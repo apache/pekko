@@ -4,6 +4,15 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.concurrent.atomic.AtomicInteger
+
+import scala.annotation.nowarn
+import scala.concurrent.Await
+import scala.concurrent.Promise
+import scala.concurrent.duration.DurationInt
+import scala.util.Success
+import scala.util.control.NoStackTrace
+
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.AbruptStageTerminationException
@@ -14,13 +23,8 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-
-import scala.annotation.nowarn
-import scala.concurrent.Await
-import scala.concurrent.Promise
-import scala.concurrent.duration.DurationInt
-import scala.util.Success
-import scala.util.control.NoStackTrace
+import pekko.stream.testkit.Utils.TE
+import pekko.testkit.EventFilter
 
 class FlowStatefulMapSpec extends StreamSpec {
 
@@ -242,7 +246,6 @@ class FlowStatefulMapSpec extends StreamSpec {
             },
           buffer => Some(buffer))
         .filter(_.nonEmpty)
-        .alsoTo(Sink.foreach(println))
         .runWith(sink)
         .request(4)
         .expectNext(List("A"))
@@ -270,5 +273,112 @@ class FlowStatefulMapSpec extends StreamSpec {
         .expectNext("D")
         .expectComplete()
     }
+
+    "will not call onComplete twice if `f` fail" in {
+      val closedCounter = new AtomicInteger(0)
+      val probe = Source
+        .repeat(1)
+        .statefulMap(() => 23)( // the best resource there is
+          (_, _) => throw TE("failing read"),
+          _ => {
+            closedCounter.incrementAndGet()
+            None
+          })
+        .runWith(TestSink[Int]())
+
+      probe.request(1)
+      probe.expectError(TE("failing read"))
+      closedCounter.get() should ===(1)
+    }
+
+    "will not call onComplete twice if `f` and `onComplete` both fail" in {
+      val closedCounter = new AtomicInteger(0)
+      val probe = Source
+        .repeat(1)
+        .statefulMap(() => 23)((_, _) => throw TE("failing read"),
+          _ => {
+            closedCounter.incrementAndGet()
+            if (closedCounter.get == 1) {
+              throw TE("boom")
+            }
+            None
+          })
+        .runWith(TestSink[Int]())
+
+      EventFilter[TE](occurrences = 1).intercept {
+        probe.request(1)
+        probe.expectError(TE("boom"))
+      }
+      closedCounter.get() should ===(1)
+    }
+
+    "will not call `onComplete` twice if `onComplete` fail on upstream complete" in {
+      val closedCounter = new AtomicInteger(0)
+      val (pub, sub) = TestSource[Int]()
+        .statefulMap(() => 23)((state, value) => (state, value),
+          _ => {
+            closedCounter.incrementAndGet()
+            throw TE("boom")
+          })
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      EventFilter[TE](occurrences = 1).intercept {
+        sub.request(1)
+        pub.sendNext(1)
+        sub.expectNext(1)
+        sub.request(1)
+        pub.sendComplete()
+        sub.expectError(TE("boom"))
+      }
+
+      closedCounter.get() should ===(1)
+    }
+
+    "will not call `onComplete` twice if `onComplete` fail on cancel" in {
+      val closedCounter = new AtomicInteger(0)
+      val (pub, sub) = TestSource[Int]()
+        .statefulMap(() => 23)((state, value) => (state, value),
+          _ => {
+            closedCounter.incrementAndGet()
+            throw TE("boom")
+          })
+        .toMat(TestSink[Int]())(Keep.both)
+        .run()
+
+      pub.expectRequest()
+      sub.cancel()
+      pub.expectCancellation()
+      closedCounter.get() should ===(1)
+    }
+
+    "will emit optional value before restarting" in {
+      val (pub, sub) = TestSource[String]()
+        .statefulMap(() => 1)((counter, value) =>
+            value match {
+              case "boom" => throw TE("boom")
+              case elem   => (counter + 1, elem)
+            },
+          counter => {
+            Some(s"onComplete:$counter")
+          })
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
+        .toMat(TestSink[String]())(Keep.both)
+        .run()
+      sub.request(1)
+      pub.sendNext("first")
+      sub.expectNext("first")
+      sub.request(1)
+      pub.sendNext("boom")
+      sub.expectNext("onComplete:2")
+      sub.request(1)
+      pub.sendNext("second")
+      sub.expectNext("second")
+      sub.request(1)
+      pub.sendComplete()
+      sub.expectNext("onComplete:2")
+      sub.expectComplete()
+    }
+
   }
 }
