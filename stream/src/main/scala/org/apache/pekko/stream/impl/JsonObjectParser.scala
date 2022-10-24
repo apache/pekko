@@ -117,21 +117,22 @@ import pekko.util.ByteString
     val bufSize = buffer.length
 
     skipToNextObject(bufSize)
+    val maxObjectLengthIndex = if (maximumObjectLength == Int.MaxValue) Int.MaxValue else pos + maximumObjectLength
 
-    while (pos < bufSize && pos < maximumObjectLength && !completedObject) {
+    while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
       val input = buffer(pos)
       proceed(input)
       pos += 1
     }
 
-    if (pos >= maximumObjectLength)
+    if (pos >= maxObjectLengthIndex)
       throw new FramingException(s"""JSON element exceeded maximumObjectLength ($maximumObjectLength bytes)!""")
 
     completedObject
   }
 
   private def skipToNextObject(bufSize: Int): Unit =
-    while (pos != -1 && pos < bufSize && pos < maximumObjectLength && depth == 0) {
+    while (pos != -1 && pos < bufSize && depth == 0) {
       val outer = outerChars(buffer(pos) & 0xFF)
       start += outer & 1
       depth = (outer & 2) >> 1
