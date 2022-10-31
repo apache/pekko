@@ -1,0 +1,23 @@
+# https://cwiki.apache.org/confluence/display/INFRA/.asf.yaml+features+for+git+repositories
+
+github:
+  description: "Build highly concurrent, distributed, and resilient message-driven applications on the JVM"
+  homepage: https://pekko.apache.org/
+  labels:
+    - pekko
+    - streaming
+    - reactive
+    - actor-model
+    - concurrency
+    - cloud-native
+    - distributed-actors
+    - distributed-systems
+    - high-performance
+  
+  features:
+    # Enable wiki for documentation
+    wiki: false
+    # Enable issue management
+    issues: true
+    # Enable projects for project management boards
+    projects: false
