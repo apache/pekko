@@ -39,9 +39,9 @@ object Scaladoc extends AutoPlugin {
       // Publishing scala3 docs is broken (https://github.com/akka/akka/issues/30788),
       // for now we just skip it:
       Compile / doc / sources := (
-          if (scalaVersion.value.startsWith("3.")) Seq()
-          else (Compile / doc / sources).value
-        ),
+        if (scalaVersion.value.startsWith("3.")) Seq()
+        else (Compile / doc / sources).value
+      ),
       Compile / validateDiagrams := true) ++
     CliOptions.scaladocDiagramsEnabled.ifTrue(Compile / doc := {
       val docs = (Compile / doc).value
@@ -80,19 +80,19 @@ object Scaladoc extends AutoPlugin {
         val hasDiagram = files.exists { f =>
           val name = f.getName
           if (name.endsWith(".html") && !name.startsWith("index-") &&
-              !name.equals("index.html") && !name.equals("package.html")) {
+            !name.equals("index.html") && !name.equals("package.html")) {
             val source = scala.io.Source.fromFile(f)(scala.io.Codec.UTF8)
-            val hd = try source
-              .getLines()
-              .exists(
-                lines =>
-                  lines.contains(
-                    "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">") ||
-                  lines.contains("<svg id=\"graph"))
-            catch {
-              case e: Exception =>
-                throw new IllegalStateException("Scaladoc verification failed for file '" + f + "'", e)
-            } finally source.close()
+            val hd =
+              try source
+                  .getLines()
+                  .exists(lines =>
+                    lines.contains(
+                      "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">") ||
+                    lines.contains("<svg id=\"graph"))
+              catch {
+                case e: Exception =>
+                  throw new IllegalStateException("Scaladoc verification failed for file '" + f + "'", e)
+              } finally source.close()
             hd
           } else false
         }
@@ -149,7 +149,7 @@ object UnidocRoot extends AutoPlugin {
         val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
         (Compile / unidoc).value match {
           case Seq(japi, api) =>
-            Seq((japi -> s"www/japi/akka/$releaseVersion"), (api -> s"www/api/akka/$releaseVersion"))
+            Seq(japi -> s"www/japi/akka/$releaseVersion", api -> s"www/api/akka/$releaseVersion")
         }
       }))
     .getOrElse(Nil)
@@ -166,20 +166,19 @@ object UnidocRoot extends AutoPlugin {
       UnidocRoot.CliOptions.genjavadocEnabled
         .ifTrue(Seq(JavaUnidoc / unidocAllSources ~= { v =>
           v.map(
-            _.filterNot(
-              s =>
-                // akka.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
-                // contains code that genjavadoc turns into (probably
-                // incorrect) Java code that in turn confuses the javadoc
-                // tool.
-                s.getAbsolutePath.endsWith("scaladsl/GraphDSL.java") ||
-                // Since adding -P:genjavadoc:strictVisibility=true,
-                // the javadoc tool would NullPointerException while
-                // determining the upper bound for some generics:
-                s.getAbsolutePath.endsWith("TopicImpl.java") ||
-                s.getAbsolutePath.endsWith("PersistencePlugin.java") ||
-                s.getAbsolutePath.endsWith("GraphDelegate.java") ||
-                s.getAbsolutePath.contains("/impl/")))
+            _.filterNot(s =>
+              // akka.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
+              // contains code that genjavadoc turns into (probably
+              // incorrect) Java code that in turn confuses the javadoc
+              // tool.
+              s.getAbsolutePath.endsWith("scaladsl/GraphDSL.java") ||
+              // Since adding -P:genjavadoc:strictVisibility=true,
+              // the javadoc tool would NullPointerException while
+              // determining the upper bound for some generics:
+              s.getAbsolutePath.endsWith("TopicImpl.java") ||
+              s.getAbsolutePath.endsWith("PersistencePlugin.java") ||
+              s.getAbsolutePath.endsWith("GraphDelegate.java") ||
+              s.getAbsolutePath.contains("/impl/")))
         }))
         .getOrElse(Nil))
   }
@@ -204,8 +203,8 @@ object BootstrapGenjavadoc extends AutoPlugin {
     .ifTrue(Seq(
       unidocGenjavadocVersion := "0.18",
       Compile / scalacOptions ++= Seq(
-          "-P:genjavadoc:fabricateParams=false",
-          "-P:genjavadoc:suppressSynthetic=false",
-          "-P:genjavadoc:strictVisibility=true")))
+        "-P:genjavadoc:fabricateParams=false",
+        "-P:genjavadoc:suppressSynthetic=false",
+        "-P:genjavadoc:strictVisibility=true")))
     .getOrElse(Nil)
 }

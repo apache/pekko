@@ -26,7 +26,7 @@ object GraphFlowSpec {
     val outMerge = b.add(Merge[String](2))
     val m2 = b.add(Merge[Int](2))
 
-    inMerge.out.map(_ * 2) ~> m2.in(0)
+    inMerge.out.map(_ * 2)                       ~> m2.in(0)
     m2.out.map(_ / 2).map(i => (i + 1).toString) ~> outMerge.in(0)
 
     source2 ~> inMerge.in(0)
@@ -192,8 +192,8 @@ class GraphFlowSpec extends StreamSpec {
           .fromGraph(GraphDSL.createGraph(source, source)(Keep.both) { implicit b => (s1, s2) =>
             import GraphDSL.Implicits._
             val merge = b.add(Merge[Int](2))
-            s1.out ~> merge.in(0)
-            merge.out ~> Sink.fromSubscriber(probe)
+            s1.out             ~> merge.in(0)
+            merge.out          ~> Sink.fromSubscriber(probe)
             s2.out.map(_ * 10) ~> merge.in(1)
             ClosedShape
           })
@@ -238,7 +238,7 @@ class GraphFlowSpec extends StreamSpec {
         val sink = Sink.fromGraph(GraphDSL.createGraph(partialGraph, Flow[String].map(_.toInt))(Keep.both) {
           implicit b => (partial, flow) =>
             import GraphDSL.Implicits._
-            flow.out ~> partial.in
+            flow.out                 ~> partial.in
             partial.out.map(_.toInt) ~> Sink.fromSubscriber(probe)
             SinkShape(flow.in)
         })
@@ -297,7 +297,7 @@ class GraphFlowSpec extends StreamSpec {
         val (m1, _, m3) = RunnableGraph
           .fromGraph(GraphDSL.createGraph(source, flow, sink)(Tuple3.apply) { implicit b => (src, f, snk) =>
             import GraphDSL.Implicits._
-            src.out.map(_.toInt) ~> f.in
+            src.out.map(_.toInt)  ~> f.in
             f.out.map(_.toString) ~> snk.in
             ClosedShape
           })

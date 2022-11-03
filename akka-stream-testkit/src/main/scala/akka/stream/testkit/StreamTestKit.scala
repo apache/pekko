@@ -97,7 +97,7 @@ object TestPublisher {
     @ccompatUsedUntil213
     private val probe: TestProbe = TestProbe()
 
-    //this is a way to pause receiving message from probe until subscription is done
+    // this is a way to pause receiving message from probe until subscription is done
     private val subscribed = new CountDownLatch(1)
     probe.ignoreMsg { case SubscriptionDone => true }
     probe.setAutoPilot(new TestActor.AutoPilot() {
@@ -690,7 +690,6 @@ object TestSubscriber {
 
     /**
      * Expect a stream element and test it with partial function.
-     *
      */
     def expectNextPF[T](f: PartialFunction[Any, T]): T =
       expectNextWithTimeoutPF(Duration.Undefined, f)
@@ -701,9 +700,10 @@ object TestSubscriber {
      * @param max wait no more than max time, otherwise throw AssertionError
      */
     def expectNextWithTimeoutPF[T](max: Duration, f: PartialFunction[Any, T]): T =
-      expectEventWithTimeoutPF(max, {
-        case OnNext(n) if f.isDefinedAt(n) => f(n)
-      })
+      expectEventWithTimeoutPF(max,
+        {
+          case OnNext(n) if f.isDefinedAt(n) => f(n)
+        })
 
     /**
      * Expect a stream element during specified time or timeout and test it with partial function.

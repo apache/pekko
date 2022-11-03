@@ -8,7 +8,7 @@ import akka.actor.typed.{ scaladsl, Behavior }
 import akka.annotation.DoNotInherit
 import akka.japi.function.Procedure
 
-import java.util.function.{ Predicate, Function => JFunction }
+import java.util.function.{ Function => JFunction, Predicate }
 
 /**
  * A non thread safe mutable message buffer that can be used to buffer messages inside actors

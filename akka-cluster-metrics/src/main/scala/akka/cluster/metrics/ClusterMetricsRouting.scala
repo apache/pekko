@@ -405,14 +405,14 @@ object MetricsSelector {
         val args = List(classOf[Config] -> config)
         dynamicAccess
           .createInstanceFor[MetricsSelector](fqn, args)
-          .recover({
+          .recover {
             case exception =>
               throw new IllegalArgumentException(
-                (s"Cannot instantiate metrics-selector [$fqn], " +
+                s"Cannot instantiate metrics-selector [$fqn], " +
                 "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
-                "has constructor with [com.typesafe.config.Config] parameter"),
+                "has constructor with [com.typesafe.config.Config] parameter",
                 exception)
-          })
+          }
           .get
     }
 }
@@ -458,7 +458,7 @@ abstract class CapacityMetricsSelector extends MetricsSelector {
       val (_, min) = capacity.minBy { case (_, c) => c }
       // lowest usable capacity is 1% (>= 0.5% will be rounded to weight 1), also avoids div by zero
       val divisor = math.max(0.01, min)
-      capacity.map { case (address, c) => (address -> math.round((c) / divisor).toInt) }
+      capacity.map { case (address, c) => address -> math.round(c / divisor).toInt }
     }
   }
 

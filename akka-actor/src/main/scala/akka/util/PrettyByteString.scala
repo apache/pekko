@@ -19,7 +19,7 @@ private[akka] object PrettyByteString {
   def formatBytes(bs: ByteString, maxBytes: Int = 16 * 5): Iterator[String] = {
     def asHex(b: Byte): String = "%02X".format(b)
     def asASCII(b: Byte): Char =
-      if (b >= 0x20 && b < 0x7f) b.toChar
+      if (b >= 0x20 && b < 0x7F) b.toChar
       else '.'
 
     def formatLine(bs: ByteString): String = {

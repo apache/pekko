@@ -69,7 +69,7 @@ import scala.concurrent.duration.FiniteDuration
     startTimerAtFixedRate(key, msg, initialDelay.asScala, interval.asScala)
 
   override final def startPeriodicTimer(key: Any, msg: T, interval: Duration): Unit = {
-    //this follows the deprecation note in the super class
+    // this follows the deprecation note in the super class
     startTimerWithFixedDelay(key, msg, interval.asScala)
   }
 

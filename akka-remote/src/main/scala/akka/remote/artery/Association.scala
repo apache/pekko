@@ -151,7 +151,8 @@ private[remote] class Association(
 
   override def settings = transport.settings
   private def advancedSettings = transport.settings.Advanced
-  private val deathWatchNotificationFlushEnabled = advancedSettings.DeathWatchNotificationFlushTimeout > Duration.Zero && transport.provider.settings.HasCluster
+  private val deathWatchNotificationFlushEnabled =
+    advancedSettings.DeathWatchNotificationFlushTimeout > Duration.Zero && transport.provider.settings.HasCluster
 
   private val restartCounter =
     new RestartCounter(advancedSettings.OutboundMaxRestarts, advancedSettings.OutboundRestartTimeout)
@@ -818,7 +819,7 @@ private[remote] class Association(
           .fromGraph(new SendQueue[OutboundEnvelope](sendToDeadLetters))
           .via(streamKillSwitch.flow)
           .viaMat(transport.outboundTestFlow(this))(Keep.both)
-          .toMat(transport.outbound(this))({ case ((a, b), (c, d)) => (a, b, c, d) }) // "keep all, exploded"
+          .toMat(transport.outbound(this)) { case ((a, b), (c, d)) => (a, b, c, d) } // "keep all, exploded"
           .run()(materializer)
 
       queueValue.inject(wrapper.queue)
@@ -1055,9 +1056,11 @@ private[remote] class Association(
       streamKillSwitch: SharedKillSwitch,
       completed: Future[Done]): Unit = {
     implicit val ec = materializer.executionContext
-    updateStreamMatValues(streamId, OutboundStreamMatValues(OptionVal.Some(streamKillSwitch), completed.recover {
-      case _ => Done
-    }, stopping = OptionVal.None))
+    updateStreamMatValues(streamId,
+      OutboundStreamMatValues(OptionVal.Some(streamKillSwitch),
+        completed.recover {
+          case _ => Done
+        }, stopping = OptionVal.None))
   }
 
   @tailrec private def updateStreamMatValues(streamId: Int, values: OutboundStreamMatValues): Unit = {

@@ -53,7 +53,7 @@ object Protobuf {
         val targets = target.value
         val cache = targets / "protoc" / "cache"
 
-        (sourceDirs.zip(targetDirs)).map {
+        sourceDirs.zip(targetDirs).map {
           case (src, dst) =>
             val relative = src
               .relativeTo(sources)
@@ -68,8 +68,8 @@ object Protobuf {
               _ => true,
               transformFile(
                 _.replace("com.google.protobuf", "akka.protobufv3.internal")
-                // this is the one thing that protobufGenerate doesn't fully qualify and causes
-                // api doc generation to fail
+                  // this is the one thing that protobufGenerate doesn't fully qualify and causes
+                  // api doc generation to fail
                   .replace(
                     "UnusedPrivateParameter",
                     "akka.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter")),
@@ -89,9 +89,10 @@ object Protobuf {
     }
 
   private def checkProtocVersion(protoc: String, protocVersion: String, log: Logger): Unit = {
-    val res = callProtoc(protoc, Seq("--version"), log, { (p, l) =>
-      p !! l
-    })
+    val res = callProtoc(protoc, Seq("--version"), log,
+      { (p, l) =>
+        p !! l
+      })
     val version = res.split(" ").last.trim
     if (version != protocVersion) {
       sys.error("Wrong protoc version! Expected %s but got %s".format(protocVersion, version))
@@ -120,7 +121,8 @@ object Protobuf {
           protoc,
           Seq("-I" + srcDir.absolutePath, "--java_out=%s".format(targetDir.absolutePath)) ++
           protoPathArg ++ protoFiles.map(_.absolutePath),
-          log, { (p, l) =>
+          log,
+          { (p, l) =>
             p ! l
           })
         if (exitCode != 0)
@@ -157,7 +159,7 @@ object Protobuf {
           updated
         } else Set.empty
     }
-    val sources = (sourceDir.allPaths).get.toSet
+    val sources = sourceDir.allPaths.get.toSet
     runTransform(sources)
     targetDir
   }

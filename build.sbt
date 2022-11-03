@@ -74,17 +74,17 @@ lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
   testkit)
 
 lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[ProjectReference](
-    actorTests,
-    actorTypedTests,
-    benchJmh,
-    docs,
-    billOfMaterials,
-    persistenceShared,
-    persistenceTck,
-    persistenceTypedTests,
-    remoteTests,
-    streamTests,
-    streamTestsTck)
+  actorTests,
+  actorTypedTests,
+  benchJmh,
+  docs,
+  billOfMaterials,
+  persistenceShared,
+  persistenceTck,
+  persistenceTypedTests,
+  remoteTests,
+  streamTests,
+  streamTestsTck)
 
 lazy val root = Project(id = "akka", base = file("."))
   .aggregate(aggregatedProjects: _*)
@@ -92,13 +92,13 @@ lazy val root = Project(id = "akka", base = file("."))
   .settings(rootSettings: _*)
   .settings(
     unidocRootIgnoreProjects := Seq(
-        remoteTests,
-        benchJmh,
-        protobuf,
-        protobufV3,
-        akkaScalaNightly,
-        docs,
-        serialversionRemoverPlugin))
+      remoteTests,
+      benchJmh,
+      protobuf,
+      protobufV3,
+      akkaScalaNightly,
+      docs,
+      serialversionRemoverPlugin))
   .settings(Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
   .settings(akka.AkkaBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
@@ -311,7 +311,7 @@ lazy val persistenceTck = akkaModule("akka-persistence-tck")
   .dependsOn(persistence % "compile->compile;test->test", testkit % "compile->compile;test->test")
   .settings(Dependencies.persistenceTck)
   .settings(AutomaticModuleName.settings("akka.persistence.tck"))
-  //.settings(OSGi.persistenceTck) TODO: we do need to export this as OSGi bundle too?
+  // .settings(OSGi.persistenceTck) TODO: we do need to export this as OSGi bundle too?
   .settings(Test / fork := true)
   .disablePlugins(MimaPlugin)
 
@@ -353,21 +353,21 @@ lazy val protobufV3 = akkaModule("akka-protobuf-v3")
   .settings(
     libraryDependencies += Dependencies.Compile.Provided.protobufRuntime,
     assembly / assemblyShadeRules := Seq(
-        ShadeRule
-          .rename("com.google.protobuf.**" -> "akka.protobufv3.internal.@1")
-          // https://github.com/sbt/sbt-assembly/issues/400
-          .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
-          .inProject),
+      ShadeRule
+        .rename("com.google.protobuf.**" -> "akka.protobufv3.internal.@1")
+        // https://github.com/sbt/sbt-assembly/issues/400
+        .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
+        .inProject),
     assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(false),
     autoScalaLibrary := false, // do not include scala dependency in pom
     exportJars := true, // in dependent projects, use assembled and shaded jar
     makePomConfiguration := makePomConfiguration.value
-        .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
+      .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
-        (Compile / packageBin / artifact).value,
-        ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
+      (Compile / packageBin / artifact).value,
+      ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
     Compile / packageBin := ReproducibleBuildsPlugin
-        .postProcessJar((Compile / assembly).value), // package by running assembly
+      .postProcessJar((Compile / assembly).value), // package by running assembly
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365
     assembly / fullClasspath := (Runtime / managedClasspath).value, // otherwise, there's a cyclic dependency between packageBin and assembly
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
@@ -589,10 +589,10 @@ lazy val serialversionRemoverPlugin =
 
 lazy val serialversionRemoverPluginSettings = Seq(
   Compile / scalacOptions ++= (
-      if (scalaVersion.value.startsWith("3."))
-        Seq("-Xplugin:" + (serialversionRemoverPlugin / Compile / Keys.`package`).value.getAbsolutePath.toString)
-      else Nil
-    ))
+    if (scalaVersion.value.startsWith("3."))
+      Seq("-Xplugin:" + (serialversionRemoverPlugin / Compile / Keys.`package`).value.getAbsolutePath.toString)
+    else Nil
+  ))
 
 def akkaModule(name: String): Project =
   Project(id = name, base = file(name))
@@ -620,7 +620,8 @@ addCommandAlias("allClusterSharding", commandValue(clusterSharding))
 addCommandAlias("allClusterTools", commandValue(clusterTools))
 addCommandAlias(
   "allCluster",
-  Seq(commandValue(cluster), commandValue(distributedData), commandValue(clusterSharding), commandValue(clusterTools)).mkString)
+  Seq(commandValue(cluster), commandValue(distributedData), commandValue(clusterSharding),
+    commandValue(clusterTools)).mkString)
 addCommandAlias("allCoordination", commandValue(coordination))
 addCommandAlias("allDistributedData", commandValue(distributedData))
 addCommandAlias("allPersistence", commandValue(persistence))

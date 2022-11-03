@@ -273,9 +273,9 @@ class BackoffOnRestartSupervisorSpec extends AkkaSpec("""
 
       // note that the message could be lost (dead letters) because ended up with previous crashed child
       probe.awaitAssert({
-        supervisor ! "PING"
-        probe.expectMsg("PING")
-      }, 1.second)
+          supervisor ! "PING"
+          probe.expectMsg("PING")
+        }, 1.second)
     }
   }
 }

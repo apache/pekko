@@ -940,7 +940,6 @@ object ClusterReceptionist {
  * since the client should normally send subsequent messages via the `ClusterClient`.
  * It is possible to pass the original sender inside the reply messages if
  * the client is supposed to communicate directly to the actor in the cluster.
- *
  */
 @deprecated(
   "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
@@ -1071,7 +1070,6 @@ final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterRecep
       }
 
     case _: MemberEvent => // not of interest
-
     case SubscribeClusterClients =>
       val subscriber = sender()
       subscriber ! ClusterClients(clientInteractions.keySet.to(HashSet))

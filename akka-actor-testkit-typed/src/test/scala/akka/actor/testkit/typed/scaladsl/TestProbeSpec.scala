@@ -22,9 +22,9 @@ class TestProbeSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     probe.fishForMessage(shortDuration) {
       case _ => FishingOutcomes.complete
     }
-    probe.awaitAssert({
+    probe.awaitAssert {
       "result"
-    })
+    }
     probe.expectMessageType[String]
     probe.expectMessage("whoa")
     probe.expectNoMessage()

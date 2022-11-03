@@ -28,11 +28,11 @@ object ConsistencySpec {
         }
       }
     """
-  class CacheMisaligned(var value: Long, var padding1: Long, var padding2: Long, var padding3: Int) //Vars, no final fences
+  class CacheMisaligned(var value: Long, var padding1: Long, var padding2: Long, var padding3: Int) // Vars, no final fences
 
   class ConsistencyCheckingActor extends Actor {
-    var left = new CacheMisaligned(42, 0, 0, 0) //var
-    var right = new CacheMisaligned(0, 0, 0, 0) //var
+    var left = new CacheMisaligned(42, 0, 0, 0) // var
+    var right = new CacheMisaligned(0, 0, 0, 0) // var
     var lastStep = -1L
     def receive = {
       case step: Long =>

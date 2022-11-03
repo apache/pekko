@@ -67,11 +67,7 @@ object ClusterEvent {
   // for binary compatibility (used to be a case class)
   object CurrentClusterState
       extends AbstractFunction5[
-        immutable.SortedSet[Member],
-        Set[Member],
-        Set[Address],
-        Option[Address],
-        Map[String, Option[Address]],
+        immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]],
         CurrentClusterState] {
 
     @nowarn("msg=deprecated")
@@ -105,11 +101,7 @@ object ClusterEvent {
       val unreachableDataCenters: Set[DataCenter],
       @InternalApi private[akka] val memberTombstones: Set[UniqueAddress])
       extends Product5[
-        immutable.SortedSet[Member],
-        Set[Member],
-        Set[Address],
-        Option[Address],
-        Map[String, Option[Address]]]
+        immutable.SortedSet[Member], Set[Member], Set[Address], Option[Address], Map[String, Option[Address]]]
       with Serializable {
 
     // for binary compatibility
@@ -488,7 +480,8 @@ object ClusterEvent {
       oldState.dcReachabilityNoOutsideNodes.allUnreachable.iterator
         .collect {
           case node
-              if newGossip.hasMember(node) && newState.dcReachabilityNoOutsideNodes.isReachable(node) && node != newState.selfUniqueAddress =>
+              if newGossip.hasMember(node) && newState.dcReachabilityNoOutsideNodes.isReachable(
+                node) && node != newState.selfUniqueAddress =>
             ReachableMember(newGossip.member(node))
         }
         .to(immutable.IndexedSeq)
@@ -517,7 +510,7 @@ object ClusterEvent {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
-          .union(newState.latestGossip.allDataCenters)) - newState.selfDc
+        .union(newState.latestGossip.allDataCenters)) - newState.selfDc
 
       val oldUnreachableDcs = otherDcs.filterNot(isDataCenterReachable(oldState))
       val currentUnreachableDcs = otherDcs.filterNot(isDataCenterReachable(newState))
@@ -536,7 +529,7 @@ object ClusterEvent {
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
-          .union(newState.latestGossip.allDataCenters)) - newState.selfDc
+        .union(newState.latestGossip.allDataCenters)) - newState.selfDc
 
       val oldUnreachableDcs = otherDcs.filterNot(isDataCenterReachable(oldState))
       val currentUnreachableDcs = otherDcs.filterNot(isDataCenterReachable(newState))

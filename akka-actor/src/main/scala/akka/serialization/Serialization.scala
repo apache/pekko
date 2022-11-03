@@ -48,7 +48,7 @@ object Serialization {
 
     private final def configToMap(cfg: Config): Map[String, String] = {
       import akka.util.ccompat.JavaConverters._
-      cfg.root.unwrapped.asScala.toMap.map { case (k, v) => (k -> v.toString) }
+      cfg.root.unwrapped.asScala.toMap.map { case (k, v) => k -> v.toString }
     }
   }
 
@@ -176,14 +176,15 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   @deprecated("Use deserialize that accepts the `manifest` as a class name.", since = "2.6.0")
   def deserialize[T](bytes: Array[Byte], serializerId: Int, clazz: Option[Class[_ <: T]]): Try[T] =
     Try {
-      val serializer = try getSerializerById(serializerId)
-      catch {
-        case _: NoSuchElementException =>
-          throw new NotSerializableException(
-            s"Cannot find serializer with id [$serializerId]${clazz.map(c => " (class [" + c.getName + "])").getOrElse("")}. " +
-            "The most probable reason is that the configuration entry " +
-            "akka.actor.serializers is not in sync between the two systems.")
-      }
+      val serializer =
+        try getSerializerById(serializerId)
+        catch {
+          case _: NoSuchElementException =>
+            throw new NotSerializableException(
+              s"Cannot find serializer with id [$serializerId]${clazz.map(c => " (class [" + c.getName + "])").getOrElse("")}. " +
+              "The most probable reason is that the configuration entry " +
+              "akka.actor.serializers is not in sync between the two systems.")
+        }
       withTransportInformation { () =>
         serializer.fromBinary(bytes, clazz).asInstanceOf[T]
       }
@@ -196,13 +197,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    */
   def deserialize(bytes: Array[Byte], serializerId: Int, manifest: String): Try[AnyRef] =
     Try {
-      val serializer = try getSerializerById(serializerId)
-      catch {
-        case _: NoSuchElementException =>
-          throw new NotSerializableException(
-            s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
-            "akka.actor.serializers is not in sync between the two systems.")
-      }
+      val serializer =
+        try getSerializerById(serializerId)
+        catch {
+          case _: NoSuchElementException =>
+            throw new NotSerializableException(
+              s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
+              "akka.actor.serializers is not in sync between the two systems.")
+        }
       deserializeByteArray(bytes, serializer, manifest)
     }
 
@@ -246,13 +248,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    */
   @throws(classOf[NotSerializableException])
   def deserializeByteBuffer(buf: ByteBuffer, serializerId: Int, manifest: String): AnyRef = {
-    val serializer = try getSerializerById(serializerId)
-    catch {
-      case _: NoSuchElementException =>
-        throw new NotSerializableException(
-          s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
-          "akka.actor.serializers is not in synch between the two systems.")
-    }
+    val serializer =
+      try getSerializerById(serializerId)
+      catch {
+        case _: NoSuchElementException =>
+          throw new NotSerializableException(
+            s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
+            "akka.actor.serializers is not in synch between the two systems.")
+      }
 
     // not using `withTransportInformation { () =>` because deserializeByteBuffer is supposed to be the
     // possibility for allocation free serialization
@@ -483,14 +486,14 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * obeying any order between unrelated subtypes (insert sort).
    */
   private def sort(in: Iterable[ClassSerializer]): immutable.Seq[ClassSerializer] =
-    (in
+    in
       .foldLeft(new ArrayBuffer[ClassSerializer](in.size)) { (buf, ca) =>
         buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
           case -1 => buf.append(ca)
           case x  => buf.insert(x, ca)
         }
         buf
-      })
+      }
       .to(immutable.Seq)
 
   /**
@@ -559,7 +562,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   @InternalApi private[akka] def shouldWarnAboutJavaSerializer(serializedClass: Class[_], serializer: Serializer) = {
 
     def suppressWarningOnNonSerializationVerification(serializedClass: Class[_]) = {
-      //suppressed, only when warn-on-no-serialization-verification = off, and extending NoSerializationVerificationNeeded
+      // suppressed, only when warn-on-no-serialization-verification = off, and extending NoSerializationVerificationNeeded
       !isWarningOnNoVerificationEnabled && classOf[NoSerializationVerificationNeeded].isAssignableFrom(serializedClass)
     }
 

@@ -92,7 +92,8 @@ abstract class MultiDcHeartbeatTakingOverSpec extends MultiNodeClusterSpec(Multi
       expectedBetaHeartbeaterNodes = takeNOldestMembers(dataCenter = "beta", 2)
       expectedBetaHeartbeaterRoles = membersAsRoles(expectedBetaHeartbeaterNodes)
 
-      expectedNoActiveHeartbeatSenderRoles = roles.toSet -- (expectedAlphaHeartbeaterRoles ++ expectedBetaHeartbeaterRoles)
+      expectedNoActiveHeartbeatSenderRoles =
+        roles.toSet -- (expectedAlphaHeartbeaterRoles ++ expectedBetaHeartbeaterRoles)
     }
 
     "collect information on oldest nodes" taggedAs LongRunningTest in {
@@ -157,7 +158,7 @@ abstract class MultiDcHeartbeatTakingOverSpec extends MultiNodeClusterSpec(Multi
 
       implicit val sender: ActorRef = observer.ref
       val expectedAlphaMonitoringNodesAfterLeaving =
-        (takeNOldestMembers(dataCenter = "alpha", 3).filterNot(_.status == MemberStatus.Exiting))
+        takeNOldestMembers(dataCenter = "alpha", 3).filterNot(_.status == MemberStatus.Exiting)
       runOn(membersAsRoles(expectedAlphaMonitoringNodesAfterLeaving).toList: _*) {
         awaitAssert(
           {

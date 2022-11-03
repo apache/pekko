@@ -42,22 +42,24 @@ class ChaosJournal extends AsyncWriteJournal {
 
   override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     try Future.successful {
-      if (shouldFail(writeFailureRate)) throw new WriteFailedException(messages.flatMap(_.payload))
-      else
-        for (a <- messages) yield {
-          a.payload.foreach(add)
-          AsyncWriteJournal.successUnit
-        }
-    } catch {
+        if (shouldFail(writeFailureRate)) throw new WriteFailedException(messages.flatMap(_.payload))
+        else
+          for (a <- messages) yield {
+            a.payload.foreach(add)
+            AsyncWriteJournal.successUnit
+          }
+      }
+    catch {
       case NonFatal(e) => Future.failed(e)
     }
 
   override def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = {
     try Future.successful {
-      (1L to toSequenceNr).foreach { snr =>
-        del(persistenceId, snr)
+        (1L to toSequenceNr).foreach { snr =>
+          del(persistenceId, snr)
+        }
       }
-    } catch {
+    catch {
       case NonFatal(e) => Future.failed(e)
     }
   }

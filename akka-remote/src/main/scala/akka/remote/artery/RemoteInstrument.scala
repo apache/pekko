@@ -167,7 +167,6 @@ abstract class RemoteInstrument {
  *  |                   ... metadata entry ...                        |
  *  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * }}}
- *
  */
 private[remote] final class RemoteInstruments(
     private val system: ExtendedActorSystem,

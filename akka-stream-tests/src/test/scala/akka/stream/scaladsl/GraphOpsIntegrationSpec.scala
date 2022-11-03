@@ -48,15 +48,15 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
 
     "support broadcast - merge layouts" in {
       val resultFuture = RunnableGraph
-        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => (sink) =>
+        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => sink =>
           import GraphDSL.Implicits._
           val bcast = b.add(Broadcast[Int](2))
           val merge = b.add(Merge[Int](2))
 
-          Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> merge.in(0)
+          Source(List(1, 2, 3))   ~> bcast.in
+          bcast.out(0)            ~> merge.in(0)
           bcast.out(1).map(_ + 3) ~> merge.in(1)
-          merge.out.grouped(10) ~> sink.in
+          merge.out.grouped(10)   ~> sink.in
           ClosedShape
         })
         .run()
@@ -67,7 +67,7 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
     "support balance - merge (parallelization) layouts" in {
       val elements = 0 to 10
       val out = RunnableGraph
-        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => (sink) =>
+        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => sink =>
           import GraphDSL.Implicits._
           val balance = b.add(Balance[Int](5))
           val merge = b.add(Merge[Int](5))
@@ -104,26 +104,26 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
             val in7 = Source(List(7))
 
             // First layer
-            in7 ~> b7.in
+            in7       ~> b7.in
             b7.out(0) ~> m11.in(0)
             b7.out(1) ~> m8.in(0)
 
             in5 ~> m11.in(1)
 
-            in3 ~> b3.in
+            in3       ~> b3.in
             b3.out(0) ~> m8.in(1)
             b3.out(1) ~> m10.in(0)
 
             // Second layer
-            m11.out ~> b11.in
+            m11.out                  ~> b11.in
             b11.out(0).grouped(1000) ~> sink2.in // Vertex 2 is omitted since it has only one in and out
-            b11.out(1) ~> m9.in(0)
-            b11.out(2) ~> m10.in(1)
+            b11.out(1)               ~> m9.in(0)
+            b11.out(2)               ~> m10.in(1)
 
             m8.out ~> m9.in(1)
 
             // Third layer
-            m9.out.grouped(1000) ~> sink9.in
+            m9.out.grouped(1000)  ~> sink9.in
             m10.out.grouped(1000) ~> sink10.in
 
             ClosedShape
@@ -139,15 +139,15 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
     "allow adding of flows to sources and sinks to flows" in {
 
       val resultFuture = RunnableGraph
-        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => (sink) =>
+        .fromGraph(GraphDSL.createGraph(Sink.head[Seq[Int]]) { implicit b => sink =>
           import GraphDSL.Implicits._
           val bcast = b.add(Broadcast[Int](2))
           val merge = b.add(Merge[Int](2))
 
           Source(List(1, 2, 3)).map(_ * 2) ~> bcast.in
-          bcast.out(0) ~> merge.in(0)
-          bcast.out(1).map(_ + 3) ~> merge.in(1)
-          merge.out.grouped(10) ~> sink.in
+          bcast.out(0)                     ~> merge.in(0)
+          bcast.out(1).map(_ + 3)          ~> merge.in(1)
+          merge.out.grouped(10)            ~> sink.in
           ClosedShape
         })
         .run()
@@ -183,7 +183,7 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
             import GraphDSL.Implicits._
             val merge = b.add(Merge[Int](2))
 
-            Source(List(1, 2, 3)) ~> s1.in1
+            Source(List(1, 2, 3))    ~> s1.in1
             Source(List(10, 11, 12)) ~> s1.in2
 
             s1.out1 ~> s2.in1
@@ -208,7 +208,7 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
     "be possible to use with generated components" in {
       implicit val ex = system.dispatcher
 
-      //#graph-from-list
+      // #graph-from-list
       val sinks = immutable
         .Seq("a", "b", "c")
         .map(prefix => Flow[String].filter(str => str.startsWith(prefix)).toMat(Sink.head[String])(Keep.right))
@@ -225,7 +225,7 @@ class GraphOpsIntegrationSpec extends StreamSpec("""
       })
 
       val matList: Seq[Future[String]] = g.run()
-      //#graph-from-list
+      // #graph-from-list
 
       val result: Seq[String] = Await.result(Future.sequence(matList), 3.seconds)
 

@@ -11,7 +11,7 @@ import akka.actor.ActorRef
 
 object ConsistentHashingRouterDocSpec {
 
-  //#cache-actor
+  // #cache-actor
   import akka.actor.Actor
   import akka.routing.ConsistentHashingRouter.ConsistentHashable
 
@@ -32,7 +32,7 @@ object ConsistentHashingRouterDocSpec {
   }
 
   final case class Entry(key: String, value: String)
-  //#cache-actor
+  // #cache-actor
 
 }
 
@@ -44,7 +44,7 @@ class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
 
     def context = system
 
-    //#consistent-hashing-router
+    // #consistent-hashing-router
     import akka.actor.Props
     import akka.routing.ConsistentHashingPool
     import akka.routing.ConsistentHashingRouter.ConsistentHashMapping
@@ -70,7 +70,7 @@ class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
     cache ! Get("hi")
     expectMsg(None)
 
-    //#consistent-hashing-router
+    // #consistent-hashing-router
 
   }
 

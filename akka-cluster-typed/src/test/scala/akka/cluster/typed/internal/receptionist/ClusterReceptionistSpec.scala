@@ -203,9 +203,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         }
 
         regProbe1.awaitAssert({
-          // we will also potentially get an update that the service was unreachable before the expected one
-          regProbe1.expectMessage(10.seconds, Listing(PingKey, Set(service1)))
-        }, 10.seconds)
+            // we will also potentially get an update that the service was unreachable before the expected one
+            regProbe1.expectMessage(10.seconds, Listing(PingKey, Set(service1)))
+          }, 10.seconds)
 
         // register another after removal
         val service1b = testKit1.spawn(pingPongBehavior)
@@ -258,9 +258,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         clusterNode2.manager ! Down(clusterNode1.selfMember.address)
         // service1 removed
         regProbe2.awaitAssert({
-          // we will also potentially get an update that the service was unreachable before the expected one
-          regProbe2.expectMessage(10.seconds, Listing(PingKey, Set(service2)))
-        }, 10.seconds)
+            // we will also potentially get an update that the service was unreachable before the expected one
+            regProbe2.expectMessage(10.seconds, Listing(PingKey, Set(service2)))
+          }, 10.seconds)
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -317,9 +317,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         clusterNode1.manager ! Down(clusterNode2.selfMember.address)
         regProbe1.awaitAssert({
 
-          // we will also potentially get an update that the service was unreachable before the expected one
-          regProbe1.expectMessage(10.seconds, Listing(PingKey, Set.empty[ActorRef[PingProtocol]]))
-        }, 10.seconds)
+            // we will also potentially get an update that the service was unreachable before the expected one
+            regProbe1.expectMessage(10.seconds, Listing(PingKey, Set.empty[ActorRef[PingProtocol]]))
+          }, 10.seconds)
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -390,11 +390,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
           // make sure it joined fine and node1 has upped it
           regProbe1.awaitAssert(
             {
-              clusterNode1.state.members.exists(
-                m =>
-                  m.uniqueAddress == clusterNode3.selfMember.uniqueAddress &&
-                  m.status == MemberStatus.Up &&
-                  !clusterNode1.state.unreachable(m)) should ===(true)
+              clusterNode1.state.members.exists(m =>
+                m.uniqueAddress == clusterNode3.selfMember.uniqueAddress &&
+                m.status == MemberStatus.Up &&
+                !clusterNode1.state.unreachable(m)) should ===(true)
             },
             10.seconds)
 
@@ -558,11 +557,11 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
         // one actor on each node up front
         val actor1 = testKit1.spawn(Behaviors.receive[AnyRef] {
-          case (ctx, "stop") =>
-            ctx.log.info("Stopping")
-            Behaviors.stopped
-          case _ => Behaviors.same
-        }, "actor1")
+            case (ctx, "stop") =>
+              ctx.log.info("Stopping")
+              Behaviors.stopped
+            case _ => Behaviors.same
+          }, "actor1")
         val actor2 = testKit2.spawn(Behaviors.empty[AnyRef], "actor2")
 
         system1.receptionist ! Register(TheKey, actor1)
@@ -723,7 +722,8 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
     }
 
-    "handle concurrent unregistration and registration on different nodes".taggedAs(LongRunningTest, GHExcludeAeronTest) in {
+    "handle concurrent unregistration and registration on different nodes".taggedAs(LongRunningTest,
+      GHExcludeAeronTest) in {
       // this covers the fact that with ddata a removal can be lost
       val testKit1 = ActorTestKit("ClusterReceptionistSpec-test-12", ClusterReceptionistSpec.config)
       val system1 = testKit1.system

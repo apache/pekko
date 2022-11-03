@@ -51,24 +51,24 @@ object ShoppingCartBehavior {
 
   def apply(pid: PersistenceId) = behavior(pid)
 
-  //#commands
+  // #commands
   sealed trait Command
   case class AddItem(item: Item) extends Command
   case object Buy extends Command
   case object Leave extends Command
   case class GetCurrentCart(replyTo: ActorRef[ShoppingCart]) extends Command
   private case object Timeout extends Command
-  //#commands
+  // #commands
 
-  //#state
+  // #state
   sealed trait State
   case class LookingAround(cart: ShoppingCart) extends State
   case class Shopping(cart: ShoppingCart) extends State
   case class Inactive(cart: ShoppingCart) extends State
   case class Paid(cart: ShoppingCart) extends State
-  //#state
+  // #state
 
-  //#snapshot-adapter
+  // #snapshot-adapter
   val persistentFSMSnapshotAdapter: SnapshotAdapter[State] = PersistentFSMMigration.snapshotAdapter[State] {
     case (stateIdentifier, data, _) =>
       val cart = data.asInstanceOf[ShoppingCart]
@@ -80,9 +80,9 @@ object ShoppingCartBehavior {
         case id               => throw new IllegalStateException(s"Unexpected state identifier $id")
       }
   }
-  //#snapshot-adapter
+  // #snapshot-adapter
 
-  //#event-adapter
+  // #event-adapter
   class PersistentFsmEventAdapter extends EventAdapter[DomainEvent, Any] {
     override def toJournal(e: DomainEvent): Any = e
     override def manifest(event: DomainEvent): String = ""
@@ -101,11 +101,11 @@ object ShoppingCartBehavior {
 
     }
   }
-  //#event-adapter
+  // #event-adapter
 
   val StateTimeout = "state-timeout"
 
-  //#command-handler
+  // #command-handler
   def commandHandler(timers: TimerScheduler[Command])(state: State, command: Command): Effect[DomainEvent, State] =
     state match {
       case LookingAround(cart) =>
@@ -152,9 +152,9 @@ object ShoppingCartBehavior {
             Effect.none
         }
     }
-  //#command-handler
+  // #command-handler
 
-  //#event-handler
+  // #event-handler
   def eventHandler(state: State, event: DomainEvent): State = {
     state match {
       case la @ LookingAround(cart) =>
@@ -178,7 +178,7 @@ object ShoppingCartBehavior {
       case Paid(_) => state // no events after paid
     }
   }
-  //#event-handler
+  // #event-handler
 
   private def behavior(pid: PersistenceId): Behavior[Command] =
     Behaviors.withTimers[Command] { timers =>
@@ -189,7 +189,7 @@ object ShoppingCartBehavior {
         eventHandler)
         .snapshotAdapter(persistentFSMSnapshotAdapter)
         .eventAdapter(new PersistentFsmEventAdapter())
-        //#signal-handler
+        // #signal-handler
         .receiveSignal {
           case (state, RecoveryCompleted) =>
             state match {
@@ -198,7 +198,7 @@ object ShoppingCartBehavior {
               case _ =>
             }
         }
-    //#signal-handler
+    // #signal-handler
     }
 
 }

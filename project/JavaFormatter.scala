@@ -24,7 +24,7 @@ object JavaFormatter extends AutoPlugin {
 
   override def projectSettings: Seq[Def.Setting[_]] =
     Seq(
-      //below is for sbt java formatter
+      // below is for sbt java formatter
       javafmt / excludeFilter := {
         val ignoreSupport =
           new ProjectFileIgnoreSupport((ThisBuild / baseDirectory).value / ignoreConfigFileName, descriptor)

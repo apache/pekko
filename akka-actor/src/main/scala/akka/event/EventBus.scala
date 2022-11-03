@@ -25,7 +25,7 @@ trait EventBus {
   type Classifier
   type Subscriber
 
-  //#event-bus-api
+  // #event-bus-api
   /**
    * Attempts to register the subscriber to the specified Classifier
    * @return true if successful and false if not (because it was already
@@ -49,7 +49,7 @@ trait EventBus {
    * Publishes the specified Event to this bus
    */
   def publish(event: Event): Unit
-  //#event-bus-api
+  // #event-bus-api
 }
 
 /**
@@ -82,9 +82,10 @@ trait PredicateClassifier { this: EventBus =>
  */
 trait LookupClassification { this: EventBus =>
 
-  protected final val subscribers = new Index[Classifier, Subscriber](mapSize(), new Comparator[Subscriber] {
-    def compare(a: Subscriber, b: Subscriber): Int = compareSubscribers(a, b)
-  })
+  protected final val subscribers = new Index[Classifier, Subscriber](mapSize(),
+    new Comparator[Subscriber] {
+      def compare(a: Subscriber, b: Subscriber): Int = compareSubscribers(a, b)
+    })
 
   /**
    * This is a size hint for the number of Classifiers you expect to have (use powers of 2)
@@ -297,7 +298,7 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier =>
 
   /** The unsubscriber takes care of unsubscribing actors, which have terminated. */
   protected lazy val unsubscriber =
-    ActorClassificationUnsubscriber.start(system, this.toString(), (this.unsubscribe: ActorRef => Unit))
+    ActorClassificationUnsubscriber.start(system, this.toString(), this.unsubscribe: ActorRef => Unit)
 
   @tailrec
   protected final def associate(monitored: ActorRef, monitor: ActorRef): Boolean = {

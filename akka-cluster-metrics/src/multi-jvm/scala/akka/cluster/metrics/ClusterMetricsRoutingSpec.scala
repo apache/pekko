@@ -133,9 +133,9 @@ abstract class AdaptiveLoadBalancingRouterSpec
 
   def receiveReplies(expectedReplies: Int): Map[Address, Int] = {
     val zero = Map.empty[Address, Int] ++ roles.map(address(_) -> 0)
-    (receiveWhile(5 seconds, messages = expectedReplies) {
+    receiveWhile(5 seconds, messages = expectedReplies) {
       case Reply(address) => address
-    }).foldLeft(zero) {
+    }.foldLeft(zero) {
       case (replyMap, address) => replyMap + (address -> (replyMap(address) + 1))
     }
   }
@@ -188,9 +188,9 @@ abstract class AdaptiveLoadBalancingRouterSpec
 
         val replies = receiveReplies(iterationCount)
 
-        replies(node1) should be > (0)
-        replies(node2) should be > (0)
-        replies(node3) should be > (0)
+        replies(node1) should be > 0
+        replies(node2) should be > 0
+        replies(node3) should be > 0
         replies.values.sum should ===(iterationCount)
 
       }

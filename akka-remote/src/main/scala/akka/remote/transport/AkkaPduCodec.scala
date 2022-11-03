@@ -264,7 +264,7 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
         .newBuilder()
         .setInstruction(controlMessageBuilder.build)
         .build
-        .toByteArray) //Reuse Byte Array (naughty!)
+        .toByteArray) // Reuse Byte Array (naughty!)
   }
 
   private def serializeActorRef(defaultAddress: Address, ref: ActorRef): ActorRefData = {

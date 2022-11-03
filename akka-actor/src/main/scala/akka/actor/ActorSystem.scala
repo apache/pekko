@@ -338,7 +338,7 @@ object ActorSystem {
 
       val loggingFilterAlreadyConfigured =
         configuredLoggingFilter == slf4jLoggingFilterClassName || configuredLoggingFilter != classOf[
-            DefaultLoggingFilter].getName
+          DefaultLoggingFilter].getName
 
       def newLoggingFilterConfStr = s"""$loggingFilterConfKey = "$slf4jLoggingFilterClassName""""
 
@@ -351,7 +351,7 @@ object ActorSystem {
       } else {
         val confKey = "akka.use-slf4j"
         if (config.hasPath(confKey) && config.getBoolean(confKey) && dynamicAccess.classIsOnClasspath(
-              slf4jLoggerClassName)) {
+            slf4jLoggerClassName)) {
           val newLoggers = slf4jLoggerClassName +: configuredLoggers.filterNot(_ == classOf[DefaultLogger].getName)
           val newLoggersConfStr = s"$loggersConfKey = [${newLoggers.mkString("\"", "\", \"", "\"")}]"
           val newConfStr =
@@ -935,19 +935,20 @@ private[akka] class ActorSystemImpl(
 
   val scheduler: Scheduler = createScheduler()
 
-  val provider: ActorRefProvider = try {
-    val arguments = Vector(
-      classOf[String] -> name,
-      classOf[Settings] -> settings,
-      classOf[EventStream] -> eventStream,
-      classOf[DynamicAccess] -> dynamicAccess)
+  val provider: ActorRefProvider =
+    try {
+      val arguments = Vector(
+        classOf[String] -> name,
+        classOf[Settings] -> settings,
+        classOf[EventStream] -> eventStream,
+        classOf[DynamicAccess] -> dynamicAccess)
 
-    dynamicAccess.createInstanceFor[ActorRefProvider](ProviderClass, arguments).get
-  } catch {
-    case NonFatal(e) =>
-      Try(stopScheduler())
-      throw e
-  }
+      dynamicAccess.createInstanceFor[ActorRefProvider](ProviderClass, arguments).get
+    } catch {
+      case NonFatal(e) =>
+        Try(stopScheduler())
+        throw e
+    }
 
   def deadLetters: ActorRef = provider.deadLetters
 
@@ -1026,28 +1027,29 @@ private[akka] class ActorSystemImpl(
         "The calling code expected that the ActorSystem was initialized but it wasn't yet. " +
         "This is probably a bug in the ActorSystem initialization sequence often related to initialization of extensions. " +
         "Please report at https://github.com/akka/akka/issues.")
-  private lazy val _start: this.type = try {
+  private lazy val _start: this.type =
+    try {
 
-    registerOnTermination(stopScheduler())
-    // the provider is expected to start default loggers, LocalActorRefProvider does this
-    provider.init(this)
-    // at this point it should be initialized "enough" for most extensions that we might want to guard against otherwise
-    _initialized = true
+      registerOnTermination(stopScheduler())
+      // the provider is expected to start default loggers, LocalActorRefProvider does this
+      provider.init(this)
+      // at this point it should be initialized "enough" for most extensions that we might want to guard against otherwise
+      _initialized = true
 
-    if (settings.LogDeadLetters > 0)
-      logDeadLetterListener = Some(systemActorOf(Props[DeadLetterListener](), "deadLetterListener"))
-    eventStream.startUnsubscriber()
-    ManifestInfo(this).checkSameVersion("Akka", allModules, logWarning = true)
-    if (!terminating)
-      loadExtensions()
-    if (LogConfigOnStart) logConfiguration()
-    this
-  } catch {
-    case NonFatal(e) =>
-      try terminate()
-      catch { case NonFatal(_) => Try(stopScheduler()) }
-      throw e
-  }
+      if (settings.LogDeadLetters > 0)
+        logDeadLetterListener = Some(systemActorOf(Props[DeadLetterListener](), "deadLetterListener"))
+      eventStream.startUnsubscriber()
+      ManifestInfo(this).checkSameVersion("Akka", allModules, logWarning = true)
+      if (!terminating)
+        loadExtensions()
+      if (LogConfigOnStart) logConfiguration()
+      this
+    } catch {
+      case NonFatal(e) =>
+        try terminate()
+        catch { case NonFatal(_) => Try(stopScheduler()) }
+        throw e
+    }
 
   def start(): this.type = _start
   def registerOnTermination[T](code: => T): Unit = { registerOnTermination(new Runnable { def run() = code }) }
@@ -1096,7 +1098,7 @@ private[akka] class ActorSystemImpl(
     terminate()
   }
 
-  //#create-scheduler
+  // #create-scheduler
   /**
    * Create the scheduler service. This one needs one special behavior: if
    * Closeable, it MUST execute all outstanding tasks upon .close() in order
@@ -1115,7 +1117,7 @@ private[akka] class ActorSystemImpl(
           classOf[LoggingAdapter] -> log,
           classOf[ThreadFactory] -> threadFactory.withName(threadFactory.name + "-scheduler")))
       .get
-  //#create-scheduler
+  // #create-scheduler
 
   /*
    * This is called after the last actor has signaled its termination, i.e.
@@ -1148,16 +1150,16 @@ private[akka] class ActorSystemImpl(
                "A serializer must not access the SerializationExtension from its constructor. Use lazy init."
              else "Could be deadlock due to cyclic initialization of extensions."))
       }
-      findExtension(ext) //Registration in process, await completion and retry
-    case t: Throwable => throw t //Initialization failed, throw same again
+      findExtension(ext) // Registration in process, await completion and retry
+    case t: Throwable => throw t // Initialization failed, throw same again
     case other =>
-      other.asInstanceOf[T] //could be a T or null, in which case we return the null as T
+      other.asInstanceOf[T] // could be a T or null, in which case we return the null as T
   }
 
   @tailrec
   final def registerExtension[T <: Extension](ext: ExtensionId[T]): T = {
     findExtension(ext) match {
-      case null => //Doesn't already exist, commence registration
+      case null => // Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
         extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null =>
@@ -1166,18 +1168,18 @@ private[akka] class ActorSystemImpl(
                 case null =>
                   throw new IllegalStateException(s"Extension instance created as 'null' for extension [$ext]")
                 case instance =>
-                  extensions.replace(ext, inProcessOfRegistration, instance) //Replace our in process signal with the initialized extension
-                  instance //Profit!
+                  extensions.replace(ext, inProcessOfRegistration, instance) // Replace our in process signal with the initialized extension
+                  instance // Profit!
               }
             } catch {
               case t: Throwable =>
-                extensions.replace(ext, inProcessOfRegistration, t) //In case shit hits the fan, remove the inProcess signal
-                throw t //Escalate to caller
+                extensions.replace(ext, inProcessOfRegistration, t) // In case shit hits the fan, remove the inProcess signal
+                throw t // Escalate to caller
             } finally {
-              inProcessOfRegistration.countDown() //Always notify listeners of the inProcess signal
+              inProcessOfRegistration.countDown() // Always notify listeners of the inProcess signal
             }
           case _ =>
-            registerExtension(ext) //Someone else is in process of registering an extension for this Extension, retry
+            registerExtension(ext) // Someone else is in process of registering an extension for this Extension, retry
         }
       case existing => existing.asInstanceOf[T]
     }

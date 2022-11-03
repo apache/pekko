@@ -162,7 +162,7 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
             s"""{
               |      "address": "${m.address}",
               |      "roles": [${if (m.roles.isEmpty) ""
-               else m.roles.toList.sorted.map("\"" + _ + "\"").mkString("\n        ", ",\n        ", "\n      ")}],
+              else m.roles.toList.sorted.map("\"" + _ + "\"").mkString("\n        ", ",\n        ", "\n      ")}],
               |      "status": "${m.status}",
               |      "app-version": "${m.appVersion}"
               |    }""".stripMargin
@@ -177,7 +177,7 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
               s"""{
               |      "node": "${subject.address}",
               |      "observed-by": [${if (observerAddresses.isEmpty) ""
-                 else observerAddresses.mkString("\n        ", ",\n        ", "\n      ")}]
+                else observerAddresses.mkString("\n        ", ",\n        ", "\n      ")}]
               |    }""".stripMargin
             }
 

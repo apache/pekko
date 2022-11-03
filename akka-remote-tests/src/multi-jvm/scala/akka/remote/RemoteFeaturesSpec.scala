@@ -304,7 +304,7 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
 
   "A remote round robin pool" must {
     s"${if (useUnsafe) "be instantiated on remote node and communicate through its RemoteActorRef"
-    else "not be instantiated on remote node and communicate through its LocalActorRef "} " in {
+      else "not be instantiated on remote node and communicate through its LocalActorRef "} " in {
 
       runOn(first, second, third) {
         enterBarrier("start", "broadcast-end", "end")

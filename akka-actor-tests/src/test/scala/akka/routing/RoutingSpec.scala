@@ -136,15 +136,15 @@ class RoutingSpec extends AkkaSpec(RoutingSpec.config) with DefaultTimeout with 
     }
 
     "set supplied supervisorStrategy" in {
-      //#supervision
+      // #supervision
       val escalator = OneForOneStrategy() {
-        //#custom-strategy
+        // #custom-strategy
         case e => testActor ! e; SupervisorStrategy.Escalate
-        //#custom-strategy
+        // #custom-strategy
       }
       val router =
         system.actorOf(RoundRobinPool(1, supervisorStrategy = escalator).props(routeeProps = Props[TestActor]()))
-      //#supervision
+      // #supervision
       router ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1).intercept {
         expectMsgType[Routees].routees.head.send(Kill, testActor)

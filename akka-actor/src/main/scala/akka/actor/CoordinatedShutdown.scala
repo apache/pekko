@@ -735,25 +735,26 @@ final class CoordinatedShutdown private[akka] (
                 val result = phaseDef.run(recoverEnabled)
                 val timeout = phases(phaseName).timeout
                 val deadline = Deadline.now + timeout
-                val timeoutFut = try {
-                  after(timeout, system.scheduler) {
-                    if (phaseName == CoordinatedShutdown.PhaseActorSystemTerminate && deadline.hasTimeLeft()) {
-                      // too early, i.e. triggered by system termination
+                val timeoutFut =
+                  try {
+                    after(timeout, system.scheduler) {
+                      if (phaseName == CoordinatedShutdown.PhaseActorSystemTerminate && deadline.hasTimeLeft()) {
+                        // too early, i.e. triggered by system termination
+                        result
+                      } else if (result.isCompleted)
+                        Future.successful(Done)
+                      else if (recoverEnabled) {
+                        log.warning("Coordinated shutdown phase [{}] timed out after {}", phaseName, timeout)
+                        Future.successful(Done)
+                      } else
+                        Future.failed(
+                          new TimeoutException(s"Coordinated shutdown phase [$phaseName] timed out after $timeout"))
+                    }
+                  } catch {
+                    case _: IllegalStateException =>
+                      // The call to `after` threw IllegalStateException, triggered by system termination
                       result
-                    } else if (result.isCompleted)
-                      Future.successful(Done)
-                    else if (recoverEnabled) {
-                      log.warning("Coordinated shutdown phase [{}] timed out after {}", phaseName, timeout)
-                      Future.successful(Done)
-                    } else
-                      Future.failed(
-                        new TimeoutException(s"Coordinated shutdown phase [$phaseName] timed out after $timeout"))
                   }
-                } catch {
-                  case _: IllegalStateException =>
-                    // The call to `after` threw IllegalStateException, triggered by system termination
-                    result
-                }
                 Future.firstCompletedOf(List(result, timeoutFut))
             }
             if (remaining.isEmpty)

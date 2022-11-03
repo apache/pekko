@@ -111,7 +111,7 @@ abstract class RollingUpdateShardAllocationSpec
         // so the folloing allocations end up as one on each node
         awaitAssert {
           shardRegion ! ShardRegion.GetCurrentRegions
-          expectMsgType[ShardRegion.CurrentRegions].regions should have size (2)
+          expectMsgType[ShardRegion.CurrentRegions].regions should have size 2
         }
 
         shardRegion ! GiveMeYourHome.Get("id1")
@@ -123,7 +123,7 @@ abstract class RollingUpdateShardAllocationSpec
         val address2 = expectMsgType[GiveMeYourHome.Home].address
 
         // one on each node
-        Set(address1, address2) should have size (2)
+        Set(address1, address2) should have size 2
       }
       enterBarrier("first-version-started")
     }
@@ -140,7 +140,7 @@ abstract class RollingUpdateShardAllocationSpec
         // if we didn't the strategy will default it back to the old nodes
         awaitAssert {
           shardRegion ! ShardRegion.GetCurrentRegions
-          expectMsgType[ShardRegion.CurrentRegions].regions should have size (3)
+          expectMsgType[ShardRegion.CurrentRegions].regions should have size 3
         }
       }
       enterBarrier("third-region-registered")
@@ -173,9 +173,9 @@ abstract class RollingUpdateShardAllocationSpec
 
       runOn(second, third, fourth) {
         awaitAssert({
-          shardRegion ! ShardRegion.GetCurrentRegions
-          expectMsgType[ShardRegion.CurrentRegions].regions should have size (3)
-        }, 30.seconds)
+            shardRegion ! ShardRegion.GetCurrentRegions
+            expectMsgType[ShardRegion.CurrentRegions].regions should have size 3
+          }, 30.seconds)
       }
       enterBarrier("sharding-handed-off")
 
@@ -198,9 +198,9 @@ abstract class RollingUpdateShardAllocationSpec
       runOn(third, fourth) {
         // make sure coordinator has noticed there are only two regions
         awaitAssert({
-          shardRegion ! ShardRegion.GetCurrentRegions
-          expectMsgType[ShardRegion.CurrentRegions].regions should have size (2)
-        }, 30.seconds)
+            shardRegion ! ShardRegion.GetCurrentRegions
+            expectMsgType[ShardRegion.CurrentRegions].regions should have size 2
+          }, 30.seconds)
       }
       enterBarrier("second-left")
 

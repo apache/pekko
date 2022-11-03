@@ -43,7 +43,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
       d ~> unzip.in
 
       unzip.out0.via(viaFlow) ~> zipper.in0
-      unzip.out1 ~> zipper.in1
+      unzip.out1              ~> zipper.in1
 
       SourceShape(zipper.out)
     }))

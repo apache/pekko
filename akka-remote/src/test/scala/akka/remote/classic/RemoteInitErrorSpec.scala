@@ -41,7 +41,7 @@ class RemoteInitErrorSpec extends AnyWordSpec with Matchers {
 
   def currentThreadIds(): Set[Long] = {
     val threads = Thread.getAllStackTraces().keySet()
-    threads.asScala.collect({ case t: Thread if (!t.isDaemon()) => t.getId() })
+    threads.asScala.collect { case t: Thread if !t.isDaemon() => t.getId() }
   }
 
   "Remoting" must {

@@ -4,7 +4,7 @@
 
 package akka.util
 
-import java.lang.{ Float => JFloat, Double => JDouble }
+import java.lang.{ Double => JDouble, Float => JFloat }
 import java.lang.reflect.{ Array => JArray }
 
 /**

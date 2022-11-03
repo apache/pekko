@@ -261,9 +261,9 @@ abstract class ActorModelSpec(config: String) extends AkkaSpec(config) with Defa
 
   def awaitStarted(ref: ActorRef): Unit = {
     awaitCond(ref match {
-      case r: RepointableRef => r.isStarted
-      case _                 => true
-    }, 1 second, 10 millis)
+        case r: RepointableRef => r.isStarted
+        case _                 => true
+      }, 1 second, 10 millis)
   }
 
   protected def interceptedDispatcher(): MessageDispatcherInterceptor
@@ -647,7 +647,7 @@ class BalancingDispatcherModelSpec extends ActorModelSpec(BalancingDispatcherMod
       system.stop(a)
       system.stop(b)
 
-      while (!a.isTerminated && !b.isTerminated) {} //Busy wait for termination
+      while (!a.isTerminated && !b.isTerminated) {} // Busy wait for termination
 
       assertRefDefaultZero(a)(registers = 1, unregisters = 1, msgsReceived = 1, msgsProcessed = 1)
       assertRefDefaultZero(b)(registers = 1, unregisters = 1, msgsReceived = 1, msgsProcessed = 1)

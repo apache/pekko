@@ -467,7 +467,7 @@ private[akka] class ActorCell(
   /*
    * MESSAGE PROCESSING
    */
-  //Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
+  // Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
   final def systemInvoke(message: SystemMessage): Unit = {
     /*
      * When recreate/suspend/resume are received while restarting (i.e. between
@@ -521,8 +521,8 @@ private[akka] class ActorCell(
           case NoMessage                                                    => // only here to suppress warning
         }
       } catch handleNonFatalOrInterruptedException { e =>
-        handleInvokeFailure(Nil, e)
-      }
+          handleInvokeFailure(Nil, e)
+        }
       val newState = calculateState
       // As each state accepts a strict subset of another state, it is enough to unstash if we "walk up" the state
       // chain
@@ -535,7 +535,7 @@ private[akka] class ActorCell(
     invokeAll(new EarliestFirstSystemMessageList(message), calculateState)
   }
 
-  //Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
+  // Memory consistency is handled by the Mailbox (reading mailbox status then processing messages, then writing mailbox status
   final def invoke(messageHandle: Envelope): Unit = {
     val msg = messageHandle.message
     val timeoutBeforeReceive = cancelReceiveTimeoutIfNeeded(msg)
@@ -548,10 +548,11 @@ private[akka] class ActorCell(
       }
       currentMessage = null // reset current message after successful invocation
     } catch handleNonFatalOrInterruptedException { e =>
-      handleInvokeFailure(Nil, e)
-    } finally
-    // Schedule or reschedule receive timeout
-    checkReceiveTimeoutIfNeeded(msg, timeoutBeforeReceive)
+        handleInvokeFailure(Nil, e)
+      }
+    finally
+      // Schedule or reschedule receive timeout
+      checkReceiveTimeoutIfNeeded(msg, timeoutBeforeReceive)
   }
 
   def autoReceiveMessage(msg: Envelope): Unit = {
@@ -607,7 +608,7 @@ private[akka] class ActorCell(
    * ACTOR INSTANCE HANDLING
    */
 
-  //This method is in charge of setting up the contextStack and create a new instance of the Actor
+  // This method is in charge of setting up the contextStack and create a new instance of the Actor
   protected def newActor(): Actor = {
     contextStack.set(this :: contextStack.get)
     try {

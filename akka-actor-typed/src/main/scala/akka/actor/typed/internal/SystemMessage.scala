@@ -33,7 +33,6 @@ private[typed] object SystemMessageList {
 }
 
 /**
- *
  * INTERNAL API
  *
  * Value class supporting list operations on system messages. The `next` field of [[SystemMessage]]
@@ -45,7 +44,6 @@ private[typed] object SystemMessageList {
  *
  * The type of the list also encodes that the messages contained are in reverse order, i.e. the head of the list is the
  * latest appended element.
- *
  */
 private[typed] class LatestFirstSystemMessageList(val head: SystemMessage) extends AnyVal {
   import SystemMessageList._
@@ -94,7 +92,6 @@ private[typed] class LatestFirstSystemMessageList(val head: SystemMessage) exten
 }
 
 /**
- *
  * INTERNAL API
  *
  * Value class supporting list operations on system messages. The `next` field of [[SystemMessage]]
@@ -106,7 +103,6 @@ private[typed] class LatestFirstSystemMessageList(val head: SystemMessage) exten
  *
  * This list type also encodes that the messages contained are in reverse order, i.e. the head of the list is the
  * latest appended element.
- *
  */
 private[typed] class EarliestFirstSystemMessageList(val head: SystemMessage) extends AnyVal {
   import SystemMessageList._

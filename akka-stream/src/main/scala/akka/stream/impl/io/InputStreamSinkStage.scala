@@ -75,7 +75,7 @@ private[stream] object InputStreamSinkStage {
       }
 
       def onPush(): Unit = {
-        //1 is buffer for Finished or Failed callback
+        // 1 is buffer for Finished or Failed callback
         require(dataQueue.remainingCapacity() > 1)
         val bs = grab(in)
         if (bs.nonEmpty) {
@@ -135,7 +135,7 @@ private[stream] object InputStreamSinkStage {
   override def read(): Int = {
     val a = new Array[Byte](1)
     read(a, 0, 1) match {
-      case 1   => a(0) & 0xff
+      case 1   => a(0) & 0xFF
       case -1  => -1
       case len => throw new IllegalStateException(s"Invalid length [$len]")
     }

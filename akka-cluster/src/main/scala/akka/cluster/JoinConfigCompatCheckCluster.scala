@@ -36,8 +36,8 @@ final class JoinConfigCompatCheckCluster extends JoinConfigCompatChecker {
     val actualDowningProvider = actualConfig.getString(DowningProviderPath)
     val downingProviderResult =
       if (toCheckDowningProvider == actualDowningProvider || Set(toCheckDowningProvider, actualDowningProvider) == Set(
-            AkkaSbrProviderClass,
-            LightbendSbrProviderClass))
+          AkkaSbrProviderClass,
+          LightbendSbrProviderClass))
         Valid
       else
         JoinConfigCompatChecker.checkEquality(List(DowningProviderPath), toCheck, actualConfig)

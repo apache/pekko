@@ -105,23 +105,23 @@ class ParentChildSpec extends AnyWordSpec with Matchers with TestKitBase with Be
   "A GenericDependentParent" should {
     "be tested with a child probe" in {
       val probe = TestProbe()
-      //#child-maker-test
+      // #child-maker-test
       val maker = (_: ActorRefFactory) => probe.ref
       val parent = system.actorOf(Props(new GenericDependentParent(maker)))
-      //#child-maker-test
+      // #child-maker-test
       probe.send(parent, "pingit")
       probe.expectMsg("ping")
     }
 
     "demonstrate production version of child creator" in {
-      //#child-maker-prod
+      // #child-maker-prod
       val maker = (f: ActorRefFactory) => f.actorOf(Props(new Child))
       val parent = system.actorOf(Props(new GenericDependentParent(maker)))
-      //#child-maker-prod
+      // #child-maker-prod
     }
   }
 
-  //#test-TestProbe-parent
+  // #test-TestProbe-parent
   "A TestProbe serving as parent" should {
     "test its child responses" in {
       val parent = TestProbe()
@@ -130,9 +130,9 @@ class ParentChildSpec extends AnyWordSpec with Matchers with TestKitBase with Be
       parent.expectMsg("pong")
     }
   }
-  //#test-TestProbe-parent
+  // #test-TestProbe-parent
 
-  //#test-fabricated-parent
+  // #test-fabricated-parent
   "A fabricated parent" should {
     "test its child responses" in {
       val proxy = TestProbe()
@@ -148,5 +148,5 @@ class ParentChildSpec extends AnyWordSpec with Matchers with TestKitBase with Be
       proxy.expectMsg("pong")
     }
   }
-  //#test-fabricated-parent
+  // #test-fabricated-parent
 }

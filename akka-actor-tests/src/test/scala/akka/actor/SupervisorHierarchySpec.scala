@@ -170,7 +170,7 @@ object SupervisorHierarchySpec {
           val sizes = s / kids
           var rest = s % kids
           val propsTemplate = Props.empty.withDispatcher("hierarchy")
-          (1 to kids).iterator.map { (id) =>
+          (1 to kids).iterator.map { id =>
             val kidSize = if (rest > 0) {
               rest -= 1; sizes + 1
             } else sizes
@@ -821,14 +821,15 @@ class SupervisorHierarchySpec extends AkkaSpec(SupervisorHierarchySpec.config) w
 
     "suspend children while failing" taggedAs LongRunningTest in {
       val latch = TestLatch()
-      val slowResumer = system.actorOf(Props(new Actor {
-        override def supervisorStrategy = OneForOneStrategy() {
-          case _ => Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
-        }
-        def receive = {
-          case "spawn" => sender() ! context.actorOf(Props[Resumer]())
-        }
-      }), "slowResumer")
+      val slowResumer = system.actorOf(
+        Props(new Actor {
+          override def supervisorStrategy = OneForOneStrategy() {
+            case _ => Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
+          }
+          def receive = {
+            case "spawn" => sender() ! context.actorOf(Props[Resumer]())
+          }
+        }), "slowResumer")
       slowResumer ! "spawn"
       val boss = expectMsgType[ActorRef]
       boss ! "spawn"
@@ -867,24 +868,24 @@ class SupervisorHierarchySpec extends AkkaSpec(SupervisorHierarchySpec.config) w
               }
 
               val child = context.actorOf(Props(new Actor {
-                val ca = createAttempt.incrementAndGet()
+                  val ca = createAttempt.incrementAndGet()
 
-                if (ca <= 6 && ca % 3 == 0)
-                  context.actorOf(Props(new Actor { override def receive = { case _ => } }), "workingChild")
+                  if (ca <= 6 && ca % 3 == 0)
+                    context.actorOf(Props(new Actor { override def receive = { case _ => } }), "workingChild")
 
-                if (ca < 6) {
-                  throw new IllegalArgumentException("OH NO!")
-                }
-                override def preStart() = {
-                  preStartCalled.incrementAndGet()
-                }
-                override def postRestart(reason: Throwable) = {
-                  postRestartCalled.incrementAndGet()
-                }
-                override def receive = {
-                  case m => sender() ! m
-                }
-              }), "failChild")
+                  if (ca < 6) {
+                    throw new IllegalArgumentException("OH NO!")
+                  }
+                  override def preStart() = {
+                    preStartCalled.incrementAndGet()
+                  }
+                  override def postRestart(reason: Throwable) = {
+                    postRestartCalled.incrementAndGet()
+                  }
+                  override def receive = {
+                    case m => sender() ! m
+                  }
+                }), "failChild")
 
               override def receive = {
                 case m => child.forward(m)

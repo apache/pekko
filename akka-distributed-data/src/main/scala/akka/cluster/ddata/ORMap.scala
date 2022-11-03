@@ -445,8 +445,8 @@ final class ORMap[A, B <: ReplicatedData] private[akka] (
         val keyDelta = putOp.underlying
         mergedKeys = mergedKeys.mergeDelta(keyDelta)
         mergedValues = mergedValues + putOp
-            .asInstanceOf[PutDeltaOp[A, B]]
-            .value // put is destructive and propagates only full values of B!
+          .asInstanceOf[PutDeltaOp[A, B]]
+          .value // put is destructive and propagates only full values of B!
       case removeOp: RemoveDeltaOp[_, _] =>
         val removedKey = removeOp.underlying match {
           // if op is RemoveDeltaOp then it must have exactly one element in the elements
@@ -461,8 +461,8 @@ final class ORMap[A, B <: ReplicatedData] private[akka] (
         // removeKeyOp tombstones values for later use
         if (mergedValues.contains(removeKeyOp.asInstanceOf[RemoveKeyDeltaOp[A, B]].removedKey)) {
           tombstonedVals = tombstonedVals + (removeKeyOp
-              .asInstanceOf[RemoveKeyDeltaOp[A, B]]
-              .removedKey -> mergedValues(removeKeyOp.asInstanceOf[RemoveKeyDeltaOp[A, B]].removedKey))
+            .asInstanceOf[RemoveKeyDeltaOp[A, B]]
+            .removedKey -> mergedValues(removeKeyOp.asInstanceOf[RemoveKeyDeltaOp[A, B]].removedKey))
         }
         mergedValues = mergedValues - removeKeyOp.asInstanceOf[RemoveKeyDeltaOp[A, B]].removedKey
         mergedKeys = mergedKeys.mergeDelta(removeKeyOp.underlying)

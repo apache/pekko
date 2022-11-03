@@ -177,7 +177,7 @@ object TypedActorSpec {
   }
 
   class StackedImpl extends Stacked {
-    override def stacked: String = "FOOBAR" //Uppercase
+    override def stacked: String = "FOOBAR" // Uppercase
   }
 
   trait LifeCycles {
@@ -410,18 +410,18 @@ class TypedActorSpec
 
         t.incr()
         t.failingPigdog()
-        t.read() should ===(1) //Make sure state is not reset after failure
+        t.read() should ===(1) // Make sure state is not reset after failure
 
         intercept[IllegalStateException] { Await.result(t.failingFuturePigdog(), 2 seconds) }.getMessage should ===(
           "expected")
-        t.read() should ===(1) //Make sure state is not reset after failure
+        t.read() should ===(1) // Make sure state is not reset after failure
 
         intercept[IllegalStateException] { t.failingJOptionPigdog() }.getMessage should ===("expected")
-        t.read() should ===(1) //Make sure state is not reset after failure
+        t.read() should ===(1) // Make sure state is not reset after failure
 
         intercept[IllegalStateException] { t.failingOptionPigdog() }.getMessage should ===("expected")
 
-        t.read() should ===(1) //Make sure state is not reset after failure
+        t.read() should ===(1) // Make sure state is not reset after failure
 
         mustStop(t)
       }
@@ -559,14 +559,14 @@ class TypedActorSpec
         t.crash()
       }
 
-      //Sneak in a check for the Receiver override
+      // Sneak in a check for the Receiver override
       val ref = ta.getActorRefFor(t)
 
       ref.tell("pigdog", testActor)
 
       expectMsg(timeout.duration, "dogpig")
 
-      //Done with that now
+      // Done with that now
 
       ta.poisonPill(t)
       latch.await(10, TimeUnit.SECONDS) should ===(true)

@@ -24,7 +24,6 @@ import akka.util.ccompat.JavaConverters._
  *
  * Allows for more detailed lookups, by specifying which records should be checked,
  * and responses can more information than plain IP addresses (e.g. ports for SRV records).
- *
  */
 object DnsProtocol {
 
@@ -88,13 +87,12 @@ object DnsProtocol {
      * Java API
      *
      * Records that relate to the query but are not strickly answers e.g. A records for the records returned for an SRV query.
-     *
      */
     def getAdditionalRecords(): util.List[ResourceRecord] = additionalRecords.asJava
 
     private val _address: Option[InetAddress] = {
       val ipv4: Option[Inet4Address] = records.collectFirst { case ARecord(_, _, ip: Inet4Address) => ip }
-      val ipv6: Option[Inet6Address] = records.collectFirst { case AAAARecord(_, _, ip)            => ip }
+      val ipv6: Option[Inet6Address] = records.collectFirst { case AAAARecord(_, _, ip) => ip }
       IpVersionSelector.getInetAddress(ipv4, ipv6)
     }
 

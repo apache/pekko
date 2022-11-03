@@ -170,14 +170,14 @@ class RetryFlowSpec extends StreamSpec("""
     "allow retrying a successful element" in {
       class SomeContext
 
-      //#retry-success
+      // #retry-success
       val flow: FlowWithContext[Int, SomeContext, Int, SomeContext, NotUsed] = // ???
-        //#retry-success
+        // #retry-success
         FlowWithContext.fromTuples[Int, SomeContext, Int, SomeContext, NotUsed](Flow.fromFunction {
           case (i, ctx) => i / 2 -> ctx
         })
 
-      //#retry-success
+      // #retry-success
 
       val retryFlow: FlowWithContext[Int, SomeContext, Int, SomeContext, NotUsed] =
         RetryFlow.withBackoffAndContext(
@@ -189,7 +189,7 @@ class RetryFlowSpec extends StreamSpec("""
           case ((_, _), (result, ctx)) if result > 0 => Some(result -> ctx)
           case _                                     => None
         })
-      //#retry-success
+      // #retry-success
 
       val (source, sink) = TestSource.probe[(Int, SomeContext)].via(retryFlow).toMat(TestSink.probe)(Keep.both).run()
 
@@ -374,7 +374,8 @@ class RetryFlowSpec extends StreamSpec("""
       externalIn.expectCancellation()
     }
 
-    "propagate error before the RetryFlow, while on retry spin" in new ConstructBench[Int, Int, Int]((v, _) => Some(v)) {
+    "propagate error before the RetryFlow, while on retry spin" in new ConstructBench[Int, Int, Int]((v, _) =>
+      Some(v)) {
       externalOut.request(92)
       // spinning message
       externalIn.sendNext(1 -> 0)
@@ -507,9 +508,7 @@ class RetryFlowSpec extends StreamSpec("""
     }
 
     "allow more demand in inner flow (but never pass in more than one element into the retrying cycle)" in new AllSucceedBench[
-      InData,
-      Ctx2,
-      OutData] {
+      InData, Ctx2, OutData] {
       externalOut.request(1)
       internalIn.expectRequest() shouldBe 1L
       internalOut.request(1)

@@ -74,7 +74,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
 
   // FIXME document these methods as well
   val pendingTestCases = Map(
-    "Source" -> (pendingSourceOrFlow),
+    "Source" -> pendingSourceOrFlow,
     "Flow" -> (pendingSourceOrFlow ++ Seq(
       "lazyInit",
       "fromProcessorMat",
@@ -199,18 +199,17 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
           category -> (element, method, md, description)
       }
       .groupBy(_._1)
-      .mapValues(
-        lines =>
-          "| |Operator|Description|\n" ++ // TODO mini images here too
-          "|--|--|--|\n" ++
-          lines
-            .map(_._2)
-            .sortBy(_._2)
-            .map {
-              case (element, method, md, description) =>
-                s"""|$element|<a name="${method.toLowerCase}"></a>@ref[${methodToShow(method)}]($md)|$description|"""
-            }
-            .mkString("\n"))
+      .mapValues(lines =>
+        "| |Operator|Description|\n" ++ // TODO mini images here too
+        "|--|--|--|\n" ++
+        lines
+          .map(_._2)
+          .sortBy(_._2)
+          .map {
+            case (element, method, md, description) =>
+              s"""|$element|<a name="${method.toLowerCase}"></a>@ref[${methodToShow(method)}]($md)|$description|"""
+          }
+          .mkString("\n"))
 
     val tables = categories
       .map { category =>

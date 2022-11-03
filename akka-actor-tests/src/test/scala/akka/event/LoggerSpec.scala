@@ -96,7 +96,7 @@ object LoggerSpec {
         sender() ! LoggerInitialized
       case SetTarget(ref, `qualifier`) =>
         target = Some(ref)
-        ref ! ("OK")
+        ref ! "OK"
       case event: LogEvent if !event.mdc.isEmpty =>
         print(event)
         target.foreach { _ ! event }
@@ -173,7 +173,7 @@ class LoggerSpec extends AnyWordSpec with Matchers {
 
     "log messages to standard output" in {
       val out = createSystemAndLogToBuffer("defaultLogger", defaultConfig, true)
-      out.size should be > (0)
+      out.size should be > 0
     }
 
     "drain logger queue on system.terminate" in {

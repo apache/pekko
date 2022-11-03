@@ -21,7 +21,7 @@ import scala.concurrent.duration._
 
 object TypedWatchingClassicSpec {
 
-  //#typed
+  // #typed
   object Typed {
     final case class Ping(replyTo: akka.actor.typed.ActorRef[Pong.type])
     sealed trait Command
@@ -52,9 +52,9 @@ object TypedWatchingClassicSpec {
           }
       }
   }
-  //#typed
+  // #typed
 
-  //#classic
+  // #classic
   object Classic {
     def props(): classic.Props = classic.Props(new Classic)
   }
@@ -64,7 +64,7 @@ object TypedWatchingClassicSpec {
         replyTo ! Typed.Pong
     }
   }
-  //#classic
+  // #classic
 }
 
 class TypedWatchingClassicSpec extends AnyWordSpec with LogCapturing {
@@ -73,10 +73,10 @@ class TypedWatchingClassicSpec extends AnyWordSpec with LogCapturing {
 
   "Typed -> Classic" must {
     "support creating, watching and messaging" in {
-      //#create
+      // #create
       val system = classic.ActorSystem("TypedWatchingClassic")
       val typed = system.spawn(Typed.behavior, "Typed")
-      //#create
+      // #create
       val probe = TestProbe()(system)
       probe.watch(typed.toClassic)
       probe.expectTerminated(typed.toClassic, 200.millis)

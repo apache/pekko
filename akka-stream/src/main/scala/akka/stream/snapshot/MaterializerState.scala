@@ -140,7 +140,6 @@ sealed trait RunningInterpreter extends InterpreterSnapshot {
 }
 
 /**
- *
  * Not for user extension
  */
 @DoNotInherit @ApiMayChange

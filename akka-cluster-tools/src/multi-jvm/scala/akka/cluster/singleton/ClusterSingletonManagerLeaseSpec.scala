@@ -177,24 +177,24 @@ class ClusterSingletonManagerLeaseSpec
       runOn(controller) {
         cluster.down(address(first))
         awaitAssert({
-          cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
-        }, 20.seconds)
+            cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
+          }, 20.seconds)
         val requests = awaitAssert({
-          TestLeaseActorClientExt(system).getLeaseActor() ! GetRequests
-          val msg = expectMsgType[LeaseRequests]
-          withClue("Requests: " + msg) {
-            msg.requests.size shouldEqual 2
-          }
-          msg
-        }, 10.seconds)
+            TestLeaseActorClientExt(system).getLeaseActor() ! GetRequests
+            val msg = expectMsgType[LeaseRequests]
+            withClue("Requests: " + msg) {
+              msg.requests.size shouldEqual 2
+            }
+            msg
+          }, 10.seconds)
 
         requests.requests should contain(Release(address(first).hostPort))
         requests.requests should contain(Acquire(address(second).hostPort))
       }
       runOn(second, third, fourth) {
         awaitAssert({
-          cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
-        }, 20.seconds)
+            cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
+          }, 20.seconds)
       }
       enterBarrier("first node downed")
       val proxy = system.actorOf(

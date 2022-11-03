@@ -48,8 +48,8 @@ import akka.util.Timeout
 
       def withState(
           subscribeAdapters: Map[
-            ActorRef[JReplicator.SubscribeResponse[ReplicatedData]],
-            ActorRef[dd.Replicator.SubscribeResponse[ReplicatedData]]]): Behavior[SReplicator.Command] = {
+            ActorRef[JReplicator.SubscribeResponse[ReplicatedData]], ActorRef[dd.Replicator.SubscribeResponse[
+              ReplicatedData]]]): Behavior[SReplicator.Command] = {
 
         def stopSubscribeAdapter(
             subscriber: ActorRef[JReplicator.SubscribeResponse[ReplicatedData]]): Behavior[SReplicator.Command] = {

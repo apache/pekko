@@ -275,7 +275,6 @@ final class Entity[M, E] private[akka] (
     copy(stopMessage = Option(newStopMessage))
 
   /**
-   *
    * If a `messageExtractor` is not specified the messages are sent to the entities by wrapping
    * them in [[ShardingEnvelope]] with the entityId of the recipient actor. That envelope
    * is used by the [[HashCodeMessageExtractor]] for extracting entityId and shardId. The number of

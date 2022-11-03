@@ -23,7 +23,6 @@ import akka.stream.stage._
  *    to that materialized Flow itself.
  *
  * Creates a [[SharedKillSwitch]] that can be used to externally control the completion of various streams.
- *
  */
 object KillSwitches {
 
@@ -109,24 +108,28 @@ object KillSwitches {
 
       val logic = new KillableGraphStageLogic(promise.future, shape) {
 
-        setHandler(shape.in1, new InHandler {
-          override def onPush(): Unit = push(shape.out1, grab(shape.in1))
-          override def onUpstreamFinish(): Unit = complete(shape.out1)
-          override def onUpstreamFailure(ex: Throwable): Unit = fail(shape.out1, ex)
-        })
-        setHandler(shape.in2, new InHandler {
-          override def onPush(): Unit = push(shape.out2, grab(shape.in2))
-          override def onUpstreamFinish(): Unit = complete(shape.out2)
-          override def onUpstreamFailure(ex: Throwable): Unit = fail(shape.out2, ex)
-        })
-        setHandler(shape.out1, new OutHandler {
-          override def onPull(): Unit = pull(shape.in1)
-          override def onDownstreamFinish(cause: Throwable): Unit = cancel(shape.in1, cause)
-        })
-        setHandler(shape.out2, new OutHandler {
-          override def onPull(): Unit = pull(shape.in2)
-          override def onDownstreamFinish(cause: Throwable): Unit = cancel(shape.in2, cause)
-        })
+        setHandler(shape.in1,
+          new InHandler {
+            override def onPush(): Unit = push(shape.out1, grab(shape.in1))
+            override def onUpstreamFinish(): Unit = complete(shape.out1)
+            override def onUpstreamFailure(ex: Throwable): Unit = fail(shape.out1, ex)
+          })
+        setHandler(shape.in2,
+          new InHandler {
+            override def onPush(): Unit = push(shape.out2, grab(shape.in2))
+            override def onUpstreamFinish(): Unit = complete(shape.out2)
+            override def onUpstreamFailure(ex: Throwable): Unit = fail(shape.out2, ex)
+          })
+        setHandler(shape.out1,
+          new OutHandler {
+            override def onPull(): Unit = pull(shape.in1)
+            override def onDownstreamFinish(cause: Throwable): Unit = cancel(shape.in1, cause)
+          })
+        setHandler(shape.out2,
+          new OutHandler {
+            override def onPull(): Unit = pull(shape.in2)
+            override def onDownstreamFinish(cause: Throwable): Unit = cancel(shape.in2, cause)
+          })
 
       }
 

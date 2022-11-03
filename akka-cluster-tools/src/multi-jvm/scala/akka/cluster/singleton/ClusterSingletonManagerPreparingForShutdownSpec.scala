@@ -111,10 +111,10 @@ class ClusterSingletonManagerPreparingForShutdownSpec
         Cluster(system).prepareForFullClusterShutdown()
       }
       awaitAssert({
-        withClue("members: " + Cluster(system).readView.members) {
-          Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
-        }
-      }, 10.seconds)
+          withClue("members: " + Cluster(system).readView.members) {
+            Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
+          }
+        }, 10.seconds)
       enterBarrier("preparation-complete")
 
       runOn(first) {
@@ -153,10 +153,10 @@ class ClusterSingletonManagerPreparingForShutdownSpec
         Cluster(system).leave(address(second))
       }
       awaitAssert({
-        withClue("self member: " + Cluster(system).selfMember) {
-          Cluster(system).selfMember.status shouldEqual Removed
-        }
-      }, 10.seconds)
+          withClue("self member: " + Cluster(system).selfMember) {
+            Cluster(system).selfMember.status shouldEqual Removed
+          }
+        }, 10.seconds)
       enterBarrier("done")
     }
 

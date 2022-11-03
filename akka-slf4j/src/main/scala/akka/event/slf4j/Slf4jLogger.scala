@@ -4,7 +4,7 @@
 
 package akka.event.slf4j
 
-import org.slf4j.{ MDC, Marker, MarkerFactory, Logger => SLFLogger, LoggerFactory => SLFLoggerFactory }
+import org.slf4j.{ Logger => SLFLogger, LoggerFactory => SLFLoggerFactory, MDC, Marker, MarkerFactory }
 
 import akka.actor._
 import akka.dispatch.RequiresMessageQueue

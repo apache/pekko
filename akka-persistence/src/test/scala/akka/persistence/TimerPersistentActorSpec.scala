@@ -70,9 +70,10 @@ object TimerPersistentActorSpec {
           BoxedUnit.UNIT
         case msg =>
           timers.startSingleTimer("key", Scheduled(msg, sender()), Duration.Zero)
-          persist(msg, new Procedure[Any] {
-            override def apply(evt: Any): Unit = ()
-          })
+          persist(msg,
+            new Procedure[Any] {
+              override def apply(evt: Any): Unit = ()
+            })
           BoxedUnit.UNIT
       })
   }

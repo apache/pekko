@@ -13,7 +13,7 @@ class RecipeDigest extends RecipeSpec {
 
     "work" in {
 
-      //#calculating-digest
+      // #calculating-digest
       import java.security.MessageDigest
 
       import akka.NotUsed
@@ -33,31 +33,33 @@ class RecipeDigest extends RecipeSpec {
         override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
           private val digest = MessageDigest.getInstance(algorithm)
 
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = pull(in)
-          })
+          setHandler(out,
+            new OutHandler {
+              override def onPull(): Unit = pull(in)
+            })
 
-          setHandler(in, new InHandler {
-            override def onPush(): Unit = {
-              val chunk = grab(in)
-              digest.update(chunk.toArray)
-              pull(in)
-            }
+          setHandler(in,
+            new InHandler {
+              override def onPush(): Unit = {
+                val chunk = grab(in)
+                digest.update(chunk.toArray)
+                pull(in)
+              }
 
-            override def onUpstreamFinish(): Unit = {
-              emit(out, ByteString(digest.digest()))
-              completeStage()
-            }
-          })
+              override def onUpstreamFinish(): Unit = {
+                emit(out, ByteString(digest.digest()))
+                completeStage()
+              }
+            })
         }
       }
 
       val digest: Source[ByteString, NotUsed] = data.via(new DigestCalculator("SHA-256"))
-      //#calculating-digest
+      // #calculating-digest
 
       Await.result(digest.runWith(Sink.head), 3.seconds) should be(
-        ByteString(0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea, 0x41, 0x41, 0x40, 0xde, 0x5d, 0xae, 0x22, 0x23, 0xb0,
-          0x03, 0x61, 0xa3, 0x96, 0x17, 0x7a, 0x9c, 0xb4, 0x10, 0xff, 0x61, 0xf2, 0x00, 0x15, 0xad))
+        ByteString(0xBA, 0x78, 0x16, 0xBF, 0x8F, 0x01, 0xCF, 0xEA, 0x41, 0x41, 0x40, 0xDE, 0x5D, 0xAE, 0x22, 0x23, 0xB0,
+          0x03, 0x61, 0xA3, 0x96, 0x17, 0x7A, 0x9C, 0xB4, 0x10, 0xFF, 0x61, 0xF2, 0x00, 0x15, 0xAD))
     }
   }
 }

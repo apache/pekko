@@ -132,8 +132,9 @@ private[io] object SelectionHandler {
           decision: SupervisorStrategy.Directive): Unit =
         if (cause.isInstanceOf[DeathPactException]) {
           try context.system.eventStream.publish {
-            Logging.Debug(child.path.toString, getClass, "Closed after handler termination")
-          } catch { case NonFatal(_) => }
+              Logging.Debug(child.path.toString, getClass, "Closed after handler termination")
+            }
+          catch { case NonFatal(_) => }
         } else super.logFailure(context, child, cause, decision)
     }
 

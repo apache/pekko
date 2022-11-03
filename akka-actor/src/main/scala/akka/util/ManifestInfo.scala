@@ -134,9 +134,9 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
           }
 
           if (title != null
-              && version != null
-              && vendor != null
-              && knownVendors(vendor)) {
+            && version != null
+            && vendor != null
+            && knownVendors(vendor)) {
             manifests = manifests.updated(title, new Version(version))
           }
         } finally {

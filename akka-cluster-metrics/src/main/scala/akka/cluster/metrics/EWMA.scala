@@ -23,7 +23,6 @@ import scala.concurrent.duration.FiniteDuration
  * @param value the current exponentially weighted moving average, e.g. Y(n - 1), or,
  *             the sampled value resulting from the previous smoothing iteration.
  *             This value is always used as the previous EWMA to calculate the new EWMA.
- *
  */
 @SerialVersionUID(1L)
 final case class EWMA(value: Double, alpha: Double) {

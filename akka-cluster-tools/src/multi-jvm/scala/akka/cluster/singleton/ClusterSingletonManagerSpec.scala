@@ -48,10 +48,10 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
 
   nodeConfig(first, second, third, fourth, fifth, sixth)(ConfigFactory.parseString("akka.cluster.roles =[worker]"))
 
-  //#singleton-message-classes
+  // #singleton-message-classes
   object PointToPointChannel {
     case object UnregistrationOk extends CborSerializable
-    //#singleton-message-classes
+    // #singleton-message-classes
     case object RegisterConsumer extends CborSerializable
     case object UnregisterConsumer extends CborSerializable
     case object RegistrationOk extends CborSerializable
@@ -59,9 +59,9 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
     case object UnexpectedUnregistration extends CborSerializable
     case object Reset extends CborSerializable
     case object ResetOk extends CborSerializable
-    //#singleton-message-classes
+    // #singleton-message-classes
   }
-  //#singleton-message-classes
+  // #singleton-message-classes
 
   /**
    * This channel is extremely strict with regards to
@@ -108,14 +108,14 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
     }
   }
 
-  //#singleton-message-classes
+  // #singleton-message-classes
   object Consumer {
     case object End extends CborSerializable
     case object GetCurrent extends CborSerializable
     case object Ping extends CborSerializable
     case object Pong extends CborSerializable
   }
-  //#singleton-message-classes
+  // #singleton-message-classes
 
   /**
    * The Singleton actor
@@ -145,7 +145,7 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
         delegateTo ! message
       case GetCurrent =>
         sender() ! current
-      //#consumer-end
+      // #consumer-end
       case End =>
         queue ! UnregisterConsumer
       case UnregistrationOk =>
@@ -153,7 +153,7 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
         context.stop(self)
       case Ping =>
         sender() ! Pong
-      //#consumer-end
+      // #consumer-end
     }
   }
 
@@ -218,35 +218,35 @@ class ClusterSingletonManagerSpec
   }
 
   def createSingleton(): ActorRef = {
-    //#create-singleton-manager
+    // #create-singleton-manager
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = Props(classOf[Consumer], queue, testActor),
         terminationMessage = End,
         settings = ClusterSingletonManagerSettings(system).withRole("worker")),
       name = "consumer")
-    //#create-singleton-manager
+    // #create-singleton-manager
   }
 
   def createSingletonProxy(): ActorRef = {
-    //#create-singleton-proxy
+    // #create-singleton-proxy
     val proxy = system.actorOf(
       ClusterSingletonProxy.props(
         singletonManagerPath = "/user/consumer",
         settings = ClusterSingletonProxySettings(system).withRole("worker")),
       name = "consumerProxy")
-    //#create-singleton-proxy
+    // #create-singleton-proxy
     proxy
   }
 
   def createSingletonProxyDc(): ActorRef = {
-    //#create-singleton-proxy-dc
+    // #create-singleton-proxy-dc
     val proxyDcB = system.actorOf(
       ClusterSingletonProxy.props(
         singletonManagerPath = "/user/consumer",
         settings = ClusterSingletonProxySettings(system).withDataCenter("B")),
       name = "consumerProxyDcB")
-    //#create-singleton-proxy-dc
+    // #create-singleton-proxy-dc
     proxyDcB
   }
 

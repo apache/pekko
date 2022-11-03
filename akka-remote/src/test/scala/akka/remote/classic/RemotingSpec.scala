@@ -165,11 +165,11 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
   private def verifySend(msg: Any)(afterSend: => Unit): Unit = {
     val bigBounceId = s"bigBounce-${ThreadLocalRandom.current.nextInt()}"
     val bigBounceOther = remoteSystem.actorOf(Props(new Actor {
-      def receive = {
-        case x: Int => sender() ! byteStringOfSize(x)
-        case x      => sender() ! x
-      }
-    }).withDeploy(Deploy.local), bigBounceId)
+        def receive = {
+          case x: Int => sender() ! byteStringOfSize(x)
+          case x      => sender() ! x
+        }
+      }).withDeploy(Deploy.local), bigBounceId)
     val bigBounceHere =
       RARP(system).provider.resolveActorRef(s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
 
@@ -331,11 +331,11 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
     "select actors across node boundaries" in {
       val l = system.actorOf(Props(new Actor {
-        def receive = {
-          case (p: Props, n: String) => sender() ! context.actorOf(p, n)
-          case ActorSelReq(s)        => sender() ! context.actorSelection(s)
-        }
-      }), "looker2")
+          def receive = {
+            case (p: Props, n: String) => sender() ! context.actorOf(p, n)
+            case ActorSelReq(s)        => sender() ! context.actorSelection(s)
+          }
+        }), "looker2")
       // child is configured to be deployed on remoteSystem
       l ! ((Props[Echo1](), "child"))
       val child = expectMsgType[ActorRef]
@@ -432,7 +432,8 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
     "be able to use multiple transports and use the appropriate one (TCP)" in {
       val r = system.actorOf(Props[Echo1](), "gonk")
       r.path.toString should ===(
-        s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/remote/akka.tcp/RemotingSpec@localhost:${port(system, "tcp")}/user/gonk")
+        s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/remote/akka.tcp/RemotingSpec@localhost:${port(
+            system, "tcp")}/user/gonk")
       r ! 42
       expectMsg(42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {
@@ -448,7 +449,8 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
     "be able to use multiple transports and use the appropriate one (SSL)" in {
       val r = system.actorOf(Props[Echo1](), "roghtaar")
       r.path.toString should ===(
-        s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem, "ssl.tcp")}/remote/akka.ssl.tcp/RemotingSpec@localhost:${port(system, "ssl.tcp")}/user/roghtaar")
+        s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem,
+            "ssl.tcp")}/remote/akka.ssl.tcp/RemotingSpec@localhost:${port(system, "ssl.tcp")}/user/roghtaar")
       r ! 42
       expectMsg(10.seconds, 42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {

@@ -63,7 +63,7 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     }
   }
 
-  //#publisher
+  // #publisher
   class Publisher extends Actor {
     import DistributedPubSubMediator.Publish
     // activate the extension
@@ -75,9 +75,9 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
         mediator ! Publish("content", out)
     }
   }
-  //#publisher
+  // #publisher
 
-  //#subscriber
+  // #subscriber
   class Subscriber extends Actor with ActorLogging {
     import DistributedPubSubMediator.{ Subscribe, SubscribeAck }
     val mediator = DistributedPubSub(context.system).mediator
@@ -91,9 +91,9 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
         log.info("subscribing")
     }
   }
-  //#subscriber
+  // #subscriber
 
-  //#sender
+  // #sender
   class Sender extends Actor {
     import DistributedPubSubMediator.Send
     // activate the extension
@@ -105,9 +105,9 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
         mediator ! Send(path = "/user/destination", msg = out, localAffinity = true)
     }
   }
-  //#sender
+  // #sender
 
-  //#send-destination
+  // #send-destination
   class Destination extends Actor with ActorLogging {
     import DistributedPubSubMediator.Put
     val mediator = DistributedPubSub(context.system).mediator
@@ -119,7 +119,7 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
         log.info("Got {}", s)
     }
   }
-  //#send-destination
+  // #send-destination
 
 }
 
@@ -347,7 +347,7 @@ class DistributedPubSubMediatorSpec
         awaitCount(10)
       }
 
-      //#start-subscribers
+      // #start-subscribers
       runOn(first) {
         system.actorOf(Props[Subscriber](), "subscriber1")
       }
@@ -355,16 +355,16 @@ class DistributedPubSubMediatorSpec
         system.actorOf(Props[Subscriber](), "subscriber2")
         system.actorOf(Props[Subscriber](), "subscriber3")
       }
-      //#start-subscribers
+      // #start-subscribers
 
-      //#publish-message
+      // #publish-message
       runOn(third) {
         val publisher = system.actorOf(Props[Publisher](), "publisher")
         later()
         // after a while the subscriptions are replicated
         publisher ! "hello"
       }
-      //#publish-message
+      // #publish-message
 
       enterBarrier("after-8")
     }
@@ -374,23 +374,23 @@ class DistributedPubSubMediatorSpec
         awaitCount(12)
       }
 
-      //#start-send-destinations
+      // #start-send-destinations
       runOn(first) {
         system.actorOf(Props[Destination](), "destination")
       }
       runOn(second) {
         system.actorOf(Props[Destination](), "destination")
       }
-      //#start-send-destinations
+      // #start-send-destinations
 
-      //#send-message
+      // #send-message
       runOn(third) {
         val sender = system.actorOf(Props[Sender](), "sender")
         later()
         // after a while the destinations are replicated
         sender ! "hello"
       }
-      //#send-message
+      // #send-message
 
       enterBarrier("after-8")
     }

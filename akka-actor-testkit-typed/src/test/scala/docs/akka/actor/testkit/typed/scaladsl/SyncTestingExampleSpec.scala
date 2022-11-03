@@ -19,13 +19,13 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 object SyncTestingExampleSpec {
-  //#child
+  // #child
   val childActor = Behaviors.receiveMessage[String] { _ =>
     Behaviors.same[String]
   }
-  //#child
+  // #child
 
-  //#under-test
+  // #under-test
   object Hello {
     sealed trait Command
     case object CreateAnonymousChild extends Command
@@ -58,7 +58,7 @@ object SyncTestingExampleSpec {
         who ! "hello"
         Behaviors.same
     }
-    //#under-test
+    // #under-test
   }
 
   object ConfigAware {
@@ -89,57 +89,57 @@ class SyncTestingExampleSpec extends AnyWordSpec with Matchers {
   "Typed actor synchronous testing" must {
 
     "record spawning" in {
-      //#test-child
+      // #test-child
       val testKit = BehaviorTestKit(Hello())
       testKit.run(Hello.CreateChild("child"))
       testKit.expectEffect(Spawned(childActor, "child"))
-      //#test-child
+      // #test-child
     }
 
     "record spawning anonymous" in {
-      //#test-anonymous-child
+      // #test-anonymous-child
       val testKit = BehaviorTestKit(Hello())
       testKit.run(Hello.CreateAnonymousChild)
       testKit.expectEffect(SpawnedAnonymous(childActor))
-      //#test-anonymous-child
+      // #test-anonymous-child
     }
 
     "record message sends" in {
-      //#test-message
+      // #test-message
       val testKit = BehaviorTestKit(Hello())
       val inbox = TestInbox[String]()
       testKit.run(Hello.SayHello(inbox.ref))
       inbox.expectMessage("hello")
-      //#test-message
+      // #test-message
     }
 
     "send a message to a spawned child" in {
-      //#test-child-message
+      // #test-child-message
       val testKit = BehaviorTestKit(Hello())
       testKit.run(Hello.SayHelloToChild("child"))
       val childInbox = testKit.childInbox[String]("child")
       childInbox.expectMessage("hello")
-      //#test-child-message
+      // #test-child-message
     }
 
     "send a message to an anonymous spawned child" in {
-      //#test-child-message-anonymous
+      // #test-child-message-anonymous
       val testKit = BehaviorTestKit(Hello())
       testKit.run(Hello.SayHelloToAnonymousChild)
       val child = testKit.expectEffectType[SpawnedAnonymous[String]]
 
       val childInbox = testKit.childInbox(child.ref)
       childInbox.expectMessage("hello stranger")
-      //#test-child-message-anonymous
+      // #test-child-message-anonymous
     }
 
     "log a message to the logger" in {
-      //#test-check-logging
+      // #test-check-logging
       val testKit = BehaviorTestKit(Hello())
       val inbox = TestInbox[String]("Inboxer")
       testKit.run(Hello.LogAndSayHello(inbox.ref))
       testKit.logEntries() shouldBe Seq(CapturedLogEvent(Level.INFO, "Saying hello to Inboxer"))
-      //#test-check-logging
+      // #test-check-logging
     }
 
     "has access to the provided config" in {

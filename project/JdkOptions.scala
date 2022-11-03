@@ -53,7 +53,7 @@ object JdkOptions extends AutoPlugin {
       // explicitly. To test whether this has the desired effect, compile
       // akka-remote and check the invocation of 'ByteBuffer.clear()' in
       // EnvelopeBuffer.class with 'javap -c': it should refer to
-      //""java/nio/ByteBuffer.clear:()Ljava/nio/Buffer" and not
+      // ""java/nio/ByteBuffer.clear:()Ljava/nio/Buffer" and not
       // "java/nio/ByteBuffer.clear:()Ljava/nio/ByteBuffer". Issue #27079
       (java8home: File) => Seq("-release", "8", "-javabootclasspath", java8home + "/jre/lib/rt.jar"))
   def targetJdkJavacOptions(

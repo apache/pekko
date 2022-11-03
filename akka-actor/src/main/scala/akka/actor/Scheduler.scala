@@ -73,46 +73,47 @@ trait Scheduler {
   def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     try new AtomicReference[Cancellable](Cancellable.initialNotCancelled) with Cancellable { self =>
-      compareAndSet(
-        Cancellable.initialNotCancelled,
-        scheduleOnce(
-          initialDelay,
-          new Runnable {
-            override def run(): Unit = {
-              try {
-                runnable.run()
-                if (self.get != null)
-                  swap(scheduleOnce(delay, this))
-              } catch {
-                // ignore failure to enqueue or terminated target actor
-                case _: SchedulerException                                                                         =>
-                case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
+        compareAndSet(
+          Cancellable.initialNotCancelled,
+          scheduleOnce(
+            initialDelay,
+            new Runnable {
+              override def run(): Unit = {
+                try {
+                  runnable.run()
+                  if (self.get != null)
+                    swap(scheduleOnce(delay, this))
+                } catch {
+                  // ignore failure to enqueue or terminated target actor
+                  case _: SchedulerException                                                                         =>
+                  case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
+                }
               }
-            }
-          }))
+            }))
 
-      @tailrec private def swap(c: Cancellable): Unit = {
-        get match {
-          case null => if (c != null) c.cancel()
-          case old  => if (!compareAndSet(old, c)) swap(c)
-        }
-      }
-
-      final def cancel(): Boolean = {
-        @tailrec def tailrecCancel(): Boolean = {
+        @tailrec private def swap(c: Cancellable): Unit = {
           get match {
-            case null => false
-            case c =>
-              if (c.cancel()) compareAndSet(c, null)
-              else compareAndSet(c, null) || tailrecCancel()
+            case null => if (c != null) c.cancel()
+            case old  => if (!compareAndSet(old, c)) swap(c)
           }
         }
 
-        tailrecCancel()
-      }
+        final def cancel(): Boolean = {
+          @tailrec def tailrecCancel(): Boolean = {
+            get match {
+              case null => false
+              case c =>
+                if (c.cancel()) compareAndSet(c, null)
+                else compareAndSet(c, null) || tailrecCancel()
+            }
+          }
 
-      override def isCancelled: Boolean = get == null
-    } catch {
+          tailrecCancel()
+        }
+
+        override def isCancelled: Boolean = get == null
+      }
+    catch {
       case SchedulerException(msg) => throw new IllegalStateException(msg)
     }
   }
@@ -441,9 +442,10 @@ trait Scheduler {
       implicit
       executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
-    scheduleOnce(delay, new Runnable {
-      override def run(): Unit = receiver ! message
-    })
+    scheduleOnce(delay,
+      new Runnable {
+        override def run(): Unit = receiver ! message
+      })
 
   /**
    * Java API: Schedules a message to be sent once with a delay, i.e. a time period that has

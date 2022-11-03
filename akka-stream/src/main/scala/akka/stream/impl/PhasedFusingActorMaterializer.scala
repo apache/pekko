@@ -834,7 +834,7 @@ private final case class SavedIslandData(
         else s"out port id [$missingHandlerIdx]"
     }
     throw new IllegalStateException(s"No handler defined in stage [${logic.toString}] for $portLabel." +
-    " All inlets and outlets must be assigned a handler with setHandler in the constructor of your graph stage logic.")
+      " All inlets and outlets must be assigned a handler with setHandler in the constructor of your graph stage logic.")
   }
 
   override def toString: String = "GraphStagePhase"

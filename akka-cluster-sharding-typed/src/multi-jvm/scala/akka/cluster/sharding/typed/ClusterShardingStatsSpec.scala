@@ -65,7 +65,7 @@ abstract class ClusterShardingStatsSpec
   private val typeKey = EntityTypeKey[Command]("ping")
   private val sharding = ClusterSharding(typedSystem)
   private val settings = ClusterShardingSettings(typedSystem)
-  private val queryTimeout = settings.shardRegionQueryTimeout * roles.size.toLong //numeric widening y'all
+  private val queryTimeout = settings.shardRegionQueryTimeout * roles.size.toLong // numeric widening y'all
 
   "Cluster sharding stats" must {
     "form cluster" in {

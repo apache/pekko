@@ -28,7 +28,7 @@ class GraphMatValueSpec extends StreamSpec {
       val sub = TestSubscriber.manualProbe[Int]()
       val f = RunnableGraph
         .fromGraph(GraphDSL.createGraph(foldSink) { implicit b => fold =>
-          Source(1 to 10) ~> fold
+          Source(1 to 10)                           ~> fold
           b.materializedValue.mapAsync(4)(identity) ~> Sink.fromSubscriber(sub)
           ClosedShape
         })
@@ -47,7 +47,7 @@ class GraphMatValueSpec extends StreamSpec {
       val f = RunnableGraph
         .fromGraph(GraphDSL.createGraph(foldSink) { implicit b => fold =>
           val zip = b.add(ZipWith[Int, Int, Int](_ + _))
-          Source(1 to 10) ~> fold
+          Source(1 to 10)                           ~> fold
           b.materializedValue.mapAsync(4)(identity) ~> zip.in0
           b.materializedValue.mapAsync(4)(identity) ~> zip.in1
 
@@ -78,7 +78,7 @@ class GraphMatValueSpec extends StreamSpec {
 
     "allow exposing the materialized value as port even if wrapped and the final materialized value is Unit" in {
       val noMatSource: Source[Int, Unit] =
-        foldFeedbackSource.mapAsync(4)(identity).map(_ + 100).mapMaterializedValue((_) => ())
+        foldFeedbackSource.mapAsync(4)(identity).map(_ + 100).mapMaterializedValue(_ => ())
       Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(155)
     }
 
@@ -87,7 +87,7 @@ class GraphMatValueSpec extends StreamSpec {
         implicit b => (s1, s2) =>
           val zip = b.add(ZipWith[Int, Int, Int](_ + _))
 
-          s1.out.mapAsync(4)(identity) ~> zip.in0
+          s1.out.mapAsync(4)(identity)              ~> zip.in0
           s2.out.mapAsync(4)(identity).map(_ * 100) ~> zip.in1
           SourceShape(zip.out)
       })
@@ -95,7 +95,7 @@ class GraphMatValueSpec extends StreamSpec {
       val compositeSource2 = Source.fromGraph(GraphDSL.createGraph(compositeSource1, compositeSource1)(Keep.both) {
         implicit b => (s1, s2) =>
           val zip = b.add(ZipWith[Int, Int, Int](_ + _))
-          s1.out ~> zip.in0
+          s1.out                ~> zip.in0
           s2.out.map(_ * 10000) ~> zip.in1
           SourceShape(zip.out)
       })
@@ -137,7 +137,7 @@ class GraphMatValueSpec extends StreamSpec {
         Source.empty.mapMaterializedValue(_ => done = true) ~> Sink.ignore
         ClosedShape
       }
-      val r = RunnableGraph.fromGraph(GraphDSL.createGraph(Sink.ignore) { implicit b => (s) =>
+      val r = RunnableGraph.fromGraph(GraphDSL.createGraph(Sink.ignore) { implicit b => s =>
         b.add(g)
         Source(1 to 10) ~> s
         ClosedShape
@@ -226,7 +226,7 @@ class GraphMatValueSpec extends StreamSpec {
       val nest3 = Flow[String].via(nest2)
       val nest4 = Flow[String].via(nest3)
 
-      //fails
+      // fails
       val matValue = Source(List("")).via(nest4).to(Sink.ignore).run()
 
       matValue should ===(NotUsed)
@@ -248,20 +248,20 @@ class GraphMatValueSpec extends StreamSpec {
     "build more complicated graph with flows optimized for identity flows" in {
       val flow1 = Flow.fromSinkAndSourceMat(Sink.ignore, Source.single(1).viaMat(Flow[Int])(Keep.both))(Keep.both)
       val (mA, (m1, m2)) = Source.single(8).viaMat(flow1)(Keep.right).to(Sink.ignore).run()
-      Await.result(mA, 1.second) should ===(Done) //from Sink.ignore
-      m1 should ===(NotUsed) //from Source.single(1)
-      m2 should ===(NotUsed) //from Flow[Int]
+      Await.result(mA, 1.second) should ===(Done) // from Sink.ignore
+      m1 should ===(NotUsed) // from Source.single(1)
+      m2 should ===(NotUsed) // from Flow[Int]
 
       val flow2 = Flow.fromSinkAndSourceMat(Sink.ignore, Source.maybe[Int].viaMat(Flow[Int])(Keep.left))(Keep.both)
       val (mB, m3) = Source.single(8).viaMat(flow2)(Keep.right).to(Sink.ignore).run()
-      Await.result(mB, 1.second) should ===(Done) //from Sink.ignore
+      Await.result(mB, 1.second) should ===(Done) // from Sink.ignore
       // Fails with ClassCastException if value is wrong
-      m3.success(None) //from Source.maybe[Int]
+      m3.success(None) // from Source.maybe[Int]
 
       val flow3 = Flow.fromSinkAndSourceMat(Sink.ignore, Source.single(1).viaMat(Flow[Int])(Keep.right))(Keep.both)
       val (mC, m4) = Source.single(8).viaMat(flow3)(Keep.right).to(Sink.ignore).run()
-      Await.result(mC, 1.second) should ===(Done) //from Sink.ignore
-      m4 should ===(NotUsed) //from Flow[Int]
+      Await.result(mC, 1.second) should ===(Done) // from Sink.ignore
+      m4 should ===(NotUsed) // from Flow[Int]
     }
 
     "provide a new materialized value for each materialization" in {
@@ -273,7 +273,7 @@ class GraphMatValueSpec extends StreamSpec {
         import GraphDSL.Implicits._
         val merge = b.add(Merge[Int](2))
 
-        s ~> merge
+        s                   ~> merge
         b.materializedValue ~> merge
 
         SourceShape(merge.out)

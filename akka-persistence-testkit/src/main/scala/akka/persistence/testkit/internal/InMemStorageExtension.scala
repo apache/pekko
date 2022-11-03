@@ -46,13 +46,14 @@ final class InMemStorageExtension(system: ExtendedActorSystem) extends Extension
   def resetPolicy(): Unit = defaultStorage().resetPolicy()
 
   def storageFor(key: String): EventStorage =
-    stores.computeIfAbsent(key, _ => {
-      // we don't really care about the key here, we just want separate instances
-      if (PersistenceTestKit.Settings(system).serialize) {
-        new SerializedEventStorageImpl(system)
-      } else {
-        new SimpleEventStorageImpl
-      }
-    })
+    stores.computeIfAbsent(key,
+      _ => {
+        // we don't really care about the key here, we just want separate instances
+        if (PersistenceTestKit.Settings(system).serialize) {
+          new SerializedEventStorageImpl(system)
+        } else {
+          new SimpleEventStorageImpl
+        }
+      })
 
 }

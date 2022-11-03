@@ -577,7 +577,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   val removedTimeToLiveMillis = removedTimeToLive.toMillis
 
-  //Start periodic gossip to random nodes in cluster
+  // Start periodic gossip to random nodes in cluster
   import context.dispatcher
   val gossipTask = context.system.scheduler.scheduleWithFixedDelay(gossipInterval, gossipInterval, self, GossipTick)
   val pruneInterval: FiniteDuration = removedTimeToLive / 2
@@ -774,7 +774,6 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
       }
 
     case _: MemberEvent => // not of interest
-
     case Count =>
       val count = registry.map {
         case (_, bucket) =>
@@ -862,7 +861,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   def mkKey(path: ActorPath): String = Internal.mkKey(path)
 
-  def myVersions: Map[Address, Long] = registry.map { case (owner, bucket) => (owner -> bucket.version) }
+  def myVersions: Map[Address, Long] = registry.map { case (owner, bucket) => owner -> bucket.version }
 
   def collectDelta(otherVersions: Map[Address, Long]): immutable.Iterable[Bucket] = {
     // missing entries are represented by version 0
@@ -908,7 +907,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     registry.foreach {
       case (owner, bucket) =>
         val oldRemoved = bucket.content.collect {
-          case (key, ValueHolder(version, None)) if (bucket.version - version > removedTimeToLiveMillis) => key
+          case (key, ValueHolder(version, None)) if bucket.version - version > removedTimeToLiveMillis => key
         }
         if (oldRemoved.nonEmpty)
           registry += owner -> bucket.copy(content = bucket.content -- oldRemoved)

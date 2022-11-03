@@ -39,7 +39,6 @@ trait Scheduler {
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` or `ActorContext.scheduleOnce` should be preferred.
-   *
    */
   def scheduleOnce(delay: java.time.Duration, runnable: Runnable, executor: ExecutionContext): Cancellable
 
@@ -62,7 +61,6 @@ trait Scheduler {
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` should be preferred.
-   *
    */
   def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable
@@ -124,7 +122,6 @@ trait Scheduler {
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` should be preferred.
-   *
    */
   def scheduleAtFixedRate(initialDelay: FiniteDuration, interval: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable

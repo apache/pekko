@@ -21,7 +21,7 @@ import akka.actor.typed.scaladsl.Behaviors
 @nowarn("msg=never used")
 object PointToPointDocExample {
 
-  //#producer
+  // #producer
   object FibonacciProducer {
     sealed trait Command
 
@@ -51,9 +51,9 @@ object PointToPointDocExample {
       }
     }
   }
-  //#producer
+  // #producer
 
-  //#consumer
+  // #consumer
   import akka.actor.typed.delivery.ConsumerController
 
   object FibonacciConsumer {
@@ -79,12 +79,12 @@ object PointToPointDocExample {
       }
     }
   }
-  //#consumer
+  // #consumer
 
   object Guardian {
     def apply(): Behavior[Nothing] = {
       Behaviors.setup[Nothing] { context =>
-        //#connect
+        // #connect
         val consumerController = context.spawn(ConsumerController[FibonacciConsumer.Command](), "consumerController")
         context.spawn(FibonacciConsumer(consumerController), "consumer")
 
@@ -95,7 +95,7 @@ object PointToPointDocExample {
         context.spawn(FibonacciProducer(producerController), "producer")
 
         consumerController ! ConsumerController.RegisterToProducerController(producerController)
-        //#connect
+        // #connect
 
         Behaviors.empty
       }

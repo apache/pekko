@@ -316,7 +316,7 @@ class ClusterShardingSpec
 
         Behaviors.empty
       }
-     */
+       */
     }
 
     "EntityRef - AskTimeoutException" in {

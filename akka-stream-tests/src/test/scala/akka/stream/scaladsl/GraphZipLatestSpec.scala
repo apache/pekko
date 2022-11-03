@@ -289,8 +289,8 @@ class GraphZipLatestSpec extends StreamSpec with ScalaCheckPropertyChecks with S
         implicit b => (ts, as, bs) =>
           import GraphDSL.Implicits._
           val zipLatest = b.add(new ZipLatest[A, B]())
-          as ~> zipLatest.in0
-          bs ~> zipLatest.in1
+          as            ~> zipLatest.in0
+          bs            ~> zipLatest.in1
           zipLatest.out ~> ts
           ClosedShape
       })

@@ -71,9 +71,10 @@ private[io] final class AsyncDnsManager(
 
   private val resolver = {
     val props: Props = FromConfig.props(
-      Props(provider.actorClass, settings, cache, (factory: ActorRefFactory, dns: List[InetSocketAddress]) => {
-        dns.map(ns => factory.actorOf(Props(new DnsClient(ns))))
-      }).withDeploy(Deploy.local).withDispatcher(dispatcher))
+      Props(provider.actorClass, settings, cache,
+        (factory: ActorRefFactory, dns: List[InetSocketAddress]) => {
+          dns.map(ns => factory.actorOf(Props(new DnsClient(ns))))
+        }).withDeploy(Deploy.local).withDispatcher(dispatcher))
     context.actorOf(props, name)
   }
 

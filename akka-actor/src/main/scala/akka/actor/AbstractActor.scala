@@ -215,7 +215,6 @@ object AbstractActor {
  *    }
  * }
  * </pre>
- *
  */
 abstract class AbstractActor extends Actor {
 
@@ -352,7 +351,6 @@ abstract class UntypedAbstractActor extends AbstractActor {
  * Java API: compatible with lambda expressions
  *
  * Actor base class that mixes in logging into the Actor.
- *
  */
 abstract class AbstractLoggingActor extends AbstractActor with ActorLogging
 
@@ -398,7 +396,6 @@ abstract class AbstractLoggingActor extends AbstractActor with ActorLogging
  * For a `Stash` based actor that enforces unbounded deques see [[akka.actor.AbstractActorWithUnboundedStash]].
  * There is also an unrestricted version [[akka.actor.AbstractActorWithUnrestrictedStash]] that does not
  * enforce the mailbox type.
- *
  */
 abstract class AbstractActorWithStash extends AbstractActor with Stash
 
@@ -408,7 +405,6 @@ abstract class AbstractActorWithStash extends AbstractActor with Stash
  * Actor base class with `Stash` that enforces an unbounded deque for the actor. The proper mailbox has to be configured
  * manually, and the mailbox should extend the [[akka.dispatch.DequeBasedMessageQueueSemantics]] marker trait.
  * See [[akka.actor.AbstractActorWithStash]] for details on how `Stash` works.
- *
  */
 abstract class AbstractActorWithUnboundedStash extends AbstractActor with UnboundedStash
 
@@ -417,6 +413,5 @@ abstract class AbstractActorWithUnboundedStash extends AbstractActor with Unboun
  *
  * Actor base class with `Stash` that does not enforce any mailbox type. The mailbox of the actor has to be configured
  * manually. See [[akka.actor.AbstractActorWithStash]] for details on how `Stash` works.
- *
  */
 abstract class AbstractActorWithUnrestrictedStash extends AbstractActor with UnrestrictedStash

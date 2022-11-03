@@ -20,9 +20,10 @@ abstract class AsyncRecovery extends SAsyncReplay with AsyncRecoveryPlugin { thi
 
   final def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
       replayCallback: (PersistentRepr) => Unit) =
-    doAsyncReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max, new Consumer[PersistentRepr] {
-      def accept(p: PersistentRepr) = replayCallback(p)
-    }).map(_ => ())
+    doAsyncReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max,
+      new Consumer[PersistentRepr] {
+        def accept(p: PersistentRepr) = replayCallback(p)
+      }).map(_ => ())
 
   final def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] =
     doAsyncReadHighestSequenceNr(persistenceId, fromSequenceNr: Long).map(_.longValue)

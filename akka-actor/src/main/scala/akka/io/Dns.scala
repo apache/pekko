@@ -95,10 +95,11 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
 
     @deprecated("Use cached(DnsProtocol.Resolve)", "2.6.0")
     def apply(newProtocol: DnsProtocol.Resolved): Resolved = {
-      Resolved(newProtocol.name, newProtocol.records.collect {
-        case r: ARecord    => r.ip
-        case r: AAAARecord => r.ip
-      })
+      Resolved(newProtocol.name,
+        newProtocol.records.collect {
+          case r: ARecord    => r.ip
+          case r: AAAARecord => r.ip
+        })
     }
   }
 

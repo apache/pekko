@@ -35,35 +35,35 @@ class RemoteDeploymentDocSpec extends AkkaSpec("""
   override def afterTermination(): Unit = { shutdown(other) }
 
   "demonstrate programmatic deployment" in {
-    //#deploy
+    // #deploy
     val ref = system.actorOf(Props[SampleActor]().withDeploy(Deploy(scope = RemoteScope(address))))
-    //#deploy
+    // #deploy
     ref.path.address should be(address)
     ref ! "test"
     expectMsgType[ActorRef].path.address should be(address)
   }
 
   def makeAddress(): Unit = {
-    //#make-address-artery
+    // #make-address-artery
     val one = AddressFromURIString("akka://sys@host:1234")
     val two = Address("akka", "sys", "host", 1234) // this gives the same
-    //#make-address-artery
+    // #make-address-artery
   }
 
   "demonstrate address extractor" in {
-    //#make-address
+    // #make-address
     val one = AddressFromURIString("akka://sys@host:1234")
     val two = Address("akka", "sys", "host", 1234) // this gives the same
-    //#make-address
+    // #make-address
     one should be(two)
   }
 
   "demonstrate sampleActor" in {
-    //#sample-actor
+    // #sample-actor
 
     val actor = system.actorOf(Props[SampleActor](), "sampleActor")
     actor ! "Pretty slick"
-    //#sample-actor
+    // #sample-actor
   }
 
 }

@@ -156,7 +156,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def wireTap(f: function.Procedure[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.wireTap(f(_)))
@@ -338,7 +337,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def filter(p: function.Predicate[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.filter(p.test))
@@ -1021,7 +1019,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recover(pf: PartialFunction[Throwable, Out]): SubSource[Out, Mat] =
     new SubSource(delegate.recover(pf))
@@ -1042,7 +1039,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @deprecated("Use recoverWithRetries instead.", "2.4.4")
   def recoverWith(pf: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]]): SubSource[Out, Mat] =
@@ -1067,7 +1063,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recoverWithRetries(
       attempts: Int,
@@ -1091,7 +1086,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError(pf: PartialFunction[Throwable, Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.mapError(pf))
@@ -1113,7 +1107,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError[E <: Throwable](clazz: Class[E], f: function.Function[E, Throwable]): javadsl.SubSource[Out, Mat] =
     mapError {
@@ -1208,7 +1201,6 @@ class SubSource[Out, Mat](
    *
    * @param seed Provides the first state for a conflated value using the first unconsumed element as a start
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-   *
    */
   def conflateWithSeed[S](
       seed: function.Function[Out, S],
@@ -1239,7 +1231,6 @@ class SubSource[Out, Mat](
    * see also [[SubSource.conflateWithSeed]] [[SubSource.batch]] [[SubSource.batchWeighted]]
    *
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-   *
    */
   def conflate(aggregate: function.Function2[Out, Out, Out]): SubSource[Out, Mat] =
     new SubSource(delegate.conflate(aggregate.apply))
@@ -1442,8 +1433,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels or substream cancels
    */
   def prefixAndTail(n: Int): SubSource[
-    akka.japi.Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+    akka.japi.Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubSource(delegate.prefixAndTail(n).map { case (taken, tail) => akka.japi.Pair(taken.asJava, tail.asJava) })
 
   /**
@@ -1465,7 +1455,7 @@ class SubSource[Out, Mat](
    *
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
-   **/
+   */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
       f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.SubSource[Out2, Mat] = {
@@ -1485,7 +1475,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes and all consumed substreams complete
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapConcat(x => f(x)))
@@ -1759,7 +1748,8 @@ class SubSource[Out, Mat](
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new SubSource(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -1817,7 +1807,8 @@ class SubSource[Out, Mat](
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new SubSource(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -2188,7 +2179,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(elements: Int, per: java.time.Duration): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.throttle(elements, per.asScala))
@@ -2227,7 +2217,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -2268,7 +2257,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       elements: Int,
@@ -2307,7 +2295,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,
@@ -2352,7 +2339,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -2401,7 +2387,6 @@ class SubSource[Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,

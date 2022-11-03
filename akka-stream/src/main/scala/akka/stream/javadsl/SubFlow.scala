@@ -165,7 +165,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def wireTap(f: function.Procedure[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.wireTap(f(_)))
@@ -347,7 +346,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def filter(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.filter(p.test))
@@ -1036,7 +1034,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recover(pf: PartialFunction[Throwable, Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.recover(pf))
@@ -1059,7 +1056,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @deprecated("Use recoverWithRetries instead.", "2.4.4")
   def recoverWith(
@@ -1087,7 +1083,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recoverWithRetries(
       attempts: Int,
@@ -1111,7 +1106,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError(pf: PartialFunction[Throwable, Throwable]): SubFlow[In, Out, Mat @uncheckedVariance] =
     new SubFlow(delegate.mapError(pf))
@@ -1133,7 +1127,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError[E <: Throwable](
       clazz: Class[E],
@@ -1230,7 +1223,6 @@ class SubFlow[In, Out, Mat](
    *
    * @param seed Provides the first state for a conflated value using the first unconsumed element as a start
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-   *
    */
   def conflateWithSeed[S](
       seed: function.Function[Out, S],
@@ -1261,7 +1253,6 @@ class SubFlow[In, Out, Mat](
    * see also [[SubFlow.conflateWithSeed]] [[SubFlow.batch]] [[SubFlow.batchWeighted]]
    *
    * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-   *
    */
   def conflate(aggregate: function.Function2[Out, Out, Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.conflate(aggregate.apply))
@@ -1466,8 +1457,7 @@ class SubFlow[In, Out, Mat](
    */
   def prefixAndTail(n: Int): SubFlow[
     In,
-    akka.japi.Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+    akka.japi.Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new SubFlow(delegate.prefixAndTail(n).map { case (taken, tail) => akka.japi.Pair(taken.asJava, tail.asJava) })
 
   /**
@@ -1489,7 +1479,7 @@ class SubFlow[In, Out, Mat](
    *
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
-   **/
+   */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
       f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
@@ -1509,7 +1499,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes and all consumed substreams complete
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.flatMapConcat(x => f(x)))
@@ -1783,7 +1772,8 @@ class SubFlow[In, Out, Mat](
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new SubFlow(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -1840,7 +1830,8 @@ class SubFlow[In, Out, Mat](
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new SubFlow(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -2211,7 +2202,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(elements: Int, per: java.time.Duration): javadsl.SubFlow[In, Out, Mat] =
     new SubFlow(delegate.throttle(elements, per.asScala))
@@ -2250,7 +2240,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -2295,7 +2284,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       elements: Int,
@@ -2334,7 +2322,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,
@@ -2379,7 +2366,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -2428,7 +2414,6 @@ class SubFlow[In, Out, Mat](
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,

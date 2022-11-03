@@ -97,7 +97,7 @@ class SnapshotSerializationSpec
       expectMsgPF() {
         case (SnapshotMetadata(`persistenceId`, 0, timestamp), state) =>
           state should ===(new MySnapshot("blahonga"))
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
     }
   }

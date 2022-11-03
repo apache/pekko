@@ -77,8 +77,8 @@ class ClusterMetricsExtensionSpec
         case (mockMetrics, expectedData) =>
           (mockMetrics, expectedData) match {
             case (
-                Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
-                (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) =>
+                  Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
+                  (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) =>
               loadAverageMock.get should ===(loadAverageEwma +- epsilon)
               cpuCombinedMock.get should ===(cpuCombinedEwma +- epsilon)
               cpuStolenMock.get should ===(cpuStolenEwma +- epsilon)

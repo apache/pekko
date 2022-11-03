@@ -62,8 +62,8 @@ private[akka] object RoutingLogics {
         val firstDiffIndex = {
           var idx = 0
           while (idx < currentRoutees.length &&
-                 idx < sortedNewRoutees.length &&
-                 currentRoutees(idx) == sortedNewRoutees(idx)) {
+            idx < sortedNewRoutees.length &&
+            currentRoutees(idx) == sortedNewRoutees(idx)) {
             idx += 1
           }
           idx

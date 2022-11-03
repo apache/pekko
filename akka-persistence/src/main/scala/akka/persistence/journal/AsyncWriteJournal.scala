@@ -198,7 +198,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     }
   }
 
-  //#journal-plugin-api
+  // #journal-plugin-api
   /**
    * Plugin API: asynchronously writes a batch (`Seq`) of persistent messages to the
    * journal.
@@ -283,10 +283,9 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
    *
    * Allows plugin implementers to use `f pipeTo self` and
    * handle additional messages for implementing advanced features
-   *
    */
   def receivePluginInternal: Actor.Receive = Actor.emptyBehavior
-  //#journal-plugin-api
+  // #journal-plugin-api
 
 }
 

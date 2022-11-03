@@ -27,7 +27,6 @@ import akka.util.JavaDurationConverters._
  * message that is sent to the target Actor in order to function as a reply-to
  * address, therefore the argument to the ask method is not the message itself
  * but a function that given the reply-to address will create the message.
- *
  */
 object AskPattern {
 
@@ -40,7 +39,7 @@ object AskPattern {
       messageFactory: JFunction[ActorRef[Res], Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
-    (actor.ask(messageFactory.apply)(timeout.asScala, scheduler)).toJava
+    actor.ask(messageFactory.apply)(timeout.asScala, scheduler).toJava
 
   /**
    * The same as [[ask]] but only for requests that result in a response of type [[akka.pattern.StatusReply]].
@@ -53,6 +52,6 @@ object AskPattern {
       messageFactory: JFunction[ActorRef[StatusReply[Res]], Req],
       timeout: Duration,
       scheduler: Scheduler): CompletionStage[Res] =
-    (actor.askWithStatus(messageFactory.apply)(timeout.asScala, scheduler).toJava)
+    actor.askWithStatus(messageFactory.apply)(timeout.asScala, scheduler).toJava
 
 }

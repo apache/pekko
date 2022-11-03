@@ -71,13 +71,13 @@ object AkkaDisciplinePlugin extends AutoPlugin {
 
   lazy val nowarnSettings = Seq(
     Compile / scalacOptions ++= (
-        if (scalaVersion.value.startsWith("3.")) Nil
-        else Seq(defaultScalaOptions)
-      ),
+      if (scalaVersion.value.startsWith("3.")) Nil
+      else Seq(defaultScalaOptions)
+    ),
     Test / scalacOptions ++= (
-        if (scalaVersion.value.startsWith("3.")) Nil
-        else Seq(defaultScalaOptions)
-      ),
+      if (scalaVersion.value.startsWith("3.")) Nil
+      else Seq(defaultScalaOptions)
+    ),
     Compile / doc / scalacOptions := Seq())
 
   /**
@@ -87,15 +87,15 @@ object AkkaDisciplinePlugin extends AutoPlugin {
     Seq(
       Compile / scalacOptions -= defaultScalaOptions,
       Compile / scalacOptions ++= (
-          if (scalaVersion.value.startsWith("3.")) Nil
-          else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-        ),
+        if (scalaVersion.value.startsWith("3.")) Nil
+        else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+      ),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
       Test / scalacOptions -= defaultScalaOptions,
       Test / scalacOptions ++= (
-          if (scalaVersion.value.startsWith("3.")) Nil
-          else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
-        ),
+        if (scalaVersion.value.startsWith("3.")) Nil
+        else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
+      ),
       Compile / doc / scalacOptions := Seq())
 
   lazy val disciplineSettings =
@@ -104,28 +104,28 @@ object AkkaDisciplinePlugin extends AutoPlugin {
         Compile / scalacOptions ++= Seq("-Xfatal-warnings"),
         Test / scalacOptions --= testUndiscipline,
         Compile / javacOptions ++= (
-            if (scalaVersion.value.startsWith("3.")) {
-              Seq()
-            } else {
-              if (!nonFatalJavaWarningsFor(name.value)) Seq("-Werror", "-Xlint:deprecation", "-Xlint:unchecked")
-              else Seq.empty
-            }
-          ),
+          if (scalaVersion.value.startsWith("3.")) {
+            Seq()
+          } else {
+            if (!nonFatalJavaWarningsFor(name.value)) Seq("-Werror", "-Xlint:deprecation", "-Xlint:unchecked")
+            else Seq.empty
+          }
+        ),
         Compile / doc / javacOptions := Seq("-Xdoclint:none"),
         Compile / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-            case Some((2, 13)) =>
-              disciplineScalacOptions -- Set(
-                "-Ywarn-inaccessible",
-                "-Ywarn-infer-any",
-                "-Ywarn-nullary-override",
-                "-Ywarn-nullary-unit",
-                "-Ypartial-unification",
-                "-Yno-adapted-args")
-            case Some((2, 12)) =>
-              disciplineScalacOptions
-            case _ =>
-              Nil
-          }).toSeq,
+          case Some((2, 13)) =>
+            disciplineScalacOptions -- Set(
+              "-Ywarn-inaccessible",
+              "-Ywarn-infer-any",
+              "-Ywarn-nullary-override",
+              "-Ywarn-nullary-unit",
+              "-Ypartial-unification",
+              "-Yno-adapted-args")
+          case Some((2, 12)) =>
+            disciplineScalacOptions
+          case _ =>
+            Nil
+        }).toSeq,
         Compile / scalacOptions --=
           (if (looseProjects.contains(name.value)) undisciplineScalacOptions.toSeq
            else Seq.empty),
@@ -150,7 +150,7 @@ object AkkaDisciplinePlugin extends AutoPlugin {
    */
   val undisciplineScalacOptions = Set("-Ywarn-numeric-widen")
 
-  /** These options are desired, but some are excluded for the time being*/
+  /** These options are desired, but some are excluded for the time being */
   val disciplineScalacOptions = Set(
     "-Ywarn-numeric-widen",
     "-Yno-adapted-args",

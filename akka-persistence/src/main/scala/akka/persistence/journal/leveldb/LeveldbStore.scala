@@ -114,28 +114,29 @@ private[persistence] trait LeveldbStore
 
   def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] =
     try Future.successful {
-      withBatch { batch =>
-        val nid = numericId(persistenceId)
+        withBatch { batch =>
+          val nid = numericId(persistenceId)
 
-        // seek to first existing message
-        val fromSequenceNr = withIterator { iter =>
-          val startKey = Key(nid, 1L, 0)
-          iter.seek(keyToBytes(startKey))
-          if (iter.hasNext) keyFromBytes(iter.peekNext().getKey).sequenceNr else Long.MaxValue
-        }
-
-        if (fromSequenceNr != Long.MaxValue) {
-          val toSeqNr = math.min(toSequenceNr, readHighestSequenceNr(nid))
-          var sequenceNr = fromSequenceNr
-          while (sequenceNr <= toSeqNr) {
-            batch.delete(keyToBytes(Key(nid, sequenceNr, 0)))
-            sequenceNr += 1
+          // seek to first existing message
+          val fromSequenceNr = withIterator { iter =>
+            val startKey = Key(nid, 1L, 0)
+            iter.seek(keyToBytes(startKey))
+            if (iter.hasNext) keyFromBytes(iter.peekNext().getKey).sequenceNr else Long.MaxValue
           }
 
-          self ! LeveldbCompaction.TryCompactLeveldb(persistenceId, toSeqNr)
+          if (fromSequenceNr != Long.MaxValue) {
+            val toSeqNr = math.min(toSequenceNr, readHighestSequenceNr(nid))
+            var sequenceNr = fromSequenceNr
+            while (sequenceNr <= toSeqNr) {
+              batch.delete(keyToBytes(Key(nid, sequenceNr, 0)))
+              sequenceNr += 1
+            }
+
+            self ! LeveldbCompaction.TryCompactLeveldb(persistenceId, toSeqNr)
+          }
         }
       }
-    } catch {
+    catch {
       case NonFatal(e) => Future.failed(e)
     }
 

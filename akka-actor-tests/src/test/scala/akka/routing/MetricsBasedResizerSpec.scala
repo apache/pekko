@@ -232,12 +232,12 @@ class MetricsBasedResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultT
       val resizer = DefaultOptimalSizeExploringResizer()
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 = router.sendToAll(await = false) // make sure the routees are still busy after the first batch of messages get processed.
 
       val before = System.nanoTime()
-      resizer.reportMessageCount(router.routees, router.msgs.size) //updates the records
+      resizer.reportMessageCount(router.routees, router.msgs.size) // updates the records
 
-      msgs1.foreach(_.second.open()) //process two messages
+      msgs1.foreach(_.second.open()) // process two messages
 
       // make sure some time passes in-between
       Thread.sleep(300)
@@ -263,12 +263,12 @@ class MetricsBasedResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultT
 
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
-      val msgs2 = router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
+      val msgs2 = router.sendToAll(await = false) // make sure the routees are still busy after the first batch of messages get processed.
 
       val before = System.nanoTime()
-      resizer.reportMessageCount(router.routees, router.msgs.size) //updates the records
+      resizer.reportMessageCount(router.routees, router.msgs.size) // updates the records
 
-      msgs1.foreach(_.second.open()) //process two messages
+      msgs1.foreach(_.second.open()) // process two messages
 
       // make sure some time passes in-between
       Thread.sleep(300)

@@ -625,14 +625,15 @@ private[persistence] trait Eventsourced
     }
 
     private val recoveryBehavior: Receive = {
-      val _receiveRecover = try receiveRecover
-      catch {
-        case NonFatal(e) =>
-          try onRecoveryFailure(e, Some(e))
-          finally context.stop(self)
-          returnRecoveryPermit()
-          Actor.emptyBehavior
-      }
+      val _receiveRecover =
+        try receiveRecover
+        catch {
+          case NonFatal(e) =>
+            try onRecoveryFailure(e, Some(e))
+            finally context.stop(self)
+            returnRecoveryPermit()
+            Actor.emptyBehavior
+        }
 
       {
         case PersistentRepr(payload, _) if recoveryRunning && _receiveRecover.isDefinedAt(payload) =>
@@ -685,32 +686,33 @@ private[persistence] trait Eventsourced
       }
 
       try message match {
-        case LoadSnapshotResult(snapshot, toSnr) =>
-          loadSnapshotResult(snapshot, toSnr)
+          case LoadSnapshotResult(snapshot, toSnr) =>
+            loadSnapshotResult(snapshot, toSnr)
 
-        case LoadSnapshotFailed(cause) =>
-          if (isSnapshotOptional) {
-            log.info(
-              "Snapshot load error for persistenceId [{}]. Replaying all events since snapshot-is-optional=true",
-              persistenceId)
-            loadSnapshotResult(snapshot = None, recovery.toSequenceNr)
-          } else {
-            timeoutCancellable.cancel()
-            try onRecoveryFailure(cause, event = None)
+          case LoadSnapshotFailed(cause) =>
+            if (isSnapshotOptional) {
+              log.info(
+                "Snapshot load error for persistenceId [{}]. Replaying all events since snapshot-is-optional=true",
+                persistenceId)
+              loadSnapshotResult(snapshot = None, recovery.toSequenceNr)
+            } else {
+              timeoutCancellable.cancel()
+              try onRecoveryFailure(cause, event = None)
+              finally context.stop(self)
+              returnRecoveryPermit()
+            }
+
+          case RecoveryTick(true) =>
+            try onRecoveryFailure(
+                new RecoveryTimedOut(s"Recovery timed out, didn't get snapshot within $timeout"),
+                event = None)
             finally context.stop(self)
             returnRecoveryPermit()
-          }
 
-        case RecoveryTick(true) =>
-          try onRecoveryFailure(
-            new RecoveryTimedOut(s"Recovery timed out, didn't get snapshot within $timeout"),
-            event = None)
-          finally context.stop(self)
-          returnRecoveryPermit()
-
-        case other =>
-          stashInternally(other)
-      } catch {
+          case other =>
+            stashInternally(other)
+        }
+      catch {
         case NonFatal(e) =>
           returnRecoveryPermit()
           throw e
@@ -749,49 +751,50 @@ private[persistence] trait Eventsourced
 
       override def stateReceive(receive: Receive, message: Any) =
         try message match {
-          case ReplayedMessage(p) =>
-            try {
-              eventSeenInInterval = true
-              updateLastSequenceNr(p)
-              Eventsourced.super.aroundReceive(recoveryBehavior, p)
-            } catch {
-              case NonFatal(t) =>
-                timeoutCancellable.cancel()
-                try onRecoveryFailure(t, Some(p.payload))
-                finally context.stop(self)
-                returnRecoveryPermit()
-            }
-          case RecoverySuccess(highestJournalSeqNr) =>
-            timeoutCancellable.cancel()
-            onReplaySuccess() // callback for subclass implementation
-            val highestSeqNr = Math.max(highestJournalSeqNr, lastSequenceNr)
-            sequenceNr = highestSeqNr
-            setLastSequenceNr(highestSeqNr)
-            _recoveryRunning = false
-            try Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
-            finally transitToProcessingState() // in finally in case exception and resume strategy
-            // if exception from RecoveryCompleted the permit is returned in below catch
-            returnRecoveryPermit()
-          case ReplayMessagesFailure(cause) =>
-            timeoutCancellable.cancel()
-            try onRecoveryFailure(cause, event = None)
-            finally context.stop(self)
-            returnRecoveryPermit()
-          case RecoveryTick(false) if !eventSeenInInterval =>
-            timeoutCancellable.cancel()
-            try onRecoveryFailure(
-              new RecoveryTimedOut(
-                s"Recovery timed out, didn't get event within $timeout, highest sequence number seen $lastSequenceNr"),
-              event = None)
-            finally context.stop(self)
-            returnRecoveryPermit()
-          case RecoveryTick(false) =>
-            eventSeenInInterval = false
-          case RecoveryTick(true) =>
-          // snapshot tick, ignore
-          case other =>
-            stashInternally(other)
-        } catch {
+            case ReplayedMessage(p) =>
+              try {
+                eventSeenInInterval = true
+                updateLastSequenceNr(p)
+                Eventsourced.super.aroundReceive(recoveryBehavior, p)
+              } catch {
+                case NonFatal(t) =>
+                  timeoutCancellable.cancel()
+                  try onRecoveryFailure(t, Some(p.payload))
+                  finally context.stop(self)
+                  returnRecoveryPermit()
+              }
+            case RecoverySuccess(highestJournalSeqNr) =>
+              timeoutCancellable.cancel()
+              onReplaySuccess() // callback for subclass implementation
+              val highestSeqNr = Math.max(highestJournalSeqNr, lastSequenceNr)
+              sequenceNr = highestSeqNr
+              setLastSequenceNr(highestSeqNr)
+              _recoveryRunning = false
+              try Eventsourced.super.aroundReceive(recoveryBehavior, RecoveryCompleted)
+              finally transitToProcessingState() // in finally in case exception and resume strategy
+              // if exception from RecoveryCompleted the permit is returned in below catch
+              returnRecoveryPermit()
+            case ReplayMessagesFailure(cause) =>
+              timeoutCancellable.cancel()
+              try onRecoveryFailure(cause, event = None)
+              finally context.stop(self)
+              returnRecoveryPermit()
+            case RecoveryTick(false) if !eventSeenInInterval =>
+              timeoutCancellable.cancel()
+              try onRecoveryFailure(
+                  new RecoveryTimedOut(
+                    s"Recovery timed out, didn't get event within $timeout, highest sequence number seen $lastSequenceNr"),
+                  event = None)
+              finally context.stop(self)
+              returnRecoveryPermit()
+            case RecoveryTick(false) =>
+              eventSeenInInterval = false
+            case RecoveryTick(true) =>
+            // snapshot tick, ignore
+            case other =>
+              stashInternally(other)
+          }
+        catch {
           case NonFatal(e) =>
             returnRecoveryPermit()
             throw e

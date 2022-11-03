@@ -340,10 +340,10 @@ import scala.collection.immutable.TreeMap
 
   def orsetFromProto(orset: ReplicatedEventSourcing.ORSet): ORSet[Any] = {
     val elements: Iterator[Any] =
-      (orset.getStringElementsList.iterator.asScala ++
+      orset.getStringElementsList.iterator.asScala ++
       orset.getIntElementsList.iterator.asScala ++
       orset.getLongElementsList.iterator.asScala ++
-      orset.getOtherElementsList.iterator.asScala.map(wrappedSupport.deserializePayload))
+      orset.getOtherElementsList.iterator.asScala.map(wrappedSupport.deserializePayload)
 
     val dots = orset.getDotsList.asScala.map(versionVectorFromProto).iterator
     val elementsMap = elements.zip(dots).toMap
@@ -371,7 +371,7 @@ import scala.collection.immutable.TreeMap
       VersionVector(entries.get(0).getKey, entries.get(0).getVersion)
     else {
       val versions = TreeMap.empty[String, Long] ++ versionVector.getEntriesList.asScala.map(entry =>
-          entry.getKey -> entry.getVersion)
+        entry.getKey -> entry.getVersion)
       VersionVector(versions)
     }
   }

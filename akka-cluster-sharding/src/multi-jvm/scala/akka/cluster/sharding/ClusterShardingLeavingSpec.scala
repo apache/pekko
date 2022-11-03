@@ -165,7 +165,7 @@ abstract class ClusterShardingLeavingSpec(multiNodeConfig: ClusterShardingLeavin
                 region.tell(Ping(id), probe.ref)
                 if (leavingNodes.contains(ref.path.address)) {
                   val newRef = probe.expectMsgType[ActorRef](1.second)
-                  newRef should not be (ref)
+                  newRef should not be ref
                   system.log.debug("Moved [{}] from [{}] to [{}]", id, ref, newRef)
                 } else
                   probe.expectMsg(1.second, ref) // should not move

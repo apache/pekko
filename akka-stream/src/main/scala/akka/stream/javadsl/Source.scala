@@ -454,18 +454,19 @@ object Source {
       bufferSize: Int,
       overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRef(new JavaPartialFunction[Any, CompletionStrategy] {
-      override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
-        val result = completionMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }, new JavaPartialFunction[Any, Throwable] {
-      override def apply(x: Any, isCheck: Boolean): Throwable = {
-        val result = failureMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }, bufferSize, overflowStrategy))
+        override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
+          val result = completionMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      },
+      new JavaPartialFunction[Any, Throwable] {
+        override def apply(x: Any, isCheck: Boolean): Throwable = {
+          val result = failureMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      }, bufferSize, overflowStrategy))
 
   /**
    * Creates a `Source` that is materialized as an [[akka.actor.ActorRef]].
@@ -513,10 +514,10 @@ object Source {
   @deprecated("Use variant accepting completion and failure matchers", "2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRef({
-      case akka.actor.Status.Success(s: CompletionStrategy) => s
-      case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
-      case akka.actor.Status.Success                        => CompletionStrategy.Draining
-    }, { case akka.actor.Status.Failure(cause)              => cause }, bufferSize, overflowStrategy))
+        case akka.actor.Status.Success(s: CompletionStrategy) => s
+        case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
+        case akka.actor.Status.Success                        => CompletionStrategy.Draining
+      }, { case akka.actor.Status.Failure(cause) => cause }, bufferSize, overflowStrategy))
 
   /**
    * Creates a `Source` that is materialized as an [[akka.actor.ActorRef]].
@@ -536,19 +537,21 @@ object Source {
       ackMessage: Any,
       completionMatcher: akka.japi.function.Function[Any, java.util.Optional[CompletionStrategy]],
       failureMatcher: akka.japi.function.Function[Any, java.util.Optional[Throwable]]): Source[T, ActorRef] =
-    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage, new JavaPartialFunction[Any, CompletionStrategy] {
-      override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
-        val result = completionMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }, new JavaPartialFunction[Any, Throwable] {
-      override def apply(x: Any, isCheck: Boolean): Throwable = {
-        val result = failureMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }))
+    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage,
+      new JavaPartialFunction[Any, CompletionStrategy] {
+        override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
+          val result = completionMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      },
+      new JavaPartialFunction[Any, Throwable] {
+        override def apply(x: Any, isCheck: Boolean): Throwable = {
+          val result = failureMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      }))
 
   /**
    * Creates a `Source` that is materialized as an [[akka.actor.ActorRef]].
@@ -572,19 +575,21 @@ object Source {
       ackMessage: Any,
       completionMatcher: akka.japi.function.Function[Any, java.util.Optional[CompletionStrategy]],
       failureMatcher: akka.japi.function.Function[Any, java.util.Optional[Throwable]]): Source[T, ActorRef] =
-    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage, new JavaPartialFunction[Any, CompletionStrategy] {
-      override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
-        val result = completionMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }, new JavaPartialFunction[Any, Throwable] {
-      override def apply(x: Any, isCheck: Boolean): Throwable = {
-        val result = failureMatcher(x)
-        if (!result.isPresent) throw JavaPartialFunction.noMatch()
-        else result.get()
-      }
-    }))
+    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage,
+      new JavaPartialFunction[Any, CompletionStrategy] {
+        override def apply(x: Any, isCheck: Boolean): CompletionStrategy = {
+          val result = completionMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      },
+      new JavaPartialFunction[Any, Throwable] {
+        override def apply(x: Any, isCheck: Boolean): Throwable = {
+          val result = failureMatcher(x)
+          if (!result.isPresent) throw JavaPartialFunction.noMatch()
+          else result.get()
+        }
+      }))
 
   /**
    * Creates a `Source` that is materialized as an [[akka.actor.ActorRef]].
@@ -608,11 +613,12 @@ object Source {
   @Deprecated
   @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers", "2.6.0")
   def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
-    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage, {
-      case akka.actor.Status.Success(s: CompletionStrategy) => s
-      case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
-      case akka.actor.Status.Success                        => CompletionStrategy.Draining
-    }, { case akka.actor.Status.Failure(cause)              => cause }))
+    new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage,
+      {
+        case akka.actor.Status.Success(s: CompletionStrategy) => s
+        case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
+        case akka.actor.Status.Success                        => CompletionStrategy.Draining
+      }, { case akka.actor.Status.Failure(cause) => cause }))
 
   /**
    * A graph with the shape of a source logically is a source, this method makes
@@ -1519,7 +1525,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def wireTap(that: Graph[SinkShape[Out], _]): javadsl.Source[Out, Mat] =
     new Source(delegate.wireTap(that))
@@ -1661,7 +1666,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new Source(delegate.interleaveAll(seq, segmentSize, eagerClose))
   }
 
@@ -1740,7 +1746,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     val seq = if (those != null) Util.immutableSeq(those).collect {
       case source: Source[Out @unchecked, _] => source.asScala
       case other                             => other
-    } else immutable.Seq()
+    }
+    else immutable.Seq()
     new Source(delegate.mergeAll(seq, eagerComplete))
   }
 
@@ -2210,7 +2217,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError(pf: PartialFunction[Throwable, Throwable]): javadsl.Source[Out, Mat] =
     new Source(delegate.mapError(pf))
@@ -2232,7 +2238,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError[E <: Throwable](clazz: Class[E], f: function.Function[E, Throwable]): javadsl.Source[Out, Mat] =
     mapError {
@@ -2318,7 +2323,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recoverWithRetries(
       attempts: Int,
@@ -2355,9 +2359,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       attempts: Int,
       clazz: Class[_ <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
-    recoverWithRetries(attempts, {
-      case elem if clazz.isInstance(elem) => supplier.get()
-    }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
+    recoverWithRetries(attempts,
+      {
+        case elem if clazz.isInstance(elem) => supplier.get()
+      }: PartialFunction[Throwable, Graph[SourceShape[Out], NotUsed]])
 
   /**
    * Transform each input element into an `Iterable` of output elements that is
@@ -2610,7 +2615,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def filter(p: function.Predicate[Out]): javadsl.Source[Out, Mat] =
     new Source(delegate.filter(p.test))
@@ -3608,8 +3612,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels or substream cancels
    */
   def prefixAndTail(n: Int): javadsl.Source[
-    Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]],
-    Mat] =
+    Pair[java.util.List[Out @uncheckedVariance], javadsl.Source[Out @uncheckedVariance, NotUsed]], Mat] =
     new Source(delegate.prefixAndTail(n).map { case (taken, tail) => Pair(taken.asJava, tail.asJava) })
 
   /**
@@ -3631,7 +3634,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
-   **/
+   */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
       f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): javadsl.Source[Out2, Mat] = {
@@ -4116,7 +4119,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(elements: Int, per: java.time.Duration): javadsl.Source[Out, Mat] =
     new Source(delegate.throttle(elements, per.asScala))
@@ -4155,7 +4157,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -4196,7 +4197,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       elements: Int,
@@ -4235,7 +4235,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,
@@ -4280,7 +4279,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -4329,7 +4327,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,
@@ -4720,7 +4717,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
 
   /**
    * Transform this source whose element is ``e`` into a source producing tuple ``(e, f(e))``
-   **/
+   */
   def asSourceWithContext[Ctx](extractContext: function.Function[Out, Ctx]): SourceWithContext[Out, Ctx, Mat] =
     new scaladsl.SourceWithContext(this.asScala.map(x => (x, extractContext.apply(x)))).asJava
 

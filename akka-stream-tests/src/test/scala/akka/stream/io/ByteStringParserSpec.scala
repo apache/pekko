@@ -64,7 +64,7 @@ class ByteStringParserSpec extends StreamSpec {
         def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new ParsingLogic {
           object ReadHeader extends ParseStep[ByteString] {
             def parse(reader: ByteReader): ParseResult[ByteString] = {
-              require(reader.readShortBE() == 0xcafe, "Magic header bytes not found")
+              require(reader.readShortBE() == 0xCAFE, "Magic header bytes not found")
               ParseResult(None, ReadData)
             }
           }
@@ -82,10 +82,10 @@ class ByteStringParserSpec extends StreamSpec {
           Source[ByteString](data.toVector).via(MultistepParsing).fold(ByteString.empty)(_ ++ _).runWith(Sink.head),
           5.seconds)
 
-      run(ByteString(0xca), ByteString(0xfe), ByteString(0xef, 0x12)) shouldEqual ByteString(0xef, 0x12)
-      run(ByteString(0xca), ByteString(0xfe, 0xef, 0x12)) shouldEqual ByteString(0xef, 0x12)
-      run(ByteString(0xca, 0xfe), ByteString(0xef, 0x12)) shouldEqual ByteString(0xef, 0x12)
-      run(ByteString(0xca, 0xfe, 0xef, 0x12)) shouldEqual ByteString(0xef, 0x12)
+      run(ByteString(0xCA), ByteString(0xFE), ByteString(0xEF, 0x12)) shouldEqual ByteString(0xEF, 0x12)
+      run(ByteString(0xCA), ByteString(0xFE, 0xEF, 0x12)) shouldEqual ByteString(0xEF, 0x12)
+      run(ByteString(0xCA, 0xFE), ByteString(0xEF, 0x12)) shouldEqual ByteString(0xEF, 0x12)
+      run(ByteString(0xCA, 0xFE, 0xEF, 0x12)) shouldEqual ByteString(0xEF, 0x12)
     }
 
     "don't spin when logic is flawed" in {

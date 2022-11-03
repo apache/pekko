@@ -854,7 +854,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def recover[T >: Out](pf: PartialFunction[Throwable, T]): Repr[T] = via(Recover(pf))
 
@@ -876,7 +875,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   @deprecated("Use recoverWithRetries instead.", "2.4.4")
   def recoverWith[T >: Out](pf: PartialFunction[Throwable, Graph[SourceShape[T], NotUsed]]): Repr[T] =
@@ -906,7 +904,6 @@ trait FlowOps[+Out, +Mat] {
    *
    * @param attempts Maximum number of retries or -1 to retry indefinitely
    * @param pf Receives the failure cause and returns the new Source to be materialized if any
-   *
    */
   def recoverWithRetries[T >: Out](
       attempts: Int,
@@ -930,7 +927,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes or upstream failed with exception pf can handle
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapError(pf: PartialFunction[Throwable, Throwable]): Repr[Out] = via(MapError(pf))
 
@@ -947,7 +943,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def map[T](f: Out => T): Repr[T] = via(Map(f))
 
@@ -972,7 +967,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def wireTap(f: Out => Unit): Repr[Out] =
     wireTap(Sink.foreach(f)).named("wireTap")
@@ -993,7 +987,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes and all remaining elements have been emitted
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def mapConcat[T](f: Out => IterableOnce[T]): Repr[T] = statefulMapConcat(() => f)
 
@@ -2099,7 +2092,7 @@ trait FlowOps[+Out, +Mat] {
    *
    *  @param n the number of elements to accumulate before materializing the downstream flow.
    *  @param f a function that produces the downstream flow based on the upstream's prefix.
-   **/
+   */
   def flatMapPrefix[Out2, Mat2](n: Int)(f: immutable.Seq[Out] => Flow[Out, Out2, Mat2]): Repr[Out2] = {
     via(new FlatMapPrefix(n, f))
   }
@@ -2511,7 +2504,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(elements: Int, per: FiniteDuration, maximumBurst: Int, mode: ThrottleMode): Repr[Out] =
     throttle(elements, per, maximumBurst, ConstantFun.oneInt, mode)
@@ -2546,7 +2538,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int): Repr[Out] =
     via(new Throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, ThrottleMode.Shaping))
@@ -2588,7 +2579,6 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes
    *
    * '''Cancels when''' downstream cancels
-   *
    */
   def throttle(
       cost: Int,
@@ -3255,7 +3245,6 @@ trait FlowOps[+Out, +Mat] {
    * This flow will then be kept from producing elements by asserting back-pressure until its time comes.
    *
    * When needing a prepend operator that is not detached use [[#prependLazy]]
-   *
    *
    * '''Emits when''' element is available from the given [[Source]] or from current stream when the [[Source]] is completed
    *

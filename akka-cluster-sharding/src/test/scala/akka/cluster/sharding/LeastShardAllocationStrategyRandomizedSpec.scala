@@ -99,7 +99,8 @@ class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("akka.loglevel
       ()
     } else if (round == maxSteps) {
       fail(
-        s"Couldn't solve rebalance in $round rounds, [${newSteps.map(step => countShardsPerRegion(step).mkString(",")).mkString(" => ")}]")
+        s"Couldn't solve rebalance in $round rounds, [${newSteps.map(step =>
+            countShardsPerRegion(step).mkString(",")).mkString(" => ")}]")
     } else {
       testRebalance(allocationStrategy, newAllocations, newSteps, maxSteps)
     }

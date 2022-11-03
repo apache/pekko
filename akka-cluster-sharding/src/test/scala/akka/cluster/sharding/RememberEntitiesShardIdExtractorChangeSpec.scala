@@ -39,8 +39,8 @@ object RememberEntitiesShardIdExtractorChangeSpec {
        akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
        akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
        akka.persistence.snapshot-store.local.dir = "target/RememberEntitiesShardIdExtractorChangeSpec-${UUID
-    .randomUUID()
-    .toString}"
+      .randomUUID()
+      .toString}"
        akka.persistence.journal.leveldb {
          native = off
           dir = "target/journal-PersistentShardingMigrationSpec-${UUID.randomUUID()}"
@@ -141,7 +141,7 @@ class RememberEntitiesShardIdExtractorChangeSpec
     def assertRegionRegistrationComplete(region: ActorRef): Unit = {
       awaitAssert {
         region ! ShardRegion.GetCurrentRegions
-        expectMsgType[CurrentRegions].regions should have size (1)
+        expectMsgType[CurrentRegions].regions should have size 1
       }
     }
   }

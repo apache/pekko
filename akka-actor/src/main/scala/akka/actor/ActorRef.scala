@@ -643,7 +643,7 @@ trait WrappedMessage {
 
 private[akka] object DeadLetterActorRef {
   @SerialVersionUID(1L)
-  class SerializedDeadLetterActorRef extends Serializable { //TODO implement as Protobuf for performance?
+  class SerializedDeadLetterActorRef extends Serializable { // TODO implement as Protobuf for performance?
     @throws(classOf[java.io.ObjectStreamException])
     private def readResolve(): AnyRef = JavaSerializer.currentSystem.value.deadLetters
   }
@@ -895,7 +895,7 @@ private[akka] class VirtualPathContainer(
       case u: Unwatch => remWatcher(u.watchee, u.watcher)
       case DeathWatchNotification(actorRef, _, _) =>
         this.!(Terminated(actorRef)(existenceConfirmed = true, addressTerminated = false))(actorRef)
-      case _ => //ignore all other messages
+      case _ => // ignore all other messages
     }
   }
 
@@ -912,7 +912,7 @@ private[akka] class VirtualPathContainer(
   @InternalApi
   override private[akka] def isTerminated: Boolean = _watchedBy.isEmpty
 
-  //noinspection EmptyCheck
+  // noinspection EmptyCheck
   protected def sendTerminated(): Unit = {
     def unwatchWatched(watched: ActorRef): Unit =
       watched.asInstanceOf[InternalActorRef].sendSystemMessage(Unwatch(watched, this))

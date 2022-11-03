@@ -35,7 +35,6 @@ object FlowWithContext {
  * operations.
  *
  * An "empty" flow can be created by calling `FlowWithContext[Ctx, T]`.
- *
  */
 final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In, CtxIn), (Out, CtxOut), Mat])
     extends GraphDelegate(delegate)
@@ -56,7 +55,7 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
       d ~> unzip.in
 
       unzip.out0.via(viaFlow) ~> zipper.in0
-      unzip.out1 ~> zipper.in1
+      unzip.out1              ~> zipper.in1
 
       FlowShape(d.in, zipper.out)
     }))
@@ -90,7 +89,7 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
         .create[Pair[JIn, JCtxIn]]()
         .map(_.toScala)
         .viaMat(delegate.map {
-          case (first, second) =>
-            Pair[JOut, JCtxOut](first, second)
-        }.asJava, javadsl.Keep.right[NotUsed, JMat]))
+            case (first, second) =>
+              Pair[JOut, JCtxOut](first, second)
+          }.asJava, javadsl.Keep.right[NotUsed, JMat]))
 }

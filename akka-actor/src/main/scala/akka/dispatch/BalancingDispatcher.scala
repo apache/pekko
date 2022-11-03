@@ -68,7 +68,7 @@ private[akka] class BalancingDispatcher(
       with DefaultSystemMessageQueue {
     override def cleanUp(): Unit = {
       val dlq = mailboxes.deadLetterMailbox
-      //Don't call the original implementation of this since it scraps all messages, and we don't want to do that
+      // Don't call the original implementation of this since it scraps all messages, and we don't want to do that
       var messages = systemDrain(new LatestFirstSystemMessageList(NoMessage))
       while (messages.nonEmpty) {
         // message must be “virgin” before being able to systemEnqueue again
@@ -103,12 +103,12 @@ private[akka] class BalancingDispatcher(
     if (attemptTeamWork) {
       @tailrec def scheduleOne(i: Iterator[ActorCell] = team.iterator): Unit =
         if (messageQueue.hasMessages
-            && i.hasNext
-            && (executorService.executor match {
-              case lm: LoadMetrics => !lm.atFullThrottle()
-              case _               => true
-            })
-            && !registerForExecution(i.next.mailbox, false, false))
+          && i.hasNext
+          && (executorService.executor match {
+            case lm: LoadMetrics => !lm.atFullThrottle()
+            case _               => true
+          })
+          && !registerForExecution(i.next.mailbox, false, false))
           scheduleOne(i)
 
       scheduleOne()

@@ -43,11 +43,11 @@ import akka.stream.stage._
 
   final val PullStartFlip = 3 // 0011
   final val PullEndFlip = 10 // 1010
-  final val PushStartFlip = 12 //1100
-  final val PushEndFlip = 5 //0101
+  final val PushStartFlip = 12 // 1100
+  final val PushEndFlip = 5 // 0101
 
   final val KeepGoingFlag = 0x4000000
-  final val KeepGoingMask = 0x3ffffff
+  final val KeepGoingMask = 0x3FFFFFF
 
   /**
    * Marker object that indicates that a port holds no element since it was already grabbed. The port is still pullable,
@@ -504,7 +504,8 @@ import akka.stream.stage._
       activeStage = connection.outOwner
       if (Debug)
         println(
-          s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(connection)} (${connection.outHandler}) [${outLogicName(connection)}]")
+          s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(
+              connection)} (${connection.outHandler}) [${outLogicName(connection)}]")
       connection.portState |= OutClosed
       completeConnection(connection.outOwner.stageId)
       val cause = connection.slot.asInstanceOf[Cancelled].cause
@@ -517,7 +518,8 @@ import akka.stream.stage._
         // Normal completion (no push pending)
         if (Debug)
           println(
-            s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(connection)} (${connection.inHandler}) [${inLogicName(connection)}]")
+            s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(
+                connection)} (${connection.inHandler}) [${inLogicName(connection)}]")
         connection.portState |= InClosed
         activeStage = connection.inOwner
         completeConnection(connection.inOwner.stageId)
@@ -536,7 +538,8 @@ import akka.stream.stage._
   private def processPush(connection: Connection): Unit = {
     if (Debug)
       println(
-        s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(connection)}, ${connection.slot} (${connection.inHandler}) [${inLogicName(connection)}]")
+        s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(
+            connection)}, ${connection.slot} (${connection.inHandler}) [${inLogicName(connection)}]")
     activeStage = connection.inOwner
     connection.portState ^= PushEndFlip
     connection.inHandler.onPush()
@@ -546,7 +549,8 @@ import akka.stream.stage._
   private def processPull(connection: Connection): Unit = {
     if (Debug)
       println(
-        s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(connection)} (${connection.outHandler}) [${outLogicName(connection)}]")
+        s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
+            connection)} (${connection.outHandler}) [${outLogicName(connection)}]")
     activeStage = connection.outOwner
     connection.portState ^= PullEndFlip
     connection.outHandler.onPull()

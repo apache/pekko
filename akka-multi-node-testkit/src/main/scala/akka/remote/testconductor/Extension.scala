@@ -51,7 +51,6 @@ object TestConductor extends ExtensionId[TestConductorExt] with ExtensionIdProvi
  * To use ``blackhole``, ``passThrough``, and ``throttle`` you must activate the
  * failure injector and throttler transport adapters by specifying `testTransport(on = true)`
  * in your MultiNodeConfig.
- *
  */
 class TestConductorExt(val system: ExtendedActorSystem) extends Extension with Conductor with Player {
 

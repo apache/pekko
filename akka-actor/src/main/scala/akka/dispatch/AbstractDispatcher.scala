@@ -63,16 +63,17 @@ private[akka] trait LoadMetrics { self: Executor =>
  * INTERNAL API
  */
 private[akka] object MessageDispatcher {
-  val UNSCHEDULED = 0 //WARNING DO NOT CHANGE THE VALUE OF THIS: It relies on the faster init of 0 in AbstractMessageDispatcher
+  val UNSCHEDULED = 0 // WARNING DO NOT CHANGE THE VALUE OF THIS: It relies on the faster init of 0 in AbstractMessageDispatcher
   val SCHEDULED = 1
   val RESCHEDULED = 2
 
   // dispatcher debugging helper using println (see below)
   // since this is a compile-time constant, scalac will elide code behind if (MessageDispatcher.debug) (RK checked with 2.9.1)
   final val debug = false // Deliberately without type ascription to make it a compile-time constant
-  lazy val actors = new Index[MessageDispatcher, ActorRef](16, new ju.Comparator[ActorRef] {
-    override def compare(a: ActorRef, b: ActorRef): Int = a.compareTo(b)
-  })
+  lazy val actors = new Index[MessageDispatcher, ActorRef](16,
+    new ju.Comparator[ActorRef] {
+      override def compare(a: ActorRef, b: ActorRef): Int = a.compareTo(b)
+    })
   def printActors(): Unit =
     if (debug) {
       for {
@@ -194,9 +195,9 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   private def scheduleShutdownAction(): Unit = {
     // IllegalStateException is thrown if scheduler has been shutdown
     try prerequisites.scheduler.scheduleOnce(shutdownTimeout, shutdownAction)(new ExecutionContext {
-      override def execute(runnable: Runnable): Unit = runnable.run()
-      override def reportFailure(t: Throwable): Unit = MessageDispatcher.this.reportFailure(t)
-    })
+        override def execute(runnable: Runnable): Unit = runnable.run()
+        override def reportFailure(t: Throwable): Unit = MessageDispatcher.this.reportFailure(t)
+      })
     catch {
       case _: IllegalStateException =>
         shutdown()
@@ -239,7 +240,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
       shutdownSchedule match {
         case SCHEDULED =>
           try {
-            if (inhabitants == 0) shutdown() //Warning, racy
+            if (inhabitants == 0) shutdown() // Warning, racy
           } finally {
             while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
           }
@@ -371,8 +372,8 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
           .recover {
             case exception =>
               throw new IllegalArgumentException(
-                ("""Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
-                make sure it has an accessible constructor with a [%s,%s] signature""")
+                """Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
+                make sure it has an accessible constructor with a [%s,%s] signature"""
                   .format(fqcn, config.getString("id"), classOf[Config], classOf[DispatcherPrerequisites]),
                 exception)
           }
@@ -407,7 +408,7 @@ class ThreadPoolExecutorConfigurator(config: Config, prerequisites: DispatcherPr
           case size if size > 0 =>
             Some(config.getString("task-queue-type"))
               .map {
-                case "array"       => ThreadPoolConfig.arrayBlockingQueue(size, false) //TODO config fairness?
+                case "array"       => ThreadPoolConfig.arrayBlockingQueue(size, false) // TODO config fairness?
                 case "" | "linked" => ThreadPoolConfig.linkedBlockingQueue(size)
                 case x =>
                   throw new IllegalArgumentException("[%s] is not a valid task-queue-type [array|linked]!".format(x))

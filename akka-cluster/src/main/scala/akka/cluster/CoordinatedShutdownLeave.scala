@@ -46,8 +46,8 @@ private[akka] class CoordinatedShutdownLeave extends Actor {
         // not joined yet
         done(replyTo)
       } else if (s.members.exists(m =>
-                   m.uniqueAddress == cluster.selfUniqueAddress &&
-                   (m.status == Leaving || m.status == Exiting || m.status == Down))) {
+          m.uniqueAddress == cluster.selfUniqueAddress &&
+          (m.status == Leaving || m.status == Exiting || m.status == Down))) {
         done(replyTo)
       }
     case MemberLeft(m) =>

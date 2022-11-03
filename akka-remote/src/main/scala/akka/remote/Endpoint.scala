@@ -100,7 +100,7 @@ private[remote] class DefaultMessageDispatcher(
         payload match {
           case sel: ActorSelectionMessage =>
             if (UntrustedMode && (!TrustedSelectionPaths.contains(sel.elements.mkString("/", "/", "")) ||
-                sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
+              sel.msg.isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 LogMarker.Security,
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
@@ -885,7 +885,7 @@ private[remote] class EndpointWriter(
           if (provider.remoteSettings.LogSend && log.isDebugEnabled) {
             def msgLog =
               s"RemoteMessage: [${s.message}] to [${s.recipient}]<+[${s.recipient.path}] from [${s.senderOption
-                .getOrElse(extendedSystem.deadLetters)}]"
+                  .getOrElse(extendedSystem.deadLetters)}]"
             log.debug("sending message {}", msgLog)
           }
 
@@ -1117,9 +1117,9 @@ private[remote] class EndpointReader(
         if (receiveBuffers.putIfAbsent(key, ResendState(uid, ackedReceiveBuffer)) ne null)
           updateSavedState(key, receiveBuffers.get(key))
       } else if (!receiveBuffers.replace(
-                   key,
-                   expectedState,
-                   merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
+          key,
+          expectedState,
+          merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
         updateSavedState(key, receiveBuffers.get(key))
     }
 

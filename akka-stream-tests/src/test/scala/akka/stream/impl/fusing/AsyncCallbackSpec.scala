@@ -56,17 +56,18 @@ class AsyncCallbackSpec extends AkkaSpec("""
           probe ! Stopped
         }
 
-        setHandlers(in, out, new InHandler with OutHandler {
-          def onPush(): Unit = {
-            val n = grab(in)
-            probe ! Elem(n)
-            push(out, n)
-          }
+        setHandlers(in, out,
+          new InHandler with OutHandler {
+            def onPush(): Unit = {
+              val n = grab(in)
+              probe ! Elem(n)
+              push(out, n)
+            }
 
-          def onPull(): Unit = {
-            pull(in)
-          }
-        })
+            def onPull(): Unit = {
+              pull(in)
+            }
+          })
       }
 
       (logic, logic.callback)
@@ -200,8 +201,8 @@ class AsyncCallbackSpec extends AkkaSpec("""
       }
 
       probe.expectMsg(Started)
-      Future.sequence(feedbacks).futureValue should have size (100)
-      (1 to 100).map(_ => probe.expectMsgType[String]).toSet should have size (100)
+      Future.sequence(feedbacks).futureValue should have size 100
+      (1 to 100).map(_ => probe.expectMsgType[String]).toSet should have size 100
 
       in.sendComplete()
       probe.expectMsg(Stopped)
@@ -247,9 +248,10 @@ class AsyncCallbackSpec extends AkkaSpec("""
         def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
           val logic: GraphStageLogic { val callbacks: Set[AsyncCallback[AnyRef]] } = new GraphStageLogic(shape) {
             val callbacks = (0 to 10).map(_ => getAsyncCallback[AnyRef](probe ! _)).toSet
-            setHandler(out, new OutHandler {
-              def onPull(): Unit = ()
-            })
+            setHandler(out,
+              new OutHandler {
+                def onPull(): Unit = ()
+              })
           }
           (logic, logic.callbacks)
         }

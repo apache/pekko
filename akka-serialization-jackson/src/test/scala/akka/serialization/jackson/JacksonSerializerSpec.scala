@@ -119,7 +119,7 @@ object ScalaTestMessages {
       extends TestMessage
   // #jackson-scala-enumeration
 
-  //delegate to AkkaSerialization
+  // delegate to AkkaSerialization
   object HasAkkaSerializer {
     def apply(description: String): HasAkkaSerializer = new HasAkkaSerializer(description)
   }
@@ -460,16 +460,17 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     "be possible to create custom ObjectMapper" in {
       val customJavaTimeModule = new SimpleModule() {
         import com.fasterxml.jackson.databind.ser.std._
-        addSerializer(classOf[Instant], new StdSerializer[Instant](classOf[Instant]) {
-          override def serialize(value: Instant, gen: JsonGenerator, provider: SerializerProvider): Unit = {
-            gen.writeStartObject()
-            gen.writeFieldName("nanos")
-            gen.writeNumber(value.getNano)
-            gen.writeFieldName("custom")
-            gen.writeString("field")
-            gen.writeEndObject()
-          }
-        })
+        addSerializer(classOf[Instant],
+          new StdSerializer[Instant](classOf[Instant]) {
+            override def serialize(value: Instant, gen: JsonGenerator, provider: SerializerProvider): Unit = {
+              gen.writeStartObject()
+              gen.writeFieldName("nanos")
+              gen.writeNumber(value.getNano)
+              gen.writeFieldName("custom")
+              gen.writeString("field")
+              gen.writeEndObject()
+            }
+          })
       }
 
       val customJacksonObjectMapperFactory = new JacksonObjectMapperFactory {

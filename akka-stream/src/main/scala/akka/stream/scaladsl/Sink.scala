@@ -163,11 +163,11 @@ object Sink {
    */
   def fromMaterializer[T, M](factory: (Materializer, Attributes) => Sink[T, M]): Sink[T, Future[M]] =
     Flow
-      .fromMaterializer({ (mat, attr) =>
+      .fromMaterializer { (mat, attr) =>
         Flow.fromGraph(GraphDSL.createGraph(factory(mat, attr)) { b => sink =>
           FlowShape(sink.in, b.materializedValue.outlet)
         })
-      })
+      }
       .to(Sink.head)
 
   /**
@@ -303,7 +303,7 @@ object Sink {
 
   /**
    * A [[Sink]] that will always backpressure never cancel and never consume any elements from the stream.
-   * */
+   */
   def never: Sink[Any, Future[Done]] = _never
   private[this] val _never: Sink[Any, Future[Done]] = fromGraph(GraphStages.NeverSink)
 

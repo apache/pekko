@@ -106,10 +106,10 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
   def numberOfMessages: Int = messageQueue.numberOfMessages
 
   @volatile
-  protected var _statusDoNotCallMeDirectly: Status = _ //0 by default
+  protected var _statusDoNotCallMeDirectly: Status = _ // 0 by default
 
   @volatile
-  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ //null by default
+  protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
 
   @inline
   final def currentStatus: Mailbox.Status = Unsafe.instance.getIntVolatile(this, AbstractMailbox.mailboxStatusOffset)
@@ -226,12 +226,12 @@ private[akka] abstract class Mailbox(val messageQueue: MessageQueue)
 
   override final def run(): Unit = {
     try {
-      if (!isClosed) { //Volatile read, needed here
-        processAllSystemMessages() //First, deal with any system messages
-        processMailbox() //Then deal with messages
+      if (!isClosed) { // Volatile read, needed here
+        processAllSystemMessages() // First, deal with any system messages
+        processMailbox() // Then deal with messages
       }
     } finally {
-      setAsIdle() //Volatile write, needed here
+      setAsIdle() // Volatile write, needed here
       dispatcher.registerForExecution(this, false, false)
     }
   }
@@ -998,26 +998,27 @@ object BoundedControlAwareMailbox {
       var remaining = pushTimeOut.toNanos
 
       putLock.lockInterruptibly()
-      val inserted = try {
-        var stop = false
-        while (size.get() == capacity && !stop) {
-          remaining = notFull.awaitNanos(remaining)
-          stop = remaining <= 0
+      val inserted =
+        try {
+          var stop = false
+          while (size.get() == capacity && !stop) {
+            remaining = notFull.awaitNanos(remaining)
+            stop = remaining <= 0
+          }
+
+          if (stop) {
+            false
+          } else {
+            q.add(envelope)
+            val c = size.incrementAndGet()
+
+            if (c < capacity) notFull.signal()
+
+            true
+          }
+        } finally {
+          putLock.unlock()
         }
-
-        if (stop) {
-          false
-        } else {
-          q.add(envelope)
-          val c = size.incrementAndGet()
-
-          if (c < capacity) notFull.signal()
-
-          true
-        }
-      } finally {
-        putLock.unlock()
-      }
 
       if (!inserted) {
         receiver

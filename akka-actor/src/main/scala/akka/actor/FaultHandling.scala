@@ -43,7 +43,7 @@ final case class ChildRestartStats(
 
   def uid: Int = child.path.uid
 
-  //FIXME How about making ChildRestartStats immutable and then move these methods into the actual supervisor strategies?
+  // FIXME How about making ChildRestartStats immutable and then move these methods into the actual supervisor strategies?
   def requestRestartPermission(retriesWindow: (Option[Int], Option[Int])): Boolean =
     retriesWindow match {
       case (Some(retries), _) if retries < 1 => false
@@ -280,12 +280,12 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    */
   private[akka] def sort(in: Iterable[CauseDirective]): immutable.Seq[CauseDirective] =
     in.foldLeft(new ArrayBuffer[CauseDirective](in.size)) { (buf, ca) =>
-        buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
-          case -1 => buf.append(ca)
-          case x  => buf.insert(x, ca)
-        }
-        buf
+      buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
+        case -1 => buf.append(ca)
+        case x  => buf.insert(x, ca)
       }
+      buf
+    }
       .to(immutable.IndexedSeq)
 
   private[akka] def withinTimeRangeOption(withinTimeRange: Duration): Option[Duration] =
@@ -548,7 +548,7 @@ case class AllForOneStrategy(
       children: Iterable[ChildRestartStats]): Unit = {
     if (children.nonEmpty) {
       if (restart && children.forall(_.requestRestartPermission(retriesWindow)))
-        children.foreach(crs => restartChild(crs.child, cause, suspendFirst = (crs.child != child)))
+        children.foreach(crs => restartChild(crs.child, cause, suspendFirst = crs.child != child))
       else
         for (c <- children) context.stop(c.child)
     }
@@ -661,6 +661,6 @@ case class OneForOneStrategy(
     if (restart && stats.requestRestartPermission(retriesWindow))
       restartChild(child, cause, suspendFirst = false)
     else
-      context.stop(child) //TODO optimization to drop child here already?
+      context.stop(child) // TODO optimization to drop child here already?
   }
 }

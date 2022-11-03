@@ -82,7 +82,7 @@ abstract class MailboxSpec extends AkkaSpec with BeforeAndAfterAll with BeforeAn
     }
   }
 
-  //CANDIDATE FOR TESTKIT
+  // CANDIDATE FOR TESTKIT
   def spawn[T <: AnyRef](fun: => T): Future[T] = Future(fun)(ExecutionContext.global)
 
   def createMessageInvocation(msg: Any): Envelope = Envelope(msg, system.deadLetters, system)
@@ -138,7 +138,7 @@ abstract class MailboxSpec extends AkkaSpec with BeforeAndAfterAll with BeforeAn
     val q = factory(config)
     ensureInitialMailboxState(config, q)
 
-    EventFilter.warning(pattern = "received dead letter", occurrences = (enqueueN - dequeueN)).intercept {
+    EventFilter.warning(pattern = "received dead letter", occurrences = enqueueN - dequeueN).intercept {
 
       def createProducer(fromNum: Int, toNum: Int): Future[Vector[Envelope]] = spawn {
         val messages = Vector() ++ (for (i <- fromNum to toNum) yield createMessageInvocation(i))
@@ -171,13 +171,13 @@ abstract class MailboxSpec extends AkkaSpec with BeforeAndAfterAll with BeforeAn
       val ps = producers.map(Await.result(_, remainingOrDefault))
       val cs = consumers.map(Await.result(_, remainingOrDefault))
 
-      ps.map(_.size).sum should ===(enqueueN) //Must have produced 1000 messages
-      cs.map(_.size).sum should ===(dequeueN) //Must have consumed all produced messages
-      //No message is allowed to be consumed by more than one consumer
+      ps.map(_.size).sum should ===(enqueueN) // Must have produced 1000 messages
+      cs.map(_.size).sum should ===(dequeueN) // Must have consumed all produced messages
+      // No message is allowed to be consumed by more than one consumer
       cs.flatten.distinct.size should ===(dequeueN)
-      //All consumed messages should have been produced
+      // All consumed messages should have been produced
       cs.flatten.diff(ps.flatten).size should ===(0)
-      //The ones that were produced and not consumed
+      // The ones that were produced and not consumed
       ps.flatten.diff(cs.flatten).size should ===(enqueueN - dequeueN)
     }
   }
@@ -248,9 +248,9 @@ class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
     "support custom mailboxType" in {
       val actor = system.actorOf(Props.empty.withDispatcher("my-dispatcher"))
       awaitCond(actor match {
-        case r: RepointableRef => r.isStarted
-        case _                 => true
-      }, 1 second, 10 millis)
+          case r: RepointableRef => r.isStarted
+          case _                 => true
+        }, 1 second, 10 millis)
       val queue = actor.asInstanceOf[ActorRefWithCell].underlying.asInstanceOf[ActorCell].mailbox.messageQueue
       queue.getClass should ===(classOf[CustomMailboxSpec.MyMailbox])
     }

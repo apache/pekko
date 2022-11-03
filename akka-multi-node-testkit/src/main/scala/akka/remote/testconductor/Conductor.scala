@@ -498,7 +498,7 @@ private[akka] class Controller(private var initialParticipants: Int, controllerP
         case GetAddress(node) =>
           if (nodes contains node) sender() ! ToClient(AddressReply(node, nodes(node).addr))
           else addrInterest += node -> ((addrInterest.get(node).getOrElse(Set())) + sender())
-        case _: Done => //FIXME what should happen?
+        case _: Done => // FIXME what should happen?
       }
     case op: CommandOp =>
       op match {

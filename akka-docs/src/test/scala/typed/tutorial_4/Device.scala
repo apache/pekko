@@ -27,9 +27,9 @@ object Device {
       extends Command
   final case class TemperatureRecorded(requestId: Long)
 
-  //#passivate-msg
+  // #passivate-msg
   case object Passivate extends Command
-  //#passivate-msg
+  // #passivate-msg
 }
 
 class Device(context: ActorContext[Device.Command], groupId: String, deviceId: String)

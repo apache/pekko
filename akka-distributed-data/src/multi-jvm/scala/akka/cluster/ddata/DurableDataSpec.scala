@@ -56,7 +56,8 @@ object DurableDataSpec {
         if (failStore) reply match {
           case Some(StoreReply(_, failureMsg, replyTo)) => replyTo ! failureMsg
           case None                                     =>
-        } else
+        }
+        else
           reply match {
             case Some(StoreReply(successMsg, _, replyTo)) => replyTo ! successMsg
             case None                                     =>

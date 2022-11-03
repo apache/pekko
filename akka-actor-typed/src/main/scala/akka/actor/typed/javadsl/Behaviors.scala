@@ -5,7 +5,7 @@
 package akka.actor.typed.javadsl
 
 import java.util.Collections
-import java.util.function.{ Supplier, Function => JFunction }
+import java.util.function.{ Function => JFunction, Supplier }
 
 import scala.reflect.ClassTag
 
@@ -154,9 +154,10 @@ object Behaviors {
   def receive[T](
       onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
       onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
-    new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg), {
-      case (ctx, sig) => onSignal.apply(ctx.asJava, sig)
-    })
+    new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg),
+      {
+        case (ctx, sig) => onSignal.apply(ctx.asJava, sig)
+      })
   }
 
   /**
@@ -327,7 +328,6 @@ object Behaviors {
    *                 each message processing by the inner behavior is done.
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T](
       interceptMessageClass: Class[T],
@@ -344,7 +344,6 @@ object Behaviors {
    * @param staticMdc This MDC is setup in the logging context for every message
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T](
       interceptMessageClass: Class[T],
@@ -369,7 +368,6 @@ object Behaviors {
    *                 each message processing by the inner behavior is done.
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T](
       interceptMessageClass: Class[T],

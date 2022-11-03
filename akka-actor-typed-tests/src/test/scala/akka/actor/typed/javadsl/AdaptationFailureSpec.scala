@@ -72,10 +72,11 @@ class AdaptationFailureSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
           val probe = createTestProbe[Any]()
           val threw = Promise[Done]()
           val ref = spawn(Behaviors.setup[Any] { ctx =>
-            val adapter = ctx.messageAdapter[Any](classOf[Any], { _ =>
-              threw.success(Done)
-              throw TestException("boom")
-            })
+            val adapter = ctx.messageAdapter[Any](classOf[Any],
+              { _ =>
+                threw.success(Done)
+                throw TestException("boom")
+              })
             adapter ! "go boom"
             behavior
           })

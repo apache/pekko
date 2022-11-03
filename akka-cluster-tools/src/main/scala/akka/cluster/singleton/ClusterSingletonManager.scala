@@ -48,8 +48,8 @@ object ClusterSingletonManagerSettings {
    */
   def apply(system: ActorSystem): ClusterSingletonManagerSettings =
     apply(system.settings.config.getConfig("akka.cluster.singleton"))
-    // note that this setting has some additional logic inside the ClusterSingletonManager
-    // falling back to DowningProvider.downRemovalMargin if it is off/Zero
+      // note that this setting has some additional logic inside the ClusterSingletonManager
+      // falling back to DowningProvider.downRemovalMargin if it is off/Zero
       .withRemovalMargin(Cluster(system).settings.DownRemovalMargin)
 
   /**
@@ -464,7 +464,6 @@ class ClusterSingletonManagerIsStuck(message: String) extends AkkaException(mess
  *
  * Not intended for subclassing by user code.
  *
- *
  * @param singletonProps [[akka.actor.Props]] of the singleton actor instance.
  *
  * @param terminationMessage When handing over to a new oldest node
@@ -498,10 +497,9 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   override val log: MarkerLoggingAdapter = Logging.withMarker(context.system, this)
 
-  val lease: Option[Lease] = settings.leaseSettings.map(
-    settings =>
-      LeaseProvider(context.system)
-        .getLease(singletonLeaseName, settings.leaseImplementation, cluster.selfAddress.hostPort))
+  val lease: Option[Lease] = settings.leaseSettings.map(settings =>
+    LeaseProvider(context.system)
+      .getLease(singletonLeaseName, settings.leaseImplementation, cluster.selfAddress.hostPort))
   val leaseRetryInterval: FiniteDuration = settings.leaseSettings match {
     case Some(s) => s.leaseRetryInterval
     case None    => 5.seconds // won't be used

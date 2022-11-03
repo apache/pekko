@@ -556,7 +556,8 @@ class EventSourcedBehaviorStashSpec
                     Effect.stash()
                 }
             }
-          }, {
+          },
+          {
             case (_, "start-stashing") => true
             case (_, "unstash")        => false
             case (_, _)                => throw new IllegalArgumentException()

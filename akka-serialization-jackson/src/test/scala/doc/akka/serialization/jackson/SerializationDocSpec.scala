@@ -131,7 +131,7 @@ object SerializationDocSpec {
 
   object Polymorphism {
 
-    //#polymorphism
+    // #polymorphism
     final case class Zoo(primaryAttraction: Animal) extends MySerializable
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -144,12 +144,12 @@ object SerializationDocSpec {
     final case class Lion(name: String) extends Animal
 
     final case class Elephant(name: String, age: Int) extends Animal
-    //#polymorphism
+    // #polymorphism
   }
 
   object PolymorphismMixedClassObject {
 
-    //#polymorphism-case-object
+    // #polymorphism-case-object
     final case class Zoo(primaryAttraction: Animal) extends MySerializable
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -172,7 +172,7 @@ object SerializationDocSpec {
       // whenever we need to deserialize an instance of Unicorn trait, we return the object Unicorn
       override def deserialize(p: JsonParser, ctxt: DeserializationContext): Unicorn = Unicorn
     }
-    //#polymorphism-case-object
+    // #polymorphism-case-object
   }
 
   val configDateTime = """

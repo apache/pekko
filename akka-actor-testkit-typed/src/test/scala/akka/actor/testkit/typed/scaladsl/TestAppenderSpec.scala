@@ -67,11 +67,11 @@ class TestAppenderSpec
     "only filter events for given logger name" in {
       val count = new AtomicInteger
       LoggingTestKit
-        .custom({
+        .custom {
           case logEvent =>
             count.incrementAndGet()
             logEvent.message == "Hello from right logger" && logEvent.loggerName == classOf[AnotherLoggerClass].getName
-        })
+        }
         .withOccurrences(2)
         .withLoggerName(classOf[AnotherLoggerClass].getName)
         .expect {

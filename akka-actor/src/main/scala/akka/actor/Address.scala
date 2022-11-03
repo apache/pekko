@@ -89,7 +89,8 @@ final case class Address private[akka] (protocol: String, system: String, host: 
    */
   def hostPort: String = toString.substring(protocol.length + 3)
 
-  /** INTERNAL API
+  /**
+   * INTERNAL API
    * Check if the address is not created through `AddressFromURIString`, if there
    * are any unusual characters in the host string.
    */

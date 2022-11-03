@@ -31,7 +31,8 @@ import akka.util.unused
 
 import scala.collection.immutable
 
-/***
+/**
+ * *
  * INTERNAL API
  *
  * Third (of four) behavior of an EventSourcedBehavior.

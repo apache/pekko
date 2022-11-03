@@ -258,8 +258,7 @@ object ProducerControllerImpl {
       settings: ProducerController.Settings,
       initialState: Option[DurableProducerQueue.State[A]])(
       thenBecomeActive: (
-          ActorRef[RequestNext[A]],
-          ActorRef[ConsumerController.Command[A]],
+          ActorRef[RequestNext[A]], ActorRef[ConsumerController.Command[A]],
           DurableProducerQueue.State[A]) => Behavior[InternalCommand]): Behavior[InternalCommand] = {
     Behaviors.receiveMessagePartial[InternalCommand] {
       case RegisterConsumer(c: ActorRef[ConsumerController.Command[A]] @unchecked) =>
@@ -346,7 +345,8 @@ object ProducerControllerImpl {
     val manifest = Serializers.manifestFor(ser, mAnyRef)
     val serializerId = ser.identifier
     if (bytes.length <= chunkSize) {
-      ChunkedMessage(ByteString.fromArrayUnsafe(bytes), firstChunk = true, lastChunk = true, serializerId, manifest) :: Nil
+      ChunkedMessage(ByteString.fromArrayUnsafe(bytes), firstChunk = true, lastChunk = true, serializerId,
+        manifest) :: Nil
     } else {
       val builder = Vector.newBuilder[ChunkedMessage]
       val chunksIter = ByteString.fromArrayUnsafe(bytes).grouped(chunkSize)

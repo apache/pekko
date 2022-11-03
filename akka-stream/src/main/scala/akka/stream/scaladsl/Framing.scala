@@ -84,7 +84,6 @@ object Framing {
    *                           Then computeFrameSize can be used to compute the frame size: `(offset bytes, computed size) => (actual frame size)`.
    *                           ''Actual frame size'' must be equal or bigger than sum of `fieldOffset` and `fieldLength`, the operator fails otherwise.
    *                           Must not mutate the given byte array.
-   *
    */
   def lengthField(
       fieldLength: Int,
@@ -307,10 +306,11 @@ object Framing {
             if (isClosed(in) && buffer.isEmpty) completeStage()
           } else {
             // Emit results and compact buffer
-            emitMultiple(out, new FrameIterator(), () => {
-              reset()
-              if (isClosed(in) && buffer.isEmpty) completeStage()
-            })
+            emitMultiple(out, new FrameIterator(),
+              () => {
+                reset()
+                if (isClosed(in) && buffer.isEmpty) completeStage()
+              })
           }
 
         private def reset(): Unit = {
@@ -371,7 +371,7 @@ object Framing {
       computeFrameSize: Option[(Array[Byte], Int) => Int])
       extends GraphStage[FlowShape[ByteString, ByteString]] {
 
-    //for the sake of binary compatibility
+    // for the sake of binary compatibility
     def this(lengthFieldLength: Int, lengthFieldOffset: Int, maximumFrameLength: Int, byteOrder: ByteOrder) =
       this(lengthFieldLength, lengthFieldOffset, maximumFrameLength, byteOrder, None)
 
@@ -393,7 +393,6 @@ object Framing {
 
         /**
          * push, and reset frameSize and buffer
-         *
          */
         private def pushFrame() = {
           val emit = buffer.take(frameSize).compact
@@ -407,7 +406,6 @@ object Framing {
 
         /**
          * try to push downstream, if failed then try to pull upstream
-         *
          */
         private def tryPushFrame() = {
           val buffSize = buffer.size

@@ -40,10 +40,10 @@ trait ScalafixSupport {
 
   def updateProjectCommands(alias: String, value: String): Def.Setting[Seq[Command]] = {
     commands := {
-      commands.value.filterNot({
+      commands.value.filterNot {
         case command: SimpleCommand => command.name == alias
         case _                      => false
-      }) :+ BasicCommands.newAlias(name = alias, value = value)
+      } :+ BasicCommands.newAlias(name = alias, value = value)
     }
   }
 }

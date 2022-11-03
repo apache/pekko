@@ -111,7 +111,7 @@ class SnapshotSpec extends PersistenceSpec(PersistenceSpec.config("inmem", "Snap
       expectMsgPF() {
         case SnapshotOffer(SnapshotMetadata(`persistenceId`, 4, timestamp), state) =>
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
       expectMsg("e-5")
       expectMsg("f-6")
@@ -135,7 +135,7 @@ class SnapshotSpec extends PersistenceSpec(PersistenceSpec.config("inmem", "Snap
       expectMsgPF() {
         case SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, timestamp), state) =>
           state should ===(List("a-1", "b-2").reverse)
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
       expectMsg("c-3")
       expectMsg(RecoveryCompleted)
@@ -150,7 +150,7 @@ class SnapshotSpec extends PersistenceSpec(PersistenceSpec.config("inmem", "Snap
       expectMsgPF() {
         case SnapshotOffer(SnapshotMetadata(`persistenceId`, 4, timestamp), state) =>
           state should ===(List("a-1", "b-2", "c-3", "d-4").reverse)
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
       expectMsg(RecoveryCompleted)
       expectMsg("done")
@@ -163,7 +163,7 @@ class SnapshotSpec extends PersistenceSpec(PersistenceSpec.config("inmem", "Snap
       expectMsgPF() {
         case SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, timestamp), state) =>
           state should ===(List("a-1", "b-2").reverse)
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
       expectMsg("c-3")
       expectMsg("d-4")
@@ -179,7 +179,7 @@ class SnapshotSpec extends PersistenceSpec(PersistenceSpec.config("inmem", "Snap
       expectMsgPF() {
         case SnapshotOffer(SnapshotMetadata(`persistenceId`, 2, timestamp), state) =>
           state should ===(List("a-1", "b-2").reverse)
-          timestamp should be > (0L)
+          timestamp should be > 0L
       }
       expectMsg("c-3")
       expectMsg(RecoveryCompleted)

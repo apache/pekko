@@ -446,7 +446,7 @@ private[akka] class LocalActorRefProvider private[akka] (
 
     override def stop(): Unit = {
       causeOfTermination.trySuccess(
-        Terminated(provider.rootGuardian)(existenceConfirmed = true, addressTerminated = true)) //Idempotent
+        Terminated(provider.rootGuardian)(existenceConfirmed = true, addressTerminated = true)) // Idempotent
       terminationPromise.completeWith(causeOfTermination.future) // Signal termination downstream, idempotent
     }
 

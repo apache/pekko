@@ -33,27 +33,26 @@ object ReplicatedEventPublishingSpec {
         ReplicatedEventSourcing.commonJournalConfig(
           ReplicationId(EntityType, entityId, replicaId),
           allReplicas,
-          PersistenceTestKitReadJournal.Identifier)(
-          replicationContext =>
-            EventSourcedBehavior[Command, String, Set[String]](
-              replicationContext.persistenceId,
-              Set.empty,
-              (state, command) =>
-                command match {
-                  case Add(string, replyTo) =>
-                    ctx.log.debug("Persisting [{}]", string)
-                    Effect.persist(string).thenRun { _ =>
-                      ctx.log.debug("Ack:ing [{}]", string)
-                      replyTo ! Done
-                    }
-                  case Get(replyTo) =>
-                    replyTo ! state
-                    Effect.none
-                  case Stop =>
-                    Effect.stop()
-                  case unexpected => throw new RuntimeException(s"Unexpected: $unexpected")
-                },
-              (state, string) => state + string))
+          PersistenceTestKitReadJournal.Identifier)(replicationContext =>
+          EventSourcedBehavior[Command, String, Set[String]](
+            replicationContext.persistenceId,
+            Set.empty,
+            (state, command) =>
+              command match {
+                case Add(string, replyTo) =>
+                  ctx.log.debug("Persisting [{}]", string)
+                  Effect.persist(string).thenRun { _ =>
+                    ctx.log.debug("Ack:ing [{}]", string)
+                    replyTo ! Done
+                  }
+                case Get(replyTo) =>
+                  replyTo ! state
+                  Effect.none
+                case Stop =>
+                  Effect.stop()
+                case unexpected => throw new RuntimeException(s"Unexpected: $unexpected")
+              },
+            (state, string) => state + string))
       }
   }
 }

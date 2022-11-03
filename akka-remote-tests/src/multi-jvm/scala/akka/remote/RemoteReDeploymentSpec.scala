@@ -153,7 +153,8 @@ abstract class RemoteReDeploymentMultiJvmSpec(multiNodeConfig: RemoteReDeploymen
             // The quarantine of node 2, where the Parent lives, should cause the Hello child to be stopped:
             expectMsg("PostStop")
             expectNoMessage()
-          } else expectNoMessage(sleepAfterKill)
+          }
+        else expectNoMessage(sleepAfterKill)
         awaitAssert(node(second), 10.seconds, 100.millis)
       }
 

@@ -182,7 +182,6 @@ private[cluster] abstract class AutoDownBase(autoDownUnreachableAfter: FiniteDur
       }
 
     case _: ClusterDomainEvent => // not interested in other events
-
   }
 
   def unreachableMember(m: Member): Unit =

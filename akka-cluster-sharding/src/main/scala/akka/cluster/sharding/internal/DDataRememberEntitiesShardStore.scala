@@ -178,17 +178,18 @@ private[akka] final class DDataRememberEntitiesShardStore(
   }
 
   private def onUpdate(update: RememberEntitiesShardStore.Update): Unit = {
-    val allEvts: Set[Evt] = (update.started.map(Started(_): Evt).union(update.stopped.map(Stopped(_))))
+    val allEvts: Set[Evt] = update.started.map(Started(_): Evt).union(update.stopped.map(Stopped(_)))
     // map from set of evts (for same ddata key) to one update that applies each of them
     val ddataUpdates: Map[Set[Evt], (Update[ORSet[EntityId]], Int)] =
       allEvts.groupBy(evt => key(evt.id)).map {
         case (key, evts) =>
-          (evts, (Update(key, ORSet.empty[EntityId], writeMajority, Some(evts)) { existing =>
-            evts.foldLeft(existing) {
-              case (acc, Started(id)) => acc :+ id
-              case (acc, Stopped(id)) => acc.remove(id)
-            }
-          }, maxUpdateAttempts))
+          (evts,
+            (Update(key, ORSet.empty[EntityId], writeMajority, Some(evts)) { existing =>
+                evts.foldLeft(existing) {
+                  case (acc, Started(id)) => acc :+ id
+                  case (acc, Stopped(id)) => acc.remove(id)
+                }
+              }, maxUpdateAttempts))
       }
 
     ddataUpdates.foreach {

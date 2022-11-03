@@ -218,7 +218,7 @@ import scala.util.Success
   override def ask[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[Res] => Req)(
       mapResponse: Try[Res] => T)(implicit responseTimeout: Timeout, classTag: ClassTag[Res]): Unit = {
     import akka.actor.typed.scaladsl.AskPattern._
-    pipeToSelf((target.ask(createRequest))(responseTimeout, system.scheduler))(mapResponse)
+    pipeToSelf(target.ask(createRequest)(responseTimeout, system.scheduler))(mapResponse)
   }
 
   override def askWithStatus[Req, Res](target: RecipientRef[Req], createRequest: ActorRef[StatusReply[Res]] => Req)(

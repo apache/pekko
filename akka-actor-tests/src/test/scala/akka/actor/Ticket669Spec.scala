@@ -21,7 +21,7 @@ class Ticket669Spec extends AkkaSpec with BeforeAndAfterAll with ImplicitSender 
 
   // TODO: does this really make sense?
   override def atStartup(): Unit = {
-    Thread.interrupted() //remove interrupted status.
+    Thread.interrupted() // remove interrupted status.
   }
 
   "A supervised actor with lifecycle PERMANENT" should {

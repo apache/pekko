@@ -32,7 +32,7 @@ class JFRRemotingFlightRecorderSpec extends AkkaSpec {
             """))
       try {
         val extension = RemotingFlightRecorder(system)
-        extension should === (NoOpRemotingFlightRecorder)
+        extension should ===(NoOpRemotingFlightRecorder)
       } finally {
         TestKit.shutdownActorSystem(system)
       }

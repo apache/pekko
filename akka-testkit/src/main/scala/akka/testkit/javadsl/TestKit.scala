@@ -5,7 +5,7 @@
 package akka.testkit.javadsl
 
 import java.util.{ List => JList }
-import java.util.function.{ Supplier, Function => JFunction }
+import java.util.function.{ Function => JFunction, Supplier }
 
 import scala.annotation.varargs
 import scala.concurrent.duration._
@@ -37,8 +37,6 @@ import akka.util.ccompat.JavaConverters._
  *    are scaled using the `dilated` method, which uses the
  *    TestKitExtension.Settings.TestTimeFactor settable via akka.conf entry
  *    "akka.test.timefactor".
- *
- *
  */
 class TestKit(system: ActorSystem) {
 
@@ -799,15 +797,14 @@ class TestKit(system: ActorSystem) {
    *
    * One possible use of this method is for testing whether messages of
    * certain characteristics are generated at a certain rate:
-   *
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.13")
   def receiveWhile[T](max: Duration, idle: Duration, messages: Int, f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max, idle, messages)(new CachingPartialFunction[AnyRef, T] {
-        @throws(classOf[Exception])
-        override def `match`(x: AnyRef): T = f.apply(x)
-      })
+      @throws(classOf[Exception])
+      override def `match`(x: AnyRef): T = f.apply(x)
+    })
       .asJava
   }
 
@@ -821,7 +818,6 @@ class TestKit(system: ActorSystem) {
    *
    * One possible use of this method is for testing whether messages of
    * certain characteristics are generated at a certain rate:
-   *
    */
   def receiveWhile[T](
       max: java.time.Duration,
@@ -829,9 +825,9 @@ class TestKit(system: ActorSystem) {
       messages: Int,
       f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max.asScala, idle.asScala, messages)(new CachingPartialFunction[AnyRef, T] {
-        @throws(classOf[Exception])
-        override def `match`(x: AnyRef): T = f.apply(x)
-      })
+      @throws(classOf[Exception])
+      override def `match`(x: AnyRef): T = f.apply(x)
+    })
       .asJava
   }
 
@@ -839,17 +835,17 @@ class TestKit(system: ActorSystem) {
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.13")
   def receiveWhile[T](max: Duration, f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max = max)(new CachingPartialFunction[AnyRef, T] {
-        @throws(classOf[Exception])
-        override def `match`(x: AnyRef): T = f.apply(x)
-      })
+      @throws(classOf[Exception])
+      override def `match`(x: AnyRef): T = f.apply(x)
+    })
       .asJava
   }
 
   def receiveWhile[T](max: java.time.Duration, f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max = max.asScala)(new CachingPartialFunction[AnyRef, T] {
-        @throws(classOf[Exception])
-        override def `match`(x: AnyRef): T = f.apply(x)
-      })
+      @throws(classOf[Exception])
+      override def `match`(x: AnyRef): T = f.apply(x)
+    })
       .asJava
   }
 

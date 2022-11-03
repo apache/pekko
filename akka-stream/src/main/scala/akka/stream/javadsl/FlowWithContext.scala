@@ -38,7 +38,6 @@ object FlowWithContext {
  * operations.
  *
  * An "empty" flow can be created by calling `FlowWithContext[Ctx, T]`.
- *
  */
 final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
     delegate: javadsl.Flow[Pair[In, CtxIn], Pair[Out, CtxOut], Mat])
@@ -151,11 +150,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[akka.stream.javadsl.Flow.grouped]]
    */
   def grouped(n: Int): FlowWithContext[
-    In,
-    CtxIn,
+    In, CtxIn,
     java.util.List[Out @uncheckedVariance],
-    java.util.List[CtxOut @uncheckedVariance],
-    Mat] =
+    java.util.List[CtxOut @uncheckedVariance], Mat] =
     viaScala(_.grouped(n).map(_.asJava).mapContext(_.asJava))
 
   /**
@@ -219,11 +216,9 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[akka.stream.javadsl.Flow.sliding]]
    */
   def sliding(n: Int, step: Int = 1): FlowWithContext[
-    In,
-    CtxIn,
+    In, CtxIn,
     java.util.List[Out @uncheckedVariance],
-    java.util.List[CtxOut @uncheckedVariance],
-    Mat] =
+    java.util.List[CtxOut @uncheckedVariance], Mat] =
     viaScala(_.sliding(n, step).map(_.asJava).mapContext(_.asJava))
 
   /**
@@ -358,11 +353,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
 
   private[this] def viaScala[In2, CtxIn2, Out2, CtxOut2, Mat2](
       f: scaladsl.FlowWithContext[In, CtxIn, Out, CtxOut, Mat] => scaladsl.FlowWithContext[
-        In2,
-        CtxIn2,
-        Out2,
-        CtxOut2,
-        Mat2]): FlowWithContext[In2, CtxIn2, Out2, CtxOut2, Mat2] =
+        In2, CtxIn2, Out2, CtxOut2, Mat2]): FlowWithContext[In2, CtxIn2, Out2, CtxOut2, Mat2] =
     f(this.asScala).asJava
 
 }

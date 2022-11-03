@@ -84,12 +84,12 @@ abstract class RestartNode3Spec extends MultiNodeClusterSpec(RestartNode3MultiJv
       // we must transfer its address to first
       runOn(first, third) {
         system.actorOf(Props(new Actor {
-          def receive = {
-            case a: UniqueAddress =>
-              secondUniqueAddress = a
-              sender() ! "ok"
-          }
-        }).withDeploy(Deploy.local), name = "address-receiver")
+            def receive = {
+              case a: UniqueAddress =>
+                secondUniqueAddress = a
+                sender() ! "ok"
+            }
+          }).withDeploy(Deploy.local), name = "address-receiver")
         enterBarrier("second-address-receiver-ready")
       }
 

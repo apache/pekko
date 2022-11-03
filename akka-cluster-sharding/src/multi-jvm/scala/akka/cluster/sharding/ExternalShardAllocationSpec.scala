@@ -124,9 +124,9 @@ abstract class ExternalShardAllocationSpec
       runOn(second, third) {
         val probe = TestProbe()
         awaitAssert({
-          shardRegion.tell(Get(shardToSpecifyLocation), probe.ref)
-          probe.expectMsg(Home(address(first)))
-        }, 10.seconds)
+            shardRegion.tell(Get(shardToSpecifyLocation), probe.ref)
+            probe.expectMsg(Home(address(first)))
+          }, 10.seconds)
       }
       enterBarrier("shard-allocated-to-specific-node")
     }
@@ -145,9 +145,9 @@ abstract class ExternalShardAllocationSpec
       enterBarrier("forth-node-joined")
       runOn(first, second, third) {
         awaitAssert({
-          shardRegion ! Get(initiallyOnForth)
-          expectMsg(Home(address(forth)))
-        }, 10.seconds)
+            shardRegion ! Get(initiallyOnForth)
+            expectMsg(Home(address(forth)))
+          }, 10.seconds)
       }
       enterBarrier("shard-allocated-to-forth")
     }
@@ -160,9 +160,9 @@ abstract class ExternalShardAllocationSpec
       enterBarrier("shard-moved-from-forth-to-first")
       runOn(first, second, third, forth) {
         awaitAssert({
-          shardRegion ! Get(initiallyOnForth)
-          expectMsg(Home(address(first)))
-        }, 10.seconds)
+            shardRegion ! Get(initiallyOnForth)
+            expectMsg(Home(address(first)))
+          }, 10.seconds)
       }
       enterBarrier("finished")
     }

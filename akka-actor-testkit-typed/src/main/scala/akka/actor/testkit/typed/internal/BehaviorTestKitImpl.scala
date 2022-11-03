@@ -137,11 +137,11 @@ private[akka] final class BehaviorTestKitImpl[T](
     try {
       context.setCurrentActorThread()
       try {
-        //we need this to handle message adapters related messages
+        // we need this to handle message adapters related messages
         val intercepted = BehaviorTestKitImpl.Interceptor.inteceptBehaviour(current, context)
         currentUncanonical = Behavior.interpretMessage(intercepted, context, message)
-        //notice we pass current and not intercepted, this way Behaviors.same will be resolved to current which will be intercepted again on the next message
-        //otherwise we would have risked intercepting an already intercepted behavior (or would have had to explicitly check if the current behavior is already intercepted by us)
+        // notice we pass current and not intercepted, this way Behaviors.same will be resolved to current which will be intercepted again on the next message
+        // otherwise we would have risked intercepting an already intercepted behavior (or would have had to explicitly check if the current behavior is already intercepted by us)
         current = Behavior.canonicalize(currentUncanonical, current, context)
       } finally {
         context.clearCurrentActorThread()
@@ -201,8 +201,8 @@ private[akka] object BehaviorTestKitImpl {
     def inteceptBehaviour[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
       Behavior
         .start(Behaviors.intercept { () =>
-          this.asInstanceOf[BehaviorInterceptor[Any, T]]
-        }(behavior), ctx.asInstanceOf[TypedActorContext[Any]])
+            this.asInstanceOf[BehaviorInterceptor[Any, T]]
+          }(behavior), ctx.asInstanceOf[TypedActorContext[Any]])
         .unsafeCast[T]
   }
 }

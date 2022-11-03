@@ -32,7 +32,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
    * @return true if the value didn't exist for the key previously, and false otherwise
    */
   def put(key: K, value: V): Boolean = {
-    //Tailrecursive spin-locking put
+    // Tailrecursive spin-locking put
     @tailrec
     def spinPut(k: K, v: V): Boolean = {
       var retry = false
@@ -41,8 +41,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
 
       if (set ne null) {
         set.synchronized {
-          if (set.isEmpty) retry = true //IF the set is empty then it has been removed, so signal retry
-          else { //Else add the value to the set and signal that retry is not needed
+          if (set.isEmpty) retry = true // IF the set is empty then it has been removed, so signal retry
+          else { // Else add the value to the set and signal that retry is not needed
             added = set.add(v)
             retry = false
           }
@@ -55,8 +55,8 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         val oldSet = container.putIfAbsent(k, newSet)
         if (oldSet ne null) {
           oldSet.synchronized {
-            if (oldSet.isEmpty) retry = true //IF the set is empty then it has been removed, so signal retry
-            else { //Else try to add the value to the set and signal that retry is not needed
+            if (oldSet.isEmpty) retry = true // IF the set is empty then it has been removed, so signal retry
+            else { // Else try to add the value to the set and signal that retry is not needed
               added = oldSet.add(v)
               retry = false
             }
@@ -125,14 +125,14 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
 
     if (set ne null) {
       set.synchronized {
-        if (set.remove(value)) { //If we can remove the value
-          if (set.isEmpty) //and the set becomes empty
-            container.remove(key, emptySet) //We try to remove the key if it's mapped to an empty set
+        if (set.remove(value)) { // If we can remove the value
+          if (set.isEmpty) // and the set becomes empty
+            container.remove(key, emptySet) // We try to remove the key if it's mapped to an empty set
 
-          true //Remove succeeded
-        } else false //Remove failed
+          true // Remove succeeded
+        } else false // Remove failed
       }
-    } else false //Remove failed
+    } else false // Remove failed
   }
 
   /**
@@ -150,7 +150,7 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
         set.clear() // Clear the original set to signal to any pending writers that there was a conflict
         Some(ret)
       }
-    } else None //Remove failed
+    } else None // Remove failed
   }
 
   /**
@@ -164,9 +164,9 @@ class Index[K, V](val mapSize: Int, val valueComparator: Comparator[V]) {
 
       if (set ne null) {
         set.synchronized {
-          if (set.remove(value)) { //If we can remove the value
-            if (set.isEmpty) //and the set becomes empty
-              container.remove(e.getKey, emptySet) //We try to remove the key if it's mapped to an empty set
+          if (set.remove(value)) { // If we can remove the value
+            if (set.isEmpty) // and the set becomes empty
+              container.remove(e.getKey, emptySet) // We try to remove the key if it's mapped to an empty set
           }
         }
       }

@@ -34,12 +34,12 @@ final private[akka] class ActorRefSinkStage[T](
       var completionSignalled = false
 
       override def preStart(): Unit = {
-        getStageActor({
+        getStageActor {
           case (_, Terminated(`ref`)) =>
             completeStage()
           case msg =>
             log.error("Unexpected message to stage actor {}", msg.getClass)
-        }).watch(ref)
+        }.watch(ref)
         pull(in)
       }
 

@@ -90,7 +90,8 @@ object AtLeastOnceDeliverySpec {
             persistAsync(AcceptedReq(payload, destination)) { evt =>
               updateState(evt)
               sender() ! ReqAck
-            } else
+            }
+          else
             persist(AcceptedReq(payload, destination)) { evt =>
               updateState(evt)
               sender() ! ReqAck
@@ -103,7 +104,8 @@ object AtLeastOnceDeliverySpec {
           if (async)
             persistAsync(ReqDone(id)) { evt =>
               updateState(evt)
-            } else
+            }
+          else
             persist(ReqDone(id)) { evt =>
               updateState(evt)
             }
@@ -195,7 +197,7 @@ class AtLeastOnceDeliverySpec
 
   "AtLeastOnceDelivery" must {
     List(true, false).foreach { deliverUsingActorSelection =>
-      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
+      s"deliver messages in order when nothing is lost (using actorSelection: $deliverUsingActorSelection)" taggedAs TimingTest in {
         val probe = TestProbe()
         val probeA = TestProbe()
         val destinations = Map("A" -> system.actorOf(destinationProps(probeA.ref)).path)
@@ -206,7 +208,7 @@ class AtLeastOnceDeliverySpec
         probeA.expectNoMessage(1.second)
       }
 
-      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs (TimingTest) in {
+      s"re-deliver lost messages (using actorSelection: $deliverUsingActorSelection)" taggedAs TimingTest in {
         val probe = TestProbe()
         val probeA = TestProbe()
         val dst = system.actorOf(destinationProps(probeA.ref))
@@ -247,7 +249,7 @@ class AtLeastOnceDeliverySpec
       expectMsgType[Failure[_]].toString should include("not supported")
     }
 
-    "re-deliver lost messages after restart" taggedAs (TimingTest) in {
+    "re-deliver lost messages after restart" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
@@ -281,7 +283,7 @@ class AtLeastOnceDeliverySpec
       probeA.expectNoMessage(1.second)
     }
 
-    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs (TimingTest) in {
+    "re-send replayed deliveries with an 'initially in-order' strategy, before delivering fresh messages" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
@@ -318,7 +320,7 @@ class AtLeastOnceDeliverySpec
       probeA.expectNoMessage(1.second)
     }
 
-    "restore state from snapshot" taggedAs (TimingTest) in {
+    "restore state from snapshot" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))
@@ -356,7 +358,7 @@ class AtLeastOnceDeliverySpec
       probeA.expectNoMessage(1.second)
     }
 
-    "warn about unconfirmed messages" taggedAs (TimingTest) in {
+    "warn about unconfirmed messages" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val probeB = TestProbe()
@@ -378,7 +380,7 @@ class AtLeastOnceDeliverySpec
       system.stop(snd)
     }
 
-    "re-deliver many lost messages" taggedAs (TimingTest) in {
+    "re-deliver many lost messages" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val probeB = TestProbe()
@@ -410,7 +412,7 @@ class AtLeastOnceDeliverySpec
         (1 to N).map(n => "c-" + n).toSet)
     }
 
-    "limit the number of messages redelivered at once" taggedAs (TimingTest) in {
+    "limit the number of messages redelivered at once" taggedAs TimingTest in {
       val probe = TestProbe()
       val probeA = TestProbe()
       val dst = system.actorOf(destinationProps(probeA.ref))

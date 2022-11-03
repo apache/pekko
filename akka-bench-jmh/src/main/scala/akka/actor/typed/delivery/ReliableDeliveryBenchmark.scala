@@ -112,7 +112,7 @@ object WorkPullingProducer {
       val requestNextAdapter =
         context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
       var remaining = numberOfMessages + context.system.settings.config
-          .getInt("akka.reliable-delivery.consumer-controller.flow-control-window")
+        .getInt("akka.reliable-delivery.consumer-controller.flow-control-window")
 
       Behaviors.receiveMessagePartial {
         case WrappedRequestNext(next) =>

@@ -523,7 +523,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("akka.actor.debug.re
 
   /**
    * Count elements that passing by this flow
-   * */
+   */
   private class CounterFlow[T] extends GraphStageWithMaterializedValue[FlowShape[T, T], AtomicLong] {
     private val in = Inlet[T]("ElementCounterFlow.in")
     private val out = Outlet[T]("ElementCounterFlow.out")

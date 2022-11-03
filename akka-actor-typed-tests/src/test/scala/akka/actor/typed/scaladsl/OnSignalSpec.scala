@@ -35,8 +35,8 @@ final class OnSignalSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike 
     def stopper(probe: TestProbe[Done], children: Int) = Behaviors.setup[String] { ctx =>
       (0 until children).foreach { i =>
         ctx.spawn(Behaviors.receiveMessage[String] { _ =>
-          Behaviors.same
-        }, s"$i")
+            Behaviors.same
+          }, s"$i")
       }
       Behaviors
         .receiveMessagePartial[String] {

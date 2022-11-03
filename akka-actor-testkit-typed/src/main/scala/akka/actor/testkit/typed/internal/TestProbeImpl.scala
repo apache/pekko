@@ -134,8 +134,9 @@ private[akka] final class TestProbeImpl[M](name: String, system: ActorSystem[_])
     val prevEnd = end
     end = start + maxDiff
 
-    val ret = try f
-    finally end = prevEnd
+    val ret =
+      try f
+      finally end = prevEnd
 
     val diff = now - start
     assert(min <= diff, s"block took ${diff.pretty}, should at least have been $min")

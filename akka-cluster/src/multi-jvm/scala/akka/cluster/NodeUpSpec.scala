@@ -52,12 +52,12 @@ abstract class NodeUpSpec extends MultiNodeClusterSpec(NodeUpMultiJvmSpec) {
 
       val unexpected = new AtomicReference[SortedSet[Member]](SortedSet.empty)
       cluster.subscribe(system.actorOf(Props(new Actor {
-        def receive = {
-          case event: MemberEvent =>
-            unexpected.set(unexpected.get + event.member)
-          case _: CurrentClusterState => // ignore
-        }
-      })), classOf[MemberEvent])
+          def receive = {
+            case event: MemberEvent =>
+              unexpected.set(unexpected.get + event.member)
+            case _: CurrentClusterState => // ignore
+          }
+        })), classOf[MemberEvent])
       enterBarrier("listener-registered")
 
       runOn(second) {

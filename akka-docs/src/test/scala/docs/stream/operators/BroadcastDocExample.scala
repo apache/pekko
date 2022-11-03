@@ -15,7 +15,7 @@ object BroadcastDocExample {
 
   implicit val system: ActorSystem = ActorSystem("BroadcastDocExample")
 
-  //#broadcast
+  // #broadcast
   import akka.NotUsed
   import akka.stream.ClosedShape
   import akka.stream.scaladsl.GraphDSL
@@ -36,25 +36,25 @@ object BroadcastDocExample {
         implicit builder => (countS, minS, maxS) =>
           import GraphDSL.Implicits._
           val broadcast = builder.add(Broadcast[Int](3))
-          source ~> broadcast
+          source           ~> broadcast
           broadcast.out(0) ~> countS
           broadcast.out(1) ~> minS
           broadcast.out(2) ~> maxS
           ClosedShape
       })
       .run()
-  //#broadcast
+  // #broadcast
 
-  //#broadcast-async
+  // #broadcast-async
   RunnableGraph.fromGraph(GraphDSL.createGraph(countSink.async, minSink.async, maxSink.async)(Tuple3.apply) {
     implicit builder => (countS, minS, maxS) =>
       import GraphDSL.Implicits._
       val broadcast = builder.add(Broadcast[Int](3))
-      source ~> broadcast
+      source           ~> broadcast
       broadcast.out(0) ~> countS
       broadcast.out(1) ~> minS
       broadcast.out(2) ~> maxS
       ClosedShape
   })
-  //#broadcast-async
+  // #broadcast-async
 }

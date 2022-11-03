@@ -150,9 +150,9 @@ class GraphMergePrioritizedSpec extends TwoStreamsSetup {
       // introduce a delay on the consuming side making it more likely that
       // the actual prioritization happens and elements does not just pass through
       val delayFirst = b.add(Flow[T].initialDelay(50.millis))
-      s1.out ~> merge.in(0)
-      s2.out ~> merge.in(1)
-      s3.out ~> merge.in(2)
+      s1.out    ~> merge.in(0)
+      s2.out    ~> merge.in(1)
+      s3.out    ~> merge.in(2)
       merge.out ~> delayFirst ~> Sink.fromSubscriber(probe)
       ClosedShape
     })

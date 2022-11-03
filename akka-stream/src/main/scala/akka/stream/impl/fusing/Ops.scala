@@ -26,7 +26,7 @@ import akka.stream.Attributes.{ InputBuffer, LogLevels }
 import akka.stream.Attributes.SourceLocation
 import akka.stream.OverflowStrategies._
 import akka.stream.Supervision.Decider
-import akka.stream.impl.{ ContextPropagation, ReactiveStreamsCompliance, Buffer => BufferImpl }
+import akka.stream.impl.{ Buffer => BufferImpl, ContextPropagation, ReactiveStreamsCompliance }
 import akka.stream.impl.Stages.DefaultAttributes
 import akka.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import akka.stream.scaladsl.{ DelayStrategy, Source }
@@ -93,7 +93,8 @@ import akka.util.ccompat._
             } else {
               buffer = OptionVal.Some(elem)
               contextPropagation.suspendContext()
-            } else pull(in)
+            }
+          else pull(in)
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
@@ -254,7 +255,7 @@ private[stream] object Collect {
             case result: Out @unchecked => push(out, result)
             case _                      => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
           }
-        case None => //do nothing
+        case None => // do nothing
       }
 
       override def onResume(t: Throwable): Unit = if (!hasBeenPulled(in)) pull(in)
@@ -297,17 +298,18 @@ private[stream] object Collect {
 
       override def onUpstreamFailure(ex: Throwable): Unit =
         try pf.applyOrElse(ex, NotApplied) match {
-          case NotApplied => failStage(ex)
-          case result: T @unchecked => {
-            if (isAvailable(out)) {
-              push(out, result)
-              completeStage()
-            } else {
-              recovered = Some(result)
+            case NotApplied => failStage(ex)
+            case result: T @unchecked => {
+              if (isAvailable(out)) {
+                push(out, result)
+                completeStage()
+              } else {
+                recovered = Some(result)
+              }
             }
+            case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
           }
-          case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
-        } catch {
+        catch {
           case NonFatal(ex) => failStage(ex)
         }
 
@@ -408,7 +410,6 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler { self =>
-
       private var aggregator = zero
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
@@ -416,12 +417,13 @@ private[stream] object Collect {
       import shape.{ in, out }
 
       // Initial behavior makes sure that the zero gets flushed if upstream is empty
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = {
-          push(out, aggregator)
-          setHandlers(in, out, self)
-        }
-      })
+      setHandler(out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            push(out, aggregator)
+            setHandlers(in, out, self)
+          }
+        })
 
       setHandler(
         in,
@@ -429,12 +431,13 @@ private[stream] object Collect {
           override def onPush(): Unit = ()
 
           override def onUpstreamFinish(): Unit =
-            setHandler(out, new OutHandler {
-              override def onPull(): Unit = {
-                push(out, aggregator)
-                completeStage()
-              }
-            })
+            setHandler(out,
+              new OutHandler {
+                override def onPull(): Unit = {
+                  push(out, aggregator)
+                  completeStage()
+                }
+              })
         })
 
       override def onPull(): Unit = pull(in)
@@ -475,7 +478,6 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler { self =>
-
       private var current: Out = zero
       private var elementHandled: Boolean = false
 
@@ -492,12 +494,13 @@ private[stream] object Collect {
         }
 
         override def onUpstreamFinish(): Unit =
-          setHandler(out, new OutHandler {
-            override def onPull(): Unit = {
-              push(out, current)
-              completeStage()
-            }
-          })
+          setHandler(out,
+            new OutHandler {
+              override def onPull(): Unit = {
+                push(out, current)
+                completeStage()
+              }
+            })
       }
 
       private def onRestart(): Unit = {
@@ -847,7 +850,7 @@ private[stream] object Collect {
           case Some(weight) =>
             left -= weight
             if (left >= 0) push(out, elem) else failStage(new StreamLimitReachedException(n))
-          case None => //do nothing
+          case None => // do nothing
         }
       }
 
@@ -2056,9 +2059,10 @@ private[akka] object TakeWithin {
         } else {
           push(out, grab(in))
           // change the in handler to avoid System.nanoTime call after timeout
-          setHandler(in, new InHandler {
-            def onPush() = push(out, grab(in))
-          })
+          setHandler(in,
+            new InHandler {
+              def onPush() = push(out, grab(in))
+            })
         }
       }
 
@@ -2089,16 +2093,17 @@ private[akka] object TakeWithin {
 
       def setInitialInHandler(): Unit = {
         // Initial input handler
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            aggregator = grab(in)
-            pull(in)
-            setHandler(in, self)
-          }
+        setHandler(in,
+          new InHandler {
+            override def onPush(): Unit = {
+              aggregator = grab(in)
+              pull(in)
+              setHandler(in, self)
+            }
 
-          override def onUpstreamFinish(): Unit =
-            failStage(new NoSuchElementException("reduce over empty stream"))
-        })
+            override def onUpstreamFinish(): Unit =
+              failStage(new NoSuchElementException("reduce over empty stream"))
+          })
       }
 
       @nowarn // compiler complaining about aggregator = _: T
@@ -2150,15 +2155,17 @@ private[akka] object TakeWithin {
   override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
     var attempt = 0
 
-    setHandler(in, new InHandler {
-      override def onPush(): Unit = push(out, grab(in))
+    setHandler(in,
+      new InHandler {
+        override def onPush(): Unit = push(out, grab(in))
 
-      override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-    })
+        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
+      })
 
-    setHandler(out, new OutHandler {
-      override def onPull(): Unit = pull(in)
-    })
+    setHandler(out,
+      new OutHandler {
+        override def onPull(): Unit = pull(in)
+      })
 
     def onFailure(ex: Throwable) =
       if ((maximumRetries < 0 || attempt < maximumRetries) && pf.isDefinedAt(ex)) {

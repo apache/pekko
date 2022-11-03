@@ -50,8 +50,7 @@ private[remote] object AeronSource {
   class MessageHandler(pool: EnvelopeBufferPool) {
     def reset(): Unit = messageReceived = null
 
-    private[remote] var messageReceived
-        : EnvelopeBuffer = null // private to avoid scalac warning about exposing EnvelopeBuffer
+    private[remote] var messageReceived: EnvelopeBuffer = null // private to avoid scalac warning about exposing EnvelopeBuffer
 
     val fragmentsHandler = new Fragments(data => messageReceived = data, pool)
   }

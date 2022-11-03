@@ -417,44 +417,49 @@ private[remote] class Decoder(
           val originUid = headerBuilder.uid
           val association = inboundContext.association(originUid)
 
-          val recipient: OptionVal[InternalActorRef] = try headerBuilder.recipientActorRef(originUid) match {
-            case OptionVal.Some(ref) =>
-              OptionVal(ref.asInstanceOf[InternalActorRef])
-            case OptionVal.None if headerBuilder.recipientActorRefPath.isDefined =>
-              resolveRecipient(headerBuilder.recipientActorRefPath.get)
-            case _ =>
-              OptionVal.None
-          } catch {
-            case NonFatal(e) =>
-              // probably version mismatch due to restarted system
-              log.warning("Couldn't decompress sender from originUid [{}]. {}", originUid, e)
-              OptionVal.None
-          }
+          val recipient: OptionVal[InternalActorRef] =
+            try headerBuilder.recipientActorRef(originUid) match {
+                case OptionVal.Some(ref) =>
+                  OptionVal(ref.asInstanceOf[InternalActorRef])
+                case OptionVal.None if headerBuilder.recipientActorRefPath.isDefined =>
+                  resolveRecipient(headerBuilder.recipientActorRefPath.get)
+                case _ =>
+                  OptionVal.None
+              }
+            catch {
+              case NonFatal(e) =>
+                // probably version mismatch due to restarted system
+                log.warning("Couldn't decompress sender from originUid [{}]. {}", originUid, e)
+                OptionVal.None
+            }
 
-          val sender: OptionVal[InternalActorRef] = try headerBuilder.senderActorRef(originUid) match {
-            case OptionVal.Some(ref) =>
-              OptionVal(ref.asInstanceOf[InternalActorRef])
-            case OptionVal.None if headerBuilder.senderActorRefPath.isDefined =>
-              OptionVal(actorRefResolver.resolve(headerBuilder.senderActorRefPath.get))
-            case _ =>
-              OptionVal.None
-          } catch {
-            case NonFatal(e) =>
-              // probably version mismatch due to restarted system
-              log.warning("Couldn't decompress sender from originUid [{}]. {}", originUid, e)
-              OptionVal.None
-          }
+          val sender: OptionVal[InternalActorRef] =
+            try headerBuilder.senderActorRef(originUid) match {
+                case OptionVal.Some(ref) =>
+                  OptionVal(ref.asInstanceOf[InternalActorRef])
+                case OptionVal.None if headerBuilder.senderActorRefPath.isDefined =>
+                  OptionVal(actorRefResolver.resolve(headerBuilder.senderActorRefPath.get))
+                case _ =>
+                  OptionVal.None
+              }
+            catch {
+              case NonFatal(e) =>
+                // probably version mismatch due to restarted system
+                log.warning("Couldn't decompress sender from originUid [{}]. {}", originUid, e)
+                OptionVal.None
+            }
 
-          val classManifestOpt = try headerBuilder.manifest(originUid)
-          catch {
-            case NonFatal(e) =>
-              // probably version mismatch due to restarted system
-              log.warning("Couldn't decompress manifest from originUid [{}]. {}", originUid, e)
-              OptionVal.None
-          }
+          val classManifestOpt =
+            try headerBuilder.manifest(originUid)
+            catch {
+              case NonFatal(e) =>
+                // probably version mismatch due to restarted system
+                log.warning("Couldn't decompress manifest from originUid [{}]. {}", originUid, e)
+                OptionVal.None
+            }
 
           if ((recipient.isEmpty && headerBuilder.recipientActorRefPath.isEmpty && !headerBuilder.isNoRecipient) ||
-              (sender.isEmpty && headerBuilder.senderActorRefPath.isEmpty && !headerBuilder.isNoSender)) {
+            (sender.isEmpty && headerBuilder.senderActorRefPath.isEmpty && !headerBuilder.isNoSender)) {
             log.debug(
               "Dropping message for unknown recipient/sender. It was probably sent from system [{}] with compression " +
               "table [{}] built for previous incarnation of the destination system, or it was compressed with a table " +

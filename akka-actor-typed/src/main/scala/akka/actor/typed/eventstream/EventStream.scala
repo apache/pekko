@@ -43,7 +43,6 @@ object EventStream {
    *   def subscribe(actorSystem: ActorSystem[_], actorRef: ActorRef[A]) =
    *     actorSystem.eventStream ! EventStream.Subscribe[A1](actorRef)
    * }}}
-   *
    */
   final case class Subscribe[E](subscriber: ActorRef[E])(implicit classTag: ClassTag[E]) extends Command {
 

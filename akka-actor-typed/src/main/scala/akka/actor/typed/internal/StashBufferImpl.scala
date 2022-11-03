@@ -186,14 +186,15 @@ import java.util.function.Predicate
       else {
         val node = messages.next()
         val message = wrap(node.message)
-        val interpretResult = try {
-          message match {
-            case sig: Signal => Behavior.interpretSignal(b2, ctx, sig)
-            case msg         => interpretUnstashedMessage(b2, ctx, msg, node)
+        val interpretResult =
+          try {
+            message match {
+              case sig: Signal => Behavior.interpretSignal(b2, ctx, sig)
+              case msg         => interpretUnstashedMessage(b2, ctx, msg, node)
+            }
+          } catch {
+            case NonFatal(e) => throw UnstashException(e, b2)
           }
-        } catch {
-          case NonFatal(e) => throw UnstashException(e, b2)
-        }
 
         val actualNext =
           if (interpretResult == BehaviorImpl.same) b2

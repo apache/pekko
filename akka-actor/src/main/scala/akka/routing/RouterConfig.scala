@@ -113,7 +113,7 @@ private[akka] trait PoolOverrideUnsetConfig[T <: Pool] extends Pool {
         case p: Pool =>
           val wssConf: PoolOverrideUnsetConfig[T] =
             if ((this.supervisorStrategy eq Pool.defaultSupervisorStrategy)
-                && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
+              && (p.supervisorStrategy ne Pool.defaultSupervisorStrategy))
               this.withSupervisorStrategy(p.supervisorStrategy).asInstanceOf[PoolOverrideUnsetConfig[T]]
             else this
 
@@ -426,7 +426,6 @@ final case class AddRoutee(routee: Routee) extends RouterManagementMesssage
  * For a pool, with child routees, the routee is stopped by sending a [[akka.actor.PoisonPill]]
  * to the routee. Precautions are taken reduce the risk of dropping messages that are concurrently
  * being routed to the removed routee, but there are no guarantees.
- *
  */
 @SerialVersionUID(1L)
 final case class RemoveRoutee(routee: Routee) extends RouterManagementMesssage

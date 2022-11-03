@@ -30,7 +30,7 @@ class GraphZipWithSpec extends TwoStreamsSetup {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipWith((_: Int) + (_: Int)))
-          Source(1 to 4) ~> zip.in0
+          Source(1 to 4)         ~> zip.in0
           Source(10 to 40 by 10) ~> zip.in1
 
           zip.out ~> Sink.fromSubscriber(probe)
@@ -60,7 +60,7 @@ class GraphZipWithSpec extends TwoStreamsSetup {
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipWith[Int, Int, Int]((_: Int) / (_: Int)))
 
-          Source(1 to 4) ~> zip.in0
+          Source(1 to 4)  ~> zip.in0
           Source(-2 to 2) ~> zip.in1
 
           zip.out ~> Sink.fromSubscriber(probe)
@@ -128,9 +128,9 @@ class GraphZipWithSpec extends TwoStreamsSetup {
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipWith(Person.apply _))
 
-          Source.single("Caplin") ~> zip.in0
+          Source.single("Caplin")   ~> zip.in0
           Source.single("Capybara") ~> zip.in1
-          Source.single(3) ~> zip.in2
+          Source.single(3)          ~> zip.in2
 
           zip.out ~> Sink.fromSubscriber(probe)
 
@@ -178,27 +178,27 @@ class GraphZipWithSpec extends TwoStreamsSetup {
           // odd input ports will be Int, even input ports will be String
           val zip = b.add(ZipWith(sum22))
 
-          Source.single(1) ~> zip.in0
-          Source.single(2).map(_.toString) ~> zip.in1
-          Source.single(3) ~> zip.in2
-          Source.single(4).map(_.toString) ~> zip.in3
-          Source.single(5) ~> zip.in4
-          Source.single(6).map(_.toString) ~> zip.in5
-          Source.single(7) ~> zip.in6
-          Source.single(8).map(_.toString) ~> zip.in7
-          Source.single(9) ~> zip.in8
+          Source.single(1)                  ~> zip.in0
+          Source.single(2).map(_.toString)  ~> zip.in1
+          Source.single(3)                  ~> zip.in2
+          Source.single(4).map(_.toString)  ~> zip.in3
+          Source.single(5)                  ~> zip.in4
+          Source.single(6).map(_.toString)  ~> zip.in5
+          Source.single(7)                  ~> zip.in6
+          Source.single(8).map(_.toString)  ~> zip.in7
+          Source.single(9)                  ~> zip.in8
           Source.single(10).map(_.toString) ~> zip.in9
-          Source.single(11) ~> zip.in10
+          Source.single(11)                 ~> zip.in10
           Source.single(12).map(_.toString) ~> zip.in11
-          Source.single(13) ~> zip.in12
+          Source.single(13)                 ~> zip.in12
           Source.single(14).map(_.toString) ~> zip.in13
-          Source.single(15) ~> zip.in14
+          Source.single(15)                 ~> zip.in14
           Source.single(16).map(_.toString) ~> zip.in15
-          Source.single(17) ~> zip.in16
+          Source.single(17)                 ~> zip.in16
           Source.single(18).map(_.toString) ~> zip.in17
-          Source.single(19) ~> zip.in18
+          Source.single(19)                 ~> zip.in18
           Source.single(20).map(_.toString) ~> zip.in19
-          Source.single(21) ~> zip.in20
+          Source.single(21)                 ~> zip.in20
           Source.single(22).map(_.toString) ~> zip.in21
 
           zip.out ~> Sink.fromSubscriber(probe)

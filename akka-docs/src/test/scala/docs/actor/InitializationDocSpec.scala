@@ -14,7 +14,7 @@ object InitializationDocSpec {
       case _ => // Ignore
     }
 
-    //#preStartInit
+    // #preStartInit
     override def preStart(): Unit = {
       // Initialize children here
     }
@@ -30,11 +30,11 @@ object InitializationDocSpec {
       // Keep the call to postStop(), but no stopping of children
       postStop()
     }
-    //#preStartInit
+    // #preStartInit
   }
 
   class MessageInitExample extends Actor {
-    //#messageInit
+    // #messageInit
     var initializeMe: Option[String] = None
 
     override def receive = {
@@ -47,7 +47,7 @@ object InitializationDocSpec {
     def initialized: Receive = {
       case "U OK?" => initializeMe.foreach { sender() ! _ }
     }
-    //#messageInit
+    // #messageInit
 
   }
 }

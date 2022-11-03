@@ -85,7 +85,7 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
       val initialActors = targets.flatMap(collectLiveActors).toSet
 
-      //Clean shutdown case
+      // Clean shutdown case
       for (_ <- 1 to 3) {
 
         val remoteSystem =
@@ -108,7 +108,7 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
       // Quarantine an old incarnation case
       for (_ <- 1 to 3) {
-        //always use the same address
+        // always use the same address
         val remoteSystem =
           ActorSystem(
             "remote",

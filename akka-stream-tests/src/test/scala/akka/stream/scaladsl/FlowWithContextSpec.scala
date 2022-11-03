@@ -26,7 +26,7 @@ class FlowWithContextSpec extends StreamSpec {
         .asSource
         .runWith(TestSink.probe[(Message, Long)])
         .request(1)
-        .expectNext(((Message("az", 1L), 1L)))
+        .expectNext((Message("az", 1L), 1L))
         .expectComplete()
     }
 
@@ -42,7 +42,7 @@ class FlowWithContextSpec extends StreamSpec {
         .toMat(TestSink.probe[(Message, Long)])(Keep.both)
         .run()
       matValue shouldBe (42 -> materializedValue)
-      probe.request(1).expectNext(((Message("a", 1L), 1L))).expectComplete()
+      probe.request(1).expectNext((Message("a", 1L), 1L)).expectComplete()
     }
 
     "be able to map error via FlowWithContext.mapError" in {

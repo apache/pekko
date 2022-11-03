@@ -65,8 +65,8 @@ import akka.util.OptionVal
         val name = clazz.getSimpleName
         // looking for "AbstractBeanFactoryPointcutAdvisor" but no point to allow any is there?
         if ("AbstractPointcutAdvisor".equals(name)
-            // ditto  for "FileSystemXmlApplicationContext": block all ApplicationContexts
-            || "AbstractApplicationContext".equals(name))
+          // ditto  for "FileSystemXmlApplicationContext": block all ApplicationContexts
+          || "AbstractApplicationContext".equals(name))
           false
         else
           isAllowedSpringClass(clazz.getSuperclass)
@@ -101,7 +101,7 @@ import akka.util.OptionVal
   }
 
   object LZ4Meta {
-    val LZ4_MAGIC = 0x87d96df6 // The last 4 bytes of `printf akka | sha512sum`
+    val LZ4_MAGIC = 0x87D96DF6 // The last 4 bytes of `printf akka | sha512sum`
 
     def apply(bytes: Array[Byte]): LZ4Meta = {
       LZ4Meta(8, bytes.length)

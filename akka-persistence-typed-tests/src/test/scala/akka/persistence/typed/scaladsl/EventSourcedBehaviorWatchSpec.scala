@@ -89,10 +89,11 @@ class EventSourcedBehaviorWatchSpec
 
           context.watch(child)
 
-          EventSourcedBehavior[Command, String, String](nextPid, emptyState = "", commandHandler = (_, cmd) => {
-            child ! cmd
-            Effect.none
-          }, eventHandler = (state, evt) => state + evt)
+          EventSourcedBehavior[Command, String, String](nextPid, emptyState = "",
+            commandHandler = (_, cmd) => {
+              child ! cmd
+              Effect.none
+            }, eventHandler = (state, evt) => state + evt)
         })
 
       LoggingTestKit.error[TestException].expect {
@@ -127,10 +128,11 @@ class EventSourcedBehaviorWatchSpec
 
           context.watch(child)
 
-          EventSourcedBehavior[Command, String, String](nextPid, emptyState = "", commandHandler = (_, cmd) => {
-            child ! cmd
-            Effect.none
-          }, eventHandler = (state, evt) => state + evt).receiveSignal(signalHandler)
+          EventSourcedBehavior[Command, String, String](nextPid, emptyState = "",
+            commandHandler = (_, cmd) => {
+              child ! cmd
+              Effect.none
+            }, eventHandler = (state, evt) => state + evt).receiveSignal(signalHandler)
         })
 
       LoggingTestKit.error[TestException].expect {
@@ -156,10 +158,11 @@ class EventSourcedBehaviorWatchSpec
           probe.ref ! child
           context.watch(child)
 
-          EventSourcedBehavior[Stop.type, String, String](nextPid, emptyState = "", commandHandler = (_, cmd) => {
-            child ! cmd
-            Effect.none
-          }, eventHandler = (state, evt) => state + evt).receiveSignal {
+          EventSourcedBehavior[Stop.type, String, String](nextPid, emptyState = "",
+            commandHandler = (_, cmd) => {
+              child ! cmd
+              Effect.none
+            }, eventHandler = (state, evt) => state + evt).receiveSignal {
             case (_, t: Terminated) =>
               probe.ref ! HasTerminated(t.ref)
               Behaviors.stopped
@@ -184,10 +187,11 @@ class EventSourcedBehaviorWatchSpec
           probe.ref ! child
           context.watch(child)
 
-          EventSourcedBehavior[Fail.type, String, String](nextPid, emptyState = "", commandHandler = (_, cmd) => {
-            child ! cmd
-            Effect.none
-          }, eventHandler = (state, evt) => state + evt).receiveSignal {
+          EventSourcedBehavior[Fail.type, String, String](nextPid, emptyState = "",
+            commandHandler = (_, cmd) => {
+              child ! cmd
+              Effect.none
+            }, eventHandler = (state, evt) => state + evt).receiveSignal {
             case (_, t: ChildFailed) =>
               probe.ref ! ChildHasFailed(t)
               Behaviors.same

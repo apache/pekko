@@ -28,7 +28,7 @@ abstract class TwoStreamsSetup extends BaseTwoStreamsSetup {
 
         Source.fromPublisher(p1) ~> f.left
         Source.fromPublisher(p2) ~> f.right
-        f.out ~> Sink.fromSubscriber(subscriber)
+        f.out                    ~> Sink.fromSubscriber(subscriber)
         ClosedShape
       })
       .run()

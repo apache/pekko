@@ -174,8 +174,8 @@ class CancellationStrategySpec extends StreamSpec("""akka.loglevel = DEBUG
           val fanOut = b.add(new TestFanOut)
 
           Source.fromPublisher(inProbe) ~> fanOut.in
-          fanOut.out(0) ~> Sink.fromSubscriber(out1Probe)
-          fanOut.out(1) ~> Sink.fromSubscriber(out2Probe)
+          fanOut.out(0)                 ~> Sink.fromSubscriber(out1Probe)
+          fanOut.out(1)                 ~> Sink.fromSubscriber(out2Probe)
 
           ClosedShape
         }

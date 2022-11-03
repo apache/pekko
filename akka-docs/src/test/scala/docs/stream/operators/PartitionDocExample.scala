@@ -10,7 +10,7 @@ object PartitionDocExample {
 
   implicit val system: ActorSystem = ???
 
-  //#partition
+  // #partition
   import akka.NotUsed
   import akka.stream.Attributes
   import akka.stream.Attributes.LogLevels
@@ -33,12 +33,12 @@ object PartitionDocExample {
     .fromGraph(GraphDSL.create() { implicit builder =>
       import GraphDSL.Implicits._
       val partition = builder.add(Partition[Int](2, element => if (element % 2 == 0) 0 else 1))
-      source ~> partition.in
+      source           ~> partition.in
       partition.out(0) ~> even
       partition.out(1) ~> odd
       ClosedShape
     })
     .run()
 
-  //#partition
+  // #partition
 }

@@ -198,11 +198,12 @@ private[akka] trait StashSupport {
    *  if the `unstash()` call successfully returns or throws an exception.
    */
   private[akka] def unstash(): Unit =
-    if (theStash.nonEmpty) try {
-      enqueueFirst(theStash.head)
-    } finally {
-      theStash = theStash.tail
-    }
+    if (theStash.nonEmpty)
+      try {
+        enqueueFirst(theStash.head)
+      } finally {
+        theStash = theStash.tail
+      }
 
   /**
    *  Prepends all messages in the stash to the mailbox, and then clears the stash.

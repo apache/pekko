@@ -74,7 +74,7 @@ object ClusterClientSpec extends MultiNodeConfig {
     }
   }
 
-  //#clientEventsListener
+  // #clientEventsListener
   class ClientListener(targetClient: ActorRef) extends Actor {
     override def preStart(): Unit =
       targetClient ! SubscribeContactPoints
@@ -94,7 +94,7 @@ object ClusterClientSpec extends MultiNodeConfig {
       // Now do something with an up-to-date "contactPoints - cp"
     }
   }
-  //#clientEventsListener
+  // #clientEventsListener
 
   object TestClientListener {
     case object GetLatestContactPoints
@@ -113,7 +113,7 @@ object ClusterClientSpec extends MultiNodeConfig {
     }
   }
 
-  //#receptionistEventsListener
+  // #receptionistEventsListener
   class ReceptionistListener(targetReceptionist: ActorRef) extends Actor {
     override def preStart(): Unit =
       targetReceptionist ! SubscribeClusterClients
@@ -133,7 +133,7 @@ object ClusterClientSpec extends MultiNodeConfig {
       // Now do something with an up-to-date "clusterClients - c"
     }
   }
-  //#receptionistEventsListener
+  // #receptionistEventsListener
 
   object TestReceptionistListener {
     case object GetLatestClusterClients
@@ -192,13 +192,13 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
   }
 
   @unused
-  def docOnly = { //not used, only demo
-    //#initialContacts
+  def docOnly = { // not used, only demo
+    // #initialContacts
     val initialContacts = Set(
       ActorPath.fromString("akka://OtherSys@host1:2552/system/receptionist"),
       ActorPath.fromString("akka://OtherSys@host2:2552/system/receptionist"))
     val settings = ClusterClientSettings(system).withInitialContacts(initialContacts)
-    //#initialContacts
+    // #initialContacts
 
     // make the compiler happy and thinking we use it
     settings.acceptableHeartbeatPause
@@ -261,7 +261,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
       def host2 = second
       def host3 = third
 
-      //#server
+      // #server
       runOn(host1) {
         val serviceA = system.actorOf(Props[Service](), "serviceA")
         ClusterClientReceptionist(system).registerService(serviceA)
@@ -271,14 +271,14 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
         val serviceB = system.actorOf(Props[Service](), "serviceB")
         ClusterClientReceptionist(system).registerService(serviceB)
       }
-      //#server
+      // #server
 
       runOn(host1, host2, host3, fourth) {
         awaitCount(4)
       }
       enterBarrier("services-replicated")
 
-      //#client
+      // #client
       runOn(client) {
         val c = system.actorOf(
           ClusterClient.props(ClusterClientSettings(system).withInitialContacts(initialContacts)),
@@ -286,7 +286,7 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
         c ! ClusterClient.Send("/user/serviceA", "hello", localAffinity = true)
         c ! ClusterClient.SendToAll("/user/serviceB", "hi")
       }
-      //#client
+      // #client
 
       runOn(client) {
         // note that "hi" was sent to 2 "serviceB"
@@ -306,9 +306,9 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
 
         val expectedContacts = Set(first, second, third, fourth).map(node(_) / "system" / "receptionist")
         awaitAssert({
-          listener ! TestClientListener.GetLatestContactPoints
-          expectMsgType[LatestContactPoints].contactPoints should ===(expectedContacts)
-        }, max = 10.seconds)
+            listener ! TestClientListener.GetLatestContactPoints
+            expectMsgType[LatestContactPoints].contactPoints should ===(expectedContacts)
+          }, max = 10.seconds)
       }
 
       enterBarrier("reporter-client-listener-tested")
@@ -327,11 +327,11 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
           val expectedClient =
             Await.result(system.actorSelection(node(client) / "user" / "client").resolveOne(), timeout.duration)
           awaitAssert({
-            val probe = TestProbe()
-            l.tell(TestReceptionistListener.GetLatestClusterClients, probe.ref)
-            // "ask-client" might still be around, filter
-            probe.expectMsgType[LatestClusterClients].clusterClients should contain(expectedClient)
-          }, max = 10.seconds)
+              val probe = TestProbe()
+              l.tell(TestReceptionistListener.GetLatestClusterClients, probe.ref)
+              // "ask-client" might still be around, filter
+              probe.expectMsgType[LatestClusterClients].clusterClients should contain(expectedClient)
+            }, max = 10.seconds)
         }
       }
 

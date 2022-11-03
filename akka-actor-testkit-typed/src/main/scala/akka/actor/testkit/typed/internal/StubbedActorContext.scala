@@ -166,12 +166,13 @@ private[akka] final class FunctionRef[-T](override val path: ActorPath, send: (T
     val i = new BehaviorTestKitImpl[U](system, p, BehaviorImpl.ignore)
     _children += p.name -> i
 
-    new FunctionRef[U](p, (message, _) => {
-      val m = f(message);
-      if (m != null) {
-        selfInbox.ref ! m; i.selfInbox().ref ! message
-      }
-    })
+    new FunctionRef[U](p,
+      (message, _) => {
+        val m = f(message);
+        if (m != null) {
+          selfInbox.ref ! m; i.selfInbox().ref ! message
+        }
+      })
   }
 
   /**

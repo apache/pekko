@@ -30,9 +30,10 @@ object AttributesSpec {
 
     override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Attributes) = {
       val logic = new GraphStageLogic(shape) {
-        setHandler(out, new OutHandler {
-          def onPull(): Unit = {}
-        })
+        setHandler(out,
+          new OutHandler {
+            def onPull(): Unit = {}
+          })
       }
       (logic, inheritedAttributes)
     }
@@ -50,10 +51,11 @@ object AttributesSpec {
     override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Attributes) = {
       val logic = new GraphStageLogic(shape) {
 
-        setHandlers(in, out, new InHandler with OutHandler {
-          override def onPush(): Unit = push(out, grab(in))
-          override def onPull(): Unit = pull(in)
-        })
+        setHandlers(in, out,
+          new InHandler with OutHandler {
+            override def onPush(): Unit = push(out, grab(in))
+            override def onPull(): Unit = pull(in)
+          })
       }
 
       (logic, inheritedAttributes)
@@ -72,12 +74,13 @@ object AttributesSpec {
         override def preStart(): Unit = {
           pull(in)
         }
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            grab(in)
-            pull(in)
-          }
-        })
+        setHandler(in,
+          new InHandler {
+            override def onPush(): Unit = {
+              grab(in)
+              pull(in)
+            }
+          })
       }
 
       (logic, inheritedAttributes)
@@ -91,12 +94,13 @@ object AttributesSpec {
     override protected def initialAttributes: Attributes =
       initialDispatcher.fold(Attributes.none)(name => ActorAttributes.dispatcher(name))
     def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
-      setHandler(out, new OutHandler {
-        def onPull(): Unit = {
-          push(out, Thread.currentThread.getName)
-          completeStage()
-        }
-      })
+      setHandler(out,
+        new OutHandler {
+          def onPull(): Unit = {
+            push(out, Thread.currentThread.getName)
+            completeStage()
+          }
+        })
     }
 
   }
@@ -365,7 +369,7 @@ class AttributesSpec
 
         val streamSnapshot = awaitAssert {
           val snapshot = MaterializerState.streamSnapshots(materializer).futureValue
-          snapshot should have size (1) // just the one island in this case
+          snapshot should have size 1 // just the one island in this case
           snapshot.head
         }
 
@@ -443,7 +447,7 @@ class AttributesSpec
 
         val snapshot = awaitAssert {
           val snapshot = MaterializerState.streamSnapshots(materializer).futureValue
-          snapshot should have size (2) // two stream "islands", one on blocking dispatcher and one on default
+          snapshot should have size 2 // two stream "islands", one on blocking dispatcher and one on default
           snapshot
         }
 
@@ -478,7 +482,7 @@ class AttributesSpec
 
         val snapshot = awaitAssert {
           val snapshot = MaterializerState.streamSnapshots(system).futureValue
-          snapshot should have size (2) // two stream "islands", one on blocking dispatcher and one on default
+          snapshot should have size 2 // two stream "islands", one on blocking dispatcher and one on default
           snapshot
         }
 
@@ -512,7 +516,7 @@ class AttributesSpec
 
         val snapshot = awaitAssert {
           val snapshot = MaterializerState.streamSnapshots(system).futureValue
-          snapshot should have size (2) // two stream "islands", one on blocking dispatcher and one on default
+          snapshot should have size 2 // two stream "islands", one on blocking dispatcher and one on default
           snapshot
         }
 

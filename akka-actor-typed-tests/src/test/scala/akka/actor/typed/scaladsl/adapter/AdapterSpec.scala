@@ -213,12 +213,12 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
         var systemN: akka.actor.typed.ActorSystem[Done] = null
         try {
           systemN = ActorSystem.create(Behaviors.receive[Done] { (context, message) =>
-            context.self ! Done
-            message match {
-              case Done => Behaviors.stopped
-            }
+              context.self ! Done
+              message match {
+                case Done => Behaviors.stopped
+              }
 
-          }, "AdapterSpec-stopping-guardian-2")
+            }, "AdapterSpec-stopping-guardian-2")
 
         } finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
       }
@@ -231,7 +231,7 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
     }
 
     "allow seamless access to untyped extensions" in {
-      SerializationExtension(typedSystem) should not be (null)
+      SerializationExtension(typedSystem) should not be null
     }
   }
 

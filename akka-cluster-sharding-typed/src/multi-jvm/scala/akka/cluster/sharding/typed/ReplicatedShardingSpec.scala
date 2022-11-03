@@ -98,11 +98,12 @@ object ReplicatedShardingSpec extends MultiNodeConfig {
 
     def provider(): ReplicatedEntityProvider[Command] = {
       ReplicatedEntityProvider[Command]("TestRES", AllReplicas) { (entityTypeKey, replicaId) =>
-        ReplicatedEntity(replicaId, Entity(entityTypeKey) { entityContext =>
-          Behaviors.setup { ctx =>
-            TestRES(ReplicationId.fromString(entityContext.entityId), ctx)
-          }
-        })
+        ReplicatedEntity(replicaId,
+          Entity(entityTypeKey) { entityContext =>
+            Behaviors.setup { ctx =>
+              TestRES(ReplicationId.fromString(entityContext.entityId), ctx)
+            }
+          })
       }.withDirectReplication(true) // this is required as we don't have a shared read journal
     }
   }

@@ -129,13 +129,13 @@ class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSende
       // of the connection, repeat until success
       here ! Lost("Blackhole 3")
       awaitCond({
-        if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
-          true
-        else {
-          here ! Lost("Blackhole 3")
-          false
-        }
-      }, 15.seconds)
+          if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
+            true
+          else {
+            here ! Lost("Blackhole 3")
+            false
+          }
+        }, 15.seconds)
 
       here ! "Cleanup"
       fishForMessage(5.seconds) {

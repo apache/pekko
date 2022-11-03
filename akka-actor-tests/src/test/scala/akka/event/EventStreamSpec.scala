@@ -74,10 +74,10 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
   "An EventStream" must {
 
     "manage subscriptions" in {
-      //#event-bus-start-unsubscriber-scala
+      // #event-bus-start-unsubscriber-scala
       val bus = new EventStream(system, true)
       bus.startUnsubscriber()
-      //#event-bus-start-unsubscriber-scala
+      // #event-bus-start-unsubscriber-scala
 
       bus.subscribe(testActor, classOf[M])
       bus.publish(M(42))
@@ -294,8 +294,8 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val tm = new A
 
         val target = sys.actorOf(Props(new Actor {
-          def receive = { case in => a1.ref.forward(in) }
-        }), "to-be-killed")
+            def receive = { case in => a1.ref.forward(in) }
+          }), "to-be-killed")
 
         es.subscribe(a2.ref, classOf[Any])
         es.subscribe(target, classOf[A]) should ===(true)
@@ -322,8 +322,8 @@ class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
         val probe = TestProbe()
 
         val terminated = system.actorOf(Props(new Actor {
-          def receive = { case _ => }
-        }), "to-be-killed")
+            def receive = { case _ => }
+          }), "to-be-killed")
 
         watch(terminated)
         terminated ! PoisonPill

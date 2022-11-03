@@ -182,7 +182,8 @@ abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
       enterBarrier("first-sharding-cluster-stopped")
     }
 
-    "start new nodes with different extractor, and have the entities running on the right shards" in within(30.seconds) {
+    "start new nodes with different extractor, and have the entities running on the right shards" in within(
+      30.seconds) {
 
       // start it with a new shard id extractor, which will put the entities
       // on different shards

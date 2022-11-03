@@ -303,9 +303,9 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
       }
 
       runOn(first, second, third) {
-        awaitAssert({
+        awaitAssert {
           clusterView.members.map(_.address) should ===(Set(address(first), address(second), address(third)))
-        })
+        }
       }
       runOn(remainingRoles: _*) {
         enterBarrier("restarted-fifth-removed")

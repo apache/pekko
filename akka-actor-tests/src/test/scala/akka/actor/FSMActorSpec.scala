@@ -44,7 +44,7 @@ object FSMActorSpec {
         soFar + digit match {
           case incomplete if incomplete.length < code.length =>
             stay().using(CodeState(incomplete, code))
-          case codeTry if (codeTry == code) => {
+          case codeTry if codeTry == code => {
             doUnlock()
             goto(Open).using(CodeState("", code)).forMax(timeout)
           }

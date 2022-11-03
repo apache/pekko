@@ -38,8 +38,8 @@ import akka.util.Timeout
  *
  *   @Test
  *   public void testBlah() throws Exception {
- * 	   // spawn actors etc using the testKit
- * 	   ActorRef<Message> ref = testKit.spawn(behavior);
+ *     // spawn actors etc using the testKit
+ *     ActorRef<Message> ref = testKit.spawn(behavior);
  *   }
  * }
  * }}}

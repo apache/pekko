@@ -122,7 +122,7 @@ import akka.util.ByteString
 
   private def skipToNextObject(bufSize: Int): Unit =
     while (pos != -1 && pos < bufSize && pos < maximumObjectLength && depth == 0) {
-      val outer = outerChars(buffer(pos) & 0xff)
+      val outer = outerChars(buffer(pos) & 0xFF)
       start += outer & 1
       depth = (outer & 2) >> 1
 

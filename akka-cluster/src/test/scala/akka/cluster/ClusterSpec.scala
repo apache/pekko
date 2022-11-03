@@ -67,8 +67,8 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
     "register jmx mbean" in {
       val name = new ObjectName("akka:type=Cluster")
       val info = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name)
-      info.getAttributes.length should be > (0)
-      info.getOperations.length should be > (0)
+      info.getAttributes.length should be > 0
+      info.getOperations.length should be > 0
     }
 
     "reply with InitJoinNack for InitJoin before joining" in {
@@ -356,13 +356,13 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
 
         val name1 = new ObjectName(s"akka:type=Cluster,port=2552")
         val info1 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name1)
-        info1.getAttributes.length should be > (0)
-        info1.getOperations.length should be > (0)
+        info1.getAttributes.length should be > 0
+        info1.getOperations.length should be > 0
 
         val name2 = new ObjectName(s"akka:type=Cluster,port=2553")
         val info2 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name2)
-        info2.getAttributes.length should be > (0)
-        info2.getOperations.length should be > (0)
+        info2.getAttributes.length should be > 0
+        info2.getOperations.length should be > 0
       } finally {
         shutdown(sys1)
         shutdown(sys2)

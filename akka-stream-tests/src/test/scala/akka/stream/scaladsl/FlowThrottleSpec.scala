@@ -31,7 +31,7 @@ class FlowThrottleSpec extends StreamSpec("""
 
   "Throttle for single cost elements" must {
     "work for the happy case" in {
-      //Source(1 to 5).throttle(1, 100.millis, 0, Shaping)
+      // Source(1 to 5).throttle(1, 100.millis, 0, Shaping)
       Source(1 to 5)
         .throttle(19, 1000.millis, -1, Shaping)
         .runWith(TestSink.probe[Int])
@@ -162,7 +162,7 @@ class FlowThrottleSpec extends StreamSpec("""
       upstream.sendNext(6)
       downstream.expectNoMessage(100.millis)
       downstream.expectNext(6)
-      downstream.expectNoMessage(500.millis) //wait to receive 2 in burst afterwards
+      downstream.expectNoMessage(500.millis) // wait to receive 2 in burst afterwards
       downstream.request(5)
       for (i <- 7 to 10) upstream.sendNext(i)
       downstream.receiveWithin(100.millis, 2) should be(Seq(7, 8))
@@ -191,7 +191,7 @@ class FlowThrottleSpec extends StreamSpec("""
   "Throttle for various cost elements" must {
     "work for happy case" in {
       Source(1 to 5)
-        .throttle(1, 100.millis, 0, (_) => 1, Shaping)
+        .throttle(1, 100.millis, 0, _ => 1, Shaping)
         .runWith(TestSink.probe[Int])
         .request(5)
         .expectNext(1, 2, 3, 4, 5)
@@ -264,7 +264,7 @@ class FlowThrottleSpec extends StreamSpec("""
       val downstream = TestSubscriber.probe[Int]()
       Source
         .fromPublisher(upstream)
-        .throttle(2, 400.millis, 5, (_) => 1, Shaping)
+        .throttle(2, 400.millis, 5, _ => 1, Shaping)
         .runWith(Sink.fromSubscriber(downstream))
 
       // Exhaust bucket first
@@ -288,7 +288,7 @@ class FlowThrottleSpec extends StreamSpec("""
       val downstream = TestSubscriber.probe[Int]()
       Source
         .fromPublisher(upstream)
-        .throttle(2, 400.millis, 5, (e) => if (e < 9) 1 else 20, Shaping)
+        .throttle(2, 400.millis, 5, e => if (e < 9) 1 else 20, Shaping)
         .runWith(Sink.fromSubscriber(downstream))
 
       // Exhaust bucket first
@@ -300,7 +300,7 @@ class FlowThrottleSpec extends StreamSpec("""
       upstream.sendNext(6)
       downstream.expectNoMessage(100.millis)
       downstream.expectNext(6)
-      downstream.expectNoMessage(500.millis) //wait to receive 2 in burst afterwards
+      downstream.expectNoMessage(500.millis) // wait to receive 2 in burst afterwards
       downstream.request(5)
       for (i <- 7 to 9) upstream.sendNext(i)
       downstream.receiveWithin(200.millis, 2) should be(Seq(7, 8))
@@ -308,7 +308,8 @@ class FlowThrottleSpec extends StreamSpec("""
     }
 
     "throw exception when exceeding throughput in enforced mode" in {
-      Await.result(Source(1 to 4).throttle(2, 200.millis, 10, identity, Enforcing).runWith(Sink.seq), 2.seconds) should ===(
+      Await.result(Source(1 to 4).throttle(2, 200.millis, 10, identity, Enforcing).runWith(Sink.seq),
+        2.seconds) should ===(
         1 to 4) // Burst is 10 so this will not fail
 
       an[RateExceededException] shouldBe thrownBy {
@@ -329,7 +330,7 @@ class FlowThrottleSpec extends StreamSpec("""
     "handle rate calculation function exception" in {
       val ex = new RuntimeException with NoStackTrace
       Source(1 to 5)
-        .throttle(2, 200.millis, 0, (_) => { throw ex }, Shaping)
+        .throttle(2, 200.millis, 0, _ => { throw ex }, Shaping)
         .throttle(1, 100.millis, 5, Enforcing)
         .runWith(TestSink.probe[Int])
         .request(5)
@@ -361,10 +362,10 @@ class FlowThrottleSpec extends StreamSpec("""
             counter1.set(0)
             if (rate < expectedMinRate.get)
               throw new RuntimeException(s"Too low rate, got $rate, expected min ${expectedMinRate.get}, " +
-              s"after ${(now - startTime).nanos.toMillis} ms at element $elem")
+                s"after ${(now - startTime).nanos.toMillis} ms at element $elem")
             if (rate > expectedMaxRate.get)
               throw new RuntimeException(s"Too high rate, got $rate, expected max ${expectedMaxRate.get}, " +
-              s"after ${(now - startTime).nanos.toMillis} ms at element $elem")
+                s"after ${(now - startTime).nanos.toMillis} ms at element $elem")
           }
         })(Keep.both)
         .run()

@@ -29,7 +29,7 @@ object Jvm {
 
   /**
    * check if the current operating system is some OS
-  **/
+   */
   def isOS(os: String) =
     try {
       System.getProperty("os.name").toUpperCase.startsWith(os.toUpperCase)
@@ -39,7 +39,7 @@ object Jvm {
 
   /**
    * convert to proper path for the operating system
-  **/
+   */
   def osPath(path: String) = if (isOS("WINDOWS")) Process(Seq("cygpath", path)).lineStream.mkString else path
 
   def getPodName(hostAndUser: String, sbtLogger: Logger): String = {

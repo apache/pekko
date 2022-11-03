@@ -42,7 +42,7 @@ import scala.concurrent.duration.{ FiniteDuration, _ }
   // 100 ms is a realistic minimum between tokens, otherwise the maximumBurst is adjusted
   // to be able to support higher rates
   val effectiveMaximumBurst: Long =
-    if (maximumBurst == Throttle.AutomaticMaximumBurst) math.max(1, ((100 * 1000 * 1000) / nanosBetweenTokens))
+    if (maximumBurst == Throttle.AutomaticMaximumBurst) math.max(1, (100 * 1000 * 1000) / nanosBetweenTokens)
     else maximumBurst
   require(!(mode == ThrottleMode.Enforcing && effectiveMaximumBurst < 0), "maximumBurst must be > 0 in Enforcing mode")
 

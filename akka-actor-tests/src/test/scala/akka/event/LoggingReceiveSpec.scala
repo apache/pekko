@@ -68,9 +68,10 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
         system.eventStream.subscribe(testActor, classOf[UnhandledMessage])
         val a = system.actorOf(Props(new Actor {
           def receive =
-            new LoggingReceive(Some("funky"), {
-              case null =>
-            })
+            new LoggingReceive(Some("funky"),
+              {
+                case null =>
+              })
         }))
         a ! "hallo"
         expectMsg(

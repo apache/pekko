@@ -100,15 +100,15 @@ private[akka] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wit
           }
         } catch {
           case t: Throwable =>
-            //In case shit hits the fan, remove the inProcess signal and escalate to caller
+            // In case shit hits the fan, remove the inProcess signal and escalate to caller
             extensions.replace(ext, inProcessOfRegistration, t)
             throw t
         } finally {
-          //Always notify listeners of the inProcess signal
+          // Always notify listeners of the inProcess signal
           inProcessOfRegistration.countDown()
         }
       case _ =>
-        //Someone else is in process of registering an extension for this Extension, retry
+        // Someone else is in process of registering an extension for this Extension, retry
         registerExtension(ext)
     }
   }
@@ -119,10 +119,10 @@ private[akka] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wit
   @tailrec
   private def findExtension[T <: Extension](ext: ExtensionId[T]): T = extensions.get(ext) match {
     case c: CountDownLatch =>
-      //Registration in process, await completion and retry
+      // Registration in process, await completion and retry
       c.await()
       findExtension(ext)
-    case t: Throwable => throw t //Initialization failed, throw same again
-    case other        => other.asInstanceOf[T] //could be a T or null, in which case we return the null as T
+    case t: Throwable => throw t // Initialization failed, throw same again
+    case other        => other.asInstanceOf[T] // could be a T or null, in which case we return the null as T
   }
 }

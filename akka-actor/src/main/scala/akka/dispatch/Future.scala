@@ -20,7 +20,7 @@ import akka.annotation.InternalApi
 import akka.annotation.InternalStableApi
 import akka.compat
 import akka.dispatch.internal.SameThreadExecutionContext
-import akka.japi.{ Procedure, Function => JFunc, Option => JOption }
+import akka.japi.{ Function => JFunc, Option => JOption, Procedure }
 import akka.util.unused
 
 /**

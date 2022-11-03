@@ -67,12 +67,12 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       val target = targets(at)
       val newScore: Long =
         if (isSuspended(target)) Long.MaxValue - 1
-        else { //Just about better than the DeadLetters
+        else { // Just about better than the DeadLetters
           (if (isProcessingMessage(target)) 1L else 0L) +
           (if (!hasMessages(target)) 0L
-           else { //Race between hasMessages and numberOfMessages here, unfortunate the numberOfMessages returns 0 if unknown
+           else { // Race between hasMessages and numberOfMessages here, unfortunate the numberOfMessages returns 0 if unknown
              val noOfMsgs: Long = if (deep) numberOfMessages(target) else 0
-             if (noOfMsgs > 0) noOfMsgs else Long.MaxValue - 3 //Just better than a suspended actorref
+             if (noOfMsgs > 0) noOfMsgs else Long.MaxValue - 3 // Just better than a suspended actorref
            })
         }
 

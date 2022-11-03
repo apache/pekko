@@ -28,8 +28,8 @@ class GraphBroadcastSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val bcast = b.add(Broadcast[Int](2))
           Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-          bcast.out(1) ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+          bcast.out(0)          ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
+          bcast.out(1)          ~> Flow[Int].buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -76,7 +76,7 @@ class GraphBroadcastSpec extends StreamSpec("""
           GraphDSL.createGraph(headSink, headSink, headSink, headSink, headSink)((fut1, fut2, fut3, fut4, fut5) =>
             Future.sequence(List(fut1, fut2, fut3, fut4, fut5))) { implicit b => (p1, p2, p3, p4, p5) =>
             val bcast = b.add(Broadcast[Int](5))
-            Source(List(1, 2, 3)) ~> bcast.in
+            Source(List(1, 2, 3))   ~> bcast.in
             bcast.out(0).grouped(5) ~> p1.in
             bcast.out(1).grouped(5) ~> p2.in
             bcast.out(2).grouped(5) ~> p3.in
@@ -125,33 +125,33 @@ class GraphBroadcastSpec extends StreamSpec("""
           headSink,
           headSink,
           headSink)(combine) {
-          implicit b =>
-            (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22) =>
-              val bcast = b.add(Broadcast[Int](22))
-              Source(List(1, 2, 3)) ~> bcast.in
-              bcast.out(0).grouped(5) ~> p1.in
-              bcast.out(1).grouped(5) ~> p2.in
-              bcast.out(2).grouped(5) ~> p3.in
-              bcast.out(3).grouped(5) ~> p4.in
-              bcast.out(4).grouped(5) ~> p5.in
-              bcast.out(5).grouped(5) ~> p6.in
-              bcast.out(6).grouped(5) ~> p7.in
-              bcast.out(7).grouped(5) ~> p8.in
-              bcast.out(8).grouped(5) ~> p9.in
-              bcast.out(9).grouped(5) ~> p10.in
-              bcast.out(10).grouped(5) ~> p11.in
-              bcast.out(11).grouped(5) ~> p12.in
-              bcast.out(12).grouped(5) ~> p13.in
-              bcast.out(13).grouped(5) ~> p14.in
-              bcast.out(14).grouped(5) ~> p15.in
-              bcast.out(15).grouped(5) ~> p16.in
-              bcast.out(16).grouped(5) ~> p17.in
-              bcast.out(17).grouped(5) ~> p18.in
-              bcast.out(18).grouped(5) ~> p19.in
-              bcast.out(19).grouped(5) ~> p20.in
-              bcast.out(20).grouped(5) ~> p21.in
-              bcast.out(21).grouped(5) ~> p22.in
-              ClosedShape
+          implicit b => (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21,
+              p22) =>
+            val bcast = b.add(Broadcast[Int](22))
+            Source(List(1, 2, 3))    ~> bcast.in
+            bcast.out(0).grouped(5)  ~> p1.in
+            bcast.out(1).grouped(5)  ~> p2.in
+            bcast.out(2).grouped(5)  ~> p3.in
+            bcast.out(3).grouped(5)  ~> p4.in
+            bcast.out(4).grouped(5)  ~> p5.in
+            bcast.out(5).grouped(5)  ~> p6.in
+            bcast.out(6).grouped(5)  ~> p7.in
+            bcast.out(7).grouped(5)  ~> p8.in
+            bcast.out(8).grouped(5)  ~> p9.in
+            bcast.out(9).grouped(5)  ~> p10.in
+            bcast.out(10).grouped(5) ~> p11.in
+            bcast.out(11).grouped(5) ~> p12.in
+            bcast.out(12).grouped(5) ~> p13.in
+            bcast.out(13).grouped(5) ~> p14.in
+            bcast.out(14).grouped(5) ~> p15.in
+            bcast.out(15).grouped(5) ~> p16.in
+            bcast.out(16).grouped(5) ~> p17.in
+            bcast.out(17).grouped(5) ~> p18.in
+            bcast.out(18).grouped(5) ~> p19.in
+            bcast.out(19).grouped(5) ~> p20.in
+            bcast.out(20).grouped(5) ~> p21.in
+            bcast.out(21).grouped(5) ~> p22.in
+            ClosedShape
         })
         .run()
 
@@ -166,8 +166,8 @@ class GraphBroadcastSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val bcast = b.add(Broadcast[Int](2))
           Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> Flow[Int] ~> Sink.fromSubscriber(c1)
-          bcast.out(1) ~> Flow[Int] ~> Sink.fromSubscriber(c2)
+          bcast.out(0)          ~> Flow[Int] ~> Sink.fromSubscriber(c1)
+          bcast.out(1)          ~> Flow[Int] ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -190,8 +190,8 @@ class GraphBroadcastSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val bcast = b.add(Broadcast[Int](2))
           Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> Flow[Int].named("identity-a") ~> Sink.fromSubscriber(c1)
-          bcast.out(1) ~> Flow[Int].named("identity-b") ~> Sink.fromSubscriber(c2)
+          bcast.out(0)          ~> Flow[Int].named("identity-a") ~> Sink.fromSubscriber(c1)
+          bcast.out(1)          ~> Flow[Int].named("identity-b") ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -215,8 +215,8 @@ class GraphBroadcastSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val bcast = b.add(Broadcast[Int](2))
           Source.fromPublisher(p1.getPublisher) ~> bcast.in
-          bcast.out(0) ~> Flow[Int] ~> Sink.fromSubscriber(c1)
-          bcast.out(1) ~> Flow[Int] ~> Sink.fromSubscriber(c2)
+          bcast.out(0)                          ~> Flow[Int] ~> Sink.fromSubscriber(c1)
+          bcast.out(1)                          ~> Flow[Int] ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()

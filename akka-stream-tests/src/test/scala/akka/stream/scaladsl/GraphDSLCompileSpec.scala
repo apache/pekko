@@ -54,8 +54,8 @@ class GraphDSLCompileSpec extends StreamSpec {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val merge = b.add(Merge[String](2))
-          in1 ~> f1 ~> merge.in(0)
-          in2 ~> f2 ~> merge.in(1)
+          in1       ~> f1 ~> merge.in(0)
+          in2       ~> f2 ~> merge.in(1)
           merge.out ~> f3 ~> out1
           ClosedShape
         })
@@ -66,7 +66,7 @@ class GraphDSLCompileSpec extends StreamSpec {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val bcast = b.add(Broadcast[String](2))
-          in1 ~> f1 ~> bcast.in
+          in1          ~> f1 ~> bcast.in
           bcast.out(0) ~> f2 ~> out1
           bcast.out(1) ~> f3 ~> out2
           ClosedShape
@@ -77,7 +77,7 @@ class GraphDSLCompileSpec extends StreamSpec {
     "build simple balance" in {
       RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
         val balance = b.add(Balance[String](2))
-        in1 ~> f1 ~> balance.in
+        in1            ~> f1 ~> balance.in
         balance.out(0) ~> f2 ~> out1
         balance.out(1) ~> f3 ~> out2
         ClosedShape
@@ -89,9 +89,9 @@ class GraphDSLCompileSpec extends StreamSpec {
         .fromGraph(GraphDSL.create() { implicit b =>
           val merge = b.add(Merge[String](2))
           val bcast = b.add(Broadcast[String](2))
-          in1 ~> f1 ~> merge.in(0)
-          in2 ~> f2 ~> merge.in(1)
-          merge ~> f3 ~> bcast
+          in1          ~> f1 ~> merge.in(0)
+          in2          ~> f2 ~> merge.in(1)
+          merge        ~> f3 ~> bcast
           bcast.out(0) ~> f4 ~> out1
           bcast.out(1) ~> f5 ~> out2
           ClosedShape
@@ -105,10 +105,10 @@ class GraphDSLCompileSpec extends StreamSpec {
           import GraphDSL.Implicits._
           val merge = b.add(Merge[String](2))
           val bcast = b.add(Broadcast[String](2))
-          b.add(in1) ~> f1 ~> merge.in(0)
-          merge.out ~> f2 ~> bcast.in
+          b.add(in1)   ~> f1 ~> merge.in(0)
+          merge.out    ~> f2 ~> bcast.in
           bcast.out(0) ~> f3 ~> b.add(out1)
-          b.add(in2) ~> f4 ~> merge.in(1)
+          b.add(in2)   ~> f4 ~> merge.in(1)
           bcast.out(1) ~> f5 ~> b.add(out2)
           ClosedShape
         })
@@ -132,12 +132,12 @@ class GraphDSLCompileSpec extends StreamSpec {
           val bcast1 = b.add(Broadcast[String](2))
           val bcast2 = b.add(Broadcast[String](2))
           val feedbackLoopBuffer = Flow[String].buffer(10, OverflowStrategy.dropBuffer)
-          in1 ~> f1 ~> merge.in(0)
-          merge ~> f2 ~> bcast1
-          bcast1.out(0) ~> f3 ~> out1
+          in1           ~> f1                 ~> merge.in(0)
+          merge         ~> f2                 ~> bcast1
+          bcast1.out(0) ~> f3                 ~> out1
           bcast1.out(1) ~> feedbackLoopBuffer ~> bcast2
-          bcast2.out(0) ~> f5 ~> merge.in(1) // cycle
-          bcast2.out(1) ~> f6 ~> out2
+          bcast2.out(0) ~> f5                 ~> merge.in(1) // cycle
+          bcast2.out(1) ~> f6                 ~> out2
           ClosedShape
         })
       }.getMessage.toLowerCase should include("cycle")
@@ -152,9 +152,9 @@ class GraphDSLCompileSpec extends StreamSpec {
           val bcast2 = b.add(Broadcast[String](2))
           val feedbackLoopBuffer = Flow[String].buffer(10, OverflowStrategy.dropBuffer)
           import GraphDSL.Implicits._
-          b.add(in1) ~> f1 ~> merge ~> f2 ~> bcast1 ~> f3 ~> b.add(out1)
-          bcast1 ~> feedbackLoopBuffer ~> bcast2 ~> f5 ~> merge
-          bcast2 ~> f6 ~> b.add(out2)
+          b.add(in1) ~> f1                 ~> merge  ~> f2 ~> bcast1 ~> f3 ~> b.add(out1)
+          bcast1     ~> feedbackLoopBuffer ~> bcast2 ~> f5 ~> merge
+          bcast2     ~> f6                 ~> b.add(out2)
           ClosedShape
         })
         .run()
@@ -166,7 +166,7 @@ class GraphDSLCompileSpec extends StreamSpec {
           val bcast = b.add(Broadcast[String](2))
           val merge = b.add(Merge[String](2))
           import GraphDSL.Implicits._
-          in1 ~> f1 ~> bcast ~> f2 ~> merge ~> f3 ~> out1
+          in1   ~> f1 ~> bcast ~> f2 ~> merge ~> f3 ~> out1
           bcast ~> f4 ~> merge
           ClosedShape
         })
@@ -193,13 +193,13 @@ class GraphDSLCompileSpec extends StreamSpec {
           def f(s: String) = Flow[String].via(op[String, String]).named(s)
           import GraphDSL.Implicits._
 
-          in7 ~> f("a") ~> b7 ~> f("b") ~> m11 ~> f("c") ~> b11 ~> f("d") ~> out2
-          b11 ~> f("e") ~> m9 ~> f("f") ~> out9
-          b7 ~> f("g") ~> m8 ~> f("h") ~> m9
+          in7 ~> f("a") ~> b7  ~> f("b") ~> m11 ~> f("c") ~> b11 ~> f("d") ~> out2
+          b11 ~> f("e") ~> m9  ~> f("f") ~> out9
+          b7  ~> f("g") ~> m8  ~> f("h") ~> m9
           b11 ~> f("i") ~> m10 ~> f("j") ~> out10
           in5 ~> f("k") ~> m11
-          in3 ~> f("l") ~> b3 ~> f("m") ~> m8
-          b3 ~> f("n") ~> m10
+          in3 ~> f("l") ~> b3  ~> f("m") ~> m8
+          b3  ~> f("n") ~> m10
           ClosedShape
         })
         .run()
@@ -211,8 +211,8 @@ class GraphDSLCompileSpec extends StreamSpec {
           val merge = b.add(Merge[String](2))
           val bcast = b.add(Broadcast[String](2))
           import GraphDSL.Implicits._
-          in1 ~> merge ~> bcast ~> out1
-          in2 ~> merge
+          in1   ~> merge ~> bcast ~> out1
+          in2   ~> merge
           bcast ~> out2
           ClosedShape
         })
@@ -227,9 +227,9 @@ class GraphDSLCompileSpec extends StreamSpec {
           val out = Sink.asPublisher[(Int, String)](false)
           import GraphDSL.Implicits._
           Source(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in
-          unzip.out0 ~> Flow[Int].map(_ * 2) ~> zip.in0
-          unzip.out1 ~> zip.in1
-          zip.out ~> out
+          unzip.out0                                 ~> Flow[Int].map(_ * 2) ~> zip.in0
+          unzip.out1                                 ~> zip.in1
+          zip.out                                    ~> out
           ClosedShape
         })
         .run()
@@ -273,9 +273,9 @@ class GraphDSLCompileSpec extends StreamSpec {
       RunnableGraph.fromGraph(GraphDSL.create() { implicit b =>
         import GraphDSL.Implicits._
         val merge = b.add(Merge[Fruit](2))
-        Source.fromIterator[Fruit](apples) ~> Flow[Fruit] ~> merge.in(0)
-        Source.fromIterator[Apple](apples) ~> Flow[Apple] ~> merge.in(1)
-        merge.out ~> Flow[Fruit].map(identity) ~> Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
+        Source.fromIterator[Fruit](apples) ~> Flow[Fruit]               ~> merge.in(0)
+        Source.fromIterator[Apple](apples) ~> Flow[Apple]               ~> merge.in(1)
+        merge.out                          ~> Flow[Fruit].map(identity) ~> Sink.fromSubscriber(TestSubscriber.manualProbe[Fruit]())
         ClosedShape
       })
     }
@@ -286,31 +286,31 @@ class GraphDSLCompileSpec extends StreamSpec {
         val fruitMerge = b.add(Merge[Fruit](2))
         Source.fromIterator[Fruit](apples) ~> fruitMerge
         Source.fromIterator[Apple](apples) ~> fruitMerge
-        fruitMerge ~> Sink.head[Fruit]
+        fruitMerge                         ~> Sink.head[Fruit]
         "fruitMerge ~> Sink.head[Apple]" shouldNot compile
 
         val appleMerge = b.add(Merge[Apple](2))
         "Source[Fruit](apples) ~> appleMerge" shouldNot compile
-        Source.empty[Apple] ~> appleMerge
+        Source.empty[Apple]                ~> appleMerge
         Source.fromIterator[Apple](apples) ~> appleMerge
-        appleMerge ~> Sink.head[Fruit]
+        appleMerge                         ~> Sink.head[Fruit]
 
         val appleMerge2 = b.add(Merge[Apple](2))
-        Source.empty[Apple] ~> appleMerge2
+        Source.empty[Apple]                ~> appleMerge2
         Source.fromIterator[Apple](apples) ~> appleMerge2
-        appleMerge2 ~> Sink.head[Apple]
+        appleMerge2                        ~> Sink.head[Apple]
 
         val fruitBcast = b.add(Broadcast[Fruit](2))
         Source.fromIterator[Apple](apples) ~> fruitBcast
-        fruitBcast ~> Sink.head[Fruit]
-        fruitBcast ~> Sink.ignore
+        fruitBcast                         ~> Sink.head[Fruit]
+        fruitBcast                         ~> Sink.ignore
         "fruitBcast ~> Sink.head[Apple]" shouldNot compile
 
         val appleBcast = b.add(Broadcast[Apple](2))
         "Source[Fruit](apples) ~> appleBcast" shouldNot compile
         Source.fromIterator[Apple](apples) ~> appleBcast
-        appleBcast ~> Sink.head[Fruit]
-        appleBcast ~> Sink.head[Apple]
+        appleBcast                         ~> Sink.head[Fruit]
+        appleBcast                         ~> Sink.head[Apple]
         ClosedShape
       })
     }
@@ -326,24 +326,24 @@ class GraphDSLCompileSpec extends StreamSpec {
         val whatever = b.add(Sink.asPublisher[Any](false))
         import GraphDSL.Implicits._
         b.add(Source.fromIterator[Fruit](apples)) ~> merge.in(0)
-        appleSource ~> merge.in(1)
-        appleSource ~> merge.in(2)
-        fruitSource ~> merge.in(3)
-        fruitSource ~> Flow[Fruit].map(identity) ~> merge.in(4)
-        appleSource ~> Flow[Apple].map(identity) ~> merge.in(5)
-        b.add(Source.fromIterator(apples)) ~> merge.in(6)
-        b.add(Source.fromIterator(apples)) ~> Flow[Fruit].map(identity) ~> merge.in(7)
-        b.add(Source.fromIterator(apples)) ~> Flow[Apple].map(identity) ~> merge.in(8)
-        merge.out ~> Flow[Fruit].map(identity) ~> outA
+        appleSource                               ~> merge.in(1)
+        appleSource                               ~> merge.in(2)
+        fruitSource                               ~> merge.in(3)
+        fruitSource                               ~> Flow[Fruit].map(identity) ~> merge.in(4)
+        appleSource                               ~> Flow[Apple].map(identity) ~> merge.in(5)
+        b.add(Source.fromIterator(apples))        ~> merge.in(6)
+        b.add(Source.fromIterator(apples))        ~> Flow[Fruit].map(identity) ~> merge.in(7)
+        b.add(Source.fromIterator(apples))        ~> Flow[Apple].map(identity) ~> merge.in(8)
+        merge.out                                 ~> Flow[Fruit].map(identity) ~> outA
 
         b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> merge.in(9)
         b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> outB
         b.add(Source.fromIterator(apples)) ~> Flow[Apple] ~> b.add(Sink.asPublisher[Fruit](false))
-        appleSource ~> Flow[Apple] ~> merge.in(10)
+        appleSource                        ~> Flow[Apple] ~> merge.in(10)
 
         Source(List(1 -> "a", 2 -> "b", 3 -> "c")) ~> unzip.in
-        unzip.out1 ~> whatever
-        unzip.out0 ~> b.add(Sink.asPublisher[Any](false))
+        unzip.out1                                 ~> whatever
+        unzip.out0                                 ~> b.add(Sink.asPublisher[Any](false))
 
         "merge.out ~> b.add(Broadcast[Apple](2))" shouldNot compile
         "merge.out ~> Flow[Fruit].map(identity) ~> b.add(Broadcast[Apple](2))" shouldNot compile

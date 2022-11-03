@@ -61,13 +61,13 @@ object SettingsExtensionDocSpec {
     //#config
     """
 
-  //#extension-usage-actor
+  // #extension-usage-actor
 
   class MyActor extends Actor {
     val settings = Settings(context.system)
     val connection = connect(settings.DbUri, settings.CircuitBreakerTimeout)
 
-    //#extension-usage-actor
+    // #extension-usage-actor
     def receive = {
       case someMessage =>
     }
@@ -82,10 +82,10 @@ object SettingsExtensionDocSpec {
 class SettingsExtensionDocSpec extends AkkaSpec(SettingsExtensionDocSpec.config) {
 
   "demonstrate how to create application specific settings extension in Scala" in {
-    //#extension-usage
+    // #extension-usage
     val dbUri = Settings(system).DbUri
     val circuitBreakerTimeout = Settings(system).CircuitBreakerTimeout
-    //#extension-usage
+    // #extension-usage
   }
 
 }

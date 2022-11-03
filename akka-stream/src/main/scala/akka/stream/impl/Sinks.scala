@@ -155,34 +155,34 @@ import akka.util.ccompat._
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val p: Promise[immutable.Seq[T]] = Promise()
     (new GraphStageLogic(shape) with InHandler {
-      private[this] val buffer = mutable.Queue.empty[T]
-      private[this] var count = 0
+        private[this] val buffer = mutable.Queue.empty[T]
+        private[this] var count = 0
 
-      override def preStart(): Unit = pull(in)
+        override def preStart(): Unit = pull(in)
 
-      override def onPush(): Unit = {
-        buffer.enqueue(grab(in))
-        if (count < n)
-          count += 1
-        else
-          buffer.dequeue()
-        pull(in)
-      }
+        override def onPush(): Unit = {
+          buffer.enqueue(grab(in))
+          if (count < n)
+            count += 1
+          else
+            buffer.dequeue()
+          pull(in)
+        }
 
-      override def onUpstreamFinish(): Unit = {
-        val elements = buffer.toList
-        buffer.clear()
-        p.trySuccess(elements)
-        completeStage()
-      }
+        override def onUpstreamFinish(): Unit = {
+          val elements = buffer.toList
+          buffer.clear()
+          p.trySuccess(elements)
+          completeStage()
+        }
 
-      override def onUpstreamFailure(ex: Throwable): Unit = {
-        p.tryFailure(ex)
-        failStage(ex)
-      }
+        override def onUpstreamFailure(ex: Throwable): Unit = {
+          p.tryFailure(ex)
+          failStage(ex)
+        }
 
-      setHandler(in, this)
-    }, p.future)
+        setHandler(in, this)
+      }, p.future)
   }
 
   override def toString: String = "TakeLastStage"
@@ -201,29 +201,29 @@ import akka.util.ccompat._
   override def createLogicAndMaterializedValue(inheritedAttributes: Attributes) = {
     val p: Promise[Option[T]] = Promise()
     (new GraphStageLogic(shape) with InHandler {
-      override def preStart(): Unit = pull(in)
+        override def preStart(): Unit = pull(in)
 
-      def onPush(): Unit = {
-        p.trySuccess(Option(grab(in)))
-        completeStage()
-      }
+        def onPush(): Unit = {
+          p.trySuccess(Option(grab(in)))
+          completeStage()
+        }
 
-      override def onUpstreamFinish(): Unit = {
-        p.trySuccess(None)
-        completeStage()
-      }
+        override def onUpstreamFinish(): Unit = {
+          p.trySuccess(None)
+          completeStage()
+        }
 
-      override def onUpstreamFailure(ex: Throwable): Unit = {
-        p.tryFailure(ex)
-        failStage(ex)
-      }
+        override def onUpstreamFailure(ex: Throwable): Unit = {
+          p.tryFailure(ex)
+          failStage(ex)
+        }
 
-      override def postStop(): Unit = {
-        if (!p.isCompleted) p.failure(new AbruptStageTerminationException(this))
-      }
+        override def postStop(): Unit = {
+          if (!p.isCompleted) p.failure(new AbruptStageTerminationException(this))
+        }
 
-      setHandler(in, this)
-    }, p.future)
+        setHandler(in, this)
+      }, p.future)
   }
 
   override def toString: String = "HeadOptionStage"
@@ -319,7 +319,7 @@ import akka.util.ccompat._
           if (currentRequests.isFull)
             pullPromise.failure(
               new IllegalStateException(s"Too many concurrent pulls. Specified maximum is $maxConcurrentPulls. " +
-              "You have to wait for one previous future to be resolved to send another request"))
+                "You have to wait for one previous future to be resolved to send another request"))
           else if (buffer.isEmpty) currentRequests.enqueue(pullPromise)
           else {
             if (buffer.used == maxBuffer) tryPull(in)
@@ -332,7 +332,7 @@ import akka.util.ccompat._
         val e = buffer.dequeue()
         promise.complete(e)
         e match {
-          case Success(_: Some[_]) => //do nothing
+          case Success(_: Some[_]) => // do nothing
           case Success(None)       => completeStage()
           case Failure(t)          => failStage(t)
         }

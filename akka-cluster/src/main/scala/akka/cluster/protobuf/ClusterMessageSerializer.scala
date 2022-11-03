@@ -358,13 +358,14 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def uniqueAddressFromProto(uniqueAddress: cm.UniqueAddress): UniqueAddress = {
 
-    UniqueAddress(addressFromProto(uniqueAddress.getAddress), if (uniqueAddress.hasUid2) {
-      // new remote node join the two parts of the long uid back
-      (uniqueAddress.getUid2.toLong << 32) | (uniqueAddress.getUid & 0XFFFFFFFFL)
-    } else {
-      // old remote node
-      uniqueAddress.getUid.toLong
-    })
+    UniqueAddress(addressFromProto(uniqueAddress.getAddress),
+      if (uniqueAddress.hasUid2) {
+        // new remote node join the two parts of the long uid back
+        (uniqueAddress.getUid2.toLong << 32) | (uniqueAddress.getUid & 0xFFFFFFFFL)
+      } else {
+        // old remote node
+        uniqueAddress.getUid.toLong
+      })
   }
 
   private val memberStatusToInt = scala.collection.immutable.HashMap[MemberStatus, Int](
@@ -469,13 +470,12 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
         case (observer, version) =>
           val subjectReachability = reachability
             .recordsFrom(observer)
-            .map(
-              r =>
-                cm.SubjectReachability
-                  .newBuilder()
-                  .setAddressIndex(mapUniqueAddress(r.subject))
-                  .setStatus(cm.ReachabilityStatus.forNumber(reachabilityStatusToInt(r.status)))
-                  .setVersion(r.version))
+            .map(r =>
+              cm.SubjectReachability
+                .newBuilder()
+                .setAddressIndex(mapUniqueAddress(r.subject))
+                .setStatus(cm.ReachabilityStatus.forNumber(reachabilityStatusToInt(r.status)))
+                .setVersion(r.version))
           cm.ObserverReachability
             .newBuilder()
             .setAddressIndex(mapUniqueAddress(observer))

@@ -6,7 +6,7 @@ package akka
 
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.baseDirectory
-import sbt.{ Compile, Def, PluginTrigger, Test, inConfig, _ }
+import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
 
 object CopyrightHeaderForBuild extends CopyrightHeader {
   override def trigger: PluginTrigger = noTrigger

@@ -33,7 +33,7 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
     // and therefore must be done at the same time with the update, not before
     updateOrSetNew(key, v => v ++ mapAny(key, elems).toVector)
 
-  override def reprToSeqNum(repr: (PersistentRepr)): Long = repr.sequenceNr
+  override def reprToSeqNum(repr: PersistentRepr): Long = repr.sequenceNr
 
   def add(elems: immutable.Seq[PersistentRepr]): Unit =
     elems.groupBy(_.persistenceId).foreach { gr =>
@@ -50,10 +50,11 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
 
     val processed = grouped.map {
       case (pid, els) =>
-        currentPolicy.tryProcess(pid, WriteEvents(els.map(_.payload match {
-          case Tagged(payload, _) => payload
-          case nonTagged          => nonTagged
-        })))
+        currentPolicy.tryProcess(pid,
+          WriteEvents(els.map(_.payload match {
+            case Tagged(payload, _) => payload
+            case nonTagged          => nonTagged
+          })))
     }
 
     val reduced: ProcessingResult =

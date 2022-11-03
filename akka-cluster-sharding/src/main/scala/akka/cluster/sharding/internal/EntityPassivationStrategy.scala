@@ -744,10 +744,10 @@ private[akka] object AdmissionOptimizer {
       optimizer: ClusterShardingSettings.CompositePassivationStrategy.AdmissionOptimizer): AdmissionOptimizer =
     optimizer match {
       case ClusterShardingSettings.CompositePassivationStrategy.HillClimbingAdmissionOptimizer(
-          adjustMultiplier,
-          initialStep,
-          restartThreshold,
-          stepDecay) =>
+            adjustMultiplier,
+            initialStep,
+            restartThreshold,
+            stepDecay) =>
         new HillClimbingAdmissionOptimizer(initialLimit, adjustMultiplier, initialStep, restartThreshold, stepDecay)
       case _ => NoAdmissionOptimizer
     }

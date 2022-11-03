@@ -96,33 +96,33 @@ class GroupRouterSpec extends ScalaTestWithActorTestKit(GroupRouterSpec.config) 
     val resultProbe = testKit.createTestProbe[Pinger.DonePinging]()
 
     val system1 = ActorSystem(Behaviors.setup[Receptionist.Listing] {
-      ctx =>
-        (0 until settings.node1WorkerCount).foreach { i =>
+        ctx =>
+          (0 until settings.node1WorkerCount).foreach { i =>
+            val worker = ctx.spawn(PingActor(), s"ping-pong-$i")
+            ctx.system.receptionist ! Receptionist.Register(pingPongKey, worker)
+          }
+          ctx.system.receptionist ! Receptionist.Subscribe(pingPongKey, ctx.self)
+          Behaviors.receiveMessage {
+            case pingPongKey.Listing(update) if update.size == settings.node1WorkerCount + settings.node2WorkerCount =>
+              // the requested number of workers are started and registered with the receptionist
+              // a new router will see all after this has been observed
+              ctx.log.debug("Saw {} workers, starting router and pinger", update.size)
+              val router = ctx.spawn(groupRouter, "group-router")
+              ctx.spawn(Pinger(router, settings.messageCount, resultProbe.ref), "pinger")
+              // ignore further listings
+              Behaviors.empty
+            case _ =>
+              Behaviors.same
+          }
+      }, system.name, config)
+
+    val system2 = ActorSystem(Behaviors.setup[Unit] { ctx =>
+        (0 until settings.node2WorkerCount).foreach { i =>
           val worker = ctx.spawn(PingActor(), s"ping-pong-$i")
           ctx.system.receptionist ! Receptionist.Register(pingPongKey, worker)
         }
-        ctx.system.receptionist ! Receptionist.Subscribe(pingPongKey, ctx.self)
-        Behaviors.receiveMessage {
-          case pingPongKey.Listing(update) if update.size == settings.node1WorkerCount + settings.node2WorkerCount =>
-            // the requested number of workers are started and registered with the receptionist
-            // a new router will see all after this has been observed
-            ctx.log.debug("Saw {} workers, starting router and pinger", update.size)
-            val router = ctx.spawn(groupRouter, "group-router")
-            ctx.spawn(Pinger(router, settings.messageCount, resultProbe.ref), "pinger")
-            // ignore further listings
-            Behaviors.empty
-          case _ =>
-            Behaviors.same
-        }
-    }, system.name, config)
-
-    val system2 = ActorSystem(Behaviors.setup[Unit] { ctx =>
-      (0 until settings.node2WorkerCount).foreach { i =>
-        val worker = ctx.spawn(PingActor(), s"ping-pong-$i")
-        ctx.system.receptionist ! Receptionist.Register(pingPongKey, worker)
-      }
-      Behaviors.empty
-    }, system.name, config)
+        Behaviors.empty
+      }, system.name, config)
 
     try {
       val node1 = Cluster(system1)

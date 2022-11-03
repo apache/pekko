@@ -23,7 +23,7 @@ import akka.testkit._
 abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config) with ImplicitSender {
   import PersistentFSMSpec._
 
-  //Dummy report actor, for tests that don't need it
+  // Dummy report actor, for tests that don't need it
   val dummyReportActorRef = TestProbe().ref
 
   "PersistentFSM" must {
@@ -274,13 +274,13 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       val persistentEventsStreamer = system.actorOf(PersistentEventsStreamer.props(persistenceId, testActor))
 
       expectMsg(ItemAdded(Item("1", "Shirt", 59.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[StateChangeEvent] // because a timeout is defined, State Change is persisted
 
       expectMsg(ItemAdded(Item("2", "Shoes", 89.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[StateChangeEvent] // because a timeout is defined, State Change is persisted
 
       expectMsg(ItemAdded(Item("3", "Coat", 119.99f)))
-      expectMsgType[StateChangeEvent] //because a timeout is defined, State Change is persisted
+      expectMsgType[StateChangeEvent] // because a timeout is defined, State Change is persisted
 
       watch(persistentEventsStreamer)
       persistentEventsStreamer ! PoisonPill
@@ -325,7 +325,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       fsmRef ! PoisonPill
       expectTerminated(fsmRef)
 
-      //Check that PersistentFSM recovers in the correct state
+      // Check that PersistentFSM recovers in the correct state
       val recoveredFsmRef = system.actorOf(WebStoreCustomerFSM.props(persistenceId, dummyReportActorRef))
       recoveredFsmRef ! GetCurrentCart
       expectMsg(NonEmptyShoppingCart(List(shirt, shoes, coat)))
@@ -334,7 +334,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
       recoveredFsmRef ! PoisonPill
       expectTerminated(recoveredFsmRef)
 
-      //Check that PersistentFSM uses snapshot during recovery
+      // Check that PersistentFSM uses snapshot during recovery
       val persistentEventsStreamer = system.actorOf(PersistentEventsStreamer.props(persistenceId, testActor))
 
       expectMsgPF() {
@@ -382,8 +382,8 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
         // Otherwise, stateData sent to this probe is already updated
         probe.expectMsg("SeqNo=3, StateData=List(3, 2, 1)")
 
-        fsmRef ! "4x" //changes the state to Persist4xAtOnce, also updates SeqNo although nothing is persisted
-        fsmRef ! 10 //Persist4xAtOnce = persist 10, 4x times
+        fsmRef ! "4x" // changes the state to Persist4xAtOnce, also updates SeqNo although nothing is persisted
+        fsmRef ! 10 // Persist4xAtOnce = persist 10, 4x times
         // snapshot-after = 3, but the SeqNo is not multiple of 3,
         // as saveStateSnapshot() is called at the end of persistent event "batch" = 4x of 10's.
         probe.expectMsg("SeqNo=8, StateData=List(10, 10, 10, 10, 3, 2, 1)")
@@ -400,7 +400,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
 
 @nowarn("msg=deprecated")
 object PersistentFSMSpec {
-  //#customer-states
+  // #customer-states
   sealed trait UserState extends FSMState
   case object LookingAround extends UserState {
     override def identifier: String = "Looking Around"
@@ -414,9 +414,9 @@ object PersistentFSMSpec {
   case object Paid extends UserState {
     override def identifier: String = "Paid"
   }
-  //#customer-states
+  // #customer-states
 
-  //#customer-states-data
+  // #customer-states-data
   case class Item(id: String, name: String, price: Float)
 
   sealed trait ShoppingCart {
@@ -431,25 +431,25 @@ object PersistentFSMSpec {
     def addItem(item: Item) = NonEmptyShoppingCart(items :+ item)
     def empty() = EmptyShoppingCart
   }
-  //#customer-states-data
+  // #customer-states-data
 
-  //#customer-commands
+  // #customer-commands
   sealed trait Command
   case class AddItem(item: Item) extends Command
   case object Buy extends Command
   case object Leave extends Command
   case object GetCurrentCart extends Command
-  //#customer-commands
+  // #customer-commands
 
-  //#customer-domain-events
+  // #customer-domain-events
   sealed trait DomainEvent
   case class ItemAdded(item: Item) extends DomainEvent
   case object OrderExecuted extends DomainEvent
   case object OrderDiscarded extends DomainEvent
   case object CustomerInactive extends DomainEvent
-  //#customer-domain-events
+  // #customer-domain-events
 
-  //Side effects - report events to be sent to some "Report Actor"
+  // Side effects - report events to be sent to some "Report Actor"
   sealed trait ReportEvent
   case class PurchaseWasMade(items: Seq[Item]) extends ReportEvent
   case object ShoppingCardDiscarded extends ReportEvent
@@ -484,7 +484,7 @@ object PersistentFSMSpec {
 
     override def persistenceId = _persistenceId
 
-    //#customer-fsm-body
+    // #customer-fsm-body
     startWith(LookingAround, EmptyShoppingCart)
 
     when(LookingAround) {
@@ -498,24 +498,24 @@ object PersistentFSMSpec {
       case Event(AddItem(item), _) =>
         stay().applying(ItemAdded(item)).forMax(1 seconds)
       case Event(Buy, _) =>
-        //#customer-andthen-example
+        // #customer-andthen-example
         goto(Paid).applying(OrderExecuted).andThen {
           case NonEmptyShoppingCart(items) =>
             reportActor ! PurchaseWasMade(items)
-            //#customer-andthen-example
+            // #customer-andthen-example
             saveStateSnapshot()
           case EmptyShoppingCart => saveStateSnapshot()
-          //#customer-andthen-example
+          // #customer-andthen-example
         }
-      //#customer-andthen-example
+      // #customer-andthen-example
       case Event(Leave, _) =>
-        //#customer-snapshot-example
+        // #customer-snapshot-example
         stop().applying(OrderDiscarded).andThen {
           case _ =>
             reportActor ! ShoppingCardDiscarded
             saveStateSnapshot()
         }
-      //#customer-snapshot-example
+      // #customer-snapshot-example
       case Event(GetCurrentCart, data) =>
         stay().replying(data)
       case Event(StateTimeout, _) =>
@@ -536,7 +536,7 @@ object PersistentFSMSpec {
       case Event(GetCurrentCart, data) =>
         stay().replying(data)
     }
-    //#customer-fsm-body
+    // #customer-fsm-body
 
     /**
      * Override this handler to define the action on Domain Event
@@ -544,7 +544,7 @@ object PersistentFSMSpec {
      * @param event domain event to apply
      * @param cartBeforeEvent state data of the previous state
      */
-    //#customer-apply-event
+    // #customer-apply-event
     override def applyEvent(event: DomainEvent, cartBeforeEvent: ShoppingCart): ShoppingCart = {
       event match {
         case ItemAdded(item)  => cartBeforeEvent.addItem(item)
@@ -553,7 +553,7 @@ object PersistentFSMSpec {
         case CustomerInactive => cartBeforeEvent
       }
     }
-    //#customer-apply-event
+    // #customer-apply-event
   }
 
   object WebStoreCustomerFSM {

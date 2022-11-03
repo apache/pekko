@@ -852,15 +852,15 @@ object ClusterShardingSettings {
           (if (dynamicAging) " (with dynamic aging)" else "") +
           idle.fold("")(idle => " and " + describe(idle))
         case CompositePassivationStrategy(
-            limit,
-            mainStrategy,
-            windowStrategy,
-            initialWindowProportion,
-            minimumWindowProportion,
-            maximumWindowProportion,
-            windowOptimizer,
-            admissionFilter,
-            idle) =>
+              limit,
+              mainStrategy,
+              windowStrategy,
+              initialWindowProportion,
+              minimumWindowProportion,
+              maximumWindowProportion,
+              windowOptimizer,
+              admissionFilter,
+              idle) =>
           val describeWindow = windowStrategy match {
             case NoPassivationStrategy => "no admission window"
             case _ =>
@@ -869,10 +869,10 @@ object ClusterShardingSettings {
                 case CompositePassivationStrategy.NoAdmissionOptimizer =>
                   s" with proportion [$initialWindowProportion]"
                 case CompositePassivationStrategy.HillClimbingAdmissionOptimizer(
-                    adjustMultiplier,
-                    initialStep,
-                    restartThreshold,
-                    stepDecay) =>
+                      adjustMultiplier,
+                      initialStep,
+                      restartThreshold,
+                      stepDecay) =>
                   s" with proportions [initial = $initialWindowProportion, min = $minimumWindowProportion, max = $maximumWindowProportion]" +
                   " adapting with hill-climbing optimizer [" +
                   s"adjust multiplier = $adjustMultiplier, " +
@@ -884,10 +884,10 @@ object ClusterShardingSettings {
           val describeFilter = admissionFilter match {
             case CompositePassivationStrategy.AlwaysAdmissionFilter => "always admit"
             case CompositePassivationStrategy.FrequencySketchAdmissionFilter(
-                widthMultiplier,
-                resetMultiplier,
-                depth,
-                counterBits) =>
+                  widthMultiplier,
+                  resetMultiplier,
+                  depth,
+                  counterBits) =>
               "admit using frequency sketch [" +
               s"width multiplier = $widthMultiplier, " +
               s"reset multiplier = $resetMultiplier, " +

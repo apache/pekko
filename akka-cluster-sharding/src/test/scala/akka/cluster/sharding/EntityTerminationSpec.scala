@@ -97,7 +97,7 @@ class EntityTerminationSpec extends AkkaSpec(EntityTerminationSpec.config) with 
       Thread.sleep(400) // restart backoff is 250 ms
       sharding ! ShardRegion.GetShardRegionState
       val regionState = expectMsgType[ShardRegion.CurrentShardRegionState]
-      regionState.shards should have size (1)
+      regionState.shards should have size 1
       regionState.shards.head.entityIds should be(Set("2"))
 
       // make sure the shard didn't crash (coverage for regression bug #29383)
@@ -123,11 +123,11 @@ class EntityTerminationSpec extends AkkaSpec(EntityTerminationSpec.config) with 
 
       Thread.sleep(400) // restart backoff is 250 ms
       awaitAssert({
-        sharding ! ShardRegion.GetShardRegionState
-        val regionState = expectMsgType[ShardRegion.CurrentShardRegionState]
-        regionState.shards should have size (1)
-        regionState.shards.head.entityIds should have size (1)
-      }, 2.seconds)
+          sharding ! ShardRegion.GetShardRegionState
+          val regionState = expectMsgType[ShardRegion.CurrentShardRegionState]
+          regionState.shards should have size 1
+          regionState.shards.head.entityIds should have size 1
+        }, 2.seconds)
     }
 
     "allow terminating entity to passivate if remembering entities" in {
@@ -149,8 +149,8 @@ class EntityTerminationSpec extends AkkaSpec(EntityTerminationSpec.config) with 
 
       sharding ! ShardRegion.GetShardRegionState
       val regionState = expectMsgType[ShardRegion.CurrentShardRegionState]
-      regionState.shards should have size (1)
-      regionState.shards.head.entityIds should have size (0)
+      regionState.shards should have size 1
+      regionState.shards.head.entityIds should have size 0
 
     }
 

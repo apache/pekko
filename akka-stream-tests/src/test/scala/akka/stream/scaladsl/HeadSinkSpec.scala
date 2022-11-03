@@ -20,12 +20,12 @@ class HeadSinkSpec extends StreamSpec("""
 
     "yield the first value for simple source" in {
       implicit val ec = system.dispatcher
-      //#head-operator-example
+      // #head-operator-example
       val source = Source(1 to 10)
       val result: Future[Int] = source.runWith(Sink.head)
       result.map(println)
       // 1
-      //#head-operator-example
+      // #head-operator-example
       result.futureValue shouldEqual 1
     }
 

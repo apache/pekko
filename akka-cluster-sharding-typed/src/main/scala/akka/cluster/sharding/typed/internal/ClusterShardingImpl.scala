@@ -53,7 +53,7 @@ import akka.util.JavaDurationConverters._
     extends ShardingMessageExtractor[Any, M] {
   override def entityId(message: Any): String = {
     message match {
-      case ShardingEnvelope(entityId, _) => entityId //also covers ClassicStartEntity in ShardingEnvelope
+      case ShardingEnvelope(entityId, _) => entityId // also covers ClassicStartEntity in ShardingEnvelope
       case ClassicStartEntity(entityId)  => entityId
       case msg                           => delegate.entityId(msg.asInstanceOf[E])
     }
@@ -64,7 +64,7 @@ import akka.util.JavaDurationConverters._
   override def unwrapMessage(message: Any): M = {
     message match {
       case ShardingEnvelope(_, msg: M @unchecked) =>
-        //also covers ClassicStartEntity in ShardingEnvelope
+        // also covers ClassicStartEntity in ShardingEnvelope
         msg
       case msg: ClassicStartEntity =>
         // not really of type M, but erased and StartEntity is only handled internally, not delivered to the entity

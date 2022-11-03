@@ -144,10 +144,10 @@ private[testkit] trait ExpectOps[U] {
     val nextInd = nextIndex(persistenceId)
     val expected = Some(event)
     val res = awaitAssert({
-      val actual = getItem(persistenceId, nextInd)
-      assert(actual == expected, s"Failed to persist $event, got $actual instead")
-      actual
-    }, max = max.dilated, interval = pollInterval)
+        val actual = getItem(persistenceId, nextInd)
+        assert(actual == expected, s"Failed to persist $event, got $actual instead")
+        actual
+      }, max = max.dilated, interval = pollInterval)
 
     setIndex(persistenceId, nextInd + 1)
     res.get.asInstanceOf[A]
@@ -178,12 +178,12 @@ private[testkit] trait ExpectOps[U] {
     val nextInd = nextIndex(persistenceId)
     val c = util.BoxedType(cla)
     val res = awaitAssert({
-      val actual = storage.findOneByIndex(persistenceId, nextInd).map(reprToAny)
-      assert(actual.isDefined, s"Expected: $cla but got no event")
-      val a = actual.get
-      assert(c.isInstance(a), s"Expected: $cla but got unexpected ${a.getClass}")
-      a.asInstanceOf[A]
-    }, max.dilated, interval = pollInterval)
+        val actual = storage.findOneByIndex(persistenceId, nextInd).map(reprToAny)
+        assert(actual.isDefined, s"Expected: $cla but got no event")
+        val a = actual.get
+        assert(c.isInstance(a), s"Expected: $cla but got unexpected ${a.getClass}")
+        a.asInstanceOf[A]
+      }, max.dilated, interval = pollInterval)
     setIndex(persistenceId, nextInd + 1)
     res
   }
@@ -200,10 +200,10 @@ private[testkit] trait ExpectOps[U] {
   def expectNothingPersisted(persistenceId: String, max: FiniteDuration): Unit = {
     val nextInd = nextIndex(persistenceId)
     assertForDuration({
-      val actual = storage.findOneByIndex(persistenceId, nextInd).map(reprToAny)
-      val res = actual.isEmpty
-      assert(res, s"Found persisted event $actual, but expected None instead")
-    }, max = max.dilated, interval = pollInterval)
+        val actual = storage.findOneByIndex(persistenceId, nextInd).map(reprToAny)
+        val res = actual.isEmpty
+        assert(res, s"Found persisted event $actual, but expected None instead")
+      }, max = max.dilated, interval = pollInterval)
   }
 
   /**
@@ -316,7 +316,7 @@ private[testkit] trait HasStorage[P, R] {
 
   protected def storage: TestKitStorage[P, R]
 
-  //todo needs to be thread safe (atomic read-increment-write) for parallel tests. Do we need parallel tests support?
+  // todo needs to be thread safe (atomic read-increment-write) for parallel tests. Do we need parallel tests support?
   @volatile
   private var nextIndexByPersistenceId: immutable.Map[String, Int] = Map.empty
 

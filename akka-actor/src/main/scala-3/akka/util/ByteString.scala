@@ -80,7 +80,6 @@ object ByteString {
    * want wrap it into an ByteArray, and from there on only use that reference (the ByteString)
    * to operate on the wrapped data. For all other intents and purposes, please use the usual
    * apply and create methods - which provide the immutability guarantees by copying the array.
-   *
    */
   def fromArrayUnsafe(array: Array[Byte]): ByteString = ByteString1C(array)
 
@@ -105,7 +104,6 @@ object ByteString {
    * want wrap it into an ByteArray, and from there on only use that reference (the ByteString)
    * to operate on the wrapped data. For all other intents and purposes, please use the usual
    * apply and create methods - which provide the immutability guarantees by copying the array.
-   *
    */
   def fromArrayUnsafe(array: Array[Byte], offset: Int, length: Int): ByteString = ByteString1(array, offset, length)
 
@@ -314,7 +312,7 @@ object ByteString {
       os.write(bytes, startIndex, length)
     }
 
-    def isCompact: Boolean = (length == bytes.length)
+    def isCompact: Boolean = length == bytes.length
 
     private[akka] def byteStringCompanion = ByteString1
 

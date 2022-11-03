@@ -50,10 +50,10 @@ import akka.util.ByteString
   def encodeFrameHeader(frameLength: Int): ByteString =
     ByteString.fromArrayUnsafe(
       Array[Byte](
-        (frameLength & 0xff).toByte,
-        ((frameLength & 0xff00) >> 8).toByte,
-        ((frameLength & 0xff0000) >> 16).toByte,
-        ((frameLength & 0xff000000) >> 24).toByte))
+        (frameLength & 0xFF).toByte,
+        ((frameLength & 0xFF00) >> 8).toByte,
+        ((frameLength & 0xFF0000) >> 16).toByte,
+        ((frameLength & 0xFF000000) >> 24).toByte))
 }
 
 /**

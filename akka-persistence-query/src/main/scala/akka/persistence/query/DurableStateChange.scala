@@ -36,7 +36,6 @@ object UpdatedDurableState {
 }
 
 /**
- *
  * @param persistenceId The persistence id of the origin entity.
  * @param revision The revision number from the origin entity.
  * @param value The object value.
@@ -60,7 +59,6 @@ object DeletedDurableState {
 }
 
 /**
- *
  * @param persistenceId The persistence id of the origin entity.
  * @param revision The revision number from the origin entity.
  * @param offset The offset that can be used in next `changes` or `currentChanges` query.

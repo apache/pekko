@@ -223,7 +223,7 @@ abstract class Shape {
 
   private def nonCorrespondingMessage(s: Shape) =
     s"The inlets [${s.inlets.mkString(", ")}] and outlets [${s.outlets.mkString(", ")}] must correspond to the inlets [${inlets
-      .mkString(", ")}] and outlets [${outlets.mkString(", ")}]"
+        .mkString(", ")}] and outlets [${outlets.mkString(", ")}]"
 }
 
 /**
@@ -346,7 +346,7 @@ final case class BidiShape[-In1, +Out1, -In2, +Out2](
     in2: Inlet[In2 @uncheckedVariance],
     out2: Outlet[Out2 @uncheckedVariance])
     extends Shape {
-  //#implementation-details-elided
+  // #implementation-details-elided
   override val inlets: immutable.Seq[Inlet[_]] = in1 :: in2 :: Nil
   override val outlets: immutable.Seq[Outlet[_]] = out1 :: out2 :: Nil
 
@@ -358,7 +358,7 @@ final case class BidiShape[-In1, +Out1, -In2, +Out2](
   override def deepCopy(): BidiShape[In1, Out1, In2, Out2] =
     BidiShape(in1.carbonCopy(), out1.carbonCopy(), in2.carbonCopy(), out2.carbonCopy())
 
-  //#implementation-details-elided
+  // #implementation-details-elided
 }
 //#bidi-shape
 object BidiShape {

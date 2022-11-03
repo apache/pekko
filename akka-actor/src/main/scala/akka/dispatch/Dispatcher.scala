@@ -121,7 +121,7 @@ class Dispatcher(
       mbox: Mailbox,
       hasMessageHint: Boolean,
       hasSystemMessageHint: Boolean): Boolean = {
-    if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { //This needs to be here to ensure thread safety and no races
+    if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { // This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {
           executorService.execute(mbox)
@@ -131,7 +131,7 @@ class Dispatcher(
             try {
               executorService.execute(mbox)
               true
-            } catch { //Retry once
+            } catch { // Retry once
               case e: RejectedExecutionException =>
                 mbox.setAsIdle()
                 eventStream.publish(Error(e, getClass.getName, getClass, "registerForExecution was rejected twice!"))

@@ -113,10 +113,10 @@ class LocalActorRefProviderSpec extends AkkaSpec(LocalActorRefProviderSpec.confi
       // the fields are cleared after the Terminated message has been sent,
       // so we need to check for a reasonable time after we receive it
       awaitAssert({
-        val childProps2 = child.asInstanceOf[LocalActorRef].underlying.props
-        childProps2 should not be theSameInstanceAs(childProps1)
-        (childProps2 should be).theSameInstanceAs(ActorCell.terminatedProps)
-      }, 1 second)
+          val childProps2 = child.asInstanceOf[LocalActorRef].underlying.props
+          childProps2 should not be theSameInstanceAs(childProps1)
+          (childProps2 should be).theSameInstanceAs(ActorCell.terminatedProps)
+        }, 1 second)
     }
   }
 
@@ -135,11 +135,11 @@ class LocalActorRefProviderSpec extends AkkaSpec(LocalActorRefProviderSpec.confi
           for (_ <- 1 to 4)
             yield Future(system.actorOf(Props(new Actor { def receive = { case _ => } }), address))
         val set: Set[Any] = Set() ++ actors.map(a =>
-            Await.ready(a, timeout.duration).value match {
-              case Some(Success(_: ActorRef))                  => 1
-              case Some(Failure(_: InvalidActorNameException)) => 2
-              case x                                           => x
-            })
+          Await.ready(a, timeout.duration).value match {
+            case Some(Success(_: ActorRef))                  => 1
+            case Some(Failure(_: InvalidActorNameException)) => 2
+            case x                                           => x
+          })
         set should ===(Set[Any](1, 2))
       }
     }
