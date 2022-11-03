@@ -25,7 +25,7 @@ github:
   enabled_merge_buttons:
     squash:  true
     merge:   false
-    rebase:  false
+    rebase:  true
 
 notifications:
   commits:              commits@pekko.apache.org
