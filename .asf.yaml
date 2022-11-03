@@ -21,3 +21,16 @@ github:
     issues: true
     # Enable projects for project management boards
     projects: false
+
+  enabled_merge_buttons:
+    squash:  true
+    merge:   false
+    rebase:  true
+
+notifications:
+  commits:              commits@pekko.apache.org
+  issues:               dev@pekko.apache.org
+  pullrequests_status:  dev@pekko.apache.org
+  pullrequests_comment: commits@pekko.apache.org
+  discussions:          dev@pekko.apache.org
+
