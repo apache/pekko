@@ -96,7 +96,7 @@ class GossipSpec extends AnyWordSpec with Matchers {
 
     "not reach convergence when unreachable" in {
       val r1 = Reachability.empty.unreachable(b1.uniqueAddress, a1.uniqueAddress)
-      val g1 = (Gossip(members = SortedSet(a1, b1), overview = GossipOverview(reachability = r1)))
+      val g1 = Gossip(members = SortedSet(a1, b1), overview = GossipOverview(reachability = r1))
         .seen(a1.uniqueAddress)
         .seen(b1.uniqueAddress)
       state(g1, b1).convergence(Set.empty) should ===(false)
@@ -107,7 +107,7 @@ class GossipSpec extends AnyWordSpec with Matchers {
     "reach convergence when downed node has observed unreachable" in {
       // e3 is Down
       val r1 = Reachability.empty.unreachable(e3.uniqueAddress, a1.uniqueAddress)
-      val g1 = (Gossip(members = SortedSet(a1, b1, e3), overview = GossipOverview(reachability = r1)))
+      val g1 = Gossip(members = SortedSet(a1, b1, e3), overview = GossipOverview(reachability = r1))
         .seen(a1.uniqueAddress)
         .seen(b1.uniqueAddress)
         .seen(e3.uniqueAddress)
@@ -422,7 +422,7 @@ class GossipSpec extends AnyWordSpec with Matchers {
         .remove(dc2d1.uniqueAddress, System.currentTimeMillis())
 
       gdc2.tombstones.keys should contain(dc2d1.uniqueAddress)
-      gdc2.members should not contain (dc2d1)
+      gdc2.members should not contain dc2d1
       gdc2.overview.reachability.records.filter(r =>
         r.subject == dc2d1.uniqueAddress || r.observer == dc2d1.uniqueAddress) should be(empty)
       gdc2.overview.reachability.versions.keys should not contain (dc2d1.uniqueAddress)
@@ -432,7 +432,7 @@ class GossipSpec extends AnyWordSpec with Matchers {
       merged1.members should ===(SortedSet(dc1a1, dc1b1, dc2c1))
 
       merged1.tombstones.keys should contain(dc2d1.uniqueAddress)
-      merged1.members should not contain (dc2d1)
+      merged1.members should not contain dc2d1
       merged1.overview.reachability.records.filter(r =>
         r.subject == dc2d1.uniqueAddress || r.observer == dc2d1.uniqueAddress) should be(empty)
       merged1.overview.reachability.versions.keys should not contain (dc2d1.uniqueAddress)

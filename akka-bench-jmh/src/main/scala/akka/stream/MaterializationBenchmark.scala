@@ -35,13 +35,13 @@ object MaterializationBenchmark {
       var outlet = broadcast.out(0)
       for (i <- 1 until numOfJunctions) {
         val merge = b.add(Merge[Unit](2))
-        outlet ~> merge
+        outlet           ~> merge
         broadcast.out(i) ~> merge
         outlet = merge.out
       }
 
       Source.single(()) ~> broadcast
-      outlet ~> Sink.ignore
+      outlet            ~> Sink.ignore
       ClosedShape
     })
 
@@ -56,7 +56,7 @@ object MaterializationBenchmark {
       }
 
       Source.single(()) ~> broadcast
-      merge ~> Sink.ignore
+      merge             ~> Sink.ignore
       ClosedShape
     })
 

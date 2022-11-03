@@ -120,8 +120,8 @@ trait ScriptedTest extends Matchers {
 
     def debug: String =
       s"Script(pending=($pendingIns in, $pendingOuts out), remainingIns=${providedInputs
-        .drop(inputCursor)
-        .mkString("/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
+          .drop(inputCursor)
+          .mkString("/")}, remainingOuts=${expectedOutputs.drop(outputCursor).mkString("/")})"
   }
 
   class ScriptRunner[In, Out, M](

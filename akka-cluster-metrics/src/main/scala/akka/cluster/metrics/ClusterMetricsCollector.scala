@@ -197,7 +197,6 @@ private[metrics] class ClusterMetricsCollector extends Actor with ActorLogging {
       if (m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp)
         addMember(m)
     case _: MemberEvent => // not interested in other types of MemberEvent
-
   }
 
   override def postStop(): Unit = {
@@ -225,7 +224,7 @@ private[metrics] class ClusterMetricsCollector extends Actor with ActorLogging {
    * Updates the initial node ring for those nodes that are [[akka.cluster.MemberStatus]] `Up`.
    */
   def receiveState(state: CurrentClusterState): Unit =
-    nodes = (state.members.diff(state.unreachable)).collect {
+    nodes = state.members.diff(state.unreachable).collect {
       case m if m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp => m.address
     }
 

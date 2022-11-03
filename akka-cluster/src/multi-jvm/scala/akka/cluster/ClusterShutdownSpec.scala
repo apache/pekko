@@ -42,10 +42,10 @@ abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownS
 
       runOn(first, second, third) {
         awaitAssert({
-          withClue("members: " + Cluster(system).readView.members) {
-            Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
-          }
-        }, 10.seconds)
+            withClue("members: " + Cluster(system).readView.members) {
+              Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
+            }
+          }, 10.seconds)
       }
     }
     "spread around the cluster" in {
@@ -72,26 +72,27 @@ abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownS
       runOn(first) {
         Cluster(system).leave(address(first))
       }
-      awaitAssert({
-        withClue("members: " + Cluster(system).readView.members) {
-          runOn(second, third) {
-            Cluster(system).readView.members.size shouldEqual 2
+      awaitAssert(
+        {
+          withClue("members: " + Cluster(system).readView.members) {
+            runOn(second, third) {
+              Cluster(system).readView.members.size shouldEqual 2
+            }
+            runOn(first) {
+              Cluster(system).selfMember.status shouldEqual Removed
+            }
           }
-          runOn(first) {
-            Cluster(system).selfMember.status shouldEqual Removed
-          }
-        }
-      }, 10.seconds)
+        }, 10.seconds)
       enterBarrier("first-gone")
       runOn(second) {
         Cluster(system).leave(address(second))
         Cluster(system).leave(address(third))
       }
       awaitAssert({
-        withClue("self member: " + Cluster(system).selfMember) {
-          Cluster(system).selfMember.status shouldEqual Removed
-        }
-      }, 10.seconds)
+          withClue("self member: " + Cluster(system).selfMember) {
+            Cluster(system).selfMember.status shouldEqual Removed
+          }
+        }, 10.seconds)
       enterBarrier("all-gone")
     }
   }

@@ -61,13 +61,13 @@ object PersistencePluginProxySpec {
       |akka.extensions = ["akka.persistence.Persistence"]
       |akka.persistence.journal.auto-start-journals = [""]
       |akka.persistence.journal.proxy.target-journal-address = "${system
-                                   .asInstanceOf[ExtendedActorSystem]
-                                   .provider
-                                   .getDefaultAddress}"
+                                  .asInstanceOf[ExtendedActorSystem]
+                                  .provider
+                                  .getDefaultAddress}"
       |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
-                                   .asInstanceOf[ExtendedActorSystem]
-                                   .provider
-                                   .getDefaultAddress}"
+                                  .asInstanceOf[ExtendedActorSystem]
+                                  .provider
+                                  .getDefaultAddress}"
     """.stripMargin)
 
   class ExamplePersistentActor(probe: ActorRef, name: String) extends NamedPersistentActor(name) {

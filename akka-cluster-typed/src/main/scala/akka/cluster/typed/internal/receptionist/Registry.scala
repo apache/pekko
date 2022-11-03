@@ -31,9 +31,6 @@ import akka.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey, 
  *
  * Two level structure for keeping service registry to be able to shard entries over multiple ddata keys (to not
  * get too large ddata messages)
- *
-
- *
  */
 @InternalApi private[akka] final case class ShardedServiceRegistry(
     serviceRegistries: Map[DDataKey, ServiceRegistry],

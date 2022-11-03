@@ -96,7 +96,6 @@ abstract class ActorSelection extends Serializable {
    * if such an actor exists. It is completed with failure [[ActorNotFound]] if
    * no such actor exists or the identification didn't complete within the
    * supplied `timeout`.
-   *
    */
   @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "2.5.20")
   def resolveOneCS(timeout: FiniteDuration): CompletionStage[ActorRef] =
@@ -110,7 +109,6 @@ abstract class ActorSelection extends Serializable {
    * if such an actor exists. It is completed with failure [[ActorNotFound]] if
    * no such actor exists or the identification didn't complete within the
    * supplied `timeout`.
-   *
    */
   @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "2.5.20")
   def resolveOneCS(timeout: java.time.Duration): CompletionStage[ActorRef] = resolveOne(timeout)
@@ -123,7 +121,6 @@ abstract class ActorSelection extends Serializable {
    * if such an actor exists. It is completed with failure [[ActorNotFound]] if
    * no such actor exists or the identification didn't complete within the
    * supplied `timeout`.
-   *
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
     import JavaDurationConverters._
@@ -189,7 +186,7 @@ abstract class ActorSelection extends Serializable {
  * allowing for broadcasting of messages to that section.
  */
 object ActorSelection {
-  //This cast is safe because the self-type of ActorSelection requires that it mixes in ScalaActorSelection
+  // This cast is safe because the self-type of ActorSelection requires that it mixes in ScalaActorSelection
   implicit def toScala(sel: ActorSelection): ScalaActorSelection = sel.asInstanceOf[ScalaActorSelection]
 
   /**

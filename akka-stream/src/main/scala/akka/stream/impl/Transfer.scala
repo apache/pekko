@@ -200,8 +200,9 @@ import akka.annotation.InternalApi
   // Generate upstream requestMore for every Nth consumed input element
   final def pump(): Unit = {
     try while (transferState.isExecutable) {
-      currentAction()
-    } catch { case NonFatal(e) => pumpFailed(e) }
+        currentAction()
+      }
+    catch { case NonFatal(e) => pumpFailed(e) }
 
     if (isPumpFinished) pumpFinished()
   }

@@ -477,7 +477,7 @@ object ShardCoordinator {
         case ShardRegionTerminated(region) =>
           require(regions.contains(region), s"Terminated region $region not registered: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards ++ regions(region)) else unallocatedShards
+            if (rememberEntities) unallocatedShards ++ regions(region) else unallocatedShards
           copy(regions = regions - region, shards = shards -- regions(region), unallocatedShards = newUnallocatedShards)
         case ShardRegionProxyTerminated(proxy) =>
           require(regionProxies.contains(proxy), s"Terminated region proxy $proxy not registered: $this")
@@ -486,7 +486,7 @@ object ShardCoordinator {
           require(regions.contains(region), s"Region $region not registered: $this")
           require(!shards.contains(shard), s"Shard [$shard] already allocated: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards - shard) else unallocatedShards
+            if (rememberEntities) unallocatedShards - shard else unallocatedShards
           copy(
             shards = shards.updated(shard, region),
             regions = regions.updated(region, regions(region) :+ shard),
@@ -496,7 +496,7 @@ object ShardCoordinator {
           val region = shards(shard)
           require(regions.contains(region), s"Region $region for shard [$shard] not registered: $this")
           val newUnallocatedShards =
-            if (rememberEntities) (unallocatedShards + shard) else unallocatedShards
+            if (rememberEntities) unallocatedShards + shard else unallocatedShards
           copy(
             shards = shards - shard,
             regions = regions.updated(region, regions(region).filterNot(_ == shard)),
@@ -802,7 +802,7 @@ abstract class ShardCoordinator(
       case ResendShardHost(shard, region) =>
         state.shards.get(shard) match {
           case Some(`region`) => sendHostShardMsg(shard, region)
-          case _              => //Reallocated to another region
+          case _              => // Reallocated to another region
         }
 
       case RebalanceTick =>
@@ -941,7 +941,7 @@ abstract class ShardCoordinator(
 
   private def terminate(): Unit = {
     if (aliveRegions.exists(_.path.address.hasLocalScope) || gracefulShutdownInProgress.exists(
-          _.path.address.hasLocalScope)) {
+        _.path.address.hasLocalScope)) {
       aliveRegions
         .find(_.path.address.hasLocalScope)
         .foreach(region =>
@@ -1195,7 +1195,7 @@ abstract class ShardCoordinator(
         case Some(ref) => getShardHomeSender ! ShardHome(shard, ref)
         case None =>
           if (state.regions.contains(region) && !gracefulShutdownInProgress(region) && !regionTerminationInProgress
-                .contains(region)) {
+              .contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt =>
               state = state.updated(evt)
               log.debug(
@@ -1352,7 +1352,7 @@ class PersistentShardCoordinator(
       if (verboseDebug)
         log.debug("{}: receiveRecover SnapshotOffer {}", typeName, st)
       state = st.withRememberEntities(settings.rememberEntities)
-      //Old versions of the state object may not have unallocatedShard set,
+      // Old versions of the state object may not have unallocatedShard set,
       // thus it will be null.
       if (state.unallocatedShards == null)
         state = state.copy(unallocatedShards = Set.empty)
@@ -1640,8 +1640,9 @@ private[akka] class DDataShardCoordinator(
     case UpdateTimeout(CoordinatorStateKey, Some(`evt`)) =>
       updateStateRetries += 1
 
-      val template = s"$typeName: The ShardCoordinator was unable to update a distributed state within 'updating-state-timeout': ${stateWriteConsistency.timeout.toMillis} millis (${if (terminating) "terminating"
-        else "retrying"}). Attempt $updateStateRetries. " +
+      val template =
+        s"$typeName: The ShardCoordinator was unable to update a distributed state within 'updating-state-timeout': ${stateWriteConsistency.timeout.toMillis} millis (${if (terminating) "terminating"
+          else "retrying"}). Attempt $updateStateRetries. " +
         s"Perhaps the ShardRegion has not started on all active nodes yet? event=$evt"
 
       if (updateStateRetries < 5) {

@@ -79,7 +79,8 @@ class CoordinatedShutdownSpec
       // a, b can be in any order
       result2.toSet should ===(Set("a", "b", "c"))
 
-      checkTopologicalSort(Map("b" -> phase("a"), "c" -> phase("b"), "d" -> phase("b", "c"), "e" -> phase("d"))) should ===(
+      checkTopologicalSort(Map("b" -> phase("a"), "c" -> phase("b"), "d" -> phase("b", "c"),
+        "e" -> phase("d"))) should ===(
         List("a", "b", "c", "d", "e"))
 
       val result3 =
@@ -324,13 +325,14 @@ class CoordinatedShutdownSpec
         val shouldBeCancelled = cancellables.zipWithIndex.collect {
           case (c, i) if i % 2 == 0 => c
         }
-        val cancelFutures = for {
-          _ <- cancellables
-          c <- shouldBeCancelled
-        } yield Future {
-          c.cancel() shouldBe true
-          Done
-        }
+        val cancelFutures =
+          for {
+            _ <- cancellables
+            c <- shouldBeCancelled
+          } yield Future {
+            c.cancel() shouldBe true
+            Done
+          }
         cancelFutures.foldLeft(Future.successful(Done)) {
           case (acc, fut) =>
             acc.flatMap(_ => fut)
@@ -785,7 +787,7 @@ class CoordinatedShutdownSpec
     withSystemRunning(newSystem, cs)
 
     TestKit.shutdownActorSystem(newSystem)
-    shutdownHooks should have size (0)
+    shutdownHooks should have size 0
 
     protected def myHooksCount: Int = synchronized(shutdownHooks.size)
   }

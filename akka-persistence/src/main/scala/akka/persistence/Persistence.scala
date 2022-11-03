@@ -91,7 +91,7 @@ trait PersistenceIdentity {
 //#persistence-identity
 
 trait PersistenceRecovery {
-  //#persistence-recovery
+  // #persistence-recovery
   /**
    * Called when the persistent actor is started for the first time.
    * The returned [[Recovery]] object defines how the Actor will recover its persistent state before
@@ -101,7 +101,7 @@ trait PersistenceRecovery {
    */
   def recovery: Recovery = Recovery()
 
-  //#persistence-recovery
+  // #persistence-recovery
 }
 
 trait PersistenceStash extends Stash with StashFactory {
@@ -400,18 +400,19 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     log.debug(s"Create plugin: $pluginActorName $pluginClassName")
     val pluginClass = system.dynamicAccess.getClassFor[Any](pluginClassName).get
     val pluginDispatcherId = pluginConfig.getString("plugin-dispatcher")
-    val pluginActorArgs: List[AnyRef] = try {
-      Reflect.findConstructor(pluginClass, List(pluginConfig, configPath)) // will throw if not found
-      List(pluginConfig, configPath)
-    } catch {
-      case NonFatal(_) =>
-        try {
-          Reflect.findConstructor(pluginClass, List(pluginConfig)) // will throw if not found
-          List(pluginConfig)
-        } catch {
-          case NonFatal(_) => Nil
-        } // otherwise use empty constructor
-    }
+    val pluginActorArgs: List[AnyRef] =
+      try {
+        Reflect.findConstructor(pluginClass, List(pluginConfig, configPath)) // will throw if not found
+        List(pluginConfig, configPath)
+      } catch {
+        case NonFatal(_) =>
+          try {
+            Reflect.findConstructor(pluginClass, List(pluginConfig)) // will throw if not found
+            List(pluginConfig)
+          } catch {
+            case NonFatal(_) => Nil
+          } // otherwise use empty constructor
+      }
     val pluginActorProps = Props(Deploy(dispatcher = pluginDispatcherId), pluginClass, pluginActorArgs)
     system.systemActorOf(pluginActorProps, pluginActorName)
   }
@@ -473,7 +474,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
       numberOfRanges * rangeSize == numberOfSlices,
       s"numberOfRanges [$numberOfRanges] must be a whole number divisor of numberOfSlices [$numberOfSlices].")
     (0 until numberOfRanges).map { i =>
-      (i * rangeSize until i * rangeSize + rangeSize)
+      i * rangeSize until i * rangeSize + rangeSize
     }.toVector
   }
 

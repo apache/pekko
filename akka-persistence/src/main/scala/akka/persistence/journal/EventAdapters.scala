@@ -85,7 +85,7 @@ private[akka] object EventAdapters {
     } require(
       adapterNames(boundAdapter.toString),
       s"$fqn was bound to undefined event-adapter: $boundAdapter (bindings: ${boundToAdapters
-        .mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})")
+          .mkString("[", ", ", "]")}, known adapters: ${adapters.keys.mkString})")
 
     // A Map of handler from alias to implementation (i.e. class implementing akka.serialization.Serializer)
     // For example this defines a handler named 'country': `"country" -> com.example.comain.CountryTagsAdapter`
@@ -154,12 +154,12 @@ private[akka] object EventAdapters {
    */
   private def sort[T](in: Iterable[(Class[_], T)]): immutable.Seq[(Class[_], T)] =
     in.foldLeft(new ArrayBuffer[(Class[_], T)](in.size)) { (buf, ca) =>
-        buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
-          case -1 => buf.append(ca)
-          case x  => buf.insert(x, ca)
-        }
-        buf
+      buf.indexWhere(_._1.isAssignableFrom(ca._1)) match {
+        case -1 => buf.append(ca)
+        case x  => buf.insert(x, ca)
       }
+      buf
+    }
       .to(immutable.Seq)
 
   private final def configToMap(config: Config, path: String): Map[String, String] = {

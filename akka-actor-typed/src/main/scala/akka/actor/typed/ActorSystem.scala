@@ -11,7 +11,7 @@ import scala.concurrent.{ ExecutionContextExecutor, Future }
 import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.Logger
 
-import akka.{ Done, actor => classic }
+import akka.{ actor => classic, Done }
 import akka.actor.{ Address, BootstrapSetup, ClassicActorSystemProvider }
 import akka.actor.setup.ActorSystemSetup
 import akka.actor.typed.eventstream.EventStream

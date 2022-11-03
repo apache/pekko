@@ -112,11 +112,12 @@ import akka.util.OptionVal
         }
       })
 
-    setHandler(externalOut, new OutHandler {
-      override def onPull(): Unit =
-        // external demand
-        if (!hasBeenPulled(internalIn)) pull(internalIn)
-    })
+    setHandler(externalOut,
+      new OutHandler {
+        override def onPull(): Unit =
+          // external demand
+          if (!hasBeenPulled(internalIn)) pull(internalIn)
+      })
 
     private def pushInternal(element: In): Unit = {
       push(internalOut, element)

@@ -40,8 +40,8 @@ object AkkaVersion {
                 if (mOrRc ne null) currentPatchStr.toInt - 1
                 else currentPatchStr.toInt
               if (requiredMajorStr.toInt != currentMajorStr.toInt ||
-                  requiredMinorStr.toInt > currentMinorStr.toInt ||
-                  (requiredMinorStr == currentMinorStr && requiredPatchStr.toInt > currentPatch))
+                requiredMinorStr.toInt > currentMinorStr.toInt ||
+                (requiredMinorStr == currentMinorStr && requiredPatchStr.toInt > currentPatch))
                 throw new UnsupportedAkkaVersion(
                   s"Current version of Akka is [$currentVersion], but $libraryName requires version [$requiredVersion]")
             case _ => // SNAPSHOT or unknown - you're on your own

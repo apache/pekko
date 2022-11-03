@@ -87,19 +87,19 @@ abstract class ClusterDeathWatchSpec
         val path3 = RootActorPath(third) / "user" / "subject"
         val watchEstablished = TestLatch(2)
         system.actorOf(Props(new Actor {
-          context.actorSelection(path2) ! Identify(path2)
-          context.actorSelection(path3) ! Identify(path3)
+            context.actorSelection(path2) ! Identify(path2)
+            context.actorSelection(path3) ! Identify(path3)
 
-          def receive = {
-            case ActorIdentity(`path2`, Some(ref)) =>
-              context.watch(ref)
-              watchEstablished.countDown()
-            case ActorIdentity(`path3`, Some(ref)) =>
-              context.watch(ref)
-              watchEstablished.countDown()
-            case Terminated(actor) => testActor ! actor.path
-          }
-        }).withDeploy(Deploy.local), name = "observer1")
+            def receive = {
+              case ActorIdentity(`path2`, Some(ref)) =>
+                context.watch(ref)
+                watchEstablished.countDown()
+              case ActorIdentity(`path3`, Some(ref)) =>
+                context.watch(ref)
+                watchEstablished.countDown()
+              case Terminated(actor) => testActor ! actor.path
+            }
+          }).withDeploy(Deploy.local), name = "observer1")
 
         watchEstablished.await
         enterBarrier("watch-established")

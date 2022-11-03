@@ -345,7 +345,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
 
   private def getToProto(get: Get[_]): dm.Get = {
     val timoutInMillis = get.consistency.timeout.toMillis
-    require(timoutInMillis <= 0XFFFFFFFFL, "Timeouts must fit in a 32-bit unsigned int")
+    require(timoutInMillis <= 0xFFFFFFFFL, "Timeouts must fit in a 32-bit unsigned int")
 
     val b = dm.Get.newBuilder().setKey(otherMessageToProto(get.key)).setTimeout(timoutInMillis.toInt)
 

@@ -97,14 +97,14 @@ class ClusterSingletonApiSpec
       val node2PongProbe = TestProbe[Pong.type]()(adaptedSystem2)
 
       node1PongProbe.awaitAssert({
-        node1ref ! Ping(node1PongProbe.ref)
-        node1PongProbe.expectMessage(Pong)
-      }, 3.seconds)
+          node1ref ! Ping(node1PongProbe.ref)
+          node1PongProbe.expectMessage(Pong)
+        }, 3.seconds)
 
       node2PongProbe.awaitAssert({
-        node2ref ! Ping(node2PongProbe.ref)
-        node2PongProbe.expectMessage(Pong)
-      }, 3.seconds)
+          node2ref ! Ping(node2PongProbe.ref)
+          node2PongProbe.expectMessage(Pong)
+        }, 3.seconds)
 
     }
   }

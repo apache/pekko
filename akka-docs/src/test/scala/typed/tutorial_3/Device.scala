@@ -23,11 +23,11 @@ object Device {
   final case class ReadTemperature(requestId: Long, replyTo: ActorRef[RespondTemperature]) extends Command
   final case class RespondTemperature(requestId: Long, value: Option[Double])
 
-  //#write-protocol
+  // #write-protocol
   final case class RecordTemperature(requestId: Long, value: Double, replyTo: ActorRef[TemperatureRecorded])
       extends Command
   final case class TemperatureRecorded(requestId: Long)
-  //#write-protocol
+  // #write-protocol
 }
 
 class Device(context: ActorContext[Device.Command], groupId: String, deviceId: String)

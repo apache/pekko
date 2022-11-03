@@ -91,7 +91,6 @@ trait ExtensionId[T <: Extension] {
    * {{{
    * override def get(system: ActorSystem): TheExtension = super.get(system)
    * }}}
-   *
    */
   def get(system: ActorSystem): T = apply(system)
 
@@ -103,7 +102,6 @@ trait ExtensionId[T <: Extension] {
    * {{{
    * override def get(system: ClassicActorSystemProvider): TheExtension = super.get(system)
    * }}}
-   *
    */
   def get(system: ClassicActorSystemProvider): T = apply(system)
 

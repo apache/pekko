@@ -48,12 +48,12 @@ class FlowDelaySpec extends StreamSpec {
         .delay(300.millis)
         .runWith(TestSink.probe[Int])
         .request(2)
-        .expectNoMessage(200.millis) //delay
-        .expectNext(200.millis, 1) //delayed element
-        .expectNext(100.millis, 2) //buffered element
+        .expectNoMessage(200.millis) // delay
+        .expectNext(200.millis, 1) // delayed element
+        .expectNext(100.millis, 2) // buffered element
         .expectNoMessage(200.millis)
         .request(1)
-        .expectNext(3) //buffered element
+        .expectNext(3) // buffered element
         .expectComplete()
     }
 
@@ -167,7 +167,7 @@ class FlowDelaySpec extends StreamSpec {
       c.expectNoMessage(300.millis)
       pSub.sendNext(17)
       c.expectNext(100.millis, 1)
-      //fail will terminate despite of non empty internal buffer
+      // fail will terminate despite of non empty internal buffer
       pSub.sendError(new RuntimeException() with NoStackTrace)
     }
 

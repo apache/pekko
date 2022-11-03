@@ -184,7 +184,7 @@ import akka.util.PrettyDuration.PrettyPrintableDuration
 
       @tailrec private def clearUnacknowledged(ackedSeqNo: Long): Unit = {
         if (!unacknowledged.isEmpty &&
-            unacknowledged.peek().message.asInstanceOf[SystemMessageEnvelope].seqNo <= ackedSeqNo) {
+          unacknowledged.peek().message.asInstanceOf[SystemMessageEnvelope].seqNo <= ackedSeqNo) {
           unacknowledged.removeFirst()
           if (unacknowledged.isEmpty)
             cancelTimer(resendInterval)

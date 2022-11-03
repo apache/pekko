@@ -52,10 +52,10 @@ final class Source[+Out, +Mat](
       combine: (Mat, Mat2) => Mat3): Source[T, Mat3] = {
     if (flow.traversalBuilder eq Flow.identityTraversalBuilder)
       if (combine == Keep.left)
-        //optimization by returning this
-        this.asInstanceOf[Source[T, Mat3]] //Mat == Mat3, due to Keep.left
+        // optimization by returning this
+        this.asInstanceOf[Source[T, Mat3]] // Mat == Mat3, due to Keep.left
       else if (combine == Keep.right || combine == Keep.none) // Mat3 = NotUsed
-        //optimization with LinearTraversalBuilder.empty()
+        // optimization with LinearTraversalBuilder.empty()
         new Source[T, Mat3](
           traversalBuilder.append(LinearTraversalBuilder.empty(), flow.shape, combine),
           SourceShape(shape.out).asInstanceOf[SourceShape[T]])
@@ -235,7 +235,7 @@ final class Source[+Out, +Mat](
 
   /**
    * Transform this source whose element is ``e`` into a source producing tuple ``(e, f(e))``
-  **/
+   */
   def asSourceWithContext[Ctx](f: Out => Ctx): SourceWithContext[Out, Ctx, Mat] =
     new SourceWithContext(this.map(e => (e, f(e))))
 
@@ -676,17 +676,16 @@ object Source {
    *
    * See also [[akka.stream.scaladsl.Source.queue]].
    *
-   *
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   @deprecated("Use variant accepting completion and failure matchers instead", "2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     actorRef({
-      case akka.actor.Status.Success(s: CompletionStrategy) => s
-      case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
-      case akka.actor.Status.Success                        => CompletionStrategy.Draining
-    }, { case akka.actor.Status.Failure(cause)              => cause }, bufferSize, overflowStrategy)
+        case akka.actor.Status.Success(s: CompletionStrategy) => s
+        case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
+        case akka.actor.Status.Success                        => CompletionStrategy.Draining
+      }, { case akka.actor.Status.Failure(cause) => cause }, bufferSize, overflowStrategy)
 
   /**
    * INTERNAL API
@@ -741,11 +740,12 @@ object Source {
    */
   @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "2.6.0")
   def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
-    actorRefWithAck(None, ackMessage, {
-      case akka.actor.Status.Success(s: CompletionStrategy) => s
-      case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
-      case akka.actor.Status.Success                        => CompletionStrategy.Draining
-    }, { case akka.actor.Status.Failure(cause)              => cause })
+    actorRefWithAck(None, ackMessage,
+      {
+        case akka.actor.Status.Success(s: CompletionStrategy) => s
+        case akka.actor.Status.Success(_)                     => CompletionStrategy.Draining
+        case akka.actor.Status.Success                        => CompletionStrategy.Draining
+      }, { case akka.actor.Status.Failure(cause) => cause })
 
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
@@ -755,7 +755,7 @@ object Source {
     Source.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
       val c = b.add(strategy(rest.size + 2))
-      first ~> c.in(0)
+      first  ~> c.in(0)
       second ~> c.in(1)
 
       @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =

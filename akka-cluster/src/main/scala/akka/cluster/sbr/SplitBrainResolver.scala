@@ -475,7 +475,7 @@ import akka.remote.artery.ThisActorSystemQuarantinedEvent
     log.warning(
       ClusterLogMarker.sbrDowning(decision),
       s"SBR took decision $decision and is downing [${nodesToDown.map(_.address).mkString(", ")}]${if (downMyself) " including myself,"
-      else ""}, " +
+        else ""}, " +
       s"[${strategy.unreachable.size}] unreachable of [${strategy.members.size}] members" +
       indirectlyConnectedLogMessage +
       s", all members in DC [${strategy.allMembersInDC.mkString(", ")}], full reachability status: [${strategy.reachability}]" +

@@ -145,11 +145,12 @@ private object ActorRefSource {
         }
       }
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = {
-          tryPush()
-        }
-      })
+      setHandler(out,
+        new OutHandler {
+          override def onPull(): Unit = {
+            tryPush()
+          }
+        })
     }
 
     (stage, stage.ref)

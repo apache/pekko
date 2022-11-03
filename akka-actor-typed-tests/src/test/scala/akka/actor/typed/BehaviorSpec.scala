@@ -488,9 +488,9 @@ class DeferredScalaBehaviorSpec extends ImmutableWithSignalScalaBehaviorSpec {
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Done]("deferredListener")
     (SBehaviors.setup(_ => {
-      inbox.ref ! Done
-      super.behavior(monitor)._1
-    }), inbox)
+        inbox.ref ! Done
+        super.behavior(monitor)._1
+      }), inbox)
   }
 
   override def checkAux(signal: Signal, aux: Aux): Unit =
@@ -594,10 +594,12 @@ class ImmutableJavaBehaviorSpec extends Messages with Become with Stoppable {
 class TransformMessagesJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec with Reuse with Siphon {
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Command]("transformMessagesListener")
-    JBehaviors.transformMessages(classOf[Command], super.behavior(monitor)._1, pf(_.`match`(classOf[Command], fi(x => {
-      inbox.ref ! x
-      x
-    })))) -> inbox
+    JBehaviors.transformMessages(classOf[Command], super.behavior(monitor)._1,
+      pf(_.`match`(classOf[Command],
+        fi(x => {
+          inbox.ref ! x
+          x
+        })))) -> inbox
   }
 }
 
@@ -607,9 +609,9 @@ class DeferredJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec {
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Done]("deferredListener")
     (JBehaviors.setup(_ => {
-      inbox.ref ! Done
-      super.behavior(monitor)._1
-    }), inbox)
+        inbox.ref ! Done
+        super.behavior(monitor)._1
+      }), inbox)
   }
 
   override def checkAux(signal: Signal, aux: Aux): Unit =

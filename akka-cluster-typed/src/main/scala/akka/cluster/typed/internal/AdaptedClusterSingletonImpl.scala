@@ -14,7 +14,7 @@ import akka.actor.typed.internal.adapter.ActorSystemAdapter
 import akka.actor.typed.scaladsl.Behaviors
 import akka.annotation.InternalApi
 import akka.cluster.ClusterSettings.DataCenter
-import akka.cluster.singleton.{ ClusterSingletonProxy, ClusterSingletonManager => OldSingletonManager }
+import akka.cluster.singleton.{ ClusterSingletonManager => OldSingletonManager, ClusterSingletonProxy }
 import akka.cluster.typed
 import akka.cluster.typed.{ Cluster, ClusterSingleton, ClusterSingletonImpl, ClusterSingletonSettings }
 

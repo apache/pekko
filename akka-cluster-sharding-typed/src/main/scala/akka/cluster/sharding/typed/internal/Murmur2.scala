@@ -29,20 +29,21 @@ import akka.annotation.InternalApi
  */
 @InternalApi
 private[sharding] object Murmur2 {
-  def toPositive(number: Int): Int = number & 0x7fffffff
+  def toPositive(number: Int): Int = number & 0x7FFFFFFF
   def murmur2(data: Array[Byte]) = {
     val length = data.length
-    val seed = 0x9747b28c
+    val seed = 0x9747B28C
     // 'm' and 'r' are mixing constants generated offline.
     // They're not really 'magic', they just happen to work well.
-    val m = 0x5bd1e995
+    val m = 0x5BD1E995
     val r = 24
     // Initialize the hash to a random value
     var h = seed ^ length
     val length4 = length / 4
     for (i <- 0 until length4) {
       val i4 = i * 4
-      var k = (data(i4 + 0) & 0xff) + ((data(i4 + 1) & 0xff) << 8) + ((data(i4 + 2) & 0xff) << 16) + ((data(i4 + 3) & 0xff) << 24)
+      var k = (data(i4 + 0) & 0xFF) + ((data(i4 + 1) & 0xFF) << 8) + ((data(i4 + 2) & 0xFF) << 16) + ((data(
+        i4 + 3) & 0xFF) << 24)
       k *= m
       k ^= k >>> r
       k *= m
@@ -52,16 +53,16 @@ private[sharding] object Murmur2 {
     // Handle the last few bytes of the input array
     length % 4 match {
       case 3 =>
-        h ^= (data((length & ~3) + 2) & 0xff) << 16
-        h ^= (data((length & ~3) + 1) & 0xff) << 8
-        h ^= data(length & ~3) & 0xff
+        h ^= (data((length & ~3) + 2) & 0xFF) << 16
+        h ^= (data((length & ~3) + 1) & 0xFF) << 8
+        h ^= data(length & ~3) & 0xFF
         h *= m
       case 2 =>
-        h ^= (data((length & ~3) + 1) & 0xff) << 8
-        h ^= data(length & ~3) & 0xff
+        h ^= (data((length & ~3) + 1) & 0xFF) << 8
+        h ^= data(length & ~3) & 0xFF
         h *= m
       case 1 =>
-        h ^= data(length & ~3) & 0xff
+        h ^= data(length & ~3) & 0xFF
         h *= m
       case 0 =>
       // fall through

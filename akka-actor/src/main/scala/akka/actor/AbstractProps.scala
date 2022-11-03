@@ -14,7 +14,6 @@ import akka.japi.Creator
 import akka.util.Reflect
 
 /**
- *
  * Java API: Factory for Props instances.
  */
 private[akka] trait AbstractProps {
@@ -26,7 +25,7 @@ private[akka] trait AbstractProps {
     if (Modifier.isAbstract(clazz.getModifiers)) {
       throw new IllegalArgumentException(s"Actor class [${clazz.getName}] must not be abstract")
     } else if (!classOf[Actor].isAssignableFrom(clazz) &&
-               !classOf[IndirectActorProducer].isAssignableFrom(clazz)) {
+      !classOf[IndirectActorProducer].isAssignableFrom(clazz)) {
       throw new IllegalArgumentException(
         s"Actor class [${clazz.getName}] must be subClass of akka.actor.Actor or akka.actor.IndirectActorProducer.")
     }

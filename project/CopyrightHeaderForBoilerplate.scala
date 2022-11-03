@@ -7,7 +7,7 @@ package akka
 import de.heikoseeberger.sbtheader.HeaderPlugin
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import sbt.Keys.sourceDirectory
-import sbt.{ Compile, Def, Plugins, Test, inConfig, _ }
+import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
 import spray.boilerplate.BoilerplatePlugin
 
 object CopyrightHeaderForBoilerplate extends CopyrightHeader {

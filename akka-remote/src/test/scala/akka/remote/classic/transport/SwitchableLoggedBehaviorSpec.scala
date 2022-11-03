@@ -19,7 +19,7 @@ object SwitchableLoggedBehaviorSpec {
 class SwitchableLoggedBehaviorSpec extends AkkaSpec with DefaultTimeout {
   import akka.remote.classic.transport.SwitchableLoggedBehaviorSpec._
 
-  private def defaultBehavior = new SwitchableLoggedBehavior[Unit, Int]((_) => Future.successful(3), (_) => ())
+  private def defaultBehavior = new SwitchableLoggedBehavior[Unit, Int](_ => Future.successful(3), _ => ())
 
   "A SwitchableLoggedBehavior" must {
 
@@ -32,10 +32,10 @@ class SwitchableLoggedBehaviorSpec extends AkkaSpec with DefaultTimeout {
     "be able to push generic behavior" in {
       val behavior = defaultBehavior
 
-      behavior.push((_) => Future.successful(4))
+      behavior.push(_ => Future.successful(4))
       Await.result(behavior(()), timeout.duration) should ===(4)
 
-      behavior.push((_) => Future.failed(TestException))
+      behavior.push(_ => Future.failed(TestException))
       behavior(()).value match {
         case Some(Failure(`TestException`)) =>
         case _                              => fail("Expected exception")

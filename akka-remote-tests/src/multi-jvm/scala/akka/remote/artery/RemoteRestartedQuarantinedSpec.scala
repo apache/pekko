@@ -126,7 +126,7 @@ abstract class RemoteRestartedQuarantinedSpec extends RemotingMultiNodeSpec(Remo
         freshSystem
           .actorSelection(RootActorPath(firstAddress) / "user" / "subject")
           .tell(Identify("subject"), probe.ref)
-        probe.expectMsgType[ActorIdentity](5.seconds).ref should not be (None)
+        probe.expectMsgType[ActorIdentity](5.seconds).ref should not be None
 
         // Now the other system will be able to pass, too
         freshSystem.actorOf(Props[Subject](), "subject")

@@ -10,8 +10,8 @@ import akka.actor.typed._
 import akka.annotation.{ DoNotInherit, InternalApi }
 import akka.cluster.ClusterSettings.DataCenter
 import akka.cluster.singleton.{
-  ClusterSingletonProxySettings,
-  ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings
+  ClusterSingletonManagerSettings => ClassicClusterSingletonManagerSettings,
+  ClusterSingletonProxySettings
 }
 import akka.cluster.typed.internal.AdaptedClusterSingletonImpl
 import akka.coordination.lease.LeaseUsageSettings

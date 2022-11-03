@@ -103,7 +103,7 @@ object Sink {
 
   /**
    * A [[Sink]] that will always backpressure never cancel and never consume any elements from the stream.
-   * */
+   */
   def never[T]: Sink[T, CompletionStage[Done]] =
     new Sink(scaladsl.Sink.never.toCompletionStage())
 
@@ -254,7 +254,6 @@ object Sink {
    * of the actor will grow. For potentially slow consumer actors it is recommended
    * to use a bounded mailbox with zero `mailbox-push-timeout-time` or use a rate
    * limiting operator in front of this `Sink`.
-   *
    */
   def actorRef[In](ref: ActorRef, onCompleteMessage: Any): Sink[In, NotUsed] =
     new Sink(scaladsl.Sink.actorRef[In](ref, onCompleteMessage, (t: Throwable) => Status.Failure(t)))
@@ -482,7 +481,7 @@ object Sink {
    */
   def lazyCompletionStageSink[T, M](create: Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[M]] =
     new Sink(scaladsl.Sink.lazyFutureSink { () =>
-      create.create().toScala.map(_.asScala)((ExecutionContexts.parasitic))
+      create.create().toScala.map(_.asScala)(ExecutionContexts.parasitic)
     }).mapMaterializedValue(_.toJava)
 }
 

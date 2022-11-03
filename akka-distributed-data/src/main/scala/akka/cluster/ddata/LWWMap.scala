@@ -200,7 +200,7 @@ final class LWWMap[A, B] private[akka] (private[akka] val underlying: ORMap[A, L
 
   // this class cannot be a `case class` because we need different `unapply`
 
-  override def toString: String = s"LWW$entries" //e.g. LWWMap(a -> 1, b -> 2)
+  override def toString: String = s"LWW$entries" // e.g. LWWMap(a -> 1, b -> 2)
 
   override def equals(o: Any): Boolean = o match {
     case other: LWWMap[_, _] => underlying == other.underlying

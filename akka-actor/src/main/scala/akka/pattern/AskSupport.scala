@@ -81,7 +81,6 @@ trait AskSupport {
    *     EnrichedMessage(response)
    *   } pipeTo nextActor
    * }}}
-   *
    */
   def ask(actorRef: ActorRef, message: Any)(implicit timeout: Timeout): Future[Any] =
     actorRef.internalAsk(message, timeout, ActorRef.noSender)
@@ -148,7 +147,6 @@ trait AskSupport {
    *     EnrichedMessage(response)
    *   } pipeTo nextActor
    * }}}
-   *
    */
   def ask(actorSelection: ActorSelection, message: Any)(implicit timeout: Timeout): Future[Any] =
     actorSelection.internalAsk(message, timeout, ActorRef.noSender)
@@ -270,7 +268,6 @@ trait ExplicitAskSupport {
    *   EnrichedMessage(response)
    * } pipeTo nextActor
    * }}}
-   *
    */
   def ask(actorSelection: ActorSelection, messageFactory: ActorRef => Any)(implicit timeout: Timeout): Future[Any] =
     actorSelection.internalAsk(messageFactory, timeout, ActorRef.noSender)
@@ -335,7 +332,7 @@ final class AskableActorRef(val actorRef: ActorRef) extends AnyVal {
   protected def ask(message: Any, timeout: Timeout): Future[Any] =
     internalAsk(message, timeout, ActorRef.noSender)
 
-  //todo add scaladoc
+  // todo add scaladoc
   def ask(message: Any)(implicit timeout: Timeout, sender: ActorRef = Actor.noSender): Future[Any] =
     internalAsk(message, timeout, sender)
 

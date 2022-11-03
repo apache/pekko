@@ -154,7 +154,7 @@ class ReplicatedDataSerializerSpec
       }
       val numberOfBytes = checkSerialization(largeSet)
       info(s"size of GSet with ${largeSet.size} elements: $numberOfBytes bytes")
-      numberOfBytes should be <= (80000)
+      numberOfBytes should be <= 80000
     }
 
     "serialize large ORSet" in {
@@ -170,7 +170,7 @@ class ReplicatedDataSerializerSpec
       val numberOfBytes = checkSerialization(largeSet)
       // note that ORSet is compressed, and therefore smaller than GSet
       info(s"size of ORSet with ${largeSet.size} elements: $numberOfBytes bytes")
-      numberOfBytes should be <= (50000)
+      numberOfBytes should be <= 50000
     }
 
     "serialize Flag" in {

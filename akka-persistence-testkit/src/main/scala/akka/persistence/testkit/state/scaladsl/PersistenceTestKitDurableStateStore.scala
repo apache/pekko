@@ -115,11 +115,11 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     this.synchronized {
       val currentGlobalOffset = lastGlobalOffset.get()
       changes(tag, offset).takeWhile(_.offset match {
-        case Sequence(fromOffset) =>
-          fromOffset < currentGlobalOffset
-        case offset =>
-          throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
-      }, inclusive = true)
+          case Sequence(fromOffset) =>
+            fromOffset < currentGlobalOffset
+          case offset =>
+            throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
+        }, inclusive = true)
     }
 
   override def currentChangesBySlices(
@@ -130,11 +130,11 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     this.synchronized {
       val currentGlobalOffset = lastGlobalOffset.get()
       changesBySlices(entityType, minSlice, maxSlice, offset).takeWhile(_.offset match {
-        case Sequence(fromOffset) =>
-          fromOffset < currentGlobalOffset
-        case offset =>
-          throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
-      }, inclusive = true)
+          case Sequence(fromOffset) =>
+            fromOffset < currentGlobalOffset
+          case offset =>
+            throw new UnsupportedOperationException(s"$offset not supported in PersistenceTestKitDurableStateStore.")
+        }, inclusive = true)
     }
 
   override def changesBySlices(
@@ -151,7 +151,8 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
       }
       def bySliceFromOffset(rec: Record[A]) = {
         val slice = persistence.sliceForPersistenceId(rec.persistenceId)
-        PersistenceId.extractEntityType(rec.persistenceId) == entityType && slice >= minSlice && slice <= maxSlice && rec.globalOffset > fromOffset
+        PersistenceId.extractEntityType(
+          rec.persistenceId) == entityType && slice >= minSlice && slice <= maxSlice && rec.globalOffset > fromOffset
       }
       def bySliceFromOffsetNotDeleted(rec: Record[A]) =
         bySliceFromOffset(rec) && storeContains(rec.persistenceId)

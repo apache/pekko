@@ -83,9 +83,10 @@ class ScheduleBenchmark {
     val tryWithNext = (1 to to)
       .foldLeft(0.millis -> List[Cancellable]()) {
         case ((interv, c), idx) =>
-          (interv + interval, scheduler.scheduleOnce(interv) {
-            op(idx)
-          } :: c)
+          (interv + interval,
+            scheduler.scheduleOnce(interv) {
+              op(idx)
+            } :: c)
       }
       ._2
     promise.future.onComplete {

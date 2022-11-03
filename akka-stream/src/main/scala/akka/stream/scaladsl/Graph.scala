@@ -229,7 +229,7 @@ final class MergePreferred[T](val secondaryPorts: Int, val eagerComplete: Boolea
     }
 
     override def preStart(): Unit = {
-      //while initializing this `MergePreferredShape`, the `preferred` port gets added to `inlets` by side-effect.
+      // while initializing this `MergePreferredShape`, the `preferred` port gets added to `inlets` by side-effect.
       shape.inlets.foreach(tryPull)
     }
 
@@ -451,7 +451,6 @@ object Interleave {
  * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
  *
  * '''Cancels when''' downstream cancels
- *
  */
 final class Interleave[T](val inputPorts: Int, val segmentSize: Int, val eagerClose: Boolean)
     extends GraphStage[UniformFanInShape[T, T]] {
@@ -568,9 +567,9 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
       // all fan-in stages need to eagerly pull all inputs to get cycles started
       pull(right)
       read(left)(l => {
-        other = l
-        readR()
-      }, () => passAlong(right, out))
+          other = l
+          readR()
+        }, () => passAlong(right, out))
     }
   }
 }
@@ -599,7 +598,6 @@ object Broadcast {
  *
  * '''Cancels when'''
  *   If eagerCancel is enabled: when any downstream cancels; otherwise: when all downstreams cancel
- *
  */
 final class Broadcast[T](val outputPorts: Int, val eagerCancel: Boolean) extends GraphStage[UniformFanOutShape[T, T]] {
   // one output might seem counter intuitive but saves us from special handling in other places
@@ -696,7 +694,6 @@ object WireTap {
  * '''Completes when''' upstream completes
  *
  * '''Cancels when''' the 'main' output cancels
- *
  */
 @InternalApi
 private[stream] final class WireTap[T] extends GraphStage[FanOutShape2[T, T, T]] {
@@ -709,27 +706,29 @@ private[stream] final class WireTap[T] extends GraphStage[FanOutShape2[T, T, T]]
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
     private var pendingTap: Option[T] = None
 
-    setHandler(in, new InHandler {
-      override def onPush() = {
-        val elem = grab(in)
-        push(outMain, elem)
-        if (isAvailable(outTap)) {
-          push(outTap, elem)
-        } else {
-          pendingTap = Some(elem)
+    setHandler(in,
+      new InHandler {
+        override def onPush() = {
+          val elem = grab(in)
+          push(outMain, elem)
+          if (isAvailable(outTap)) {
+            push(outTap, elem)
+          } else {
+            pendingTap = Some(elem)
+          }
         }
-      }
-    })
+      })
 
-    setHandler(outMain, new OutHandler {
-      override def onPull() = {
-        pull(in)
-      }
+    setHandler(outMain,
+      new OutHandler {
+        override def onPull() = {
+          pull(in)
+        }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
-        cancelStage(cause)
-      }
-    })
+        override def onDownstreamFinish(cause: Throwable): Unit = {
+          cancelStage(cause)
+        }
+      })
 
     // The 'tap' output can neither backpressure, nor cancel, the stage.
     setHandler(
@@ -745,11 +744,12 @@ private[stream] final class WireTap[T] extends GraphStage[FanOutShape2[T, T, T]]
         }
 
         override def onDownstreamFinish(cause: Throwable): Unit = {
-          setHandler(in, new InHandler {
-            override def onPush() = {
-              push(outMain, grab(in))
-            }
-          })
+          setHandler(in,
+            new InHandler {
+              override def onPush() = {
+                push(outMain, grab(in))
+              }
+            })
           // Allow any outstanding element to be garbage-collected
           pendingTap = None
         }
@@ -770,7 +770,8 @@ object Partition {
    *
    * @param outputPorts number of output ports
    * @param partitioner function deciding which output each element will be targeted
-   */ // FIXME BC add `eagerCancel: Boolean = false` parameter
+   */
+  // FIXME BC add `eagerCancel: Boolean = false` parameter
   def apply[T](outputPorts: Int, partitioner: T => Int): Partition[T] = new Partition(outputPorts, partitioner, false)
 }
 
@@ -1237,19 +1238,20 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
 
       shape.inlets.zipWithIndex.foreach {
         case (in, i) =>
-          setHandler(in, new InHandler {
-            override def onPush(): Unit = {
-              // Only one context can be propagated. Picked the first element as an arbitrary but deterministic choice.
-              if (i == 0) contextPropagation.suspendContext()
-              pending -= 1
-              if (pending == 0) pushAll()
-            }
+          setHandler(in,
+            new InHandler {
+              override def onPush(): Unit = {
+                // Only one context can be propagated. Picked the first element as an arbitrary but deterministic choice.
+                if (i == 0) contextPropagation.suspendContext()
+                pending -= 1
+                if (pending == 0) pushAll()
+              }
 
-            override def onUpstreamFinish(): Unit = {
-              if (!isAvailable(in)) completeStage()
-              willShutDown = true
-            }
-          })
+              override def onUpstreamFinish(): Unit = {
+                if (!isAvailable(in)) completeStage()
+                willShutDown = true
+              }
+            })
       }
 
       def onPull(): Unit = {
@@ -1422,15 +1424,16 @@ private[stream] final class OrElse[T] extends GraphStage[UniformFanInShape[T, T]
         }
       }
 
-      setHandler(secondary, new InHandler {
-        override def onPush(): Unit = {
-          push(out, grab(secondary))
-        }
+      setHandler(secondary,
+        new InHandler {
+          override def onPush(): Unit = {
+            push(out, grab(secondary))
+          }
 
-        override def onUpstreamFinish(): Unit = {
-          if (isClosed(primary)) completeStage()
-        }
-      })
+          override def onUpstreamFinish(): Unit = {
+            if (isClosed(primary)) completeStage()
+          }
+        })
 
       setHandlers(primary, out, this)
     }
@@ -1445,7 +1448,7 @@ object MergeSequence {
 
   private implicit def ordering[T]: Ordering[Pushed[T]] = Ordering.by[Pushed[T], Long](_.sequence).reverse
 
-  /** @see [[MergeSequence]] **/
+  /** @see [[MergeSequence]] * */
   def apply[T](inputPorts: Int = 2)(extractSequence: T => Long): Graph[UniformFanInShape[T, T], NotUsed] =
     GraphStages.withDetachedInputs(new MergeSequence[T](inputPorts)(extractSequence))
 }
@@ -1675,9 +1678,10 @@ object GraphDSL extends GraphApply {
      * @return The outlet that will emit the materialized value.
      */
     def materializedValue: Outlet[M @uncheckedVariance] =
-      add(Source.maybe[M], { (prev: M, prom: Promise[Option[M]]) =>
-        prom.success(Some(prev)); prev
-      }).out
+      add(Source.maybe[M],
+        { (prev: M, prom: Promise[Option[M]]) =>
+          prom.success(Some(prev)); prev
+        }).out
 
     private[GraphDSL] def traversalBuilder: TraversalBuilder = traversalBuilderInProgress
 

@@ -23,7 +23,7 @@ import akka.serialization.jackson.CborSerializable
  */
 object AccountExampleWithCommandHandlersInState {
 
-  //#account-entity
+  // #account-entity
   object AccountEntity {
     // Command
     sealed trait Command extends CborSerializable
@@ -145,6 +145,6 @@ object AccountExampleWithCommandHandlersInState {
     }
 
   }
-  //#account-entity
+  // #account-entity
 
 }

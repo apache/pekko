@@ -22,7 +22,7 @@ import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 object GracefulStopDocSpec {
 
-  //#master-actor
+  // #master-actor
 
   object MasterControlProgram {
     sealed trait Command
@@ -51,9 +51,9 @@ object GracefulStopDocSpec {
         }
     }
   }
-  //#master-actor
+  // #master-actor
 
-  //#worker-actor
+  // #worker-actor
 
   object Job {
     sealed trait Command
@@ -66,10 +66,10 @@ object GracefulStopDocSpec {
       }
     }
   }
-  //#worker-actor
+  // #worker-actor
 
   object IllustrateWatch {
-    //#master-actor-watch
+    // #master-actor-watch
 
     object MasterControlProgram {
       sealed trait Command
@@ -93,11 +93,11 @@ object GracefulStopDocSpec {
           }
       }
     }
-    //#master-actor-watch
+    // #master-actor-watch
   }
 
   object IllustrateWatchWith {
-    //#master-actor-watchWith
+    // #master-actor-watchWith
 
     object MasterControlProgram {
       sealed trait Command
@@ -121,7 +121,7 @@ object GracefulStopDocSpec {
         }
       }
     }
-    //#master-actor-watchWith
+    // #master-actor-watchWith
   }
 
 }
@@ -133,7 +133,7 @@ class GracefulStopDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
   "Graceful stop example" must {
 
     "start some workers" in {
-      //#start-workers
+      // #start-workers
       import MasterControlProgram._
 
       val system: ActorSystem[Command] = ActorSystem(MasterControlProgram(), "B6700")
@@ -148,7 +148,7 @@ class GracefulStopDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike
       system.terminate()
 
       Await.result(system.whenTerminated, 3.seconds)
-      //#start-workers
+      // #start-workers
     }
 
     "gracefully stop workers and master" in {

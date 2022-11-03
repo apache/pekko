@@ -32,8 +32,8 @@ class FlowJoinSpec extends StreamSpec("""
         import GraphDSL.Implicits._
         val merge = b.add(Merge[Int](2))
         val broadcast = b.add(Broadcast[Int](2))
-        source ~> merge.in(0)
-        merge.out ~> broadcast.in
+        source                         ~> merge.in(0)
+        merge.out                      ~> broadcast.in
         broadcast.out(0).grouped(1000) ~> Sink.fromSubscriber(probe)
 
         FlowShape(merge.in(1), broadcast.out(1))
@@ -60,8 +60,8 @@ class FlowJoinSpec extends StreamSpec("""
         import GraphDSL.Implicits._
         val merge = b.add(Merge[String](2))
         val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
-        source ~> merge.in(0)
-        merge.out ~> broadcast.in
+        source           ~> merge.in(0)
+        merge.out        ~> broadcast.in
         broadcast.out(0) ~> sink
 
         FlowShape(merge.in(1), broadcast.out(1))
@@ -77,8 +77,8 @@ class FlowJoinSpec extends StreamSpec("""
         import GraphDSL.Implicits._
         val merge = b.add(MergePreferred[String](1))
         val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
-        source ~> merge.preferred
-        merge.out ~> broadcast.in
+        source           ~> merge.preferred
+        merge.out        ~> broadcast.in
         broadcast.out(0) ~> sink
 
         FlowShape(merge.in(0), broadcast.out(1))
@@ -94,8 +94,8 @@ class FlowJoinSpec extends StreamSpec("""
         import GraphDSL.Implicits._
         val zip = b.add(Zip[String, String]())
         val broadcast = b.add(Broadcast[(String, String)](2))
-        source ~> zip.in0
-        zip.out ~> broadcast.in
+        source           ~> zip.in0
+        zip.out          ~> broadcast.in
         broadcast.out(0) ~> sink
 
         FlowShape(zip.in1, broadcast.out(1))
@@ -107,7 +107,7 @@ class FlowJoinSpec extends StreamSpec("""
         val merge = b.add(Merge[String](2))
 
         ignition ~> merge.in(0)
-        flow ~> merge.in(1)
+        flow     ~> merge.in(1)
 
         FlowShape(flow.in, merge.out)
       })
@@ -123,8 +123,8 @@ class FlowJoinSpec extends StreamSpec("""
           import GraphDSL.Implicits._
           val concat = b.add(Concat[String](2))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
-          source ~> concat.in(0)
-          concat.out ~> broadcast.in
+          source           ~> concat.in(0)
+          concat.out       ~> broadcast.in
           broadcast.out(0) ~> sink
 
           FlowShape(concat.in(1), broadcast.out(1))
@@ -145,8 +145,8 @@ class FlowJoinSpec extends StreamSpec("""
         import GraphDSL.Implicits._
         val merge = b.add(Interleave[String](2, 1))
         val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
-        source ~> merge.in(0)
-        merge.out ~> broadcast.in
+        source           ~> merge.in(0)
+        merge.out        ~> broadcast.in
         broadcast.out(0) ~> sink
 
         FlowShape(merge.in(1), broadcast.out(1))

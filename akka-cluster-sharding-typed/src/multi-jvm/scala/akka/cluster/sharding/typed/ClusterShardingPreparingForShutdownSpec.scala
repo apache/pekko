@@ -91,11 +91,11 @@ class ClusterShardingPreparingForShutdownSpec
         cluster.manager ! PrepareForFullClusterShutdown
       }
       awaitAssert({
-        withClue("members: " + cluster.state.members) {
-          cluster.selfMember.status shouldEqual MemberStatus.ReadyForShutdown
-          cluster.state.members.unsorted.map(_.status) shouldEqual Set(MemberStatus.ReadyForShutdown)
-        }
-      }, 10.seconds)
+          withClue("members: " + cluster.state.members) {
+            cluster.selfMember.status shouldEqual MemberStatus.ReadyForShutdown
+            cluster.state.members.unsorted.map(_.status) shouldEqual Set(MemberStatus.ReadyForShutdown)
+          }
+        }, 10.seconds)
       enterBarrier("preparation-complete")
 
       shardRegion ! ShardingEnvelope("id2", Pinger.Ping(2, probe.ref))
@@ -104,26 +104,27 @@ class ClusterShardingPreparingForShutdownSpec
       runOn(second) {
         cluster.manager ! Leave(address(second))
       }
-      awaitAssert({
-        runOn(first, third) {
-          withClue("members: " + cluster.state.members) {
-            cluster.state.members.size shouldEqual 2
+      awaitAssert(
+        {
+          runOn(first, third) {
+            withClue("members: " + cluster.state.members) {
+              cluster.state.members.size shouldEqual 2
+            }
           }
-        }
-        runOn(second) {
-          withClue("self member: " + cluster.selfMember) {
-            cluster.selfMember.status shouldEqual MemberStatus.Removed
+          runOn(second) {
+            withClue("self member: " + cluster.selfMember) {
+              cluster.selfMember.status shouldEqual MemberStatus.Removed
+            }
           }
-        }
-      }, 5.seconds) // keep this lower than coordinated shutdown timeout
+        }, 5.seconds) // keep this lower than coordinated shutdown timeout
 
       // trigger creation of a new shard should be fine even though one node left
       runOn(first, third) {
 
         awaitAssert({
-          shardRegion ! ShardingEnvelope("id3", Pinger.Ping(3, probe.ref))
-          probe.expectMessage(Pong(3))
-        }, 10.seconds)
+            shardRegion ! ShardingEnvelope("id3", Pinger.Ping(3, probe.ref))
+            probe.expectMessage(Pong(3))
+          }, 10.seconds)
       }
       enterBarrier("new-shards-verified")
 
@@ -132,10 +133,10 @@ class ClusterShardingPreparingForShutdownSpec
         cluster.manager ! Leave(address(third))
       }
       awaitAssert({
-        withClue("self member: " + cluster.selfMember) {
-          cluster.selfMember.status shouldEqual Removed
-        }
-      }, 15.seconds)
+          withClue("self member: " + cluster.selfMember) {
+            cluster.selfMember.status shouldEqual Removed
+          }
+        }, 15.seconds)
       enterBarrier("done")
     }
   }

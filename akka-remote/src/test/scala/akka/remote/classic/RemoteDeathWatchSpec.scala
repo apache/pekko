@@ -94,14 +94,14 @@ akka.actor.warn-about-java-serializer-usage = off
     val path = RootActorPath(Address(protocol, system.name, "unknownhost", 2552)) / "user" / "subject"
 
     system.actorOf(Props(new Actor {
-      @nowarn
-      val watchee = RARP(context.system).provider.resolveActorRef(path)
-      context.watch(watchee)
+        @nowarn
+        val watchee = RARP(context.system).provider.resolveActorRef(path)
+        context.watch(watchee)
 
-      def receive = {
-        case t: Terminated => testActor ! t.actor.path
-      }
-    }).withDeploy(Deploy.local), name = "observer2")
+        def receive = {
+          case t: Terminated => testActor ! t.actor.path
+        }
+      }).withDeploy(Deploy.local), name = "observer2")
 
     expectMsg(60.seconds, path)
   }
@@ -115,7 +115,8 @@ akka.actor.warn-about-java-serializer-usage = off
   "quarantine systems after unsuccessful system message delivery if have not communicated before" in {
     // Synthesize an ActorRef to a remote system this one has never talked to before.
     // This forces ReliableDeliverySupervisor to start with unknown remote system UID.
-    val extinctPath = RootActorPath(Address(protocol, "extinct-system", "localhost", SocketUtil.temporaryLocalPort())) / "user" / "noone"
+    val extinctPath = RootActorPath(Address(protocol, "extinct-system", "localhost",
+      SocketUtil.temporaryLocalPort())) / "user" / "noone"
     val transport = RARP(system).provider.transport
     val extinctRef = new RemoteActorRef(
       transport,

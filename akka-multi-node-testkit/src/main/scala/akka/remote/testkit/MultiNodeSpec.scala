@@ -114,8 +114,8 @@ abstract class MultiNodeConfig {
       else ConfigFactory.empty
 
     val configs = _nodeConf
-        .get(myself)
-        .toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
+      .get(myself)
+      .toList ::: _commonConf.toList ::: transportConfig :: MultiNodeSpec.nodeConfig :: MultiNodeSpec.baseConfig :: Nil
     configs.reduceLeft(_.withFallback(_))
   }
 
@@ -318,17 +318,17 @@ abstract class MultiNodeSpec(
 
   def this(config: MultiNodeConfig) =
     this(config, {
-      val name = TestKitUtils.testNameFromCallStack(classOf[MultiNodeSpec], "".r)
-      config =>
-        try {
-          ActorSystem(name, config)
-        } catch {
-          // Retry creating the system once as when using port = 0 two systems may try and use the same one.
-          // RTE is for aeron, CE for netty
-          case _: RemoteTransportException => ActorSystem(name, config)
-          case _: ChannelException         => ActorSystem(name, config)
-        }
-    })
+        val name = TestKitUtils.testNameFromCallStack(classOf[MultiNodeSpec], "".r)
+        config =>
+          try {
+            ActorSystem(name, config)
+          } catch {
+            // Retry creating the system once as when using port = 0 two systems may try and use the same one.
+            // RTE is for aeron, CE for netty
+            case _: RemoteTransportException => ActorSystem(name, config)
+            case _: ChannelException         => ActorSystem(name, config)
+          }
+      })
 
   val log: LoggingAdapter = Logging(system, this)(_.getClass.getName)
 
@@ -351,9 +351,9 @@ abstract class MultiNodeSpec(
       testConductor.removeNode(myself)
       within(testConductor.Settings.BarrierTimeout.duration) {
         awaitCond({
-          // Await.result(testConductor.getNodes, remaining).filterNot(_ == myself).isEmpty
-          testConductor.getNodes.await.forall(_ == myself)
-        }, message = s"Nodes not shutdown: ${testConductor.getNodes.await}")
+            // Await.result(testConductor.getNodes, remaining).filterNot(_ == myself).isEmpty
+            testConductor.getNodes.await.forall(_ == myself)
+          }, message = s"Nodes not shutdown: ${testConductor.getNodes.await}")
       }
     }
     shutdown(system, duration = shutdownTimeout)
@@ -498,16 +498,17 @@ abstract class MultiNodeSpec(
           base.indexOf(tag) match {
             case -1 => base
             case _ =>
-              val replaceWith = try r.addr
-              catch {
-                case NonFatal(e) =>
-                  // might happen if all test cases are ignored (excluded) and
-                  // controller node is finished/exited before r.addr is run
-                  // on the other nodes
-                  val unresolved = "akka://unresolved-replacement-" + r.role.name
-                  log.warning(unresolved + " due to: " + e.getMessage)
-                  unresolved
-              }
+              val replaceWith =
+                try r.addr
+                catch {
+                  case NonFatal(e) =>
+                    // might happen if all test cases are ignored (excluded) and
+                    // controller node is finished/exited before r.addr is run
+                    // on the other nodes
+                    val unresolved = "akka://unresolved-replacement-" + r.role.name
+                    log.warning(unresolved + " due to: " + e.getMessage)
+                    unresolved
+                }
               base.replace(tag, replaceWith)
           }
       }

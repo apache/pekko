@@ -38,18 +38,18 @@ import akka.util.ccompat._
 object MurmurHash {
   // Magic values used for MurmurHash's 32 bit hash.
   // Don't change these without consulting a hashing expert!
-  final private val visibleMagic: Int = 0x971e137b
+  final private val visibleMagic: Int = 0x971E137B
   final private val hiddenMagicA: Int = 0x95543787
-  final private val hiddenMagicB: Int = 0x2ad7eb25
-  final private val visibleMixer: Int = 0x52dce729
-  final private val hiddenMixerA: Int = 0x7b7d159c
-  final private val hiddenMixerB: Int = 0x6bce6396
-  final private val finalMixer1: Int = 0x85ebca6b
-  final private val finalMixer2: Int = 0xc2b2ae35
+  final private val hiddenMagicB: Int = 0x2AD7EB25
+  final private val visibleMixer: Int = 0x52DCE729
+  final private val hiddenMixerA: Int = 0x7B7D159C
+  final private val hiddenMixerB: Int = 0x6BCE6396
+  final private val finalMixer1: Int = 0x85EBCA6B
+  final private val finalMixer2: Int = 0xC2B2AE35
 
   // Arbitrary values used for hashing certain classes
-  final private val seedString: Int = 0xf7ca7fd2
-  final private val seedArray: Int = 0x3c074a61
+  final private val seedString: Int = 0xF7CA7FD2
+  final private val seedArray: Int = 0x3C074A61
 
   /** The first 23 magic integers from the first stream are stored here */
   private val storedMagicA: Array[Int] =
@@ -88,7 +88,7 @@ object MurmurHash {
 
   /** Once all hashes have been incorporated, this performs a final mixing */
   def finalizeHash(hash: Int): Int = {
-    var i = (hash ^ (hash >>> 16))
+    var i = hash ^ (hash >>> 16)
     i *= finalMixer1
     i ^= (i >>> 13)
     i *= finalMixer2

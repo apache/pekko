@@ -144,12 +144,13 @@ trait LoggingBus extends ActorEventBus {
       try {
         if (system.settings.DebugUnhandledMessage)
           subscribe(
-            system.systemActorOf(Props(new Actor {
-              def receive = {
-                case UnhandledMessage(msg, sender, rcp) =>
-                  publish(Debug(rcp.path.toString, rcp.getClass, "unhandled message from " + sender + ": " + msg))
-              }
-            }), "UnhandledMessageForwarder"),
+            system.systemActorOf(
+              Props(new Actor {
+                def receive = {
+                  case UnhandledMessage(msg, sender, rcp) =>
+                    publish(Debug(rcp.path.toString, rcp.getClass, "unhandled message from " + sender + ": " + msg))
+                }
+              }), "UnhandledMessageForwarder"),
             classOf[UnhandledMessage])
       } catch {
         case _: InvalidActorNameException => // ignore if it is already running
@@ -202,16 +203,17 @@ trait LoggingBus extends ActorEventBus {
     val actor = system.systemActorOf(Props(clazz).withDispatcher(system.settings.LoggersDispatcher), name)
     implicit def timeout: Timeout = system.settings.LoggerStartTimeout
     import akka.pattern.ask
-    val response = try Await.result(actor ? InitializeLogger(this), timeout.duration)
-    catch {
-      case _: TimeoutException =>
-        publish(
-          Warning(
-            logName,
-            this.getClass,
-            "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
-        "[TIMEOUT]"
-    }
+    val response =
+      try Await.result(actor ? InitializeLogger(this), timeout.duration)
+      catch {
+        case _: TimeoutException =>
+          publish(
+            Warning(
+              logName,
+              this.getClass,
+              "Logger " + name + " did not respond within " + timeout + " to InitializeLogger(bus)"))
+          "[TIMEOUT]"
+      }
     if (response != LoggerInitialized)
       throw new LoggerInitializationException(
         "Logger " + name + " did not respond with LoggerInitialized, sent instead " + response)
@@ -1671,7 +1673,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
   def clearMDC(): Unit = mdc(emptyMDC)
 }
 
-/** DO NOT INHERIT: Class is open only for use by akka-slf4j*/
+/** DO NOT INHERIT: Class is open only for use by akka-slf4j */
 @DoNotInherit
 class LogMarker(val name: String, val properties: Map[String, Any]) {
 

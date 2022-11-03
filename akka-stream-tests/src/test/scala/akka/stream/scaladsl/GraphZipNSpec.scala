@@ -67,7 +67,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zipN.in(0)
           Source.fromPublisher(upstream2) ~> zipN.in(1)
-          zipN.out ~> out
+          zipN.out                        ~> out
 
           ClosedShape
         })
@@ -94,7 +94,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zipN.in(0)
           Source.fromPublisher(upstream2) ~> zipN.in(1)
-          zipN.out ~> out
+          zipN.out                        ~> out
 
           ClosedShape
         })
@@ -122,7 +122,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zipN.in(0)
           Source.fromPublisher(upstream2) ~> zipN.in(1)
-          zipN.out ~> out
+          zipN.out                        ~> out
 
           ClosedShape
         })
@@ -149,7 +149,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zipN.in(0)
           Source.fromPublisher(upstream2) ~> zipN.in(1)
-          zipN.out ~> out
+          zipN.out                        ~> out
 
           ClosedShape
         })
@@ -177,7 +177,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zipN.in(0)
           Source.fromPublisher(upstream2) ~> zipN.in(1)
-          zipN.out ~> out
+          zipN.out                        ~> out
 
           ClosedShape
         })

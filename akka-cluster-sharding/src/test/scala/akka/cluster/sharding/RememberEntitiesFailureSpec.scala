@@ -272,9 +272,9 @@ class RememberEntitiesFailureSpec
 
         // it takes a while - timeout hits and then backoff
         awaitAssert({
-          sharding.tell(EntityEnvelope(11, "hello-11-2"), probe.ref)
-          probe.expectMsg("hello-11-2")
-        }, 10.seconds)
+            sharding.tell(EntityEnvelope(11, "hello-11-2"), probe.ref)
+            probe.expectMsg("hello-11-2")
+          }, 10.seconds)
         system.stop(sharding)
       }
 
@@ -308,9 +308,9 @@ class RememberEntitiesFailureSpec
 
         // it takes a while - timeout hits and then backoff
         awaitAssert({
-          sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
-          probe.expectMsg("hello-2")
-        }, 10.seconds)
+            sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
+            probe.expectMsg("hello-2")
+          }, 10.seconds)
         system.stop(sharding)
       }
 
@@ -349,9 +349,9 @@ class RememberEntitiesFailureSpec
 
         // it takes a while?
         awaitAssert({
-          sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
-          probe.expectMsg("hello-2")
-        }, 5.seconds)
+            sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
+            probe.expectMsg("hello-2")
+          }, 5.seconds)
         system.stop(sharding)
       }
 
@@ -388,9 +388,9 @@ class RememberEntitiesFailureSpec
         storeProbe.expectMsg(Done)
 
         probe.awaitAssert({
-          sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
-          probe.expectMsg("hello-2") // should now work again
-        }, 5.seconds)
+            sharding.tell(EntityEnvelope(1, "hello-2"), probe.ref)
+            probe.expectMsg("hello-2") // should now work again
+          }, 5.seconds)
 
         system.stop(sharding)
       }

@@ -92,8 +92,8 @@ abstract class RemoteQuarantinePiercingSpec(multiNodeConfig: RemoteQuarantinePie
           awaitAssert {
             system.actorSelection(RootActorPath(secondAddress) / "user" / "subject") ! "identify"
             val (uidSecond, subjectSecond) = expectMsgType[(Long, ActorRef)](1.second)
-            uidSecond should not be (uidFirst)
-            subjectSecond should not be (subjectFirst)
+            uidSecond should not be uidFirst
+            subjectSecond should not be subjectFirst
           }
         }
 

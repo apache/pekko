@@ -125,7 +125,7 @@ object SharedLeveldbPluginDocSpec {
       //#event-adapter-config
     """
 
-  //#shared-store-usage
+  // #shared-store-usage
   trait SharedStoreUsage extends Actor {
     override def preStart(): Unit = {
       context.actorSelection("akka://example@127.0.0.1:2552/user/store") ! Identify(1)
@@ -136,7 +136,7 @@ object SharedLeveldbPluginDocSpec {
         SharedLeveldbJournal.setStore(store, context.system)
     }
   }
-  //#shared-store-usage
+  // #shared-store-usage
 }
 
 trait SharedLeveldbPluginDocSpec {
@@ -144,22 +144,22 @@ trait SharedLeveldbPluginDocSpec {
 
   {
     import akka.actor._
-    //#shared-store-creation
+    // #shared-store-creation
     import akka.persistence.journal.leveldb.SharedLeveldbStore
 
     val store = system.actorOf(Props[SharedLeveldbStore](), "store")
-    //#shared-store-creation
+    // #shared-store-creation
   }
 }
 
 class MyJournal extends AsyncWriteJournal {
-  //#sync-journal-plugin-api
+  // #sync-journal-plugin-api
   def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
     Future.fromTry(Try {
       // blocking call here
       ???
     })
-  //#sync-journal-plugin-api
+  // #sync-journal-plugin-api
 
   def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] = ???
   def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
@@ -184,7 +184,7 @@ object PersistenceTCKDoc {
   object example1 {
     import akka.persistence.journal.JournalSpec
 
-    //#journal-tck-scala
+    // #journal-tck-scala
     class MyJournalSpec
         extends JournalSpec(
           config = ConfigFactory.parseString("""akka.persistence.journal.plugin = "my.journal.plugin"""")) {
@@ -195,12 +195,12 @@ object PersistenceTCKDoc {
       override def supportsSerialization: CapabilityFlag =
         true // or CapabilityFlag.on
     }
-    //#journal-tck-scala
+    // #journal-tck-scala
   }
   object example2 {
     import akka.persistence.snapshot.SnapshotStoreSpec
 
-    //#snapshot-store-tck-scala
+    // #snapshot-store-tck-scala
     class MySnapshotStoreSpec
         extends SnapshotStoreSpec(
           config = ConfigFactory.parseString("""
@@ -210,7 +210,7 @@ object PersistenceTCKDoc {
       override def supportsSerialization: CapabilityFlag =
         true // or CapabilityFlag.on
     }
-    //#snapshot-store-tck-scala
+    // #snapshot-store-tck-scala
   }
   object example3 {
     import java.io.File
@@ -218,7 +218,7 @@ object PersistenceTCKDoc {
     import akka.persistence.journal.JournalSpec
     import org.iq80.leveldb.util.FileUtils
 
-    //#journal-tck-before-after-scala
+    // #journal-tck-before-after-scala
     class MyJournalSpec
         extends JournalSpec(config = ConfigFactory.parseString("""
         akka.persistence.journal.plugin = "my.journal.plugin"
@@ -242,6 +242,6 @@ object PersistenceTCKDoc {
       }
 
     }
-    //#journal-tck-before-after-scala
+    // #journal-tck-before-after-scala
   }
 }

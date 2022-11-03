@@ -90,7 +90,6 @@ private[akka] object RemoteWatcher {
  *
  * For bi-directional watch between two nodes the same thing will be established in
  * both directions, but independent of each other.
- *
  */
 @InternalApi
 private[akka] class RemoteWatcher(
@@ -207,7 +206,8 @@ private[akka] class RemoteWatcher(
     }
   }
 
-  /** Returns true if either has cluster or `akka.remote.use-unsafe-remote-features-outside-cluster`
+  /**
+   * Returns true if either has cluster or `akka.remote.use-unsafe-remote-features-outside-cluster`
    * is enabled. Can be overridden when using RemoteWatcher as a superclass.
    */
   protected def shouldWatch(@unused watchee: InternalActorRef): Boolean = {

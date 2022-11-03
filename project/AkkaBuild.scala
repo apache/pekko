@@ -37,8 +37,8 @@ object AkkaBuild {
     UnidocRoot.akkaSettings,
     Protobuf.settings,
     GlobalScope / parallelExecution := System
-        .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
-        .toBoolean,
+      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
+      .toBoolean,
     // used for linking to API docs (overwrites `project-info.version`)
     ThisBuild / projectInfoVersion := { if (isSnapshot.value) "snapshot" else version.value })
 
@@ -68,15 +68,15 @@ object AkkaBuild {
           Seq(
             otherResolvers := resolver :: publishTo.value.toList,
             publishM2Configuration := Classpaths.publishConfig(
-                publishMavenStyle.value,
-                deliverPattern(crossTarget.value),
-                if (isSnapshot.value) "integration" else "release",
-                ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
-                artifacts = packagedArtifacts.value.toVector,
-                resolverName = resolver.name,
-                checksums = (publishM2 / checksums).value.toVector,
-                logging = ivyLoggingLevel.value,
-                overwrite = true)))
+              publishMavenStyle.value,
+              deliverPattern(crossTarget.value),
+              if (isSnapshot.value) "integration" else "release",
+              ivyConfigurations.value.map(c => ConfigRef(c.name)).toVector,
+              artifacts = packagedArtifacts.value.toVector,
+              resolverName = resolver.name,
+              checksums = (publishM2 / checksums).value.toVector,
+              logging = ivyLoggingLevel.value,
+              overwrite = true)))
     }
 
   lazy val resolverSettings = Def.settings(
@@ -140,13 +140,13 @@ object AkkaBuild {
         scalaVersion.value),
     Compile / scalacOptions ++= (if (allWarnings) Seq("-deprecation") else Nil),
     Test / scalacOptions := (Test / scalacOptions).value.filterNot(opt =>
-        opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
+      opt == "-Xlog-reflective-calls" || opt.contains("genjavadoc")),
     Compile / javacOptions ++= {
       DefaultJavacOptions ++
       JdkOptions.targetJdkJavacOptions(targetSystemJdk.value, optionalDir(jdk8home.value), fullJavaHomes.value)
     },
     Test / javacOptions ++= DefaultJavacOptions ++
-      JdkOptions.targetJdkJavacOptions(targetSystemJdk.value, optionalDir(jdk8home.value), fullJavaHomes.value),
+    JdkOptions.targetJdkJavacOptions(targetSystemJdk.value, optionalDir(jdk8home.value), fullJavaHomes.value),
     Compile / javacOptions ++= (if (allWarnings) Seq("-Xlint:deprecation") else Nil),
     doc / javacOptions := Seq(),
     crossVersion := CrossVersion.binary,
@@ -165,10 +165,10 @@ object AkkaBuild {
     homepage := Some(url("https://akka.io/")),
     description := "Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
-        ScmInfo(
-          url("https://github.com/akka/akka"),
-          "scm:git:https://github.com/akka/akka.git",
-          "scm:git:git@github.com:akka/akka.git")),
+      ScmInfo(
+        url("https://github.com/akka/akka"),
+        "scm:git:https://github.com/akka/akka.git",
+        "scm:git:git@github.com:akka/akka.git")),
     apiURL := Some(url(s"https://doc.akka.io/api/akka/${version.value}")),
     initialCommands :=
       """|import language.postfixOps
@@ -244,8 +244,8 @@ object AkkaBuild {
       }
     },
     Test / parallelExecution := System
-        .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
-        .toBoolean,
+      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
+      .toBoolean,
     Test / logBuffered := System.getProperty("akka.logBufferedTests", "false").toBoolean,
     // show full stack traces and test case durations
     Test / testOptions += Tests.Argument("-oDF"),
@@ -278,18 +278,18 @@ object AkkaBuild {
       },
       logoColor := scala.Console.BLUE,
       usefulTasks := Seq(
-          UsefulTask("", "compile", "Compile the current project"),
-          UsefulTask("", "test", "Run all the tests "),
-          UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
-          UsefulTask("", "verifyCodeStyle", "Verify code style"),
-          UsefulTask("", "applyCodeStyle", "Apply code style"),
-          UsefulTask("", "sortImports", "Sort the imports"),
-          UsefulTask("", "mimaReportBinaryIssues ", "Check binary issues"),
-          UsefulTask("", "validatePullRequest ", "Validate pull request"),
-          UsefulTask("", "akka-docs/paradox", "Build documentation"),
-          UsefulTask("", "akka-docs/paradoxBrowse", "Browse the generated documentation"),
-          UsefulTask("", "tips:", "prefix commands with `+` to run against cross Scala versions."),
-          UsefulTask("", "Contributing guide:", "https://github.com/akka/akka/blob/main/CONTRIBUTING.md")))
+        UsefulTask("", "compile", "Compile the current project"),
+        UsefulTask("", "test", "Run all the tests "),
+        UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("", "verifyCodeStyle", "Verify code style"),
+        UsefulTask("", "applyCodeStyle", "Apply code style"),
+        UsefulTask("", "sortImports", "Sort the imports"),
+        UsefulTask("", "mimaReportBinaryIssues ", "Check binary issues"),
+        UsefulTask("", "validatePullRequest ", "Validate pull request"),
+        UsefulTask("", "akka-docs/paradox", "Build documentation"),
+        UsefulTask("", "akka-docs/paradoxBrowse", "Browse the generated documentation"),
+        UsefulTask("", "tips:", "prefix commands with `+` to run against cross Scala versions."),
+        UsefulTask("", "Contributing guide:", "https://github.com/akka/akka/blob/main/CONTRIBUTING.md")))
   }
 
   private def optionalDir(path: String): Option[File] =
@@ -330,7 +330,7 @@ object AkkaBuild {
   // * When subprojects need to be excluded, ++ needs to be specified for each command
   //
   // So the `++` equivalent of the above example is `sbt "++ 3.1.2 clean" "++ 3.1.2 compile"`
-  val switchVersion: Command = Command.args("+~", "<version> <args>")({ (initialState: State, args: Seq[String]) =>
+  val switchVersion: Command = Command.args("+~", "<version> <args>") { (initialState: State, args: Seq[String]) =>
     {
       val requestedVersionPrefix = args.head
       val requestedVersion = Dependencies.allScalaVersions.filter(_.startsWith(requestedVersionPrefix)).head
@@ -347,5 +347,5 @@ object AkkaBuild {
       val commands = args.tail
       commands.foldLeft(initialState)(run)
     }
-  })
+  }
 }

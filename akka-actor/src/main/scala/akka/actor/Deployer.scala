@@ -227,7 +227,7 @@ private[akka] class Deployer(val settings: ActorSystem.Settings, val dynamicAcce
       .unwrapped
       .asScala
       .collect {
-        case (key, value: String) => (key -> value)
+        case (key, value: String) => key -> value
       }
       .toMap
 

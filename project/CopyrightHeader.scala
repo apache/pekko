@@ -23,21 +23,22 @@ trait CopyrightHeader extends AutoPlugin {
         Seq(
           headerLicense := Some(HeaderLicense.Custom(headerFor(CurrentYear))),
           headerMappings := headerMappings.value ++ Map(
-              HeaderFileType.scala -> cStyleComment,
-              HeaderFileType.java -> cStyleComment,
-              HeaderFileType("template") -> cStyleComment)))
+            HeaderFileType.scala -> cStyleComment,
+            HeaderFileType.java -> cStyleComment,
+            HeaderFileType("template") -> cStyleComment)))
     }
 
   override def projectSettings: Seq[Def.Setting[_]] = Def.settings(headerMappingSettings, additional)
 
   def additional: Seq[Def.Setting[_]] =
     Def.settings(Compile / compile := {
-      (Compile / headerCreate).value
-      (Compile / compile).value
-    }, Test / compile := {
-      (Test / headerCreate).value
-      (Test / compile).value
-    })
+        (Compile / headerCreate).value
+        (Compile / compile).value
+      },
+      Test / compile := {
+        (Test / headerCreate).value
+        (Test / compile).value
+      })
 
   // We hard-code this so PR's created in year X will not suddenly fail in X+1.
   // Of course we should remember to update it early in the year.

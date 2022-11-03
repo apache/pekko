@@ -171,7 +171,7 @@ class ReverseArrowSpec extends StreamSpec {
             val f: UniformFanInShape[Int, Int] = b.add(Merge[Int](2))
             s <~ f
             Source.empty ~> f
-            source ~> f
+            source       ~> f
             ClosedShape
           })
           .run(),
@@ -185,7 +185,7 @@ class ReverseArrowSpec extends StreamSpec {
             val f: UniformFanInShape[Int, Int] = b.add(Merge[Int](2))
             val src = b.add(source)
             Source.empty ~> f
-            src ~> f
+            src          ~> f
             (the[IllegalArgumentException] thrownBy (s <~ f <~ src)).getMessage should include("no more inlets free")
             ClosedShape
           })

@@ -151,7 +151,7 @@ private[akka] object Shard {
    *        +------------------------------------------------------------------------------------------+------------------------------------------------+<-------------+
    *                       stop stored/passivation complete
    * }}}
-   **/
+   */
   sealed trait EntityState {
     def transition(newState: EntityState, entities: Entities): EntityState
     final def invalidTransition(to: EntityState, entities: Entities): EntityState = {
@@ -465,12 +465,11 @@ private[akka] class Shard(
     context.system.scheduler.scheduleWithFixedDelay(interval, interval, self, PassivateIntervalTick)
   }
 
-  private val lease = settings.leaseSettings.map(
-    ls =>
-      LeaseProvider(context.system).getLease(
-        s"${context.system.name}-shard-$typeName-$shardId",
-        ls.leaseImplementation,
-        Cluster(context.system).selfAddress.hostPort))
+  private val lease = settings.leaseSettings.map(ls =>
+    LeaseProvider(context.system).getLease(
+      s"${context.system.name}-shard-$typeName-$shardId",
+      ls.leaseImplementation,
+      Cluster(context.system).selfAddress.hostPort))
 
   private val leaseRetryInterval = settings.leaseSettings match {
     case Some(l) => l.leaseRetryInterval
@@ -882,7 +881,7 @@ private[akka] class Shard(
             HandOffStopper.props(typeName, shardId, replyTo, activeEntities, handOffStopMessage, entityHandOffTimeout),
             "HandOffStopper")))
 
-        //During hand off we only care about watching for termination of the hand off stopper
+        // During hand off we only care about watching for termination of the hand off stopper
         context.become {
           case Terminated(ref) => receiveTerminated(ref)
         }
@@ -1152,7 +1151,7 @@ private[akka] class Shard(
 
   // After entity started
   def sendMsgBuffer(entityId: EntityId): Unit = {
-    //Get the buffered messages and remove the buffer
+    // Get the buffered messages and remove the buffer
     val messages = messageBuffers.getOrEmpty(entityId)
     messageBuffers.remove(entityId)
 

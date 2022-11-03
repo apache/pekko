@@ -93,7 +93,8 @@ class SharedLeveldbJournalSpec extends AkkaSpec(SharedLeveldbJournalSpec.config)
       @nowarn
       val sharedLeveldbStoreCls = classOf[SharedLeveldbStore]
       system.actorOf(Props(sharedLeveldbStoreCls, storeConfig), "store")
-      val storePath = RootActorPath(system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress) / "user" / "store"
+      val storePath =
+        RootActorPath(system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress) / "user" / "store"
 
       val appA = systemA.actorOf(Props(classOf[ExampleApp], probeA.ref, storePath))
       val appB = systemB.actorOf(Props(classOf[ExampleApp], probeB.ref, storePath))

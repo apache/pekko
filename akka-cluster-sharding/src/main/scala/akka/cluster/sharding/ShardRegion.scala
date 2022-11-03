@@ -304,7 +304,6 @@ object ShardRegion {
   def getRegionStatsInstance = GetShardRegionStats
 
   /**
-   *
    * @param stats the region stats mapping of `ShardId` to number of entities
    * @param failed set of shards if any failed to respond within the timeout
    */
@@ -793,8 +792,7 @@ private[akka] class ShardRegion(
       preparingForShutdown = true
 
     case _: MemberEvent => // these are expected, no need to warn about them
-
-    case _ => unhandled(evt)
+    case _              => unhandled(evt)
   }
 
   private def addMember(m: Member): Unit = {
@@ -819,7 +817,7 @@ private[akka] class ShardRegion(
         regionByShard = regionByShard.updated(shard, self)
         regions = regions.updated(self, regions.getOrElse(self, Set.empty) + shard)
 
-        //Start the shard, if already started this does nothing
+        // Start the shard, if already started this does nothing
         getShard(shard)
         sender() ! ShardStarted(shard)
       }

@@ -114,7 +114,6 @@ case object OptimalSizeExploringResizer {
  *
  * For documentation about the parameters, see the reference.conf -
  * akka.actor.deployment.default.optimal-size-exploring-resizer
- *
  */
 @SerialVersionUID(1L)
 case class DefaultOptimalSizeExploringResizer(
@@ -237,7 +236,7 @@ case class DefaultOptimalSizeExploringResizer(
         if (totalProcessed > 0) {
           val duration = Duration.fromNanos(System.nanoTime() - record.checkTime)
           val last: Duration = duration / totalProcessed
-          //exponentially decrease the weight of old last metrics data
+          // exponentially decrease the weight of old last metrics data
           val toUpdate = performanceLog.get(currentSize).fold(last) { oldSpeed =>
             (oldSpeed * (1.0 - weightOfLatestMetric)) + (last * weightOfLatestMetric)
           }
@@ -259,7 +258,8 @@ case class DefaultOptimalSizeExploringResizer(
     val currentSize = currentRoutees.length
     val now = LocalDateTime.now
     val proposedChange =
-      if (record.underutilizationStreak.fold(false)(_.start.isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
+      if (record.underutilizationStreak.fold(false)(
+          _.start.isBefore(now.minus(downsizeAfterUnderutilizedFor.asJava)))) {
         val downsizeTo = (record.underutilizationStreak.get.highestUtilization * downsizeRatio).toInt
         Math.min(downsizeTo - currentSize, 0)
       } else if (performanceLog.isEmpty || record.underutilizationStreak.isDefined) {

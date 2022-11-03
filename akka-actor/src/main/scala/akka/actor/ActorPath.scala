@@ -89,17 +89,18 @@ object ActorPath {
 
     // If the number of cases increase remember to add a `@switch` annotation e.g.:
     // (findInvalidPathElementCharPosition(element): @switch) match {
-    (findInvalidPathElementCharPosition(element)) match {
+    findInvalidPathElementCharPosition(element) match {
       case ValidPathCode =>
       // valid
       case EmptyPathCode =>
         throw InvalidActorNameException(s"Actor path element must not be empty $fullPathMsg")
       case invalidAt =>
-        throw InvalidActorNameException(s"""Invalid actor path element [$element]$fullPathMsg, illegal character [${element(
-          invalidAt)}] at position: $invalidAt. """ +
-        """Actor paths MUST: """ +
-        """not start with `$`, """ +
-        s"""include only ASCII letters and can only contain these special characters: ${ActorPath.ValidSymbols}.""")
+        throw InvalidActorNameException(
+          s"""Invalid actor path element [$element]$fullPathMsg, illegal character [${element(
+              invalidAt)}] at position: $invalidAt. """ +
+          """Actor paths MUST: """ +
+          """not start with `$`, """ +
+          s"""include only ASCII letters and can only contain these special characters: ${ActorPath.ValidSymbols}.""")
     }
   }
 
@@ -130,7 +131,8 @@ object ActorPath {
             case '%' if pos + 2 < len && isHexChar(s.charAt(pos + 1)) && isHexChar(s.charAt(pos + 2)) =>
               validate(pos + 3)
             case _ => pos
-          } else ValidPathCode
+          }
+        else ValidPathCode
 
       if (len > 0 && s.charAt(0) != '$') validate(0) else 0
     }

@@ -357,14 +357,15 @@ import akka.util.OptionVal
 
     private def reportSubscribeFailure(subscriber: Subscriber[Any]): Unit =
       try shutdownReason match {
-        case OptionVal.Some(_: SpecViolation) => // ok, not allowed to call onError
-        case OptionVal.Some(e) =>
-          tryOnSubscribe(subscriber, CancelledSubscription)
-          tryOnError(subscriber, e)
-        case _ =>
-          tryOnSubscribe(subscriber, CancelledSubscription)
-          tryOnComplete(subscriber)
-      } catch {
+          case OptionVal.Some(_: SpecViolation) => // ok, not allowed to call onError
+          case OptionVal.Some(e) =>
+            tryOnSubscribe(subscriber, CancelledSubscription)
+            tryOnError(subscriber, e)
+          case _ =>
+            tryOnSubscribe(subscriber, CancelledSubscription)
+            tryOnComplete(subscriber)
+        }
+      catch {
         case _: SpecViolation => // nothing to do
       }
 
@@ -558,13 +559,14 @@ import akka.util.OptionVal
   private var enqueueToShortCircuit: (Any) => Unit = _
 
   lazy val interpreter: GraphInterpreter =
-    new GraphInterpreter(mat, log, logics, connections, (logic, event, promise, handler) => {
-      val asyncInput = AsyncInput(this, logic, event, promise, handler)
-      val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
-      if (currentInterpreter == null || (currentInterpreter.context ne self))
-        self ! asyncInput
-      else enqueueToShortCircuit(asyncInput)
-    }, attributes.mandatoryAttribute[ActorAttributes.FuzzingMode].enabled, self)
+    new GraphInterpreter(mat, log, logics, connections,
+      (logic, event, promise, handler) => {
+        val asyncInput = AsyncInput(this, logic, event, promise, handler)
+        val currentInterpreter = GraphInterpreter.currentInterpreterOrNull
+        if (currentInterpreter == null || (currentInterpreter.context ne self))
+          self ! asyncInput
+        else enqueueToShortCircuit(asyncInput)
+      }, attributes.mandatoryAttribute[ActorAttributes.FuzzingMode].enabled, self)
 
   // TODO: really needed?
   private var subscribesPending = 0
@@ -654,9 +656,10 @@ import akka.util.OptionVal
         else {
           waitingForShutdown = true
           val subscriptionTimeout = attributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
-          mat.scheduleOnce(subscriptionTimeout, new Runnable {
-            override def run(): Unit = self ! Abort(GraphInterpreterShell.this)
-          })
+          mat.scheduleOnce(subscriptionTimeout,
+            new Runnable {
+              override def run(): Unit = self ! Abort(GraphInterpreterShell.this)
+            })
         }
       } else if (interpreter.isSuspended && !resumeScheduled) sendResume(!usingShellLimit)
 
@@ -738,10 +741,10 @@ import akka.util.OptionVal
         false
     }
 
-  //this limits number of messages that can be processed synchronously during one actor receive.
+  // this limits number of messages that can be processed synchronously during one actor receive.
   private val eventLimit: Int = _initial.attributes.mandatoryAttribute[ActorAttributes.SyncProcessingLimit].limit
   private var currentLimit: Int = eventLimit
-  //this is a var in order to save the allocation when no short-circuiting actually happens
+  // this is a var in order to save the allocation when no short-circuiting actually happens
   private var shortCircuitBuffer: util.ArrayDeque[Any] = null
 
   def enqueueToShortCircuit(input: Any): Unit = {

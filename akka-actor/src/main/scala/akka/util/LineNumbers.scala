@@ -217,7 +217,7 @@ object LineNumbers {
   private def skipID(d: DataInputStream): Unit = {
     val magic = d.readInt()
     if (debug) println(f"LNB: magic=0x$magic%08X")
-    if (magic != 0xcafebabe) throw new IllegalArgumentException("not a Java class file")
+    if (magic != 0xCAFEBABE) throw new IllegalArgumentException("not a Java class file")
   }
 
   private def skipVersion(d: DataInputStream): Unit = {

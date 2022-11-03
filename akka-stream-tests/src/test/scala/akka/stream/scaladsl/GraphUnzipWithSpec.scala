@@ -58,8 +58,8 @@ class GraphUnzipWithSpec extends StreamSpec("""
         val f = fixture(b)
 
         Source.fromPublisher(p) ~> f.in
-        f.left ~> Sink.fromSubscriber(leftSubscriber)
-        f.right ~> Sink.fromSubscriber(rightSubscriber)
+        f.left                  ~> Sink.fromSubscriber(leftSubscriber)
+        f.right                 ~> Sink.fromSubscriber(rightSubscriber)
 
         ClosedShape
       })
@@ -109,7 +109,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
           val unzip = b.add(UnzipWith(f))
           Source(1 to 4) ~> unzip.in
 
-          unzip.out0 ~> Flow[LeftOutput].buffer(4, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(leftProbe)
+          unzip.out0 ~> Flow[LeftOutput].buffer(4, OverflowStrategy.backpressure)  ~> Sink.fromSubscriber(leftProbe)
           unzip.out1 ~> Flow[RightOutput].buffer(4, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(rightProbe)
 
           ClosedShape
@@ -216,7 +216,7 @@ class GraphUnzipWithSpec extends StreamSpec("""
             probe.ref ! killSwitch
             NotUsed
           }
-          unzip.out0 ~> killSwitchFlow[Int] ~> Sink.ignore
+          unzip.out0 ~> killSwitchFlow[Int]    ~> Sink.ignore
           unzip.out1 ~> killSwitchFlow[String] ~> Sink.ignore
 
           ClosedShape

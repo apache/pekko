@@ -102,21 +102,22 @@ object ProcessingPolicy {
         returnNonTrigger: => ProcessingResult,
         cond: (String, U) => Boolean,
         onLimitExceed: => Unit)
-        extends ReturnAfterNextNCond(returnOnTrigger, returnNonTrigger, new Function2[String, U, Boolean] {
+        extends ReturnAfterNextNCond(returnOnTrigger, returnNonTrigger,
+          new Function2[String, U, Boolean] {
 
-          var counter = 0
+            var counter = 0
 
-          override def apply(persistenceId: String, v1: U): Boolean = {
-            val intRes = cond(persistenceId, v1)
-            if (intRes && counter < numberToCount) {
-              counter += 1
-              if (counter == numberToCount) onLimitExceed
-              intRes
-            } else {
-              false
+            override def apply(persistenceId: String, v1: U): Boolean = {
+              val intRes = cond(persistenceId, v1)
+              if (intRes && counter < numberToCount) {
+                counter += 1
+                if (counter == numberToCount) onLimitExceed
+                intRes
+              } else {
+                false
+              }
             }
-          }
-        })
+          })
 
   }
 

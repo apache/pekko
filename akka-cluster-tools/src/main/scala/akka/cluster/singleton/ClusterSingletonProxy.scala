@@ -272,7 +272,6 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
       else
         remove(m)
     case _: MemberEvent => // do nothing
-
     // singleton identification logic
     case ActorIdentity(_, Some(s)) =>
       // if the new singleton is defined, deliver all buffered messages

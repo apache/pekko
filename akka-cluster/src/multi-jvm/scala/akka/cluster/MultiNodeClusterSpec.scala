@@ -245,7 +245,7 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
     awaitCond(
       {
         if (memberInState(joinNode, List(MemberStatus.Up)) &&
-            memberInState(myself, List(MemberStatus.Joining, MemberStatus.Up)))
+          memberInState(myself, List(MemberStatus.Joining, MemberStatus.Up)))
           true
         else {
           cluster.join(joinNode)
@@ -290,7 +290,7 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
    */
   def assertLeaderIn(nodesInCluster: immutable.Seq[RoleName]): Unit =
     if (nodesInCluster.contains(myself)) {
-      nodesInCluster.length should not be (0)
+      nodesInCluster.length should not be 0
       val expectedLeader = roleOfLeader(nodesInCluster)
       val leader = clusterView.leader
       val isLeader = leader == Some(clusterView.selfAddress)
@@ -310,7 +310,7 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
       timeout: FiniteDuration = 25.seconds): Unit = {
     within(timeout) {
       if (!canNotBePartOfMemberRing.isEmpty) // don't run this on an empty set
-        awaitAssert(canNotBePartOfMemberRing.foreach(a => clusterView.members.map(_.address) should not contain (a)))
+        awaitAssert(canNotBePartOfMemberRing.foreach(a => clusterView.members.map(_.address) should not contain a))
       awaitAssert(clusterView.members.size should ===(numberOfMembers))
       awaitAssert(clusterView.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up)))
       // clusterView.leader is updated by LeaderChanged, await that to be updated also
@@ -380,7 +380,7 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
    * be determined from the `RoleName`.
    */
   def roleOfLeader(nodesInCluster: immutable.Seq[RoleName] = roles): RoleName = {
-    nodesInCluster.length should not be (0)
+    nodesInCluster.length should not be 0
     nodesInCluster.sorted.head
   }
 

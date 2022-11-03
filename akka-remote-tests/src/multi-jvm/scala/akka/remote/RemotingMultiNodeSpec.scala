@@ -25,6 +25,4 @@ abstract class RemotingMultiNodeSpec(config: MultiNodeConfig)
     with Suite
     with STMultiNodeSpec
     with ImplicitSender
-    with DefaultTimeout { self: MultiNodeSpec =>
-
-}
+    with DefaultTimeout { self: MultiNodeSpec => }

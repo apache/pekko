@@ -13,7 +13,7 @@ import docs.CompileOnlySpec
 class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
 
   "offer a source ref" in compileOnlySpec {
-    //#offer-source
+    // #offer-source
     import akka.stream.SourceRef
     import akka.pattern.pipe
 
@@ -39,9 +39,9 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
 
       def streamLogs(streamId: Long): Source[String, NotUsed] = ???
     }
-    //#offer-source
+    // #offer-source
 
-    //#offer-source-use
+    // #offer-source-use
     val sourceActor = system.actorOf(Props[DataSource](), "dataSource")
 
     sourceActor ! RequestLogs(1337)
@@ -52,11 +52,11 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
     // alternatively explicitly obtain Source from SourceRef:
     // offer.sourceRef.source.runWith(Sink.foreach(println))
 
-    //#offer-source-use
+    // #offer-source-use
   }
 
   "offer a sink ref" in compileOnlySpec {
-    //#offer-sink
+    // #offer-sink
     import akka.stream.SinkRef
 
     case class PrepareUpload(id: String)
@@ -82,11 +82,11 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
       def logsSinkFor(nodeId: String): Sink[String, NotUsed] = ???
     }
 
-    //#offer-sink
+    // #offer-sink
 
     def localMetrics(): Source[String, NotUsed] = Source.single("")
 
-    //#offer-sink-use
+    // #offer-sink-use
     val receiver = system.actorOf(Props[DataReceiver](), "receiver")
 
     receiver ! PrepareUpload("system-42-tmp")
@@ -94,11 +94,11 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
 
     // stream local metrics to Sink's origin:
     localMetrics().runWith(ready.sinkRef)
-    //#offer-sink-use
+    // #offer-sink-use
   }
 
   "show how to configure timeouts with attrs" in compileOnlySpec {
-    //#attr-sub-timeout
+    // #attr-sub-timeout
     // configure the timeout for source
     import scala.concurrent.duration._
     import akka.stream.StreamRefAttributes
@@ -113,7 +113,7 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
       .sinkRef()
       .addAttributes(StreamRefAttributes.subscriptionTimeout(5.seconds))
       .runWith(Sink.ignore) // not very interesting Sink, just an example
-    //#attr-sub-timeout
+    // #attr-sub-timeout
   }
 
 }

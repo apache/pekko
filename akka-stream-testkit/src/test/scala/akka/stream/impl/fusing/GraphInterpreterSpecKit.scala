@@ -237,7 +237,7 @@ object GraphInterpreterSpecKit {
   }
 
   private def setPortIds(stage: GraphStageWithMaterializedValue[_ <: Shape, _]): Unit = {
-    stage.shape.inlets.zipWithIndex.foreach { case (inlet, idx)  => inlet.id = idx }
+    stage.shape.inlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
     stage.shape.outlets.zipWithIndex.foreach { case (inlet, idx) => inlet.id = idx }
   }
 
@@ -268,25 +268,27 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       out.id = 0
       override def toString = "Upstream"
 
-      setHandler(out, new OutHandler {
-        override def onPull() = {
-          // TODO handler needed but should it do anything?
-        }
+      setHandler(out,
+        new OutHandler {
+          override def onPull() = {
+            // TODO handler needed but should it do anything?
+          }
 
-        override def toString = "Upstream.OutHandler"
-      })
+          override def toString = "Upstream.OutHandler"
+        })
     }
 
     object Downstream extends DownstreamBoundaryStageLogic[Int] {
       override val in = Inlet[Int]("down")
       in.id = 0
-      setHandler(in, new InHandler {
-        override def onPush() = {
-          // TODO handler needed but should it do anything?
-        }
+      setHandler(in,
+        new InHandler {
+          override def onPush() = {
+            // TODO handler needed but should it do anything?
+          }
 
-        override def toString = "Downstream.InHandler"
-      })
+          override def toString = "Downstream.InHandler"
+        })
 
       override def toString = "Downstream"
     }
@@ -372,11 +374,12 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       val out = Outlet[T]("out")
       out.id = 0
 
-      setHandler(out, new OutHandler {
-        override def onPull(): Unit = lastEvent += RequestOne(UpstreamProbe.this)
-        override def onDownstreamFinish(cause: Throwable): Unit = lastEvent += Cancel(UpstreamProbe.this, cause)
-        override def toString = s"${UpstreamProbe.this.toString}.outHandler"
-      })
+      setHandler(out,
+        new OutHandler {
+          override def onPull(): Unit = lastEvent += RequestOne(UpstreamProbe.this)
+          override def onDownstreamFinish(cause: Throwable): Unit = lastEvent += Cancel(UpstreamProbe.this, cause)
+          override def toString = s"${UpstreamProbe.this.toString}.outHandler"
+        })
 
       def onNext(elem: T, eventLimit: Int = Int.MaxValue): Unit = {
         if (GraphInterpreter.Debug) println(s"----- NEXT: $this $elem")
@@ -401,12 +404,13 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       val in = Inlet[T]("in")
       in.id = 0
 
-      setHandler(in, new InHandler {
-        override def onPush(): Unit = lastEvent += OnNext(DownstreamProbe.this, grab(in))
-        override def onUpstreamFinish(): Unit = lastEvent += OnComplete(DownstreamProbe.this)
-        override def onUpstreamFailure(ex: Throwable): Unit = lastEvent += OnError(DownstreamProbe.this, ex)
-        override def toString = s"${DownstreamProbe.this.toString}.inHandler"
-      })
+      setHandler(in,
+        new InHandler {
+          override def onPush(): Unit = lastEvent += OnNext(DownstreamProbe.this, grab(in))
+          override def onUpstreamFinish(): Unit = lastEvent += OnComplete(DownstreamProbe.this)
+          override def onUpstreamFailure(ex: Throwable): Unit = lastEvent += OnError(DownstreamProbe.this, ex)
+          override def toString = s"${DownstreamProbe.this.toString}.inHandler"
+        })
 
       def requestOne(eventLimit: Int = Int.MaxValue): Unit = {
         if (GraphInterpreter.Debug) println(s"----- REQ $this")
@@ -468,21 +472,22 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       def cancel(): Unit = cancel(this.in)
       def grab(): T = grab(this.in)
 
-      setHandler(this.in, new InHandler {
+      setHandler(this.in,
+        new InHandler {
 
-        // Modified onPush that does not grab() automatically the element. This accesses some internals.
-        override def onPush(): Unit = {
-          val internalEvent = portToConn(DownstreamPortProbe.this.in.id).slot
+          // Modified onPush that does not grab() automatically the element. This accesses some internals.
+          override def onPush(): Unit = {
+            val internalEvent = portToConn(DownstreamPortProbe.this.in.id).slot
 
-          internalEvent match {
-            case Failed(_, elem) => lastEvent += OnNext(DownstreamPortProbe.this, elem)
-            case elem            => lastEvent += OnNext(DownstreamPortProbe.this, elem)
+            internalEvent match {
+              case Failed(_, elem) => lastEvent += OnNext(DownstreamPortProbe.this, elem)
+              case elem            => lastEvent += OnNext(DownstreamPortProbe.this, elem)
+            }
           }
-        }
 
-        override def onUpstreamFinish() = lastEvent += OnComplete(DownstreamPortProbe.this)
-        override def onUpstreamFailure(ex: Throwable) = lastEvent += OnError(DownstreamPortProbe.this, ex)
-      })
+          override def onUpstreamFinish() = lastEvent += OnComplete(DownstreamPortProbe.this)
+          override def onUpstreamFailure(ex: Throwable) = lastEvent += OnError(DownstreamPortProbe.this, ex)
+        })
     }
 
     val (logics, connections) =
@@ -531,18 +536,20 @@ trait GraphInterpreterSpecKit extends StreamSpec {
         }
       }
 
-      setHandler(stagein, new InHandler {
-        override def onPush(): Unit = mayFail(push(stageout, grab(stagein)))
-        override def onUpstreamFinish(): Unit = mayFail(completeStage())
-        override def onUpstreamFailure(ex: Throwable): Unit = mayFail(failStage(ex))
-        override def toString = "insideOutStage.stagein"
-      })
+      setHandler(stagein,
+        new InHandler {
+          override def onPush(): Unit = mayFail(push(stageout, grab(stagein)))
+          override def onUpstreamFinish(): Unit = mayFail(completeStage())
+          override def onUpstreamFailure(ex: Throwable): Unit = mayFail(failStage(ex))
+          override def toString = "insideOutStage.stagein"
+        })
 
-      setHandler(stageout, new OutHandler {
-        override def onPull(): Unit = mayFail(pull(stagein))
-        override def onDownstreamFinish(cause: Throwable): Unit = mayFail(completeStage())
-        override def toString = "insideOutStage.stageout"
-      })
+      setHandler(stageout,
+        new OutHandler {
+          override def onPull(): Unit = mayFail(pull(stagein))
+          override def onDownstreamFinish(cause: Throwable): Unit = mayFail(completeStage())
+          override def toString = "insideOutStage.stageout"
+        })
 
       override def preStart(): Unit = mayFail(lastEvent += PreStart(insideOutStage))
       override def postStop(): Unit =
@@ -647,16 +654,17 @@ trait GraphInterpreterSpecKit extends StreamSpec {
       val in = Inlet[TT]("in")
       in.id = 0
 
-      setHandler(in, new InHandler {
+      setHandler(in,
+        new InHandler {
 
-        // Modified onPush that does not grab() automatically the element. This accesses some internals.
-        override def onPush(): Unit = {
-          lastEvent += OnNext(grab(in))
-        }
+          // Modified onPush that does not grab() automatically the element. This accesses some internals.
+          override def onPush(): Unit = {
+            lastEvent += OnNext(grab(in))
+          }
 
-        override def onUpstreamFinish() = lastEvent += OnComplete
-        override def onUpstreamFailure(ex: Throwable) = lastEvent += OnError(ex)
-      })
+          override def onUpstreamFinish() = lastEvent += OnComplete
+          override def onUpstreamFailure(ex: Throwable) = lastEvent += OnError(ex)
+        })
 
       def requestOne(): Unit = {
         pull(in)

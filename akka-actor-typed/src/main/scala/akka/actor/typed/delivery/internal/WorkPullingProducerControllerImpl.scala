@@ -373,7 +373,7 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
               false
             } else {
               throw new IllegalStateException(s"Invalid combination of hasRequested [${s.requested}], " +
-              s"wasStashed [$wasStashed], hasMoreDemand [$hasMoreDemand], stashBuffer.isEmpty [${stashBuffer.isEmpty}]")
+                s"wasStashed [$wasStashed], hasMoreDemand [$hasMoreDemand], stashBuffer.isEmpty [${stashBuffer.isEmpty}]")
             }
 
           s.copy(out = newOut, requested = newRequested, preselectedWorkers = s.preselectedWorkers - totalSeqNr)
@@ -443,7 +443,8 @@ private class WorkPullingProducerControllerImpl[A: ClassTag](
               currentSeqNr = s.currentSeqNr + 1,
               preselectedWorkers =
                 s.preselectedWorkers.updated(s.currentSeqNr, PreselectedWorker(outKey, out.confirmationQualifier)),
-              handOver = s.handOver.updated(s.currentSeqNr, HandOver(resend.oldConfirmationQualifier, resend.oldSeqNr))))
+              handOver =
+                s.handOver.updated(s.currentSeqNr, HandOver(resend.oldConfirmationQualifier, resend.oldSeqNr))))
         case None =>
           checkStashFull(stashBuffer)
           // no demand from any workers, or all already preselected

@@ -625,11 +625,11 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
     val FinishConnectRetries: Int =
       getInt("finish-connect-retries").requiring(_ > 0, "finish-connect-retries must be > 0")
 
-    val WindowsConnectionAbortWorkaroundEnabled
-        : Boolean = getString("windows-connection-abort-workaround-enabled") match {
-      case "auto" => Helpers.isWindows
-      case _      => getBoolean("windows-connection-abort-workaround-enabled")
-    }
+    val WindowsConnectionAbortWorkaroundEnabled: Boolean =
+      getString("windows-connection-abort-workaround-enabled") match {
+        case "auto" => Helpers.isWindows
+        case _      => getBoolean("windows-connection-abort-workaround-enabled")
+      }
 
     private[this] def getIntBytes(path: String): Int = {
       val size = getBytes(path)
@@ -640,7 +640,6 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
   }
 
   /**
-   *
    */
   val manager: ActorRef = {
     system.systemActorOf(

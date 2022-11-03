@@ -250,7 +250,6 @@ object Behaviors {
    *                 each message processing by the inner behavior is done.
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T: ClassTag](mdcForMessage: T => Map[String, String])(behavior: Behavior[T]): Behavior[T] =
     withMdc[T](Map.empty[String, String], mdcForMessage)(behavior)
@@ -265,7 +264,6 @@ object Behaviors {
    * @param staticMdc This MDC is setup in the logging context for every message
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T: ClassTag](staticMdc: Map[String, String])(behavior: Behavior[T]): Behavior[T] =
     withMdc[T](staticMdc, (_: T) => Map.empty[String, String])(behavior)
@@ -288,7 +286,6 @@ object Behaviors {
    *                 each message processing by the inner behavior is done.
    * @param behavior The actual behavior handling the messages, the MDC is used for the log entries logged through
    *                 `ActorContext.log`
-   *
    */
   def withMdc[T: ClassTag](staticMdc: Map[String, String], mdcForMessage: T => Map[String, String])(
       behavior: Behavior[T]): Behavior[T] =

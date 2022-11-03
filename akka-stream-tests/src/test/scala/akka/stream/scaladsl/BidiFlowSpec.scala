@@ -95,9 +95,9 @@ class BidiFlowSpec extends StreamSpec {
         val bcast = b.add(Broadcast[Int](2))
         val merge = b.add(Merge[Int](2))
         val flow = b.add(Flow[String].map(Integer.valueOf(_).toInt))
-        bcast ~> sink
+        bcast            ~> sink
         Source.single(1) ~> bcast ~> merge
-        flow ~> merge
+        flow             ~> merge
         FlowShape(flow.in, merge.out)
       })
       val right = Flow.fromGraph(GraphDSL.createGraph(Sink.head[immutable.Seq[Long]]) { implicit b => sink =>

@@ -88,8 +88,8 @@ object BehaviorTestKitSpec {
               Behaviors.same
             case SpawnAdapterWithName(name) =>
               context.spawnMessageAdapter({ (r: Reproduce) =>
-                SpawnAnonymous(r.times)
-              }, name)
+                  SpawnAnonymous(r.times)
+                }, name)
               Behaviors.same
             case SpawnAndWatchUnwatch(name) =>
               val c = context.spawn(Child.initial, name)
@@ -420,11 +420,11 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       testkit.run(ScheduleCommand("abc", 42.seconds, Effect.TimerScheduled.SingleMode, SpawnChild))
       testkit.expectEffectPF {
         case Effect.TimerScheduled(
-            "abc",
-            SpawnChild,
-            finiteDuration,
-            Effect.TimerScheduled.SingleMode,
-            false /*not overriding*/ ) =>
+              "abc",
+              SpawnChild,
+              finiteDuration,
+              Effect.TimerScheduled.SingleMode,
+              false /*not overriding*/ ) =>
           finiteDuration should equal(42.seconds)
       }
       testkit.run(IsTimerActive("abc", t.ref))
@@ -456,7 +456,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       testkit.expectEffectPF {
         case Effect.Spawned(_, "child", _) =>
       }
-      //no effect since the timer's mode was single, hence removed after fired
+      // no effect since the timer's mode was single, hence removed after fired
       send()
       testkit.selfInbox().hasMessages should be(false)
     }
@@ -485,7 +485,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
       testkit.expectEffect {
         Effect.Stopped("child")
       }
-      //when scheduling with fixed rate the timer remains scheduled
+      // when scheduling with fixed rate the timer remains scheduled
       send()
       testkit.runOne()
       testkit.expectEffectPF {

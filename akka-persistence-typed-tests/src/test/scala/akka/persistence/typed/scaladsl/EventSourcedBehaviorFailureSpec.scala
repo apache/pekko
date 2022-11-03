@@ -123,10 +123,11 @@ class EventSourcedBehaviorFailureSpec
       LoggingTestKit.error[JournalFailureException].expect {
         val probe = TestProbe[String]()
         val excProbe = TestProbe[Throwable]()
-        spawn(failingPersistentActor(PersistenceId.ofUniqueId("fail-recovery"), probe.ref, {
-          case (_, RecoveryFailed(t)) =>
-            excProbe.ref ! t
-        }))
+        spawn(failingPersistentActor(PersistenceId.ofUniqueId("fail-recovery"), probe.ref,
+          {
+            case (_, RecoveryFailed(t)) =>
+              excProbe.ref ! t
+          }))
 
         excProbe.expectMessageType[TestException].message shouldEqual "Nope"
         probe.expectMessage("stopped")
@@ -135,10 +136,11 @@ class EventSourcedBehaviorFailureSpec
 
     "handle exceptions from RecoveryFailed signal handler" in {
       val probe = TestProbe[String]()
-      val pa = spawn(failingPersistentActor(PersistenceId.ofUniqueId("fail-recovery-twice"), probe.ref, {
-        case (_, RecoveryFailed(_)) =>
-          throw TestException("recovery call back failure")
-      }))
+      val pa = spawn(failingPersistentActor(PersistenceId.ofUniqueId("fail-recovery-twice"), probe.ref,
+        {
+          case (_, RecoveryFailed(_)) =>
+            throw TestException("recovery call back failure")
+        }))
       pa ! "one"
       probe.expectMessage("starting")
       probe.expectMessage("persisting")
@@ -160,10 +162,11 @@ class EventSourcedBehaviorFailureSpec
 
       LoggingTestKit.error[JournalFailureException].expect {
         // start again and then the event handler will throw
-        spawn(failingPersistentActor(pid, probe.ref, {
-          case (_, RecoveryFailed(t)) =>
-            excProbe.ref ! t
-        }))
+        spawn(failingPersistentActor(pid, probe.ref,
+          {
+            case (_, RecoveryFailed(t)) =>
+              excProbe.ref ! t
+          }))
 
         excProbe.expectMessageType[TestException].message shouldEqual "wrong event"
         probe.expectMessage("stopped")
@@ -177,7 +180,8 @@ class EventSourcedBehaviorFailureSpec
           Behaviors
             .supervise(failingPersistentActor(
               PersistenceId.ofUniqueId("recovery-ok"),
-              probe.ref, {
+              probe.ref,
+              {
                 case (_, RecoveryCompleted) =>
                   probe.ref.tell("starting")
                   throw TestException("recovery call back failure")
@@ -292,9 +296,10 @@ class EventSourcedBehaviorFailureSpec
       case object SomeSignal extends Signal
       LoggingTestKit.error[TestException].expect {
         val probe = TestProbe[String]()
-        val behav = failingPersistentActor(PersistenceId.ofUniqueId("wrong-signal-handler"), probe.ref, {
-          case (_, SomeSignal) => throw TestException("from signal")
-        })
+        val behav = failingPersistentActor(PersistenceId.ofUniqueId("wrong-signal-handler"), probe.ref,
+          {
+            case (_, SomeSignal) => throw TestException("from signal")
+          })
         val c = spawn(behav)
         probe.expectMessage("starting")
         c.toClassic ! SomeSignal

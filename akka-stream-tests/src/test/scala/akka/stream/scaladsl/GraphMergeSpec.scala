@@ -40,8 +40,8 @@ class GraphMergeSpec extends TwoStreamsSetup {
           val m2 = b.add(Merge[Int](2))
 
           source1 ~> m1.in(0)
-          m1.out ~> Flow[Int].map(_ * 2) ~> m2.in(0)
-          m2.out ~> Flow[Int].map(_ / 2).map(_ + 1) ~> Sink.fromSubscriber(probe)
+          m1.out  ~> Flow[Int].map(_ * 2)            ~> m2.in(0)
+          m2.out  ~> Flow[Int].map(_ / 2).map(_ + 1) ~> Sink.fromSubscriber(probe)
           source2 ~> m1.in(1)
           source3 ~> m2.in(1)
 
@@ -56,7 +56,7 @@ class GraphMergeSpec extends TwoStreamsSetup {
         subscription.request(1)
         collected :+= probe.expectNext()
       }
-      //test ordering of elements coming from each of nonempty flows
+      // test ordering of elements coming from each of nonempty flows
       collected.filter(_ <= 4) should ===(1 to 4)
       collected.filter(_ >= 5) should ===(5 to 10)
 
@@ -92,12 +92,12 @@ class GraphMergeSpec extends TwoStreamsSetup {
         .fromGraph(GraphDSL.create() { implicit b =>
           val merge = b.add(Merge[Int](6))
 
-          source1 ~> merge.in(0)
-          source2 ~> merge.in(1)
-          source3 ~> merge.in(2)
-          source4 ~> merge.in(3)
-          source5 ~> merge.in(4)
-          source6 ~> merge.in(5)
+          source1   ~> merge.in(0)
+          source2   ~> merge.in(1)
+          source3   ~> merge.in(2)
+          source4   ~> merge.in(3)
+          source5   ~> merge.in(4)
+          source6   ~> merge.in(5)
           merge.out ~> Sink.fromSubscriber(probe)
 
           ClosedShape
@@ -179,8 +179,8 @@ class GraphMergeSpec extends TwoStreamsSetup {
       val (graphSubscriber1, graphSubscriber2) = RunnableGraph
         .fromGraph(GraphDSL.createGraph(src1, src2)((_, _)) { implicit b => (s1, s2) =>
           val merge = b.add(Merge[Int](2))
-          s1.out ~> merge.in(0)
-          s2.out ~> merge.in(1)
+          s1.out    ~> merge.in(0)
+          s2.out    ~> merge.in(1)
           merge.out ~> Sink.fromSubscriber(down)
           ClosedShape
         })

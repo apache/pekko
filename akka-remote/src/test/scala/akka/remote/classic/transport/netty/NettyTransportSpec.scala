@@ -61,7 +61,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
     }
 
     "bind to a random port but remoting accepts from a specified port" in {
-      //keep open to ensure it isn't used for the bind-port
+      // keep open to ensure it isn't used for the bind-port
       val (openSS, address) = randomOpenServerSocket()
 
       try {

@@ -6,7 +6,7 @@ package doc.akka.serialization.jackson
 
 object CustomAdtSerializer {
 
-  //#adt-trait-object
+  // #adt-trait-object
   import com.fasterxml.jackson.core.JsonGenerator
   import com.fasterxml.jackson.core.JsonParser
   import com.fasterxml.jackson.databind.DeserializationContext
@@ -55,5 +55,5 @@ object CustomAdtSerializer {
   }
 
   final case class Compass(currentDirection: Direction) extends MySerializable
-  //#adt-trait-object
+  // #adt-trait-object
 }

@@ -6,7 +6,7 @@ package docs.actor
 
 class SharedMutableStateDocSpec {
 
-  //#mutable-state
+  // #mutable-state
   import akka.actor.{ Actor, ActorRef }
   import akka.pattern.ask
   import akka.util.Timeout
@@ -76,5 +76,5 @@ class SharedMutableStateDocSpec {
         Future { expensiveCalculation(currentSender) }
     }
   }
-  //#mutable-state
+  // #mutable-state
 }

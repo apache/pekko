@@ -69,7 +69,6 @@ import akka.util.OptionVal
  * downstream and upstream, this needs an atomic state machine which looks a
  * little like this:
  *
- *
  *      +--------+     (2)     +---------------+
  *      |  null  +------------>+   Subscriber  |
  *      +---+----+             +-----+---------+
@@ -91,7 +90,6 @@ import akka.util.OptionVal
  *      +---+----------+  (2)  +-----+---------+ ---
  *      |  Publisher   +-----> |    Inert      |    | (5, *)
  *      +--------------+       +---------------+ <--
- *
  *
  * The idea is to keep the major state in only one atomic reference. The actions
  * that can happen are:
@@ -324,10 +322,12 @@ import akka.util.OptionVal
             if (!compareAndSet(x, ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
           case s: Subscriber[_] =>
             try s.onError(ex)
-            catch { case NonFatal(_) => } finally set(Inert)
+            catch { case NonFatal(_) => }
+            finally set(Inert)
           case Both(s) =>
             try s.onError(ex)
-            catch { case NonFatal(_) => } finally set(Inert)
+            catch { case NonFatal(_) => }
+            finally set(Inert)
           case _ => // spec violation or cancellation race, but nothing we can do
         }
       rec()

@@ -483,10 +483,11 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     "be possible to combine with MDC" in {
       val probe = createTestProbe[String]()
       val ref = spawn(Behaviors.setup[Command] { _ =>
-        Behaviors.withMdc(staticMdc = Map("x" -> "y"), mdcForMessage = (msg: Command) => {
-          probe.ref ! s"mdc:${msg.s.toUpperCase()}"
-          Map("msg" -> msg.s.toUpperCase())
-        }) {
+        Behaviors.withMdc(staticMdc = Map("x" -> "y"),
+          mdcForMessage = (msg: Command) => {
+            probe.ref ! s"mdc:${msg.s.toUpperCase()}"
+            Map("msg" -> msg.s.toUpperCase())
+          }) {
           MultiProtocol(probe.ref)
         }
       })

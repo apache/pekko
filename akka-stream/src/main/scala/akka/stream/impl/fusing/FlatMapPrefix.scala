@@ -43,7 +43,7 @@ import akka.util.OptionVal
       setHandlers(in, out, this)
 
       override def postStop(): Unit = {
-        //this covers the case when the nested flow was never materialized
+        // this covers the case when the nested flow was never materialized
         if (!matPromise.isCompleted) {
           matPromise.failure(new AbruptStageTerminationException(this))
         }
@@ -58,7 +58,7 @@ import akka.util.OptionVal
             if (accumulated.size == n) {
               materializeFlow()
             } else {
-              //gi'me some more!
+              // gi'me some more!
               pull(in)
             }
         }
@@ -75,7 +75,7 @@ import akka.util.OptionVal
         subSource match {
           case OptionVal.Some(s) => s.fail(ex)
           case _                 =>
-            //flow won't be materialized, so we have to complete the future with a failure indicating this
+            // flow won't be materialized, so we have to complete the future with a failure indicating this
             matPromise.failure(new NeverMaterializedException(ex))
             super.onUpstreamFailure(ex)
         }
@@ -84,12 +84,12 @@ import akka.util.OptionVal
       override def onPull(): Unit = {
         subSink match {
           case OptionVal.Some(s) =>
-            //delegate to subSink
+            // delegate to subSink
             s.pull()
           case _ =>
             if (accumulated.size < n) pull(in)
             else if (accumulated.size == n) {
-              //corner case for n = 0, can be handled in FlowOps
+              // corner case for n = 0, can be handled in FlowOps
               materializeFlow()
             } else {
               throw new IllegalStateException(s"Unexpected accumulated size: ${accumulated.size} (n: $n)")
@@ -104,9 +104,9 @@ import akka.util.OptionVal
             if (propagateToNestedMaterialization) {
               downstreamCause = OptionVal.Some(cause)
               if (accumulated.size == n) {
-                //corner case for n = 0, can be handled in FlowOps
+                // corner case for n = 0, can be handled in FlowOps
                 materializeFlow()
-              } else if (!hasBeenPulled(in)) { //if in was already closed, nested flow would have already been materialized
+              } else if (!hasBeenPulled(in)) { // if in was already closed, nested flow would have already been materialized
                 pull(in)
               }
             } else {
@@ -153,31 +153,32 @@ import akka.util.OptionVal
               }
             }
           }
-          val matVal = try {
-            val flow = f(prefix)
-            val runnableGraph = Source.fromGraph(theSubSource.source).viaMat(flow)(Keep.right).to(theSubSink.sink)
-            interpreter.subFusingMaterializer.materialize(runnableGraph, inheritedAttributes)
-          } catch {
-            case NonFatal(ex) =>
-              matPromise.failure(new NeverMaterializedException(ex))
-              subSource = OptionVal.None
-              subSink = OptionVal.None
-              throw ex
-          }
+          val matVal =
+            try {
+              val flow = f(prefix)
+              val runnableGraph = Source.fromGraph(theSubSource.source).viaMat(flow)(Keep.right).to(theSubSink.sink)
+              interpreter.subFusingMaterializer.materialize(runnableGraph, inheritedAttributes)
+            } catch {
+              case NonFatal(ex) =>
+                matPromise.failure(new NeverMaterializedException(ex))
+                subSource = OptionVal.None
+                subSink = OptionVal.None
+                throw ex
+            }
           matPromise.success(matVal)
 
-          //in case downstream was closed
+          // in case downstream was closed
           downstreamCause match {
             case OptionVal.Some(ex) => theSubSink.cancel(ex)
             case _                  =>
           }
 
-          //in case we've materialized due to upstream completion
+          // in case we've materialized due to upstream completion
           if (isClosed(in)) {
             theSubSource.complete()
           }
 
-          //in case we've been pulled by downstream
+          // in case we've been pulled by downstream
           if (isAvailable(out)) {
             theSubSink.pull()
           }

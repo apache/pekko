@@ -112,16 +112,16 @@ abstract class ClusterShardingQueriesSpec
         val probe = TestProbe()
         val region = ClusterSharding(system).shardRegion(shardTypeName)
         awaitAssert({
-          region.tell(ShardRegion.GetClusterShardingStats(10.seconds), probe.ref)
-          val regions = probe.expectMsgType[ShardRegion.ClusterShardingStats].regions
-          regions.size shouldEqual 3
-          val timeouts = numberOfShards / regions.size
+            region.tell(ShardRegion.GetClusterShardingStats(10.seconds), probe.ref)
+            val regions = probe.expectMsgType[ShardRegion.ClusterShardingStats].regions
+            regions.size shouldEqual 3
+            val timeouts = numberOfShards / regions.size
 
-          // 3 regions, 2 shards per region, all 2 shards/region were unresponsive
-          // within shard-region-query-timeout, which only on first is 0ms
-          regions.values.map(_.stats.size).sum shouldEqual 4
-          regions.values.map(_.failed.size).sum shouldEqual timeouts
-        }, max = 10.seconds)
+            // 3 regions, 2 shards per region, all 2 shards/region were unresponsive
+            // within shard-region-query-timeout, which only on first is 0ms
+            regions.values.map(_.stats.size).sum shouldEqual 4
+            regions.values.map(_.failed.size).sum shouldEqual timeouts
+          }, max = 10.seconds)
       }
       enterBarrier("received failed stats from timed out shards vs empty")
     }
@@ -131,11 +131,11 @@ abstract class ClusterShardingQueriesSpec
         val probe = TestProbe()
         val region = ClusterSharding(system).shardRegion(shardTypeName)
         awaitAssert({
-          region.tell(ShardRegion.GetShardRegionState, probe.ref)
-          val state = probe.expectMsgType[ShardRegion.CurrentShardRegionState]
-          state.shards.isEmpty shouldEqual true
-          state.failed.size shouldEqual 2
-        }, max = 10.seconds)
+            region.tell(ShardRegion.GetShardRegionState, probe.ref)
+            val state = probe.expectMsgType[ShardRegion.CurrentShardRegionState]
+            state.shards.isEmpty shouldEqual true
+            state.failed.size shouldEqual 2
+          }, max = 10.seconds)
       }
       enterBarrier("query-timeout-on-busy-node")
 
@@ -143,11 +143,11 @@ abstract class ClusterShardingQueriesSpec
         val probe = TestProbe()
         val region = ClusterSharding(system).shardRegion(shardTypeName)
         awaitAssert({
-          region.tell(ShardRegion.GetShardRegionState, probe.ref)
-          val state = probe.expectMsgType[ShardRegion.CurrentShardRegionState]
-          state.shards.size shouldEqual 2
-          state.failed.isEmpty shouldEqual true
-        }, max = 10.seconds)
+            region.tell(ShardRegion.GetShardRegionState, probe.ref)
+            val state = probe.expectMsgType[ShardRegion.CurrentShardRegionState]
+            state.shards.size shouldEqual 2
+            state.failed.isEmpty shouldEqual true
+          }, max = 10.seconds)
       }
       enterBarrier("done")
     }

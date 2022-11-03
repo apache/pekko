@@ -168,7 +168,8 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
               concatNames(i, null, b.append(first).append('-').append(n))
             } else concatNames(i, n, null)
           case _ => concatNames(i, first, buf)
-        } else if (buf eq null) first
+        }
+      else if (buf eq null) first
       else buf.toString
 
     Option(concatNames(attributeList.reverseIterator, null, null))
@@ -311,18 +312,19 @@ object Attributes {
    * for debugging. Included in the default toString of GraphStageLogic if present
    */
   final class SourceLocation(lambda: AnyRef) extends Attribute {
-    lazy val locationName: String = try {
-      val locationName = LineNumbers(lambda) match {
-        case LineNumbers.NoSourceInfo           => "unknown"
-        case LineNumbers.UnknownSourceFormat(_) => "unknown"
-        case LineNumbers.SourceFile(filename)   => filename
-        case LineNumbers.SourceFileLines(filename, from, _) =>
-          s"$filename:$from"
+    lazy val locationName: String =
+      try {
+        val locationName = LineNumbers(lambda) match {
+          case LineNumbers.NoSourceInfo           => "unknown"
+          case LineNumbers.UnknownSourceFormat(_) => "unknown"
+          case LineNumbers.SourceFile(filename)   => filename
+          case LineNumbers.SourceFileLines(filename, from, _) =>
+            s"$filename:$from"
+        }
+        s"${lambda.getClass.getPackage.getName}-$locationName"
+      } catch {
+        case NonFatal(_) => "unknown" // location is not critical so give up without failing
       }
-      s"${lambda.getClass.getPackage.getName}-$locationName"
-    } catch {
-      case NonFatal(_) => "unknown" // location is not critical so give up without failing
-    }
 
     override def toString: String = locationName
   }
@@ -562,10 +564,10 @@ object Attributes {
      * nested flow materialization.
      * This applies to [[akka.stream.scaladsl.FlowOps.flatMapPrefix]], [[akka.stream.scaladsl.Flow.futureFlow]] and derived operators.
      */
-    val EagerCancellation
-        : NestedMaterializationCancellationPolicy = new NestedMaterializationCancellationPolicy(false) {
-      override def toString: String = "EagerCancellation"
-    }
+    val EagerCancellation: NestedMaterializationCancellationPolicy =
+      new NestedMaterializationCancellationPolicy(false) {
+        override def toString: String = "EagerCancellation"
+      }
 
     /**
      * A [[NestedMaterializationCancellationPolicy]] that configures graph stages
@@ -676,7 +678,6 @@ object Attributes {
    *
    * Configures `log()` operator log-levels to be used when logging.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
-   *
    */
   def createLogLevels(
       onElement: Logging.LogLevel,
@@ -689,7 +690,6 @@ object Attributes {
    *
    * Configures `log()` operator log-levels to be used when logging onElement.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
-   *
    */
   def createLogLevels(onElement: Logging.LogLevel): Attributes =
     logLevels(onElement)
@@ -765,7 +765,6 @@ object ActorAttributes {
    *
    * Configures `log()` operator log-levels to be used when logging.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
-   *
    */
   def createLogLevels(
       onElement: Logging.LogLevel,
@@ -778,7 +777,6 @@ object ActorAttributes {
    *
    * Configures `log()` operator log-levels to be used when logging onElement.
    * Logging a certain operation can be completely disabled by using [[Attributes#logLevelOff]].
-   *
    */
   def createLogLevels(onElement: Logging.LogLevel): Attributes =
     logLevels(onElement)
@@ -895,7 +893,8 @@ object ActorAttributes {
 object StreamRefAttributes {
   import Attributes._
 
-  /** Attributes specific to stream refs.
+  /**
+   * Attributes specific to stream refs.
    *
    * Not for user extension.
    */

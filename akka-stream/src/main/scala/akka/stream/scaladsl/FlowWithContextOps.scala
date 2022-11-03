@@ -20,7 +20,6 @@ import ccompat._
 /**
  * Shared stream operations for [[FlowWithContext]] and [[SourceWithContext]] that automatically propagate a context
  * element with each data element.
- *
  */
 @ccompatUsedUntil213
 trait FlowWithContextOps[+Out, +Ctx, +Mat] {

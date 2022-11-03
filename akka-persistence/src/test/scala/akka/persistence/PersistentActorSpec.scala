@@ -770,7 +770,7 @@ object PersistentActorSpec {
             probe ! inner
             Thread.sleep(1000) // really long wait here...
             // the next incoming command must be handled by the following function
-            context.become({ case _ => sender() ! "done" })
+            context.become { case _ => sender() ! "done" }
           }
         }
     }

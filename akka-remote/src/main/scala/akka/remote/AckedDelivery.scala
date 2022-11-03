@@ -121,8 +121,8 @@ final case class AckedSendBuffer[T <: HasSequenceNumber](
     if (newNacked.size < ack.nacks.size) throw new ResendUnfulfillableException
     else
       this.copy(nonAcked = nonAcked.filter { m =>
-        m.seq > ack.cumulativeAck
-      }, nacked = newNacked)
+          m.seq > ack.cumulativeAck
+        }, nacked = newNacked)
   }
 
   /**

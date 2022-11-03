@@ -25,10 +25,11 @@ object ActorSourceSinkExample {
     case class Fail(ex: Exception) extends Protocol
 
     val source: Source[Protocol, ActorRef[Protocol]] = ActorSource.actorRef[Protocol](completionMatcher = {
-      case Complete =>
-    }, failureMatcher = {
-      case Fail(ex) => ex
-    }, bufferSize = 8, overflowStrategy = OverflowStrategy.fail)
+        case Complete =>
+      },
+      failureMatcher = {
+        case Fail(ex) => ex
+      }, bufferSize = 8, overflowStrategy = OverflowStrategy.fail)
 
     val ref = source
       .collect {
@@ -166,7 +167,7 @@ object ActorSourceSinkExample {
       onInitMessage = (responseActorRef: ActorRef[Ack]) => Init(responseActorRef),
       ackMessage = Ack,
       onCompleteMessage = Complete,
-      onFailureMessage = (exception) => Fail(exception))
+      onFailureMessage = exception => Fail(exception))
 
     Source.single("msg1").runWith(sink)
     // #actor-sink-ref-with-backpressure

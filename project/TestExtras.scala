@@ -39,7 +39,7 @@ object TestExtras {
         onlyTestTags := Params.testTagsOnly,
         // add filters for tests excluded by name
         Test / testOptions ++= excludeTestNames.value.toSeq.map(exclude =>
-            Tests.Filter(test => !test.contains(exclude))),
+          Tests.Filter(test => !test.contains(exclude))),
         // add arguments for tests excluded by tag
         Test / testOptions ++= {
           val tags = excludeTestTags.value

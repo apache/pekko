@@ -36,8 +36,7 @@ final case class SerializationCheckFailedException private[dungeon] (msg: Object
 @InternalApi
 private[akka] trait Dispatch { this: ActorCell =>
 
-  @nowarn @volatile private var _mailboxDoNotCallMeDirectly
-      : Mailbox = _ //This must be volatile since it isn't protected by the mailbox status
+  @nowarn @volatile private var _mailboxDoNotCallMeDirectly: Mailbox = _ // This must be volatile since it isn't protected by the mailbox status
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _mailboxDoNotCallMeDirectly
@@ -177,11 +176,12 @@ private[akka] trait Dispatch { this: ActorCell =>
         if (system.settings.NoSerializationVerificationNeededClassPrefix.exists(msg.getClass.getName.startsWith))
           envelope
         else {
-          val deserializedMsg = try {
-            serializeAndDeserializePayload(msg)
-          } catch {
-            case NonFatal(e) => throw SerializationCheckFailedException(msg, e)
-          }
+          val deserializedMsg =
+            try {
+              serializeAndDeserializePayload(msg)
+            } catch {
+              case NonFatal(e) => throw SerializationCheckFailedException(msg, e)
+            }
           envelope.message match {
             case dl: DeadLetter => envelope.copy(message = dl.copy(message = deserializedMsg))
             case _              => envelope.copy(message = deserializedMsg)

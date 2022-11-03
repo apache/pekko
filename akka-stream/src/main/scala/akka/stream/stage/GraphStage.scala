@@ -606,11 +606,13 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
         connection.slot match {
           case Empty | _ @(_: Cancelled) => false // cancelled (element is discarded when cancelled)
           case _                         => true // completed but element still there to grab
-        } else if ((connection.portState & (InReady | InFailed)) == (InReady | InFailed))
+        }
+      else if ((connection.portState & (InReady | InFailed)) == (InReady | InFailed))
         connection.slot match {
           case Failed(_, elem) => elem.asInstanceOf[AnyRef] ne Empty // failed but element still there to grab
           case _               => false
-        } else false
+        }
+      else false
     }
   }
 
@@ -782,14 +784,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * the `onClose` function is invoked with the elements which were read.
    */
   final protected def readN[T](in: Inlet[T], n: Int)(andThen: Seq[T] => Unit, onClose: Seq[T] => Unit): Unit =
-    //FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
+    // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
     if (n < 0) throw new IllegalArgumentException("cannot read negative number of elements")
     else if (n == 0) andThen(Nil)
     else {
       val result = new Array[AnyRef](n).asInstanceOf[Array[T]]
       var pos = 0
 
-      if (isAvailable(in)) { //If we already have data available, then shortcircuit and read the first
+      if (isAvailable(in)) { // If we already have data available, then shortcircuit and read the first
         result(pos) = grab(in)
         pos += 1
       }
@@ -797,11 +799,12 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       if (n != pos) { // If we aren't already done
         requireNotReading(in)
         if (!hasBeenPulled(in)) pull(in)
-        setHandler(in, new Reading(in, n - pos, getHandler(in))((elem: T) => {
-          result(pos) = elem
-          pos += 1
-          if (pos == n) andThen(result.toSeq)
-        }, () => onClose(result.take(pos).toSeq)))
+        setHandler(in,
+          new Reading(in, n - pos, getHandler(in))((elem: T) => {
+              result(pos) = elem
+              pos += 1
+              if (pos == n) andThen(result.toSeq)
+            }, () => onClose(result.take(pos).toSeq)))
       } else andThen(result.toSeq)
     }
 
@@ -816,7 +819,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       n: Int,
       andThen: Procedure[java.util.List[T]],
       onClose: Procedure[java.util.List[T]]): Unit = {
-    //FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
+    // FIXME `onClose` is a poor name for `onComplete` rename this at the earliest possible opportunity
     import akka.util.ccompat.JavaConverters._
     readN(in, n)(seq => andThen(seq.asJava), seq => onClose(seq.asJava))
   }
@@ -1232,7 +1235,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
         Future.failed(streamDetachedException)
     }
 
-    //external call
+    // external call
     override def invoke(event: T): Unit = invokeWithPromise(event, NoPromise)
 
     @tailrec
@@ -1427,22 +1430,23 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     private var closed = false
     private var pulled = false
 
-    private val _sink = new SubSink[T](name, getAsyncCallback[ActorSubscriberMessage] { msg =>
-      if (!closed) msg match {
-        case OnNext(e) =>
-          elem = e.asInstanceOf[T]
-          pulled = false
-          handler.onPush()
-        case OnComplete =>
-          closed = true
-          handler.onUpstreamFinish()
-          GraphStageLogic.this.completedOrFailed(this)
-        case OnError(ex) =>
-          closed = true
-          handler.onUpstreamFailure(ex)
-          GraphStageLogic.this.completedOrFailed(this)
-      }
-    }.invoke _)
+    private val _sink = new SubSink[T](name,
+      getAsyncCallback[ActorSubscriberMessage] { msg =>
+        if (!closed) msg match {
+          case OnNext(e) =>
+            elem = e.asInstanceOf[T]
+            pulled = false
+            handler.onPush()
+          case OnComplete =>
+            closed = true
+            handler.onUpstreamFinish()
+            GraphStageLogic.this.completedOrFailed(this)
+          case OnError(ex) =>
+            closed = true
+            handler.onUpstreamFailure(ex)
+            GraphStageLogic.this.completedOrFailed(this)
+        }
+      }.invoke _)
 
     GraphStageLogic.this.created(this)
 
@@ -1924,7 +1928,7 @@ trait OutHandler {
       require(cause ne null, "Cancellation cause must not be null")
       require(thisStage.lastCancellationCause eq null, "onDownstreamFinish(cause) must not be called recursively")
       thisStage.lastCancellationCause = cause
-      (onDownstreamFinish(): @nowarn("msg=deprecated")) // if not overridden, call old deprecated variant
+      onDownstreamFinish(): @nowarn("msg=deprecated") // if not overridden, call old deprecated variant
     } finally thisStage.lastCancellationCause = null
   }
 }

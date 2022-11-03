@@ -322,7 +322,7 @@ class FramingSpec extends StreamSpec {
     "report truncated frames" in {
       import system.dispatcher
       val resultFutures: List[Future[(Throwable, (ByteOrder, Int, Int, Int))]] = for {
-        //_ <- 1 to 10
+        // _ <- 1 to 10
         byteOrder <- byteOrders
         fieldOffset <- fieldOffsets
         fieldLength <- fieldLengths

@@ -32,11 +32,11 @@ object AkkaValidatePullRequest extends AutoPlugin {
   val additionalTasks = settingKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
 
   override lazy val globalSettings = Seq(credentials ++= {
-    // todo this should probably be supplied properly
-    GitHub.envTokenOrThrow.map { token =>
-      Credentials("GitHub API", "api.github.com", "", token)
-    }
-  }, additionalTasks := Seq.empty)
+      // todo this should probably be supplied properly
+      GitHub.envTokenOrThrow.map { token =>
+        Credentials("GitHub API", "api.github.com", "", token)
+      }
+    }, additionalTasks := Seq.empty)
 
   override lazy val buildSettings = Seq(
     validatePullRequest / includeFilter := PathGlobFilter("akka-*/**"),
@@ -45,16 +45,16 @@ object AkkaValidatePullRequest extends AutoPlugin {
     prValidatorTargetBranch := "origin/main")
 
   override lazy val projectSettings = inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
-      ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "performance"),
-      ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
-      ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "timing"),
-      ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gh-exclude"),
-      // make it fork just like regular test running
-      ValidatePR / fork := (Test / fork).value,
-      ValidatePR / testGrouping := (Test / testGrouping).value,
-      ValidatePR / javaOptions := (Test / javaOptions).value,
-      prValidatorTasks := Seq(ValidatePR / test) ++ additionalTasks.value,
-      prValidatorEnforcedBuildAllTasks := Seq(Test / test) ++ additionalTasks.value)
+    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "performance"),
+    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
+    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "timing"),
+    ValidatePR / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-l", "gh-exclude"),
+    // make it fork just like regular test running
+    ValidatePR / fork := (Test / fork).value,
+    ValidatePR / testGrouping := (Test / testGrouping).value,
+    ValidatePR / javaOptions := (Test / javaOptions).value,
+    prValidatorTasks := Seq(ValidatePR / test) ++ additionalTasks.value,
+    prValidatorEnforcedBuildAllTasks := Seq(Test / test) ++ additionalTasks.value)
 }
 
 /**

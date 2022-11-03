@@ -57,7 +57,7 @@ class DuplicateHandshakeSpec extends AkkaSpec("""
         env
       }
       .via(new DuplicateHandshakeReq(numberOfLanes = 3, inboundContext, system.asInstanceOf[ExtendedActorSystem], pool))
-      .map { case env: InboundEnvelope => (env.message -> env.lane) }
+      .map { case env: InboundEnvelope => env.message -> env.lane }
       .toMat(TestSink.probe[Any])(Keep.both)
       .run()
   }

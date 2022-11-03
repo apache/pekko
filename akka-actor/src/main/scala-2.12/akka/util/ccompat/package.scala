@@ -5,7 +5,7 @@
 package akka.util
 
 import scala.{ collection => c }
-import scala.collection.{ GenTraversable, immutable => i, mutable => m }
+import scala.collection.{ immutable => i, mutable => m, GenTraversable }
 import scala.collection.generic.{ CanBuildFrom, GenericCompanion, Sorted, SortedSetFactory }
 import scala.language.higherKinds
 import scala.language.implicitConversions
@@ -49,8 +49,8 @@ package object ccompat {
     simpleCBF(fact.newBuilder[A])
 
   private[akka] implicit def sortedSetCompanionToCBF[
-      A: Ordering,
-      CC[X] <: c.SortedSet[X] with c.SortedSetLike[X, CC[X]]](fact: SortedSetFactory[CC]): CanBuildFrom[Any, A, CC[A]] =
+      A: Ordering, CC[X] <: c.SortedSet[X] with c.SortedSetLike[X, CC[X]]](
+      fact: SortedSetFactory[CC]): CanBuildFrom[Any, A, CC[A]] =
     simpleCBF(fact.newBuilder[A])
 
   private[ccompat] def build[T, CC](builder: m.Builder[T, CC], source: TraversableOnce[T]): CC = {

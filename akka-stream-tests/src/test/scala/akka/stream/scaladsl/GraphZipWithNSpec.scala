@@ -31,7 +31,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
       RunnableGraph
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipWithN((_: immutable.Seq[Int]).sum)(2))
-          Source(1 to 4) ~> zip.in(0)
+          Source(1 to 4)         ~> zip.in(0)
           Source(10 to 40 by 10) ~> zip.in(1)
 
           zip.out ~> Sink.fromSubscriber(probe)
@@ -61,7 +61,7 @@ class GraphZipWithNSpec extends TwoStreamsSetup {
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(ZipWithN((_: immutable.Seq[Int]).foldLeft(1)(_ / _))(2))
 
-          Source(1 to 4) ~> zip.in(0)
+          Source(1 to 4)  ~> zip.in(0)
           Source(-2 to 2) ~> zip.in(1)
 
           zip.out ~> Sink.fromSubscriber(probe)

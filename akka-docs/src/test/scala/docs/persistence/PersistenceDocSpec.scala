@@ -29,57 +29,57 @@ object PersistenceDocSpec {
 
   object RecoverySample {
     trait MyPersistentActor1 extends PersistentActor {
-      //#recovery-disabled
+      // #recovery-disabled
       override def recovery = Recovery.none
-      //#recovery-disabled
+      // #recovery-disabled
     }
 
     trait MyPersistentActor2 extends PersistentActor {
-      //#recovery-custom
+      // #recovery-custom
       override def recovery = Recovery(toSequenceNr = 457L)
-      //#recovery-custom
+      // #recovery-custom
     }
 
     class MyPersistentActor4 extends PersistentActor {
       override def persistenceId = "my-stable-persistence-id"
 
-      //#recovery-completed
+      // #recovery-completed
 
       override def receiveRecover: Receive = {
         case RecoveryCompleted =>
         // perform init after recovery, before any other messages
-        //...
-        case evt => //...
+        // ...
+        case evt => // ...
       }
 
       override def receiveCommand: Receive = {
-        case msg => //...
+        case msg => // ...
       }
-      //#recovery-completed
+      // #recovery-completed
     }
 
     trait MyPersistentActor5 extends PersistentActor {
-      //#recovery-no-snap
+      // #recovery-no-snap
       override def recovery =
         Recovery(fromSnapshot = SnapshotSelectionCriteria.None)
-      //#recovery-no-snap
+      // #recovery-no-snap
     }
   }
 
   object PersistenceId {
     trait PersistentActorMethods {
-      //#persistence-id
+      // #persistence-id
       def persistenceId: String
-      //#persistence-id
-      //#recovery-status
+      // #persistence-id
+      // #recovery-status
       def recoveryRunning: Boolean
       def recoveryFinished: Boolean
-      //#recovery-status
+      // #recovery-status
     }
     class MyPersistentActor1 extends PersistentActor with PersistentActorMethods {
-      //#persistence-id-override
+      // #persistence-id-override
       override def persistenceId = "my-stable-persistence-id"
-      //#persistence-id-override
+      // #persistence-id-override
 
       override def receiveRecover: Receive = {
         case _ =>
@@ -93,18 +93,18 @@ object PersistenceDocSpec {
   object BackoffOnStop {
     abstract class MyActor extends Actor {
       import PersistAsync.MyPersistentActor
-      //#backoff
+      // #backoff
       val childProps = Props[MyPersistentActor]()
       val props = BackoffSupervisor.props(BackoffOpts
         .onStop(childProps, childName = "myActor", minBackoff = 3.seconds, maxBackoff = 30.seconds, randomFactor = 0.2))
       context.actorOf(props, name = "mySupervisor")
-      //#backoff
+      // #backoff
     }
 
   }
 
   object AtLeastOnce {
-    //#at-least-once-example
+    // #at-least-once-example
     import akka.actor.{ Actor, ActorSelection }
     import akka.persistence.AtLeastOnceDelivery
 
@@ -143,7 +143,7 @@ object PersistenceDocSpec {
           sender() ! Confirm(deliveryId)
       }
     }
-    //#at-least-once-example
+    // #at-least-once-example
   }
 
   object SaveSnapshot {
@@ -153,7 +153,7 @@ object PersistenceDocSpec {
 
       def updateState(event: String): Unit = {}
 
-      //#save-snapshot
+      // #save-snapshot
       var state: Any = _
 
       val snapShotInterval = 1000
@@ -167,7 +167,7 @@ object PersistenceDocSpec {
               saveSnapshot(state)
           }
       }
-      //#save-snapshot
+      // #save-snapshot
 
       override def receiveRecover: Receive = ???
     }
@@ -177,13 +177,13 @@ object PersistenceDocSpec {
     class MyPersistentActor extends PersistentActor {
       override def persistenceId = "my-stable-persistence-id"
 
-      //#snapshot-criteria
+      // #snapshot-criteria
       override def recovery =
         Recovery(
           fromSnapshot = SnapshotSelectionCriteria(maxSequenceNr = 457L, maxTimestamp = System.currentTimeMillis))
-      //#snapshot-criteria
+      // #snapshot-criteria
 
-      //#snapshot-offer
+      // #snapshot-offer
       var state: Any = _
 
       override def receiveRecover: Receive = {
@@ -191,7 +191,7 @@ object PersistenceDocSpec {
         case RecoveryCompleted                        =>
         case event                                    => // ...
       }
-      //#snapshot-offer
+      // #snapshot-offer
 
       override def receiveCommand: Receive = ???
     }
@@ -200,7 +200,7 @@ object PersistenceDocSpec {
 
   object PersistAsync {
 
-    //#persist-async
+    // #persist-async
     class MyPersistentActor extends PersistentActor {
 
       override def persistenceId = "my-stable-persistence-id"
@@ -234,12 +234,12 @@ object PersistenceDocSpec {
     // evt-b-1
     // evt-b-2
 
-    //#persist-async
+    // #persist-async
   }
 
   object Defer {
 
-    //#defer
+    // #defer
     class MyPersistentActor extends PersistentActor {
 
       override def persistenceId = "my-stable-persistence-id"
@@ -263,9 +263,9 @@ object PersistenceDocSpec {
         }
       }
     }
-    //#defer
+    // #defer
 
-    //#defer-caller
+    // #defer-caller
     persistentActor ! "a"
     persistentActor ! "b"
 
@@ -279,11 +279,11 @@ object PersistenceDocSpec {
     // evt-b-2
     // evt-b-3
 
-    //#defer-caller
+    // #defer-caller
   }
 
   object DeferWithPersist {
-    //#defer-with-persist
+    // #defer-with-persist
     class MyPersistentActor extends PersistentActor {
 
       override def persistenceId = "my-stable-persistence-id"
@@ -307,7 +307,7 @@ object PersistenceDocSpec {
         }
       }
     }
-    //#defer-with-persist
+    // #defer-with-persist
   }
 
   object NestedPersists {
@@ -319,7 +319,7 @@ object PersistenceDocSpec {
         case _ => // handle recovery here
       }
 
-      //#nested-persist-persist
+      // #nested-persist-persist
       override def receiveCommand: Receive = {
         case c: String =>
           sender() ! c
@@ -338,10 +338,10 @@ object PersistenceDocSpec {
             }
           }
       }
-      //#nested-persist-persist
+      // #nested-persist-persist
     }
 
-    //#nested-persist-persist-caller
+    // #nested-persist-persist-caller
     persistentActor ! "a"
     persistentActor ! "b"
 
@@ -358,7 +358,7 @@ object PersistenceDocSpec {
     // b-inner-1
     // b-inner-2
 
-    //#nested-persist-persist-caller
+    // #nested-persist-persist-caller
 
     class MyPersistAsyncActor extends PersistentActor {
       override def persistenceId = "my-stable-persistence-id"
@@ -367,7 +367,7 @@ object PersistenceDocSpec {
         case _ => // handle recovery here
       }
 
-      //#nested-persistAsync-persistAsync
+      // #nested-persistAsync-persistAsync
       override def receiveCommand: Receive = {
         case c: String =>
           sender() ! c
@@ -384,10 +384,10 @@ object PersistenceDocSpec {
             }
           }
       }
-      //#nested-persistAsync-persistAsync
+      // #nested-persistAsync-persistAsync
     }
 
-    //#nested-persistAsync-persistAsync-caller
+    // #nested-persistAsync-persistAsync-caller
     persistentActor ! "a"
     persistentActor ! "b"
 
@@ -407,12 +407,12 @@ object PersistenceDocSpec {
     // a -> a-outer-1 -> a-outer-2 -> a-inner-1 -> a-inner-2
     // b -> b-outer-1 -> b-outer-2 -> b-inner-1 -> b-inner-2
 
-    //#nested-persistAsync-persistAsync-caller
+    // #nested-persistAsync-persistAsync-caller
   }
 
   object AvoidPoisonPill {
 
-    //#safe-shutdown
+    // #safe-shutdown
     /** Explicit shutdown message */
     case object Shutdown
 
@@ -431,9 +431,9 @@ object PersistenceDocSpec {
         case _ => // handle recovery here
       }
     }
-    //#safe-shutdown
+    // #safe-shutdown
 
-    //#safe-shutdown-example-bad
+    // #safe-shutdown-example-bad
     // UN-SAFE, due to PersistentActor's command stashing:
     persistentActor ! "a"
     persistentActor ! "b"
@@ -444,9 +444,9 @@ object PersistenceDocSpec {
     // PoisonPill is an AutoReceivedMessage, is handled automatically
     // !! stop !!
     // Actor is stopped without handling `b` nor the `a` handler!
-    //#safe-shutdown-example-bad
+    // #safe-shutdown-example-bad
 
-    //#safe-shutdown-example-good
+    // #safe-shutdown-example-good
     // SAFE:
     persistentActor ! "a"
     persistentActor ! "b"
@@ -462,7 +462,7 @@ object PersistenceDocSpec {
     //   # unstashing;                            internal-stash = []
     // Shutdown
     // -- stop --
-    //#safe-shutdown-example-good
+    // #safe-shutdown-example-good
   }
 
 }

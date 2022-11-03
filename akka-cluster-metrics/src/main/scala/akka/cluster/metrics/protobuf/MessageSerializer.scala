@@ -305,7 +305,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends SerializerWithS
     val mm = cm.MixMetricsSelector.parseFrom(bytes)
     MixMetricsSelector(
       mm.getSelectorsList.asScala
-      // should be safe because we serialized only the right subtypes of MetricsSelector
+        // should be safe because we serialized only the right subtypes of MetricsSelector
         .map(s => metricSelectorFromProto(s).asInstanceOf[CapacityMetricsSelector])
         .toIndexedSeq)
   }

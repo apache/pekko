@@ -17,12 +17,12 @@ import scala.annotation.nowarn
 @nowarn("msg=never used")
 object WorkPullingDocExample {
 
-  //#imports
+  // #imports
   import akka.actor.typed.scaladsl.Behaviors
   import akka.actor.typed.Behavior
-  //#imports
+  // #imports
 
-  //#consumer
+  // #consumer
   import akka.actor.typed.delivery.ConsumerController
   import akka.actor.typed.receptionist.ServiceKey
 
@@ -59,9 +59,9 @@ object WorkPullingDocExample {
     }
 
   }
-  //#consumer
+  // #consumer
 
-  //#producer
+  // #producer
   import akka.actor.typed.delivery.WorkPullingProducerController
   import akka.actor.typed.scaladsl.ActorContext
   import akka.actor.typed.scaladsl.StashBuffer
@@ -74,9 +74,9 @@ object WorkPullingDocExample {
 
     final case class GetResult(resultId: UUID, replyTo: ActorRef[Option[Array[Byte]]]) extends Command
 
-    //#producer
+    // #producer
 
-    //#ask
+    // #ask
     final case class ConvertRequest(
         fromFormat: String,
         toFormat: String,
@@ -91,9 +91,9 @@ object WorkPullingDocExample {
 
     private final case class AskReply(resultId: UUID, originalReplyTo: ActorRef[ConvertResponse], timeout: Boolean)
         extends Command
-    //#ask
+    // #ask
 
-    //#producer
+    // #producer
     def apply(): Behavior[Command] = {
       Behaviors.setup { context =>
         val requestNextAdapter =
@@ -105,8 +105,8 @@ object WorkPullingDocExample {
             workerServiceKey = ImageConverter.serviceKey,
             durableQueueBehavior = None),
           "producerController")
-        //#producer
-        //#durable-queue
+        // #producer
+        // #durable-queue
         import akka.persistence.typed.delivery.EventSourcedProducerQueue
         import akka.persistence.typed.PersistenceId
 
@@ -118,8 +118,8 @@ object WorkPullingDocExample {
             workerServiceKey = ImageConverter.serviceKey,
             durableQueueBehavior = Some(durableQueue)),
           "producerController")
-        //#durable-queue
-        //#producer
+        // #durable-queue
+        // #producer
         producerController ! WorkPullingProducerController.Start(requestNextAdapter)
 
         Behaviors.withStash(1000) { stashBuffer =>
@@ -168,9 +168,9 @@ object WorkPullingDocExample {
           throw new IllegalStateException("Unexpected RequestNext")
       }
     }
-    //#producer
+    // #producer
     object askScope {
-      //#ask
+      // #ask
 
       import WorkPullingProducerController.MessageWithConfirmation
       import akka.util.Timeout
@@ -224,10 +224,10 @@ object WorkPullingDocExample {
         }
       }
 
-      //#ask
+      // #ask
     }
-    //#producer
+    // #producer
   }
-  //#producer
+  // #producer
 
 }

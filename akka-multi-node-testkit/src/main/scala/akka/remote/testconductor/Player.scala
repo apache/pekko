@@ -275,7 +275,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
             case true => self ! ToServer(Done)
             case _ =>
               throw new RuntimeException("Throttle was requested from the TestConductor, but no transport " +
-              "adapters available that support throttling. Specify `testTransport(on = true)` in your MultiNodeConfig")
+                "adapters available that support throttling. Specify `testTransport(on = true)` in your MultiNodeConfig")
           }
           stay()
         case _: DisconnectMsg =>
@@ -290,7 +290,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
         case TerminateMsg(Right(exitValue)) =>
           System.exit(exitValue)
           stay() // needed because Java doesn’t have Nothing
-        case _: Done => stay() //FIXME what should happen?
+        case _: Done => stay() // FIXME what should happen?
       }
   }
 

@@ -25,11 +25,11 @@ object Publish extends AutoPlugin {
     sonatypeProfileName := "com.typesafe",
     startYear := Some(2009),
     developers := List(
-        Developer(
-          "akka-contributors",
-          "Akka Contributors",
-          "akka.official@gmail.com",
-          url("https://github.com/akka/akka/graphs/contributors"))),
+      Developer(
+        "akka-contributors",
+        "Akka Contributors",
+        "akka.official@gmail.com",
+        url("https://github.com/akka/akka/graphs/contributors"))),
     publishMavenStyle := true,
     pomIncludeRepository := { x =>
       false

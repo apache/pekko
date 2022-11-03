@@ -136,9 +136,9 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
       expectMsg(4)
       testLease.getCurrentCallback()(Option(LeaseFailed("oh dear")))
       awaitAssert({
-        region ! 4
-        expectMsg(4)
-      }, max = 10.seconds)
+          region ! 4
+          expectMsg(4)
+        }, max = 10.seconds)
     }
   }
 }

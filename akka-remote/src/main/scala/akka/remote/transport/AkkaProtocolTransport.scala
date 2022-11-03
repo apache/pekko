@@ -61,9 +61,9 @@ private[remote] class AkkaProtocolSettings(config: Config) {
 }
 
 @nowarn("msg=deprecated")
-private[remote] object AkkaProtocolTransport { //Couldn't these go into the Remoting Extension/ RemoteSettings instead?
+private[remote] object AkkaProtocolTransport { // Couldn't these go into the Remoting Extension/ RemoteSettings instead?
   val AkkaScheme: String = "akka"
-  val AkkaOverhead: Int = 0 //Don't know yet
+  val AkkaOverhead: Int = 0 // Don't know yet
   val UniqueId = new java.util.concurrent.atomic.AtomicInteger(0)
 
   final case class AssociateUnderlyingRefuseUid(
@@ -514,7 +514,7 @@ private[remote] class ProtocolStateActor(
       sendDisassociate(wrappedHandle, Unknown)
       stop(
         FSM.Failure(TimeoutReason("No response from remote for outbound association. Handshake timed out after " +
-        s"[${settings.HandshakeTimeout.toMillis} ms].")))
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
     case Event(HandshakeTimer, InboundUnassociated(_, wrappedHandle)) =>
       if (log.isDebugEnabled)
@@ -526,7 +526,7 @@ private[remote] class ProtocolStateActor(
       sendDisassociate(wrappedHandle, Unknown)
       stop(
         FSM.Failure(TimeoutReason("No response from remote for inbound association. Handshake timed out after " +
-        s"[${settings.HandshakeTimeout.toMillis} ms].")))
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
   }
 
@@ -608,7 +608,7 @@ private[remote] class ProtocolStateActor(
       sendDisassociate(wrappedHandle, Unknown)
       stop(
         FSM.Failure(TimeoutReason(s"No response from remote. " +
-        s"Transport failure detector triggered. (internal state was $stateName)")))
+          s"Transport failure detector triggered. (internal state was $stateName)")))
     }
   }
 

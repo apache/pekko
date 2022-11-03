@@ -120,10 +120,11 @@ class DeferredSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with L
       // monitor is implemented with tap, so this is testing both
       val probe = TestProbe[Event]("evt")
       val monitorProbe = TestProbe[Command]("monitor")
-      val behv = Behaviors.monitor(monitorProbe.ref, Behaviors.setup[Command] { _ =>
-        probe.ref ! Started
-        target(probe.ref)
-      })
+      val behv = Behaviors.monitor(monitorProbe.ref,
+        Behaviors.setup[Command] { _ =>
+          probe.ref ! Started
+          target(probe.ref)
+        })
       probe.expectNoMessage() // not yet
       val ref = spawn(behv)
       // it's supposed to be created immediately (not waiting for first message)

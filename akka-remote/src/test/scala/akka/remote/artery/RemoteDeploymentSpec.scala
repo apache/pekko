@@ -153,17 +153,17 @@ class RemoteDeploymentSpec
 
       val probes = Vector.fill(numParents, numChildren)(TestProbe()(masterSystem))
       val childProps = Props[Echo1]()
-      for (p <- (0 until numParents); c <- (0 until numChildren)) {
+      for (p <- 0 until numParents; c <- 0 until numChildren) {
         parents(p).tell((childProps, numMessages), probes(p)(c).ref)
       }
 
-      for (p <- (0 until numParents); c <- (0 until numChildren)) {
+      for (p <- 0 until numParents; c <- 0 until numChildren) {
         val probe = probes(p)(c)
         probe.expectMsgType[ActorRef] // the child
       }
 
       val expectedMessages = (0 until numMessages).toVector
-      for (p <- (0 until numParents); c <- (0 until numChildren)) {
+      for (p <- 0 until numParents; c <- 0 until numChildren) {
         val probe = probes(p)(c)
         probe.receiveN(numMessages) should equal(expectedMessages)
       }

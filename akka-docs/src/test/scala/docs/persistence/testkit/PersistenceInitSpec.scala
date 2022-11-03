@@ -27,11 +27,11 @@ class PersistenceInitSpec extends ScalaTestWithActorTestKit(s"""
 
   "PersistenceInit" should {
     "initialize plugins" in {
-      //#init
+      // #init
       val timeout = 5.seconds
       val done: Future[Done] = PersistenceInit.initializeDefaultPlugins(system, timeout)
       Await.result(done, timeout)
-      //#init
+      // #init
     }
   }
 }

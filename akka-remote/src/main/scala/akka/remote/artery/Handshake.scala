@@ -257,16 +257,17 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
             }
           })
       else
-        setHandler(in, new InHandler {
-          override def onPush(): Unit = {
-            val env = grab(in)
-            env.message match {
-              case HandshakeReq(from, to) => onHandshakeReq(from, to)
-              case _ =>
-                onMessage(env)
+        setHandler(in,
+          new InHandler {
+            override def onPush(): Unit = {
+              val env = grab(in)
+              env.message match {
+                case HandshakeReq(from, to) => onHandshakeReq(from, to)
+                case _ =>
+                  onMessage(env)
+              }
             }
-          }
-        })
+          })
 
       private def onHandshakeReq(from: UniqueAddress, to: Address): Unit = {
         if (to == inboundContext.localAddress.address) {

@@ -25,11 +25,11 @@ import akka.annotation.DoNotInherit
 class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAccess {
 
   override def getClassFor[T: ClassTag](fqcn: String): Try[Class[_ <: T]] =
-    Try[Class[_ <: T]]({
+    Try[Class[_ <: T]] {
       val c = Class.forName(fqcn, false, classLoader).asInstanceOf[Class[_ <: T]]
       val t = implicitly[ClassTag[T]].runtimeClass
       if (t.isAssignableFrom(c)) c else throw new ClassCastException(t.toString + " is not assignable from " + c)
-    })
+    }
 
   override def createInstanceFor[T: ClassTag](clazz: Class[_], args: immutable.Seq[(Class[_], AnyRef)]): Try[T] =
     Try {

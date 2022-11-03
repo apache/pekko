@@ -69,7 +69,7 @@ abstract class ActorSystemActivator extends BundleActivator {
     val filter = s"(objectclass=${classOf[LogService].getName})"
     context.addServiceListener(logServiceListner, filter)
 
-    //Small trick to create an event if the service is registered before this start listing for
+    // Small trick to create an event if the service is registered before this start listing for
     Option(context.getServiceReference(classOf[LogService].getName)).foreach(x => {
       logServiceListner.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, x))
     })
@@ -101,7 +101,7 @@ abstract class ActorSystemActivator extends BundleActivator {
    * @param system the actor system
    */
   def registerService(context: BundleContext, system: ActorSystem): Unit = {
-    registration.foreach(_.unregister()) //Cleanup
+    registration.foreach(_.unregister()) // Cleanup
     val properties = new Properties()
     properties.put("name", system.name)
     registration = Some(

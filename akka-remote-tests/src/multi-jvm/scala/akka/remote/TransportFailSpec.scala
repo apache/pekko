@@ -107,7 +107,7 @@ abstract class TransportFailSpec extends RemotingMultiNodeSpec(TransportFailConf
 
   def identify(role: RoleName, actorName: String): ActorRef = {
     val p = TestProbe()
-    (system.actorSelection(node(role) / "user" / actorName)).tell(Identify(actorName), p.ref)
+    system.actorSelection(node(role) / "user" / actorName).tell(Identify(actorName), p.ref)
     p.expectMsgType[ActorIdentity](remainingOrDefault).ref.get
   }
 
@@ -143,10 +143,10 @@ abstract class TransportFailSpec extends RemotingMultiNodeSpec(TransportFailConf
 
         var subject2: ActorRef = null
         awaitAssert({
-          within(1.second) {
-            subject2 = identify(second, "subject2")
-          }
-        }, max = 5.seconds)
+            within(1.second) {
+              subject2 = identify(second, "subject2")
+            }
+          }, max = 5.seconds)
         watch(subject2)
         quarantineProbe.expectNoMessage(1.seconds)
         subject2 ! "hello2"

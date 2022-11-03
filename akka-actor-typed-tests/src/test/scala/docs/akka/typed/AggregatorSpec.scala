@@ -14,7 +14,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 object AggregatorSpec {
   object IllustrateUsage {
-    //#usage
+    // #usage
     object Hotel1 {
       final case class RequestQuote(replyTo: ActorRef[Quote])
       final case class Quote(hotel: String, price: BigDecimal)
@@ -65,7 +65,7 @@ object AggregatorSpec {
         }
       }
     }
-    //#usage
+    // #usage
   }
 }
 

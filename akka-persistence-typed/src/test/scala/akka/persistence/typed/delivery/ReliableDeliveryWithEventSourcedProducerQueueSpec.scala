@@ -22,8 +22,8 @@ object ReliableDeliveryWithEventSourcedProducerQueueSpec {
     akka.persistence.journal.inmem.test-serialization = on
     akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
     akka.persistence.snapshot-store.local.dir = "target/ProducerControllerWithEventSourcedProducerQueueSpec-${UUID
-      .randomUUID()
-      .toString}"
+        .randomUUID()
+        .toString}"
     akka.reliable-delivery.consumer-controller.flow-control-window = 20
     """)
 }

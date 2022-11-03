@@ -66,7 +66,7 @@ private[akka] object FrequencySketch {
  * INTERNAL API
  *
  * A frequency sketch for estimating the popularity of items. For implementing the TinyLFU cache admission policy.
-
+ *
  * This is a generalised frequency sketch with configurable depth (number of hash functions) and counter size.
  *
  * The matrix of counters is a two-dimensional array of longs, which each hold multiple counters depending on the
@@ -239,7 +239,7 @@ private[akka] object FastFrequencySketch {
  * INTERNAL API
  *
  * A faster implementation of the frequency sketch (around twice as fast).
-
+ *
  * This frequency sketch uses a fixed depth (number of hash functions) of 4 and a counter size of 4 bits (0-15),
  * so that constants can be used for improved efficiency. It also uses its own rehashing of item hash codes.
  *
@@ -301,8 +301,8 @@ private[akka] final class FastFrequencySketch[A](width: Int, resetSize: Int) {
   // https://github.com/skeeto/hash-prospector
   private def rehash(hash: Int): Int = {
     var x = hash
-    x = ((x >>> 15) ^ x) * 0xd168aaad
-    x = ((x >>> 15) ^ x) * 0xaf723597
+    x = ((x >>> 15) ^ x) * 0xD168AAAD
+    x = ((x >>> 15) ^ x) * 0xAF723597
     (x >>> 15) ^ x
   }
 

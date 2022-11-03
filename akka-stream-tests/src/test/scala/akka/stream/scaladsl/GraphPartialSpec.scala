@@ -32,8 +32,8 @@ class GraphPartialSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
           implicit b => (d1, d2, sink) =>
             Source(List(1, 2, 3)) ~> d1.in
-            d1.out ~> d2.in
-            d2.out.grouped(100) ~> sink.in
+            d1.out                ~> d2.in
+            d2.out.grouped(100)   ~> sink.in
             ClosedShape
         })
         .run()
@@ -46,8 +46,8 @@ class GraphPartialSpec extends StreamSpec("""
         val bcast = b.add(Broadcast[Int](3))
         val zip = b.add(ZipWith((a: Int, b: Int) => a + b))
 
-        bcast.out(0) ~> zip.in0
-        bcast.out(1) ~> zip.in1
+        bcast.out(0)              ~> zip.in0
+        bcast.out(1)              ~> zip.in1
         bcast.out(2).grouped(100) ~> sink.in
         FlowShape(bcast.in, zip.out)
       }
@@ -56,8 +56,8 @@ class GraphPartialSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
           implicit b => (d1, d2, sink) =>
             Source(List(1, 2, 3)) ~> d1.in
-            d1.out ~> d2.in
-            d2.out.grouped(100) ~> sink.in
+            d1.out                ~> d2.in
+            d2.out.grouped(100)   ~> sink.in
             ClosedShape
         })
         .run()
@@ -79,7 +79,7 @@ class GraphPartialSpec extends StreamSpec("""
         bcast.out(1) ~> zip.in1
         bcast.out(2) ~> s1.in
 
-        zip.out ~> bcast2.in
+        zip.out       ~> bcast2.in
         bcast2.out(0) ~> s2.in
 
         FlowShape(bcast.in, bcast2.out(1))
@@ -89,8 +89,8 @@ class GraphPartialSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(doubler, doubler, Sink.head[Seq[Int]])(Tuple3.apply) {
           implicit b => (d1, d2, sink) =>
             Source(List(1, 2, 3)) ~> d1.in
-            d1.out ~> d2.in
-            d2.out.grouped(100) ~> sink.in
+            d1.out                ~> d2.in
+            d2.out.grouped(100)   ~> sink.in
             ClosedShape
         })
         .run()
@@ -111,7 +111,7 @@ class GraphPartialSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(Sink.head[Int], p)(Keep.left) { implicit b => (sink, flow) =>
           import GraphDSL.Implicits._
           Source.single(0) ~> flow.in
-          flow.out ~> sink.in
+          flow.out         ~> sink.in
           ClosedShape
         })
         .run()

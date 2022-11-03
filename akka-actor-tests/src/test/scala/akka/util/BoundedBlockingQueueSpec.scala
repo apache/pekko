@@ -183,7 +183,7 @@ class BoundedBlockingQueueSpec
       // queue.take() must happen first
       Thread.sleep(50) // this is why this test is tagged as TimingTest
       events should contain(awaitNotEmpty)
-      events should not contain (poll)
+      events should not contain poll
     }
 
     "block until the backing queue is non-empty" taggedAs TimingTest in {
@@ -557,7 +557,7 @@ class BoundedBlockingQueueSpec
       val target = mutable.Buffer[String]()
       elems.foreach(queue.put)
       queue.drainTo(target.asJava)
-      elems should contain theSameElementsAs (target)
+      elems should contain theSameElementsAs target
     }
   }
 
@@ -617,7 +617,7 @@ class BoundedBlockingQueueSpec
       queue.retainAll(elems.asJava) should equal(true)
       queue.remainingCapacity() should equal(1)
       queue.toArray() shouldNot contain("Akka")
-      queue.toArray() should contain theSameElementsAs (elems)
+      queue.toArray() should contain theSameElementsAs elems
     }
 
     "return false if no elements were removed" in {

@@ -112,8 +112,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
   class Receiver(reporter: RateReporter, payloadSize: Int, numSenders: Int) extends Actor {
     private var c = 0L
     private var endMessagesMissing = numSenders
-    private var correspondingSender
-        : ActorRef = null // the Actor which send the Start message will also receive the report
+    private var correspondingSender: ActorRef = null // the Actor which send the Start message will also receive the report
 
     def receive = {
       case msg: Array[Byte] =>
@@ -246,19 +245,20 @@ object MaxThroughputSpec extends MultiNodeConfig {
     val waitingForEndResult: Receive = {
       case EndResult(totalReceived) =>
         val took = NANOSECONDS.toMillis(System.nanoTime - startTime)
-        val throughput = (totalReceived * 1000.0 / took)
+        val throughput = totalReceived * 1000.0 / took
 
         reporter.reportResults(s"=== ${reporter.testName} ${self.path.name}: " +
-        f"throughput ${throughput * testSettings.senderReceiverPairs}%,.0f msg/s, " +
-        f"${throughput * payloadSize * testSettings.senderReceiverPairs}%,.0f bytes/s (payload), " +
-        f"${throughput * totalSize(context.system) * testSettings.senderReceiverPairs}%,.0f bytes/s (total" +
-        (if (RARP(context.system).provider.remoteSettings.Artery.Advanced.Compression.Enabled) ",compression" else "") + "), " +
-        (if (testSettings.senderReceiverPairs == 1) s"dropped ${totalMessages - totalReceived}, " else "") +
-        s"max round-trip $maxRoundTripMillis ms, " +
-        s"burst size $burstSize, " +
-        s"payload size $payloadSize, " +
-        s"total size ${totalSize(context.system)}, " +
-        s"$took ms to deliver $totalReceived messages.")
+          f"throughput ${throughput * testSettings.senderReceiverPairs}%,.0f msg/s, " +
+          f"${throughput * payloadSize * testSettings.senderReceiverPairs}%,.0f bytes/s (payload), " +
+          f"${throughput * totalSize(context.system) * testSettings.senderReceiverPairs}%,.0f bytes/s (total" +
+          (if (RARP(context.system).provider.remoteSettings.Artery.Advanced.Compression.Enabled) ",compression"
+           else "") + "), " +
+          (if (testSettings.senderReceiverPairs == 1) s"dropped ${totalMessages - totalReceived}, " else "") +
+          s"max round-trip $maxRoundTripMillis ms, " +
+          s"burst size $burstSize, " +
+          s"payload size $payloadSize, " +
+          s"total size ${totalSize(context.system)}, " +
+          s"$took ms to deliver $totalReceived messages.")
 
         plotRef ! PlotResult().add(testName, throughput * payloadSize * testSettings.senderReceiverPairs / 1024 / 1024)
         context.stop(self)

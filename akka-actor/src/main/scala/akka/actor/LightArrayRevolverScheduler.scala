@@ -103,46 +103,47 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       implicit executor: ExecutionContext): Cancellable = {
     checkMaxDelay(roundUp(delay).toNanos)
     try new AtomicReference[Cancellable](InitialRepeatMarker) with Cancellable { self =>
-      compareAndSet(
-        InitialRepeatMarker,
-        schedule(
-          executor,
-          new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
-            override def run(): Unit = {
-              try {
-                runnable.run()
-                val driftNanos = clock() - getAndAdd(delay.toNanos)
-                if (self.get != null)
-                  swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
-              } catch {
-                case _: SchedulerException => // ignore failure to enqueue or terminated target actor
+        compareAndSet(
+          InitialRepeatMarker,
+          schedule(
+            executor,
+            new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
+              override def run(): Unit = {
+                try {
+                  runnable.run()
+                  val driftNanos = clock() - getAndAdd(delay.toNanos)
+                  if (self.get != null)
+                    swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
+                } catch {
+                  case _: SchedulerException => // ignore failure to enqueue or terminated target actor
+                }
               }
-            }
-          },
-          roundUp(initialDelay)))
+            },
+            roundUp(initialDelay)))
 
-      @tailrec private def swap(c: Cancellable): Unit = {
-        get match {
-          case null => if (c != null) c.cancel()
-          case old  => if (!compareAndSet(old, c)) swap(c)
-        }
-      }
-
-      final def cancel(): Boolean = {
-        @tailrec def tailrecCancel(): Boolean = {
+        @tailrec private def swap(c: Cancellable): Unit = {
           get match {
-            case null => false
-            case c =>
-              if (c.cancel()) compareAndSet(c, null)
-              else compareAndSet(c, null) || tailrecCancel()
+            case null => if (c != null) c.cancel()
+            case old  => if (!compareAndSet(old, c)) swap(c)
           }
         }
 
-        tailrecCancel()
-      }
+        final def cancel(): Boolean = {
+          @tailrec def tailrecCancel(): Boolean = {
+            get match {
+              case null => false
+              case c =>
+                if (c.cancel()) compareAndSet(c, null)
+                else compareAndSet(c, null) || tailrecCancel()
+            }
+          }
 
-      override def isCancelled: Boolean = get == null
-    } catch {
+          tailrecCancel()
+        }
+
+        override def isCancelled: Boolean = get == null
+      }
+    catch {
       case cause @ SchedulerException(msg) => throw new IllegalStateException(msg, cause)
     }
   }

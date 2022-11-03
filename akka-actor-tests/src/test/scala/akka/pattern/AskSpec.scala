@@ -133,8 +133,8 @@ class AskSpec extends AkkaSpec("""
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
       val echo = system.actorOf(Props(new Actor {
-        def receive = { case x => context.actorSelection(sender().path) ! x }
-      }), "select-echo2")
+          def receive = { case x => context.actorSelection(sender().path) ! x }
+        }), "select-echo2")
       val f = echo ? "hi"
 
       Await.result(f, 1 seconds) should ===("hi")
@@ -164,13 +164,13 @@ class AskSpec extends AkkaSpec("""
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
       val echo = system.actorOf(Props(new Actor {
-        def receive = {
-          case x =>
-            val name = sender().path.name
-            val parent = sender().path.parent
-            context.actorSelection(parent / ".." / "temp" / name) ! x
-        }
-      }), "select-echo4")
+          def receive = {
+            case x =>
+              val name = sender().path.name
+              val parent = sender().path.parent
+              context.actorSelection(parent / ".." / "temp" / name) ! x
+          }
+        }), "select-echo4")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
         Await.result(f, 1 seconds) should ===("hi")
@@ -185,12 +185,12 @@ class AskSpec extends AkkaSpec("""
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
       val echo = system.actorOf(Props(new Actor {
-        def receive = {
-          case x =>
-            val parent = sender().path.parent
-            context.actorSelection(parent / "missing") ! x
-        }
-      }), "select-echo5")
+          def receive = {
+            case x =>
+              val parent = sender().path.parent
+              context.actorSelection(parent / "missing") ! x
+          }
+        }), "select-echo5")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
         Await.result(f, 1 seconds) should ===("hi")
@@ -204,11 +204,11 @@ class AskSpec extends AkkaSpec("""
       system.eventStream.subscribe(deadListener.ref, classOf[DeadLetter])
 
       val echo = system.actorOf(Props(new Actor {
-        def receive = {
-          case x =>
-            context.actorSelection(sender().path / "missing") ! x
-        }
-      }), "select-echo6")
+          def receive = {
+            case x =>
+              context.actorSelection(sender().path / "missing") ! x
+          }
+        }), "select-echo6")
       val f = echo ? "hi"
       intercept[AskTimeoutException] {
         Await.result(f, 1 seconds) should ===(ActorSelectionMessage("hi", Vector(SelectChildName("missing")), false))
@@ -242,10 +242,10 @@ class AskSpec extends AkkaSpec("""
       val p = TestProbe()
 
       val act = system.actorOf(Props(new Actor {
-        def receive = {
-          case msg => p.ref ! sender() -> msg
-        }
-      }), "myName")
+          def receive = {
+            case msg => p.ref ! sender() -> msg
+          }
+        }), "myName")
 
       (act ? "ask").mapTo[String]
       val (promiseActorRef, "ask") = p.expectMsgType[(ActorRef, String)]

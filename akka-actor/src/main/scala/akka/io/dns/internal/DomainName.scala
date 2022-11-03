@@ -38,8 +38,8 @@ private[akka] object DomainName {
       if (ret.nonEmpty)
         ret.append('.')
 
-      if ((length & 0xc0) == 0xc0) {
-        val offset = ((length.toShort & 0x3f) << 8) | (it.getByte.toShort & 0x00ff)
+      if ((length & 0xC0) == 0xC0) {
+        val offset = ((length.toShort & 0x3F) << 8) | (it.getByte.toShort & 0x00FF)
         return ret.result() + parse(msg.iterator.drop(offset), msg)
       }
 

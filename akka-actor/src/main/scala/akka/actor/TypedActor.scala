@@ -75,9 +75,9 @@ trait TypedActorFactory {
    * Creates a new TypedActor with the specified properties
    */
   def typedActorOf[R <: AnyRef, T <: R](props: TypedProps[T]): R = {
-    val proxyVar = new AtomVar[R] //Chicken'n'egg-resolver
-    val c = props.creator //Cache this to avoid closing over the Props
-    val i = props.interfaces //Cache this to avoid closing over the Props
+    val proxyVar = new AtomVar[R] // Chicken'n'egg-resolver
+    val c = props.creator // Cache this to avoid closing over the Props
+    val i = props.interfaces // Cache this to avoid closing over the Props
     val ap = Props(new TypedActor.TypedActor[R, T](proxyVar, c(), i)).withDeploy(props.actorProps().deploy)
     typedActor.createActorRefProxy(props, proxyVar, actorFactory.actorOf(ap))
   }
@@ -86,9 +86,9 @@ trait TypedActorFactory {
    * Creates a new TypedActor with the specified properties
    */
   def typedActorOf[R <: AnyRef, T <: R](props: TypedProps[T], name: String): R = {
-    val proxyVar = new AtomVar[R] //Chicken'n'egg-resolver
-    val c = props.creator //Cache this to avoid closing over the Props
-    val i = props.interfaces //Cache this to avoid closing over the Props
+    val proxyVar = new AtomVar[R] // Chicken'n'egg-resolver
+    val c = props.creator // Cache this to avoid closing over the Props
+    val i = props.interfaces // Cache this to avoid closing over the Props
     val ap = Props(new akka.actor.TypedActor.TypedActor[R, T](proxyVar, c(), i)).withDeploy(props.actorProps().deploy)
     typedActor.createActorRefProxy(props, proxyVar, actorFactory.actorOf(ap, name))
   }
@@ -167,7 +167,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
           val p = ps(i)
           val s = serialization.findSerializerFor(p)
           val m = Serializers.manifestFor(s, p)
-          serializedParameters(i) = (s.identifier, m, s.toBinary(parameters(i))) //Mutable for the sake of sanity
+          serializedParameters(i) = (s.identifier, m, s.toBinary(parameters(i))) // Mutable for the sake of sanity
         }
 
         SerializedMethodCall(method.getDeclaringClass, method.getName, method.getParameterTypes, serializedParameters)
@@ -185,8 +185,8 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
       parameterTypes: Array[Class[_]],
       serializedParameters: Array[(Int, String, Array[Byte])]) {
 
-    //TODO implement writeObject and readObject to serialize
-    //TODO Possible optimization is to special encode the parameter-types to conserve space
+    // TODO implement writeObject and readObject to serialize
+    // TODO Possible optimization is to special encode the parameter-types to conserve space
     @throws(classOf[ObjectStreamException]) private def readResolve(): AnyRef = {
       val system = akka.serialization.JavaSerializer.currentSystem.value
       if (system eq null)
@@ -200,7 +200,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
           case null               => null
           case a if a.length == 0 => Array[AnyRef]()
           case a =>
-            val deserializedParameters: Array[AnyRef] = new Array[AnyRef](a.length) //Mutable for the sake of sanity
+            val deserializedParameters: Array[AnyRef] = new Array[AnyRef](a.length) // Mutable for the sake of sanity
             for (i <- 0 until a.length) {
               val (sId, manifest, bytes) = a(i)
               deserializedParameters(i) = serialization.deserialize(bytes, sId, manifest).get
@@ -300,7 +300,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
         akka.actor.TypedActor(self.context.system).invocationHandlerFor(proxyVar.get) match {
           case null =>
           case some =>
-            some.actorVar.set(self.context.system.deadLetters) //Point it to the DLQ
+            some.actorVar.set(self.context.system.deadLetters) // Point it to the DLQ
             proxyVar.set(null.asInstanceOf[R])
         }
       }
@@ -310,7 +310,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
         case l: PreRestart => l.preRestart(reason, message)
         case _ =>
           self.context.children
-            .foreach(self.context.stop) //Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
+            .foreach(self.context.stop) // Can't be super.preRestart(reason, message) since that would invoke postStop which would set the actorVar to DL and proxyVar to null
       }
     }
 
@@ -457,14 +457,14 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
       case "toString" => actor.toString
       case "equals" =>
         (args.length == 1 && (proxy eq args(0)) || actor == extension.getActorRefFor(args(0)))
-          .asInstanceOf[AnyRef] //Force boxing of the boolean
+          .asInstanceOf[AnyRef] // Force boxing of the boolean
       case "hashCode" => actor.hashCode.asInstanceOf[AnyRef]
       case _ =>
         implicit val dispatcher = extension.system.dispatcher
         import akka.pattern.ask
         MethodCall(method, args) match {
           case m if m.isOneWay =>
-            actor ! m; null //Null return value
+            actor ! m; null // Null return value
           case m if m.returnsFuture =>
             ask(actor, m)(timeout).map {
               case NullResponse => null
@@ -649,8 +649,6 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
   /**
    * Scala API: return a new TypedProps that will use the specified Timeout for its non-void-returning methods,
    * if None is specified, it will use the default timeout as specified in the configuration.
-   *
-   *
    */
   def withTimeout(timeout: Option[Timeout]): TypedProps[T] = this.copy(timeout = timeout)
 
@@ -691,7 +689,7 @@ final case class ContextualTypedActorFactory(typedActor: TypedActorExtension, ac
 
 @nowarn("msg=deprecated")
 class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFactory with Extension {
-  import TypedActor._ //Import the goodies from the companion object
+  import TypedActor._ // Import the goodies from the companion object
   protected def actorFactory: ActorRefFactory = system
   protected def typedActor = this
 
@@ -725,13 +723,13 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
       props: TypedProps[T],
       proxyVar: AtomVar[R],
       actorRef: => ActorRef): R = {
-    //Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
+    // Warning, do not change order of the following statements, it's some elaborate chicken-n-egg handling
     val actorVar = new AtomVar[ActorRef](null)
     val proxy = Proxy
       .newProxyInstance(
         props.loader
           .orElse(props.interfaces.collectFirst { case any => any.getClassLoader })
-          .orNull, //If we have no loader, we arbitrarily take the loader of the first interface
+          .orNull, // If we have no loader, we arbitrarily take the loader of the first interface
         props.interfaces.toArray,
         new TypedActorInvocationHandler(this, actorVar, props.timeout.getOrElse(DefaultReturnTimeout)))
       .asInstanceOf[R]
@@ -741,7 +739,7 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
       proxy
     } else {
       proxyVar.set(proxy) // Chicken and egg situation we needed to solve, set the proxy so that we can set the self-reference inside each receive
-      actorVar.set(actorRef) //Make sure the InvocationHandler gets a hold of the actor reference, this is not a problem since the proxy hasn't escaped this method yet
+      actorVar.set(actorRef) // Make sure the InvocationHandler gets a hold of the actor reference, this is not a problem since the proxy hasn't escaped this method yet
       proxyVar.get
     }
   }
@@ -751,7 +749,7 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
    */
   private[akka] def invocationHandlerFor(typedActor: AnyRef): TypedActorInvocationHandler =
     if ((typedActor ne null) && classOf[Proxy].isAssignableFrom(typedActor.getClass) && Proxy.isProxyClass(
-          typedActor.getClass)) typedActor match {
+        typedActor.getClass)) typedActor match {
       case null => null
       case other =>
         Proxy.getInvocationHandler(other) match {
@@ -759,5 +757,6 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
           case handler: TypedActorInvocationHandler => handler
           case _                                    => null
         }
-    } else null
+    }
+    else null
 }

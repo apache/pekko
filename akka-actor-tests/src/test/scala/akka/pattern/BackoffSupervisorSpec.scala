@@ -253,7 +253,7 @@ class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender with Eventually
         }
 
         EventFilter.warning(pattern = ".*boom.*", occurrences = 1).intercept {
-          supervisor ! "boom" //this will be sent to deadLetters
+          supervisor ! "boom" // this will be sent to deadLetters
           expectNoMessage(500.milliseconds)
         }
       }

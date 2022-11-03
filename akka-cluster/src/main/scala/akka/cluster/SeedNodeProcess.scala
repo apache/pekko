@@ -280,7 +280,6 @@ private[cluster] final class JoinSeedNodeProcess(
       receiveInitJoinAckIncompatibleConfig(joinTo = address, origin = sender(), behavior = Some(done))
 
     case InitJoinNack(_) => // that seed was uninitialized
-
     case ReceiveTimeout =>
       if (attempt >= 2)
         logWarning(

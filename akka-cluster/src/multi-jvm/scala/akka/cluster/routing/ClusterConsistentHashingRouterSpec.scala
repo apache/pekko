@@ -124,7 +124,8 @@ abstract class ClusterConsistentHashingRouterSpec
         val router2 = system.actorOf(
           ClusterRouterPool(
             local = ConsistentHashingPool(nrOfInstances = 0),
-            settings = ClusterRouterPoolSettings(totalInstances = 10, maxInstancesPerNode = 2, allowLocalRoutees = true))
+            settings =
+              ClusterRouterPoolSettings(totalInstances = 10, maxInstancesPerNode = 2, allowLocalRoutees = true))
             .props(Props[Echo]()),
           "router2")
         // it may take some time until router receives cluster member events

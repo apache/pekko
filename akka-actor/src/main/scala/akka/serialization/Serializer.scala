@@ -177,7 +177,6 @@ abstract class SerializerWithStringManifest extends Serializer {
  *   // you need to know the maximum size in bytes of the serialized messages
  *   val pool = new akka.io.DirectByteBufferPool(defaultBufferSize = 1024 * 1024, maxPoolEntries = 10)
  *
- *
  *  // Implement this method for compatibility with `SerializerWithStringManifest`.
  *  override def toBinary(o: AnyRef): Array[Byte] = {
  *    val buf = pool.acquire()

@@ -33,7 +33,7 @@ class GraphZipSpec extends TwoStreamsSetup {
         .fromGraph(GraphDSL.create() { implicit b =>
           val zip = b.add(Zip[Int, String]())
 
-          Source(1 to 4) ~> zip.in0
+          Source(1 to 4)                             ~> zip.in0
           Source(List("A", "B", "C", "D", "E", "F")) ~> zip.in1
 
           zip.out ~> Sink.fromSubscriber(probe)
@@ -66,7 +66,7 @@ class GraphZipSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zip.in0
           Source.fromPublisher(upstream2) ~> zip.in1
-          zip.out ~> out
+          zip.out                         ~> out
 
           ClosedShape
         })
@@ -93,7 +93,7 @@ class GraphZipSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zip.in0
           Source.fromPublisher(upstream2) ~> zip.in1
-          zip.out ~> out
+          zip.out                         ~> out
 
           ClosedShape
         })
@@ -121,7 +121,7 @@ class GraphZipSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zip.in0
           Source.fromPublisher(upstream2) ~> zip.in1
-          zip.out ~> out
+          zip.out                         ~> out
 
           ClosedShape
         })
@@ -148,7 +148,7 @@ class GraphZipSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zip.in0
           Source.fromPublisher(upstream2) ~> zip.in1
-          zip.out ~> out
+          zip.out                         ~> out
 
           ClosedShape
         })
@@ -176,7 +176,7 @@ class GraphZipSpec extends TwoStreamsSetup {
 
           Source.fromPublisher(upstream1) ~> zip.in0
           Source.fromPublisher(upstream2) ~> zip.in1
-          zip.out ~> out
+          zip.out                         ~> out
 
           ClosedShape
         })

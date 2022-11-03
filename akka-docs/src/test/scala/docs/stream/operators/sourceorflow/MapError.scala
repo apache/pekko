@@ -16,7 +16,7 @@ object MapError extends App {
   implicit val system: ActorSystem = ActorSystem()
   implicit val ec: ExecutionContext = system.dispatcher
 
-  //#map-error
+  // #map-error
   Source(-1 to 1)
     .map(1 / _)
     .mapError {
@@ -30,6 +30,6 @@ object MapError extends App {
     }
 
   // prints "Divide by Zero Operation is not supported."
-  //#map-error
+  // #map-error
 
 }

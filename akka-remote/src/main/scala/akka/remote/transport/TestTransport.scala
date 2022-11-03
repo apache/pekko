@@ -101,22 +101,22 @@ class TestTransport(
    * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the listen() method.
    */
   val listenBehavior = new SwitchableLoggedBehavior[Unit, (Address, Promise[AssociationEventListener])](
-    (_) => defaultListen,
-    (_) => registry.logActivity(ListenAttempt(localAddress)))
+    _ => defaultListen,
+    _ => registry.logActivity(ListenAttempt(localAddress)))
 
   /**
    * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the associate() method.
    */
   val associateBehavior = new SwitchableLoggedBehavior[Address, AssociationHandle](
     defaultAssociate _,
-    (remoteAddress) => registry.logActivity(AssociateAttempt(localAddress, remoteAddress)))
+    remoteAddress => registry.logActivity(AssociateAttempt(localAddress, remoteAddress)))
 
   /**
    * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the shutdown() method.
    */
   val shutdownBehavior = new SwitchableLoggedBehavior[Unit, Boolean](
-    (_) => defaultShutdown,
-    (_) => registry.logActivity(ShutdownAttempt(localAddress)))
+    _ => defaultShutdown,
+    _ => registry.logActivity(ShutdownAttempt(localAddress)))
 
   override def listen: Future[(Address, Promise[AssociationEventListener])] = listenBehavior(())
   // Need to do like this for binary compatibility reasons
@@ -147,22 +147,25 @@ class TestTransport(
    * altering the behavior via pushDelayed will turn write to a blocking operation -- use of pushDelayed therefore
    * is not recommended.
    */
-  val writeBehavior = new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](defaultBehavior = {
-    defaultWrite _
-  }, logCallback = {
-    case (handle, payload) =>
-      registry.logActivity(WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
-  })
+  val writeBehavior = new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](
+    defaultBehavior = {
+      defaultWrite _
+    },
+    logCallback = {
+      case (handle, payload) =>
+        registry.logActivity(WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
+    })
 
   /**
    * The [[akka.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the disassociate() method on handles. All
    * handle calls pass through this call.
    */
   val disassociateBehavior = new SwitchableLoggedBehavior[TestAssociationHandle, Unit](defaultBehavior = {
-    defaultDisassociate _
-  }, logCallback = { (handle) =>
-    registry.logActivity(DisassociateAttempt(handle.localAddress, handle.remoteAddress))
-  })
+      defaultDisassociate _
+    },
+    logCallback = { handle =>
+      registry.logActivity(DisassociateAttempt(handle.localAddress, handle.remoteAddress))
+    })
 
   private[akka] def write(handle: TestAssociationHandle, payload: ByteString): Boolean =
     Await.result(writeBehavior((handle, payload)), 3.seconds)

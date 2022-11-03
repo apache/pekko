@@ -272,7 +272,7 @@ private[akka] class Mailboxes(
   private final def warn(msg: String): Unit =
     eventStream.publish(Warning("mailboxes", getClass, msg))
 
-  //INTERNAL API
+  // INTERNAL API
   private def config(id: String): Config = {
     import akka.util.ccompat.JavaConverters._
     ConfigFactory

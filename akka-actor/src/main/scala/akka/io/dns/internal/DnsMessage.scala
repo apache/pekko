@@ -57,7 +57,7 @@ private[internal] case class MessageFlags(flags: Short) extends AnyVal {
   def isRecursionAvailable: Boolean = (flags & (1 << 7)) != 0
 
   def responseCode: ResponseCode.Value = {
-    ResponseCode(flags & 0x0f)
+    ResponseCode(flags & 0x0F)
   }
 
   override def toString: String = {

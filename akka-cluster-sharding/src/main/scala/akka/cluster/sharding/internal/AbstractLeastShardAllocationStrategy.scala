@@ -58,8 +58,6 @@ private[akka] object AbstractLeastShardAllocationStrategy {
 }
 
 /**
-
- *
  * INTERNAL API
  */
 @InternalApi

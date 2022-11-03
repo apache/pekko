@@ -59,94 +59,96 @@ import akka.dispatch.UnboundedMessageQueueSemantics
   private val eventBusListener: ActorRef = {
     cluster.system
       .systemActorOf(Props(new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
-        override def preStart(): Unit = cluster.subscribe(this.self, classOf[ClusterDomainEvent])
+          override def preStart(): Unit = cluster.subscribe(this.self, classOf[ClusterDomainEvent])
 
-        // make sure that final state has member status Removed
-        override def postStop(): Unit = {
-          selfRemoved() // make sure it ends as Removed even though MemberRemoved message didn't make it
-        }
+          // make sure that final state has member status Removed
+          override def postStop(): Unit = {
+            selfRemoved() // make sure it ends as Removed even though MemberRemoved message didn't make it
+          }
 
-        private def selfRemoved(): Unit = {
-          val oldState = _state.get()
-          // keepig latestStats, but otherwise clear everything
-          val newState = oldState.copy(
-            clusterState = CurrentClusterState(),
-            reachability = Reachability.empty,
-            selfMember = oldState.selfMember.copy(MemberStatus.Removed))
-          _state.set(newState)
-        }
-
-        def receive: Receive = {
-          case e: ClusterDomainEvent =>
+          private def selfRemoved(): Unit = {
             val oldState = _state.get()
-            val oldClusterState = oldState.clusterState
-            e match {
-              case SeenChanged(_, seenBy) =>
-                _state.set(oldState.copy(clusterState = oldClusterState.copy(seenBy = seenBy)))
-              case ReachabilityChanged(reachability) =>
-                _state.set(oldState.copy(reachability = reachability))
-              case MemberRemoved(member, _) if member.address == selfAddress =>
-                selfRemoved()
-              case MemberRemoved(member, _) =>
-                _state.set(
-                  oldState.copy(
-                    clusterState = oldClusterState.copy(
-                      members = oldClusterState.members - member,
-                      unreachable = oldClusterState.unreachable - member)))
-              case UnreachableMember(member) =>
-                // replace current member with new member (might have different status, only address is used in equals)
-                _state.set(
-                  oldState.copy(
-                    clusterState = oldClusterState.copy(unreachable = oldClusterState.unreachable - member + member)))
-              case ReachableMember(member) =>
-                _state.set(
-                  oldState.copy(
-                    clusterState = oldClusterState.copy(unreachable = oldClusterState.unreachable - member)))
-              case event: MemberEvent =>
-                val member = event.member
-                // replace current member with new member (might have different status, only address is used in equals)
-                val newUnreachable =
-                  if (oldClusterState.unreachable.contains(member)) oldClusterState.unreachable - member + member
-                  else oldClusterState.unreachable
-                val newSelfMember = if (member.address == selfAddress) member else oldState.selfMember
-                _state.set(
-                  oldState.copy(
-                    clusterState = oldClusterState
-                      .copy(members = oldClusterState.members - member + member, unreachable = newUnreachable),
-                    selfMember = newSelfMember))
-              case LeaderChanged(leader) =>
-                _state.set(oldState.copy(clusterState = oldClusterState.copy(leader = leader)))
-              case RoleLeaderChanged(role, leader) =>
-                _state.set(
-                  oldState.copy(clusterState =
-                    oldClusterState.copy(roleLeaderMap = oldClusterState.roleLeaderMap + (role -> leader))))
-              case stats: CurrentInternalStats =>
-                _state.set(oldState.copy(latestStats = stats))
-              case ClusterShuttingDown =>
-              case r: ReachableDataCenter =>
-                _state.set(
-                  oldState.copy(clusterState =
-                    oldClusterState.withUnreachableDataCenters(oldClusterState.unreachableDataCenters - r.dataCenter)))
-              case r: UnreachableDataCenter =>
-                _state.set(
-                  oldState.copy(clusterState =
-                    oldClusterState.withUnreachableDataCenters(oldClusterState.unreachableDataCenters + r.dataCenter)))
-              case MemberTombstonesChanged(tombstones) =>
-                _state.set(oldState.copy(clusterState = oldClusterState.withMemberTombstones(tombstones)))
-              case unexpected =>
-                throw new IllegalArgumentException(s"Unexpected cluster event type ${unexpected.getClass}") // compiler exhaustiveness check pleaser
-            }
+            // keepig latestStats, but otherwise clear everything
+            val newState = oldState.copy(
+              clusterState = CurrentClusterState(),
+              reachability = Reachability.empty,
+              selfMember = oldState.selfMember.copy(MemberStatus.Removed))
+            _state.set(newState)
+          }
 
-            // once captured, optional verbose logging of event
-            logInfoVerbose(e)
+          def receive: Receive = {
+            case e: ClusterDomainEvent =>
+              val oldState = _state.get()
+              val oldClusterState = oldState.clusterState
+              e match {
+                case SeenChanged(_, seenBy) =>
+                  _state.set(oldState.copy(clusterState = oldClusterState.copy(seenBy = seenBy)))
+                case ReachabilityChanged(reachability) =>
+                  _state.set(oldState.copy(reachability = reachability))
+                case MemberRemoved(member, _) if member.address == selfAddress =>
+                  selfRemoved()
+                case MemberRemoved(member, _) =>
+                  _state.set(
+                    oldState.copy(
+                      clusterState = oldClusterState.copy(
+                        members = oldClusterState.members - member,
+                        unreachable = oldClusterState.unreachable - member)))
+                case UnreachableMember(member) =>
+                  // replace current member with new member (might have different status, only address is used in equals)
+                  _state.set(
+                    oldState.copy(
+                      clusterState = oldClusterState.copy(unreachable = oldClusterState.unreachable - member + member)))
+                case ReachableMember(member) =>
+                  _state.set(
+                    oldState.copy(
+                      clusterState = oldClusterState.copy(unreachable = oldClusterState.unreachable - member)))
+                case event: MemberEvent =>
+                  val member = event.member
+                  // replace current member with new member (might have different status, only address is used in equals)
+                  val newUnreachable =
+                    if (oldClusterState.unreachable.contains(member)) oldClusterState.unreachable - member + member
+                    else oldClusterState.unreachable
+                  val newSelfMember = if (member.address == selfAddress) member else oldState.selfMember
+                  _state.set(
+                    oldState.copy(
+                      clusterState = oldClusterState
+                        .copy(members = oldClusterState.members - member + member, unreachable = newUnreachable),
+                      selfMember = newSelfMember))
+                case LeaderChanged(leader) =>
+                  _state.set(oldState.copy(clusterState = oldClusterState.copy(leader = leader)))
+                case RoleLeaderChanged(role, leader) =>
+                  _state.set(
+                    oldState.copy(clusterState =
+                      oldClusterState.copy(roleLeaderMap = oldClusterState.roleLeaderMap + (role -> leader))))
+                case stats: CurrentInternalStats =>
+                  _state.set(oldState.copy(latestStats = stats))
+                case ClusterShuttingDown =>
+                case r: ReachableDataCenter =>
+                  _state.set(
+                    oldState.copy(clusterState =
+                      oldClusterState.withUnreachableDataCenters(
+                        oldClusterState.unreachableDataCenters - r.dataCenter)))
+                case r: UnreachableDataCenter =>
+                  _state.set(
+                    oldState.copy(clusterState =
+                      oldClusterState.withUnreachableDataCenters(
+                        oldClusterState.unreachableDataCenters + r.dataCenter)))
+                case MemberTombstonesChanged(tombstones) =>
+                  _state.set(oldState.copy(clusterState = oldClusterState.withMemberTombstones(tombstones)))
+                case unexpected =>
+                  throw new IllegalArgumentException(s"Unexpected cluster event type ${unexpected.getClass}") // compiler exhaustiveness check pleaser
+              }
 
-          case s: CurrentClusterState =>
-            val oldState = _state.get()
-            val newSelfMember =
-              s.members.find(_.uniqueAddress == cluster.selfUniqueAddress).getOrElse(oldState.selfMember)
-            _state.set(oldState.copy(clusterState = s, selfMember = newSelfMember))
-        }
-      }).withDispatcher(cluster.settings.UseDispatcher).withDeploy(Deploy.local), name = "clusterEventBusListener")
+              // once captured, optional verbose logging of event
+              logInfoVerbose(e)
+
+            case s: CurrentClusterState =>
+              val oldState = _state.get()
+              val newSelfMember =
+                s.members.find(_.uniqueAddress == cluster.selfUniqueAddress).getOrElse(oldState.selfMember)
+              _state.set(oldState.copy(clusterState = s, selfMember = newSelfMember))
+          }
+        }).withDispatcher(cluster.settings.UseDispatcher).withDeploy(Deploy.local), name = "clusterEventBusListener")
   }
 
   def state: CurrentClusterState = _state.get().clusterState

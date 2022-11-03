@@ -13,7 +13,7 @@ import akka.actor.Props
 
 object ClassicSample {
 
-  //#hello-world-actor
+  // #hello-world-actor
   object HelloWorld {
     final case class Greet(whom: String)
     final case class Greeted(whom: String)
@@ -27,11 +27,11 @@ object ClassicSample {
 
     override def receive: Receive = {
       case Greet(whom) =>
-        //#fiddle_code
+        // #fiddle_code
         log.info("Hello {}!", whom)
         sender() ! Greeted(whom)
     }
   }
-  //#hello-world-actor
+  // #hello-world-actor
 
 }

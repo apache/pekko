@@ -42,7 +42,6 @@ object MergeHub {
     /**
      * Set the operation mode of the linked MergeHub to draining. In this mode the Hub will cancel any new producer and
      * will complete as soon as all the currently connected producers complete.
-     *
      */
     def drainAndComplete(): Unit
   }
@@ -172,10 +171,9 @@ private[akka] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Boo
     @volatile private[this] var draining = false
 
     private[this] val demands = scala.collection.mutable.LongMap.empty[InputState]
-    private[this] val wakeupCallback = getAsyncCallback[NotUsed](
-      (_) =>
-        // We are only allowed to dequeue if we are not backpressured. See comment in tryProcessNext() for details.
-        if (isAvailable(out)) tryProcessNext(firstAttempt = true))
+    private[this] val wakeupCallback = getAsyncCallback[NotUsed](_ =>
+      // We are only allowed to dequeue if we are not backpressured. See comment in tryProcessNext() for details.
+      if (isAvailable(out)) tryProcessNext(firstAttempt = true))
 
     private[MergeHub] val drainingCallback: Option[AsyncCallback[NotUsed]] = {
       // Only create an async callback if the draining support is enabled in order to avoid book-keeping costs.
@@ -430,7 +428,6 @@ object BroadcastHub {
    * all corresponding [[Source]]s are completed. Both failure and normal completion is "remembered" and later
    * materializations of the [[Source]] will see the same (failure or completion) state. [[Source]]s that are
    * cancelled are simply removed from the dynamic set of consumers.
-   *
    */
   def sink[T]: Sink[T, Source[T, NotUsed]] = sink(bufferSize = defaultBufferSize)
 
@@ -596,7 +593,7 @@ private[akka] class BroadcastHub[T](bufferSize: Int)
       // TODO: Try to eliminate modulo division somehow...
       val wheelSlot = offset & WheelMask
       var consumersInSlot = consumerWheel(wheelSlot)
-      //debug(s"consumers before removal $consumersInSlot")
+      // debug(s"consumers before removal $consumersInSlot")
       var remainingConsumersInSlot: List[Consumer] = Nil
       var removedConsumer: Consumer = null
 

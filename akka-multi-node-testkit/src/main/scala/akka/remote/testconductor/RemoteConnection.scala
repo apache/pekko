@@ -116,8 +116,9 @@ private[akka] object RemoteConnection {
   def shutdown(channel: Channel): Unit = {
     try {
       try channel.close()
-      finally try channel.getFactory.shutdown()
-      finally channel.getFactory.releaseExternalResources()
+      finally
+        try channel.getFactory.shutdown()
+        finally channel.getFactory.releaseExternalResources()
     } catch {
       case NonFatal(_) =>
       // silence this one to not make tests look like they failed, it's not really critical

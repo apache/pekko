@@ -299,7 +299,7 @@ private[remote] object InboundCompression {
                 s"[compress] Found table [version: ${version}], was [OLD][${t}], old tables: [${oldTables.map(_.version)}]")
             case OptionVal.None =>
               println(s"[compress] Did not find table [version: ${version}], old tables: [${oldTables
-                .map(_.version)}], activeTable: ${activeTable}, nextTable: ${nextTable}")
+                  .map(_.version)}], activeTable: ${activeTable}, nextTable: ${nextTable}")
           }
         }
         found

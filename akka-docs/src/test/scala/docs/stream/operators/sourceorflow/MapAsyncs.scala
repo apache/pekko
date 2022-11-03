@@ -16,7 +16,6 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 /**
- *
  */
 object CommonMapAsync {
   case class Event(sequenceNumber: Int)
@@ -29,7 +28,7 @@ object CommonMapAsync {
   // #mapasync-concurrent
   // #mapasyncunordered
 
-  val events: Source[Event, NotUsed] = //...
+  val events: Source[Event, NotUsed] = // ...
     // #mapasync-strict-order
     // #mapasync-concurrent
     // #mapasyncunordered
@@ -43,7 +42,7 @@ object CommonMapAsync {
 
   def eventHandler(event: Event): Future[Int] = {
     println(s"Processing event $event...")
-    //...
+    // ...
     // #mapasync-strict-order
     // #mapasync-concurrent
     // #mapasyncunordered

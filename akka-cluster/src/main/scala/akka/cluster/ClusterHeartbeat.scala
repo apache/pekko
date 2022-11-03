@@ -178,16 +178,16 @@ private[cluster] class ClusterHeartbeatSender extends Actor {
   }
 
   def init(snapshot: CurrentClusterState): Unit = {
-    val nodes = snapshot.members.collect { case m if filterInternalClusterMembers(m)           => m.uniqueAddress }
+    val nodes = snapshot.members.collect { case m if filterInternalClusterMembers(m) => m.uniqueAddress }
     val unreachable = snapshot.unreachable.collect { case m if filterInternalClusterMembers(m) => m.uniqueAddress }
     state = state.init(nodes, unreachable)
   }
 
   def addMember(m: Member): Unit =
     if (m.uniqueAddress != selfUniqueAddress && // is not self
-        !state.contains(m.uniqueAddress) && // not already added
-        filterInternalClusterMembers(m) // should be watching members from this DC (internal / external)
-        ) {
+      !state.contains(m.uniqueAddress) && // not already added
+      filterInternalClusterMembers(m) // should be watching members from this DC (internal / external)
+    ) {
       state = state.addMember(m.uniqueAddress)
     }
 

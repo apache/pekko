@@ -32,9 +32,9 @@ class EventSourcedSequenceNumberSpec
     with LogCapturing {
 
   private def behavior(pid: PersistenceId, probe: ActorRef[String]): Behavior[String] =
-    Behaviors.setup(
-      ctx =>
-        EventSourcedBehavior[String, String, String](pid, "", {
+    Behaviors.setup(ctx =>
+      EventSourcedBehavior[String, String, String](pid, "",
+        {
           (state, command) =>
             state match {
               case "stashing" =>
@@ -64,13 +64,14 @@ class EventSourcedSequenceNumberSpec
                     Effect.persist("snapshot")
                 }
             }
-        }, { (_, evt) =>
+        },
+        { (_, evt) =>
           probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} eventHandler $evt"
           evt
         }).snapshotWhen((_, event, _) => event == "snapshot").receiveSignal {
-          case (_, RecoveryCompleted) =>
-            probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
-        })
+        case (_, RecoveryCompleted) =>
+          probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
+      })
 
   "The sequence number" must {
 

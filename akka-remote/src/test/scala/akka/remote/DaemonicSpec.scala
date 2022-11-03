@@ -44,10 +44,10 @@ class DaemonicSpec extends AkkaSpec {
 
         // get new non daemonic threads running
         awaitAssert({
-          val newNonDaemons: Set[Thread] =
-            Thread.getAllStackTraces.keySet().asScala.filter(t => !origThreads(t) && !t.isDaemon).to(Set)
-          newNonDaemons should ===(Set.empty[Thread])
-        }, 4.seconds)
+            val newNonDaemons: Set[Thread] =
+              Thread.getAllStackTraces.keySet().asScala.filter(t => !origThreads(t) && !t.isDaemon).to(Set)
+            newNonDaemons should ===(Set.empty[Thread])
+          }, 4.seconds)
 
       } finally {
         shutdown(daemonicSystem)

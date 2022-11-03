@@ -380,32 +380,33 @@ class TcpConnectionSpec extends AkkaSpec("""
       override implicit lazy val system: ActorSystem = ActorSystem("respectPullModeTest", config)
 
       try run {
-        val maxBufferSize = 1 * 1024
-        val ts = "t" * maxBufferSize
-        val us = "u" * (maxBufferSize / 2)
+          val maxBufferSize = 1 * 1024
+          val ts = "t" * maxBufferSize
+          val us = "u" * (maxBufferSize / 2)
 
-        // send a batch that is bigger than the default buffer to make sure we don't recurse and
-        // send more than one Received messages
-        serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
-        connectionHandler.expectNoMessage(100.millis)
+          // send a batch that is bigger than the default buffer to make sure we don't recurse and
+          // send more than one Received messages
+          serverSideChannel.write(ByteBuffer.wrap((ts ++ us).getBytes("ASCII")))
+          connectionHandler.expectNoMessage(100.millis)
 
-        connectionActor ! ResumeReading
-        connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(ts)
+          connectionActor ! ResumeReading
+          connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(ts)
 
-        connectionHandler.expectNoMessage(100.millis)
+          connectionHandler.expectNoMessage(100.millis)
 
-        connectionActor ! ResumeReading
-        connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(us)
+          connectionActor ! ResumeReading
+          connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(us)
 
-        connectionHandler.expectNoMessage(100.millis)
+          connectionHandler.expectNoMessage(100.millis)
 
-        val vs = "v" * (maxBufferSize / 2)
-        serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
+          val vs = "v" * (maxBufferSize / 2)
+          serverSideChannel.write(ByteBuffer.wrap(vs.getBytes("ASCII")))
 
-        connectionActor ! ResumeReading
+          connectionActor ! ResumeReading
 
-        connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(vs)
-      } finally shutdown(system)
+          connectionHandler.expectMsgType[Received].data.decodeString("ASCII") should ===(vs)
+        }
+      finally shutdown(system)
     }
 
     "close the connection and reply with `Closed` upon reception of a `Close` command" in
@@ -653,7 +654,7 @@ class TcpConnectionSpec extends AkkaSpec("""
       override lazy val connectionActor =
         createConnectionActor(serverAddress = UnboundAddress, timeout = Option(100.millis))
       run {
-        connectionActor.toString should not be ("")
+        connectionActor.toString should not be ""
         userHandler.expectMsg(CommandFailed(Connect(UnboundAddress, timeout = Option(100.millis))))
         watch(connectionActor)
         expectTerminated(connectionActor)
@@ -982,7 +983,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     override def run(body: => Unit): Unit = super.run {
       try {
         serverSideChannel.configureBlocking(false)
-        serverSideChannel should not be (null)
+        serverSideChannel should not be null
 
         interestCallReceiver.expectMsg(OP_CONNECT)
         selector.send(connectionActor, ChannelConnectable)

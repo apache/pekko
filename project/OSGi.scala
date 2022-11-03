@@ -36,17 +36,17 @@ object OSGi {
       OsgiKeys.requireCapability := "osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version>=1.8))\"")
 
   val actor = osgiSettings ++ Seq(
-      OsgiKeys.exportPackage := Seq("akka*"),
-      OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
-      //akka-actor packages are not imported, as contained in the CP
-      OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
-          "!sun.misc",
-          scalaJava8CompatImport(),
-          scalaVersion(scalaImport).value,
-          configImport(),
-          "*"),
-      // dynamicImportPackage needed for loading classes defined in configuration
-      OsgiKeys.dynamicImportPackage := Seq("*"))
+    OsgiKeys.exportPackage := Seq("akka*"),
+    OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
+    // akka-actor packages are not imported, as contained in the CP
+    OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
+      "!sun.misc",
+      scalaJava8CompatImport(),
+      scalaVersion(scalaImport).value,
+      configImport(),
+      "*"),
+    // dynamicImportPackage needed for loading classes defined in configuration
+    OsgiKeys.dynamicImportPackage := Seq("*"))
 
   val actorTyped = exports(Seq("akka.actor.typed.*"))
 
@@ -65,14 +65,14 @@ object OSGi {
   val protobuf = exports(Seq("akka.protobuf.*"))
 
   val protobufV3 = osgiSettings ++ Seq(
-      OsgiKeys.importPackage := Seq(
-          "!sun.misc",
-          scalaJava8CompatImport(),
-          scalaVersion(scalaImport).value,
-          configImport(),
-          "*"),
-      OsgiKeys.exportPackage := Seq("akka.protobufv3.internal.*"),
-      OsgiKeys.privatePackage := Seq("google.protobuf.*"))
+    OsgiKeys.importPackage := Seq(
+      "!sun.misc",
+      scalaJava8CompatImport(),
+      scalaVersion(scalaImport).value,
+      configImport(),
+      "*"),
+    OsgiKeys.exportPackage := Seq("akka.protobufv3.internal.*"),
+    OsgiKeys.privatePackage := Seq("google.protobuf.*"))
 
   val jackson = exports(Seq("akka.serialization.jackson.*"))
 

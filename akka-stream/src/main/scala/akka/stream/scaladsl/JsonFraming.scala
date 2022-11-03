@@ -75,9 +75,10 @@ object JsonFraming {
 
           def tryPopBuffer(): Unit = {
             try buffer.poll() match {
-              case Some(json) => push(out, json)
-              case _          => if (isClosed(in)) complete() else pull(in)
-            } catch {
+                case Some(json) => push(out, json)
+                case _          => if (isClosed(in)) complete() else pull(in)
+              }
+            catch {
               case NonFatal(ex) => failStage(ex)
             }
           }

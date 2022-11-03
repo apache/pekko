@@ -25,9 +25,9 @@ class AggregateWithBoundarySpec extends StreamSpec {
     val groupSize = 3
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(aggregate = (buffer, i) => {
-        buffer += i
-        (buffer, buffer.size >= groupSize)
-      }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
+          buffer += i
+          (buffer, buffer.size >= groupSize)
+        }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
     Await.result(result, 10.seconds) should be(stream.grouped(groupSize).toSeq)
@@ -57,9 +57,9 @@ class AggregateWithBoundarySpec extends StreamSpec {
 
     val result = Source(stream)
       .aggregateWithBoundary(allocate = () => ListBuffer.empty[Int])(aggregate = (buffer, i) => {
-        buffer += i
-        (buffer, buffer.sum >= weight)
-      }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
+          buffer += i
+          (buffer, buffer.sum >= weight)
+        }, harvest = buffer => buffer.toSeq, emitOnTimer = None)
       .runWith(Sink.collection)
 
     Await.result(result, 10.seconds) should be(Seq(Seq(1, 2, 3, 4), Seq(5, 6), Seq(7)))
@@ -121,16 +121,17 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
       }
 
       source.aggregateWithBoundary(allocate = () => new ValueTimeWrapper(value = allocate))(aggregate = (agg, in) => {
-        agg.updateTime(currentTimeMs)
-        // user provided Agg type must be mutable
-        val (updated, result) = aggregate(agg.value, in)
-        agg.value = updated
-        (agg, result)
-      }, harvest = agg => harvest(agg.value), emitOnTimer = Some((agg => {
-        val currentTime = currentTimeMs
-        maxDuration.exists(md => currentTime - agg.firstTime >= md.toMillis) ||
-        maxGap.exists(mg => currentTime - agg.lastTime >= mg.toMillis)
-      }, interval)))
+          agg.updateTime(currentTimeMs)
+          // user provided Agg type must be mutable
+          val (updated, result) = aggregate(agg.value, in)
+          agg.value = updated
+          (agg, result)
+        }, harvest = agg => harvest(agg.value),
+        emitOnTimer = Some((agg => {
+            val currentTime = currentTimeMs
+            maxDuration.exists(md => currentTime - agg.firstTime >= md.toMillis) ||
+            maxGap.exists(mg => currentTime - agg.lastTime >= mg.toMillis)
+          }, interval)))
     }
   }
 

@@ -323,8 +323,8 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
 
   private val priorityMessageDestinations =
     WildcardIndex[NotUsed]()
-    // These destinations are not defined in configuration because it should not
-    // be possible to abuse the control channel
+      // These destinations are not defined in configuration because it should not
+      // be possible to abuse the control channel
       .insert(Array("system", "remote-watcher"), NotUsed)
       // these belongs to cluster and should come from there
       .insert(Array("system", "cluster", "core", "daemon", "heartbeatSender"), NotUsed)
@@ -348,17 +348,16 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     capacity =
       settings.Advanced.OutboundMessageQueueSize * settings.Advanced.OutboundLanes * 3)
 
-  private val associationRegistry = new AssociationRegistry(
-    remoteAddress =>
-      new Association(
-        this,
-        materializer,
-        controlMaterializer,
-        remoteAddress,
-        controlSubject,
-        settings.LargeMessageDestinations,
-        priorityMessageDestinations,
-        outboundEnvelopePool))
+  private val associationRegistry = new AssociationRegistry(remoteAddress =>
+    new Association(
+      this,
+      materializer,
+      controlMaterializer,
+      remoteAddress,
+      controlSubject,
+      settings.LargeMessageDestinations,
+      priorityMessageDestinations,
+      outboundEnvelopePool))
 
   def remoteAddresses: Set[Address] = associationRegistry.allAssociations.map(_.remoteAddress)
 
@@ -636,7 +635,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     killSwitch.abort(ShutdownSignal)
     flightRecorder.transportKillSwitchPulled()
     for {
-      _ <- streamsCompleted.recover { case _    => Done }
+      _ <- streamsCompleted.recover { case _ => Done }
       _ <- shutdownTransport().recover { case _ => Done }
     } yield {
       // no need to explicitly shut down the contained access since it's lifecycle is bound to the Decoder

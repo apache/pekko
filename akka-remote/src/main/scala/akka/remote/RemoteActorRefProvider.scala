@@ -149,7 +149,6 @@ private[akka] object RemoteActorRefProvider {
  * Depending on this class is not supported, only the [[akka.actor.ActorRefProvider]] interface is supported.
  *
  * Remote ActorRefProvider. Starts up actor on remote node and creates a RemoteActorRef representing it.
- *
  */
 private[akka] class RemoteActorRefProvider(
     val systemName: String,
@@ -161,7 +160,8 @@ private[akka] class RemoteActorRefProvider(
 
   val remoteSettings: RemoteSettings = new RemoteSettings(settings.config)
 
-  private[akka] final val hasClusterOrUseUnsafe = settings.HasCluster || remoteSettings.UseUnsafeRemoteFeaturesWithoutCluster
+  private[akka] final val hasClusterOrUseUnsafe =
+    settings.HasCluster || remoteSettings.UseUnsafeRemoteFeaturesWithoutCluster
 
   private val warnOnUnsafeRemote =
     !settings.HasCluster &&
@@ -250,7 +250,8 @@ private[akka] class RemoteActorRefProvider(
         case ArterySettings.AeronUpd => new ArteryAeronUdpTransport(system, this)
         case ArterySettings.Tcp      => new ArteryTcpTransport(system, this, tlsEnabled = false)
         case ArterySettings.TlsTcp   => new ArteryTcpTransport(system, this, tlsEnabled = true)
-      } else new Remoting(system, this))
+      }
+      else new Remoting(system, this))
     _internals = internals
     remotingTerminator ! internals
 
@@ -345,14 +346,16 @@ private[akka] class RemoteActorRefProvider(
     if (warnOnUnsafeRemote) log.warning(message)
     else log.debug(message)
 
-  /** Logs if deathwatch message is intentionally dropped. To disable
+  /**
+   * Logs if deathwatch message is intentionally dropped. To disable
    * warnings set `akka.remote.warn-unsafe-watch-outside-cluster` to `off`
    * or use Akka Cluster.
    */
   private[akka] def warnIfUnsafeDeathwatchWithoutCluster(watchee: ActorRef, watcher: ActorRef, action: String): Unit =
     warnOnUnsafe(s"Dropped remote $action: disabled for [$watcher -> $watchee]")
 
-  /** If `warnOnUnsafeRemote`, this logs a warning if `actorOf` falls back to `LocalActorRef`
+  /**
+   * If `warnOnUnsafeRemote`, this logs a warning if `actorOf` falls back to `LocalActorRef`
    * versus creating a `RemoteActorRef`. Override to log a more granular reason if using
    * `RemoteActorRefProvider` as a superclass.
    */
@@ -416,7 +419,8 @@ private[akka] class RemoteActorRefProvider(
             case "user" | "system" => deployer.lookup(elems.drop(1))
             case "remote"          => lookupRemotes(elems)
             case _                 => None
-          } else None
+          }
+        else None
 
       val deployment = {
         deploy.toList ::: lookup.toList match {
@@ -710,7 +714,7 @@ private[akka] class RemoteActorRef private[akka] (
 
   def sendSystemMessage(message: SystemMessage): Unit =
     try {
-      //send to remote, unless watch message is intercepted by the remoteWatcher
+      // send to remote, unless watch message is intercepted by the remoteWatcher
       message match {
         case Watch(watchee, watcher) =>
           if (isWatchIntercepted(watchee, watcher))
@@ -720,7 +724,7 @@ private[akka] class RemoteActorRef private[akka] (
           else
             provider.warnIfUnsafeDeathwatchWithoutCluster(watchee, watcher, "Watch")
 
-        //Unwatch has a different signature, need to pattern match arguments against InternalActorRef
+        // Unwatch has a different signature, need to pattern match arguments against InternalActorRef
         case Unwatch(watchee: InternalActorRef, watcher: InternalActorRef) =>
           if (isWatchIntercepted(watchee, watcher))
             provider.remoteWatcher.foreach(_ ! RemoteWatcher.UnwatchRemote(watchee, watcher))

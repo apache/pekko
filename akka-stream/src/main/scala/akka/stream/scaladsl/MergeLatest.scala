@@ -20,7 +20,6 @@ import akka.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
  * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
  *
  * '''Cancels when''' downstream cancels
- *
  */
 object MergeLatest {
 

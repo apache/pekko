@@ -96,9 +96,10 @@ import akka.persistence.typed.state.internal._
    * finding mistakes.
    */
   def reply[ReplyMessage](replyTo: ActorRef[ReplyMessage], replyWithMessage: ReplyMessage): ReplyEffect[State] =
-    none().thenReply[ReplyMessage](replyTo, new function.Function[State, ReplyMessage] {
-      override def apply(param: State): ReplyMessage = replyWithMessage
-    })
+    none().thenReply[ReplyMessage](replyTo,
+      new function.Function[State, ReplyMessage] {
+        override def apply(param: State): ReplyMessage = replyWithMessage
+      })
 
   /**
    * When [[DurableStateBehaviorWithEnforcedReplies]] is used there will be compilation errors if the returned effect
@@ -139,7 +140,6 @@ import akka.persistence.typed.state.internal._
    *                  but if a known subtype of `State` is expected that can be specified instead (preferably by
    *                  explicitly typing the lambda parameter like so: `thenRun((SubState state) -> { ... })`).
    *                  If the state is not of the expected type an [[java.lang.ClassCastException]] is thrown.
-   *
    */
   final def thenRun[NewState <: State](callback: function.Procedure[NewState]): EffectBuilder[State] =
     CompositeEffect(this, SideEffect[State](s => callback.apply(s.asInstanceOf[NewState])))

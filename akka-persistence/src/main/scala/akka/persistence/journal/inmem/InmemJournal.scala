@@ -154,9 +154,9 @@ object InmemJournal {
     }
 
     messages = messages + (messages.get(p.persistenceId) match {
-        case Some(ms) => p.persistenceId -> (ms :+ pr)
-        case None     => p.persistenceId -> Vector(pr)
-      })
+      case Some(ms) => p.persistenceId -> (ms :+ pr)
+      case None     => p.persistenceId -> Vector(pr)
+    })
     highestSequenceNumbers =
       highestSequenceNumbers.updated(p.persistenceId, math.max(highestSequenceNr(p.persistenceId), p.sequenceNr))
   }

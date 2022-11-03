@@ -173,7 +173,8 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
   protected def persistenceIsNeeded: Boolean =
     mode == ClusterShardingSettings.StateStoreModePersistence ||
     system.settings.config
-      .getString("akka.cluster.sharding.remember-entities-store") == ClusterShardingSettings.RememberEntitiesStoreEventsourced
+      .getString(
+        "akka.cluster.sharding.remember-entities-store") == ClusterShardingSettings.RememberEntitiesStoreEventsourced
 
   protected def setStoreIfNeeded(sys: ActorSystem, storeOn: RoleName): Unit =
     if (persistenceIsNeeded) setStore(sys, storeOn)

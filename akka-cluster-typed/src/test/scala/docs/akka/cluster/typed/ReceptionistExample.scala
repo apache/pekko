@@ -13,7 +13,7 @@ import akka.actor.typed.scaladsl.Behaviors
 //#import
 
 object PingPongExample {
-  //#ping-service
+  // #ping-service
   object PingService {
     val PingServiceKey = ServiceKey[Ping]("pingService")
 
@@ -33,9 +33,9 @@ object PingPongExample {
       }
     }
   }
-  //#ping-service
+  // #ping-service
 
-  //#pinger
+  // #pinger
   object Pinger {
     def apply(pingService: ActorRef[PingService.Ping]): Behavior[PingService.Pong.type] = {
       Behaviors.setup { context =>
@@ -48,9 +48,9 @@ object PingPongExample {
       }
     }
   }
-  //#pinger
+  // #pinger
 
-  //#pinger-guardian
+  // #pinger-guardian
   object Guardian {
     def apply(): Behavior[Nothing] = {
       Behaviors
@@ -67,9 +67,9 @@ object PingPongExample {
         .narrow
     }
   }
-  //#pinger-guardian
+  // #pinger-guardian
 
-  //#find
+  // #find
   object PingManager {
     sealed trait Command
     case object PingAll extends Command
@@ -92,12 +92,12 @@ object PingPongExample {
       }
     }
   }
-  //#find
+  // #find
 
   Behaviors.setup[PingService.Ping] { context =>
-    //#deregister
+    // #deregister
     context.system.receptionist ! Receptionist.Deregister(PingService.PingServiceKey, context.self)
-    //#deregister
+    // #deregister
     Behaviors.empty
   }
 }

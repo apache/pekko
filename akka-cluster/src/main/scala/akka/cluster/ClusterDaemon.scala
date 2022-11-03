@@ -791,9 +791,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
             // add joining node as Joining
             // add self in case someone else joins before self has joined (Set discards duplicates)
             val newMembers = localMembers + Member(joiningNode, roles, appVersion) + Member(
-                selfUniqueAddress,
-                cluster.selfRoles,
-                cluster.settings.AppVersion)
+              selfUniqueAddress,
+              cluster.selfRoles,
+              cluster.settings.AppVersion)
             val newGossip = latestGossip.copy(members = newMembers)
 
             updateLatestGossip(newGossip)
@@ -1048,14 +1048,15 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
    */
   def receiveGossip(envelope: GossipEnvelope): ReceiveGossipType = {
     val from = envelope.from
-    val remoteGossip = try {
-      envelope.gossip
-    } catch {
-      case NonFatal(t) =>
-        gossipLogger.logWarning("Invalid Gossip. This should only happen during a rolling upgrade. {}", t.getMessage)
-        Gossip.empty
+    val remoteGossip =
+      try {
+        envelope.gossip
+      } catch {
+        case NonFatal(t) =>
+          gossipLogger.logWarning("Invalid Gossip. This should only happen during a rolling upgrade. {}", t.getMessage)
+          Gossip.empty
 
-    }
+      }
     val localGossip = latestGossip
 
     if (remoteGossip eq Gossip.empty) {
@@ -1274,8 +1275,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   }
 
   def checkForPrepareForShutdown(): Unit = {
-    if (MembershipState.allowedToPrepareToShutdown(latestGossip.member(selfUniqueAddress).status) && latestGossip.members
-          .exists(m => MembershipState.prepareForShutdownStates(m.status))) {
+    if (MembershipState.allowedToPrepareToShutdown(
+        latestGossip.member(selfUniqueAddress).status) && latestGossip.members
+        .exists(m => MembershipState.prepareForShutdownStates(m.status))) {
       logDebug("Detected full cluster shutdown")
       self ! ClusterUserAction.PrepareForShutdown
     }
@@ -1287,8 +1289,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
       // status Down. The down commands should spread before we shutdown.
       val unreachable = membershipState.dcReachability.allUnreachableOrTerminated
       val downed = membershipState.dcMembers.collect { case m if m.status == Down => m.uniqueAddress }
-      if (selfDownCounter >= MaxTicksBeforeShuttingDownMyself || downed.forall(
-            node => unreachable(node) || latestGossip.seenByNode(node))) {
+      if (selfDownCounter >= MaxTicksBeforeShuttingDownMyself || downed.forall(node =>
+          unreachable(node) || latestGossip.seenByNode(node))) {
         // the reason for not shutting down immediately is to give the gossip a chance to spread
         // the downing information to other downed nodes, so that they can shutdown themselves
         logInfo("Node has been marked as DOWN. Shutting down myself")
@@ -1377,7 +1379,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
 
     val updatedGossip: Gossip =
       if (removedUnreachable.nonEmpty || removedExitingConfirmed.nonEmpty || changedMembers.nonEmpty ||
-          removedOtherDc.nonEmpty) {
+        removedOtherDc.nonEmpty) {
 
         // replace changed members
         val removed = removedUnreachable
@@ -1557,10 +1559,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
 
   // needed for tests
   def sendGossipTo(address: Address): Unit = {
-    latestGossip.members.foreach(
-      m =>
-        if (m.address == address)
-          gossipTo(m.uniqueAddress))
+    latestGossip.members.foreach(m =>
+      if (m.address == address)
+        gossipTo(m.uniqueAddress))
   }
 
   /**

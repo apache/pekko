@@ -88,24 +88,24 @@ abstract class StatsSampleSpec
 
   override def afterAll() = multiNodeSpecAfterAll()
 
-  //#abstract-test
+  // #abstract-test
 
   "The stats sample" must {
 
-    //#startup-cluster
+    // #startup-cluster
     "illustrate how to startup cluster" in within(15 seconds) {
       Cluster(system).subscribe(testActor, classOf[MemberUp])
       expectMsgClass(classOf[CurrentClusterState])
 
-      //#addresses
+      // #addresses
       val firstAddress = node(first).address
       val secondAddress = node(second).address
       val thirdAddress = node(third).address
-      //#addresses
+      // #addresses
 
-      //#join
+      // #join
       Cluster(system).join(firstAddress)
-      //#join
+      // #join
 
       system.actorOf(Props[StatsWorker](), "statsWorker")
       system.actorOf(Props[StatsService](), "statsService")
@@ -117,9 +117,9 @@ abstract class StatsSampleSpec
 
       testConductor.enter("all-up")
     }
-    //#startup-cluster
+    // #startup-cluster
 
-    //#test-statsService
+    // #test-statsService
     "show usage of the statsService from one node" in within(15 seconds) {
       runOn(second) {
         assertServiceOk()
@@ -138,7 +138,7 @@ abstract class StatsSampleSpec
       }
 
     }
-    //#test-statsService
+    // #test-statsService
 
     "show usage of the statsService from all nodes" in within(15 seconds) {
       assertServiceOk()

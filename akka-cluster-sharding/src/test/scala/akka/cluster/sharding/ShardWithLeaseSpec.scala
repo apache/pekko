@@ -128,7 +128,7 @@ class ShardWithLeaseSpec extends AkkaSpec(ShardWithLeaseSpec.config) with WithLo
         .error(
           start =
             s"$typeName: Shard id [1] lease lost, stopping shard and killing [1] entities. Reason for losing lease: ${classOf[
-              BadLease].getName}: bye bye lease",
+                BadLease].getName}: bye bye lease",
           occurrences = 1)
         .intercept {
           lease.getCurrentCallback().apply(Some(BadLease("bye bye lease")))

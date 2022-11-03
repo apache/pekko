@@ -34,7 +34,7 @@ object PerformanceSpec {
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime
-      (NanoToSecond * numberOfMessages / (stopTime - startTime))
+      NanoToSecond * numberOfMessages / (stopTime - startTime)
     }
   }
 

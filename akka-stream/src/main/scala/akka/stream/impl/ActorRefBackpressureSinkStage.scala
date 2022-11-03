@@ -53,7 +53,7 @@ import java.util
               if (buffer.size() == maxBuffer) tryPull(in)
               dequeueAndSend()
             }
-          case _ => //ignore all other messages
+          case _ => // ignore all other messages
         }
       }
 

@@ -86,14 +86,14 @@ class RemoteDeathWatchSpec
     val path = RootActorPath(Address("akka", system.name, "unknownhost", 2552)) / "user" / "subject"
 
     system.actorOf(Props(new Actor {
-      @nowarn
-      val watchee = RARP(context.system).provider.resolveActorRef(path)
-      context.watch(watchee)
+        @nowarn
+        val watchee = RARP(context.system).provider.resolveActorRef(path)
+        context.watch(watchee)
 
-      def receive = {
-        case t: Terminated => testActor ! t.actor.path
-      }
-    }).withDeploy(Deploy.local), name = "observer2")
+        def receive = {
+          case t: Terminated => testActor ! t.actor.path
+        }
+      }).withDeploy(Deploy.local), name = "observer2")
 
     expectMsg(60.seconds, path)
   }

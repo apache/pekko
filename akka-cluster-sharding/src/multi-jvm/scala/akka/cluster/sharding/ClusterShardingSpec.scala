@@ -25,7 +25,7 @@ import akka.testkit.TestEvent.Mute
 import scala.annotation.nowarn
 
 object ClusterShardingSpec {
-  //#counter-actor
+  // #counter-actor
   case object Increment
   case object Decrement
   final case class Get(counterId: Long)
@@ -43,14 +43,14 @@ object ClusterShardingSpec {
     override def persistenceId: String = "Counter-" + self.path.name
 
     var count = 0
-    //#counter-actor
+    // #counter-actor
 
     override def postStop(): Unit = {
       super.postStop()
       // Simulate that the passivation takes some time, to verify passivation buffering
       Thread.sleep(500)
     }
-    //#counter-actor
+    // #counter-actor
 
     def updateState(event: CounterChanged): Unit =
       count += event.delta
@@ -67,7 +67,7 @@ object ClusterShardingSpec {
       case Stop           => context.stop(self)
     }
   }
-  //#counter-actor
+  // #counter-actor
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case EntityEnvelope(id, payload) => (id.toString, payload)
@@ -92,7 +92,7 @@ object ClusterShardingSpec {
 
   class AnotherCounter extends QualifiedCounter("AnotherCounter")
 
-  //#supervisor
+  // #supervisor
   class CounterSupervisor extends Actor {
     val counter = context.actorOf(Props[Counter](), "theCounter")
 
@@ -107,7 +107,7 @@ object ClusterShardingSpec {
       case msg => counter.forward(msg)
     }
   }
-  //#supervisor
+  // #supervisor
 
 }
 
@@ -125,7 +125,8 @@ abstract class ClusterShardingSpecConfig(
   val fifth = role("fifth")
   val sixth = role("sixth")
 
-  /** This is the only test that creates the shared store regardless of mode,
+  /**
+   * This is the only test that creates the shared store regardless of mode,
    * because it uses a PersistentActor. So unlike all other uses of
    * `MultiNodeClusterShardingConfig`, we use `MultiNodeConfig.commonConfig` here,
    * and call `MultiNodeClusterShardingConfig.persistenceConfig` which does not check
@@ -182,7 +183,7 @@ abstract class ClusterShardingSpecConfig(
 object ClusterShardingDocCode {
   import ClusterShardingSpec._
 
-  //#counter-extractor
+  // #counter-extractor
   val extractEntityId: ShardRegion.ExtractEntityId = {
     case EntityEnvelope(id, payload) => (id.toString, payload)
     case msg @ Get(id)               => (id.toString, msg)
@@ -198,10 +199,10 @@ object ClusterShardingDocCode {
       (id.toLong % numberOfShards).toString
     case _ => throw new IllegalArgumentException()
   }
-  //#counter-extractor
+  // #counter-extractor
 
   {
-    //#extractShardId-StartEntity
+    // #extractShardId-StartEntity
     val extractShardId: ShardRegion.ExtractShardId = {
       case EntityEnvelope(id, _)       => (id % numberOfShards).toString
       case Get(id)                     => (id % numberOfShards).toString
@@ -210,7 +211,7 @@ object ClusterShardingDocCode {
         (id.toLong % numberOfShards).toString
       case _ => throw new IllegalArgumentException()
     }
-    //#extractShardId-StartEntity
+    // #extractShardId-StartEntity
     extractShardId.toString() // keep the compiler happy
   }
 
@@ -661,7 +662,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
               if (probe.lastSender.path == rebalancingRegion.path / (n % 12).toString / n.toString)
                 count += 1
             }
-            count should be >= (2)
+            count should be >= 2
           }
         }
       }
@@ -672,14 +673,14 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
 
   "easy to use with extensions" in within(50.seconds) {
     runOn(third, fourth, fifth, sixth) {
-      //#counter-start
+      // #counter-start
       val counterRegion: ActorRef = ClusterSharding(system).start(
         typeName = "Counter",
         entityProps = Props[Counter](),
         settings = ClusterShardingSettings(system),
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
-      //#counter-start
+      // #counter-start
       counterRegion.toString // keep the compiler happy
 
       ClusterSharding(system).start(
@@ -689,18 +690,18 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
 
-      //#counter-supervisor-start
+      // #counter-supervisor-start
       ClusterSharding(system).start(
         typeName = "SupervisedCounter",
         entityProps = Props[CounterSupervisor](),
         settings = ClusterShardingSettings(system),
         extractEntityId = extractEntityId,
         extractShardId = extractShardId)
-      //#counter-supervisor-start
+      // #counter-supervisor-start
     }
     enterBarrier("extension-started")
     runOn(fifth) {
-      //#counter-usage
+      // #counter-usage
       val counterRegion: ActorRef = ClusterSharding(system).shardRegion("Counter")
       counterRegion ! Get(123)
       expectMsg(0)
@@ -708,7 +709,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       counterRegion ! EntityEnvelope(123, Increment)
       counterRegion ! Get(123)
       expectMsg(1)
-      //#counter-usage
+      // #counter-usage
 
       ClusterSharding(system).shardRegion("AnotherCounter") ! EntityEnvelope(123, Decrement)
       ClusterSharding(system).shardRegion("AnotherCounter") ! Get(123)
@@ -775,7 +776,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       var shard: ActorSelection = null
       var region: ActorSelection = null
       runOn(third) {
-        //Create an increment counter 1
+        // Create an increment counter 1
         persistentEntitiesRegion ! EntityEnvelope(1, Increment)
         persistentEntitiesRegion ! Get(1)
         expectMsg(1)
@@ -793,30 +794,30 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("everybody-hand-off-ack")
 
       runOn(third) {
-        //Stop the shard cleanly
+        // Stop the shard cleanly
         region ! HandOff("1")
         expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe = TestProbe()
         awaitAssert({
-          shard.tell(Identify(1), probe.ref)
-          probe.expectMsg(1 second, "Shard was still around", ActorIdentity(1, None))
-        }, 5 seconds, 500 millis)
+            shard.tell(Identify(1), probe.ref)
+            probe.expectMsg(1 second, "Shard was still around", ActorIdentity(1, None))
+          }, 5 seconds, 500 millis)
 
-        //Get the path to where the shard now resides
+        // Get the path to where the shard now resides
         awaitAssert({
-          persistentEntitiesRegion ! Get(13)
-          expectMsg(0)
-        }, 5 seconds, 500 millis)
+            persistentEntitiesRegion ! Get(13)
+            expectMsg(0)
+          }, 5 seconds, 500 millis)
 
-        //Check that counter 1 is now alive again, even though we have
+        // Check that counter 1 is now alive again, even though we have
         // not sent a message to it via the ShardRegion
         val counter1 = system.actorSelection(lastSender.path.parent / "1")
         within(5.seconds) {
           awaitAssert {
             val p = TestProbe()
             counter1.tell(Identify(2), p.ref)
-            p.expectMsgType[ActorIdentity](2.seconds).ref should not be (None)
+            p.expectMsgType[ActorIdentity](2.seconds).ref should not be None
           }
         }
 
@@ -826,14 +827,14 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("after-shard-restart")
 
       runOn(fourth) {
-        //Check a second region does not share the same persistent shards
+        // Check a second region does not share the same persistent shards
 
-        //Create a separate 13 counter
+        // Create a separate 13 counter
         anotherPersistentRegion ! EntityEnvelope(13, Increment)
         anotherPersistentRegion ! Get(13)
         expectMsg(1)
 
-        //Check that no counter "1" exists in this shard
+        // Check that no counter "1" exists in this shard
         val secondCounter1 = system.actorSelection(lastSender.path.parent / "1")
         secondCounter1 ! Identify(3)
         expectMsg(3 seconds, ActorIdentity(3, None))
@@ -849,7 +850,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("cluster-started-12")
 
       runOn(third) {
-        //Create and increment counter 1
+        // Create and increment counter 1
         persistentRegion ! EntityEnvelope(1, Increment)
         persistentRegion ! Get(1)
         expectMsg(1)
@@ -858,7 +859,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         val shard = system.actorSelection(counter1.path.parent)
         val region = system.actorSelection(counter1.path.parent.parent)
 
-        //Create and increment counter 13
+        // Create and increment counter 13
         persistentRegion ! EntityEnvelope(13, Increment)
         persistentRegion ! Get(13)
         expectMsg(1)
@@ -867,50 +868,50 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
 
         counter1.path.parent should ===(counter13.path.parent)
 
-        //Send the shard the passivate message from the counter
+        // Send the shard the passivate message from the counter
         watch(counter1)
         shard.tell(Passivate(Stop), counter1)
 
-        //Watch for the terminated message
+        // Watch for the terminated message
         expectTerminated(counter1, 5 seconds)
 
         val probe1 = TestProbe()
         awaitAssert({
-          //Check counter 1 is dead
-          counter1.tell(Identify(1), probe1.ref)
-          probe1.expectMsg(1 second, "Entity 1 was still around", ActorIdentity(1, None))
-        }, 5 second, 500 millis)
+            // Check counter 1 is dead
+            counter1.tell(Identify(1), probe1.ref)
+            probe1.expectMsg(1 second, "Entity 1 was still around", ActorIdentity(1, None))
+          }, 5 second, 500 millis)
 
-        //Stop the shard cleanly
+        // Stop the shard cleanly
         region ! HandOff("1")
         expectMsg(10 seconds, "ShardStopped not received", ShardStopped("1"))
 
         val probe2 = TestProbe()
         awaitAssert({
-          shard.tell(Identify(2), probe2.ref)
-          probe2.expectMsg(1 second, "Shard was still around", ActorIdentity(2, None))
-        }, 5 seconds, 500 millis)
+            shard.tell(Identify(2), probe2.ref)
+            probe2.expectMsg(1 second, "Shard was still around", ActorIdentity(2, None))
+          }, 5 seconds, 500 millis)
       }
 
       enterBarrier("shard-shutdown-12")
 
       runOn(fourth) {
-        //Force the shard back up
+        // Force the shard back up
         persistentRegion ! Get(25)
         expectMsg(0)
 
         val shard = lastSender.path.parent
 
-        //Check counter 1 is still dead
+        // Check counter 1 is still dead
         system.actorSelection(shard / "1") ! Identify(3)
         expectMsg(ActorIdentity(3, None))
 
-        //Check counter 13 is alive again
+        // Check counter 13 is alive again
         val probe3 = TestProbe()
         awaitAssert({
-          system.actorSelection(shard / "13").tell(Identify(4), probe3.ref)
-          probe3.expectMsgType[ActorIdentity](1 second).ref should not be (None)
-        }, 5 seconds, 500 millis)
+            system.actorSelection(shard / "13").tell(Identify(4), probe3.ref)
+            probe3.expectMsgType[ActorIdentity](1 second).ref should not be None
+          }, 5 seconds, 500 millis)
       }
 
       enterBarrier("after-13")
@@ -923,7 +924,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       enterBarrier("cluster-started-12")
 
       runOn(third) {
-        //Create and increment counter 1
+        // Create and increment counter 1
         persistentRegion ! EntityEnvelope(1, Increment)
         persistentRegion ! Get(1)
         expectMsg(2)
@@ -934,9 +935,9 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
 
         val probe = TestProbe()
         awaitAssert({
-          counter1.tell(Identify(1), probe.ref)
-          probe.expectMsgType[ActorIdentity](1 second).ref should not be (None)
-        }, 5.seconds, 500.millis)
+            counter1.tell(Identify(1), probe.ref)
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be None
+          }, 5.seconds, 500.millis)
       }
 
       enterBarrier("after-14")
@@ -944,7 +945,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
 
     "be migrated to new regions upon region failure" in within(15.seconds) {
 
-      //Start only one region, and force an entity onto that region
+      // Start only one region, and force an entity onto that region
       runOn(third) {
         autoMigrateRegion ! EntityEnvelope(1, Increment)
         autoMigrateRegion ! Get(1)
@@ -952,7 +953,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       }
       enterBarrier("shard1-region3")
 
-      //Start another region and test it talks to node 3
+      // Start another region and test it talks to node 3
       runOn(fourth) {
         autoMigrateRegion ! EntityEnvelope(1, Increment)
 
@@ -960,20 +961,20 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         expectMsg(2)
         lastSender.path should ===(node(third) / "user" / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
 
-        //Kill region 3
+        // Kill region 3
         system.actorSelection(lastSender.path.parent.parent) ! PoisonPill
       }
       enterBarrier("region4-up")
 
       // Wait for migration to happen
-      //Test the shard, thus counter was moved onto node 4 and started.
+      // Test the shard, thus counter was moved onto node 4 and started.
       runOn(fourth) {
         val counter1 = system.actorSelection(system / "AutoMigrateRememberRegionTestRegion" / "1" / "1")
         val probe = TestProbe()
         awaitAssert({
-          counter1.tell(Identify(1), probe.ref)
-          probe.expectMsgType[ActorIdentity](1 second).ref should not be (None)
-        }, 5.seconds, 500 millis)
+            counter1.tell(Identify(1), probe.ref)
+            probe.expectMsgType[ActorIdentity](1 second).ref should not be None
+          }, 5.seconds, 500 millis)
 
         counter1 ! Get(1)
         expectMsg(2)
@@ -1008,11 +1009,11 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
             entity ! Identify(n)
             receiveOne(3 seconds) match {
               case ActorIdentity(id, Some(_)) if id == n => count = count + 1
-              case ActorIdentity(_, None)                => //Not on the fifth shard
+              case ActorIdentity(_, None)                => // Not on the fifth shard
               case _                                     => fail()
             }
           }
-          count should be >= (2)
+          count should be >= 2
         }
       }
 

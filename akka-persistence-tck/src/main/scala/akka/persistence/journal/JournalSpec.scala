@@ -335,8 +335,8 @@ abstract class JournalSpec(config: Config)
         val WriterUuid = writerUuid
         probe.expectMsgPF() {
           case WriteMessageSuccess(
-              PersistentImpl(payload, 6L, Pid, _, _, Actor.noSender, WriterUuid, _, Some(`meta`)),
-              _) =>
+                PersistentImpl(payload, 6L, Pid, _, _, Actor.noSender, WriterUuid, _, Some(`meta`)),
+                _) =>
             payload should be(event)
         }
 

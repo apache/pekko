@@ -50,7 +50,7 @@ private[akka] class SnapshotAfter(config: Config) extends Extension {
    */
   val isSnapshotAfterSeqNo: Long => Boolean = snapshotAfterValue match {
     case Some(snapShotAfterValue) => (seqNo: Long) => seqNo % snapShotAfterValue == 0
-    case None                     => (_: Long) => false //always false, if snapshotAfter is not specified in config
+    case None                     => (_: Long) => false // always false, if snapshotAfter is not specified in config
   }
 }
 
@@ -64,7 +64,6 @@ private[akka] class SnapshotAfter(config: Config) extends Extension {
  * Persistence execution order is: persist -&gt; wait for ack -&gt; apply state.
  * Incoming messages are deferred until the state is applied.
  * State Data is constructed based on domain events, according to user's implementation of applyEvent function.
- *
  */
 @deprecated("Use EventSourcedBehavior", "2.6.0")
 trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with PersistentFSMBase[S, D, E] with ActorLogging {
@@ -141,16 +140,16 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
   override private[akka] def applyState(nextState: State): Unit = {
     var eventsToPersist: immutable.Seq[Any] = nextState.domainEvents.toList
 
-    //Prevent StateChangeEvent persistence when staying in the same state, except when state defines a timeout
+    // Prevent StateChangeEvent persistence when staying in the same state, except when state defines a timeout
     if (nextState.notifies || nextState.timeout.nonEmpty) {
       eventsToPersist = eventsToPersist :+ StateChangeEvent(nextState.stateName.identifier, nextState.timeout)
     }
 
     if (eventsToPersist.isEmpty) {
-      //If there are no events to persist, just apply the state
+      // If there are no events to persist, just apply the state
       super.applyState(nextState)
     } else {
-      //Persist the events and apply the new state after all event handlers were executed
+      // Persist the events and apply the new state after all event handlers were executed
       var nextData: D = stateData
       var handlersExecutedCounter = 0
 
@@ -490,7 +489,6 @@ object PersistentFSM {
  * Java API: compatible with lambda expressions
  *
  * Persistent Finite State Machine actor abstract base class.
- *
  */
 @deprecated("Use EventSourcedBehavior", "2.6.0")
 abstract class AbstractPersistentFSM[S <: FSMState, D, E]
@@ -534,7 +532,6 @@ abstract class AbstractPersistentFSM[S <: FSMState, D, E]
  * Java API: compatible with lambda expressions
  *
  * Persistent Finite State Machine actor abstract base class with FSM Logging
- *
  */
 @nowarn("msg=deprecated")
 @deprecated("Use EventSourcedBehavior", "2.6.0")

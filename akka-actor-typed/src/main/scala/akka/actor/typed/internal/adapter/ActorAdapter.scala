@@ -118,7 +118,7 @@ import akka.util.OptionVal
       if (c.hasTimer) {
         msg match {
           case timerMsg: TimerMsg =>
-            //we can only get this kind of message if the timer is of this concrete class
+            // we can only get this kind of message if the timer is of this concrete class
             c.timer.asInstanceOf[TimerSchedulerImpl[T]].interceptTimerMsg(ctx.log, timerMsg) match {
               case OptionVal.Some(m) =>
                 next(Behavior.interpretMessage(behavior, c, m), m)
@@ -187,17 +187,18 @@ import akka.util.OptionVal
 
   private def withSafelyAdapted[U, V](adapt: () => U)(body: U => V): Unit = {
     var failed = false
-    val adapted: U = try {
-      adapt()
-    } catch {
-      case NonFatal(ex) =>
-        // pass it on through the signal handler chain giving supervision a chance to deal with it
-        handleSignal(MessageAdaptionFailure(ex))
-        // Signal handler should actually throw so this is mostly to keep compiler happy (although a user could override
-        // the MessageAdaptionFailure handling to do something weird)
-        failed = true
-        null.asInstanceOf[U]
-    }
+    val adapted: U =
+      try {
+        adapt()
+      } catch {
+        case NonFatal(ex) =>
+          // pass it on through the signal handler chain giving supervision a chance to deal with it
+          handleSignal(MessageAdaptionFailure(ex))
+          // Signal handler should actually throw so this is mostly to keep compiler happy (although a user could override
+          // the MessageAdaptionFailure handling to do something weird)
+          failed = true
+          null.asInstanceOf[U]
+      }
     if (!failed) {
       if (adapted != null) body(adapted)
       else
@@ -222,33 +223,34 @@ import akka.util.OptionVal
     case ex =>
       ctx.setCurrentActorThread()
       try ex match {
-        case TypedActorFailedException(cause) =>
-          // These have already been optionally logged by typed supervision
-          recordChildFailure(cause)
-          classic.SupervisorStrategy.Stop
-        case _ =>
-          val isTypedActor = sender() match {
-            case afwc: ActorRefWithCell =>
-              afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[_]]
-            case _ =>
-              false
-          }
-          recordChildFailure(ex)
-          val logMessage = ex match {
-            case e: ActorInitializationException if e.getCause ne null =>
-              e.getCause match {
-                case ex: InvocationTargetException if ex.getCause ne null => ex.getCause.getMessage
-                case ex                                                   => ex.getMessage
-              }
-            case e => e.getMessage
-          }
-          // log at Error as that is what the supervision strategy would have done.
-          ctx.log.error(logMessage, ex)
-          if (isTypedActor)
+          case TypedActorFailedException(cause) =>
+            // These have already been optionally logged by typed supervision
+            recordChildFailure(cause)
             classic.SupervisorStrategy.Stop
-          else
-            ActorAdapter.classicSupervisorDecider(ex)
-      } finally {
+          case _ =>
+            val isTypedActor = sender() match {
+              case afwc: ActorRefWithCell =>
+                afwc.underlying.props.producer.actorClass == classOf[ActorAdapter[_]]
+              case _ =>
+                false
+            }
+            recordChildFailure(ex)
+            val logMessage = ex match {
+              case e: ActorInitializationException if e.getCause ne null =>
+                e.getCause match {
+                  case ex: InvocationTargetException if ex.getCause ne null => ex.getCause.getMessage
+                  case ex                                                   => ex.getMessage
+                }
+              case e => e.getMessage
+            }
+            // log at Error as that is what the supervision strategy would have done.
+            ctx.log.error(logMessage, ex)
+            if (isTypedActor)
+              classic.SupervisorStrategy.Stop
+            else
+              ActorAdapter.classicSupervisorDecider(ex)
+        }
+      finally {
         ctx.clearCurrentActorThread()
       }
   }

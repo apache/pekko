@@ -50,10 +50,12 @@ final private[akka] class EventsByPersistenceIdStage(
           log.debug("tryPush available. Query for {} {} result {}", currentSequenceNr, currentSequenceNr, event)
           event.headOption match {
             case Some(pr) =>
-              push(out, EventEnvelope(Sequence(pr.sequenceNr), pr.persistenceId, pr.sequenceNr, pr.payload match {
-                case Tagged(payload, _) => payload
-                case payload            => payload
-              }, pr.timestamp, pr.metadata))
+              push(out,
+                EventEnvelope(Sequence(pr.sequenceNr), pr.persistenceId, pr.sequenceNr,
+                  pr.payload match {
+                    case Tagged(payload, _) => payload
+                    case payload            => payload
+                  }, pr.timestamp, pr.metadata))
               if (currentSequenceNr == toSequenceNr) {
                 completeStage()
               } else {

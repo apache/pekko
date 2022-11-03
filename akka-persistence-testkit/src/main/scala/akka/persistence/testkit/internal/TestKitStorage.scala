@@ -41,11 +41,10 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
   def reprToSeqNum(repr: R): Long
 
   def findMany(key: K, fromInclusive: Int, maxNum: Int): Option[Vector[R]] =
-    read(key).flatMap(
-      value =>
-        if (value.size > fromInclusive)
-          Some(value.drop(fromInclusive).take(maxNum))
-        else None)
+    read(key).flatMap(value =>
+      if (value.size > fromInclusive)
+        Some(value.drop(fromInclusive).take(maxNum))
+      else None)
 
   def removeFirstInExpectNextQueue(key: K): Unit = lock.synchronized {
     expectNextQueue.get(key).foreach { item =>
@@ -149,9 +148,10 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
   }
 
   def deleteToSeqNumber(key: K, toSeqNumberInclusive: Long): Unit =
-    updateOrSetNew(key, value => {
-      value.dropWhile(reprToSeqNum(_) <= toSeqNumberInclusive)
-    })
+    updateOrSetNew(key,
+      value => {
+        value.dropWhile(reprToSeqNum(_) <= toSeqNumberInclusive)
+      })
 
   def clearAllPreservingSeqNumbers(): Unit = lock.synchronized {
     eventsMap.keys.foreach(removePreservingSeqNumber)

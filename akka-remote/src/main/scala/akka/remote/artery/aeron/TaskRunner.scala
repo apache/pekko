@@ -48,7 +48,7 @@ private[akka] object TaskRunner {
         } else if (elements(i) eq null)
           elements(i) = e
         else
-          tryAdd(i + 1) //recursive
+          tryAdd(i + 1) // recursive
       }
       tryAdd(0)
     }
@@ -61,7 +61,7 @@ private[akka] object TaskRunner {
         else if (elements(i) == e)
           elements(i) = null.asInstanceOf[T]
         else
-          tryRemove(i + 1) //recursive
+          tryRemove(i + 1) // recursive
       }
       tryRemove(0)
     }
@@ -170,16 +170,17 @@ private[akka] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: In
     val size = elements.length
     while (i < size) {
       val task = elements(i)
-      if (task ne null) try {
-        if (task()) {
-          tasks.remove(task)
-          reset = true
+      if (task ne null)
+        try {
+          if (task()) {
+            tasks.remove(task)
+            reset = true
+          }
+        } catch {
+          case NonFatal(e) =>
+            log.error(e, "Task failed")
+            tasks.remove(task)
         }
-      } catch {
-        case NonFatal(e) =>
-          log.error(e, "Task failed")
-          tasks.remove(task)
-      }
       i += 1
     }
   }

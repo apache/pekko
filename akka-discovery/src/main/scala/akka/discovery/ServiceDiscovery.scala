@@ -279,7 +279,6 @@ case object Lookup {
 
 /**
  * Implement to provide a service discovery method
- *
  */
 abstract class ServiceDiscovery {
 
@@ -310,7 +309,6 @@ abstract class ServiceDiscovery {
    * eagerness to wait for a result for this specific lookup.
    *
    * The returned future should be failed once resolveTimeout has passed with a [[DiscoveryTimeoutException]].
-   *
    */
   def lookup(query: Lookup, resolveTimeout: java.time.Duration): CompletionStage[Resolved] = {
     import scala.compat.java8.FutureConverters._

@@ -86,7 +86,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
         case NotFound(_, _) =>
           Future.successful(Map.empty[ShardId, ShardLocation])
         case GetFailure(_, _) =>
-          Future.failed((new ClientTimeoutException(s"Unable to get shard locations after ${timeout.duration.pretty}")))
+          Future.failed(new ClientTimeoutException(s"Unable to get shard locations after ${timeout.duration.pretty}"))
         case _ => throw new IllegalArgumentException() // compiler exhaustiveness check pleaser
       }
       .map { locations =>

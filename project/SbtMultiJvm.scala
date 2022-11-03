@@ -96,10 +96,10 @@ object MultiJvmPlugin extends AutoPlugin {
       loadedTestFrameworks := (Test / loadedTestFrameworks).value,
       definedTests := Defaults.detectTests.value,
       multiJvmTests := collectMultiJvmTests(
-          definedTests.value,
-          multiJvmMarker.value,
-          (MultiJvm / testOptions).value,
-          streams.value.log),
+        definedTests.value,
+        multiJvmMarker.value,
+        (MultiJvm / testOptions).value,
+        streams.value.log),
       multiJvmTestNames := multiJvmTests.map(_.keys.toSeq).storeAs(multiJvmTestNames).triggeredBy(compile).value,
       multiJvmApps := collectMultiJvm(discoveredMainClasses.value, multiJvmMarker.value),
       multiJvmAppNames := multiJvmApps.map(_.keys.toSeq).storeAs(multiJvmAppNames).triggeredBy(compile).value,
@@ -116,13 +116,13 @@ object MultiJvmPlugin extends AutoPlugin {
       scalatestClasspath := managedClasspath.value.filter(_.data.name.contains("scalatest")),
       multiRunCopiedClassLocation := new File(target.value, "multi-run-copied-libraries"),
       scalatestScalaOptions := scalaOptionsForScalatest(
-          scalatestRunner.value,
-          scalatestOptions.value,
-          fullClasspath.value,
-          multiRunCopiedClassLocation.value),
+        scalatestRunner.value,
+        scalatestOptions.value,
+        fullClasspath.value,
+        multiRunCopiedClassLocation.value),
       scalatestMultiNodeScalaOptions := scalaMultiNodeOptionsForScalatest(
-          scalatestRunner.value,
-          scalatestOptions.value),
+        scalatestRunner.value,
+        scalatestOptions.value),
       multiTestOptions := Options(jvmOptions.value, extraOptions.value, scalatestScalaOptions.value),
       multiNodeTestOptions := Options(jvmOptions.value, extraOptions.value, scalatestMultiNodeScalaOptions.value),
       appScalaOptions := scalaOptionsForApps(fullClasspath.value),
@@ -145,10 +145,10 @@ object MultiJvmPlugin extends AutoPlugin {
       multiNodeHosts := Seq.empty,
       multiNodeHostsFileName := "multi-node-test.hosts",
       multiNodeProcessedHosts := processMultiNodeHosts(
-          multiNodeHosts.value,
-          multiNodeHostsFileName.value,
-          multiNodeJavaName.value,
-          streams.value),
+        multiNodeHosts.value,
+        multiNodeHostsFileName.value,
+        multiNodeJavaName.value,
+        streams.value),
       multiNodeTargetDirName := "multi-node-test",
       multiNodeJavaName := "java",
       // TODO there must be a way get at keys in the tasks that I just don't get
@@ -242,7 +242,8 @@ object MultiJvmPlugin extends AutoPlugin {
       .filter(_.isFile)
       .foreach(classpathFile =>
         IO.copyFile(classpathFile, new File(multiRunCopiedClassDir, classpathFile.getName), true))
-    val cp = directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File.separator + "*"
+    val cp =
+      directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File.separator + "*"
     (testClass: String) => { Seq("-cp", cp, runner, "-s", testClass) ++ options }
   }
 

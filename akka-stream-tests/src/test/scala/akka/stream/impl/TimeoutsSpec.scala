@@ -126,7 +126,8 @@ class TimeoutsSpec extends StreamSpec {
   "BackpressureTimeout" must {
 
     "pass through elements unmodified" in {
-      Await.result(Source(1 to 100).backpressureTimeout(1.second).grouped(200).runWith(Sink.head), 3.seconds) should ===(
+      Await.result(Source(1 to 100).backpressureTimeout(1.second).grouped(200).runWith(Sink.head),
+        3.seconds) should ===(
         1 to 100)
     }
 
@@ -271,7 +272,7 @@ class TimeoutsSpec extends StreamSpec {
           import GraphDSL.Implicits._
           val timeoutStage = b.add(BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
           Source.fromPublisher(upWrite) ~> timeoutStage.in1
-          timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
+          timeoutStage.out1             ~> Sink.fromSubscriber(downRead)
           Sink.fromSubscriber(upRead) <~ timeoutStage.out2
           timeoutStage.in2 <~ Source.fromPublisher(downWrite)
           ClosedShape
@@ -321,7 +322,7 @@ class TimeoutsSpec extends StreamSpec {
           import GraphDSL.Implicits._
           val timeoutStage = b.add(BidiFlow.bidirectionalIdleTimeout[String, Int](2.seconds))
           Source.fromPublisher(upWrite) ~> timeoutStage.in1
-          timeoutStage.out1 ~> Sink.fromSubscriber(downRead)
+          timeoutStage.out1             ~> Sink.fromSubscriber(downRead)
           Sink.fromSubscriber(upRead) <~ timeoutStage.out2
           timeoutStage.in2 <~ Source.fromPublisher(downWrite)
           ClosedShape

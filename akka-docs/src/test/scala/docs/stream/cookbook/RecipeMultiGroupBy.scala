@@ -25,7 +25,7 @@ class RecipeMultiGroupBy extends RecipeSpec {
         else List(Topic("1"), Topic("2"))
       }
 
-      //#multi-groupby
+      // #multi-groupby
       val topicMapper: (Message) => immutable.Seq[Topic] = extractTopics
 
       val messageAndTopic: Source[(Message, Topic), NotUsed] = elems.mapConcat { (msg: Message) =>
@@ -38,11 +38,11 @@ class RecipeMultiGroupBy extends RecipeSpec {
       val multiGroups = messageAndTopic.groupBy(2, _._2).map {
         case (msg, topic) =>
           // do what needs to be done
-          //#multi-groupby
+          // #multi-groupby
           (msg, topic)
-        //#multi-groupby
+        // #multi-groupby
       }
-      //#multi-groupby
+      // #multi-groupby
 
       val result = multiGroups
         .grouped(10)

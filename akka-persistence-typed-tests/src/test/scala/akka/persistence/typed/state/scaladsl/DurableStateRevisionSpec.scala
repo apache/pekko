@@ -32,38 +32,37 @@ class DurableStateRevisionSpec
     with LogCapturing {
 
   private def behavior(pid: PersistenceId, probe: ActorRef[String]): Behavior[String] =
-    Behaviors.setup(
-      ctx =>
-        DurableStateBehavior[String, String](
-          pid,
-          "",
-          (state, command) =>
-            state match {
-              case "stashing" =>
-                command match {
-                  case "unstash" =>
-                    probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
-                    Effect.persist("normal").thenUnstashAll()
-                  case _ =>
-                    Effect.stash()
-                }
-              case _ =>
-                command match {
-                  case "cmd" =>
-                    probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
-                    Effect
-                      .persist("state")
-                      .thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
-                  case "stash" =>
-                    probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
-                    Effect.persist("stashing")
-                  case "snapshot" =>
-                    Effect.persist("snapshot")
-                }
-            }).receiveSignal {
-          case (_, RecoveryCompleted) =>
-            probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
-        })
+    Behaviors.setup(ctx =>
+      DurableStateBehavior[String, String](
+        pid,
+        "",
+        (state, command) =>
+          state match {
+            case "stashing" =>
+              command match {
+                case "unstash" =>
+                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} unstash"
+                  Effect.persist("normal").thenUnstashAll()
+                case _ =>
+                  Effect.stash()
+              }
+            case _ =>
+              command match {
+                case "cmd" =>
+                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onCommand"
+                  Effect
+                    .persist("state")
+                    .thenRun(_ => probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} thenRun")
+                case "stash" =>
+                  probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} stash"
+                  Effect.persist("stashing")
+                case "snapshot" =>
+                  Effect.persist("snapshot")
+              }
+          }).receiveSignal {
+        case (_, RecoveryCompleted) =>
+          probe ! s"${DurableStateBehavior.lastSequenceNumber(ctx)} onRecoveryComplete"
+      })
 
   "The revision number" must {
 

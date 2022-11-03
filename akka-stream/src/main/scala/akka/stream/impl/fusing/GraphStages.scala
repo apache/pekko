@@ -126,36 +126,36 @@ import akka.stream.stage._
       val finishPromise = Promise[Done]()
 
       (new GraphStageLogic(shape) with InHandler with OutHandler {
-        def onPush(): Unit = push(out, grab(in))
+          def onPush(): Unit = push(out, grab(in))
 
-        override def onUpstreamFinish(): Unit = {
-          finishPromise.success(Done)
-          completeStage()
-        }
-
-        override def onUpstreamFailure(ex: Throwable): Unit = {
-          finishPromise.failure(ex)
-          failStage(ex)
-        }
-
-        def onPull(): Unit = pull(in)
-
-        override def onDownstreamFinish(cause: Throwable): Unit = {
-          cause match {
-            case _: SubscriptionWithCancelException.NonFailureCancellation =>
-              finishPromise.success(Done)
-            case ex =>
-              finishPromise.failure(ex)
+          override def onUpstreamFinish(): Unit = {
+            finishPromise.success(Done)
+            completeStage()
           }
-          cancelStage(cause)
-        }
 
-        override def postStop(): Unit = {
-          if (!finishPromise.isCompleted) finishPromise.failure(new AbruptStageTerminationException(this))
-        }
+          override def onUpstreamFailure(ex: Throwable): Unit = {
+            finishPromise.failure(ex)
+            failStage(ex)
+          }
 
-        setHandlers(in, out, this)
-      }, finishPromise.future)
+          def onPull(): Unit = pull(in)
+
+          override def onDownstreamFinish(cause: Throwable): Unit = {
+            cause match {
+              case _: SubscriptionWithCancelException.NonFailureCancellation =>
+                finishPromise.success(Done)
+              case ex =>
+                finishPromise.failure(ex)
+            }
+            cancelStage(cause)
+          }
+
+          override def postStop(): Unit = {
+            if (!finishPromise.isCompleted) finishPromise.failure(new AbruptStageTerminationException(this))
+          }
+
+          setHandlers(in, out, this)
+        }, finishPromise.future)
     }
 
     override def toString = "TerminationWatcher"

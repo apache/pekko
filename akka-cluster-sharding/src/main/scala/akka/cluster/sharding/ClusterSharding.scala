@@ -152,7 +152,6 @@ import akka.util.ccompat.JavaConverters._
  * then supposed to stop itself. Incoming messages will be buffered by the `ShardRegion`
  * between reception of `Passivate` and termination of the entity. Such buffered messages
  * are thereafter delivered to a new incarnation of the entity.
- *
  */
 object ClusterSharding extends ExtensionId[ClusterSharding] with ExtensionIdProvider {
 
@@ -603,10 +602,11 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       dataCenter: Optional[String],
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    startProxy(typeName, Option(role.orElse(null)), Option(dataCenter.orElse(null)), extractEntityId = {
-      case msg if messageExtractor.entityId(msg) ne null =>
-        (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
-    }, extractShardId = msg => messageExtractor.shardId(msg))
+    startProxy(typeName, Option(role.orElse(null)), Option(dataCenter.orElse(null)),
+      extractEntityId = {
+        case msg if messageExtractor.entityId(msg) ne null =>
+          (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
+      }, extractShardId = msg => messageExtractor.shardId(msg))
 
   }
 
@@ -728,7 +728,7 @@ private[akka] class ClusterShardingGuardian extends Actor {
 
   private def replicator(settings: ClusterShardingSettings): ActorRef = {
     if (settings.stateStoreMode == ClusterShardingSettings.StateStoreModeDData ||
-        settings.stateStoreMode == ClusterShardingSettings.RememberEntitiesStoreCustom) {
+      settings.stateStoreMode == ClusterShardingSettings.RememberEntitiesStoreCustom) {
       // one Replicator per role
       replicatorByRole.get(settings.role) match {
         case Some(ref) => ref
@@ -747,13 +747,13 @@ private[akka] class ClusterShardingGuardian extends Actor {
 
   def receive: Receive = {
     case Start(
-        typeName,
-        entityProps,
-        settings,
-        extractEntityId,
-        extractShardId,
-        allocationStrategy,
-        handOffStopMessage) =>
+          typeName,
+          entityProps,
+          settings,
+          extractEntityId,
+          extractShardId,
+          allocationStrategy,
+          handOffStopMessage) =>
       try {
         import settings.role
         import settings.tuningParameters.coordinatorFailureBackoff

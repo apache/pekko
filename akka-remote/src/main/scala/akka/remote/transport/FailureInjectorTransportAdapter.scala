@@ -106,9 +106,8 @@ private[remote] class FailureInjectorTransportAdapter(
   protected def interceptAssociate(remoteAddress: Address, statusPromise: Promise[AssociationHandle]): Unit = {
     // Association is simulated to be failed if there was either an inbound or outbound message drop
     if (shouldDropInbound(remoteAddress, (), "interceptAssociate") || shouldDropOutbound(
-          remoteAddress,
-          (),
-          "interceptAssociate"))
+        remoteAddress, (),
+        "interceptAssociate"))
       statusPromise.failure(new FailureInjectorException("Simulated failure of association to " + remoteAddress))
     else
       statusPromise.completeWith(wrappedTransport.associate(remoteAddress).map { handle =>
@@ -118,7 +117,7 @@ private[remote] class FailureInjectorTransportAdapter(
   }
 
   def notify(ev: AssociationEvent): Unit = ev match {
-    case InboundAssociation(handle) if shouldDropInbound(handle.remoteAddress, ev, "notify") => //Ignore
+    case InboundAssociation(handle) if shouldDropInbound(handle.remoteAddress, ev, "notify") => // Ignore
     case _ =>
       upstreamListener match {
         case Some(listener) => listener.notify(interceptInboundAssociation(ev))

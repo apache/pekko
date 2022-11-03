@@ -82,7 +82,7 @@ abstract class MultiDcSunnyWeatherSpec extends MultiNodeClusterSpec(MultiDcSunny
       val expectedBetaHeartbeaterRoles = membersAsRoles(expectedBetaHeartbeaterNodes)
 
       val expectedNoActiveHeartbeatSenderRoles = roles.toSet -- (expectedAlphaHeartbeaterRoles.union(
-          expectedBetaHeartbeaterRoles))
+        expectedBetaHeartbeaterRoles))
 
       enterBarrier("found-expectations")
 

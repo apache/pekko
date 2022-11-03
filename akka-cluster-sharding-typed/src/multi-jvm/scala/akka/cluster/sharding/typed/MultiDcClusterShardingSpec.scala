@@ -109,10 +109,10 @@ abstract class MultiDcClusterShardingSpec
   "be able to message cross dc via proxy, defined with Entity" in {
     runOn(first, second) {
       val system = typedSystem
-      //#proxy-dc
+      // #proxy-dc
       val proxy: ActorRef[ShardingEnvelope[Command]] =
         ClusterSharding(system).init(Entity(typeKey)(_ => MultiDcPinger()).withDataCenter("dc2"))
-      //#proxy-dc
+      // #proxy-dc
       val probe = TestProbe[Pong]()
       proxy ! ShardingEnvelope(entityId, Ping(probe.ref))
       probe.expectMessage(remainingOrDefault, Pong("dc2"))
@@ -123,12 +123,12 @@ abstract class MultiDcClusterShardingSpec
   "be able to message cross dc via proxy, defined with EntityRef" in {
     runOn(first, second) {
       val system = typedSystem
-      //#proxy-dc-entityref
+      // #proxy-dc-entityref
       // it must still be started before usage
       ClusterSharding(system).init(Entity(typeKey)(_ => MultiDcPinger()).withDataCenter("dc2"))
 
       val entityRef = ClusterSharding(system).entityRefFor(typeKey, entityId, "dc2")
-      //#proxy-dc-entityref
+      // #proxy-dc-entityref
 
       val probe = TestProbe[Pong]()
       entityRef ! Ping(probe.ref)

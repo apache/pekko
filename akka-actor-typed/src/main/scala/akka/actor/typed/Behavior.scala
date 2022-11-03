@@ -133,7 +133,6 @@ object Behavior {
      * The `ClassTag` for `Outer` ensures that only messages of this class or a subclass thereof will be
      * intercepted. Other message types (e.g. a private protocol) will bypass
      * the interceptor and be continue to the inner behavior untouched.
-     *
      */
     def transformMessages[Outer: ClassTag](matcher: PartialFunction[Outer, Inner]): Behavior[Outer] =
       BehaviorImpl.transformMessages(behavior, matcher)

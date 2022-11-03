@@ -143,7 +143,6 @@ object ConsistentHashingRoutingLogic {
  *   use for the consistent hash key
  *
  * @param system the actor system hosting this router
- *
  */
 @SerialVersionUID(1L)
 final case class ConsistentHashingRoutingLogic(
@@ -347,7 +346,7 @@ final case class ConsistentHashingPool(
    */
   override def withFallback(other: RouterConfig): RouterConfig = other match {
     case _: FromConfig | _: NoRouter        => this.overrideUnsetConfig(other)
-    case otherRouter: ConsistentHashingPool => (copy(hashMapping = otherRouter.hashMapping)).overrideUnsetConfig(other)
+    case otherRouter: ConsistentHashingPool => copy(hashMapping = otherRouter.hashMapping).overrideUnsetConfig(other)
     case _                                  => throw new IllegalArgumentException("Expected ConsistentHashingPool, got [%s]".format(other))
   }
 

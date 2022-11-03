@@ -255,8 +255,8 @@ abstract class StreamRefSpec extends MultiNodeClusterSpec(StreamRefSpec) with Im
         // and it triggered the subscription timeout. Therefore we must wait more than the
         // the subscription timeout for a failure
         val timeout = system.settings.config
-            .getDuration("akka.stream.materializer.stream-ref.subscription-timeout")
-            .asScala + 2.seconds
+          .getDuration("akka.stream.materializer.stream-ref.subscription-timeout")
+          .asScala + 2.seconds
         streamLifecycle3.expectMsg(timeout, "failed-system-42-tmp")
       }
 

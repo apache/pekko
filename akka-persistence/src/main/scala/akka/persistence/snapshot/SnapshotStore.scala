@@ -123,7 +123,7 @@ trait SnapshotStore extends Actor with ActorLogging {
   private def tryReceivePluginInternal(evt: Any): Unit =
     if (receivePluginInternal.isDefinedAt(evt)) receivePluginInternal(evt)
 
-  //#snapshot-store-plugin-api
+  // #snapshot-store-plugin-api
 
   /**
    * Plugin API: asynchronously loads a snapshot.
@@ -176,5 +176,5 @@ trait SnapshotStore extends Actor with ActorLogging {
    * handle additional messages for implementing advanced features
    */
   def receivePluginInternal: Actor.Receive = Actor.emptyBehavior
-  //#snapshot-store-plugin-api
+  // #snapshot-store-plugin-api
 }

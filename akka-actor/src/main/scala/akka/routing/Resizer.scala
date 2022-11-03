@@ -153,7 +153,7 @@ case class DefaultResizer(
   if (messagesPerResize <= 0)
     throw new IllegalArgumentException("messagesPerResize must be > 0, was [%s]".format(messagesPerResize))
 
-  def isTimeForResize(messageCounter: Long): Boolean = (messageCounter % messagesPerResize == 0)
+  def isTimeForResize(messageCounter: Long): Boolean = messageCounter % messagesPerResize == 0
 
   override def resize(currentRoutees: immutable.IndexedSeq[Routee]): Int =
     capacity(currentRoutees)
@@ -275,7 +275,7 @@ private[akka] final class ResizablePoolCell(
 
   override def sendMessage(envelope: Envelope): Unit = {
     if (!routerConfig.isManagementMessage(envelope.message) &&
-        resizer.isTimeForResize(resizeCounter.getAndIncrement()) && resizeInProgress.compareAndSet(false, true)) {
+      resizer.isTimeForResize(resizeCounter.getAndIncrement()) && resizeInProgress.compareAndSet(false, true)) {
       super.sendMessage(Envelope(ResizablePoolActor.Resize, self, system))
     }
 
@@ -283,18 +283,19 @@ private[akka] final class ResizablePoolCell(
   }
 
   private[akka] def resize(initial: Boolean): Unit = {
-    if (resizeInProgress.get || initial) try {
-      tryReportMessageCount()
-      val requestedCapacity = resizer.resize(router.routees)
-      if (requestedCapacity > 0) {
-        val newRoutees = Vector.fill(requestedCapacity)(pool.newRoutee(routeeProps, this))
-        addRoutees(newRoutees)
-      } else if (requestedCapacity < 0) {
-        val currentRoutees = router.routees
-        val abandon = currentRoutees.drop(currentRoutees.length + requestedCapacity)
-        removeRoutees(abandon, stopChild = true)
-      }
-    } finally resizeInProgress.set(false)
+    if (resizeInProgress.get || initial)
+      try {
+        tryReportMessageCount()
+        val requestedCapacity = resizer.resize(router.routees)
+        if (requestedCapacity > 0) {
+          val newRoutees = Vector.fill(requestedCapacity)(pool.newRoutee(routeeProps, this))
+          addRoutees(newRoutees)
+        } else if (requestedCapacity < 0) {
+          val currentRoutees = router.routees
+          val abandon = currentRoutees.drop(currentRoutees.length + requestedCapacity)
+          removeRoutees(abandon, stopChild = true)
+        }
+      } finally resizeInProgress.set(false)
   }
 
   /**
@@ -303,7 +304,7 @@ private[akka] final class ResizablePoolCell(
   private def tryReportMessageCount(): Unit = {
     resizer match {
       case r: OptimalSizeExploringResizer => r.reportMessageCount(router.routees, resizeCounter.get())
-      case _                              => //ignore
+      case _                              => // ignore
     }
   }
 

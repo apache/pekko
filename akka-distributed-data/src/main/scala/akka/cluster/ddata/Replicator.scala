@@ -877,7 +877,7 @@ object Replicator {
     def key: Key[A]
     def request: Option[Any]
 
-    /** Java API*/
+    /** Java API */
     def getRequest: Optional[Any] = Optional.ofNullable(request.orNull)
   }
   final case class DeleteSuccess[A <: ReplicatedData](key: Key[A], request: Option[Any]) extends DeleteResponse[A]
@@ -1111,10 +1111,10 @@ object Replicator {
         extends ReplicatorMessage
         with DestinationSystemUid {
       override def toString: String =
-        (digests
+        digests
           .map {
             case (key, bytes) => key + " -> " + bytes.map(byte => f"$byte%02x").mkString("")
-          })
+          }
           .mkString("Status(", ", ", ")")
     }
     final case class Gossip(
@@ -1379,7 +1379,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     new PayloadSizeAggregator(log, sizeExceeding, maxFrameSize)
   }
 
-  //Start periodic gossip to random nodes in cluster
+  // Start periodic gossip to random nodes in cluster
   import context.dispatcher
   val gossipTask = context.system.scheduler.scheduleWithFixedDelay(gossipInterval, gossipInterval, self, GossipTick)
   val notifyTask =
@@ -2149,8 +2149,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         }
         val chunk = (statusCount % totChunks).toInt
         val status = Status(dataEntries.collect {
-          case (key, (_, _)) if math.abs(key.hashCode % totChunks) == chunk => (key, getDigest(key))
-        }, chunk, totChunks, toSystemUid, selfFromSystemUid)
+            case (key, (_, _)) if math.abs(key.hashCode % totChunks) == chunk => (key, getDigest(key))
+          }, chunk, totChunks, toSystemUid, selfFromSystemUid)
         to ! status
       }
     }
@@ -2167,7 +2167,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       log.debug(
         "Received gossip status from [{}], chunk [{}] of [{}] containing [{}].",
         replyTo.path.address,
-        (chunk + 1),
+        chunk + 1,
         totChunks,
         otherDigests.keys.mkString(", "))
 
@@ -2298,7 +2298,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   }
 
   def hasSubscriber(subscriber: ActorRef): Boolean =
-    subscribers.exists { case (_, s)    => s.contains(subscriber) } ||
+    subscribers.exists { case (_, s) => s.contains(subscriber) } ||
     newSubscribers.exists { case (_, s) => s.contains(subscriber) }
 
   def receiveTerminated(ref: ActorRef): Unit = {
@@ -2828,7 +2828,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       replyTo.tell(replyMsg, context.parent)
       context.stop(self)
     case _: ReadResult =>
-      //collect late replies
+      // collect late replies
       remaining -= sender().path.address
     case SendToSecondary =>
     case ReceiveTimeout  =>

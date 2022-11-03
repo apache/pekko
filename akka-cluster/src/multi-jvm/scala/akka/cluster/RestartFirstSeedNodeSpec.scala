@@ -79,12 +79,12 @@ abstract class RestartFirstSeedNodeSpec
       // we must transfer its address to seed2 and seed3
       runOn(seed2, seed3) {
         system.actorOf(Props(new Actor {
-          def receive = {
-            case a: Address =>
-              seedNode1Address = a
-              sender() ! "ok"
-          }
-        }).withDeploy(Deploy.local), name = "address-receiver")
+            def receive = {
+              case a: Address =>
+                seedNode1Address = a
+                sender() ! "ok"
+            }
+          }).withDeploy(Deploy.local), name = "address-receiver")
         enterBarrier("seed1-address-receiver-ready")
       }
 

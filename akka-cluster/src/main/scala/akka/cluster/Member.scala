@@ -43,7 +43,7 @@ class Member private[cluster] (
   }
   override def toString: String = {
     s"Member($address, $status${if (dataCenter == ClusterSettings.DefaultDataCenter) "" else s", $dataCenter"}${if (appVersion == Version.Zero) ""
-    else s", $appVersion"})"
+      else s", $appVersion"})"
   }
 
   def hasRole(role: String): Boolean = roles.contains(role)

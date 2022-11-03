@@ -82,11 +82,11 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
       val probe2 = TestProbe()(sys2)
       Cluster(sys2).join(node(first).address)
       awaitAssert({
-        Cluster(system).state.members.size should ===(4)
-        Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
-        Cluster(sys2).state.members.size should ===(4)
-        Cluster(sys2).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
-      }, 10.seconds)
+          Cluster(system).state.members.size should ===(4)
+          Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
+          Cluster(sys2).state.members.size should ===(4)
+          Cluster(sys2).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
+        }, 10.seconds)
       enterBarrier("joined")
 
       within(5.seconds) {
@@ -170,9 +170,9 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
         cluster3.join(node(first).address)
 
         awaitAssert({
-          cluster.state.members.exists(m =>
-            m.uniqueAddress == cluster3.selfUniqueAddress && m.status == MemberStatus.Up) should ===(true)
-        }, 10.seconds)
+            cluster.state.members.exists(m =>
+              m.uniqueAddress == cluster3.selfUniqueAddress && m.status == MemberStatus.Up) should ===(true)
+          }, 10.seconds)
 
         within(10.seconds) {
           var values = Set.empty[Int]
@@ -189,9 +189,9 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
 
         // all must at least have seen it as joining
         awaitAssert({
-          cluster3.state.members.size should ===(4)
-          cluster3.state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
-        }, 10.seconds)
+            cluster3.state.members.size should ===(4)
+            cluster3.state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
+          }, 10.seconds)
 
         // after merging with others
         replicator3 ! Get(KeyA, ReadAll(remainingOrDefault))

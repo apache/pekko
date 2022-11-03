@@ -355,7 +355,7 @@ class AkkaProtocolSpec extends AkkaSpec("""akka.actor.provider = remote """) wit
 
       wrappedHandle.readHandlerPromise.success(ActorHandleEventListener(testActor))
 
-      //wait for one heartbeat
+      // wait for one heartbeat
       awaitCond(lastActivityIsHeartbeat(registry))
 
       failureDetector.isAvailable = false

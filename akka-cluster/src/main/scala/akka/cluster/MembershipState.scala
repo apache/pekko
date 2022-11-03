@@ -69,11 +69,10 @@ import akka.util.ccompat._
     // only assigned once.
     def memberHinderingConvergenceExists = {
       val memberStatus = if (firstMemberInDc) convergenceMemberStatus + Joining + WeaklyUp else convergenceMemberStatus
-      members.exists(
-        member =>
-          (firstMemberInDc || member.dataCenter == selfDc) &&
-          memberStatus(member.status) &&
-          !(latestGossip.seenByNode(member.uniqueAddress) || exitingConfirmed(member.uniqueAddress)))
+      members.exists(member =>
+        (firstMemberInDc || member.dataCenter == selfDc) &&
+        memberStatus(member.status) &&
+        !(latestGossip.seenByNode(member.uniqueAddress) || exitingConfirmed(member.uniqueAddress)))
     }
 
     // Find cluster members in the data center that are unreachable from other members of the data center
@@ -174,11 +173,10 @@ import akka.util.ccompat._
     val reachableMembersInDc =
       if (reachability.isAllReachable) mbrs.filter(m => m.dataCenter == selfDc && m.status != Down)
       else
-        mbrs.filter(
-          m =>
-            m.dataCenter == selfDc &&
-            m.status != Down &&
-            (reachability.isReachable(m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress))
+        mbrs.filter(m =>
+          m.dataCenter == selfDc &&
+          m.status != Down &&
+          (reachability.isReachable(m.uniqueAddress) || m.uniqueAddress == selfUniqueAddress))
     if (reachableMembersInDc.isEmpty) None
     else
       reachableMembersInDc

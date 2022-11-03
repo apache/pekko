@@ -55,7 +55,7 @@ private[remote] final class CompressionTable[T](
       val mit = _dictionary.entrySet().iterator
       while (i < tups.length) {
         val entry = mit.next()
-        tups(i) = (entry.getKey -> entry.getValue.intValue())
+        tups(i) = entry.getKey -> entry.getValue.intValue()
         i += 1
       }
       util.Arrays.sort(tups, CompressionTable.compareBy2ndValue[T])

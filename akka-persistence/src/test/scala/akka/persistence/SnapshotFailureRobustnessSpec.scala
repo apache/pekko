@@ -131,7 +131,7 @@ class SnapshotFailureRobustnessSpec
         expectMsgPF() {
           case (SnapshotMetadata(`persistenceId`, 1, timestamp), state) =>
             state should ===("blahonga")
-            timestamp should be > (0L)
+            timestamp should be > 0L
         }
         expectMsg("kablama-2")
         expectMsg(RecoveryCompleted)

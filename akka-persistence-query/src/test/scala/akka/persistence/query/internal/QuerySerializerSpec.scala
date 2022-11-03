@@ -60,7 +60,7 @@ class QuerySerializerSpec extends AkkaSpec {
     }
 
     "serialize EventEnvelope with TimeBasedUUID Offset" in {
-      //2019-12-16T15:32:36.148Z[UTC]
+      // 2019-12-16T15:32:36.148Z[UTC]
       val uuidString = "49225740-2019-11ea-a752-ffae2393b6e4"
       val timeUuidOffset = TimeBasedUUID(UUID.fromString(uuidString))
       verifySerialization(
@@ -79,7 +79,7 @@ class QuerySerializerSpec extends AkkaSpec {
     }
 
     "serialize TimeBasedUUID Offset" in {
-      //2019-12-16T15:32:36.148Z[UTC]
+      // 2019-12-16T15:32:36.148Z[UTC]
       val uuidString = "49225740-2019-11ea-a752-ffae2393b6e4"
       val timeUuidOffset = TimeBasedUUID(UUID.fromString(uuidString))
       verifySerialization(timeUuidOffset)

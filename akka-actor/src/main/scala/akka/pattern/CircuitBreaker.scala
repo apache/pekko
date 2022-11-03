@@ -353,7 +353,6 @@ class CircuitBreaker(
    * @param body Call needing protected
    * @return [[scala.concurrent.Future]] containing the call result or a
    *   `scala.concurrent.TimeoutException` if the call timed out
-   *
    */
   def withCircuitBreaker[T](body: => Future[T]): Future[T] =
     currentState.invoke(body, failureFn)
@@ -408,8 +407,8 @@ class CircuitBreaker(
       body: Callable[CompletionStage[T]],
       defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
     FutureConverters.toJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-      override def call(): Future[T] = FutureConverters.toScala(body.call())
-    }, defineFailureFn))
+        override def call(): Future[T] = FutureConverters.toScala(body.call())
+      }, defineFailureFn))
 
   /**
    * Wraps invocations of synchronous calls that need to be protected.
@@ -925,20 +924,17 @@ class CircuitBreaker(
 
     /**
      * Invoked when call succeeds
-     *
      */
     def callSucceeds(): Unit
 
     /**
      * Invoked when call fails
-     *
      */
     def callFails(): Unit
 
     /**
      * Invoked on the transitioned-to state during transition.  Notifies listeners after invoking subclass template
      * method _enter
-     *
      */
     final def enter(): Unit = {
       _enter()
@@ -947,7 +943,6 @@ class CircuitBreaker(
 
     /**
      * Template method for concrete traits
-     *
      */
     def _enter(): Unit
   }

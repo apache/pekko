@@ -368,7 +368,7 @@ import akka.util.ByteString
     if (tracing)
       log.debug(
         s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer
-          .position()}")
+            .position()}")
 
     if (lastHandshakeStatus == FINISHED) handshakeFinished()
     runDelegatedTasks()
@@ -402,7 +402,7 @@ import akka.util.ByteString
     if (tracing)
       log.debug(
         s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer
-          .position()}")
+            .position()}")
     runDelegatedTasks()
     result.getStatus match {
       case OK =>

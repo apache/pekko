@@ -715,7 +715,7 @@ class EventSourcedBehaviorSpec
       firstThree.size shouldBe 3
       val others = queries.currentPersistenceIds(Some(firstThree.last), Long.MaxValue).runWith(Sink.seq).futureValue
 
-      firstThree ++ others should contain theSameElementsInOrderAs (all)
+      firstThree ++ others should contain theSameElementsInOrderAs all
     }
 
     def watcher(toWatch: ActorRef[_]): TestProbe[String] = {

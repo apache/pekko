@@ -42,7 +42,7 @@ object Slf4jLoggingFilterSpec {
         sender() ! LoggerInitialized
       case SetTarget(ref) =>
         target = Some(ref)
-        ref ! ("OK")
+        ref ! "OK"
       case event: LogEvent =>
         println("# event: " + event)
         target.foreach { _ ! event }

@@ -376,10 +376,10 @@ object Actor {
   /**
    * Type alias representing a Receive-expression for Akka Actors.
    */
-  //#receive
+  // #receive
   type Receive = PartialFunction[Any, Unit]
 
-  //#receive
+  // #receive
 
   /**
    * emptyBehavior is a Receive-expression that matches no messages at all, ever.
@@ -503,7 +503,7 @@ trait Actor {
    * self ! message
    * </pre>
    */
-  implicit final val self: ActorRef = context.self //MUST BE A VAL, TRUST ME
+  implicit final val self: ActorRef = context.self // MUST BE A VAL, TRUST ME
 
   /**
    * The reference sender Actor of the last received message.
@@ -519,9 +519,9 @@ trait Actor {
    * Scala API: This defines the initial actor behavior, it must return a partial function
    * with the actor logic.
    */
-  //#receive
+  // #receive
   def receive: Actor.Receive
-  //#receive
+  // #receive
 
   /**
    * INTERNAL API.
@@ -585,10 +585,10 @@ trait Actor {
    * Empty default implementation.
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
-  //#lifecycle-hooks
+  // #lifecycle-hooks
   def preStart(): Unit = ()
 
-  //#lifecycle-hooks
+  // #lifecycle-hooks
 
   /**
    * User overridable callback.
@@ -597,10 +597,10 @@ trait Actor {
    * Empty default implementation.
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
-  //#lifecycle-hooks
+  // #lifecycle-hooks
   def postStop(): Unit = ()
 
-  //#lifecycle-hooks
+  // #lifecycle-hooks
 
   /**
    * Scala API: User overridable callback: '''By default it disposes of all children and then calls `postStop()`.'''
@@ -611,7 +611,7 @@ trait Actor {
    * up of resources before Actor is terminated.
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
-  //#lifecycle-hooks
+  // #lifecycle-hooks
   def preRestart(@unused reason: Throwable, @unused message: Option[Any]): Unit = {
     context.children.foreach { child =>
       context.unwatch(child)
@@ -620,7 +620,7 @@ trait Actor {
     postStop()
   }
 
-  //#lifecycle-hooks
+  // #lifecycle-hooks
 
   /**
    * User overridable callback: By default it calls `preStart()`.
@@ -629,11 +629,11 @@ trait Actor {
    * Is called right AFTER restart on the newly created Actor to allow reinitialization after an Actor crash.
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
-  //#lifecycle-hooks
+  // #lifecycle-hooks
   def postRestart(@unused reason: Throwable): Unit = {
     preStart()
   }
-  //#lifecycle-hooks
+  // #lifecycle-hooks
 
   /**
    * User overridable callback.

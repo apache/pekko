@@ -34,7 +34,7 @@ import scala.util.Try
 @InternalApi private[akka] object Supervisor {
   def apply[T, Thr <: Throwable: ClassTag](initialBehavior: Behavior[T], strategy: SupervisorStrategy): Behavior[T] = {
     if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[_]] || initialBehavior
-          .isInstanceOf[javadsl.AbstractBehavior[_]]) {
+        .isInstanceOf[javadsl.AbstractBehavior[_]]) {
       throw new IllegalArgumentException(
         "The supervised Behavior must not be a AbstractBehavior instance directly," +
         "because a different instance should be created when it is restarted. Wrap in Behaviors.setup.")
@@ -303,18 +303,20 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
   override protected def handleSignalException(
       ctx: TypedActorContext[Any],
       target: SignalTarget[T]): Catcher[Behavior[T]] = {
-    handleException(ctx, signalRestart = {
-      case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
-      case _                                   => target(ctx, PreRestart)
-    })
+    handleException(ctx,
+      signalRestart = {
+        case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
+        case _                                   => target(ctx, PreRestart)
+      })
   }
   override protected def handleReceiveException(
       ctx: TypedActorContext[Any],
       target: ReceiveTarget[T]): Catcher[Behavior[T]] = {
-    handleException(ctx, signalRestart = {
-      case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
-      case _                                   => target.signalRestart(ctx)
-    })
+    handleException(ctx,
+      signalRestart = {
+        case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
+        case _                                   => target.signalRestart(ctx)
+      })
   }
 
   private def handleException(ctx: TypedActorContext[Any], signalRestart: Throwable => Unit): Catcher[Behavior[T]] = {
@@ -391,10 +393,11 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
         case _ => newBehavior
       }
       nextBehavior.narrow
-    } catch handleException(ctx, signalRestart = {
-      case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
-      case _                                   => ()
-    })
+    } catch handleException(ctx,
+        signalRestart = {
+          case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
+          case _                                   => ()
+        })
   }
 
   private def stopChildren(ctx: TypedActorContext[_], children: Set[ActorRef[Nothing]]): Unit = {

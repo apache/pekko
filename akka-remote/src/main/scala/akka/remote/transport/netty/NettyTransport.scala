@@ -488,7 +488,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
     bootstrap
   }
 
-  override def isResponsibleFor(address: Address): Boolean = true //TODO: Add configurable subnet filtering
+  override def isResponsibleFor(address: Address): Boolean = true // TODO: Add configurable subnet filtering
 
   // TODO: This should be factored out to an async (or thread-isolated) name lookup service #2960
   def addressToSocketAddress(addr: Address): Future[InetSocketAddress] = addr match {
@@ -527,7 +527,8 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
           Some(settings.Hostname),
           port) match {
           case Some(address) =>
-            addressFromSocketAddress(newServerChannel.getLocalAddress, schemeIdentifier, system.name, None, None) match {
+            addressFromSocketAddress(newServerChannel.getLocalAddress, schemeIdentifier, system.name, None,
+              None) match {
               case Some(address) => boundTo = address
               case None =>
                 throw new NettyTransportException(

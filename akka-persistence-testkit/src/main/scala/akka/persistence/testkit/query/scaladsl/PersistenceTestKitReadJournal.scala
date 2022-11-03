@@ -107,11 +107,12 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
       case _ =>
         throw new UnsupportedOperationException("Offsets not supported for persistence test kit currentEventsByTag yet")
     }
-    val prs = storage.tryRead(entityType, repr => {
-      val pid = repr.persistenceId
-      val slice = persistence.sliceForPersistenceId(pid)
-      PersistenceId.extractEntityType(pid) == entityType && slice >= minSlice && slice <= maxSlice
-    })
+    val prs = storage.tryRead(entityType,
+      repr => {
+        val pid = repr.persistenceId
+        val slice = persistence.sliceForPersistenceId(pid)
+        PersistenceId.extractEntityType(pid) == entityType && slice >= minSlice && slice <= maxSlice
+      })
     Source(prs).map { pr =>
       val slice = persistence.sliceForPersistenceId(pr.persistenceId)
       new typed.EventEnvelope[Event](

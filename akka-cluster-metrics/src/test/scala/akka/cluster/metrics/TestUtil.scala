@@ -107,7 +107,7 @@ trait MetricsCollectorFactory { this: AkkaSpec =>
   def createMetricsCollector: MetricsCollector =
     try {
       new SigarMetricsCollector(selfAddress, defaultDecayFactor, new Sigar())
-      //new SigarMetricsCollector(selfAddress, defaultDecayFactor, SimpleSigarProvider().createSigarInstance)
+      // new SigarMetricsCollector(selfAddress, defaultDecayFactor, SimpleSigarProvider().createSigarInstance)
     } catch {
       case e: Throwable =>
         log.warning("Sigar failed to load. Using JMX. Reason: " + e.toString)
@@ -134,7 +134,6 @@ trait MetricsCollectorFactory { this: AkkaSpec =>
 }
 
 /**
- *
  */
 class MockitoSigarMetricsCollector(system: ActorSystem)
     extends SigarMetricsCollector(

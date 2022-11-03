@@ -308,7 +308,7 @@ class ScanningEventBusSpec extends EventBusSpec("ScanningEventBus") {
 
   def createNewEventBus(): BusType = new MyScanningEventBus
 
-  def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
+  def createEvents(numberOfEvents: Int) = 0 until numberOfEvents
 
   def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
 
@@ -339,7 +339,7 @@ class LookupEventBusSpec extends EventBusSpec("LookupEventBus") {
 
   def createNewEventBus(): BusType = new MyLookupEventBus
 
-  def createEvents(numberOfEvents: Int) = (0 until numberOfEvents)
+  def createEvents(numberOfEvents: Int) = 0 until numberOfEvents
 
   def createSubscriber(pipeTo: ActorRef) = new Procedure[Int] { def apply(i: Int) = pipeTo ! i }
 

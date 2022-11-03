@@ -13,7 +13,7 @@ import scala.collection.immutable
   "2.5.5")
 class FanInShape1N[-T0, -T1, +O](val n: Int, _init: FanInShape.Init[O]) extends FanInShape[O](_init) {
 
-  //ports get added to `FanInShape.inlets` as a side-effect of calling `newInlet`
+  // ports get added to `FanInShape.inlets` as a side-effect of calling `newInlet`
   val in0: Inlet[T0 @uncheckedVariance] = newInlet[T0]("in0")
   for (i <- 1 until n) newInlet[T1](s"in$i")
 
@@ -33,8 +33,8 @@ class FanInShape1N[-T0, -T1, +O](val n: Int, _init: FanInShape.Init[O]) extends 
 
   // cannot deprecate a lazy val because of genjavadoc problem https://github.com/typesafehub/genjavadoc/issues/85
   private lazy val _in1Seq: immutable.IndexedSeq[Inlet[T1 @uncheckedVariance]] =
-    inlets.tail //head is in0
-    .toIndexedSeq.asInstanceOf[immutable.IndexedSeq[Inlet[T1]]]
+    inlets.tail // head is in0
+      .toIndexedSeq.asInstanceOf[immutable.IndexedSeq[Inlet[T1]]]
 
   def in(n: Int): Inlet[T1 @uncheckedVariance] = {
     require(n > 0, "n must be > 0")

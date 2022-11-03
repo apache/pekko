@@ -27,8 +27,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](2))
           Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)        ~> Sink.fromSubscriber(c1)
+          balance.out(1)        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -53,8 +53,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(Sink.asPublisher[Int](false)) { implicit b => p2Sink =>
           val balance = b.add(Balance[Int](2, waitForAllDownstreams = true))
           Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(s1)
-          balance.out(1) ~> p2Sink
+          balance.out(0)        ~> Sink.fromSubscriber(s1)
+          balance.out(1)        ~> p2Sink
           ClosedShape
         })
         .run()
@@ -86,9 +86,9 @@ class GraphBalanceSpec extends StreamSpec("""
           implicit b => (p2Sink, p3Sink) =>
             val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
             Source(List(1, 2, 3)) ~> balance.in
-            balance.out(0) ~> Sink.fromSubscriber(s1)
-            balance.out(1) ~> p2Sink
-            balance.out(2) ~> p3Sink
+            balance.out(0)        ~> Sink.fromSubscriber(s1)
+            balance.out(1)        ~> p2Sink
+            balance.out(2)        ~> p3Sink
             ClosedShape
         })
         .run()
@@ -136,7 +136,7 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(sink, sink, sink, sink, sink)(Tuple5.apply) {
           implicit b => (f1, f2, f3, f4, f5) =>
             val balance = b.add(Balance[Int](5, waitForAllDownstreams = true))
-            Source(0 to 14) ~> balance.in
+            Source(0 to 14)            ~> balance.in
             balance.out(0).grouped(15) ~> f1
             balance.out(1).grouped(15) ~> f2
             balance.out(2).grouped(15) ~> f3
@@ -157,9 +157,9 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.createGraph(outputs, outputs, outputs)(List(_, _, _)) { implicit b => (o1, o2, o3) =>
           val balance = b.add(Balance[Int](3, waitForAllDownstreams = true))
           Source.repeat(1).take(numElementsForSink * 3) ~> balance.in
-          balance.out(0) ~> o1
-          balance.out(1) ~> o2
-          balance.out(2) ~> o3
+          balance.out(0)                                ~> o1
+          balance.out(1)                                ~> o2
+          balance.out(2)                                ~> o3
           ClosedShape
         })
         .run()
@@ -206,8 +206,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](2))
           Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)        ~> Sink.fromSubscriber(c1)
+          balance.out(1)        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -230,8 +230,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](2))
           Source(List(1, 2, 3)) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)        ~> Sink.fromSubscriber(c1)
+          balance.out(1)        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -255,8 +255,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](2))
           Source.fromPublisher(p1.getPublisher) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)                        ~> Sink.fromSubscriber(c1)
+          balance.out(1)                        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -288,8 +288,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(new Balance[Int](2, waitForAllDownstreams = false, eagerCancel = true))
           Source.fromPublisher(p1.getPublisher) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)                        ~> Sink.fromSubscriber(c1)
+          balance.out(1)                        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -321,8 +321,8 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](2))
           Source.fromPublisher(p1.getPublisher) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
+          balance.out(0)                        ~> Sink.fromSubscriber(c1)
+          balance.out(1)                        ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()
@@ -355,9 +355,9 @@ class GraphBalanceSpec extends StreamSpec("""
         .fromGraph(GraphDSL.create() { implicit b =>
           val balance = b.add(Balance[Int](3))
           Source.fromPublisher(p1.getPublisher) ~> balance.in
-          balance.out(0) ~> Sink.fromSubscriber(c1)
-          balance.out(1) ~> Sink.fromSubscriber(c2)
-          balance.out(2) ~> Sink.fromSubscriber(c3)
+          balance.out(0)                        ~> Sink.fromSubscriber(c1)
+          balance.out(1)                        ~> Sink.fromSubscriber(c2)
+          balance.out(2)                        ~> Sink.fromSubscriber(c3)
 
           ClosedShape
         })

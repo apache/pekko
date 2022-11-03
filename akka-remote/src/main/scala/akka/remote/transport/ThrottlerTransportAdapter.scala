@@ -115,9 +115,9 @@ object ThrottlerTransportAdapter {
       extends ThrottleMode {
 
     private def isAvailable(nanoTimeOfSend: Long, tokens: Int): Boolean =
-      if ((tokens > capacity && availableTokens > 0)) {
+      if (tokens > capacity && availableTokens > 0) {
         true // Allow messages larger than capacity through, it will be recorded as negative tokens
-      } else min((availableTokens + tokensGenerated(nanoTimeOfSend)), capacity) >= tokens
+      } else min(availableTokens + tokensGenerated(nanoTimeOfSend), capacity) >= tokens
 
     override def tryConsumeTokens(nanoTimeOfSend: Long, tokens: Int): (ThrottleMode, Boolean) = {
       if (isAvailable(nanoTimeOfSend, tokens))
@@ -375,14 +375,14 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       internalTarget.sendSystemMessage(Watch(internalTarget, ref))
       target.tell(mode, ref)
       ref.result.future.transform({
-        case Terminated(t) if t.path == target.path =>
-          SetThrottleAck
-        case SetThrottleAck =>
-          internalTarget.sendSystemMessage(Unwatch(target, ref))
-          SetThrottleAck
-        case _ =>
-          throw new IllegalArgumentException() // won't happen, compiler exhaustiveness check pleaser
-      }, t => { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ExecutionContexts.parasitic)
+          case Terminated(t) if t.path == target.path =>
+            SetThrottleAck
+          case SetThrottleAck =>
+            internalTarget.sendSystemMessage(Unwatch(target, ref))
+            SetThrottleAck
+          case _ =>
+            throw new IllegalArgumentException() // won't happen, compiler exhaustiveness check pleaser
+        }, t => { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ExecutionContexts.parasitic)
     }
   }
 
@@ -490,14 +490,15 @@ private[transport] class ThrottledAssociation(
     case Event(mode: ThrottleMode, ExposedHandle(exposedHandle)) =>
       inboundThrottleMode = mode
       try if (mode == Blackhole) {
-        throttledMessages = Queue.empty[ByteString]
-        exposedHandle.disassociate("the association was blackholed", log)
-        stop()
-      } else {
-        associationHandler.notify(InboundAssociation(exposedHandle))
-        exposedHandle.readHandlerPromise.future.map(Listener(_)).pipeTo(self)
-        goto(WaitUpstreamListener)
-      } finally sender() ! SetThrottleAck
+          throttledMessages = Queue.empty[ByteString]
+          exposedHandle.disassociate("the association was blackholed", log)
+          stop()
+        } else {
+          associationHandler.notify(InboundAssociation(exposedHandle))
+          exposedHandle.readHandlerPromise.future.map(Listener(_)).pipeTo(self)
+          goto(WaitUpstreamListener)
+        }
+      finally sender() ! SetThrottleAck
   }
 
   when(WaitUpstreamListener) {

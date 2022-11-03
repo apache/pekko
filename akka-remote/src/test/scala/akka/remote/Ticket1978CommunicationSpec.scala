@@ -76,7 +76,7 @@ object Configuration {
     assert(ports.size == 2)
     val (localPort, remotePort) = (ports(0), ports(1))
     try {
-      //if (true) throw new IllegalArgumentException("Ticket1978*Spec isn't enabled")
+      // if (true) throw new IllegalArgumentException("Ticket1978*Spec isn't enabled")
 
       val config =
         ConfigFactory.parseString(conf.format(localPort, trustStore, keyStore, cipher, enabled.mkString(", ")))
@@ -145,11 +145,11 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
   def preCondition: Boolean = true
 
-  ("-") must {
+  "-" must {
     if (cipherConfig.runTest && preCondition) {
       other.actorOf(Props(new Actor {
-        def receive = { case ("ping", x) => sender() ! ((("pong", x), sender())) }
-      }), "echo")
+          def receive = { case ("ping", x) => sender() ! ((("pong", x), sender())) }
+        }), "echo")
 
       val otherAddress =
         other.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport.defaultAddress

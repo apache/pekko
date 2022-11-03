@@ -70,12 +70,12 @@ object ByteIterator {
     final override def clone: ByteArrayIterator = new ByteArrayIterator(array, from, until)
 
     final override def take(n: Int): this.type = {
-      if (n < len) until = { if (n > 0) (from + n) else from }
+      if (n < len) until = { if (n > 0) from + n else from }
       this
     }
 
     final override def drop(n: Int): this.type = {
-      if (n > 0) from = { if (n < len) (from + n) else until }
+      if (n > 0) from = { if (n < len) from + n else until }
       this
     }
 
@@ -153,7 +153,7 @@ object ByteIterator {
     def asInputStream: java.io.InputStream = new java.io.InputStream {
       override def available: Int = iterator.len
 
-      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int = if (hasNext) next().toInt & 0xFF else -1
 
       override def read(b: Array[Byte], off: Int, len: Int): Int = {
         if ((off < 0) || (len < 0) || (off + len > b.length)) throw new IndexOutOfBoundsException
@@ -372,7 +372,7 @@ object ByteIterator {
     def asInputStream: java.io.InputStream = new java.io.InputStream {
       override def available: Int = current.len
 
-      def read: Int = if (hasNext) (next().toInt & 0xff) else -1
+      def read: Int = if (hasNext) next().toInt & 0xFF else -1
 
       override def read(b: Array[Byte], off: Int, len: Int): Int = {
         val nRead = current.asInputStream.read(b, off, len)
@@ -511,9 +511,9 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    */
   def getShort(implicit byteOrder: ByteOrder): Short = {
     if (byteOrder == ByteOrder.BIG_ENDIAN)
-      ((next() & 0xff) << 8 | (next() & 0xff) << 0).toShort
+      ((next() & 0xFF) << 8 | (next() & 0xFF) << 0).toShort
     else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
-      ((next() & 0xff) << 0 | (next() & 0xff) << 8).toShort
+      ((next() & 0xFF) << 0 | (next() & 0xFF) << 8).toShort
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
@@ -522,15 +522,15 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    */
   def getInt(implicit byteOrder: ByteOrder): Int = {
     if (byteOrder == ByteOrder.BIG_ENDIAN)
-      ((next() & 0xff) << 24
-      | (next() & 0xff) << 16
-      | (next() & 0xff) << 8
-      | (next() & 0xff) << 0)
+      ((next() & 0xFF) << 24
+      | (next() & 0xFF) << 16
+      | (next() & 0xFF) << 8
+      | (next() & 0xFF) << 0)
     else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
-      ((next() & 0xff) << 0
-      | (next() & 0xff) << 8
-      | (next() & 0xff) << 16
-      | (next() & 0xff) << 24)
+      ((next() & 0xFF) << 0
+      | (next() & 0xFF) << 8
+      | (next() & 0xFF) << 16
+      | (next() & 0xFF) << 24)
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
@@ -539,23 +539,23 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
    */
   def getLong(implicit byteOrder: ByteOrder): Long = {
     if (byteOrder == ByteOrder.BIG_ENDIAN)
-      ((next().toLong & 0xff) << 56
-      | (next().toLong & 0xff) << 48
-      | (next().toLong & 0xff) << 40
-      | (next().toLong & 0xff) << 32
-      | (next().toLong & 0xff) << 24
-      | (next().toLong & 0xff) << 16
-      | (next().toLong & 0xff) << 8
-      | (next().toLong & 0xff) << 0)
+      ((next().toLong & 0xFF) << 56
+      | (next().toLong & 0xFF) << 48
+      | (next().toLong & 0xFF) << 40
+      | (next().toLong & 0xFF) << 32
+      | (next().toLong & 0xFF) << 24
+      | (next().toLong & 0xFF) << 16
+      | (next().toLong & 0xFF) << 8
+      | (next().toLong & 0xFF) << 0)
     else if (byteOrder == ByteOrder.LITTLE_ENDIAN)
-      ((next().toLong & 0xff) << 0
-      | (next().toLong & 0xff) << 8
-      | (next().toLong & 0xff) << 16
-      | (next().toLong & 0xff) << 24
-      | (next().toLong & 0xff) << 32
-      | (next().toLong & 0xff) << 40
-      | (next().toLong & 0xff) << 48
-      | (next().toLong & 0xff) << 56)
+      ((next().toLong & 0xFF) << 0
+      | (next().toLong & 0xFF) << 8
+      | (next().toLong & 0xFF) << 16
+      | (next().toLong & 0xFF) << 24
+      | (next().toLong & 0xFF) << 32
+      | (next().toLong & 0xFF) << 40
+      | (next().toLong & 0xFF) << 48
+      | (next().toLong & 0xFF) << 56)
     else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }
 
@@ -566,11 +566,11 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   def getLongPart(n: Int)(implicit byteOrder: ByteOrder): Long = {
     if (byteOrder == ByteOrder.BIG_ENDIAN) {
       var x = 0L
-      (1 to n).foreach(_ => x = (x << 8) | (next() & 0xff))
+      (1 to n).foreach(_ => x = (x << 8) | (next() & 0xFF))
       x
     } else if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
       var x = 0L
-      (0 until n).foreach(i => x |= (next() & 0xff) << 8 * i)
+      (0 until n).foreach(i => x |= (next() & 0xFF) << 8 * i)
       x
     } else throw new IllegalArgumentException("Unknown byte order " + byteOrder)
   }

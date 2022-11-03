@@ -14,7 +14,7 @@ sealed abstract class QueueOfferResult {
 
   /**
    * Return ture if the element was already enqueued, otherwise false.
-   * */
+   */
   def isEnqueued: Boolean
 }
 

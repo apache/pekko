@@ -29,7 +29,8 @@ private[akka] trait DeathWatch { this: ActorCell =>
           maintainAddressTerminatedSubscription(a) {
             a.sendSystemMessage(Watch(a, self)) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
             updateWatching(a, None)
-          } else
+          }
+        else
           checkWatchingSame(a, None)
       }
       a
@@ -44,7 +45,8 @@ private[akka] trait DeathWatch { this: ActorCell =>
           maintainAddressTerminatedSubscription(a) {
             a.sendSystemMessage(Watch(a, self)) // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
             updateWatching(a, Some(msg))
-          } else
+          }
+        else
           checkWatchingSame(a, Some(msg))
       }
       a

@@ -28,7 +28,8 @@ private[testkit] trait SnapshotStorage
   override protected val DefaultPolicy = SnapshotPolicies.PassAll
 
   def tryAdd(meta: SnapshotMetadata, payload: Any): Unit = {
-    currentPolicy.tryProcess(meta.persistenceId, WriteSnapshot(SnapshotMeta(meta.sequenceNr, meta.timestamp), payload)) match {
+    currentPolicy.tryProcess(meta.persistenceId,
+      WriteSnapshot(SnapshotMeta(meta.sequenceNr, meta.timestamp), payload)) match {
       case ProcessingSuccess =>
         add(meta.persistenceId, (meta, payload))
         Success(())
@@ -56,7 +57,8 @@ private[testkit] trait SnapshotStorage
   }
 
   def tryDelete(meta: SnapshotMetadata): Unit = {
-    currentPolicy.tryProcess(meta.persistenceId, DeleteSnapshotByMeta(SnapshotMeta(meta.sequenceNr, meta.timestamp))) match {
+    currentPolicy.tryProcess(meta.persistenceId,
+      DeleteSnapshotByMeta(SnapshotMeta(meta.sequenceNr, meta.timestamp))) match {
       case ProcessingSuccess =>
         delete(meta.persistenceId, _._1.sequenceNr == meta.sequenceNr)
       case f: ProcessingFailure => throw f.error
@@ -99,7 +101,6 @@ case object SnapshotMeta {
 sealed trait SnapshotOperation
 
 /**
- *
  * Storage read operation for recovery of the persistent actor.
  *
  * @param criteria criteria with which snapshot is searched

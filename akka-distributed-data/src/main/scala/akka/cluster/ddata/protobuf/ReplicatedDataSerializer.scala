@@ -92,8 +92,7 @@ private object ReplicatedDataSerializer {
   }
 
   sealed trait ProtoMapEntryWriter[
-      Entry <: GeneratedMessageV3,
-      EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder],
+      Entry <: GeneratedMessageV3, EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder],
       Value <: GeneratedMessageV3] {
     def setStringKey(builder: EntryBuilder, key: String, value: Value): Entry
     def setLongKey(builder: EntryBuilder, key: Long, value: Value): Entry
@@ -656,10 +655,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
    * Convert a Map[A, B] to an Iterable[Entry] where Entry is the protobuf map entry.
    */
   private def getEntries[
-      IKey,
-      IValue,
-      EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder],
-      PEntry <: GeneratedMessageV3,
+      IKey, IValue, EntryBuilder <: GeneratedMessageV3.Builder[EntryBuilder], PEntry <: GeneratedMessageV3,
       PValue <: GeneratedMessageV3](
       input: Map[IKey, IValue],
       createBuilder: () => EntryBuilder,

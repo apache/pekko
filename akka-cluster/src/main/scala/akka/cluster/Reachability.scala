@@ -147,8 +147,8 @@ private[cluster] class Reachability private (
               this
             else {
               if (status == Reachable && oldObserverRows.forall {
-                    case (_, r) => r.status == Reachable || r.subject == subject
-                  }) {
+                  case (_, r) => r.status == Reachable || r.subject == subject
+                }) {
                 // all Reachable, prune by removing the records of the observer, and bump the version
                 new Reachability(records.filterNot(_.observer == observer), newVersions)
               } else {

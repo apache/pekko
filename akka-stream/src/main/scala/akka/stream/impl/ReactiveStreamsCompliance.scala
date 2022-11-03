@@ -131,9 +131,10 @@ import akka.stream.SubscriptionWithCancelException
     if (subscription eq null)
       throw new IllegalStateException("Subscription must be not null on cancel() call, rule 1.3")
     try subscription match {
-      case s: SubscriptionWithCancelException => s.cancel(cause)
-      case s                                  => s.cancel()
-    } catch {
+        case s: SubscriptionWithCancelException => s.cancel(cause)
+        case s                                  => s.cancel()
+      }
+    catch {
       case NonFatal(t) =>
         throw new SignalThrewException("It is illegal to throw exceptions from cancel(), rule 3.15", t)
     }
