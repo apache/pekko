@@ -51,17 +51,18 @@ jobs:
           fail_if_no_tests: false
           skip_publishing: true
 
-      - name: Email on failure
-        if: ${{ failure() }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: "Failed: ${{ github.workflow }} / ${{ github.job }}"
-          to: akka.official@gmail.com
-          from: Akka CI (GHActions)
-          body: |
-            Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
-            https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
+      #- name: Email on failure
+      #  if: ${{ failure() }}
+      #  uses: dawidd6/action-send-mail@v3
+      #  with:
+      #    server_address: smtp.gmail.com
+      #    server_port: 465
+      #    username: ${{secrets.MAIL_USERNAME}}
+      #    password: ${{secrets.MAIL_PASSWORD}}
+      #    subject: "Failed: ${{ github.workflow }} / ${{ github.job }}"
+      #    to: akka.official@gmail.com
+      #    from: Akka CI (GHActions)
+      #    body: |
+      #      Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
+      #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}

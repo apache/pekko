@@ -71,22 +71,23 @@ jobs:
             -Dmultinode.Daeron.term.buffer.length=33554432 \
             multiNodeTest
 
-      - name: Email on failure
-        if: ${{ failure() }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
+      # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
+      #- name: Email on failure
+      #  if: ${{ failure() }}
+      #  uses: dawidd6/action-send-mail@v3
+      #  with:
+      #    server_address: smtp.gmail.com
+      #    server_port: 465
           # Using port 465 already sets `secure: true`
-          secure: true
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Multi node test (Akka)
-          to: akka.official@gmail.com
-          from: Akka CI (GHActions)
-          body: |
-            Multi node test of ${{github.repository}} failed!
-            https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      #    secure: true
+      #    username: ${{secrets.MAIL_USERNAME}}
+      #    password: ${{secrets.MAIL_PASSWORD}}
+      #    subject: Multi node test (Akka)
+      #    to: akka.official@gmail.com
+      #    from: Akka CI (GHActions)
+      #    body: |
+      #      Multi node test of ${{github.repository}} failed!
+      #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
       
       - name: Cleanup the environment
         if: ${{ always() }}
@@ -155,22 +156,22 @@ jobs:
             -Dmultinode.Daeron.term.buffer.length=33554432 \
             multiNodeTest
 
-      - name: Email on failure
-        if: ${{ failure() }}
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
+      #- name: Email on failure
+      #  if: ${{ failure() }}
+      #  uses: dawidd6/action-send-mail@v3
+      #  with:
+      #    server_address: smtp.gmail.com
+      #    server_port: 465
           # Using port 465 already sets `secure: true`
-          secure: true
-          username: ${{secrets.MAIL_USERNAME}}
-          password: ${{secrets.MAIL_PASSWORD}}
-          subject: Multi node test with Aeron (Akka)
-          to: akka.official@gmail.com
-          from: Akka CI (GHActions)
-          body: |
-            Multi node test of ${{github.repository}} failed!
-            https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      #    secure: true
+      #    username: ${{secrets.MAIL_USERNAME}}
+      #    password: ${{secrets.MAIL_PASSWORD}}
+      #    subject: Multi node test with Aeron (Akka)
+      #    to: akka.official@gmail.com
+      #    from: Akka CI (GHActions)
+      #    body: |
+      #      Multi node test of ${{github.repository}} failed!
+      #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
       
       - name: Cleanup the environment
         if: ${{ always() }}
