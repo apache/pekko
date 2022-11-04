@@ -12,7 +12,7 @@ jobs:
   compile:
     name: Compile
     runs-on: ubuntu-20.04
-    if: github.repository == 'akka/akka'
+    if: github.repository == 'apache/incubator-pekko'
     strategy:
       matrix:
         command:

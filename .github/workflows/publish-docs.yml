@@ -15,7 +15,7 @@ jobs:
   documentation:
     name: Documentation
     runs-on: ubuntu-20.04
-    if: github.repository == 'akka/akka'
+    if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
         uses: actions/checkout@v2

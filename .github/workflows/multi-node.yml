@@ -14,7 +14,7 @@ jobs:
   run-multi-node-tests:
     name: Multi Node Test
     runs-on: ubuntu-20.04
-    if: github.repository == 'akka/akka'
+    if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -98,7 +98,7 @@ jobs:
   run-multi-node-aeron-tests:
     name: Multi Node Test with Artery Aeron UDP transport
     runs-on: ubuntu-20.04
-    if: github.repository == 'akka/akka'
+    if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
