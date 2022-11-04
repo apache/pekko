@@ -38,7 +38,7 @@ jobs:
 
       # compile code instead of doing mima check (until we re-enable mima check)
       - name: Compile code
-        run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} Test / compile"
+        run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} Test/compile"
 
       # disable mima check until first pekko release is done
       #- name: Report MiMa Binary Issues
