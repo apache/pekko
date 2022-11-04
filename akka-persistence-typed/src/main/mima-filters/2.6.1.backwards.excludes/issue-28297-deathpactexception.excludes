@@ -1,3 +1,0 @@
-# #28297 EventSourcedBehavior not failing with DeathPactException for unhandled Terminated() signals
-# akka.persistence.typed.internal.BehaviorSetup.onSignal now returns Boolean rather than Unit
-ProblemFilters.exclude[IncompatibleResultTypeProblem]("akka.persistence.typed.internal.BehaviorSetup.onSignal")

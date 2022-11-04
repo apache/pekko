@@ -1,2 +1,0 @@
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.remote.testkit.PerfFlamesSupport.*")
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.remote.testkit.PerfFlamesSupport.runPerfFlames")

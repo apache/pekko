@@ -1,2 +1,0 @@
-# #25322 Sink.takeLast
-ProblemFilters.exclude[MissingClassProblem]("akka.stream.impl.LastOptionStage")

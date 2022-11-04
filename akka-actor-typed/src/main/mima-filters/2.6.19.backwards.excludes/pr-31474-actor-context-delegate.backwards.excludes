@@ -1,3 +1,0 @@
-#akka31474 ActorContext is marked with @DoNotInherit
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.actor.typed.scaladsl.ActorContext.delegate")
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.actor.typed.javadsl.ActorContext.delegate")

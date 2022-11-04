@@ -1,2 +1,0 @@
-# Diverging but internal
-ProblemFilters.exclude[IncompatibleSignatureProblem]("akka.persistence.fsm.PersistentFSM#Timer.unapply")

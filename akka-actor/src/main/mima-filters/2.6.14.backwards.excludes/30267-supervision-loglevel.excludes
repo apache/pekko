@@ -1,2 +1,0 @@
-# sealed trait
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.actor.SupervisorStrategy#Directive.logLevel")

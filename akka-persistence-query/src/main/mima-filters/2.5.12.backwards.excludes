@@ -1,3 +1,0 @@
-# Internal API changes
-ProblemFilters.exclude[MissingClassProblem]("akka.persistence.query.PersistenceQuery$PluginHolder")
-ProblemFilters.exclude[MissingClassProblem]("akka.persistence.query.PersistenceQuery$PluginHolder$")

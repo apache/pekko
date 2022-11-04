@@ -1,2 +1,0 @@
-# Internals only
-ProblemFilters.exclude[IncompatibleResultTypeProblem]("akka.persistence.typed.internal.Running#HandlingCommands.applyEffects")

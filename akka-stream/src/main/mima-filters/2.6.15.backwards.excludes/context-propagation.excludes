@@ -1,3 +1,0 @@
-# internal
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.stream.impl.ContextPropagation.currentContext")
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.stream.impl.ContextPropagation.resumeContext")

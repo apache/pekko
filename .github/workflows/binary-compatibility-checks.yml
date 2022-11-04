@@ -36,11 +36,16 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.2
 
-      - name: Report MiMa Binary Issues
-        run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+      # compile code instead of doing mima check (until we re-enable mima check)
+      - name: Compile code
+        run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} Test / compile"
 
-      - name: Check correct MiMa filter directories
-        run: sbt -jvm-opts .jvmopts-ci checkMimaFilterDirectories
+      # disable mima check until first pekko release is done
+      #- name: Report MiMa Binary Issues
+      #  run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+
+      #- name: Check correct MiMa filter directories
+      #  run: sbt -jvm-opts .jvmopts-ci checkMimaFilterDirectories
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
       #- name: Email on failure

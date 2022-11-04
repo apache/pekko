@@ -1,1 +1,0 @@
-ProblemFilters.exclude[IncompatibleResultTypeProblem]("akka.remote.testconductor.RemoteConnection.shutdown")

@@ -1,2 +1,0 @@
-# internal actor class
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.io.TcpConnection.resumeReading")

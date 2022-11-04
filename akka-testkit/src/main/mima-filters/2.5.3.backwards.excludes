@@ -1,1 +1,0 @@
-ProblemFilters.exclude[IncompatibleResultTypeProblem]("akka.testkit.TestKitBase.awaitAssert")
