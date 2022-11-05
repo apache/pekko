@@ -39,8 +39,8 @@ class OsgiActorSystemFactory(
 
   /**
    * Strategy method to create the Config for the ActorSystem
-   * ensuring that the default/reference configuration is loaded from the akka-actor bundle.
-   * Configuration files found in akka-actor bundle
+   * ensuring that the default/reference configuration is loaded from the pekko-actor bundle.
+   * Configuration files found in pekko-actor bundle
    */
   def actorSystemConfig(@unused context: BundleContext): Config = {
     config.withFallback(
@@ -61,7 +61,7 @@ class OsgiActorSystemFactory(
 object OsgiActorSystemFactory {
 
   /**
-   * Class loader of akka-actor bundle.
+   * Class loader of pekko-actor bundle.
    */
   def akkaActorClassLoader = classOf[ActorSystemActivator].getClassLoader
 

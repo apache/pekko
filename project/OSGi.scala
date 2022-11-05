@@ -38,7 +38,7 @@ object OSGi {
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("akka*"),
     OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
-    // akka-actor packages are not imported, as contained in the CP
+    // pekko-actor packages are not imported, as contained in the CP
     OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
       "!sun.misc",
       scalaJava8CompatImport(),

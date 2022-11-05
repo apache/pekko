@@ -516,7 +516,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
 
         Source.single(SendBytes(ByteString.empty)).via(flow).runWith(Sink.ignore)
       }
-      Await.result(run("akka-remote"), 3.seconds) // CN=akka-remote
+      Await.result(run("pekko-remote"), 3.seconds) // CN=pekko-remote
       val cause = intercept[Exception] {
         Await.result(run("unknown.example.org"), 3.seconds)
       }

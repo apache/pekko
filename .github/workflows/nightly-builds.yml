@@ -231,7 +231,7 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - akka-remote/test akka-remote-tests/test
+          - pekko-remote/test pekko-remote-tests/test
           - akka-cluster/test akka-cluster-typed/test
     steps:
       - name: Checkout

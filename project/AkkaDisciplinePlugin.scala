@@ -20,16 +20,16 @@ object AkkaDisciplinePlugin extends AutoPlugin {
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalJavaWarningsFor = Set(
     // for sun.misc.Unsafe and AbstractScheduler
-    "akka-actor",
+    "pekko-actor",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-actor-typed-tests",
+    "pekko-actor-typed-tests",
     // references to deprecated PARSER fields in generated message formats?
     "akka-cluster-typed",
     // use of deprecated akka.protobuf.GeneratedMessage
     "akka-protobuf",
     "akka-protobuf-v3",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-remote",
+    "pekko-remote",
     // references to deprecated PARSER fields in generated message formats?
     "akka-distributed-data",
     // references to deprecated PARSER fields in generated message formats?
@@ -43,11 +43,11 @@ object AkkaDisciplinePlugin extends AutoPlugin {
     "akka-stream-tests")
 
   val looseProjects = Set(
-    "akka-actor",
-    "akka-actor-testkit-typed",
-    "akka-actor-tests",
-    "akka-actor-typed",
-    "akka-actor-typed-tests",
+    "pekko-actor",
+    "pekko-actor-testkit-typed",
+    "pekko-actor-tests",
+    "pekko-actor-typed",
+    "pekko-actor-typed-tests",
     "akka-bench-jmh",
     "akka-cluster",
     "akka-cluster-metrics",
@@ -59,8 +59,8 @@ object AkkaDisciplinePlugin extends AutoPlugin {
     "akka-persistence-tck",
     "akka-persistence-typed",
     "akka-persistence-query",
-    "akka-remote",
-    "akka-remote-tests",
+    "pekko-remote",
+    "pekko-remote-tests",
     "akka-stream",
     "akka-stream-testkit",
     "akka-stream-tests",
@@ -131,7 +131,7 @@ object AkkaDisciplinePlugin extends AutoPlugin {
            else Seq.empty),
         // Discipline is not needed for the docs compilation run (which uses
         // different compiler phases from the regular run), and in particular
-        // '-Ywarn-unused:explicits' breaks 'sbt ++2.13.0-M5 akka-actor/doc'
+        // '-Ywarn-unused:explicits' breaks 'sbt ++2.13.0-M5 pekko-actor/doc'
         // https://github.com/akka/akka/issues/26119
         Compile / doc / scalacOptions --= disciplineScalacOptions.toSeq :+ "-Xfatal-warnings",
         // having discipline warnings in console is just an annoyance

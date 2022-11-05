@@ -178,7 +178,7 @@ To format the Java source code:
 
 ```shell
 sbt
-project akka-actor
+project pekko-actor
 javafmtAll
 ```
 
@@ -186,7 +186,7 @@ To keep the *import*s sorted with:
 
 ```shell
 sbt
-project akka-actor
+project pekko-actor
 sortImports
 ```
 
@@ -222,8 +222,8 @@ The Akka build includes a special task called `validatePullRequest`, which inves
 (uncommitted changes) in your local working directory and figures out which projects are impacted by those changes,
 then running tests only on those projects.
 
-For example, changing something in `akka-actor` would cause tests to be run in all projects which depend on it
-(e.g. `akka-actor-tests`, `akka-stream`, `akka-docs` etc.).
+For example, changing something in `pekko-actor` would cause tests to be run in all projects which depend on it
+(e.g. `pekko-actor-tests`, `akka-stream`, `akka-docs` etc.).
 
 To use the task, simply type `validatePullRequest`, and the output should include entries like shown below:
 
@@ -231,7 +231,7 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
 [info] Detected uncomitted changes in directories (including in dependency analysis): [akka-protobuf,project]
-[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, akka-docs, akka-persistence]
+[info] Detected changes in directories: [pekko-actor-tests, project, akka-stream, akka-docs, akka-persistence]
 ```
 
 By default, changes are diffed with the `main` branch when working locally. If you want to validate against a different
@@ -264,7 +264,7 @@ an error like this:
 In such situations it's good to consult with a core team member whether the violation can be safely ignored or if it would indeed
 break binary compatibility. If the violation can be ignored add exclude statements from the mima output to
 a new file named `<module>/src/main/mima-filters/<last-version>.backwards.excludes/<pr-or-issue>-<issue-number>-<description>.excludes`,
-e.g. `akka-actor/src/main/mima-filters/2.6.0.backwards.excludes/pr-12345-rename-internal-classes.excludes`. Make sure to add a comment
+e.g. `pekko-actor/src/main/mima-filters/2.6.0.backwards.excludes/pr-12345-rename-internal-classes.excludes`. Make sure to add a comment
 in the file that describes briefly why the incompatibility can be ignored.
 
 Situations when it may be acceptable to ignore a MiMa issued warning include:
@@ -437,7 +437,7 @@ For first time contributors, the workflow will be run after an approval from a c
 
 To speed up PR validation times the Akka build contains a special sbt task called `validatePullRequest`,
 which is smart enough to figure out which projects should be built if a PR only has changes in some parts of the project.
-For example, if your PR only touches `akka-persistence`, no `akka-remote` tests need to be run, however the task
+For example, if your PR only touches `akka-persistence`, no `pekko-remote` tests need to be run, however the task
 will validate all projects that depend on `akka-persistence` (including samples).
 Also, tests tagged as `PerformanceTest`, `TimingTest`, `LongRunningTest`, and all multi-node tests are excluded from PR validation.
 
