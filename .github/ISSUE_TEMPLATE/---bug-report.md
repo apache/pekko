@@ -13,5 +13,5 @@ Please report issues regarding specific projects in their respective issue track
 
 Please explain your issue precisely, and if possible provide a reproducer snippet (this helps resolve issues much quicker).
 
-Thanks, happy hakking!
+Thanks for contributing!
 -->

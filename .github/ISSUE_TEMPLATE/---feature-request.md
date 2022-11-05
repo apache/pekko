@@ -13,5 +13,5 @@ Please report issues regarding specific projects in their respective issue track
 
 Please explain your use case precisely, and if possible provide an example snippet.
 
-Thanks, happy hakking!
+Thanks for contributing!
 -->
