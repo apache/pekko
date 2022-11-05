@@ -7,8 +7,8 @@ on:
 
 jobs:
 
-  akka-cluster-metrics-sigar:
-    name: Akka Cluster Metrics Test with Sigar
+  pekko-cluster-metrics-sigar:
+    name: Pekko Cluster Metrics Test with Sigar
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:
@@ -43,14 +43,15 @@ jobs:
             -Dmultinode.XX:+AlwaysActAsServerClassMachine \
             clean akka-cluster-metrics/test
 
-      - name: Test Reports
-        # Makes it easier to spot failures instead of looking at the logs.
-        if: ${{ failure() }}
-        uses: marcospereira/action-surefire-report@v1
-        with:
-          report_paths: '**/target/test-reports/TEST-*.xml'
-          fail_if_no_tests: false
-          skip_publishing: true
+# comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
+#      - name: Test Reports
+#        # Makes it easier to spot failures instead of looking at the logs.
+#        if: ${{ failure() }}
+#        uses: marcospereira/action-surefire-report@v1
+#        with:
+#          report_paths: '**/target/test-reports/TEST-*.xml'
+#          fail_if_no_tests: false
+#          skip_publishing: true
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
       #- name: Email on failure
@@ -68,8 +69,8 @@ jobs:
       #      Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
       #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
-  akka-classic-remoting-tests:
-    name: Akka Classic Remoting Tests
+  pekko-classic-remoting-tests:
+    name: Pekko Classic Remoting Tests
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     strategy:
@@ -169,21 +170,22 @@ jobs:
             ${{ matrix.extraOpts }} \
             clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
-      - name: Test Reports
-        # Makes it easier to spot failures instead of looking at the logs.
-        if: ${{ failure() }}
-        uses: marcospereira/action-surefire-report@v1
-        with:
-          report_paths: '**/target/test-reports/TEST-*.xml'
-          fail_if_no_tests: false
+# comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
+#      - name: Test Reports
+#        # Makes it easier to spot failures instead of looking at the logs.
+#        if: ${{ failure() }}
+#        uses: marcospereira/action-surefire-report@v1
+#        with:
+#          report_paths: '**/target/test-reports/TEST-*.xml'
+#          fail_if_no_tests: false
 
-      # Archive test results so we can do some diagnostics later
-      - name: Upload test results
-        uses: actions/upload-artifact@v2
-        if: success() || failure()        # run this step even if previous step failed
-        with:
-          name: test-results-${{ matrix.jdkVersion }}-${{ matrix.scalaVersion }}
-          path: '**/target/test-reports/TEST-*.xml'
+#      # Archive test results so we can do some diagnostics later
+#      - name: Upload test results
+#        uses: actions/upload-artifact@v2
+#        if: success() || failure()        # run this step even if previous step failed
+#        with:
+#          name: test-results-${{ matrix.jdkVersion }}-${{ matrix.scalaVersion }}
+#          path: '**/target/test-reports/TEST-*.xml'
 
       - name: Docs
         # Docs generation requires JDK 11. Checks with `startsWith` helps
@@ -221,8 +223,8 @@ jobs:
       #      Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
       #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
-  akka-artery-aeron-tests:
-    name: Akka Artery Aeron Tests
+  pekko-artery-aeron-tests:
+    name: Pekko Artery Aeron Tests
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     strategy:
