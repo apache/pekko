@@ -9,8 +9,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-code-style:
-    name: Check / Code Style
+  check-headers:
+    name: Check / Headers
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -27,12 +27,12 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.2
 
-      - name: Code style check
+      - name: Check headers
         run: |-
           sbt -jvm-opts .jvmopts-ci \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
-          verifyCodeStyle
+          headerCheckAll
 
   pull-request-validation:
     name: Check / Tests

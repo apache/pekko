@@ -1,0 +1,24 @@
+name: Scalafmt
+
+permissions: read-all
+
+on:
+  pull_request:
+    branches: ['**']
+
+jobs:
+  build:
+    name: Code is formatted
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Check project is formatted
+        uses: jrouly/scalafmt-native-action@v2
+        with:
+          version: '3.6.1'
+          arguments: '--list --mode diff-ref=origin/main'
