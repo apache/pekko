@@ -1,2 +1,0 @@
-# disable compatibility check for a new method in BoundedSourceQueue
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.stream.BoundedSourceQueue.size")

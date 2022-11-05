@@ -1,2 +1,0 @@
-# #22881 Make sure connections are aborted correctly on Windows
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.io.ChannelRegistration.cancel")

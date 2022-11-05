@@ -1,2 +1,0 @@
-# added "restartOn" constructor argument
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.stream.RestartSettings.this")

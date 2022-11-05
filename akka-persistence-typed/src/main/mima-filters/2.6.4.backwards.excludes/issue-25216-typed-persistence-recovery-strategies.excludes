@@ -1,3 +1,0 @@
-# #25216 customize recovery strategy for typed persistence behaviors
-# abstract method withRecovery(akka.persistence.Recovery)akka.persistence.typed.scaladsl.EventSourcedBehavior in interface akka.persistence.typed.scaladsl.EventSourcedBehavior is present only in current version
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.persistence.typed.scaladsl.EventSourcedBehavior.withRecovery")

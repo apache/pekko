@@ -1,5 +1,0 @@
-# Internal API changes
-# renamed to internalLogger
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.persistence.typed.internal.BehaviorSetup.log")
-# added extra constructor argument
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.persistence.typed.internal.BehaviorSetup.this")

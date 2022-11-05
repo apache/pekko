@@ -1,2 +1,0 @@
-# Internal changes to CompressionTable
-ProblemFilters.exclude[Problem]("akka.remote.artery.compress.CompressionTable*")

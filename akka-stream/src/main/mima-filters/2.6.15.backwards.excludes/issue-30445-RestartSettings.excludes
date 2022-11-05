@@ -1,3 +1,0 @@
-# #30445 Log settings for restart stream stages
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.stream.RestartSettings.this")
-

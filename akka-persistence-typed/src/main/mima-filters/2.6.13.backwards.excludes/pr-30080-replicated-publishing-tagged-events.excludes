@@ -1,2 +1,0 @@
-# not for user extension
-ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.persistence.typed.PublishedEvent.withoutTags")

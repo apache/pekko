@@ -1,2 +1,0 @@
-#21880 PartitionHub in Artery
-ProblemFilters.exclude[DirectMissingMethodProblem]("akka.remote.artery.ArterySettings#Advanced.InboundBroadcastHubBufferSize")

@@ -1,2 +1,0 @@
-# Missed out in previous releases
-ProblemFilters.exclude[MissingTypesProblem]("akka.persistence.AbstractPersistentActorWithTimers")

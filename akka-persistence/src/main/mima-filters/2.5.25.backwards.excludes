@@ -1,3 +1,0 @@
-# #27411 changes not caught by previous mima versions
-## TimerMode parameter
-ProblemFilters.exclude[IncompatibleSignatureProblem]("akka.persistence.fsm.PersistentFSM#Timer.unapply")
