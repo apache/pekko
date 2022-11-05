@@ -1,8 +1,10 @@
 name: Nightly Builds
 
 on:
-  schedule:
-    - cron: "0 0 * * *"
+# fixme revert
+#  schedule:
+#    - cron: "0 0 * * *"
+  pull_request:
   workflow_dispatch:
 
 jobs:
