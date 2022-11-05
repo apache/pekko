@@ -6,8 +6,8 @@ about: Suggest an idea for this project
 
 <!--
 Please report issues regarding specific projects in their respective issue trackers, e.g.:
- - Pekko: https://github.com/apache/incubator-pekko/issues
  - Pekko HTTP: https://github.com/apache/incubator-pekko-http/issues
+ - Pekko Connectors: https://github.com/apache/incubator-pekko-connectors/issues 
  - Pekko Persistence Cassandra Plugin: https://github.com/apache/incubator-pekko-persistence-cassandra/issues
  - ...
 
