@@ -31,5 +31,5 @@ notifications:
   commits:              commits@pekko.apache.org
   issues:               notifications@pekko.apache.org
   pullrequests:         notifications@pekko.apache.org
-  discussions:          dev@pekko.apache.org
+  discussions:          notifications@pekko.apache.org
 
