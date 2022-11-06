@@ -29,8 +29,7 @@ github:
 
 notifications:
   commits:              commits@pekko.apache.org
-  issues:               dev@pekko.apache.org
-  pullrequests_status:  dev@pekko.apache.org
-  pullrequests_comment: commits@pekko.apache.org
+  issues:               notifications@pekko.apache.org
+  pullrequests:         notifications@pekko.apache.org
   discussions:          dev@pekko.apache.org
 
