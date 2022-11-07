@@ -1,4 +1,4 @@
-name: Build and test Akka with Scala 3
+name: Build and test Pekko with Scala 3
 
 on:
   schedule:

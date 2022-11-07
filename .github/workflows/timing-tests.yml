@@ -9,8 +9,8 @@ permissions: {}
 
 jobs:
 
-  akka-timing-sensitive-tests:
-    name: Akka Tests taggedAs TimingTest
+  pekko-timing-sensitive-tests:
+    name: Pekko Tests taggedAs TimingTest
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:

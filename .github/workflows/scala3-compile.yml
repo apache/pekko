@@ -1,4 +1,4 @@
-name: Compile Akka with Scala 3
+name: Compile Pekko with Scala 3
 
 on:
   pull_request:

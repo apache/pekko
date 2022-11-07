@@ -36,11 +36,11 @@ jobs:
         run: |-
           gcloud config set compute/region us-central1
           gcloud config set compute/zone us-central1-c
-          ./kubernetes/create-cluster-gke.sh "akka-multi-node-${GITHUB_RUN_ID}"
+          ./kubernetes/create-cluster-gke.sh "pekko-multi-node-${GITHUB_RUN_ID}"
 
       - name: Setup Pods
         run: |
-          # Start 10 pods. At most 10 MultiJvmNode (akka.cluster.StressSpec is currently disabled).
+          # Start 10 pods. At most 10 MultiJvmNode (org.apache.pekko.cluster.StressSpec is currently disabled).
           ./kubernetes/setup.sh 10 multi-node-test.hosts tcp
 
       - name: Setup Java 11
@@ -100,7 +100,7 @@ jobs:
         if: ${{ always() }}
         shell: bash {0}
         run: |
-          gcloud container clusters delete "akka-multi-node-${GITHUB_RUN_ID}" --quiet
+          gcloud container clusters delete "pekko-multi-node-${GITHUB_RUN_ID}" --quiet
 
   run-multi-node-aeron-tests:
     name: Multi Node Test with Artery Aeron UDP transport
@@ -124,11 +124,11 @@ jobs:
         run: |-
           gcloud config set compute/region us-central1
           gcloud config set compute/zone us-central1-c
-          ./kubernetes/create-cluster-gke.sh "akka-artery-aeron-cluster-${GITHUB_RUN_ID}"
+          ./kubernetes/create-cluster-gke.sh "pekko-artery-aeron-cluster-${GITHUB_RUN_ID}"
 
       - name: Setup Pods
         run: |
-          # Start 10 pods. At most 10 MultiJvmNode (akka.cluster.StressSpec is currently disabled).
+          # Start 10 pods. At most 10 MultiJvmNode (org.apache.pekko.cluster.StressSpec is currently disabled).
           ./kubernetes/setup.sh 10 multi-node-test.hosts udp
 
       - name: Setup Java 11
@@ -188,4 +188,4 @@ jobs:
         if: ${{ always() }}
         shell: bash {0}
         run: |
-          gcloud container clusters delete "akka-artery-aeron-cluster-${GITHUB_RUN_ID}" --quiet
+          gcloud container clusters delete "pekko-artery-aeron-cluster-${GITHUB_RUN_ID}" --quiet
