@@ -27,9 +27,11 @@ github:
     merge:   false
     rebase:  true
 
+  protected_branches:
+    main: { }
+
 notifications:
   commits:              commits@pekko.apache.org
   issues:               notifications@pekko.apache.org
   pullrequests:         notifications@pekko.apache.org
   discussions:          notifications@pekko.apache.org
-
