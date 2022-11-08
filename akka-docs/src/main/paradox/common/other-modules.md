@@ -4,7 +4,7 @@ This page describes modules that compliment libraries from the Akka core.  See [
 
 ## [Akka HTTP](https://doc.akka.io/docs/akka-http/current/)
 
-A full server- and client-side HTTP stack on top of akka-actor and akka-stream.
+A full server- and client-side HTTP stack on top of pekko-actor and akka-stream.
 
 ## [Akka gRPC](https://doc.akka.io/docs/akka-grpc/current/)
 

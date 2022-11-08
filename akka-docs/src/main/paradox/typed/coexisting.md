@@ -9,7 +9,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=AkkaVersion
 }
 
@@ -34,7 +34,7 @@ Typed and classic can interact the following ways:
 In the examples the `akka.actor` package is aliased to `classic`.
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #import-alias }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #import-alias }
 
 @@@
 
@@ -46,44 +46,44 @@ While coexisting your application will likely still have a classic ActorSystem. 
 so that new code and migrated parts don't rely on the classic system:
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #adapter-import #convert-classic }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #adapter-import #convert-classic }
 
 Java
-:  @@snip [ClassicWatchingTypedTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #adapter-import #convert-classic }
+:  @@snip [ClassicWatchingTypedTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #adapter-import #convert-classic }
 
 Then for new typed actors here's how you create, watch and send messages to
 it from a classic actor.
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #typed }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #typed }
 
 Java
-:  @@snip [ClassicWatchingTypedTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #typed }
+:  @@snip [ClassicWatchingTypedTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #typed }
 
 The top level classic actor is created in the usual way:
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #create-classic }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #create-classic }
 
 Java
-:  @@snip [ClassicWatchingTypedTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #create-classic }
+:  @@snip [ClassicWatchingTypedTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #create-classic }
 
 Then it can create a typed actor, watch it, and send a message to it:
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #classic-watch }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #classic-watch }
 
 Java
-:  @@snip [ClassicWatchingTypedTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #classic-watch }
+:  @@snip [ClassicWatchingTypedTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #classic-watch }
 
 @scala[There is one `import` that is needed to make that work.] @java[We import the Adapter class and
 call static methods for conversion.]
 
 Scala
-:  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #adapter-import }
+:  @@snip [ClassicWatchingTypedSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/ClassicWatchingTypedSpec.scala) { #adapter-import }
 
 Java
-:  @@snip [ClassicWatchingTypedTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #adapter-import }
+:  @@snip [ClassicWatchingTypedTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/ClassicWatchingTypedTest.java) { #adapter-import }
 
 
 @scala[That adds some implicit extension methods that are added to classic and typed `ActorSystem`, `ActorContext` and `ActorRef` in both directions.]
@@ -93,10 +93,10 @@ Note the inline comments in the example above.
 This method of using a top level classic actor is the suggested path for this type of co-existence. However, if you prefer to start with a typed top level actor then you can use the @scala[implicit @scaladoc[spawn](akka.actor.typed.scaladsl.adapter.package$$ClassicActorSystemOps#spawn[T](behavior:akka.actor.typed.Behavior[T],name:String,props:akka.actor.typed.Props):akka.actor.typed.ActorRef[T]) -method]@java[@javadoc[Adapter.spawn](akka.actor.typed.javadsl.Adapter#spawn(akka.actor.ActorSystem,akka.actor.typed.Behavior,java.lang.String,akka.actor.typed.Props))] directly from the typed system:
 
 Scala
-:  @@snip [TypedWatchingClassicSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #create }
+:  @@snip [TypedWatchingClassicSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #create }
 
 Java
-:  @@snip [TypedWatchingClassicTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #create }
+:  @@snip [TypedWatchingClassicTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #create }
 
 The above classic-typed difference is further elaborated in @ref:[the `ActorSystem` section](./from-classic.md#actorsystem) of "Learning Akka Typed from Classic". 
 
@@ -108,28 +108,28 @@ The following will show how to create, watch and send messages back and forth fr
 classic actor:
 
 Scala
-:  @@snip [TypedWatchingClassicSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #classic }
+:  @@snip [TypedWatchingClassicSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #classic }
 
 Java
-:  @@snip [TypedWatchingClassicTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #classic }
+:  @@snip [TypedWatchingClassicTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #classic }
 
 <a id="top-level-typed-actor-classic-system"></a>
 
 Creating the actor system and the typed actor:
 
 Scala
-:  @@snip [TypedWatchingClassicSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #create }
+:  @@snip [TypedWatchingClassicSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #create }
 
 Java
-:  @@snip [TypedWatchingClassicTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #create }
+:  @@snip [TypedWatchingClassicTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #create }
 
 Then the typed actor creates the classic actor, watches it and sends and receives a response:
 
 Scala
-:  @@snip [TypedWatchingClassicSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #typed }
+:  @@snip [TypedWatchingClassicSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/coexistence/TypedWatchingClassicSpec.scala) { #typed }
 
 Java
-:  @@snip [TypedWatchingClassicTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #typed }
+:  @@snip [TypedWatchingClassicTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/coexistence/TypedWatchingClassicTest.java) { #typed }
 
 @@@ div { .group-scala }
 

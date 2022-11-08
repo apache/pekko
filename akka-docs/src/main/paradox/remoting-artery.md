@@ -27,7 +27,7 @@ To use Artery Remoting, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=AkkaVersion
 }
 
@@ -585,7 +585,7 @@ remained the same, we recommend reading the @ref:[Serialization](serialization.m
 Implementing an `akka.serialization.ByteBufferSerializer` works the same way as any other serializer,
 
 Scala
-:  @@snip [Serializer.scala](/akka-actor/src/main/scala/akka/serialization/Serializer.scala) { #ByteBufferSerializer }
+:  @@snip [Serializer.scala](/pekko-actor/src/main/scala/akka/serialization/Serializer.scala) { #ByteBufferSerializer }
 
 Java
 :  @@snip [ByteBufferSerializerDocTest.java](/akka-docs/src/test/java/jdocs/actor/ByteBufferSerializerDocTest.java) { #ByteBufferSerializer-interface }
@@ -662,7 +662,7 @@ Note that lowest latency can be achieved with `inbound-lanes=1` and `outbound-la
 
 Also note that the total amount of parallel tasks are bound by the `remote-dispatcher` and the thread pool size should not exceed the number of CPU cores minus headroom for actually processing the messages in the application, i.e. in practice the the pool size should be less than half of the number of cores.
 
-See `inbound-lanes` and `outbound-lanes` in the @ref:[reference configuration](general/configuration-reference.md#config-akka-remote-artery) for default values.
+See `inbound-lanes` and `outbound-lanes` in the @ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for default values.
 
 ### Dedicated subchannel for large messages
 
@@ -831,7 +831,7 @@ the system might have less latency than at low message rates.
 ## Remote Configuration
 
 There are lots of configuration properties that are related to remoting in Akka. We refer to the
-@ref:[reference configuration](general/configuration-reference.md#config-akka-remote-artery) for more information.
+@ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for more information.
 
 @@@ note
 

@@ -22,7 +22,7 @@ To use reliable delivery, add the module to your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=AkkaVersion
 }
 
@@ -441,6 +441,6 @@ This feature is not implemented for @ref:[Work pulling](#work-pulling) and @ref:
 There are several configuration properties, please refer to `akka.reliable-delivery` config section in the
 reference configuration:
 
-* @ref:[akka-actor-typed reference configuration](../general/configuration-reference.md#config-akka-actor-typed)
+* @ref:[pekko-actor-typed reference configuration](../general/configuration-reference.md#config-pekko-actor-typed)
 * @ref:[akka-persistence-typed reference configuration](../general/configuration-reference.md#config-akka-persistence-typed)
 * @ref:[akka-cluster-sharding-typed reference configuration](../general/configuration-reference.md#config-cluster-sharding-typed)

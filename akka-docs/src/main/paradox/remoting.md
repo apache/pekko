@@ -29,11 +29,11 @@ To use Akka Remoting, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=AkkaVersion
 }
 
-@@project-info{ projectId="akka-remote" }
+@@project-info{ projectId="pekko-remote" }
 
 Classic remoting depends on Netty. This needs to be explicitly added as a dependency so that users
 not using classic remoting do not have to have Netty on the classpath:
@@ -287,7 +287,7 @@ The list of allowed classes has to be configured on the "remote" system, in othe
 others will be attempting to remote deploy Actors. That system, locally, knows best which Actors it should or
 should not allow others to remote deploy onto it. The full settings section may for example look like this:
 
-@@snip [RemoteDeploymentAllowListSpec.scala](/akka-remote/src/test/scala/akka/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
+@@snip [RemoteDeploymentAllowListSpec.scala](/pekko-remote/src/test/scala/akka/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
 
 Actor classes not included in the allow list will not be allowed to be remote deployed onto this system.
 
@@ -588,7 +588,7 @@ marking them `PossiblyHarmful` so that a client cannot forge them.
 ## Remote Configuration
 
 There are lots of configuration properties that are related to remoting in Akka. We refer to the
-@ref:[reference configuration](general/configuration-reference.md#config-akka-remote) for more information.
+@ref:[reference configuration](general/configuration-reference.md#config-pekko-remote) for more information.
 
 @@@ note
 

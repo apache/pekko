@@ -7,15 +7,15 @@ You are viewing the documentation for the new actor APIs, to view the Akka Class
 
 ## Dependency
 
-Dispatchers are part of core Akka, which means that they are part of the `akka-actor` dependency. This
-page describes how to use dispatchers with `akka-actor-typed`, which has dependency:
+Dispatchers are part of core Akka, which means that they are part of the `pekko-actor` dependency. This
+page describes how to use dispatchers with `pekko-actor-typed`, which has dependency:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor-typed_$scala.binary.version$"
+  artifact="pekko-actor-typed_$scala.binary.version$"
   version=AkkaVersion
 }
 
@@ -58,10 +58,10 @@ details @ref:[here](#blocking-needs-careful-management).
 To select a dispatcher use `DispatcherSelector` to create a `Props` instance for spawning your actor:
 
 Scala
-:  @@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #spawn-dispatcher }
+:  @@snip [DispatcherDocSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #spawn-dispatcher }
 
 Java
-:  @@snip [DispatcherDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/DispatchersDocTest.java) { #spawn-dispatcher }
+:  @@snip [DispatcherDocTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/DispatchersDocTest.java) { #spawn-dispatcher }
 
 `DispatcherSelector` has a few convenience methods:
 
@@ -72,7 +72,7 @@ Java
 The final example shows how to load a custom dispatcher from configuration and relies on this being in your `application.conf`:
 
 <!-- Same between Java and Scala -->
-@@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #config }
+@@snip [DispatcherDocSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #config }
 
 ## Types of dispatchers
 

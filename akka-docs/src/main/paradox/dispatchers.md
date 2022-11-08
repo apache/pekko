@@ -5,14 +5,14 @@ For the full documentation of this feature and for new projects see @ref:[Dispat
 
 ## Dependency
 
-Dispatchers are part of core Akka, which means that they are part of the akka-actor dependency:
+Dispatchers are part of core Akka, which means that they are part of the pekko-actor dependency:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
 }
 

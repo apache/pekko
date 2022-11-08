@@ -12,7 +12,7 @@ To use Serialization, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
 }
 
@@ -64,7 +64,7 @@ you would need to reference it as `Wrapper$Message` instead of `Wrapper.Message`
 
 Akka provides serializers for several primitive types and [protobuf](https://github.com/protocolbuffers/protobuf)
 @javadoc[com.google.protobuf.GeneratedMessage](com.google.protobuf.GeneratedMessage) (protobuf2) and @javadoc[com.google.protobuf.GeneratedMessageV3](com.google.protobuf.GeneratedMessageV3) (protobuf3) by default (the latter only if
-depending on the akka-remote module), so normally you don't need to add
+depending on the pekko-remote module), so normally you don't need to add
 configuration for that if you send raw protobuf messages as actor messages.
 
 ### Programmatic

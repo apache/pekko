@@ -11,7 +11,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=AkkaVersion
 }
 
@@ -34,19 +34,19 @@ Tell is asynchronous which means that the method returns right away. After the s
 With the given protocol and actor behavior:
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #fire-and-forget-definition }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #fire-and-forget-definition }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #fire-and-forget-definition }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #fire-and-forget-definition }
 
 
 Fire and forget looks like this:
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #fire-and-forget-doit }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #fire-and-forget-doit }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #fire-and-forget-doit }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #fire-and-forget-doit }
 
 
 **Useful when:**
@@ -73,28 +73,28 @@ In Akka the recipient of responses has to be encoded as a field in the message i
 With the following protocol:
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-protocol }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-protocol }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-protocol }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-protocol }
 
 
 The sender would use its own @scala[`ActorRef[Response]`]@java[`ActorRef<Response>`], which it can access through @scala[@scaladoc[ActorContext.self](akka.actor.typed.scaladsl.ActorContext#self:akka.actor.typed.ActorRef[T])]@java[@javadoc[ActorContext.getSelf()](akka.actor.typed.javadsl.ActorContext#getSelf())], for the `replyTo`. 
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-send }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-send }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-send }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-send }
 
 
 On the receiving side the @scala[`ActorRef[Response]`]@java[`ActorRef<Response>`] can then be used to send one or more responses back:
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-respond }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #request-response-respond }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-respond }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #request-response-respond }
 
 
 **Useful when:**
@@ -119,10 +119,10 @@ Most often the sending actor does not, and should not, support receiving the res
 ![adapted-response.png](./images/adapted-response.png)
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #adapted-response }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #adapted-response }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #adapted-response }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #adapted-response }
 
 You can register several message adapters for different message classes.
 It's only possible to have one message adapter per message class to make sure
@@ -170,10 +170,10 @@ See also the [Generic response wrapper](#generic-response-wrapper) for replies t
 ![ask-from-actor.png](./images/ask-from-actor.png)
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #actor-ask }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #actor-ask }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #actor-ask }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #actor-ask }
 
 
 The response adapting function is running in the receiving actor and can safely access its state, but if it throws an exception the actor is stopped.
@@ -207,10 +207,10 @@ to send a message to an actor and get a `Future[Response]` back. `ask` takes imp
 ![ask-from-outside.png](./images/ask-from-outside.png)
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #standalone-ask }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #standalone-ask }
 
 Note that validation errors are also explicit in the message protocol. The `GiveMeCookies` request can reply
 with `Cookies` or `InvalidRequest`. The requestor has to decide how to handle an `InvalidRequest` reply. Sometimes
@@ -218,10 +218,10 @@ it should be treated as a failed @scala[@scaladoc[Future](scala.concurrent.Futur
 requestor side. See also the [Generic response wrapper](#generic-response-wrapper) for replies that are either a success or an error.
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-fail-future }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-fail-future }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #standalone-ask-fail-future }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #standalone-ask-fail-future }
 
 **Useful when:**
 
@@ -252,10 +252,10 @@ Errors are preferably sent as a text describing what is wrong, but using excepti
 **Example actor to actor ask:**
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #actor-ask-with-status }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #actor-ask-with-status }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #actor-ask-with-status }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #actor-ask-with-status }
 
 A validation error is turned into a `Failure` for the message adapter. In this case we are explicitly handling the validation error separately from
 other ask failures.
@@ -263,18 +263,18 @@ other ask failures.
 **Example ask from the outside:**
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-with-status }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-with-status }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #standalone-ask-with-status }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #standalone-ask-with-status }
 
 Note that validation errors are also explicit in the message protocol, but encoded as the wrapper type, constructed using @scala[@scaladoc[StatusReply.Error(text)](akka.pattern.StatusReply$$Error$#apply[T](errorMessage:String):akka.pattern.StatusReply[T])]@java[@javadoc[StatusReply.error(text)](akka.pattern.StatusReply$#error(java.lang.String))]:
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-with-status-fail-future }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #standalone-ask-with-status-fail-future }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #standalone-ask-with-status-fail-future }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsAskWithStatusTest.java) { #standalone-ask-with-status-fail-future }
 
 
 ## Ignoring replies
@@ -286,10 +286,10 @@ In some situations an actor has a response for a particular request message but 
 With the same protocol as the @ref[request response](#request-response) above, if the sender would prefer to ignore the reply it could pass @scala[`system.ignoreRef`]@java[`system.ignoreRef()`] for the `replyTo`, which it can access through @scala[`ActorContext.system.ignoreRef`]@java[`ActorContext.getSystem().ignoreRef()`]. 
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #ignore-reply }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #ignore-reply }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #ignore-reply }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #ignore-reply }
 
 **Useful when:**
 
@@ -316,10 +316,10 @@ this purpose the `ActorContext` provides a @apidoc[pipeToSelf](typed.*.ActorCont
 An actor, `CustomerRepository`, is invoking a method on `CustomerDataAccess` that returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)].
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #pipeToSelf }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #pipeToSelf }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #pipeToSelf }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #pipeToSelf }
 
 It could be tempting to just use @scala[`onComplete on the Future`]@java[`a callback on the CompletionStage`], but
 that introduces the risk of accessing internal state of the actor that is not thread-safe from an external thread.
@@ -353,10 +353,10 @@ As the protocol of the session actor is not a public API but rather an implement
 ![per-session-child.png](./images/per-session-child.png)
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #per-session-child }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #per-session-child }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #per-session-child }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #per-session-child }
 
 In an actual session child you would likely want to include some form of timeout as well (see @ref:[scheduling messages to self](#scheduling-messages-to-self)).
 
@@ -390,19 +390,19 @@ function and sent back to the `replyTo`. If replies don't arrive within the `tim
 aggregated and sent back to the `replyTo`.
 
 Scala
-:  @@snip [AggregatorSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/AggregatorSpec.scala) { #usage }
+:  @@snip [AggregatorSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/AggregatorSpec.scala) { #usage }
 
 Java
-:  @@snip [AggregatorTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/AggregatorTest.java) { #usage }
+:  @@snip [AggregatorTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/AggregatorTest.java) { #usage }
 
 
 The implementation of the `Aggregator`:
 
 Scala
-:  @@snip [Aggregator.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/Aggregator.scala) { #behavior }
+:  @@snip [Aggregator.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/Aggregator.scala) { #behavior }
 
 Java
-:  @@snip [Aggregator.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/Aggregator.java) { #behavior }
+:  @@snip [Aggregator.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/Aggregator.java) { #behavior }
 
 **Useful when:**
 
@@ -437,10 +437,10 @@ example rather than a built in @apidoc[akka.actor.typed.Behavior] in Akka. It is
 ![tail-chopping.png](./images/tail-chopping.png)
 
 Scala
-:  @@snip [TailChopping.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/TailChopping.scala) { #behavior }
+:  @@snip [TailChopping.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/TailChopping.scala) { #behavior }
 
 Java
-:  @@snip [TailChopping.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/TailChopping.java) { #behavior }
+:  @@snip [TailChopping.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/TailChopping.java) { #behavior }
 
 **Useful when:**
 
@@ -467,10 +467,10 @@ The following example demonstrates how to use timers to schedule messages to an 
 The `Buncher` actor buffers a burst of incoming messages and delivers them as a batch after a timeout or when the number of batched messages exceeds a maximum size.
 
 Scala
-:  @@snip [InteractionPatternsSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #timer }
+:  @@snip [InteractionPatternsSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/InteractionPatternsSpec.scala) { #timer }
 
 Java
-:  @@snip [InteractionPatternsTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #timer }
+:  @@snip [InteractionPatternsTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/InteractionPatternsTest.java) { #timer }
 
 There are a few things worth noting here:
 

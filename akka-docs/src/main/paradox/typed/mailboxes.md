@@ -4,15 +4,15 @@ You are viewing the documentation for the new actor APIs, to view the Akka Class
 
 ## Dependency
 
-Mailboxes are part of core Akka, which means that they are part of the `akka-actor` dependency. This
-page describes how to use mailboxes with `akka-actor-typed`, which has dependency:
+Mailboxes are part of core Akka, which means that they are part of the `pekko-actor` dependency. This
+page describes how to use mailboxes with `pekko-actor-typed`, which has dependency:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor-typed_$scala.binary.version$"
+  artifact="pekko-actor-typed_$scala.binary.version$"
   version=AkkaVersion
 }
 
@@ -36,14 +36,14 @@ For advanced use cases it is also possible to defer mailbox selection to config 
 To select a specific mailbox for an actor use @apidoc[MailboxSelector](MailboxSelector$) to create a @apidoc[Props](typed.Props) instance for spawning your actor:
 
 Scala
-:  @@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/MailboxDocSpec.scala) { #select-mailbox }
+:  @@snip [MailboxDocSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/MailboxDocSpec.scala) { #select-mailbox }
 
 Java
-:  @@snip [MailboxDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/MailboxDocTest.java) { #select-mailbox }
+:  @@snip [MailboxDocTest.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/MailboxDocTest.java) { #select-mailbox }
 
 @apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):akka.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
 
-@@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
+@@snip [MailboxDocSpec.scala](/pekko-actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
 
 ### Default Mailbox
 

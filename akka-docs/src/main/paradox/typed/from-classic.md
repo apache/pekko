@@ -38,14 +38,14 @@ Artifact names:
 
 | Classic               | Typed                       |
 |-----------------------|-----------------------------|
-| akka-actor            | akka-actor-typed            |
+| pekko-actor           | pekko-actor-typed           |
 | akka-cluster          | akka-cluster-typed          |
 | akka-cluster-sharding | akka-cluster-sharding-typed |
 | akka-cluster-tools    | akka-cluster-typed          |
 | akka-distributed-data | akka-cluster-typed          |
 | akka-persistence      | akka-persistence-typed      |
 | akka-stream           | akka-stream-typed           |
-| akka-testkit          | akka-actor-testkit-typed    |
+| akka-testkit          | pekko-actor-testkit-typed   |
 
 Cluster Singleton and Distributed Data are included in `akka-cluster-typed`.
 
@@ -78,18 +78,18 @@ the @ref:[functional style](style-guide.md#functional-versus-object-oriented-sty
 Classic HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
 
 Typed HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #hello-world-actor }
 
 Why is it called `Behavior` and not `Actor`?
 
@@ -322,10 +322,10 @@ collection for bookkeeping of children, such as a @scala[`Map[String, ActorRef[C
 @java[`Map<String, ActorRef<Child.Command>>`]. It can look like this:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #children }
+:  @@snip [IntroSpec.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #children }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #children }
+:  @@snip [IntroSpec.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #children }
 
 Remember to remove entries from the `Map` when the children are terminated. For that purpose it's
 convenient to use `watchWith`, as illustrated in the example above, because then you can include the

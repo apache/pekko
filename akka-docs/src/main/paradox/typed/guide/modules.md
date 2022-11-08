@@ -40,11 +40,11 @@ This page does not list all available modules, but overviews the main functional
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=AkkaVersion
 }
 
-The core Akka library is `akka-actor-typed`, but actors are used across Akka libraries, providing a consistent, integrated model that relieves you from individually
+The core Akka library is `pekko-actor-typed`, but actors are used across Akka libraries, providing a consistent, integrated model that relieves you from individually
 solving the challenges that arise in concurrent or distributed system design. From a birds-eye view,
 actors are a programming paradigm that takes encapsulation, one of the pillars of OOP, to its extreme.
 Unlike objects, actors encapsulate not only their
@@ -68,7 +68,7 @@ Challenges that actors solve include the following:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=AkkaVersion
 }
 

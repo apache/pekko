@@ -12,15 +12,15 @@ meaning of the configuration properties. One library must not try to override pr
 for properties originally defined by another library's `reference.conf`, because the effective value would be
 nondeterministic when loading the configuration.`
 
-<a id="config-akka-actor"></a>
-### akka-actor
+<a id="config-pekko-actor"></a>
+### pekko-actor
 
-@@snip [reference.conf](/akka-actor/src/main/resources/reference.conf)
+@@snip [reference.conf](/pekko-actor/src/main/resources/reference.conf)
 
-<a id="config-akka-actor-typed"></a>
-### akka-actor-typed
+<a id="config-pekko-actor-typed"></a>
+### pekko-actor-typed
 
-@@snip [reference.conf](/akka-actor-typed/src/main/resources/reference.conf)
+@@snip [reference.conf](/pekko-actor-typed/src/main/resources/reference.conf)
 
 <a id="config-akka-cluster-typed"></a>
 ### akka-cluster-typed
@@ -67,15 +67,15 @@ nondeterministic when loading the configuration.`
 
 @@snip [reference.conf](/akka-persistence-testkit/src/main/resources/reference.conf)
 
-<a id="config-akka-remote-artery"></a>
-### akka-remote artery
+<a id="config-pekko-remote-artery"></a>
+### pekko-remote artery
 
-@@snip [reference.conf](/akka-remote/src/main/resources/reference.conf) { #shared #artery type=none }
+@@snip [reference.conf](/pekko-remote/src/main/resources/reference.conf) { #shared #artery type=none }
 
-<a id="config-akka-remote"></a>
-### akka-remote classic (deprecated)
+<a id="config-pekko-remote"></a>
+### pekko-remote classic (deprecated)
 
-@@snip [reference.conf](/akka-remote/src/main/resources/reference.conf) { #shared #classic type=none }
+@@snip [reference.conf](/pekko-remote/src/main/resources/reference.conf) { #shared #classic type=none }
 
 <a id="config-akka-testkit"></a>
 ### akka-testkit

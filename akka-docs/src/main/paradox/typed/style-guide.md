@@ -19,18 +19,18 @@ There are two flavors of the Actor APIs.
 An example of a counter actor implemented in the functional style:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style }
 
 Corresponding actor implemented in the object-oriented style:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #oo-style }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #oo-style }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #oo-style }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #oo-style }
 
 Some similarities to note:
 
@@ -138,10 +138,10 @@ Let's add `name` parameter and timers to the previous `Counter` example. A first
 as separate parameters:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params1 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params1 }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params1 }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params1 }
 
 Ouch, that doesn't look good. More things may be needed, such as stashing or application specific "constructor"
 parameters. As you can imagine, that will be too much boilerplate.
@@ -150,10 +150,10 @@ As a first step we can place all these parameters in a class so that we at least
 Still good to have the "changing" state, the @scala[`n: Int`]@java[`final int n`] here, as a separate parameter.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params2 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params2 }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params2 }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params2 }
 
 That's better. Only one thing to carry around and easy to add more things to it without rewriting everything.
 @scala[Note that we also placed the `ActorContext` in the `Setup` class, and therefore switched from
@@ -166,10 +166,10 @@ The "constructor" parameters can be @scala[immutable]@java[`final`] instance fie
 member methods.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params3 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params3 }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params3 }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #fun-style-setup-params3 }
 
 That's nice. One thing to be cautious with here is that it's important that you create a new instance for
 each spawned actor, since those parameters must not be shared between different actor instances. That comes natural
@@ -193,7 +193,7 @@ block. That works fine, but for more complex behaviors it can be better to struc
 For completeness, here is how it would look like:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params4 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #fun-style-setup-params4 }
 
 @@@
 
@@ -220,18 +220,18 @@ parameters it is preferred to consistently use a method @scala[(`def`)] for the 
 Example:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #behavior-factory-method }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #behavior-factory-method }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #behavior-factory-method }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #behavior-factory-method }
 
 When spawning an actor from this initial behavior it looks like:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #behavior-factory-method-spawn }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #behavior-factory-method-spawn }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #behavior-factory-method-spawn }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #behavior-factory-method-spawn }
 
 
 ## Where to define messages
@@ -240,10 +240,10 @@ When sending or receiving actor messages they should be prefixed with the name
 of the actor/behavior that defines them to avoid ambiguities.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #message-prefix-in-tell }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #message-prefix-in-tell }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-prefix-in-tell }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-prefix-in-tell }
 
 Such a style is preferred over using @scala[importing `Down` and using `countDown ! Down`]
 @java[importing `Down` and using `countDown.tell(Down.INSTANCE);`].
@@ -255,10 +255,10 @@ For the majority of cases it's good style to define
 the messages @scala[in the companion object]@java[as static inner classes] together with the `Behavior`.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #messages }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #messages }
 
 If several actors share the same message protocol, it's recommended to define
 those messages in a separate @scala[`object`]@java[`interface`] for that protocol.
@@ -266,10 +266,10 @@ those messages in a separate @scala[`object`]@java[`interface`] for that protoco
 Here's an example of a shared message protocol setup:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #message-protocol }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #message-protocol }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-protocol }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-protocol }
 
 Note that the response message hierarchy in this case could be completely avoided by using the @apiDoc[StatusReply] API 
 instead (see @ref[Generic Response Wrapper](interaction-patterns.md#generic-response-wrapper)).
@@ -286,10 +286,10 @@ public `Command` @scala[trait]@java[interface].
 Here is an example of using `private` for an internal message:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #public-private-messages-1 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #public-private-messages-1 }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #public-private-messages-1 }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #public-private-messages-1 }
 
 An alternative approach is using a type hierarchy and `narrow` to have a super-type for the public messages as a
 distinct type from the super-type of all actor messages.  The
@@ -299,10 +299,10 @@ using shared message protocol classes as described in @ref:[Where to define mess
 Here's an example of using a type hierarchy to separate public and private messages:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #public-private-messages-2 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #public-private-messages-2 }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #public-private-messages-2 }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #public-private-messages-2 }
 
 `private` visibility can be defined for the `PrivateCommand` messages but it's not strictly needed since they can't be
 sent to an @scala[ActorRef[Command]]@java[ActorRef<Command>], which is the public message type of the actor.
@@ -314,12 +314,12 @@ sent to an @scala[ActorRef[Command]]@java[ActorRef<Command>], which is the publi
 For messages without parameters the `enum` singleton pattern is recommended:
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-enum }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-enum }
 
 In the `ReceiveBuilder` it can be matched in same way as other messages:
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-enum-match }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #message-enum-match }
 
 @@@
 
@@ -335,13 +335,13 @@ The delegation can be with lambdas or [method references](https://docs.oracle.co
 Example of delegation using a lambda:
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-lambda }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-lambda }
 
 When possible it's preferred to use method references instead of lambdas. The benefit is less verbosity and
 in some cases it can actually give better type inference.
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-method-ref }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-method-ref }
 
 `this::onGetValue` is a method reference in above example. It corresponds to `command -> onGetValue(command)`.
 
@@ -351,7 +351,7 @@ More important than the choice between lambdas or method references is to avoid 
 An anti-pattern would be to inline all message handling inside the lambdas like this:
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-lambda-anti }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #on-message-lambda-anti }
 
 In a real application it would often be more than 3 lines for each message.
 It's not only making it more difficult to get an overview of the message matching, but compiler errors related
@@ -370,7 +370,7 @@ It's recommended to use a `sealed` trait as the super type of the commands (inco
 as the compiler will emit a warning if a message type is forgotten in the pattern match.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages-sealed }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages-sealed }
 
 That is the main reason for `Behaviors.receive`, `Behaviors.receiveMessage` taking a `Function` rather than a `PartialFunction`.
 
@@ -388,14 +388,14 @@ attention to those. If a `Behavior` should not handle certain messages you can s
 in the pattern match and return `Behaviors.unhandled`.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #pattern-match-unhandled }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #pattern-match-unhandled }
 
 It's recommended to use the `sealed` trait and total functions with exhaustiveness check to detect mistakes
 of forgetting to handle some messages. Sometimes that can be inconvenient and then you can use a `PartialFunction`
 with `Behaviors.receivePartial` or `Behaviors.receiveMessagePartial`
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #pattern-match-partial }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #pattern-match-partial }
 
 @@@
 
@@ -410,19 +410,19 @@ A good use case for composing two or more `PartialFunction`s is when there is a 
 The Command definition is still highly recommended be kept within a `sealed` Trait:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages-sealed-composition }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #messages-sealed-composition }
 
 In this particular case, the Behavior that is repeating over is the one in charge to handle
 the `GetValue` Command, as it behaves the same regardless of the Actor's internal state.
 Instead of defining the specific handlers as a `Behavior`, we can define them as a `PartialFunction`:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #get-handler-partial #set-handler-non-zero-partial #set-handler-zero-partial }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #get-handler-partial #set-handler-non-zero-partial #set-handler-zero-partial }
 
 Finally, we can go on defining the two different behaviors for this specific actor. For each `Behavior` we would go and concatenate all needed `PartialFunction` instances with `orElse` to finally apply the command to the resulting one:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #top-level-behaviors-partial }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #top-level-behaviors-partial }
 
 Even though in this particular example we could use `receiveMessage` as we cover all cases, we use `receiveMessagePartial` instead to cover potential future unhandled message cases.
 
@@ -435,22 +435,22 @@ Even though in this particular example we could use `receiveMessage` as we cover
 When using the `AskPattern` it's recommended to use the `ask` method rather than the infix `?` operator, like so:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-1 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-1 }
 
 You may also use the more terse placeholder syntax `_` instead of `replyTo`:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-2 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-2 }
 
 However, using the infix operator `?` with the placeholder syntax `_`, like is done in the following example, won't typecheck because of the binding scope rules for wildcard parameters:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-3 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-3 }
 
 Adding the necessary parentheses (as shown below) makes it typecheck, but, subjectively, it's rather ugly so the recommendation is to use `ask`.
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-4 }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #ask-4 }
 
 Note that `AskPattern` is only intended for request-response interaction from outside an actor. If the requester is
 inside an actor, prefer `ActorContext.ask` as it provides better thread-safety by not requiring the use of a @scala[`Future`]@java[`CompletionStage`] inside the actor.
@@ -484,10 +484,10 @@ When an actor behavior needs more than one of `setup`, `withTimers` and `withSta
 the needed dependencies:
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #nesting }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #nesting }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #nesting }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #nesting }
 
 The order of the nesting does not change the behavior as long as there is no additional logic in any other function than the innermost one. 
 It can be nice to default to put `setup` outermost as that is the least likely block that will be removed if the actor logic changes. 
@@ -495,10 +495,10 @@ It can be nice to default to put `setup` outermost as that is the least likely b
 Note that adding `supervise` to the mix is different as it will restart the behavior it wraps, but not the behavior around itself:   
 
 Scala
-:  @@snip [StyleGuideDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #nesting-supervise }
+:  @@snip [StyleGuideDocExamples.scala](/pekko-actor-typed-tests/src/test/scala/docs/akka/typed/StyleGuideDocExamples.scala) { #nesting-supervise }
 
 Java
-:  @@snip [StyleGuideDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #nesting-supervise }
+:  @@snip [StyleGuideDocExamples.java](/pekko-actor-typed-tests/src/test/java/jdocs/akka/typed/StyleGuideDocExamples.java) { #nesting-supervise }
 
 
 ## Additional naming conventions

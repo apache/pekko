@@ -11,7 +11,7 @@ To use Actor TestKit add the module to your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group=com.typesafe.akka
-  artifact=akka-actor-testkit-typed_$scala.binary.version$
+  artifact=pekko-actor-testkit-typed_$scala.binary.version$
   version=AkkaVersion
   scope=test
 }
@@ -29,7 +29,7 @@ We recommend using Akka TestKit with ScalaTest:
 
 @@@
 
-@@project-info{ projectId="akka-actor-testkit-typed" }
+@@project-info{ projectId="pekko-actor-testkit-typed" }
 
 ## Introduction
 

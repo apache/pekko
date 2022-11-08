@@ -12,11 +12,11 @@ To use Logging, you must at least use the Akka actors dependency in your project
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
 }
 
-@@project-info{ projectId="akka-slf4j" }
+@@project-info{ projectId="pekko-slf4j" }
 
 ## Introduction
 
@@ -317,12 +317,12 @@ akka {
 
 The default one logs to STDOUT and is registered by default. It is not intended
 to be used for production. There is also an @ref:[SLF4J](#slf4j)
-logger available in the 'akka-slf4j' module.
+logger available in the 'pekko-slf4j' module.
 
 @@@ note
 
-If `akka-actor-typed` is available on your classpath, logging will automatically switch to @ref:[SLF4J](#slf4j) instead of 
-the default logger. See the  @ref:[Akka typed logging](typed/logging.md#event-bus) docs for more details.
+If `pekko-actor-typed` is available on your classpath, logging will automatically switch to @ref:[SLF4J](#slf4j) instead of 
+the default logger. See the  @ref:[Pekko typed logging](typed/logging.md#event-bus) docs for more details.
 
 @@@
 
@@ -344,7 +344,7 @@ stdout logger is `WARNING` and it can be silenced completely by setting
 
 ## SLF4J
 
-Akka provides a logger for [SLF4J](https://www.slf4j.org/). This module is available in the 'akka-slf4j.jar'.
+Akka provides a logger for [SLF4J](https://www.slf4j.org/). This module is available in the 'pekko-slf4j.jar'.
 It has a single dependency: the slf4j-api jar. In your runtime, you also need a SLF4J backend. We recommend [Logback](https://logback.qos.ch/):
 
 @@dependency[sbt,Maven,Gradle] {
@@ -352,7 +352,7 @@ It has a single dependency: the slf4j-api jar. In your runtime, you also need a 
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-slf4j_$scala.binary.version$"
+  artifact="pekko-slf4j_$scala.binary.version$"
   version=AkkaVersion
   group2="ch.qos.logback"
   artifact2="logback-classic"
@@ -435,12 +435,12 @@ load is high.
 
 A starting point for configuration of `logback.xml` for production:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-prod.xml)
+@@snip [logback.xml](/pekko-actor-typed-tests/src/test/resources/logback-doc-prod.xml)
 
 For development you might want to log to standard out, but also have all `DEBUG` level logging to file, like
 in this example:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-dev.xml)
+@@snip [logback.xml](/pekko-actor-typed-tests/src/test/resources/logback-doc-dev.xml)
 
 Place the `logback.xml` file in `src/main/resources/logback.xml`. For tests you can define different
 logging configuration in `src/test/resources/logback-test.xml`.
@@ -571,7 +571,7 @@ trigger emails and other notifications immediately.
 Markers are available through the LoggingAdapters, when obtained via @apidoc[Logging.withMarker](akka.event.Logging$) {scala="#withMarker(logSource:akka.actor.Actor):akka.event.DiagnosticMarkerBusLoggingAdapter" java="#withMarker(akka.actor.Actor)"}.
 The first argument passed into all log calls then should be a @apidpc[akka.event.LogMarker].
 
-The slf4j bridge provided by Akka in `akka-slf4j` will automatically pick up this marker value and make it available to SLF4J.
+The slf4j bridge provided by Akka in `pekko-slf4j` will automatically pick up this marker value and make it available to SLF4J.
 
 Akka is logging some events with markers. Some of these events also include structured MDC properties. 
 
@@ -595,7 +595,7 @@ The marker can be included in the Logback output with `%marker` and all MDC prop
 
 It is also possible to use the @javadoc[org.slf4j.Marker](org.slf4j.Marker) with the @apidoc[LoggingAdapter] when using slf4j.
 
-Since the akka-actor library avoids depending on any specific logging library, the support for this is included in `akka-slf4j`,
+Since the pekko-actor library avoids depending on any specific logging library, the support for this is included in `pekko-slf4j`,
 which provides the @apidoc[Slf4jLogMarker] type which can be passed in as first argument instead of the logging framework agnostic LogMarker
-type from `akka-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
+type from `pekko-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
 rely more information using them rather than just a single string.

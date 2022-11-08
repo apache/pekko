@@ -35,18 +35,18 @@ and not in `src/test/...`.
 The multi-JVM tasks are similar to the normal tasks: `test`, `testOnly`,
 and `run`, but are under the `multi-jvm` configuration.
 
-So in Akka, to run all the multi-JVM tests in the akka-remote project use (at
+So in Akka, to run all the multi-JVM tests in the pekko-remote project use (at
 the sbt prompt):
 
 ```none
-akka-remote-tests/multi-jvm:test
+pekko-remote-tests/multi-jvm:test
 ```
 
-Or one can change to the `akka-remote-tests` project first, and then run the
+Or one can change to the `pekko-remote-tests` project first, and then run the
 tests:
 
 ```none
-project akka-remote-tests
+project pekko-remote-tests
 multi-jvm:test
 ```
 

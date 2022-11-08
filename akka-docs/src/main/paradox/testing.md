@@ -714,13 +714,13 @@ options:
 
 @@@ div { .group-scala }
 * *Logging of message invocations on certain actors*
-   This is enabled by a setting in the @ref:[Configuration](general/configuration-reference.md#config-akka-actor) — namely
+   This is enabled by a setting in the @ref:[Configuration](general/configuration-reference.md#config-pekko-actor) — namely
 `akka.actor.debug.receive` — which enables the `loggable`
 statement to be applied to an actor’s `receive` function:
 
 @@snip [TestkitDocSpec.scala](/akka-docs/src/test/scala/docs/testkit/TestkitDocSpec.scala) { #logging-receive }
 
-If the aforementioned setting is not given in the @ref:[Configuration](general/configuration-reference.md#config-akka-actor), this method will
+If the aforementioned setting is not given in the @ref:[Configuration](general/configuration-reference.md#config-pekko-actor), this method will
 pass through the given `Receive` function unmodified, meaning that
 there is no runtime cost unless enabled.
 

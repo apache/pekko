@@ -12,7 +12,7 @@ To use Routing, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
 }
 
@@ -126,7 +126,7 @@ In addition to being able to create local actors as routees, you can instruct th
 deploy its created children on a set of remote hosts. Routees will be deployed in round-robin
 fashion. In order to deploy routees remotely, wrap the router configuration in a
 @apidoc[akka.remote.routing.RemoteRouterConfig], attaching the remote addresses of the nodes to deploy to. Remote
-deployment requires the `akka-remote` module to be included in the classpath.
+deployment requires the `pekko-remote` module to be included in the classpath.
 
 Scala
 :  @@snip [RouterDocSpec.scala](/akka-docs/src/test/scala/docs/routing/RouterDocSpec.scala) { #remoteRoutees }
@@ -182,7 +182,7 @@ by specifying the strategy when defining the router.
 Setting the strategy is done like this:
 
 Scala
-:  @@snip [RoutingSpec.scala](/akka-actor-tests/src/test/scala/akka/routing/RoutingSpec.scala) { #supervision }
+:  @@snip [RoutingSpec.scala](/pekko-actor-tests/src/test/scala/akka/routing/RoutingSpec.scala) { #supervision }
 
 Java
 :  @@snip [RouterDocTest.java](/akka-docs/src/test/java/jdocs/routing/RouterDocTest.java) { #supervision }
@@ -239,7 +239,7 @@ Java
 :  @@snip [RouterDocTest.java](/akka-docs/src/test/java/jdocs/routing/RouterDocTest.java) { #create-worker-actors }
 
 The paths may contain protocol and address information for actors running on remote hosts.
-Remoting requires the `akka-remote` module to be included in the classpath.
+Remoting requires the `pekko-remote` module to be included in the classpath.
 
 @@snip [RouterDocSpec.scala](/akka-docs/src/test/scala/docs/routing/RouterDocSpec.scala) { #config-remote-round-robin-group }
 

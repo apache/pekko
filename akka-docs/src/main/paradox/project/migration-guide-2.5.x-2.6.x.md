@@ -229,8 +229,8 @@ akka.remote.artery.canonical.port = 2552
 ```
 
 The configuration for Artery is different, so you might have to revisit any custom configuration. See the full
-@ref:[reference configuration for Artery](../general/configuration-reference.md#config-akka-remote-artery) and
-@ref:[reference configuration for classic remoting](../general/configuration-reference.md#config-akka-remote).
+@ref:[reference configuration for Artery](../general/configuration-reference.md#config-pekko-remote-artery) and
+@ref:[reference configuration for classic remoting](../general/configuration-reference.md#config-pekko-remote).
 
 Configuration that is likely required to be ported:
 
@@ -280,7 +280,7 @@ down of the Cluster you have to enable Classic remoting. Later, you can plan for
 
 Explicitly disable Artery by setting property `akka.remote.artery.enabled` to `false`. Further, any configuration under `akka.remote` that is
 specific to classic remoting needs to be moved to `akka.remote.classic`. To see which configuration options
-are specific to classic search for them in: @ref:[`akka-remote/reference.conf`](../general/configuration-reference.md#config-akka-remote).
+are specific to classic search for them in: @ref:[`pekko-remote/reference.conf`](../general/configuration-reference.md#config-pekko-remote).
 
 If you have a [Lightbend Subscription](https://www.lightbend.com/lightbend-subscription) you can use our [Config Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html) enhancement to flag any settings that have not been properly migrated.
 

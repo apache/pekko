@@ -9,7 +9,7 @@ To use I/O, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
 }
 

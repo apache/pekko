@@ -11,7 +11,7 @@ To use Classic Actors, add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
   group2="com.typesafe.akka"
   artifact2="akka-testkit_$scala.binary.version$"
@@ -19,7 +19,7 @@ To use Classic Actors, add the following dependency in your project:
   version2=AkkaVersion
 }
 
-@@project-info{ projectId="akka-actor" }
+@@project-info{ projectId="pekko-actor" }
 
 ## Introduction
 
@@ -351,7 +351,7 @@ The remaining visible methods are user-overridable life-cycle hooks which are
 described in the following:
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/akka/actor/Actor.scala) { #lifecycle-hooks }
+:  @@snip [Actor.scala](/pekko-actor/src/main/scala/akka/actor/Actor.scala) { #lifecycle-hooks }
 
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #lifecycle-callbacks }
@@ -785,7 +785,7 @@ An Actor has to
 @java[define its initial receive behavior by implementing the @javadoc[createReceive](akka.actor.AbstractActor#createReceive()) method in the `AbstractActor`:]
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/akka/actor/Actor.scala) { #receive }
+:  @@snip [Actor.scala](/pekko-actor/src/main/scala/akka/actor/Actor.scala) { #receive }
 
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #createReceive }

@@ -96,7 +96,7 @@ dependencies, you might get a warning at run time such as:
 You are using version 2.6.6 of Akka, but it appears you (perhaps indirectly) also depend on older versions 
 of related artifacts. You can solve this by adding an explicit dependency on version 2.6.6 of the 
 [akka-persistence-query] artifacts to your project. Here's a complete collection of detected 
-artifacts: (2.5.3, [akka-persistence-query]), (2.6.6, [akka-actor, akka-cluster]).
+artifacts: (2.5.3, [akka-persistence-query]), (2.6.6, [pekko-actor, akka-cluster]).
 See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed
 ```
 

@@ -5,7 +5,7 @@ Originally conceived as a way to send messages to groups of actors, the
 implementing a simple interface:
 
 Scala
-:  @@snip [EventBus.scala](/akka-actor/src/main/scala/akka/event/EventBus.scala) { #event-bus-api }
+:  @@snip [EventBus.scala](/pekko-actor/src/main/scala/akka/event/EventBus.scala) { #event-bus-api }
 
 Java
 :  @@snip [EventBusDocTest.java](/akka-docs/src/test/java/jdocs/event/EventBusDocTest.java) { #event-bus-api }
@@ -35,7 +35,7 @@ for any concrete implementation.
 
 The classifiers presented here are part of the Akka distribution, but rolling
 your own in case you do not find a perfect match is not difficult, check the
-implementation of the existing ones on @extref[github](github:akka-actor/src/main/scala/akka/event/EventBus.scala) 
+implementation of the existing ones on @extref[github](github:pekko-actor/src/main/scala/akka/event/EventBus.scala) 
 
 ### Lookup Classification
 

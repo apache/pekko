@@ -18,7 +18,7 @@ Most relevant default phases
 | before-actor-system-terminate | Phase for custom application tasks that are to be run after cluster shutdown and before `ActorSystem` termination. |
 
 reference.conf (HOCON)
-:   @@snip [reference.conf](/akka-actor/src/main/resources/reference.conf) { #coordinated-shutdown-phases }
+:   @@snip [reference.conf](/pekko-actor/src/main/resources/reference.conf) { #coordinated-shutdown-phases }
 
 More phases can be added in the application's `application.conf` if needed by overriding a phase with an
 additional `depends-on`.
@@ -41,7 +41,7 @@ is only used for debugging/logging.
 Tasks added to the same phase are executed in parallel without any ordering assumptions.
 Next phase will not start until all tasks of previous phase have been completed.
 
-If tasks are not completed within a configured timeout (see @ref:[reference.conf](general/configuration-reference.md#config-akka-actor))
+If tasks are not completed within a configured timeout (see @ref:[reference.conf](general/configuration-reference.md#config-pekko-actor))
 the next phase will be started anyway. It is possible to configure `recover=off` for a phase
 to abort the rest of the shutdown process if a task fails or is not completed within the timeout.
 

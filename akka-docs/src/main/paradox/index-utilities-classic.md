@@ -9,7 +9,7 @@ To use Utilities, you must add the following dependency in your project:
   symbol1=AkkaVersion
   value1="$akka.version$"
   group="com.typesafe.akka"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=AkkaVersion
   group2="com.typesafe.akka"
   artifact2="akka-testkit_$scala.binary.version$"
