@@ -1,63 +1,39 @@
-Pekko [![Latest version](https://index.scala-lang.org/akka/akka/akka-actor/latest.svg)](https://index.scala-lang.org/akka/akka/akka-actor)[![Build Status](https://api.travis-ci.com/akka/akka.svg?branch=main)](https://travis-ci.com/github/akka/akka)
-====
+Apache Pekko
+============
 
-We believe that writing correct concurrent & distributed, resilient and elastic applications is too hard.
-Most of the time it's because we are using the wrong tools and the wrong level of abstraction.
+Apache Pekko is an open-source framework for building applications that are concurrent, distributed, resilient and elastic.
+Pekko uses the Actor Model to provide more intuitive high-level abstractions for concurrency.
+Using these abstractions, Pekko also provides libraries for persistence, streams, HTTP, and more.
 
-Pekko (a continuation project of [Akka](https://akka.io/)) is here to change that.
-
-Using the Actor Model we raise the abstraction level and provide a better platform to build correct concurrent and scalable applications. This model is a perfect match for the principles laid out in the [Reactive Manifesto](https://www.reactivemanifesto.org/).
-
-For resilience, we adopt the "Let it crash" model which the telecom industry has used with great success to build applications that self-heal and systems that never stop.
-
-Actors also provide the abstraction for transparent distribution and the basis for truly scalable and fault-tolerant applications.
-
-Learn more at [akka.io](https://akka.io/).
+Pekko is fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka project's adoption of the Business Source License.
 
 Reference Documentation
 -----------------------
 
-The reference documentation is available at [doc.akka.io](https://doc.akka.io),
-for [Scala](https://doc.akka.io/docs/akka/current/scala.html) and [Java](https://doc.akka.io/docs/akka/current/java.html).
+**TODO add documentation links**
 
 Community
 ---------
-You can join these groups and chats to discuss and ask Akka related questions:
 
-- Forums: [discuss.akka.io](https://discuss.akka.io)
-- Chat room about *using* Akka: [![gitter: akka/akka](https://img.shields.io/badge/gitter%3A-akka%2Fakka-blue.svg?style=flat-square)](https://gitter.im/akka/akka)
-- Issue tracker: [![github: akka/akka](https://img.shields.io/badge/github%3A-issues-blue.svg?style=flat-square)](https://github.com/akka/akka/issues)
+There are several ways to interact with the Pekko community:
 
-In addition to that, you may enjoy following:
-
-- The [news](https://akka.io/blog/news-archive.html) section of the page, which is updated whenever a new version is released
-- The [Akka Team Blog](https://akka.io/blog/article-archive.html)
-- [@akkateam](https://twitter.com/akkateam) on Twitter
-- Questions tagged [#akka on StackOverflow](https://stackoverflow.com/questions/tagged/akka)
-- Projects built with Akka: [![akka-dependency-badge]][akka-dependency-scaladex]
+- [GitHub discussions](https://github.com/apache/incubator-pekko/discussions): for questions and general discussion.
+- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
+- [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
 
 Contributing
 ------------
-**Contributions are *very* welcome!**
 
-If you see an issue that you'd like to see fixed, or want to shape out some ideas,
-the best way to make it happen is to help out by submitting a pull request implementing it.
-We welcome contributions from all, even you are not yet familiar with this project,
-We are happy to get you started, and will guide you through the process once you've submitted your PR.
+Contributions are very welcome. If you have an idea on how to improve Pekko, don't hesitate to create an issue or submit a pull request.
 
-[![akka-dependency-badge]][akka-dependency-scaladex]
+See [CONTRIBUTING.md](https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md) for details on the development workflow and how to create your pull request.
 
-Refer to the [CONTRIBUTING.md](https://github.com/akka/akka/blob/main/CONTRIBUTING.md) file for more details about the workflow,
-and general hints on how to prepare your pull request. You can also ask for clarifications or guidance in GitHub issues directly,
-or in the akka/dev chat if a more real time communication would be of benefit.
+Code of Conduct
+---------------
 
-A chat room is available for all questions related to *developing and contributing* to Akka:
-[![gitter: akka/dev](https://img.shields.io/badge/gitter%3A-akka%2Fdev-blue.svg?style=flat-square)](https://gitter.im/akka/dev)
+Apache Pekko is governed by the [Apache code of conduct](https://www.apache.org/foundation/policies/conduct.html). By participating in this project you agree to abide by its terms.
 
 License
 -------
 
-Pekko is Open Source and available under the Apache 2 License.
-
-[akka-dependency-badge]: https://index.scala-lang.org/count.svg?q=dependencies:akka/*&subject=scaladex:&color=blue&style=flat-square "Built with Pekko"
-[akka-dependency-scaladex]: https://index.scala-lang.org/search?q=dependencies:akka/*
+Apache Pekko is available under the Apache License, version 2.0. See [LICENSE](https://github.com/apache/incubator-pekko/blob/main/LICENSE) file for details.
