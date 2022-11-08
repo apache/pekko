@@ -1,10 +1,10 @@
-# Welcome! Thank you for interest in contributing to Akka!
+# Welcome! Thank you for interest in contributing to Pekko!
 
 We follow the standard GitHub [fork & pull](https://help.github.com/articles/using-pull-requests/#fork--pull) approach to pull requests. Just fork the official repo, develop in a branch, and submit a PR!
 
 You're always welcome to submit your PR straight away and start the discussion (without reading the rest of this wonderful doc or the README.md). The goal of these notes is to make your experience contributing to Akka as smooth and pleasant as possible. We're happy to guide you through the process once you've submitted your PR.
 
-## The Akka Community
+## The Pekko Community
 
 If you have questions about the contribution process or discuss specific issues, please visit the [akka/dev Gitter chat](https://gitter.im/akka/dev).
 
@@ -22,13 +22,9 @@ Depending on which version (or sometimes module) you want to work on, you should
 
 ### Tags
 
-Akka uses tags to categorise issues into groups or mark their phase in development.
+Pekko uses tags to categorise issues into groups or mark their phase in development.
 
-Most notably, many tags start with a `t:` prefix (as in `topic:`), categorizing issues in which module they are related. Examples are:
-
-- [t:core](https://github.com/akka/akka/issues?utf8=%E2%9C%93&q=is%3Aissue%20is%3Aopen%20label%3At%3Acore)
-- [t:stream](https://github.com/akka/akka/issues?q=is%3Aissue+is%3Aopen+label%3At%3Astream)
-- see [all tags here](https://github.com/akka/akka/labels)
+Most notably, many tags start with a `t:` prefix (as in `topic:`), categorizing issues in which module they are related. Examples would be added soon.
 
 In general *all issues are open for anyone working on them*. However, if you're new to the project and looking for an issue
 that will be accepted and likely is a nice one to get started you should check out the following tags:
@@ -53,10 +49,9 @@ Pull request validation states:
 
 - `validating => [tested | needs-attention]` - signify pull request validation status.
 
-## Akka contributing guidelines
+## Pekko contributing guidelines
 
-These guidelines apply to all Akka projects, by which we mean both the `akka/akka` repository,
-as well as any plugins or additional repositories located under the Akka GitHub organisation.
+These guidelines apply to all Pekko projects, by which we currently mean both the `apache/incubator-pekko` repository, as well as any plugins or additional repositories.
 
 These guidelines are meant to be a living document that should be changed and adapted as needed.
 We encourage changes that make it easier to achieve our goals efficiently.
@@ -66,15 +61,15 @@ We encourage changes that make it easier to achieve our goals efficiently.
 The steps below describe how to get a patch into the main development branch (`main`).
 The steps are exactly the same for everyone involved in the project, including the core team and first-time contributors.
 
-1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/akka/akka/issues) and [existing pull requests](https://github.com/akka/akka/pulls) for existing work.
-   - If there is no ticket yet, feel free to [create one](https://github.com/akka/akka/issues/new) to discuss the problem and the approach you want to take to solve it.
-1. [Fork the project](https://github.com/akka/akka#fork-destination-box) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Akka.
+1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
+   - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new) to discuss the problem and the approach you want to take to solve it.
+1. [Fork the project](https://github.com/apache/incubator-pekko#fork-destination-box) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Akka.
 1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-akka-http`
    - Please make sure to follow the general quality guidelines (specified below) when developing your patch.
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
    - Use the `verifyCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
-1. If it's a new feature or a change of behavior, document it on the [akka-docs](https://github.com/akka/akka/tree/main/akka-docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
+1. If it's a new feature or a change of behavior, document it on the [akka-docs](https://github.com/apache/incubator-pekko/tree/main/akka-docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
     - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
 1. If you have not already done so, you will be asked by our CLA bot to [sign the Lightbend CLA](https://www.lightbend.com/contribute/cla) online. CLA stands for Contributor License Agreement and protects intellectual property disputes from harming the project.
@@ -89,7 +84,7 @@ The steps are exactly the same for everyone involved in the project, including t
 
 The TL;DR; of the above very precise workflow version is:
 
-1. Fork Akka
+1. Fork Pekko
 2. Hack and test on your feature (on a branch)
 3. Document it
 4. Submit a PR
@@ -97,7 +92,7 @@ The TL;DR; of the above very precise workflow version is:
 6. Keep polishing it until getting the required number of approvals
 7. Profit!
 
-> **Note:** Github Actions runs all the workflows for the forked project. We have filters to ensure that each action efectively runs only for the `akka/akka` repository, but you may also want to [disable Github Actions](https://docs.github.com/en/github/administering-a-repository/managing-repository-settings/disabling-or-limiting-github-actions-for-a-repository) entirely in your fork.
+> **Note:** Github Actions runs all the workflows for the forked project. We have filters to ensure that each action effectively runs only for the `apache/incubator-pekko` repository, but you may also want to [disable Github Actions](https://docs.github.com/en/github/administering-a-repository/managing-repository-settings/disabling-or-limiting-github-actions-for-a-repository) entirely in your fork.
 
 #### Backporting
 
@@ -218,7 +213,7 @@ Akka, like most Scala projects, compiles faster with the Graal JIT enabled. The 
 
 ### The `validatePullRequest` task
 
-The Akka build includes a special task called `validatePullRequest`, which investigates the changes made as well as dirty
+The Pekko build includes a special task called `validatePullRequest`, which investigates the changes made as well as dirty
 (uncommitted changes) in your local working directory and figures out which projects are impacted by those changes,
 then running tests only on those projects.
 
@@ -251,7 +246,7 @@ e.g. `allCluster`, `allTyped`.
 Binary compatibility rules and guarantees are described in depth in the [Binary Compatibility Rules
 ](https://doc.akka.io/docs/akka/snapshot/common/binary-compatibility-rules.html) section of the documentation.
 
-Akka uses [MiMa](https://github.com/lightbend/mima) to
+Pekko uses [MiMa](https://github.com/lightbend/mima) to
 validate the binary compatibility of incoming pull requests. If your PR fails due to binary compatibility issues, you may see
 an error like this:
 
@@ -293,12 +288,12 @@ All wire protocol changes that may concern rolling upgrades should be documented
 
 ### Protobuf
 
-Akka includes a shaded version of protobuf `3` that is used for internal communication. To generate files,
+Pekko includes a shaded version of protobuf `3` that is used for internal communication. To generate files,
 run `protobufGenerate`. The generated files are put in each project's `src/main/java` and need to be committed.
 The generated files are automatically transformed to use the shaded version of protobuf.
 
 Generation depends on protoc `3.11.4` being on the path. See [protobuf project](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) for installation instructions, and
-[Protobuf.scala](https://github.com/akka/akka/blob/main/project/Protobuf.scala) for details of how to override
+[Protobuf.scala](https://github.com/apache/incubator-pekko/blob/main/project/Protobuf.scala) for details of how to override
 the settings for generation.
 
 ### Pull request requirements
@@ -306,15 +301,9 @@ the settings for generation.
 For a pull request to be considered at all, it has to meet these requirements:
 
 1. Regardless if the code introduces new features or fixes bugs or regressions, it must have comprehensive tests.
-1. The code must be well documented in the Lightbend's standard documentation format (see the 'Documentation' section below).
+1. The code must be well documented as per the existing documentation format (see the 'Documentation' section below).
 1. The commit messages must properly describe the changes. See further below.
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
-1. All Lightbend projects must include Lightbend copyright notices.  Each project can choose between one of two approaches:
-
-    1. All source files in the project must have a Lightbend copyright notice in the file header.
-    1. The Notices file for the project includes the Lightbend copyright notice and no other files contain copyright notices.  See <https://www.apache.org/legal/src-headers.html> for instructions for managing this approach for copyrights.
-
-    Akka uses the first choice, having copyright notices in every file header. When absent, these are added automatically during `sbt compile`.
 
 #### Additional guidelines
 
@@ -351,7 +340,7 @@ Akka Paradox supports directives to link to the Scaladoc- and Javadoc-generated 
 
 #### Scaladoc
 
-Akka generates class diagrams for the API documentation using ScalaDoc.
+Pekko generates class diagrams for the API documentation using ScalaDoc.
 
 Links to methods in ScalaDoc comments should be formatted
 `[[Like#this]]`, because `[[this]]` does not work with [genjavadoc](https://github.com/typesafehub/genjavadoc), and
@@ -364,7 +353,7 @@ The Scaladoc tool needs the `dot` command from the [Graphviz](https://graphviz.o
 
 #### JavaDoc
 
-Akka generates JavaDoc-style API documentation using the [genjavadoc](https://github.com/typesafehub/genjavadoc) sbt plugin, since the sources are written mostly in Scala.
+Pekko generates JavaDoc-style API documentation using the [genjavadoc](https://github.com/typesafehub/genjavadoc) sbt plugin, since the sources are written mostly in Scala.
 
 Generating JavaDoc is not enabled by default, as it's not needed on day-to-day development as it's expected to just work.
 If you'd like to check if your links and formatting look good in JavaDoc (and not only in ScalaDoc), you can generate it by running:
@@ -429,7 +418,7 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ### Pull request validation workflow details
 
-Akka uses GitHub Actions to validate pull requests, which involves checking code style, run tests, check binary compatibility, etc.
+Pekko uses GitHub Actions to validate pull requests, which involves checking code style, run tests, check binary compatibility, etc.
 
 For existing contributors, Github Actions will run without requiring any manual intervention from a core team member.
 
@@ -462,7 +451,7 @@ In such situations, we prefer 'internal' over 'impl' as a package name.
 
 #### Scala style
 
-Akka uses [Scalafmt](https://scalameta.org/scalafmt/docs/installation.html) to enforce some of the code style rules.
+Pekko uses [Scalafmt](https://scalameta.org/scalafmt/docs/installation.html) to enforce some of the code style rules.
 
 It's recommended to enable Scalafmt formatting in IntelliJ. Use version 2019.1 or later. In
 Preferences > Editor > Code Style > Scala, select Scalafmt as formatter and enable "Reformat on file save".
@@ -471,7 +460,7 @@ not needed to use `sbt scalafmtAll` when editing with IntelliJ.
 
 PR validation includes checking that the Scala sources are formatted and will fail if they are not.
 
-Akka prefers flattened imports rather than grouped, which helps reduce merge conflicts. 
+Pekko prefers flattened imports rather than grouped, which helps reduce merge conflicts. 
 If you are using IntelliJ IDEA, you can disable it by unchecking: `Preferences` -> `Code Style` -> `Scala` -> `Imports` -> `Merge imports with the same prefix into one statement`.
 
 
@@ -479,13 +468,13 @@ It's recommended to run `sbt +sortImports` to keep the *import*s sorted.
 
 #### Java style
 
-Akka uses [the sbt Java Formatter plugin](https://github.com/sbt/sbt-java-formatter) to format Java sources.
+Pekko uses [the sbt Java Formatter plugin](https://github.com/sbt/sbt-java-formatter) to format Java sources.
 
 PR validation includes checking that the Java sources are formatted and will fail if they are not.
 
 #### Code discipline opt out
 
-In addition to formatting, the Akka build enforces code discipline through a set of compiler flags. While exploring ideas, the discipline may be more of a hindrance than a help. Therefore, it is possible to disable it by setting the system property `akka.no.discipline`
+In addition to formatting, the Pekko build enforces code discipline through a set of compiler flags. While exploring ideas, the discipline may be more of a hindrance than a help. Therefore, it is possible to disable it by setting the system property `akka.no.discipline`
 to any non-empty string value when starting up sbt:
 
 ```shell
@@ -498,7 +487,7 @@ PR validation includes the discipline flags and hence may fail if the flags were
 
 Avoid short test timeouts since Github Actions runners may GC heavily, causing spurious test failures. GC pause or other hiccups of 2 seconds are common in our CI environment. Please note that usually giving a larger timeout *does not slow down the tests*, as in an `expectMessage` call for example it usually will complete quickly.
 
-There are a number of ways timeouts can be defined in Akka tests. The following ways to use timeouts are recommended (in order of preference):
+There are a number of ways timeouts can be defined in Pekko tests. The following ways to use timeouts are recommended (in order of preference):
 
 * `remaining` is the first choice (requires `within` block)
 * `remainingOrDefault` is the second choice
@@ -507,7 +496,7 @@ There are a number of ways timeouts can be defined in Akka tests. The following 
 
 Special care should be given to `expectNoMessage` calls, which indeed will wait for the entire timeout before continuing. Therefore a shorter timeout should be used in those, for example `200.millis` or `300.millis`. Prefer the method without timeout parameter, which will use the configured `expect-no-message-default` timeout.
 
-You can read up on `remaining` and friends in [TestKit.scala](https://github.com/akka/akka/blob/main/akka-testkit/src/main/scala/akka/testkit/TestKit.scala).
+You can read up on `remaining` and friends in [TestKit.scala](https://github.com/apache/incubator-pekko/blob/main/akka-testkit/src/main/scala/akka/testkit/TestKit.scala).
 
 ### Contributing modules
 
@@ -515,20 +504,20 @@ For external contributions of entire features, the normal way is to establish it
 as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
 next step would be to add it to Akka as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation,
 then when the feature is hardened, well documented and
-tested it becomes an officially supported Akka feature.
+tested it becomes an officially supported Pekko feature.
 
-[List of Akka features marked as may change](https://doc.akka.io/docs/akka/current/common/may-change.html)
+[List of Pekko features marked as may change](https://doc.akka.io/docs/akka/current/common/may-change.html)
 
-### Java APIs in Akka
+### Java APIs in Pekko
 
-Akka aims to keep 100% feature parity between Java and Scala. Implementing even the API for Java in
+Pekko aims to keep 100% feature parity between Java and Scala. Implementing even the API for Java in
 Scala has proven the most viable way to do it, as long as you keep the following in mind:
 
 1. Keep entry points separated in `javadsl` and `scaladsl` unless changing existing APIs which for historical
    and binary compatibility reasons do not have this subdivision.
 
 1. Have methods in the `javadsl` package delegate to the methods in the Scala API, or the common internal implementation.
-   For example, the Akka Stream Scala instances have a `.asJava` method to convert to the `akka.stream.javadsl` counterparts.
+   For example, the Pekko Stream Scala instances have a `.asJava` method to convert to the `akka.stream.javadsl` counterparts.
 
 1. When using Scala `object` instances, offer a `getInstance()` method. See `akka.Done` for an example.
 
@@ -579,13 +568,13 @@ Scala has proven the most viable way to do it, as long as you keep the following
 | `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>` |
 | `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>` |
 
-### Contributing new Akka Streams operators
+### Contributing new Pekko Streams operators
 
-Documentation of Akka Streams operators is automatically enforced.
+Documentation of Pekko Streams operators is automatically enforced.
 If a method exists on Source / Sink / Flow, or any other class listed in `project/StreamOperatorsIndexGenerator.scala`,
 it must also have a corresponding documentation page under `akka-docs/src/main/paradox/streams/operators/...`.
 
-Akka Streams operators' consistency is enforced by `ConsistencySpec`, normally an operator should exist on both Source / SubSource, Flow / SubFlow, Sink / SubSink.
+Pekko Streams operators' consistency is enforced by `ConsistencySpec`, normally an operator should exist on both Source / SubSource, Flow / SubFlow, Sink / SubSink.
 
 The pages structure is well-defined and must be the same on all documentation pages. Please refer to any neighbouring
 docs pages in there to see the pattern in action. In general the page must consist of:
@@ -611,14 +600,14 @@ existence of those docs.
 
 ### Reporting security issues
 
-If you have found an issue in an Akka project that might have security
-implications, you can report it to <security@lightbend.com>. We will make
+If you have found an issue in an Pekko project that might have security
+implications, you can report it to <???>. We will make
 sure those will get handled with priority. Thank you for your responsible
 disclosure!
 
 ### Continuous integration
 
-Akka currently uses Github Actions to run continuous integration. There are workflows for different purposes, such as:
+Pekko currently uses Github Actions to run continuous integration. There are workflows for different purposes, such as:
 
 * Validating pull requests
 * Nightly builds
@@ -628,6 +617,5 @@ Anyone can propose new changes to our CI workflows, and we will gladly review th
 
 ### Related links
 
-* [Akka Contributor License Agreement](https://www.lightbend.com/contribute/cla)
-* [Akka Issue Tracker](https://doc.akka.io/docs/akka/current/project/issue-tracking.html)
+* [Pekko Issue Tracker](https://doc.akka.io/docs/akka/current/project/issue-tracking.html)
 * [Scalafmt](https://scalameta.org/scalafmt/)

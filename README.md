@@ -1,10 +1,10 @@
-Akka [![Latest version](https://index.scala-lang.org/akka/akka/akka-actor/latest.svg)](https://index.scala-lang.org/akka/akka/akka-actor)[![Build Status](https://api.travis-ci.com/akka/akka.svg?branch=main)](https://travis-ci.com/github/akka/akka)
+Pekko [![Latest version](https://index.scala-lang.org/akka/akka/akka-actor/latest.svg)](https://index.scala-lang.org/akka/akka/akka-actor)[![Build Status](https://api.travis-ci.com/akka/akka.svg?branch=main)](https://travis-ci.com/github/akka/akka)
 ====
 
 We believe that writing correct concurrent & distributed, resilient and elastic applications is too hard.
 Most of the time it's because we are using the wrong tools and the wrong level of abstraction.
 
-Akka is here to change that.
+Pekko (a continuation project of [Akka](https://akka.io/)) is here to change that.
 
 Using the Actor Model we raise the abstraction level and provide a better platform to build correct concurrent and scalable applications. This model is a perfect match for the principles laid out in the [Reactive Manifesto](https://www.reactivemanifesto.org/).
 
@@ -57,7 +57,7 @@ A chat room is available for all questions related to *developing and contributi
 License
 -------
 
-Akka is Open Source and available under the Apache 2 License.
+Pekko is Open Source and available under the Apache 2 License.
 
-[akka-dependency-badge]: https://index.scala-lang.org/count.svg?q=dependencies:akka/*&subject=scaladex:&color=blue&style=flat-square "Built with Akka"
+[akka-dependency-badge]: https://index.scala-lang.org/count.svg?q=dependencies:akka/*&subject=scaladex:&color=blue&style=flat-square "Built with Pekko"
 [akka-dependency-scaladex]: https://index.scala-lang.org/search?q=dependencies:akka/*
