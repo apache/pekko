@@ -11,7 +11,7 @@ This operator is included in:
 @@dependency[sbt,Maven,Gradle] {
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group="com.typesafe.akka"
+  group="org.apache.pekko"
   artifact="akka-stream-typed_$scala.binary.version$"
   version=PekkoVersion
 }

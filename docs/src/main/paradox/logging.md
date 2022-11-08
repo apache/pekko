@@ -8,10 +8,10 @@ For the new API see @ref[Logging](typed/logging.md).
 To use Logging, you must at least use the Akka actors dependency in your project, and will most likely want to configure logging via the SLF4J module (@ref:[see below](#slf4j)).
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group="com.typesafe.akka"
+  group="org.apache.pekko"
   artifact="akka-actor_$scala.binary.version$"
   version=PekkoVersion
 }
@@ -348,10 +348,10 @@ Akka provides a logger for [SLF4J](https://www.slf4j.org/). This module is avail
 It has a single dependency: the slf4j-api jar. In your runtime, you also need a SLF4J backend. We recommend [Logback](https://logback.qos.ch/):
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group="com.typesafe.akka"
+  group="org.apache.pekko"
   artifact="akka-slf4j_$scala.binary.version$"
   version=PekkoVersion
   group2="ch.qos.logback"

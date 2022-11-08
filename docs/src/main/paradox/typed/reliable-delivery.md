@@ -18,10 +18,10 @@ warning or deprecation period. It is also not recommended to use this module in 
 To use reliable delivery, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -255,10 +255,10 @@ In that case some of these may already have been processed by the previous worke
 To use reliable delivery with Cluster Sharding, add the following module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -364,10 +364,10 @@ Be aware of that a `DurableProducerQueue` will add a substantial performance ove
 When using the `EventSourcedProducerQueue` the following dependency is needed:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-persistence-typed_$scala.binary.version$
   version=PekkoVersion
 } 

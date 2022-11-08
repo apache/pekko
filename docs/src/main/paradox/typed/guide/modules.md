@@ -36,10 +36,10 @@ This page does not list all available modules, but overviews the main functional
 ### Actor library
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -64,10 +64,10 @@ Challenges that actors solve include the following:
 ### Remoting
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-remote_$scala.binary.version$
   version=PekkoVersion
 }
@@ -90,10 +90,10 @@ Challenges Remoting solves include the following:
 ### Cluster
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -116,10 +116,10 @@ Challenges the Cluster module solves include the following:
 ### Cluster Sharding
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -138,10 +138,10 @@ Challenges that Sharding solves include the following:
 ### Cluster Singleton
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-cluster-singleton_$scala.binary.version$
   version=PekkoVersion
 }
@@ -162,10 +162,10 @@ The Singleton module can be used to solve these challenges:
 ### Persistence
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-persistence-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -187,10 +187,10 @@ Persistence tackles the following challenges:
 ### Projections
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-projection-core_$scala.binary.version$
   version=PekkoVersion
 }
@@ -207,10 +207,10 @@ Challenges Projections solve include the following:
 ### Distributed Data
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
@@ -229,10 +229,10 @@ Distributed Data is intended to solve the following challenges:
 ### Streams
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-stream-typed_$scala.binary.version$
   version=PekkoVersion
 }

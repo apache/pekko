@@ -8,13 +8,13 @@ project.description: Durable State with Akka Persistence enables actors to persi
 To use Akka Persistence, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group=com.typesafe.akka
+  group=org.apache.pekko
   artifact=akka-persistence-typed_$scala.binary.version$
   version=PekkoVersion
-  group2=com.typesafe.akka
+  group2=org.apache.pekko
   artifact2=akka-persistence-testkit_$scala.binary.version$
   version2=PekkoVersion
   scope2=test

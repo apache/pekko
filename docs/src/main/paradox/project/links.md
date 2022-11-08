@@ -28,7 +28,7 @@ Akka uses Git and is hosted at [Github akka/akka](https://github.com/akka/akka).
 ## Releases Repository
 
 All Akka releases are published via Sonatype to Maven Central, see
-[search.maven.org](https://search.maven.org/search?q=g:com.typesafe.akka)
+[search.maven.org](https://search.maven.org/search?q=g:org.apache.pekko)
 
 ## Snapshots Repository
 
@@ -52,7 +52,7 @@ Define the library dependencies with the complete version. For example:
 
 @@@vars
 ```
-libraryDependencies += "com.typesafe.akka" % "akka-remote_$scala.binary.version$" % "2.6.14+72-53943d99-SNAPSHOT"
+libraryDependencies += "org.apache.pekko" % "akka-remote_$scala.binary.version$" % "2.6.14+72-53943d99-SNAPSHOT"
 ```
 @@@
 
@@ -79,7 +79,7 @@ Define the library dependencies with the timestamp as version. For example:
 ```
 <dependencies>
   <dependency>
-    <groupId>com.typesafe.akka</groupId>
+    <groupId>org.apache.pekko</groupId>
     <artifactId>akka-remote_$scala.binary.version$</artifactId>
     <version>2.6.14+72-53943d99-SNAPSHOT</version>
   </dependency>
