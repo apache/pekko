@@ -50,9 +50,6 @@ scaladoc generation build task, which is part of the release.
  
 ## Snapshot releases
 
-Snapshot releases are created from `main` and published to
-https://oss.sonatype.org/content/repositories/snapshots/com/typesafe/pekko/
-
 To create snapshot versions manually, use `sbt clean publishLocal`.
 If you have access, you can use `+publishSigned` to publish them to
 sonatype.

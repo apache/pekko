@@ -8,9 +8,7 @@ You're always welcome to submit your PR straight away and start the discussion (
 
 ## The Pekko Community
 
-If you have questions about the contribution process or discuss specific issues, please visit the [akka/dev Gitter chat](https://gitter.im/akka/dev).
-
-You may also check out these [other resources](https://akka.io/get-involved/).
+If you have questions about the contribution process or discuss specific issues, please check this page from time to time. We will update this section as we form community discussion forums.
 
 ## Navigating around the project & codebase
 
@@ -306,6 +304,9 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. The code must be well documented as per the existing documentation format (see the 'Documentation' section below).
 1. The commit messages must properly describe the changes. See further below.
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
+1. Licensing rules:
+   - Existing files with copyright statements must leave those copyright statements intact
+   - New files should have an Apache license header instead
 
 #### Additional guidelines
 
