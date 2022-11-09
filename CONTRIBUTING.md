@@ -8,7 +8,11 @@ You're always welcome to submit your PR straight away and start the discussion (
 
 ## The Pekko Community
 
-If you have questions about the contribution process or discuss specific issues, please check this page from time to time. We will update this section as we form community discussion forums.
+If you have questions about the contribution process or discuss specific issues, please interact with the community using the following resources.
+
+- [GitHub discussions](https://github.com/apache/incubator-pekko/discussions): for questions and general discussion.
+- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
+- [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
 
 ## Navigating around the project & codebase
 
@@ -306,7 +310,7 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - New files should have an Apache license header instead
+   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/poi/blob/trunk/poi/src/main/java/org/apache/poi/POIDocument.java).
 
 #### Additional guidelines
 
@@ -421,7 +425,7 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ### Pull request validation workflow details
 
-Pekko uses GitHub Actions to validate pull requests, which involves checking code style, run tests, check binary compatibility, etc.
+Pekko uses GitHub Actions to validate pull requests, which involves checking code style, running tests, checking binary compatibility, etc.
 
 For existing contributors, Github Actions will run without requiring any manual intervention from a core team member.
 
@@ -603,10 +607,7 @@ existence of those docs.
 
 ### Reporting security issues
 
-If you have found an issue in an Pekko project that might have security
-implications, you can report it to <???>. We will make
-sure those will get handled with priority. Thank you for your responsible
-disclosure!
+If you have found an issue in an Pekko project that might have security implications, you can report it by following the process mentioned in the [Apache document](https://apache.org/security/#reporting-a-vulnerability). We will make sure those will get handled with priority. Thank you for your responsible disclosure!
 
 ### Continuous integration
 
