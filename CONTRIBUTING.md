@@ -1,10 +1,8 @@
 # Contributing to Apache Pekko
 
-**NOTE: this document still needs to be migrated from the Akka project.**
-
 We follow the standard GitHub [fork & pull](https://help.github.com/articles/using-pull-requests/#fork--pull) approach to pull requests. Just fork the official repo, develop in a branch, and submit a PR!
 
-You're always welcome to submit your PR straight away and start the discussion (without reading the rest of this wonderful doc or the README.md). The goal of these notes is to make your experience contributing to Akka as smooth and pleasant as possible. We're happy to guide you through the process once you've submitted your PR.
+You're always welcome to submit your PR straight away and start the discussion (without reading the rest of this wonderful doc or the README.md). The goal of these notes is to make your experience contributing to Pekko as smooth and pleasant as possible. We're happy to guide you through the process once you've submitted your PR.
 
 ## The Pekko Community
 
@@ -20,9 +18,8 @@ If you have questions about the contribution process or discuss specific issues,
 
 Depending on which version (or sometimes module) you want to work on, you should target a specific branch as explained below:
 
-* `main` – active development branch of Akka 2.6.x
-* `release-2.5` – maintenance branch of Akka 2.5.x
-* similarly `release-2.#` branches contain legacy versions of Akka
+* `main` – active development branch of Pekko
+* `release-x.y` – maintenance branch of Pekko x.y.z
 
 ### Tags
 
@@ -33,21 +30,21 @@ Most notably, many tags start with a `t:` prefix (as in `topic:`), categorizing 
 In general *all issues are open for anyone working on them*. However, if you're new to the project and looking for an issue
 that will be accepted and likely is a nice one to get started you should check out the following tags:
 
-- [good first issue](https://github.com/akka/akka/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - which identifies simple entry-level tickets, such as improvements of documentation or tests. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
-- [help wanted](https://github.com/akka/akka/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
-- [nice-to-have (low-priority)](https://github.com/akka/akka/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
+- [good first issue](https://github.com/apache/incubator-pekko/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - which identifies simple entry-level tickets, such as improvements of documentation or tests. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
+- [help wanted](https://github.com/apache/incubator-pekko/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
+- [nice-to-have (low-priority)](https://github.com/apache/incubator-pekko/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
 
 Another group of issues is those which start from a number. They're used to signal in what phase of development an issue is:
 
-- [0 - new](https://github.com/akka/akka/labels/0%20-%20new) - is assigned when an issue is unclear on its purpose or if it is valid or not. Sometimes the additional tag `discuss` is used if they propose large-scale changes and need more discussion before moving into triaged (or being closed as invalid).
-- [1 - triaged](https://github.com/akka/akka/labels/1%20-%20triaged) - roughly speaking means "this issue makes sense". Triaged issues are safe to pick up for contributing in terms of the likeliness of a patch for it being accepted. It is not recommended to start working on an issue that is not triaged.
-- [2 - pick next](https://github.com/akka/akka/labels/2%20-%20pick%20next) - used to mark issues that are next up in the queue to be worked on. Sometimes it's also used to mark which PRs are expected to be reviewed/merged for the next release. The tag is non-binding and mostly used as an organisational helper.
-- [3 - in progress](https://github.com/akka/akka/labels/3%20-%20in%20progress) - means someone is working on this ticket. If you see an issue that has the tag but seems inactive, it could have been an omission with removing the tag. Feel free to ping the ticket then if it's still being worked on.
+- [0 - new](https://github.com/apache/incubator-pekko/labels/0%20-%20new) - is assigned when an issue is unclear on its purpose or if it is valid or not. Sometimes the additional tag `discuss` is used if they propose large-scale changes and need more discussion before moving into triaged (or being closed as invalid).
+- [1 - triaged](https://github.com/apache/incubator-pekko/labels/1%20-%20triaged) - roughly speaking means "this issue makes sense". Triaged issues are safe to pick up for contributing in terms of the likeliness of a patch for it being accepted. It is not recommended to start working on an issue that is not triaged.
+- [2 - pick next](https://github.com/apache/incubator-pekko/labels/2%20-%20pick%20next) - used to mark issues that are next up in the queue to be worked on. Sometimes it's also used to mark which PRs are expected to be reviewed/merged for the next release. The tag is non-binding and mostly used as an organisational helper.
+- [3 - in progress](https://github.com/apache/incubator-pekko/labels/3%20-%20in%20progress) - means someone is working on this ticket. If you see an issue that has the tag but seems inactive, it could have been an omission with removing the tag. Feel free to ping the ticket then if it's still being worked on.
 
 The last group of special tags indicates specific states a ticket is in:
 
-- [bug](https://github.com/akka/akka/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
-- [failed](https://github.com/akka/akka/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
+- [bug](https://github.com/apache/incubator-pekko/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
+- [failed](https://github.com/apache/incubator-pekko/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
 
 Pull request validation states:
 
@@ -76,7 +73,6 @@ The steps are exactly the same for everyone involved in the project, including t
 1. If it's a new feature or a change of behavior, document it on the [akka-docs](https://github.com/apache/incubator-pekko/tree/main/akka-docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
     - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
-1. If you have not already done so, you will be asked by our CLA bot to [sign the Lightbend CLA](https://www.lightbend.com/contribute/cla) online. CLA stands for Contributor License Agreement and protects intellectual property disputes from harming the project.
 1. If you are a first time contributor, a core member must approve the CI to run for your pull request.
 1. Now, both committers and interested people will review your code. This process ensures that the code we merge is of the best possible quality and that no silly mistakes slip through. You're expected to follow-up on these comments by adding new commits to the same branch. The commit messages of those commits can be more loose, for example: `Removed debugging using printline`, as they all will be squashed into one commit before merging into the main branch.
     - The community and core team are really nice people, so don't be afraid to ask follow-up questions if you didn't understand some comment or would like clarification on how to continue with a given feature. We're here to help, so feel free to ask and discuss any questions you might have during the review process!
@@ -145,12 +141,12 @@ start the interactive sbt shell and enter the commands directly. This saves
 starting up a new JVM instance for each command and can be much faster and more
 convenient.
 
-For example, building Akka as above is more commonly done like this:
+For example, building Pekko as above is more commonly done like this:
 
 ```
 % sbt
-[info] Set current project to default (in build file:/.../akka/project/plugins/)
-[info] Set current project to akka (in build file:/.../akka/)
+[info] Set current project to default (in build file:/.../pekko/project/plugins/)
+[info] Set current project to pekko (in build file:/.../pekko/)
 > compile
 ...
 > test
@@ -205,12 +201,12 @@ applyCodeStyle
 
 #### Do not use `-optimize` Scala compiler flag
 
-Akka has not been compiled or tested with `-optimize` Scala compiler flag. (In sbt, you can specify compiler options in the `scalacOptions` key.)
+Pekko has not been compiled or tested with `-optimize` Scala compiler flag. (In sbt, you can specify compiler options in the `scalacOptions` key.)
 Strange behavior has been reported by users that have tried it.
 
 #### Compiling with Graal JIT
 
-Akka, like most Scala projects, compiles faster with the Graal JIT enabled. The easiest way to use it for compiling Akka is to:
+Pekko, like most Scala projects, compiles faster with the Graal JIT enabled. The easiest way to use it for compiling Pekko is to:
 
 * Use a JDK > 10
 * Use the following JVM options for SBT e.g. by adding them to the `SBT_OPTS` environment variable: `-XX:+UnlockExperimentalVMOptions -XX:+EnableJVMCI -XX:+UseJVMCICompiler`
@@ -250,9 +246,8 @@ e.g. `allCluster`, `allTyped`.
 Binary compatibility rules and guarantees are described in depth in the [Binary Compatibility Rules
 ](https://doc.akka.io/docs/akka/snapshot/common/binary-compatibility-rules.html) section of the documentation.
 
-Pekko uses [MiMa](https://github.com/lightbend/mima) to
-validate the binary compatibility of incoming pull requests. If your PR fails due to binary compatibility issues, you may see
-an error like this:
+Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary compatibility of incoming pull requests. If your 
+PR fails due to binary compatibility issues, you may see an error like this:
 
 ```
 [info] akka-stream: found 1 potential binary incompatibilities while checking against com.typesafe.akka:akka-stream_2.12:2.4.2  (filtered 222)
@@ -339,7 +334,7 @@ Alternatively, use `akka-docs/paradoxBrowse` to open the generated docs in your 
 
 #### Links to API documentation
 
-Akka Paradox supports directives to link to the Scaladoc- and Javadoc-generated API documentation:
+Pekko Paradox supports directives to link to the Scaladoc- and Javadoc-generated API documentation:
 
 * `@apidoc[Flow]` searches for the class name and creates links to Scaladoc and Javadoc (see variants in [sbt-paradox-apidoc](https://github.com/lightbend/sbt-paradox-apidoc#examples))
 * `@scaladoc[Flow](akka.stream.scaladsl.Flow)` (see [Paradox docs](https://developer.lightbend.com/docs/paradox/current/directives/linking.html#scaladoc-directive))
@@ -509,7 +504,7 @@ You can read up on `remaining` and friends in [TestKit.scala](https://github.com
 
 For external contributions of entire features, the normal way is to establish it
 as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
-next step would be to add it to Akka as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation,
+next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation,
 then when the feature is hardened, well documented and
 tested it becomes an officially supported Pekko feature.
 
