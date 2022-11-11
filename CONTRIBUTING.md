@@ -64,7 +64,7 @@ The steps are exactly the same for everyone involved in the project, including t
 
 1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
    - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new) to discuss the problem and the approach you want to take to solve it.
-1. [Fork the project](https://github.com/apache/incubator-pekko#fork-destination-box) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Akka.
+1. [Fork the project](https://github.com/apache/incubator-pekko#fork-destination-box) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Pekko.
 1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-akka-http`
    - Please make sure to follow the general quality guidelines (specified below) when developing your patch.
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
@@ -114,9 +114,9 @@ Using, for example: current.version 2.5.22, previous.version 2.5, milestone.vers
 
 ### Getting started with sbt
 
-Akka is using the [sbt](https://github.com/sbt/sbt) build system. So the first thing you have to do is to download and install sbt. You can read more about how to do that in the [sbt setup](https://www.scala-sbt.org/1.x/docs/Getting-Started.html) documentation.
+Pekko is using the [sbt](https://github.com/sbt/sbt) build system. So the first thing you have to do is to download and install sbt. You can read more about how to do that in the [sbt setup](https://www.scala-sbt.org/1.x/docs/Getting-Started.html) documentation.
 
-To compile all the Akka core modules, use the `compile` command:
+To compile all the Pekko core modules, use the `compile` command:
 
 ```shell
 sbt compile
@@ -244,7 +244,7 @@ e.g. `allCluster`, `allTyped`.
 ### Binary compatibility
 
 Binary compatibility rules and guarantees are described in depth in the [Binary Compatibility Rules
-](https://doc.akka.io/docs/akka/snapshot/common/binary-compatibility-rules.html) section of the documentation.
+](https://pekko.apache.org/) section of the documentation.
 
 Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary compatibility of incoming pull requests. If your 
 PR fails due to binary compatibility issues, you may see an error like this:
@@ -272,17 +272,13 @@ The binary compatibility of the current changes can be checked by running `sbt +
 
 ### Wire compatibility
 
-Changes to the binary protocol of remoting, cluster and the cluster tools require great care so that it is possible
-to do rolling upgrades. Note that this may include older nodes communicating with a newer node, so compatibility
-may have to be both ways.
+Changes to the binary protocol of remoting, cluster and the cluster tools require great care so that it is possible to do rolling upgrades. Note that this may include older nodes communicating with a newer node, so compatibility may have to be both ways.
 
-Since during a rolling upgrade nodes producing the 'new' format and nodes producing the 'old' format coexist, a change can require a two-release process:
-the first change is to add a new binary format but still use the old one. A second step then starts actually emitting the
-new wire format. This ensures users can complete a rolling upgrade first to the intermediate version and then another
+Since during a rolling upgrade nodes producing the 'new' format and nodes producing the 'old' format coexist, a change can require a two-release process: the first change is to add a new binary format but still use the old one. A second step then starts actually emitting the new wire format. This ensures users can complete a rolling upgrade first to the intermediate version and then another
 rolling upgrade to the next version.
 
 All wire protocol changes that may concern rolling upgrades should be documented in the
-[Rolling Update Changelog](https://doc.akka.io/docs/akka/current/project/rolling-update.html#change-log)
+[Rolling Update Changelog](https://pekko.apache.org/)
 (found in akka-docs/src/main/paradox/project/rolling-update.md)
 
 ### Protobuf
@@ -502,13 +498,10 @@ You can read up on `remaining` and friends in [TestKit.scala](https://github.com
 
 ### Contributing modules
 
-For external contributions of entire features, the normal way is to establish it
-as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
-next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation,
-then when the feature is hardened, well documented and
-tested it becomes an officially supported Pekko feature.
+For external contributions of entire features, the normal way is to establish it as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
+next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation, then when the feature is hardened, well documented and tested it becomes an officially supported Pekko feature.
 
-[List of Pekko features marked as may change](https://doc.akka.io/docs/akka/current/common/may-change.html)
+[List of Pekko features marked as may change](https://pekko.apache.org/)
 
 ### Java APIs in Pekko
 
@@ -616,5 +609,5 @@ Anyone can propose new changes to our CI workflows, and we will gladly review th
 
 ### Related links
 
-* [Pekko Issue Tracker](https://doc.akka.io/docs/akka/current/project/issue-tracking.html)
+* [Pekko Issue Tracker](https://github.com/apache/incubator-pekko/issues)
 * [Scalafmt](https://scalameta.org/scalafmt/)
