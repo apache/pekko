@@ -4,9 +4,9 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.japi.Pair;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.math.BigInteger;
 import java.util.Optional;

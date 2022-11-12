@@ -4,16 +4,17 @@
 
 package docs.persistence.query
 
-import akka.NotUsed
-import akka.testkit.AkkaSpec
-import akka.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
-import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
-import akka.stream.scaladsl.Source
+import org.apache.pekko.NotUsed
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
+import org.apache.pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
+import org.apache.pekko.stream.scaladsl.Source
 
 object LeveldbPersistenceQueryDocSpec {
   // #tagger
-  import akka.persistence.journal.WriteEventAdapter
-  import akka.persistence.journal.Tagged
+  import org.apache.pekko
+  import pekko.persistence.journal.WriteEventAdapter
+  import pekko.persistence.journal.Tagged
 
   class MyTaggingEventAdapter extends WriteEventAdapter {
     val colors = Set("green", "black", "blue")
@@ -38,8 +39,9 @@ class LeveldbPersistenceQueryDocSpec
   "LeveldbPersistentQuery" must {
     "demonstrate how get ReadJournal" in {
       // #get-read-journal
-      import akka.persistence.query.PersistenceQuery
-      import akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
+      import org.apache.pekko
+      import pekko.persistence.query.PersistenceQuery
+      import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 
       val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
       // #get-read-journal

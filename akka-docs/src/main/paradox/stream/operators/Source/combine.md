@@ -6,7 +6,7 @@ Combine several sources, using a given strategy such as merge or concat, into on
 
 ## Signature
 
-@apidoc[Source.combine](Source$) { scala="#combine[T,U](first:akka.stream.scaladsl.Source[T,_],second:akka.stream.scaladsl.Source[T,_],rest:akka.stream.scaladsl.Source[T,_]*)(strategy:Int=&gt;akka.stream.Graph[akka.stream.UniformFanInShape[T,U],akka.NotUsed]):akka.stream.scaladsl.Source[U,akka.NotUsed]" java="#combine(akka.stream.javadsl.Source,akka.stream.javadsl.Source,java.util.List,akka.japi.function.Function)" }
+@apidoc[Source.combine](Source$) { scala="#combine[T,U](first:org.apache.pekko.stream.scaladsl.Source[T,_],second:org.apache.pekko.stream.scaladsl.Source[T,_],rest:org.apache.pekko.stream.scaladsl.Source[T,_]*)(strategy:Int=&gt;org.apache.pekko.stream.Graph[org.apache.pekko.stream.UniformFanInShape[T,U],org.apache.pekko.NotUsed]):org.apache.pekko.stream.scaladsl.Source[U,org.apache.pekko.NotUsed]" java="#combine(org.apache.pekko.stream.javadsl.Source,org.apache.pekko.stream.javadsl.Source,java.util.List,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description
@@ -25,8 +25,8 @@ operators for 2-source @ref:[concat](../Source-or-Flow/concat.md) and @ref:[merg
 
 Some of the built-in operators that can be used as strategy are:
  
- * @apidoc[akka.stream.*.Merge] 
- * @apidoc[akka.stream.(javadsl|scaladsl).Concat] 
+ * @apidoc[stream.*.Merge] 
+ * @apidoc[stream.(javadsl|scaladsl).Concat] 
  * @apidoc[MergePrioritized]
  * @apidoc[MergeLatest]
  * @apidoc[ZipN]

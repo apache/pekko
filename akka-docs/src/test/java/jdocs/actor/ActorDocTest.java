@@ -4,19 +4,19 @@
 
 package jdocs.actor;
 
-import akka.actor.*;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
 import static jdocs.actor.Messages.Swap.Swap;
 import static jdocs.actor.Messages.*;
-import akka.actor.CoordinatedShutdown;
+import org.apache.pekko.actor.CoordinatedShutdown;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.time.Duration;
-import akka.testkit.TestActors;
+import org.apache.pekko.testkit.TestActors;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -24,31 +24,31 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 // #import-props
-import akka.actor.Props;
+import org.apache.pekko.actor.Props;
 // #import-props
 // #import-actorRef
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 // #import-actorRef
 // #import-identify
-import akka.actor.ActorIdentity;
-import akka.actor.ActorSelection;
-import akka.actor.Identify;
+import org.apache.pekko.actor.ActorIdentity;
+import org.apache.pekko.actor.ActorSelection;
+import org.apache.pekko.actor.Identify;
 // #import-identify
 // #import-ask
-import static akka.pattern.Patterns.ask;
-import static akka.pattern.Patterns.pipe;
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.pipe;
 
 import java.util.concurrent.CompletableFuture;
 // #import-ask
 // #import-gracefulStop
-import static akka.pattern.Patterns.gracefulStop;
-import akka.pattern.AskTimeoutException;
+import static org.apache.pekko.pattern.Patterns.gracefulStop;
+import org.apache.pekko.pattern.AskTimeoutException;
 import java.util.concurrent.CompletionStage;
 
 // #import-gracefulStop
 // #import-terminated
-import akka.actor.Terminated;
+import org.apache.pekko.actor.Terminated;
 // #import-terminated
 
 public class ActorDocTest extends AbstractJavaTest {
@@ -56,7 +56,7 @@ public class ActorDocTest extends AbstractJavaTest {
   public static Config config =
       ConfigFactory.parseString(
           "akka {\n"
-              + "  loggers = [\"akka.testkit.TestEventListener\"]\n"
+              + "  loggers = [\"org.apache.pekko.testkit.TestEventListener\"]\n"
               + "  loglevel = \"WARNING\"\n"
               + "  stdout-loglevel = \"WARNING\"\n"
               + "}\n");
@@ -351,7 +351,7 @@ public class ActorDocTest extends AbstractJavaTest {
                   String result = operation();
                   getSender().tell(result, getSelf());
                 } catch (Exception e) {
-                  getSender().tell(new akka.actor.Status.Failure(e), getSelf());
+                  getSender().tell(new org.apache.pekko.actor.Status.Failure(e), getSelf());
                   throw e;
                 }
                 // #reply-exception
@@ -841,7 +841,8 @@ public class ActorDocTest extends AbstractJavaTest {
         // using timeout from above
         CompletableFuture<Object> future2 = ask(actorB, "another request", t).toCompletableFuture();
 
-        CompletableFuture<Result> transformed = future1.thenCombine(future2, (x, s) -> new Result((String) x, (String) s));
+        CompletableFuture<Result> transformed =
+            future1.thenCombine(future2, (x, s) -> new Result((String) x, (String) s));
 
         pipe(transformed, system.dispatcher()).to(actorC);
         // #ask-pipe
@@ -858,7 +859,7 @@ public class ActorDocTest extends AbstractJavaTest {
         ActorRef victim = system.actorOf(TestActors.echoActorProps());
         watch(victim);
         // #kill
-        victim.tell(akka.actor.Kill.getInstance(), ActorRef.noSender());
+        victim.tell(org.apache.pekko.actor.Kill.getInstance(), ActorRef.noSender());
 
         // expecting the actor to indeed terminate:
         expectTerminated(Duration.ofSeconds(3), victim);
@@ -874,7 +875,7 @@ public class ActorDocTest extends AbstractJavaTest {
         ActorRef victim = system.actorOf(TestActors.echoActorProps());
         watch(victim);
         // #poison-pill
-        victim.tell(akka.actor.PoisonPill.getInstance(), ActorRef.noSender());
+        victim.tell(org.apache.pekko.actor.PoisonPill.getInstance(), ActorRef.noSender());
         // #poison-pill
         expectTerminated(Duration.ofSeconds(3), victim);
       }

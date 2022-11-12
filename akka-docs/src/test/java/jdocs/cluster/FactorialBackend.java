@@ -7,8 +7,8 @@ package jdocs.cluster;
 import java.math.BigInteger;
 import java.util.concurrent.CompletableFuture;
 
-import akka.actor.AbstractActor;
-import static akka.pattern.Patterns.pipe;
+import org.apache.pekko.actor.AbstractActor;
+import static org.apache.pekko.pattern.Patterns.pipe;
 
 // #backend
 public class FactorialBackend extends AbstractActor {

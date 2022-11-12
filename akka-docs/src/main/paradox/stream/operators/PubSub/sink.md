@@ -1,6 +1,6 @@
 # PubSub.sink
 
-A sink that will publish emitted messages to a @apidoc[akka.actor.typed.pubsub.Topic$].
+A sink that will publish emitted messages to a @apidoc[actor.typed.pubsub.Topic$].
 
 @ref[Actor interop operators](../index.md#actor-interop-operators)
 
@@ -24,7 +24,7 @@ version=AkkaVersion
 
 ## Signature
 
-@apidoc[PubSub.sink](akka.stream.typed.*.PubSub$) { scala="#sink[T](topic:akka.actor.typed.Toppic[T]):akka.stream.scaladsl.Sink[T,akka.NotUsed]" java="#sink(akka.actor.typed.Topic)" }
+@apidoc[PubSub.sink](stream.typed.*.PubSub$) { scala="#sink[T](topic:org.apache.pekko.actor.typed.Toppic[T]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#sink(org.apache.pekko.actor.typed.Topic)" }
 
 ## Reactive Streams semantics
 

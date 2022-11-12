@@ -8,11 +8,11 @@ import scala.concurrent.Future
 
 import com.typesafe.config.ConfigFactory
 
-import akka.cluster.Cluster
-import akka.coordination.lease.LeaseSettings
-import akka.coordination.lease.scaladsl.Lease
-import akka.coordination.lease.scaladsl.LeaseProvider
-import akka.testkit.AkkaSpec
+import org.apache.pekko.cluster.Cluster
+import org.apache.pekko.coordination.lease.LeaseSettings
+import org.apache.pekko.coordination.lease.scaladsl.Lease
+import org.apache.pekko.coordination.lease.scaladsl.LeaseProvider
+import org.apache.pekko.testkit.AkkaSpec
 
 //#lease-example
 class SampleLease(settings: LeaseSettings) extends Lease(settings) {

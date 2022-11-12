@@ -6,7 +6,7 @@ Defers creation of a single element source until there is demand.
 
 ## Signature
 
-@apidoc[Source.lazySingle](Source$) { scala="#lazySingle[T](create:()=&gt;T):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#lazySingle(akka.japi.function.Creator)" }
+@apidoc[Source.lazySingle](Source$) { scala="#lazySingle[T](create:()=&gt;T):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#lazySingle(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

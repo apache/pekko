@@ -4,17 +4,17 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.actor.Cancellable;
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.ActorSystem;
-import akka.actor.typed.javadsl.AskPattern;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.javadsl.AskPattern;
 import java.util.concurrent.CompletionStage;
 import java.time.Duration;
 
-import akka.japi.Pair;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.Source;
 
 public class Tick {
 

@@ -6,8 +6,8 @@ Allow for a slower downstream by passing incoming elements and a summary into an
 
 ## Signature
 
-@apidoc[Source.batchWeighted](Source) { scala="#batchWeighted[S](max:Long,costFn:Out=&gt;Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batchWeighted(long,akka.japi.function.Function,akka.japi.function.Function,akka.japi.function.Function2)" }
-@apidoc[Flow.batchWeighted](Flow) { scala="#batchWeighted[S](max:Long,costFn:Out=&gt;Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batchWeighted(long,akka.japi.function.Function,akka.japi.function.Function,akka.japi.function.Function2)" }
+@apidoc[Source.batchWeighted](Source) { scala="#batchWeighted[S](max:Long,costFn:Out=&gt;Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batchWeighted(long,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.batchWeighted](Flow) { scala="#batchWeighted[S](max:Long,costFn:Out=&gt;Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batchWeighted(long,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
 
 
 

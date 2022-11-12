@@ -7,13 +7,13 @@ package jdocs.routing;
 // #group
 import java.util.List;
 
-import akka.actor.ActorSystem;
-import akka.dispatch.Dispatchers;
-import akka.routing.Router;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.dispatch.Dispatchers;
+import org.apache.pekko.routing.Router;
 
 import com.typesafe.config.Config;
 
-import akka.routing.GroupBase;
+import org.apache.pekko.routing.GroupBase;
 import static jdocs.routing.CustomRouterDocTest.RedundancyRoutingLogic;
 
 public class RedundancyGroup extends GroupBase {

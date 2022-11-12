@@ -6,8 +6,8 @@ Just like @ref[`scan`](./scan.md) but receives a function that results in a @sca
 
 ## Signature
 
-@apidoc[Source.scanAsync](Source) { scala="#scanAsync[T](zero:T)(f:(T,Out)=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#scanAsync(java.lang.Object,akka.japi.function.Function2)" }
-@apidoc[Flow.scanAsync](Flow) { scala="#scanAsync[T](zero:T)(f:(T,Out)=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#scanAsync(java.lang.Object,akka.japi.function.Function2)" }
+@apidoc[Source.scanAsync](Source) { scala="#scanAsync[T](zero:T)(f:(T,Out)=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#scanAsync(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.scanAsync](Flow) { scala="#scanAsync[T](zero:T)(f:(T,Out)=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#scanAsync(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description

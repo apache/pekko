@@ -6,7 +6,7 @@ Transform each stream element with the help of a state.
 
 ## Signature
 
-@apidoc[Flow.statefulMap](Flow) { scala="#statefulMap%5BS%2CT%5D%28create%3A%28%29%3D%3ES%29%28f%3A%28S%2COut%29%20%3D%3E%28S%2CT%29%2ConComplete%3AS%3D%3EOption%5BT%5D%29%3ARepr%5BT%5D" java="#statefulMap(akka.japi.function.Creator,akka.japi.function.Function2,akka.japi.function.Function)" }
+@apidoc[Flow.statefulMap](Flow) { scala="#statefulMap%5BS%2CT%5D%28create%3A%28%29%3D%3ES%29%28f%3A%28S%2COut%29%20%3D%3E%28S%2CT%29%2ConComplete%3AS%3D%3EOption%5BT%5D%29%3ARepr%5BT%5D" java="#statefulMap(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

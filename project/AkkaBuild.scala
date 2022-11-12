@@ -2,9 +2,9 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
-import akka.JdkOptions.autoImport._
+import org.apache.pekko.JdkOptions.autoImport._
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
 import com.typesafe.sbt.MultiJvmPlugin.autoImport.MultiJvm
 import sbt.Def

@@ -6,7 +6,7 @@ Creates a `Flow` from a `Sink` and a `Source` where the Flow's input will be sen
 
 ## Signature
 
-@apidoc[Flow.fromSinkAndSource](Flow$) { scala="#fromSinkAndSource[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" java="#fromSinkAndSource(akka.stream.Graph,akka.stream.Graph)" }
+@apidoc[Flow.fromSinkAndSource](Flow$) { scala="#fromSinkAndSource[I,O](sink:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[I],_],source:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[O],_]):org.apache.pekko.stream.scaladsl.Flow[I,O,org.apache.pekko.NotUsed]" java="#fromSinkAndSource(org.apache.pekko.stream.Graph,org.apache.pekko.stream.Graph)" }
 
 ## Description
 

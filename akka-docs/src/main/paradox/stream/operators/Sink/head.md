@@ -6,7 +6,7 @@ Materializes into a @scala[`Future`] @java[`CompletionStage`] which completes wi
 
 ## Signature
 
-@apidoc[Sink.head](Sink$) { scala="#head[T]:akka.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#head()" }
+@apidoc[Sink.head](Sink$) { scala="#head[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#head()" }
 
 
 ## Description
@@ -17,7 +17,7 @@ after this the stream is canceled. If no element is emitted, the @scala[`Future`
 ## Example
 
 Scala
-:   @@snip [HeadSinkSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/HeadSinkSpec.scala) { #head-operator-example }
+:   @@snip [HeadSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/HeadSinkSpec.scala) { #head-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #head-operator-example }

@@ -6,8 +6,8 @@ Prepends the given source to the flow, consuming it until completion before the 
 
 ## Signature
 
-@apidoc[Source.prepend](Source) { scala="#prepend[U&gt;:Out,Mat2](that:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(akka.stream.Graph)" }
-@apidoc[Flow.prepend](Flow) { scala="#prepend[U&gt;:Out,Mat2](that:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(akka.stream.Graph)" }
+@apidoc[Source.prepend](Source) { scala="#prepend[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.prepend](Flow) { scala="#prepend[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#prepend(org.apache.pekko.stream.Graph)" }
 
 
 ## Description
@@ -36,7 +36,7 @@ use @ref(prependLazy)[prependLazy.md]
 
 ## Example
 Scala
-:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowPrependSpec.scala) { #prepend }
+:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowPrependSpec.scala) { #prepend }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #prepend }

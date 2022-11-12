@@ -2,7 +2,7 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
@@ -27,14 +27,14 @@ object Paradox {
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> "https://developer.lightbend.com/start/?group=akka&amp;project=%s",
       "extref.ecs.base_url" -> "https://example.lightbend.com/v1/download/%s",
-      "scaladoc.akka.base_url" -> "https://doc.akka.io/api/akka/2.6",
-      "scaladoc.akka.http.base_url" -> "https://doc.akka.io/api/akka-http/current",
+      "scaladoc.pekko.base_url" -> "https://doc.akka.io/api/akka/2.6/org/apache",
+      "scaladoc.pekko.http.base_url" -> "https://doc.akka.io/api/akka-http/current/org/apache",
       "javadoc.java.base_url" -> "https://docs.oracle.com/en/java/javase/11/docs/api/java.base/",
       "javadoc.java.link_style" -> "direct",
-      "javadoc.akka.base_url" -> "https://doc.akka.io/japi/akka/2.6",
-      "javadoc.akka.link_style" -> "direct",
-      "javadoc.akka.http.base_url" -> "https://doc.akka.io/japi/akka-http/current",
-      "javadoc.akka.http.link_style" -> "frames",
+      "javadoc.pekko.base_url" -> "https://doc.akka.io/japi/akka/2.6/org/apache",
+      "javadoc.pekko.link_style" -> "direct",
+      "javadoc.pekko.http.base_url" -> "https://doc.akka.io/japi/akka-http/current/org/apache",
+      "javadoc.pekko.http.link_style" -> "frames",
       "javadoc.com.fasterxml.jackson.annotation.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
       "javadoc.com.fasterxml.jackson.annotation.link_style" -> "direct",
       "javadoc.com.fasterxml.jackson.databind.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",
@@ -92,7 +92,7 @@ object Paradox {
     Seq(
       Compile / paradox / name := "Akka",
       resolvers += Resolver.jcenterRepo,
-      ApidocPlugin.autoImport.apidocRootPackage := "akka",
+      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
       publishRsyncArtifacts += {
         val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
         (Compile / paradox).value -> s"www/docs/akka/$releaseVersion"

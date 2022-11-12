@@ -3,11 +3,11 @@
  */
 
 package docs.stream.operators.sourceorflow
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 
 object Scan {
   def scanExample(): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 

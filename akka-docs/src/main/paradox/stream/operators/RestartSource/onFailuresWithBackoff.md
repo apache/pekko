@@ -6,7 +6,7 @@ Wrap the given @apidoc[Source] with a @apidoc[Source] that will restart it when 
 
 ## Signature
 
-@apidoc[RestartSource.onFailuresWithBackoff](RestartSource$) { scala="#onFailuresWithBackoff[T](settings:akka.stream.RestartSettings)(sourceFactory:()=&gt;akka.stream.scaladsl.Source[T,_]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#onFailuresWithBackoff(akka.stream.RestartSettings,akka.japi.function.Creator)" }
+@apidoc[RestartSource.onFailuresWithBackoff](RestartSource$) { scala="#onFailuresWithBackoff[T](settings:org.apache.pekko.stream.RestartSettings)(sourceFactory:()=&gt;org.apache.pekko.stream.scaladsl.Source[T,_]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#onFailuresWithBackoff(org.apache.pekko.stream.RestartSettings,org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 

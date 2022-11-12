@@ -4,9 +4,9 @@
 
 package docs.persistence
 
-import akka.actor._
-import akka.pattern.{ BackoffOpts, BackoffSupervisor }
-import akka.persistence._
+import org.apache.pekko.actor._
+import org.apache.pekko.pattern.{ BackoffOpts, BackoffSupervisor }
+import org.apache.pekko.persistence._
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -105,8 +105,9 @@ object PersistenceDocSpec {
 
   object AtLeastOnce {
     // #at-least-once-example
-    import akka.actor.{ Actor, ActorSelection }
-    import akka.persistence.AtLeastOnceDelivery
+    import org.apache.pekko
+    import pekko.actor.{ Actor, ActorSelection }
+    import pekko.persistence.AtLeastOnceDelivery
 
     case class Msg(deliveryId: Long, s: String)
     case class Confirm(deliveryId: Long)

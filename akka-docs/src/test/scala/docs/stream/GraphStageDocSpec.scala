@@ -4,12 +4,12 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.stream.scaladsl.{ Flow, Keep, Sink, Source }
-import akka.stream.stage._
-import akka.stream._
-import akka.stream.testkit.{ TestPublisher, TestSubscriber }
-import akka.testkit.{ AkkaSpec, TestLatch }
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
+import org.apache.pekko.stream.stage._
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.testkit.{ TestPublisher, TestSubscriber }
+import org.apache.pekko.testkit.{ AkkaSpec, TestLatch }
 
 import scala.collection.mutable
 import scala.concurrent.{ Await, Future, Promise }
@@ -20,8 +20,8 @@ class GraphStageDocSpec extends AkkaSpec {
 
   "Demonstrate creation of GraphStage boilerplate" in {
     // #boilerplate-example
-    import akka.stream.SourceShape
-    import akka.stream.stage.GraphStage
+    import org.apache.pekko
+    import pekko.stream.stage.GraphStage
 
     class NumbersSource extends GraphStage[SourceShape[Int]] {
       // Define the (sole) output port of this stage
@@ -38,12 +38,13 @@ class GraphStageDocSpec extends AkkaSpec {
 
   "Demonstrate creation of GraphStage Source" in {
     // #custom-source-example
-    import akka.stream.Attributes
-    import akka.stream.Outlet
-    import akka.stream.SourceShape
-    import akka.stream.stage.GraphStage
-    import akka.stream.stage.GraphStageLogic
-    import akka.stream.stage.OutHandler
+    import org.apache.pekko
+    import pekko.stream.Attributes
+    import pekko.stream.Outlet
+    import pekko.stream.SourceShape
+    import pekko.stream.stage.GraphStage
+    import pekko.stream.stage.GraphStageLogic
+    import pekko.stream.stage.OutHandler
 
     class NumbersSource extends GraphStage[SourceShape[Int]] {
       val out: Outlet[Int] = Outlet("NumbersSource")
@@ -89,12 +90,13 @@ class GraphStageDocSpec extends AkkaSpec {
 
   "Demonstrate creation of GraphStage Sink" in {
     // #custom-sink-example
-    import akka.stream.Attributes
-    import akka.stream.Inlet
-    import akka.stream.SinkShape
-    import akka.stream.stage.GraphStage
-    import akka.stream.stage.GraphStageLogic
-    import akka.stream.stage.InHandler
+    import org.apache.pekko
+    import pekko.stream.Attributes
+    import pekko.stream.Inlet
+    import pekko.stream.SinkShape
+    import pekko.stream.stage.GraphStage
+    import pekko.stream.stage.GraphStageLogic
+    import pekko.stream.stage.InHandler
 
     class StdoutSink extends GraphStage[SinkShape[Int]] {
       val in: Inlet[Int] = Inlet("StdoutSink")

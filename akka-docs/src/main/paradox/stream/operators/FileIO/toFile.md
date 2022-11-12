@@ -12,7 +12,7 @@ The `toFile` operator has been deprecated, use @ref:[toPath](./toPath.md) instea
 
 ## Signature
 
-@apidoc[FileIO.toFile](FileIO$) { scala="#toFile(f:java.io.File,options:Set[java.nio.file.OpenOption]):akka.stream.scaladsl.Sink[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#toFile(java.io.File,java.util.Set)" }
+@apidoc[FileIO.toFile](FileIO$) { scala="#toFile(f:java.io.File,options:Set[java.nio.file.OpenOption]):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#toFile(java.io.File,java.util.Set)" }
 
 
 ## Description

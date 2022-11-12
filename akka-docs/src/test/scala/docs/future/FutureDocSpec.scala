@@ -5,14 +5,15 @@
 package docs.future
 
 import language.postfixOps
-import akka.testkit._
-import akka.actor.{ Actor, ActorRef, Props, Status }
-import akka.util.Timeout
+import org.apache.pekko
+import pekko.testkit._
+import pekko.actor.{ Actor, ActorRef, Props, Status }
+import pekko.util.Timeout
 
 import scala.concurrent.duration._
 import java.lang.IllegalStateException
 
-import akka.actor.typed.ActorSystem
+import pekko.actor.typed.ActorSystem
 
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.util.{ Failure, Success }
@@ -41,7 +42,7 @@ object FutureDocSpec {
   // #pipe-to-usage
   class ActorUsingPipeTo(target: ActorRef) extends Actor {
     // akka.pattern.pipe needs to be imported
-    import akka.pattern.{ ask, pipe }
+    import org.apache.pekko.pattern.{ ask, pipe }
     // implicit ExecutionContext should be in scope
     implicit val ec: ExecutionContext = context.dispatcher
     implicit val timeout: Timeout = 5.seconds
@@ -83,7 +84,7 @@ object FutureDocSpec {
   }
 
   class UserActivityActor(val userId: String, repository: UserActivityRepository) extends Actor {
-    import akka.pattern.pipe
+    import org.apache.pekko.pattern.pipe
     import UserActivityActor._
     implicit val ec: ExecutionContext = context.dispatcher
 
@@ -103,7 +104,7 @@ object FutureDocSpec {
   // #pipe-to-proxy-actor
   class UserProxyActor(userData: ActorRef, userActivities: ActorRef) extends Actor {
     import UserProxyActor._
-    import akka.pattern.{ ask, pipe }
+    import org.apache.pekko.pattern.{ ask, pipe }
     implicit val ec: ExecutionContext = context.dispatcher
 
     implicit val timeout: Timeout = Timeout(5 seconds)
@@ -154,8 +155,8 @@ class FutureDocSpec extends AkkaSpec {
     val msg = "hello"
     // #ask-blocking
     import scala.concurrent.Await
-    import akka.pattern.ask
-    import akka.util.Timeout
+    import org.apache.pekko.pattern.ask
+    import org.apache.pekko.util.Timeout
     import scala.concurrent.duration._
 
     implicit val timeout: Timeout = 5.seconds
@@ -172,7 +173,7 @@ class FutureDocSpec extends AkkaSpec {
     implicit val timeout: Timeout = 5.seconds
     // #map-to
     import scala.concurrent.Future
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
 
     val future: Future[String] = ask(actor, msg).mapTo[String]
     // #map-to
@@ -287,7 +288,7 @@ class FutureDocSpec extends AkkaSpec {
     val msg2 = 2
     implicit val timeout: Timeout = 5.seconds
     import scala.concurrent.Await
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
     // #composing-wrong
 
     val f1 = ask(actor1, msg1)
@@ -311,7 +312,7 @@ class FutureDocSpec extends AkkaSpec {
     val msg2 = 2
     implicit val timeout: Timeout = 5.seconds
     import scala.concurrent.Await
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
     // #composing
 
     val f1 = ask(actor1, msg1)
@@ -334,7 +335,7 @@ class FutureDocSpec extends AkkaSpec {
     val oddActor = system.actorOf(Props[OddActor]())
     // #sequence-ask
     // oddActor returns odd numbers sequentially from 1 as a List[Future[Int]]
-    val listOfFutures = List.fill(100)(akka.pattern.ask(oddActor, GetNext).mapTo[Int])
+    val listOfFutures = List.fill(100)(pekko.pattern.ask(oddActor, GetNext).mapTo[Int])
 
     // now we have a Future[List[Int]]
     val futureList = Future.sequence(listOfFutures)
@@ -389,7 +390,7 @@ class FutureDocSpec extends AkkaSpec {
     val actor = system.actorOf(Props[MyActor]())
     val msg1 = -1
     // #recover
-    val future = akka.pattern.ask(actor, msg1).recover {
+    val future = pekko.pattern.ask(actor, msg1).recover {
       case e: ArithmeticException => 0
     }
     future.foreach(println)
@@ -402,7 +403,7 @@ class FutureDocSpec extends AkkaSpec {
     val actor = system.actorOf(Props[MyActor]())
     val msg1 = -1
     // #try-recover
-    val future = akka.pattern.ask(actor, msg1).recoverWith {
+    val future = pekko.pattern.ask(actor, msg1).recoverWith {
       case e: ArithmeticException => Future.successful(0)
       case foo: IllegalArgumentException =>
         Future.failed[Int](new IllegalStateException("All br0ken!"))
@@ -482,11 +483,11 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate usage of pattern.after" in {
-    import akka.actor.typed.scaladsl.adapter.ClassicActorSystemOps
+    import org.apache.pekko.actor.typed.scaladsl.adapter.ClassicActorSystemOps
     implicit val system: ActorSystem[Nothing] = this.system.toTyped
     // #after
     val delayed =
-      akka.pattern.after(200.millis)(Future.failed(new IllegalStateException("OHNOES")))
+      pekko.pattern.after(200.millis)(Future.failed(new IllegalStateException("OHNOES")))
 
     val future = Future { Thread.sleep(1000); "foo" }
     val result = Future.firstCompletedOf(Seq(future, delayed))
@@ -495,11 +496,12 @@ class FutureDocSpec extends AkkaSpec {
   }
 
   "demonstrate pattern.retry" in {
-    import akka.actor.typed.scaladsl.adapter.ClassicActorSystemOps
+    import pekko.actor.typed.scaladsl.adapter.ClassicActorSystemOps
     val system: ActorSystem[Nothing] = this.system.toTyped
     // #retry
-    import akka.actor.typed.scaladsl.adapter._
-    implicit val scheduler: akka.actor.Scheduler = system.scheduler.toClassic
+    import org.apache.pekko
+    import pekko.actor.typed.scaladsl.adapter._
+    implicit val scheduler: pekko.actor.Scheduler = system.scheduler.toClassic
     implicit val ec: ExecutionContext = system.executionContext
 
     // Given some future that will succeed eventually
@@ -512,7 +514,7 @@ class FutureDocSpec extends AkkaSpec {
     }
 
     // Return a new future that will retry up to 10 times
-    val retried: Future[Int] = akka.pattern.retry(() => futureToAttempt(), attempts = 10, 100 milliseconds)
+    val retried: Future[Int] = pekko.pattern.retry(() => futureToAttempt(), attempts = 10, 100 milliseconds)
     // #retry
 
     Await.result(retried, 1 second) should ===(5)

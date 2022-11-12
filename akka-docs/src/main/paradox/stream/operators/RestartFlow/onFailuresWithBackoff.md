@@ -6,7 +6,7 @@ Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it f
 
 ## Signature
 
-@apidoc[RestartFlow.onFailuresWithBackoff](RestartFlow$) { scala="#onFailuresWithBackoff[In,Out](settings:akka.stream.RestartSettings)(flowFactory:()=&gt;akka.stream.scaladsl.Flow[In,Out,_]):akka.stream.scaladsl.Flow[In,Out,akka.NotUsed]" java="#onFailuresWithBackoff(akka.stream.RestartSettings,akka.japi.function.Creator)" }
+@apidoc[RestartFlow.onFailuresWithBackoff](RestartFlow$) { scala="#onFailuresWithBackoff[In,Out](settings:org.apache.pekko.stream.RestartSettings)(flowFactory:()=&gt;org.apache.pekko.stream.scaladsl.Flow[In,Out,_]):org.apache.pekko.stream.scaladsl.Flow[In,Out,org.apache.pekko.NotUsed]" java="#onFailuresWithBackoff(org.apache.pekko.stream.RestartSettings,org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

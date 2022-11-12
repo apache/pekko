@@ -4,15 +4,15 @@
 
 package jdocs.cluster;
 
-import akka.actor.AbstractActor;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent;
-import akka.cluster.ClusterEvent.MemberEvent;
-import akka.cluster.ClusterEvent.MemberUp;
-import akka.cluster.ClusterEvent.MemberRemoved;
-import akka.cluster.ClusterEvent.UnreachableMember;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent;
+import org.apache.pekko.cluster.ClusterEvent.MemberEvent;
+import org.apache.pekko.cluster.ClusterEvent.MemberUp;
+import org.apache.pekko.cluster.ClusterEvent.MemberRemoved;
+import org.apache.pekko.cluster.ClusterEvent.UnreachableMember;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 public class SimpleClusterListener extends AbstractActor {
   LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);

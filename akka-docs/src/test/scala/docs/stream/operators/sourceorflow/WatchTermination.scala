@@ -4,8 +4,8 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Source
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }

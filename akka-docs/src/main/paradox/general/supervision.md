@@ -98,8 +98,8 @@ Lifecycle monitoring is implemented using a @apidoc[typed.Terminated] message to
 received by the monitoring actor, where the default behavior is to throw a
 special @apidoc[typed.DeathPactException] if not otherwise handled. In order to start
 listening for @apidoc[typed.Terminated] messages, invoke
-@apidoc[ActorContext.watch(targetActorRef)](typed.*.ActorContext) {scala="#watch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#watch(akka.actor.typed.ActorRef)"}.  To stop listening, invoke
-@apidoc[ActorContext.unwatch(targetActorRef)](typed.*.ActorContext) {scala="#unwatch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#unwatch(akka.actor.typed.ActorRef)"}.  One important property is that the
+@apidoc[ActorContext.watch(targetActorRef)](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"}.  To stop listening, invoke
+@apidoc[ActorContext.unwatch(targetActorRef)](typed.*.ActorContext) {scala="#unwatch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#unwatch(org.apache.pekko.actor.typed.ActorRef)"}.  One important property is that the
 message will be delivered irrespective of the order in which the monitoring
 request and target’s termination occur, i.e. you still get the message even if
 at the time of registration the target is already dead.

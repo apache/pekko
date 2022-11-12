@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.cluster.sharding.protobuf.msg";
+option java_package = "org.apache.pekko.cluster.sharding.protobuf.msg";
 option optimize_for = SPEED;
 
 message CoordinatorState {

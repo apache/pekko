@@ -4,7 +4,7 @@
 
 package docs.stream.cookbook
 
-import akka.stream.scaladsl._
+import org.apache.pekko.stream.scaladsl._
 import scala.concurrent.Future
 
 class RecipeSeq extends RecipeSpec {

@@ -6,7 +6,7 @@ Stream a single object once.
 
 ## Signature
 
-@apidoc[Source.single](Source$) { scala="#single[T](element:T):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#single(T)" }
+@apidoc[Source.single](Source$) { scala="#single[T](element:T):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#single(T)" }
 
 ## Description
 
@@ -21,10 +21,10 @@ See also:
 ## Examples
 
 Scala
-:  @@snip [source.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SourceSpec.scala) { #imports #source-single }
+:  @@snip [source.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #imports #source-single }
 
 Java
-:   @@snip [source.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/SourceTest.java) { #imports #source-single }
+:   @@snip [source.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #imports #source-single }
 
 ## Reactive Streams semantics
 

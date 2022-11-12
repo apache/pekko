@@ -8,10 +8,10 @@ package jdocs.stream.operators.source;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CompletableFuture;
 
-import akka.NotUsed;
-import akka.Done;
-import akka.actor.typed.ActorSystem;
-import akka.stream.javadsl.*;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.stream.javadsl.*;
 
 // #sourceFromCompletionStage
 

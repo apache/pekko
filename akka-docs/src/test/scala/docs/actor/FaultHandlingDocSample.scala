@@ -8,12 +8,13 @@ import language.postfixOps
 
 //#all
 //#imports
-import akka.actor._
-import akka.actor.SupervisorStrategy._
+import org.apache.pekko
+import pekko.actor._
+import pekko.actor.SupervisorStrategy._
 import scala.concurrent.duration._
-import akka.util.Timeout
-import akka.event.LoggingReceive
-import akka.pattern.{ ask, pipe }
+import pekko.util.Timeout
+import pekko.event.LoggingReceive
+import pekko.pattern.{ ask, pipe }
 import com.typesafe.config.ConfigFactory
 //#imports
 

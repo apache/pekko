@@ -6,8 +6,8 @@ Accumulate incoming events until the combined weight of elements is greater than
 
 ## Signature
 
-@apidoc[Source.groupedWeighted](Source) { scala="#groupedWeighted(minWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWeighted(long,akka.japi.function.Function)" }
-@apidoc[Flow.groupedWeighted](Flow) { scala="#groupedWeighted(minWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWeighted(long,akka.japi.function.Function)" }
+@apidoc[Source.groupedWeighted](Source) { scala="#groupedWeighted(minWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWeighted(long,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.groupedWeighted](Flow) { scala="#groupedWeighted(minWeight:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[scala.collection.immutable.Seq[Out]]" java="#groupedWeighted(long,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

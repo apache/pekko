@@ -12,21 +12,21 @@ import java.util.List;
 import java.util.Map;
 import java.time.Duration;
 
-import akka.actor.*;
-import akka.dispatch.Mapper;
-import akka.event.LoggingReceive;
-import akka.japi.pf.DeciderBuilder;
-import akka.pattern.Patterns;
-import akka.util.Timeout;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.dispatch.Mapper;
+import org.apache.pekko.event.LoggingReceive;
+import org.apache.pekko.japi.pf.DeciderBuilder;
+import org.apache.pekko.pattern.Patterns;
+import org.apache.pekko.util.Timeout;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import static akka.japi.Util.classTag;
-import static akka.actor.SupervisorStrategy.restart;
-import static akka.actor.SupervisorStrategy.stop;
-import static akka.actor.SupervisorStrategy.escalate;
+import static org.apache.pekko.japi.Util.classTag;
+import static org.apache.pekko.actor.SupervisorStrategy.restart;
+import static org.apache.pekko.actor.SupervisorStrategy.stop;
+import static org.apache.pekko.actor.SupervisorStrategy.escalate;
 
-import static akka.pattern.Patterns.pipe;
+import static org.apache.pekko.pattern.Patterns.pipe;
 
 import static jdocs.actor.FaultHandlingDocSample.WorkerApi.*;
 import static jdocs.actor.FaultHandlingDocSample.CounterServiceApi.*;

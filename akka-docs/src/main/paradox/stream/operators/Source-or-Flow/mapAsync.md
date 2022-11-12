@@ -6,8 +6,8 @@ Pass incoming elements to a function that return a @scala[`Future`] @java[`Compl
 
 ## Signature
 
-@apidoc[Source.mapAsync](Source) { scala="#mapAsync[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,akka.japi.function.Function)" }
-@apidoc[Flow.mapAsync](Flow) { scala="#mapAsync[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,akka.japi.function.Function)" }
+@apidoc[Source.mapAsync](Source) { scala="#mapAsync[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.mapAsync](Flow) { scala="#mapAsync[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

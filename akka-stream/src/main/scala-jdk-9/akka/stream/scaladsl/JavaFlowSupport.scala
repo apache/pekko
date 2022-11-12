@@ -2,15 +2,16 @@
  * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.stream.scaladsl
+package org.apache.pekko.stream.scaladsl
 
 import java.util.{ concurrent => juc }
 
 import scala.annotation.unchecked.uncheckedVariance
 
-import akka.NotUsed
-import akka.stream.impl.JavaFlowAndRsConverters
-import akka.stream.scaladsl
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.impl.JavaFlowAndRsConverters
+import pekko.stream.scaladsl
 
 /**
  * For use only with `JDK 9+`.
@@ -22,7 +23,7 @@ object JavaFlowSupport {
   import JavaFlowAndRsConverters.Implicits._
 
   /**
-   * [[akka.stream.scaladsl.Source]] factories operating with `java.util.concurrent.Flow.*` interfaces.
+   * [[pekko.stream.scaladsl.Source]] factories operating with `java.util.concurrent.Flow.*` interfaces.
    */
   object Source {
 
@@ -57,7 +58,7 @@ object JavaFlowSupport {
   }
 
   /**
-   * [[akka.stream.scaladsl.Flow]] factories operating with `java.util.concurrent.Flow.*` interfaces.
+   * [[pekko.stream.scaladsl.Flow]] factories operating with `java.util.concurrent.Flow.*` interfaces.
    */
   object Flow {
 
@@ -100,7 +101,7 @@ object JavaFlowSupport {
   }
 
   /**
-   * [[akka.stream.scaladsl.Sink]] factories operating with `java.util.concurrent.Flow.*` interfaces.
+   * [[pekko.stream.scaladsl.Sink]] factories operating with `java.util.concurrent.Flow.*` interfaces.
    */
   object Sink {
 

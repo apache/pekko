@@ -58,10 +58,10 @@ details @ref:[here](#blocking-needs-careful-management).
 To select a dispatcher use `DispatcherSelector` to create a `Props` instance for spawning your actor:
 
 Scala
-:  @@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #spawn-dispatcher }
+:  @@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/DispatchersDocSpec.scala) { #spawn-dispatcher }
 
 Java
-:  @@snip [DispatcherDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/DispatchersDocTest.java) { #spawn-dispatcher }
+:  @@snip [DispatcherDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/DispatchersDocTest.java) { #spawn-dispatcher }
 
 `DispatcherSelector` has a few convenience methods:
 
@@ -72,7 +72,7 @@ Java
 The final example shows how to load a custom dispatcher from configuration and relies on this being in your `application.conf`:
 
 <!-- Same between Java and Scala -->
-@@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/DispatchersDocSpec.scala) { #config }
+@@snip [DispatcherDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/DispatchersDocSpec.scala) { #config }
 
 ## Types of dispatchers
 
@@ -88,7 +88,7 @@ There are 2 different types of message dispatchers:
     * Use cases: Default dispatcher, Bulkheading
     * Driven by: `java.util.concurrent.ExecutorService`.
       Specify using "executor" using "fork-join-executor", "thread-pool-executor" or the fully-qualified
-      class name of an `akka.dispatcher.ExecutorServiceConfigurator` implementation.
+      class name of an `org.apache.pekko.dispatcher.ExecutorServiceConfigurator` implementation.
 
 * **PinnedDispatcher**
 
@@ -98,7 +98,7 @@ There are 2 different types of message dispatchers:
     * Shareability: None
     * Mailboxes: Any, creates one per Actor
     * Use cases: Bulkheading
-    * Driven by: Any `akka.dispatch.ThreadPoolExecutorConfigurator`.
+    * Driven by: Any `org.apache.pekko.dispatch.ThreadPoolExecutorConfigurator`.
       By default a "thread-pool-executor".
 
 Here is an example configuration of a Fork Join Pool dispatcher:

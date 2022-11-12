@@ -5,35 +5,35 @@
 package jdocs.event;
 
 // #imports
-import akka.actor.*;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 // #imports
 
 // #imports-listener
-import akka.event.Logging.InitializeLogger;
-import akka.event.Logging.Error;
-import akka.event.Logging.Warning;
-import akka.event.Logging.Info;
-import akka.event.Logging.Debug;
+import org.apache.pekko.event.Logging.InitializeLogger;
+import org.apache.pekko.event.Logging.Error;
+import org.apache.pekko.event.Logging.Warning;
+import org.apache.pekko.event.Logging.Info;
+import org.apache.pekko.event.Logging.Debug;
 
 // #imports-listener
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.Test;
 import java.util.Optional;
 
 // #imports-mdc
-import akka.event.DiagnosticLoggingAdapter;
+import org.apache.pekko.event.DiagnosticLoggingAdapter;
 import java.util.HashMap;
 import java.util.Map;
 // #imports-mdc
 
 // #imports-deadletter
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
 // #imports-deadletter
 
 public class LoggingDocTest extends AbstractJavaTest {

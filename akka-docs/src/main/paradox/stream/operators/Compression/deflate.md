@@ -6,12 +6,12 @@ Creates a flow that deflate-compresses a stream of ByteStrings.
 
 ## Signature
 
-@apidoc[Compression.deflate](stream.*.Compression$) { scala="#deflate:akka.stream.scaladsl.Flow[akka.util.ByteString,akka.util.ByteString,akka.NotUsed]" java="#deflate()" }
+@apidoc[Compression.deflate](stream.*.Compression$) { scala="#deflate:org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#deflate()" }
 
 ## Description
 
 Creates a flow that deflate-compresses a stream of ByteStrings. Note that the compressor
-will SYNC_FLUSH after every @apidoc[akka.util.ByteString] so that it is guaranteed that every @apidoc[akka.util.ByteString]
+will SYNC_FLUSH after every @apidoc[util.ByteString] so that it is guaranteed that every @apidoc[util.ByteString]
 coming out of the flow can be fully decompressed without waiting for additional data. This may
 come at a compression performance cost for very small chunks.
 

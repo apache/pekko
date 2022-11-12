@@ -6,8 +6,8 @@ Demultiplex the incoming stream into separate output streams.
 
 ## Signature
 
-@apidoc[Source.groupBy](Source) { scala="#groupBy[K](maxSubstreams:Int,f:Out=&gt;K):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#groupBy(int,akka.japi.function.Function,boolean)" }
-@apidoc[Flow.groupBy](Flow) { scala="#groupBy[K](maxSubstreams:Int,f:Out=&gt;K):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#groupBy(int,akka.japi.function.Function,boolean)" }
+@apidoc[Source.groupBy](Source) { scala="#groupBy[K](maxSubstreams:Int,f:Out=&gt;K):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#groupBy(int,org.apache.pekko.japi.function.Function,boolean)" }
+@apidoc[Flow.groupBy](Flow) { scala="#groupBy[K](maxSubstreams:Int,f:Out=&gt;K):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#groupBy(int,org.apache.pekko.japi.function.Function,boolean)" }
 
 
 ## Description

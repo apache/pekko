@@ -4,15 +4,16 @@
 
 package docs.stream.operators
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 
 class WithContextSpec extends AkkaSpec {
 
   "use asSourceWithContext" in {
     // #asSourceWithContext
-    import akka.NotUsed
-    import akka.stream.scaladsl.Source
-    import akka.stream.scaladsl.SourceWithContext
+    import org.apache.pekko
+    import pekko.NotUsed
+    import pekko.stream.scaladsl.Source
+    import pekko.stream.scaladsl.SourceWithContext
     import scala.collection.immutable
 
     // values with their contexts as tuples
@@ -32,7 +33,7 @@ class WithContextSpec extends AkkaSpec {
       .map(s => s.reverse)
 
     // running the source and asserting the outcome
-    import akka.stream.scaladsl.Sink
+    import org.apache.pekko.stream.scaladsl.Sink
     val result = mapped.runWith(Sink.seq)
     result.futureValue should contain theSameElementsInOrderAs immutable.Seq("snie" -> 1, "iewz" -> 2, "ierd" -> 3)
     // #asSourceWithContext
@@ -40,9 +41,10 @@ class WithContextSpec extends AkkaSpec {
 
   "use asFlowWithContext" in {
     // #asFlowWithContext
-    import akka.NotUsed
-    import akka.stream.scaladsl.Flow
-    import akka.stream.scaladsl.FlowWithContext
+    import org.apache.pekko
+    import pekko.NotUsed
+    import pekko.stream.scaladsl.Flow
+    import pekko.stream.scaladsl.FlowWithContext
     // a regular flow with pairs as elements
     val flow: Flow[(String, Int), (String, Int), NotUsed] = // ???
       // #asFlowWithContext
@@ -67,8 +69,8 @@ class WithContextSpec extends AkkaSpec {
       .map(_.reverse)
 
     // running the flow with some sample data and asserting the outcome
-    import akka.stream.scaladsl.Source
-    import akka.stream.scaladsl.Sink
+    import pekko.stream.scaladsl.Source
+    import pekko.stream.scaladsl.Sink
     import scala.collection.immutable
 
     val values: immutable.Seq[(String, Int)] = immutable.Seq("eins" -> 1, "zwei" -> 2, "drei" -> 3)

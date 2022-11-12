@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.stream";
+option java_package = "org.apache.pekko.stream";
 option optimize_for = SPEED;
 
 /*************************************************

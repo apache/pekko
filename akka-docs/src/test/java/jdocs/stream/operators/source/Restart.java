@@ -4,22 +4,22 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.actor.Cancellable;
-import akka.japi.Creator;
-import akka.stream.KillSwitches;
-import akka.stream.RestartSettings;
-import akka.stream.UniqueKillSwitch;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.RestartSource;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.japi.Creator;
+import org.apache.pekko.stream.KillSwitches;
+import org.apache.pekko.stream.RestartSettings;
+import org.apache.pekko.stream.UniqueKillSwitch;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.RestartSource;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.time.Duration;
 import java.util.Arrays;
 
 public class Restart {
-  static akka.actor.ActorSystem system = akka.actor.ActorSystem.create();
+  static org.apache.pekko.actor.ActorSystem system = org.apache.pekko.actor.ActorSystem.create();
 
   public static void onRestartWithBackoffInnerFailure() {
     // #restart-failure-inner-failure

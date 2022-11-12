@@ -24,7 +24,7 @@ namespace. For Java 8 there is instead a separate Reactive Streams artifact with
 
 Akka streams provides interoperability for both these two API versions, the Reactive Streams interfaces directly through factories on the
 regular `Source` and `Sink` APIs. For the Java 9 and later built in interfaces there is a separate set of factories in 
-@scala[`akka.stream.scaladsl.JavaFlowSupport`]@java[`akka.stream.javadsl.JavaFlowSupport`].
+@scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport`].
 
 In the following samples the standalone Reactive Stream API factories has been used but each such call can be replaced with the
 corresponding method from `JavaFlowSupport` and the JDK @scala[`java.util.concurrent.Flow._`]@java[`java.util.concurrent.Flow.*`] interfaces.

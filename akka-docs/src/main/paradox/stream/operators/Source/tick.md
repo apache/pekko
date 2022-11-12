@@ -6,7 +6,7 @@ A periodical repetition of an arbitrary object.
 
 ## Signature
 
-@apidoc[Source.tick](Source$) { scala="#tick[T](initialDelay:scala.concurrent.duration.FiniteDuration,interval:scala.concurrent.duration.FiniteDuration,tick:T):akka.stream.scaladsl.Source[T,akka.actor.Cancellable]" java="#tick(java.time.Duration,java.time.Duration,java.lang.Object)" }
+@apidoc[Source.tick](Source$) { scala="#tick[T](initialDelay:scala.concurrent.duration.FiniteDuration,interval:scala.concurrent.duration.FiniteDuration,tick:T):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.Cancellable]" java="#tick(java.time.Duration,java.time.Duration,java.lang.Object)" }
 
 
 ## Description

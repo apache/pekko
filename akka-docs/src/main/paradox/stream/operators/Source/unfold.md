@@ -6,7 +6,7 @@ Stream the result of a function as long as it returns a @scala[`Some`] @java[non
 
 ## Signature
 
-@apidoc[Source.unfold](Source$) { scala="#unfold[S,E](s:S)(f:S=&gt;Option[(S,E)]):akka.stream.scaladsl.Source[E,akka.NotUsed]" java="#unfold(java.lang.Object,akka.japi.function.Function)" }
+@apidoc[Source.unfold](Source$) { scala="#unfold[S,E](s:S)(f:S=&gt;Option[(S,E)]):org.apache.pekko.stream.scaladsl.Source[E,org.apache.pekko.NotUsed]" java="#unfold(java.lang.Object,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

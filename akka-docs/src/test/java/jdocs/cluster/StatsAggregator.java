@@ -10,9 +10,9 @@ import java.time.Duration;
 
 import jdocs.cluster.StatsMessages.JobFailed;
 import jdocs.cluster.StatsMessages.StatsResult;
-import akka.actor.ActorRef;
-import akka.actor.ReceiveTimeout;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ReceiveTimeout;
+import org.apache.pekko.actor.AbstractActor;
 
 // #aggregator
 public class StatsAggregator extends AbstractActor {

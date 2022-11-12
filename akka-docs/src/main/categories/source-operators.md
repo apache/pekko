@@ -1,1 +1,1 @@
-These built-in sources are available from @scala[`akka.stream.scaladsl.Source`] @java[`akka.stream.javadsl.Source`]:
+These built-in sources are available from @scala[`org.apache.pekko.stream.scaladsl.Source`] @java[`org.apache.pekko.stream.javadsl.Source`]:

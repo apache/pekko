@@ -5,12 +5,13 @@
 package docs.dispatcher
 
 //#mailbox-implementation-example
-import akka.actor.ActorRef
-import akka.actor.ActorSystem
-import akka.dispatch.Envelope
-import akka.dispatch.MailboxType
-import akka.dispatch.MessageQueue
-import akka.dispatch.ProducesMessageQueue
+import org.apache.pekko
+import pekko.actor.ActorRef
+import pekko.actor.ActorSystem
+import pekko.dispatch.Envelope
+import pekko.dispatch.MailboxType
+import pekko.dispatch.MessageQueue
+import pekko.dispatch.ProducesMessageQueue
 import com.typesafe.config.Config
 import java.util.concurrent.ConcurrentLinkedQueue
 import scala.Option

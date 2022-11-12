@@ -4,15 +4,15 @@
 
 package jdocs.stream;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.japi.Pair;
-import akka.stream.*;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

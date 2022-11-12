@@ -6,8 +6,8 @@ Attaches the given `Sink` to this `Flow`, meaning that elements that pass throug
 
 ## Signature
 
-@apidoc[Source.alsoTo](Source) { scala="#alsoTo(that:akka.stream.Graph[akka.stream.SinkShape[Out],_]):FlowOps.this.Repr[Out]" java="#alsoTo(akka.stream.Graph)" }
-@apidoc[Flow.alsoTo](Flow) { scala="#alsoTo(that:akka.stream.Graph[akka.stream.SinkShape[Out],_]):FlowOps.this.Repr[Out]" java="#alsoTo(akka.stream.Graph)" }
+@apidoc[Source.alsoTo](Source) { scala="#alsoTo(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]):FlowOps.this.Repr[Out]" java="#alsoTo(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.alsoTo](Flow) { scala="#alsoTo(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]):FlowOps.this.Repr[Out]" java="#alsoTo(org.apache.pekko.stream.Graph)" }
 
 
 ## Description

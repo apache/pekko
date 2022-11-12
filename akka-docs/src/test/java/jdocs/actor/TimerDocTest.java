@@ -6,7 +6,7 @@ package jdocs.actor;
 
 // #timers
 import java.time.Duration;
-import akka.actor.AbstractActorWithTimers;
+import org.apache.pekko.actor.AbstractActorWithTimers;
 
 // #timers
 

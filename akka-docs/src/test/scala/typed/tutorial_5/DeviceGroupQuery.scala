@@ -6,12 +6,13 @@ package typed.tutorial_5
 
 import scala.concurrent.duration._
 
-import akka.actor.typed.ActorRef
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.AbstractBehavior
-import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.TimerScheduler
+import org.apache.pekko
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.TimerScheduler
 
 //#query-full
 //#query-outline

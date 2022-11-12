@@ -4,10 +4,10 @@
 
 package jdocs.routing;
 
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -22,45 +22,45 @@ import java.util.Collections;
 import java.util.List;
 import java.time.Duration;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 
 // #imports1
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.Terminated;
-import akka.actor.AbstractActor;
-import akka.routing.ActorRefRoutee;
-import akka.routing.Routee;
-import akka.routing.Router;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.routing.ActorRefRoutee;
+import org.apache.pekko.routing.Routee;
+import org.apache.pekko.routing.Router;
 
 // #imports1
 
 // #imports2
-import akka.actor.Address;
-import akka.actor.AddressFromURIString;
-import akka.actor.Kill;
-import akka.actor.PoisonPill;
-import akka.actor.SupervisorStrategy;
-import akka.actor.OneForOneStrategy;
-import akka.remote.routing.RemoteRouterConfig;
-import akka.routing.Broadcast;
-import akka.routing.BroadcastGroup;
-import akka.routing.BroadcastPool;
-import akka.routing.ConsistentHashingGroup;
-import akka.routing.ConsistentHashingPool;
-import akka.routing.DefaultResizer;
-import akka.routing.FromConfig;
-import akka.routing.RandomGroup;
-import akka.routing.RandomPool;
-import akka.routing.RoundRobinGroup;
-import akka.routing.RoundRobinPool;
-import akka.routing.RoundRobinRoutingLogic;
-import akka.routing.ScatterGatherFirstCompletedGroup;
-import akka.routing.ScatterGatherFirstCompletedPool;
-import akka.routing.BalancingPool;
-import akka.routing.SmallestMailboxPool;
-import akka.routing.TailChoppingGroup;
-import akka.routing.TailChoppingPool;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.actor.AddressFromURIString;
+import org.apache.pekko.actor.Kill;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.actor.OneForOneStrategy;
+import org.apache.pekko.remote.routing.RemoteRouterConfig;
+import org.apache.pekko.routing.Broadcast;
+import org.apache.pekko.routing.BroadcastGroup;
+import org.apache.pekko.routing.BroadcastPool;
+import org.apache.pekko.routing.ConsistentHashingGroup;
+import org.apache.pekko.routing.ConsistentHashingPool;
+import org.apache.pekko.routing.DefaultResizer;
+import org.apache.pekko.routing.FromConfig;
+import org.apache.pekko.routing.RandomGroup;
+import org.apache.pekko.routing.RandomPool;
+import org.apache.pekko.routing.RoundRobinGroup;
+import org.apache.pekko.routing.RoundRobinPool;
+import org.apache.pekko.routing.RoundRobinRoutingLogic;
+import org.apache.pekko.routing.ScatterGatherFirstCompletedGroup;
+import org.apache.pekko.routing.ScatterGatherFirstCompletedPool;
+import org.apache.pekko.routing.BalancingPool;
+import org.apache.pekko.routing.SmallestMailboxPool;
+import org.apache.pekko.routing.TailChoppingGroup;
+import org.apache.pekko.routing.TailChoppingPool;
 
 // #imports2
 

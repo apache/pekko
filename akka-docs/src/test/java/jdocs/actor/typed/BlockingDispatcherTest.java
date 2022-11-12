@@ -4,8 +4,8 @@
 
 package jdocs.actor.typed;
 
-import akka.actor.typed.*;
-import akka.actor.typed.javadsl.*;
+import org.apache.pekko.actor.typed.*;
+import org.apache.pekko.actor.typed.javadsl.*;
 
 public class BlockingDispatcherTest {
   public static void main(String args[]) {

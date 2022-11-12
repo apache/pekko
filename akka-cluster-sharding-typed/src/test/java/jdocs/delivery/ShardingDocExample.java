@@ -5,15 +5,15 @@
 package jdocs.delivery;
 
 // #imports
-import akka.Done;
-import akka.actor.Address;
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.delivery.ConsumerController;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.delivery.ConsumerController;
+import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
+import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.actor.typed.javadsl.Receive;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,18 +25,18 @@ import java.util.concurrent.CompletionStage;
 // #imports
 
 // #producer
-import akka.cluster.sharding.typed.delivery.ShardingProducerController;
+import org.apache.pekko.cluster.sharding.typed.delivery.ShardingProducerController;
 
 // #producer
 
 // #init
-import akka.cluster.sharding.typed.delivery.ShardingConsumerController;
-import akka.cluster.sharding.typed.ShardingEnvelope;
-import akka.cluster.sharding.typed.javadsl.ClusterSharding;
-import akka.cluster.sharding.typed.javadsl.Entity;
-import akka.cluster.sharding.typed.javadsl.EntityTypeKey;
-import akka.cluster.typed.Cluster;
-import akka.actor.typed.ActorSystem;
+import org.apache.pekko.cluster.sharding.typed.delivery.ShardingConsumerController;
+import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
+import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
+import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
+import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
+import org.apache.pekko.cluster.typed.Cluster;
+import org.apache.pekko.actor.typed.ActorSystem;
 
 // #init
 

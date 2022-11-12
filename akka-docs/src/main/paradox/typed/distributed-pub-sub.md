@@ -18,7 +18,7 @@ when used in a clustered application:
 
 ## The Topic Actor
 
-Distributed publish subscribe is achieved by representing each pub sub topic with an actor, @apidoc[akka.actor.typed.pubsub.Topic](akka.actor.typed.pubsub.Topic$). 
+Distributed publish subscribe is achieved by representing each pub sub topic with an actor, @apidoc[actor.typed.pubsub.Topic](typed.pubsub.Topic$). 
 
 The topic actor needs to run on each node where subscribers will live or that wants to publish messages to the topic.
  
@@ -26,26 +26,26 @@ The identity of the topic is a tuple of the type of messages that can be publish
 to not define multiple topics with different types and the same topic name.
 
 Scala
-:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/pubsub/PubSubExample.scala) { #start-topic }
+:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #start-topic }
 
 Java
-:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/pubsub/PubSubExample.java) { #start-topic }
+:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #start-topic }
 
 Local actors can then subscribe to the topic (and unsubscribe from it):
 
 Scala
-:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/pubsub/PubSubExample.scala) { #subscribe }
+:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #subscribe }
 
 Java
-:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/pubsub/PubSubExample.java) { #subscribe }
+:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #subscribe }
 
 And publish messages to the topic:
 
 Scala
-:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/pubsub/PubSubExample.scala) { #publish }
+:  @@snip [PubSubExample.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/pubsub/PubSubExample.scala) { #publish }
 
 Java
-:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/pubsub/PubSubExample.java) { #publish }
+:  @@snip [PubSubExample.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/pubsub/PubSubExample.java) { #publish }
 
 ## Pub Sub Scalability
 

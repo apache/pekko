@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.stream.ClosedShape
-import akka.stream.scaladsl._
-import akka.stream.testkit._
+import org.apache.pekko.stream.ClosedShape
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.testkit._
 import scala.concurrent.duration._
 
 class RecipeManualTrigger extends RecipeSpec {

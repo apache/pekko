@@ -4,7 +4,7 @@
 
 package jdocs.cluster;
 
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 
 import java.util.LinkedList;
@@ -16,12 +16,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 // #join-seed-nodes-imports
-import akka.actor.Address;
-import akka.cluster.Cluster;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.cluster.Cluster;
 
 // #join-seed-nodes-imports
-import akka.actor.ActorSystem;
-import akka.cluster.Member;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.cluster.Member;
 
 public class ClusterDocTest extends AbstractJavaTest {
 

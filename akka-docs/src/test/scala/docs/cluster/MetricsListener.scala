@@ -5,16 +5,17 @@
 package scala.docs.cluster
 
 //#metrics-listener
-import akka.actor.ActorLogging
-import akka.actor.Actor
-import akka.cluster.Cluster
-import akka.cluster.metrics.ClusterMetricsEvent
-import akka.cluster.metrics.ClusterMetricsChanged
-import akka.cluster.ClusterEvent.CurrentClusterState
-import akka.cluster.metrics.NodeMetrics
-import akka.cluster.metrics.StandardMetrics.HeapMemory
-import akka.cluster.metrics.StandardMetrics.Cpu
-import akka.cluster.metrics.ClusterMetricsExtension
+import org.apache.pekko
+import pekko.actor.ActorLogging
+import pekko.actor.Actor
+import pekko.cluster.Cluster
+import pekko.cluster.metrics.ClusterMetricsEvent
+import pekko.cluster.metrics.ClusterMetricsChanged
+import pekko.cluster.ClusterEvent.CurrentClusterState
+import pekko.cluster.metrics.NodeMetrics
+import pekko.cluster.metrics.StandardMetrics.HeapMemory
+import pekko.cluster.metrics.StandardMetrics.Cpu
+import pekko.cluster.metrics.ClusterMetricsExtension
 
 class MetricsListener extends Actor with ActorLogging {
   val selfAddress = Cluster(context.system).selfAddress

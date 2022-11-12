@@ -4,10 +4,10 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.ActorRef
-import akka.stream.WatchedActorTerminatedException
-import akka.stream.scaladsl.Flow
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.stream.WatchedActorTerminatedException
+import org.apache.pekko.stream.scaladsl.Flow
 
 object Watch {
 

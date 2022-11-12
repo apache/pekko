@@ -5,7 +5,7 @@
 package docs.cluster.singleton
 
 //#singleton-supervisor-actor
-import akka.actor.{ Actor, Props, SupervisorStrategy }
+import org.apache.pekko.actor.{ Actor, Props, SupervisorStrategy }
 class SupervisorActor(childProps: Props, override val supervisorStrategy: SupervisorStrategy) extends Actor {
   val child = context.actorOf(childProps, "supervised-child")
 
@@ -15,13 +15,14 @@ class SupervisorActor(childProps: Props, override val supervisorStrategy: Superv
 }
 //#singleton-supervisor-actor
 
-import akka.actor.Actor
+import org.apache.pekko.actor.Actor
 abstract class ClusterSingletonSupervision extends Actor {
-  import akka.actor.{ ActorRef, Props, SupervisorStrategy }
+  import org.apache.pekko.actor.{ ActorRef, Props, SupervisorStrategy }
   def createSingleton(name: String, props: Props, supervisorStrategy: SupervisorStrategy): ActorRef = {
     // #singleton-supervisor-actor-usage
-    import akka.actor.{ PoisonPill, Props }
-    import akka.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
+    import org.apache.pekko
+    import pekko.actor.{ PoisonPill, Props }
+    import pekko.cluster.singleton.{ ClusterSingletonManager, ClusterSingletonManagerSettings }
     context.system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = Props(classOf[SupervisorActor], props, supervisorStrategy),

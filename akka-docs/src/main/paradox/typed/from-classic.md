@@ -59,18 +59,18 @@ APIs, which is familiar from Akka Streams.
 
 Examples of a few package names:
 
-| Classic               | Typed for Scala                       | Typed for Java                       |
-|-----------------------|---------------------------------------|--------------------------------------|
-| akka.actor            | akka.actor.typed.scaladsl             | akka.actor.typed.javadsl             |
-| akka.cluster          | akka.cluster.typed                    | akka.cluster.typed                   |
-| akka.cluster.sharding | akka.cluster.sharding.typed.scaladsl  | akka.cluster.sharding.typed.javadsl  |
-| akka.persistence      | akka.persistence.typed.scaladsl       | akka.persistence.typed.javadsl       |
+| Classic                           | Typed for Scala                                  | Typed for Java                                  |
+|-----------------------------------|--------------------------------------------------|-------------------------------------------------|
+| org.apache.pekko.actor            | org.apache.pekko.actor.typed.scaladsl            | org.apache.pekko.actor.typed.javadsl            |
+| org.apache.pekko.cluster          | org.apache.pekko.cluster.typed                   | org.apache.pekko.cluster.typed                  |
+| org.apache.pekko.cluster.sharding | org.apache.pekko.cluster.sharding.typed.scaladsl | org.apache.pekko.cluster.sharding.typed.javadsl |
+| org.apache.pekko.persistence      | org.apache.pekko.persistence.typed.scaladsl      | org.apache.pekko.persistence.typed.javadsl      |
 
 ## Actor definition
 
-A classic actor is defined by a class extending @scala[`akka.actor.Actor`]@java[`akka.actor.AbstractActor`].
+A classic actor is defined by a class extending @scala[`org.apache.pekko.actor.Actor`]@java[`org.apache.pekko.actor.AbstractActor`].
 
-An actor in Typed is defined by a class extending @scala[`akka.actor.typed.scaladsl.AbstractBehavior`]@java[`akka.actor.typed.javadsl.AbstractBehavior`].
+An actor in Typed is defined by a class extending @scala[`org.apache.pekko.actor.typed.scaladsl.AbstractBehavior`]@java[`org.apache.pekko.actor.typed.javadsl.AbstractBehavior`].
 
 It's also possible to define an actor in Typed from functions instead of extending a class. This is called
 the @ref:[functional style](style-guide.md#functional-versus-object-oriented-style).
@@ -78,18 +78,18 @@ the @ref:[functional style](style-guide.md#functional-versus-object-oriented-sty
 Classic HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
 
 Typed HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #hello-world-actor }
 
 Why is it called `Behavior` and not `Actor`?
 
@@ -110,9 +110,9 @@ Links to reference documentation:
 
 A classic actor is started with the `actorOf` method of the `ActorContext` or `ActorSystem`.
 
-Corresponding method in Typed is called `spawn` in the @scala[`akka.actor.typed.scaladsl.ActorContext`]@java[`akka.actor.typed.javadsl.ActorContext`].
+Corresponding method in Typed is called `spawn` in the @scala[`org.apache.pekko.actor.typed.scaladsl.ActorContext`]@java[`org.apache.pekko.actor.typed.javadsl.ActorContext`].
 
-There is no `spawn` method in the @scala[`akka.actor.typed.scaladsl.ActorSystem`]@java[`akka.actor.typed.javadsl.ActorSystem`]
+There is no `spawn` method in the @scala[`org.apache.pekko.actor.typed.scaladsl.ActorSystem`]@java[`org.apache.pekko.actor.typed.javadsl.ActorSystem`]
 for creating top level actors. Instead, there is a single top level actor defined by a user guardian `Behavior` that is given
 when starting the `ActorSystem`. Other actors are started as children of that user guardian actor or
 children of other actors in the actor hierarchy. This is explained more in @ref:[ActorSystem](#actorsystem).
@@ -120,17 +120,17 @@ children of other actors in the actor hierarchy. This is explained more in @ref:
 Note that when mixing classic and typed and have a classic system, spawning top level actors from the side is possible, see
 @ref:[Coexistence](coexisting.md#top-level-typed-actor-classic-system).
 
-The `actorOf` method takes an `akka.actor.Props` parameter, which is like a factory for creating the actor instance, and it's
+The `actorOf` method takes an `org.apache.pekko.actor.Props` parameter, which is like a factory for creating the actor instance, and it's
 also used when creating a new instance when the actor is restarted. The `Props` may also define additional
 properties such as which dispatcher to use for the actor.
 
 In typed, the `spawn` method creates an actor directly from a given `Behavior` without using a `Props` factory.
-It does however accept an optional `akka.actor.typed.Props` for specifying Actor metadata.
+It does however accept an optional `org.apache.pekko.actor.typed.Props` for specifying Actor metadata.
 The factory aspect is instead defined via `Behaviors.setup` when using the object-oriented style with
 a class extending `AbstractBehavior`. For the function style there is typically no need for the factory.
 
 Additional properties such as which dispatcher to use for the actor can still be given via an optional
-`akka.actor.typed.Props` parameter of the `spawn` method.
+`org.apache.pekko.actor.typed.Props` parameter of the `spawn` method.
 
 The `name` parameter of `actorOf` is optional and if not defined the actor will have a generated name. Corresponding
 in Typed is achieved with the `spawnAnonymous` method.
@@ -142,14 +142,14 @@ Links to reference documentation:
 
 ## ActorRef
 
-`akka.actor.ActorRef` has its correspondence in `akka.actor.typed.ActorRef`. The difference being that the latter
+`org.apache.pekko.actor.ActorRef` has its correspondence in `org.apache.pekko.actor.typed.ActorRef`. The difference being that the latter
 has a type parameter describing which messages the actor can handle. This information is not defined for a
 classic actor and you can send any type of message to a classic `ActorRef` even though the actor may not
 understand it.
 
 ## ActorSystem
 
-`akka.actor.ActorSystem` has its correspondence in `akka.actor.typed.ActorSystem`. One difference is that
+`org.apache.pekko.actor.ActorSystem` has its correspondence in `org.apache.pekko.actor.typed.ActorSystem`. One difference is that
 when creating an `ActorSystem` in Typed you give it a `Behavior` that will be used as the top level actor, also known 
 as the user guardian.
 
@@ -290,7 +290,7 @@ Links to reference documentation:
 The classic `ask` pattern returns a @scala[`Future`]@java[`CompletionStage`] for the response.
 
 Corresponding `ask` exists in Typed and is good when the requester itself isn't an actor.
-It is located in @scala[`akka.actor.typed.scaladsl.AskPattern`]@java[`akka.actor.typed.javadsl.AskPattern`].
+It is located in @scala[`org.apache.pekko.actor.typed.scaladsl.AskPattern`]@java[`org.apache.pekko.actor.typed.javadsl.AskPattern`].
 
 When the requester is an actor it is better to use the `ask` method of the `ActorContext` in Typed.
 It has the advantage of not having to mix @scala[`Future`]@java[`CompletionStage`] callbacks that are
@@ -322,10 +322,10 @@ collection for bookkeeping of children, such as a @scala[`Map[String, ActorRef[C
 @java[`Map<String, ActorRef<Child.Command>>`]. It can look like this:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/fromclassic/TypedSample.scala) { #children }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #children }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/fromclassic/TypedSample.java) { #children }
+:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #children }
 
 Remember to remove entries from the `Map` when the children are terminated. For that purpose it's
 convenient to use `watchWith`, as illustrated in the example above, because then you can include the
@@ -393,7 +393,7 @@ Links to reference documentation:
 
 ## PersistentActor
 
-The correspondence of the classic `PersistentActor` is @scala[`akka.persistence.typed.scaladsl.EventSourcedBehavior`]@java[`akka.persistence.typed.javadsl.EventSourcedBehavior`].
+The correspondence of the classic `PersistentActor` is @scala[`org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior`]@java[`org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior`].
 
 The Typed API is much more guided to facilitate Event Sourcing best practices. It also has tighter integration with
 Cluster Sharding.

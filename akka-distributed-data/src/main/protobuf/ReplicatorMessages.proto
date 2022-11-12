@@ -4,9 +4,9 @@
 
 syntax = "proto2";
 
-package akka.cluster.ddata;
+package org.apache.pekko.cluster.ddata;
 
-option java_package = "akka.cluster.ddata.protobuf.msg";
+option java_package = "org.apache.pekko.cluster.ddata.protobuf.msg";
 option optimize_for = SPEED;
 
 message Get {

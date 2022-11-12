@@ -5,8 +5,9 @@
 package scala.docs.persistence
 
 //#persistent-actor-example
-import akka.actor._
-import akka.persistence._
+import org.apache.pekko
+import pekko.actor._
+import pekko.persistence._
 
 case class Cmd(data: String)
 case class Evt(data: String)

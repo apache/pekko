@@ -4,12 +4,12 @@
 
 package jdocs.stream;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.stream.*;
-import akka.stream.javadsl.*;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

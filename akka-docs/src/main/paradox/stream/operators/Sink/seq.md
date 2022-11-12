@@ -6,7 +6,7 @@ Collect values emitted from the stream into a collection.
 
 ## Signature
 
-@apidoc[Sink.seq](Sink$) { scala="#seq[T]:akka.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#seq()" }
+@apidoc[Sink.seq](Sink$) { scala="#seq[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#seq()" }
 
 
 ## Description
@@ -20,7 +20,7 @@ if more element are emitted the sink will cancel the stream
 Given a stream of numbers we can collect the numbers into a collection with the `seq` operator
 
 Scala
-:   @@snip [SinkSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SinkSpec.scala) { #seq-operator-example }
+:   @@snip [SinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #seq-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #seq-operator-example }

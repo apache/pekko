@@ -6,7 +6,7 @@ Defers creation and materialization of a `Source` until there is demand.
 
 ## Signature
 
-@apidoc[Source.lazySource](Source$) { scala="#lazySource[T,M](create:()=&gt;akka.stream.scaladsl.Source[T,M]):akka.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" java="#lazySource(akka.japi.function.Creator)" }
+@apidoc[Source.lazySource](Source$) { scala="#lazySource[T,M](create:()=&gt;org.apache.pekko.stream.scaladsl.Source[T,M]):org.apache.pekko.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" java="#lazySource(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

@@ -7,13 +7,14 @@ package docs.actor
 import language.postfixOps
 
 //#imports1
-import akka.actor.Actor
-import akka.actor.Props
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.Props
 import scala.concurrent.duration._
 
 //#imports1
 
-import akka.testkit._
+import pekko.testkit._
 
 class SchedulerDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
   "schedule a one-off task" in {

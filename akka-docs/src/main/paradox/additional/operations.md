@@ -43,7 +43,7 @@ See documentation of @extref:[Akka Management](akka-management:).
 <a id="cluster-jmx"></a>
 ### JMX
 
-Information and management of the cluster is available as JMX MBeans with the root name `akka.Cluster`.
+Information and management of the cluster is available as JMX MBeans with the root name `org.apache.pekko.Cluster`.
 The JMX information can be displayed with an ordinary JMX console such as JConsole or JVisualVM.
 
 From JMX you can:

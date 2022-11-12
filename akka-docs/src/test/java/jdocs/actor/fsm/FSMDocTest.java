@@ -4,9 +4,9 @@
 
 package jdocs.actor.fsm;
 
-import akka.actor.*;
+import org.apache.pekko.actor.*;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

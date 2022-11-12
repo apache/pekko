@@ -6,14 +6,14 @@ package docs.testkit
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import akka.testkit.TestKitBase
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.testkit.TestProbe
-import akka.actor.ActorRefFactory
-import akka.testkit.TestKit
+import org.apache.pekko.testkit.TestKitBase
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.actor.ActorRefFactory
+import org.apache.pekko.testkit.TestKit
 import org.scalatest.BeforeAndAfterAll
 
 /**

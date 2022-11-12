@@ -36,23 +36,23 @@ will participate in Cluster Metrics collection and dissemination.
 
 ## Metrics Collector
 
-Metrics collection is delegated to an implementation of `akka.cluster.metrics.MetricsCollector`.
+Metrics collection is delegated to an implementation of `org.apache.pekko.cluster.metrics.MetricsCollector`.
 
 Different collector implementations provide different subsets of metrics published to the cluster.
 Certain message routing and let-it-crash functions may not work when Sigar is not provisioned.
 
 Cluster metrics extension comes with two built-in collector implementations:
 
-1. `akka.cluster.metrics.SigarMetricsCollector`, which requires Sigar provisioning, and is more rich/precise
-2. `akka.cluster.metrics.JmxMetricsCollector`, which is used as fall back, and is less rich/precise
+1. `org.apache.pekko.cluster.metrics.SigarMetricsCollector`, which requires Sigar provisioning, and is more rich/precise
+2. `org.apache.pekko.cluster.metrics.JmxMetricsCollector`, which is used as fall back, and is less rich/precise
 
 You can also plug-in your own metrics collector implementation.
 
 By default, metrics extension will use collector provider fall back and will try to load them in this order:
 
 1. configured user-provided collector
-2. built-in `akka.cluster.metrics.SigarMetricsCollector`
-3. and finally `akka.cluster.metrics.JmxMetricsCollector`
+2. built-in `org.apache.pekko.cluster.metrics.SigarMetricsCollector`
+3. and finally `org.apache.pekko.cluster.metrics.JmxMetricsCollector`
 
 ## Metrics Events
 
@@ -60,7 +60,7 @@ Metrics extension periodically publishes current snapshot of the cluster metrics
 
 The publication interval is controlled by the `akka.cluster.metrics.collector.sample-interval` setting.
 
-The payload of the `akka.cluster.metrics.ClusterMetricsChanged` event will contain
+The payload of the `org.apache.pekko.cluster.metrics.ClusterMetricsChanged` event will contain
 latest metrics of the node as well as other cluster member nodes metrics gossip
 which was received during the collector sample interval.
 
@@ -126,7 +126,7 @@ It can be configured to use a specific MetricsSelector to produce the probabilit
 * `load` / `SystemLoadAverageMetricsSelector` - System load average for the past 1 minute, corresponding value can be found in `top` of Linux systems. The system is possibly nearing a bottleneck if the system load average is nearing number of cpus/cores. Weights based on remaining load capacity; 1 - (load / processors)
 * `cpu` / `CpuMetricsSelector` - CPU utilization in percentage, sum of User + Sys + Nice + Wait. Weights based on remaining cpu capacity; 1 - utilization
 * `mix` / `MixMetricsSelector` - Combines heap, cpu and load. Weights based on mean of remaining capacity of the combined selectors.
-* Any custom implementation of `akka.cluster.metrics.MetricsSelector`
+* Any custom implementation of `org.apache.pekko.cluster.metrics.MetricsSelector`
 
 The collected metrics values are smoothed with [exponential weighted moving average](https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average). In the @ref:[Cluster configuration](cluster-usage.md#cluster-configuration) you can adjust how quickly past data is decayed compared to new data.
 
@@ -194,10 +194,10 @@ Java
 
 ## Custom Metrics Collector
 
-Metrics collection is delegated to the implementation of `akka.cluster.metrics.MetricsCollector`
+Metrics collection is delegated to the implementation of `org.apache.pekko.cluster.metrics.MetricsCollector`
 
 You can plug-in your own metrics collector instead of built-in
-`akka.cluster.metrics.SigarMetricsCollector` or `akka.cluster.metrics.JmxMetricsCollector`.
+`org.apache.pekko.cluster.metrics.SigarMetricsCollector` or `org.apache.pekko.cluster.metrics.JmxMetricsCollector`.
 
 Look at those two implementations for inspiration.
 

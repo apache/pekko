@@ -4,13 +4,13 @@
 
 package jdocs.io;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.AbstractActor;
-import akka.io.Inet;
-import akka.io.Tcp;
-import akka.io.TcpMessage;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.io.Inet;
+import org.apache.pekko.io.Tcp;
+import org.apache.pekko.io.TcpMessage;
+import org.apache.pekko.util.ByteString;
 import java.time.Duration;
 
 import java.net.InetSocketAddress;

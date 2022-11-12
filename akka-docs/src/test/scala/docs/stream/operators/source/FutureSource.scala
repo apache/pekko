@@ -6,8 +6,9 @@ package docs.stream.operators.source
 
 // #sourceFutureSource
 
-import akka.NotUsed
-import akka.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.Source
 
 import scala.concurrent.Future
 

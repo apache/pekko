@@ -4,24 +4,24 @@
 
 package jdocs.actor;
 
-import akka.actor.*;
+import org.apache.pekko.actor.*;
 
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
 import java.util.Optional;
 import java.time.Duration;
 
-import static akka.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.ask;
 
 // #testkit
-import akka.testkit.TestProbe;
-import akka.testkit.ErrorFilter;
-import akka.testkit.EventFilter;
-import akka.testkit.TestEvent;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.ErrorFilter;
+import org.apache.pekko.testkit.EventFilter;
+import org.apache.pekko.testkit.TestEvent;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static akka.japi.Util.immutableSeq;
+import static org.apache.pekko.japi.Util.immutableSeq;
 import static org.junit.Assert.assertEquals;
 
 import scala.concurrent.Await;
@@ -29,8 +29,8 @@ import scala.concurrent.Await;
 // #testkit
 
 // #supervisor
-import akka.japi.pf.DeciderBuilder;
-import akka.actor.SupervisorStrategy;
+import org.apache.pekko.japi.pf.DeciderBuilder;
+import org.apache.pekko.actor.SupervisorStrategy;
 
 // #supervisor
 
@@ -45,7 +45,7 @@ public class FaultHandlingTest extends AbstractJavaTest {
   public static Config config =
       ConfigFactory.parseString(
           "akka {\n"
-              + "  loggers = [\"akka.testkit.TestEventListener\"]\n"
+              + "  loggers = [\"org.apache.pekko.testkit.TestEventListener\"]\n"
               + "  loglevel = \"WARNING\"\n"
               + "  stdout-loglevel = \"WARNING\"\n"
               + "}\n");

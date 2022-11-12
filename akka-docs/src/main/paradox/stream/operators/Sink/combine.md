@@ -6,7 +6,7 @@ Combine several sinks into one using a user specified strategy
 
 ## Signature
 
-@apidoc[Sink.combine](Sink$) { scala="#combine[T,U](first:akka.stream.scaladsl.Sink[U,_],second:akka.stream.scaladsl.Sink[U,_],rest:akka.stream.scaladsl.Sink[U,_]*)(strategy:Int=&gt;akka.stream.Graph[akka.stream.UniformFanOutShape[T,U],akka.NotUsed]):akka.stream.scaladsl.Sink[T,akka.NotUsed]" java="#combine(akka.stream.javadsl.Sink,akka.stream.javadsl.Sink,java.util.List,akka.japi.function.Function)" }
+@apidoc[Sink.combine](Sink$) { scala="#combine[T,U](first:org.apache.pekko.stream.scaladsl.Sink[U,_],second:org.apache.pekko.stream.scaladsl.Sink[U,_],rest:org.apache.pekko.stream.scaladsl.Sink[U,_]*)(strategy:Int=&gt;org.apache.pekko.stream.Graph[org.apache.pekko.stream.UniformFanOutShape[T,U],org.apache.pekko.NotUsed]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#combine(org.apache.pekko.stream.javadsl.Sink,org.apache.pekko.stream.javadsl.Sink,java.util.List,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

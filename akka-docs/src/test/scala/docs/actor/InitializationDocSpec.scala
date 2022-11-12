@@ -4,8 +4,8 @@
 
 package docs.actor
 
-import akka.actor.{ Actor, Props }
-import akka.testkit.{ AkkaSpec, ImplicitSender }
+import org.apache.pekko.actor.{ Actor, Props }
+import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender }
 
 object InitializationDocSpec {
 

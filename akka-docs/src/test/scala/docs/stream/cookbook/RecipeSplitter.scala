@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers

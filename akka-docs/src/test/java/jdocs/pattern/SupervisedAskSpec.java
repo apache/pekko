@@ -4,10 +4,10 @@
 
 package jdocs.pattern;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorRefFactory;
-import akka.actor.Props;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorRefFactory;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
 
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;

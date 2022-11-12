@@ -6,24 +6,25 @@ package docs.stream
 
 //#imports
 
-import akka.{ Done, NotUsed }
-import akka.actor.ActorSystem
-import akka.stream.{ ClosedShape, OverflowStrategy }
-import akka.stream.scaladsl._
+import org.apache.pekko.{ Done, NotUsed }
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
+import org.apache.pekko.stream.scaladsl._
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.io.StdIn.readLine
 
 //#imports
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 import scala.concurrent.ExecutionContext
 
 object TwitterStreamQuickstartDocSpec {
   // #fiddle_code
-  import akka.NotUsed
-  import akka.actor.ActorSystem
-  import akka.stream.scaladsl._
+  import org.apache.pekko
+  import pekko.NotUsed
+  import pekko.actor.ActorSystem
+  import pekko.stream.scaladsl._
 
   // #model
   final case class Author(handle: String)

@@ -4,11 +4,11 @@
 
 package jdocs.coordination;
 
-import akka.actor.ActorSystem;
-import akka.coordination.lease.LeaseSettings;
-import akka.coordination.lease.javadsl.Lease;
-import akka.coordination.lease.javadsl.LeaseProvider;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.coordination.lease.LeaseSettings;
+import org.apache.pekko.coordination.lease.javadsl.Lease;
+import org.apache.pekko.coordination.lease.javadsl.LeaseProvider;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import docs.coordination.LeaseDocSpec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

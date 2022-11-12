@@ -6,8 +6,8 @@ Log elements flowing through the stream as well as completion and erroring.
 
 ## Signature
 
-@apidoc[Source.logWithMarker](Source) { scala="#logWithMarker(name:String,marker:Out=&gt;akka.event.LogMarker,extract:Out=&gt;Any)(implicitlog:akka.event.MarkerLoggingAdapter):FlowOps.this.Repr[Out]" java="#logWithMarker(java.lang.String,akka.japi.function.Function)" }
-@apidoc[Flow.logWithMarker](Flow) { scala="#logWithMarker(name:String,marker:Out=&gt;akka.event.LogMarker,extract:Out=&gt;Any)(implicitlog:akka.event.MarkerLoggingAdapter):FlowOps.this.Repr[Out]" java="#logWithMarker(java.lang.String,akka.japi.function.Function)" }
+@apidoc[Source.logWithMarker](Source) { scala="#logWithMarker(name:String,marker:Out=&gt;org.apache.pekko.event.LogMarker,extract:Out=&gt;Any)(implicitlog:org.apache.pekko.event.MarkerLoggingAdapter):FlowOps.this.Repr[Out]" java="#logWithMarker(java.lang.String,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.logWithMarker](Flow) { scala="#logWithMarker(name:String,marker:Out=&gt;org.apache.pekko.event.LogMarker,extract:Out=&gt;Any)(implicitlog:org.apache.pekko.event.MarkerLoggingAdapter):FlowOps.this.Repr[Out]" java="#logWithMarker(java.lang.String,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

@@ -10,8 +10,8 @@ import java.util.Set;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import akka.actor.*;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import docs.ddata.DistributedDataDocSpec;
 import jdocs.AbstractJavaTest;
@@ -23,10 +23,10 @@ import org.junit.Test;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import akka.cluster.ddata.*;
-import akka.japi.pf.ReceiveBuilder;
+import org.apache.pekko.cluster.ddata.*;
+import org.apache.pekko.japi.pf.ReceiveBuilder;
 
-import static akka.cluster.ddata.Replicator.*;
+import static org.apache.pekko.cluster.ddata.Replicator.*;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class DistributedDataDocTest extends AbstractJavaTest {

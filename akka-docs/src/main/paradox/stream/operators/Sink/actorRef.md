@@ -6,7 +6,7 @@ Send the elements from the stream to an `ActorRef` of the classic actors API.
 
 ## Signature
 
-@apidoc[Sink.actorRef](Sink$) { scala="#actorRef[T](ref:akka.actor.ActorRef,onCompleteMessage:Any,onFailureMessage:Throwable=&gt;Any):akka.stream.scaladsl.Sink[T,akka.NotUsed]" java="#actorRef(akka.actor.ActorRef,java.lang.Object)" }
+@apidoc[Sink.actorRef](Sink$) { scala="#actorRef[T](ref:org.apache.pekko.actor.ActorRef,onCompleteMessage:Any,onFailureMessage:Throwable=&gt;Any):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#actorRef(org.apache.pekko.actor.ActorRef,java.lang.Object)" }
 
 ## Description
 

@@ -15,11 +15,12 @@ import org.scalatest.matchers.should.Matchers
 
 import com.typesafe.config.ConfigFactory
 
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.testkit.{ DefaultTimeout, ImplicitSender, TestActors, TestKit }
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.ActorRef
+import pekko.actor.ActorSystem
+import pekko.actor.Props
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, TestActors, TestKit }
 import scala.concurrent.duration._
 import scala.collection.immutable
 

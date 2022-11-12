@@ -36,7 +36,7 @@ Akka itself uses Protocol Buffers to serialize internal messages (for example cl
 ### Configuration
 
 For Akka to know which `Serializer` to use for what, you need to edit your configuration: 
-in the `akka.actor.serializers`-section, you bind names to implementations of the @apidoc[akka.serialization.Serializer](Serializer)
+in the `akka.actor.serializers`-section, you bind names to implementations of the @apidoc[serialization.Serializer](Serializer)
 you wish to use, like this:
 
 @@snip [SerializationDocSpec.scala](/akka-docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #serialize-serializers-config }
@@ -94,7 +94,7 @@ It is important to use the serializer identifier in this way to support rolling 
 consisting of the bytes, the serializer id, and the manifest should always be transferred or stored together so that
 they can be deserialized with different `serialization-bindings` configuration.
 
-The @apidoc[SerializationExtension$] is a Classic @apidoc[akka.actor.Extension], but it can be used with an @apidoc[akka.actor.typed.ActorSystem](typed.ActorSystem) like this:
+The @apidoc[SerializationExtension$] is a Classic @apidoc[actor.Extension], but it can be used with an @apidoc[actor.typed.ActorSystem](typed.ActorSystem) like this:
 
 Scala
 :  @@snip [SerializationDocSpec.scala](/akka-docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #programmatic-typed }
@@ -108,7 +108,7 @@ The first code snippet on this page contains a configuration file that reference
 
 ### Creating new Serializers
 
-A custom `Serializer` has to inherit from @scala[@apidoc[akka.serialization.Serializer](Serializer)]@java[@apidoc[akka.serialization.JSerializer](JSerializer)] and can be defined like the following:
+A custom `Serializer` has to inherit from @scala[@apidoc[serialization.Serializer](Serializer)]@java[@apidoc[serialization.JSerializer](JSerializer)] and can be defined like the following:
 
 Scala
 :  @@snip [SerializationDocSpec.scala](/akka-docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #imports }
@@ -130,7 +130,7 @@ rolling updates.
 
 @@@ div { .group-scala }
 
-If you prefer to define the identifier in cofiguration that is supported by the @apidoc[akka.serialization.BaseSerializer] trait, which
+If you prefer to define the identifier in cofiguration that is supported by the @apidoc[serialization.BaseSerializer] trait, which
 implements the `def identifier` by reading it from configuration based on the serializer's class name:
 
 Scala
@@ -139,7 +139,7 @@ Scala
 @@@
 
 The manifest is a type hint so that the same serializer can be used for different
-classes. The manifest parameter in @scala[@scaladoc[fromBinary](akka.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](akka.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))] is the class of the object that
+classes. The manifest parameter in @scala[@scaladoc[fromBinary](pekko.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](pekko.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))] is the class of the object that
 was serialized. In @scala[`fromBinary`]@java[`fromBinaryJava`] you can match on the class and deserialize the
 bytes to different objects.
 
@@ -160,7 +160,7 @@ instead of a @javadoc[Class](java.lang.Class). That means that the class can be 
 can still deserialize old data by matching  on the `String`. This is especially useful
 for @ref:[Persistence](persistence.md).
 
-The manifest string can also encode a version number that can be used in @scala[@scaladoc[fromBinary](akka.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](akka.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))] to
+The manifest string can also encode a version number that can be used in @scala[@scaladoc[fromBinary](pekko.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](pekko.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))] to
 deserialize in different ways to migrate old data to new domain objects.
 
 If the data was originally serialized with `Serializer` and in a later version of the
@@ -193,17 +193,17 @@ Actor references are typically included in the messages.
 All ActorRefs are serializable when using @ref:[Serialization with Jackson](serialization-jackson.md),
 but in case you are writing your own serializer, you might want to know how to serialize and deserialize them properly.
 
-To serialize actor references to/from string representation you would use the @apidoc[akka.actor.typed.ActorRefResolver].
+To serialize actor references to/from string representation you would use the @apidoc[actor.typed.ActorRefResolver].
 
 For example here's how a serializer could look for `Ping` and `Pong` messages:
 
 Scala
-:  @@snip [PingSerializer.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/PingSerializer.scala) { #serializer }
+:  @@snip [PingSerializer.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/PingSerializer.scala) { #serializer }
 
 Java
-:  @@snip [PingSerializerExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/PingSerializerExampleTest.java) { #serializer }
+:  @@snip [PingSerializerExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/PingSerializerExampleTest.java) { #serializer }
 
-Serialization of Classic @apidoc[akka.actor.ActorRef] is described in @ref:[Classic Serialization](serialization-classic.md#serializing-actorrefs).
+Serialization of Classic @apidoc[actor.ActorRef] is described in @ref:[Classic Serialization](serialization-classic.md#serializing-actorrefs).
 Classic and Typed actor references have the same serialization format so they can be interchanged.
 
 ### Deep serialization of Actors
@@ -256,7 +256,7 @@ and this could lead to very surprising errors.
 ## Rolling updates
 
 A serialized remote message (or persistent event) consists of serializer-id, the manifest, and the binary payload.
-When deserializing it is only looking at the serializer-id to pick which @scala[`Serializer`]@java[`JSerializer`] to use for @scala[@scaladoc[fromBinary](akka.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](akka.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))].
+When deserializing it is only looking at the serializer-id to pick which @scala[`Serializer`]@java[`JSerializer`] to use for @scala[@scaladoc[fromBinary](pekko.serialization.Serializer#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef)]@java[@javadoc[fromBinaryJava](pekko.serialization.JSerializer#fromBinaryJava(byte%5B%5D,java.lang.Class))].
 The message class (the bindings) is not used for deserialization. The manifest is only used within the
 @scala[`Serializer`]@java[`JSerializer`] to decide how to deserialize the payload, so one @scala[`Serializer`]@java[`JSerializer`] can handle many classes.
 
@@ -285,10 +285,10 @@ Normally, messages sent between local actors (i.e. same JVM) do not undergo seri
 @@snip [SerializationDocSpec.scala](/akka-docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #serialize-messages-config }
 
 Certain messages can be excluded from verification by extending the marker @scala[trait]@java[interface]
-@apidoc[akka.actor.NoSerializationVerificationNeeded](NoSerializationVerificationNeeded) or define a class name prefix in configuration
+@apidoc[actor.NoSerializationVerificationNeeded](NoSerializationVerificationNeeded) or define a class name prefix in configuration
 `akka.actor.no-serialization-verification-needed-class-prefix`.
 
-If you want to verify that your @apidoc[akka.actor.Props] are serializable you can enable the following config option:
+If you want to verify that your @apidoc[actor.Props] are serializable you can enable the following config option:
 
 @@snip [SerializationDocSpec.scala](/akka-docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #serialize-creators-config }
 

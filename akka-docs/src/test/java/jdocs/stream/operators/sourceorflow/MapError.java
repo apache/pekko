@@ -4,9 +4,9 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.Arrays;
 

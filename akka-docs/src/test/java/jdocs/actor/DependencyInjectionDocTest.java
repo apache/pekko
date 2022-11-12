@@ -5,19 +5,19 @@
 package jdocs.actor;
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
 
 // #import
-import akka.actor.Actor;
-import akka.actor.IndirectActorProducer;
+import org.apache.pekko.actor.Actor;
+import org.apache.pekko.actor.IndirectActorProducer;
 // #import
 
 public class DependencyInjectionDocTest extends AbstractJavaTest {

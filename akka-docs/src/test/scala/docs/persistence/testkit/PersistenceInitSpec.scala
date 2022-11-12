@@ -6,12 +6,12 @@ package docs.persistence.testkit
 
 import java.util.UUID
 
-import akka.Done
-import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko.Done
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
 
 //#imports
-import akka.persistence.testkit.scaladsl.PersistenceInit
+import org.apache.pekko.persistence.testkit.scaladsl.PersistenceInit
 
 import scala.concurrent.Await
 import scala.concurrent.Future

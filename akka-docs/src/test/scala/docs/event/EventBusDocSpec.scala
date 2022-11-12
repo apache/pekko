@@ -5,15 +5,16 @@
 package docs.event
 
 import scala.concurrent.duration._
-import akka.testkit.AkkaSpec
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.testkit.TestProbe
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.actor.{ ActorRef, ActorSystem }
+import org.apache.pekko.testkit.TestProbe
 
 object EventBusDocSpec {
 
   // #lookup-bus
-  import akka.event.EventBus
-  import akka.event.LookupClassification
+  import org.apache.pekko
+  import pekko.event.EventBus
+  import pekko.event.LookupClassification
 
   final case class MsgEnvelope(topic: String, payload: Any)
 
@@ -49,7 +50,7 @@ object EventBusDocSpec {
   // #lookup-bus
 
   // #subchannel-bus
-  import akka.util.Subclassification
+  import org.apache.pekko.util.Subclassification
 
   class StartsWithSubclassification extends Subclassification[String] {
     override def isEqual(x: String, y: String): Boolean =
@@ -59,7 +60,7 @@ object EventBusDocSpec {
       x.startsWith(y)
   }
 
-  import akka.event.SubchannelClassification
+  import pekko.event.SubchannelClassification
 
   /**
    * Publishes the payload of the MsgEnvelope when the topic of the
@@ -87,7 +88,7 @@ object EventBusDocSpec {
   // #subchannel-bus
 
   // #scanning-bus
-  import akka.event.ScanningClassification
+  import org.apache.pekko.event.ScanningClassification
 
   /**
    * Publishes String messages with length less than or equal to the length
@@ -121,9 +122,10 @@ object EventBusDocSpec {
   // #scanning-bus
 
   // #actor-bus
-  import akka.event.ActorEventBus
-  import akka.event.ManagedActorClassification
-  import akka.event.ActorClassifier
+  import org.apache.pekko
+  import pekko.event.ActorEventBus
+  import pekko.event.ManagedActorClassification
+  import pekko.event.ActorClassifier
 
   final case class Notification(ref: ActorRef, id: Int)
 

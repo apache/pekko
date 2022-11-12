@@ -10,23 +10,23 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
-import akka.NotUsed;
-import akka.stream.javadsl.GraphDSL;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.javadsl.GraphDSL;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.japi.pf.PFBuilder;
-import akka.stream.*;
-import akka.stream.javadsl.*;
-import akka.stream.stage.*;
-import akka.util.ByteIterator;
-import akka.util.ByteString;
-import static akka.util.ByteString.emptyByteString;
-import akka.util.ByteStringBuilder;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.stage.*;
+import org.apache.pekko.util.ByteIterator;
+import org.apache.pekko.util.ByteString;
+import static org.apache.pekko.util.ByteString.emptyByteString;
+import org.apache.pekko.util.ByteStringBuilder;
 import static org.junit.Assert.assertArrayEquals;
 
 public class BidiFlowDocTest extends AbstractJavaTest {

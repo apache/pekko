@@ -4,23 +4,23 @@
 
 package jdocs.io;
 
-import akka.japi.pf.ReceiveBuilder;
+import org.apache.pekko.japi.pf.ReceiveBuilder;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.AbstractActor;
 // #imports
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import akka.actor.ActorRef;
-import akka.io.Inet;
-import akka.io.UdpConnected;
-import akka.io.UdpConnectedMessage;
-import akka.io.UdpSO;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.io.Inet;
+import org.apache.pekko.io.UdpConnected;
+import org.apache.pekko.io.UdpConnectedMessage;
+import org.apache.pekko.io.UdpSO;
+import org.apache.pekko.util.ByteString;
 
-import static akka.util.ByteString.emptyByteString;
+import static org.apache.pekko.util.ByteString.emptyByteString;
 
 // #imports
 

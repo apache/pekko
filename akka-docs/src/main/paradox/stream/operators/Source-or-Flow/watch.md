@@ -6,14 +6,14 @@ Watch a specific `ActorRef` and signal a failure downstream once the actor termi
 
 ## Signature
 
-@apidoc[Source.watch](Source) { scala="#watch(ref:akka.actor.ActorRef):FlowOps.this.Repr[Out]" java="#watch(akka.actor.ActorRef)" }
-@apidoc[Flow.watch](Flow) { scala="#watch(ref:akka.actor.ActorRef):FlowOps.this.Repr[Out]" java="#watch(akka.actor.ActorRef)" }
+@apidoc[Source.watch](Source) { scala="#watch(ref:org.apache.pekko.actor.ActorRef):FlowOps.this.Repr[Out]" java="#watch(org.apache.pekko.actor.ActorRef)" }
+@apidoc[Flow.watch](Flow) { scala="#watch(ref:org.apache.pekko.actor.ActorRef):FlowOps.this.Repr[Out]" java="#watch(org.apache.pekko.actor.ActorRef)" }
 
 ## Description
 
 Watch a specific `ActorRef` and signal a failure downstream once the actor terminates.
-The signaled failure will be an @java[@javadoc:[WatchedActorTerminatedException](akka.stream.WatchedActorTerminatedException)]
-@scala[@scaladoc[WatchedActorTerminatedException](akka.stream.WatchedActorTerminatedException)].
+The signaled failure will be an @java[@javadoc:[WatchedActorTerminatedException](pekko.stream.WatchedActorTerminatedException)]
+@scala[@scaladoc[WatchedActorTerminatedException](pekko.stream.WatchedActorTerminatedException)].
 
 ## Example
 

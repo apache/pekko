@@ -6,7 +6,7 @@ Stream a single object repeatedly.
 
 ## Signature
 
-@apidoc[Source.repeat](Source$) { scala="#repeat[T](element:T):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#repeat(T)" }
+@apidoc[Source.repeat](Source$) { scala="#repeat[T](element:T):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#repeat(T)" }
 
 ## Description
 
@@ -23,10 +23,10 @@ See also:
 This example prints the first 4 elements emitted by `Source.repeat`.
 
 Scala
-:  @@snip [snip](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SourceSpec.scala) { #repeat }
+:  @@snip [snip](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #repeat }
 
 Java
-:  @@snip [snip](/akka-stream-tests/src/test/java/akka/stream/javadsl/SourceTest.java) { #repeat }
+:  @@snip [snip](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #repeat }
 
 
 

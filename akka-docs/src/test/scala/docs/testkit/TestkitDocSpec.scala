@@ -6,12 +6,12 @@ package docs.testkit
 
 import language.postfixOps
 import scala.util.Success
-import akka.testkit._
+import org.apache.pekko.testkit._
 
 //#imports-test-probe
 import scala.concurrent.duration._
-import akka.actor._
-import akka.testkit.TestProbe
+import org.apache.pekko.actor._
+import org.apache.pekko.testkit.TestProbe
 
 //#imports-test-probe
 
@@ -89,7 +89,7 @@ object TestKitDocSpec {
 
   class LoggingActor extends Actor {
     // #logging-receive
-    import akka.event.LoggingReceive
+    import org.apache.pekko.event.LoggingReceive
     def receive = LoggingReceive {
       case msg => // Do something ...
     }
@@ -105,7 +105,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate usage of TestActorRef" in {
     // #test-actor-ref
-    import akka.testkit.TestActorRef
+    import org.apache.pekko.testkit.TestActorRef
 
     val actorRef = TestActorRef[MyActor]
     val actor = actorRef.underlyingActor
@@ -138,7 +138,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate usage of TestFSMRef" in {
     // #test-fsm-ref
-    import akka.testkit.TestFSMRef
+    import org.apache.pekko.testkit.TestFSMRef
     import scala.concurrent.duration._
 
     val fsm = TestFSMRef(new TestFsmActor)
@@ -165,8 +165,9 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate testing of behavior" in {
 
     // #test-behavior
-    import akka.testkit.TestActorRef
-    import akka.pattern.ask
+    import org.apache.pekko
+    import pekko.testkit.TestActorRef
+    import pekko.pattern.ask
 
     val actorRef = TestActorRef(new MyActor)
     // hypothetical message stimulating a '42' answer
@@ -177,7 +178,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate unhandled message" in {
     // #test-unhandled
-    import akka.testkit.TestActorRef
+    import org.apache.pekko.testkit.TestActorRef
     system.eventStream.subscribe(testActor, classOf[UnhandledMessage])
     val ref = TestActorRef[MyActor]
     ref.receive(Unknown)
@@ -187,7 +188,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate expecting exceptions" in {
     // #test-expecting-exceptions
-    import akka.testkit.TestActorRef
+    import org.apache.pekko.testkit.TestActorRef
 
     val actorRef = TestActorRef(new Actor {
       def receive = {
@@ -201,7 +202,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate within" in {
     type Worker = MyActor
     // #test-within
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     import scala.concurrent.duration._
 
     val worker = system.actorOf(Props[Worker]())
@@ -217,7 +218,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   "demonstrate dilated duration" in {
     // #duration-dilation
     import scala.concurrent.duration._
-    import akka.testkit._
+    import org.apache.pekko.testkit._
     10.milliseconds.dilated
     // #duration-dilation
   }
@@ -258,7 +259,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   }
 
   "demonstrate probe watch" in {
-    import akka.testkit.TestProbe
+    import org.apache.pekko.testkit.TestProbe
     val target = system.actorOf(Props.empty)
     // #test-probe-watch
     val probe = TestProbe()
@@ -269,9 +270,9 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   }
 
   "demonstrate probe reply" in {
-    import akka.testkit.TestProbe
+    import org.apache.pekko.testkit.TestProbe
     import scala.concurrent.duration._
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
     // #test-probe-reply
     val probe = TestProbe()
     val future = probe.ref ? "hello"
@@ -282,8 +283,8 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
   }
 
   "demonstrate probe forward" in {
-    import akka.testkit.TestProbe
-    import akka.actor.Props
+    import org.apache.pekko.testkit.TestProbe
+    import org.apache.pekko.actor.Props
     // #test-probe-forward
     val probe = TestProbe()
     val source = system.actorOf(Props(classOf[Source], probe.ref))
@@ -296,8 +297,9 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate using inheritance to test timers" in {
     // #timer-test
-    import akka.testkit.TestProbe
-    import akka.actor.Props
+    import org.apache.pekko
+    import pekko.testkit.TestProbe
+    import pekko.actor.Props
 
     val probe = TestProbe()
     val actor = system.actorOf(Props(new TestTimerActor() {
@@ -312,20 +314,20 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate calling thread dispatcher" in {
     // #calling-thread-dispatcher
-    import akka.testkit.CallingThreadDispatcher
+    import org.apache.pekko.testkit.CallingThreadDispatcher
     val ref = system.actorOf(Props[MyActor]().withDispatcher(CallingThreadDispatcher.Id))
     // #calling-thread-dispatcher
   }
 
   "demonstrate EventFilter" in {
     // #event-filter
-    import akka.testkit.EventFilter
+    import org.apache.pekko.testkit.EventFilter
     import com.typesafe.config.ConfigFactory
 
     implicit val system: ActorSystem = ActorSystem(
       "testsystem",
       ConfigFactory.parseString("""
-      akka.loggers = ["akka.testkit.TestEventListener"]
+      akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
       """))
     try {
       val actor = system.actorOf(Props.empty)
@@ -340,7 +342,7 @@ class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   "demonstrate TestKitBase" in {
     // #test-kit-base
-    import akka.testkit.TestKitBase
+    import org.apache.pekko.testkit.TestKitBase
 
     class MyTest extends TestKitBase {
       implicit lazy val system: ActorSystem = ActorSystem()

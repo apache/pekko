@@ -6,8 +6,8 @@ Take up to *n* elements from the stream (less than *n* only if the upstream comp
 
 ## Signature
 
-@apidoc[Source.prefixAndTail](Source) { scala="#prefixAndTail[U&gt;:Out](n:Int):FlowOps.this.Repr[(scala.collection.immutable.Seq[Out],akka.stream.scaladsl.Source[U,akka.NotUsed])]" java="#prefixAndTail(int)" }
-@apidoc[Flow.prefixAndTail](Flow) { scala="#prefixAndTail[U&gt;:Out](n:Int):FlowOps.this.Repr[(scala.collection.immutable.Seq[Out],akka.stream.scaladsl.Source[U,akka.NotUsed])]" java="#prefixAndTail(int)" }
+@apidoc[Source.prefixAndTail](Source) { scala="#prefixAndTail[U&gt;:Out](n:Int):FlowOps.this.Repr[(scala.collection.immutable.Seq[Out],org.apache.pekko.stream.scaladsl.Source[U,org.apache.pekko.NotUsed])]" java="#prefixAndTail(int)" }
+@apidoc[Flow.prefixAndTail](Flow) { scala="#prefixAndTail[U&gt;:Out](n:Int):FlowOps.this.Repr[(scala.collection.immutable.Seq[Out],org.apache.pekko.stream.scaladsl.Source[U,org.apache.pekko.NotUsed])]" java="#prefixAndTail(int)" }
 
 
 ## Description

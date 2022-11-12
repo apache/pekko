@@ -4,13 +4,13 @@
 
 package jdocs.stream.operators.converters;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
 // #import
-import akka.japi.function.Creator;
-import akka.stream.Materializer;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.StreamConverters;
+import org.apache.pekko.japi.function.Creator;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.StreamConverters;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
@@ -20,12 +20,12 @@ import java.util.stream.BaseStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 // #import
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.Source;
 
 import static org.junit.Assert.assertEquals;
 

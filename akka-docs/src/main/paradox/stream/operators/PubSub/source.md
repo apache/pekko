@@ -1,6 +1,6 @@
 # PubSub.source
 
-A source that will subscribe to a @apidoc[akka.actor.typed.pubsub.Topic$] and stream messages published to the topic. 
+A source that will subscribe to a @apidoc[actor.typed.pubsub.Topic$] and stream messages published to the topic. 
 
 @ref[Actor interop operators](../index.md#actor-interop-operators)
 
@@ -27,7 +27,7 @@ version=AkkaVersion
 
 ## Signature
 
-@apidoc[PubSub.source](akka.stream.typed.*.PubSub$) { scala="#source[T](topic:akka.actor.typed.Toppic[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#source(akka.actor.typed.Topic)" }
+@apidoc[PubSub.source](stream.typed.*.PubSub$) { scala="#source[T](topic:org.apache.pekko.actor.typed.Topic[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#source(org.apache.pekko.actor.typed.Topic)" }
 
 ## Reactive Streams semantics
 

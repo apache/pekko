@@ -5,8 +5,9 @@
 package docs.actor.typed
 
 // #blocking-in-actor
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.Behaviors
 
 object BlockingActor {
   def apply(): Behavior[Int] =

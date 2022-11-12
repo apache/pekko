@@ -25,7 +25,7 @@ If the API you want to consume elements from accepts a @javadoc[Subscriber](java
 @@@ note
 
 For JDK 8 users: since @javadoc[java.util.concurrent.Flow](java.util.concurrent.Flow) was introduced in JDK version 9,
-if you are still on version 8 you may use the [org.reactivestreams](https://github.com/reactive-streams/reactive-streams-jvm#reactive-streams) library with @apidoc[Source.fromPublisher](Source$) { scala="#fromPublisher[T](publisher:org.reactivestreams.Publisher[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#fromPublisher(org.reactivestreams.Publisher)" }.
+if you are still on version 8 you may use the [org.reactivestreams](https://github.com/reactive-streams/reactive-streams-jvm#reactive-streams) library with @apidoc[Source.fromPublisher](Source$) { scala="#fromPublisher[T](publisher:org.reactivestreams.Publisher[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromPublisher(org.reactivestreams.Publisher)" }.
 
 @@@
 

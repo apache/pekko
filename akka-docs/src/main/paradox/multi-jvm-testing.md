@@ -53,7 +53,7 @@ multi-jvm:test
 To run individual tests use `testOnly`:
 
 ```none
-multi-jvm:testOnly akka.remote.RandomRoutedRemoteActor
+multi-jvm:testOnly org.apache.pekko.remote.RandomRoutedRemoteActor
 ```
 
 More than one test name can be listed to run multiple specific
@@ -63,7 +63,7 @@ It's also possible to specify JVM options with `testOnly` by including those
 options after the test names and `--`. For example:
 
 ```none
-multi-jvm:testOnly akka.remote.RandomRoutedRemoteActor -- -Dsome.option=something
+multi-jvm:testOnly org.apache.pekko.remote.RandomRoutedRemoteActor -- -Dsome.option=something
 ```
 
 ## Creating application tests

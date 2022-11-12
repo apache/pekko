@@ -6,8 +6,8 @@ Combines elements from multiple sources through a `combine` function and passes 
 
 ## Signature
 
-@apidoc[Source.zipWith](Source) { scala="#zipWith[Out2,Out3](that:akka.stream.Graph[akka.stream.SourceShape[Out2],_])(combine:(Out,Out2)=&gt;Out3):FlowOps.this.Repr[Out3]" java="#zipWith(akka.stream.Graph,akka.japi.function.Function2)" }
-@apidoc[Flow.zipWith](Flow) { scala="#zipWith[Out2,Out3](that:akka.stream.Graph[akka.stream.SourceShape[Out2],_])(combine:(Out,Out2)=&gt;Out3):FlowOps.this.Repr[Out3]" java="#zipWith(akka.stream.Graph,akka.japi.function.Function2)" }
+@apidoc[Source.zipWith](Source) { scala="#zipWith[Out2,Out3](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[Out2],_])(combine:(Out,Out2)=&gt;Out3):FlowOps.this.Repr[Out3]" java="#zipWith(org.apache.pekko.stream.Graph,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.zipWith](Flow) { scala="#zipWith[Out2,Out3](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[Out2],_])(combine:(Out,Out2)=&gt;Out3):FlowOps.this.Repr[Out3]" java="#zipWith(org.apache.pekko.stream.Graph,org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description
@@ -24,7 +24,7 @@ See also:
 ## Examples
 
 Scala
-:   @@snip [FlowZipWithSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowZipWithSpec.scala) { #zip-with }
+:   @@snip [FlowZipWithSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowZipWithSpec.scala) { #zip-with }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #zip-with }

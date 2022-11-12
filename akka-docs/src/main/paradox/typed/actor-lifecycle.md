@@ -36,7 +36,7 @@ so create one per logical application. Typically one `ActorSystem` per JVM proce
 ## Creating Actors
 
 An actor can create, or _spawn_, an arbitrary number of child actors, which in turn can spawn children of their own, thus
-forming an actor hierarchy. @apidoc[akka.actor.typed.ActorSystem] hosts the hierarchy and there can be only one _root actor_,
+forming an actor hierarchy. @apidoc[actor.typed.ActorSystem] hosts the hierarchy and there can be only one _root actor_,
 an actor at the top of the hierarchy of the `ActorSystem`. The lifecycle of a child actor is tied to the parent -- a child
 can stop itself or be stopped at any time but it can never outlive its parent.
 
@@ -49,16 +49,16 @@ The @apidoc[ActorContext](typed.*.ActorContext) can be accessed for many purpose
 * Logging
 * Creating message adapters
 * Request-response interactions (ask) with another actor
-* Access to the @scala[@scaladoc[self](akka.actor.typed.scaladsl.ActorContext#self:akka.actor.typed.ActorRef[T])]@java[@javadoc[getSelf()](akka.actor.typed.javadsl.ActorContext#getSelf())] ActorRef
+* Access to the @scala[@scaladoc[self](pekko.actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())] ActorRef
 
 If a behavior needs to use the `ActorContext`, for example to spawn child actors, or use
-@scala[`context.self`]@java[`context.getSelf()`], it can be obtained by wrapping construction with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"}:
+@scala[`context.self`]@java[`context.getSelf()`], it can be obtained by wrapping construction with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-main-setup }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-setup }
 
 #### ActorContext Thread Safety
 
@@ -75,10 +75,10 @@ system are directed to the root actor. The root actor is defined by the behavior
 named `HelloWorldMain` in the example below:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world }
 
 For very simple applications the guardian may contain the actual application logic and handle messages. As soon as the application
 handles more than one concern the guardian should instead just bootstrap the application, spawn the various subsystems as
@@ -91,7 +91,7 @@ stop actors and services in a specific order.
 
 @@@ Note
 
-In the classic counter part, the @apidoc[akka.actor.ActorSystem], the root actor was provided out of the box and you
+In the classic counter part, the @apidoc[actor.ActorSystem], the root actor was provided out of the box and you
 could spawn top-level actors from the outside of the `ActorSystem` using `actorOf`. @ref:[SpawnProtocol](#spawnprotocol)
 is a tool that mimics the old style of starting up actors.
 
@@ -100,25 +100,25 @@ is a tool that mimics the old style of starting up actors.
 
 ### Spawning Children
 
-Child actors are created and started with `ActorContext`'s @apidoc[spawn](typed.*.ActorContext) {scala="#spawn[U](behavior:akka.actor.typed.Behavior[U],name:String,props:akka.actor.typed.Props):akka.actor.typed.ActorRef[U]" java="#spawn(akka.actor.typed.Behavior,java.lang.String)"}.
+Child actors are created and started with `ActorContext`'s @apidoc[spawn](typed.*.ActorContext) {scala="#spawn[U](behavior:org.apache.pekko.actor.typed.Behavior[U],name:String,props:org.apache.pekko.actor.typed.Props):org.apache.pekko.actor.typed.ActorRef[U]" java="#spawn(org.apache.pekko.actor.typed.Behavior,java.lang.String)"}.
 In the example below, when the root actor
 is started, it spawns a child actor described by the `HelloWorld` behavior. Additionally, when the root actor receives a
 `SayHello` message, it creates a child actor defined by the behavior `HelloWorldBot`:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main }
 
 To specify a dispatcher when spawning an actor use @apidoc[DispatcherSelector]. If not specified, the actor will
 use the default dispatcher, see @ref:[Default dispatcher](dispatchers.md#default-dispatcher) for details.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-main-with-dispatchers }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main-with-dispatchers }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-main-with-dispatchers }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-with-dispatchers }
 
 Refer to @ref:[Actors](actors.md#first-example) for a walk-through of the above examples.
 
@@ -130,26 +130,26 @@ per HTTP request.
 
 That is not difficult to implement in your behavior, but since this is a common pattern there is a predefined
 message protocol and implementation of a behavior for this. It can be used as the guardian actor of the @apidoc[ActorSystem](typed.ActorSystem),
-possibly combined with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} to start some initial tasks or actors. Child actors can then be started from
-the outside by @apidoc[tell](typed.ActorRef) {scala="#tell(msg:T):Unit" java="#tell(T)"}ing or @scala[@scaladoc[ask](akka.actor.typed.scaladsl.AskPattern.Askable#ask[Res](replyTo:akka.actor.typed.ActorRef[Res]=%3EReq)(implicittimeout:akka.util.Timeout,implicitscheduler:akka.actor.typed.Scheduler):scala.concurrent.Future[Res])]@java[@javadoc[ask](akka.actor.typed.javadsl.AskPattern#ask(akka.actor.typed.RecipientRef,akka.japi.function.Function,java.time.Duration,akka.actor.typed.Scheduler))]ing @apidoc[SpawnProtocol.Spawn] to the actor reference of the system. Using `ask` is
+possibly combined with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} to start some initial tasks or actors. Child actors can then be started from
+the outside by @apidoc[tell](typed.ActorRef) {scala="#tell(msg:T):Unit" java="#tell(T)"}ing or @scala[@scaladoc[ask](pekko.actor.typed.scaladsl.AskPattern.Askable#ask[Res](replyTo:org.apache.pekko.actor.typed.ActorRef[Res]=%3EReq)(implicittimeout:org.apache.pekko.util.Timeout,implicitscheduler:org.apache.pekko.actor.typed.Scheduler):scala.concurrent.Future[Res])]@java[@javadoc[ask](pekko.actor.typed.javadsl.AskPattern#ask(org.apache.pekko.actor.typed.RecipientRef,org.apache.pekko.japi.function.Function,java.time.Duration,org.apache.pekko.actor.typed.Scheduler))]ing @apidoc[SpawnProtocol.Spawn] to the actor reference of the system. Using `ask` is
 similar to how `ActorSystem.actorOf` can be used in classic actors with the difference that a
 @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] of the @apidoc[ActorRef](typed.ActorRef) is returned.
 
 The guardian behavior can be defined as:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/SpawnProtocolDocSpec.scala) { #imports1 #main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports1 #main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/SpawnProtocolDocTest.java) { #imports1 #main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports1 #main }
 
 and the @apidoc[ActorSystem](typed.ActorSystem) can be created with that `main` behavior and asked to spawn other actors:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/SpawnProtocolDocSpec.scala) { #imports2 #system-spawn }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports2 #system-spawn }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/SpawnProtocolDocTest.java) { #imports2 #system-spawn }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports2 #system-spawn }
 
 The @apidoc[SpawnProtocol$] can also be used at other places in the actor hierarchy. It doesn't have to be the root
 guardian actor.
@@ -158,10 +158,10 @@ A way to find running actors is described in @ref:[Actor discovery](actor-discov
 
 ## Stopping Actors
 
-An actor can stop itself by returning @apidoc[Behaviors.stopped](typed.*.Behaviors$) {scala="#stopped[T]:akka.actor.typed.Behavior[T]" java="#stopped()"} as the next behavior.
+An actor can stop itself by returning @apidoc[Behaviors.stopped](typed.*.Behaviors$) {scala="#stopped[T]:org.apache.pekko.actor.typed.Behavior[T]" java="#stopped()"} as the next behavior.
 
 A child actor can be forced to stop after it finishes processing its current message by using the
-@apidoc[stop](typed.*.ActorContext) {scala="#stop[U](child:akka.actor.typed.ActorRef[U]):Unit" java="#stop(akka.actor.typed.ActorRef)"} method of the `ActorContext` from the parent actor. Only child actors can be stopped in that way.
+@apidoc[stop](typed.*.ActorContext) {scala="#stop[U](child:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#stop(org.apache.pekko.actor.typed.ActorRef)"} method of the `ActorContext` from the parent actor. Only child actors can be stopped in that way.
 
 All child actors will be stopped when their parent is stopped.
 
@@ -170,14 +170,14 @@ When an actor is stopped, it receives the @apidoc[PostStop](typed.PostStop) sign
 Here is an illustrating example:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/GracefulStopDocSpec.scala) {
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) {
     #imports
     #master-actor
     #worker-actor
   }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/GracefulStopDocTest.java)  {
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  {
    #imports
    #master-actor
    #worker-actor
@@ -190,26 +190,26 @@ is not emitted for a restart.
 ## Watching Actors
 
 In order to be notified when another actor terminates (i.e. stops permanently, not temporary failure and restart),
-an actor can @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#watch(akka.actor.typed.ActorRef)"} another actor. It will receive the @apidoc[akka.actor.typed.Terminated] signal upon
+an actor can @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"} another actor. It will receive the @apidoc[actor.typed.Terminated] signal upon
 termination (see @ref:[Stopping Actors](#stopping-actors)) of the watched actor.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/GracefulStopDocSpec.scala) { #master-actor-watch }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watch }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/GracefulStopDocTest.java)  { #master-actor-watch }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watch }
 
-An alternative to @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#watch(akka.actor.typed.ActorRef)"} is @apidoc[watchWith](typed.*.ActorContext) {scala="#watchWith[U](other:akka.actor.typed.ActorRef[U],msg:T):Unit" java="#watchWith(akka.actor.typed.ActorRef,T)"}, which allows specifying a custom message instead of the `Terminated`.
+An alternative to @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"} is @apidoc[watchWith](typed.*.ActorContext) {scala="#watchWith[U](other:org.apache.pekko.actor.typed.ActorRef[U],msg:T):Unit" java="#watchWith(org.apache.pekko.actor.typed.ActorRef,T)"}, which allows specifying a custom message instead of the `Terminated`.
 This is often preferred over using `watch` and the `Terminated` signal because additional information can
 be included in the message that can be used later when receiving it.
 
 Similar example as above, but using `watchWith` and replies to the original requestor when the job has finished.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/GracefulStopDocSpec.scala) { #master-actor-watchWith }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watchWith }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/GracefulStopDocTest.java)  { #master-actor-watchWith }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watchWith }
 
 Note how the `replyToWhenDone` is included in the `watchWith` message and then used later when receiving the
 `JobTerminated` message. 
@@ -226,7 +226,7 @@ the message, and another registration is done before this message has been proce
 queued, because registering for monitoring of an already terminated actor leads to the immediate generation of
 the terminated message.
 
-It is also possible to deregister from watching another actor’s liveliness using @apidoc[context.unwatch(target)](typed.*.ActorContext) {scala="#unwatch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#unwatch(akka.actor.typed.ActorRef)"}.
+It is also possible to deregister from watching another actor’s liveliness using @apidoc[context.unwatch(target)](typed.*.ActorContext) {scala="#unwatch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#unwatch(org.apache.pekko.actor.typed.ActorRef)"}.
 This works even if the terminated message has already been enqueued in the mailbox; after calling `unwatch`
 no terminated message for that actor will be processed anymore.
 

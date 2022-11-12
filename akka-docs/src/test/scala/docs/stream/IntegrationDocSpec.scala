@@ -6,22 +6,22 @@ package docs.stream
 
 import scala.concurrent.duration._
 
-import akka.Done
-import akka.NotUsed
-import akka.testkit.AkkaSpec
-import akka.stream.scaladsl._
-import akka.stream._
+import org.apache.pekko.Done
+import org.apache.pekko.NotUsed
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream._
 
 import scala.concurrent.Future
-import akka.testkit.TestProbe
-import akka.actor.{ Actor, ActorLogging, ActorRef, Props }
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import com.typesafe.config.ConfigFactory
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 
 import scala.concurrent.ExecutionContext
 import java.util.concurrent.atomic.AtomicInteger
 
-import akka.stream.scaladsl.Flow
+import org.apache.pekko.stream.scaladsl.Flow
 import org.scalacheck.Gen.const
 
 object IntegrationDocSpec {
@@ -38,7 +38,7 @@ object IntegrationDocSpec {
     }
     #//#blocking-dispatcher-config
 
-    akka.actor.default-mailbox.mailbox-type = akka.dispatch.UnboundedMailbox
+    akka.actor.default-mailbox.mailbox-type = org.apache.pekko.dispatch.UnboundedMailbox
     """)
 
   class AddressSystem {
@@ -380,7 +380,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
     val database = system.actorOf(Props(classOf[DatabaseService], probe.ref), "db")
 
     // #save-tweets
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
 
     val akkaTweets: Source[Tweet, NotUsed] = tweets.filter(_.hashtags.contains(akkaTag))
 

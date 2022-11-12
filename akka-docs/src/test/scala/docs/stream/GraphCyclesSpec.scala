@@ -4,9 +4,9 @@
 
 package docs.stream
 
-import akka.stream.{ ClosedShape, OverflowStrategy }
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 
 class GraphCyclesSpec extends AkkaSpec {
 

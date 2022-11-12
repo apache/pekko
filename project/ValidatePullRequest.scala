@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import com.hpe.sbt.ValidatePullRequest
 import com.hpe.sbt.ValidatePullRequest.PathGlobFilter

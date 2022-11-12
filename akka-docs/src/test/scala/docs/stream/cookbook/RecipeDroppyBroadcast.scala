@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.stream.{ ClosedShape, OverflowStrategy }
-import akka.stream.scaladsl._
-import akka.stream.testkit._
+import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.testkit._
 
 class RecipeDroppyBroadcast extends RecipeSpec {
 

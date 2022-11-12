@@ -6,8 +6,8 @@ package docs.stream.cookbook
 
 import java.util.UUID
 
-import akka.NotUsed
-import akka.stream.scaladsl._
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl._
 
 class RecipeSourceFromFunction extends RecipeSpec {
 

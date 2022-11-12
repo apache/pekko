@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.persistence.typed.serialization";
+option java_package = "org.apache.pekko.persistence.typed.serialization";
 option optimize_for = SPEED;
 import "ContainerFormats.proto";
 

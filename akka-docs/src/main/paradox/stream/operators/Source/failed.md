@@ -6,7 +6,7 @@ Fail directly with a user specified exception.
 
 ## Signature
 
-@apidoc[Source.failed](Source$) { scala="#failed[T](cause:Throwable):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#failed(java.lang.Throwable)" }
+@apidoc[Source.failed](Source$) { scala="#failed[T](cause:Throwable):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#failed(java.lang.Throwable)" }
 
 
 ## Description

@@ -55,24 +55,24 @@ To assist in implementing the event handler the Replicated Event Sourcing detect
 @scala[The same API as regular `EventSourcedBehavior`s]@java[A very similar API to the regular `EventSourcedBehavior`] is used to define the logic. 
 
 To enable an entity for Replicated Event Sourcing
-@java[let it extend `ReplicatedEventSourcedBehavior` instead of `EventSourcedBehavior` and] use the factory methods on @scala[`akka.persistence.typed.scaladsl.ReplicatedEventSourcing`]@java[`akka.persistence.typed.javadsl.ReplicatedEventSourcing`]. 
+@java[let it extend `ReplicatedEventSourcedBehavior` instead of `EventSourcedBehavior` and] use the factory methods on @scala[`org.apache.pekko.persistence.typed.scaladsl.ReplicatedEventSourcing`]@java[`org.apache.pekko.persistence.typed.javadsl.ReplicatedEventSourcing`]. 
 
 All replicas need to be known up front:
 
 Scala
-:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #replicas }
+:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #replicas }
 
 Java
-:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/MyReplicatedBehavior.java) { #replicas }
+:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/MyReplicatedBehavior.java) { #replicas }
 
 
 Then to enable replication create the event sourced behavior with the factory method:
 
 Scala
-:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory }
+:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory }
 
 Java
-:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/MyReplicatedBehavior.java) { #factory }
+:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/MyReplicatedBehavior.java) { #factory }
 
 The factory takes in:
 
@@ -84,10 +84,10 @@ The factory takes in:
 In this scenario each replica reads from each other's database effectively providing cross region replication for any database that has an Akka Persistence plugin. Alternatively if all the replicas use the same journal, e.g. for testing or if it is a distributed database such as Cassandra, the `withSharedJournal` factory can be used. 
 
 Scala
-:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory-shared}
+:  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory-shared}
 
 Java
-:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/MyReplicatedBehavior.java) { #factory-shared }
+:  @@snip [MyReplicatedBehavior.java](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/MyReplicatedBehavior.java) { #factory-shared }
 
 
 @@@ div { .group-scala }
@@ -145,23 +145,23 @@ The following CRDTs are included that can you can use as the state or part of th
 
 * @apidoc[LwwTime]
 * @apidoc[Counter]
-* @apidoc[akka.persistence.typed.crdt.ORSet]
+* @apidoc[persistence.typed.crdt.ORSet]
 
 Akka serializers are included for all these types and can be used to serialize when 
 @ref[embedded in Jackson](../serialization-jackson.md#using-akka-serialization-for-embedded-types).
 
 An example would be a movies watch list that is represented by the general purpose 
-@apidoc[akka.persistence.typed.crdt.ORSet] CRDT. `ORSet` is short for Observed Remove Set. Elements can be added and
+@apidoc[persistence.typed.crdt.ORSet] CRDT. `ORSet` is short for Observed Remove Set. Elements can be added and
 removed any number of times. Concurrent add wins over remove. It is an operation based CRDT where the delta of an
 operation (add/remove) can be represented as an event.
 
 Such movies watch list example:
 
 Scala
-:   @@snip [movie](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedMovieWatchListExampleSpec.scala) { #movie-entity }
+:   @@snip [movie](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedMovieWatchListExampleSpec.scala) { #movie-entity }
 
 Java
-:   @@snip [movie](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedMovieExample.java) { #movie-entity }
+:   @@snip [movie](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedMovieExample.java) { #movie-entity }
 
 The @ref[Auction example](replicated-eventsourcing-auction.md) is a more comprehensive example that illustrates how application-specific
 rules can be used to implement an entity with CRDT semantics.
@@ -181,19 +181,19 @@ identifier is used if the two timestamps are equal, and then the one from the `r
 alphanumeric order wins.
 
 Scala
-:   @@snip [blog](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedBlogExampleSpec.scala) { #event-handler }
+:   @@snip [blog](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedBlogExampleSpec.scala) { #event-handler }
 
 Java
-:   @@snip [blog](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedBlogExample.java) { #event-handler }
+:   @@snip [blog](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedBlogExample.java) { #event-handler }
 
 When creating the `LwwTime` it is good to have a monotonically increasing timestamp, and for that the `increase`
 method in `LwwTime` can be used:
 
 Scala
-:   @@snip [blog](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedBlogExampleSpec.scala) { #command-handler }
+:   @@snip [blog](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedBlogExampleSpec.scala) { #command-handler }
 
 Java
-:   @@snip [blog](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedBlogExample.java) { #command-handler }
+:   @@snip [blog](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedBlogExample.java) { #command-handler }
 
 The nature of last writer wins means that if you only have one timestamp for the state the events must represent an
 update of the full state. Otherwise, there is a risk that the state in different replicas will be different and
@@ -305,10 +305,10 @@ To simplify all three cases the @apidoc[ReplicatedShardingExtension] is availabl
 `akka-cluster-sharding-typed` module.
 
 Scala
-:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap }
+:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap }
 
 Java
-:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap }
+:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap }
 
 This will run an instance of sharding and per replica and each entity id contains the replica id and the type name.
 Replicas could be on the same node if they end up in the same shard or if the shards get allocated to the same node.
@@ -316,28 +316,28 @@ Replicas could be on the same node if they end up in the same shard or if the sh
 To prevent this roles can be used. You could for instance add a cluster role per availability zone / rack and have a replica per rack.
 
 Scala
-:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap-role }
+:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap-role }
 
 Java
-:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap-role }
+:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap-role }
 
 Lastly if your Akka Cluster is setup across DCs you can run a replica per DC.
 
 Scala
-:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap-dc }
+:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap-dc }
 
 Java
-:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap-dc }
+:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap-dc }
 
 Regardless of which replication strategy you use sending messages to the replicated entities is the same.
 
 `init` returns an @apidoc[ReplicatedSharding] instance which gives access to @apidoc[EntityRef]s for each of the replicas for arbitrary routing logic:
 
 Scala
-:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #sending-messages }
+:  @@snip [ReplicatedShardingSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #sending-messages }
 
 Java
-:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/akka/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #sending-messages }
+:  @@snip [ReplicatedShardingTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #sending-messages }
 
 More advanced routing among the replicas is currently left as an exercise for the reader (or may be covered in a future release [#29281](https://github.com/akka/akka/issues/29281), [#29319](https://github.com/akka/akka/issues/29319)).
 
@@ -370,10 +370,10 @@ Determining the replica id of the replicated actor itself and the origin replica
 @apidoc[ReplicationContext] when the tagger callback is invoked like this:
 
 Scala
-:  @@snip [ReplicatedEventSourcingTaggingSpec.scala](/akka-persistence-typed-tests/src/test/scala/akka/persistence/typed/ReplicatedEventSourcingTaggingSpec.scala) { #tagging }
+:  @@snip [ReplicatedEventSourcingTaggingSpec.scala](/akka-persistence-typed-tests/src/test/scala/org/apache/pekko/persistence/typed/ReplicatedEventSourcingTaggingSpec.scala) { #tagging }
 
 Java
-:  @@snip [ReplicatedStringSet.java](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedStringSet.java) { #tagging }
+:  @@snip [ReplicatedStringSet.java](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedStringSet.java) { #tagging }
 
 In this sample we are using a shared journal, and single tag but only tagging local events to it and therefore ending up
 with a single stream of tagged events from all replicas without duplicates. 
@@ -409,8 +409,8 @@ For a journal plugin to support replication it needs to store and read metadata 
  `metadata` field. To attach the metadata after writing it, `PersistentRepr.withMetadata` is used. The @apidoc[JournalSpec] in the Persistence TCK provides 
  a capability flag `supportsMetadata` to toggle verification that metadata is handled correctly.
  
-For a snapshot plugin to support replication it needs to store and read metadata for the snapshot if it is defined in the @apiref[akka.persistence.SnapshotMetadata] `metadata` field. 
-To attach the metadata when reading the snapshot the `akka.persistence.SnapshotMetadata.apply` factory overload taking a `metadata` parameter is used.
+For a snapshot plugin to support replication it needs to store and read metadata for the snapshot if it is defined in the @apiref[org.apache.pekko.persistence.SnapshotMetadata] `metadata` field. 
+To attach the metadata when reading the snapshot the `org.apache.pekko.persistence.SnapshotMetadata.apply` factory overload taking a `metadata` parameter is used.
 The @apidoc[SnapshotStoreSpec] in the Persistence TCK provides a capability flag `supportsMetadata` to toggle verification that metadata is handled correctly.
 
 The following plugins support Replicated Event Sourcing:

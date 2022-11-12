@@ -2,7 +2,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 object GitHub {
 

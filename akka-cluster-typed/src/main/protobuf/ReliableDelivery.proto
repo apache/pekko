@@ -4,9 +4,9 @@
 
 syntax = "proto2";
 
-package akka.cluster.typed.delivery;
+package org.apache.pekko.cluster.typed.delivery;
 
-option java_package = "akka.cluster.typed.internal.protobuf";
+option java_package = "org.apache.pekko.cluster.typed.internal.protobuf";
 option optimize_for = SPEED;
 import "ContainerFormats.proto";
 

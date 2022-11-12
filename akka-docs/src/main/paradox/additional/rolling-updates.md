@@ -56,7 +56,7 @@ akka.cluster.app-version = 1.2.3
 ```
 
 To understand which is old and new it compares the version numbers using normal conventions,
-see @apidoc[akka.util.Version] for more details.
+see @apidoc[util.Version] for more details.
 
 Rebalance is also disabled during rolling updates, since shards from stopped nodes are anyway supposed to be
 started on new nodes. Messages to shards that were stopped on the old nodes will allocate corresponding shards

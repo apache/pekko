@@ -6,8 +6,8 @@ Log elements flowing through the stream as well as completion and erroring.
 
 ## Signature
 
-@apidoc[Source.log](Source) { scala="#log(name:String,extract:Out=&gt;Any)(implicitlog:akka.event.LoggingAdapter):FlowOps.this.Repr[Out]" java="#log(java.lang.String)" }
-@apidoc[Flow.log](Flow) { scala="#log(name:String,extract:Out=&gt;Any)(implicitlog:akka.event.LoggingAdapter):FlowOps.this.Repr[Out]" java="#log(java.lang.String)" }
+@apidoc[Source.log](Source) { scala="#log(name:String,extract:Out=&gt;Any)(implicitlog:org.apache.pekko.event.LoggingAdapter):FlowOps.this.Repr[Out]" java="#log(java.lang.String)" }
+@apidoc[Flow.log](Flow) { scala="#log(name:String,extract:Out=&gt;Any)(implicitlog:org.apache.pekko.event.LoggingAdapter):FlowOps.this.Repr[Out]" java="#log(java.lang.String)" }
 
 ## Description
 

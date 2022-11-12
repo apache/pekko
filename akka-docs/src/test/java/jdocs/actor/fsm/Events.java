@@ -4,7 +4,7 @@
 
 package jdocs.actor.fsm;
 
-import akka.actor.ActorRef;
+import org.apache.pekko.actor.ActorRef;
 import java.util.List;
 
 public class Events {

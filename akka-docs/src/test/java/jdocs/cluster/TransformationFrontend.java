@@ -11,9 +11,9 @@ import java.util.List;
 
 import jdocs.cluster.TransformationMessages.JobFailed;
 import jdocs.cluster.TransformationMessages.TransformationJob;
-import akka.actor.ActorRef;
-import akka.actor.Terminated;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.AbstractActor;
 
 // #frontend
 public class TransformationFrontend extends AbstractActor {

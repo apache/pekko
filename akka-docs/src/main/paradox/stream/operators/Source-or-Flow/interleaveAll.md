@@ -6,8 +6,8 @@ Emits a specifiable number of elements from the original source, then from the p
 
 ## Signature
 
-@apidoc[Source.interleaveAll](Source) { scala="#interleaveAll[U&gt;:Out](that:List[akka.stream.Graph[akka.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[akka.stream.Graph],int,boolean)" }
-@apidoc[Flow.interleaveAll](Flow) { scala="#interleaveAll[U&gt;:Out](that:List[akka.stream.Graph[akka.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[akka.stream.Graph],int,boolean)" }
+@apidoc[Source.interleaveAll](Source) { scala="#interleaveAll[U&gt;:Out](that:List[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[org.apache.pekko.stream.Graph],int,boolean)" }
+@apidoc[Flow.interleaveAll](Flow) { scala="#interleaveAll[U&gt;:Out](that:List[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleaveAll(java.util.List[org.apache.pekko.stream.Graph],int,boolean)" }
 
 
 ## Description
@@ -18,7 +18,7 @@ the flow is complete.
 
 ## Example
 Scala
-:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowInterleaveAllSpec.scala) { #interleaveAll }
+:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveAllSpec.scala) { #interleaveAll }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #interleaveAll }

@@ -4,12 +4,12 @@
 
 package jdocs.testkit;
 
-import akka.actor.*;
-import akka.japi.Creator;
-import akka.japi.Function;
-import akka.testkit.AkkaJUnitActorSystemResource;
-import akka.testkit.TestProbe;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.japi.Creator;
+import org.apache.pekko.japi.Function;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import docs.testkit.MockedChild;
 import jdocs.AbstractJavaTest;
@@ -21,7 +21,7 @@ public class ParentChildTest extends AbstractJavaTest {
   public static AkkaJUnitActorSystemResource actorSystemResource =
       new AkkaJUnitActorSystemResource(
           "TestKitDocTest",
-          ConfigFactory.parseString("akka.loggers = [akka.testkit.TestEventListener]"));
+          ConfigFactory.parseString("akka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

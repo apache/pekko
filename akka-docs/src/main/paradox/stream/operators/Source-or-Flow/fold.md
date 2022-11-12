@@ -6,8 +6,8 @@ Start with current value `zero` and then apply the current and next value to the
 
 ## Signature
 
-@apidoc[Source.fold](Source) { scala="#fold[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#fold(java.lang.Object,akka.japi.function.Function2)" }
-@apidoc[Flow.fold](Flow) { scala="#fold[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#fold(java.lang.Object,akka.japi.function.Function2)" }
+@apidoc[Source.fold](Source) { scala="#fold[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.fold](Flow) { scala="#fold[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
 
 ## Description
 

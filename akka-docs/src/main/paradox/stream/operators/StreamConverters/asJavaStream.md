@@ -6,7 +6,7 @@ Create a sink which materializes into Java 8 `Stream` that can be run to trigger
 
 ## Signature
 
-@apidoc[StreamConverters](StreamConverters$) { scala="#asJavaStream[T]():akka.stream.scaladsl.Sink[T,java.util.stream.Stream[T]]" java="#asJavaStream()" }
+@apidoc[StreamConverters](StreamConverters$) { scala="#asJavaStream[T]():org.apache.pekko.stream.scaladsl.Sink[T,java.util.stream.Stream[T]]" java="#asJavaStream()" }
 
 ## Description
 

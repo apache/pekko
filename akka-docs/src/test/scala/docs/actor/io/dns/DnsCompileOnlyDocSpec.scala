@@ -4,12 +4,12 @@
 
 package docs.actor.io.dns
 
-import akka.actor.{ ActorRef, ActorSystem }
-import akka.io.dns.DnsProtocol
-import akka.io.dns.DnsProtocol.Srv
-import akka.pattern.ask
-import akka.io.{ Dns, IO }
-import akka.util.Timeout
+import org.apache.pekko.actor.{ ActorRef, ActorSystem }
+import org.apache.pekko.io.dns.DnsProtocol
+import org.apache.pekko.io.dns.DnsProtocol.Srv
+import org.apache.pekko.pattern.ask
+import org.apache.pekko.io.{ Dns, IO }
+import org.apache.pekko.util.Timeout
 
 import scala.concurrent.Future
 import scala.concurrent.duration._

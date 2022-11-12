@@ -100,14 +100,14 @@ Java
 
 After running (materializing) the `RunnableGraph[T]` we get back the materialized value of type T. Every stream
 operator can produce a materialized value, and it is the responsibility of the user to combine them to a new type.
-In the above example, we used @scaladoc[toMat](akka.stream.scaladsl.Source#toMat[Mat2,Mat3](sink:akka.stream.Graph[akka.stream.SinkShape[Out],Mat2])(combine:(Mat,Mat2)=%3EMat3):akka.stream.scaladsl.RunnableGraph[Mat3]) to indicate that we want to transform the materialized value of the source and
-sink, and we used the convenience function @scaladoc[Keep.right](akka.stream.scaladsl.Keep$#right[L,R]:(L,R)=%3ER) to say that we are only interested in the materialized value
+In the above example, we used @scaladoc[toMat](pekko.stream.scaladsl.Source#toMat[Mat2,Mat3](sink:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],Mat2])(combine:(Mat,Mat2)=%3EMat3):org.apache.pekko.stream.scaladsl.RunnableGraph[Mat3]) to indicate that we want to transform the materialized value of the source and
+sink, and we used the convenience function @scaladoc[Keep.right](pekko.stream.scaladsl.Keep$#right[L,R]:(L,R)=%3ER) to say that we are only interested in the materialized value
 of the sink.
 
-In our example, the @scaladoc[Sink.fold](akka.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=&gt;U):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) materializes a value of type @scaladoc[Future](scala.concurrent.Future) which will represent the result
+In our example, the @scaladoc[Sink.fold](pekko.stream.scaladsl.Sink$#fold[U,T](zero:U)(f:(U,T)=&gt;U):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]) materializes a value of type @scaladoc[Future](scala.concurrent.Future) which will represent the result
 of the folding process over the stream.  In general, a stream can expose multiple materialized values,
 but it is quite common to be interested in only the value of the Source or the Sink in the stream. For this reason
-there is a convenience method called `runWith()` available for @scaladoc[Sink](akka.stream.scaladsl.Sink), @scaladoc[Source](akka.stream.scaladsl.Source) or @scaladoc[Flow](akka.stream.scaladsl.Flow) requiring, respectively,
+there is a convenience method called `runWith()` available for @scaladoc[Sink](pekko.stream.scaladsl.Sink), @scaladoc[Source](pekko.stream.scaladsl.Source) or @scaladoc[Flow](pekko.stream.scaladsl.Flow) requiring, respectively,
 a supplied `Source` (in order to run a `Sink`), a `Sink` (in order to run a `Source`) or
 both a `Source` and a `Sink` (in order to run a `Flow`, since it has neither attached yet).
 
@@ -115,14 +115,14 @@ both a `Source` and a `Sink` (in order to run a `Flow`, since it has neither att
 
 @@@ div { .group-java }
 
-After running (materializing) the @javadoc[RunnableGraph](akka.stream.javadsl.RunnableGraph) we get a special container object, the `MaterializedMap`. Both
+After running (materializing) the @javadoc[RunnableGraph](pekko.stream.javadsl.RunnableGraph) we get a special container object, the `MaterializedMap`. Both
 sources and sinks are able to put specific objects into this map. Whether they put something in or not is implementation
 dependent. 
 
-For example, a @javadoc[Sink.fold](akka.stream.javadsl.Sink$#fold(java.lang.Object,akka.japi.function.Function2)) will make a @javadoc[CompletionStage](java.util.concurrent.CompletionStage) available in this map which will represent the result
+For example, a @javadoc[Sink.fold](pekko.stream.javadsl.Sink$#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)) will make a @javadoc[CompletionStage](java.util.concurrent.CompletionStage) available in this map which will represent the result
 of the folding process over the stream.  In general, a stream can expose multiple materialized values,
 but it is quite common to be interested in only the value of the Source or the Sink in the stream. For this reason
-there is a convenience method called `runWith()` available for @javadoc[Sink](akka.stream.javadsl.Sink), @javadoc[Source](akka.stream.javadsl.Source) or @javadoc[Flow](akka.stream.javadsl.Flow) requiring, respectively,
+there is a convenience method called `runWith()` available for @javadoc[Sink](pekko.stream.javadsl.Sink), @javadoc[Source](pekko.stream.javadsl.Source) or @javadoc[Flow](pekko.stream.javadsl.Flow) requiring, respectively,
 a supplied `Source` (in order to run a `Sink`), a `Sink` (in order to run a `Source`) or
 both a `Source` and a `Sink` (in order to run a `Flow`, since it has neither attached yet).
 @@@
@@ -292,7 +292,7 @@ operators due to avoiding the asynchronous messaging overhead
 only up to one CPU core is used for each fused part
 
 To allow for parallel processing you will have to insert asynchronous boundaries manually into your flows and
-operators by way of adding @apidoc[Attributes.asyncBoundary](stream.Attributes$) {scala="#asyncBoundary:akka.stream.Attributes" java="#asyncBoundary()"} using the method `async` on @apidoc[stream.*.Source], @apidoc[stream.*.Sink] and @apidoc[stream.*.Flow]
+operators by way of adding @apidoc[Attributes.asyncBoundary](stream.Attributes$) {scala="#asyncBoundary:org.apache.pekko.stream.Attributes" java="#asyncBoundary()"} using the method `async` on @apidoc[stream.*.Source], @apidoc[stream.*.Sink] and @apidoc[stream.*.Flow]
 to operators that shall communicate with the downstream of the graph in an asynchronous fashion.
 
 Scala
@@ -349,7 +349,7 @@ In Graphs it is possible to access the materialized value from inside the stream
 There are situations in which you require a @apidoc[stream.*.Source] materialized value **before** the `Source` gets hooked up to the rest of the graph.
 This is particularly useful in the case of "materialized value powered" `Source`s, like `Source.queue`, `Source.actorRef` or `Source.maybe`.
 
-By using the @apidoc[preMaterialize](stream.*.Source) {scala="#preMaterialize()(implicitmaterializer:akka.stream.Materializer):(Mat,Source.this.ReprMat[Out,akka.NotUsed])" java="#preMaterialize(akka.stream.Materializer)"} operator on a `Source`, you can obtain its materialized value and another `Source`. The latter can be used
+By using the @apidoc[preMaterialize](stream.*.Source) {scala="#preMaterialize()(implicitmaterializer:org.apache.pekko.stream.Materializer):(Mat,Source.this.ReprMat[Out,org.apache.pekko.NotUsed])" java="#preMaterialize(org.apache.pekko.stream.Materializer)"} operator on a `Source`, you can obtain its materialized value and another `Source`. The latter can be used
 to consume messages from the original `Source`. Note that this can be materialized multiple times.
 
 Scala
@@ -364,8 +364,8 @@ In Akka Streams almost all computation operators *preserve input order* of eleme
 "cause" outputs `{OA1,OA2,...,OAk}` and inputs `{IB1,IB2,...,IBm}` "cause" outputs `{OB1,OB2,...,OBl}` and all of
 `IAi` happened before all `IBi` then `OAi` happens before `OBi`.
 
-This property is even upheld by async operations such as @apidoc[mapAsync](stream.*.Source) { scala="#mapAsync[T](parallelism:Int)(f:Out=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,akka.japi.function.Function)" }, however an unordered version exists
-called @apidoc[mapAsyncUnordered](stream.*.Source) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,akka.japi.function.Function)" } which does not preserve this ordering.
+This property is even upheld by async operations such as @apidoc[mapAsync](stream.*.Source) { scala="#mapAsync[T](parallelism:Int)(f:Out=%3Escala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsync(int,org.apache.pekko.japi.function.Function)" }, however an unordered version exists
+called @apidoc[mapAsyncUnordered](stream.*.Source) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,org.apache.pekko.japi.function.Function)" } which does not preserve this ordering.
 
 However, in the case of Junctions which handle multiple input streams (e.g. `Merge`) the output order is,
 in general, *not defined* for elements arriving on different input ports. That is a merge-like operation may emit `Ai`
@@ -379,23 +379,23 @@ merge is performed.
 
 ## Actor Materializer Lifecycle
 
-The @apidoc[akka.stream.Materializer] is a component that is responsible for turning the stream blueprint into a running stream
-and emitting the "materialized value". An @apidoc[akka.actor.ActorSystem] wide `Materializer` is provided by the Akka `Extension` 
+The @apidoc[stream.Materializer] is a component that is responsible for turning the stream blueprint into a running stream
+and emitting the "materialized value". An @apidoc[actor.ActorSystem] wide `Materializer` is provided by the Akka `Extension` 
 @apidoc[SystemMaterializer] by @scala[having an implicit `ActorSystem` in scope]@java[passing the `ActorSystem` to the 
 various `run` methods] this way there is no need to worry about the `Materializer` unless there are special requirements.
 
 The use case that may require a custom instance of `Materializer` is when all streams materialized in an actor should be tied to the Actor lifecycle and stop if the Actor stops or crashes. 
 
 An important aspect of working with streams and actors is understanding a `Materializer`'s life-cycle.
-The materializer is bound to the lifecycle of the @apidoc[akka.actor.ActorRefFactory] it is created from, which in practice will
-be either an @apidoc[akka.actor.ActorSystem] or @apidoc[ActorContext](akka.actor.ActorContext) (when the materializer is created within an @apidoc[akka.actor.Actor]). 
+The materializer is bound to the lifecycle of the @apidoc[actor.ActorRefFactory] it is created from, which in practice will
+be either an @apidoc[actor.ActorSystem] or @apidoc[ActorContext](actor.ActorContext) (when the materializer is created within an @apidoc[actor.Actor]). 
 
 Tying it to the `ActorSystem` should be replaced with using the system materializer from Akka 2.6 and on.
 
 When run by the system materializer the streams will run until the `ActorSystem` is shut down. When the materializer is shut down
 *before* the streams have run to completion, they will be terminated abruptly. This is a little different than the
 usual way to terminate streams, which is by cancelling/completing them. The stream lifecycles are bound to the materializer
-like this to prevent leaks, and in normal operations you should not rely on the mechanism and rather use @apidoc[akka.stream.KillSwitch] or
+like this to prevent leaks, and in normal operations you should not rely on the mechanism and rather use @apidoc[stream.KillSwitch] or
 normal completion signals to manage the lifecycles of your streams.  
 
 If we look at the following example, where we create the `Materializer` within an `Actor`:
@@ -406,10 +406,10 @@ Scala
 Java
 :   @@snip [FlowDocTest.java](/akka-docs/src/test/java/jdocs/stream/FlowDocTest.java) { #materializer-from-actor-context }
 
-In the above example we used the @apidoc[akka.actor.ActorContext] to create the materializer. This binds its lifecycle to the surrounding @apidoc[akka.actor.Actor]. In other words, while the stream we started there would under normal circumstances run forever, if we stop the Actor it would terminate the stream as well. We have *bound the stream's lifecycle to the surrounding actor's lifecycle*.
+In the above example we used the @apidoc[actor.ActorContext] to create the materializer. This binds its lifecycle to the surrounding @apidoc[actor.Actor]. In other words, while the stream we started there would under normal circumstances run forever, if we stop the Actor it would terminate the stream as well. We have *bound the stream's lifecycle to the surrounding actor's lifecycle*.
 This is a very useful technique if the stream is closely related to the actor, e.g. when the actor represents a user or other entity, that we continuously query using the created stream -- and it would not make sense to keep the stream alive when the actor has terminated already. The streams termination will be signalled by an "Abrupt termination exception" signaled by the stream.
 
-You may also cause a `Materializer` to shut down by explicitly calling @apidoc[shutdown()](akka.stream.Materializer) {scala="#shutdown():Unit" java="#shutdown()"} on it, resulting in abruptly terminating all of the streams it has been running then. 
+You may also cause a `Materializer` to shut down by explicitly calling @apidoc[shutdown()](stream.Materializer) {scala="#shutdown():Unit" java="#shutdown()"} on it, resulting in abruptly terminating all of the streams it has been running then. 
 
 Sometimes, however, you may want to explicitly create a stream that will out-last the actor's life.
 For example, you are using an Akka stream to push some large stream of data to an external service.
@@ -421,13 +421,13 @@ Scala
 Java
 :   @@snip [FlowDocTest.java](/akka-docs/src/test/java/jdocs/stream/FlowDocTest.java) { #materializer-from-system-in-actor }
 
-In the above example we pass in a materializer to the Actor, which results in binding its lifecycle to the entire @apidoc[akka.actor.ActorSystem] rather than the single enclosing actor. This can be useful if you want to share a materializer or group streams into specific materializers,
+In the above example we pass in a materializer to the Actor, which results in binding its lifecycle to the entire @apidoc[actor.ActorSystem] rather than the single enclosing actor. This can be useful if you want to share a materializer or group streams into specific materializers,
 for example because of the materializer's settings etc.
 
 @@@ warning
 
-Do not create new actor materializers inside actors by passing the @scala[@scaladoc[context.system](akka.actor.ActorContext#system:akka.actor.ActorSystem)]@java[@javadoc[context.system()](akka.actor.ActorContext#system())] to it. 
-This will cause a new @apidoc[akka.stream.Materializer] to be created and potentially leaked (unless you shut it down explicitly) for each such actor.
+Do not create new actor materializers inside actors by passing the @scala[@scaladoc[context.system](pekko.actor.ActorContext#system:org.apache.pekko.actor.ActorSystem)]@java[@javadoc[context.system()](pekko.actor.ActorContext#system())] to it. 
+This will cause a new @apidoc[stream.Materializer] to be created and potentially leaked (unless you shut it down explicitly) for each such actor.
 It is instead recommended to either pass-in the Materializer or create one using the actor's `context`.
 
 @@@

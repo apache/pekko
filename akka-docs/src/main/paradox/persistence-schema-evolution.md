@@ -52,7 +52,7 @@ differs from how one would go about it in a mutable database setting (e.g. in ty
 
 The system needs to be able to continue to work in the presence of "old" events which were stored under the "old" schema.
 We also want to limit complexity in the business logic layer, exposing a consistent view over all of the events of a given
-type to @scala[@scaladoc[PersistentActor](akka.persistence.PersistentActor)]@java[@javadoc[AbstractPersistentActor](akka.persistence.AbstractPersistentActor)] s and @ref:[persistence queries](persistence-query.md). This allows the business logic layer to focus on solving business problems
+type to @scala[@scaladoc[PersistentActor](pekko.persistence.PersistentActor)]@java[@javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor)] s and @ref:[persistence queries](persistence-query.md). This allows the business logic layer to focus on solving business problems
 instead of having to explicitly deal with different schemas.
 
 In summary, schema evolution in event sourced systems exposes the following characteristics:
@@ -68,7 +68,7 @@ Before we explain the various techniques that can be used to safely evolve the s
 over time, we first need to define what the actual problem is, and what the typical styles of changes are.
 
 Since events are never deleted, we need to have a way to be able to replay (read) old events, in such way
-that does not force the @scala[@scaladoc[PersistentActor](akka.persistence.PersistentActor)]@java[@javadoc[AbstractPersistentActor](akka.persistence.AbstractPersistentActor)] to be aware of all possible versions of an event that it may have
+that does not force the @scala[@scaladoc[PersistentActor](pekko.persistence.PersistentActor)]@java[@javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor)] to be aware of all possible versions of an event that it may have
 persisted in the past. Instead, we want the Actors to work on some form of "latest" version of the event and provide some
 means of either converting old "versions" of stored events into this "latest" event type, or constantly evolve the event
 definition - in a backwards compatible way - such that the new deserialization code can still read old events.
@@ -120,7 +120,7 @@ for its own message types such as @apidoc[PersistentRepr], @apidoc[AtomicWrite] 
 @@@ note
 
 Serialization is **NOT** handled automatically by Akka Persistence itself. Instead, it only provides the above described
-serializers, and in case a @scala[@scaladoc[AsyncWriteJournal](akka.persistence.journal.AsyncWriteJournal)]@java[@javadoc[AsyncWriteJournal](akka.persistence.journal.japi.AsyncWriteJournal)] plugin implementation chooses to use them directly, the above serialization
+serializers, and in case a @scala[@scaladoc[AsyncWriteJournal](pekko.persistence.journal.AsyncWriteJournal)]@java[@javadoc[AsyncWriteJournal](pekko.persistence.journal.japi.AsyncWriteJournal)] plugin implementation chooses to use them directly, the above serialization
 scheme will be used.
 
 Please refer to your write journal's documentation to learn more about how it handles serialization!
@@ -141,7 +141,7 @@ Akka Persistence provided serializers wrap the user payload in an envelope conta
 be serialized using the user configured serializer, and if none is provided explicitly, Java serialization will be used for it.**
 
 The blue colored regions of the `PersistentMessage` indicate what is serialized using the generated protocol buffers
-serializers, and the yellow payload indicates the user provided event (by calling @scala[@scaladoc[persist(payload)(...)](akka.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist(payload,...)](akka.persistence.AbstractPersistentActorLike#persist(A,akka.japi.Procedure))].
+serializers, and the yellow payload indicates the user provided event (by calling @scala[@scaladoc[persist(payload)(...)](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist(payload,...)](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))].
 As you can see, the `PersistentMessage` acts as an envelope around the payload, adding various fields related to the
 origin of the event (`persistenceId`, `sequenceNr` and more).
 

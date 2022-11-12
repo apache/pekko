@@ -6,8 +6,8 @@ Limit the throughput to a specific number of elements per time unit, or a specif
 
 ## Signature
 
-@apidoc[Source.throttle](Source) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:akka.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,akka.japi.function.Function,akka.stream.ThrottleMode)" }
-@apidoc[Flow.throttle](Flow) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:akka.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,akka.japi.function.Function,akka.stream.ThrottleMode)" }
+@apidoc[Source.throttle](Source) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:org.apache.pekko.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,org.apache.pekko.japi.function.Function,org.apache.pekko.stream.ThrottleMode)" }
+@apidoc[Flow.throttle](Flow) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:org.apache.pekko.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,org.apache.pekko.japi.function.Function,org.apache.pekko.stream.ThrottleMode)" }
 
 ## Description
 
@@ -46,7 +46,7 @@ the maximum rate. Alternatively we could set the throttling mode to cause a stre
 than the throttle rate.   
 
 The examples above don't cover all the parameters supported by `throttle` (e.g. `cost`-based throttling). See the 
-@apidoc[api documentation](Flow) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:akka.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,akka.japi.function.Function,akka.stream.ThrottleMode)" }
+@apidoc[api documentation](Flow) { scala="#throttle(cost:Int,per:scala.concurrent.duration.FiniteDuration,maximumBurst:Int,costCalculation:Out=&gt;Int,mode:org.apache.pekko.stream.ThrottleMode):FlowOps.this.Repr[Out]" java="#throttle(int,java.time.Duration,int,org.apache.pekko.japi.function.Function,org.apache.pekko.stream.ThrottleMode)" }
 for all the details.
 
 ## Reactive Streams semantics

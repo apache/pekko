@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.stream.FlowShape
-import akka.stream.scaladsl._
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.FlowShape
+import org.apache.pekko.stream.scaladsl._
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

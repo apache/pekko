@@ -4,14 +4,14 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Framing;
-import akka.stream.javadsl.FramingTruncation;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.testkit.javadsl.TestKit;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Framing;
+import org.apache.pekko.stream.javadsl.FramingTruncation;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.ByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

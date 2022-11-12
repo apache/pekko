@@ -4,17 +4,17 @@
 
 package docs.stream.operators.source
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.{ KillSwitches, RestartSettings, UniqueKillSwitch }
-import akka.stream.scaladsl.Keep
-import akka.stream.scaladsl.RestartSource
-import akka.stream.scaladsl.Sink
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.{ KillSwitches, RestartSettings, UniqueKillSwitch }
+import org.apache.pekko.stream.scaladsl.Keep
+import org.apache.pekko.stream.scaladsl.RestartSource
+import org.apache.pekko.stream.scaladsl.Sink
 
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 // #imports
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 // #imports
 
 object Restart extends App {

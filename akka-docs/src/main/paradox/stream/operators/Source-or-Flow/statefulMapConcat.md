@@ -6,7 +6,7 @@ Transform each element into zero or more elements that are individually passed d
 
 ## Signature
 
-@apidoc[Flow.statefulMapConcat](Flow) { scala="#statefulMapConcat[T](f:()=&gt;Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#statefulMapConcat(akka.japi.function.Creator)" } 
+@apidoc[Flow.statefulMapConcat](Flow) { scala="#statefulMapConcat[T](f:()=&gt;Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#statefulMapConcat(org.apache.pekko.japi.function.Creator)" } 
 
 ## Description
 

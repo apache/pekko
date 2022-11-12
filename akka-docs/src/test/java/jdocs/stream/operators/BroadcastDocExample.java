@@ -4,20 +4,20 @@
 
 package jdocs.stream.operators;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 
 // #import
-import akka.NotUsed;
-import akka.japi.tuple.Tuple3;
-import akka.stream.ClosedShape;
-import akka.stream.UniformFanOutShape;
-import akka.stream.javadsl.Broadcast;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.GraphDSL;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.RunnableGraph;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.japi.tuple.Tuple3;
+import org.apache.pekko.stream.ClosedShape;
+import org.apache.pekko.stream.UniformFanOutShape;
+import org.apache.pekko.stream.javadsl.Broadcast;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.GraphDSL;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.RunnableGraph;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 import java.util.concurrent.CompletionStage;
 // #import
 

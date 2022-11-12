@@ -4,9 +4,9 @@
 
 package docs.stream.operators.source
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 // #imports
-import akka.stream.scaladsl.{ Concat, Merge, Source }
+import org.apache.pekko.stream.scaladsl.{ Concat, Merge, Source }
 // ...
 
 // #imports

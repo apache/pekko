@@ -5,15 +5,15 @@
 package jdocs.persistence;
 
 // #plugin-imports
-import akka.dispatch.Futures;
-import akka.persistence.*;
-import akka.persistence.journal.japi.*;
-import akka.persistence.snapshot.japi.*;
+import org.apache.pekko.dispatch.Futures;
+import org.apache.pekko.persistence.*;
+import org.apache.pekko.persistence.journal.japi.*;
+import org.apache.pekko.persistence.snapshot.japi.*;
 // #plugin-imports
 
-import akka.actor.*;
-import akka.persistence.journal.leveldb.SharedLeveldbJournal;
-import akka.persistence.journal.leveldb.SharedLeveldbStore;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal;
+import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -28,8 +28,8 @@ import java.util.function.Consumer;
 import org.iq80.leveldb.util.FileUtils;
 import java.util.Optional;
 
-import akka.persistence.japi.journal.JavaJournalSpec;
-import akka.persistence.japi.snapshot.JavaSnapshotStoreSpec;
+import org.apache.pekko.persistence.japi.journal.JavaJournalSpec;
+import org.apache.pekko.persistence.japi.snapshot.JavaSnapshotStoreSpec;
 
 public class LambdaPersistencePluginDocTest {
 

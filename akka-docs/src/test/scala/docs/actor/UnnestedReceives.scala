@@ -4,7 +4,7 @@
 
 package docs.actor
 
-import akka.actor._
+import org.apache.pekko.actor._
 import scala.collection.mutable.ListBuffer
 
 /**

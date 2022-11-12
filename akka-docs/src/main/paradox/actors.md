@@ -50,8 +50,8 @@ as well as @ref:[Actor References, Paths and Addresses](general/addressing.md).
 
 @@@ div { .group-scala }
 
-Actors are implemented by extending the @scaladoc[Actor](akka.actor.Actor) base trait and implementing the
-@scaladoc[receive](akka.actor.Actor#receive:akka.actor.Actor.Receive) method. The `receive` method should define a series of case
+Actors are implemented by extending the @scaladoc[Actor](pekko.actor.Actor) base trait and implementing the
+@scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive) method. The `receive` method should define a series of case
 statements (which has the type `PartialFunction[Any, Unit]`) that define
 which messages your Actor can handle, using standard Scala pattern matching,
 along with the implementation of how the messages should be processed.
@@ -60,11 +60,11 @@ along with the implementation of how the messages should be processed.
 
 @@@ div { .group-java }
 
-Actor classes are implemented by extending the @javadoc[AbstractActor](akka.actor.AbstractActor) class and setting
-the “initial behavior” in the @javadoc[createReceive](akka.actor.AbstractActor#createReceive()) method.
+Actor classes are implemented by extending the @javadoc[AbstractActor](pekko.actor.AbstractActor) class and setting
+the “initial behavior” in the @javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method.
 
-The `createReceive` method has no arguments and returns @javadoc[AbstractActor.Receive](akka.actor.AbstractActor.Receive). It defines which messages your Actor can handle, along with the implementation of how the messages should be processed. You can build such behavior with a builder named
-@javadoc[ReceiveBuilder](akka.actor.typed.javadsl.ReceiveBuilder). This build has a convenient factory in `AbstractActor` called @javadoc[receiveBuilder](akka.actor.AbstractActor#receiveBuilder()).
+The `createReceive` method has no arguments and returns @javadoc[AbstractActor.Receive](pekko.actor.AbstractActor.Receive). It defines which messages your Actor can handle, along with the implementation of how the messages should be processed. You can build such behavior with a builder named
+@javadoc[ReceiveBuilder](pekko.actor.typed.javadsl.ReceiveBuilder). This build has a convenient factory in `AbstractActor` called @javadoc[receiveBuilder](pekko.actor.AbstractActor#receiveBuilder()).
 
 @@@
 
@@ -79,15 +79,15 @@ Java
 Please note that the Akka Actor @scala[`receive`] message loop is exhaustive, which is different compared to Erlang and the late Scala Actors. This means that you
 need to provide a pattern match for all messages that it can accept and if you
 want to be able to handle unknown messages then you need to have a default case
-as in the example above. Otherwise an @apidoc[akka.actor.UnhandledMessage] will be published to the @apidoc[akka.actor.ActorSystem]'s
-@apidoc[akka.event.EventStream].
+as in the example above. Otherwise an @apidoc[actor.UnhandledMessage] will be published to the @apidoc[actor.ActorSystem]'s
+@apidoc[event.EventStream].
 
 Note further that the return type of the behavior defined above is @scaladoc[Unit](scala.Unit); if
 the actor shall reply to the received message then this must be done explicitly
 as explained below.
 
-The result of the @scala[@scaladoc[receive](akka.actor.Actor#receive:akka.actor.Actor.Receive) method is a partial function object, which is]
-@java[@javadoc[createReceive](akka.actor.AbstractActor#createReceive()) method is @javadoc[AbstractActor.Receive](akka.actor.AbstractActor.Receive) which is a wrapper around partial
+The result of the @scala[@scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive) method is a partial function object, which is]
+@java[@javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method is @javadoc[AbstractActor.Receive](pekko.actor.AbstractActor.Receive) which is a wrapper around partial
 scala function object. It is] stored within the actor as its “initial behavior”,
 see @ref:[Become/Unbecome](#become-unbecome) for
 further information on changing the behavior of an actor after its
@@ -103,7 +103,7 @@ construction.
 
 ### Props
 
-@apidoc[akka.actor.Props] is a configuration class to specify options for the creation
+@apidoc[actor.Props] is a configuration class to specify options for the creation
 of actors, think of it as an immutable and thus freely shareable recipe for
 creating an actor including associated deployment information (e.g., which
 dispatcher to use, see more below). Here are some examples of how to create a
@@ -117,7 +117,7 @@ Java
 
 
 The second variant shows how to pass constructor arguments to the
-@apidoc[akka.actor.Actor] being created, but it should only be used outside of actors as
+@apidoc[actor.Actor] being created, but it should only be used outside of actors as
 explained below.
 
 The last line shows a possibility to pass constructor arguments regardless of
@@ -128,7 +128,7 @@ found.
 
 @@@ note { .group-scala }
 
-The recommended approach to create the actor @apidoc[akka.actor.Props] is not supported
+The recommended approach to create the actor @apidoc[actor.Props] is not supported
 for cases when the actor constructor takes value classes as arguments.
 
 @@@
@@ -149,7 +149,7 @@ is completely fine.
 
 There were two use-cases for these methods: passing constructor arguments to
 the actor—which is solved by the newly introduced
-@scala[@scaladoc[Props.apply(clazz, args)](akka.actor.Props$#apply(clazz:Class[_],args:Any*):akka.actor.Props)] @java[@javadoc[Props.create(clazz, args)](akka.actor.Props#create(java.lang.Class,java.lang.Object...))] method above or the recommended practice
+@scala[@scaladoc[Props.apply(clazz, args)](pekko.actor.Props$#apply(clazz:Class[_],args:Any*):org.apache.pekko.actor.Props)] @java[@javadoc[Props.create(clazz, args)](pekko.actor.Props#create(java.lang.Class,java.lang.Object...))] method above or the recommended practice
 below—and creating actors “on the spot” as anonymous classes. The latter should
 be solved by making these actors named classes instead (if they are not
 declared within a top-level `object` then the enclosing instance’s `this`
@@ -166,7 +166,7 @@ encapsulation. Never pass an actor’s `this` reference into `Props`!
 
 #### Edge cases
 
-There are two edge cases in actor creation with @scaladoc[akka.actor.Props](akka.actor.Props):
+There are two edge cases in actor creation with @scaladoc[actor.Props](pekko.actor.Props):
 
 * An actor with @scaladoc[AnyVal](scala.AnyVal) arguments.
 
@@ -181,7 +181,7 @@ There are two edge cases in actor creation with @scaladoc[akka.actor.Props](akka
 In both cases, an @javadoc[IllegalArgumentException](java.lang.IllegalArgumentException) will be thrown stating
 no matching constructor could be found.
 
-The next section explains the recommended ways to create @scaladoc[Actor](akka.actor.Actor) props in a way,
+The next section explains the recommended ways to create @scaladoc[Actor](pekko.actor.Actor) props in a way,
 which simultaneously safe-guards against these edge cases.
 
 @@@
@@ -189,10 +189,10 @@ which simultaneously safe-guards against these edge cases.
 #### Recommended Practices
 
 It is a good idea to provide @scala[factory methods on the companion object of each
-@apidoc[Actor](akka.actor.Actor)] @java[static factory methods for each @apidoc[Actor](akka.actor.Actor)] which help keeping the creation of
+@apidoc[Actor](actor.Actor)] @java[static factory methods for each @apidoc[Actor](actor.Actor)] which help keeping the creation of
 suitable `Props` as close to the actor definition as possible. This also avoids the pitfalls
-associated with using the @scala[@scaladoc[Props.apply(...)](akka.actor.Props$#apply(clazz:Class[_],args:Any*):akka.actor.Props) method which takes a by-name
-argument, since within a companion object] @java[ @javadoc[Props.create(...)](akka.actor.Props#create(java.lang.Class,java.lang.Object...)) method which takes
+associated with using the @scala[@scaladoc[Props.apply(...)](pekko.actor.Props$#apply(clazz:Class[_],args:Any*):org.apache.pekko.actor.Props) method which takes a by-name
+argument, since within a companion object] @java[ @javadoc[Props.create(...)](pekko.actor.Props#create(java.lang.Class,java.lang.Object...)) method which takes
 arguments as constructor parameters, since within static method]
 the given code block will not retain a reference to its enclosing scope:
 
@@ -215,9 +215,9 @@ Java
 
 ### Creating Actors with Props
 
-Actors are created by passing a @apidoc[akka.actor.Props] instance into the
-`actorOf` factory method which is available on @apidoc[akka.actor.ActorSystem] and
-@apidoc[akka.actor.ActorContext].
+Actors are created by passing a @apidoc[actor.Props] instance into the
+`actorOf` factory method which is available on @apidoc[actor.ActorSystem] and
+@apidoc[actor.ActorContext].
 
 Scala
 :  @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #system-actorOf }
@@ -239,7 +239,7 @@ It is recommended to create a hierarchy of children, grand-children and so on
 such that it fits the logical failure-handling structure of the application,
 see @ref:[Actor Systems](general/actor-systems.md).
 
-The call to `actorOf` returns an instance of @apidoc[akka.actor.ActorRef]. This is a
+The call to `actorOf` returns an instance of @apidoc[actor.ActorRef]. This is a
 handle to the actor instance and the only way to interact with it. The
 `ActorRef` is immutable and has a one to one relationship with the Actor
 it represents. The `ActorRef` is also serializable and network-aware.
@@ -251,7 +251,7 @@ The name parameter is optional, but you should preferably name your actors,
 since that is used in log messages and for identifying actors. The name must
 not be empty or start with `$`, but it may contain URL encoded characters
 (eg., `%20` for a blank space).  If the given name is already in use by
-another child to the same parent an @apidoc[akka.actor.InvalidActorNameException] is thrown.
+another child to the same parent an @apidoc[actor.InvalidActorNameException] is thrown.
 
 Actors are automatically started asynchronously when created.
 
@@ -272,8 +272,8 @@ calling the constructor manually:
 
 ### Dependency Injection
 
-If your @apidoc[akka.actor.Actor] has a constructor that takes parameters then those need to
-be part of the @apidoc[akka.actor.Props] as well, as described @ref:[above](#props). But there
+If your @apidoc[actor.Actor] has a constructor that takes parameters then those need to
+be part of the @apidoc[actor.Props] as well, as described @ref:[above](#props). But there
 are cases when a factory method must be used, for example when the actual
 constructor arguments are determined by a dependency injection framework.
 
@@ -285,7 +285,7 @@ Java
 
 @@@ warning
 
-You might be tempted at times to offer an @apidoc[akka.actor.IndirectActorProducer]
+You might be tempted at times to offer an @apidoc[actor.IndirectActorProducer]
 which always returns the same instance, e.g. by using a @scala[`lazy val`.] @java[static field.] This is
 not supported, as it goes against the meaning of an actor restart, which is
 described here: @ref:[What Restarting Means](general/supervision.md#supervision-restart).
@@ -302,25 +302,25 @@ guideline and the [Akka Java Spring](https://github.com/typesafehub/activator-ak
 
 ## Actor API
 
-@scala[The @apidoc[akka.actor.Actor] trait defines only one abstract method, the above mentioned
+@scala[The @apidoc[actor.Actor] trait defines only one abstract method, the above mentioned
 `receive`, which implements the behavior of the actor.]
-@java[The @apidoc[akka.actor.AbstractActor] class defines a method called `createReceive`,
+@java[The @apidoc[actor.AbstractActor] class defines a method called `createReceive`,
 that is used to set the “initial behavior” of the actor.]
 
 If the current actor behavior does not match a received message,
 `unhandled` is called, which by default publishes an
-@apidoc[akka.actor.UnhandledMessage(message, sender, recipient)](akka.actor.UnhandledMessage) on the actor
+@apidoc[actor.UnhandledMessage(message, sender, recipient)](actor.UnhandledMessage) on the actor
 system’s event stream (set configuration item
 `akka.actor.debug.unhandled` to `on` to have them converted into
 actual Debug messages).
 
 In addition, it offers:
 
-* @scala[@scaladoc[self](akka.actor.Actor#self:akka.actor.ActorRef)] @java[@javadoc[getSelf()](akka.actor.AbstractActor#getSelf())] reference to the @apidoc[akka.actor.ActorRef] of the actor
-* @scala[@scaladoc[sender](akka.actor.Actor#sender():akka.actor.ActorRef)] @java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())] reference sender Actor of the last received message, typically used as described in
+* @scala[@scaladoc[self](pekko.actor.Actor#self:org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSelf()](pekko.actor.AbstractActor#getSelf())] reference to the @apidoc[actor.ActorRef] of the actor
+* @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] reference sender Actor of the last received message, typically used as described in
   @scala[[Actor.Reply](#actor-reply)]
   @java[[LambdaActor.Reply](#lambdaactor-reply)]
-* @scala[@scaladoc[supervisorStrategy](akka.actor.Actor#supervisorStrategy:akka.actor.SupervisorStrategy)] @java[@javadoc[supervisorStrategy()](akka.actor.AbstractActor#supervisorStrategy())] user overridable definition the strategy to use for supervising child actors
+* @scala[@scaladoc[supervisorStrategy](pekko.actor.Actor#supervisorStrategy:org.apache.pekko.actor.SupervisorStrategy)] @java[@javadoc[supervisorStrategy()](pekko.actor.AbstractActor#supervisorStrategy())] user overridable definition the strategy to use for supervising child actors
 
   This strategy is typically declared inside the actor to have access
   to the actor’s internal state within the decider function: since failure is
@@ -331,7 +331,7 @@ In addition, it offers:
   occurred within a distant descendant it is still reported one level up at a
   time).
 
-* @scala[@scaladoc[context](akka.actor.Actor#context:akka.actor.ActorContext)] @java[@javadoc[getContext()](akka.actor.AbstractActor#getContext())] exposes contextual information for the actor and the current message, such as:
+* @scala[@scaladoc[context](pekko.actor.Actor#context:org.apache.pekko.actor.ActorContext)] @java[@javadoc[getContext()](pekko.actor.AbstractActor#getContext())] exposes contextual information for the actor and the current message, such as:
     * factory methods to create child actors (`actorOf`)
     * system that the actor belongs to
     * parent supervisor
@@ -351,12 +351,12 @@ The remaining visible methods are user-overridable life-cycle hooks which are
 described in the following:
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/akka/actor/Actor.scala) { #lifecycle-hooks }
+:  @@snip [Actor.scala](/akka-actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #lifecycle-hooks }
 
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #lifecycle-callbacks }
 
-The implementations shown above are the defaults provided by the @scala[@scaladoc[Actor](akka.actor.Actor) trait.] @java[@javadoc[AbstractActor](akka.actor.AbstractActor) class.]
+The implementations shown above are the defaults provided by the @scala[@scaladoc[Actor](pekko.actor.Actor) trait.] @java[@javadoc[AbstractActor](pekko.actor.AbstractActor) class.]
 
 ### Actor Lifecycle
 
@@ -365,7 +365,7 @@ The implementations shown above are the defaults provided by the @scala[@scalado
 A path in an actor system represents a "place" that might be occupied
 by a living actor. Initially (apart from system initialized actors) a path is
 empty. When `actorOf()` is called it assigns an *incarnation* of the actor
-described by the passed @apidoc[akka.actor.Props] to the given path. An actor incarnation is
+described by the passed @apidoc[actor.Props] to the given path. An actor incarnation is
 identified by the path *and a UID*.
 
 It is worth noting about the difference between:
@@ -375,10 +375,10 @@ It is worth noting about the difference between:
 
 as explained below.
 
-A restart only swaps the @apidoc[akka.actor.Actor]
-instance defined by the @apidoc[akka.actor.Props] but the incarnation and hence the UID remains
+A restart only swaps the @apidoc[actor.Actor]
+instance defined by the @apidoc[actor.Props] but the incarnation and hence the UID remains
 the same.
-As long as the incarnation is the same, you can keep using the same @apidoc[akka.actor.ActorRef].
+As long as the incarnation is the same, you can keep using the same @apidoc[actor.ActorRef].
 Restart is handled by the @ref:[Supervision Strategy](fault-tolerance.md#creating-a-supervisor-strategy) of actor's parent actor,
 and there is more discussion about @ref:[what restart means](general/supervision.md#supervision-restart).
 
@@ -388,7 +388,7 @@ are notified of the termination. After the incarnation is stopped, the path can
 be reused again by creating an actor with `actorOf()`. In this case, the
 name of the new incarnation will be the same as the previous one, but the
 UIDs will differ. An actor can be stopped by the actor itself, another actor
-or the @apidoc[ActorSystem](akka.actor.ActorSystem) (see @ref:[Stopping actors](#stopping-actors)).
+or the @apidoc[ActorSystem](actor.ActorSystem) (see @ref:[Stopping actors](#stopping-actors)).
 
 @@@ note
 
@@ -399,18 +399,18 @@ stop all the child Actors that this parent has created.
 
 @@@
 
-An @apidoc[akka.actor.ActorRef] always represents an incarnation (path and UID) not just a
+An @apidoc[actor.ActorRef] always represents an incarnation (path and UID) not just a
 given path. Therefore, if an actor is stopped, and a new one with the same
 name is created then an `ActorRef` of the old incarnation will not point
 to the new one.
 
-@apidoc[akka.actor.ActorSelection] on the other hand points to the path (or multiple paths
+@apidoc[actor.ActorSelection] on the other hand points to the path (or multiple paths
 if wildcards are used) and is completely oblivious to which incarnation is currently
 occupying it. `ActorSelection` cannot be watched for this reason. It is
 possible to resolve the current incarnation's `ActorRef` living under the
-path by sending an @apidoc[akka.actor.Identify] message to the `ActorSelection` which
-will be replied to with an @apidoc[akka.actor.ActorIdentity] containing the correct reference
-(see @ref:[ActorSelection](#actorselection)). This can also be done with the @apidoc[resolveOne](akka.actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[akka.actor.ActorRef]" java="#resolveOne(java.time.Duration)"}
+path by sending an @apidoc[actor.Identify] message to the `ActorSelection` which
+will be replied to with an @apidoc[actor.ActorIdentity] containing the correct reference
+(see @ref:[ActorSelection](#actorselection)). This can also be done with the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[actor.ActorRef]" java="#resolveOne(java.time.Duration)"}
 method of the `ActorSelection`, which returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] of the matching
 `ActorRef`.
 
@@ -419,7 +419,7 @@ method of the `ActorSelection`, which returns a @scala[@scaladoc[Future](scala.c
 
 To be notified when another actor terminates (i.e., stops permanently,
 not a temporary failure and restart), an actor may register itself for reception
-of the @apidoc[akka.actor.Terminated] message dispatched by the other actor upon
+of the @apidoc[actor.Terminated] message dispatched by the other actor upon
 termination (see @ref:[Stopping Actors](#stopping-actors)). This service is provided by the
 `DeathWatch` component of the actor system.
 
@@ -431,7 +431,7 @@ Scala
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #import-terminated #watch }
 
-It should be noted that the @apidoc[akka.actor.Terminated] message is generated
+It should be noted that the @apidoc[actor.Terminated] message is generated
 independently of the order in which registration and termination occur.
 In particular, the watching actor will receive a `Terminated` message even if the
 watched actor has already been terminated at the time of registration.
@@ -445,13 +445,13 @@ monitoring of an already terminated actor leads to the immediate generation of
 the `Terminated` message.
 
 It is also possible to deregister from watching another actor’s liveliness
-using @apidoc[context.unwatch(target)](akka.actor.ActorContext) {scala="#unwatch(subject:akka.actor.ActorRef):akka.actor.ActorRef" java="#unwatch(akka.actor.ActorRef)"}. This works even if the `Terminated`
+using @apidoc[context.unwatch(target)](actor.ActorContext) {scala="#unwatch(subject:org.apache.pekko.actor.ActorRef):org.apache.pekko.actor.ActorRef" java="#unwatch(org.apache.pekko.actor.ActorRef)"}. This works even if the `Terminated`
 message has already been enqueued in the mailbox; after calling `unwatch`
 no `Terminated` message for that actor will be processed anymore.
 
 ### Start Hook
 
-Right after starting the actor, its @scala[@scaladoc[preStart](akka.actor.Actor#preStart():Unit)]@java[@javadoc[preStart](akka.actor.AbstractActor#preStart())] method is invoked.
+Right after starting the actor, its @scala[@scaladoc[preStart](pekko.actor.Actor#preStart():Unit)]@java[@javadoc[preStart](pekko.actor.AbstractActor#preStart())] method is invoked.
 
 Scala
 :  @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #preStart }
@@ -460,7 +460,7 @@ Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #preStart }
 
 This method is called when the actor is first created. During restarts, it is
-called by the default implementation of @scala[@scaladoc[postRestart](akka.actor.Actor#postRestart(reason:Throwable):Unit)]@java[@javadoc[postRestart](akka.actor.AbstractActor#postRestart(java.lang.Throwable))], which means that
+called by the default implementation of @scala[@scaladoc[postRestart](pekko.actor.Actor#postRestart(reason:Throwable):Unit)]@java[@javadoc[postRestart](pekko.actor.AbstractActor#postRestart(java.lang.Throwable))], which means that
 by overriding that method you can choose whether the initialization code in
 this method is called only exactly once for this actor or every restart.
 Initialization code which is part of the actor’s constructor will always be
@@ -475,16 +475,16 @@ handling strategy. Actors may be restarted in case an exception is thrown while
 processing a message (see @ref:[supervision](general/supervision.md)). This restart involves the hooks
 mentioned above:
 
-1. The old actor is informed by calling @scala[@scaladoc[preRestart](akka.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]@java[@javadoc[preRestart](akka.actor.AbstractActor#preRestart(java.lang.Throwable,java.util.Optional))] with the exception
+1. The old actor is informed by calling @scala[@scaladoc[preRestart](pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]@java[@javadoc[preRestart](pekko.actor.AbstractActor#preRestart(java.lang.Throwable,java.util.Optional))] with the exception
    which caused the restart, and the message which triggered that exception; the
    latter may be `None` if the restart was not caused by processing a
    message, e.g. when a supervisor does not trap the exception and is restarted
    in turn by its supervisor, or if an actor is restarted due to a sibling’s
    failure. If the message is available, then that message’s sender is also
-   accessible in the usual way (i.e. by calling @scala[@scaladoc[sender](akka.actor.Actor#sender():akka.actor.ActorRef)] @java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())]).
+   accessible in the usual way (i.e. by calling @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())]).
    This method is the best place for cleaning up, preparing hand-over to the
    fresh actor instance, etc.  By default, it stops all children and calls
-   @scala[@scaladoc[postStop](akka.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](akka.actor.AbstractActor#postStop())].
+   @scala[@scaladoc[postStop](pekko.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](pekko.actor.AbstractActor#postStop())].
 2. The initial factory from the `actorOf` call is used
    to produce the fresh instance.
 3. The new actor’s `postRestart` method is invoked with the exception
@@ -509,11 +509,11 @@ See @ref:[Discussion: Message Ordering](general/message-delivery-reliability.md#
 
 ### Stop Hook
 
-After stopping an actor, its @scala[@scaladoc[postStop](akka.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](akka.actor.AbstractActor#postStop())] hook is called, which may be used
+After stopping an actor, its @scala[@scaladoc[postStop](pekko.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](pekko.actor.AbstractActor#postStop())] hook is called, which may be used
 e.g. for deregistering this actor from other services. This hook is guaranteed
 to run after message queuing has been disabled for this actor, i.e. messages
-sent to a stopped actor will be redirected to the @apidoc[deadLetters](akka.actor.ActorSystem) {scala="#deadLetters:akka.actor.ActorRef" java="#deadLetters()"} of the
-@apidoc[akka.actor.ActorSystem].
+sent to a stopped actor will be redirected to the @apidoc[deadLetters](actor.ActorSystem) {scala="#deadLetters:org.apache.pekko.actor.ActorRef" java="#deadLetters()"} of the
+@apidoc[actor.ActorSystem].
 
 <a id="actorselection"></a>
 ## Identifying Actors via Actor Selection
@@ -525,7 +525,7 @@ differ if the supervision chain includes any remote supervisors. These paths
 are used by the system to look up actors, e.g. when a remote message is
 received and the recipient is searched, but they are also useful more directly:
 actors may look up other actors by specifying absolute or relative
-paths—logical or physical—and receive back an @apidoc[akka.actor.ActorSelection] with the
+paths—logical or physical—and receive back an @apidoc[actor.ActorSelection] with the
 result:
 
 Scala
@@ -566,15 +566,15 @@ Scala
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #selection-wildcard }
 
-Messages can be sent via the @apidoc[akka.actor.ActorSelection] and the path of the
+Messages can be sent via the @apidoc[actor.ActorSelection] and the path of the
 `ActorSelection` is looked up when delivering each message. If the selection
 does not match any actors the message will be dropped.
 
-To acquire an @apidoc[akka.actor.ActorRef] for an `ActorSelection` you need to send
-a message to the selection and use the @scala[@scaladoc[sender](akka.actor.Actor#sender():akka.actor.ActorRef)] @java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())]) reference of the reply from
-the actor. There is a built-in @apidoc[akka.actor.Identify] message that all Actors will
-understand and automatically reply to with an @apidoc[akka.actor.ActorIdentity] message
-containing the @apidoc[akka.actor.ActorRef]. This message is handled specially by the
+To acquire an @apidoc[actor.ActorRef] for an `ActorSelection` you need to send
+a message to the selection and use the @scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())]) reference of the reply from
+the actor. There is a built-in @apidoc[actor.Identify] message that all Actors will
+understand and automatically reply to with an @apidoc[actor.ActorIdentity] message
+containing the @apidoc[actor.ActorRef]. This message is handled specially by the
 actors which are traversed in the sense that if a concrete name lookup fails
 (i.e. a non-wildcard path element does not correspond to a live actor) then a
 negative result is generated. Please note that this does not mean that delivery
@@ -587,9 +587,9 @@ Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #import-identify #identify }
 
 You can also acquire an `ActorRef` for an `ActorSelection` with
-the @apidoc[resolveOne](akka.actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[akka.actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of the `ActorSelection`. It returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]
+the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of the `ActorSelection`. It returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]
 of the matching `ActorRef` if such an actor exists. It is completed with
-failure @apidoc[akka.actor.ActorNotFound] if no such actor exists or the identification
+failure @apidoc[actor.ActorNotFound] if no such actor exists or the identification
 didn't complete within the supplied `timeout`.
 
 Remote actor addresses may also be looked up, if @ref:[remoting](remoting.md) is enabled:
@@ -627,7 +627,7 @@ Java
 
 Messages are sent to an Actor through one of the following methods.
 
-* @scala[@scaladoc[!](akka.actor.ActorRef#!(message:Any)(implicitsender:akka.actor.ActorRef):Unit)] @java[@javadoc[tell](akka.actor.ActorRef#tell(java.lang.Object,akka.actor.ActorRef))] means “fire-and-forget”, e.g. send a message asynchronously and return
+* @scala[@scaladoc[!](pekko.actor.ActorRef#!(message:Any)(implicitsender:org.apache.pekko.actor.ActorRef):Unit)] @java[@javadoc[tell](pekko.actor.ActorRef#tell(java.lang.Object,org.apache.pekko.actor.ActorRef))] means “fire-and-forget”, e.g. send a message asynchronously and return
   immediately. @scala[Also known as `tell`.]
 * @scala[`?`] @java[`ask`] sends a message asynchronously and returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]
   representing a possible reply. @scala[Also known as `ask`.]
@@ -638,14 +638,14 @@ Message ordering is guaranteed on a per-sender basis.
 
 There are performance implications of using `ask` since something needs to
 keep track of when it times out, there needs to be something that bridges
-a `Promise` into an @apidoc[akka.actor.ActorRef] and it also needs to be reachable through
+a `Promise` into an @apidoc[actor.ActorRef] and it also needs to be reachable through
 remoting. So always prefer `tell` for performance, and only `ask` if you must.
 
 @@@
 
 @@@ div { .group-java }
 
-In all these methods you have the option of passing along your own @apidoc[akka.actor.ActorRef].
+In all these methods you have the option of passing along your own @apidoc[actor.ActorRef].
 Make it a practice of doing so because it will allow the receiver actors to be able to respond
 to your message since the sender reference is sent along with the message.
 
@@ -671,17 +671,17 @@ in its `sender(): ActorRef` member method. The target actor can use this
 to reply to the original sender, by using `sender() ! replyMsg`.
 
 If invoked from an instance that is **not** an Actor the sender will be
-@scaladoc[deadLetters](akka.actor.ActorSystem#deadLetters:akka.actor.ActorRef) actor reference by default.
+@scaladoc[deadLetters](pekko.actor.ActorSystem#deadLetters:org.apache.pekko.actor.ActorRef) actor reference by default.
 
 @@@
 
 @@@ div { .group-java }
 
 The sender reference is passed along with the message and available within the
-receiving actor via its @javadoc[getSender()](akka.actor.AbstractActor#getSender()) method while processing this
-message. Inside of an actor it is usually @javadoc[getSelf()](akka.actor.AbstractActor#getSelf()) who shall be the
+receiving actor via its @javadoc[getSender()](pekko.actor.AbstractActor#getSender()) method while processing this
+message. Inside of an actor it is usually @javadoc[getSelf()](pekko.actor.AbstractActor#getSelf()) who shall be the
 sender, but there can be cases where replies shall be routed to some other
-actor—e.g. the parent—in which the second argument to @javadoc[tell](akka.actor.ActorRef#tell(java.lang.Object,akka.actor.ActorRef)) would be a
+actor—e.g. the parent—in which the second argument to @javadoc[tell](pekko.actor.ActorRef#tell(java.lang.Object,org.apache.pekko.actor.ActorRef)) would be a
 different one. Outside of an actor and if no reply is needed the second
 argument can be `null`; if a reply is needed outside of an actor you can use
 the ask-pattern described next.
@@ -692,7 +692,7 @@ the ask-pattern described next.
 ### Ask: Send-And-Receive-Future
 
 The `ask` pattern involves actors as well as futures, hence it is offered as
-a use pattern rather than a method on @apidoc[akka.actor.ActorRef]:
+a use pattern rather than a method on @apidoc[actor.ActorRef]:
 
 Scala
 :  @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #ask-pipeTo }
@@ -701,7 +701,7 @@ Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #import-ask #ask-pipe }
 
 
-This example demonstrates `ask` together with the @scala[@scaladoc[pipeTo](akka.pattern.PipeToSupport$PipeableFuture#pipeTo(recipient:akka.actor.ActorRef)(implicitsender:akka.actor.ActorRef):scala.concurrent.Future[T])]@java[@javadoc[pipeTo](akka.pattern.PipeToSupport.PipeableCompletionStage#pipeTo(akka.actor.ActorRef,akka.actor.ActorRef))] pattern on
+This example demonstrates `ask` together with the @scala[@scaladoc[pipeTo](pekko.pattern.PipeToSupport$PipeableFuture#pipeTo(recipient:org.apache.pekko.actor.ActorRef)(implicitsender:org.apache.pekko.actor.ActorRef):scala.concurrent.Future[T])]@java[@javadoc[pipeTo](pekko.pattern.PipeToSupport.PipeableCompletionStage#pipeTo(org.apache.pekko.actor.ActorRef,org.apache.pekko.actor.ActorRef))] pattern on
 futures, because this is likely to be a common combination. Please note that
 all of the above is completely non-blocking and asynchronous: `ask` produces
 a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)], @scala[three] @java[two] of which are composed into a new future using the
@@ -717,11 +717,11 @@ which it is destroyed in order not to leak resources; see more below.
 
 @@@ warning
 
-To complete the @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] with an exception you need to send an @apidoc[akka.actor.Status.Failure] message to the sender.
+To complete the @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] with an exception you need to send an @apidoc[actor.Status.Failure] message to the sender.
 This is *not done automatically* when an actor throws an exception while processing a message.
 
 @scala[Please note that Scala's `Try` sub types @scaladoc[scala.util.Failure](scala.util.Failure) and @scaladoc[scala.util.Success](scala.util.Success) are not treated
-especially, and would complete the ask @scala[`Future`]@java[`CompletionStage`] with the given value - only the @scaladoc[akka.actor.Status](akka.actor.Status$) messages
+especially, and would complete the ask @scala[`Future`]@java[`CompletionStage`] with the given value - only the @scaladoc[actor.Status](pekko.actor.Status$) messages
 are treated specially by the ask pattern.]
 
 @@@
@@ -733,8 +733,8 @@ Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #reply-exception }
 
 If the actor does not complete the @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)], it will expire after the timeout period,
-@scala[completing it with an @scaladoc[AskTimeoutException](akka.pattern.AskTimeoutException). The timeout is taken from one of the following locations in order of precedence:]
-@java[specified as parameter to the `ask` method; this will complete the `CompletionStage` with an @javadoc[AskTimeoutException](akka.pattern.AskTimeoutException).]
+@scala[completing it with an @scaladoc[AskTimeoutException](pekko.pattern.AskTimeoutException). The timeout is taken from one of the following locations in order of precedence:]
+@java[specified as parameter to the `ask` method; this will complete the `CompletionStage` with an @javadoc[AskTimeoutException](pekko.pattern.AskTimeoutException).]
 
 @@@ div { .group-scala }
 
@@ -742,7 +742,7 @@ If the actor does not complete the @scala[@scaladoc[Future](scala.concurrent.Fut
 
     @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #using-explicit-timeout }
 
- 2. implicit argument of type `akka.util.Timeout`, e.g.
+ 2. implicit argument of type `org.apache.pekko.util.Timeout`, e.g.
 
     @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #using-implicit-timeout }
 
@@ -781,11 +781,11 @@ Java
 ## Receive messages
 
 An Actor has to
-@scala[implement the @scaladoc[receive](akka.actor.Actor#receive:akka.actor.Actor.Receive) method to receive messages:]
-@java[define its initial receive behavior by implementing the @javadoc[createReceive](akka.actor.AbstractActor#createReceive()) method in the `AbstractActor`:]
+@scala[implement the @scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive) method to receive messages:]
+@java[define its initial receive behavior by implementing the @javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method in the `AbstractActor`:]
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/akka/actor/Actor.scala) { #receive }
+:  @@snip [Actor.scala](/akka-actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #receive }
 
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #createReceive }
@@ -800,9 +800,9 @@ pattern matching. Here is an example:
 
 @@@ div { .group-java }
 
-The return type is @javadoc[AbstractActor.Receive](akka.actor.AbstractActor.Receive) that defines which messages your Actor can handle,
+The return type is @javadoc[AbstractActor.Receive](pekko.actor.AbstractActor.Receive) that defines which messages your Actor can handle,
 along with the implementation of how the messages should be processed.
-You can build such behavior with a builder named @javadoc[receiveBuilder](akka.actor.AbstractActor#receiveBuilder()). Here is an example:
+You can build such behavior with a builder named @javadoc[receiveBuilder](pekko.actor.AbstractActor#receiveBuilder()). Here is an example:
 
 @@@
 
@@ -832,14 +832,14 @@ That has benefits such as:
 * works better with performance profiling tools
 * Java HotSpot has a better opportunity for making optimizations
 
-The @javadoc[Receive](akka.actor.AbstractActor.Receive) can be implemented in other ways than using the `ReceiveBuilder` since in the
+The @javadoc[Receive](pekko.actor.AbstractActor.Receive) can be implemented in other ways than using the `ReceiveBuilder` since in the
 end, it is just a wrapper around a Scala `PartialFunction`. In Java, you can implement `PartialFunction` by
 extending `AbstractPartialFunction`. For example, one could implement an adapter
 to [Vavr Pattern Matching DSL](https://docs.vavr.io/#_pattern_matching). See the [Akka Vavr sample project](https://github.com/akka/akka-samples/tree/2.5/akka-sample-vavr) for more details.
 
 If the validation of the `ReceiveBuilder` match logic turns out to be a bottleneck for some of your
-actors you can consider implementing it at a lower level by extending @javadoc[UntypedAbstractActor](akka.actor.UntypedAbstractActor) instead
-of @javadoc[AbstractActor](akka.actor.AbstractActor). The partial functions created by the `ReceiveBuilder` consist of multiple lambda
+actors you can consider implementing it at a lower level by extending @javadoc[UntypedAbstractActor](pekko.actor.UntypedAbstractActor) instead
+of @javadoc[AbstractActor](pekko.actor.AbstractActor). The partial functions created by the `ReceiveBuilder` consist of multiple lambda
 expressions for every match statement, where each lambda is referencing the code to be run. This is something
 that the JVM can have problems optimizing and the resulting code might not be as performant as the
 untyped version. When extending `UntypedAbstractActor` each message is received as an untyped
@@ -853,7 +853,7 @@ untyped version. When extending `UntypedAbstractActor` each message is received 
 ## Reply to messages
 
 If you want to have a handle for replying to a message, you can use
-@scala[@scaladoc[sender](akka.actor.Actor#sender():akka.actor.ActorRef)] @java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())], which gives you an ActorRef. You can reply by sending to
+@scala[@scaladoc[sender](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)] @java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())], which gives you an ActorRef. You can reply by sending to
 that ActorRef with @scala[`sender() ! replyMsg`.] @java[`getSender().tell(replyMsg, getSelf())`.] You can also store the ActorRef
 for replying later, or passing it on to other actors. If there is no sender (a
 message was sent without an actor or future context) then the sender
@@ -867,9 +867,9 @@ Java
 
 ## Receive timeout
 
-The @java[@scaladoc[ActorContext.setReceiveTimeout](akka.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](akka.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
-the sending of a @apidoc[akka.actor.ReceiveTimeout] message is triggered.
-When specified, the receive function should be able to handle an `akka.actor.ReceiveTimeout` message.
+The @java[@scaladoc[ActorContext.setReceiveTimeout](pekko.actor.ActorContext#setReceiveTimeout(timeout:scala.concurrent.duration.Duration):Unit)]@java[@javadoc[ActorContext.setReceiveTimeout](pekko.actor.AbstractActor.ActorContext#setReceiveTimeout(java.time.Duration))] defines the inactivity timeout after which
+the sending of a @apidoc[actor.ReceiveTimeout] message is triggered.
+When specified, the receive function should be able to handle an `org.apache.pekko.actor.ReceiveTimeout` message.
 1 millisecond is the minimum supported timeout.
 
 Please note that the receive timeout might fire and enqueue the `ReceiveTimeout` message right after
@@ -888,7 +888,7 @@ Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #receive-timeout }
 
 Messages marked with @apidoc[NotInfluenceReceiveTimeout] will not reset the timer. This can be useful when
-@apidoc[akka.actor.ReceiveTimeout] should be fired by external inactivity but not influenced by internal activity,
+@apidoc[actor.ReceiveTimeout] should be fired by external inactivity but not influenced by internal activity,
 e.g. scheduled tick messages.
 
 <a id="actors-timers"></a>
@@ -908,20 +908,20 @@ Java
 
 The @ref:[Scheduler](scheduler.md#schedule-periodically) documentation describes the difference between
 `fixed-delay` and `fixed-rate` scheduling. If you are uncertain of which one to use you should pick
-@apidoc[startTimerWithFixedDelay](akka.actor.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:Any,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
+@apidoc[startTimerWithFixedDelay](actor.TimerScheduler) {scala="#startTimerWithFixedDelay(key:Any,msg:Any,initialDelay:scala.concurrent.duration.FiniteDuration,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startTimerWithFixedDelay(java.lang.Object,java.lang.Object,java.time.Duration,java.time.Duration)"}.
 
 Each timer has a key and can be replaced or cancelled. It's guaranteed that a message from the
 previous incarnation of the timer with the same key is not received, even though it might already
 be enqueued in the mailbox when it was cancelled or the new timer was started.
 
 The timers are bound to the lifecycle of the actor that owns it and thus are cancelled
-automatically when it is restarted or stopped. Note that the @apidoc[akka.actor.TimerScheduler] is not thread-safe,
+automatically when it is restarted or stopped. Note that the @apidoc[actor.TimerScheduler] is not thread-safe,
 i.e. it must only be used within the actor that owns it.
 
 ## Stopping actors
 
-Actors are stopped by invoking the `stop` method of a @apidoc[akka.actor.ActorRefFactory],
-i.e. @apidoc[akka.actor.ActorContext] or @apidoc[akka.actor.ActorSystem]. Typically the context is used for stopping
+Actors are stopped by invoking the `stop` method of a @apidoc[actor.ActorRefFactory],
+i.e. @apidoc[actor.ActorContext] or @apidoc[actor.ActorSystem]. Typically the context is used for stopping
 the actor itself or child actors and the system for stopping top-level actors. The actual
 termination of the actor is performed asynchronously, i.e. `stop` may return before
 the actor is stopped.
@@ -935,14 +935,14 @@ Java
 
 Processing of the current message, if any, will continue before the actor is stopped,
 but additional messages in the mailbox will not be processed. By default, these
-messages are sent to the @apidoc[deadLetters](akka.actor.ActorSystem) {scala="#deadLetters:akka.actor.ActorRef" java="#deadLetters()"} of the `ActorSystem`, but that
+messages are sent to the @apidoc[deadLetters](actor.ActorSystem) {scala="#deadLetters:org.apache.pekko.actor.ActorRef" java="#deadLetters()"} of the `ActorSystem`, but that
 depends on the mailbox implementation.
 
 Termination of an actor proceeds in two steps: first the actor suspends its
 mailbox processing and sends a stop command to all its children, then it keeps
 processing the internal termination notifications from its children until the last one is
-gone, finally terminating itself (invoking @scala[@scaladoc[postStop](akka.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](akka.actor.AbstractActor#postStop())], dumping mailbox,
-publishing @apidoc[akka.actor.Terminated] on the @ref:[DeathWatch](#deathwatch), telling
+gone, finally terminating itself (invoking @scala[@scaladoc[postStop](pekko.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](pekko.actor.AbstractActor#postStop())], dumping mailbox,
+publishing @apidoc[actor.Terminated] on the @ref:[DeathWatch](#deathwatch), telling
 its supervisor). This procedure ensures that actor system sub-trees terminate
 in an orderly fashion, propagating the stop command to the leaves and
 collecting their confirmation back to the stopped supervisor. If one of the
@@ -950,7 +950,7 @@ actors do not respond (i.e. processing a message for extended periods of time
 and therefore not receiving the stop command), this whole process will be
 stuck.
 
-Upon @apidoc[ActorSystem.terminate()](akka.actor.ActorSystem) {scala="#terminate():scala.concurrent.Future[akka.actor.Terminated]" java="#terminate()"}, the system guardian actors will be
+Upon @apidoc[ActorSystem.terminate()](actor.ActorSystem) {scala="#terminate():scala.concurrent.Future[actor.Terminated]" java="#terminate()"}, the system guardian actors will be
 stopped, and the aforementioned process will ensure proper termination of the
 whole system. See @ref:[Coordinated Shutdown](coordinated-shutdown.md).
 
@@ -967,8 +967,8 @@ Java
 
 Since stopping an actor is asynchronous, you cannot immediately reuse the
 name of the child you just stopped; this will result in an
-@apidoc[akka.actor.InvalidActorNameException]. Instead, `watch()` the terminating
-actor and create its replacement in response to the @apidoc[akka.actor.Terminated]
+@apidoc[actor.InvalidActorNameException]. Instead, `watch()` the terminating
+actor and create its replacement in response to the @apidoc[actor.Terminated]
 message which will eventually arrive.
 
 @@@
@@ -976,7 +976,7 @@ message which will eventually arrive.
 <a id="poison-pill"></a>
 ### PoisonPill
 
-You can also send an actor the @apidoc[akka.actor.PoisonPill] message, which will
+You can also send an actor the @apidoc[actor.PoisonPill] message, which will
 stop the actor when the message is processed. `PoisonPill` is enqueued as
 ordinary messages and will be handled after messages that were already queued
 in the mailbox.
@@ -990,7 +990,7 @@ Java
 <a id="killing-actors"></a>
 ### Killing an Actor
 
-You can also "kill" an actor by sending a @apidoc[akka.actor.Kill] message. Unlike `PoisonPill` this will cause the actor to throw a @apidoc[akka.actor.ActorKilledException], triggering a failure. The actor will
+You can also "kill" an actor by sending a @apidoc[actor.Kill] message. Unlike `PoisonPill` this will cause the actor to throw a @apidoc[actor.ActorKilledException], triggering a failure. The actor will
 suspend operation and its supervisor will be asked how to handle the failure,
 which may mean resuming the actor, restarting it or terminating it completely.
 See @ref:[What Supervision Means](general/supervision.md#supervision-directives) for more information.
@@ -1010,7 +1010,7 @@ over which design you do not have control over.
 
 ### Graceful Stop
 
-@scala[@scaladoc[gracefulStop](akka.pattern.GracefulStopSupport#gracefulStop(target:akka.actor.ActorRef,timeout:scala.concurrent.duration.FiniteDuration,stopMessage:Any):scala.concurrent.Future[Boolean])]@java[@javadoc[gracefulStop](akka.pattern.Patterns#gracefulStop(akka.actor.ActorRef,scala.concurrent.duration.FiniteDuration,java.lang.Object))] is useful if you need to wait for termination or compose ordered
+@scala[@scaladoc[gracefulStop](pekko.pattern.GracefulStopSupport#gracefulStop(target:org.apache.pekko.actor.ActorRef,timeout:scala.concurrent.duration.FiniteDuration,stopMessage:Any):scala.concurrent.Future[Boolean])]@java[@javadoc[gracefulStop](pekko.pattern.Patterns#gracefulStop(org.apache.pekko.actor.ActorRef,scala.concurrent.duration.FiniteDuration,java.lang.Object))] is useful if you need to wait for termination or compose ordered
 termination of several actors:
 
 Scala
@@ -1019,7 +1019,7 @@ Scala
 Java
 :  @@snip [ActorDocTest.java](/akka-docs/src/test/java/jdocs/actor/ActorDocTest.java) { #import-gracefulStop #gracefulStop}
 
-When `gracefulStop()` returns successfully, the actor’s @scala[@scaladoc[postStop](akka.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](akka.actor.AbstractActor#postStop())] hook
+When `gracefulStop()` returns successfully, the actor’s @scala[@scaladoc[postStop](pekko.actor.Actor#postStop():Unit)]@java[@javadoc[postStop](pekko.actor.AbstractActor#postStop())] hook
 will have been executed: there exists a happens-before edge between the end of
 `postStop()` and the return of `gracefulStop()`.
 
@@ -1034,7 +1034,7 @@ Keep in mind that an actor stopping and its name being deregistered are
 separate events that happen asynchronously from each other. Therefore it may
 be that you will find the name still in use after `gracefulStop()`
 returned. To guarantee proper deregistration, only reuse names from
-within a supervisor you control and only in response to a @apidoc[akka.actor.Terminated]
+within a supervisor you control and only in response to a @apidoc[actor.Terminated]
 message, i.e. not for top-level actors.
 
 @@@
@@ -1045,7 +1045,7 @@ message, i.e. not for top-level actors.
 ### Upgrade
 
 Akka supports hotswapping the Actor’s message loop (e.g. its implementation) at
-runtime: invoke the @apidoc[context.become](akka.actor.ActorContext) {scala="#become(behavior:akka.actor.Actor.Receive,discardOld:Boolean):Unit" java="#become(scala.PartialFunction,boolean)"} method from within the Actor.
+runtime: invoke the @apidoc[context.become](actor.ActorContext) {scala="#become(behavior:org.apache.pekko.actor.Actor.Receive,discardOld:Boolean):Unit" java="#become(scala.PartialFunction,boolean)"} method from within the Actor.
 `become` takes a @scala[`PartialFunction[Any, Unit]`] @java[`PartialFunction<Object, BoxedUnit>`] that implements the new
 message handler. The hotswapped code is kept in a Stack that can be pushed and
 popped.
@@ -1066,7 +1066,7 @@ Java
 
 This variant of the `become` method is useful for many different things,
 such as to implement a Finite State Machine (FSM). It will replace the current behavior (i.e. the top of the behavior
-stack), which means that you do not use @apidoc[unbecome](akka.actor.ActorContext) {scala="#unbecome():Unit" java="#unbecome()"}, instead always the
+stack), which means that you do not use @apidoc[unbecome](actor.ActorContext) {scala="#unbecome():Unit" java="#unbecome()"}, instead always the
 next behavior is explicitly installed.
 
 The other way of using `become` does not replace but add to the top of
@@ -1087,7 +1087,7 @@ See this @extref[Unnested receive example](github:akka-docs/src/test/scala/docs/
 
 ## Stash
 
-The @scala[@scaladoc[Stash](akka.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](akka.actor.AbstractActorWithStash) class] enables an actor to temporarily stash away messages
+The @scala[@scaladoc[Stash](pekko.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](pekko.actor.AbstractActorWithStash) class] enables an actor to temporarily stash away messages
 that can not or should not be handled using the actor's current
 behavior. Upon changing the actor's message handler, i.e., right
 before invoking @scala[`context.become` or `context.unbecome`] @java[`getContext().become()` or `getContext().unbecome()`], all
@@ -1099,7 +1099,7 @@ order as they have been received originally. @java[An actor that extends
 @@@ note  { .group-scala }
 
 The trait `Stash` extends the marker trait
-@scaladoc[RequiresMessageQueue](akka.dispatch.RequiresMessageQueue)[@scaladoc[DequeBasedMessageQueueSemantics](akka.dispatch.DequeBasedMessageQueueSemantics)] which
+@scaladoc[RequiresMessageQueue](pekko.dispatch.RequiresMessageQueue)[@scaladoc[DequeBasedMessageQueueSemantics](org.apache.pekko.dispatch.DequeBasedMessageQueueSemantics)] which
 requests the system to automatically choose a deque based
 mailbox implementation for the actor. If you want more
 control over the
@@ -1109,15 +1109,15 @@ mailbox, see the documentation on mailboxes: @ref:[Mailboxes](mailboxes.md).
 
 @@@ note { .group-java }
 
-The abstract class @javadoc[AbstractActorWithStash](akka.actor.AbstractActorWithStash) implements the marker
-interface @javadoc[RequiresMessageQueue](akka.dispatch.RequiresMessageQueue)<@javadoc[DequeBasedMessageQueueSemantics](akka.dispatch.DequeBasedMessageQueueSemantics)>
+The abstract class @javadoc[AbstractActorWithStash](pekko.actor.AbstractActorWithStash) implements the marker
+interface @javadoc[RequiresMessageQueue](pekko.dispatch.RequiresMessageQueue)<@javadoc[DequeBasedMessageQueueSemantics](pekko.dispatch.DequeBasedMessageQueueSemantics)>
 which requests the system to automatically choose a deque based
 mailbox implementation for the actor. If you want more
 control over the mailbox, see the documentation on mailboxes: @ref:[Mailboxes](mailboxes.md).
 
 @@@
 
-Here is an example of the @scala[@scaladoc[Stash](akka.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](akka.actor.AbstractActorWithStash) class] in action:
+Here is an example of the @scala[@scaladoc[Stash](pekko.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](pekko.actor.AbstractActorWithStash) class] in action:
 
 Scala
 :  @@snip [ActorDocSpec.scala](/akka-docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #stash }
@@ -1132,7 +1132,7 @@ messages that aren't handled by the other cases. It is illegal to
 stash the same message twice; to do so results in an
 @javadoc[IllegalStateException](java.lang.IllegalStateException) being thrown. The stash may also be bounded
 in which case invoking `stash()` may lead to a capacity violation,
-which results in a @apidoc[akka.actor.StashOverflowException]. The capacity of the
+which results in a @apidoc[actor.StashOverflowException]. The capacity of the
 stash can be configured using the `stash-capacity` setting (an `Int`) of the
 mailbox's configuration.
 
@@ -1149,8 +1149,8 @@ major impact on performance.
 
 @@@ warning { .group-scala }
 
-Note that the @scaladoc[Stash](akka.actor.Stash) trait must be mixed into (a subclass of) the
-@scaladoc[Actor](akka.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](akka.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]
+Note that the @scaladoc[Stash](pekko.actor.Stash) trait must be mixed into (a subclass of) the
+@scaladoc[Actor](pekko.actor.Actor) trait before any trait/class that overrides the @scaladoc[preRestart](org.apache.pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]
 callback. This means it's not possible to write
 `Actor with MyActor with Stash` if `MyActor` overrides `preRestart`.
 
@@ -1160,7 +1160,7 @@ Note that the stash is part of the ephemeral actor state, unlike the
 mailbox. Therefore, it should be managed like other parts of the
 actor's state which have the same property.
 
-However, the @scala[@scaladoc[Stash](akka.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](akka.actor.AbstractActorWithStash) class]
+However, the @scala[@scaladoc[Stash](pekko.actor.Stash) trait] @java[@javadoc[AbstractActorWithStash](pekko.actor.AbstractActorWithStash) class]
 implementation of `preRestart` will call `unstashAll()`. This means
 that before the actor restarts, it will transfer all stashed messages back to the actor's mailbox.
 
@@ -1170,7 +1170,7 @@ This is usually the desired behavior.
 @@@ note
 
 If you want to enforce that your actor can only work with an unbounded stash,
-then you should use the @scala[@scaladoc[UnboundedStash](akka.actor.UnboundedStash) trait] @java[@javadoc[AbstractActorWithUnboundedStash](akka.actor.AbstractActorWithUnboundedStash) class] instead.
+then you should use the @scala[@scaladoc[UnboundedStash](pekko.actor.UnboundedStash) trait] @java[@javadoc[AbstractActorWithUnboundedStash](pekko.actor.AbstractActorWithUnboundedStash) class] instead.
 
 @@@
 
@@ -1179,7 +1179,7 @@ then you should use the @scala[@scaladoc[UnboundedStash](akka.actor.UnboundedSta
 ## Extending Actors using PartialFunction chaining
 
 Sometimes it can be useful to share common behavior among a few actors, or compose one actor's behavior from multiple smaller functions.
-This is possible because an actor's @scala[@scaladoc[receive](akka.actor.Actor#receive:akka.actor.Actor.Receive)]@java[@javadoc[createReceive](akka.actor.AbstractActor#createReceive())] method returns an `Actor.Receive`, which is a type alias for `PartialFunction[Any,Unit]`,
+This is possible because an actor's @scala[@scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive)]@java[@javadoc[createReceive](pekko.actor.AbstractActor#createReceive())] method returns an `Actor.Receive`, which is a type alias for `PartialFunction[Any,Unit]`,
 and partial functions can be chained together using the `PartialFunction#orElse` method. You can chain as many functions as you need,
 however you should keep in mind that "first match" wins - which may be important when combining functions that both can handle the same type of message.
 
@@ -1196,7 +1196,7 @@ Instead of inheritance the same pattern can be applied via composition - compose
 ## Initialization patterns
 
 The rich lifecycle hooks of Actors provide a useful toolkit to implement various initialization patterns. During the
-lifetime of an @apidoc[akka.actor.ActorRef], an actor can potentially go through several restarts, where the old instance is replaced by
+lifetime of an @apidoc[actor.ActorRef], an actor can potentially go through several restarts, where the old instance is replaced by
 a fresh one, invisibly to the outside observer who only sees the `ActorRef`.
 
 Initialization might be necessary every time an actor is instantiated,
@@ -1214,13 +1214,13 @@ restarts. The following section provides a pattern for this case.
 
 ### Initialization via preStart
 
-The method @scala[@scaladoc[preStart](akka.actor.Actor#preStart():Unit)]@java[@javadoc[preStart](akka.actor.AbstractActor#preStart())] of an actor is only called once directly during the initialization of the first instance, that
-is, at the creation of its `ActorRef`. In the case of restarts, `preStart()` is called from @scala[@scaladoc[postRestart](akka.actor.Actor#postRestart(reason:Throwable):Unit)]@java[@javadoc[postRestart](akka.actor.AbstractActor#postRestart(java.lang.Throwable))], therefore
+The method @scala[@scaladoc[preStart](pekko.actor.Actor#preStart():Unit)]@java[@javadoc[preStart](pekko.actor.AbstractActor#preStart())] of an actor is only called once directly during the initialization of the first instance, that
+is, at the creation of its `ActorRef`. In the case of restarts, `preStart()` is called from @scala[@scaladoc[postRestart](pekko.actor.Actor#postRestart(reason:Throwable):Unit)]@java[@javadoc[postRestart](pekko.actor.AbstractActor#postRestart(java.lang.Throwable))], therefore
 if not overridden, `preStart()` is called on every restart. However, by overriding `postRestart()` one can disable
 this behavior, and ensure that there is only one call to `preStart()`.
 
 One useful usage of this pattern is to disable creation of new `ActorRefs` for children during restarts. This can be
-achieved by overriding @scala[@scaladoc[preRestart](akka.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]@java[@javadoc[preRestart](akka.actor.AbstractActor#preRestart(java.lang.Throwable,java.util.Optional))]. Below is the default implementation of these lifecycle hooks:
+achieved by overriding @scala[@scaladoc[preRestart](pekko.actor.Actor#preRestart(reason:Throwable,message:Option[Any]):Unit)]@java[@javadoc[preRestart](pekko.actor.AbstractActor#preRestart(java.lang.Throwable,java.util.Optional))]. Below is the default implementation of these lifecycle hooks:
 
 Scala
 :  @@snip [InitializationDocSpec.scala](/akka-docs/src/test/scala/docs/actor/InitializationDocSpec.scala) { #preStartInit }
@@ -1229,7 +1229,7 @@ Java
 :  @@snip [InitializationDocTest.java](/akka-docs/src/test/java/jdocs/actor/InitializationDocTest.java) { #preStartInit }
 
 
-Please note, that the child actors are *still restarted*, but no new @apidoc[akka.actor.ActorRef] is created. One can recursively apply
+Please note, that the child actors are *still restarted*, but no new @apidoc[actor.ActorRef] is created. One can recursively apply
 the same principles for the children, ensuring that their `preStart()` method is called only at the creation of their
 refs.
 
@@ -1239,7 +1239,7 @@ For more information see @ref:[What Restarting Means](general/supervision.md#sup
 
 There are cases when it is impossible to pass all the information needed for actor initialization in the constructor,
 for example in the presence of circular dependencies. In this case, the actor should listen for an initialization message,
-and use @apidoc[become()](akka.actor.ActorContext) {scala="#become(behavior:akka.actor.Actor.Receive,discardOld:Boolean):Unit" java="#become(scala.PartialFunction,boolean)"} or a finite state-machine state transition to encode the initialized and uninitialized states
+and use @apidoc[become()](actor.ActorContext) {scala="#become(behavior:org.apache.pekko.actor.Actor.Receive,discardOld:Boolean):Unit" java="#become(scala.PartialFunction,boolean)"} or a finite state-machine state transition to encode the initialized and uninitialized states
 of the actor.
 
 Scala
@@ -1254,7 +1254,7 @@ until the initialization finishes, and replaying them after the actor became ini
 @@@ warning
 
 This pattern should be used with care, and applied only when none of the patterns above are applicable. One of
-the potential issues is that messages might be lost when sent to remote actors. Also, publishing an @apidoc[akka.actor.ActorRef] in
+the potential issues is that messages might be lost when sent to remote actors. Also, publishing an @apidoc[actor.ActorRef] in
 an uninitialized state might lead to the condition that it receives a user message before the initialization has been
 done.
 

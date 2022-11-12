@@ -4,16 +4,16 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import akka.Done;
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.dispatch.Futures;
-import akka.japi.pf.PFBuilder;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Source;
-import akka.stream.testkit.TestSubscriber;
-import akka.stream.testkit.javadsl.TestSink;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.dispatch.Futures;
+import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.testkit.TestSubscriber;
+import org.apache.pekko.stream.testkit.javadsl.TestSink;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;

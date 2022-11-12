@@ -4,10 +4,10 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.stream.FlowShape
-import akka.stream.scaladsl.{ Balance, Flow, GraphDSL, Merge, Source }
-import akka.testkit.AkkaSpec
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.FlowShape
+import org.apache.pekko.stream.scaladsl.{ Balance, Flow, GraphDSL, Merge, Source }
+import org.apache.pekko.testkit.AkkaSpec
 
 class FlowParallelismDocSpec extends AkkaSpec {
 

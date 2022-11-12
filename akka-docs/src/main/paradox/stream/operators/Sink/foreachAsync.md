@@ -6,7 +6,7 @@ Invoke a given procedure asynchronously for each element received.
 
 ## Signature
 
-@apidoc[Sink.foreachAsync](Sink$) { scala="#foreachAsync[T](parallelism:Int)(f:T=&gt;scala.concurrent.Future[Unit]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[akka.Done]]" java="#foreachAsync(int,akka.japi.function.Function)" }
+@apidoc[Sink.foreachAsync](Sink$) { scala="#foreachAsync[T](parallelism:Int)(f:T=&gt;scala.concurrent.Future[Unit]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[org.apache.pekko.Done]]" java="#foreachAsync(int,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

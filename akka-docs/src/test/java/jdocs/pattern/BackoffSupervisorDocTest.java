@@ -4,10 +4,10 @@
 
 package jdocs.pattern;
 
-import akka.actor.*;
-import akka.pattern.BackoffOpts;
-import akka.pattern.BackoffSupervisor;
-import akka.testkit.TestActors.EchoActor;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.pattern.BackoffOpts;
+import org.apache.pekko.pattern.BackoffSupervisor;
+import org.apache.pekko.testkit.TestActors.EchoActor;
 // #backoff-imports
 import java.time.Duration;
 // #backoff-imports

@@ -6,12 +6,12 @@ package docs.ddata
 
 import scala.concurrent.duration._
 
-import akka.actor.Actor
-import akka.cluster.ddata._
-import akka.testkit.AkkaSpec
-import akka.testkit.TestProbe
-import akka.actor.ActorRef
-import akka.serialization.SerializationExtension
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.cluster.ddata._
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.serialization.SerializationExtension
 import jdocs.ddata
 
 object DistributedDataDocSpec {
@@ -46,14 +46,15 @@ object DistributedDataDocSpec {
 
   // #data-bot
   import java.util.concurrent.ThreadLocalRandom
-  import akka.actor.Actor
-  import akka.actor.ActorLogging
-  import akka.cluster.Cluster
-  import akka.cluster.ddata.DistributedData
-  import akka.cluster.ddata.ORSet
-  import akka.cluster.ddata.ORSetKey
-  import akka.cluster.ddata.Replicator
-  import akka.cluster.ddata.Replicator._
+  import org.apache.pekko
+  import pekko.actor.Actor
+  import pekko.actor.ActorLogging
+  import pekko.cluster.Cluster
+  import pekko.cluster.ddata.DistributedData
+  import pekko.cluster.ddata.ORSet
+  import pekko.cluster.ddata.ORSetKey
+  import pekko.cluster.ddata.Replicator
+  import pekko.cluster.ddata.Replicator._
 
   object DataBot {
     private case object Tick
@@ -399,7 +400,7 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
   }
 
   "test japi.TwoPhaseSetSerializer" in {
-    import akka.util.ccompat.JavaConverters._
+    import org.apache.pekko.util.ccompat.JavaConverters._
     val s1 = ddata.TwoPhaseSet.create().add("a").add("b").add("c").remove("b")
     s1.getElements.asScala should be(Set("a", "c"))
     val serializer = SerializationExtension(system).findSerializerFor(s1)

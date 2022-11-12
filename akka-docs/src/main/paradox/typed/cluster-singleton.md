@@ -47,7 +47,7 @@ See @ref:[Downing](cluster.md#downing).
 ### Singleton manager
 
 The cluster singleton pattern manages one singleton actor instance among all cluster nodes or a group of nodes tagged with
-a specific role. The singleton manager is an actor that is supposed to be started with @apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:akka.cluster.typed.SingletonActor[M]):akka.actor.typed.ActorRef[M]" java="#init(akka.cluster.typed.SingletonActor)"} as
+a specific role. The singleton manager is an actor that is supposed to be started with @apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:org.apache.pekko.cluster.typed.SingletonActor[M]):org.apache.pekko.actor.typed.ActorRef[M]" java="#init(org.apache.pekko.cluster.typed.SingletonActor)"} as
 early as possible on all nodes, or all nodes with specified role, in the cluster. 
 
 The actual singleton actor is
@@ -56,7 +56,7 @@ The actual singleton actor is
 supplied @apidoc[Behavior](typed.Behavior). It makes sure that at most one singleton instance is running at any point in time.
 * Always running on the oldest member with specified role.
 
-The oldest member is determined by @apidoc[akka.cluster.Member#isOlderThan](cluster.Member) {scala="#isOlderThan(other:akka.cluster.Member):Boolean" java="#isOlderThan(akka.cluster.Member)"}
+The oldest member is determined by @apidoc[cluster.Member#isOlderThan](cluster.Member) {scala="#isOlderThan(other:org.apache.pekko.cluster.Member):Boolean" java="#isOlderThan(org.apache.pekko.cluster.Member)"}
 This can change when removing that member from the cluster. Be aware that there is a short time
 period when there is no active singleton during the hand-over process.
 
@@ -72,7 +72,7 @@ cases are eventually resolved by configurable timeouts. Additional safety can be
 ### Singleton proxy
 
 To communicate with a given named singleton in the cluster you can access it though a proxy @apidoc[ActorRef](typed.ActorRef).
-When calling @apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:akka.cluster.typed.SingletonActor[M]):akka.actor.typed.ActorRef[M]" java="#init(akka.cluster.typed.SingletonActor)"} for a given `singletonName` on a node an `ActorRef` is returned. It is
+When calling @apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:org.apache.pekko.cluster.typed.SingletonActor[M]):org.apache.pekko.actor.typed.ActorRef[M]" java="#init(org.apache.pekko.cluster.typed.SingletonActor)"} for a given `singletonName` on a node an `ActorRef` is returned. It is
 to this `ActorRef` that you can send messages to the singleton instance, independent of which node the singleton
 instance is active. `ClusterSingleton.init` can be called multiple times, if there already is a singleton manager 
 running on this node, no additional manager is started, and if there is one running an `ActorRef` to the proxy
@@ -117,20 +117,20 @@ See @ref:[Downing](cluster.md#downing).
 Any @apidoc[Behavior](typed.Behavior) can be run as a singleton. E.g. a basic counter:
 
 Scala
-:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/SingletonCompileOnlySpec.scala) { #counter }
+:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #counter }
 
 Java
-:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/SingletonCompileOnlyTest.java) { #counter }
+:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #counter }
 
 Then on every node in the cluster, or every node with a given role, use the @apidoc[ClusterSingleton$] extension
 to spawn the singleton. An instance will per data centre of the cluster:
 
 
 Scala
-:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/SingletonCompileOnlySpec.scala) { #singleton }
+:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #singleton }
 
 Java
-:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/SingletonCompileOnlyTest.java) { #import #singleton }
+:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #import #singleton }
 
 ## Supervision
 
@@ -140,10 +140,10 @@ a backoff:
 
 
 Scala
-:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/SingletonCompileOnlySpec.scala) { #backoff}
+:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #backoff}
 
 Java
-:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/SingletonCompileOnlyTest.java) { #backoff}
+:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #backoff}
 
 Be aware that this means there will be times when the singleton won't be running as restart is delayed.
 See @ref[Fault Tolerance](./fault-tolerance.md) for a full list of supervision options.
@@ -157,10 +157,10 @@ singleton actor is terminated.
 If the shutdown logic does not include any asynchronous actions it can be executed in the @apidoc[PostStop$] signal handler.
 
 Scala
-:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/SingletonCompileOnlySpec.scala) { #stop-message }
+:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #stop-message }
 
 Java
-:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/SingletonCompileOnlyTest.java) { #stop-message }
+:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #stop-message }
 
 ## Lease
 
@@ -190,14 +190,14 @@ TODO @github[#27705](#27705)
 The following configuration properties are read by the @apidoc[ClusterSingletonManagerSettings](singleton.ClusterSingletonManagerSettings)
 when created with a @apidoc[ActorSystem](typed.ActorSystem) parameter. It is also possible to amend the `ClusterSingletonManagerSettings`
 or create it from another config section with the same layout as below. `ClusterSingletonManagerSettings` is
-a parameter to the @apidoc[ClusterSingletonManager.props](ClusterSingletonManager$) {scala="#props(singletonProps:akka.actor.Props,terminationMessage:Any,settings:akka.cluster.singleton.ClusterSingletonManagerSettings):akka.actor.Props" java="#props(akka.actor.Props,java.lang.Object,akka.cluster.singleton.ClusterSingletonManagerSettings)"} factory method, i.e. each singleton can be configured
+a parameter to the @apidoc[ClusterSingletonManager.props](ClusterSingletonManager$) {scala="#props(singletonProps:org.apache.pekko.actor.Props,terminationMessage:Any,settings:org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings):org.apache.pekko.actor.Props" java="#props(org.apache.pekko.actor.Props,java.lang.Object,org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings)"} factory method, i.e. each singleton can be configured
 with different settings if needed.
 
 @@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #singleton-config }
 
 The following configuration properties are read by the @apidoc[ClusterSingletonSettings](typed.ClusterSingletonSettings)
 when created with a @apidoc[ActorSystem](typed.ActorSystem) parameter. `ClusterSingletonSettings` is an optional parameter in
-@apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:akka.cluster.typed.SingletonActor[M]):akka.actor.typed.ActorRef[M]" java="#init(akka.cluster.typed.SingletonActor)"}. It is also possible to amend the @apidoc[ClusterSingletonProxySettings]
+@apidoc[ClusterSingleton.init](ClusterSingleton) {scala="#init[M](singleton:org.apache.pekko.cluster.typed.SingletonActor[M]):org.apache.pekko.actor.typed.ActorRef[M]" java="#init(org.apache.pekko.cluster.typed.SingletonActor)"}. It is also possible to amend the @apidoc[ClusterSingletonProxySettings]
 or create it from another config section with the same layout as below.
 
 @@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #singleton-proxy-config }

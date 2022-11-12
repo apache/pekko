@@ -11,9 +11,9 @@ import docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet.Builder;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import akka.actor.ExtendedActorSystem;
-import akka.cluster.ddata.GSet;
-import akka.cluster.ddata.protobuf.AbstractSerializationSupport;
+import org.apache.pekko.actor.ExtendedActorSystem;
+import org.apache.pekko.cluster.ddata.GSet;
+import org.apache.pekko.cluster.ddata.protobuf.AbstractSerializationSupport;
 
 public class TwoPhaseSetSerializer extends AbstractSerializationSupport {
 

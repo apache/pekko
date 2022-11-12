@@ -6,7 +6,7 @@ Invoke a given procedure for each element received.
 
 ## Signature
 
-@apidoc[Sink.foreach](Sink$) { java="#foreach(akka.japi.function.Procedure)" scala="#foreach[T](f:T=%3EUnit):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[akka.Done]]" }
+@apidoc[Sink.foreach](Sink$) { java="#foreach(org.apache.pekko.japi.function.Procedure)" scala="#foreach[T](f:T=%3EUnit):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[org.apache.pekko.Done]]" }
 
 ## Description
 
@@ -27,10 +27,10 @@ See also:
 This prints out every element to standard out.
 
 Scala
-:   @@snip [snip](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SinkSpec.scala) { #foreach }
+:   @@snip [snip](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #foreach }
 
 Java
-:   @@snip [snip](/akka-stream-tests/src/test/java/akka/stream/javadsl/SinkTest.java) { #foreach }
+:   @@snip [snip](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #foreach }
 
 ## Reactive Streams semantics
 

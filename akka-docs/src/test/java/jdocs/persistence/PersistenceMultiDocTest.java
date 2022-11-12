@@ -4,8 +4,8 @@
 
 package jdocs.persistence;
 
-import akka.persistence.AbstractPersistentActor;
-import akka.persistence.RuntimePluginConfig;
+import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.persistence.RuntimePluginConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

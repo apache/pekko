@@ -34,10 +34,10 @@ To set up a set of actors running with Sharded Daemon process each node in the c
 when starting up:
 
 Scala
-:  @@snip [ShardedDaemonProcessExample.scala](/akka-cluster-sharding-typed/src/test/scala/akka/cluster/sharding/typed/scaladsl/ShardedDaemonProcessSpec.scala) { #tag-processing }
+:  @@snip [ShardedDaemonProcessExample.scala](/akka-cluster-sharding-typed/src/test/scala/org/apache/pekko/cluster/sharding/typed/scaladsl/ShardedDaemonProcessSpec.scala) { #tag-processing }
 
 Java
-:  @@snip [ShardedDaemonProcessExample.java](/akka-cluster-sharding-typed/src/test/java/akka/cluster/sharding/typed/javadsl/ShardedDaemonProcessCompileOnlyTest.java) { #tag-processing }
+:  @@snip [ShardedDaemonProcessExample.java](/akka-cluster-sharding-typed/src/test/java/org/apache/pekko/cluster/sharding/typed/javadsl/ShardedDaemonProcessCompileOnlyTest.java) { #tag-processing }
 
 An additional factory method is provided for further configurability and providing a graceful stop message for the actor.
 

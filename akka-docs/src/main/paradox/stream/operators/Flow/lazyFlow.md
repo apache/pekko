@@ -6,7 +6,7 @@ Defers creation and materialization of a `Flow` until there is a first element.
 
 ## Signature
 
-@apidoc[Flow.lazyFlow](Flow$) { scala="#lazyFlow[I,O,M](create:()=&gt;akka.stream.scaladsl.Flow[I,O,M]):akka.stream.scaladsl.Flow[I,O,scala.concurrent.Future[M]]" java="#lazyFlow(akka.japi.function.Creator)" }
+@apidoc[Flow.lazyFlow](Flow$) { scala="#lazyFlow[I,O,M](create:()=&gt;org.apache.pekko.stream.scaladsl.Flow[I,O,M]):org.apache.pekko.stream.scaladsl.Flow[I,O,scala.concurrent.Future[M]]" java="#lazyFlow(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description
@@ -65,6 +65,6 @@ all materialization and what is even worse, unsafely across threads.
 
 **cancels** when downstream cancels (keep reading)
     The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-     This behaviour can be controlled by setting the [[akka.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+     This behaviour can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
     this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
 @@@

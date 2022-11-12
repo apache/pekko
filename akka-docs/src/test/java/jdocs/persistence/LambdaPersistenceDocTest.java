@@ -4,11 +4,11 @@
 
 package jdocs.persistence;
 
-import akka.actor.*;
-import akka.japi.Procedure;
-import akka.pattern.BackoffOpts;
-import akka.pattern.BackoffSupervisor;
-import akka.persistence.*;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.japi.Procedure;
+import org.apache.pekko.pattern.BackoffOpts;
+import org.apache.pekko.pattern.BackoffSupervisor;
+import org.apache.pekko.persistence.*;
 
 import java.io.Serializable;
 import java.time.Duration;

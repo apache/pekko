@@ -8,22 +8,22 @@ package jdocs.ddata;
 import java.time.Duration;
 import java.util.concurrent.ThreadLocalRandom;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Cancellable;
-import akka.cluster.Cluster;
-import akka.cluster.ddata.DistributedData;
-import akka.cluster.ddata.Key;
-import akka.cluster.ddata.ORSet;
-import akka.cluster.ddata.ORSetKey;
-import akka.cluster.ddata.Replicator;
-import akka.cluster.ddata.Replicator.Changed;
-import akka.cluster.ddata.Replicator.Subscribe;
-import akka.cluster.ddata.Replicator.Update;
-import akka.cluster.ddata.Replicator.UpdateResponse;
-import akka.cluster.ddata.SelfUniqueAddress;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ddata.DistributedData;
+import org.apache.pekko.cluster.ddata.Key;
+import org.apache.pekko.cluster.ddata.ORSet;
+import org.apache.pekko.cluster.ddata.ORSetKey;
+import org.apache.pekko.cluster.ddata.Replicator;
+import org.apache.pekko.cluster.ddata.Replicator.Changed;
+import org.apache.pekko.cluster.ddata.Replicator.Subscribe;
+import org.apache.pekko.cluster.ddata.Replicator.Update;
+import org.apache.pekko.cluster.ddata.Replicator.UpdateResponse;
+import org.apache.pekko.cluster.ddata.SelfUniqueAddress;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 public class DataBot extends AbstractActor {
 

@@ -4,7 +4,7 @@
 
 package docs.discovery
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._
@@ -27,8 +27,9 @@ class DnsDiscoveryDocSpec extends AkkaSpec(DnsDiscoveryDocSpec.config) {
   "DNS Discovery" should {
     "find akka.io" in {
       // #lookup-dns
-      import akka.discovery.Discovery
-      import akka.discovery.ServiceDiscovery
+      import org.apache.pekko
+      import pekko.discovery.Discovery
+      import pekko.discovery.ServiceDiscovery
 
       val discovery: ServiceDiscovery = Discovery(system).discovery
       // ...

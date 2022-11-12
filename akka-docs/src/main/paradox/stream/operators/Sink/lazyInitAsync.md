@@ -6,8 +6,8 @@ Deprecated by @ref:[`Sink.lazyFutureSink`](lazyFutureSink.md).
 
 ## Signature
 
-@apidoc[Flow.lazyInitAsync](Flow$) { scala="#lazyInitAsync[I,O,M](flowFactory:()=&gt;scala.concurrent.Future[akka.stream.scaladsl.Flow[I,O,M]]):akka.stream.scaladsl.Flow[I,O,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(akka.japi.function.Creator)" }
-@apidoc[Sink.lazyInitAsync](Sink$) { scala="#lazyInitAsync[T,M](sinkFactory:()=&gt;scala.concurrent.Future[akka.stream.scaladsl.Sink[T,M]]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(akka.japi.function.Creator)" }
+@apidoc[Flow.lazyInitAsync](Flow$) { scala="#lazyInitAsync[I,O,M](flowFactory:()=&gt;scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Flow[I,O,M]]):org.apache.pekko.stream.scaladsl.Flow[I,O,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(org.apache.pekko.japi.function.Creator)" }
+@apidoc[Sink.lazyInitAsync](Sink$) { scala="#lazyInitAsync[T,M](sinkFactory:()=&gt;scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Sink[T,M]]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

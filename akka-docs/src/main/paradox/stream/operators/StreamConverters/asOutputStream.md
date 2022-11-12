@@ -6,7 +6,7 @@ Create a source that materializes into an `OutputStream`.
 
 ## Signature
 
-@apidoc[StreamConverters.asOutputStream](StreamConverters$) { scala="#asOutputStream(writeTimeout:scala.concurrent.duration.FiniteDuration):akka.stream.scaladsl.Source[akka.util.ByteString,java.io.OutputStream]" java="#asOutputStream(java.time.Duration)" }
+@apidoc[StreamConverters.asOutputStream](StreamConverters$) { scala="#asOutputStream(writeTimeout:scala.concurrent.duration.FiniteDuration):org.apache.pekko.stream.scaladsl.Source[org.apache.pekko.util.ByteString,java.io.OutputStream]" java="#asOutputStream(java.time.Duration)" }
 
 ## Description
 
@@ -25,7 +25,7 @@ closing the `OutputStream` will complete the `Source`.
 @@@
 
 ## Example
-Here is an example of a @apidoc[Source] that materializes into a @javadoc[java.io.OutputStream](java.io.OutputStream), and is connected to a Sink which concatenates the incoming @apidoc[akka.util.ByteString]s
+Here is an example of a @apidoc[Source] that materializes into a @javadoc[java.io.OutputStream](java.io.OutputStream), and is connected to a Sink which concatenates the incoming @apidoc[util.ByteString]s
 
 Scala
 :   @@snip [ToFromJavaIOStreams.scala](/akka-docs/src/test/scala/docs/stream/operators/converters/ToFromJavaIOStreams.scala) { #asJavaOutputStream }

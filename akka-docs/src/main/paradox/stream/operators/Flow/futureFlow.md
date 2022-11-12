@@ -6,7 +6,7 @@ Streams the elements through the given future flow once it successfully complete
 
 ## Signature
 
-@apidoc[Flow.futureFlow](Flow$) { scala="#futureFlow[I,O,M](flow:scala.concurrent.Future[akka.stream.scaladsl.Flow[I,O,M]]):akka.stream.scaladsl.Flow[I,O,scala.concurrent.Future[M]]" }
+@apidoc[Flow.futureFlow](Flow$) { scala="#futureFlow[I,O,M](flow:scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Flow[I,O,M]]):org.apache.pekko.stream.scaladsl.Flow[I,O,scala.concurrent.Future[M]]" }
 
 
 ## Description
@@ -38,7 +38,7 @@ Scala
 
 **cancels** when downstream cancels (keep reading)
     The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-     This behaviour can be controlled by setting the [[akka.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+     This behaviour can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
     this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
 @@@
 

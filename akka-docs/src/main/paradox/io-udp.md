@@ -112,11 +112,11 @@ connect, thus writes do not suffer an additional performance penalty.
 ## UDP Multicast
 
 Akka provides a way to control various options of `DatagramChannel` through the
-`akka.io.Inet.SocketOption` interface. The example below shows
+`org.apache.pekko.io.Inet.SocketOption` interface. The example below shows
 how to setup a receiver of multicast messages using IPv6 protocol.
 
-To select a Protocol Family you must extend `akka.io.Inet.DatagramChannelCreator`
-class which @scala[extends]@java[implements] `akka.io.Inet.SocketOption`. Provide custom logic
+To select a Protocol Family you must extend `org.apache.pekko.io.Inet.DatagramChannelCreator`
+class which @scala[extends]@java[implements] `org.apache.pekko.io.Inet.SocketOption`. Provide custom logic
 for opening a datagram channel by overriding `create` method.
 
 Scala

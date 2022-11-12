@@ -4,13 +4,13 @@
 
 syntax = "proto2";
 
-package akka.persistence.query;
+package org.apache.pekko.persistence.query;
 
-option java_package = "akka.persistence.query.internal.protobuf";
+option java_package = "org.apache.pekko.persistence.query.internal.protobuf";
 option optimize_for = SPEED;
 import "ContainerFormats.proto";
 
-// for akka.persistence.query.typed.EventEnvelope
+// for org.apache.pekko.persistence.query.typed.EventEnvelope
 message EventEnvelope {
   required string persistence_id = 1;
   required string entity_type = 2;

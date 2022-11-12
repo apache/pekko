@@ -5,16 +5,17 @@
 package docs.serialization {
 
   // #imports
-  import akka.actor._
-  import akka.actor.typed.scaladsl.Behaviors
-  import akka.cluster.Cluster
-  import akka.serialization._
+  import org.apache.pekko
+  import pekko.actor._
+  import pekko.actor.typed.scaladsl.Behaviors
+  import pekko.cluster.Cluster
+  import pekko.serialization._
 
   // #imports
 
-  import akka.testkit._
+  import org.apache.pekko.testkit._
   import com.typesafe.config.ConfigFactory
-  import akka.actor.ExtendedActorSystem
+  import org.apache.pekko.actor.ExtendedActorSystem
   import java.nio.charset.StandardCharsets
 
   // #my-own-serializer
@@ -161,9 +162,9 @@ package docs.serialization {
       akka {
         actor {
           serializers {
-            jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
-            jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
-            proto = "akka.remote.serialization.ProtobufSerializer"
+            jackson-json = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
+            jackson-cbor = "org.apache.pekko.serialization.jackson.JacksonCborSerializer"
+            proto = "org.apache.pekko.remote.serialization.ProtobufSerializer"
             myown = "docs.serialization.MyOwnSerializer"
           }
         }
@@ -180,9 +181,9 @@ package docs.serialization {
       akka {
         actor {
           serializers {
-            jackson-json = "akka.serialization.jackson.JacksonJsonSerializer"
-            jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
-            proto = "akka.remote.serialization.ProtobufSerializer"
+            jackson-json = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
+            jackson-cbor = "org.apache.pekko.serialization.jackson.JacksonCborSerializer"
+            proto = "org.apache.pekko.remote.serialization.ProtobufSerializer"
             myown = "docs.serialization.MyOwnSerializer"
           }
 
@@ -228,7 +229,7 @@ package docs.serialization {
 
     def demonstrateTypedActorSystem(): Unit = {
       // #programmatic-typed
-      import akka.actor.typed.ActorSystem
+      import org.apache.pekko.actor.typed.ActorSystem
 
       val system = ActorSystem(Behaviors.empty, "example")
 

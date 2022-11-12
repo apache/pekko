@@ -6,7 +6,7 @@ Wrap any resource that can be opened, queried for next element (in a blocking wa
 
 ## Signature
 
-@apidoc[Source.unfoldResource](Source$) { scala="#unfoldResource[T,S](create:()=&gt;S,read:S=&gt;Option[T],close:S=&gt;Unit):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#unfoldResource(akka.japi.function.Creator,akka.japi.function.Function,akka.japi.function.Procedure)" }
+@apidoc[Source.unfoldResource](Source$) { scala="#unfoldResource[T,S](create:()=&gt;S,read:S=&gt;Option[T],close:S=&gt;Unit):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#unfoldResource(org.apache.pekko.japi.function.Creator,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Procedure)" }
 
 
 ## Description

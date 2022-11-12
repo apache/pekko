@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -15,7 +15,7 @@ class RecipeDecompress extends RecipeSpec {
   "Recipe for decompressing a Gzip stream" must {
     "work" in {
       // #decompress-gzip
-      import akka.stream.scaladsl.Compression
+      import org.apache.pekko.stream.scaladsl.Compression
       // #decompress-gzip
 
       val compressed =

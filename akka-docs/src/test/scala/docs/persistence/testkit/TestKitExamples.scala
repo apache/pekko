@@ -4,10 +4,10 @@
 
 package docs.persistence.testkit
 
-import akka.persistence.typed.PersistenceId
-import akka.persistence.typed.scaladsl.Effect
-import akka.persistence.typed.scaladsl.EventSourcedBehavior
-import akka.serialization.jackson.CborSerializable
+import org.apache.pekko.persistence.typed.PersistenceId
+import org.apache.pekko.persistence.typed.scaladsl.Effect
+import org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior
+import org.apache.pekko.serialization.jackson.CborSerializable
 import com.typesafe.config.ConfigFactory
 import docs.persistence.testkit.PersistenceTestKitSampleSpec.{ Cmd, Evt, _ }
 import org.scalatest.BeforeAndAfterEach
@@ -25,9 +25,10 @@ object PersistenceTestKitSampleSpec {
 }
 
 //#test
-import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import akka.persistence.testkit.PersistenceTestKitPlugin
-import akka.persistence.testkit.scaladsl.PersistenceTestKit
+import org.apache.pekko
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.persistence.testkit.PersistenceTestKitPlugin
+import pekko.persistence.testkit.scaladsl.PersistenceTestKit
 
 class PersistenceTestKitSampleSpec
     extends ScalaTestWithActorTestKit(PersistenceTestKitPlugin.config.withFallback(ConfigFactory.defaultApplication()))
@@ -64,7 +65,7 @@ class PersistenceTestKitSampleSpec
 //#test
 
 //#set-event-storage-policy
-import akka.persistence.testkit._
+import org.apache.pekko.persistence.testkit._
 
 class SampleEventStoragePolicy extends EventStorage.JournalPolicies.PolicyType {
 

@@ -6,7 +6,7 @@ Emit each incoming element each of `n` outputs.
 
 ## Signature
 
-@apidoc[akka.stream.*.Broadcast]
+@apidoc[stream.*.Broadcast]
 
 ## Description
 

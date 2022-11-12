@@ -6,7 +6,7 @@ Stream iterator in cycled manner.
 
 ## Signature
 
-@apidoc[Source.cycle](Source$) { scala="#cycle[T](f:()=&gt;Iterator[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#cycle(akka.japi.function.Creator)" }
+@apidoc[Source.cycle](Source$) { scala="#cycle[T](f:()=&gt;Iterator[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#cycle(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description
@@ -19,19 +19,19 @@ terminated with an exception.
 ## Examples
 
 Scala
-:  @@snip [cycle.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SourceSpec.scala) { #cycle }
+:  @@snip [cycle.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle }
 
 Java
-:  @@snip [cycle.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/SourceTest.java) { #cycle }
+:  @@snip [cycle.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle }
 
 
 When iterator is empty the stream will be terminated with _IllegalArgumentException_
 
 Scala
-:  @@snip [cycleError.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SourceSpec.scala) { #cycle-error }
+:  @@snip [cycleError.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle-error }
 
 Java
-:  @@snip [cycle.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/SourceTest.java) { #cycle-error }
+:  @@snip [cycle.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle-error }
 
 ## Reactive Streams semantics
 

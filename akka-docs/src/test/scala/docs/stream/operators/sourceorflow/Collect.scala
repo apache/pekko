@@ -4,8 +4,8 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.stream.scaladsl.Flow
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.Flow
 
 object Collect {
   // #collect-elements

@@ -6,7 +6,7 @@ package other
 
 import java.nio.charset.StandardCharsets
 
-import akka.serialization.SerializerWithStringManifest
+import org.apache.pekko.serialization.SerializerWithStringManifest
 
 class SerializerOutsideAkkaPackage extends SerializerWithStringManifest {
   override def identifier: Int = 999

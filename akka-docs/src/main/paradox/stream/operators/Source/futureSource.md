@@ -6,7 +6,7 @@ Streams the elements of the given future source once it successfully completes.
 
 ## Signature
 
-@apidoc[Source.futureSource](Source$) { scala="#futureSource[T,M](futureSource:scala.concurrent.Future[akka.stream.scaladsl.Source[T,M]]):akka.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" }
+@apidoc[Source.futureSource](Source$) { scala="#futureSource[T,M](futureSource:scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Source[T,M]]):org.apache.pekko.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" }
 
 
 ## Description

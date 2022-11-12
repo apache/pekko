@@ -4,8 +4,8 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
 import scala.collection.immutable
 import scala.concurrent.Await

@@ -4,13 +4,13 @@
 
 package jdocs.stream.operators;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 // #imports
-import akka.NotUsed;
-import akka.japi.Pair;
-import akka.stream.javadsl.*;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.*;
 // #imports
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import jdocs.AbstractJavaTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

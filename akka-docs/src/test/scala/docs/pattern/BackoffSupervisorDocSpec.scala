@@ -4,10 +4,10 @@
 
 package docs.pattern
 
-import akka.actor.{ ActorContext, ActorSystem, OneForOneStrategy, Props, SupervisorStrategy }
-import akka.cluster.sharding.ShardRegion.Passivate
-import akka.pattern.{ BackoffOpts, BackoffSupervisor }
-import akka.testkit.TestActors.EchoActor
+import org.apache.pekko.actor.{ ActorContext, ActorSystem, OneForOneStrategy, Props, SupervisorStrategy }
+import org.apache.pekko.cluster.sharding.ShardRegion.Passivate
+import org.apache.pekko.pattern.{ BackoffOpts, BackoffSupervisor }
+import org.apache.pekko.testkit.TestActors.EchoActor
 
 class BackoffSupervisorDocSpec {
 

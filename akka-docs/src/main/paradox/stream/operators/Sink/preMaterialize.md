@@ -6,7 +6,7 @@ Materializes this Sink, immediately returning (1) its materialized value, and (2
 
 ## Signature
 
-@apidoc[Sink.preMaterialize](Sink) { scala="#preMaterialize()(implicitmaterializer:akka.stream.Materializer):(Mat,akka.stream.scaladsl.Sink[In,akka.NotUsed])" java="#preMaterialize(akka.actor.ClassicActorSystemProvider)" java="#preMaterialize(akka.stream.Materializer)" }
+@apidoc[Sink.preMaterialize](Sink) { scala="#preMaterialize()(implicitmaterializer:org.apache.pekko.stream.Materializer):(Mat,org.apache.pekko.stream.scaladsl.Sink[In,org.apache.pekko.NotUsed])" java="#preMaterialize(org.apache.pekko.actor.ClassicActorSystemProvider)" java="#preMaterialize(org.apache.pekko.stream.Materializer)" }
 
 
 ## Description

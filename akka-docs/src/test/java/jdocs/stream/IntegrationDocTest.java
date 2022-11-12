@@ -4,14 +4,14 @@
 
 package jdocs.stream;
 
-import akka.Done;
-import akka.NotUsed;
-import akka.actor.*;
-import akka.stream.*;
-import akka.stream.javadsl.*;
-import akka.testkit.TestProbe;
-import akka.testkit.javadsl.TestKit;
-import akka.util.Timeout;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.Timeout;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -33,7 +33,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import static akka.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.ask;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.AKKA;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 import static junit.framework.TestCase.assertTrue;
@@ -831,7 +831,8 @@ public class IntegrationDocTest extends AbstractJavaTest {
         actorRef.tell(2, ActorRef.noSender());
         actorRef.tell(3, ActorRef.noSender());
         actorRef.tell(
-            new akka.actor.Status.Success(CompletionStrategy.draining()), ActorRef.noSender());
+            new org.apache.pekko.actor.Status.Success(CompletionStrategy.draining()),
+            ActorRef.noSender());
         // #source-actorRef
       }
     };

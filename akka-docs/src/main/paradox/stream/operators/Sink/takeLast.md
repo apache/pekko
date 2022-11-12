@@ -6,7 +6,7 @@ Collect the last `n` values emitted from the stream into a collection.
 
 ## Signature
 
-@apidoc[Sink.takeLast](Sink$) { scala="#takeLast[T](n:Int):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#takeLast(int)" }
+@apidoc[Sink.takeLast](Sink$) { scala="#takeLast[T](n:Int):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[scala.collection.immutable.Seq[T]]]" java="#takeLast(int)" }
 
 
 ## Description
@@ -20,7 +20,7 @@ If there is a failure signaled in the stream the @scala[`Future`] @java[`Complet
 ## Example
 
 Scala
-:   @@snip [TakeLastSinkSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/TakeLastSinkSpec.scala) { #takeLast-operator-example }
+:   @@snip [TakeLastSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/TakeLastSinkSpec.scala) { #takeLast-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #takeLast-operator-example }

@@ -12,7 +12,7 @@ The `setup` operator has been deprecated, use @ref:[fromMaterializer](./fromMate
 
 ## Signature
 
-@apidoc[Sink.setup](Sink$) { scala="#setup[T,M](factory:(akka.stream.ActorMaterializer,akka.stream.Attributes)=&gt;akka.stream.scaladsl.Sink[T,M]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#setup(java.util.function.BiFunction)" }
+@apidoc[Sink.setup](Sink$) { scala="#setup[T,M](factory:(org.apache.pekko.stream.ActorMaterializer,org.apache.pekko.stream.Attributes)=&gt;org.apache.pekko.stream.scaladsl.Sink[T,M]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#setup(java.util.function.BiFunction)" }
 
 ## Description
 

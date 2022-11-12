@@ -5,7 +5,7 @@
 package docs.actor
 
 import language.postfixOps
-import akka.actor.{ ActorRef, ActorSystem, Props, Terminated }
+import org.apache.pekko.actor.{ ActorRef, ActorSystem, Props, Terminated }
 import FaultHandlingDocSpec._
 
 //#testkit
@@ -13,19 +13,20 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import akka.testkit.{ EventFilter, ImplicitSender, TestKit }
+import org.apache.pekko.testkit.{ EventFilter, ImplicitSender, TestKit }
 
 //#testkit
 object FaultHandlingDocSpec {
   // #supervisor
   // #child
-  import akka.actor.Actor
+  import org.apache.pekko.actor.Actor
 
   // #child
   class Supervisor extends Actor {
     // #strategy
-    import akka.actor.OneForOneStrategy
-    import akka.actor.SupervisorStrategy._
+    import org.apache.pekko
+    import pekko.actor.OneForOneStrategy
+    import pekko.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
@@ -46,8 +47,9 @@ object FaultHandlingDocSpec {
   // #supervisor2
   class Supervisor2 extends Actor {
     // #strategy2
-    import akka.actor.OneForOneStrategy
-    import akka.actor.SupervisorStrategy._
+    import org.apache.pekko
+    import pekko.actor.OneForOneStrategy
+    import pekko.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
@@ -69,8 +71,9 @@ object FaultHandlingDocSpec {
 
   class Supervisor3 extends Actor {
     // #default-strategy-fallback
-    import akka.actor.OneForOneStrategy
-    import akka.actor.SupervisorStrategy._
+    import org.apache.pekko
+    import pekko.actor.OneForOneStrategy
+    import pekko.actor.SupervisorStrategy._
     import scala.concurrent.duration._
 
     override val supervisorStrategy =
@@ -97,7 +100,7 @@ object FaultHandlingDocSpec {
 
   val testConf: Config = ConfigFactory.parseString("""
       akka {
-        loggers = ["akka.testkit.TestEventListener"]
+        loggers = ["org.apache.pekko.testkit.TestEventListener"]
       }
   """)
 }
@@ -115,7 +118,7 @@ class FaultHandlingDocSpec(_system: ActorSystem)
         "FaultHandlingDocSpec",
         ConfigFactory.parseString("""
       akka {
-        loggers = ["akka.testkit.TestEventListener"]
+        loggers = ["org.apache.pekko.testkit.TestEventListener"]
         loglevel = "WARNING"
       }
       """)))

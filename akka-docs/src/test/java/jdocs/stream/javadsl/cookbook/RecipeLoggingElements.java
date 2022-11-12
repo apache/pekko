@@ -4,15 +4,15 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
-import akka.stream.Attributes;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.testkit.DebugFilter;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.DebugFilter;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import jdocs.stream.SilenceSystemOut;
 import org.junit.AfterClass;
@@ -31,7 +31,7 @@ public class RecipeLoggingElements extends RecipeTest {
         ActorSystem.create(
             "RecipeLoggingElements",
             ConfigFactory.parseString(
-                "akka.loglevel=DEBUG\nakka.loggers = [akka.testkit.TestEventListener]"));
+                "akka.loglevel=DEBUG\nakka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
   @AfterClass

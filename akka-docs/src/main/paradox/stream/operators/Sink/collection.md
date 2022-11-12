@@ -8,7 +8,7 @@
 
 ## Signature
 
-@apidoc[Sink.collection](Sink$) { scala="#collection[T,That](implicitcbf:akka.util.ccompat.Factory[T,Thatwithscala.collection.immutable.Iterable[_]]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[That]]" }
+@apidoc[Sink.collection](Sink$) { scala="#collection[T,That](implicitcbf:org.apache.pekko.util.ccompat.Factory[T,Thatwithscala.collection.immutable.Iterable[_]]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[That]]" }
 
 ## Description
 

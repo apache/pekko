@@ -10,21 +10,23 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
-import akka.Done
-import akka.actor.typed.ActorRef
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.typed.ActorRef
 import scala.annotation.nowarn
 
 @nowarn("msg=never used")
 object WorkPullingDocExample {
 
   // #imports
-  import akka.actor.typed.scaladsl.Behaviors
-  import akka.actor.typed.Behavior
+  import org.apache.pekko
+  import pekko.actor.typed.scaladsl.Behaviors
+  import pekko.actor.typed.Behavior
   // #imports
 
   // #consumer
-  import akka.actor.typed.delivery.ConsumerController
-  import akka.actor.typed.receptionist.ServiceKey
+  import pekko.actor.typed.delivery.ConsumerController
+  import pekko.actor.typed.receptionist.ServiceKey
 
   object ImageConverter {
     sealed trait Command
@@ -62,9 +64,10 @@ object WorkPullingDocExample {
   // #consumer
 
   // #producer
-  import akka.actor.typed.delivery.WorkPullingProducerController
-  import akka.actor.typed.scaladsl.ActorContext
-  import akka.actor.typed.scaladsl.StashBuffer
+  import org.apache.pekko
+  import pekko.actor.typed.delivery.WorkPullingProducerController
+  import pekko.actor.typed.scaladsl.ActorContext
+  import pekko.actor.typed.scaladsl.StashBuffer
 
   object ImageWorkManager {
     sealed trait Command
@@ -107,8 +110,9 @@ object WorkPullingDocExample {
           "producerController")
         // #producer
         // #durable-queue
-        import akka.persistence.typed.delivery.EventSourcedProducerQueue
-        import akka.persistence.typed.PersistenceId
+        import org.apache.pekko
+        import pekko.persistence.typed.delivery.EventSourcedProducerQueue
+        import pekko.persistence.typed.PersistenceId
 
         val durableQueue =
           EventSourcedProducerQueue[ImageConverter.ConversionJob](PersistenceId.ofUniqueId("ImageWorkManager"))
@@ -173,7 +177,7 @@ object WorkPullingDocExample {
       // #ask
 
       import WorkPullingProducerController.MessageWithConfirmation
-      import akka.util.Timeout
+      import pekko.util.Timeout
 
       implicit val askTimeout: Timeout = 5.seconds
 

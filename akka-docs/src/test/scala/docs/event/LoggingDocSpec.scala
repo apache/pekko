@@ -4,13 +4,14 @@
 
 package docs.event
 
-import akka.actor.{ Actor, DeadLetter, Props }
-import akka.testkit.AkkaSpec
+import org.apache.pekko
+import pekko.actor.{ Actor, DeadLetter, Props }
+import pekko.testkit.AkkaSpec
 
 object LoggingDocSpec {
 
   // #my-actor
-  import akka.event.Logging
+  import org.apache.pekko.event.Logging
 
   class MyActor extends Actor {
     val log = Logging(context.system, this)
@@ -27,7 +28,7 @@ object LoggingDocSpec {
   }
   // #my-actor
 
-  import akka.event.Logging
+  import org.apache.pekko.event.Logging
 
   class MdcActor extends Actor {
     val log = Logging(this)
@@ -52,7 +53,7 @@ object LoggingDocSpec {
 
   final case class Req(work: String, visitorId: Int)
 
-  class MdcActorMixin extends Actor with akka.actor.DiagnosticActorLogging {
+  class MdcActorMixin extends Actor with pekko.actor.DiagnosticActorLogging {
     var reqId = 0
 
     override def mdc(currentMessage: Any): MDC = {
@@ -75,12 +76,13 @@ object LoggingDocSpec {
   // #mdc-actor
 
   // #my-event-listener
-  import akka.event.Logging.Debug
-  import akka.event.Logging.Error
-  import akka.event.Logging.Info
-  import akka.event.Logging.InitializeLogger
-  import akka.event.Logging.LoggerInitialized
-  import akka.event.Logging.Warning
+  import org.apache.pekko
+  import pekko.event.Logging.Debug
+  import pekko.event.Logging.Error
+  import pekko.event.Logging.Info
+  import pekko.event.Logging.InitializeLogger
+  import pekko.event.Logging.LoggerInitialized
+  import pekko.event.Logging.Warning
 
   class MyEventListener extends Actor {
     def receive = {
@@ -94,8 +96,9 @@ object LoggingDocSpec {
   // #my-event-listener
 
   // #my-source
-  import akka.actor.ActorSystem
-  import akka.event.LogSource
+  import org.apache.pekko
+  import pekko.actor.ActorSystem
+  import pekko.event.LogSource
 
   object MyType {
     implicit val logSource: LogSource[AnyRef] = new LogSource[AnyRef] {
@@ -106,7 +109,7 @@ object LoggingDocSpec {
 
   class MyType(system: ActorSystem) {
     import MyType._
-    import akka.event.Logging
+    import pekko.event.Logging
 
     val log = Logging(system, this)
   }
@@ -116,7 +119,7 @@ object LoggingDocSpec {
     def println(s: Any) = ()
 
     // #deadletters
-    import akka.actor.{ Actor, DeadLetter, Props }
+    import org.apache.pekko.actor.{ Actor, DeadLetter, Props }
 
     class DeadLetterListener extends Actor {
       def receive = {
@@ -187,16 +190,16 @@ class LoggingDocSpec extends AkkaSpec {
   }
 
   "allow registration to suppressed dead letters" in {
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     val listener = system.actorOf(Props[MyActor]())
 
     // #suppressed-deadletters
-    import akka.actor.SuppressedDeadLetter
+    import org.apache.pekko.actor.SuppressedDeadLetter
     system.eventStream.subscribe(listener, classOf[SuppressedDeadLetter])
     // #suppressed-deadletters
 
     // #all-deadletters
-    import akka.actor.AllDeadLetters
+    import org.apache.pekko.actor.AllDeadLetters
     system.eventStream.subscribe(listener, classOf[AllDeadLetters])
     // #all-deadletters
   }

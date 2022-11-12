@@ -4,37 +4,37 @@
 
 package jdocs.event;
 
-import akka.event.japi.EventBus;
+import org.apache.pekko.event.japi.EventBus;
 
 import java.time.Duration;
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.actor.ActorRef;
-import akka.testkit.AkkaJUnitActorSystemResource;
-import akka.util.Subclassification;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.util.Subclassification;
 
 // #lookup-bus
-import akka.event.japi.LookupEventBus;
+import org.apache.pekko.event.japi.LookupEventBus;
 
 // #lookup-bus
 
 // #subchannel-bus
-import akka.event.japi.SubchannelEventBus;
+import org.apache.pekko.event.japi.SubchannelEventBus;
 
 // #subchannel-bus
 
 // #scanning-bus
-import akka.event.japi.ScanningEventBus;
+import org.apache.pekko.event.japi.ScanningEventBus;
 
 // #scanning-bus
 
 // #actor-bus
-import akka.event.japi.ManagedActorEventBus;
+import org.apache.pekko.event.japi.ManagedActorEventBus;
 
 // #actor-bus
 

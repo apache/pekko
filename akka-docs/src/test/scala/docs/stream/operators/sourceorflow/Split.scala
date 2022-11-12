@@ -10,12 +10,12 @@ import java.time.ZoneOffset
 
 import scala.concurrent.duration._
 
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
 
 object Split {
   def splitWhenExample(args: Array[String]): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 
@@ -58,7 +58,7 @@ object Split {
   }
 
   def splitAfterExample(args: Array[String]): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 

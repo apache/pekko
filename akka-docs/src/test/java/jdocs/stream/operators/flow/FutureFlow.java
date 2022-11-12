@@ -4,10 +4,10 @@
 
 package jdocs.stream.operators.flow;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

@@ -2,7 +2,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt._
 import sbt.Keys._
@@ -16,7 +16,7 @@ object VersionGenerator {
     Seq(
       resourceGenerators += generateVersion(resourceManaged, _ / "version.conf", """|akka.version = "%s"
          |"""),
-      sourceGenerators += generateVersion(sourceManaged, _ / "akka" / "Version.scala", """|package akka
+      sourceGenerators += generateVersion(sourceManaged, _ / "akka" / "Version.scala", """|package org.apache.pekko
          |
          |object Version {
          |  val current: String = "%s"

@@ -107,7 +107,7 @@ while Akka does the heavy lifting under the hood.
 ## Terminating ActorSystem
 
 When you know everything is done for your application, you can have the user guardian
- actor stop, or call the @scala[@scaladoc[terminate](akka.actor.typed.ActorSystem#terminate():Unit)]@java[@javadoc[terminate()](akka.actor.typed.ActorSystem#terminate())] method of @apidoc[ActorSystem](typed.ActorSystem). That will run @ref:[`CoordinatedShutdown`](../coordinated-shutdown.md)
+ actor stop, or call the @scala[@scaladoc[terminate](pekko.actor.typed.ActorSystem#terminate():Unit)]@java[@javadoc[terminate()](pekko.actor.typed.ActorSystem#terminate())] method of @apidoc[ActorSystem](typed.ActorSystem). That will run @ref:[`CoordinatedShutdown`](../coordinated-shutdown.md)
 stopping all running actors.
 
 If you want to execute some operations while terminating @apidoc[ActorSystem](typed.ActorSystem),

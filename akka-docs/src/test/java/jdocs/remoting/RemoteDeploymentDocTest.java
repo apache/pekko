@@ -4,8 +4,8 @@
 
 package jdocs.remoting;
 
-import akka.testkit.AkkaJUnitActorSystemResource;
-import akka.testkit.AkkaSpec;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.AkkaSpec;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -13,16 +13,16 @@ import org.junit.Test;
 import com.typesafe.config.ConfigFactory;
 
 // #import
-import akka.actor.ActorRef;
-import akka.actor.Address;
-import akka.actor.AddressFromURIString;
-import akka.actor.Deploy;
-import akka.actor.Props;
-import akka.actor.ActorSystem;
-import akka.remote.RemoteScope;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.actor.AddressFromURIString;
+import org.apache.pekko.actor.Deploy;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.remote.RemoteScope;
 // #import
 
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor;
 
 import static org.junit.Assert.assertEquals;
 

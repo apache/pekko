@@ -5,26 +5,26 @@
 package docs.routing
 
 import scala.concurrent.duration._
-import akka.testkit._
-import akka.actor.{ Actor, ActorRef, Props }
-import akka.actor.Terminated
-import akka.routing.FromConfig
-import akka.routing.RoundRobinPool
-import akka.routing.RandomPool
-import akka.routing.RoundRobinGroup
-import akka.routing.SmallestMailboxPool
-import akka.routing.BroadcastPool
-import akka.routing.BroadcastGroup
-import akka.routing.ConsistentHashingGroup
-import akka.routing.ConsistentHashingPool
-import akka.routing.DefaultResizer
-import akka.routing.ScatterGatherFirstCompletedGroup
-import akka.routing.RandomGroup
-import akka.routing.ScatterGatherFirstCompletedPool
-import akka.routing.BalancingPool
-import akka.routing.TailChoppingGroup
-import akka.routing.TailChoppingPool
-import akka.util.ccompat.JavaConverters._
+import org.apache.pekko.testkit._
+import org.apache.pekko.actor.{ Actor, ActorRef, Props }
+import org.apache.pekko.actor.Terminated
+import org.apache.pekko.routing.FromConfig
+import org.apache.pekko.routing.RoundRobinPool
+import org.apache.pekko.routing.RandomPool
+import org.apache.pekko.routing.RoundRobinGroup
+import org.apache.pekko.routing.SmallestMailboxPool
+import org.apache.pekko.routing.BroadcastPool
+import org.apache.pekko.routing.BroadcastGroup
+import org.apache.pekko.routing.ConsistentHashingGroup
+import org.apache.pekko.routing.ConsistentHashingPool
+import org.apache.pekko.routing.DefaultResizer
+import org.apache.pekko.routing.ScatterGatherFirstCompletedGroup
+import org.apache.pekko.routing.RandomGroup
+import org.apache.pekko.routing.ScatterGatherFirstCompletedPool
+import org.apache.pekko.routing.BalancingPool
+import org.apache.pekko.routing.TailChoppingGroup
+import org.apache.pekko.routing.TailChoppingPool
+import org.apache.pekko.util.ccompat.JavaConverters._
 
 object RouterDocSpec {
 
@@ -294,7 +294,7 @@ router-dispatcher {}
   final case class Work(payload: String)
 
   // #router-in-actor
-  import akka.routing.{ ActorRefRoutee, RoundRobinRoutingLogic, Router }
+  import org.apache.pekko.routing.{ ActorRefRoutee, RoundRobinRoutingLogic, Router }
 
   class Master extends Actor {
     var router = {
@@ -548,7 +548,7 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   "demonstrate broadcast" in {
     val router = system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]()))
     // #broadcastDavyJonesWarning
-    import akka.routing.Broadcast
+    import org.apache.pekko.routing.Broadcast
     router ! Broadcast("Watch out for Davy Jones' locker")
     // #broadcastDavyJonesWarning
     (receiveN(5, 5.seconds.dilated) should have).length(5)
@@ -557,7 +557,7 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   "demonstrate PoisonPill" in {
     val router = watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]())))
     // #poisonPill
-    import akka.actor.PoisonPill
+    import org.apache.pekko.actor.PoisonPill
     router ! PoisonPill
     // #poisonPill
     expectTerminated(router)
@@ -566,8 +566,9 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   "demonstrate broadcast of PoisonPill" in {
     val router = watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]())))
     // #broadcastPoisonPill
-    import akka.actor.PoisonPill
-    import akka.routing.Broadcast
+    import org.apache.pekko
+    import pekko.actor.PoisonPill
+    import pekko.routing.Broadcast
     router ! Broadcast(PoisonPill)
     // #broadcastPoisonPill
     expectTerminated(router)
@@ -576,7 +577,7 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   "demonstrate Kill" in {
     val router = watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]())))
     // #kill
-    import akka.actor.Kill
+    import org.apache.pekko.actor.Kill
     router ! Kill
     // #kill
     expectTerminated(router)
@@ -585,8 +586,9 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   "demonstrate broadcast of Kill" in {
     val router = watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo]())))
     // #broadcastKill
-    import akka.actor.Kill
-    import akka.routing.Broadcast
+    import org.apache.pekko
+    import pekko.actor.Kill
+    import pekko.routing.Broadcast
     router ! Broadcast(Kill)
     // #broadcastKill
     expectTerminated(router)
@@ -594,8 +596,9 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
 
   "demonstrate remote deploy" in {
     // #remoteRoutees
-    import akka.actor.{ Address, AddressFromURIString }
-    import akka.remote.routing.RemoteRouterConfig
+    import org.apache.pekko
+    import pekko.actor.{ Address, AddressFromURIString }
+    import pekko.remote.routing.RemoteRouterConfig
     val addresses =
       Seq(Address("akka", "remotesys", "otherhost", 1234), AddressFromURIString("akka://othersys@anotherhost:1234"))
     val routerRemote = system.actorOf(RemoteRouterConfig(RoundRobinPool(5), addresses).props(Props[Echo]()))
@@ -605,8 +608,9 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   // only compile test
   def demonstrateRemoteDeployWithArtery(): Unit = {
     // #remoteRoutees-artery
-    import akka.actor.{ Address, AddressFromURIString }
-    import akka.remote.routing.RemoteRouterConfig
+    import org.apache.pekko
+    import pekko.actor.{ Address, AddressFromURIString }
+    import pekko.remote.routing.RemoteRouterConfig
     val addresses =
       Seq(Address("akka", "remotesys", "otherhost", 1234), AddressFromURIString("akka://othersys@anotherhost:1234"))
     val routerRemote = system.actorOf(RemoteRouterConfig(RoundRobinPool(5), addresses).props(Props[Echo]()))

@@ -5,14 +5,14 @@
 package jdocs.io;
 
 // #imports
-import akka.actor.ActorRef;
-import akka.actor.PoisonPill;
-import akka.actor.AbstractActor;
-import akka.io.Udp;
-import akka.io.UdpConnected;
-import akka.io.UdpConnectedMessage;
-import akka.io.UdpMessage;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.io.Udp;
+import org.apache.pekko.io.UdpConnected;
+import org.apache.pekko.io.UdpConnectedMessage;
+import org.apache.pekko.io.UdpMessage;
+import org.apache.pekko.util.ByteString;
 
 import java.net.InetSocketAddress;
 // #imports

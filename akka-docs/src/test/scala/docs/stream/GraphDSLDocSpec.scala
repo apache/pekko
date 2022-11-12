@@ -4,10 +4,10 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 
 import scala.collection.immutable
 import scala.concurrent.duration._

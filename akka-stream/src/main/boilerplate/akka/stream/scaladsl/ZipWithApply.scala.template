@@ -2,11 +2,11 @@
  * Copyright (C) 2014-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.stream.scaladsl
+package org.apache.pekko.stream.scaladsl
 
-import akka.stream._
-import akka.stream.impl.ContextPropagation
-import akka.stream.stage._
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.impl.ContextPropagation
+import org.apache.pekko.stream.stage._
 
 trait ZipWithApply {
 

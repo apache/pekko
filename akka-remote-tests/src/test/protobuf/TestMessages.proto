@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.remote.artery.protobuf";
+option java_package = "org.apache.pekko.remote.artery.protobuf";
 
 message TestMessage {
   required uint64 id = 1;

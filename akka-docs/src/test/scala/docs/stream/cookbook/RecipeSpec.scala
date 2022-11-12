@@ -4,7 +4,7 @@
 
 package docs.stream.cookbook
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 
 trait RecipeSpec extends AkkaSpec {
 

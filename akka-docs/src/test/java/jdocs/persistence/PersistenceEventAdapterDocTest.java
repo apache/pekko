@@ -4,8 +4,8 @@
 
 package jdocs.persistence;
 
-import akka.persistence.journal.EventAdapter;
-import akka.persistence.journal.EventSeq;
+import org.apache.pekko.persistence.journal.EventAdapter;
+import org.apache.pekko.persistence.journal.EventSeq;
 
 public class PersistenceEventAdapterDocTest {
 

@@ -6,17 +6,17 @@ package jdocs.io.japi;
 
 import java.net.InetSocketAddress;
 
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.SupervisorStrategy;
-import akka.actor.AbstractActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
-import akka.io.Tcp;
-import akka.io.Tcp.Bind;
-import akka.io.Tcp.Bound;
-import akka.io.Tcp.Connected;
-import akka.io.TcpMessage;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.io.Tcp;
+import org.apache.pekko.io.Tcp.Bind;
+import org.apache.pekko.io.Tcp.Bound;
+import org.apache.pekko.io.Tcp.Connected;
+import org.apache.pekko.io.TcpMessage;
 
 public class EchoManager extends AbstractActor {
 

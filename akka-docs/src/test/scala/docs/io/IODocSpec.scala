@@ -5,18 +5,19 @@
 package docs.io
 
 //#imports
-import akka.actor.{ Actor, ActorRef, Props }
-import akka.io.{ IO, Tcp }
-import akka.util.ByteString
+import org.apache.pekko
+import pekko.actor.{ Actor, ActorRef, Props }
+import pekko.io.{ IO, Tcp }
+import pekko.util.ByteString
 import java.net.InetSocketAddress
 //#imports
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 import scala.concurrent.duration._
 
 class DemoActor extends Actor {
   // #manager
-  import akka.io.{ IO, Tcp }
+  import org.apache.pekko.io.{ IO, Tcp }
   import context.system // implicitly used by IO(Tcp)
 
   val manager = IO(Tcp)

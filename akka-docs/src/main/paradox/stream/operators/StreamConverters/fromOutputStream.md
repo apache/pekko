@@ -6,17 +6,17 @@ Create a sink that wraps an `OutputStream`.
 
 ## Signature
 
-@apidoc[StreamConverters.fromOutputStream](StreamConverters$) { scala="#fromOutputStream(out:()=%3Cjava.io.OutputStream,autoFlush:Boolean):akka.stream.scaladsl.Sink[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#fromOutputStream(akka.japi.function.Creator)" }
+@apidoc[StreamConverters.fromOutputStream](StreamConverters$) { scala="#fromOutputStream(out:()=%3Cjava.io.OutputStream,autoFlush:Boolean):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromOutputStream(org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 
-Creates a Sink which writes incoming @apidoc[akka.util.ByteString]s to a `java.io.OutputStream` created by the given function.
+Creates a Sink which writes incoming @apidoc[util.ByteString]s to a `java.io.OutputStream` created by the given function.
 
 Materializes a @java[`CompletionStage`]@scala[`Future`] of `IOResult` that will be completed with the size of the file (in bytes) on completion,
 and a possible exception if IO operation was not completed successfully.
 
-You can configure the default dispatcher for this Source by changing the `akka.stream.materializer.blocking-io-dispatcher` or
-set it for a given Source by using `akka.stream.ActorAttributes`.
+You can configure the default dispatcher for this Source by changing the `org.apache.pekko.stream.materializer.blocking-io-dispatcher` or
+set it for a given Source by using `org.apache.pekko.stream.ActorAttributes`.
 
 If `autoFlush` is true the OutputStream will be flushed whenever a byte array is written, defaults to false.
 The `OutputStream` will be closed when the stream flowing into this `Sink` is completed. The `Sink`

@@ -5,14 +5,15 @@
 package typed.tutorial_5
 
 //#device-with-passivate
-import akka.actor.typed.ActorRef
-import akka.actor.typed.Behavior
-import akka.actor.typed.PostStop
-import akka.actor.typed.Signal
-import akka.actor.typed.scaladsl.AbstractBehavior
-import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.scaladsl.Behaviors
-import akka.actor.typed.scaladsl.LoggerOps
+import org.apache.pekko
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.PostStop
+import pekko.actor.typed.Signal
+import pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.actor.typed.scaladsl.LoggerOps
 
 object Device {
   def apply(groupId: String, deviceId: String): Behavior[Command] =

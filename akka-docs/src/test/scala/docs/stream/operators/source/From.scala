@@ -6,8 +6,8 @@ package docs.stream.operators.source
 
 import java.util.stream.IntStream
 
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Source
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
 
 object From {
 

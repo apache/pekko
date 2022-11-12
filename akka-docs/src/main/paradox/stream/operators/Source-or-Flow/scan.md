@@ -6,8 +6,8 @@ Emit its current value, which starts at `zero`, and then apply the current and n
 
 ## Signature
 
-@apidoc[Source.scan](Source) { scala="#scan[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#scan(java.lang.Object,akka.japi.function.Function2)" }
-@apidoc[Flow.scan](Flow) { scala="#scan[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#scan(java.lang.Object,akka.japi.function.Function2)" }
+@apidoc[Source.scan](Source) { scala="#scan[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#scan(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.scan](Flow) { scala="#scan[T](zero:T)(f:(T,Out)=&gt;T):FlowOps.this.Repr[T]" java="#scan(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description

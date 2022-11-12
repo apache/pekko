@@ -4,12 +4,12 @@
 
 package docs.io
 
-import akka.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
-import akka.io.Tcp._
-import akka.io.{ IO, Tcp }
+import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Props }
+import org.apache.pekko.io.Tcp._
+import org.apache.pekko.io.{ IO, Tcp }
 import java.net.InetSocketAddress
-import akka.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
-import akka.util.ByteString
+import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration

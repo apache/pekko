@@ -32,7 +32,7 @@ You need to enable the Split Brain Resolver by configuring it as downing provide
 the `ActorSystem` (`application.conf`):
 
 ```
-akka.cluster.downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
 ```
 
 You should also consider the different available @ref:[downing strategies](#strategies).
@@ -363,7 +363,7 @@ Configuration:
 ```
 akka {
   cluster {
-    downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+    downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
     split-brain-resolver {
       active-strategy = "lease-majority"
       lease-majority {

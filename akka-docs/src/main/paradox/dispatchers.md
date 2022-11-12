@@ -29,7 +29,7 @@ Java
 
 ## Setting the dispatcher for an Actor
 
-So in case you want to give your @apidoc[akka.actor.Actor] a different dispatcher than the default, you need to do two things, of which the first
+So in case you want to give your @apidoc[actor.Actor] a different dispatcher than the default, you need to do two things, of which the first
 is to configure the dispatcher:
 
 <!--same config text for Scala & Java-->
@@ -81,7 +81,7 @@ Java
 
 @@@ note
 
-The dispatcher you specify in @apidoc[withDispatcher](akka.actor.Props) {scala="#withDispatcher(d:String):akka.actor.Props" java="#withDispatcher(java.lang.String)"} and the `dispatcher` property in the deployment
+The dispatcher you specify in @apidoc[withDispatcher](actor.Props) {scala="#withDispatcher(d:String):org.apache.pekko.actor.Props" java="#withDispatcher(java.lang.String)"} and the `dispatcher` property in the deployment
 configuration is in fact a path into your configuration.
 So in this example it's a top-level section, but you could for instance put it as a sub-section,
 where you'd use periods to denote sub-sections, like this: `"foo.bar.my-dispatcher"`

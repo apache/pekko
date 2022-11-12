@@ -22,7 +22,7 @@ To use Cluster Singleton, you must add the following dependency in your project:
 
 For the full documentation of this feature and for new projects see @ref:[Cluster Singleton - Introduction](typed/cluster-singleton.md#introduction).
 
-The cluster singleton pattern is implemented by `akka.cluster.singleton.ClusterSingletonManager`.
+The cluster singleton pattern is implemented by `org.apache.pekko.cluster.singleton.ClusterSingletonManager`.
 It manages one singleton actor instance among all cluster nodes or a group of nodes tagged with
 a specific role. `ClusterSingletonManager` is an actor that is supposed to be started as early as possible
 on all nodes, or all nodes with specified role, in the cluster. The actual singleton actor is
@@ -30,10 +30,10 @@ started by the `ClusterSingletonManager` on the oldest node by creating a child 
 supplied `Props`. `ClusterSingletonManager` makes sure that at most one singleton instance
 is running at any point in time.
 
-You can access the singleton actor by using the provided `akka.cluster.singleton.ClusterSingletonProxy`,
+You can access the singleton actor by using the provided `org.apache.pekko.cluster.singleton.ClusterSingletonProxy`,
 which will route all messages to the current instance of the singleton. The proxy will keep track of
 the oldest node in the cluster and resolve the singleton's `ActorRef` by explicitly sending the
-singleton's `actorSelection` the `akka.actor.Identify` message and waiting for it to reply.
+singleton's `actorSelection` the `org.apache.pekko.actor.Identify` message and waiting for it to reply.
 This is performed periodically if the singleton doesn't reply within a certain (configurable) time.
 Given the implementation, there might be periods of time during which the `ActorRef` is unavailable,
 e.g., when a node leaves the cluster. In these cases, the proxy will buffer the messages sent to the
@@ -55,19 +55,19 @@ Before explaining how to create a cluster singleton actor, let's define message 
 which will be used by the singleton.
 
 Scala
-:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/singleton/ClusterSingletonManagerSpec.scala) { #singleton-message-classes }
+:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/singleton/ClusterSingletonManagerSpec.scala) { #singleton-message-classes }
 
 Java
-:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/akka/cluster/singleton/TestSingletonMessages.java) { #singleton-message-classes }
+:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/TestSingletonMessages.java) { #singleton-message-classes }
 
 On each node in the cluster you need to start the `ClusterSingletonManager` and
 supply the `Props` of the singleton actor, in this case the JMS queue consumer.
 
 Scala
-:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-manager }
+:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-manager }
 
 Java
-:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/akka/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-manager }
+:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-manager }
 
 Here we limit the singleton to nodes tagged with the `"worker"` role, but all nodes, independent of
 role, can be used by not specifying `withRole`.
@@ -79,19 +79,19 @@ perfectly fine `terminationMessage` if you only need to stop the actor.
 Here is how the singleton actor handles the `terminationMessage` in this example.
 
 Scala
-:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/singleton/ClusterSingletonManagerSpec.scala) { #consumer-end }
+:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/singleton/ClusterSingletonManagerSpec.scala) { #consumer-end }
 
 Java
-:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/akka/cluster/singleton/Consumer.java) { #consumer-end }
+:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/Consumer.java) { #consumer-end }
 
 With the names given above, access to the singleton can be obtained from any cluster node using a properly
 configured proxy.
 
 Scala
-:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-proxy }
+:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-proxy }
 
 Java
-:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/akka/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-proxy }
+:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-proxy }
 
 A more comprehensive sample is available in the tutorial named 
 @scala[[Distributed workers with Akka and Scala!](https://github.com/typesafehub/activator-akka-distributed-workers)]@java[[Distributed workers with Akka and Java!](https://github.com/typesafehub/activator-akka-distributed-workers-java)].

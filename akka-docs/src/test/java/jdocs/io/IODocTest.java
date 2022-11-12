@@ -4,18 +4,18 @@
 
 package jdocs.io;
 
-import akka.actor.ActorSystem;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.AbstractActor;
 // #imports
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
-import akka.actor.ActorRef;
-import akka.io.Inet;
-import akka.io.Tcp;
-import akka.io.TcpMessage;
-import akka.io.TcpSO;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.io.Inet;
+import org.apache.pekko.io.Tcp;
+import org.apache.pekko.io.TcpMessage;
+import org.apache.pekko.io.TcpSO;
+import org.apache.pekko.util.ByteString;
 import java.time.Duration;
 // #imports
 

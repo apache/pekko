@@ -135,12 +135,12 @@ to change at any time (even if best-effort is taken to keep them compatible).
 
 When browsing the source code and/or looking for methods available to be called, especially from Java which does not
 have as rich of an access protection system as Scala has, you may sometimes find methods or classes annotated with
-the `/** INTERNAL API */` comment or the @javadoc[@InternalApi](akka.annotation.InternalApi) annotation. 
+the `/** INTERNAL API */` comment or the @javadoc[@InternalApi](pekko.annotation.InternalApi) annotation. 
 
 No compatibility guarantees are given about these classes. They may change or even disappear in minor versions,
 and user code is not supposed to call them.
 
-Side-note on JVM representation details of the Scala `private[akka]` pattern that Akka is using extensively in 
+Side-note on JVM representation details of the Scala `private[pekko]` pattern that Akka is using extensively in 
 its internals: Such methods or classes, which act as "accessible only from the given package" in Scala, are compiled
 down to `public` (!) in raw Java bytecode. The access restriction, that Scala understands is carried along
 as metadata stored in the classfile. Thus, such methods are safely guarded from being accessed from Scala,
@@ -151,11 +151,11 @@ into Internal APIs, as they are subject to change without any warning.
 
 In addition to the special internal API marker two annotations exist in Akka and specifically address the following use cases:
 
- * @javadoc[@ApiMayChange](akka.annotation.ApiMayChange) – which marks APIs which are known to be not fully stable yet. Read more in @ref:[Modules marked "May Change"](may-change.md)
- * @javadoc[@DoNotInherit](akka.annotation.DoNotInherit) – which marks APIs that are designed under a closed-world assumption, and thus must not be
+ * @javadoc[@ApiMayChange](pekko.annotation.ApiMayChange) – which marks APIs which are known to be not fully stable yet. Read more in @ref:[Modules marked "May Change"](may-change.md)
+ * @javadoc[@DoNotInherit](pekko.annotation.DoNotInherit) – which marks APIs that are designed under a closed-world assumption, and thus must not be
 extended outside Akka itself (or such code will risk facing binary incompatibilities). E.g. an interface may be
 marked using this annotation, and while the type is public, it is not meant for extension by user-code. This allows
-adding new methods to these interfaces without risking to break client code. Examples of such API are the @scaladoc[FlowOps](akka.stream.scaladsl.FlowOps)
+adding new methods to these interfaces without risking to break client code. Examples of such API are the @scaladoc[FlowOps](pekko.stream.scaladsl.FlowOps)
 trait or the Akka HTTP domain model.
 
 Please note that a best-effort approach is always taken when having to change APIs and breakage is avoided as much as 

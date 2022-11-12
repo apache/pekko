@@ -4,9 +4,9 @@
 
 package scala.docs.cluster
 
-import akka.cluster.Cluster
+import org.apache.pekko.cluster.Cluster
 
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 import docs.CompileOnlySpec
 
 object ClusterDocSpec {
@@ -44,8 +44,9 @@ class ClusterDocSpec extends AkkaSpec(ClusterDocSpec.config) with CompileOnlySpe
 
   "demonstrate programmatic joining to seed nodes" in compileOnlySpec {
     // #join-seed-nodes
-    import akka.actor.Address
-    import akka.cluster.Cluster
+    import org.apache.pekko
+    import pekko.actor.Address
+    import pekko.cluster.Cluster
 
     val cluster = Cluster(system)
     val list: List[Address] = ??? // your method to dynamically get seed nodes

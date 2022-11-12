@@ -4,7 +4,7 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
@@ -12,7 +12,7 @@ import scala.concurrent.Future
 object ScanAsync {
 
   def scanAsyncExample(): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
     implicit val ec: ExecutionContext = system.dispatcher

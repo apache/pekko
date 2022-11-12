@@ -4,12 +4,12 @@
 
 package jdocs.actor.io.dns;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.io.Dns;
-import akka.io.dns.DnsProtocol;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.io.Dns;
+import org.apache.pekko.io.dns.DnsProtocol;
 
-import static akka.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.ask;
 
 import scala.Option;
 

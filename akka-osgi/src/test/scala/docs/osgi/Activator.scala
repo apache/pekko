@@ -4,16 +4,19 @@
 
 package docs.osgi
 
+import org.apache.pekko
+
 case object SomeMessage
 
-class SomeActor extends akka.actor.Actor {
+class SomeActor extends pekko.actor.Actor {
   def receive = { case SomeMessage => }
 }
 
 //#Activator
-import akka.actor.{ ActorSystem, Props }
+import org.apache.pekko
+import pekko.actor.{ ActorSystem, Props }
 import org.osgi.framework.BundleContext
-import akka.osgi.ActorSystemActivator
+import pekko.osgi.ActorSystemActivator
 
 class Activator extends ActorSystemActivator {
 

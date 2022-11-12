@@ -6,7 +6,7 @@ Streams the elements to the given future sink once it successfully completes.
 
 ## Signature
 
-@apidoc[Sink.futureSink](Sink$) { scala="#futureSink[T,M](future:scala.concurrent.Future[akka.stream.scaladsl.Sink[T,M]]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" }
+@apidoc[Sink.futureSink](Sink$) { scala="#futureSink[T,M](future:scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Sink[T,M]]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" }
 
 
 ## Description

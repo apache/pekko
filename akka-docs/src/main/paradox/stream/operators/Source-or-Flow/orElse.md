@@ -6,8 +6,8 @@ If the primary source completes without emitting any elements, the elements from
 
 ## Signature
 
-@apidoc[Source.orElse](Source) { scala="#orElse[U&gt;:Out,Mat2](secondary:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#orElse(akka.stream.Graph)" }
-@apidoc[Flow.orElse](Flow) { scala="#orElse[U&gt;:Out,Mat2](secondary:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#orElse(akka.stream.Graph)" }
+@apidoc[Source.orElse](Source) { scala="#orElse[U&gt;:Out,Mat2](secondary:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#orElse(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.orElse](Flow) { scala="#orElse[U&gt;:Out,Mat2](secondary:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#orElse(org.apache.pekko.stream.Graph)" }
 
 
 ## Description
@@ -22,7 +22,7 @@ Signal errors downstream, regardless which of the two sources emitted the error.
 
 ## Example
 Scala
-:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowOrElseSpec.scala) { #or-else }
+:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowOrElseSpec.scala) { #or-else }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #or-else }

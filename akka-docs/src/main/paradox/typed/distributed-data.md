@@ -49,14 +49,14 @@ accessed through the @apidoc[typed.*.DistributedData] extension.
 The messages for the replicator, such as @apidoc[typed.*Replicator.Update] are defined as
 subclasses of @apidoc[typed.*Replicator.Command]
 and the actual CRDTs are defined in the `akka.cluster.ddata` package, for example
-@apidoc[akka.cluster.ddata.GCounter]. It requires a @scala[implicit] `akka.cluster.ddata.SelfUniqueAddress`,
+@apidoc[cluster.ddata.GCounter]. It requires a @scala[implicit] `org.apache.pekko.cluster.ddata.SelfUniqueAddress`,
 available from:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #selfUniqueAddress }
+:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #selfUniqueAddress }
 
 Java
-:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #selfUniqueAddress }
+:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #selfUniqueAddress }
  
 The replicator can contain multiple entries each containing a replicated data type, we therefore need to create a 
 key identifying the entry and helping us know what type it has, and then use that key for every interaction with
@@ -74,10 +74,10 @@ This sample uses the replicated data type `GCounter` to implement a counter that
 cluster: 
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #sample }
+:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #sample }
 
 Java
-:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #sample }
+:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #sample }
 
 Although you can interact with the `Replicator` using the @scala[`ActorRef[Replicator.Command]`]@java[`ActorRef<Replicator.Command>`]
 from @scala[`DistributedData(ctx.system).replicator`]@java[`DistributedData(ctx.getSystem()).replicator()`] it's
@@ -103,7 +103,7 @@ it contains five values:
 There is alternative way of constructing the function for the `Update` message:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/akka/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-update }
+:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-update }
 
 @@@
 
@@ -144,7 +144,7 @@ incoming message can be used when the `GetSuccess` response from the replicator 
 Alternative way of constructing the function for the `Get` and `Delete`:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/akka/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-get }
+:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-get }
 
 @@@
 
@@ -591,7 +591,7 @@ Implement the additional methods of @scala[`DeltaReplicatedData`]@java[`Abstract
 The data types must be serializable with an @ref:[Akka Serializer](../serialization.md).
 It is highly recommended that you implement  efficient serialization with Protobuf or similar
 for your custom data types. The built in data types are marked with `ReplicatedDataSerialization`
-and serialized with `akka.cluster.ddata.protobuf.ReplicatedDataSerializer`.
+and serialized with `org.apache.pekko.cluster.ddata.protobuf.ReplicatedDataSerializer`.
 
 Serialization of the data types are used in remote messages and also for creating message
 digests (SHA-1) to detect changes. Therefore it is important that the serialization is efficient
@@ -621,7 +621,7 @@ Java
 : @@snip [DistributedDataDocSpec.scala](/akka-docs/src/test/scala/docs/ddata/DistributedDataDocSpec.scala) { #japi-serializer-config }
 
 Using compression can sometimes be a good idea to reduce the data size. Gzip compression is
-provided by the @scala[`akka.cluster.ddata.protobuf.SerializationSupport` trait]@java[`akka.cluster.ddata.protobuf.AbstractSerializationSupport` interface]:
+provided by the @scala[`org.apache.pekko.cluster.ddata.protobuf.SerializationSupport` trait]@java[`org.apache.pekko.cluster.ddata.protobuf.AbstractSerializationSupport` interface]:
 
 Scala
 : @@snip [TwoPhaseSetSerializer.scala](/akka-docs/src/test/scala/docs/ddata/protobuf/TwoPhaseSetSerializer.scala) { #compression }
@@ -672,7 +672,7 @@ akka.cluster.distributed-data.durable.keys = ["*"]
 
 @scala[[LMDB](https://symas.com/lmdb/technical/)]@java[[LMDB](https://github.com/lmdbjava/lmdbjava/)] is the default storage implementation. It is
 possible to replace that with another implementation by implementing the actor protocol described in
-`akka.cluster.ddata.DurableStore` and defining the `akka.cluster.distributed-data.durable.store-actor-class`
+`org.apache.pekko.cluster.ddata.DurableStore` and defining the `akka.cluster.distributed-data.durable.store-actor-class`
 property for the new implementation.
 
 The location of the files for the data is configured with:

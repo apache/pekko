@@ -6,8 +6,8 @@ Like `mapAsync` but @scala[`Future`] @java[`CompletionStage`] results are passed
 
 ## Signature
 
-@apidoc[Source.mapAsyncUnordered](Source) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,akka.japi.function.Function)" }
-@apidoc[Flow.mapAsyncUnordered](Flow) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,akka.japi.function.Function)" }
+@apidoc[Source.mapAsyncUnordered](Source) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.mapAsyncUnordered](Flow) { scala="#mapAsyncUnordered[T](parallelism:Int)(f:Out=&gt;scala.concurrent.Future[T]):FlowOps.this.Repr[T]" java="#mapAsyncUnordered(int,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

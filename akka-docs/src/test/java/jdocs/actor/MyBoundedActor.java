@@ -5,8 +5,8 @@
 package jdocs.actor;
 
 // #my-bounded-classic-actor
-import akka.dispatch.BoundedMessageQueueSemantics;
-import akka.dispatch.RequiresMessageQueue;
+import org.apache.pekko.dispatch.BoundedMessageQueueSemantics;
+import org.apache.pekko.dispatch.RequiresMessageQueue;
 
 public class MyBoundedActor extends MyActor
     implements RequiresMessageQueue<BoundedMessageQueueSemantics> {}

@@ -4,11 +4,11 @@
 
 package docs.stream.cookbook
 
-import akka.event.Logging
-import akka.event.LoggingAdapter
-import akka.stream.Attributes
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.testkit.{ EventFilter, TestProbe }
+import org.apache.pekko.event.Logging
+import org.apache.pekko.event.LoggingAdapter
+import org.apache.pekko.stream.Attributes
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.testkit.{ EventFilter, TestProbe }
 
 class RecipeLoggingElements extends RecipeSpec {
 

@@ -6,10 +6,10 @@ package docs.stream.cookbook
 
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
 
-import akka.stream.scaladsl.Source
-import akka.stream.testkit.scaladsl.TestSink
-import akka.testkit.TimingTest
-import akka.{ Done, NotUsed }
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.stream.testkit.scaladsl.TestSink
+import org.apache.pekko.testkit.TimingTest
+import org.apache.pekko.{ Done, NotUsed }
 
 import scala.concurrent._
 import scala.concurrent.duration._

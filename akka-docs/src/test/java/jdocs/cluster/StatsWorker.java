@@ -7,7 +7,7 @@ package jdocs.cluster;
 import java.util.HashMap;
 import java.util.Map;
 
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor;
 
 // #worker
 public class StatsWorker extends AbstractActor {

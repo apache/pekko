@@ -19,7 +19,7 @@ This operator is included in:
 
 ## Signature
 
-@apidoc[ActorFlow.askWithContext](ActorFlow$) { scala="#askWithContext%5BI,Q,A,Ctx](ref:akka.actor.typed.ActorRef%5BQ])(makeMessage:(I,akka.actor.typed.ActorRef%5BA])=%3EQ)(implicittimeout:akka.util.Timeout):akka.stream.scaladsl.Flow%5B(I,Ctx),(A,Ctx),akka.NotUsed]" java="#askWithContext(akka.actor.typed.ActorRef,java.time.Duration,java.util.function.BiFunction)" }
+@apidoc[ActorFlow.askWithContext](ActorFlow$) { scala="#askWithContext%5BI,Q,A,Ctx](ref:org.apache.pekko.actor.typed.ActorRef%5BQ])(makeMessage:(I,org.apache.pekko.actor.typed.ActorRef%5BA])=%3EQ)(implicittimeout:org.apache.pekko.util.Timeout):org.apache.pekko.stream.scaladsl.Flow%5B(I,Ctx),(A,Ctx),org.apache.pekko.NotUsed]" java="#askWithContext(org.apache.pekko.actor.typed.ActorRef,java.time.Duration,java.util.function.BiFunction)" }
 
 ## Description
 

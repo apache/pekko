@@ -6,7 +6,7 @@ Fold over emitted element with a function, where each invocation will get the ne
 
 ## Signature
 
-@apidoc[Sink.fold](Sink$) { scala="#fold[U,T](zero:U)(f:(U,T)=&gt;U):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]" java="#fold(java.lang.Object,akka.japi.function.Function2)" }
+@apidoc[Sink.fold](Sink$) { scala="#fold[U,T](zero:U)(f:(U,T)=&gt;U):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[U]]" java="#fold(java.lang.Object,org.apache.pekko.japi.function.Function2)" }
 
 ## Description
 

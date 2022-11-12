@@ -10,7 +10,7 @@ Collect all input elements using a Java @javadoc[Collector](java.util.stream.Col
 
 ## Description
 
-A @javadoc[Sink](akka.stream.javadsl.Sink) which materializes into a @javadoc[CompletionStage](java.util.concurrent.CompletionStage) 
+A @javadoc[Sink](pekko.stream.javadsl.Sink) which materializes into a @javadoc[CompletionStage](java.util.concurrent.CompletionStage) 
 which will be completed with a result of the Java @javadoc[Collector](java.util.stream.Collector) transformation and reduction operations.
 
 ## Example
@@ -18,7 +18,7 @@ which will be completed with a result of the Java @javadoc[Collector](java.util.
 Given a stream of numbers we can collect the numbers into a collection with the `seq` operator
 
 Java
-:   @@snip [SinkTest.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/SinkTest.java) { #collect-to-list }
+:   @@snip [SinkTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #collect-to-list }
 
 
 ## Reactive Streams semantics

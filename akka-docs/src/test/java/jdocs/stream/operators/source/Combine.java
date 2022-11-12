@@ -4,12 +4,12 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
 // #imports
-import akka.stream.javadsl.Concat;
-import akka.stream.javadsl.Merge;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.Concat;
+import org.apache.pekko.stream.javadsl.Merge;
+import org.apache.pekko.stream.javadsl.Source;
 // ...
 
 // #imports

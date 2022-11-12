@@ -4,16 +4,16 @@
 
 package jdocs.cluster.singleton;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.SupervisorStrategy;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.SupervisorStrategy;
 
 // #singleton-supervisor-actor-usage-imports
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.cluster.singleton.ClusterSingletonManager;
-import akka.cluster.singleton.ClusterSingletonManagerSettings;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManager;
+import org.apache.pekko.cluster.singleton.ClusterSingletonManagerSettings;
 // #singleton-supervisor-actor-usage-imports
 
 abstract class ClusterSingletonSupervision extends AbstractActor {

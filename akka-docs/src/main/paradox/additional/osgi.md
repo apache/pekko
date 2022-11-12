@@ -106,11 +106,11 @@ dynamic in this way. ActorRefs may safely be exposed to other bundles.
 
 ## Activator
 
-To bootstrap Akka inside an OSGi environment, you can use the @apidoc[akka.osgi.ActorSystemActivator](akka.osgi.ActorSystemActivator) class
-to conveniently set up the @apidoc[ActorSystem](akka.actor.ActorSystem).
+To bootstrap Akka inside an OSGi environment, you can use the @apidoc[osgi.ActorSystemActivator](osgi.ActorSystemActivator) class
+to conveniently set up the @apidoc[ActorSystem](actor.ActorSystem).
 
 @@snip [Activator.scala](/akka-osgi/src/test/scala/docs/osgi/Activator.scala) { #Activator }
 
-The goal here is to map the OSGi lifecycle more directly to the Akka lifecycle. The @apidoc[ActorSystemActivator](akka.osgi.ActorSystemActivator) creates
+The goal here is to map the OSGi lifecycle more directly to the Akka lifecycle. The @apidoc[ActorSystemActivator](osgi.ActorSystemActivator) creates
 the actor system with a class loader that finds resources (`application.conf` and `reference.conf` files) and classes
 from the application bundle and all transitive dependencies.

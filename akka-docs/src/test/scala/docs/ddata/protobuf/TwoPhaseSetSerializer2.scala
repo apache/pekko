@@ -5,10 +5,11 @@
 package docs.ddata.protobuf
 
 //#serializer
-import akka.actor.ExtendedActorSystem
-import akka.cluster.ddata.GSet
-import akka.cluster.ddata.protobuf.SerializationSupport
-import akka.serialization.Serializer
+import org.apache.pekko
+import pekko.actor.ExtendedActorSystem
+import pekko.cluster.ddata.GSet
+import pekko.cluster.ddata.protobuf.SerializationSupport
+import pekko.serialization.Serializer
 import docs.ddata.TwoPhaseSet
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages
 

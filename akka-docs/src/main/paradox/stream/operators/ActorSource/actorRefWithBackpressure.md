@@ -19,7 +19,7 @@ This operator is included in:
 
 ## Signature
 
-@apidoc[ActorSource.actorRefWithBackpressure](ActorSource$) { scala="#actorRefWithBackpressure[T,Ack](ackTo:akka.actor.typed.ActorRef[Ack],ackMessage:Ack,completionMatcher:PartialFunction[T,akka.stream.CompletionStrategy],failureMatcher:PartialFunction[T,Throwable]):akka.stream.scaladsl.Source[T,akka.actor.typed.ActorRef[T]]" java="#actorRefWithBackpressure(akka.actor.typed.ActorRef,java.lang.Object,akka.japi.function.Function,akka.japi.function.Function)" }
+@apidoc[ActorSource.actorRefWithBackpressure](ActorSource$) { scala="#actorRefWithBackpressure[T,Ack](ackTo:org.apache.pekko.actor.typed.ActorRef[Ack],ackMessage:Ack,completionMatcher:PartialFunction[T,org.apache.pekko.stream.CompletionStrategy],failureMatcher:PartialFunction[T,Throwable]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.typed.ActorRef[T]]" java="#actorRefWithBackpressure(org.apache.pekko.actor.typed.ActorRef,java.lang.Object,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 
@@ -48,10 +48,10 @@ In this example we create the stream in an actor which itself reacts on the dema
 
 
 Scala
-:  @@snip [ActorSourceSinkExample.scala](/akka-stream-typed/src/test/scala/docs/akka/stream/typed/ActorSourceSinkExample.scala) { #actor-source-with-backpressure }
+:  @@snip [ActorSourceSinkExample.scala](/akka-stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-source-with-backpressure }
 
 Java
-:  @@snip [snip](/akka-stream-typed/src/test/java/docs/akka/stream/typed/ActorSourceWithBackpressureExample.java) { #sample }
+:  @@snip [snip](/akka-stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSourceWithBackpressureExample.java) { #sample }
 
 ## Reactive Streams semantics
 

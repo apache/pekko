@@ -7,10 +7,10 @@ package docs.persistence
 import java.io.NotSerializableException
 import java.nio.charset.Charset
 
-import akka.actor.ActorSystem
-import akka.persistence.journal.{ EventAdapter, EventSeq }
-import akka.serialization.{ SerializationExtension, SerializerWithStringManifest }
-import akka.testkit.TestKit
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
+import org.apache.pekko.serialization.{ SerializationExtension, SerializerWithStringManifest }
+import org.apache.pekko.testkit.TestKit
 import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
 import spray.json.JsObject

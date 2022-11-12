@@ -3,7 +3,7 @@
 
 ## Source operators
 
-These built-in sources are available from @scala[`akka.stream.scaladsl.Source`] @java[`akka.stream.javadsl.Source`]:
+These built-in sources are available from @scala[`org.apache.pekko.stream.scaladsl.Source`] @java[`org.apache.pekko.stream.javadsl.Source`]:
 
 | |Operator|Description|
 |--|--|--|
@@ -49,7 +49,7 @@ These built-in sources are available from @scala[`akka.stream.scaladsl.Source`] 
 
 ## Sink operators
 
-These built-in sinks are available from @scala[`akka.stream.scaladsl.Sink`] @java[`akka.stream.javadsl.Sink`]:
+These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl.Sink`] @java[`org.apache.pekko.stream.javadsl.Sink`]:
 
 
 | |Operator|Description|
@@ -338,8 +338,8 @@ Operators meant for inter-operating between Akka Streams and Actors:
 |ActorFlow|<a name="askwithcontext"></a>@ref[askWithContext](ActorFlow/askWithContext.md)|Use the "Ask Pattern" to send each stream element (without the context) as an `ask` to the target actor (of the new actors API), and expect a reply that will be emitted downstream.|
 |ActorFlow|<a name="askwithstatus"></a>@ref[askWithStatus](ActorFlow/askWithStatus.md)|Use the "Ask Pattern" to send each stream element as an `ask` to the target actor (of the new actors API),  and expect a reply of Type @scala[`StatusReply[T]`]@java[`StatusReply<T>`] where the T will be unwrapped and emitted downstream.|
 |ActorFlow|<a name="askwithstatusandcontext"></a>@ref[askWithStatusAndContext](ActorFlow/askWithStatusAndContext.md)|Use the "Ask Pattern" to send each stream element (without the context) as an `ask` to the target actor (of the new actors API), and expect a reply of Type @scala[`StatusReply[T]`]@java[`StatusReply<T>`] where the T will be unwrapped and emitted downstream.|
-|PubSub|<a name="sink"></a>@ref[sink](PubSub/sink.md)|A sink that will publish emitted messages to a @apidoc[akka.actor.typed.pubsub.Topic$].|
-|PubSub|<a name="source"></a>@ref[source](PubSub/source.md)|A source that will subscribe to a @apidoc[akka.actor.typed.pubsub.Topic$] and stream messages published to the topic. |
+|PubSub|<a name="sink"></a>@ref[sink](PubSub/sink.md)|A sink that will publish emitted messages to a @apidoc[actor.typed.pubsub.Topic$].|
+|PubSub|<a name="source"></a>@ref[source](PubSub/source.md)|A source that will subscribe to a @apidoc[actor.typed.pubsub.Topic$] and stream messages published to the topic. |
 |Source/Flow|<a name="watch"></a>@ref[watch](Source-or-Flow/watch.md)|Watch a specific `ActorRef` and signal a failure downstream once the actor terminates.|
 
 ## Compression operators

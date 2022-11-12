@@ -4,9 +4,9 @@
 
 package docs.actor.typed
 
-import akka.actor.typed.scaladsl._
-import akka.actor.typed.{ ActorRef, Behavior }
-import akka.util.Timeout
+import org.apache.pekko.actor.typed.scaladsl._
+import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
+import org.apache.pekko.util.Timeout
 
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -67,7 +67,7 @@ class SharedMutableStateDocSpec {
 
         // Another example of incorrect approach
         // mutating actor state from ask future callback
-        import akka.actor.typed.scaladsl.AskPattern._
+        import org.apache.pekko.actor.typed.scaladsl.AskPattern._
         implicit val timeout: Timeout = 5.seconds // needed for `ask` below
         implicit val scheduler = context.system.scheduler
         val future: Future[String] = otherActor.ask(Query(_))

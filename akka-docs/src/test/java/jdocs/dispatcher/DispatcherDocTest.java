@@ -4,10 +4,10 @@
 
 package jdocs.dispatcher;
 
-import akka.dispatch.ControlMessage;
-import akka.dispatch.RequiresMessageQueue;
-import akka.testkit.AkkaSpec;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.dispatch.ControlMessage;
+import org.apache.pekko.dispatch.RequiresMessageQueue;
+import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import docs.dispatcher.DispatcherDocSpec;
 import jdocs.AbstractJavaTest;
@@ -18,18 +18,18 @@ import org.junit.Test;
 import scala.concurrent.ExecutionContextExecutor;
 
 // #imports
-import akka.actor.*;
+import org.apache.pekko.actor.*;
 // #imports
 // #imports-prio
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 // #imports-prio
 
 // #imports-prio-mailbox
-import akka.dispatch.PriorityGenerator;
-import akka.dispatch.UnboundedStablePriorityMailbox;
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.dispatch.PriorityGenerator;
+import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 import com.typesafe.config.Config;
 
 // #imports-prio-mailbox

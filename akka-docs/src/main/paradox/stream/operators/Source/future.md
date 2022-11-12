@@ -6,7 +6,7 @@ Send the single value of the `Future` when it completes and there is demand.
 
 ## Signature
 
-@apidoc[Source.future](Source$) { scala="#future[T](futureElement:scala.concurrent.Future[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" }
+@apidoc[Source.future](Source$) { scala="#future[T](futureElement:scala.concurrent.Future[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" }
 
 ## Description
 

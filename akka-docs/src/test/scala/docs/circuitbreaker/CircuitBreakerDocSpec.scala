@@ -6,9 +6,10 @@ package docs.circuitbreaker
 
 //#imports1
 import scala.concurrent.duration._
-import akka.pattern.CircuitBreaker
-import akka.pattern.pipe
-import akka.actor.{ Actor, ActorLogging, ActorRef }
+import org.apache.pekko
+import pekko.pattern.CircuitBreaker
+import pekko.pattern.pipe
+import pekko.actor.{ Actor, ActorLogging, ActorRef }
 
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
@@ -53,7 +54,7 @@ class TellPatternActor(recipient: ActorRef) extends Actor with ActorLogging {
     log.warning("My CircuitBreaker is now open, and will not close for one minute")
 
   // #circuit-breaker-tell-pattern
-  import akka.actor.ReceiveTimeout
+  import org.apache.pekko.actor.ReceiveTimeout
 
   def receive = {
     case "call" if breaker.isClosed => {

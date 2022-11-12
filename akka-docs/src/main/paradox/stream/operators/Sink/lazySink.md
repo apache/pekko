@@ -6,7 +6,7 @@ Defers creation and materialization of a `Sink` until there is a first element.
 
 ## Signature
 
-@apidoc[Sink.lazySink](Sink$) { scala="#lazySink[T,M](create:()=&gt;akka.stream.scaladsl.Sink[T,M]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#lazySink(akka.japi.function.Creator)" }
+@apidoc[Sink.lazySink](Sink$) { scala="#lazySink[T,M](create:()=&gt;org.apache.pekko.stream.scaladsl.Sink[T,M]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[M]]" java="#lazySink(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

@@ -4,10 +4,10 @@
 
 package docs.stream
 
-import akka.actor.ActorRef
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._

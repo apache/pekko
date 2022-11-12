@@ -242,7 +242,7 @@ Java
 The supervision strategy to restart a classic actor only provides immediate restart. In some cases that will only trigger
 the same failure right away and giving things a bit of time before restarting is required to actually resolve the failure.
 
-The `akka.pattern.BackoffSupervisor` implements the so-called
+The `org.apache.pekko.pattern.BackoffSupervisor` implements the so-called
 *exponential backoff supervision strategy*, starting a child actor again when it fails, each time with a growing time delay between restarts.
 
 This pattern is useful when the started actor fails <a id="^1" href="#1">[1]</a> because some external resource is not available,
@@ -295,7 +295,7 @@ and re-starting after the same configured interval. By adding additional randomn
 re-start intervals the actors will start in slightly different points in time, thus avoiding
 large spikes of traffic hitting the recovering shared database or other resource that they all need to contact.
 
-The `akka.pattern.BackoffSupervisor` actor can also be configured to stop and start the actor after a delay when the actor 
+The `org.apache.pekko.pattern.BackoffSupervisor` actor can also be configured to stop and start the actor after a delay when the actor 
 crashes and the supervision strategy decides that it should restart.
 
 The following snippet shows how to create a backoff supervisor which will start the given echo actor after it has crashed
@@ -309,7 +309,7 @@ Java
 
 ### Customization
 
-The `akka.pattern.BackoffOnFailureOptions` and `akka.pattern.BackoffOnRestartOptions` can be used to customize the behavior of the back-off supervisor actor.
+The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnRestartOptions` can be used to customize the behavior of the back-off supervisor actor.
 Options are:
 * `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behaviour with `minBackoff` as default value
 * `withManualReset`: The child must send `BackoffSupervisor.Reset` to its backoff supervisor (parent)
@@ -325,7 +325,7 @@ Some examples:
 
 @@snip [BackoffSupervisorDocSpec.scala](/akka-docs/src/test/scala/docs/pattern/BackoffSupervisorDocSpec.scala) { #backoff-custom-stop }
 
-The above code sets up a back-off supervisor that requires the child actor to send a `akka.pattern.BackoffSupervisor.Reset` message
+The above code sets up a back-off supervisor that requires the child actor to send a `org.apache.pekko.pattern.BackoffSupervisor.Reset` message
 to its parent when a message is successfully processed, resetting the back-off. It also uses a default stopping strategy, any exception
 will cause the child to stop.
 

@@ -4,15 +4,15 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.japi.Pair;
-import akka.japi.function.Function;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon;
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon.Frame;
 

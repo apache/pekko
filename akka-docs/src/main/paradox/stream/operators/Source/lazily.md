@@ -6,7 +6,7 @@ Deprecated by @ref:[`Source.lazySource`](lazySource.md).
 
 ## Signature
 
-@apidoc[Source.lazily](Source$) { scala="#lazily[T,M](create:()=&gt;akka.stream.scaladsl.Source[T,M]):akka.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" java="#lazily(akka.japi.function.Creator)" }
+@apidoc[Source.lazily](Source$) { scala="#lazily[T,M](create:()=&gt;org.apache.pekko.stream.scaladsl.Source[T,M]):org.apache.pekko.stream.scaladsl.Source[T,scala.concurrent.Future[M]]" java="#lazily(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

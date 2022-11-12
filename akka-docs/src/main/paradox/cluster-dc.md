@@ -22,10 +22,10 @@ For the full documentation of this feature and for new projects see @ref:[Multi-
 This is how to create a singleton proxy for a specific data center:
 
 Scala
-:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-proxy-dc }
+:  @@snip [ClusterSingletonManagerSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/singleton/ClusterSingletonManagerSpec.scala) { #create-singleton-proxy-dc }
 
 Java
-:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/akka/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-proxy-dc }
+:  @@snip [ClusterSingletonManagerTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-proxy-dc }
 
 If using the own data center as the `withDataCenter` parameter that would be a proxy for the singleton in the own data center, which
 is also the default if `withDataCenter` is not given.
@@ -37,7 +37,7 @@ For the full documentation of this feature and for new projects see @ref:[Multi-
 This is how to create a sharding proxy for a specific data center:
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #proxy-dc }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #proxy-dc }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #proxy-dc }

@@ -4,12 +4,12 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.actor.{ Actor, ActorRef, Props }
-import akka.stream.ClosedShape
-import akka.stream.scaladsl._
-import akka.stream.testkit._
-import akka.testkit._
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.{ Actor, ActorRef, Props }
+import org.apache.pekko.stream.ClosedShape
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.testkit._
+import org.apache.pekko.testkit._
 
 import scala.collection.immutable
 import scala.concurrent.duration._
@@ -33,7 +33,7 @@ class RecipeGlobalRateLimit extends RecipeSpec {
         extends Actor {
       import Limiter._
       import context.dispatcher
-      import akka.actor.Status
+      import org.apache.pekko.actor.Status
 
       private var waitQueue = immutable.Queue.empty[ActorRef]
       private var permitTokens = maxAvailableTokens
@@ -81,8 +81,9 @@ class RecipeGlobalRateLimit extends RecipeSpec {
 
       // #global-limiter-flow
       def limitGlobal[T](limiter: ActorRef, maxAllowedWait: FiniteDuration): Flow[T, T, NotUsed] = {
-        import akka.pattern.ask
-        import akka.util.Timeout
+        import org.apache.pekko
+        import pekko.pattern.ask
+        import pekko.util.Timeout
         Flow[T].mapAsync(4)((element: T) => {
           import system.dispatcher
           implicit val triggerTimeout = Timeout(maxAllowedWait)

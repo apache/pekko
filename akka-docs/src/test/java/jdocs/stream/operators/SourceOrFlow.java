@@ -4,17 +4,16 @@
 
 package jdocs.stream.operators;
 
-import akka.Done;
-import akka.NotUsed;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.event.LogMarker;
-import akka.japi.Pair;
-import akka.japi.function.Function2;
-import akka.japi.pf.PFBuilder;
-import akka.stream.Attributes;
-import akka.stream.javadsl.Flow;
-
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.event.LogMarker;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.japi.function.Function2;
+import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.javadsl.Flow;
 
 // #zip
 // #zip-with
@@ -29,9 +28,9 @@ import akka.stream.javadsl.Flow;
 // #interleaveAll
 // #merge
 // #merge-sorted
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.Sink;
 
 import java.util.*;
 
@@ -50,8 +49,8 @@ import java.util.*;
 // #zip
 
 // #log
-import akka.event.LogMarker;
-import akka.stream.Attributes;
+import org.apache.pekko.event.LogMarker;
+import org.apache.pekko.stream.Attributes;
 
 // #log
 
@@ -162,16 +161,17 @@ class SourceOrFlow {
 
     // #concatLazy
   }
-  
+
   void concatAllLazyExample() {
     // #concatAllLazy
     Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3));
     Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(4, 5, 6));
-    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8 , 9));
-    sourceA.concatAllLazy(sourceB, sourceC)
+    Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8, 9));
+    sourceA
+        .concatAllLazy(sourceB, sourceC)
         .fold(new StringJoiner(","), (joiner, input) -> joiner.add(String.valueOf(input)))
         .runForeach(System.out::println, system);
-    //prints 1,2,3,4,5,6,7,8,9
+    // prints 1,2,3,4,5,6,7,8,9
     // #concatAllLazy
   }
 
@@ -184,19 +184,20 @@ class SourceOrFlow {
 
     // #interleave
   }
-  
+
   void interleaveAllExample() {
     // #interleaveAll
     Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 7, 8));
     Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(3, 4, 9));
     Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(5, 6));
-    sourceA.interleaveAll(Arrays.asList(sourceB, sourceC), 2, false)
-        .fold(new StringJoiner(","),(joiner, input) -> joiner.add(String.valueOf(input)))
+    sourceA
+        .interleaveAll(Arrays.asList(sourceB, sourceC), 2, false)
+        .fold(new StringJoiner(","), (joiner, input) -> joiner.add(String.valueOf(input)))
         .runForeach(System.out::println, system);
-    //prints 1,2,3,4,5,6,7,8,9
+    // prints 1,2,3,4,5,6,7,8,9
     // #interleaveAll
   }
-  
+
   void mergeExample() {
     // #merge
     Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
@@ -206,13 +207,14 @@ class SourceOrFlow {
 
     // #merge
   }
-  
+
   void mergeAllExample() {
     // #merge-all
     Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3));
     Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(4, 5, 6));
     Source<Integer, NotUsed> sourceC = Source.from(Arrays.asList(7, 8, 9, 10));
-    sourceA.mergeAll(Arrays.asList(sourceB, sourceC), false)
+    sourceA
+        .mergeAll(Arrays.asList(sourceB, sourceC), false)
         .runForeach(System.out::println, system);
     // merging is not deterministic, can for example print 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
     // #merge-all
@@ -594,7 +596,9 @@ class SourceOrFlow {
     Flow<String, String, NotUsed> flow =
         Flow.of(String.class)
             .watch(ref)
-            .recover(akka.stream.WatchedActorTerminatedException.class, () -> ref + " terminated");
+            .recover(
+                org.apache.pekko.stream.WatchedActorTerminatedException.class,
+                () -> ref + " terminated");
     // #watch
   }
 

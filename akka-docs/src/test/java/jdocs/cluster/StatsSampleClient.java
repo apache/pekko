@@ -14,19 +14,19 @@ import jdocs.cluster.StatsMessages.StatsJob;
 import jdocs.cluster.StatsMessages.StatsResult;
 import java.util.concurrent.ThreadLocalRandom;
 import java.time.Duration;
-import akka.actor.ActorSelection;
-import akka.actor.Address;
-import akka.actor.Cancellable;
-import akka.actor.AbstractActor;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent.UnreachableMember;
-import akka.cluster.ClusterEvent.ReachableMember;
-import akka.cluster.ClusterEvent.CurrentClusterState;
-import akka.cluster.ClusterEvent.MemberEvent;
-import akka.cluster.ClusterEvent.MemberUp;
-import akka.cluster.ClusterEvent.ReachabilityEvent;
-import akka.cluster.Member;
-import akka.cluster.MemberStatus;
+import org.apache.pekko.actor.ActorSelection;
+import org.apache.pekko.actor.Address;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent.UnreachableMember;
+import org.apache.pekko.cluster.ClusterEvent.ReachableMember;
+import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
+import org.apache.pekko.cluster.ClusterEvent.MemberEvent;
+import org.apache.pekko.cluster.ClusterEvent.MemberUp;
+import org.apache.pekko.cluster.ClusterEvent.ReachabilityEvent;
+import org.apache.pekko.cluster.Member;
+import org.apache.pekko.cluster.MemberStatus;
 
 public class StatsSampleClient extends AbstractActor {
 

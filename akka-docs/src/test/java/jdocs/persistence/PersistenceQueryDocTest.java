@@ -9,15 +9,15 @@ import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
-import akka.NotUsed;
-import akka.persistence.query.Sequence;
-import akka.persistence.query.Offset;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.persistence.query.Sequence;
+import org.apache.pekko.persistence.query.Offset;
 import com.typesafe.config.Config;
 
-import akka.actor.*;
-import akka.persistence.query.*;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.persistence.query.*;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import jdocs.persistence.query.MyEventsByTagSource;
 import org.reactivestreams.Subscriber;
@@ -83,11 +83,11 @@ public class PersistenceQueryDocTest {
   public
   // #my-read-journal
   static class MyJavadslReadJournal
-      implements akka.persistence.query.javadsl.ReadJournal,
-          akka.persistence.query.javadsl.EventsByTagQuery,
-          akka.persistence.query.javadsl.EventsByPersistenceIdQuery,
-          akka.persistence.query.javadsl.PersistenceIdsQuery,
-          akka.persistence.query.javadsl.CurrentPersistenceIdsQuery {
+      implements org.apache.pekko.persistence.query.javadsl.ReadJournal,
+          org.apache.pekko.persistence.query.javadsl.EventsByTagQuery,
+          org.apache.pekko.persistence.query.javadsl.EventsByPersistenceIdQuery,
+          org.apache.pekko.persistence.query.javadsl.PersistenceIdsQuery,
+          org.apache.pekko.persistence.query.javadsl.CurrentPersistenceIdsQuery {
 
     private final Duration refreshInterval;
     private Connection conn;
@@ -153,11 +153,11 @@ public class PersistenceQueryDocTest {
   public
   // #my-read-journal
   static class MyScaladslReadJournal
-      implements akka.persistence.query.scaladsl.ReadJournal,
-          akka.persistence.query.scaladsl.EventsByTagQuery,
-          akka.persistence.query.scaladsl.EventsByPersistenceIdQuery,
-          akka.persistence.query.scaladsl.PersistenceIdsQuery,
-          akka.persistence.query.scaladsl.CurrentPersistenceIdsQuery {
+      implements org.apache.pekko.persistence.query.scaladsl.ReadJournal,
+          org.apache.pekko.persistence.query.scaladsl.EventsByTagQuery,
+          org.apache.pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery,
+          org.apache.pekko.persistence.query.scaladsl.PersistenceIdsQuery,
+          org.apache.pekko.persistence.query.scaladsl.CurrentPersistenceIdsQuery {
 
     private final MyJavadslReadJournal javadslReadJournal;
 
@@ -166,13 +166,13 @@ public class PersistenceQueryDocTest {
     }
 
     @Override
-    public akka.stream.scaladsl.Source<EventEnvelope, NotUsed> eventsByTag(
-        String tag, akka.persistence.query.Offset offset) {
+    public org.apache.pekko.stream.scaladsl.Source<EventEnvelope, NotUsed> eventsByTag(
+        String tag, org.apache.pekko.persistence.query.Offset offset) {
       return javadslReadJournal.eventsByTag(tag, offset).asScala();
     }
 
     @Override
-    public akka.stream.scaladsl.Source<EventEnvelope, NotUsed> eventsByPersistenceId(
+    public org.apache.pekko.stream.scaladsl.Source<EventEnvelope, NotUsed> eventsByPersistenceId(
         String persistenceId, long fromSequenceNr, long toSequenceNr) {
       return javadslReadJournal
           .eventsByPersistenceId(persistenceId, fromSequenceNr, toSequenceNr)
@@ -180,18 +180,18 @@ public class PersistenceQueryDocTest {
     }
 
     @Override
-    public akka.stream.scaladsl.Source<String, NotUsed> persistenceIds() {
+    public org.apache.pekko.stream.scaladsl.Source<String, NotUsed> persistenceIds() {
       return javadslReadJournal.persistenceIds().asScala();
     }
 
     @Override
-    public akka.stream.scaladsl.Source<String, NotUsed> currentPersistenceIds() {
+    public org.apache.pekko.stream.scaladsl.Source<String, NotUsed> currentPersistenceIds() {
       return javadslReadJournal.currentPersistenceIds().asScala();
     }
 
     // possibility to add more plugin specific queries
 
-    public akka.stream.scaladsl.Source<RichEvent, QueryMetadata> byTagsWithMeta(
+    public org.apache.pekko.stream.scaladsl.Source<RichEvent, QueryMetadata> byTagsWithMeta(
         scala.collection.Set<String> tags) {
       Set<String> jTags = scala.collection.JavaConverters.setAsJavaSetConverter(tags).asJava();
       return javadslReadJournal.byTagsWithMeta(jTags).asScala();

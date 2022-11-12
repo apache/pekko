@@ -287,7 +287,7 @@ The list of allowed classes has to be configured on the "remote" system, in othe
 others will be attempting to remote deploy Actors. That system, locally, knows best which Actors it should or
 should not allow others to remote deploy onto it. The full settings section may for example look like this:
 
-@@snip [RemoteDeploymentAllowListSpec.scala](/akka-remote/src/test/scala/akka/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
+@@snip [RemoteDeploymentAllowListSpec.scala](/akka-remote/src/test/scala/org/apache/pekko/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
 
 Actor classes not included in the allow list will not be allowed to be remote deployed onto this system.
 
@@ -325,8 +325,8 @@ Please see:
 
 ### Using the Failure Detector
  
-Remoting uses the `akka.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your by
-implementing the `akka.remote.FailureDetector` and configuring it:
+Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure detector by default, or you can provide your by
+implementing the `org.apache.pekko.remote.FailureDetector` and configuring it:
 
 ```
 akka.remote.watch-failure-detector.implementation-class = "com.example.CustomFailureDetector"
@@ -376,7 +376,7 @@ you register as listener to the below described types in on the `ActorSystem.eve
 To subscribe to any remote event, subscribe to
 `RemotingLifecycleEvent`.  To subscribe to events related only to
 the lifecycle of associations, subscribe to
-`akka.remote.AssociationEvent`.
+`org.apache.pekko.remote.AssociationEvent`.
 
 @@@
 

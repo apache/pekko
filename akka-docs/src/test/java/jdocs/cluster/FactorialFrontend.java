@@ -10,21 +10,21 @@ import java.util.HashSet;
 import java.util.Set;
 import java.time.Duration;
 
-import akka.actor.Props;
-import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
-import akka.cluster.metrics.AdaptiveLoadBalancingPool;
-import akka.cluster.metrics.HeapMetricsSelector;
-import akka.cluster.metrics.SystemLoadAverageMetricsSelector;
-import akka.cluster.routing.ClusterRouterGroup;
-import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.cluster.routing.ClusterRouterPool;
-import akka.cluster.routing.ClusterRouterPoolSettings;
-import akka.actor.ActorRef;
-import akka.actor.ReceiveTimeout;
-import akka.actor.AbstractActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
-import akka.routing.FromConfig;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingGroup;
+import org.apache.pekko.cluster.metrics.AdaptiveLoadBalancingPool;
+import org.apache.pekko.cluster.metrics.HeapMetricsSelector;
+import org.apache.pekko.cluster.metrics.SystemLoadAverageMetricsSelector;
+import org.apache.pekko.cluster.routing.ClusterRouterGroup;
+import org.apache.pekko.cluster.routing.ClusterRouterGroupSettings;
+import org.apache.pekko.cluster.routing.ClusterRouterPool;
+import org.apache.pekko.cluster.routing.ClusterRouterPoolSettings;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ReceiveTimeout;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.routing.FromConfig;
 
 // #frontend
 public class FactorialFrontend extends AbstractActor {

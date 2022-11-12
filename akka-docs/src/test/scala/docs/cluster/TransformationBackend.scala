@@ -6,16 +6,16 @@ package scala.docs.cluster
 
 import language.postfixOps
 import scala.concurrent.duration._
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.actor.RootActorPath
-import akka.cluster.Cluster
-import akka.cluster.ClusterEvent.CurrentClusterState
-import akka.cluster.ClusterEvent.MemberUp
-import akka.cluster.Member
-import akka.cluster.MemberStatus
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
+import org.apache.pekko.actor.RootActorPath
+import org.apache.pekko.cluster.Cluster
+import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState
+import org.apache.pekko.cluster.ClusterEvent.MemberUp
+import org.apache.pekko.cluster.Member
+import org.apache.pekko.cluster.MemberStatus
 import com.typesafe.config.ConfigFactory
 
 //#backend

@@ -7,11 +7,11 @@ package scala.docs.cluster
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import com.typesafe.config.ConfigFactory
-import akka.actor.Actor
-import akka.actor.ActorLogging
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.pattern.pipe
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorLogging
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
+import org.apache.pekko.pattern.pipe
 
 //#backend
 class FactorialBackend extends Actor with ActorLogging {

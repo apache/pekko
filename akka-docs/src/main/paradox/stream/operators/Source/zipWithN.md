@@ -6,7 +6,7 @@ Combine the elements of multiple streams into a stream of sequences using a comb
 
 ## Signature
 
-@apidoc[Source.zipWithN](Source$) { scala="#zipWithN[T,O](zipper:scala.collection.immutable.Seq[T]=&gt;O)(sources:scala.collection.immutable.Seq[akka.stream.scaladsl.Source[T,_]]):akka.stream.scaladsl.Source[O,akka.NotUsed]" java="#zipWithN(akka.japi.function.Function,java.util.List)" }
+@apidoc[Source.zipWithN](Source$) { scala="#zipWithN[T,O](zipper:scala.collection.immutable.Seq[T]=&gt;O)(sources:scala.collection.immutable.Seq[org.apache.pekko.stream.scaladsl.Source[T,_]]):org.apache.pekko.stream.scaladsl.Source[O,org.apache.pekko.NotUsed]" java="#zipWithN(org.apache.pekko.japi.function.Function,java.util.List)" }
 
 ## Description
 

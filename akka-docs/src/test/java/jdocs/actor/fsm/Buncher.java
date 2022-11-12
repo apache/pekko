@@ -5,9 +5,9 @@
 package jdocs.actor.fsm;
 
 // #simple-imports
-import akka.actor.AbstractFSM;
-import akka.actor.ActorRef;
-import akka.japi.pf.UnitMatch;
+import org.apache.pekko.actor.AbstractFSM;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.japi.pf.UnitMatch;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

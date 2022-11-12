@@ -5,9 +5,9 @@
 package jdocs.actor;
 
 // #imports
-import akka.actor.AbstractActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 // #imports
 

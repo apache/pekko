@@ -4,8 +4,8 @@
 
 package docs.stream.operators
 
-import akka.actor.ActorSystem
-import akka.testkit.TestProbe
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.testkit.TestProbe
 
 object SourceOperators {
 
@@ -14,9 +14,10 @@ object SourceOperators {
   def fromFuture(): Unit = {
     // #sourceFromFuture
 
-    import akka.actor.ActorSystem
-    import akka.stream.scaladsl._
-    import akka.{ Done, NotUsed }
+    import org.apache.pekko
+    import pekko.actor.ActorSystem
+    import pekko.stream.scaladsl._
+    import pekko.{ Done, NotUsed }
 
     import scala.concurrent.Future
 
@@ -29,11 +30,12 @@ object SourceOperators {
 
   def actorRef(): Unit = {
     // #actorRef
-    import akka.Done
-    import akka.actor.ActorRef
-    import akka.stream.OverflowStrategy
-    import akka.stream.CompletionStrategy
-    import akka.stream.scaladsl._
+    import org.apache.pekko
+    import pekko.Done
+    import pekko.actor.ActorRef
+    import pekko.stream.OverflowStrategy
+    import pekko.stream.CompletionStrategy
+    import pekko.stream.scaladsl._
 
     val source: Source[Any, ActorRef] = Source.actorRef(
       completionMatcher = {
@@ -58,10 +60,11 @@ object SourceOperators {
   def actorRefWithBackpressure(): Unit = {
     // #actorRefWithBackpressure
 
-    import akka.actor.Status.Success
-    import akka.actor.ActorRef
-    import akka.stream.CompletionStrategy
-    import akka.stream.scaladsl._
+    import org.apache.pekko
+    import pekko.actor.Status.Success
+    import pekko.actor.ActorRef
+    import pekko.stream.CompletionStrategy
+    import pekko.stream.scaladsl._
 
     val probe = TestProbe()
 
@@ -87,7 +90,7 @@ object SourceOperators {
 
   def maybe(): Unit = {
     // #maybe
-    import akka.stream.scaladsl._
+    import org.apache.pekko.stream.scaladsl._
     import scala.concurrent.Promise
 
     val source = Source.maybe[Int].to(Sink.foreach(elem => println(elem)))

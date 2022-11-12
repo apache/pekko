@@ -7,14 +7,14 @@ package docs.stream.operators.converters
 // #import
 import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, InputStream, OutputStream }
 
-import akka.NotUsed
-import akka.stream.IOResult
-import akka.stream.scaladsl.{ Flow, Keep, Sink, Source, StreamConverters }
-import akka.util.ByteString
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.IOResult
+import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source, StreamConverters }
+import org.apache.pekko.util.ByteString
 
 import scala.util.Random
 // #import
-import akka.testkit.AkkaSpec
+import org.apache.pekko.testkit.AkkaSpec
 import org.scalatest.concurrent.Futures
 
 import scala.concurrent.Future

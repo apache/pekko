@@ -6,7 +6,7 @@ Combine the elements of multiple sources into a source of sequences of value.
 
 ## Signature
 
-@apidoc[Source.zipN](Source$) { scala="#zipN[T](sources:scala.collection.immutable.Seq[akka.stream.scaladsl.Source[T,_]]):akka.stream.scaladsl.Source[scala.collection.immutable.Seq[T],akka.NotUsed]" java="#zipN(java.util.List)" } 
+@apidoc[Source.zipN](Source$) { scala="#zipN[T](sources:scala.collection.immutable.Seq[org.apache.pekko.stream.scaladsl.Source[T,_]]):org.apache.pekko.stream.scaladsl.Source[scala.collection.immutable.Seq[T],org.apache.pekko.NotUsed]" java="#zipN(java.util.List)" } 
 
 ## Description
 

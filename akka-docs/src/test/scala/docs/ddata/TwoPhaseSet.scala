@@ -4,8 +4,8 @@
 
 package docs.ddata
 
-import akka.cluster.ddata.ReplicatedData
-import akka.cluster.ddata.GSet
+import org.apache.pekko.cluster.ddata.ReplicatedData
+import org.apache.pekko.cluster.ddata.GSet
 
 //#twophaseset
 case class TwoPhaseSet(adds: GSet[String] = GSet.empty, removals: GSet[String] = GSet.empty) extends ReplicatedData {

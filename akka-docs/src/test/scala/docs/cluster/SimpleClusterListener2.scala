@@ -4,9 +4,9 @@
 
 package docs.cluster
 
-import akka.actor.{ Actor, ActorLogging }
-import akka.cluster.Cluster
-import akka.cluster.ClusterEvent._
+import org.apache.pekko.actor.{ Actor, ActorLogging }
+import org.apache.pekko.cluster.Cluster
+import org.apache.pekko.cluster.ClusterEvent._
 
 class SimpleClusterListener2 extends Actor with ActorLogging {
 
