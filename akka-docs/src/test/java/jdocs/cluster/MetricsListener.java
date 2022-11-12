@@ -5,17 +5,17 @@
 package jdocs.cluster;
 
 // #metrics-listener
-import akka.actor.AbstractActor;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent.CurrentClusterState;
-import akka.cluster.metrics.ClusterMetricsChanged;
-import akka.cluster.metrics.NodeMetrics;
-import akka.cluster.metrics.StandardMetrics;
-import akka.cluster.metrics.StandardMetrics.HeapMemory;
-import akka.cluster.metrics.StandardMetrics.Cpu;
-import akka.cluster.metrics.ClusterMetricsExtension;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
+import org.apache.pekko.cluster.metrics.ClusterMetricsChanged;
+import org.apache.pekko.cluster.metrics.NodeMetrics;
+import org.apache.pekko.cluster.metrics.StandardMetrics;
+import org.apache.pekko.cluster.metrics.StandardMetrics.HeapMemory;
+import org.apache.pekko.cluster.metrics.StandardMetrics.Cpu;
+import org.apache.pekko.cluster.metrics.ClusterMetricsExtension;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
 
 public class MetricsListener extends AbstractActor {
   LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);

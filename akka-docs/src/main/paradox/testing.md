@@ -244,7 +244,7 @@ Be sure to exchange the default logger with the
 function:
 
 ```
-akka.loggers = [akka.testkit.TestEventListener]
+akka.loggers = [org.apache.pekko.testkit.TestEventListener]
 ```
 
 @@@
@@ -457,7 +457,7 @@ This code can be used to forward messages, e.g. in a chain `A --> Probe -->
 B`, as long as a certain protocol is obeyed.
 
 Scala
-:   @@snip [TestProbeSpec.scala](/akka-testkit/src/test/scala/akka/testkit/TestProbeSpec.scala) { #autopilot }
+:   @@snip [TestProbeSpec.scala](/akka-testkit/src/test/scala/org/apache/pekko/testkit/TestProbeSpec.scala) { #autopilot }
 
 Java
 :   @@snip [TestKitDocTest.java](/akka-docs/src/test/java/jdocs/testkit/TestKitDocTest.java) { #test-auto-pilot }

@@ -6,7 +6,7 @@ Wrap the given @apidoc[Sink] with a @apidoc[Sink] that will restart it when it f
 
 ## Signature
 
-@apidoc[RestartSink.withBackoff](RestartSink$) { scala="#withBackoff[T](settings:akka.stream.RestartSettings)(sinkFactory:()=&gt;akka.stream.scaladsl.Sink[T,_]):akka.stream.scaladsl.Sink[T,akka.NotUsed]"  java="#withBackoff(akka.stream.RestartSettings,akka.japi.function.Creator)" }
+@apidoc[RestartSink.withBackoff](RestartSink$) { scala="#withBackoff[T](settings:org.apache.pekko.stream.RestartSettings)(sinkFactory:()=&gt;org.apache.pekko.stream.scaladsl.Sink[T,_]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]"  java="#withBackoff(org.apache.pekko.stream.RestartSettings,org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 

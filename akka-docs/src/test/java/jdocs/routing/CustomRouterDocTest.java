@@ -4,15 +4,15 @@
 
 package jdocs.routing;
 
-import akka.routing.FromConfig;
-import akka.routing.RoundRobinRoutingLogic;
-import akka.routing.Routee;
-import akka.routing.RoutingLogic;
-import akka.routing.SeveralRoutees;
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.routing.FromConfig;
+import org.apache.pekko.routing.RoundRobinRoutingLogic;
+import org.apache.pekko.routing.Routee;
+import org.apache.pekko.routing.RoutingLogic;
+import org.apache.pekko.routing.SeveralRoutees;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -21,14 +21,14 @@ import static org.junit.Assert.*;
 import com.typesafe.config.ConfigFactory;
 
 import scala.collection.immutable.IndexedSeq;
-import static akka.japi.Util.immutableIndexedSeq;
+import static org.apache.pekko.japi.Util.immutableIndexedSeq;
 
 import docs.routing.CustomRouterDocSpec;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
 // #imports1
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.mergePrioritized](Source) { scala="#mergePrioritized[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],leftPriority:Int,rightPriority:Int,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePrioritized(akka.stream.Graph,int,int,boolean)" }
-@apidoc[Flow.mergePrioritized](Flow) { scala="#mergePrioritized[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],leftPriority:Int,rightPriority:Int,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePrioritized(akka.stream.Graph,int,int,boolean)" }
+@apidoc[Source.mergePrioritized](Source) { scala="#mergePrioritized[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],leftPriority:Int,rightPriority:Int,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePrioritized(org.apache.pekko.stream.Graph,int,int,boolean)" }
+@apidoc[Flow.mergePrioritized](Flow) { scala="#mergePrioritized[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],leftPriority:Int,rightPriority:Int,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePrioritized(org.apache.pekko.stream.Graph,int,int,boolean)" }
 
 ## Description
 
@@ -18,7 +18,7 @@ prioritized and similarly for the right source. The priorities for each source m
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritized }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritized }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #mergePrioritized }

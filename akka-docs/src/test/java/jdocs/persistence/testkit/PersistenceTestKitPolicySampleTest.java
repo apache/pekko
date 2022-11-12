@@ -4,17 +4,17 @@
 
 package jdocs.persistence.testkit;
 
-import akka.actor.testkit.typed.javadsl.TestKitJunitResource;
-import akka.actor.typed.ActorRef;
-import akka.persistence.testkit.JournalOperation;
-import akka.persistence.testkit.PersistenceTestKitPlugin;
-import akka.persistence.testkit.ProcessingPolicy;
-import akka.persistence.testkit.ProcessingResult;
-import akka.persistence.testkit.ProcessingSuccess;
-import akka.persistence.testkit.StorageFailure;
-import akka.persistence.testkit.WriteEvents;
-import akka.persistence.testkit.javadsl.PersistenceTestKit;
-import akka.persistence.typed.PersistenceId;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.persistence.testkit.JournalOperation;
+import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
+import org.apache.pekko.persistence.testkit.ProcessingPolicy;
+import org.apache.pekko.persistence.testkit.ProcessingResult;
+import org.apache.pekko.persistence.testkit.ProcessingSuccess;
+import org.apache.pekko.persistence.testkit.StorageFailure;
+import org.apache.pekko.persistence.testkit.WriteEvents;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
+import org.apache.pekko.persistence.typed.PersistenceId;
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
 import org.junit.Before;

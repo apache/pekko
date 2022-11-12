@@ -44,37 +44,37 @@ To facilitate this dynamic aspect you can also subscribe to changes with the `Re
 These imports are used in the following example:
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #import }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #import }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #import }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #import }
 
 First we create a `PingService` actor and register it with the `Receptionist` against a
 @apidoc[receptionist.ServiceKey] that will later be used to lookup the reference:
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #ping-service }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #ping-service }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #ping-service }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #ping-service }
 
 Then we have another actor that requires a `PingService` to be constructed:
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #pinger }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #pinger }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #pinger }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #pinger }
 
 Finally in the guardian actor we spawn the service as well as subscribing to any actors registering
 against the @apidoc[receptionist.ServiceKey]. Subscribing means that the guardian actor will be informed of any
 new registrations via a `Listing` message:
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #pinger-guardian }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #pinger-guardian }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #pinger-guardian }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #pinger-guardian }
 
 Each time a new (which is just a single time in this example) `PingService` is registered the
 guardian actor spawns a `Pinger` for each currently known `PingService`. The `Pinger`
@@ -85,12 +85,12 @@ of the current state without receiving further updates by sending the `Reception
 receptionist. An example of using `Receptionist.Find`:
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #find }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #find }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #find }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #find }
 
-Also note how a @apidoc[messageAdapter](akka.actor.typed.*.ActorContext) {scala="#messageAdapter[U](f:U=%3ET)(implicitevidence$1:scala.reflect.ClassTag[U]):akka.actor.typed.ActorRef[U]" java="#messageAdapter(java.lang.Class,akka.japi.function.Function)"} is used to convert the `Receptionist.Listing` to a message type that
+Also note how a @apidoc[messageAdapter](actor.typed.*.ActorContext) {scala="#messageAdapter[U](f:U=%3ET)(implicitevidence$1:scala.reflect.ClassTag[U]):org.apache.pekko.actor.typed.ActorRef[U]" java="#messageAdapter(java.lang.Class,org.apache.pekko.japi.function.Function)"} is used to convert the `Receptionist.Listing` to a message type that
 the `PingManager` understands.
 
 If a server no longer wish to be associated with a service key it can deregister using the command `Receptionist.Deregister`
@@ -100,10 +100,10 @@ The command can optionally send an acknowledgement once the local receptionist h
 that all subscribers has seen that the instance has been removed, it may still receive messages from subscribers for some time after this.
 
 Scala
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/ReceptionistExample.scala) { #deregister }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/ReceptionistExample.scala) { #deregister }
 
 Java
-:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/ReceptionistExample.java) { #deregister }
+:  @@snip [ReceptionistExample](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/ReceptionistExample.java) { #deregister }
 
 ## Cluster Receptionist
 
@@ -115,7 +115,7 @@ will eventually reach the same set of actors per `ServiceKey`.
 
 `Subscription`s and `Find` queries to a clustered receptionist will keep track of cluster reachability and only list 
 registered actors that are reachable. The full set of actors, including unreachable ones, is available through 
-@scala[@scaladoc[Listing.allServiceInstances](akka.actor.typed.receptionist.Receptionist.Listing#allServiceInstances[T](key:akka.actor.typed.receptionist.ServiceKey[T]):Set[akka.actor.typed.ActorRef[T]])]@java[@javadoc[Listing.getAllServiceInstances](akka.actor.typed.receptionist.Receptionist.Listing#getAllServiceInstances(akka.actor.typed.receptionist.ServiceKey))].
+@scala[@scaladoc[Listing.allServiceInstances](pekko.typed.receptionist.Receptionist.Listing#allServiceInstances[T](key:org.apache.pekko.actor.typed.receptionist.ServiceKey[T]):Set[org.apache.pekko.actor.typed.ActorRef[T]])]@java[@javadoc[Listing.getAllServiceInstances](pekko.actor.typed.receptionist.Receptionist.Listing#getAllServiceInstances(org.apache.pekko.actor.typed.receptionist.ServiceKey))].
 
 One important difference from local only receptions are the serialization concerns, all messages sent to and back from 
 an actor on another node must be serializable, see @ref:[serialization](../serialization.md).

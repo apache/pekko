@@ -5,8 +5,8 @@
 package docs.persistence
 
 import scala.collection.immutable
-import akka.actor.ActorSystem
-import akka.testkit.TestKit
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.testkit.TestKit
 import com.typesafe.config._
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -15,9 +15,10 @@ import scala.util.Try
 import scala.concurrent.duration._
 
 //#plugin-imports
-import akka.persistence._
-import akka.persistence.journal._
-import akka.persistence.snapshot._
+import org.apache.pekko
+import pekko.persistence._
+import pekko.persistence.journal._
+import pekko.persistence.snapshot._
 
 //#plugin-imports
 
@@ -106,8 +107,8 @@ class PersistencePluginDocSpec extends AnyWordSpec {
 }
 
 object SharedLeveldbPluginDocSpec {
-  import akka.actor._
-  import akka.persistence.journal.leveldb.SharedLeveldbJournal
+  import org.apache.pekko.actor._
+  import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbJournal
 
   val config =
     """
@@ -143,9 +144,9 @@ trait SharedLeveldbPluginDocSpec {
   val system: ActorSystem
 
   {
-    import akka.actor._
+    import org.apache.pekko.actor._
     // #shared-store-creation
-    import akka.persistence.journal.leveldb.SharedLeveldbStore
+    import org.apache.pekko.persistence.journal.leveldb.SharedLeveldbStore
 
     val store = system.actorOf(Props[SharedLeveldbStore](), "store")
     // #shared-store-creation
@@ -182,7 +183,7 @@ class MySnapshotStore extends SnapshotStore {
 
 object PersistenceTCKDoc {
   object example1 {
-    import akka.persistence.journal.JournalSpec
+    import org.apache.pekko.persistence.journal.JournalSpec
 
     // #journal-tck-scala
     class MyJournalSpec
@@ -198,7 +199,7 @@ object PersistenceTCKDoc {
     // #journal-tck-scala
   }
   object example2 {
-    import akka.persistence.snapshot.SnapshotStoreSpec
+    import org.apache.pekko.persistence.snapshot.SnapshotStoreSpec
 
     // #snapshot-store-tck-scala
     class MySnapshotStoreSpec
@@ -215,7 +216,7 @@ object PersistenceTCKDoc {
   object example3 {
     import java.io.File
 
-    import akka.persistence.journal.JournalSpec
+    import org.apache.pekko.persistence.journal.JournalSpec
     import org.iq80.leveldb.util.FileUtils
 
     // #journal-tck-before-after-scala

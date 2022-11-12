@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2015-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.stream.stage;
+
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.AkkaSpec;
+
+import org.junit.ClassRule;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+
+public class StageTest extends StreamTest {
+  public StageTest() {
+    super(actorSystemResource);
+  }
+
+  @ClassRule
+  public static AkkaJUnitActorSystemResource actorSystemResource =
+      new AkkaJUnitActorSystemResource("StageTest", AkkaSpec.testConf());
+
+  @Test
+  public void javaStageUsage() throws Exception {
+    final java.lang.Iterable<Integer> input = Arrays.asList(0, 1, 2, 3, 4, 5);
+    final Source<Integer, NotUsed> ints = Source.from(input);
+    final JavaIdentityStage<Integer> identity = new JavaIdentityStage<Integer>();
+
+    final CompletionStage<List<Integer>> result =
+        ints.via(identity).via(identity).grouped(1000).runWith(Sink.<List<Integer>>head(), system);
+
+    assertEquals(
+        Arrays.asList(0, 1, 2, 3, 4, 5), result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+}

@@ -12,7 +12,7 @@ The `fromFile` operator has been deprecated, use @ref:[fromPath](./fromPath.md) 
 
 ## Signature
 
-@apidoc[FileIO.fromFile](FileIO$) { scala="#fromFile(f:java.io.File,chunkSize:Int):akka.stream.scaladsl.Source[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#fromFile(java.io.File)" java="#fromFile(java.io.File,int)" }
+@apidoc[FileIO.fromFile](FileIO$) { scala="#fromFile(f:java.io.File,chunkSize:Int):org.apache.pekko.stream.scaladsl.Source[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromFile(java.io.File)" java="#fromFile(java.io.File,int)" }
 
 
 ## Description

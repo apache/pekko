@@ -4,23 +4,24 @@
 
 package docs.stream.operators
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 
 object PartitionDocExample {
 
   implicit val system: ActorSystem = ???
 
   // #partition
-  import akka.NotUsed
-  import akka.stream.Attributes
-  import akka.stream.Attributes.LogLevels
-  import akka.stream.ClosedShape
-  import akka.stream.scaladsl.Flow
-  import akka.stream.scaladsl.GraphDSL
-  import akka.stream.scaladsl.Partition
-  import akka.stream.scaladsl.RunnableGraph
-  import akka.stream.scaladsl.Sink
-  import akka.stream.scaladsl.Source
+  import org.apache.pekko
+  import pekko.NotUsed
+  import pekko.stream.Attributes
+  import pekko.stream.Attributes.LogLevels
+  import pekko.stream.ClosedShape
+  import pekko.stream.scaladsl.Flow
+  import pekko.stream.scaladsl.GraphDSL
+  import pekko.stream.scaladsl.Partition
+  import pekko.stream.scaladsl.RunnableGraph
+  import pekko.stream.scaladsl.Sink
+  import pekko.stream.scaladsl.Source
 
   val source: Source[Int, NotUsed] = Source(1 to 10)
 

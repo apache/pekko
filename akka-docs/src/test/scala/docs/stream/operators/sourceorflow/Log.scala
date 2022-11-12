@@ -4,9 +4,9 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.stream.scaladsl.Flow
+import org.apache.pekko.stream.scaladsl.Flow
 //#log
-import akka.stream.Attributes
+import org.apache.pekko.stream.Attributes
 
 //#log
 

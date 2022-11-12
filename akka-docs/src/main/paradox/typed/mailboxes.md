@@ -36,12 +36,12 @@ For advanced use cases it is also possible to defer mailbox selection to config 
 To select a specific mailbox for an actor use @apidoc[MailboxSelector](MailboxSelector$) to create a @apidoc[Props](typed.Props) instance for spawning your actor:
 
 Scala
-:  @@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/MailboxDocSpec.scala) { #select-mailbox }
+:  @@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/MailboxDocSpec.scala) { #select-mailbox }
 
 Java
-:  @@snip [MailboxDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/MailboxDocTest.java) { #select-mailbox }
+:  @@snip [MailboxDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #select-mailbox }
 
-@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):akka.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
+@apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
 
 @@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
 
@@ -68,41 +68,41 @@ Akka ships with a number of mailbox implementations:
     * Backed by a Multiple-Producer Single-Consumer queue, cannot be used with `BalancingDispatcher`
     * Blocking: No
     * Bounded: No
-    * Configuration name: `"akka.dispatch.SingleConsumerOnlyUnboundedMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"`
  * 
    @apidoc[UnboundedMailbox]
     * Backed by a @javadoc[java.util.concurrent.ConcurrentLinkedQueue](java.util.concurrent.ConcurrentLinkedQueue)
     * Blocking: No
     * Bounded: No
-    * Configuration name: `"unbounded"` or `"akka.dispatch.UnboundedMailbox"`
+    * Configuration name: `"unbounded"` or `"org.apache.pekko.dispatch.UnboundedMailbox"`
 
  * 
    @apidoc[NonBlockingBoundedMailbox]
     * Backed by a very efficient Multiple-Producer Single-Consumer queue
     * Blocking: No (discards overflowing messages into deadLetters)
     * Bounded: Yes
-    * Configuration name: `"akka.dispatch.NonBlockingBoundedMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.NonBlockingBoundedMailbox"`
  * 
    @apidoc[UnboundedControlAwareMailbox]
-    * Delivers messages that extend @apidoc[akka.dispatch.ControlMessage](dispatch.ControlMessage) with higher priority
+    * Delivers messages that extend @apidoc[dispatch.ControlMessage](dispatch.ControlMessage) with higher priority
     * Backed by two @javadoc[java.util.concurrent.ConcurrentLinkedQueue](java.util.concurrent.ConcurrentLinkedQueue)
     * Blocking: No
     * Bounded: No
-    * Configuration name: `"akka.dispatch.UnboundedControlAwareMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.UnboundedControlAwareMailbox"`
  * 
    @apidoc[UnboundedPriorityMailbox]
     * Backed by a @javadoc[java.util.concurrent.PriorityBlockingQueue](java.util.concurrent.PriorityBlockingQueue)
     * Delivery order for messages of equal priority is undefined - contrast with the `UnboundedStablePriorityMailbox`
     * Blocking: No
     * Bounded: No
-    * Configuration name: `"akka.dispatch.UnboundedPriorityMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.UnboundedPriorityMailbox"`
  * 
    @apidoc[UnboundedStablePriorityMailbox]
-    * Backed by a @javadoc[java.util.concurrent.PriorityBlockingQueue](java.util.concurrent.PriorityBlockingQueue) wrapped in an @apidoc[akka.util.PriorityQueueStabilizer](PriorityQueueStabilizer)
+    * Backed by a @javadoc[java.util.concurrent.PriorityBlockingQueue](java.util.concurrent.PriorityBlockingQueue) wrapped in an @apidoc[util.PriorityQueueStabilizer](PriorityQueueStabilizer)
     * FIFO order is preserved for messages of equal priority - contrast with the `UnboundedPriorityMailbox`
     * Blocking: No
     * Bounded: No
-    * Configuration name: `"akka.dispatch.UnboundedStablePriorityMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.UnboundedStablePriorityMailbox"`
 
 Other bounded mailbox implementations which will block the sender if the capacity is reached and
 configured with non-zero `mailbox-push-timeout-time`. 
@@ -117,25 +117,25 @@ The following mailboxes should only be used with zero `mailbox-push-timeout-time
     * Backed by a @javadoc[java.util.concurrent.LinkedBlockingQueue](java.util.concurrent.LinkedBlockingQueue)
     * Blocking: Yes if used with non-zero `mailbox-push-timeout-time`, otherwise No
     * Bounded: Yes
-    * Configuration name: `"bounded"` or `"akka.dispatch.BoundedMailbox"`
+    * Configuration name: `"bounded"` or `"org.apache.pekko.dispatch.BoundedMailbox"`
  * @apidoc[BoundedPriorityMailbox]
-    * Backed by a @javadoc[java.util.PriorityQueue](java.util.PriorityQueue) wrapped in an @apidoc[akka.util.BoundedBlockingQueue](BoundedBlockingQueue)
+    * Backed by a @javadoc[java.util.PriorityQueue](java.util.PriorityQueue) wrapped in an @apidoc[util.BoundedBlockingQueue](BoundedBlockingQueue)
     * Delivery order for messages of equal priority is undefined - contrast with the `BoundedStablePriorityMailbox`
     * Blocking: Yes if used with non-zero `mailbox-push-timeout-time`, otherwise No
     * Bounded: Yes
-    * Configuration name: `"akka.dispatch.BoundedPriorityMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.BoundedPriorityMailbox"`
  * @apidoc[BoundedStablePriorityMailbox]
-    * Backed by a @javadoc[java.util.PriorityQueue](java.util.PriorityQueue) wrapped in an @apidoc[akka.util.PriorityQueueStabilizer](PriorityQueueStabilizer) and an @apidoc[akka.util.BoundedBlockingQueue](BoundedBlockingQueue)
+    * Backed by a @javadoc[java.util.PriorityQueue](java.util.PriorityQueue) wrapped in an @apidoc[util.PriorityQueueStabilizer](PriorityQueueStabilizer) and an @apidoc[util.BoundedBlockingQueue](BoundedBlockingQueue)
     * FIFO order is preserved for messages of equal priority - contrast with the BoundedPriorityMailbox
     * Blocking: Yes if used with non-zero `mailbox-push-timeout-time`, otherwise No
     * Bounded: Yes
-    * Configuration name: `"akka.dispatch.BoundedStablePriorityMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.BoundedStablePriorityMailbox"`
  * @apidoc[BoundedControlAwareMailbox]
-    * Delivers messages that extend @apidoc[akka.dispatch.ControlMessage](dispatch.ControlMessage) with higher priority
+    * Delivers messages that extend @apidoc[dispatch.ControlMessage](dispatch.ControlMessage) with higher priority
     * Backed by two @javadoc[java.util.concurrent.ConcurrentLinkedQueue](java.util.concurrent.ConcurrentLinkedQueue) and blocking on enqueue if capacity has been reached
     * Blocking: Yes if used with non-zero `mailbox-push-timeout-time`, otherwise No
     * Bounded: Yes
-    * Configuration name: `"akka.dispatch.BoundedControlAwareMailbox"`
+    * Configuration name: `"org.apache.pekko.dispatch.BoundedControlAwareMailbox"`
 
 ## Custom Mailbox type
 
@@ -160,7 +160,7 @@ configuration, or the mailbox configuration.
 @@@ note
 
 Make sure to include a constructor which takes
-@apidoc[akka.actor.ActorSystem.Settings](actor.ActorSystem.Settings) and [com.typesafe.config.Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html)
+@apidoc[actor.ActorSystem.Settings](actor.ActorSystem.Settings) and [com.typesafe.config.Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html)
 arguments, as this constructor is invoked reflectively to construct your
 mailbox type. The config passed in as second argument is that section from
 the configuration which describes the dispatcher or mailbox setting using

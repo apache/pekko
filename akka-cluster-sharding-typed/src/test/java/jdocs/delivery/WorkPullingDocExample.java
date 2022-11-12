@@ -5,12 +5,12 @@
 package jdocs.delivery;
 
 // #imports
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.delivery.ConsumerController;
-import akka.actor.typed.delivery.DurableProducerQueue;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.delivery.ConsumerController;
+import org.apache.pekko.actor.typed.delivery.DurableProducerQueue;
+import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
 
 import java.time.Duration;
 import java.util.Optional;
@@ -19,19 +19,19 @@ import java.util.UUID;
 // #imports
 
 // #producer
-import akka.actor.typed.delivery.WorkPullingProducerController;
-import akka.Done;
+import org.apache.pekko.actor.typed.delivery.WorkPullingProducerController;
+import org.apache.pekko.Done;
 
 // #producer
 
 // #durable-queue
-import akka.persistence.typed.PersistenceId;
-import akka.persistence.typed.delivery.EventSourcedProducerQueue;
+import org.apache.pekko.persistence.typed.PersistenceId;
+import org.apache.pekko.persistence.typed.delivery.EventSourcedProducerQueue;
 
 // #durable-queue
 
-import akka.actor.typed.javadsl.StashBuffer;
-import akka.actor.typed.receptionist.ServiceKey;
+import org.apache.pekko.actor.typed.javadsl.StashBuffer;
+import org.apache.pekko.actor.typed.receptionist.ServiceKey;
 
 interface WorkPullingDocExample {
 

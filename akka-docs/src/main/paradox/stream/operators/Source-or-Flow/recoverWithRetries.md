@@ -6,8 +6,8 @@ RecoverWithRetries allows to switch to alternative Source on flow failure.
 
 ## Signature
 
-@apidoc[Source.recoverWithRetries](Source) { scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,akka.stream.Graph[akka.stream.SourceShape[T],akka.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)" }
-@apidoc[Flow.recoverWithRetries](Flow) { scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,akka.stream.Graph[akka.stream.SourceShape[T],akka.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)" }
+@apidoc[Source.recoverWithRetries](Source) { scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)" }
+@apidoc[Flow.recoverWithRetries](Flow) { scala="#recoverWithRetries[T&gt;:Out](attempts:Int,pf:PartialFunction[Throwable,org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[T],org.apache.pekko.NotUsed]]):FlowOps.this.Repr[T]" java="#recoverWithRetries(int,java.lang.Class,java.util.function.Supplier)" }
 
 
 ## Description

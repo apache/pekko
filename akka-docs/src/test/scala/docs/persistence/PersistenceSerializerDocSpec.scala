@@ -8,9 +8,9 @@ import com.typesafe.config._
 
 import scala.concurrent.duration._
 import org.scalatest.wordspec.AnyWordSpec
-import akka.actor.ActorSystem
-import akka.serialization.{ SerializationExtension, Serializer }
-import akka.testkit.TestKit
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.serialization.{ SerializationExtension, Serializer }
+import org.apache.pekko.testkit.TestKit
 
 class PersistenceSerializerDocSpec extends AnyWordSpec {
 

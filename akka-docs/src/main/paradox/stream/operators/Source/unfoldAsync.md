@@ -6,7 +6,7 @@ Just like `unfold` but the fold function returns a @scala[`Future`] @java[`Compl
 
 ## Signature
 
-@apidoc[Source.unfoldAsync](Source$) { scala="#unfoldAsync[S,E](s:S)(f:S=&gt;scala.concurrent.Future[Option[(S,E)]]):akka.stream.scaladsl.Source[E,akka.NotUsed]" java="#unfoldAsync(java.lang.Object,akka.japi.function.Function)" }
+@apidoc[Source.unfoldAsync](Source$) { scala="#unfoldAsync[S,E](s:S)(f:S=&gt;scala.concurrent.Future[Option[(S,E)]]):org.apache.pekko.stream.scaladsl.Source[E,org.apache.pekko.NotUsed]" java="#unfoldAsync(java.lang.Object,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

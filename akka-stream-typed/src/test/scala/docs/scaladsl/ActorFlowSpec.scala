@@ -4,19 +4,21 @@
 
 package docs.scaladsl
 
-import akka.NotUsed
-import akka.pattern.StatusReply
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.pattern.StatusReply
 
 //#imports
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.stream.typed.scaladsl.ActorFlow
-import akka.actor.typed.ActorRef
-import akka.actor.typed.scaladsl.Behaviors
-import akka.util.Timeout
+import org.apache.pekko
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.stream.typed.scaladsl.ActorFlow
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.util.Timeout
 
 //#imports
-import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import akka.stream.testkit.TestSubscriber
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.stream.testkit.TestSubscriber
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import scala.collection.immutable
@@ -170,7 +172,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
     }
 
     "signal ask timeout failure" in {
-      import akka.actor.typed.scaladsl.adapter._
+      import pekko.actor.typed.scaladsl.adapter._
       val dontReply = spawn(Behaviors.ignore[Asking])
 
       val c = TestSubscriber.manualProbe[Reply]()(system.toClassic)

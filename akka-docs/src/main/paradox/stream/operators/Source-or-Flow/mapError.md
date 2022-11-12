@@ -6,8 +6,8 @@ While similar to `recover` this operators can be used to transform an error sign
 
 ## Signature
 
-@apidoc[Source.mapError](Source) { scala="#mapError(pf:PartialFunction[Throwable,Throwable]):FlowOps.this.Repr[Out]" java="#mapError(java.lang.Class,akka.japi.function.Function)" }
-@apidoc[Flow.mapError](Flow) { scala="#mapError(pf:PartialFunction[Throwable,Throwable]):FlowOps.this.Repr[Out]" java="#mapError(java.lang.Class,akka.japi.function.Function)" }
+@apidoc[Source.mapError](Source) { scala="#mapError(pf:PartialFunction[Throwable,Throwable]):FlowOps.this.Repr[Out]" java="#mapError(java.lang.Class,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.mapError](Flow) { scala="#mapError(pf:PartialFunction[Throwable,Throwable]):FlowOps.this.Repr[Out]" java="#mapError(java.lang.Class,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

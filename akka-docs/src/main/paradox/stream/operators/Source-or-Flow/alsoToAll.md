@@ -6,8 +6,8 @@ Attaches the given @apidoc[Source]s to this @apidoc[Flow], meaning that elements
 
 ## Signature
 
-@apidoc[Source.alsoToAll](Source) { scala="#alsoToAll(that:akka.stream.Graph[akka.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(akka.stream.Graph*)" }
-@apidoc[Flow.alsoToAll](Flow) { scala="#alsoToAll(that:akka.stream.Graph[akka.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(akka.stream.Graph*)" }
+@apidoc[Source.alsoToAll](Source) { scala="#alsoToAll(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
+@apidoc[Flow.alsoToAll](Flow) { scala="#alsoToAll(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_]*):FlowOps.this.Repr[Out]" java="#alsoToAll(org.apache.pekko.stream.Graph*)" }
 
 ## Description
 

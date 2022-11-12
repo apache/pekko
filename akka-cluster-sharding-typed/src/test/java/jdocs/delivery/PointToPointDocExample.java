@@ -5,24 +5,24 @@
 package jdocs.delivery;
 
 // #imports
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.delivery.ProducerController;
-import akka.actor.typed.javadsl.AbstractBehavior;
-import akka.actor.typed.javadsl.ActorContext;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.actor.typed.javadsl.Receive;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.delivery.ProducerController;
+import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
+import org.apache.pekko.actor.typed.javadsl.ActorContext;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.actor.typed.javadsl.Receive;
 import java.math.BigInteger;
 import java.util.Optional;
 
 // #imports
 
 // #consumer
-import akka.actor.typed.delivery.ConsumerController;
+import org.apache.pekko.actor.typed.delivery.ConsumerController;
 
 // #consumer
 
-import akka.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.ActorSystem;
 
 import java.util.UUID;
 

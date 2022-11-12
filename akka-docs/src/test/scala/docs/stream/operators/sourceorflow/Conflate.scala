@@ -6,7 +6,7 @@ package docs.stream.operators.sourceorflow
 
 //#conflate
 //#conflateWithSeed
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 
 //#conflateWithSeed
 //#conflate

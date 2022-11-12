@@ -6,24 +6,24 @@ package jdocs.stream.operators;
 
 // #imports
 // #range-imports
-import akka.Done;
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.actor.testkit.typed.javadsl.ManualTime;
-import akka.actor.testkit.typed.javadsl.TestKitJunitResource;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.stream.javadsl.Source;
 // #range-imports
 
 // #actor-ref-imports
-import akka.actor.ActorRef;
-import akka.stream.OverflowStrategy;
-import akka.stream.CompletionStrategy;
-import akka.stream.javadsl.Sink;
-import akka.testkit.TestProbe;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.stream.OverflowStrategy;
+import org.apache.pekko.stream.CompletionStrategy;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.testkit.TestProbe;
 // #actor-ref-imports
 
 // #maybe
-import akka.stream.javadsl.RunnableGraph;
+import org.apache.pekko.stream.javadsl.RunnableGraph;
 import java.util.concurrent.CompletableFuture;
 // #maybe
 

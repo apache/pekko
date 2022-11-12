@@ -7,13 +7,13 @@ package scala.docs.cluster
 import language.postfixOps
 import scala.util.Success
 import scala.concurrent.duration._
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.actor.Terminated
-import akka.pattern.ask
-import akka.util.Timeout
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorRef
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
+import org.apache.pekko.actor.Terminated
+import org.apache.pekko.pattern.ask
+import org.apache.pekko.util.Timeout
 import com.typesafe.config.ConfigFactory
 import java.util.concurrent.atomic.AtomicInteger
 

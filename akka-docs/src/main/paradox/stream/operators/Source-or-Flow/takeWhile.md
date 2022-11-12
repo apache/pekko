@@ -6,8 +6,8 @@ Pass elements downstream as long as a predicate function returns true and then c
 
 ## Signature
 
-@apidoc[Source.takeWhile](Source) { scala="#takeWhile(p:Out=&gt;Boolean,inclusive:Boolean):FlowOps.this.Repr[Out]" java="#takeWhile(akka.japi.function.Predicate)" }
-@apidoc[Flow.takeWhile](Flow) { scala="#takeWhile(p:Out=&gt;Boolean,inclusive:Boolean):FlowOps.this.Repr[Out]" java="#takeWhile(akka.japi.function.Predicate)" }
+@apidoc[Source.takeWhile](Source) { scala="#takeWhile(p:Out=&gt;Boolean,inclusive:Boolean):FlowOps.this.Repr[Out]" java="#takeWhile(org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.takeWhile](Flow) { scala="#takeWhile(p:Out=&gt;Boolean,inclusive:Boolean):FlowOps.this.Repr[Out]" java="#takeWhile(org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description

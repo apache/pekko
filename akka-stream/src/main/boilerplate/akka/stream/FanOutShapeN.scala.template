@@ -2,7 +2,7 @@
  * Copyright (C) 2014-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.stream
+package org.apache.pekko.stream
 
 import scala.annotation.unchecked.uncheckedVariance
 

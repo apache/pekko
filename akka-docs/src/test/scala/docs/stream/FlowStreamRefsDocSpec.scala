@@ -4,18 +4,19 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.actor.{ Actor, Props }
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.{ Actor, Props }
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 import docs.CompileOnlySpec
 
 class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
 
   "offer a source ref" in compileOnlySpec {
     // #offer-source
-    import akka.stream.SourceRef
-    import akka.pattern.pipe
+    import org.apache.pekko
+    import pekko.stream.SourceRef
+    import pekko.pattern.pipe
 
     case class RequestLogs(streamId: Int)
     case class LogsOffer(streamId: Int, sourceRef: SourceRef[String])
@@ -57,7 +58,7 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
 
   "offer a sink ref" in compileOnlySpec {
     // #offer-sink
-    import akka.stream.SinkRef
+    import org.apache.pekko.stream.SinkRef
 
     case class PrepareUpload(id: String)
     case class MeasurementsSinkReady(id: String, sinkRef: SinkRef[String])
@@ -101,7 +102,7 @@ class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
     // #attr-sub-timeout
     // configure the timeout for source
     import scala.concurrent.duration._
-    import akka.stream.StreamRefAttributes
+    import org.apache.pekko.stream.StreamRefAttributes
 
     // configuring Sink.sourceRef (notice that we apply the attributes to the Sink!):
     Source

@@ -5,8 +5,8 @@
 package jdocs.actor;
 
 // #bytebufserializer-with-manifest
-import akka.serialization.ByteBufferSerializer;
-import akka.serialization.SerializerWithStringManifest;
+import org.apache.pekko.serialization.ByteBufferSerializer;
+import org.apache.pekko.serialization.SerializerWithStringManifest;
 
 // #bytebufserializer-with-manifest
 import java.nio.ByteBuffer;

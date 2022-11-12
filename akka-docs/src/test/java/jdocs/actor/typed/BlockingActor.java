@@ -5,8 +5,8 @@
 package jdocs.actor.typed;
 
 // #blocking-in-actor
-import akka.actor.typed.*;
-import akka.actor.typed.javadsl.*;
+import org.apache.pekko.actor.typed.*;
+import org.apache.pekko.actor.typed.javadsl.*;
 
 public class BlockingActor extends AbstractBehavior<Integer> {
   public static Behavior<Integer> create() {

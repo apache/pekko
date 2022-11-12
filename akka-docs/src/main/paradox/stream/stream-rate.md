@@ -23,7 +23,7 @@ buffers in a stream. In this chapter we cover how buffers are used in Akka Strea
 
 In this section we will discuss internal buffers that are introduced as an optimization when using asynchronous operators.
 
-To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](akka.stream.Graph#shape:S)]@java[@javadoc[`.async()`](akka.stream.Graph#async--)] method. Being run
+To run an operator asynchronously it has to be marked explicitly as such using the @scala[@scaladoc[`.async`](pekko.stream.Graph#shape:S)]@java[@javadoc[`.async()`](pekko.stream.Graph#async--)] method. Being run
 asynchronously means that an operator, after handing out an element to its downstream consumer is able to immediately
 process the next message. To demonstrate what we mean by this, let's take a look at the following example:
 
@@ -80,7 +80,7 @@ akka.stream.materializer.max-input-buffer-size = 16
 
 Alternatively they can be set per stream by adding an attribute to the complete `RunnableGraph` or on smaller segments
 of the stream it is possible by defining a separate
-@scala[@scaladoc[`Flow`](akka.stream.scaladsl.Flow)]@java[@javadoc[`Flow`](akka.stream.javadsl.Flow)] with these attributes:
+@scala[@scaladoc[`Flow`](pekko.stream.scaladsl.Flow)]@java[@javadoc[`Flow`](pekko.stream.javadsl.Flow)] with these attributes:
 
 Scala
 :   @@snip [StreamBuffersRateSpec.scala](/akka-docs/src/test/scala/docs/stream/StreamBuffersRateSpec.scala) { #section-buffer }
@@ -97,11 +97,11 @@ Java
 :   @@snip [StreamBuffersRateDocTest.java](/akka-docs/src/test/java/jdocs/stream/StreamBuffersRateDocTest.java) { #buffering-abstraction-leak }
 
 Running the above example one would expect the number *3* to be printed in every 3 seconds (the `conflateWithSeed`
-step here is configured so that it counts the number of elements received before the downstream @scala[@scaladoc[`ZipWith`](akka.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](akka.stream.javadsl.ZipWith$)] consumes
+step here is configured so that it counts the number of elements received before the downstream @scala[@scaladoc[`ZipWith`](pekko.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](pekko.stream.javadsl.ZipWith$)] consumes
 them). What is being printed is different though, we will see the number *1*. The reason for this is the internal
-buffer which is by default 16 elements large, and prefetches elements before the @scala[@scaladoc[`ZipWith`](akka.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](akka.stream.javadsl.ZipWith$)] starts consuming them.
-It is possible to fix this issue by changing the buffer size of @scala[@scaladoc[`ZipWith`](akka.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](akka.stream.javadsl.ZipWith$)] (or the whole graph) to 1. We will still see
-a leading 1 though which is caused by an initial prefetch of the @scala[@scaladoc[`ZipWith`](akka.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](akka.stream.javadsl.ZipWith$)] element.
+buffer which is by default 16 elements large, and prefetches elements before the @scala[@scaladoc[`ZipWith`](pekko.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](pekko.stream.javadsl.ZipWith$)] starts consuming them.
+It is possible to fix this issue by changing the buffer size of @scala[@scaladoc[`ZipWith`](pekko.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](pekko.stream.javadsl.ZipWith$)] (or the whole graph) to 1. We will still see
+a leading 1 though which is caused by an initial prefetch of the @scala[@scaladoc[`ZipWith`](pekko.stream.scaladsl.ZipWith$)]@java[@javadoc[`ZipWith`](pekko.stream.javadsl.ZipWith$)] element.
 
 @@@ note
 

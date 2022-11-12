@@ -4,26 +4,27 @@
 
 package docs.actor
 
-import akka.actor.Kill
+import org.apache.pekko.actor.Kill
 import jdocs.actor.ImmutableMessage
 
 import language.postfixOps
 
 //#imports1
-import akka.actor.Actor
-import akka.actor.Props
-import akka.event.Logging
+import org.apache.pekko
+import pekko.actor.Actor
+import pekko.actor.Props
+import pekko.event.Logging
 
 //#imports1
 
 import scala.concurrent.Future
-import akka.actor.{ ActorLogging, ActorRef, ActorSystem, PoisonPill, Terminated }
-import akka.testkit._
-import akka.util._
+import pekko.actor.{ ActorLogging, ActorRef, ActorSystem, PoisonPill, Terminated }
+import pekko.testkit._
+import pekko.util._
 import scala.concurrent.duration._
 import scala.concurrent.Await
-import akka.Done
-import akka.actor.CoordinatedShutdown
+import pekko.Done
+import pekko.actor.CoordinatedShutdown
 
 //#my-actor
 class MyActor extends Actor {
@@ -146,7 +147,7 @@ class ReplyException extends Actor {
         sender() ! result
       } catch {
         case e: Exception =>
-          sender() ! akka.actor.Status.Failure(e)
+          sender() ! pekko.actor.Status.Failure(e)
           throw e
       }
     // #reply-exception
@@ -277,7 +278,7 @@ final case class Give(thing: Any)
 //#receive-orElse
 
 //#fiddle_code
-import akka.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
+import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, PoisonPill, Props }
 import language.postfixOps
 import scala.concurrent.duration._
 
@@ -407,7 +408,7 @@ class ActorDocSpec extends AkkaSpec("""
 
   "creating a Props config" in {
     // #creating-props
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
 
     val props1 = Props[MyActor]()
     val props2 = Props(new ActorWithArgs("arg")) // careful, see below
@@ -423,7 +424,7 @@ class ActorDocSpec extends AkkaSpec("""
 
   "creating actor with Props" in {
     // #system-actorOf
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     // ActorSystem is a heavy object: create only one per application
     val system = ActorSystem("mySystem")
@@ -448,7 +449,7 @@ class ActorDocSpec extends AkkaSpec("""
       val applicationContext = this
 
       // #creating-indirectly
-      import akka.actor.IndirectActorProducer
+      import org.apache.pekko.actor.IndirectActorProducer
 
       class DependencyInjector(applicationContext: AnyRef, beanName: String) extends IndirectActorProducer {
 
@@ -483,8 +484,9 @@ class ActorDocSpec extends AkkaSpec("""
     val myActor = system.actorOf(Props[FirstActor]())
     // #using-implicit-timeout
     import scala.concurrent.duration._
-    import akka.util.Timeout
-    import akka.pattern.ask
+    import org.apache.pekko
+    import pekko.util.Timeout
+    import pekko.pattern.ask
     implicit val timeout: Timeout = 5.seconds
     val future = myActor ? "hello"
     // #using-implicit-timeout
@@ -496,7 +498,7 @@ class ActorDocSpec extends AkkaSpec("""
     val myActor = system.actorOf(Props[FirstActor]())
     // #using-explicit-timeout
     import scala.concurrent.duration._
-    import akka.pattern.ask
+    import org.apache.pekko.pattern.ask
     val future = myActor.ask("hello")(5 seconds)
     // #using-explicit-timeout
     Await.result(future, 5 seconds) should be("hello")
@@ -504,7 +506,7 @@ class ActorDocSpec extends AkkaSpec("""
 
   "using receiveTimeout" in {
     // #receive-timeout
-    import akka.actor.ReceiveTimeout
+    import org.apache.pekko.actor.ReceiveTimeout
     import scala.concurrent.duration._
     class MyActor extends Actor {
       // To set an initial delay
@@ -548,7 +550,7 @@ class ActorDocSpec extends AkkaSpec("""
 
   "using Stash" in {
     // #stash
-    import akka.actor.Stash
+    import org.apache.pekko.actor.Stash
     class ActorWithProtocol extends Actor with Stash {
       def receive = {
         case "open" =>
@@ -569,7 +571,7 @@ class ActorDocSpec extends AkkaSpec("""
   "using watch" in {
     new AnyRef {
       // #watch
-      import akka.actor.{ Actor, Props, Terminated }
+      import org.apache.pekko.actor.{ Actor, Props, Terminated }
 
       class WatchActor extends Actor {
         val child = context.actorOf(Props.empty, "child")
@@ -630,7 +632,7 @@ class ActorDocSpec extends AkkaSpec("""
   "using Identify" in {
     new AnyRef {
       // #identify
-      import akka.actor.{ Actor, ActorIdentity, Identify, Props, Terminated }
+      import org.apache.pekko.actor.{ Actor, ActorIdentity, Identify, Props, Terminated }
 
       class Follower extends Actor {
         val identifyId = 1
@@ -654,14 +656,14 @@ class ActorDocSpec extends AkkaSpec("""
       val b = system.actorOf(Props(classOf[Follower], this))
       watch(b)
       system.stop(a)
-      expectMsgType[akka.actor.Terminated].actor should be(b)
+      expectMsgType[pekko.actor.Terminated].actor should be(b)
     }
   }
 
   "using pattern gracefulStop" in {
     val actorRef = system.actorOf(Props[Manager]())
     // #gracefulStop
-    import akka.pattern.gracefulStop
+    import org.apache.pekko.pattern.gracefulStop
     import scala.concurrent.Await
 
     try {
@@ -670,7 +672,7 @@ class ActorDocSpec extends AkkaSpec("""
       // the actor has been stopped
     } catch {
       // the actor wasn't stopped within 5 seconds
-      case e: akka.pattern.AskTimeoutException =>
+      case e: pekko.pattern.AskTimeoutException =>
     }
     // #gracefulStop
   }
@@ -678,7 +680,7 @@ class ActorDocSpec extends AkkaSpec("""
   "using pattern ask / pipeTo" in {
     val actorA, actorB, actorC, actorD = system.actorOf(Props.empty)
     // #ask-pipeTo
-    import akka.pattern.{ ask, pipe }
+    import org.apache.pekko.pattern.{ ask, pipe }
     import system.dispatcher // The ExecutionContext that will be used
     final case class Result(x: Int, s: String, d: Double)
     case object Request

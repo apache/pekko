@@ -4,7 +4,7 @@
 
 package docs.actor
 
-import akka.actor.{ Actor, Props }
+import org.apache.pekko.actor.{ Actor, Props }
 import docs.CompileOnlySpec
 import org.scalatest.wordspec.AnyWordSpec
 

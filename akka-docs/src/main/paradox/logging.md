@@ -45,15 +45,15 @@ Java
 For convenience, you can mix in the `log` member into actors, instead of defining it as above.
 
 ```scala
-class MyActor extends Actor with akka.actor.ActorLogging {
+class MyActor extends Actor with org.apache.pekko.actor.ActorLogging {
   ...
 }
 ```
 
 @@@
 
-The first parameter to @scala[@scaladoc[Logging](akka.event.Logging$#apply[T](bus:akka.event.LoggingBus,logSource:T)(implicitevidence$5:akka.event.LogSource[T]):akka.event.LoggingAdapter)] @java[@javadoc[Logging.getLogger](akka.event.Logging#getLogger(akka.event.LoggingBus,java.lang.Object))] could also be any
-@apidoc[LoggingBus], specifically @scala[@scaladoc[system.eventStream](akka.actor.ActorSystem#eventStream:akka.event.EventStream)] @java[@javadoc[system.getEventStream()](akka.actor.ActorSystem#getEventStream())]. 
+The first parameter to @scala[@scaladoc[Logging](pekko.event.Logging$#apply[T](bus:org.apache.pekko.event.LoggingBus,logSource:T)(implicitevidence$5:org.apache.pekko.event.LogSource[T]):org.apache.pekko.event.LoggingAdapter)] @java[@javadoc[Logging.getLogger](pekko.event.Logging#getLogger(org.apache.pekko.event.LoggingBus,java.lang.Object))] could also be any
+@apidoc[LoggingBus], specifically @scala[@scaladoc[system.eventStream](pekko.actor.ActorSystem#eventStream:org.apache.pekko.event.EventStream)] @java[@javadoc[system.getEventStream()](pekko.actor.ActorSystem#getEventStream())]. 
 In the demonstrated case, the actor system's address is included in the `akkaSource`
 representation of the log source (see @ref:[Logging Thread, Akka Source and Actor System in MDC](#logging-thread-akka-source-and-actor-system-in-mdc)),
 while in the second case this is not automatically done.
@@ -64,7 +64,7 @@ The source object is translated to a String according to the following rules:
  * in case of a String it is used as is
  * in case of a Class an approximation of its `simpleName` is used
  * in all other cases @scala[a compile error occurs unless an implicit
-@scaladoc[LogSource[T]](akka.event.LogSource) is in scope for the type in question] @java[the `simpleName` of its class] is used
+@scaladoc[LogSource[T]](pekko.event.LogSource) is in scope for the type in question] @java[the `simpleName` of its class] is used
 
 The log message may contain argument placeholders `{}`, which will be
 substituted if the log level is enabled. Compared to constructing a full string
@@ -81,8 +81,8 @@ Java
 :   @@snip [LoggingDocTest.java](/akka-docs/src/test/java/jdocs/event/LoggingDocTest.java) { #array }
 
 The Java @javadoc[Class](java.lang.Class) of the log source is also included in the generated
-@apidoc[akka.event.Logging.LogEvent]. In case of a simple string this is replaced with a “marker”
-class @apidoc[akka.event.DummyClassForStringSources] in order to allow special
+@apidoc[event.Logging.LogEvent]. In case of a simple string this is replaced with a “marker”
+class @apidoc[event.DummyClassForStringSources] in order to allow special
 treatment of this case, e.g. in the SLF4J event listener which will then use
 the string instead of the class’ name for looking up the logger instance to
 use.
@@ -132,7 +132,7 @@ akka {
 @@@ div { .group-scala }
 
 If you want very detailed logging of user-level messages then wrap your actors' behaviors with
-@scaladoc[LoggingReceive](akka.event.LoggingReceive) and enable the `receive` option:
+@scaladoc[LoggingReceive](pekko.event.LoggingReceive) and enable the `receive` option:
 
 ```ruby
 akka {
@@ -244,16 +244,16 @@ Also see the @ref:[logging options for TestKit](testing.md#actor-logging).
 ### Translating Log Source to String and Class
 
 The rules for translating the source object to the source string and class
-which are inserted into the @scaladoc[LogEvent](akka.event.Logging.LogEvent) during runtime are implemented
+which are inserted into the @scaladoc[LogEvent](pekko.event.Logging.LogEvent) during runtime are implemented
 using implicit parameters and thus fully customizable: create your own
-instance of @scaladoc[LogSource[T]](akka.event.LogSource) and have it in scope when creating the
+instance of @scaladoc[LogSource[T]](pekko.event.LogSource) and have it in scope when creating the
 logger.
 
 @@snip [LoggingDocSpec.scala](/akka-docs/src/test/scala/docs/event/LoggingDocSpec.scala) { #my-source }
 
 This example creates a log source which mimics traditional usage of Java
 loggers, which are based upon the originating object’s class name as log
-category. The override of @scaladoc[getClazz](akka.event.LogSource#getClazz(t:T):Class[_]) is only included for demonstration
+category. The override of @scaladoc[getClazz](pekko.event.LogSource#getClazz(t:T):Class[_]) is only included for demonstration
 purposes as it contains exactly the default behavior.
 
 @@@
@@ -262,8 +262,8 @@ purposes as it contains exactly the default behavior.
 
 You may also create the string representation up front and pass that in as
 the log source, but be aware that then the `Class[_]` which will be
-put in the @scaladoc[LogEvent](akka.event.Logging.LogEvent) is
-@scaladoc[akka.event.DummyClassForStringSources](akka.event.DummyClassForStringSources).
+put in the @scaladoc[LogEvent](pekko.event.Logging.LogEvent) is
+@scaladoc[event.DummyClassForStringSources](pekko.event.DummyClassForStringSources).
 
 The SLF4J event listener treats this case specially (using the actual string
 to look up the logger instance to use instead of the class’ name), and you
@@ -307,9 +307,9 @@ configuration property.
 
 ```ruby
 akka {
-  # Loggers to register at boot time (akka.event.Logging$DefaultLogger logs
+  # Loggers to register at boot time (org.apache.pekko.event.Logging$DefaultLogger logs
   # to STDOUT)
-  loggers = ["akka.event.Logging$DefaultLogger"]
+  loggers = ["org.apache.pekko.event.Logging$DefaultLogger"]
   # Options: OFF, ERROR, WARNING, INFO, DEBUG
   loglevel = "DEBUG"
 }
@@ -362,7 +362,7 @@ It has a single dependency: the slf4j-api jar. In your runtime, you also need a 
 You need to enable the Slf4jLogger in the `loggers` element in
 the @ref:[configuration](general/configuration.md). Here you can also define the log level of the event bus.
 More fine grained log levels can be defined in the configuration of the SLF4J backend
-(e.g. logback.xml). You should also define @apidoc[akka.event.slf4j.Slf4jLoggingFilter] in
+(e.g. logback.xml). You should also define @apidoc[event.slf4j.Slf4jLoggingFilter] in
 the `logging-filter` configuration property. It will filter the log events using the backend
 configuration (e.g. logback.xml) before they are published to the event bus.
 
@@ -379,9 +379,9 @@ without any significant overhead, also for production.
 
 ```ruby
 akka {
-  loggers = ["akka.event.slf4j.Slf4jLogger"]
+  loggers = ["org.apache.pekko.event.slf4j.Slf4jLogger"]
   loglevel = "DEBUG"
-  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+  logging-filter = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"
 }
 ```
 
@@ -396,7 +396,7 @@ the first case and @scala[@javadoc[LoggerFactory.getLogger(s: String)](org.slf4j
 @@@ note
 
 Beware that the actor system’s name is appended to a @javadoc[String](java.lang.String) log
-source if the LoggingAdapter was created giving an @apidoc[akka.actor.ActorSystem] to
+source if the LoggingAdapter was created giving an @apidoc[actor.ActorSystem] to
 the factory. If this is not intended, give a @apidoc[LoggingBus] instead as
 shown below:
 
@@ -429,7 +429,7 @@ Logback has flexible configuration options and details can be found in the
 
 One part that is important to highlight is the importance of configuring an [AsyncAppender](https://logback.qos.ch/manual/appenders.html#AsyncAppender),
 because it offloads rendering of logging events to a background thread, increasing performance. It doesn't block
-the threads of the @apidoc[akka.actor.ActorSystem] while the underlying infrastructure writes the log messages to disk or other configured
+the threads of the @apidoc[actor.ActorSystem] while the underlying infrastructure writes the log messages to disk or other configured
 destination. It also contains a feature which will drop `INFO` and `DEBUG` messages if the logging
 load is high.
 
@@ -499,7 +499,7 @@ If you want to more accurately output the timestamp, use the MDC attribute `akka
 One useful feature available in Slf4j is [MDC](https://logback.qos.ch/manual/mdc.html),
 Akka has a way to let the application specify custom values, for this you need to use a
 specialized @apidoc[LoggingAdapter], the @apidoc[DiagnosticLoggingAdapter]. In order to
-get it you can use the factory, providing an @scala[@scaladoc[Actor](akka.actor.Actor)] @java[@javadoc[AbstractActor](akka.actor.AbstractActor)] as logSource:
+get it you can use the factory, providing an @scala[@scaladoc[Actor](pekko.actor.Actor)] @java[@javadoc[AbstractActor](pekko.actor.AbstractActor)] as logSource:
 
 Scala
 :   ```scala
@@ -534,7 +534,7 @@ Java
 @@@ div { .group-scala }
 
 For convenience, you can mix in the `log` member into actors, instead of defining it as above.
-This trait also lets you override @scaladoc[mdc(msg: Any)](akka.actor.DiagnosticActorLogging#mdc(currentMessage:Any):akka.event.Logging.MDC) for specifying MDC values
+This trait also lets you override @scaladoc[mdc(msg: Any)](pekko.actor.DiagnosticActorLogging#mdc(currentMessage:Any):org.apache.pekko.event.Logging.MDC) for specifying MDC values
 depending on current message and lets you forget about the cleanup as well, since it already does it for you.
 
 @@snip [LoggingDocSpec.scala](/akka-docs/src/test/scala/docs/event/LoggingDocSpec.scala) { #mdc-actor }
@@ -568,18 +568,18 @@ These are used to filter out rare and special events, for example you might want
 some malicious activity and mark them with a `SECURITY` tag, and in your appender configuration make these
 trigger emails and other notifications immediately.
 
-Markers are available through the LoggingAdapters, when obtained via @apidoc[Logging.withMarker](akka.event.Logging$) {scala="#withMarker(logSource:akka.actor.Actor):akka.event.DiagnosticMarkerBusLoggingAdapter" java="#withMarker(akka.actor.Actor)"}.
-The first argument passed into all log calls then should be a @apidpc[akka.event.LogMarker].
+Markers are available through the LoggingAdapters, when obtained via @apidoc[Logging.withMarker](event.Logging$) {scala="#withMarker(logSource:org.apache.pekko.actor.Actor):org.apache.pekko.event.DiagnosticMarkerBusLoggingAdapter" java="#withMarker(org.apache.pekko.actor.Actor)"}.
+The first argument passed into all log calls then should be a @apidoc[event.LogMarker].
 
 The slf4j bridge provided by Akka in `akka-slf4j` will automatically pick up this marker value and make it available to SLF4J.
 
 Akka is logging some events with markers. Some of these events also include structured MDC properties. 
 
 * The "SECURITY" marker is used for highlighting security related events or incidents.
-* Akka Actor is using the markers defined in @apidoc[akka.actor.ActorLogMarker$].
-* Akka Cluster is using the markers defined in @apidoc[akka.cluster.ClusterLogMarker$].
-* Akka Remoting is using the markers defined in @apidoc[akka.remote.RemoteLogMarker$].
-* Akka Cluster Sharding is using the markers defined in @apidoc[akka.cluster.sharding.ShardingLogMarker$].
+* Akka Actor is using the markers defined in @apidoc[actor.ActorLogMarker$].
+* Akka Cluster is using the markers defined in @apidoc[cluster.ClusterLogMarker$].
+* Akka Remoting is using the markers defined in @apidoc[remote.RemoteLogMarker$].
+* Akka Cluster Sharding is using the markers defined in @apidoc[cluster.sharding.ShardingLogMarker$].
 
 Markers and MDC properties are automatically picked up by the [Logstash Logback encoder](https://github.com/logstash/logstash-logback-encoder).
 

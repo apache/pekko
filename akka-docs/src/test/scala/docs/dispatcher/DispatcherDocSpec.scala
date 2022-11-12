@@ -6,10 +6,10 @@ package docs.dispatcher
 
 import language.postfixOps
 
-import akka.testkit.AkkaSpec
-import akka.event.Logging
-import akka.event.LoggingAdapter
-import akka.actor._
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.event.Logging
+import org.apache.pekko.event.LoggingAdapter
+import org.apache.pekko.actor._
 
 object DispatcherDocSpec {
   val javaConfig = """
@@ -192,7 +192,7 @@ object DispatcherDocSpec {
 
     //#bounded-mailbox-config
     bounded-mailbox {
-      mailbox-type = "akka.dispatch.NonBlockingBoundedMailbox"
+      mailbox-type = "org.apache.pekko.dispatch.NonBlockingBoundedMailbox"
       mailbox-capacity = 1000 
     }
     //#bounded-mailbox-config
@@ -200,7 +200,7 @@ object DispatcherDocSpec {
     //#required-mailbox-config
 
     akka.actor.mailbox.requirements {
-      "akka.dispatch.BoundedMessageQueueSemantics" = bounded-mailbox
+      "org.apache.pekko.dispatch.BoundedMessageQueueSemantics" = bounded-mailbox
     }
     //#required-mailbox-config
 
@@ -222,7 +222,7 @@ object DispatcherDocSpec {
 
     //#control-aware-mailbox-config
     control-aware-dispatcher {
-      mailbox-type = "akka.dispatch.UnboundedControlAwareMailbox"
+      mailbox-type = "org.apache.pekko.dispatch.UnboundedControlAwareMailbox"
       //Other dispatcher configuration goes here
     }
     //#control-aware-mailbox-config
@@ -230,8 +230,9 @@ object DispatcherDocSpec {
   """
 
   // #prio-mailbox
-  import akka.dispatch.PriorityGenerator
-  import akka.dispatch.UnboundedStablePriorityMailbox
+  import org.apache.pekko
+  import pekko.dispatch.PriorityGenerator
+  import pekko.dispatch.UnboundedStablePriorityMailbox
   import com.typesafe.config.Config
 
   // We inherit, in this case, from UnboundedStablePriorityMailbox
@@ -255,7 +256,7 @@ object DispatcherDocSpec {
   // #prio-mailbox
 
   // #control-aware-mailbox-messages
-  import akka.dispatch.ControlMessage
+  import org.apache.pekko.dispatch.ControlMessage
 
   case object MyControlMessage extends ControlMessage
   // #control-aware-mailbox-messages
@@ -267,8 +268,9 @@ object DispatcherDocSpec {
   }
 
   // #required-mailbox-class
-  import akka.dispatch.RequiresMessageQueue
-  import akka.dispatch.BoundedMessageQueueSemantics
+  import org.apache.pekko
+  import pekko.dispatch.RequiresMessageQueue
+  import pekko.dispatch.BoundedMessageQueueSemantics
 
   class MyBoundedActor extends MyActor with RequiresMessageQueue[BoundedMessageQueueSemantics]
   // #required-mailbox-class
@@ -292,7 +294,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   "defining dispatcher in config" in {
     val context = system
     // #defining-dispatcher-in-config
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     val myActor = context.actorOf(Props[MyActor](), "myactor")
     // #defining-dispatcher-in-config
   }
@@ -300,7 +302,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   "defining dispatcher in code" in {
     val context = system
     // #defining-dispatcher-in-code
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     val myActor =
       context.actorOf(Props[MyActor]().withDispatcher("my-dispatcher"), "myactor1")
     // #defining-dispatcher-in-code
@@ -344,7 +346,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   "defining mailbox in config" in {
     val context = system
     // #defining-mailbox-in-config
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     val myActor = context.actorOf(Props[MyActor](), "priomailboxactor")
     // #defining-mailbox-in-config
   }
@@ -352,7 +354,7 @@ class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
   "defining mailbox in code" in {
     val context = system
     // #defining-mailbox-in-code
-    import akka.actor.Props
+    import org.apache.pekko.actor.Props
     val myActor = context.actorOf(Props[MyActor]().withMailbox("prio-mailbox"))
     // #defining-mailbox-in-code
   }

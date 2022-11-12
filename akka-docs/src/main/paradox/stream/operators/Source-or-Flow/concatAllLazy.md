@@ -6,8 +6,8 @@ After completion of the original upstream the elements of the given sources will
 
 ## Signature
 
-@apidoc[Source.concatAllLazy](Source) { scala="#concatAllLazy[U&gt;:Out](those:akka.stream.Graph[akka.stream.SourceShape[U],_]*):FlowOps.this.Repr[U]" java="#concatAllLazy(akka.stream.Graph*)" }
-@apidoc[Flow.concatAllLazy](Flow) { scala="#concatAllLazy[U&gt;:Out](those:akka.stream.Graph[akka.stream.SourceShape[U],_]*):FlowOps.this.Repr[U]" java="#concatAllLazy(akka.stream.Graph*)" }
+@apidoc[Source.concatAllLazy](Source) { scala="#concatAllLazy[U&gt;:Out](those:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]*):FlowOps.this.Repr[U]" java="#concatAllLazy(org.apache.pekko.stream.Graph*)" }
+@apidoc[Flow.concatAllLazy](Flow) { scala="#concatAllLazy[U&gt;:Out](those:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]*):FlowOps.this.Repr[U]" java="#concatAllLazy(org.apache.pekko.stream.Graph*)" }
 
 
 ## Description
@@ -20,7 +20,7 @@ To defer the materialization of the given sources (or to completely avoid its ma
 
 ## Example
 Scala
-:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowConcatAllLazySpec.scala) { #concatAllLazy }
+:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatAllLazySpec.scala) { #concatAllLazy }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #concatAllLazy }

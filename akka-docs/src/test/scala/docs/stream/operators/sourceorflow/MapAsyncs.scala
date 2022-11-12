@@ -4,11 +4,12 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
-import akka.util.Timeout
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
+import pekko.util.Timeout
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
@@ -48,7 +49,7 @@ object CommonMapAsync {
     // #mapasyncunordered
     val result =
       if (Random.nextInt(5) == 0) {
-        akka.pattern.after(500.millis)(Future.successful(event.sequenceNumber))
+        pekko.pattern.after(500.millis)(Future.successful(event.sequenceNumber))
       } else {
         Future.successful(event.sequenceNumber)
       }

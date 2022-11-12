@@ -6,32 +6,32 @@ package jdocs.testkit;
 
 import static org.junit.Assert.*;
 
-import akka.pattern.Patterns;
+import org.apache.pekko.pattern.Patterns;
 import jdocs.AbstractJavaTest;
 import org.junit.Assert;
-import akka.japi.JavaPartialFunction;
-import akka.testkit.AkkaJUnitActorSystemResource;
-import akka.testkit.CallingThreadDispatcher;
-import akka.testkit.TestActor;
-import akka.testkit.TestActorRef;
-import akka.testkit.TestProbe;
-import akka.testkit.javadsl.EventFilter;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.japi.JavaPartialFunction;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.CallingThreadDispatcher;
+import org.apache.pekko.testkit.TestActor;
+import org.apache.pekko.testkit.TestActorRef;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.javadsl.EventFilter;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.typesafe.config.ConfigFactory;
 
-import akka.actor.AbstractActorWithTimers;
-import akka.actor.ActorKilledException;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Kill;
-import akka.actor.PoisonPill;
-import akka.actor.Props;
-import akka.actor.Terminated;
-import akka.actor.AbstractActor;
-import akka.testkit.TestActor.AutoPilot;
+import org.apache.pekko.actor.AbstractActorWithTimers;
+import org.apache.pekko.actor.ActorKilledException;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Kill;
+import org.apache.pekko.actor.PoisonPill;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.testkit.TestActor.AutoPilot;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ public class TestKitDocTest extends AbstractJavaTest {
   public static AkkaJUnitActorSystemResource actorSystemResource =
       new AkkaJUnitActorSystemResource(
           "TestKitDocTest",
-          ConfigFactory.parseString("akka.loggers = [akka.testkit.TestEventListener]"));
+          ConfigFactory.parseString("akka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

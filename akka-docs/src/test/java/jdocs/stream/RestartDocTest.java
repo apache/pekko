@@ -4,16 +4,16 @@
 
 package jdocs.stream;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.stream.KillSwitch;
-import akka.stream.KillSwitches;
-import akka.stream.Materializer;
-import akka.stream.RestartSettings;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.RestartSource;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.KillSwitch;
+import org.apache.pekko.stream.KillSwitches;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.RestartSettings;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.RestartSource;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;

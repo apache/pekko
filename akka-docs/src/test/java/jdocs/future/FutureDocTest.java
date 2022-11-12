@@ -4,12 +4,12 @@
 
 package jdocs.future;
 
-import akka.actor.typed.ActorSystem;
-import akka.dispatch.Futures;
-import akka.pattern.Patterns;
-import akka.testkit.AkkaJUnitActorSystemResource;
-import akka.testkit.AkkaSpec;
-import akka.util.Timeout;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.dispatch.Futures;
+import org.apache.pekko.pattern.Patterns;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.util.Timeout;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -24,10 +24,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import static akka.actor.typed.javadsl.Adapter.toTyped;
-import static akka.dispatch.Futures.future;
+import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
+import static org.apache.pekko.dispatch.Futures.future;
 // #imports
-import akka.pattern.Patterns;
+import org.apache.pekko.pattern.Patterns;
 
 // #imports
 import static java.util.concurrent.TimeUnit.SECONDS;

@@ -5,8 +5,8 @@
 package jdocs.future;
 
 // #context-dispatcher
-import akka.actor.AbstractActor;
-import akka.dispatch.Futures;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.dispatch.Futures;
 
 public class ActorWithFuture extends AbstractActor {
   ActorWithFuture() {

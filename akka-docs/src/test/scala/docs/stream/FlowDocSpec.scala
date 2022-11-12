@@ -4,14 +4,14 @@
 
 package docs.stream
 
-import akka.Done
-import akka.NotUsed
-import akka.actor.{ Actor, ActorSystem, Cancellable }
-import akka.stream.CompletionStrategy
-import akka.stream.Materializer
-import akka.stream.{ ClosedShape, FlowShape, OverflowStrategy }
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.Done
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.{ Actor, ActorSystem, Cancellable }
+import org.apache.pekko.stream.CompletionStrategy
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.{ ClosedShape, FlowShape, OverflowStrategy }
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.{ Future, Promise }

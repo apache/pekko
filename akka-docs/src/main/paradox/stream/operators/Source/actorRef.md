@@ -6,7 +6,7 @@ Materialize an `ActorRef` of the classic actors API; sending messages to it will
 
 ## Signature
 
-@apidoc[Source.actorRef](Source$) { scala="#actorRef[T](completionMatcher:PartialFunction[Any,akka.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable],bufferSize:Int,overflowStrategy:akka.stream.OverflowStrategy):akka.stream.scaladsl.Source[T,akka.actor.ActorRef]" java="#actorRef(akka.japi.function.Function,akka.japi.function.Function,int,akka.stream.OverflowStrategy)" }
+@apidoc[Source.actorRef](Source$) { scala="#actorRef[T](completionMatcher:PartialFunction[Any,org.apache.pekko.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable],bufferSize:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.ActorRef]" java="#actorRef(org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function,int,org.apache.pekko.stream.OverflowStrategy)" }
 
 ## Description
 
@@ -14,12 +14,12 @@ Materialize an `ActorRef`, sending messages to it will emit them on the stream. 
 a buffer but since communication is one way, there is no back pressure. Handling overflow is done by either dropping
 elements or failing the stream; the strategy is chosen by the user.
 
-The stream can be completed successfully by sending the actor reference a `akka.actor.Status.Success`.
-If the content is `akka.stream.CompletionStrategy.immediately` the completion will be signaled immediately.
-Otherwise, if the content is `akka.stream.CompletionStrategy.draining` (or anything else)
+The stream can be completed successfully by sending the actor reference a `org.apache.pekko.actor.Status.Success`.
+If the content is `org.apache.pekko.stream.CompletionStrategy.immediately` the completion will be signaled immediately.
+Otherwise, if the content is `org.apache.pekko.stream.CompletionStrategy.draining` (or anything else)
 already buffered elements will be sent out before signaling completion.
-Sending `akka.actor.PoisonPill` will signal completion immediately but this behavior is deprecated and scheduled to be removed.
-Using `akka.actor.ActorSystem.stop` to stop the actor and complete the stream is *not supported*.
+Sending `org.apache.pekko.actor.PoisonPill` will signal completion immediately but this behavior is deprecated and scheduled to be removed.
+Using `org.apache.pekko.actor.ActorSystem.stop` to stop the actor and complete the stream is *not supported*.
 
 See also:
 

@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.mergeSorted](Source) { scala="#mergeSorted[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M])(implicitord:Ordering[U]):FlowOps.this.Repr[U]" java="#mergeSorted(akka.stream.Graph,java.util.Comparator)" }
-@apidoc[Flow.mergeSorted](Flow) { scala="#mergeSorted[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M])(implicitord:Ordering[U]):FlowOps.this.Repr[U]" java="#mergeSorted(akka.stream.Graph,java.util.Comparator)" }
+@apidoc[Source.mergeSorted](Source) { scala="#mergeSorted[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M])(implicitord:Ordering[U]):FlowOps.this.Repr[U]" java="#mergeSorted(org.apache.pekko.stream.Graph,java.util.Comparator)" }
+@apidoc[Flow.mergeSorted](Flow) { scala="#mergeSorted[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M])(implicitord:Ordering[U]):FlowOps.this.Repr[U]" java="#mergeSorted(org.apache.pekko.stream.Graph,java.util.Comparator)" }
 
 
 ## Description
@@ -17,7 +17,7 @@ smallest element.
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeSpec.scala) { #merge-sorted }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #merge-sorted }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #merge-sorted }

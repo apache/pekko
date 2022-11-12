@@ -6,8 +6,8 @@ Filter the incoming elements using a predicate.
 
 ## Signature
 
-@apidoc[Source.filter](Source) { scala="#filter(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#filter(akka.japi.function.Predicate)" }
-@apidoc[Flow.filter](Flow) { scala="#filter(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#filter(akka.japi.function.Predicate)" }
+@apidoc[Source.filter](Source) { scala="#filter(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#filter(org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.filter](Flow) { scala="#filter(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#filter(org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description
@@ -41,4 +41,4 @@ Java
 
 ## API docs
 
-@apidoc[Flow.filter](Flow) { scala="#filter(p:Out=%3EBoolean):FlowOps.this.Repr[Out]" java="#filter(akka.japi.function.Predicate)" }
+@apidoc[Flow.filter](Flow) { scala="#filter(p:Out=%3EBoolean):FlowOps.this.Repr[Out]" java="#filter(org.apache.pekko.japi.function.Predicate)" }

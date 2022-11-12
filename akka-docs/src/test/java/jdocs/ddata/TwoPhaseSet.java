@@ -8,8 +8,8 @@ import java.util.HashSet;
 
 import java.util.Set;
 
-import akka.cluster.ddata.AbstractReplicatedData;
-import akka.cluster.ddata.GSet;
+import org.apache.pekko.cluster.ddata.AbstractReplicatedData;
+import org.apache.pekko.cluster.ddata.GSet;
 
 // #twophaseset
 public class TwoPhaseSet extends AbstractReplicatedData<TwoPhaseSet> {

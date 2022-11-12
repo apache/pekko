@@ -8,18 +8,18 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeoutException;
 import java.time.Duration;
 
-import akka.actor.ActorKilledException;
-import akka.actor.ActorRef;
-import akka.actor.ActorRefFactory;
-import akka.actor.Cancellable;
-import akka.actor.OneForOneStrategy;
-import akka.actor.Props;
-import akka.actor.Scheduler;
-import akka.actor.Status;
-import akka.actor.SupervisorStrategy;
-import akka.actor.Terminated;
-import akka.actor.AbstractActor;
-import akka.pattern.Patterns;
+import org.apache.pekko.actor.ActorKilledException;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorRefFactory;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.OneForOneStrategy;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.Scheduler;
+import org.apache.pekko.actor.Status;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.actor.Terminated;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.pattern.Patterns;
 
 public class SupervisedAsk {
 

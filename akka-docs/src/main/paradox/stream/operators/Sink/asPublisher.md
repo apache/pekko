@@ -6,7 +6,7 @@ Integration with Reactive Streams, materializes into a `org.reactivestreams.Publ
 
 ## Signature
 
-@apidoc[Sink.asPublisher](Sink$) { scala="#asPublisher[T](fanout:Boolean):akka.stream.scaladsl.Sink[T,org.reactivestreams.Publisher[T]]" java="#asPublisher(akka.stream.javadsl.AsPublisher)" }
+@apidoc[Sink.asPublisher](Sink$) { scala="#asPublisher[T](fanout:Boolean):org.apache.pekko.stream.scaladsl.Sink[T,org.reactivestreams.Publisher[T]]" java="#asPublisher(org.apache.pekko.stream.javadsl.AsPublisher)" }
 
 
 
@@ -17,7 +17,7 @@ Generally, in Akka Streams a `Sink` is considered a subscriber, which consumes t
 Now, the data from this publisher can be consumed by subscribing to it. We can control if we allow more than one downstream subscriber from the single running Akka stream through the `fanout` parameter.
 In Java 9, the Reactive Stream API was included in the JDK, and `Publisher` is available through [Flow.Publisher](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.Publisher.html).
 Since those APIs are identical but exist at different package namespaces and does not depend on the Reactive Streams package a separate publisher sink for those is available 
-through @scala[`akka.stream.scaladsl.JavaFlowSupport.Sink#asPublisher`]@java[`akka.stream.javadsl.JavaFlowSupport.Sink#asPublisher`].
+through @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport.Sink#asPublisher`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport.Sink#asPublisher`].
 
 
 ## Example

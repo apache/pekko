@@ -6,7 +6,7 @@ Wrap the given @apidoc[Flow] and retry individual elements in that stream with a
 
 ## Signature
 
-@apidoc[RetryFlow.withBackoff](RetryFlow$) { scala="#withBackoff[In,Out,Mat](minBackoff:scala.concurrent.duration.FiniteDuration,maxBackoff:scala.concurrent.duration.FiniteDuration,randomFactor:Double,maxRetries:Int,flow:akka.stream.scaladsl.Flow[In,Out,Mat])(decideRetry:(In,Out)=&gt;Option[In]):akka.stream.scaladsl.Flow[In,Out,Mat]" java="#withBackoff(java.time.Duration,java.time.Duration,double,int,akka.stream.javadsl.Flow,akka.japi.function.Function2)" }
+@apidoc[RetryFlow.withBackoff](RetryFlow$) { scala="#withBackoff[In,Out,Mat](minBackoff:scala.concurrent.duration.FiniteDuration,maxBackoff:scala.concurrent.duration.FiniteDuration,randomFactor:Double,maxRetries:Int,flow:org.apache.pekko.stream.scaladsl.Flow[In,Out,Mat])(decideRetry:(In,Out)=&gt;Option[In]):org.apache.pekko.stream.scaladsl.Flow[In,Out,Mat]" java="#withBackoff(java.time.Duration,java.time.Duration,double,int,org.apache.pekko.stream.javadsl.Flow,org.apache.pekko.japi.function.Function2)" }
 
 ## Description
 
@@ -29,10 +29,10 @@ This API was added in Akka 2.6.0 and @ref:[may be changed](../../../common/may-c
 This example wraps a `flow` handling @scala[`Int`s]@java[`Integer`s], and retries elements unless the result is 0 or negative, or `maxRetries` is hit.
 
 Scala
-:   @@snip [RetryFlowSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/RetryFlowSpec.scala) { #withBackoff-demo }
+:   @@snip [RetryFlowSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/RetryFlowSpec.scala) { #withBackoff-demo }
 
 Java
-:   @@snip [RetryFlowTest.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/RetryFlowTest.java) { #withBackoff-demo }
+:   @@snip [RetryFlowTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/RetryFlowTest.java) { #withBackoff-demo }
 
 ## Reactive Streams semantics
 

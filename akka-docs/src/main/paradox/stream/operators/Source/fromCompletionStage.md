@@ -6,7 +6,7 @@ Deprecated by @ref:[`Source.completionStage`](completionStage.md).
 
 ## Signature
 
-@apidoc[Source.fromCompletionStage](Source$) { scala="#fromCompletionStage[T](future:java.util.concurrent.CompletionStage[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#fromCompletionStage(java.util.concurrent.CompletionStage)" }
+@apidoc[Source.fromCompletionStage](Source$) { scala="#fromCompletionStage[T](future:java.util.concurrent.CompletionStage[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromCompletionStage(java.util.concurrent.CompletionStage)" }
 
 
 ## Description

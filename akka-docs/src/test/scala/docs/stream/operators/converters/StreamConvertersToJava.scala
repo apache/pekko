@@ -8,13 +8,14 @@ package docs.stream.operators.converters
 import java.util.stream
 import java.util.stream.IntStream
 
-import akka.NotUsed
-import akka.stream.scaladsl.Keep
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
-import akka.stream.scaladsl.StreamConverters
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.Keep
+import pekko.stream.scaladsl.Sink
+import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.StreamConverters
 // #import
-import akka.testkit.AkkaSpec
+import pekko.testkit.AkkaSpec
 import org.scalatest.concurrent.Futures
 
 import scala.collection.immutable

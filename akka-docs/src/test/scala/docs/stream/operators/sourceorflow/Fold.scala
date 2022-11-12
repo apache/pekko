@@ -5,8 +5,9 @@
 package docs.stream.operators.sourceorflow
 
 //#imports
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Source
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.stream.scaladsl.Source
 
 //#imports
 object Fold extends App {

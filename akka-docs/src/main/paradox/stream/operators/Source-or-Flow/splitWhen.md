@@ -6,8 +6,8 @@ Split off elements into a new substream whenever a predicate function return `tr
 
 ## Signature
 
-@apidoc[Source.splitWhen](Source) { scala="#splitWhen(substreamCancelStrategy:akka.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(akka.stream.SubstreamCancelStrategy,akka.japi.function.Predicate)" }
-@apidoc[Flow.splitWhen](Flow) { scala="#splitWhen(substreamCancelStrategy:akka.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(akka.stream.SubstreamCancelStrategy,akka.japi.function.Predicate)" }
+@apidoc[Source.splitWhen](Source) { scala="#splitWhen(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.splitWhen](Flow) { scala="#splitWhen(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description

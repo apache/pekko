@@ -6,8 +6,8 @@ Attaches the given `Sink` to this `Flow` as a wire tap, meaning that elements th
 
 ## Signature
 
-@apidoc[Source.wireTap](Source) { scala="#wireTap(f:Out=&gt;Unit):FlowOps.this.Repr[Out]" java="#wireTap(akka.japi.function.Procedure)" }
-@apidoc[Flow.wireTap](Flow) { scala="#wireTap(f:Out=&gt;Unit):FlowOps.this.Repr[Out]" java="#wireTap(akka.japi.function.Procedure)" }
+@apidoc[Source.wireTap](Source) { scala="#wireTap(f:Out=&gt;Unit):FlowOps.this.Repr[Out]" java="#wireTap(org.apache.pekko.japi.function.Procedure)" }
+@apidoc[Flow.wireTap](Flow) { scala="#wireTap(f:Out=&gt;Unit):FlowOps.this.Repr[Out]" java="#wireTap(org.apache.pekko.japi.function.Procedure)" }
 
 
 ## Description

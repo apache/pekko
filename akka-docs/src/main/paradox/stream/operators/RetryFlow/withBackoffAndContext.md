@@ -6,7 +6,7 @@ Wrap the given @apidoc[FlowWithContext] and retry individual elements in that st
 
 ## Signature
 
-@apidoc[RetryFlow.withBackoffAndContext](RetryFlow$) { scala="#withBackoffAndContext[In,CtxIn,Out,CtxOut,Mat](minBackoff:scala.concurrent.duration.FiniteDuration,maxBackoff:scala.concurrent.duration.FiniteDuration,randomFactor:Double,maxRetries:Int,flow:akka.stream.scaladsl.FlowWithContext[In,CtxIn,Out,CtxOut,Mat])(decideRetry:((In,CtxIn),(Out,CtxOut))=&gt;Option[(In,CtxIn)]):akka.stream.scaladsl.FlowWithContext[In,CtxIn,Out,CtxOut,Mat]" java="#withBackoffAndContext(java.time.Duration,java.time.Duration,double,int,akka.stream.javadsl.FlowWithContext,akka.japi.function.Function2)" }
+@apidoc[RetryFlow.withBackoffAndContext](RetryFlow$) { scala="#withBackoffAndContext[In,CtxIn,Out,CtxOut,Mat](minBackoff:scala.concurrent.duration.FiniteDuration,maxBackoff:scala.concurrent.duration.FiniteDuration,randomFactor:Double,maxRetries:Int,flow:org.apache.pekko.stream.scaladsl.FlowWithContext[In,CtxIn,Out,CtxOut,Mat])(decideRetry:((In,CtxIn),(Out,CtxOut))=&gt;Option[(In,CtxIn)]):org.apache.pekko.stream.scaladsl.FlowWithContext[In,CtxIn,Out,CtxOut,Mat]" java="#withBackoffAndContext(java.time.Duration,java.time.Duration,double,int,org.apache.pekko.stream.javadsl.FlowWithContext,org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description
@@ -18,7 +18,7 @@ At most `maxRetries` will be made after the initial try.
 
 The wrapped `flow` must have **one-in one-out semantics**. It may not filter, nor duplicate elements. The `RetryFlow` will fail if two elements are emitted from the `flow`, it will be stuck "forever" if nothing is emitted. Just one element will be emitted into the `flow` at any time. The `flow` needs to emit an element before the next will be emitted to it. 
 
-Elements are retried as long as `maxRetries` is not reached and the `decideRetry` function returns a new element to be sent to `flow`. The `decideRetry` function gets passed in the original element sent to the `flow` and the element emitted by it together with their contexts as @scala[tuples]@java[`akka.japi.Pair`s].
+Elements are retried as long as `maxRetries` is not reached and the `decideRetry` function returns a new element to be sent to `flow`. The `decideRetry` function gets passed in the original element sent to the `flow` and the element emitted by it together with their contexts as @scala[tuples]@java[`org.apache.pekko.japi.Pair`s].
 When `decideRetry` returns @scala[`None`]@java[`Optional.empty`], no retries will be issued, and the response will be emitted downstream.
 
 @@@ note
@@ -30,10 +30,10 @@ This API was added in Akka 2.6.0 and @ref:[may be changed](../../../common/may-c
 This example wraps a `flow` handling @scala[`Int`s]@java[`Integer`s] with `SomeContext` in context, and retries elements unless the result is 0 or negative, or `maxRetries` is hit.
 
 Scala
-:   @@snip [RetryFlowSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/RetryFlowSpec.scala) { #retry-success }
+:   @@snip [RetryFlowSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/RetryFlowSpec.scala) { #retry-success }
 
 Java
-:   @@snip [RetryFlowTest.java](/akka-stream-tests/src/test/java/akka/stream/javadsl/RetryFlowTest.java) { #retry-success }
+:   @@snip [RetryFlowTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/RetryFlowTest.java) { #retry-success }
 
 ## Reactive Streams semantics
 

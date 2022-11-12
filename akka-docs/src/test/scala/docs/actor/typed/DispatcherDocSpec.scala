@@ -4,7 +4,7 @@
 
 package docs.actor.typed
 
-import akka.actor.typed.scaladsl.ActorContext
+import org.apache.pekko.actor.typed.scaladsl.ActorContext
 
 object DispatcherDocSpec {
 
@@ -12,7 +12,7 @@ object DispatcherDocSpec {
 
   {
     // #defining-dispatcher-in-code
-    import akka.actor.typed.DispatcherSelector
+    import org.apache.pekko.actor.typed.DispatcherSelector
     val myActor =
       context.spawn(PrintActor(), "PrintActor", DispatcherSelector.fromConfig("PrintActor"))
     // #defining-dispatcher-in-code
@@ -20,7 +20,7 @@ object DispatcherDocSpec {
 
   {
     // #defining-fixed-pool-size-dispatcher
-    import akka.actor.typed.DispatcherSelector
+    import org.apache.pekko.actor.typed.DispatcherSelector
     val myActor =
       context.spawn(PrintActor(), "PrintActor", DispatcherSelector.fromConfig("blocking-io-dispatcher"))
     // #defining-fixed-pool-size-dispatcher
@@ -29,7 +29,7 @@ object DispatcherDocSpec {
   {
     // #lookup
     // for use with Futures, Scheduler, etc.
-    import akka.actor.typed.DispatcherSelector
+    import org.apache.pekko.actor.typed.DispatcherSelector
     implicit val executionContext = context.system.dispatchers.lookup(DispatcherSelector.fromConfig("my-dispatcher"))
     // #lookup
   }

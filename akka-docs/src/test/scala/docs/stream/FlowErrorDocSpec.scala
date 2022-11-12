@@ -5,10 +5,10 @@
 package docs.stream
 
 import scala.concurrent.Await
-import akka.stream.Supervision
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
-import akka.stream.ActorAttributes
+import org.apache.pekko.stream.Supervision
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.stream.ActorAttributes
 import scala.concurrent.duration._
 
 class FlowErrorDocSpec extends AkkaSpec {

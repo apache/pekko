@@ -4,12 +4,12 @@
 
 package jdocs.discovery;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 // #lookup-dns
-import akka.discovery.Discovery;
-import akka.discovery.ServiceDiscovery;
+import org.apache.pekko.discovery.Discovery;
+import org.apache.pekko.discovery.ServiceDiscovery;
 // #lookup-dns
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import docs.discovery.DnsDiscoveryDocSpec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.remote.testconductor";
+option java_package = "org.apache.pekko.remote.testconductor";
 option optimize_for = SPEED;
 
 message Wrapper {

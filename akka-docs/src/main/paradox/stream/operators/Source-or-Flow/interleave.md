@@ -6,8 +6,8 @@ Emits a specifiable number of elements from the original source, then from the p
 
 ## Signature
 
-@apidoc[Source.interleave](Source) { scala="#interleave[U&gt;:Out](that:akka.stream.Graph[akka.stream.SourceShape[U],_],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleave(akka.stream.Graph,int,boolean)" }
-@apidoc[Flow.interleave](Flow) { scala="#interleave[U&gt;:Out](that:akka.stream.Graph[akka.stream.SourceShape[U],_],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleave(akka.stream.Graph,int,boolean)" }
+@apidoc[Source.interleave](Source) { scala="#interleave[U&gt;:Out](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleave(org.apache.pekko.stream.Graph,int,boolean)" }
+@apidoc[Flow.interleave](Flow) { scala="#interleave[U&gt;:Out](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_],segmentSize:Int,eagerClose:Boolean):FlowOps.this.Repr[U]" java="#interleave(org.apache.pekko.stream.Graph,int,boolean)" }
 
 
 ## Description
@@ -17,7 +17,7 @@ source completes the rest of the other stream will be emitted.
 
 ## Example
 Scala
-:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowInterleaveSpec.scala) { #interleave }
+:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveSpec.scala) { #interleave }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #interleave }

@@ -6,8 +6,8 @@ Combines elements from each of multiple sources into @scala[tuples] @java[*Pair*
 
 ## Signature
 
-@apidoc[Source.zipLatest](Source) { scala="#zipLatest[U](that:akka.stream.Graph[akka.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zipLatest(akka.stream.Graph)" }
-@apidoc[Flow.zipLatest](Flow) { scala="#zipLatest[U](that:akka.stream.Graph[akka.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zipLatest(akka.stream.Graph)" }
+@apidoc[Source.zipLatest](Source) { scala="#zipLatest[U](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zipLatest(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.zipLatest](Flow) { scala="#zipLatest[U](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zipLatest(org.apache.pekko.stream.Graph)" }
 
 
 ## Description

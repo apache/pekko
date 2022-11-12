@@ -25,7 +25,7 @@ Note that implementations for other journals may have different semantics.
 
 ## How to get the ReadJournal
 
-The `ReadJournal` is retrieved via the `akka.persistence.query.PersistenceQuery`
+The `ReadJournal` is retrieved via the `org.apache.pekko.persistence.query.PersistenceQuery`
 extension:
 
 Scala
@@ -104,7 +104,7 @@ Scala
 Java
 :  @@snip [LeveldbPersistenceQueryDocTest.java](/akka-docs/src/test/java/jdocs/persistence/query/LeveldbPersistenceQueryDocTest.java) { #EventsByTag }
 
-To tag events you create an @ref:[Event Adapters](persistence.md#event-adapters) that wraps the events in a `akka.persistence.journal.Tagged`
+To tag events you create an @ref:[Event Adapters](persistence.md#event-adapters) that wraps the events in a `org.apache.pekko.persistence.journal.Tagged`
 with the given `tags`.
 
 Scala

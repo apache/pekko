@@ -4,15 +4,15 @@
 
 package jdocs.actor.typed;
 
-import akka.Done;
-import akka.actor.Cancellable;
-import akka.actor.CoordinatedShutdown;
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.ActorSystem;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.*;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.actor.CoordinatedShutdown;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.*;
 // #coordinated-shutdown-addTask
-import static akka.actor.typed.javadsl.AskPattern.ask;
+import static org.apache.pekko.actor.typed.javadsl.AskPattern.ask;
 
 // #coordinated-shutdown-addTask
 

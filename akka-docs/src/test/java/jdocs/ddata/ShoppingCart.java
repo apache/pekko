@@ -10,22 +10,22 @@ import java.util.Optional;
 import java.util.Set;
 import java.time.Duration;
 
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.cluster.ddata.*;
-import akka.cluster.ddata.Replicator.GetFailure;
-import akka.cluster.ddata.Replicator.GetResponse;
-import akka.cluster.ddata.Replicator.GetSuccess;
-import akka.cluster.ddata.Replicator.NotFound;
-import akka.cluster.ddata.Replicator.ReadConsistency;
-import akka.cluster.ddata.Replicator.ReadMajority;
-import akka.cluster.ddata.Replicator.Update;
-import akka.cluster.ddata.Replicator.UpdateFailure;
-import akka.cluster.ddata.Replicator.UpdateSuccess;
-import akka.cluster.ddata.Replicator.UpdateTimeout;
-import akka.cluster.ddata.Replicator.WriteConsistency;
-import akka.cluster.ddata.Replicator.WriteMajority;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.ddata.*;
+import org.apache.pekko.cluster.ddata.Replicator.GetFailure;
+import org.apache.pekko.cluster.ddata.Replicator.GetResponse;
+import org.apache.pekko.cluster.ddata.Replicator.GetSuccess;
+import org.apache.pekko.cluster.ddata.Replicator.NotFound;
+import org.apache.pekko.cluster.ddata.Replicator.ReadConsistency;
+import org.apache.pekko.cluster.ddata.Replicator.ReadMajority;
+import org.apache.pekko.cluster.ddata.Replicator.Update;
+import org.apache.pekko.cluster.ddata.Replicator.UpdateFailure;
+import org.apache.pekko.cluster.ddata.Replicator.UpdateSuccess;
+import org.apache.pekko.cluster.ddata.Replicator.UpdateTimeout;
+import org.apache.pekko.cluster.ddata.Replicator.WriteConsistency;
+import org.apache.pekko.cluster.ddata.Replicator.WriteMajority;
 
 @SuppressWarnings("unchecked")
 public class ShoppingCart extends AbstractActor {

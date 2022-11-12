@@ -6,7 +6,7 @@ Apply a reduction function on the incoming elements and pass the result to the n
 
 ## Signature
 
-@apidoc[Sink.reduce](Sink$) { scala="#reduce[T](f:(T,T)=&gt;T):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#reduce(akka.japi.function.Function2)" }
+@apidoc[Sink.reduce](Sink$) { scala="#reduce[T](f:(T,T)=&gt;T):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#reduce(org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description
@@ -19,7 +19,7 @@ Materializes into a @scala[`Future`] @java[`CompletionStage`] that will be compl
 ## Example
 
 Scala
-:   @@snip [SinkReduceSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/SinkSpec.scala) { #reduce-operator-example }
+:   @@snip [SinkReduceSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #reduce-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #reduce-operator-example }

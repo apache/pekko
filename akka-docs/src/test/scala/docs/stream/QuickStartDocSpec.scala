@@ -5,14 +5,15 @@
 package docs.stream
 
 //#stream-imports
-import akka.stream._
-import akka.stream.scaladsl._
+import org.apache.pekko
+import pekko.stream._
+import pekko.stream.scaladsl._
 //#stream-imports
 
 //#other-imports
-import akka.{ Done, NotUsed }
-import akka.actor.ActorSystem
-import akka.util.ByteString
+import pekko.{ Done, NotUsed }
+import pekko.actor.ActorSystem
+import pekko.util.ByteString
 import scala.concurrent._
 import scala.concurrent.duration._
 import java.nio.file.Paths

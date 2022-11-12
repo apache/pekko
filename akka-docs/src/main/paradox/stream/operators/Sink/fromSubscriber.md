@@ -6,7 +6,7 @@ Integration with Reactive Streams, wraps a `org.reactivestreams.Subscriber` as a
 
 ## Signature
 
-@apidoc[Sink.fromSubscriber](Sink$) { scala="#fromSubscriber[T](subscriber:org.reactivestreams.Subscriber[T]):akka.stream.scaladsl.Sink[T,akka.NotUsed]" java="#fromSubscriber(org.reactivestreams.Subscriber)" }
+@apidoc[Sink.fromSubscriber](Sink$) { scala="#fromSubscriber[T](subscriber:org.reactivestreams.Subscriber[T]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#fromSubscriber(org.reactivestreams.Subscriber)" }
 
 
 ## Description

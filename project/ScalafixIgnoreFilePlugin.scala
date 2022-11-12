@@ -2,7 +2,7 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt.plugins.JvmPlugin
 import sbt.{ AutoPlugin, PluginTrigger, Plugins, ScalafixSupport }

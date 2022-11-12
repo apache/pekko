@@ -4,11 +4,11 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.stream.testkit._
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
+import org.apache.pekko.stream.testkit._
 import scala.concurrent.duration._
-import akka.testkit.TestLatch
+import org.apache.pekko.testkit.TestLatch
 import scala.concurrent.Await
 
 class RecipeSimpleDrop extends RecipeSpec {

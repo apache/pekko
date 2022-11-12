@@ -3,8 +3,8 @@
  */
 
 package docs.stream.operators.flow
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Source
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
 
 object StatefulMap {
 

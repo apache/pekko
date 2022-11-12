@@ -15,7 +15,7 @@ within an actor system, please read on for the details.
 
 An actor reference is a subtype of @apidoc[ActorRef](typed.ActorRef), whose foremost purpose is
 to support sending messages to the actor it represents. Each actor has access
-to its canonical (local) reference through the @apidoc[ActorContext.self](typed.*.ActorContext) {scala="#self:akka.actor.typed.ActorRef[T]" java="#getSelf()"} field; this
+to its canonical (local) reference through the @apidoc[ActorContext.self](typed.*.ActorContext) {scala="#self:org.apache.pekko.actor.typed.ActorRef[T]" java="#getSelf()"} field; this
 reference can be included in messages to other actors to get replies back.
 
 There are several different types of actor references that are supported
@@ -36,7 +36,7 @@ transparently and send them to the remote JVM.
 actor references for all practical purposes:
     * `PromiseActorRef` is the special representation of a @scaladoc[Promise](scala.concurrent.Promise)
 for the purpose of being completed by the response from an actor.
-`akka.pattern.ask` creates this actor reference.
+`org.apache.pekko.pattern.ask` creates this actor reference.
     * `DeadLetterActorRef` is the default implementation of the dead
 letters service to which Akka routes all messages whose destinations
 are shut down or non-existent.
@@ -154,7 +154,7 @@ other actors are found; its name is `"/"`. The next level consists of the
 following:
 
  * `"/user"` is the guardian actor for all user-created top-level actors;
-actors created using @apidoc[ActorSystem.actorOf](ActorRefFactory) {scala="#actorOf(props:akka.actor.Props):akka.actor.ActorRef" java="#actorOf(akka.actor.Props)"} are found below this one.
+actors created using @apidoc[ActorSystem.actorOf](ActorRefFactory) {scala="#actorOf(props:org.apache.pekko.actor.Props):org.apache.pekko.actor.ActorRef" java="#actorOf(org.apache.pekko.actor.Props)"} are found below this one.
  * `"/system"` is the guardian actor for all system-created top-level actors,
 e.g. logging listeners or actors automatically deployed by configuration at
 the start of the actor system.
@@ -162,7 +162,7 @@ the start of the actor system.
 stopped or non-existing actors are re-routed (on a best-effort basis: messages
 may be lost even within the local JVM).
  * `"/temp"` is the guardian for all short-lived system-created actors, e.g.
-those which are used in the implementation of @scala[@scaladoc[ActorRef.ask](akka.pattern.AskableActorRef#ask(message:Any)(implicittimeout:akka.util.Timeout,implicitsender:akka.actor.ActorRef):scala.concurrent.Future[Any])]@java[@javadoc[Patterns.ask](akka.pattern.Patterns#ask(akka.actor.ActorRef,java.lang.Object,java.time.Duration))].
+those which are used in the implementation of @scala[@scaladoc[ActorRef.ask](pekko.pattern.AskableActorRef#ask(message:Any)(implicittimeout:org.apache.pekko.util.Timeout,implicitsender:org.apache.pekko.actor.ActorRef):scala.concurrent.Future[Any])]@java[@javadoc[Patterns.ask](pekko.pattern.Patterns#ask(org.apache.pekko.actor.ActorRef,java.lang.Object,java.time.Duration))].
  * `"/remote"` is an artificial path below which all actors reside whose
 supervisors are remote actor references
 

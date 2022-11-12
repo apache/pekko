@@ -4,9 +4,9 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Source
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
 
 object FlatMapMerge {
 

@@ -6,7 +6,7 @@ Send the single value of the `CompletionStage` when it completes and there is de
 
 ## Signature
 
-@apidoc[Source.completionStage](Source$) { scala="#completionStage[T](completionStage:java.util.concurrent.CompletionStage[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#completionStage(java.util.concurrent.CompletionStage)" }
+@apidoc[Source.completionStage](Source$) { scala="#completionStage[T](completionStage:java.util.concurrent.CompletionStage[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#completionStage(java.util.concurrent.CompletionStage)" }
 
 
 ## Description

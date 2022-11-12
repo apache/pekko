@@ -4,14 +4,14 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import akka.Done;
-import akka.actor.ActorSystem;
-import akka.japi.Pair;
-import akka.stream.FlowMonitor;
-import akka.stream.FlowMonitorState;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.Done;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.FlowMonitor;
+import org.apache.pekko.stream.FlowMonitorState;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.time.Duration;
 import java.util.Arrays;

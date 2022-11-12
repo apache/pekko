@@ -11,19 +11,20 @@ package com.example
 //#print-refs
  */
 
-import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
-import akka.actor.typed.PostStop
-import akka.actor.typed.PreRestart
-import akka.actor.typed.Signal
-import akka.actor.typed.SupervisorStrategy
+import org.apache.pekko.actor.typed.PostStop
+import org.apache.pekko.actor.typed.PreRestart
+import org.apache.pekko.actor.typed.Signal
+import org.apache.pekko.actor.typed.SupervisorStrategy
 
 //#print-refs
-import akka.actor.typed.ActorSystem
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.AbstractBehavior
-import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.typed.ActorSystem
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.AbstractBehavior
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
 
 object PrintMyActorRefActor {
   def apply(): Behavior[String] =

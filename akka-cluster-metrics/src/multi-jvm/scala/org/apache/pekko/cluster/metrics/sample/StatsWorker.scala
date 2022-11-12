@@ -1,0 +1,25 @@
+/*
+ * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.cluster.metrics.sample
+
+import org.apache.pekko.actor.Actor
+
+//#worker
+class StatsWorker extends Actor {
+  var cache = Map.empty[String, Int]
+  def receive = {
+    case word: String =>
+      val length = cache.get(word) match {
+        case Some(x) => x
+        case None =>
+          val x = word.length
+          cache += (word -> x)
+          x
+      }
+
+      sender() ! length
+  }
+}
+//#worker

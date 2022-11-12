@@ -4,10 +4,10 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.stream.testkit._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
+import org.apache.pekko.stream.testkit._
+import org.apache.pekko.testkit.AkkaSpec
 
 class ReactiveStreamsDocSpec extends AkkaSpec {
   import TwitterStreamQuickstartDocSpec._

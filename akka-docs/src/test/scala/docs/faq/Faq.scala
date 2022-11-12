@@ -4,7 +4,7 @@
 
 package docs.faq
 
-import akka.actor.Actor
+import org.apache.pekko.actor.Actor
 
 //#exhaustiveness-check
 object MyActor {

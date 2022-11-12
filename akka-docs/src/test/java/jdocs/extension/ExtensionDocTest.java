@@ -5,7 +5,7 @@
 package jdocs.extension;
 
 // #imports
-import akka.actor.*;
+import org.apache.pekko.actor.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 // #imports

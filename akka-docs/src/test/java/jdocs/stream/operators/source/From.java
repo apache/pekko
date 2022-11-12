@@ -4,8 +4,8 @@
 
 package jdocs.stream.operators.source;
 
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.Arrays;
 import java.util.stream.IntStream;

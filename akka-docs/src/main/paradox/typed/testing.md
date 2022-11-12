@@ -33,7 +33,7 @@ We recommend using Akka TestKit with ScalaTest:
 
 ## Introduction
 
-Testing can either be done asynchronously using a real @apidoc[akka.actor.typed.ActorSystem] or synchronously on the testing thread using the
+Testing can either be done asynchronously using a real @apidoc[actor.typed.ActorSystem] or synchronously on the testing thread using the
 @apidoc[typed.*.BehaviorTestKit].
 
 For testing logic in a @apidoc[Behavior] in isolation synchronous testing is preferred, but the features that can be

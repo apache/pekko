@@ -4,13 +4,13 @@
 
 package jdocs.stream.javadsl.cookbook;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Compression;
-import akka.stream.javadsl.Source;
-import akka.testkit.javadsl.TestKit;
-import akka.util.ByteString;
-import static akka.util.ByteString.emptyByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Compression;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.apache.pekko.util.ByteString;
+import static org.apache.pekko.util.ByteString.emptyByteString;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

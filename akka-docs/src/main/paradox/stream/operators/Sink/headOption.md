@@ -6,7 +6,7 @@ Materializes into a @scala[`Future[Option[T]]`] @java[`CompletionStage<Optional<
 
 ## Signature
 
-@apidoc[Sink.headOption](Sink$) { scala="#headOption[T]:akka.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[T]]]" java="#headOption()" }
+@apidoc[Sink.headOption](Sink$) { scala="#headOption[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[T]]]" java="#headOption()" }
 
 
 ## Description

@@ -11,19 +11,19 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import akka.NotUsed;
-import akka.japi.pf.PFBuilder;
-import akka.stream.javadsl.*;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.javadsl.*;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.stream.Supervision;
-import akka.stream.ActorAttributes;
-import akka.japi.function.Function;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.Supervision;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.japi.function.Function;
 
 public class FlowErrorDocTest extends AbstractJavaTest {
 

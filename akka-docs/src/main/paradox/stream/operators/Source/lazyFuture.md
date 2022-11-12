@@ -6,7 +6,7 @@ Defers creation of a future of a single element source until there is demand.
 
 ## Signature
 
-@apidoc[Source.lazyFuture](Source$) { scala="#lazyFuture[T](create:()=&gt;scala.concurrent.Future[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" }
+@apidoc[Source.lazyFuture](Source$) { scala="#lazyFuture[T](create:()=&gt;scala.concurrent.Future[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" }
 
 ## Description
 

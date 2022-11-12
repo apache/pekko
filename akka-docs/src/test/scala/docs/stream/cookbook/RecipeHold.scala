@@ -4,16 +4,17 @@
 
 package docs.stream.cookbook
 
-import akka.stream.Attributes
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.stream.testkit._
+import org.apache.pekko.stream.Attributes
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.stream.testkit._
 
 import scala.concurrent.duration._
 
 object HoldOps {
   // #hold-version-1
-  import akka.stream._
-  import akka.stream.stage._
+  import org.apache.pekko
+  import pekko.stream._
+  import pekko.stream.stage._
   final class HoldWithInitial[T](initial: T) extends GraphStage[FlowShape[T, T]] {
     val in = Inlet[T]("HoldWithInitial.in")
     val out = Outlet[T]("HoldWithInitial.out")
@@ -44,8 +45,9 @@ object HoldOps {
   // #hold-version-1
 
   // #hold-version-2
-  import akka.stream._
-  import akka.stream.stage._
+  import org.apache.pekko
+  import pekko.stream._
+  import pekko.stream.stage._
   final class HoldWithWait[T] extends GraphStage[FlowShape[T, T]] {
     val in = Inlet[T]("HoldWithWait.in")
     val out = Outlet[T]("HoldWithWait.out")

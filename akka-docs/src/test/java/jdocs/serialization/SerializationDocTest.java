@@ -4,15 +4,15 @@
 
 package jdocs.serialization;
 
-import akka.actor.typed.javadsl.Behaviors;
-import akka.cluster.Cluster;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 // #imports
-import akka.actor.*;
-import akka.serialization.*;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.serialization.*;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -184,8 +184,8 @@ public class SerializationDocTest {
 
   public void demonstrateTheProgrammaticAPITyped() {
     // #programmatic-typed
-    akka.actor.typed.ActorSystem<Void> system =
-        akka.actor.typed.ActorSystem.create(Behaviors.empty(), "example");
+    org.apache.pekko.actor.typed.ActorSystem<Void> system =
+        org.apache.pekko.actor.typed.ActorSystem.create(Behaviors.empty(), "example");
 
     // Get the Serialization Extension
     Serialization serialization = SerializationExtension.get(system);

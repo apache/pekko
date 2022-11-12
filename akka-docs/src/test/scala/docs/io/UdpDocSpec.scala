@@ -4,18 +4,18 @@
 
 package docs.io
 
-import akka.testkit.AkkaSpec
-import akka.actor.Actor
-import akka.io.IO
-import akka.io.Udp
-import akka.actor.ActorRef
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.io.IO
+import org.apache.pekko.io.Udp
+import org.apache.pekko.actor.ActorRef
 import java.net.InetSocketAddress
-import akka.util.ByteString
-import akka.testkit.TestProbe
-import akka.actor.Props
+import org.apache.pekko.util.ByteString
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.actor.Props
 import scala.concurrent.duration._
-import akka.actor.PoisonPill
-import akka.io.UdpConnected
+import org.apache.pekko.actor.PoisonPill
+import org.apache.pekko.io.UdpConnected
 
 object ScalaUdpDocSpec {
 

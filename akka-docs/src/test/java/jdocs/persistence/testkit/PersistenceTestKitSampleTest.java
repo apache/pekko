@@ -4,17 +4,17 @@
 
 package jdocs.persistence.testkit;
 
-import akka.actor.testkit.typed.javadsl.TestKitJunitResource;
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.Behavior;
-import akka.actor.typed.javadsl.Behaviors;
-import akka.persistence.testkit.PersistenceTestKitPlugin;
-import akka.persistence.testkit.javadsl.PersistenceTestKit;
-import akka.persistence.typed.PersistenceId;
-import akka.persistence.typed.javadsl.CommandHandler;
-import akka.persistence.typed.javadsl.EventHandler;
-import akka.persistence.typed.javadsl.EventSourcedBehavior;
-import akka.serialization.jackson.CborSerializable;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.javadsl.Behaviors;
+import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
+import org.apache.pekko.persistence.typed.PersistenceId;
+import org.apache.pekko.persistence.typed.javadsl.CommandHandler;
+import org.apache.pekko.persistence.typed.javadsl.EventHandler;
+import org.apache.pekko.persistence.typed.javadsl.EventSourcedBehavior;
+import org.apache.pekko.serialization.jackson.CborSerializable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;

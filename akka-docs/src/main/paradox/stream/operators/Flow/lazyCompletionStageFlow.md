@@ -12,7 +12,7 @@ and inserted in the stream.
 The internal `Flow` will not be created if there are no elements on completion or failure of up or downstream.
 
 The materialized value of the `Flow` will be the materialized value of the created internal flow if it is materialized
-and failed with a `akka.stream.NeverMaterializedException` if the stream fails or completes without the flow being materialized.
+and failed with a `org.apache.pekko.stream.NeverMaterializedException` if the stream fails or completes without the flow being materialized.
 
 See also @ref:[lazyFlow](lazyFlow.md).
 

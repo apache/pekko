@@ -5,8 +5,8 @@
 package jdocs.stream.operators.source;
 
 // #sourceCompletionStageSource
-import akka.NotUsed;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.concurrent.CompletionStage;
 

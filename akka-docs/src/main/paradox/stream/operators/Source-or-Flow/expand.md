@@ -6,8 +6,8 @@ Like `extrapolate`, but does not have the `initial` argument, and the `Iterator`
 
 ## Signature
 
-@apidoc[Source.expand](Source) { scala="#expand[U](expander:Out=&gt;Iterator[U]):FlowOps.this.Repr[U]" java="#expand(akka.japi.function.Function)" }
-@apidoc[Flow.expand](Flow) { scala="#expand[U](expander:Out=&gt;Iterator[U]):FlowOps.this.Repr[U]" java="#expand(akka.japi.function.Function)" }
+@apidoc[Source.expand](Source) { scala="#expand[U](expander:Out=&gt;Iterator[U]):FlowOps.this.Repr[U]" java="#expand(org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.expand](Flow) { scala="#expand[U](expander:Out=&gt;Iterator[U]):FlowOps.this.Repr[U]" java="#expand(org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

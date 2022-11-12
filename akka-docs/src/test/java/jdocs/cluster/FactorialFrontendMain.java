@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.cluster.Cluster;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.cluster.Cluster;
 
 public class FactorialFrontendMain {
 

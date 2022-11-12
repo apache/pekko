@@ -6,7 +6,7 @@ package jdocs.ddata.protobuf;
 
 import jdocs.ddata.TwoPhaseSet;
 
-import akka.actor.ExtendedActorSystem;
+import org.apache.pekko.actor.ExtendedActorSystem;
 
 public class TwoPhaseSetSerializerWithCompression extends TwoPhaseSetSerializer {
   public TwoPhaseSetSerializerWithCompression(ExtendedActorSystem system) {

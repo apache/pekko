@@ -5,8 +5,9 @@
 package docs.stream.operators
 
 //#imports
-import akka.NotUsed
-import akka.stream.scaladsl._
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl._
 
 //#imports
 

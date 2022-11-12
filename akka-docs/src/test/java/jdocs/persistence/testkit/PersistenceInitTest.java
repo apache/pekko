@@ -4,7 +4,7 @@
 
 package jdocs.persistence.testkit;
 
-import akka.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
@@ -14,8 +14,8 @@ import org.junit.Test;
 import java.util.UUID;
 
 // #imports
-import akka.persistence.testkit.javadsl.PersistenceInit;
-import akka.Done;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceInit;
+import org.apache.pekko.Done;
 
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;

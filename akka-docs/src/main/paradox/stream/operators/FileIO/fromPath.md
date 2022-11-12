@@ -6,7 +6,7 @@ Emits the contents of a file from the given path.
 
 ## Signature
 
-@apidoc[FileIO.fromPath](FileIO$) { scala="#fromPath(f:java.nio.file.Path,chunkSize:Int,startPosition:Long):akka.stream.scaladsl.Source[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#fromPath(java.nio.file.Path,int,long)" }
+@apidoc[FileIO.fromPath](FileIO$) { scala="#fromPath(f:java.nio.file.Path,chunkSize:Int,startPosition:Long):org.apache.pekko.stream.scaladsl.Source[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromPath(java.nio.file.Path,int,long)" }
 
 
 ## Description

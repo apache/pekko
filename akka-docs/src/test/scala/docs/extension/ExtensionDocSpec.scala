@@ -6,12 +6,12 @@ package docs.extension
 
 import java.util.concurrent.atomic.AtomicLong
 
-import akka.actor.Actor
-import akka.actor.ClassicActorSystemProvider
-import akka.testkit.AkkaSpec
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ClassicActorSystemProvider
+import org.apache.pekko.testkit.AkkaSpec
 
 //#extension
-import akka.actor.Extension
+import org.apache.pekko.actor.Extension
 
 class CountExtensionImpl extends Extension {
   // Since this Extension is a shared instance
@@ -24,10 +24,11 @@ class CountExtensionImpl extends Extension {
 //#extension
 
 //#extensionid
-import akka.actor.ActorSystem
-import akka.actor.ExtensionId
-import akka.actor.ExtensionIdProvider
-import akka.actor.ExtendedActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.actor.ExtensionId
+import pekko.actor.ExtensionIdProvider
+import pekko.actor.ExtendedActorSystem
 
 object CountExtension extends ExtensionId[CountExtensionImpl] with ExtensionIdProvider {
   // The lookup method is required by ExtensionIdProvider,

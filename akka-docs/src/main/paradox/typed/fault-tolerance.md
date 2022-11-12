@@ -31,52 +31,52 @@ with a fresh state that we know is valid.
 In Akka this "somewhere else" is called supervision. Supervision allows you to declaratively describe what should happen when certain types of exceptions are thrown inside an actor. 
 
 The default @ref:[supervision](../general/supervision.md) strategy is to stop the actor if an exception is thrown. 
-In many cases you will want to further customize this behavior. To use supervision the actual Actor behavior is wrapped using @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:akka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(akka.actor.typed.Behavior)"}. 
+In many cases you will want to further customize this behavior. To use supervision the actual Actor behavior is wrapped using @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"}. 
 Typically you would wrap the actor with supervision in the parent when spawning it as a child.
  
 This example restarts the actor when it fails with an @javadoc[IllegalStateException](java.lang.IllegalStateException): 
 
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #restart }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #restart }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #restart }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #restart }
 
 Or to resume, ignore the failure and process the next message, instead:
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #resume }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #resume }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #resume }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #resume }
 
 More complicated restart strategies can be used e.g. to restart no more than 10
 times in a 10 second period:
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #restart-limit }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #restart-limit }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-limit }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-limit }
 
-To handle different exceptions with different strategies calls to @apidoc[supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:akka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(akka.actor.typed.Behavior)"}
+To handle different exceptions with different strategies calls to @apidoc[supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"}
 can be nested:
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #multiple }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #multiple }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #multiple }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #multiple }
 
-For a full list of strategies see the public methods on @apidoc[akka.actor.typed.SupervisorStrategy].
+For a full list of strategies see the public methods on @apidoc[actor.typed.SupervisorStrategy].
 
 @@@ note
 
-When the behavior is restarted the original @apidoc[Behavior] that was given to @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:akka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(akka.actor.typed.Behavior)"} is re-installed,
-which means that if it contains mutable state it must be a factory via @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"}. When using the
+When the behavior is restarted the original @apidoc[Behavior] that was given to @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"} is re-installed,
+which means that if it contains mutable state it must be a factory via @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}. When using the
 object-oriented style with a class extending @apidoc[AbstractBehavior](typed.*.AbstractBehavior) it's always recommended to create it via
-@apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} as described in @ref:[Behavior factory method](style-guide.md#behavior-factory-method).
+@apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} as described in @ref:[Behavior factory method](style-guide.md#behavior-factory-method).
 For the function style there is typically no need for the factory if the state is captured in immutable
 parameters.
 @@@
@@ -87,47 +87,47 @@ With the @ref:[functional style](style-guide.md#functional-versus-object-oriente
 to store state by changing behavior e.g.
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #wrap }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #wrap }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #wrap }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #wrap }
 
 When doing this supervision only needs to be added to the top level:
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #top-level }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #top-level }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #top-level }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #top-level }
 
 Each returned behavior will be re-wrapped automatically with the supervisor.
 
 ## Child actors are stopped when parent is restarting
 
-Child actors are often started in a @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} block that is run again when the parent actor is restarted.
+Child actors are often started in a @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} block that is run again when the parent actor is restarted.
 The child actors are stopped to avoid resource leaks of creating new child actors each time the parent is restarted.
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #restart-stop-children }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #restart-stop-children }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-stop-children }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-stop-children }
 
 It is possible to override this so that child actors are not influenced when the parent actor is restarted.
 The restarted parent instance will then have the same children as before the failure.
 
-If child actors are created from @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} like in the previous example and they should remain intact (not stopped)
-when parent is restarted the @apidoc[supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:akka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(akka.actor.typed.Behavior)"} should be placed inside the @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} and using
-@scala[@scaladoc[SupervisorStrategy.restart.withStopChildren(false)](akka.actor.typed.RestartSupervisorStrategy#withStopChildren(enabled:Boolean):akka.actor.typed.RestartSupervisorStrategy)]@java[@javadoc[SupervisorStrategy.restart().withStopChildren(false)](akka.actor.typed.RestartSupervisorStrategy#withStopChildren(boolean))]
+If child actors are created from @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} like in the previous example and they should remain intact (not stopped)
+when parent is restarted the @apidoc[supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"} should be placed inside the @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} and using
+@scala[@scaladoc[SupervisorStrategy.restart.withStopChildren(false)](pekko.actor.typed.RestartSupervisorStrategy#withStopChildren(enabled:Boolean):org.apache.pekko.actor.typed.RestartSupervisorStrategy)]@java[@javadoc[SupervisorStrategy.restart().withStopChildren(false)](pekko.actor.typed.RestartSupervisorStrategy#withStopChildren(boolean))]
 like this:
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #restart-keep-children }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #restart-keep-children }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-keep-children }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-keep-children }
 
-That means that the @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"} block will only be run when the parent actor is first started, and not when it is
+That means that the @apidoc[setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"} block will only be run when the parent actor is first started, and not when it is
 restarted.
 
 ## The PreRestart signal
@@ -137,10 +137,10 @@ it has created, much like the @apidoc[PostStop] signal when the @ref[actor stops
 The returned behavior from the @apidoc[PreRestart] signal is ignored.
 
 Scala
-:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/supervision/SupervisionCompileOnly.scala) { #restart-PreRestart-signal }
+:  @@snip [SupervisionCompileOnly.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/supervision/SupervisionCompileOnly.scala) { #restart-PreRestart-signal }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-PreRestart-signal }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/supervision/SupervisionCompileOnlyTest.java) { #restart-PreRestart-signal }
 
 Note that @apidoc[PostStop] is not emitted for a restart, so typically you need to handle both @apidoc[PreRestart] and @apidoc[PostStop]
 to cleanup resources.
@@ -167,7 +167,7 @@ There might be cases when you want the original exception to bubble up the hiera
 
  
 Scala
-:  @@snip [FaultToleranceDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/FaultToleranceDocSpec.scala) { #bubbling-example }
+:  @@snip [FaultToleranceDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/FaultToleranceDocSpec.scala) { #bubbling-example }
 
 Java
-:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/BubblingSample.java) { #bubbling-example }
+:  @@snip [SupervisionCompileOnlyTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/BubblingSample.java) { #bubbling-example }

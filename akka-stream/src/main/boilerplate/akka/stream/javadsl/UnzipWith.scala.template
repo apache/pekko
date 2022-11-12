@@ -2,14 +2,14 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.stream.javadsl
+package org.apache.pekko.stream.javadsl
 
-import akka.stream._
-import akka.stream.scaladsl
-import akka.japi.function
-import akka.japi.Pair
-import akka.japi.tuple._
-import akka.NotUsed
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.scaladsl
+import org.apache.pekko.japi.function
+import org.apache.pekko.japi.Pair
+import org.apache.pekko.japi.tuple._
+import org.apache.pekko.NotUsed
 
 /**
  * Split one stream into several streams using a splitting function.

@@ -6,7 +6,7 @@ Stream the values from a Java 8 `Stream`, requesting the next value when there i
 
 ## Signature
 
-@apidoc[StreamConverters.fromJavaStream](StreamConverters$) { scala="#fromJavaStream[T,S&lt;:java.util.stream.BaseStream[T,S]](stream:()=&gt;java.util.stream.BaseStream[T,S]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#fromJavaStream(akka.japi.function.Creator)" }
+@apidoc[StreamConverters.fromJavaStream](StreamConverters$) { scala="#fromJavaStream[T,S&lt;:java.util.stream.BaseStream[T,S]](stream:()=&gt;java.util.stream.BaseStream[T,S]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromJavaStream(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

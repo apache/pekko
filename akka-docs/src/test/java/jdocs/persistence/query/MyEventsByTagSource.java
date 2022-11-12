@@ -4,13 +4,13 @@
 
 package jdocs.persistence.query;
 
-import akka.actor.ActorSystem;
-import akka.persistence.query.EventEnvelope;
-import akka.persistence.query.Offset;
-import akka.serialization.Serialization;
-import akka.serialization.SerializationExtension;
-import akka.stream.*;
-import akka.stream.stage.*;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.persistence.query.EventEnvelope;
+import org.apache.pekko.persistence.query.Offset;
+import org.apache.pekko.serialization.Serialization;
+import org.apache.pekko.serialization.SerializationExtension;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.stage.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

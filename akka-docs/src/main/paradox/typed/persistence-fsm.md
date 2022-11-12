@@ -11,10 +11,10 @@ To demonstrate this consider an example of a shopping application. A customer ca
 * Paid
 
 Scala
-:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/akka/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #state }
+:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #state }
 
 Java
-:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/akka/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #state }
+:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #state }
 
 
 And the commands that can result in state changes:
@@ -29,10 +29,10 @@ And the following read only commands:
 * Get current cart 
 
 Scala
-:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/akka/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #commands }
+:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #commands }
 
 Java
-:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/akka/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #commands }
+:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #commands }
 
 The command handler of the EventSourcedBehavior is used to convert the commands that change the state of the FSM
 to events, and reply to commands.
@@ -40,18 +40,18 @@ to events, and reply to commands.
 @scala[The command handler:]@java[The `forStateType` command handler can be used:]
 
 Scala
-:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/akka/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #command-handler }
+:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #command-handler }
 
 Java
-:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/akka/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #command-handler }
+:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #command-handler }
 
 The event handler is used to change state once the events have been persisted. When the EventSourcedBehavior is restarted
 the events are replayed to get back into the correct state.
 
 Scala
-:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/akka/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #event-handler }
+:  @@snip [PersistentFsmToTypedMigrationSpec.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationSpec.scala) { #event-handler }
 
 Java
-:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/akka/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #event-handler }
+:  @@snip [PersistentFsmToTypedMigrationCompileOnlyTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/PersistentFsmToTypedMigrationCompileOnlyTest.java) { #event-handler }
 
 

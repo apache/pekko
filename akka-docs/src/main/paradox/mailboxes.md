@@ -18,7 +18,7 @@ To use Mailboxes, you must add the following dependency in your project:
 
 ## Introduction
 
-An Akka `Mailbox` holds the messages that are destined for an @apidoc[akka.actor.Actor].
+An Akka `Mailbox` holds the messages that are destined for an @apidoc[actor.Actor].
 Normally each `Actor` has its own mailbox, but with for example a @apidoc[BalancingPool]
 all routees will share a single mailbox instance.
 
@@ -39,7 +39,7 @@ Configuration of `SingleConsumerOnlyUnboundedMailbox` as default mailbox:
 
 ```
 akka.actor.default-mailbox {
-  mailbox-type = "akka.dispatch.SingleConsumerOnlyUnboundedMailbox"
+  mailbox-type = "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"
 }
 ```
 
@@ -96,7 +96,7 @@ dispatcher which will execute it. Then the mailbox is determined as follows:
 
  1. If the actor's deployment configuration section contains a `mailbox` key,
 this refers to a configuration section describing the mailbox type.
- 2. If the actor's @apidoc[Props](akka.actor.Props) contains a mailbox selection then that names a configuration section describing the
+ 2. If the actor's @apidoc[Props](actor.Props) contains a mailbox selection then that names a configuration section describing the
 mailbox type to be used. This needs to be an absolute config path,
 for example `myapp.special-mailbox`, and is not nested inside the `akka` namespace.
  3. If the dispatcher's configuration section contains a `mailbox-type` key
@@ -166,7 +166,7 @@ It can be configured like this:
 
 @@snip [DispatcherDocSpec.scala](/akka-docs/src/test/scala/docs/dispatcher/DispatcherDocSpec.scala) { #control-aware-mailbox-config }
 
-Control messages need to extend the @apidoc[akka.dispatch.ControlMessage] @scala[trait]@java[interface]:
+Control messages need to extend the @apidoc[dispatch.ControlMessage] @scala[trait]@java[interface]:
 
 Scala
 :   @@snip [DispatcherDocSpec.scala](/akka-docs/src/test/scala/docs/dispatcher/DispatcherDocSpec.scala) { #control-aware-mailbox-messages }
@@ -184,13 +184,13 @@ Java
 
 ## Special Semantics of `system.actorOf`
 
-In order to make @apidoc[system.actorOf](akka.actor.ActorRefFactory) {scala="#actorOf(props:akka.actor.Props):akka.actor.ActorRef" java="#actorOf(akka.actor.Props)"} both synchronous and non-blocking while
-keeping the return type @apidoc[akka.actor.ActorRef] (and the semantics that the returned
+In order to make @apidoc[system.actorOf](actor.ActorRefFactory) {scala="#actorOf(props:org.apache.pekko.actor.Props):org.apache.pekko.actor.ActorRef" java="#actorOf(org.apache.pekko.actor.Props)"} both synchronous and non-blocking while
+keeping the return type @apidoc[actor.ActorRef] (and the semantics that the returned
 ref is fully functional), special handling takes place for this case. Behind
 the scenes, a hollow kind of actor reference is constructed, which is sent to
 the system’s guardian actor who actually creates the actor and its context and
 puts those inside the reference. Until that has happened, messages sent to the
-@apidoc[akka.actor.ActorRef] will be queued locally, and only upon swapping the real
+@apidoc[actor.ActorRef] will be queued locally, and only upon swapping the real
 filling in will they be transferred into the real mailbox. Thus,
 
 Scala
@@ -214,4 +214,4 @@ Java
     @@@
 
 will probably fail; you will have to allow for some time to pass and retry the
-check à la @scala[@scaladoc[TestKit.awaitCond](akka.testkit.TestKit#awaitCond(p:=%3EBoolean,max:scala.concurrent.duration.Duration,interval:scala.concurrent.duration.Duration,message:String):Unit)]@java[@javadoc[TestKit.awaitCond](akka.testkit.javadsl.TestKit#awaitCond(java.time.Duration,java.time.Duration,java.lang.String,java.util.function.Supplier))].
+check à la @scala[@scaladoc[TestKit.awaitCond](pekko.testkit.TestKit#awaitCond(p:=%3EBoolean,max:scala.concurrent.duration.Duration,interval:scala.concurrent.duration.Duration,message:String):Unit)]@java[@javadoc[TestKit.awaitCond](pekko.testkit.javadsl.TestKit#awaitCond(java.time.Duration,java.time.Duration,java.lang.String,java.util.function.Supplier))].

@@ -2,9 +2,9 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
-import akka.TestExtras.Filter.Keys._
+import org.apache.pekko.TestExtras.Filter.Keys._
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
 import com.typesafe.sbt.{ MultiJvmPlugin => SbtMultiJvm }
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._

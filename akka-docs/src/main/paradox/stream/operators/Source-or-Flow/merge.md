@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.merge](Source) { scala="#merge[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#merge(akka.stream.Graph)" java="#merge(akka.stream.Graph,boolean)" }
-@apidoc[Flow.merge](Flow) { scala="#merge[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#merge(akka.stream.Graph)" java="#merge(akka.stream.Graph,boolean)" }
+@apidoc[Source.merge](Source) { scala="#merge[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#merge(org.apache.pekko.stream.Graph)" java="#merge(org.apache.pekko.stream.Graph,boolean)" }
+@apidoc[Flow.merge](Flow) { scala="#merge[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#merge(org.apache.pekko.stream.Graph)" java="#merge(org.apache.pekko.stream.Graph,boolean)" }
 
 
 ## Description
@@ -16,7 +16,7 @@ Merge multiple sources. Picks elements randomly if all sources has elements read
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeSpec.scala) { #merge }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #merge }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #merge }

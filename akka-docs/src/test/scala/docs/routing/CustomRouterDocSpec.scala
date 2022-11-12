@@ -4,15 +4,15 @@
 
 package docs.routing
 
-import akka.testkit.AkkaSpec
-import akka.testkit.ImplicitSender
-import akka.actor.Actor
-import akka.actor.Props
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.ImplicitSender
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.Props
 import CustomRouterDocSpec.RedundancyRoutingLogic
 import scala.collection.immutable
-import akka.actor.ActorSystem
-import akka.routing.FromConfig
-import akka.actor.ActorRef
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.routing.FromConfig
+import org.apache.pekko.actor.ActorRef
 
 object CustomRouterDocSpec {
 
@@ -43,10 +43,11 @@ akka.actor.deployment {
   // #routing-logic
   import scala.collection.immutable
   import java.util.concurrent.ThreadLocalRandom
-  import akka.routing.RoundRobinRoutingLogic
-  import akka.routing.RoutingLogic
-  import akka.routing.Routee
-  import akka.routing.SeveralRoutees
+  import org.apache.pekko
+  import pekko.routing.RoundRobinRoutingLogic
+  import pekko.routing.RoutingLogic
+  import pekko.routing.Routee
+  import pekko.routing.SeveralRoutees
 
   class RedundancyRoutingLogic(nbrCopies: Int) extends RoutingLogic {
     val roundRobin = RoundRobinRoutingLogic()
@@ -72,10 +73,11 @@ akka.actor.deployment {
 }
 
 //#group
-import akka.dispatch.Dispatchers
-import akka.routing.Group
-import akka.routing.Router
-import akka.japi.Util.immutableSeq
+import org.apache.pekko
+import pekko.dispatch.Dispatchers
+import pekko.routing.Group
+import pekko.routing.Router
+import pekko.japi.Util.immutableSeq
 import com.typesafe.config.Config
 
 final case class RedundancyGroup(routeePaths: immutable.Iterable[String], nbrCopies: Int) extends Group {
@@ -95,7 +97,7 @@ final case class RedundancyGroup(routeePaths: immutable.Iterable[String], nbrCop
 class CustomRouterDocSpec extends AkkaSpec(CustomRouterDocSpec.config) with ImplicitSender {
 
   import CustomRouterDocSpec._
-  import akka.routing.SeveralRoutees
+  import org.apache.pekko.routing.SeveralRoutees
 
   "unit test routing logic" in {
     // #unit-test-logic

@@ -4,18 +4,18 @@
 
 package jdocs.cluster;
 
-import akka.cluster.routing.ClusterRouterGroup;
-import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.cluster.routing.ClusterRouterPool;
-import akka.cluster.routing.ClusterRouterPoolSettings;
-import akka.routing.ConsistentHashingGroup;
-import akka.routing.ConsistentHashingPool;
+import org.apache.pekko.cluster.routing.ClusterRouterGroup;
+import org.apache.pekko.cluster.routing.ClusterRouterGroupSettings;
+import org.apache.pekko.cluster.routing.ClusterRouterPool;
+import org.apache.pekko.cluster.routing.ClusterRouterPoolSettings;
+import org.apache.pekko.routing.ConsistentHashingGroup;
+import org.apache.pekko.routing.ConsistentHashingPool;
 import jdocs.cluster.StatsMessages.StatsJob;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.AbstractActor;
-import akka.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
-import akka.routing.FromConfig;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
+import org.apache.pekko.routing.FromConfig;
 
 import java.util.Arrays;
 import java.util.Collections;

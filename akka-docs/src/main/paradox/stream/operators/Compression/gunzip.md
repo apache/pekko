@@ -6,7 +6,7 @@ Creates a flow that gzip-decompresses a stream of ByteStrings.
 
 ## Signature
 
-@apidoc[Compression.gunzip](stream.*.Compression$) { scala="#gunzip(maxBytesPerChunk:Int):akka.stream.scaladsl.Flow[akka.util.ByteString,akka.util.ByteString,akka.NotUsed]" java="#gunzip(int)" }
+@apidoc[Compression.gunzip](stream.*.Compression$) { scala="#gunzip(maxBytesPerChunk:Int):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed]" java="#gunzip(int)" }
 
 ## Description
 

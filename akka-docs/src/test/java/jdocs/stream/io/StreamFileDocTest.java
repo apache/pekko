@@ -10,22 +10,22 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
-import akka.Done;
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.stream.ActorAttributes;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.FileIO;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.ActorAttributes;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.FileIO;
+import org.apache.pekko.stream.javadsl.Source;
 import jdocs.AbstractJavaTest;
 import jdocs.stream.SilenceSystemOut;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.stream.*;
-import akka.util.ByteString;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.util.ByteString;
 
 public class StreamFileDocTest extends AbstractJavaTest {
 

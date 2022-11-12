@@ -16,12 +16,13 @@ class RecipeDigest extends RecipeSpec {
       // #calculating-digest
       import java.security.MessageDigest
 
-      import akka.NotUsed
-      import akka.stream.{ Attributes, FlowShape, Inlet, Outlet }
-      import akka.stream.scaladsl.{ Sink, Source }
-      import akka.util.ByteString
+      import org.apache.pekko
+      import pekko.NotUsed
+      import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+      import pekko.stream.scaladsl.{ Sink, Source }
+      import pekko.util.ByteString
 
-      import akka.stream.stage._
+      import pekko.stream.stage._
 
       val data: Source[ByteString, NotUsed] = Source.single(ByteString("abc"))
 

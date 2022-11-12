@@ -32,7 +32,7 @@ However, these entries are provided as empty "", and require explicit user confi
 ## Eager initialization of persistence plugin
 
 By default, persistence plugins are started on-demand, as they are used. In some case, however, it might be beneficial
-to start a certain plugin eagerly. In order to do that, you should first add `akka.persistence.Persistence`
+to start a certain plugin eagerly. In order to do that, you should first add `org.apache.pekko.persistence.Persistence`
 under the `akka.extensions` key. Then, specify the IDs of plugins you wish to start automatically under
 `akka.persistence.journal.auto-start-journals` and `akka.persistence.snapshot-store.auto-start-snapshot-stores`.
 
@@ -41,18 +41,18 @@ For example, if you want eager initialization for the leveldb journal plugin and
 ```
 akka {
 
-  extensions = [akka.persistence.Persistence]
+  extensions = [org.apache.pekko.persistence.Persistence]
 
   persistence {
 
     journal {
       plugin = "akka.persistence.journal.leveldb"
-      auto-start-journals = ["akka.persistence.journal.leveldb"]
+      auto-start-journals = ["org.apache.pekko.persistence.journal.leveldb"]
     }
 
     snapshot-store {
       plugin = "akka.persistence.snapshot-store.local"
-      auto-start-snapshot-stores = ["akka.persistence.snapshot-store.local"]
+      auto-start-snapshot-stores = ["org.apache.pekko.persistence.snapshot-store.local"]
     }
 
   }

@@ -4,10 +4,10 @@
 
 package docs.stream.cookbook
 
-import akka.NotUsed
-import akka.stream.{ Attributes, FlowShape, Inlet, Outlet }
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.util.ByteString
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.{ Attributes, FlowShape, Inlet, Outlet }
+import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
+import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -21,7 +21,7 @@ class RecipeByteStrings extends RecipeSpec {
       val ChunkLimit = 2
 
       // #bytestring-chunker
-      import akka.stream.stage._
+      import org.apache.pekko.stream.stage._
 
       class Chunker(val chunkSize: Int) extends GraphStage[FlowShape[ByteString, ByteString]] {
         val in = Inlet[ByteString]("Chunker.in")
@@ -86,7 +86,7 @@ class RecipeByteStrings extends RecipeSpec {
       val SizeLimit = 9
 
       // #bytes-limiter
-      import akka.stream.stage._
+      import org.apache.pekko.stream.stage._
       class ByteLimiter(val maximumBytes: Long) extends GraphStage[FlowShape[ByteString, ByteString]] {
         val in = Inlet[ByteString]("ByteLimiter.in")
         val out = Outlet[ByteString]("ByteLimiter.out")

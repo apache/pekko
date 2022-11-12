@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import java.io.File
 import java.io.PrintWriter
@@ -67,12 +67,12 @@ object Protobuf {
               dst,
               _ => true,
               transformFile(
-                _.replace("com.google.protobuf", "akka.protobufv3.internal")
+                _.replace("com.google.protobuf", "org.apache.pekko.protobufv3.internal")
                   // this is the one thing that protobufGenerate doesn't fully qualify and causes
                   // api doc generation to fail
                   .replace(
                     "UnusedPrivateParameter",
-                    "akka.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter")),
+                    "org.apache.pekko.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter")),
               cache,
               log)
         }

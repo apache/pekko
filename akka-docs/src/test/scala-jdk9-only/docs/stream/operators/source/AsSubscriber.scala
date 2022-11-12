@@ -8,9 +8,10 @@ package docs.stream.operators.source;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.concurrent.Flow.Publisher;
 
-import akka.NotUsed;
-import akka.stream.scaladsl.Source;
-import akka.stream.scaladsl.JavaFlowSupport;
+import org.apache.pekko;
+import pekko.NotUsed;
+import pekko.stream.scaladsl.Source;
+import pekko.stream.scaladsl.JavaFlowSupport;
 
 //#imports
 

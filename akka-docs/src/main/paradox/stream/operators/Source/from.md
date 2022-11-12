@@ -8,7 +8,7 @@ Stream the values of an @scala[`immutable.Seq`]@java[`Iterable`].
 
 @@@div { .group-scala }
 
-@apidoc[Source.apply](Source$) { scala="#apply[T](iterable:scala.collection.immutable.Iterable[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]"  }
+@apidoc[Source.apply](Source$) { scala="#apply[T](iterable:scala.collection.immutable.Iterable[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]"  }
 
 @@@ 
 

@@ -80,9 +80,9 @@ akka {
   # Logger config for Akka internals and classic actors, the new API relies
   # directly on SLF4J and your config for the logger backend.
 
-  # Loggers to register at boot time (akka.event.Logging$DefaultLogger logs
+  # Loggers to register at boot time (org.apache.pekko.event.Logging$DefaultLogger logs
   # to STDOUT)
-  loggers = ["akka.event.slf4j.Slf4jLogger"]
+  loggers = ["org.apache.pekko.event.slf4j.Slf4jLogger"]
 
   # Log level used by the configured loggers (see "loggers") as soon
   # as they have been started; before that, see "stdout-loglevel"
@@ -96,7 +96,7 @@ akka {
 
   # Filter of log events that is used by the LoggingAdapter before
   # publishing log events to the eventStream.
-  logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+  logging-filter = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"
 
   actor {
     provider = "cluster"

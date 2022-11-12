@@ -9,10 +9,10 @@ import jdocs.ddata.TwoPhaseSet;
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages;
 import docs.ddata.protobuf.msg.TwoPhaseSetMessages.TwoPhaseSet2.Builder;
 
-import akka.actor.ExtendedActorSystem;
-import akka.cluster.ddata.GSet;
-import akka.cluster.ddata.protobuf.AbstractSerializationSupport;
-import akka.cluster.ddata.protobuf.ReplicatedDataSerializer;
+import org.apache.pekko.actor.ExtendedActorSystem;
+import org.apache.pekko.cluster.ddata.GSet;
+import org.apache.pekko.cluster.ddata.protobuf.AbstractSerializationSupport;
+import org.apache.pekko.cluster.ddata.protobuf.ReplicatedDataSerializer;
 
 public class TwoPhaseSetSerializer2 extends AbstractSerializationSupport {
 

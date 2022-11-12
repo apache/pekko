@@ -2,9 +2,9 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
-import akka.AkkaValidatePullRequest.additionalTasks
+import org.apache.pekko.AkkaValidatePullRequest.additionalTasks
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import de.heikoseeberger.sbtheader.{ CommentCreator, HeaderPlugin }
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._

@@ -5,8 +5,9 @@
 package docs.testkit
 
 //#plain-spec
-import akka.actor.ActorSystem
-import akka.testkit.{ ImplicitSender, TestActors, TestKit }
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.testkit.{ ImplicitSender, TestActors, TestKit }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

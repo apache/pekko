@@ -53,7 +53,7 @@ Java
 
 And the minimum configuration required is to set a host/port for remoting and the `akka.actor.provider = "cluster"`.
 
-@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
+@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
 The actor registers itself as subscriber of certain cluster events. It receives events corresponding to the current state
 of the cluster when the subscription starts and then it receives events for changes that happen in the cluster.
@@ -87,7 +87,7 @@ Java
 
 For more information see @ref[tuning joins](typed/cluster.md#tuning-joins)
 
-It's also possible to specifically join a single node as illustrated in below example, but @apidoc[joinSeedNodes](cluster.Cluster) {scala="#joinSeedNodes(seedNodes:Seq[akka.actor.Address]):Unit" java="#joinSeedNodes(java.util.List)"} should be
+It's also possible to specifically join a single node as illustrated in below example, but @apidoc[joinSeedNodes](cluster.Cluster) {scala="#joinSeedNodes(seedNodes:Seq[org.apache.pekko.actor.Address]):Unit" java="#joinSeedNodes(java.util.List)"} should be
 preferred since it has redundancy and retry mechanisms built-in.
 
 Scala
@@ -108,7 +108,7 @@ See @ref:[Downing](typed/cluster.md#downing) in the documentation of the new API
 ## Subscribe to Cluster Events
 
 You can subscribe to change notifications of the cluster membership by using
-@scala[@scaladoc[Cluster(system).subscribe](akka.cluster.Cluster#subscribe(subscriber:akka.actor.ActorRef,to:Class[_]*):Unit)]@java[@javadoc[Cluster.get(system).subscribe](akka.cluster.Cluster#subscribe(akka.actor.ActorRef,akka.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...))].
+@scala[@scaladoc[Cluster(system).subscribe](pekko.cluster.Cluster#subscribe(subscriber:org.apache.pekko.actor.ActorRef,to:Class[_]*):Unit)]@java[@javadoc[Cluster.get(system).subscribe](pekko.cluster.Cluster#subscribe(org.apache.pekko.actor.ActorRef,org.apache.pekko.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...))].
 
 Scala
 :  @@snip [SimpleClusterListener2.scala](/akka-docs/src/test/scala/docs/cluster/SimpleClusterListener2.scala) { #subscribe }
@@ -122,7 +122,7 @@ as the first message, followed by events for incremental updates.
 Note that you may receive an empty `CurrentClusterState`, containing no members,
 followed by @apidoc[MemberUp](ClusterEvent.MemberUp) events from other nodes which already joined,
 if you start the subscription before the initial join procedure has completed.
-This may for example happen when you start the subscription immediately after @apidoc[cluster.join()](cluster.Cluster) {scala="#join(address:akka.actor.Address):Unit" java="#join(akka.actor.Address)"} like below.
+This may for example happen when you start the subscription immediately after @apidoc[cluster.join()](cluster.Cluster) {scala="#join(address:org.apache.pekko.actor.Address):Unit" java="#join(org.apache.pekko.actor.Address)"} like below.
 This is expected behavior. When the node has been accepted in the cluster you will
 receive `MemberUp` for that node, and other nodes.
 
@@ -143,7 +143,7 @@ Java
 
 
 If you find it inconvenient to handle the `CurrentClusterState` you can use
-@scala[@scaladoc[ClusterEvent.InitialStateAsEvents](akka.cluster.ClusterEvent$$InitialStateAsEvents$)] @java[@javadoc[ClusterEvent.initialStateAsEvents()](akka.cluster.ClusterEvent#initialStateAsEvents())] as parameter to @apidoc[subscribe](akka.cluster.Cluster) {scala="#subscribe(subscriber:akka.actor.ActorRef,to:Class[_]*):Unit" java="#subscribe(akka.actor.ActorRef,akka.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...)"}.
+@scala[@scaladoc[ClusterEvent.InitialStateAsEvents](cluster.ClusterEvent$$InitialStateAsEvents$)] @java[@javadoc[ClusterEvent.initialStateAsEvents()](pekko.cluster.ClusterEvent#initialStateAsEvents())] as parameter to @apidoc[subscribe](pekko.cluster.Cluster) {scala="#subscribe(subscriber:org.apache.pekko.actor.ActorRef,to:Class[_]*):Unit" java="#subscribe(org.apache.pekko.actor.ActorRef,org.apache.pekko.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...)"}.
 That means that instead of receiving `CurrentClusterState` as the first message you will receive
 the events corresponding to the current state to mimic what you would have seen if you were
 listening to the events when they occurred in the past. Note that those initial events only correspond
@@ -252,7 +252,7 @@ An alternative is to register tasks to the @ref:[Coordinated Shutdown](coordinat
 @@@ note
 
 Register a OnMemberRemoved callback on a cluster that have been shutdown, the callback will be invoked immediately on
-the caller thread, otherwise it will be invoked later when the current member status changed to @scala[@scaladoc[Removed](akka.cluster.MemberStatus$$Removed$)]@java[@javadoc[Removed](akka.cluster.MemberStatus#removed())]. You may
+the caller thread, otherwise it will be invoked later when the current member status changed to @scala[@scaladoc[Removed](pekko.cluster.MemberStatus$$Removed$)]@java[@javadoc[Removed](pekko.cluster.MemberStatus#removed())]. You may
 want to install some cleanup handling after the cluster was started up, but the cluster might already be shutting
 down when you installing, and depending on the race is not healthy.
 
@@ -318,15 +318,15 @@ unreachable from the rest of the cluster. Please see:
 Set up your project according to the instructions in @ref:[Multi Node Testing](multi-node-testing.md) and @ref:[Multi JVM Testing](multi-jvm-testing.md), i.e.
 add the `sbt-multi-jvm` plugin and the dependency to `akka-multi-node-testkit`.
 
-First, as described in @ref:[Multi Node Testing](multi-node-testing.md), we need some scaffolding to configure the @scaladoc[MultiNodeSpec](akka.remote.testkit.MultiNodeSpec).
-Define the participating @ref:[roles](typed/cluster.md#node-roles) and their @ref:[configuration](#configuration) in an object extending @scaladoc[MultiNodeConfig](akka.remote.testkit.MultiNodeConfig):
+First, as described in @ref:[Multi Node Testing](multi-node-testing.md), we need some scaffolding to configure the @scaladoc[MultiNodeSpec](pekko.remote.testkit.MultiNodeSpec).
+Define the participating @ref:[roles](typed/cluster.md#node-roles) and their @ref:[configuration](#configuration) in an object extending @scaladoc[MultiNodeConfig](pekko.remote.testkit.MultiNodeConfig):
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #MultiNodeConfig }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #MultiNodeConfig }
 
 Define one concrete test class for each role/node. These will be instantiated on the different nodes (JVMs). They can be
 implemented differently, but often they are the same and extend an abstract test class, as illustrated here.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #concrete-tests }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #concrete-tests }
 
 Note the naming convention of these classes. The name of the classes must end with `MultiJvmNode1`, `MultiJvmNode2`
 and so on. It is possible to define another suffix to be used by the `sbt-multi-jvm`, but the default should be
@@ -334,34 +334,34 @@ fine in most cases.
 
 Then the abstract `MultiNodeSpec`, which takes the `MultiNodeConfig` as constructor parameter.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #abstract-test }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #abstract-test }
 
 Most of this can be extracted to a separate trait to avoid repeating this in all your tests.
 
 Typically you begin your test by starting up the cluster and let the members join, and create some actors.
 That can be done like this:
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #startup-cluster }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #startup-cluster }
 
-From the test you interact with the cluster using the `Cluster` extension, e.g. @scaladoc[join](akka.cluster.Cluster#join(address:akka.actor.Address):Unit).
+From the test you interact with the cluster using the `Cluster` extension, e.g. @scaladoc[join](pekko.cluster.Cluster#join(address:org.apache.pekko.actor.Address):Unit).
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #join }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #join }
 
 Notice how the *testActor* from @ref:[testkit](testing.md) is added as @ref:[subscriber](#cluster-subscriber)
 to cluster changes and then waiting for certain events, such as in this case all members becoming 'Up'.
 
-The above code was running for all roles (JVMs). @scaladoc[runOn](akka.remote.testkit.MultiNodeSpec#runOn(nodes:akka.remote.testconductor.RoleName*)(thunk:=%3EUnit):Unit) is a convenient utility to declare that a certain block
+The above code was running for all roles (JVMs). @scaladoc[runOn](pekko.remote.testkit.MultiNodeSpec#runOn(nodes:org.apache.pekko.remote.testconductor.RoleName*)(thunk:=%3EUnit):Unit) is a convenient utility to declare that a certain block
 of code should only run for a specific role.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #test-statsService }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #test-statsService }
 
 Once again we take advantage of the facilities in @ref:[testkit](testing.md) to verify expected behavior.
-Here using `testActor` as sender (via @scaladoc[ImplicitSender](akka.testkit.ImplicitSender)) and verifying the reply with @scaladoc[expectMsgType](akka.testkit.TestKit#expectMsgType[T](max:scala.concurrent.duration.FiniteDuration)(implicitt:scala.reflect.ClassTag[T]):T).
+Here using `testActor` as sender (via @scaladoc[ImplicitSender](pekko.testkit.ImplicitSender)) and verifying the reply with @scaladoc[expectMsgType](org.apache.pekko.testkit.TestKit#expectMsgType[T](max:scala.concurrent.duration.FiniteDuration)(implicitt:scala.reflect.ClassTag[T]):T).
 
 In the above code you can see `node(third)`, which is useful facility to get the root actor reference of
-the actor system for a specific role. This can also be used to grab the @scaladoc[akka.actor.Address](akka.actor.Address) of that node.
+the actor system for a specific role. This can also be used to grab the @scaladoc[actor.Address](pekko.actor.Address) of that node.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/akka/cluster/metrics/sample/StatsSampleSpec.scala) { #addresses }
+@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #addresses }
 
 @@@
 

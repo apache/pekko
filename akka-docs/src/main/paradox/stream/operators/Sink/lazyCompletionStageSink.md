@@ -12,7 +12,7 @@ that is materialized and inserted in the stream.
 The internal `Sink` will not be created if the stream completes of fails before any element got through.
 
 The materialized value of the `Sink` will be the materialized value of the created internal flow if it is materialized
-and failed with a `akka.stream.NeverMaterializedException` if the stream fails or completes without the flow being materialized.
+and failed with a `org.apache.pekko.stream.NeverMaterializedException` if the stream fails or completes without the flow being materialized.
 
 Can be combined with @ref:[prefixAndTail](../Source-or-Flow/prefixAndTail.md) to base the sink on the first element.
 

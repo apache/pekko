@@ -8,20 +8,21 @@ import java.util.concurrent.ThreadLocalRandom
 
 import scala.concurrent.Future
 
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.Broadcast
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.Broadcast
 
 object BroadcastDocExample {
 
   implicit val system: ActorSystem = ActorSystem("BroadcastDocExample")
 
   // #broadcast
-  import akka.NotUsed
-  import akka.stream.ClosedShape
-  import akka.stream.scaladsl.GraphDSL
-  import akka.stream.scaladsl.RunnableGraph
-  import akka.stream.scaladsl.Sink
-  import akka.stream.scaladsl.Source
+  import org.apache.pekko
+  import pekko.NotUsed
+  import pekko.stream.ClosedShape
+  import pekko.stream.scaladsl.GraphDSL
+  import pekko.stream.scaladsl.RunnableGraph
+  import pekko.stream.scaladsl.Sink
+  import pekko.stream.scaladsl.Source
 
   val source: Source[Int, NotUsed] =
     Source.fromIterator(() => Iterator.continually(ThreadLocalRandom.current().nextInt(100))).take(100)

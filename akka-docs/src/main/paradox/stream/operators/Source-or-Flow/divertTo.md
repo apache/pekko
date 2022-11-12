@@ -6,8 +6,8 @@ Each upstream element will either be diverted to the given sink, or the downstre
 
 ## Signature
 
-@apidoc[Source.divertTo](Source) { scala="#divertTo(that:akka.stream.Graph[akka.stream.SinkShape[Out],_],when:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#divertTo(akka.stream.Graph,akka.japi.function.Predicate)" }
-@apidoc[Flow.divertTo](Flow) { scala="#divertTo(that:akka.stream.Graph[akka.stream.SinkShape[Out],_],when:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#divertTo(akka.stream.Graph,akka.japi.function.Predicate)" }
+@apidoc[Source.divertTo](Source) { scala="#divertTo(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_],when:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#divertTo(org.apache.pekko.stream.Graph,org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.divertTo](Flow) { scala="#divertTo(that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[Out],_],when:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#divertTo(org.apache.pekko.stream.Graph,org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description

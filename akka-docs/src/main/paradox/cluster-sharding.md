@@ -27,7 +27,7 @@ For an introduction to Sharding concepts see @ref:[Cluster Sharding](typed/clust
 This is what an entity actor may look like:
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #counter-actor }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #counter-actor }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #counter-actor }
@@ -47,7 +47,7 @@ when there is no match between the roles of the current cluster node and the rol
 `ClusterShardingSettings`.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #counter-start }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #counter-start }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #counter-start }
@@ -56,7 +56,7 @@ The @scala[`extractEntityId` and `extractShardId` are two] @java[`messageExtract
 identifier and the shard identifier from incoming messages.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #counter-extractor }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #counter-extractor }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #counter-extractor }
@@ -94,7 +94,7 @@ delegate the message to the right node and it will create the entity actor on de
 first message for a specific entity is delivered.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #counter-usage }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #counter-usage }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #counter-usage }
@@ -172,7 +172,7 @@ the `rememberEntities` flag to true in `ClusterShardingSettings` when calling
 extract from the `EntityId`.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #extractShardId-StartEntity }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #extractShardId-StartEntity }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #extractShardId-StartEntity }
@@ -184,7 +184,7 @@ you need to create an intermediate parent actor that defines the `supervisorStra
 child entity actor.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #supervisor }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #supervisor }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #supervisor }
@@ -192,7 +192,7 @@ Java
 You start such a supervisor in the same way as if it was the entity actor.
 
 Scala
-:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/akka/cluster/sharding/ClusterShardingSpec.scala) { #counter-supervisor-start }
+:  @@snip [ClusterShardingSpec.scala](/akka-cluster-sharding/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/ClusterShardingSpec.scala) { #counter-supervisor-start }
 
 Java
 :  @@snip [ClusterShardingTest.java](/akka-docs/src/test/java/jdocs/sharding/ClusterShardingTest.java) { #counter-supervisor-start }

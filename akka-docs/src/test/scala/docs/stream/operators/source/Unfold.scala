@@ -4,8 +4,8 @@
 
 package docs.stream.operators.source
 
-import akka.NotUsed
-import akka.stream.scaladsl.Source
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.scaladsl.Source
 
 object Unfold {
 

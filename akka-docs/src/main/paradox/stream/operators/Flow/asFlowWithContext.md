@@ -6,7 +6,7 @@ Extracts context data from the elements of a `Flow` so that it can be turned int
 
 ## Signature
 
-@apidoc[Flow.asFlowWithContext](Flow) { scala="#asFlowWithContext[U,CtxU,CtxOut](collapseContext:(U,CtxU)=&gt;In)(extractContext:Out=&gt;CtxOut):akka.stream.scaladsl.FlowWithContext[U,CtxU,Out,CtxOut,Mat]" java="#asFlowWithContext(akka.japi.function.Function2,akka.japi.function.Function)" }
+@apidoc[Flow.asFlowWithContext](Flow) { scala="#asFlowWithContext[U,CtxU,CtxOut](collapseContext:(U,CtxU)=&gt;In)(extractContext:Out=&gt;CtxOut):org.apache.pekko.stream.scaladsl.FlowWithContext[U,CtxU,Out,CtxOut,Mat]" java="#asFlowWithContext(org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

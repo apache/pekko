@@ -6,8 +6,8 @@ Allow for a slower downstream by passing incoming elements and a summary into an
 
 ## Signature
 
-@apidoc[Source.batch](Source) { scala="#batch[S](max:Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batch(long,akka.japi.function.Function,akka.japi.function.Function2)" }
-@apidoc[Flow.batch](Flow) { scala="#batch[S](max:Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batch(long,akka.japi.function.Function,akka.japi.function.Function2)" }
+@apidoc[Source.batch](Source) { scala="#batch[S](max:Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batch(long,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.batch](Flow) { scala="#batch[S](max:Long,seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#batch(long,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
 
 
 

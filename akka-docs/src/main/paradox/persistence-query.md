@@ -63,7 +63,7 @@ Java
 :  @@snip [PersistenceQueryDocTest.java](/akka-docs/src/test/java/jdocs/persistence/PersistenceQueryDocTest.java) { #basic-usage }
 
 Journal implementers are encouraged to put this identifier in a variable known to the user, such that one can access it via
-@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](akka.persistence.query.PersistenceQuery#readJournalFor[T%3C:akka.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](akka.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
+@scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
 
 Read journal implementations are available as [Community plugins](https://akka.io/community/#plugins-to-akka-persistence-query).
 
@@ -129,15 +129,15 @@ That includes the use case to query all domain events of an Aggregate Root type.
 Please refer to your read journal plugin's documentation to find out if and how it is supported.
 
 Some journals may support @ref:[tagging of events](typed/persistence.md#tagging) or
-@ref:[Event Adapters](persistence.md#event-adapters) that wraps the events in a @apidoc[akka.persistence.journal.Tagged](akka.persistence.journal.Tagged)
+@ref:[Event Adapters](persistence.md#event-adapters) that wraps the events in a @apidoc[persistence.journal.Tagged](persistence.journal.Tagged)
 with the given `tags`. The journal may support other ways of doing tagging - again,
 how exactly this is implemented depends on the used journal. Here is an example of such a tagging with an @apidoc[typed.*.EventSourcedBehavior]:
 
 Scala
-:  @@snip [BasicPersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/akka/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging-query }
+:  @@snip [BasicPersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging-query }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/akka/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging-query }
+:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging-query }
 
 @@@ note
 
@@ -174,7 +174,7 @@ If your usage does not require a live stream, you can use the @apidoc[currentEve
 Query events for given entity type and slices. A slice is deterministically defined based on the persistence id.
 The purpose is to evenly distribute all persistence ids over the slices.
 
-See @apidoc[akka.persistence.query.typed.*.EventsBySliceQuery] and @apidoc[akka.persistence.query.typed.*.CurrentEventsBySliceQuery]. 
+See @apidoc[persistence.query.typed.*.EventsBySliceQuery] and @apidoc[persistence.query.typed.*.CurrentEventsBySliceQuery]. 
 
 ### Materialized values of queries
 
@@ -288,11 +288,11 @@ their exposed semantics as well as handled query scenarios.
 
 ### ReadJournal plugin API
 
-A read journal plugin must implement @apidoc[akka.persistence.query.ReadJournalProvider](akka.persistence.query.ReadJournalProvider) which
-creates instances of @scaladoc[akka.persistence.query.scaladsl.ReadJournal](akka.persistence.query.scaladsl.ReadJournal) and
-@javadoc[akka.persistence.query.javadsl.ReadJournal](akka.persistence.query.javadsl.ReadJournal). The plugin must implement both the `scaladsl`
-and the `javadsl` @scala[traits]@java[interfaces] because the @scaladoc[akka.stream.scaladsl.Source](akka.stream.scaladsl.Source) and 
-@javadoc[akka.stream.javadsl.Source](akka.stream.javadsl.Source) are different types and even though those types can be converted
+A read journal plugin must implement @apidoc[pekko.query.ReadJournalProvider](persistence.query.ReadJournalProvider) which
+creates instances of @scaladoc[pekko.persistence.query.scaladsl.ReadJournal](pekko.persistence.query.scaladsl.ReadJournal) and
+@javadoc[persistence.query.javadsl.ReadJournal](pekko.persistence.query.javadsl.ReadJournal). The plugin must implement both the `scaladsl`
+and the `javadsl` @scala[traits]@java[interfaces] because the @scaladoc[pekko.stream.scaladsl.Source](pekko.stream.scaladsl.Source) and 
+@javadoc[stream.javadsl.Source](pekko.stream.javadsl.Source) are different types and even though those types can be converted
 to each other it is most convenient for the end user to get access to the Java or Scala `Source` directly.
 As illustrated below one of the implementations can delegate to the other. 
 

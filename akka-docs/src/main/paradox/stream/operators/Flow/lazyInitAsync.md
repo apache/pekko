@@ -6,7 +6,7 @@ Deprecated by @ref:[`Flow.lazyFutureFlow`](lazyFutureFlow.md) in combination wit
 
 ## Signature
 
-@apidoc[Flow.lazyInitAsync](Flow$) { scala="#lazyInitAsync[I,O,M](flowFactory:()=&gt;scala.concurrent.Future[akka.stream.scaladsl.Flow[I,O,M]]):akka.stream.scaladsl.Flow[I,O,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(akka.japi.function.Creator)" }
+@apidoc[Flow.lazyInitAsync](Flow$) { scala="#lazyInitAsync[I,O,M](flowFactory:()=&gt;scala.concurrent.Future[org.apache.pekko.stream.scaladsl.Flow[I,O,M]]):org.apache.pekko.stream.scaladsl.Flow[I,O,scala.concurrent.Future[Option[M]]]" java="#lazyInitAsync(org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 
@@ -28,7 +28,7 @@ Defers creation until a first element arrives.
 
 **cancels** when downstream cancels (keep reading)
     The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-     This behaviour can be controlled by setting the [[akka.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+     This behaviour can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
     this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
 @@@
 

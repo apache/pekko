@@ -4,22 +4,23 @@
 
 package docs.persistence.query
 
-import akka.NotUsed
-import akka.actor._
-import akka.persistence.query._
-import akka.stream.scaladsl.{ Flow, Sink, Source }
-import akka.stream.javadsl
-import akka.testkit.AkkaSpec
-import akka.util.Timeout
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.actor._
+import pekko.persistence.query._
+import pekko.stream.scaladsl.{ Flow, Sink, Source }
+import pekko.stream.javadsl
+import pekko.testkit.AkkaSpec
+import pekko.util.Timeout
 import org.reactivestreams.Subscriber
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration._
 
-import akka.Done
-import akka.actor.typed.Behavior
-import akka.actor.typed.scaladsl.Behaviors
+import pekko.Done
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.Config
 
 object PersistenceQueryDocSpec {
@@ -34,6 +35,7 @@ object PersistenceQueryDocSpec {
   // #advanced-journal-query-types
 
   // #my-read-journal
+  import org.apache.pekko
   class MyReadJournalProvider(system: ExtendedActorSystem, config: Config) extends ReadJournalProvider {
 
     private val readJournal: MyScaladslReadJournal =
@@ -47,11 +49,11 @@ object PersistenceQueryDocSpec {
   }
 
   class MyScaladslReadJournal(system: ExtendedActorSystem, config: Config)
-      extends akka.persistence.query.scaladsl.ReadJournal
-      with akka.persistence.query.scaladsl.EventsByTagQuery
-      with akka.persistence.query.scaladsl.EventsByPersistenceIdQuery
-      with akka.persistence.query.scaladsl.PersistenceIdsQuery
-      with akka.persistence.query.scaladsl.CurrentPersistenceIdsQuery {
+      extends pekko.persistence.query.scaladsl.ReadJournal
+      with pekko.persistence.query.scaladsl.EventsByTagQuery
+      with pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery
+      with pekko.persistence.query.scaladsl.PersistenceIdsQuery
+      with pekko.persistence.query.scaladsl.CurrentPersistenceIdsQuery {
 
     private val refreshInterval: FiniteDuration =
       config.getDuration("refresh-interval", MILLISECONDS).millis
@@ -60,7 +62,7 @@ object PersistenceQueryDocSpec {
      * You can use `NoOffset` to retrieve all events with a given tag or retrieve a subset of all
      * events by specifying a `Sequence` `offset`. The `offset` corresponds to an ordered sequence number for
      * the specific tag. Note that the corresponding offset of each event is provided in the
-     * [[akka.persistence.query.EventEnvelope]], which makes it possible to resume the
+     * [[pekko.persistence.query.EventEnvelope]], which makes it possible to resume the
      * stream at a later point from a given offset.
      *
      * The `offset` is exclusive, i.e. the event with the exact same sequence number will not be included
@@ -105,11 +107,11 @@ object PersistenceQueryDocSpec {
   }
 
   class MyJavadslReadJournal(scaladslReadJournal: MyScaladslReadJournal)
-      extends akka.persistence.query.javadsl.ReadJournal
-      with akka.persistence.query.javadsl.EventsByTagQuery
-      with akka.persistence.query.javadsl.EventsByPersistenceIdQuery
-      with akka.persistence.query.javadsl.PersistenceIdsQuery
-      with akka.persistence.query.javadsl.CurrentPersistenceIdsQuery {
+      extends pekko.persistence.query.javadsl.ReadJournal
+      with pekko.persistence.query.javadsl.EventsByTagQuery
+      with pekko.persistence.query.javadsl.EventsByPersistenceIdQuery
+      with pekko.persistence.query.javadsl.PersistenceIdsQuery
+      with pekko.persistence.query.javadsl.CurrentPersistenceIdsQuery {
 
     override def eventsByTag(tag: String, offset: Offset = Sequence(0L)): javadsl.Source[EventEnvelope, NotUsed] =
       scaladslReadJournal.eventsByTag(tag, offset).asJava
@@ -129,7 +131,7 @@ object PersistenceQueryDocSpec {
     // possibility to add more plugin specific queries
 
     def byTagsWithMeta(tags: java.util.Set[String]): javadsl.Source[RichEvent, QueryMetadata] = {
-      import akka.util.ccompat.JavaConverters._
+      import pekko.util.ccompat.JavaConverters._
       scaladslReadJournal.byTagsWithMeta(tags.asScala.toSet).asJava
     }
   }

@@ -4,12 +4,12 @@
 
 package jdocs.persistence.testkit;
 
-import akka.actor.typed.ActorSystem;
-import akka.actor.typed.Behavior;
-import akka.persistence.testkit.PersistenceTestKitPlugin;
-import akka.persistence.testkit.PersistenceTestKitSnapshotPlugin;
-import akka.persistence.testkit.javadsl.PersistenceTestKit;
-import akka.persistence.testkit.javadsl.SnapshotTestKit;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.persistence.testkit.PersistenceTestKitPlugin;
+import org.apache.pekko.persistence.testkit.PersistenceTestKitSnapshotPlugin;
+import org.apache.pekko.persistence.testkit.javadsl.PersistenceTestKit;
+import org.apache.pekko.persistence.testkit.javadsl.SnapshotTestKit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 

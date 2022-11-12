@@ -4,12 +4,12 @@
 
 package docs.stream
 
-import akka.testkit.AkkaSpec
-import akka.stream.scaladsl._
-import akka.stream._
-import akka.util.ByteString
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream._
+import org.apache.pekko.util.ByteString
 import java.nio.ByteOrder
-import akka.stream.stage._
+import org.apache.pekko.stream.stage._
 import scala.concurrent.duration._
 import scala.concurrent.Await
 

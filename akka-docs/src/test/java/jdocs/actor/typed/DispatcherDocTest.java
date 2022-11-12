@@ -6,8 +6,8 @@ package jdocs.actor.typed;
 
 import scala.concurrent.ExecutionContextExecutor;
 
-import akka.actor.typed.*;
-import akka.actor.typed.javadsl.*;
+import org.apache.pekko.actor.typed.*;
+import org.apache.pekko.actor.typed.javadsl.*;
 
 @SuppressWarnings("unused")
 public class DispatcherDocTest {

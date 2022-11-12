@@ -6,7 +6,7 @@ Immediately cancel the stream
 
 ## Signature
 
-@apidoc[Sink.cancelled](Sink$) { scala="#cancelled[T]:akka.stream.scaladsl.Sink[T,akka.NotUsed]" java="#cancelled()" }
+@apidoc[Sink.cancelled](Sink$) { scala="#cancelled[T]:org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#cancelled()" }
 
 
 ## Description

@@ -7,12 +7,12 @@ package jdocs.cluster;
 import static jdocs.cluster.TransformationMessages.BACKEND_REGISTRATION;
 import jdocs.cluster.TransformationMessages.TransformationJob;
 import jdocs.cluster.TransformationMessages.TransformationResult;
-import akka.actor.AbstractActor;
-import akka.cluster.Cluster;
-import akka.cluster.ClusterEvent.CurrentClusterState;
-import akka.cluster.ClusterEvent.MemberUp;
-import akka.cluster.Member;
-import akka.cluster.MemberStatus;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.cluster.Cluster;
+import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
+import org.apache.pekko.cluster.ClusterEvent.MemberUp;
+import org.apache.pekko.cluster.Member;
+import org.apache.pekko.cluster.MemberStatus;
 
 // #backend
 public class TransformationBackend extends AbstractActor {

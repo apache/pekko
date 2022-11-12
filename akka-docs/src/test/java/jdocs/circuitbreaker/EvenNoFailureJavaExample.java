@@ -4,8 +4,8 @@
 
 package jdocs.circuitbreaker;
 
-import akka.actor.AbstractActor;
-import akka.pattern.CircuitBreaker;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.pattern.CircuitBreaker;
 import java.time.Duration;
 
 import java.util.Optional;

@@ -5,22 +5,23 @@
 package docs.extension
 
 //#imports
-import akka.actor.ActorSystem
-import akka.actor.Extension
-import akka.actor.ExtensionId
-import akka.actor.ExtensionIdProvider
-import akka.actor.ExtendedActorSystem
+import org.apache.pekko
+import pekko.actor.ActorSystem
+import pekko.actor.Extension
+import pekko.actor.ExtensionId
+import pekko.actor.ExtensionIdProvider
+import pekko.actor.ExtendedActorSystem
 
 import scala.concurrent.duration.Duration
 import com.typesafe.config.Config
 import java.util.concurrent.TimeUnit
 
-import akka.actor.ClassicActorSystemProvider
+import pekko.actor.ClassicActorSystemProvider
 
 //#imports
 
-import akka.actor.Actor
-import akka.testkit.AkkaSpec
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.testkit.AkkaSpec
 
 //#extension
 class SettingsImpl(config: Config) extends Extension {

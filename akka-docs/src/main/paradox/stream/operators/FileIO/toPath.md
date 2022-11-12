@@ -6,7 +6,7 @@ Create a sink which will write incoming `ByteString` s to a given file path.
 
 ## Signature
 
-@apidoc[FileIO.toPath](FileIO$) { scala="#toPath(f:java.nio.file.Path,options:Set[java.nio.file.OpenOption],startPosition:Long):akka.stream.scaladsl.Sink[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#toPath(java.nio.file.Path,java.util.Set,long)" }
+@apidoc[FileIO.toPath](FileIO$) { scala="#toPath(f:java.nio.file.Path,options:Set[java.nio.file.OpenOption],startPosition:Long):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#toPath(java.nio.file.Path,java.util.Set,long)" }
 
 
 ## Description

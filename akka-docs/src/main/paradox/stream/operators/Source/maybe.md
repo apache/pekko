@@ -6,7 +6,7 @@ Create a source that emits once the materialized @scala[`Promise`] @java[`Comple
 
 ## Signature
 
-@apidoc[Source.maybe](Source$) { scala="#maybe[T]:akka.stream.scaladsl.Source[T,scala.concurrent.Promise[Option[T]]]" java="#maybe()" }
+@apidoc[Source.maybe](Source$) { scala="#maybe[T]:org.apache.pekko.stream.scaladsl.Source[T,scala.concurrent.Promise[Option[T]]]" java="#maybe()" }
 
 
 ## Description

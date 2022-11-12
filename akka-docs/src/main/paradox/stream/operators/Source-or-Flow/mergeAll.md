@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.mergeAll](Source) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[akka.stream.Graph[akka.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
-@apidoc[Flow.mergeAll](Flow) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[akka.stream.Graph[akka.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
+@apidoc[Source.mergeAll](Source) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
+@apidoc[Flow.mergeAll](Flow) { scala="#mergeAll[U&gt;:Out,M](those:immutable.Seq[org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M]],eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergeAll(java.util.List,boolean)" }
 
 ## Description
 
@@ -15,7 +15,7 @@ Merge multiple sources. Picks elements randomly if all sources has elements read
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeAllSpec.scala) { #merge-all }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeAllSpec.scala) { #merge-all }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #merge-all }

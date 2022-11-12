@@ -6,8 +6,8 @@ After completion of the original upstream the elements of the given source will 
 
 ## Signature
 
-@apidoc[Source.concat](Source) { scala="#concatLazy[U&gt;:Out,Mat2](that:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(akka.stream.Graph)" }
-@apidoc[Flow.concat](Flow) { scala="#concatLazy[U&gt;:Out,Mat2](that:akka.stream.Graph[akka.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(akka.stream.Graph)" }
+@apidoc[Source.concat](Source) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.concat](Flow) { scala="#concatLazy[U&gt;:Out,Mat2](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],Mat2]):FlowOps.this.Repr[U]" java="#concatLazy(org.apache.pekko.stream.Graph)" }
 
 
 ## Description
@@ -22,7 +22,7 @@ If materialized values needs to be collected `concatLazyMat` is available.
 
 ## Example
 Scala
-:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowConcatSpec.scala) { #concatLazy }
+:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatSpec.scala) { #concatLazy }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #concatLazy }

@@ -4,29 +4,29 @@
 
 package jdocs.io.japi;
 
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 // #imports
 import java.net.InetSocketAddress;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.actor.AbstractActor;
-import akka.io.Tcp;
-import akka.io.Tcp.Bound;
-import akka.io.Tcp.CommandFailed;
-import akka.io.Tcp.Connected;
-import akka.io.Tcp.ConnectionClosed;
-import akka.io.Tcp.Received;
-import akka.io.TcpMessage;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.io.Tcp;
+import org.apache.pekko.io.Tcp.Bound;
+import org.apache.pekko.io.Tcp.CommandFailed;
+import org.apache.pekko.io.Tcp.Connected;
+import org.apache.pekko.io.Tcp.ConnectionClosed;
+import org.apache.pekko.io.Tcp.Received;
+import org.apache.pekko.io.TcpMessage;
+import org.apache.pekko.util.ByteString;
 // #imports
 
-import akka.testkit.AkkaSpec;
+import org.apache.pekko.testkit.AkkaSpec;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

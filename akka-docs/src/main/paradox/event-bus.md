@@ -1,11 +1,11 @@
 # Classic Event Bus
 
 Originally conceived as a way to send messages to groups of actors, the
-@scala[@scaladoc[EventBus](akka.event.EventBus)]@java[@javadoc[EventBus](akka.event.japi.EventBus)] has been generalized into a set of @scala[composable traits] @java[abstract base classes]
+@scala[@scaladoc[EventBus](pekko.event.EventBus)]@java[@javadoc[EventBus](pekko.event.japi.EventBus)] has been generalized into a set of @scala[composable traits] @java[abstract base classes]
 implementing a simple interface:
 
 Scala
-:  @@snip [EventBus.scala](/akka-actor/src/main/scala/akka/event/EventBus.scala) { #event-bus-api }
+:  @@snip [EventBus.scala](/akka-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) { #event-bus-api }
 
 Java
 :  @@snip [EventBusDocTest.java](/akka-docs/src/test/java/jdocs/event/EventBusDocTest.java) { #event-bus-api }
@@ -35,14 +35,14 @@ for any concrete implementation.
 
 The classifiers presented here are part of the Akka distribution, but rolling
 your own in case you do not find a perfect match is not difficult, check the
-implementation of the existing ones on @extref[github](github:akka-actor/src/main/scala/akka/event/EventBus.scala) 
+implementation of the existing ones on @extref[github](github:akka-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) 
 
 ### Lookup Classification
 
 The simplest classification is just to extract an arbitrary classifier from
 each event and maintaining a set of subscribers for each possible classifier.
 This can be compared to tuning in on a radio station. The @scala[trait
-@scaladoc[LookupClassification](akka.event.LookupClassification)]@java[abstract class @scaladoc[LookupEventBus](akka.event.japi.LookupEventBus)] is still generic in that it abstracts over how to
+@scaladoc[LookupClassification](pekko.event.LookupClassification)]@java[abstract class @scaladoc[LookupEventBus](org.apache.pekko.event.japi.LookupEventBus)] is still generic in that it abstracts over how to
 compare subscribers and how exactly to classify them.
 
 The necessary methods to be implemented are illustrated with the following example:
@@ -207,7 +207,7 @@ stream for logging: these are the handlers which are configured for example in
 
 ```text
 akka {
-  loggers = ["akka.event.Logging$DefaultLogger"]
+  loggers = ["org.apache.pekko.event.Logging$DefaultLogger"]
 }
 ```
 

@@ -5,7 +5,7 @@
 package sbt
 import Keys.baseDirectory
 
-import akka.ProjectFileIgnoreSupport
+import org.apache.pekko.ProjectFileIgnoreSupport
 import sbt.Keys.unmanagedSources
 
 trait ScalafixSupport {

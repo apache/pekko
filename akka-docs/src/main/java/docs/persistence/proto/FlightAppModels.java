@@ -10,17 +10,17 @@ package docs.persistence.proto;
 public final class FlightAppModels {
   private FlightAppModels() {}
   public static void registerAllExtensions(
-      akka.protobufv3.internal.ExtensionRegistryLite registry) {
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
   }
 
   public static void registerAllExtensions(
-      akka.protobufv3.internal.ExtensionRegistry registry) {
+      org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
     registerAllExtensions(
-        (akka.protobufv3.internal.ExtensionRegistryLite) registry);
+        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
   public interface SeatReservedOrBuilder extends
       // @@protoc_insertion_point(interface_extends:docs.persistence.SeatReserved)
-      akka.protobufv3.internal.MessageOrBuilder {
+      org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string letter = 1;</code>
@@ -36,7 +36,7 @@ public final class FlightAppModels {
      * <code>required string letter = 1;</code>
      * @return The bytes for letter.
      */
-    akka.protobufv3.internal.ByteString
+    org.apache.pekko.protobufv3.internal.ByteString
         getLetterBytes();
 
     /**
@@ -76,19 +76,19 @@ public final class FlightAppModels {
      * <code>optional string seatType = 3;</code>
      * @return The bytes for seatType.
      */
-    akka.protobufv3.internal.ByteString
+    org.apache.pekko.protobufv3.internal.ByteString
         getSeatTypeBytes();
   }
   /**
    * Protobuf type {@code docs.persistence.SeatReserved}
    */
   public  static final class SeatReserved extends
-      akka.protobufv3.internal.GeneratedMessageV3 implements
+      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:docs.persistence.SeatReserved)
       SeatReservedOrBuilder {
   private static final long serialVersionUID = 0L;
     // Use SeatReserved.newBuilder() to construct.
-    private SeatReserved(akka.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private SeatReserved(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
     private SeatReserved() {
@@ -99,26 +99,26 @@ public final class FlightAppModels {
     @java.lang.Override
     @SuppressWarnings({"unused"})
     protected java.lang.Object newInstance(
-        akka.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter unused) {
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.UnusedPrivateParameter unused) {
       return new SeatReserved();
     }
 
     @java.lang.Override
-    public final akka.protobufv3.internal.UnknownFieldSet
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
     getUnknownFields() {
       return this.unknownFields;
     }
     private SeatReserved(
-        akka.protobufv3.internal.CodedInputStream input,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       this();
       if (extensionRegistry == null) {
         throw new java.lang.NullPointerException();
       }
       int mutable_bitField0_ = 0;
-      akka.protobufv3.internal.UnknownFieldSet.Builder unknownFields =
-          akka.protobufv3.internal.UnknownFieldSet.newBuilder();
+      org.apache.pekko.protobufv3.internal.UnknownFieldSet.Builder unknownFields =
+          org.apache.pekko.protobufv3.internal.UnknownFieldSet.newBuilder();
       try {
         boolean done = false;
         while (!done) {
@@ -128,7 +128,7 @@ public final class FlightAppModels {
               done = true;
               break;
             case 10: {
-              akka.protobufv3.internal.ByteString bs = input.readBytes();
+              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
               letter_ = bs;
               break;
@@ -139,7 +139,7 @@ public final class FlightAppModels {
               break;
             }
             case 26: {
-              akka.protobufv3.internal.ByteString bs = input.readBytes();
+              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
               seatType_ = bs;
               break;
@@ -153,23 +153,23 @@ public final class FlightAppModels {
             }
           }
         }
-      } catch (akka.protobufv3.internal.InvalidProtocolBufferException e) {
+      } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new akka.protobufv3.internal.InvalidProtocolBufferException(
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
             e).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
-    public static final akka.protobufv3.internal.Descriptors.Descriptor
+    public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
       return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
     }
 
     @java.lang.Override
-    protected akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+    protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
@@ -195,8 +195,8 @@ public final class FlightAppModels {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        akka.protobufv3.internal.ByteString bs = 
-            (akka.protobufv3.internal.ByteString) ref;
+        org.apache.pekko.protobufv3.internal.ByteString bs = 
+            (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           letter_ = s;
@@ -208,17 +208,17 @@ public final class FlightAppModels {
      * <code>required string letter = 1;</code>
      * @return The bytes for letter.
      */
-    public akka.protobufv3.internal.ByteString
+    public org.apache.pekko.protobufv3.internal.ByteString
         getLetterBytes() {
       java.lang.Object ref = letter_;
       if (ref instanceof java.lang.String) {
-        akka.protobufv3.internal.ByteString b = 
-            akka.protobufv3.internal.ByteString.copyFromUtf8(
+        org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         letter_ = b;
         return b;
       } else {
-        return (akka.protobufv3.internal.ByteString) ref;
+        return (org.apache.pekko.protobufv3.internal.ByteString) ref;
       }
     }
 
@@ -265,8 +265,8 @@ public final class FlightAppModels {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        akka.protobufv3.internal.ByteString bs = 
-            (akka.protobufv3.internal.ByteString) ref;
+        org.apache.pekko.protobufv3.internal.ByteString bs = 
+            (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
           seatType_ = s;
@@ -282,17 +282,17 @@ public final class FlightAppModels {
      * <code>optional string seatType = 3;</code>
      * @return The bytes for seatType.
      */
-    public akka.protobufv3.internal.ByteString
+    public org.apache.pekko.protobufv3.internal.ByteString
         getSeatTypeBytes() {
       java.lang.Object ref = seatType_;
       if (ref instanceof java.lang.String) {
-        akka.protobufv3.internal.ByteString b = 
-            akka.protobufv3.internal.ByteString.copyFromUtf8(
+        org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
         seatType_ = b;
         return b;
       } else {
-        return (akka.protobufv3.internal.ByteString) ref;
+        return (org.apache.pekko.protobufv3.internal.ByteString) ref;
       }
     }
 
@@ -316,16 +316,16 @@ public final class FlightAppModels {
     }
 
     @java.lang.Override
-    public void writeTo(akka.protobufv3.internal.CodedOutputStream output)
+    public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        akka.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, letter_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, letter_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeUInt32(2, row_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        akka.protobufv3.internal.GeneratedMessageV3.writeString(output, 3, seatType_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 3, seatType_);
       }
       unknownFields.writeTo(output);
     }
@@ -337,14 +337,14 @@ public final class FlightAppModels {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += akka.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, letter_);
+        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, letter_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += akka.protobufv3.internal.CodedOutputStream
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
           .computeUInt32Size(2, row_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += akka.protobufv3.internal.GeneratedMessageV3.computeStringSize(3, seatType_);
+        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(3, seatType_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -406,71 +406,71 @@ public final class FlightAppModels {
 
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         java.nio.ByteBuffer data)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         java.nio.ByteBuffer data,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        akka.protobufv3.internal.ByteString data)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        org.apache.pekko.protobufv3.internal.ByteString data)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        akka.protobufv3.internal.ByteString data,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        org.apache.pekko.protobufv3.internal.ByteString data,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(byte[] data)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         byte[] data,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws akka.protobufv3.internal.InvalidProtocolBufferException {
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         java.io.InputStream input,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseDelimitedFrom(
         java.io.InputStream input,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        akka.protobufv3.internal.CodedInputStream input)
+        org.apache.pekko.protobufv3.internal.CodedInputStream input)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        akka.protobufv3.internal.CodedInputStream input,
-        akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        org.apache.pekko.protobufv3.internal.CodedInputStream input,
+        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return akka.protobufv3.internal.GeneratedMessageV3
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
@@ -490,7 +490,7 @@ public final class FlightAppModels {
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        akka.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -498,16 +498,16 @@ public final class FlightAppModels {
      * Protobuf type {@code docs.persistence.SeatReserved}
      */
     public static final class Builder extends
-        akka.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
         // @@protoc_insertion_point(builder_implements:docs.persistence.SeatReserved)
         docs.persistence.proto.FlightAppModels.SeatReservedOrBuilder {
-      public static final akka.protobufv3.internal.Descriptors.Descriptor
+      public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
         return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
       }
 
       @java.lang.Override
-      protected akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -520,12 +520,12 @@ public final class FlightAppModels {
       }
 
       private Builder(
-          akka.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
+          org.apache.pekko.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (akka.protobufv3.internal.GeneratedMessageV3
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
         }
       }
@@ -542,7 +542,7 @@ public final class FlightAppModels {
       }
 
       @java.lang.Override
-      public akka.protobufv3.internal.Descriptors.Descriptor
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
         return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
       }
@@ -589,34 +589,34 @@ public final class FlightAppModels {
       }
       @java.lang.Override
       public Builder setField(
-          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
       @java.lang.Override
       public Builder clearField(
-          akka.protobufv3.internal.Descriptors.FieldDescriptor field) {
+          org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
       @java.lang.Override
       public Builder clearOneof(
-          akka.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
+          org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
       @java.lang.Override
       public Builder setRepeatedField(
-          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
       @java.lang.Override
       public Builder addRepeatedField(
-          akka.protobufv3.internal.Descriptors.FieldDescriptor field,
+          org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
       @java.lang.Override
-      public Builder mergeFrom(akka.protobufv3.internal.Message other) {
+      public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
         if (other instanceof docs.persistence.proto.FlightAppModels.SeatReserved) {
           return mergeFrom((docs.persistence.proto.FlightAppModels.SeatReserved)other);
         } else {
@@ -658,13 +658,13 @@ public final class FlightAppModels {
 
       @java.lang.Override
       public Builder mergeFrom(
-          akka.protobufv3.internal.CodedInputStream input,
-          akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
         docs.persistence.proto.FlightAppModels.SeatReserved parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (akka.protobufv3.internal.InvalidProtocolBufferException e) {
+        } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
           parsedMessage = (docs.persistence.proto.FlightAppModels.SeatReserved) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
@@ -691,8 +691,8 @@ public final class FlightAppModels {
       public java.lang.String getLetter() {
         java.lang.Object ref = letter_;
         if (!(ref instanceof java.lang.String)) {
-          akka.protobufv3.internal.ByteString bs =
-              (akka.protobufv3.internal.ByteString) ref;
+          org.apache.pekko.protobufv3.internal.ByteString bs =
+              (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
             letter_ = s;
@@ -706,17 +706,17 @@ public final class FlightAppModels {
        * <code>required string letter = 1;</code>
        * @return The bytes for letter.
        */
-      public akka.protobufv3.internal.ByteString
+      public org.apache.pekko.protobufv3.internal.ByteString
           getLetterBytes() {
         java.lang.Object ref = letter_;
         if (ref instanceof String) {
-          akka.protobufv3.internal.ByteString b = 
-              akka.protobufv3.internal.ByteString.copyFromUtf8(
+          org.apache.pekko.protobufv3.internal.ByteString b = 
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           letter_ = b;
           return b;
         } else {
-          return (akka.protobufv3.internal.ByteString) ref;
+          return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
       /**
@@ -750,7 +750,7 @@ public final class FlightAppModels {
        * @return This builder for chaining.
        */
       public Builder setLetterBytes(
-          akka.protobufv3.internal.ByteString value) {
+          org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -820,8 +820,8 @@ public final class FlightAppModels {
       public java.lang.String getSeatType() {
         java.lang.Object ref = seatType_;
         if (!(ref instanceof java.lang.String)) {
-          akka.protobufv3.internal.ByteString bs =
-              (akka.protobufv3.internal.ByteString) ref;
+          org.apache.pekko.protobufv3.internal.ByteString bs =
+              (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
             seatType_ = s;
@@ -839,17 +839,17 @@ public final class FlightAppModels {
        * <code>optional string seatType = 3;</code>
        * @return The bytes for seatType.
        */
-      public akka.protobufv3.internal.ByteString
+      public org.apache.pekko.protobufv3.internal.ByteString
           getSeatTypeBytes() {
         java.lang.Object ref = seatType_;
         if (ref instanceof String) {
-          akka.protobufv3.internal.ByteString b = 
-              akka.protobufv3.internal.ByteString.copyFromUtf8(
+          org.apache.pekko.protobufv3.internal.ByteString b = 
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
           seatType_ = b;
           return b;
         } else {
-          return (akka.protobufv3.internal.ByteString) ref;
+          return (org.apache.pekko.protobufv3.internal.ByteString) ref;
         }
       }
       /**
@@ -895,7 +895,7 @@ public final class FlightAppModels {
        * @return This builder for chaining.
        */
       public Builder setSeatTypeBytes(
-          akka.protobufv3.internal.ByteString value) {
+          org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -906,13 +906,13 @@ public final class FlightAppModels {
       }
       @java.lang.Override
       public final Builder setUnknownFields(
-          final akka.protobufv3.internal.UnknownFieldSet unknownFields) {
+          final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
       @java.lang.Override
       public final Builder mergeUnknownFields(
-          final akka.protobufv3.internal.UnknownFieldSet unknownFields) {
+          final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
       }
 
@@ -930,23 +930,23 @@ public final class FlightAppModels {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final akka.protobufv3.internal.Parser<SeatReserved>
-        PARSER = new akka.protobufv3.internal.AbstractParser<SeatReserved>() {
+    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<SeatReserved>
+        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<SeatReserved>() {
       @java.lang.Override
       public SeatReserved parsePartialFrom(
-          akka.protobufv3.internal.CodedInputStream input,
-          akka.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws akka.protobufv3.internal.InvalidProtocolBufferException {
+          org.apache.pekko.protobufv3.internal.CodedInputStream input,
+          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return new SeatReserved(input, extensionRegistry);
       }
     };
 
-    public static akka.protobufv3.internal.Parser<SeatReserved> parser() {
+    public static org.apache.pekko.protobufv3.internal.Parser<SeatReserved> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public akka.protobufv3.internal.Parser<SeatReserved> getParserForType() {
+    public org.apache.pekko.protobufv3.internal.Parser<SeatReserved> getParserForType() {
       return PARSER;
     }
 
@@ -957,17 +957,17 @@ public final class FlightAppModels {
 
   }
 
-  private static final akka.protobufv3.internal.Descriptors.Descriptor
+  private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
     internal_static_docs_persistence_SeatReserved_descriptor;
   private static final 
-    akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_docs_persistence_SeatReserved_fieldAccessorTable;
 
-  public static akka.protobufv3.internal.Descriptors.FileDescriptor
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static  akka.protobufv3.internal.Descriptors.FileDescriptor
+  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -976,14 +976,14 @@ public final class FlightAppModels {
       "\030\002 \002(\r\022\020\n\010seatType\030\003 \001(\tB\032\n\026docs.persist" +
       "ence.protoH\001"
     };
-    descriptor = akka.protobufv3.internal.Descriptors.FileDescriptor
+    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
-        new akka.protobufv3.internal.Descriptors.FileDescriptor[] {
+        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
         });
     internal_static_docs_persistence_SeatReserved_descriptor =
       getDescriptor().getMessageTypes().get(0);
     internal_static_docs_persistence_SeatReserved_fieldAccessorTable = new
-      akka.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_docs_persistence_SeatReserved_descriptor,
         new java.lang.String[] { "Letter", "Row", "SeatType", });
   }

@@ -6,8 +6,8 @@ Materializes to a `FlowMonitor` that monitors messages flowing through or comple
 
 ## Signature
 
-@apidoc[Source.monitor](Source) { scala="#monitor[Mat2]()(combine:(Mat,akka.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
-@apidoc[Flow.monitor](Flow) { scala="#monitor[Mat2]()(combine:(Mat,akka.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
+@apidoc[Source.monitor](Source) { scala="#monitor[Mat2]()(combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
+@apidoc[Flow.monitor](Flow) { scala="#monitor[Mat2]()(combine:(Mat,org.apache.pekko.stream.FlowMonitor[Out])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#monitor()" }
 
 
 ## Description

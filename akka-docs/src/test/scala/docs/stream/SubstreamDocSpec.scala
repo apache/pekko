@@ -4,9 +4,9 @@
 
 package docs.stream
 
-import akka.stream.scaladsl.{ Sink, Source }
-import akka.stream.SubstreamCancelStrategy
-import akka.testkit.AkkaSpec
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.stream.SubstreamCancelStrategy
+import org.apache.pekko.testkit.AkkaSpec
 
 class SubstreamDocSpec extends AkkaSpec {
 

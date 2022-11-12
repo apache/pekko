@@ -4,14 +4,14 @@
 
 package docs.stream
 
-import akka.stream.scaladsl._
-import akka.stream.testkit.scaladsl._
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.testkit.scaladsl._
 
 import scala.util.Random
 import scala.math._
 import scala.concurrent.duration._
 import scala.collection.immutable
-import akka.testkit.{ AkkaSpec, TestLatch }
+import org.apache.pekko.testkit.{ AkkaSpec, TestLatch }
 
 import scala.concurrent.Await
 

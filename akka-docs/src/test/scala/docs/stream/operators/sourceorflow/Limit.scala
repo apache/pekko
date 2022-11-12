@@ -4,10 +4,10 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.typed.ActorSystem
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
 
 import scala.concurrent.Future
 

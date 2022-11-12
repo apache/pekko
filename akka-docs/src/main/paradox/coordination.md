@@ -85,7 +85,7 @@ Leases can be used for @ref[Split Brain Resolver](split-brain-resolver.md#lease)
 ## Implementing a lease
 
 Implementations should extend
-the @scala[`akka.coordination.lease.scaladsl.Lease`]@java[`akka.coordination.lease.javadsl.Lease`] 
+the @scala[`org.apache.pekko.coordination.lease.scaladsl.Lease`]@java[`org.apache.pekko.coordination.lease.javadsl.Lease`] 
 
 Scala
 :  @@snip [LeaseDocSpec.scala](/akka-docs/src/test/scala/docs/coordination/LeaseDocSpec.scala) { #lease-example }

@@ -8,7 +8,7 @@ Complete right away without ever emitting any elements.
 
 ## Signature
 
-@apidoc[Source.empty](Source$) { scala="#empty[T]:akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#empty()" java="#empty(java.lang.Class)" }
+@apidoc[Source.empty](Source$) { scala="#empty[T]:org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#empty()" java="#empty(java.lang.Class)" }
 
 
 ## Description

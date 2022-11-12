@@ -49,28 +49,28 @@ See @ref:[Migration hints](#migrating-from-akka-management-discovery-before-1-0-
 Loading the extension:
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/akka/discovery/CompileOnlySpec.scala) { #loading }
+:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #loading }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/akka/discovery/CompileOnlyTest.java) { #loading }
+:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #loading }
 
 A `Lookup` contains a mandatory `serviceName` and an optional `portName` and `protocol`. How these are interpreted is discovery 
 method dependent e.g.DNS does an A/AAAA record query if any of the fields are missing and an SRV query for a full look up:
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/akka/discovery/CompileOnlySpec.scala) { #basic }
+:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #basic }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/akka/discovery/CompileOnlyTest.java) { #basic }
+:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #basic }
 
 
 `portName` and `protocol` are optional and their meaning is interpreted by the method.
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/akka/discovery/CompileOnlySpec.scala) { #full }
+:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #full }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/akka/discovery/CompileOnlyTest.java) { #full }
+:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #full }
 
 Port can be used when a service opens multiple ports e.g. a HTTP port and an Akka remoting port.
 
@@ -257,8 +257,8 @@ At least version `1.0.0` of any Akka Management module should be used if also us
 
 Migration steps:
 
-* Any custom discovery method should now implement `akka.discovery.ServiceDiscovery`
-* `discovery-method` now has to be a configuration location under `akka.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `akka.discovery.ServiceDiscovery`.
+* Any custom discovery method should now implement `org.apache.pekko.discovery.ServiceDiscovery`
+* `discovery-method` now has to be a configuration location under `akka.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `org.apache.pekko.discovery.ServiceDiscovery`.
   Previous versions allowed this to be a class name or a fully qualified config location e.g. `akka.discovery.kubernetes-api` rather than just `kubernetes-api`
 
 

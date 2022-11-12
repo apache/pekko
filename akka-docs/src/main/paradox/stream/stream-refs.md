@@ -75,7 +75,7 @@ wording to be rather useful.
 
 ### Source Refs - offering streaming data to a remote system
 
-A @scala[@scaladoc[`SourceRef`](akka.stream.SourceRef)]@java[@javadoc[`SourceRef`](akka.stream.SourceRef)]
+A @scala[@scaladoc[`SourceRef`](pekko.stream.SourceRef)]@java[@javadoc[`SourceRef`](pekko.stream.SourceRef)]
 can be offered to a remote actor system in order for it to consume some source of data that we have prepared
 locally. 
 
@@ -112,7 +112,7 @@ The process of preparing and running a `SourceRef`-powered distributed stream is
 
 ### Sink Refs - offering to receive streaming data from a remote system
 
-The dual of @scala[@scaladoc[`SourceRef`](akka.stream.SinkRef)]@java[@javadoc[`SourceRef`](akka.stream.SinkRef)]s.
+The dual of @scala[@scaladoc[`SourceRef`](pekko.stream.SinkRef)]@java[@javadoc[`SourceRef`](pekko.stream.SinkRef)]s.
 
 They can be used to offer the other side the capability to 
 send to the *origin* side data in a streaming, flow-controlled fashion. The origin here allocates a `Sink`,
@@ -182,7 +182,7 @@ into your own actor message classes.
 When @ref[Akka Jackson](../serialization-jackson.md) is used, serialization of wrapped `SourceRef` and `SinkRef` 
 will work out of the box.
  
-If you are using some other form of serialization you will need to use the @apidoc[akka.stream.StreamRefResolver] extension 
+If you are using some other form of serialization you will need to use the @apidoc[stream.StreamRefResolver] extension 
 from your serializer to get the `SourceRef` and `SinkRef`. The extension provides the methods `toSerializationFormat(sink or source)`
 to transform from refs to string and `resolve{Sink,Source}Ref(String)` to resolve refs from strings.
 

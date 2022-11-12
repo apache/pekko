@@ -6,7 +6,7 @@ Materialize an `ActorRef` of the classic actors API; sending messages to it will
 
 ## Signature
 
-@apidoc[Source.actorRefWithBackpressure](Source$) { scala="#actorRefWithBackpressure[T](ackMessage:Any,completionMatcher:PartialFunction[Any,akka.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable]):akka.stream.scaladsl.Source[T,akka.actor.ActorRef]" java="#actorRefWithBackpressure(java.lang.Object,akka.japi.function.Function,akka.japi.function.Function)" }
+@apidoc[Source.actorRefWithBackpressure](Source$) { scala="#actorRefWithBackpressure[T](ackMessage:Any,completionMatcher:PartialFunction[Any,org.apache.pekko.stream.CompletionStrategy],failureMatcher:PartialFunction[Any,Throwable]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.actor.ActorRef]" java="#actorRefWithBackpressure(java.lang.Object,org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

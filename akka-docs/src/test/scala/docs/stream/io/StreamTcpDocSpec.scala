@@ -6,14 +6,14 @@ package docs.stream.io
 
 import java.util.concurrent.atomic.AtomicReference
 
-import akka.stream.scaladsl.Tcp._
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
-import akka.testkit.TestProbe
-import akka.util.ByteString
+import org.apache.pekko.stream.scaladsl.Tcp._
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.TestProbe
+import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Future
-import akka.testkit.SocketUtil
+import org.apache.pekko.testkit.SocketUtil
 import scala.concurrent.ExecutionContext
 
 class StreamTcpDocSpec extends AkkaSpec {
@@ -39,7 +39,7 @@ class StreamTcpDocSpec extends AkkaSpec {
     {
       val (host, port) = SocketUtil.temporaryServerHostnameAndPort()
       // #echo-server-simple-handle
-      import akka.stream.scaladsl.Framing
+      import org.apache.pekko.stream.scaladsl.Framing
 
       val connections: Source[IncomingConnection, Future[ServerBinding]] =
         Tcp(system).bind(host, port)
@@ -64,7 +64,7 @@ class StreamTcpDocSpec extends AkkaSpec {
     val connections = Tcp(system).bind(localhost.getHostString, localhost.getPort)
     val serverProbe = TestProbe()
 
-    import akka.stream.scaladsl.Framing
+    import org.apache.pekko.stream.scaladsl.Framing
     val binding =
       // #welcome-banner-chat-server
       connections
@@ -98,7 +98,7 @@ class StreamTcpDocSpec extends AkkaSpec {
     // make sure server is started before we connect
     binding.futureValue
 
-    import akka.stream.scaladsl.Framing
+    import org.apache.pekko.stream.scaladsl.Framing
 
     val input = new AtomicReference("Hello world" :: "What a lovely day" :: Nil)
     def readLine(prompt: String): String = {

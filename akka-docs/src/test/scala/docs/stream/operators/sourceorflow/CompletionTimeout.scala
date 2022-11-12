@@ -4,9 +4,9 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.Done
-import akka.actor.ActorSystem
-import akka.stream.scaladsl.{ Flow, Sink, Source }
+import org.apache.pekko.Done
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
 
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContextExecutor, Future }

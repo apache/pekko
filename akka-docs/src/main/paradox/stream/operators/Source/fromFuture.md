@@ -6,7 +6,7 @@ Deprecated by @ref[`Source.future`](future.md).
 
 ## Signature
 
-@apidoc[Source.fromFuture](Source$) { scala="#fromFuture[T](future:scala.concurrent.Future[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" }
+@apidoc[Source.fromFuture](Source$) { scala="#fromFuture[T](future:scala.concurrent.Future[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" }
 
 
 ## Description

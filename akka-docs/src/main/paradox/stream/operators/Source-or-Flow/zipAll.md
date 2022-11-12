@@ -6,8 +6,8 @@ Combines elements from two sources into @scala[tuples] @java[*Pair*] handling ea
 
 ## Signature
 
-@apidoc[Source.zipAll](Source) { scala="#zipAll[U,A&gt;:Out](that:akka.stream.Graph[akka.stream.SourceShape[U],_],thisElem:A,thatElem:U):FlowOps.this.Repr[(A,U)]" java="#zipAll(akka.stream.Graph,java.lang.Object,java.lang.Object)" }
-@apidoc[Flow.zipAll](Flow) { scala="#zipAll[U,A&gt;:Out](that:akka.stream.Graph[akka.stream.SourceShape[U],_],thisElem:A,thatElem:U):FlowOps.this.Repr[(A,U)]" java="#zipAll(akka.stream.Graph,java.lang.Object,java.lang.Object)" }
+@apidoc[Source.zipAll](Source) { scala="#zipAll[U,A&gt;:Out](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_],thisElem:A,thatElem:U):FlowOps.this.Repr[(A,U)]" java="#zipAll(org.apache.pekko.stream.Graph,java.lang.Object,java.lang.Object)" }
+@apidoc[Flow.zipAll](Flow) { scala="#zipAll[U,A&gt;:Out](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_],thisElem:A,thatElem:U):FlowOps.this.Repr[(A,U)]" java="#zipAll(org.apache.pekko.stream.Graph,java.lang.Object,java.lang.Object)" }
 
 
 ## Description

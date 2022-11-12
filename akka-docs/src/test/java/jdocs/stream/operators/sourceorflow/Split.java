@@ -4,11 +4,11 @@
 
 package jdocs.stream.operators.sourceorflow;
 
-import akka.actor.ActorSystem;
-import akka.japi.Pair;
-import akka.japi.function.Function;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.japi.function.Function;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -6,8 +6,8 @@ Drop elements as long as a predicate function return true for the element
 
 ## Signature
 
-@apidoc[Source.dropWhile](Source) { scala="#dropWhile(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropWhile(akka.japi.function.Predicate)" }
-@apidoc[Flow.dropWhile](Flow) { scala="#dropWhile(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropWhile(akka.japi.function.Predicate)" }
+@apidoc[Source.dropWhile](Source) { scala="#dropWhile(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropWhile(org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.dropWhile](Flow) { scala="#dropWhile(p:Out=&gt;Boolean):FlowOps.this.Repr[Out]" java="#dropWhile(org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description

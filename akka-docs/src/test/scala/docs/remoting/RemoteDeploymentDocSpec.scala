@@ -4,11 +4,12 @@
 
 package docs.remoting
 
-import akka.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem }
-import akka.testkit.{ AkkaSpec, ImplicitSender }
+import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem }
+import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender }
 //#import
-import akka.actor.{ Address, AddressFromURIString, Deploy, Props }
-import akka.remote.RemoteScope
+import org.apache.pekko
+import pekko.actor.{ Address, AddressFromURIString, Deploy, Props }
+import pekko.remote.RemoteScope
 //#import
 
 object RemoteDeploymentDocSpec {

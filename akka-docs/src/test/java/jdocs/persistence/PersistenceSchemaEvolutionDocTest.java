@@ -13,10 +13,10 @@ import java.nio.charset.StandardCharsets;
 
 import spray.json.JsObject;
 
-import akka.persistence.journal.EventAdapter;
-import akka.persistence.journal.EventSeq;
-import akka.protobufv3.internal.InvalidProtocolBufferException;
-import akka.serialization.SerializerWithStringManifest;
+import org.apache.pekko.persistence.journal.EventAdapter;
+import org.apache.pekko.persistence.journal.EventSeq;
+import org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException;
+import org.apache.pekko.serialization.SerializerWithStringManifest;
 
 public class PersistenceSchemaEvolutionDocTest {
 

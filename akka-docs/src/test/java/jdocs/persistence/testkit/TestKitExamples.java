@@ -4,21 +4,21 @@
 
 package jdocs.persistence.testkit;
 
-import akka.persistence.testkit.DeleteEvents;
-import akka.persistence.testkit.DeleteSnapshotByMeta;
-import akka.persistence.testkit.DeleteSnapshotsByCriteria;
-import akka.persistence.testkit.JournalOperation;
-import akka.persistence.testkit.ProcessingPolicy;
-import akka.persistence.testkit.ProcessingResult;
-import akka.persistence.testkit.ProcessingSuccess;
-import akka.persistence.testkit.ReadEvents;
-import akka.persistence.testkit.ReadSeqNum;
-import akka.persistence.testkit.ReadSnapshot;
-import akka.persistence.testkit.Reject;
-import akka.persistence.testkit.SnapshotOperation;
-import akka.persistence.testkit.StorageFailure;
-import akka.persistence.testkit.WriteEvents;
-import akka.persistence.testkit.WriteSnapshot;
+import org.apache.pekko.persistence.testkit.DeleteEvents;
+import org.apache.pekko.persistence.testkit.DeleteSnapshotByMeta;
+import org.apache.pekko.persistence.testkit.DeleteSnapshotsByCriteria;
+import org.apache.pekko.persistence.testkit.JournalOperation;
+import org.apache.pekko.persistence.testkit.ProcessingPolicy;
+import org.apache.pekko.persistence.testkit.ProcessingResult;
+import org.apache.pekko.persistence.testkit.ProcessingSuccess;
+import org.apache.pekko.persistence.testkit.ReadEvents;
+import org.apache.pekko.persistence.testkit.ReadSeqNum;
+import org.apache.pekko.persistence.testkit.ReadSnapshot;
+import org.apache.pekko.persistence.testkit.Reject;
+import org.apache.pekko.persistence.testkit.SnapshotOperation;
+import org.apache.pekko.persistence.testkit.StorageFailure;
+import org.apache.pekko.persistence.testkit.WriteEvents;
+import org.apache.pekko.persistence.testkit.WriteSnapshot;
 
 public class TestKitExamples {
 

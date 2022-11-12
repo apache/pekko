@@ -2,7 +2,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi._
@@ -36,8 +36,8 @@ object OSGi {
       OsgiKeys.requireCapability := "osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version>=1.8))\"")
 
   val actor = osgiSettings ++ Seq(
-    OsgiKeys.exportPackage := Seq("akka*"),
-    OsgiKeys.privatePackage := Seq("akka.osgi.impl"),
+    OsgiKeys.exportPackage := Seq("org.apache.pekko*"),
+    OsgiKeys.privatePackage := Seq("org.apache.pekko.osgi.impl"),
     // akka-actor packages are not imported, as contained in the CP
     OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
       "!sun.misc",
@@ -48,21 +48,22 @@ object OSGi {
     // dynamicImportPackage needed for loading classes defined in configuration
     OsgiKeys.dynamicImportPackage := Seq("*"))
 
-  val actorTyped = exports(Seq("akka.actor.typed.*"))
+  val actorTyped = exports(Seq("org.apache.pekko.actor.typed.*"))
 
-  val cluster = exports(Seq("akka.cluster.*"))
+  val cluster = exports(Seq("org.apache.pekko.cluster.*"))
 
-  val clusterTools = exports(Seq("akka.cluster.singleton.*", "akka.cluster.client.*", "akka.cluster.pubsub.*"))
+  val clusterTools = exports(Seq("org.apache.pekko.cluster.singleton.*", "org.apache.pekko.cluster.client.*",
+    "org.apache.pekko.cluster.pubsub.*"))
 
-  val clusterSharding = exports(Seq("akka.cluster.sharding.*"))
+  val clusterSharding = exports(Seq("org.apache.pekko.cluster.sharding.*"))
 
-  val clusterMetrics = exports(Seq("akka.cluster.metrics.*"), imports = Seq(kamonImport(), sigarImport()))
+  val clusterMetrics = exports(Seq("org.apache.pekko.cluster.metrics.*"), imports = Seq(kamonImport(), sigarImport()))
 
-  val distributedData = exports(Seq("akka.cluster.ddata.*"))
+  val distributedData = exports(Seq("org.apache.pekko.cluster.ddata.*"))
 
-  val osgi = exports(Seq("akka.osgi.*"))
+  val osgi = exports(Seq("org.apache.pekko.osgi.*"))
 
-  val protobuf = exports(Seq("akka.protobuf.*"))
+  val protobuf = exports(Seq("org.apache.pekko.protobuf.*"))
 
   val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(
@@ -71,46 +72,46 @@ object OSGi {
       scalaVersion(scalaImport).value,
       configImport(),
       "*"),
-    OsgiKeys.exportPackage := Seq("akka.protobufv3.internal.*"),
+    OsgiKeys.exportPackage := Seq("org.apache.pekko.protobufv3.internal.*"),
     OsgiKeys.privatePackage := Seq("google.protobuf.*"))
 
-  val jackson = exports(Seq("akka.serialization.jackson.*"))
+  val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
 
-  val remote = exports(Seq("akka.remote.*"))
+  val remote = exports(Seq("org.apache.pekko.remote.*"))
 
   val stream =
     exports(
-      packages = Seq("akka.stream.*", "com.typesafe.sslconfig.akka.*"),
+      packages = Seq("org.apache.pekko.stream.*", "com.typesafe.sslconfig.pekko.*"),
       imports = Seq(
         scalaJava8CompatImport(),
         scalaParsingCombinatorImport(),
         sslConfigCoreImport("com.typesafe.sslconfig.ssl.*"),
         sslConfigCoreImport("com.typesafe.sslconfig.util.*"),
-        "!com.typesafe.sslconfig.akka.*"))
+        "!com.typesafe.sslconfig.pekko.*"))
 
-  val streamTestkit = exports(Seq("akka.stream.testkit.*"))
+  val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 
-  val slf4j = exports(Seq("akka.event.slf4j.*"))
+  val slf4j = exports(Seq("org.apache.pekko.event.slf4j.*"))
 
   val persistence = exports(
-    Seq("akka.persistence.*"),
+    Seq("org.apache.pekko.persistence.*"),
     imports = Seq(optionalResolution("org.fusesource.leveldbjni.*"), optionalResolution("org.iq80.leveldb.*")))
 
-  val persistenceTyped = exports(Seq("akka.persistence.typed.*"))
+  val persistenceTyped = exports(Seq("org.apache.pekko.persistence.typed.*"))
 
-  val persistenceQuery = exports(Seq("akka.persistence.query.*"))
+  val persistenceQuery = exports(Seq("org.apache.pekko.persistence.query.*"))
 
-  val testkit = exports(Seq("akka.testkit.*"))
+  val testkit = exports(Seq("org.apache.pekko.testkit.*"))
 
-  val discovery = exports(Seq("akka.discovery.*"))
+  val discovery = exports(Seq("org.apache.pekko.discovery.*"))
 
-  val coordination = exports(Seq("akka.coordination.*"))
+  val coordination = exports(Seq("org.apache.pekko.coordination.*"))
 
   val osgiOptionalImports = Seq(
     // needed because testkit is normally not used in the application bundle,
     // but it should still be included as transitive dependency and used by BundleDelegatingClassLoader
     // to be able to find reference.conf
-    "akka.testkit")
+    "org.apache.pekko.testkit")
 
   def exports(packages: Seq[String] = Seq(), imports: Seq[String] = Nil) =
     osgiSettings ++ Seq(
@@ -125,7 +126,7 @@ object OSGi {
       "!scala.util.parsing.*",
       scalaImport(scalaVersion),
       "*")
-  def akkaImport(packageName: String = "akka.*") = versionedImport(packageName, "2.6", "2.7")
+  def akkaImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "2.6", "2.7")
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
     val packageName = "scala.*"

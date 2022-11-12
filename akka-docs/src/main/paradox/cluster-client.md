@@ -29,7 +29,7 @@ version=AkkaVersion
 An actor system that is not part of the cluster can communicate with actors
 somewhere in the cluster via the @apidoc[ClusterClient], the client can run in an `ActorSystem` that is part of
 another cluster. It only needs to know the location of one (or more) nodes to use as initial
-contact points. It will establish a connection to a @apidoc[akka.cluster.client.ClusterReceptionist] somewhere in
+contact points. It will establish a connection to a @apidoc[cluster.client.ClusterReceptionist] somewhere in
 the cluster. It will monitor the connection to the receptionist and establish a new
 connection if the link goes down. When looking for a new receptionist it uses fresh
 contact points retrieved from the previous establishment, or periodically refreshed contacts,
@@ -50,18 +50,18 @@ within the same cluster. Similar functionality as the @apidoc[ClusterClient] is
 provided more efficiently by @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md) for actors that
 belong to the same cluster.
 
-The connecting system must have its `akka.actor.provider` set  to `remote` or `cluster` when using
+The connecting system must have its `org.apache.pekko.actor.provider` set  to `remote` or `cluster` when using
 the cluster client.
 
 The receptionist is supposed to be started on all nodes, or all nodes with a specified role,
-in the cluster. The receptionist can be started with the @apidoc[akka.cluster.client.ClusterReceptionist] extension
+in the cluster. The receptionist can be started with the @apidoc[cluster.client.ClusterReceptionist] extension
 or as an ordinary actor.
 
 You can send messages via the @apidoc[ClusterClient] to any actor in the cluster that is registered
-in the @apidoc[DistributedPubSubMediator] used by the @apidoc[akka.cluster.client.ClusterReceptionist].
+in the @apidoc[DistributedPubSubMediator] used by the @apidoc[cluster.client.ClusterReceptionist].
 The @apidoc[ClusterClientReceptionist] provides methods for registration of actors that
 should be reachable from the client. Messages are wrapped in `ClusterClient.Send`,
-@scala[@scaladoc[`ClusterClient.SendToAll`](akka.cluster.client.ClusterClient$)]@java[`ClusterClient.SendToAll`] or @scala[@scaladoc[`ClusterClient.Publish`](akka.cluster.client.ClusterClient$)]@java[`ClusterClient.Publish`].
+@scala[@scaladoc[`ClusterClient.SendToAll`](pekko.cluster.client.ClusterClient$)]@java[`ClusterClient.SendToAll`] or @scala[@scaladoc[`ClusterClient.Publish`](org.apache.pekko.cluster.client.ClusterClient$)]@java[`ClusterClient.Publish`].
 
 Both the @apidoc[ClusterClient] and the @apidoc[ClusterClientReceptionist] emit events that can be subscribed to.
 The @apidoc[ClusterClient] sends out notifications about the list of contact points received
@@ -93,9 +93,9 @@ what clients are connected to.
 Response messages from the destination actor are tunneled via the receptionist
 to avoid inbound connections from other cluster nodes to the client:
 
-* @scala[@scaladoc[`sender()`](akka.actor.Actor)]@java[@javadoc[`getSender()`](akka.actor.Actor)], as seen by the destination actor, is not the client itself,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)]@java[@javadoc[`getSender()`](pekko.actor.Actor)], as seen by the destination actor, is not the client itself,
   but the receptionist
-* @scala[@scaladoc[`sender()`](akka.actor.Actor)] @java[@javadoc[`getSender()`](akka.actor.Actor)] of the response messages, sent back from the destination and seen by the client,
+* @scala[@scaladoc[`sender()`](pekko.actor.Actor)] @java[@javadoc[`getSender()`](pekko.actor.Actor)] of the response messages, sent back from the destination and seen by the client,
   is `deadLetters`
 
 since the client should normally send subsequent messages via the @apidoc[ClusterClient].
@@ -117,34 +117,34 @@ On the cluster nodes, first start the receptionist. Note, it is recommended to l
 when the actor system is started by defining it in the `akka.extensions` configuration property:
 
 ```
-akka.extensions = ["akka.cluster.client.ClusterClientReceptionist"]
+akka.extensions = ["org.apache.pekko.cluster.client.ClusterClientReceptionist"]
 ```
 
 Next, register the actors that should be available for the client.
 
 Scala
-:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/client/ClusterClientSpec.scala) { #server }
+:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/client/ClusterClientSpec.scala) { #server }
 
 Java
-:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/akka/cluster/client/ClusterClientTest.java) { #server }
+:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/client/ClusterClientTest.java) { #server }
 
 On the client, you create the @apidoc[ClusterClient] actor and use it as a gateway for sending
 messages to the actors identified by their path (without address information) somewhere
 in the cluster.
 
 Scala
-:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/client/ClusterClientSpec.scala) { #client }
+:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/client/ClusterClientSpec.scala) { #client }
 
 Java
-:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/akka/cluster/client/ClusterClientTest.java) { #client }
+:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/client/ClusterClientTest.java) { #client }
 
 The `initialContacts` parameter is a @scala[`Set[ActorPath]`]@java[`Set<ActorPath>`], which can be created like this:
 
 Scala
-:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/client/ClusterClientSpec.scala) { #initialContacts }
+:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/client/ClusterClientSpec.scala) { #initialContacts }
 
 Java
-:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/akka/cluster/client/ClusterClientTest.java) { #initialContacts }
+:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/client/ClusterClientTest.java) { #initialContacts }
 
 You will probably define the address information of the initial contact points in configuration or system property.
 See also @ref:[Configuration](#cluster-client-config).
@@ -155,9 +155,9 @@ A more comprehensive sample is available in the tutorial named
 
 ## ClusterClientReceptionist Extension
 
-In the example above the receptionist is started and accessed with the `akka.cluster.client.ClusterClientReceptionist` extension.
+In the example above the receptionist is started and accessed with the `org.apache.pekko.cluster.client.ClusterClientReceptionist` extension.
 That is convenient and perfectly fine in most cases, but it can be good to know that it is possible to
-start the `akka.cluster.client.ClusterReceptionist` actor as an ordinary actor and you can have several
+start the `org.apache.pekko.cluster.client.ClusterReceptionist` actor as an ordinary actor and you can have several
 different receptionists at the same time, serving different types of clients.
 
 Note that the @apidoc[ClusterClientReceptionist] uses the @apidoc[DistributedPubSub] extension, which is described
@@ -178,31 +178,31 @@ receptionists), as they become available. The code illustrates subscribing to th
 initial state.
 
 Scala
-:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/client/ClusterClientSpec.scala) { #clientEventsListener }
+:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/client/ClusterClientSpec.scala) { #clientEventsListener }
 
 Java
-:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/akka/cluster/client/ClusterClientTest.java) { #clientEventsListener }
+:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/client/ClusterClientTest.java) { #clientEventsListener }
 
 Similarly we can have an actor that behaves in a similar fashion for learning what cluster clients are connected to a @apidoc[ClusterClientReceptionist]:
 
 Scala
-:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/akka/cluster/client/ClusterClientSpec.scala) { #receptionistEventsListener }
+:  @@snip [ClusterClientSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/client/ClusterClientSpec.scala) { #receptionistEventsListener }
 
 Java
-:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/akka/cluster/client/ClusterClientTest.java) { #receptionistEventsListener }
+:  @@snip [ClusterClientTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/client/ClusterClientTest.java) { #receptionistEventsListener }
 
 <a id="cluster-client-config"></a>
 ## Configuration
 
-The @apidoc[ClusterClientReceptionist] extension (or @apidoc[akka.cluster.client.ClusterReceptionistSettings]) can be configured
+The @apidoc[ClusterClientReceptionist] extension (or @apidoc[cluster.client.ClusterReceptionistSettings]) can be configured
 with the following properties:
 
 @@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #receptionist-ext-config }
 
 The following configuration properties are read by the @apidoc[ClusterClientSettings]
-when created with a @scala[@scaladoc[`ActorSystem`](akka.actor.ActorSystem)]@java[@javadoc[`ActorSystem`](akka.actor.ActorSystem)] parameter. It is also possible to amend the @apidoc[ClusterClientSettings]
+when created with a @scala[@scaladoc[`ActorSystem`](pekko.actor.ActorSystem)]@java[@javadoc[`ActorSystem`](pekko.actor.ActorSystem)] parameter. It is also possible to amend the @apidoc[ClusterClientSettings]
 or create it from another config section with the same layout as below. @apidoc[ClusterClientSettings] is
-a parameter to the @scala[@scaladoc[`ClusterClient.props`](akka.cluster.client.ClusterClient$)]@java[@javadoc[`ClusterClient.props`](akka.cluster.client.ClusterClient$)] factory method, i.e. each client can be configured
+a parameter to the @scala[@scaladoc[`ClusterClient.props`](pekko.cluster.client.ClusterClient$)]@java[@javadoc[`ClusterClient.props`](pekko.cluster.client.ClusterClient$)] factory method, i.e. each client can be configured
 with different settings if needed.
 
 @@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #cluster-client-config }

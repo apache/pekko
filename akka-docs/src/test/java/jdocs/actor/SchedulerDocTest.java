@@ -9,16 +9,16 @@ import java.time.Duration;
 // #imports1
 
 // #imports2
-import akka.actor.Cancellable;
+import org.apache.pekko.actor.Cancellable;
 // #imports2
 
 import jdocs.AbstractJavaTest;
-import akka.actor.Props;
-import akka.actor.AbstractActor;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.testkit.AkkaSpec;
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 import org.junit.*;
 
 public class SchedulerDocTest extends AbstractJavaTest {

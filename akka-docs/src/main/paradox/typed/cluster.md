@@ -44,30 +44,30 @@ which are exposed as event APIs.
 
 It does this through these references on the @apidoc[typed.Cluster$] extension:
 
-* `manager`: An @scala[@apidoc[typed.ActorRef]\[@apidoc[akka.cluster.typed.ClusterCommand](typed.ClusterCommand)\]]@java[@apidoc[typed.ActorRef]<@apidoc[akka.cluster.typed.ClusterCommand](typed.ClusterCommand)>] where a `ClusterCommand` is a command such as: @apidoc[Join], @apidoc[Leave] and @apidoc[Down]
-* `subscriptions`: An @scala[@apidoc[typed.ActorRef]\[@apidoc[akka.cluster.typed.ClusterStateSubscription](typed.ClusterStateSubscription)\]]@java[@apidoc[typed.ActorRef]<@apidoc[akka.cluster.typed.ClusterStateSubscription](typed.ClusterStateSubscription)>] where a `ClusterStateSubscription` is one of @apidoc[GetCurrentState] or @apidoc[Subscribe] and @apidoc[Unsubscribe] to cluster events like @apidoc[MemberRemoved](ClusterEvent.MemberRemoved)
+* `manager`: An @scala[@apidoc[typed.ActorRef]\[@apidoc[cluster.typed.ClusterCommand](typed.ClusterCommand)\]]@java[@apidoc[typed.ActorRef]<@apidoc[cluster.typed.ClusterCommand](typed.ClusterCommand)>] where a `ClusterCommand` is a command such as: @apidoc[Join], @apidoc[Leave] and @apidoc[Down]
+* `subscriptions`: An @scala[@apidoc[typed.ActorRef]\[@apidoc[cluster.typed.ClusterStateSubscription](typed.ClusterStateSubscription)\]]@java[@apidoc[typed.ActorRef]<@apidoc[cluster.typed.ClusterStateSubscription](typed.ClusterStateSubscription)>] where a `ClusterStateSubscription` is one of @apidoc[GetCurrentState] or @apidoc[Subscribe] and @apidoc[Unsubscribe] to cluster events like @apidoc[MemberRemoved](ClusterEvent.MemberRemoved)
 * `state`: The current @apidoc[CurrentClusterState](ClusterEvent.CurrentClusterState)
 
 All of the examples below assume the following imports:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-imports }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-imports }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-imports }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-imports }
 
 <a id="basic-cluster-configuration"></a>
 The minimum configuration required is to set a host/port for remoting and the `akka.actor.provider = "cluster"`.
 
-@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
+@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
 Accessing the @apidoc[typed.Cluster$] extension on each node:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-create }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-create }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-create }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-create }
 
 @@@ note
   
@@ -77,54 +77,54 @@ Java
 
 ### Joining and Leaving a Cluster 
 
-If not using configuration to specify @ref:[seed nodes to join](#joining), joining the cluster can be done programmatically via the @scala[@scaladoc[manager](akka.cluster.typed.Cluster#manager:akka.actor.typed.ActorRef[akka.cluster.typed.ClusterCommand])]@java[@javadoc[manager()](akka.cluster.typed.Cluster#manager())].
+If not using configuration to specify @ref:[seed nodes to join](#joining), joining the cluster can be done programmatically via the @scala[@scaladoc[manager](pekko.cluster.typed.Cluster#manager:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.cluster.typed.ClusterCommand])]@java[@javadoc[manager()](pekko.cluster.typed.Cluster#manager())].
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-join }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-join }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-join }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-join }
 
 @ref:[Leaving](#leaving) the cluster and @ref:[downing](#downing) a node are similar:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave }
 
 ### Cluster Subscriptions
 
-Cluster @scala[@scaladoc[subscriptions](akka.cluster.typed.Cluster#subscriptions:akka.actor.typed.ActorRef[akka.cluster.typed.ClusterStateSubscription])]@java[@javadoc[subscriptions()](akka.cluster.typed.Cluster#subscriptions())] can be used to receive messages when cluster state changes. For example, registering
+Cluster @scala[@scaladoc[subscriptions](pekko.cluster.typed.Cluster#subscriptions:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.cluster.typed.ClusterStateSubscription])]@java[@javadoc[subscriptions()](pekko.cluster.typed.Cluster#subscriptions())] can be used to receive messages when cluster state changes. For example, registering
 for all @apidoc[MemberEvent](ClusterEvent.MemberEvent)'s, then using the `manager` to have a node leave the cluster will result in events
 for the node going through the @ref:[Membership Lifecycle](cluster-membership.md#membership-lifecycle).
 
 This example subscribes to a @scala[`subscriber: ActorRef[MemberEvent]`]@java[`ActorRef<MemberEvent> subscriber`]:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-subscribe }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-subscribe }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-subscribe }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-subscribe }
 
 Then asking a node to leave:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave-example }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave-example }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave-example }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave-example }
 
 
 ### Cluster State
 
 Instead of subscribing to cluster events it can sometimes be convenient to only get the full membership state with
-@scala[@scaladoc[Cluster(system).state](akka.cluster.typed.Cluster#state:akka.cluster.ClusterEvent.CurrentClusterState)]@java[@javadoc[Cluster.get(system).state()](akka.cluster.typed.Cluster#state())]. Note that this state is not necessarily in sync with the events published to a
+@scala[@scaladoc[Cluster(system).state](pekko.cluster.typed.Cluster#state:org.apache.pekko.cluster.ClusterEvent.CurrentClusterState)]@java[@javadoc[Cluster.get(system).state()](pekko.cluster.typed.Cluster#state())]. Note that this state is not necessarily in sync with the events published to a
 cluster subscription.
 
 See @ref:[Cluster Membership](cluster-membership.md#member-events) more information on member events specifically.
 There are more types of change events, consult the API documentation
-of classes that extends @apidoc[akka.cluster.ClusterEvent.ClusterDomainEvent](ClusterEvent.ClusterDomainEvent) for details about the events.
+of classes that extends @apidoc[cluster.ClusterEvent.ClusterDomainEvent](ClusterEvent.ClusterDomainEvent) for details about the events.
  
 ## Cluster Membership API
 
@@ -199,10 +199,10 @@ Joining programmatically is useful when **dynamically discovering** other nodes
 at startup through an external tool or API.
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #join-seed-nodes }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #join-seed-nodes }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #join-seed-nodes }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #join-seed-nodes }
 
 The seed node address list has the same semantics as the configured `seed-nodes`, and the the underlying
 implementation of the process is the same, see @ref:[Joining configured seed nodes](#joining-configured-seed-nodes).
@@ -284,7 +284,7 @@ We recommend that you enable the @ref:[Split Brain Resolver](../split-brain-reso
 Akka Cluster module. You enable it with configuration:
 
 ```
-akka.cluster.downing-provider-class = "akka.cluster.sbr.SplitBrainResolverProvider"
+akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
 ```
 
 You should also consider the different available @ref:[downing strategies](../split-brain-resolver.md#strategies).
@@ -317,14 +317,14 @@ The node roles are defined in the configuration property named `akka.cluster.rol
 and typically defined in the start script as a system property or environment variable.
 
 The roles are part of the membership information in @apidoc[MemberEvent](ClusterEvent.MemberEvent) that you can subscribe to. The roles
-of the own node are available from the @scala[@scaladoc[selfMember](akka.cluster.typed.Cluster#selfMember:akka.cluster.Member)]@java[@javadoc[selfMember()](akka.cluster.typed.Cluster#selfMember())] and that can be used for conditionally starting certain
+of the own node are available from the @scala[@scaladoc[selfMember](pekko.cluster.typed.Cluster#selfMember:org.apache.pekko.cluster.Member)]@java[@javadoc[selfMember()](pekko.cluster.typed.Cluster#selfMember())] and that can be used for conditionally starting certain
 actors:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/akka/cluster/typed/BasicClusterExampleSpec.scala) { #hasRole }
+:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #hasRole }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/akka/cluster/typed/BasicClusterExampleTest.java) { #hasRole }
+:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #hasRole }
 
 ## Failure Detector
 
@@ -337,8 +337,8 @@ unreachable from the rest of the cluster. Please see:
  
 ### Using the Failure Detector
  
-Cluster uses the @apidoc[akka.remote.PhiAccrualFailureDetector](PhiAccrualFailureDetector) failure detector by default, or you can provide your by
-implementing the @apidoc[akka.remote.FailureDetector](FailureDetector) and configuring it:
+Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDetector) failure detector by default, or you can provide your by
+implementing the @apidoc[remote.FailureDetector](FailureDetector) and configuring it:
 
 ```
 akka.cluster.implementation-class = "com.example.CustomFailureDetector"
@@ -414,7 +414,7 @@ Creating a cluster is about deploying two or more nodes and having them behave a
 
 The Configuration Compatibility Check feature ensures that all nodes in a cluster have a compatible configuration. Whenever a new node is joining an existing cluster, a subset of its configuration settings (only those that are required to be checked) is sent to the nodes in the cluster for verification. Once the configuration is checked on the cluster side, the cluster sends back its own set of required configuration settings. The joining node will then verify if it's compliant with the cluster configuration. The joining node will only proceed if all checks pass, on both sides.   
 
-New custom checkers can be added by extending @apidoc[akka.cluster.JoinConfigCompatChecker](JoinConfigCompatChecker) and including them in the configuration. Each checker must be associated with a unique key:
+New custom checkers can be added by extending @apidoc[cluster.JoinConfigCompatChecker](JoinConfigCompatChecker) and including them in the configuration. Each checker must be associated with a unique key:
 
 ```
 akka.cluster.configuration-compatibility-check.checkers {

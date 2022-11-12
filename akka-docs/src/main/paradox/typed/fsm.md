@@ -19,29 +19,29 @@ This example demonstrates how to:
 The events the FSM can receive become the type of message the Actor can receive:
 
 Scala
-:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/FSMDocSpec.scala) { #simple-events }
+:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/FSMDocSpec.scala) { #simple-events }
 
 Java
-:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/FSMDocTest.java) { #simple-events }
+:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/FSMDocTest.java) { #simple-events }
 
 `SetTarget` is needed for starting it up, setting the destination for the
 `Batches` to be passed on; `Queue` will add to the internal queue while
 `Flush` will mark the end of a burst.
 
 Scala
-:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/FSMDocSpec.scala) { #storing-state }
+:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/FSMDocSpec.scala) { #storing-state }
 
 Java
-:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/FSMDocTest.java) { #storing-state }
+:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/FSMDocTest.java) { #storing-state }
 
 Each state becomes a distinct behavior and after processing a message the next state in the form of a `Behavior`
 is returned.
 
 Scala
-:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/FSMDocSpec.scala) { #simple-state }
+:  @@snip [FSMSocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/FSMDocSpec.scala) { #simple-state }
 
 Java
-:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/FSMDocTest.java) { #simple-state}
+:  @@snip [FSMSocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/FSMDocTest.java) { #simple-state}
 
 @@@ div { .group-scala }
 The method `idle` above makes use of `Behaviors.unhandled` which advises the system to reuse the previous behavior, 

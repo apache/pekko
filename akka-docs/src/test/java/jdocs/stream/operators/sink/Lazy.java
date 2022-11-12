@@ -4,10 +4,10 @@
 
 package jdocs.stream.operators.sink;
 
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.Keep;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.Keep;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;

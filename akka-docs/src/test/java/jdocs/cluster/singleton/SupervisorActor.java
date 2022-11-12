@@ -5,11 +5,11 @@
 package jdocs.cluster.singleton;
 
 // #singleton-supervisor-actor
-import akka.actor.AbstractActor;
-import akka.actor.AbstractActor.Receive;
-import akka.actor.ActorRef;
-import akka.actor.Props;
-import akka.actor.SupervisorStrategy;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor.Receive;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.SupervisorStrategy;
 
 public class SupervisorActor extends AbstractActor {
   final Props childProps;

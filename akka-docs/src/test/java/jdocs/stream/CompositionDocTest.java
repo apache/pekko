@@ -9,20 +9,20 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import akka.NotUsed;
-import akka.stream.ClosedShape;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.ClosedShape;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.japi.Pair;
-import akka.stream.*;
-import akka.stream.javadsl.*;
-import akka.stream.javadsl.Tcp.OutgoingConnection;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.javadsl.Tcp.OutgoingConnection;
+import org.apache.pekko.util.ByteString;
 
 public class CompositionDocTest extends AbstractJavaTest {
 

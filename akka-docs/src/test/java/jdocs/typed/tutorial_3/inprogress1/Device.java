@@ -12,7 +12,7 @@ package com.example;
 */
 
 // #read-protocol-1
-import akka.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorRef;
 import java.util.Optional;
 
 public class Device {

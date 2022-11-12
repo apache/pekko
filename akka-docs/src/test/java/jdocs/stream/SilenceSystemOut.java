@@ -4,7 +4,7 @@
 
 package jdocs.stream;
 
-import akka.actor.ActorRef;
+import org.apache.pekko.actor.ActorRef;
 
 import java.util.function.Predicate;
 

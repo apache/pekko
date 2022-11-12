@@ -6,7 +6,7 @@ Limit the total weight of incoming elements
 
 ## Signature
 
-@apidoc[Flow.limitWeighted](Flow) { scala="#limitWeighted[T](max:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Out]" java="#limitWeighted(long,akka.japi.function.Function)" } 
+@apidoc[Flow.limitWeighted](Flow) { scala="#limitWeighted[T](max:Long)(costFn:Out=&gt;Long):FlowOps.this.Repr[Out]" java="#limitWeighted(long,org.apache.pekko.japi.function.Function)" } 
 
 ## Description
 

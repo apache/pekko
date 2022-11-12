@@ -5,11 +5,11 @@
 package jdocs.extension;
 
 // #imports
-import akka.actor.Extension;
-import akka.actor.AbstractExtensionId;
-import akka.actor.ExtensionIdProvider;
-import akka.actor.ActorSystem;
-import akka.actor.ExtendedActorSystem;
+import org.apache.pekko.actor.Extension;
+import org.apache.pekko.actor.AbstractExtensionId;
+import org.apache.pekko.actor.ExtensionIdProvider;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.ExtendedActorSystem;
 import com.typesafe.config.Config;
 import java.util.concurrent.TimeUnit;
 import java.time.Duration;
@@ -17,7 +17,7 @@ import java.time.Duration;
 // #imports
 
 import jdocs.AbstractJavaTest;
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor;
 import org.junit.Test;
 
 public class SettingsExtensionDocTest extends AbstractJavaTest {

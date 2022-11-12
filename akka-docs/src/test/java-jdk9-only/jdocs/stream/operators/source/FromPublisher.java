@@ -7,9 +7,9 @@ package jdocs.stream.operators.source;
 //#imports
 import java.util.concurrent.Flow.Publisher;
 
-import akka.NotUsed;
-import akka.stream.javadsl.Source;
-import akka.stream.javadsl.JavaFlowSupport;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.javadsl.JavaFlowSupport;
 
 //#imports
 

@@ -101,7 +101,7 @@ This page describes the remoting subsystem, codenamed *Artery* that has replaced
 Remoting enables Actor systems on different hosts or JVMs to communicate with each other. By enabling remoting
 the system will start listening on a provided network address and also gains the ability to connect to other
 systems through the network. From the application's perspective there is no API difference between local or remote
-systems, @apidoc[akka.actor.ActorRef] instances that point to remote systems look exactly the same as local ones: they can be
+systems, @apidoc[actor.ActorRef] instances that point to remote systems look exactly the same as local ones: they can be
 sent messages to, watched, etc.
 Every `ActorRef` contains hostname and port information and can be passed around even on the network. This means
 that on a network every `ActorRef` is a unique identifier of an actor on that network.
@@ -159,7 +159,7 @@ unique name of the system and will be used by other systems to open a connection
 that if a host has multiple names (different DNS records pointing to the same IP address) then only one of these
 can be *canonical*. If a message arrives to a system but it contains a different hostname than the expected canonical
 name then the message will be dropped. If multiple names for a system would be allowed, then equality checks among
-@apidoc[akka.actor.ActorRef] instances would no longer to be trusted and this would violate the fundamental assumption that
+@apidoc[actor.ActorRef] instances would no longer to be trusted and this would violate the fundamental assumption that
 an actor has a globally unique reference on a given network. As a consequence, this also means that localhost addresses
 (e.g. *127.0.0.1*) cannot be used in general (apart from local development) since they are not unique addresses in a
 real network.
@@ -171,24 +171,24 @@ for details.
 
 ## Acquiring references to remote actors
 
-In order to communicate with an actor, it is necessary to have its @apidoc[akka.actor.ActorRef]. In the local case it is usually
+In order to communicate with an actor, it is necessary to have its @apidoc[actor.ActorRef]. In the local case it is usually
 the creator of the actor (the caller of `actorOf()`) is who gets the `ActorRef` for an actor that it can
 then send to other actors. In other words:
 
- * An Actor can get a remote Actor's reference by receiving a message from it (as it's available as @scala[@scaladoc[sender()](akka.actor.Actor#sender():akka.actor.ActorRef)]@java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())] then),
+ * An Actor can get a remote Actor's reference by receiving a message from it (as it's available as @scala[@scaladoc[sender()](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)]@java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] then),
 or inside of a remote message (e.g. *PleaseReply(message: String, remoteActorRef: ActorRef)*)
 
 Alternatively, an actor can look up another located at a known path using
-@apidoc[akka.actor.ActorSelection]. These methods are available even in remoting enabled systems:
+@apidoc[actor.ActorSelection]. These methods are available even in remoting enabled systems:
 
- * Remote Lookup    : used to look up an actor on a remote node with @apidoc[actorSelection(path)](akka.actor.ActorRefFactory) {scala="#actorSelection(path:String):akka.actor.ActorSelection" java="#actorSelection(java.lang.String)"}
- * Remote Creation  : used to create an actor on a remote node with @apidoc[actorOf(Props(...), actorName)](akka.actor.ActorRefFactory) {scala="#actorOf(props:akka.actor.Props,name:String):akka.actor.ActorRef" java="#actorOf(akka.actor.Props,java.lang.String)"}
+ * Remote Lookup    : used to look up an actor on a remote node with @apidoc[actorSelection(path)](actor.ActorRefFactory) {scala="#actorSelection(path:String):org.apache.pekko.actor.ActorSelection" java="#actorSelection(java.lang.String)"}
+ * Remote Creation  : used to create an actor on a remote node with @apidoc[actorOf(Props(...), actorName)](actor.ActorRefFactory) {scala="#actorOf(props:org.apache.pekko.actor.Props,name:String):org.apache.pekko.actor.ActorRef" java="#actorOf(org.apache.pekko.actor.Props,java.lang.String)"}
 
 In the next sections the two alternatives are described in detail.
 
 ### Looking up Remote Actors
 
-@apidoc[actorSelection(path)](akka.actor.ActorRefFactory) {scala="#actorSelection(path:String):akka.actor.ActorSelection" java="#actorSelection(java.lang.String)"} will obtain an @apidoc[akka.actor.ActorSelection] to an Actor on a remote node, e.g.:
+@apidoc[actorSelection(path)](actor.ActorRefFactory) {scala="#actorSelection(path:String):org.apache.pekko.actor.ActorSelection" java="#actorSelection(java.lang.String)"} will obtain an @apidoc[actor.ActorSelection] to an Actor on a remote node, e.g.:
 
 Scala
 :   ```
@@ -232,11 +232,11 @@ Java
     @@@
 
 
-To acquire an @apidoc[akka.actor.ActorRef] for an @apidoc[akka.actor.ActorSelection] you need to
-send a message to the selection and use the @scala[@scaladoc[sender()](akka.actor.Actor#sender():akka.actor.ActorRef)]@java[@javadoc[getSender()](akka.actor.AbstractActor#getSender())] reference of the reply from
-the actor. There is a built-in @apidoc[akka.actor.Identify] message that all Actors will understand
-and automatically reply to with a @apidoc[akka.actor.ActorIdentity] message containing the
-`ActorRef`. This can also be done with the @apidoc[resolveOne](akka.actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[akka.actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of
+To acquire an @apidoc[actor.ActorRef] for an @apidoc[actor.ActorSelection] you need to
+send a message to the selection and use the @scala[@scaladoc[sender()](pekko.actor.Actor#sender():org.apache.pekko.actor.ActorRef)]@java[@javadoc[getSender()](pekko.actor.AbstractActor#getSender())] reference of the reply from
+the actor. There is a built-in @apidoc[actor.Identify] message that all Actors will understand
+and automatically reply to with a @apidoc[actor.ActorIdentity] message containing the
+`ActorRef`. This can also be done with the @apidoc[resolveOne](actor.ActorSelection) {scala="#resolveOne(timeout:scala.concurrent.duration.FiniteDuration):scala.concurrent.Future[org.apache.pekko.actor.ActorRef]" java="#resolveOne(java.time.Duration)"} method of
 the `ActorSelection`, which returns a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] of the matching
 `ActorRef`.
 
@@ -257,7 +257,7 @@ be delivered just fine.
 
 ## Remote Security
 
-An @apidoc[akka.actor.ActorSystem] should not be exposed via Akka Remote (Artery) over plain Aeron/UDP or TCP to an untrusted
+An @apidoc[actor.ActorSystem] should not be exposed via Akka Remote (Artery) over plain Aeron/UDP or TCP to an untrusted
 network (e.g. Internet). It should be protected by network security, such as a firewall. If that is not considered
 as enough protection @ref:[TLS with mutual authentication](#remote-tls) should be enabled.
 
@@ -385,7 +385,7 @@ to the JVM to prevent blocking. It is NOT as secure because it reuses the seed.
 
 As soon as an actor system can connect to another remotely, it may in principle
 send any possible message to any actor contained within that remote system. One
-example may be sending a @apidoc[akka.actor.PoisonPill] to the system guardian, shutting
+example may be sending a @apidoc[actor.PoisonPill] to the system guardian, shutting
 that system down. This is not always desired, and it can be disabled with the
 following setting:
 
@@ -394,11 +394,11 @@ akka.remote.artery.untrusted-mode = on
 ```
 
 This disallows sending of system messages (actor life-cycle commands,
-DeathWatch, etc.) and any message extending @apidoc[akka.actor.PossiblyHarmful] to the
+DeathWatch, etc.) and any message extending @apidoc[actor.PossiblyHarmful] to the
 system on which this flag is set. Should a client send them nonetheless they
 are dropped and logged (at DEBUG level in order to reduce the possibilities for
 a denial of service attack). `PossiblyHarmful` covers the predefined
-messages like @apidoc[akka.actor.PoisonPill] and @apidoc[akka.actor.Kill], but it can also be added
+messages like @apidoc[actor.PoisonPill] and @apidoc[actor.Kill], but it can also be added
 as a marker trait to user-defined messages.
 
 @@@ warning
@@ -428,9 +428,9 @@ untrusted mode when incoming via the remoting layer:
 
  * remote deployment (which also means no remote supervision)
  * remote DeathWatch
- * @apidoc[system.stop()](akka.actor.ActorRefFactory) {scala="#stop(actor:akka.actor.ActorRef):Unit" java="#stop(akka.actor.ActorRef)"}, @apidoc[akka.actor.PoisonPill], @apidoc[akka.actor.Kill]
- * sending any message which extends from the @apidoc[akka.actor.PossiblyHarmful] marker
-interface, which includes @apidoc[akka.actor.Terminated]
+ * @apidoc[system.stop()](actor.ActorRefFactory) {scala="#stop(actor:org.apache.pekko.actor.ActorRef):Unit" java="#stop(org.apache.pekko.actor.ActorRef)"}, @apidoc[actor.PoisonPill], @apidoc[actor.Kill]
+ * sending any message which extends from the @apidoc[actor.PossiblyHarmful] marker
+interface, which includes @apidoc[actor.Terminated]
  * messages sent with actor selection, unless destination defined in `trusted-selection-paths`.
 
 @@@ note
@@ -442,9 +442,9 @@ It is good practice for a client-facing system to only contain a well-defined
 set of entry point actors, which then forward requests (possibly after
 performing validation) to another actor system containing the actual worker
 actors. If messaging between these two server-side systems is done using
-local @apidoc[akka.actor.ActorRef] (they can be exchanged safely between actor systems
+local @apidoc[actor.ActorRef] (they can be exchanged safely between actor systems
 within the same JVM), you can restrict the messages on this interface by
-marking them @apidoc[akka.actor.PossiblyHarmful] so that a client cannot forge them.
+marking them @apidoc[actor.PossiblyHarmful] so that a client cannot forge them.
 
 @@@
 
@@ -471,7 +471,7 @@ association with the destination system is irrecoverable failed, and Terminated 
 actors on the remote system. It is placed in a so called quarantined state. Quarantine usually does not
 happen if remote watch or remote deployment is not used.
 
-Each @apidoc[akka.actor.ActorSystem] instance has an unique identifier (UID), which is important for differentiating between
+Each @apidoc[actor.ActorSystem] instance has an unique identifier (UID), which is important for differentiating between
 incarnations of a system when it is restarted with the same hostname and port. It is the specific
 incarnation (UID) that is quarantined. The only way to recover from this state is to restart one of the
 actor systems.
@@ -490,7 +490,7 @@ partition heals. A cluster member is not quarantined when the failure detector t
 (`system-message-buffer-size` config).
  * Unexpected exception occurs in the control subchannel of the remoting infrastructure.
 
-The UID of the @apidoc[akka.actor.ActorSystem] is exchanged in a two-way handshake when the first message is sent to
+The UID of the @apidoc[actor.ActorSystem] is exchanged in a two-way handshake when the first message is sent to
 a destination. The handshake will be retried until the other system replies and no other messages will
 pass through until the handshake is completed. If the handshake cannot be established within a timeout
 (`handshake-timeout` config) the association is stopped (freeing up resources). Queued messages will be
@@ -510,7 +510,7 @@ by the built-in failure detector.
 
 ### Failure Detector
 
-Under the hood remote death watch uses heartbeat messages and a failure detector to generate @apidoc[akka.actor.Terminated]
+Under the hood remote death watch uses heartbeat messages and a failure detector to generate @apidoc[actor.Terminated]
 message from network failures and JVM crashes, in addition to graceful termination of watched
 actor.
 
@@ -582,10 +582,10 @@ the ability to serialize directly into and from ByteBuffers.
 As the new feature only changes how bytes are read and written, and the rest of the serialization infrastructure
 remained the same, we recommend reading the @ref:[Serialization](serialization.md) documentation first.
 
-Implementing an `akka.serialization.ByteBufferSerializer` works the same way as any other serializer,
+Implementing an `org.apache.pekko.serialization.ByteBufferSerializer` works the same way as any other serializer,
 
 Scala
-:  @@snip [Serializer.scala](/akka-actor/src/main/scala/akka/serialization/Serializer.scala) { #ByteBufferSerializer }
+:  @@snip [Serializer.scala](/akka-actor/src/main/scala/org/apache/pekko/serialization/Serializer.scala) { #ByteBufferSerializer }
 
 Java
 :  @@snip [ByteBufferSerializerDocTest.java](/akka-docs/src/test/java/jdocs/actor/ByteBufferSerializerDocTest.java) { #ByteBufferSerializer-interface }
@@ -646,7 +646,7 @@ specific events
  * Providing protocol stability across major Akka versions to support rolling updates of large-scale systems
 
 The main incompatible change from the previous implementation that the protocol field of the string representation of an
-@apidoc[akka.actor.ActorRef] is always *akka* instead of the previously used *akka.tcp* or *akka.ssl.tcp*. Configuration properties
+@apidoc[actor.ActorRef] is always *akka* instead of the previously used *akka.tcp* or *akka.ssl.tcp*. Configuration properties
 are also different.
 
 

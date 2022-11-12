@@ -3,12 +3,12 @@
  */
 
 package docs.stream.operators.sourceorflow
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 import scala.collection.immutable
 
 object GroupedWeighted {
   def groupedWeightedExample(): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
 

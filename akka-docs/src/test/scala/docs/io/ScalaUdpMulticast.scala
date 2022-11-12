@@ -8,10 +8,10 @@ import java.net.{ InetAddress, InetSocketAddress, NetworkInterface, StandardProt
 import java.net.DatagramSocket
 import java.nio.channels.DatagramChannel
 
-import akka.actor.{ Actor, ActorLogging, ActorRef }
-import akka.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
-import akka.io.{ IO, Udp }
-import akka.util.ByteString
+import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef }
+import org.apache.pekko.io.Inet.{ DatagramChannelCreator, SocketOptionV2 }
+import org.apache.pekko.io.{ IO, Udp }
+import org.apache.pekko.util.ByteString
 
 //#inet6-protocol-family
 final case class Inet6ProtocolFamily() extends DatagramChannelCreator {

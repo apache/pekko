@@ -7,9 +7,9 @@ package docs.actor
 class SharedMutableStateDocSpec {
 
   // #mutable-state
-  import akka.actor.{ Actor, ActorRef }
-  import akka.pattern.ask
-  import akka.util.Timeout
+  import org.apache.pekko.actor.{ Actor, ActorRef }
+  import org.apache.pekko.pattern.ask
+  import org.apache.pekko.util.Timeout
   import scala.concurrent.Future
   import scala.concurrent.duration._
   import scala.language.postfixOps

@@ -4,14 +4,14 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Source
 
 import scala.concurrent.ExecutionContext
 
 object MapConcat {
 
   def mapConcat(): Unit = {
-    import akka.actor.ActorSystem
+    import org.apache.pekko.actor.ActorSystem
 
     implicit val system: ActorSystem = ActorSystem()
     implicit val ec: ExecutionContext = system.dispatcher

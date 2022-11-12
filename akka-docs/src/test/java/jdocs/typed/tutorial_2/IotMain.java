@@ -12,7 +12,7 @@ package com.example;
 */
 
 // #iot-app
-import akka.actor.typed.ActorSystem;
+import org.apache.pekko.actor.typed.ActorSystem;
 
 public class IotMain {
 

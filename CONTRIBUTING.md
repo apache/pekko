@@ -263,7 +263,7 @@ in the file that describes briefly why the incompatibility can be ignored.
 
 Situations when it may be acceptable to ignore a MiMa issued warning include:
 
-- if it is touching any class marked as `private[akka]`, `/** INTERNAL API*/` or similar markers
+- if it is touching any class marked as `private[pekko]`, `/** INTERNAL API*/` or similar markers
 - if it is concerning internal classes (often recognisable by package names like `dungeon`, `impl`, `internal` etc.)
 - if it is adding API to classes / traits which are only meant for extension by Akka itself, i.e. should not be extended by end-users
 - other tricky situations
@@ -542,7 +542,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 1. Provide `getX` style accessors for values in the Java APIs
 
 1. Place classes not part of the public APIs in a shared `internal` package. This package can contain implementations of
-   both Java and Scala APIs. Make such classes `private[akka]` and also, since that becomes `public` from Java's point of
+   both Java and Scala APIs. Make such classes `private[pekko]` and also, since that becomes `public` from Java's point of
    view, annotate with `@InternalApi` and add a scaladoc saying `INTERNAL API`
 
 1. Traits that are part of the Java API should only be used to define pure interfaces, as soon as there are implementations of methods, prefer

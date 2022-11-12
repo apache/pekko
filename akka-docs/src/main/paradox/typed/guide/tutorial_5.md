@@ -61,7 +61,7 @@ First, we need to design the lifecycle of our query actor. This consists of iden
 
 #### Scheduling the query timeout
 Since we need a way to indicate how long we are willing to wait for responses, it is time to introduce a new Akka feature that we have
-not used yet, the built-in scheduler facility. Using @apidoc[Behaviors.withTimers](typed.*.Behaviors$) {scala="#withTimers[T](factory:akka.actor.typed.scaladsl.TimerScheduler[T]=%3eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#withTimers(akka.japi.function.Function)"} and @apidoc[startSingleTimer](typed.*.TimerScheduler) {scala="#startSingleTimer(key:Any,msg:T,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startSingleTimer(java.lang.Object,T,java.time.Duration)"} to schedule a message that will be sent after a given delay.
+not used yet, the built-in scheduler facility. Using @apidoc[Behaviors.withTimers](typed.*.Behaviors$) {scala="#withTimers[T](factory:org.apache.pekko.actor.typed.scaladsl.TimerScheduler[T]=%3eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#withTimers(org.apache.pekko.japi.function.Function)"} and @apidoc[startSingleTimer](typed.*.TimerScheduler) {scala="#startSingleTimer(key:Any,msg:T,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startSingleTimer(java.lang.Object,T,java.time.Duration)"} to schedule a message that will be sent after a given delay.
 
 
 We need to create a message that represents the query timeout. We create a simple message `CollectionTimeout` without any parameters for this purpose.

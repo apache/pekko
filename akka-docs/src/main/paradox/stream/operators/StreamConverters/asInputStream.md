@@ -6,7 +6,7 @@ Create a sink which materializes into an `InputStream` that can be read to trigg
 
 ## Signature
 
-@apidoc[StreamConverters.asInputStream](StreamConverters$) { scala="#asInputStream(readTimeout:scala.concurrent.duration.FiniteDuration):akka.stream.scaladsl.Sink[akka.util.ByteString,java.io.InputStream]" java="#asInputStream()" }
+@apidoc[StreamConverters.asInputStream](StreamConverters$) { scala="#asInputStream(readTimeout:scala.concurrent.duration.FiniteDuration):org.apache.pekko.stream.scaladsl.Sink[org.apache.pekko.util.ByteString,java.io.InputStream]" java="#asInputStream()" }
 
 
 ## Description

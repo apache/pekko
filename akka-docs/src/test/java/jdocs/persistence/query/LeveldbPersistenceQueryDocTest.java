@@ -7,15 +7,15 @@ package jdocs.persistence.query;
 import java.util.HashSet;
 import java.util.Set;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.persistence.journal.WriteEventAdapter;
-import akka.persistence.journal.Tagged;
-import akka.persistence.query.EventEnvelope;
-import akka.persistence.query.Sequence;
-import akka.persistence.query.PersistenceQuery;
-import akka.persistence.query.journal.leveldb.javadsl.LeveldbReadJournal;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.persistence.journal.WriteEventAdapter;
+import org.apache.pekko.persistence.journal.Tagged;
+import org.apache.pekko.persistence.query.EventEnvelope;
+import org.apache.pekko.persistence.query.Sequence;
+import org.apache.pekko.persistence.query.PersistenceQuery;
+import org.apache.pekko.persistence.query.journal.leveldb.javadsl.LeveldbReadJournal;
+import org.apache.pekko.stream.javadsl.Source;
 
 public class LeveldbPersistenceQueryDocTest {
 

@@ -5,7 +5,7 @@
 package jdocs.actor;
 
 // #sample-actor
-import akka.actor.AbstractActor;
+import org.apache.pekko.actor.AbstractActor;
 
 public class SampleActor extends AbstractActor {
 

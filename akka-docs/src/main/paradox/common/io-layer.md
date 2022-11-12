@@ -1,6 +1,6 @@
 # I/O Layer Design
 
-The `akka.io` package has been developed in collaboration between the Akka
+The `org.apache.pekko.io` package has been developed in collaboration between the Akka
 and [spray.io](http://spray.io) teams. Its design incorporates the experiences with the
 `spray-io` module along with improvements that were jointly developed for
 more general consumption as an actor-based service.
@@ -26,7 +26,7 @@ instead allow completely protocol-specific user-level APIs.
 ## Basic Architecture
 
 Each transport implementation will be made available as a separate Akka
-extension, offering an @apidoc[akka.actor.ActorRef] representing the initial point of
+extension, offering an @apidoc[actor.ActorRef] representing the initial point of
 contact for client code. This "manager" accepts requests for establishing a
 communications channel (e.g. connect or listen on a TCP socket). Each
 communications channel is represented by one dedicated actor, which is exposed
@@ -84,7 +84,7 @@ actors to notice the demise of their user-level handler actors and terminate in
 an orderly fashion in that case as well; this naturally reduces the chances of
 leaking open channels.
 
-The choice of using @apidoc[akka.actor.ActorRef] for exposing all functionality entails
+The choice of using @apidoc[actor.ActorRef] for exposing all functionality entails
 that these references can be distributed or delegated freely and in general
 handled as the user sees fit, including the use of remoting and life-cycle
 monitoring (just to name two).

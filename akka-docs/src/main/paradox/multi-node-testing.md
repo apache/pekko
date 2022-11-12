@@ -46,14 +46,14 @@ This is a schematic overview of the test conductor.
 
 The test conductor server is responsible for coordinating barriers and sending commands to the test conductor
 clients that act upon them, e.g. throttling network traffic to/from another client. More information on the
-possible operations is available in the @apidoc[akka.remote.testconductor.Conductor](Conductor) API documentation.
+possible operations is available in the @apidoc[remote.testconductor.Conductor](Conductor) API documentation.
 
 ## The Multi Node Spec
 
 The Multi Node Spec consists of two parts. The @apidoc[MultiNodeConfig] that is responsible for common
 configuration and enumerating and naming the nodes under test. The `MultiNodeSpec` that contains a number
 of convenience functions for making the test nodes interact with each other. More information on the possible
-operations is available in the @apidoc[akka.remote.testkit.MultiNodeSpec](MultiNodeSpec) API documentation.
+operations is available in the @apidoc[remote.testkit.MultiNodeSpec](MultiNodeSpec) API documentation.
 
 The setup of the `MultiNodeSpec` is configured through java system properties that you set on all JVMs that's going to run a
 node under test. These can be set on the JVM command line with `-Dproperty=value`.
@@ -172,17 +172,17 @@ complete the test names.
 First we need some scaffolding to hook up the @apidoc[MultiNodeSpec] with your favorite test framework. Lets define a trait
 `STMultiNodeSpec` that uses ScalaTest to start and stop `MultiNodeSpec`.
 
-@@snip [STMultiNodeSpec.scala](/akka-remote-tests/src/test/scala/akka/remote/testkit/STMultiNodeSpec.scala) { #example }
+@@snip [STMultiNodeSpec.scala](/akka-remote-tests/src/test/scala/org/apache/pekko/remote/testkit/STMultiNodeSpec.scala) { #example }
 
 Then we need to define a configuration. Lets use two nodes `"node1` and `"node2"` and call it
 `MultiNodeSampleConfig`.
 
-@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/akka/remote/sample/MultiNodeSample.scala) { #package #config }
+@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #config }
 
 And then finally to the node test code. That starts the two nodes, and demonstrates a barrier, and a remote actor
 message send/receive.
 
-@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/akka/remote/sample/MultiNodeSample.scala) { #package #spec }
+@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #spec }
 
 ## Things to Keep in Mind
 
@@ -191,7 +191,7 @@ surprising ways.
 
  * Don't issue a shutdown of the first node. The first node is the controller and if it shuts down your test will break.
  * To be able to use `blackhole`, `passThrough`, and `throttle` you must activate the failure injector and
-throttler transport adapters by specifying @scala[@scaladoc[testTransport(on = true)](akka.remote.testkit.MultiNodeConfig#testTransport(on:Boolean):Unit)]@java[@javadoc[testTransport(true)](akka.remote.testkit.MultiNodeConfig#testTransport(boolean))] in your `MultiNodeConfig`.
+throttler transport adapters by specifying @scala[@scaladoc[testTransport(on = true)](pekko.remote.testkit.MultiNodeConfig#testTransport(on:Boolean):Unit)]@java[@javadoc[testTransport(true)](pekko.remote.testkit.MultiNodeConfig#testTransport(boolean))] in your `MultiNodeConfig`.
  * Throttling, shutdown and other failure injections can only be done from the first node, which again is the controller.
  * Don't ask for the address of a node using `node(address)` after the node has been shut down. Grab the address before
 shutting down the node.

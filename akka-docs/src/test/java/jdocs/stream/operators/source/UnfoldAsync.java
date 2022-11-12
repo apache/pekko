@@ -4,13 +4,13 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.ActorSystem;
-import akka.japi.Pair;
-import akka.stream.javadsl.Source;
-import akka.util.ByteString;
-import akka.actor.typed.javadsl.AskPattern;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.util.ByteString;
+import org.apache.pekko.actor.typed.javadsl.AskPattern;
 
 import java.time.Duration;
 import java.util.Optional;

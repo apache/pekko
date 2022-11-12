@@ -4,13 +4,13 @@
 
 package docs.stream.operators.source
 
-import akka.NotUsed
-import akka.actor.typed.ActorRef
-import akka.actor.typed.ActorSystem
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
-import akka.actor.typed.scaladsl.AskPattern._
-import akka.util.Timeout
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.typed.ActorRef
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
+import org.apache.pekko.actor.typed.scaladsl.AskPattern._
+import org.apache.pekko.util.Timeout
 
 import scala.concurrent.Future
 import scala.concurrent.duration._

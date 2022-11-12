@@ -4,13 +4,13 @@
 
 package jdocs.stream.operators.source;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.japi.Pair;
-import akka.stream.javadsl.RunnableGraph;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.SinkQueueWithCancel;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.RunnableGraph;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.SinkQueueWithCancel;
+import org.apache.pekko.stream.javadsl.Source;
 
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;

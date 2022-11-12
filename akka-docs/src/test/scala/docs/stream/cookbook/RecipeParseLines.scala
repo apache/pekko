@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -25,7 +25,7 @@ class RecipeParseLines extends RecipeSpec {
           ByteString("\r\n\r\n")))
 
       // #parse-lines
-      import akka.stream.scaladsl.Framing
+      import org.apache.pekko.stream.scaladsl.Framing
       val linesStream = rawData
         .via(Framing.delimiter(ByteString("\r\n"), maximumFrameLength = 100, allowTruncation = true))
         .map(_.utf8String)

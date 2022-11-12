@@ -4,11 +4,11 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
 
 object Intersperse extends App {
-  import akka.actor.ActorSystem
+  import org.apache.pekko.actor.ActorSystem
 
   implicit val system: ActorSystem = ActorSystem()
 

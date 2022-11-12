@@ -8,15 +8,15 @@ import java.net.InetSocketAddress;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import akka.actor.ActorRef;
-import akka.actor.AbstractActor;
-import akka.event.Logging;
-import akka.event.LoggingAdapter;
-import akka.io.Tcp.ConnectionClosed;
-import akka.io.Tcp.Event;
-import akka.io.Tcp.Received;
-import akka.io.TcpMessage;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.io.Tcp.ConnectionClosed;
+import org.apache.pekko.io.Tcp.Event;
+import org.apache.pekko.io.Tcp.Received;
+import org.apache.pekko.io.TcpMessage;
+import org.apache.pekko.util.ByteString;
 
 // #simple-echo-handler
 public class SimpleEchoHandler extends AbstractActor {

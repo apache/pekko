@@ -4,9 +4,9 @@
 
 package docs.persistence.testkit
 
-import akka.actor.typed.ActorSystem
-import akka.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
-import akka.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.persistence.testkit.{ PersistenceTestKitPlugin, PersistenceTestKitSnapshotPlugin }
+import org.apache.pekko.persistence.testkit.scaladsl.{ PersistenceTestKit, SnapshotTestKit }
 import com.typesafe.config.ConfigFactory
 
 object TestKitTypedConf {

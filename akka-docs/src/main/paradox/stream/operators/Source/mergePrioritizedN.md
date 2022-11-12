@@ -6,7 +6,7 @@ Merge multiple sources with priorities.
 
 ## Signature
 
-@@signature [Source.scala](/akka-stream/src/main/scala/akka/stream/scaladsl/Source.scala) { #mergePrioritized }
+@@signature [Source.scala](/akka-stream/src/main/scala/org/apache/pekko/stream/scaladsl/Source.scala) { #mergePrioritized }
 
 ## Description
 
@@ -17,7 +17,7 @@ prioritized and similarly for the rest of the sources. The priorities for each s
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritizedN }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritizedN }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #mergePrioritizedN }

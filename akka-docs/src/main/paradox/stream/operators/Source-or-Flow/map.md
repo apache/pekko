@@ -6,8 +6,8 @@ Transform each element in the stream by calling a mapping function with it and p
 
 ## Signature
 
-@apidoc[Source.map](Source) { scala="#map[T](f:Out=&gt;T):FlowOps.this.Repr[T]" java="#map(akka.japi.function.Function)" }
-@apidoc[Flow.map](Flow) { scala="#map[T](f:Out=&gt;T):FlowOps.this.Repr[T]" java="#map(akka.japi.function.Function)" }
+@apidoc[Source.map](Source) { scala="#map[T](f:Out=&gt;T):FlowOps.this.Repr[T]" java="#map(org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.map](Flow) { scala="#map[T](f:Out=&gt;T):FlowOps.this.Repr[T]" java="#map(org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

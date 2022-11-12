@@ -12,28 +12,28 @@ We are building a small auction service. It has the following operations:
 We model those operations as commands to be sent to the auction actor:
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #commands }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #commands }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #commands }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #commands }
 
 The events:
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #events }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #events }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #events }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #events }
 
 The winner does not have to pay the highest bid but only enough to beat the second highest, so the `highestCounterOffer` is in the `AuctionFinished` event. 
 
 Let's have a look at the auction entity that will handle incoming commands:
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #command-handler }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #command-handler }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #command-handler }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #command-handler }
 
 There is nothing specific to Replicated Event Sourcing about the command handler. It is the same as a command handler for a standard `EventSourcedBehavior`.
 For `OfferBid` and `AuctionFinished` we do nothing more than to emit
@@ -45,17 +45,17 @@ The auction entity is started with the initial parameters for the auction.
 The minimum bid is modelled as an `initialBid`.
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #setup }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #setup }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #setup }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #setup }
 
 @@@ div { .group-scala }
 
 The auction moves through the following phases:
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #phase }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #phase }
 
 @@@
 
@@ -65,10 +65,10 @@ actually closing the action.
 Let's have a look at our state class, `AuctionState` which also represents the CRDT in our example.
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #state }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #state }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #state }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #state }
 
 The state consists of a flag that keeps track of whether the auction is still active, the currently highest bid,
 and the highest counter offer so far.
@@ -107,10 +107,10 @@ all replicas have seen all bids.
 In the event handler above, when recovery is not running, it calls `eventTriggers`.
 
 Scala
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/akka/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #event-triggers }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleSpec.scala) { #event-triggers }
 
 Java
-:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/akka/persistence/typed/ReplicatedAuctionExampleTest.java) { #event-triggers }
+:   @@snip [AuctionExample](/akka-persistence-typed-tests/src/test/java/jdocs/org/apache/pekko/persistence/typed/ReplicatedAuctionExampleTest.java) { #event-triggers }
 
 The event trigger uses the `ReplicationContext` to decide when to trigger the Finish of the action.
 When a replica saves the `AuctionFinished` event it checks whether it should close the auction.

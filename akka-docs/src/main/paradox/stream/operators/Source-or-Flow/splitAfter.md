@@ -6,8 +6,8 @@ End the current substream whenever a predicate returns `true`, starting a new su
 
 ## Signature
 
-@apidoc[Source.splitAfter](Source) { scala="#splitAfter(substreamCancelStrategy:akka.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitAfter(akka.stream.SubstreamCancelStrategy,akka.japi.function.Predicate)" }
-@apidoc[Flow.splitAfter](Flow) { scala="#splitAfter(substreamCancelStrategy:akka.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):akka.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitAfter(akka.stream.SubstreamCancelStrategy,akka.japi.function.Predicate)" }
+@apidoc[Source.splitAfter](Source) { scala="#splitAfter(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitAfter(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.splitAfter](Flow) { scala="#splitAfter(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitAfter(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
 
 
 ## Description

@@ -4,9 +4,9 @@
 
 package docs.stream
 
-import akka.stream.scaladsl._
-import akka.stream.{ DelayOverflowStrategy, KillSwitches }
-import akka.testkit.AkkaSpec
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.{ DelayOverflowStrategy, KillSwitches }
+import org.apache.pekko.testkit.AkkaSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.Await

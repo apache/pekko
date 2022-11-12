@@ -4,14 +4,14 @@
 
 package jdocs.stream.operators.flow;
 
-import akka.NotUsed;
-import akka.actor.ActorSystem;
-import akka.actor.Cancellable;
-import akka.japi.Pair;
-import akka.stream.javadsl.*;
-import akka.stream.testkit.TestPublisher;
-import akka.stream.testkit.TestSubscriber;
-import akka.util.ByteString;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Cancellable;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.testkit.TestPublisher;
+import org.apache.pekko.stream.testkit.TestSubscriber;
+import org.apache.pekko.util.ByteString;
 
 import java.time.Duration;
 import java.util.Collections;

@@ -64,7 +64,7 @@ Scala
 Java
 :   @@snip [IntegrationDocTest.java](/akka-docs/src/test/java/jdocs/stream/IntegrationDocTest.java) { #ask-actor }
 
-The stream can be completed with failure by sending `akka.actor.Status.Failure` as reply from the actor.
+The stream can be completed with failure by sending `org.apache.pekko.actor.Status.Failure` as reply from the actor.
 
 If the `ask` fails due to timeout the stream will be completed with
 `TimeoutException` failure. If that is not desired outcome you can use `recover`
@@ -93,7 +93,7 @@ message after each stream element to make back-pressure work.
 
 If the target actor terminates the stream will be cancelled. When the stream is completed successfully the
 given `onCompleteMessage` will be sent to the destination actor. When the stream is completed with
-failure a `akka.actor.Status.Failure` message will be sent to the destination actor.
+failure a `org.apache.pekko.actor.Status.Failure` message will be sent to the destination actor.
 
 Scala
 :   @@snip [IntegrationDocSpec.scala](/akka-docs/src/test/scala/docs/stream/IntegrationDocSpec.scala) { #actorRefWithBackpressure }
@@ -136,7 +136,7 @@ the stream). The elements will be buffered until the stream can process them. Yo
 the queue and they will be emitted to the stream if there is demand from downstream, otherwise they will
 be buffered until request for demand is received.
 
-Use overflow strategy `akka.stream.OverflowStrategy.backpressure` to avoid dropping of elements if the
+Use overflow strategy `org.apache.pekko.stream.OverflowStrategy.backpressure` to avoid dropping of elements if the
 buffer is full, instead the returned @scala[`Future`]@java[`CompletionStage`] does not complete until there is space in the
 buffer and `offer` should not be called again until it completes.
 
@@ -174,8 +174,8 @@ if you want a backpressured actor interface.
 
 The stream can be completed successfully by sending any message to the actor that is handled
 by the completion matching function that was provided when the actor reference was created.
-If the returned completion strategy is `akka.stream.CompletionStrategy.immediately` the completion will be signaled immediately.
-If the completion strategy is `akka.stream.CompletionStrategy.draining`, already buffered elements will be processed before signaling completion.
+If the returned completion strategy is `org.apache.pekko.stream.CompletionStrategy.immediately` the completion will be signaled immediately.
+If the completion strategy is `org.apache.pekko.stream.CompletionStrategy.draining`, already buffered elements will be processed before signaling completion.
 Any elements that are in the actor's mailbox and subsequent elements sent to the actor will not be processed.
 
 The stream can be completed with failure by sending any message to the
@@ -228,7 +228,7 @@ Sends the elements of the stream to the given @java[`ActorRef<T>`]@scala[`ActorR
 
 ### Topic.source
 
-A source that will subscribe to a @apidoc[akka.actor.typed.pubsub.Topic$] and stream messages published to the topic.
+A source that will subscribe to a @apidoc[actor.typed.pubsub.Topic$] and stream messages published to the topic.
 
 @@@ note
 See also: @ref[ActorSink.actorRefWithBackpressure operator reference docs](operators/PubSub/source.md)
@@ -236,7 +236,7 @@ See also: @ref[ActorSink.actorRefWithBackpressure operator reference docs](opera
 
 ### Topic.sink
 
-A sink that will publish emitted messages to a @apidoc[akka.actor.typed.pubsub.Topic$].
+A sink that will publish emitted messages to a @apidoc[actor.typed.pubsub.Topic$].
 
 @@@ note
 See also: @ref[ActorSink.actorRefWithBackpressure operator reference docs](operators/PubSub/sink.md)

@@ -6,8 +6,8 @@ Materializes to a @scala[`Future`] @java[`CompletionStage`] that will be complet
 
 ## Signature
 
-@apidoc[Source.watchTermination](Source) { scala="#watchTermination[Mat2]()(matF:(Mat,scala.concurrent.Future[akka.Done])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#watchTermination(akka.japi.function.Function2)" }
-@apidoc[Flow.watchTermination](Flow) { scala="#watchTermination[Mat2]()(matF:(Mat,scala.concurrent.Future[akka.Done])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#watchTermination(akka.japi.function.Function2)" }
+@apidoc[Source.watchTermination](Source) { scala="#watchTermination[Mat2]()(matF:(Mat,scala.concurrent.Future[org.apache.pekko.Done])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#watchTermination(org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.watchTermination](Flow) { scala="#watchTermination[Mat2]()(matF:(Mat,scala.concurrent.Future[org.apache.pekko.Done])=&gt;Mat2):FlowOpsMat.this.ReprMat[Out,Mat2]" java="#watchTermination(org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description

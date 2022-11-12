@@ -6,7 +6,7 @@ Stream the values from an `Iterator`, requesting the next value when there is de
 
 ## Signature
 
-@apidoc[Source.fromIterator](Source$) { scala="#fromIterator[T](f:()=&gt;Iterator[T]):akka.stream.scaladsl.Source[T,akka.NotUsed]" java="#fromIterator(akka.japi.function.Creator)" }
+@apidoc[Source.fromIterator](Source$) { scala="#fromIterator[T](f:()=&gt;Iterator[T]):org.apache.pekko.stream.scaladsl.Source[T,org.apache.pekko.NotUsed]" java="#fromIterator(org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

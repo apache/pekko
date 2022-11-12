@@ -4,7 +4,7 @@
 
 package jdocs.stream;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 
 // #main-app
 public class Main {

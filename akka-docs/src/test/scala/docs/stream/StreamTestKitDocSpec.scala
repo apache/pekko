@@ -8,12 +8,12 @@ import scala.util._
 import scala.concurrent.duration._
 import scala.concurrent._
 
-import akka.Done
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.stream.testkit.scaladsl._
-import akka.testkit.{ AkkaSpec, TestProbe }
-import akka.pattern
+import org.apache.pekko.Done
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.stream.testkit.scaladsl._
+import org.apache.pekko.testkit.{ AkkaSpec, TestProbe }
+import org.apache.pekko.pattern
 
 class StreamTestKitDocSpec extends AkkaSpec {
 
@@ -31,7 +31,7 @@ class StreamTestKitDocSpec extends AkkaSpec {
   "grouped part of infinite stream" in {
     // #grouped-infinite
     import system.dispatcher
-    import akka.pattern.pipe
+    import org.apache.pekko.pattern.pipe
 
     val sourceUnderTest = Source.repeat(1).map(_ * 2)
 
@@ -54,7 +54,7 @@ class StreamTestKitDocSpec extends AkkaSpec {
   "pipe to test probe" in {
     // #pipeto-testprobe
     import system.dispatcher
-    import akka.pattern.pipe
+    import org.apache.pekko.pattern.pipe
 
     val sourceUnderTest = Source(1 to 4).grouped(2)
 

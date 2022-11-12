@@ -6,11 +6,11 @@ package jdocs.persistence;
 
 // #persistent-actor-example
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.persistence.AbstractPersistentActor;
-import akka.persistence.SnapshotOffer;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.persistence.AbstractPersistentActor;
+import org.apache.pekko.persistence.SnapshotOffer;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -7,11 +7,11 @@ package jdocs.stream.io;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import akka.NotUsed;
-import akka.stream.javadsl.Framing;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.stream.javadsl.Framing;
 import jdocs.AbstractJavaTest;
 import jdocs.stream.SilenceSystemOut;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
@@ -19,12 +19,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
-import akka.stream.javadsl.*;
-import akka.stream.javadsl.Tcp.*;
-import akka.testkit.SocketUtil;
-import akka.testkit.TestProbe;
-import akka.util.ByteString;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.javadsl.Tcp.*;
+import org.apache.pekko.testkit.SocketUtil;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.util.ByteString;
 
 public class StreamTcpDocTest extends AbstractJavaTest {
 

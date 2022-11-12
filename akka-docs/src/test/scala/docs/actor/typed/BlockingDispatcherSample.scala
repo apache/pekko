@@ -4,8 +4,8 @@
 
 package docs.actor.typed
 
-import akka.actor.typed._
-import akka.actor.typed.scaladsl._
+import org.apache.pekko.actor.typed._
+import org.apache.pekko.actor.typed.scaladsl._
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.{ ExecutionContext, Future }

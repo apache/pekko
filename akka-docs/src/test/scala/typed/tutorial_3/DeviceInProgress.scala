@@ -11,13 +11,13 @@ package com.example
 //#read-protocol-1
  */
 
-import akka.actor.typed.PostStop
-import akka.actor.typed.Signal
+import org.apache.pekko.actor.typed.PostStop
+import org.apache.pekko.actor.typed.Signal
 
 object DeviceInProgress1 {
 
   // #read-protocol-1
-  import akka.actor.typed.ActorRef
+  import org.apache.pekko.actor.typed.ActorRef
 
   object Device {
     sealed trait Command
@@ -29,14 +29,15 @@ object DeviceInProgress1 {
 }
 
 object DeviceInProgress2 {
-  import akka.actor.typed.ActorRef
+  import org.apache.pekko.actor.typed.ActorRef
 
   // #device-with-read
-  import akka.actor.typed.Behavior
-  import akka.actor.typed.scaladsl.AbstractBehavior
-  import akka.actor.typed.scaladsl.ActorContext
-  import akka.actor.typed.scaladsl.Behaviors
-  import akka.actor.typed.scaladsl.LoggerOps
+  import org.apache.pekko
+  import pekko.actor.typed.Behavior
+  import pekko.actor.typed.scaladsl.AbstractBehavior
+  import pekko.actor.typed.scaladsl.ActorContext
+  import pekko.actor.typed.scaladsl.Behaviors
+  import pekko.actor.typed.scaladsl.LoggerOps
 
   object Device {
     def apply(groupId: String, deviceId: String): Behavior[Command] =

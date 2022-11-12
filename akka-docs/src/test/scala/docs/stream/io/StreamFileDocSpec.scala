@@ -6,11 +6,11 @@ package docs.stream.io
 
 import java.nio.file.{ Files, Paths }
 
-import akka.stream._
-import akka.stream.scaladsl.{ FileIO, Sink, Source }
-import akka.stream.testkit.Utils._
-import akka.util.ByteString
-import akka.testkit.AkkaSpec
+import org.apache.pekko.stream._
+import org.apache.pekko.stream.scaladsl.{ FileIO, Sink, Source }
+import org.apache.pekko.stream.testkit.Utils._
+import org.apache.pekko.util.ByteString
+import org.apache.pekko.testkit.AkkaSpec
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
@@ -28,7 +28,7 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
 
   {
     // #file-source
-    import akka.stream.scaladsl._
+    import org.apache.pekko.stream.scaladsl._
     // #file-source
     Thread.sleep(0) // needs a statement here for valid syntax and to avoid "unused" warnings
   }

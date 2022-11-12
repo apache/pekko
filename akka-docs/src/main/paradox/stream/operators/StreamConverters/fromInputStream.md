@@ -6,18 +6,18 @@ Create a source that wraps an `InputStream`.
 
 ## Signature
 
-@apidoc[StreamConverters.fromInputStream](StreamConverters$) { scala="#fromInputStream(in:()=%3Ejava.io.InputStream,chunkSize:Int):akka.stream.scaladsl.Source[akka.util.ByteString,scala.concurrent.Future[akka.stream.IOResult]]" java="#fromInputStream(akka.japi.function.Creator)" }
+@apidoc[StreamConverters.fromInputStream](StreamConverters$) { scala="#fromInputStream(in:()=%3Ejava.io.InputStream,chunkSize:Int):org.apache.pekko.stream.scaladsl.Source[org.apache.pekko.util.ByteString,scala.concurrent.Future[org.apache.pekko.stream.IOResult]]" java="#fromInputStream(org.apache.pekko.japi.function.Creator)" }
 
 ## Description
 
 Creates a Source from a `java.io.InputStream` created by the given function.  Emitted elements are up to `chunkSize` 
-sized @apidoc[akka.util.ByteString]s elements.  The actual size of the emitted elements depends on how much data the 
+sized @apidoc[util.ByteString]s elements.  The actual size of the emitted elements depends on how much data the 
 underlying `java.io.InputStream` returns on each read invocation. Such chunks will  never be larger 
 than `chunkSize` though.
 
 You can configure the default dispatcher for this Source by changing 
 the `akka.stream.materializer.blocking-io-dispatcher` or set it for a given Source by 
-using `akka.stream.ActorAttributes`.
+using `org.apache.pekko.stream.ActorAttributes`.
 
 It materializes a @java[`CompletionStage`]@scala[`Future`] of `IOResult` containing the number of bytes read from the source file 
 upon completion,  and a possible exception if IO operation was not completed successfully. Note that bytes having

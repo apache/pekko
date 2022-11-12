@@ -4,10 +4,10 @@
 
 package docs.stream
 
-import akka.NotUsed
-import akka.stream.{ KillSwitches, RestartSettings }
-import akka.stream.scaladsl._
-import akka.testkit.AkkaSpec
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.{ KillSwitches, RestartSettings }
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.testkit.AkkaSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.duration._

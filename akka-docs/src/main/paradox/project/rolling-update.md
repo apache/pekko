@@ -106,7 +106,7 @@ a rolling update to Akka 2.6.5 using default configuration. Then change the conf
 ```
 akka.actor {
   serializers {
-    jackson-cbor = "akka.serialization.jackson.JacksonCborSerializer"
+    jackson-cbor = "org.apache.pekko.serialization.jackson.JacksonCborSerializer"
   }
   serialization-identifiers {
     jackson-cbor = 33

@@ -4,16 +4,16 @@
 
 package jdocs.stream;
 
-import akka.NotUsed;
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.japi.function.Creator;
-import akka.stream.javadsl.*;
-import akka.testkit.TestProbe;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.japi.function.Creator;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.testkit.TestProbe;
 import jdocs.AbstractJavaTest;
 import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Author;
 import jdocs.stream.TwitterStreamQuickstartDocTest.Model.Tweet;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

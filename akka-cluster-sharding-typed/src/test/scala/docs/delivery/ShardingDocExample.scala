@@ -10,14 +10,15 @@ import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
 
-import akka.Done
-import akka.actor.typed.ActorRef
-import akka.actor.typed.Behavior
-import akka.actor.typed.delivery.ConsumerController
-import akka.actor.typed.scaladsl.ActorContext
-import akka.actor.typed.scaladsl.Behaviors
-import akka.cluster.sharding.typed.delivery.ShardingConsumerController
-import akka.util.Timeout
+import org.apache.pekko
+import pekko.Done
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.delivery.ConsumerController
+import pekko.actor.typed.scaladsl.ActorContext
+import pekko.actor.typed.scaladsl.Behaviors
+import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
+import pekko.util.Timeout
 
 //#imports
 
@@ -105,7 +106,7 @@ object ShardingDocExample {
   // #consumer
 
   // #producer
-  import akka.cluster.sharding.typed.delivery.ShardingProducerController
+  import pekko.cluster.sharding.typed.delivery.ShardingProducerController
 
   object TodoService {
     sealed trait Command
@@ -187,10 +188,11 @@ object ShardingDocExample {
   def illustrateInit(): Unit = {
     Behaviors.setup[Nothing] { context =>
       // #init
-      import akka.cluster.sharding.typed.scaladsl.ClusterSharding
-      import akka.cluster.sharding.typed.scaladsl.Entity
-      import akka.cluster.sharding.typed.scaladsl.EntityTypeKey
-      import akka.cluster.typed.Cluster
+      import org.apache.pekko
+      import pekko.cluster.sharding.typed.scaladsl.ClusterSharding
+      import pekko.cluster.sharding.typed.scaladsl.Entity
+      import pekko.cluster.sharding.typed.scaladsl.EntityTypeKey
+      import pekko.cluster.typed.Cluster
 
       val db: DB = ???
 

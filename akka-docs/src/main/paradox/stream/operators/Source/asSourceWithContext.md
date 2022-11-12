@@ -6,7 +6,7 @@ Extracts context data from the elements of a `Source` so that it can be turned i
 
 ## Signature
 
-@apidoc[Source.asSourceWithContext](Source) { scala="#asSourceWithContext[Ctx](f:Out=&gt;Ctx):akka.stream.scaladsl.SourceWithContext[Out,Ctx,Mat]" java="#asSourceWithContext(akka.japi.function.Function)" }
+@apidoc[Source.asSourceWithContext](Source) { scala="#asSourceWithContext[Ctx](f:Out=&gt;Ctx):org.apache.pekko.stream.scaladsl.SourceWithContext[Out,Ctx,Mat]" java="#asSourceWithContext(org.apache.pekko.japi.function.Function)" }
 
 ## Description
 

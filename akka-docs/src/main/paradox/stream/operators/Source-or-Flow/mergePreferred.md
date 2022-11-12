@@ -6,8 +6,8 @@ Merge multiple sources.
 
 ## Signature
 
-@apidoc[Source.mergePreferred](Source) { scala="#mergePreferred[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],preferred:Boolean,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePreferred(akka.stream.Graph,boolean,boolean)" }
-@apidoc[Flow.mergePreferred](Flow) { scala="#mergePreferred[U&gt;:Out,M](that:akka.stream.Graph[akka.stream.SourceShape[U],M],preferred:Boolean,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePreferred(akka.stream.Graph,boolean,boolean)" }
+@apidoc[Source.mergePreferred](Source) { scala="#mergePreferred[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],preferred:Boolean,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePreferred(org.apache.pekko.stream.Graph,boolean,boolean)" }
+@apidoc[Flow.mergePreferred](Flow) { scala="#mergePreferred[U&gt;:Out,M](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],M],preferred:Boolean,eagerComplete:Boolean):FlowOps.this.Repr[U]" java="#mergePreferred(org.apache.pekko.stream.Graph,boolean,boolean)" }
 
 ## Description
 
@@ -18,7 +18,7 @@ prefer the left source (see examples).
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowMergeSpec.scala) { #mergePreferred }
+:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #mergePreferred }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #mergePreferred }

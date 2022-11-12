@@ -2,7 +2,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt.Keys._
 import sbt._
@@ -56,10 +56,10 @@ object TestExtras {
 
           val baseList =
             List(
-              "The java JavaExtension.java" -> "akka-actor-tests/target/test-reports/TEST-akka.actor.JavaExtension.xml")
+              "The java JavaExtension.java" -> "akka-actor-tests/target/test-reports/TEST-org.apache.pekko.actor.JavaExtension.xml")
           val jdk9Only = List(
-            "The jdk9-only FlowPublisherSinkSpec.scala" -> "akka-stream-tests/target/test-reports/TEST-akka.stream.scaladsl.FlowPublisherSinkSpec.xml",
-            "The jdk9-only JavaFlowSupportCompileTest.java" -> "akka-stream-tests/target/test-reports/TEST-akka.stream.javadsl.JavaFlowSupportCompileTest.xml")
+            "The jdk9-only FlowPublisherSinkSpec.scala" -> "akka-stream-tests/target/test-reports/TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
+            "The jdk9-only JavaFlowSupportCompileTest.java" -> "akka-stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
 
           val testsToCheck =
             if (isJdk8) baseList

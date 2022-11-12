@@ -4,7 +4,7 @@
 
 package docs.stream
 
-import akka.stream.scaladsl.{ Sink, Source }
+import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 import docs.stream.cookbook.RecipeSpec
 
 import scala.concurrent.Future

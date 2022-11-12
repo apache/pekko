@@ -6,7 +6,7 @@ Allows coupling termination (cancellation, completion, erroring) of Sinks and So
 
 ## Signature
 
-@apidoc[Flow.fromSinkAndSourceCoupled](Flow$) { scala="#fromSinkAndSourceCoupled[I,O](sink:akka.stream.Graph[akka.stream.SinkShape[I],_],source:akka.stream.Graph[akka.stream.SourceShape[O],_]):akka.stream.scaladsl.Flow[I,O,akka.NotUsed]" java="#fromSinkAndSourceCoupled(akka.stream.Graph,akka.stream.Graph)" }
+@apidoc[Flow.fromSinkAndSourceCoupled](Flow$) { scala="#fromSinkAndSourceCoupled[I,O](sink:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SinkShape[I],_],source:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[O],_]):org.apache.pekko.stream.scaladsl.Flow[I,O,org.apache.pekko.NotUsed]" java="#fromSinkAndSourceCoupled(org.apache.pekko.stream.Graph,org.apache.pekko.stream.Graph)" }
 
 ## Description
 

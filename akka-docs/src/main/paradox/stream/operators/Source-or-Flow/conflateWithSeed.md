@@ -6,8 +6,8 @@ Allow for a slower downstream by passing incoming elements and a summary into an
 
 ## Signature
 
-@apidoc[Source.conflateWithSeed](Source) { scala="#conflateWithSeed[S](seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#conflateWithSeed(akka.japi.function.Function,akka.japi.function.Function2)" }
-@apidoc[Flow.conflateWithSeed](Flow) { scala="#conflateWithSeed[S](seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#conflateWithSeed(akka.japi.function.Function,akka.japi.function.Function2)" }
+@apidoc[Source.conflateWithSeed](Source) { scala="#conflateWithSeed[S](seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#conflateWithSeed(org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
+@apidoc[Flow.conflateWithSeed](Flow) { scala="#conflateWithSeed[S](seed:Out=&gt;S)(aggregate:(S,Out)=&gt;S):FlowOps.this.Repr[S]" java="#conflateWithSeed(org.apache.pekko.japi.function.Function,org.apache.pekko.japi.function.Function2)" }
 
 
 ## Description

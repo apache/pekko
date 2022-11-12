@@ -4,16 +4,16 @@
 
 package jdocs.stream;
 
-import akka.actor.ActorSystem;
-import akka.stream.Attributes;
-import akka.stream.Materializer;
-import akka.stream.Outlet;
-import akka.stream.SourceShape;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.Materializer;
+import org.apache.pekko.stream.Outlet;
+import org.apache.pekko.stream.SourceShape;
 // #stage-with-logging
-import akka.stream.stage.AbstractOutHandler;
-import akka.stream.stage.GraphStage;
-import akka.stream.stage.GraphStageLogic;
-import akka.stream.stage.GraphStageLogicWithLogging;
+import org.apache.pekko.stream.stage.AbstractOutHandler;
+import org.apache.pekko.stream.stage.GraphStage;
+import org.apache.pekko.stream.stage.GraphStageLogic;
+import org.apache.pekko.stream.stage.GraphStageLogicWithLogging;
 
 // #stage-with-logging
 import jdocs.AbstractJavaTest;

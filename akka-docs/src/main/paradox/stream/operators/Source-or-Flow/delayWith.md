@@ -6,8 +6,8 @@ Delay every element passed through with a duration that can be controlled dynami
 
 ## Signature
 
-@apidoc[Source.delayWith](Source) { scala="#delayWith(delayStrategySupplier:()=&gt;akka.stream.scaladsl.DelayStrategy[Out],overFlowStrategy:akka.stream.DelayOverflowStrategy):FlowOps.this.Repr[Out]" java="#delayWith(java.util.function.Supplier,akka.stream.DelayOverflowStrategy)" }
-@apidoc[Flow.delayWith](Flow) { scala="#delayWith(delayStrategySupplier:()=&gt;akka.stream.scaladsl.DelayStrategy[Out],overFlowStrategy:akka.stream.DelayOverflowStrategy):FlowOps.this.Repr[Out]" java="#delayWith(java.util.function.Supplier,akka.stream.DelayOverflowStrategy)" }
+@apidoc[Source.delayWith](Source) { scala="#delayWith(delayStrategySupplier:()=&gt;org.apache.pekko.stream.scaladsl.DelayStrategy[Out],overFlowStrategy:org.apache.pekko.stream.DelayOverflowStrategy):FlowOps.this.Repr[Out]" java="#delayWith(java.util.function.Supplier,org.apache.pekko.stream.DelayOverflowStrategy)" }
+@apidoc[Flow.delayWith](Flow) { scala="#delayWith(delayStrategySupplier:()=&gt;org.apache.pekko.stream.scaladsl.DelayStrategy[Out],overFlowStrategy:org.apache.pekko.stream.DelayOverflowStrategy):FlowOps.this.Repr[Out]" java="#delayWith(java.util.function.Supplier,org.apache.pekko.stream.DelayOverflowStrategy)" }
 
 
 ## Description

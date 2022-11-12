@@ -6,7 +6,7 @@ Create a sink which materializes into a @scala[`Future`] @java[`CompletionStage`
 
 ## Signature
 
-@apidoc[StreamConverters.javaCollectorParallelUnordered](StreamConverters$) { scala="#javaCollectorParallelUnordered[T,R](parallelism:Int)(collectorFactory:()=&gt;java.util.stream.Collector[T,_,R]):akka.stream.scaladsl.Sink[T,scala.concurrent.Future[R]]" java="#javaCollectorParallelUnordered(int,akka.japi.function.Creator)" }
+@apidoc[StreamConverters.javaCollectorParallelUnordered](StreamConverters$) { scala="#javaCollectorParallelUnordered[T,R](parallelism:Int)(collectorFactory:()=&gt;java.util.stream.Collector[T,_,R]):org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[R]]" java="#javaCollectorParallelUnordered(int,org.apache.pekko.japi.function.Creator)" }
 
 
 ## Description

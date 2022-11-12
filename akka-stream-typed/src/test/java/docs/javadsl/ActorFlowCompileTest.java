@@ -4,15 +4,15 @@
 
 package docs.javadsl;
 
-import akka.NotUsed;
+import org.apache.pekko.NotUsed;
 // #ask-actor
-import akka.actor.typed.ActorRef;
-import akka.actor.typed.ActorSystem;
-import akka.pattern.StatusReply;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
-import akka.stream.typed.javadsl.ActorFlow;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.pattern.StatusReply;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
+import org.apache.pekko.stream.typed.javadsl.ActorFlow;
 
 // #ask-actor
 import java.time.Duration;
@@ -87,15 +87,18 @@ public class ActorFlowCompileTest {
     // #askWithContext
 
     // method reference notation
-    Flow<akka.japi.Pair<String, Long>, akka.japi.Pair<Reply, Long>, NotUsed> askFlowWithContext =
-        ActorFlow.askWithContext(actorRef, timeout, Asking::new);
+    Flow<org.apache.pekko.japi.Pair<String, Long>, org.apache.pekko.japi.Pair<Reply, Long>, NotUsed>
+        askFlowWithContext = ActorFlow.askWithContext(actorRef, timeout, Asking::new);
 
     // explicit creation of the sent message
-    Flow<akka.japi.Pair<String, Long>, akka.japi.Pair<Reply, Long>, NotUsed>
+    Flow<org.apache.pekko.japi.Pair<String, Long>, org.apache.pekko.japi.Pair<Reply, Long>, NotUsed>
         askFlowExplicitWithContext =
             ActorFlow.askWithContext(actorRef, timeout, (msg, replyTo) -> new Asking(msg, replyTo));
 
-    Flow<akka.japi.Pair<String, Long>, akka.japi.Pair<String, Long>, NotUsed>
+    Flow<
+            org.apache.pekko.japi.Pair<String, Long>,
+            org.apache.pekko.japi.Pair<String, Long>,
+            NotUsed>
         askFlowExplicitWithStatusAndContext =
             ActorFlow.askWithStatusAndContext(
                 actorWithStatusRef, timeout, (msg, replyTo) -> new AskingWithStatus(msg, replyTo));

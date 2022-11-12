@@ -14,20 +14,20 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import akka.Done;
-import akka.NotUsed;
+import org.apache.pekko.Done;
+import org.apache.pekko.NotUsed;
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import akka.actor.*;
-import akka.japi.Pair;
-import akka.stream.*;
-import akka.stream.javadsl.*;
-import akka.stream.testkit.*;
-import akka.stream.testkit.javadsl.*;
+import org.apache.pekko.actor.*;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.javadsl.*;
+import org.apache.pekko.stream.testkit.*;
+import org.apache.pekko.stream.testkit.javadsl.*;
 
 public class StreamTestKitDocTest extends AbstractJavaTest {
 
@@ -95,7 +95,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
     final TestKit probe = new TestKit(system);
     final CompletionStage<List<List<Integer>>> future =
         sourceUnderTest.grouped(2).runWith(Sink.head(), system);
-    akka.pattern.Patterns.pipe(future, system.dispatcher()).to(probe.getRef());
+    org.apache.pekko.pattern.Patterns.pipe(future, system.dispatcher()).to(probe.getRef());
     probe.expectMsg(Duration.ofSeconds(3), Arrays.asList(Arrays.asList(1, 2), Arrays.asList(3, 4)));
     // #pipeto-testprobe
   }
@@ -208,7 +208,7 @@ public class StreamTestKitDocTest extends AbstractJavaTest {
             .mapAsyncUnordered(
                 2,
                 sleep ->
-                    akka.pattern.Patterns.after(
+                    org.apache.pekko.pattern.Patterns.after(
                         Duration.ofMillis(10),
                         system.scheduler(),
                         system.dispatcher(),

@@ -71,23 +71,23 @@ After being deprecated since 2.5.0, the following have been removed in Akka 2.6.
 * akka-agent module
     - If there is interest it may be moved to a separate, community-maintained repository.
 * akka-contrib module
-    - To migrate, take the components you are using from [Akka 2.5](https://github.com/akka/akka/tree/release-2.5/akka-contrib) and include them in your own project or library under your own package name.
+    - To migrate, take the components you are using from [Akka 2.5](https://github.com/org/apache/pekko/akka/tree/release-2.5/akka-contrib) and include them in your own project or library under your own package name.
 * Actor DSL
     - Actor DSL is a rarely used feature. Use plain `system.actorOf` instead of the DSL to create Actors if you have been using it.
-* `akka.stream.extra.Timing` operator
-    - If you need it you can now find it in `akka.stream.contrib.Timed` from [Akka Stream Contrib](https://github.com/akka/akka-stream-contrib/blob/master/src/main/scala/akka/stream/contrib/Timed.scala).
+* `org.apache.pekko.stream.extra.Timing` operator
+    - If you need it you can now find it in `org.apache.pekko.stream.contrib.Timed` from [Akka Stream Contrib](https://github.com/org/apache/pekko/akka-stream-contrib/blob/master/src/main/scala/org/apache/pekko/stream/contrib/Timed.scala).
 * Netty UDP (Classic remoting over UDP)
     - To continue to use UDP configure @ref[Artery UDP](../remoting-artery.md#configuring-ssl-tls-for-akka-remoting) or migrate to Artery TCP.
     - A full cluster restart is required to change to Artery.
 * `UntypedActor`
     - Use `AbstractActor` instead.
 * `JavaTestKit`
-    - Use `akka.testkit.javadsl.TestKit` instead.
+    - Use `org.apache.pekko.testkit.javadsl.TestKit` instead.
 * `UntypedPersistentActor`
     - Use `AbstractPersistentActor` instead.
 * `UntypedPersistentActorWithAtLeastOnceDelivery`
     - Use @apidoc[AbstractPersistentActorWithAtLeastOnceDelivery] instead.
-* `akka.stream.actor.ActorSubscriber` and `akka.stream.actor.ActorPublisher`
+* `org.apache.pekko.stream.actor.ActorSubscriber` and `org.apache.pekko.stream.actor.ActorPublisher`
     - Use `GraphStage` instead.
 
 After being deprecated since 2.4.0, the following have been removed in Akka 2.6.0.
@@ -121,7 +121,7 @@ After being deprecated since 2.2, the following have been removed in Akka 2.6.0.
 
 ### TypedActor
 
-`akka.actor.TypedActor` has been deprecated as of 2.6.0 in favor of the
+`org.apache.pekko.actor.TypedActor` has been deprecated as of 2.6.0 in favor of the
 `akka.actor.typed` API which should be used instead.
 
 There are several reasons for phasing out the old `TypedActor`. The primary reason is they use transparent
@@ -146,7 +146,7 @@ that sending a message will result in it being processed instantaneously. The go
 transparency is to unify message passing for both local and remote interactions, versus attempting
 to make remote interactions look like local method calls.
 
-Warnings about `TypedActor` have been [mentioned in documentation](https://doc.akka.io/docs/akka/2.5/typed-actors.html#when-to-use-typed-actors)
+Warnings about `TypedActor` have been [mentioned in documentation](https://doc.akka.io/docs/org/apache/pekko/2.5/typed-actors.html#when-to-use-typed-actors)
 for many years.
 
 ### Cluster Client
@@ -164,8 +164,8 @@ Akka is now using Protobuf version 3.9.0 for serialization of messages defined b
 
 ### ByteString.empty
 
-It is now recommended to use @apidoc[akka.util.ByteString]`.emptyByteString()` instead of
-@apidoc[akka.util.ByteString]`.empty()` when using Java because @apidoc[akka.util.ByteString]`.empty()`
+It is now recommended to use @apidoc[util.ByteString]`.emptyByteString()` instead of
+@apidoc[util.ByteString]`.empty()` when using Java because @apidoc[util.ByteString]`.empty()`
 is [no longer available as a static method](https://github.com/scala/bug/issues/11509) in the artifacts built for Scala 2.13.
 
 ### AkkaSslConfig
@@ -179,12 +179,12 @@ See documentation of @ref:[streaming IO with TLS](../stream/stream-io.md#tls).
 
 ### JavaLogger
 
-`akka.event.jul.JavaLogger` for integration with `java.util.logging` has been deprecated. Use SLF4J instead,
+`org.apache.pekko.event.jul.JavaLogger` for integration with `java.util.logging` has been deprecated. Use SLF4J instead,
 which also has support for `java.util.logging`.
 
-### akka.Main
+### org.apache.pekko.Main
 
-`akka.Main` is deprecated in favour of starting the `ActorSystem` from a custom main class instead. `akka.Main` was not
+`org.apache.pekko.Main` is deprecated in favour of starting the `ActorSystem` from a custom main class instead. `org.apache.pekko.Main` was not
 adding much value and typically a custom main class is needed anyway.
 
 ### Pluggable DNS
@@ -242,9 +242,9 @@ for how to do this.
 
 The following events that are published to the `eventStream` have changed:
 
-* classic `akka.remote.QuarantinedEvent` is `akka.remote.artery.QuarantinedEvent` in Artery
-* classic `akka.remote.GracefulShutdownQuarantinedEvent` is `akka.remote.artery.GracefulShutdownQuarantinedEvent` in Artery
-* classic `akka.remote.ThisActorSystemQuarantinedEvent` is `akka.remote.artery.ThisActorSystemQuarantinedEvent` in Artery
+* classic `org.apache.pekko.remote.QuarantinedEvent` is `org.apache.pekko.remote.artery.QuarantinedEvent` in Artery
+* classic `org.apache.pekko.remote.GracefulShutdownQuarantinedEvent` is `org.apache.pekko.remote.artery.GracefulShutdownQuarantinedEvent` in Artery
+* classic `org.apache.pekko.remote.ThisActorSystemQuarantinedEvent` is `org.apache.pekko.remote.artery.ThisActorSystemQuarantinedEvent` in Artery
 
 #### Migration from 2.5.x Artery to 2.6.x Artery
 
@@ -288,7 +288,7 @@ If you have a [Lightbend Subscription](https://www.lightbend.com/lightbend-subsc
 
 Cluster Sharding coordinator and @ref:[Remembering Entities](../cluster-sharding.md#remembering-entities) state could previously be stored in Distributed Data or via Akka Persistence.
 The Persistence mode has been deprecated in favour of using the Distributed Data mode for the coordinator state. A replacement for the state
-for Remembered Entities is tracked in [issue 27763](https://github.com/akka/akka/issues/27763).
+for Remembered Entities is tracked in [issue 27763](https://github.com/org/apache/pekko/akka/issues/27763).
 
 ## Java Serialization
 
@@ -615,7 +615,7 @@ Akka Typed APIs were still marked as @ref:[may change](../common/may-change.md) 
 made before finalizing the APIs. Compared to Akka 2.5.x the source incompatible changes are:
 
 * `Behaviors.intercept` now takes a factory function for the interceptor.
-* `ActorSystem.scheduler` previously gave access to the classic `akka.actor.Scheduler` but now returns a specific `akka.actor.typed.Scheduler`.
+* `ActorSystem.scheduler` previously gave access to the classic `org.apache.pekko.actor.Scheduler` but now returns a specific `org.apache.pekko.actor.typed.Scheduler`.
   Additionally `schedule` method has been replaced by `scheduleWithFixedDelay` and `scheduleAtFixedRate`. Actors that need to schedule tasks should
   prefer `Behaviors.withTimers`.
 * `TimerScheduler.startPeriodicTimer`, replaced by `startTimerWithFixedDelay` or `startTimerAtFixedRate`
@@ -625,7 +625,7 @@ made before finalizing the APIs. Compared to Akka 2.5.x the source incompatible 
   they were redundant with corresponding @scala[scaladsl.Behaviors.x]@java[javadsl.Behaviors.x].
 * `ActorContext` parameter removed in `javadsl.ReceiveBuilder` for the functional style in Java. Use `Behaviors.setup`
    to retrieve `ActorContext`, and use an enclosing class to hold initialization parameters and `ActorContext`.
-* Java @javadoc[EntityRef](akka.cluster.sharding.typed.javadsl.EntityRef) ask timeout now takes a `java.time.Duration` rather than a @apidoc[Timeout]
+* Java @javadoc[EntityRef](pekko.cluster.sharding.typed.javadsl.EntityRef) ask timeout now takes a `java.time.Duration` rather than a @apidoc[Timeout]
 * Changed method signature for `EventAdapter.fromJournal` and support for `manifest` in `EventAdapter`.
 * Renamed @scala[`widen`]@java[`Behaviors.widen`] to @scala[`transformMessages`]@java[`Behaviors.transformMessages`]
 * `BehaviorInterceptor`, `Behaviors.monitor`, `Behaviors.withMdc` and @scala[`transformMessages`]@java[`Behaviors.transformMessages`] takes
@@ -647,7 +647,7 @@ made before finalizing the APIs. Compared to Akka 2.5.x the source incompatible 
   causing more confusion than adding value. Construction of `PersistentId` for the `EventSourcedBehavior` is
   facilitated by factory methods in `PersistenceId`.
 * `PersistenceId.apply(String)` renamed to `PersistenceId.ofUniqueId(String)`  
-* `akka.cluster.sharding.typed.scaladsl.Entity.apply` changed to use two parameter lists because the new
+* `org.apache.pekko.cluster.sharding.typed.scaladsl.Entity.apply` changed to use two parameter lists because the new
   `EntityContext.entityTypeKey` required additional type parameter that is inferred better with a secondary
   parameter list.
 * `EventSourcedBehavior.withEnforcedReplies` signature changed. Command is not required to extend `ExpectingReply`
@@ -661,8 +661,8 @@ made before finalizing the APIs. Compared to Akka 2.5.x the source incompatible 
 #### Akka Typed Stream API changes
 
 * `ActorSource.actorRef` relying on `PartialFunction` has been replaced in the Java API with a variant more suitable to be called by Java.
-* Factories for creating a materializer from an `akka.actor.typed.ActorSystem` have been removed.
-  A stream can be run with an `akka.actor.typed.ActorSystem` @scala[in implicit scope]@java[parameter]
+* Factories for creating a materializer from an `org.apache.pekko.actor.typed.ActorSystem` have been removed.
+  A stream can be run with an `org.apache.pekko.actor.typed.ActorSystem` @scala[in implicit scope]@java[parameter]
   and therefore the need for creating a materializer has been reduced.
 * `actorRefWithAck` has been renamed to `actorRefWithBackpressure`
 
@@ -674,7 +674,7 @@ A default materializer is now provided out of the box. For the Java API just pas
 for Scala an implicit materializer is provided if there is an implicit `ActorSystem` available. This avoids leaking
 materializers and simplifies most stream use cases somewhat.
 
-The `ActorMaterializer` factories has been deprecated and replaced with a few corresponding factories in `akka.stream.Materializer`.
+The `ActorMaterializer` factories has been deprecated and replaced with a few corresponding factories in `org.apache.pekko.stream.Materializer`.
 New factories with per-materializer settings has not been provided but should instead be done globally through config or per stream,
 see below for more details.
 
@@ -684,7 +684,7 @@ and Scala `implicit val materializer = ActorMaterializer()` should be removed.
 Details about the stream materializer can be found in @ref:[Actor Materializer Lifecycle](../stream/stream-flows-and-basics.md#actor-materializer-lifecycle)
 
 When using streams from typed the same factories and methods for creating materializers and running streams as from classic can now be used with typed. The
-`akka.stream.typed.scaladsl.ActorMaterializer` and `akka.stream.typed.javadsl.ActorMaterializerFactory` that previously existed in the `akka-stream-typed` module has been removed.
+`org.apache.pekko.stream.typed.scaladsl.ActorMaterializer` and `org.apache.pekko.stream.typed.javadsl.ActorMaterializerFactory` that previously existed in the `akka-stream-typed` module has been removed.
 
 ### Materializer settings deprecated
 
@@ -725,10 +725,10 @@ used for individual streams when they are materialized.
 Setting attributes on individual streams can be done like so:
 
 Scala
-:  @@snip [StreamAttributeDocSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/StreamAttributeDocSpec.scala) { #attributes-on-stream }
+:  @@snip [StreamAttributeDocSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/StreamAttributeDocSpec.scala) { #attributes-on-stream }
 
 Java
-:  @@snip [StreamAttributeDocTest.java](/akka-stream-tests/src/test/java/akka/stream/StreamAttributeDocTest.java) { #attributes-on-stream }
+:  @@snip [StreamAttributeDocTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/StreamAttributeDocTest.java) { #attributes-on-stream }
 
 ### Stream cancellation available upstream
 
@@ -755,7 +755,7 @@ The operators that provide support for lazy and @scala[`Future`]@java[`Completio
 to be more consistent.
 
 The materialized value is now no longer wrapped in an @scala[`Option`]@java[`Optional`], instead the @scala[`Future`]@java[`CompletionStage`]
-is failed with a `akka.stream.NeverMaterializedException` in the cases that would previously lead to @scala[`None`]@java[an empty `Optional`] 
+is failed with a `org.apache.pekko.stream.NeverMaterializedException` in the cases that would previously lead to @scala[`None`]@java[an empty `Optional`] 
 
 A deferred creation of the stream based on the initial element like how the deprecated `lazyInit` worked can be achieved by combining 
 @scala[`future(Flow|Sink)`] @java[`completionStage(Flow|Sink)`] with `prefixAndTail`. See example in @scala[@ref:[futureFlow](../stream/operators/Flow/futureFlow.md)]

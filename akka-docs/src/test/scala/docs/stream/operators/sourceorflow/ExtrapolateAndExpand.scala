@@ -4,15 +4,15 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.actor.Cancellable
-import akka.stream.DelayOverflowStrategy
-import akka.stream.scaladsl.DelayStrategy
-import akka.stream.scaladsl.Flow
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
-import akka.util.ByteString
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Cancellable
+import org.apache.pekko.stream.DelayOverflowStrategy
+import org.apache.pekko.stream.scaladsl.DelayStrategy
+import org.apache.pekko.stream.scaladsl.Flow
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.fps
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.nowInSeconds
 import docs.stream.operators.sourceorflow.ExtrapolateAndExpand.periodInMillis

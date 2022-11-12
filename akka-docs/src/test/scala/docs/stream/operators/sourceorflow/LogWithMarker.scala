@@ -4,10 +4,11 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.stream.scaladsl.Flow
+import org.apache.pekko.stream.scaladsl.Flow
 //#logWithMarker
-import akka.event.LogMarker
-import akka.stream.Attributes
+import org.apache.pekko
+import pekko.event.LogMarker
+import pekko.stream.Attributes
 
 //#logWithMarker
 

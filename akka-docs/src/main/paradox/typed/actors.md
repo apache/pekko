@@ -55,10 +55,10 @@ look like?
 In all of the following these imports are assumed:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #imports }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #imports }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #imports }
+:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #imports }
 
 With these in place we can define our first Actor, and it will say
 hello!
@@ -66,10 +66,10 @@ hello!
 ![hello-world1.png](./images/hello-world1.png)
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-actor }
 
 This small piece of code defines two message types, one for commanding the
 Actor to greet someone and one that the Actor will use to confirm that it has
@@ -79,10 +79,10 @@ supplies so that the `HelloWorld` Actor can send back the confirmation
 message.
 
 The behavior of the Actor is defined as the `Greeter` with the help
-of the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(akka.actor.typed.scaladsl.ActorContext[T],T)=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(akka.japi.function.Function2,akka.japi.function.Function2)"} behavior factory. Processing the next message then results
+of the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(org.apache.pekko.actor.typed.scaladsl.ActorContext[T],T)=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(org.apache.pekko.japi.function.Function2,org.apache.pekko.japi.function.Function2)"} behavior factory. Processing the next message then results
 in a new behavior that can potentially be different from this one. State is
 updated by returning a new behavior that holds the new immutable state. In this
-case we don't need to update any state, so we return @apidoc[same](typed.*.Behaviors$){scala="#same[T]:akka.actor.typed.Behavior[T]" java="#same()"}, which means
+case we don't need to update any state, so we return @apidoc[same](typed.*.Behaviors$){scala="#same[T]:org.apache.pekko.actor.typed.Behavior[T]" java="#same()"}, which means
 the next behavior is "the same as the current one".
 
 The type of the messages handled by this behavior is declared to be of class
@@ -92,7 +92,7 @@ Typically, an actor handles more than one specific message type where all of the
 directly or indirectly @scala[`extend`]@java[`implement`] a common @scala[`trait`]@java[`interface`].
 
 On the last line we see the `HelloWorld` Actor send a message to another
-Actor, which is done using the @scala[@scaladoc[!](akka.actor.typed.ActorRef#tell(msg:T):Unit) operator (pronounced “bang” or “tell”)]@java[@javadoc[tell](akka.actor.typed.ActorRef#tell(T)) method].
+Actor, which is done using the @scala[@scaladoc[!](pekko.actor.typed.ActorRef#tell(msg:T):Unit) operator (pronounced “bang” or “tell”)]@java[@javadoc[tell](pekko.actor.typed.ActorRef#tell(T)) method].
 It is an asynchronous operation that doesn't block the caller's thread.
 
 Since the `replyTo` address is declared to be of type @scala[`ActorRef[Greeted]`]@java[`ActorRef<Greeted>`], the
@@ -114,10 +114,10 @@ of messages have been reached.
 ![hello-world2.png](./images/hello-world2.png)
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-bot }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-bot }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-bot }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-bot }
 
 @scala[Note how this Actor manages the counter by changing the behavior for each `Greeted` reply
 rather than using any variables.]@java[Note how this Actor manages the counter with an instance variable.]
@@ -127,18 +127,18 @@ message at a time.
 A third actor spawns the `Greeter` and the `HelloWorldBot` and starts the interaction between those.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main }
 
 Now we want to try out this Actor, so we must start an ActorSystem to host it:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #hello-world }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #hello-world }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world }
 
 We start an Actor system from the defined `HelloWorldMain` behavior and send two `SayHello` messages that
 will kick-off the interaction between two separate `HelloWorldBot` actors and the single `Greeter` actor.
@@ -168,7 +168,7 @@ You will also need to add a @ref:[logging dependency](logging.md) to see that ou
 
 #### Here is another example that you can edit and run in the browser:
 
-@@fiddle [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #fiddle_code template=Akka layout=v75 minheight=400px }
+@@fiddle [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #fiddle_code template=Akka layout=v75 minheight=400px }
 
 @@@
 
@@ -197,10 +197,10 @@ chat room Actor will disseminate all posted messages to all currently connected
 client Actors. The protocol definition could look like the following:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #chatroom-protocol }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #chatroom-protocol }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #chatroom-protocol }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #chatroom-protocol }
 
 Initially the client Actors only get access to an @apidoc[typed.ActorRef[GetSession]]
 which allows them to make the first step. Once a client’s session has been
@@ -217,10 +217,10 @@ full protocol that can involve multiple Actors and that can evolve over
 multiple steps. Here's the implementation of the chat room protocol:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #chatroom-behavior }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #chatroom-behavior }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #chatroom-behavior }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #chatroom-behavior }
 
 
 The state is managed by changing behavior rather than using any variables.
@@ -260,16 +260,16 @@ problematic, so passing an @scala[`ActorRef[PublishSessionMessage]`]@java[`Actor
 In order to see this chat room in action we need to write a client Actor that can use it:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #chatroom-gabbler }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #chatroom-gabbler }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #chatroom-gabbler }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #chatroom-gabbler }
 
 From this behavior we can create an Actor that will accept a chat room session,
 post a message, wait to see it published, and then terminate. The last step
 requires the ability to change behavior, we need to transition from the normal
 running behavior into the terminated state. This is why here we do not return
-@apidoc[same](typed.*.Behaviors$){scala="#same[T]:akka.actor.typed.Behavior[T]" java="#same()"}, as above, but another special value @apidoc[stopped](typed.*.Behaviors$){scala="#stopped[T]:akka.actor.typed.Behavior[T]" java="#stopped()"}.
+@apidoc[same](typed.*.Behaviors$){scala="#same[T]:org.apache.pekko.actor.typed.Behavior[T]" java="#same()"}, as above, but another special value @apidoc[stopped](typed.*.Behaviors$){scala="#stopped[T]:org.apache.pekko.actor.typed.Behavior[T]" java="#stopped()"}.
 
 @@@ div {.group-scala}
 
@@ -288,28 +288,28 @@ nonsensical) or we start both of them from a third Actor—our only sensible
 choice:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/IntroSpec.scala) { #chatroom-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #chatroom-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/IntroTest.java) { #chatroom-main }
+:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #chatroom-main }
 
 In good tradition we call the `Main` Actor what it is, it directly
 corresponds to the `main` method in a traditional Java application. This
 Actor will perform its job on its own accord, we do not need to send messages
-from the outside, so we declare it to be of type @scala[@scaladoc[NotUsed](akka.NotUsed)]@java[@javadoc[Void](java.lang.Void)]. Actors receive not
+from the outside, so we declare it to be of type @scala[@scaladoc[NotUsed](pekko.NotUsed)]@java[@javadoc[Void](java.lang.Void)]. Actors receive not
 only external messages, they also are notified of certain system events,
 so-called Signals. In order to get access to those we choose to implement this
-particular one using the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(akka.actor.typed.scaladsl.ActorContext[T],T)=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(akka.japi.function.Function2)"} behavior decorator. The
+particular one using the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(org.apache.pekko.actor.typed.scaladsl.ActorContext[T],T)=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(org.apache.pekko.japi.function.Function2)"} behavior decorator. The
 provided `onSignal` function will be invoked for signals (subclasses of @apidoc[typed.Signal])
 or the `onMessage` function for user messages.
 
-This particular `Main` Actor is created using @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"}, which is like a factory for a behavior.
-Creation of the behavior instance is deferred until the actor is started, as opposed to @apidoc[Behaviors.receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(akka.actor.typed.scaladsl.ActorContext[T],T)=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(akka.japi.function.Function2)"}
+This particular `Main` Actor is created using @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}, which is like a factory for a behavior.
+Creation of the behavior instance is deferred until the actor is started, as opposed to @apidoc[Behaviors.receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(org.apache.pekko.actor.typed.scaladsl.ActorContext[T],T)=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(org.apache.pekko.japi.function.Function2)"}
 that creates the behavior instance immediately before the actor is running. The factory function in
 `setup` is passed the @apidoc[typed.*.ActorContext] as parameter and that can for example be used for spawning child actors.
 This `Main` Actor creates the chat room and the gabbler and the session between them is initiated, and when the
 gabbler is finished we will receive the @apidoc[typed.Terminated] event due to having
-called @apidoc[context.watch](typed.*.ActorContext) {scala="#watch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#watch(akka.actor.typed.ActorRef)"} for it. This allows us to shut down the Actor system: when
+called @apidoc[context.watch](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"} for it. This allows us to shut down the Actor system: when
 the `Main` Actor terminates there is nothing more to do.
 
 Therefore after creating the Actor system with the `Main` Actor’s
@@ -332,17 +332,17 @@ is best for a specific actor. Considerations for the choice is provided in the
 #### AbstractBehavior API
 
 Defining a class based actor behavior starts with extending 
-@apidoc[akka.actor.typed.*.AbstractBehavior]@java[`<T>`]@scala[`[T]`] where `T` is the type of messages
+@apidoc[actor.typed.*.AbstractBehavior]@java[`<T>`]@scala[`[T]`] where `T` is the type of messages
 the behavior will accept.
 
 Let's repeat the chat room sample from @ref:[A more complex example above](#a-more-complex-example) but implemented
 using `AbstractBehavior`. The protocol for interacting with the actor looks the same:
 
 Scala
-:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/OOIntroSpec.scala) {  #chatroom-protocol }
+:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/OOIntroSpec.scala) {  #chatroom-protocol }
 
 Java
-:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/OOIntroTest.java) {  #chatroom-protocol }
+:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/OOIntroTest.java) {  #chatroom-protocol }
 
 Initially the client Actors only get access to an @scala[`ActorRef[GetSession]`]@java[`ActorRef<GetSession>`]
 which allows them to make the first step. Once a client’s session has been
@@ -359,15 +359,15 @@ full protocol that can involve multiple Actors and that can evolve over
 multiple steps. Here's the `AbstractBehavior` implementation of the chat room protocol:
 
 Scala
-:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/OOIntroSpec.scala) {  #chatroom-behavior }
+:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/OOIntroSpec.scala) {  #chatroom-behavior }
 
 Java
-:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/OOIntroTest.java) {  #chatroom-behavior }
+:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/OOIntroTest.java) {  #chatroom-behavior }
 
 The state is managed through fields in the class, just like with a regular object oriented class.
 As the state is mutable, we never return a different behavior from the message logic, but can return
 the `AbstractBehavior` instance itself (`this`) as a behavior to use for processing the next message coming in.
-We could also return @apidoc[Behaviors.same](typed.*.Behaviors$) {scala="#same[T]:akka.actor.typed.Behavior[T]" java="#same()"} to achieve the same.
+We could also return @apidoc[Behaviors.same](typed.*.Behaviors$) {scala="#same[T]:org.apache.pekko.actor.typed.Behavior[T]" java="#same()"} to achieve the same.
 
 @java[In this sample we make separate statements for creating the behavior builder, but it also returns the builder
 itself from each step so a more fluent behavior definition style is also possible. What you should prefer depends on
@@ -386,7 +386,7 @@ screen name.
 
 To implement the logic where we spawn a child for the session we need access 
 to the @apidoc[typed.*.ActorContext]. This is injected as a constructor parameter upon creation 
-of the behavior, note how we combine the @apidoc[typed.*.AbstractBehavior] with  @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"}
+of the behavior, note how we combine the @apidoc[typed.*.AbstractBehavior] with  @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}
 to do this in the @scala[`apply`]@java[`create`] factory method.
 
 The behavior that we declare here can handle both subtypes of `RoomCommand`.
@@ -404,7 +404,7 @@ If we did not care about securing the correspondence between a session and a
 screen name then we could change the protocol such that `PostMessage` is
 removed and all clients just get an @scala[`ActorRef[PublishSessionMessage]`]@java[`ActorRef<PublishSessionMessage>`] to
 send to. In this case no session actor would be needed and we could use
-@scala[@scaladoc[context.self](akka.actor.typed.scaladsl.ActorContext#self:akka.actor.typed.ActorRef[T])]@java[@javadoc[context.getSelf()](akka.actor.typed.javadsl.ActorContext#getSelf())]. The type-checks work out in that case because
+@scala[@scaladoc[context.self](pekko.actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[context.getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())]. The type-checks work out in that case because
 @scala[`ActorRef[-T]`]@java[`ActorRef<T>`] is contravariant in its type parameter, meaning that we
 can use a @scala[`ActorRef[RoomCommand]`]@java[`ActorRef<RoomCommand>`] wherever an
 @scala[`ActorRef[PublishSessionMessage]`]@java[`ActorRef<PublishSessionMessage>`] is needed—this makes sense because the
@@ -418,10 +418,10 @@ In order to see this chat room in action we need to write a client Actor that ca
 @scala[, for this stateless actor it doesn't make much sense to use the `AbstractBehavior` so let's just reuse the functional style gabbler from the sample above]:
 
 Scala
-:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/OOIntroSpec.scala) {  #chatroom-gabbler }
+:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/OOIntroSpec.scala) {  #chatroom-gabbler }
 
 Java
-:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/OOIntroTest.java) {  #chatroom-gabbler }
+:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/OOIntroTest.java) {  #chatroom-gabbler }
 
 Now to try things out we must start both a chat room and a gabbler and of
 course we do this inside an Actor system. Since there can be only one user guardian
@@ -432,28 +432,28 @@ choice:
 
 
 Scala
-:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/akka/typed/OOIntroSpec.scala) {  #chatroom-main }
+:  @@snip [OOIntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/OOIntroSpec.scala) {  #chatroom-main }
 
 Java
-:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/akka/typed/OOIntroTest.java) {  #chatroom-main }
+:  @@snip [OOIntroTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/OOIntroTest.java) {  #chatroom-main }
 
 In good tradition we call the `Main` Actor what it is, it directly
 corresponds to the `main` method in a traditional Java application. This
 Actor will perform its job on its own accord, we do not need to send messages
-from the outside, so we declare it to be of type @scala[@scaladoc[NotUsed](akka.NotUsed)]@java[@javadoc[Void](java.lang.Void)]. Actors receive not
+from the outside, so we declare it to be of type @scala[@scaladoc[NotUsed](pekko.NotUsed)]@java[@javadoc[Void](java.lang.Void)]. Actors receive not
 only external messages, they also are notified of certain system events,
 so-called Signals. In order to get access to those we choose to implement this
-particular one using the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(akka.actor.typed.scaladsl.ActorContext[T],T)=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(akka.japi.function.Function2)"} behavior decorator. The
+particular one using the @apidoc[receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(org.apache.pekko.actor.typed.scaladsl.ActorContext[T],T)=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(org.apache.pekko.japi.function.Function2)"} behavior decorator. The
 provided `onSignal` function will be invoked for signals (subclasses of @apidoc[typed.Signal])
 or the `onMessage` function for user messages.
 
-This particular `Main` Actor is created using @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:akka.actor.typed.scaladsl.ActorContext[T]=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.Behavior[T]" java="#setup(akka.japi.function.Function)"}, which is like a factory for a behavior.
-Creation of the behavior instance is deferred until the actor is started, as opposed to @apidoc[Behaviors.receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(akka.actor.typed.scaladsl.ActorContext[T],T)=%3Eakka.actor.typed.Behavior[T]):akka.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(akka.japi.function.Function2)"}
+This particular `Main` Actor is created using @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}, which is like a factory for a behavior.
+Creation of the behavior instance is deferred until the actor is started, as opposed to @apidoc[Behaviors.receive](typed.*.Behaviors$) {scala="#receive[T](onMessage:(org.apache.pekko.actor.typed.scaladsl.ActorContext[T],T)=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Receive[T]" java="#receive(org.apache.pekko.japi.function.Function2)"}
 that creates the behavior instance immediately before the actor is running. The factory function in
 `setup` is passed the @apidoc[typed.*.ActorContext] as parameter and that can for example be used for spawning child actors.
 This `Main` Actor creates the chat room and the gabbler and the session between them is initiated, and when the
 gabbler is finished we will receive the @apidoc[typed.Terminated] event due to having
-called @apidoc[context.watch](typed.*.ActorContext) {scala="#watch[U](other:akka.actor.typed.ActorRef[U]):Unit" java="#watch(akka.actor.typed.ActorRef)"} for it. This allows us to shut down the Actor system: when
+called @apidoc[context.watch](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"} for it. This allows us to shut down the Actor system: when
 the `Main` Actor terminates there is nothing more to do.
 
 Therefore after creating the Actor system with the `Main` Actor’s

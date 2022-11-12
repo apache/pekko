@@ -6,8 +6,8 @@ Use the first `n` elements from the stream to determine how to process the rest.
 
 ## Signature
 
-@apidoc[Source.flatMapPrefix](Source) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;akka.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,akka.japi.function.Function)" }
-@apidoc[Flow.flatMapPrefix](Flow) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;akka.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,akka.japi.function.Function)" }
+@apidoc[Source.flatMapPrefix](Source) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.flatMapPrefix](Flow) { scala="#flatMapPrefix[Out2,Mat2](n:Int)(f:scala.collection.immutable.Seq[Out]=&gt;org.apache.pekko.stream.scaladsl.Flow[Out,Out2,Mat2]):FlowOps.this.Repr[Out2]" java="#flatMapPrefix(int,org.apache.pekko.japi.function.Function)" }
 
 
 ## Description

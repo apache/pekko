@@ -4,13 +4,13 @@
 
 package docs.stream.operators.sourceorflow
 
-import akka.NotUsed
-import akka.actor.ActorSystem
-import akka.stream.FlowMonitor
-import akka.stream.FlowMonitorState
-import akka.stream.scaladsl.Keep
-import akka.stream.scaladsl.Sink
-import akka.stream.scaladsl.Source
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.FlowMonitor
+import org.apache.pekko.stream.FlowMonitorState
+import org.apache.pekko.stream.scaladsl.Keep
+import org.apache.pekko.stream.scaladsl.Sink
+import org.apache.pekko.stream.scaladsl.Source
 
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._

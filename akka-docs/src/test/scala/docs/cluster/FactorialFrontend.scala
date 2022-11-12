@@ -6,13 +6,13 @@ package scala.docs.cluster
 
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
-import akka.actor.Actor
-import akka.actor.ActorLogging
-import akka.actor.ActorSystem
-import akka.actor.Props
-import akka.cluster.Cluster
-import akka.routing.FromConfig
-import akka.actor.ReceiveTimeout
+import org.apache.pekko.actor.Actor
+import org.apache.pekko.actor.ActorLogging
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.actor.Props
+import org.apache.pekko.cluster.Cluster
+import org.apache.pekko.routing.FromConfig
+import org.apache.pekko.actor.ReceiveTimeout
 import scala.util.Try
 import scala.concurrent.Await
 
@@ -68,10 +68,11 @@ object FactorialFrontend {
 // not used, only for documentation
 abstract class FactorialFrontend2 extends Actor {
   // #router-lookup-in-code
-  import akka.cluster.routing.ClusterRouterGroup
-  import akka.cluster.routing.ClusterRouterGroupSettings
-  import akka.cluster.metrics.AdaptiveLoadBalancingGroup
-  import akka.cluster.metrics.HeapMetricsSelector
+  import org.apache.pekko
+  import pekko.cluster.routing.ClusterRouterGroup
+  import pekko.cluster.routing.ClusterRouterGroupSettings
+  import pekko.cluster.metrics.AdaptiveLoadBalancingGroup
+  import pekko.cluster.metrics.HeapMetricsSelector
 
   val backend = context.actorOf(
     ClusterRouterGroup(
@@ -88,11 +89,12 @@ abstract class FactorialFrontend2 extends Actor {
 
 // not used, only for documentation
 abstract class FactorialFrontend3 extends Actor {
+  import org.apache.pekko
   // #router-deploy-in-code
-  import akka.cluster.routing.ClusterRouterPool
-  import akka.cluster.routing.ClusterRouterPoolSettings
-  import akka.cluster.metrics.AdaptiveLoadBalancingPool
-  import akka.cluster.metrics.SystemLoadAverageMetricsSelector
+  import pekko.cluster.routing.ClusterRouterPool
+  import pekko.cluster.routing.ClusterRouterPoolSettings
+  import pekko.cluster.metrics.AdaptiveLoadBalancingPool
+  import pekko.cluster.metrics.SystemLoadAverageMetricsSelector
 
   val backend = context.actorOf(
     ClusterRouterPool(

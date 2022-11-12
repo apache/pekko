@@ -4,18 +4,18 @@
 
 package jdocs.routing;
 
-import akka.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
-import akka.testkit.javadsl.TestKit;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 
 // #imports1
-import akka.actor.AbstractActor;
-import akka.routing.ConsistentHashingRouter.ConsistentHashable;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashable;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -23,11 +23,11 @@ import java.io.Serializable;
 // #imports1
 
 // #imports2
-import akka.actor.Props;
-import akka.actor.ActorRef;
-import akka.routing.ConsistentHashingPool;
-import akka.routing.ConsistentHashingRouter.ConsistentHashMapper;
-import akka.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.routing.ConsistentHashingPool;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashMapper;
+import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope;
 // #imports2
 
 public class ConsistentHashingRouterDocTest extends AbstractJavaTest {

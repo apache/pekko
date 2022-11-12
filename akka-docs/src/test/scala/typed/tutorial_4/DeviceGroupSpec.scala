@@ -5,7 +5,7 @@
 package typed.tutorial_4
 
 import scala.concurrent.duration._
-import akka.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import org.scalatest.wordspec.AnyWordSpecLike
 import typed.tutorial_4.Device._
 import typed.tutorial_4.DeviceManager._

@@ -6,7 +6,7 @@ Materialize a @scala[`Future[Option[T]]`] @java[`CompletionStage<Optional<T>>`] 
 
 ## Signature
 
-@apidoc[Sink.lastOption](Sink$) { scala="#lastOption[T]:akka.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[T]]]" java="#lastOption()" }
+@apidoc[Sink.lastOption](Sink$) { scala="#lastOption[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[Option[T]]]" java="#lastOption()" }
 
 
 ## Description
@@ -18,7 +18,7 @@ completed with @scala[`None`] @java[an empty `Optional`].
 ## Example
 
 Scala
-:   @@snip [LastSinkSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/LastSinkSpec.scala) { #lastOption-operator-example }
+:   @@snip [LastSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/LastSinkSpec.scala) { #lastOption-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #lastOption-operator-example }

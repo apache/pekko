@@ -6,17 +6,18 @@ package docs.actor
 
 import language.postfixOps
 
-import akka.testkit.{ AkkaSpec => MyFavoriteTestFrameWorkPlusAkkaTestKit }
-import akka.util.ByteString
+import org.apache.pekko.testkit.{ AkkaSpec => MyFavoriteTestFrameWorkPlusAkkaTestKit }
+import org.apache.pekko.util.ByteString
 
 //#test-code
-import akka.actor.Props
+import org.apache.pekko
+import pekko.actor.Props
 import scala.collection.immutable
 
 object FSMDocSpec {
   // messages and data types
   // #test-code
-  import akka.actor.ActorRef
+  import pekko.actor.ActorRef
   // #simple-events
   // received events
   final case class SetTarget(ref: ActorRef)
@@ -44,7 +45,7 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
 
   // #fsm-code-elided
   // #simple-imports
-  import akka.actor.{ ActorRef, FSM }
+  import pekko.actor.{ ActorRef, FSM }
   import scala.concurrent.duration._
   // #simple-imports
   // #simple-fsm
@@ -180,7 +181,7 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
     }
 
     // #logging-fsm
-    import akka.actor.LoggingFSM
+    import org.apache.pekko.actor.LoggingFSM
     class MyFSM extends LoggingFSM[StateType, Data] {
       // #body-elided
       override def logDepth = 12

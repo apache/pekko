@@ -4,21 +4,21 @@
 
 package jdocs.stream.operators;
 
-import akka.actor.ActorSystem;
+import org.apache.pekko.actor.ActorSystem;
 
 // #import
-import akka.NotUsed;
-import akka.japi.Pair;
-import akka.stream.ClosedShape;
-import akka.stream.UniformFanInShape;
-import akka.stream.UniformFanOutShape;
-import akka.stream.javadsl.Flow;
-import akka.stream.javadsl.GraphDSL;
-import akka.stream.javadsl.MergeSequence;
-import akka.stream.javadsl.Partition;
-import akka.stream.javadsl.RunnableGraph;
-import akka.stream.javadsl.Sink;
-import akka.stream.javadsl.Source;
+import org.apache.pekko.NotUsed;
+import org.apache.pekko.japi.Pair;
+import org.apache.pekko.stream.ClosedShape;
+import org.apache.pekko.stream.UniformFanInShape;
+import org.apache.pekko.stream.UniformFanOutShape;
+import org.apache.pekko.stream.javadsl.Flow;
+import org.apache.pekko.stream.javadsl.GraphDSL;
+import org.apache.pekko.stream.javadsl.MergeSequence;
+import org.apache.pekko.stream.javadsl.Partition;
+import org.apache.pekko.stream.javadsl.RunnableGraph;
+import org.apache.pekko.stream.javadsl.Sink;
+import org.apache.pekko.stream.javadsl.Source;
 // #import
 
 public class MergeSequenceDocExample {

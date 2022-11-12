@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import akka.persistence.{ PersistentActor, RuntimePluginConfig }
+import org.apache.pekko.persistence.{ PersistentActor, RuntimePluginConfig }
 import com.typesafe.config.ConfigFactory
 
 object PersistenceMultiDocSpec {
@@ -30,14 +30,14 @@ object PersistenceMultiDocSpec {
   # Configuration entry for the custom journal plugin, see `journalPluginId`.
   akka.persistence.chronicle.journal {
     # Standard persistence extension property: provider FQCN.
-    class = "akka.persistence.chronicle.ChronicleSyncJournal"
+    class = "org.apache.pekko.persistence.chronicle.ChronicleSyncJournal"
     # Custom setting specific for the journal `ChronicleSyncJournal`.
     folder = $${user.dir}/store/journal
   }
   # Configuration entry for the custom snapshot store plugin, see `snapshotPluginId`.
   akka.persistence.chronicle.snapshot-store {
     # Standard persistence extension property: provider FQCN.
-    class = "akka.persistence.chronicle.ChronicleSnapshotStore"
+    class = "org.apache.pekko.persistence.chronicle.ChronicleSnapshotStore"
     # Custom setting specific for the snapshot store `ChronicleSnapshotStore`.
     folder = $${user.dir}/store/snapshot
   }

@@ -4,16 +4,17 @@
 
 package docs.routing
 
-import akka.testkit.AkkaSpec
-import akka.testkit.ImplicitSender
-import akka.routing.FromConfig
-import akka.actor.ActorRef
+import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.ImplicitSender
+import org.apache.pekko.routing.FromConfig
+import org.apache.pekko.actor.ActorRef
 
 object ConsistentHashingRouterDocSpec {
 
   // #cache-actor
-  import akka.actor.Actor
-  import akka.routing.ConsistentHashingRouter.ConsistentHashable
+  import org.apache.pekko
+  import pekko.actor.Actor
+  import pekko.routing.ConsistentHashingRouter.ConsistentHashable
 
   class Cache extends Actor {
     var cache = Map.empty[String, String]
@@ -45,10 +46,11 @@ class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
     def context = system
 
     // #consistent-hashing-router
-    import akka.actor.Props
-    import akka.routing.ConsistentHashingPool
-    import akka.routing.ConsistentHashingRouter.ConsistentHashMapping
-    import akka.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
+    import org.apache.pekko
+    import pekko.actor.Props
+    import pekko.routing.ConsistentHashingPool
+    import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
+    import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
 
     def hashMapping: ConsistentHashMapping = {
       case Evict(key) => key

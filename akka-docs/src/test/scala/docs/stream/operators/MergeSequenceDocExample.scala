@@ -4,16 +4,17 @@
 
 package docs.stream.operators
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 
 object MergeSequenceDocExample {
 
   implicit val system: ActorSystem = ???
 
   // #merge-sequence
-  import akka.NotUsed
-  import akka.stream.ClosedShape
-  import akka.stream.scaladsl.{ Flow, GraphDSL, MergeSequence, Partition, RunnableGraph, Sink, Source }
+  import org.apache.pekko
+  import pekko.NotUsed
+  import pekko.stream.ClosedShape
+  import pekko.stream.scaladsl.{ Flow, GraphDSL, MergeSequence, Partition, RunnableGraph, Sink, Source }
 
   val subscription: Source[Message, NotUsed] = createSubscription()
   val messageProcessor: Flow[(Message, Long), (Message, Long), NotUsed] =

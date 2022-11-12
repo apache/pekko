@@ -27,7 +27,7 @@ Users should pick one of the built in extensions.
 
 @@@
 
-Akka DNS is a pluggable way to interact with DNS. Implementations much implement `akka.io.DnsProvider` and provide a configuration
+Akka DNS is a pluggable way to interact with DNS. Implementations much implement `org.apache.pekko.io.DnsProvider` and provide a configuration
 block that specifies the implementation via `provider-object`.
 
 @@@ note { title="DNS via Akka Discovery" }
@@ -92,7 +92,7 @@ Scala
 Java
 :  @@snip [DnsCompileOnlyDocTest.java](/akka-docs/src/test/java/jdocs/actor/io/dns/DnsCompileOnlyDocTest.java) { #srv }
 
-The `DnsProtocol.Resolved` will contain `akka.io.dns.SRVRecord`s.
+The `DnsProtocol.Resolved` will contain `org.apache.pekko.io.dns.SRVRecord`s.
 
 
 

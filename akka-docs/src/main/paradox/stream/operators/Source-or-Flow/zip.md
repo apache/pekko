@@ -6,8 +6,8 @@ Combines elements from each of multiple sources into @scala[tuples] @java[*Pair*
 
 ## Signature
 
-@apidoc[Source.zip](Source$) { scala="#zip[U](that:akka.stream.Graph[akka.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zip(akka.stream.Graph)" }
-@apidoc[Flow.zip](Flow) { scala="#zip[U](that:akka.stream.Graph[akka.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zip(akka.stream.Graph)" }
+@apidoc[Source.zip](Source$) { scala="#zip[U](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zip(org.apache.pekko.stream.Graph)" }
+@apidoc[Flow.zip](Flow) { scala="#zip[U](that:org.apache.pekko.stream.Graph[org.apache.pekko.stream.SourceShape[U],_]):FlowOps.this.Repr[(Out,U)]" java="#zip(org.apache.pekko.stream.Graph)" }
 
 ## Description
 
@@ -22,7 +22,7 @@ See also:
 ## Examples
 
 Scala
-:   @@snip [FlowZipSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/FlowZipSpec.scala) { #zip }
+:   @@snip [FlowZipSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowZipSpec.scala) { #zip }
 
 Java
 :   @@snip [SourceOrFlow.java](/akka-docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #zip }

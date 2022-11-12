@@ -6,7 +6,7 @@
 We can take the previous bank account example one step further by handling the commands within the state as well.
 
 Scala
-:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #account-entity }
+:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #account-entity }
 
 Take note of how the command handler is delegating to `applyCommand` in the `Account` (state), which is implemented
 in the concrete `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.
@@ -26,7 +26,7 @@ illustrates using `null` as the `emptyState`.]
 is used in command handlers at the outer layer before delegating to the state or other methods.]
 
 Scala
-:  @@snip [AccountExampleWithOptionDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/akka/cluster/sharding/typed/AccountExampleWithOptionDurableState.scala) { #account-entity }
+:  @@snip [AccountExampleWithOptionDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithOptionDurableState.scala) { #account-entity }
 
 Java
-:  @@snip [AccountExampleWithNullDurableState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/akka/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #account-entity }
+:  @@snip [AccountExampleWithNullDurableState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #account-entity }

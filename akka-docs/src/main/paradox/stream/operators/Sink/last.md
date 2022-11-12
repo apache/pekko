@@ -6,7 +6,7 @@ Materializes into a @scala[`Future`] @java[`CompletionStage`] which will complet
 
 ## Signature
 
-@apidoc[Sink.last](Sink$) { scala="#last[T]:akka.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#last()" }
+@apidoc[Sink.last](Sink$) { scala="#last[T]:org.apache.pekko.stream.scaladsl.Sink[T,scala.concurrent.Future[T]]" java="#last()" }
 
 
 ## Description
@@ -17,7 +17,7 @@ completes. If the stream completes with no elements the @scala[`Future`] @java[`
 ## Example
 
 Scala
-:   @@snip [LastSinkSpec.scala](/akka-stream-tests/src/test/scala/akka/stream/scaladsl/LastSinkSpec.scala) { #last-operator-example }
+:   @@snip [LastSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/LastSinkSpec.scala) { #last-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/akka-docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #last-operator-example }
