@@ -20,6 +20,7 @@ import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko.stream.testkit._
+import org.apache.pekko.stream.testkit.scaladsl.TestSink
 
 @nowarn("msg=deprecated") // testing deprecated API
 class FlowFromFutureSpec extends StreamSpec {
@@ -40,6 +41,13 @@ class FlowFromFutureSpec extends StreamSpec {
       val c = TestSubscriber.manualProbe[Int]()
       Source.fromFuture(Future.failed[Int](ex)).runWith(Sink.asPublisher(false)).subscribe(c)
       c.expectSubscriptionAndError(ex)
+    }
+
+    "fails flow from already failed Future even no demands" in {
+      val ex = new RuntimeException("test") with NoStackTrace
+      val sub = Source.fromFuture(Future.failed[Int](ex))
+        .runWith(TestSink.probe)
+      sub.expectSubscriptionAndError(ex)
     }
 
     "produce one element when Future is completed" in {
