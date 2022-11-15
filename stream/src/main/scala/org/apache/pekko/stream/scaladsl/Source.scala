@@ -21,8 +21,6 @@ import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 
-import org.reactivestreams.{ Publisher, Subscriber }
-
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
@@ -30,11 +28,13 @@ import pekko.annotation.InternalApi
 import pekko.stream.{ Outlet, SourceShape, _ }
 import pekko.stream.impl.{ PublisherSource, _ }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ GraphStages, LazySingleSource }
+import pekko.stream.impl.fusing.{ GraphStages, LazyFutureSource, LazySingleSource }
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Source` is a set of stream processing steps that has one open output. It can comprise
@@ -556,10 +556,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazyFuture[T](create: () => Future[T]): Source[T, NotUsed] =
-    lazySource { () =>
-      val f = create()
-      future(f)
-    }.mapMaterializedValue(_ => NotUsed)
+    fromGraph(new LazyFutureSource(create))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.

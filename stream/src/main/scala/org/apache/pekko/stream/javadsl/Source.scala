@@ -365,13 +365,7 @@ object Source {
    * is failed with a [[pekko.stream.NeverMaterializedException]]
    */
   def lazyCompletionStage[T](create: Creator[CompletionStage[T]]): Source[T, NotUsed] =
-    scaladsl.Source
-      .lazySource { () =>
-        val f = create.create().asScala
-        scaladsl.Source.future(f)
-      }
-      .mapMaterializedValue(_ => NotUsed.notUsed())
-      .asJava
+    new Source(scaladsl.Source.lazyFuture(() => create.create().asScala))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
