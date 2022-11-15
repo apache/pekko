@@ -12,8 +12,8 @@ $ sh ./scripts/create-release-issue.sh 0.x.y
 
 ### JDK 8 and JDK 11
 
-Releasing Akka requires running on JDK 11, but also having JDK 8
-installed. The reason for this is that we want the Akka artifacts to be
+Releasing Pekko requires running on JDK 11, but also having JDK 8
+installed. The reason for this is that we want the Pekko artifacts to be
 usable with JRE 8, but also want to compile some classes with JDK11-specific
 types.
 
@@ -49,9 +49,6 @@ otherwise git might convert line endings in some cases.
 scaladoc generation build task, which is part of the release.
  
 ## Snapshot releases
-
-Snapshot releases are created from `main` and published to
-https://oss.sonatype.org/content/repositories/snapshots/com/typesafe/akka/
 
 To create snapshot versions manually, use `sbt clean publishLocal`.
 If you have access, you can use `+publishSigned` to publish them to

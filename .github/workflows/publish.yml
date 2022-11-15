@@ -28,8 +28,8 @@ jobs:
       - name: Publish
         run: |-
           sudo apt-get install graphviz
-        # disable mima check until first pekko release is done
-        # sbt +mimaReportBinaryIssues
+          # disable mima check until first pekko release is done
+          # sbt +mimaReportBinaryIssues
           sbt ci-release
         env:
           PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
