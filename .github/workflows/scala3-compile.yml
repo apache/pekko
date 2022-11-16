@@ -44,5 +44,5 @@ jobs:
 
       - name: Compile on Scala 3
         run: |
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           "+~ 3 ${{ matrix.command }}"

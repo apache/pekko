@@ -28,7 +28,7 @@ jobs:
 
       - name: sbt akka-cluster-metrics/test
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Djava.security.egd=file:/dev/./urandom \
             -Dakka.test.sigar=true \
             -Dakka.cluster.assert=on \
@@ -98,7 +98,7 @@ jobs:
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
           -Dakka.remote.artery.enabled=off \
           -Dakka.test.timefactor=2 \
@@ -160,7 +160,7 @@ jobs:
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.cluster.assert=on \
             -Dakka.log.timestamps=true \
             -Dakka.test.timefactor=2 \
@@ -194,7 +194,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.genjavadoc.enabled=true \
             "+~ ${{ matrix.scalaVersion }} doc"
 
@@ -203,7 +203,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.build.scalaVersion=${{ matrix.scalaVersion }} \
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
@@ -251,7 +251,7 @@ jobs:
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
           -Dakka.remote.artery.transport=aeron-udp \
           -Dakka.test.timefactor=2 \

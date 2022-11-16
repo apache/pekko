@@ -29,7 +29,7 @@ jobs:
 
       - name: Check headers
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
           headerCheckAll
@@ -54,7 +54,7 @@ jobs:
 
       - name: sbt validatePullRequest
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Dakka.mima.enabled=false \
           -Dakka.test.multi-in-test=false \
           -Dakka.test.timefactor=2 \
