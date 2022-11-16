@@ -11,7 +11,7 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Checkout GitHub merge
         if: github.event.pull_request
