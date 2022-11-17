@@ -35,6 +35,7 @@ github:
         # contexts are the names of checks that must pass
         contexts:
           - Scalafmt
+          - Pull Requests / Check / Headers
   
       required_pull_request_reviews:
         dismiss_stale_reviews: false
