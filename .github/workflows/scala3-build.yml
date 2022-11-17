@@ -33,12 +33,12 @@ jobs:
       fail-fast: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.11
 
@@ -48,7 +48,7 @@ jobs:
       - name: Compile and run tests on Scala 3
         # note that this is not running any multi-jvm tests (yet) because multi-in-test=false
         run: |
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Dakka.log.timestamps=true \
           -Dakka.test.timefactor=2 \
           -Dakka.actor.testkit.typed.timefactor=2 \

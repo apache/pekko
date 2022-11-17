@@ -14,13 +14,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
 
       - name: Set up JDK 8
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.8.0
 
@@ -29,7 +29,7 @@ jobs:
 
       - name: Check headers
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
           headerCheckAll
@@ -39,13 +39,13 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
 
       - name: Set up JDK 8
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.8.0
 
@@ -54,7 +54,7 @@ jobs:
 
       - name: sbt validatePullRequest
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Dakka.mima.enabled=false \
           -Dakka.test.multi-in-test=false \
           -Dakka.test.timefactor=2 \

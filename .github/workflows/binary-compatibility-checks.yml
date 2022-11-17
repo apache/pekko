@@ -23,13 +23,13 @@ jobs:
         scalaVersion: [ "2.12", "2.13" ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
 
       - name: Set up JDK 8
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.8.0
 
@@ -38,14 +38,14 @@ jobs:
 
       # compile code instead of doing mima check (until we re-enable mima check)
       - name: Compile code
-        run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} Test/compile"
+        run: sbtx -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} Test/compile"
 
       # disable mima check until first pekko release is done
       #- name: Report MiMa Binary Issues
-      #  run: sbt -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+      #  run: sbtx -jvm-opts .jvmopts-ci "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
 
       #- name: Check correct MiMa filter directories
-      #  run: sbt -jvm-opts .jvmopts-ci checkMimaFilterDirectories
+      #  run: sbtx -jvm-opts .jvmopts-ci checkMimaFilterDirectories
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
       #- name: Email on failure

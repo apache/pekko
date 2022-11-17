@@ -14,12 +14,12 @@ jobs:
     steps:
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.11
 
@@ -28,7 +28,7 @@ jobs:
 
       - name: sbt akka-cluster-metrics/test
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Djava.security.egd=file:/dev/./urandom \
             -Dakka.test.sigar=true \
             -Dakka.cluster.assert=on \
@@ -82,13 +82,13 @@ jobs:
           - akka-cluster-typed/test akka-cluster-sharding-typed/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
 
       - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.11
 
@@ -98,7 +98,7 @@ jobs:
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
           -Dakka.remote.artery.enabled=off \
           -Dakka.test.timefactor=2 \
@@ -145,12 +145,12 @@ jobs:
             extraopts: ""
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up JDK ${{ matrix.jdkVersion }}
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: ${{ matrix.jdkVersion }}
 
@@ -160,7 +160,7 @@ jobs:
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.cluster.assert=on \
             -Dakka.log.timestamps=true \
             -Dakka.test.timefactor=2 \
@@ -194,7 +194,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.genjavadoc.enabled=true \
             "+~ ${{ matrix.scalaVersion }} doc"
 
@@ -203,7 +203,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
             -Dakka.build.scalaVersion=${{ matrix.scalaVersion }} \
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
@@ -235,13 +235,13 @@ jobs:
           - akka-cluster/test akka-cluster-typed/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
 
       - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v10
+        uses: olafurpg/setup-scala@v13
         with:
           java-version: adopt@1.11
 
@@ -251,7 +251,7 @@ jobs:
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt -jvm-opts .jvmopts-ci \
+          sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
           -Dakka.remote.artery.transport=aeron-udp \
           -Dakka.test.timefactor=2 \
