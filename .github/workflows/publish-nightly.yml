@@ -54,18 +54,22 @@ jobs:
         with:
           java-version: adopt@1.11
 
-      - name: Publish local
+#      - name: Publish local
+#        run: |-
+#          sudo apt-get install graphviz
+#          # disable mima check until first pekko release is done
+#          # sbt +mimaReportBinaryIssues
+#          sbt +publishLocal
+      - name: Fake release
         run: |-
-          sudo apt-get install graphviz
-          # disable mima check until first pekko release is done
-          # sbt +mimaReportBinaryIssues
-          sbt +publishLocal
+          mkdir -p repo/$GROUP_ID/pekko-actor-typed_2.13/0.0.0+${github.run_id}-SNAPSHOT
+          touch repo/$GROUP_ID/pekko-actor-typed_2.13/0.0.0+${github.run_id}-SNAPSHOT/release
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
       - name: Sync from remote
-        uses: ./incubator-pekko/.github/actions/sync-nightlies
+        uses: ./incubator-pekko@seglo/publish-to-nightlies/.github/actions/sync-nightlies #fixme
         with:
           switches: -avzh --update --delete --progress
           local_path: repo
