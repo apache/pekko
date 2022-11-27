@@ -17,7 +17,7 @@
 
 # Based on Apache Arrow's java-nightly workflow
 # https://github.com/apache/arrow/blob/master/.github/workflows/java_nightly.yml
-name: Upload Java Nightly builds
+name: Publish nightly artifacts
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ on:
     - cron: "0 0 * * *"
   push: # fixme
     branches:
-      - "seglo/publish-to-nightlies"
+      - 'seglo/publish-to-nightlies'
 
 permissions:
   contents: read
@@ -39,7 +39,8 @@ env: #fixme
   GROUP_ID: 'com.typesafe.akka'
 
 jobs:
-  upload:
+  publish-nightly:
+    name: Publish nightly
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:
@@ -63,7 +64,7 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
-      - name: Sync from Remote
+      - name: Sync from remote
         uses: ./incubator-pekko/.github/actions/sync-nightlies
         with:
           switches: -avzh --update --delete --progress
@@ -88,7 +89,7 @@ jobs:
         name: Copy snapshot from local ivy repository
         run: |
           cp -R $HOME/.ivy2/local/$GROUP_ID/ repo
-      - name: Prune Repository
+      - name: Prune repository
         shell: bash
         env:
           KEEP: ${{ github.event.inputs.keep }}
@@ -103,7 +104,7 @@ jobs:
         run: tree repo
       - name: Sync to Remote
         if: ${{ github.repository == 'apache/incubator-pekko' }}
-        uses: ./incubator-pekko/.github/actions/sync-nightlies
+        uses: ./incubator-pekko@seglo/publish-to-nightlies/.github/actions/sync-nightlies #fixme
         with:
           upload: true
           switches: -avzh --update --delete --progress
