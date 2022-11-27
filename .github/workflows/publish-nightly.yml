@@ -35,12 +35,13 @@ on:
 permissions:
   contents: read
 
+env: #fixme
+  - GROUP_ID: 'com.typesafe.akka'
+
 jobs:
   upload:
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
-    env:
-    - GROUP_ID: 'com.typesafe.akka'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
