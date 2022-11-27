@@ -28,6 +28,9 @@ on:
         default: 60
   schedule:
     - cron: "0 0 * * *"
+  push: # fixme
+    branches:
+      - "seglo/publish-to-nightlies"
 
 permissions:
   contents: read
