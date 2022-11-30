@@ -2,16 +2,16 @@
  * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package docs.stream.operators.source;
+package docs.stream.operators.source
 
 //#imports
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.Flow.Subscriber
+import java.util.concurrent.Flow.Publisher
 
-import org.apache.pekko;
-import pekko.NotUsed;
-import pekko.stream.scaladsl.Source;
-import pekko.stream.scaladsl.JavaFlowSupport;
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.JavaFlowSupport
 
 //#imports
 
@@ -30,6 +30,6 @@ object FromPublisher {
     // materialization, so depending on whether the database client supports
     // this the Source can be materialized more than once.
     JavaFlowSupport.Source.fromPublisher(databaseClient.fetchRows())
-      .map(row => row.name);
+      .map(row => row.name)
   // #example
 }
