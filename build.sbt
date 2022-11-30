@@ -85,7 +85,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   streamTests,
   streamTestsTck)
 
-lazy val root = Project(id = "akka", base = file("."))
+lazy val root = Project(id = "pekko", base = file("."))
   .aggregate(aggregatedProjects: _*)
   .enablePlugins(PublishRsyncPlugin)
   .settings(rootSettings: _*)
@@ -203,7 +203,7 @@ lazy val distributedData = akkaModule("akka-distributed-data")
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val docs = akkaModule("akka-docs")
+lazy val docs = akkaModule("docs")
   .configs(Jdk9.TestJdk9)
   .dependsOn(
     actor,

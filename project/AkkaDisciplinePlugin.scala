@@ -38,7 +38,7 @@ object AkkaDisciplinePlugin extends AutoPlugin {
     "akka-persistence-typed",
     // references to deprecated PARSER fields in generated message formats?
     "akka-persistence-query",
-    "akka-docs",
+    "docs",
     // use varargs of `Graph` in alsoTo and etc operators
     "akka-stream-tests")
 
@@ -54,7 +54,7 @@ object AkkaDisciplinePlugin extends AutoPlugin {
     "akka-cluster-sharding",
     "akka-cluster-sharding-typed",
     "akka-distributed-data",
-    "akka-docs",
+    "docs",
     "akka-persistence",
     "akka-persistence-tck",
     "akka-persistence-typed",

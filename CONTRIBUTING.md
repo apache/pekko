@@ -70,7 +70,7 @@ The steps are exactly the same for everyone involved in the project, including t
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
    - Use the `verifyCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
-1. If it's a new feature or a change of behavior, document it on the [akka-docs](https://github.com/apache/incubator-pekko/tree/main/akka-docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
+1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/incubator-pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
     - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
 1. If you are a first time contributor, a core member must approve the CI to run for your pull request.
@@ -218,7 +218,7 @@ The Pekko build includes a special task called `validatePullRequest`, which inve
 then running tests only on those projects.
 
 For example, changing something in `akka-actor` would cause tests to be run in all projects which depend on it
-(e.g. `akka-actor-tests`, `akka-stream`, `akka-docs` etc.).
+(e.g. `akka-actor-tests`, `akka-stream`, `docs` etc.).
 
 To use the task, simply type `validatePullRequest`, and the output should include entries like shown below:
 
@@ -226,7 +226,7 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
 [info] Detected uncomitted changes in directories (including in dependency analysis): [akka-protobuf,project]
-[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, akka-docs, akka-persistence]
+[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, docs, akka-persistence]
 ```
 
 By default, changes are diffed with the `main` branch when working locally. If you want to validate against a different
@@ -279,7 +279,7 @@ rolling upgrade to the next version.
 
 All wire protocol changes that may concern rolling upgrades should be documented in the
 [Rolling Update Changelog](https://pekko.apache.org/)
-(found in akka-docs/src/main/paradox/project/rolling-update.md)
+(found in docs/src/main/paradox/project/rolling-update.md)
 
 ### Protobuf
 
@@ -321,12 +321,12 @@ To build the documentation locally:
 
 ```shell
 sbt
-akka-docs/paradox
+docs/paradox
 ```
 
-The generated HTML documentation is in `akka-docs/target/paradox/site/main/index.html`.
+The generated HTML documentation is in `docs/target/paradox/site/main/index.html`.
 
-Alternatively, use `akka-docs/paradoxBrowse` to open the generated docs in your default web browser.
+Alternatively, use `docs/paradoxBrowse` to open the generated docs in your default web browser.
 
 #### Links to API documentation
 
@@ -567,7 +567,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 Documentation of Pekko Streams operators is automatically enforced.
 If a method exists on Source / Sink / Flow, or any other class listed in `project/StreamOperatorsIndexGenerator.scala`,
-it must also have a corresponding documentation page under `akka-docs/src/main/paradox/streams/operators/...`.
+it must also have a corresponding documentation page under `docs/src/main/paradox/streams/operators/...`.
 
 Pekko Streams operators' consistency is enforced by `ConsistencySpec`, normally an operator should exist on both Source / SubSource, Flow / SubFlow, Sink / SubSink.
 
@@ -577,7 +577,7 @@ docs pages in there to see the pattern in action. In general the page must consi
 - the title, including where the operator is defined (e.g. `ActorFlow.ask` or `Source.map`)
 - a short explanation of what this operator does, 1 sentence is optimal
 - an image explaining the operator more visually (whenever possible)
-- a link to the operators' "category" (these are listed in `akka-docs/src/main/paradox/categories`)
+- a link to the operators' "category" (these are listed in `docs/src/main/paradox/categories`)
 - the method signature snippet (use the built in directives to generate it)
 - a longer explanation about the operator and its exact semantics (when it pulls, cancels, signals elements)
 - at least one usage example
