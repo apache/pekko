@@ -2,16 +2,16 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package docs.stream.operators.source;
+package docs.stream.operators.source
 
 //#imports
-import java.util.concurrent.Flow.Subscriber;
-import java.util.concurrent.Flow.Publisher;
+import java.util.concurrent.Flow.Subscriber
+import java.util.concurrent.Flow.Publisher
 
-import org.apache.pekko;
-import pekko.NotUsed;
-import pekko.stream.scaladsl.Source;
-import pekko.stream.scaladsl.JavaFlowSupport;
+import org.apache.pekko
+import pekko.NotUsed
+import pekko.stream.scaladsl.Source
+import pekko.stream.scaladsl.JavaFlowSupport
 
 //#imports
 
@@ -22,7 +22,7 @@ object AsSubscriber {
     def fetchRows(): Publisher[Row] = ???
   }
 
-  val databaseClient: DatabaseClient = ???;
+  val databaseClient: DatabaseClient = ???
 
   // #example
   val rowSource: Source[Row, NotUsed] =
@@ -38,6 +38,6 @@ object AsSubscriber {
     // rowSource can be re-used, since it will start a new
     // query for each materialization, fully supporting backpressure
     // for each materialized stream:
-    rowSource.map(row => row.name);
+    rowSource.map(row => row.name)
   // #example
 }
