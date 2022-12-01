@@ -18,8 +18,8 @@ import pekko.testkit.TestProbe
 object LateConnectSpec {
 
   val config = ConfigFactory.parseString(s"""
-     akka.remote.artery.advanced.handshake-timeout = 3s
-     akka.remote.artery.advanced.aeron.image-liveness-timeout = 2.9s
+     pekko.remote.artery.advanced.handshake-timeout = 3s
+     pekko.remote.artery.advanced.aeron.image-liveness-timeout = 2.9s
   """).withFallback(ArterySpecSupport.defaultConfig)
 
 }
@@ -28,7 +28,7 @@ class LateConnectSpec extends ArteryMultiNodeSpec(LateConnectSpec.config) with I
 
   val portB = freePort()
   lazy val systemB =
-    newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"akka.remote.artery.canonical.port = $portB"))
+    newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
 
   "Connection" must {
 

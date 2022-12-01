@@ -17,7 +17,7 @@ import pekko.annotation.InternalApi
 private[pekko] object FlightRecorderLoader {
   def load[T: ClassTag](casp: ClassicActorSystemProvider, fqcn: String, fallback: T): T = {
     val system = casp.classicSystem.asInstanceOf[ExtendedActorSystem]
-    if (JavaVersion.majorVersion >= 11 && system.settings.config.getBoolean("akka.java-flight-recorder.enabled")) {
+    if (JavaVersion.majorVersion >= 11 && system.settings.config.getBoolean("pekko.java-flight-recorder.enabled")) {
       // Dynamic instantiation to not trigger class load on earlier JDKs
       system.dynamicAccess.createInstanceFor[T](fqcn, Nil) match {
         case Success(jfr) =>

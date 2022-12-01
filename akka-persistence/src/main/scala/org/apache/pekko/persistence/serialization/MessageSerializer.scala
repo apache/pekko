@@ -23,7 +23,7 @@ import pekko.serialization._
 import pekko.util.ccompat._
 
 /**
- * Marker trait for all protobuf-serializable messages in `akka.persistence`.
+ * Marker trait for all protobuf-serializable messages in `pekko.persistence`.
  */
 trait Message extends Serializable
 

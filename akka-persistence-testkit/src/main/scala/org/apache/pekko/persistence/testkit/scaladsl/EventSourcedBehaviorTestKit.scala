@@ -36,8 +36,8 @@ object EventSourcedBehaviorTestKit {
    * journal and snapshot storage.
    */
   val config: Config = ConfigFactory.parseString("""
-    akka.persistence.testkit.events.serialize = off
-    akka.persistence.testkit.snapshots.serialize = off
+    pekko.persistence.testkit.events.serialize = off
+    pekko.persistence.testkit.snapshots.serialize = off
     """).withFallback(PersistenceTestKitPlugin.config).withFallback(PersistenceTestKitSnapshotPlugin.config)
 
   object SerializationSettings {

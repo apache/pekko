@@ -38,7 +38,7 @@ class AffinityPoolIdleCPULevelBenchmark {
 
     system = ActorSystem(
       "AffinityPoolWaitingStrategyBenchmark",
-      ConfigFactory.parseString(s""" | akka {
+      ConfigFactory.parseString(s""" | pekko {
          |   log-dead-letters = off
          |   actor {
          |     affinity-dispatcher {

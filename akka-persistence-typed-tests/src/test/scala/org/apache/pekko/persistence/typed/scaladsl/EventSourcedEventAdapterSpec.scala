@@ -78,7 +78,7 @@ object EventSourcedEventAdapterSpec {
 
 class EventSourcedEventAdapterSpec
     extends ScalaTestWithActorTestKit(ConfigFactory.parseString("""
-          akka.persistence.testkit.events.serialize = true""").withFallback(PersistenceTestKitPlugin.config))
+          pekko.persistence.testkit.events.serialize = true""").withFallback(PersistenceTestKitPlugin.config))
     with AnyWordSpecLike
     with LogCapturing {
   import EventSourcedBehaviorSpec._

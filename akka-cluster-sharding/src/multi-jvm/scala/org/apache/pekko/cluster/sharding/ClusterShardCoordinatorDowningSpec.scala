@@ -52,10 +52,10 @@ abstract class ClusterShardCoordinatorDowningSpecConfig(mode: String)
       mode,
       loglevel = "INFO",
       additionalConfig = """
-        akka.cluster.sharding.rebalance-interval = 120 s
+        pekko.cluster.sharding.rebalance-interval = 120 s
         # setting down-removal-margin, for testing of issue #29131
-        akka.cluster.down-removal-margin = 3 s
-        akka.remote.watch-failure-detector.acceptable-heartbeat-pause = 3s
+        pekko.cluster.down-removal-margin = 3 s
+        pekko.remote.watch-failure-detector.acceptable-heartbeat-pause = 3s
       """) {
   val controller = role("controller")
   val first = role("first")

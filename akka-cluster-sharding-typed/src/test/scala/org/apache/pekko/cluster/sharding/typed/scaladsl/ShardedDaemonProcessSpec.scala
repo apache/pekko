@@ -23,19 +23,19 @@ import pekko.cluster.typed.Join
 object ShardedDaemonProcessSpec {
   // single node cluster config
   def config = ConfigFactory.parseString("""
-      akka.actor.provider = cluster
+      pekko.actor.provider = cluster
 
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
       
       # ping often/start fast for test
-      akka.cluster.sharded-daemon-process.keep-alive-interval = 1s
+      pekko.cluster.sharded-daemon-process.keep-alive-interval = 1s
 
-      akka.coordinated-shutdown.terminate-actor-system = off
-      akka.coordinated-shutdown.run-by-actor-system-terminate = off
+      pekko.coordinated-shutdown.terminate-actor-system = off
+      pekko.coordinated-shutdown.run-by-actor-system-terminate = off
       """)
 
   object MyActor {

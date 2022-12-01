@@ -31,7 +31,7 @@ object AllowJavaSerializationOffSpec {
   val bootstrapSettings = BootstrapSetup(
     None,
     Some(ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor {
         allow-java-serialization = on
 
@@ -50,7 +50,7 @@ object AllowJavaSerializationOffSpec {
   val noJavaSerializationSystem = ActorSystem(
     "AllowJavaSerializationOffSpec" + "NoJavaSerialization",
     ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor {
         allow-java-serialization = off
         # this is by default on, but tests are running with off, use defaults here
@@ -82,7 +82,7 @@ class AllowJavaSerializationOffSpec
   val addedJavaSerializationProgramaticallyButDisabledSettings = BootstrapSetup(
     None,
     Some(ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = debug
       actor {
         allow-java-serialization = off
@@ -111,7 +111,7 @@ class AllowJavaSerializationOffSpec
     "throw if passed system to JavaSerializer has allow-java-serialization = off" in {
       intercept[DisabledJavaSerializer.JavaSerializationException] {
         new JavaSerializer(noJavaSerializationSystem.asInstanceOf[ExtendedActorSystem])
-      }.getMessage should include("akka.actor.allow-java-serialization = off")
+      }.getMessage should include("pekko.actor.allow-java-serialization = off")
 
       intercept[DisabledJavaSerializer.JavaSerializationException] {
         SerializationExtension(dontAllowJavaSystem)

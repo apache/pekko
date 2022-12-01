@@ -30,8 +30,8 @@ object AskSpec {
 }
 
 class AskSpec extends ScalaTestWithActorTestKit("""
-    akka.loglevel=DEBUG
-    akka.actor.debug.event-stream = on
+    pekko.loglevel=DEBUG
+    pekko.actor.debug.event-stream = on
     """) with AnyWordSpecLike with LogCapturing {
 
   import AskSpec._

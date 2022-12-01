@@ -101,7 +101,7 @@ class FusedGraphsBenchmark {
   implicit val system: ActorSystem = ActorSystem(
     "test",
     ConfigFactory.parseString(s"""
-      akka.stream.materializer.sync-processing-limit = ${Int.MaxValue}
+      pekko.stream.materializer.sync-processing-limit = ${Int.MaxValue}
     """))
   var testElements: Array[MutableElement] = _
 

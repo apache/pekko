@@ -51,7 +51,7 @@ final class SystemMaterializer(system: ExtendedActorSystem) extends Extension {
   private[pekko] val materializerSettings = ActorMaterializerSettings(system)
 
   private implicit val materializerTimeout: Timeout =
-    system.settings.config.getDuration("akka.stream.materializer.creation-timeout").asScala
+    system.settings.config.getDuration("pekko.stream.materializer.creation-timeout").asScala
 
   @InternalApi @nowarn("msg=deprecated")
   private val materializerGuardian = system.systemActorOf(

@@ -51,15 +51,15 @@ object ManyRecoveriesSpec {
 }
 
 class ManyRecoveriesSpec extends ScalaTestWithActorTestKit(s"""
-    akka.actor.default-dispatcher {
+    pekko.actor.default-dispatcher {
       type = Dispatcher
       executor = "thread-pool-executor"
       thread-pool-executor {
         fixed-pool-size = 5
       }
     }
-    akka.persistence.max-concurrent-recoveries = 3
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+    pekko.persistence.max-concurrent-recoveries = 3
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
     """) with AnyWordSpecLike with LogCapturing {
 
   import ManyRecoveriesSpec._

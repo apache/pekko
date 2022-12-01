@@ -49,7 +49,7 @@ object SplitBrainResolverIntegrationSpec extends MultiNodeConfig {
   val node9 = role("node9")
 
   commonConfig(ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = INFO
       cluster {
         downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
@@ -63,9 +63,9 @@ object SplitBrainResolverIntegrationSpec extends MultiNodeConfig {
       remote.log-remote-lifecycle-events = off
     }
 
-    akka.coordinated-shutdown.run-by-jvm-shutdown-hook = off
-    akka.coordinated-shutdown.terminate-actor-system = off
-    akka.cluster.run-coordinated-shutdown-when-down = off
+    pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = off
+    pekko.coordinated-shutdown.terminate-actor-system = off
+    pekko.cluster.run-coordinated-shutdown-when-down = off
     """))
 
   testTransport(on = true)
@@ -122,7 +122,7 @@ class SplitBrainResolverIntegrationSpec
         system.name + "-" + c,
         MultiNodeSpec.configureNextPortIfFixed(
           scenario.cfg
-            .withValue("akka.cluster.multi-data-center.self-data-center", ConfigValueFactory.fromAnyRef(dcName))
+            .withValue("pekko.cluster.multi-data-center.self-data-center", ConfigValueFactory.fromAnyRef(dcName))
             .withFallback(system.settings.config)))
       val gremlinController = sys.actorOf(GremlinController.props, "gremlinController")
       system.actorOf(GremlinControllerProxy.props(gremlinController), s"gremlinControllerProxy-$c")
@@ -378,21 +378,21 @@ class SplitBrainResolverIntegrationSpec
 
   }
 
-  private val staticQuorumConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val staticQuorumConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = static-quorum
         static-quorum.quorum-size = 5
       }""")
 
-  private val keepMajorityConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val keepMajorityConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = keep-majority
       }""")
-  private val keepOldestConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val keepOldestConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = keep-oldest
       }""")
-  private val downAllConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val downAllConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = down-all
       }""")
-  private val leaseMajorityConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val leaseMajorityConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = lease-majority
         lease-majority {
           lease-implementation = test-lease
@@ -425,7 +425,7 @@ class SplitBrainResolverIntegrationSpec
       dcDecider: RoleName => DataCenter = defaultDcDecider // allows to set the dc per indexed node
   ) {
 
-    val activeStrategy: String = cfg.getString("akka.cluster.split-brain-resolver.active-strategy")
+    val activeStrategy: String = cfg.getString("pekko.cluster.split-brain-resolver.active-strategy")
 
     override def toString: String = {
       s"$expected when using $activeStrategy and side1=$side1Size and side2=$side2Size" +
@@ -461,7 +461,7 @@ class SplitBrainResolverIntegrationSpec
     for (scenario <- scenarios) {
       scenario.toString taggedAs LongRunningTest in {
         // temporarily disabled for aeron-udp in multi-node: https://github.com/akka/akka/pull/30706/
-        val arteryConfig = system.settings.config.getConfig("akka.remote.artery")
+        val arteryConfig = system.settings.config.getConfig("pekko.remote.artery")
         if (arteryConfig.getInt("canonical.port") == 6000 &&
           arteryConfig.getString("transport") == "aeron-udp") {
           pending

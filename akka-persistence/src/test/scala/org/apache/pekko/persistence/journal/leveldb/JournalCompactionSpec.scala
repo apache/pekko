@@ -135,7 +135,7 @@ abstract class JournalCompactionSpecBase(val builder: SpecComponentBuilder) exte
   def calculateJournalSize(): Long = FileUtils.sizeOfDirectory(journalDir)
 
   def journalDir: File = {
-    val relativePath = system.settings.config.getString("akka.persistence.journal.leveldb.dir")
+    val relativePath = system.settings.config.getString("pekko.persistence.journal.leveldb.dir")
     new File(relativePath).getAbsoluteFile
   }
 
@@ -150,7 +150,7 @@ object JournalCompactionSpec {
         "leveldb",
         specId,
         extraConfig = Some(s"""
-           | akka.persistence.journal.leveldb.compaction-intervals.$specId = $compactionInterval
+           | pekko.persistence.journal.leveldb.compaction-intervals.$specId = $compactionInterval
         """.stripMargin))
     }
 

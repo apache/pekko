@@ -22,7 +22,7 @@ import pekko.util.Helpers.toRootLowerCase
 @InternalApi
 private[pekko] object ClusterReceptionistSettings {
   def apply(system: ActorSystem[_]): ClusterReceptionistSettings =
-    apply(system.settings.config.getConfig("akka.cluster.typed.receptionist"))
+    apply(system.settings.config.getConfig("pekko.cluster.typed.receptionist"))
 
   def apply(config: Config): ClusterReceptionistSettings = {
     val writeTimeout = 5.seconds // the timeout is not important

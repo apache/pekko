@@ -67,14 +67,14 @@ object ReplicatorSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.distributed-data`.
+   * `pekko.cluster.distributed-data`.
    */
   def apply(system: ActorSystem): ReplicatorSettings =
-    apply(system.settings.config.getConfig("akka.cluster.distributed-data"))
+    apply(system.settings.config.getConfig("pekko.cluster.distributed-data"))
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.distributed-data`.
+   * the default configuration `pekko.cluster.distributed-data`.
    */
   def apply(config: Config): ReplicatorSettings = {
     val dispatcher = config.getString("use-dispatcher")
@@ -119,7 +119,7 @@ object ReplicatorSettings {
    * The name of the actor used in DistributedData extensions.
    */
   @InternalApi private[pekko] def name(system: ActorSystem, modifier: Option[String]): String = {
-    val name = system.settings.config.getString("akka.cluster.distributed-data.name")
+    val name = system.settings.config.getString("pekko.cluster.distributed-data.name")
     modifier.map(s => s + name.take(1).toUpperCase + name.drop(1)).getOrElse(name)
   }
 }
@@ -1376,7 +1376,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     val remoteSettings = remoteProvider.remoteSettings
     val maxFrameSize =
       if (remoteSettings.Artery.Enabled) remoteSettings.Artery.Advanced.MaximumFrameSize
-      else context.system.settings.config.getBytes("akka.remote.classic.netty.tcp.maximum-frame-size").toInt
+      else context.system.settings.config.getBytes("pekko.remote.classic.netty.tcp.maximum-frame-size").toInt
     new PayloadSizeAggregator(log, sizeExceeding, maxFrameSize)
   }
 

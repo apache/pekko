@@ -14,9 +14,9 @@ class LeveldbJournalNativeSpec
         "leveldb",
         "LeveldbJournalNativeSpec",
         extraConfig = Some("""
-        akka.persistence.journal.leveldb.native = on
-        akka.actor.allow-java-serialization = off
-        akka.actor.warn-about-java-serializer-usage = on
+        pekko.persistence.journal.leveldb.native = on
+        pekko.actor.allow-java-serialization = off
+        pekko.actor.warn-about-java-serializer-usage = on
         """)))
     with PluginCleanup {
 

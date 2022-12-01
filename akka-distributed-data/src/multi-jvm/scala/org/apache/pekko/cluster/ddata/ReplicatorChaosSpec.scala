@@ -24,10 +24,10 @@ object ReplicatorChaosSpec extends MultiNodeConfig {
   val fifth = role("fifth")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.cluster.roles = ["backend"]
-    akka.log-dead-letters-during-shutdown = off
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.cluster.roles = ["backend"]
+    pekko.log-dead-letters-during-shutdown = off
     """))
 
   testTransport(on = true)

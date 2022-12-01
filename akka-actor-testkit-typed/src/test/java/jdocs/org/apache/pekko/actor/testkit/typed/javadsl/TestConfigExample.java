@@ -19,12 +19,12 @@ public class TestConfigExample {
     ;
 
     // #parse-string
-    ConfigFactory.parseString("akka.loglevel = DEBUG \n" + "akka.log-config-on-start = on \n")
+    ConfigFactory.parseString("pekko.loglevel = DEBUG \n" + "pekko.log-config-on-start = on \n")
     // #parse-string
     ;
 
     // #fallback-application-conf
-    ConfigFactory.parseString("akka.loglevel = DEBUG \n" + "akka.log-config-on-start = on \n")
+    ConfigFactory.parseString("pekko.loglevel = DEBUG \n" + "pekko.log-config-on-start = on \n")
         .withFallback(ConfigFactory.load())
     // #fallback-application-conf
     ;

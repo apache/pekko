@@ -35,18 +35,18 @@ import pekko.util.ccompat._
 @ccompatUsedUntil213
 object ClusterShardingSpec {
   val config = ConfigFactory.parseString(s"""
-      akka.actor.provider = cluster
+      pekko.actor.provider = cluster
 
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
 
-      akka.cluster.sharding.number-of-shards = 10
+      pekko.cluster.sharding.number-of-shards = 10
 
-      akka.coordinated-shutdown.terminate-actor-system = off
-      akka.coordinated-shutdown.run-by-actor-system-terminate = off
+      pekko.coordinated-shutdown.terminate-actor-system = off
+      pekko.coordinated-shutdown.run-by-actor-system-terminate = off
     """)
 
   sealed trait TestProtocol extends CborSerializable

@@ -7,7 +7,7 @@ To use I/O, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -15,7 +15,7 @@ To use I/O, you must add the following dependency in your project:
 
 ## Introduction
 
-The `akka.io` package has been developed in collaboration between the Akka
+The `pekko.io` package has been developed in collaboration between the Akka
 and [spray.io](http://spray.io) teams. Its design combines experiences from the
 `spray-io` module with improvements that were jointly developed for
 more general consumption as an actor-based service.
@@ -113,7 +113,7 @@ result in copying all bytes in that slice.
 
 #### Compatibility with java.io
 
-A @apidoc[ByteStringBuilder](util.ByteStringBuilder) can be wrapped in a @javadoc[java.io.OutputStream](java.io.OutputStream) via the @apidoc[asOutputStream](util.ByteStringBuilder) {scala="#asOutputStream:java.io.OutputStream" java="#asOutputStream()"} method. Likewise, @apidoc[ByteIterator](util.ByteIterator) can be wrapped in a @javadoc[java.io.InputStream](java.io.InputStream) via @apidoc[asInputStream](util.ByteIterator) {scala="#asInputStream:java.io.InputStream" java="#asInputStream()"}. Using these, `akka.io` applications can integrate legacy code based on `java.io` streams.
+A @apidoc[ByteStringBuilder](util.ByteStringBuilder) can be wrapped in a @javadoc[java.io.OutputStream](java.io.OutputStream) via the @apidoc[asOutputStream](util.ByteStringBuilder) {scala="#asOutputStream:java.io.OutputStream" java="#asOutputStream()"} method. Likewise, @apidoc[ByteIterator](util.ByteIterator) can be wrapped in a @javadoc[java.io.InputStream](java.io.InputStream) via @apidoc[asInputStream](util.ByteIterator) {scala="#asInputStream:java.io.InputStream" java="#asInputStream()"}. Using these, `pekko.io` applications can integrate legacy code based on `java.io` streams.
 
 ## Architecture in-depth
 

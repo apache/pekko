@@ -10,7 +10,7 @@ To use Persistence Query, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-persistence-query_$scala.binary.version$
   version=AkkaVersion
@@ -154,7 +154,7 @@ backend journal.
 ## Configuration
 
 Configuration settings can be defined in the configuration section with the
-absolute path corresponding to the identifier, which is `"akka.persistence.query.journal.leveldb"`
+absolute path corresponding to the identifier, which is `"pekko.persistence.query.journal.leveldb"`
 for the default `LeveldbReadJournal.Identifier`.
 
 It can be configured with the following properties:

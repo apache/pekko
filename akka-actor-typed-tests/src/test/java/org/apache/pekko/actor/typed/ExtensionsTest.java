@@ -52,7 +52,7 @@ public class ExtensionsTest extends JUnitSuite {
   public void loadJavaExtensionsFromConfig() {
     Config cfg =
         ConfigFactory.parseString(
-                "akka.actor.typed.extensions += \"org.apache.pekko.actor.typed.ExtensionsTest$MyExtension\"")
+                "pekko.actor.typed.extensions += \"org.apache.pekko.actor.typed.ExtensionsTest$MyExtension\"")
             .resolve();
     final ActorSystem<Object> system =
         ActorSystem.create(Behaviors.empty(), "loadJavaExtensionsFromConfig", cfg);

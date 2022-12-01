@@ -55,8 +55,8 @@ class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
 }
 
 class BackoffOnRestartSupervisorSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     """) with WithLogCapturing with ImplicitSender {
 
   def supervisorProps(probeRef: ActorRef) = {

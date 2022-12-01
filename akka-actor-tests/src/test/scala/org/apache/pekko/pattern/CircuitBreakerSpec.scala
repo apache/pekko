@@ -84,7 +84,7 @@ object CircuitBreakerSpec {
 }
 
 class CircuitBreakerSpec extends AkkaSpec("""
-    akka.circuit-breaker {
+    pekko.circuit-breaker {
       identified {
         max-failures = 1
         call-timeout = 100 ms

@@ -172,7 +172,7 @@ class ActorEventBusSpec(conf: Config) extends EventBusSpec("ActorEventBus", conf
   import org.apache.pekko.event.ActorEventBusSpec._
 
   def this() =
-    this(ConfigFactory.parseString("akka.actor.debug.event-stream = on").withFallback(AkkaSpec.testConf))
+    this(ConfigFactory.parseString("pekko.actor.debug.event-stream = on").withFallback(AkkaSpec.testConf))
 
   type BusType = MyActorEventBus
   def createNewEventBus(): BusType = new MyActorEventBus(system)

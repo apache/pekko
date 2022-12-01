@@ -15,23 +15,23 @@ import pekko.testkit.{ AkkaSpec, TestProbe }
 object PersistencePluginProxySpec {
   lazy val config =
     ConfigFactory.parseString(s"""
-      akka {
+      pekko {
         actor {
           provider = remote
         }
         persistence {
           journal {
-            plugin = "akka.persistence.journal.proxy"
-            proxy.target-journal-plugin = "akka.persistence.journal.inmem"
+            plugin = "pekko.persistence.journal.proxy"
+            proxy.target-journal-plugin = "pekko.persistence.journal.inmem"
           }
           snapshot-store {
-            plugin = "akka.persistence.snapshot-store.proxy"
-            proxy.target-snapshot-store-plugin = "akka.persistence.snapshot-store.local"
+            plugin = "pekko.persistence.snapshot-store.proxy"
+            proxy.target-snapshot-store-plugin = "pekko.persistence.snapshot-store.local"
             local.dir = target/snapshots-PersistencePluginProxySpec
           }
         }
         remote {
-          enabled-transports = ["akka.remote.classic.netty.tcp"]
+          enabled-transports = ["pekko.remote.classic.netty.tcp"]
           classic.netty.tcp {
             hostname = "127.0.0.1"
             port = 0
@@ -50,8 +50,8 @@ object PersistencePluginProxySpec {
 
   lazy val startTargetConfig =
     ConfigFactory.parseString("""
-      |akka.extensions = ["org.apache.pekko.persistence.journal.PersistencePluginProxyExtension"]
-      |akka.persistence {
+      |pekko.extensions = ["org.apache.pekko.persistence.journal.PersistencePluginProxyExtension"]
+      |pekko.persistence {
       |  journal.proxy.start-target-journal = on
       |  snapshot-store.proxy.start-target-snapshot-store = on
       |}
@@ -59,13 +59,13 @@ object PersistencePluginProxySpec {
 
   def targetAddressConfig(system: ActorSystem) =
     ConfigFactory.parseString(s"""
-      |akka.extensions = ["org.apache.pekko.persistence.Persistence"]
-      |akka.persistence.journal.auto-start-journals = [""]
-      |akka.persistence.journal.proxy.target-journal-address = "${system
+      |pekko.extensions = ["org.apache.pekko.persistence.Persistence"]
+      |pekko.persistence.journal.auto-start-journals = [""]
+      |pekko.persistence.journal.proxy.target-journal-address = "${system
                                   .asInstanceOf[ExtendedActorSystem]
                                   .provider
                                   .getDefaultAddress}"
-      |akka.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
+      |pekko.persistence.snapshot-store.proxy.target-snapshot-store-address = "${system
                                   .asInstanceOf[ExtendedActorSystem]
                                   .provider
                                   .getDefaultAddress}"

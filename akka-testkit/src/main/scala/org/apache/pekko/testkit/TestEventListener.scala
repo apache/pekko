@@ -535,11 +535,11 @@ final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int)
 /**
  * EventListener for running tests, which allows selectively filtering out
  * expected messages. To use it, include something like this into
- * <code>akka.test.conf</code> and run your tests with system property
- * <code>"akka.mode"</code> set to <code>"test"</code>:
+ * <code>pekko.test.conf</code> and run your tests with system property
+ * <code>"pekko.mode"</code> set to <code>"test"</code>:
  *
  * <pre><code>
- * akka {
+ * pekko {
  *   loggers = ["org.apache.pekko.testkit.TestEventListener"]
  * }
  * </code></pre>

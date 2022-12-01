@@ -105,7 +105,7 @@ private[remote] class DefaultMessageDispatcher(
               log.debug(
                 LogMarker.Security,
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
-                "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
+                "allow it by adding the path to 'pekko.remote.trusted-selection-paths' configuration",
                 sel.elements.mkString("/", "/", ""))
             else
               // run the receive logic for ActorSelectionMessage here to make sure it is not stuck on busy user actor
@@ -640,7 +640,7 @@ private[remote] class EndpointWriter(
   private val markLog = Logging.withMarker(this)
   val extendedSystem: ExtendedActorSystem = context.system.asInstanceOf[ExtendedActorSystem]
   val remoteMetrics = RemoteMetricsExtension(extendedSystem)
-  val backoffDispatcher = context.system.dispatchers.lookup("akka.remote.classic.backoff-remote-dispatcher")
+  val backoffDispatcher = context.system.dispatchers.lookup("pekko.remote.classic.backoff-remote-dispatcher")
 
   var reader: Option[ActorRef] = None
   var handle: Option[AkkaProtocolHandle] = handleOrActive
@@ -1188,7 +1188,7 @@ private[remote] class EndpointReader(
       if (log.isWarningEnabled)
         log.warning(
           "Discarding inbound message to [{}] in read-only association to [{}]. " +
-          "If this happens often you may consider using akka.remote.use-passive-connections=off " +
+          "If this happens often you may consider using pekko.remote.use-passive-connections=off " +
           "or use Artery TCP.",
           msgOption.map(_.recipient).getOrElse("unknown"),
           remoteAddress)

@@ -21,7 +21,7 @@ import pekko.testkit.SocketUtil
 
 object NettyTransportSpec {
   val commonConfig = ConfigFactory.parseString("""
-    akka.actor.provider = remote
+    pekko.actor.provider = remote
   """)
 
   def getInternal()(implicit sys: ActorSystem) =
@@ -49,8 +49,8 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
 
     "bind to a random port" in {
       val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic.netty.tcp {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic.netty.tcp {
           port = 0
         }
         """)
@@ -67,8 +67,8 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
 
       try {
         val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic.netty.tcp {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic.netty.tcp {
           port = ${address.getPort}
           bind-port = 0
         }
@@ -95,8 +95,8 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
       val address = SocketUtil.temporaryServerAddress(InetAddress.getLocalHost.getHostAddress, udp = false)
 
       val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic.netty.tcp {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic.netty.tcp {
           port = 0
           bind-port = ${address.getPort}
         }
@@ -111,8 +111,8 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
 
     "bind to all interfaces" in {
       val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic {
           netty.tcp.bind-hostname = "0.0.0.0"
         }
         """)
@@ -137,13 +137,13 @@ trait BindBehavior {
       val address = SocketUtil.temporaryServerAddress()
 
       val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic {
           netty.tcp {
             hostname = ${address.getAddress.getHostAddress}
             port = ${address.getPort}
           }
-          enabled-transports = ["akka.remote.classic.netty.tcp"]
+          enabled-transports = ["pekko.remote.classic.netty.tcp"]
         }
         """)
       implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
@@ -166,8 +166,8 @@ trait BindBehavior {
         }
 
       val bindConfig = ConfigFactory.parseString(s"""
-        akka.remote.artery.enabled = false 
-        akka.remote.classic {
+        pekko.remote.artery.enabled = false 
+        pekko.remote.classic {
           netty.tcp {
             hostname = ${address.getAddress.getHostAddress}
             port = ${address.getPort}
@@ -175,7 +175,7 @@ trait BindBehavior {
             bind-hostname = ${bindAddress.getAddress.getHostAddress}
             bind-port = ${bindAddress.getPort}
           }
-          enabled-transports = ["akka.remote.classic.netty.tcp"]
+          enabled-transports = ["pekko.remote.classic.netty.tcp"]
         }
         """)
       implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))

@@ -19,13 +19,13 @@ import pekko.persistence.typed.PersistenceId
 object ReliableDeliveryWithEventSourcedProducerQueueSpec {
   def conf: Config =
     ConfigFactory.parseString(s"""
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.journal.inmem.test-serialization = on
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/ProducerControllerWithEventSourcedProducerQueueSpec-${UUID
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.journal.inmem.test-serialization = on
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/ProducerControllerWithEventSourcedProducerQueueSpec-${UUID
         .randomUUID()
         .toString}"
-    akka.reliable-delivery.consumer-controller.flow-control-window = 20
+    pekko.reliable-delivery.consumer-controller.flow-control-window = 20
     """)
 }
 
@@ -176,5 +176,5 @@ class ReliableDeliveryWithEventSourcedProducerQueueSpec(config: Config)
 class ReliableDeliveryWithEventSourcedProducerQueueChunkedSpec
     extends ReliableDeliveryWithEventSourcedProducerQueueSpec(
       ConfigFactory.parseString("""
-    akka.reliable-delivery.producer-controller.chunk-large-messages = 1b
+    pekko.reliable-delivery.producer-controller.chunk-large-messages = 1b
     """).withFallback(ReliableDeliveryWithEventSourcedProducerQueueSpec.conf))

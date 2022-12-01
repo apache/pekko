@@ -20,9 +20,9 @@ import scala.concurrent.duration._
 //#imports
 
 class PersistenceInitSpec extends ScalaTestWithActorTestKit(s"""
-  akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-  akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-  akka.persistence.snapshot-store.local.dir = "target/snapshot-${UUID.randomUUID().toString}"
+  pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+  pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+  pekko.persistence.snapshot-store.local.dir = "target/snapshot-${UUID.randomUUID().toString}"
   """) with AnyWordSpecLike {
 
   "PersistenceInit" should {

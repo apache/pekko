@@ -15,7 +15,7 @@ import pekko.testkit.SocketUtil.temporaryServerAddresses
 import pekko.util.ByteString
 
 class UdpIntegrationSpec extends AkkaSpec("""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     # tests expect to be able to mutate messages
     """) with ImplicitSender {
 

@@ -39,17 +39,17 @@ object SystemMessageDeliverySpec {
   case class TestSysMsg(s: String) extends SystemMessageDelivery.AckedDeliveryMessage
 
   val safe = ConfigFactory.parseString(s"""
-       akka.loglevel = INFO
-       akka.remote.artery.advanced.stop-idle-outbound-after = 1000 ms
-       akka.remote.artery.advanced.inject-handshake-interval = 500 ms
-       akka.remote.watch-failure-detector.heartbeat-interval = 2 s
-       akka.remote.artery.log-received-messages = on
-       akka.remote.artery.log-sent-messages = on
-       akka.stream.materializer.debug.fuzzing-mode = on
+       pekko.loglevel = INFO
+       pekko.remote.artery.advanced.stop-idle-outbound-after = 1000 ms
+       pekko.remote.artery.advanced.inject-handshake-interval = 500 ms
+       pekko.remote.watch-failure-detector.heartbeat-interval = 2 s
+       pekko.remote.artery.log-received-messages = on
+       pekko.remote.artery.log-sent-messages = on
+       pekko.stream.materializer.debug.fuzzing-mode = on
     """).withFallback(ArterySpecSupport.defaultConfig)
 
   val config =
-    ConfigFactory.parseString("akka.remote.use-unsafe-remote-features-outside-cluster = on").withFallback(safe)
+    ConfigFactory.parseString("pekko.remote.use-unsafe-remote-features-outside-cluster = on").withFallback(safe)
 }
 
 abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiNodeSpec(c) with ImplicitSender {

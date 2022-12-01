@@ -11,7 +11,7 @@ import pekko.stream.StreamLimitReachedException
 import pekko.stream.testkit.StreamSpec
 
 class FlowLimitSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "Limit" must {

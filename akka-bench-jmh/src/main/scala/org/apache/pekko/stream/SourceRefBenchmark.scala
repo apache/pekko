@@ -29,7 +29,7 @@ import pekko.stream.scaladsl._
 class SourceRefBenchmark {
 
   val config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         log-config-on-start = off
         log-dead-letters-during-shutdown = off
         loglevel = "WARNING"

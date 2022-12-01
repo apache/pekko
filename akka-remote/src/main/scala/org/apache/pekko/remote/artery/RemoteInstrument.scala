@@ -404,7 +404,7 @@ private[remote] object RemoteInstruments {
   @InternalStableApi
   def create(system: ExtendedActorSystem, @unused log: LoggingAdapter): Vector[RemoteInstrument] = {
     val c = system.settings.config
-    val path = "akka.remote.artery.advanced.instruments"
+    val path = "pekko.remote.artery.advanced.instruments"
     import pekko.util.ccompat.JavaConverters._
     val configuredInstruments = c
       .getStringList(path)

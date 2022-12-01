@@ -17,7 +17,7 @@ import org.openjdk.jmh.annotations._
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 class CachingConfigBenchmark {
 
-  val deepKey = "akka.actor.deep.settings.something"
+  val deepKey = "pekko.actor.deep.settings.something"
   val deepConfigString = s"""$deepKey = something"""
   val deepConfig = ConfigFactory.parseString(deepConfigString)
   val deepCaching = new CachingConfig(deepConfig)

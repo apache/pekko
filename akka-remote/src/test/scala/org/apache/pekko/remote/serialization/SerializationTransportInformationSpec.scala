@@ -75,7 +75,7 @@ object SerializationTransportInformationSpec {
 abstract class AbstractSerializationTransportInformationSpec(config: Config)
     extends AkkaSpec(config.withFallback(
       ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = info
       actor {
         provider = remote
@@ -133,8 +133,8 @@ abstract class AbstractSerializationTransportInformationSpec(config: Config)
 
 class SerializationTransportInformationSpec
     extends AbstractSerializationTransportInformationSpec(ConfigFactory.parseString("""
-  akka.remote.artery.enabled = off
-  akka.remote.classic.netty.tcp {
+  pekko.remote.artery.enabled = off
+  pekko.remote.classic.netty.tcp {
     hostname = localhost
     port = 0
   }

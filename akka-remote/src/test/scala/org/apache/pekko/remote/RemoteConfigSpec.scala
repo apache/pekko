@@ -18,8 +18,8 @@ import pekko.util.Helpers.ConfigOps
 
 @nowarn // classic deprecated
 class RemoteConfigSpec extends AkkaSpec("""
-    akka.actor.provider = remote
-    akka.remote.classic.netty.tcp.port = 0
+    pekko.actor.provider = remote
+    pekko.remote.classic.netty.tcp.port = 0
   """) {
 
   "Remoting" should {
@@ -36,7 +36,7 @@ class RemoteConfigSpec extends AkkaSpec("""
       FlushWait should ===(2 seconds)
       StartupTimeout.duration should ===(10 seconds)
       RetryGateClosedFor should ===(5 seconds)
-      Dispatcher should ===("akka.remote.default-remote-dispatcher")
+      Dispatcher should ===("pekko.remote.default-remote-dispatcher")
       UsePassiveConnections should ===(true)
       BackoffPeriod should ===(5 millis)
       LogBufferSizeExceeding should ===(50000)
@@ -64,7 +64,7 @@ class RemoteConfigSpec extends AkkaSpec("""
       WatchFailureDetectorConfig.getMillisDuration("acceptable-heartbeat-pause") should ===(10 seconds)
       WatchFailureDetectorConfig.getMillisDuration("min-std-deviation") should ===(100 millis)
 
-      remoteSettings.config.getString("akka.remote.classic.log-frame-size-exceeding") should ===("off")
+      remoteSettings.config.getString("pekko.remote.classic.log-frame-size-exceeding") should ===("off")
     }
 
     "be able to parse AkkaProtocol related config elements" in {
@@ -78,7 +78,7 @@ class RemoteConfigSpec extends AkkaSpec("""
     }
 
     "contain correct netty.tcp values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config.getConfig("akka.remote.classic.netty.tcp")
+      val c = RARP(system).provider.remoteSettings.config.getConfig("pekko.remote.classic.netty.tcp")
       val s = new NettyTransportSettings(c)
       import s._
 
@@ -102,7 +102,7 @@ class RemoteConfigSpec extends AkkaSpec("""
     }
 
     "contain correct socket worker pool configuration values in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config.getConfig("akka.remote.classic.netty.tcp")
+      val c = RARP(system).provider.remoteSettings.config.getConfig("pekko.remote.classic.netty.tcp")
 
       // server-socket-worker-pool
       {
@@ -124,7 +124,7 @@ class RemoteConfigSpec extends AkkaSpec("""
     }
 
     "contain correct ssl configuration values in reference.conf" in {
-      val sslSettings = new SSLSettings(system.settings.config.getConfig("akka.remote.classic.netty.ssl.security"))
+      val sslSettings = new SSLSettings(system.settings.config.getConfig("pekko.remote.classic.netty.ssl.security"))
       sslSettings.SSLKeyStore should ===("keystore")
       sslSettings.SSLKeyStorePassword should ===("changeme")
       sslSettings.SSLKeyPassword should ===("changeme")
@@ -137,7 +137,7 @@ class RemoteConfigSpec extends AkkaSpec("""
     }
 
     "have debug logging of the failure injector turned off in reference.conf" in {
-      val c = RARP(system).provider.remoteSettings.config.getConfig("akka.remote.classic.gremlin")
+      val c = RARP(system).provider.remoteSettings.config.getConfig("pekko.remote.classic.gremlin")
       c.getBoolean("debug") should ===(false)
     }
   }

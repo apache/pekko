@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 object LeastFrequentlyUsedSpec {
 
   val config: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lfu
         lfu {
@@ -25,7 +25,7 @@ object LeastFrequentlyUsedSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val dynamicAgingConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lfuda
         lfuda {
@@ -42,7 +42,7 @@ object LeastFrequentlyUsedSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val idleConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lfu-idle
         lfu-idle {

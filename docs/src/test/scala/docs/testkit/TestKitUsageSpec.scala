@@ -109,7 +109,7 @@ class TestKitUsageSpec
 object TestKitUsageSpec {
   // Define your test specific configuration here
   val config = """
-    akka {
+    pekko {
       loglevel = "WARNING"
     }
     """

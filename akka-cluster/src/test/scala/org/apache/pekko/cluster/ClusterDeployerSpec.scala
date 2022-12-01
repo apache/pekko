@@ -18,8 +18,8 @@ import pekko.testkit._
 object ClusterDeployerSpec {
   val deployerConf = ConfigFactory.parseString(
     """
-      akka.actor.provider = "cluster"
-      akka.actor.deployment {
+      pekko.actor.provider = "cluster"
+      pekko.actor.deployment {
         /user/service1 {
           router = round-robin-pool
           cluster.enabled = on
@@ -37,8 +37,8 @@ object ClusterDeployerSpec {
           cluster.allow-local-routees = off
         }
       }
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
       """,
     ConfigParseOptions.defaults)
 
@@ -52,7 +52,7 @@ class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
 
   "A RemoteDeployer" must {
 
-    "be able to parse 'akka.actor.deployment._' with specified cluster pool" in {
+    "be able to parse 'pekko.actor.deployment._' with specified cluster pool" in {
       val service = "/user/service1"
       val deployment = system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(service.split("/").drop(1))
       deployment should not be None
@@ -69,7 +69,7 @@ class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
           Deploy.NoMailboxGiven)))
     }
 
-    "be able to parse 'akka.actor.deployment._' with specified cluster group" in {
+    "be able to parse 'pekko.actor.deployment._' with specified cluster group" in {
       val service = "/user/service2"
       val deployment = system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(service.split("/").drop(1))
       deployment should not be None

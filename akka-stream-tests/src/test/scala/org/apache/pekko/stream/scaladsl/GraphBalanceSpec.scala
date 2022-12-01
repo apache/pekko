@@ -14,7 +14,7 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
 
 class GraphBalanceSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "A balance" must {

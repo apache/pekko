@@ -29,10 +29,10 @@ public class ReplicatorDocTest extends JUnitSuite {
 
   static Config config =
       ConfigFactory.parseString(
-          "akka.actor.provider = cluster \n"
-              + "akka.remote.classic.netty.tcp.port = 0 \n"
-              + "akka.remote.artery.canonical.port = 0 \n"
-              + "akka.remote.artery.canonical.hostname = 127.0.0.1 \n");
+          "pekko.actor.provider = cluster \n"
+              + "pekko.remote.classic.netty.tcp.port = 0 \n"
+              + "pekko.remote.artery.canonical.port = 0 \n"
+              + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n");
 
   @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource(config);
 

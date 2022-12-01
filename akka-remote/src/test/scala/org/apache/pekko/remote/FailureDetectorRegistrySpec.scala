@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.remote.FailureDetector.Clock
 import pekko.testkit.AkkaSpec
 
-class FailureDetectorRegistrySpec extends AkkaSpec("akka.loglevel = INFO") {
+class FailureDetectorRegistrySpec extends AkkaSpec("pekko.loglevel = INFO") {
 
   def fakeTimeGenerator(timeIntervals: Seq[Long]): Clock = new Clock {
     @volatile var times =

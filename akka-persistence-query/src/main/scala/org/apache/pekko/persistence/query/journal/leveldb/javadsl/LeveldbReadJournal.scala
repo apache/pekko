@@ -22,7 +22,7 @@ import pekko.stream.javadsl.Source
  * Corresponding Scala API is in [[pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal]].
  *
  * Configuration settings can be defined in the configuration section with the
- * absolute path corresponding to the identifier, which is `"akka.persistence.query.journal.leveldb"`
+ * absolute path corresponding to the identifier, which is `"pekko.persistence.query.journal.leveldb"`
  * for the default [[LeveldbReadJournal#Identifier]]. See `reference.conf`.
  */
 @deprecated("Use another journal implementation", "2.6.15")
@@ -165,7 +165,7 @@ object LeveldbReadJournal {
    * The default identifier for [[LeveldbReadJournal]] to be used with
    * [[pekko.persistence.query.PersistenceQuery#getReadJournalFor]].
    *
-   * The value is `"akka.persistence.query.journal.leveldb"` and corresponds
+   * The value is `"pekko.persistence.query.journal.leveldb"` and corresponds
    * to the absolute path to the read journal configuration entry.
    */
   final val Identifier = pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal.Identifier

@@ -50,11 +50,11 @@ abstract class ClusterShardingLeavingSpecConfig(mode: String)
       loglevel = "DEBUG",
       additionalConfig =
         """
-        akka.cluster.sharding.verbose-debug-logging = on
-        akka.cluster.sharding.rebalance-interval = 1s # make rebalancing more likely to happen to test for https://github.com/akka/akka/issues/29093
-        akka.cluster.sharding.distributed-data.majority-min-cap = 1
-        akka.cluster.sharding.coordinator-state.write-majority-plus = 1
-        akka.cluster.sharding.coordinator-state.read-majority-plus = 1
+        pekko.cluster.sharding.verbose-debug-logging = on
+        pekko.cluster.sharding.rebalance-interval = 1s # make rebalancing more likely to happen to test for https://github.com/akka/akka/issues/29093
+        pekko.cluster.sharding.distributed-data.majority-min-cap = 1
+        pekko.cluster.sharding.coordinator-state.write-majority-plus = 1
+        pekko.cluster.sharding.coordinator-state.read-majority-plus = 1
       """) {
   val first = role("first")
   val second = role("second")

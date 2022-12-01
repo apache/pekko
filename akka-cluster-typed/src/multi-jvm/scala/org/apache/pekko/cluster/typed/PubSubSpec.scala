@@ -23,15 +23,15 @@ object PubSubSpecConfig extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-        akka.loglevel = INFO
+        pekko.loglevel = INFO
       """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc1"
+      pekko.cluster.multi-data-center.self-data-center = "dc1"
     """))
 
   nodeConfig(second, third)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc2"
+      pekko.cluster.multi-data-center.self-data-center = "dc2"
     """))
 
   case class Message(msg: String) extends CborSerializable

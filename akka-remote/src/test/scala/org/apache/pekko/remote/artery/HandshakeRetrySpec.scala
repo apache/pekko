@@ -15,8 +15,8 @@ import pekko.testkit.TestActors
 
 object HandshakeRetrySpec {
   val commonConfig = ConfigFactory.parseString(s"""
-     akka.remote.artery.advanced.handshake-timeout = 10s
-     akka.remote.artery.advanced.aeron.image-liveness-timeout = 7s
+     pekko.remote.artery.advanced.handshake-timeout = 10s
+     pekko.remote.artery.advanced.aeron.image-liveness-timeout = 7s
   """).withFallback(ArterySpecSupport.defaultConfig)
 
 }
@@ -33,7 +33,7 @@ class HandshakeRetrySpec extends ArteryMultiNodeSpec(HandshakeRetrySpec.commonCo
       expectNoMessage(1.second)
 
       val systemB =
-        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"akka.remote.artery.canonical.port = $portB"))
+        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
       systemB.actorOf(TestActors.echoActorProps, "echo")
 
       expectMsg("hello")

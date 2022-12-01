@@ -23,7 +23,7 @@ import scala.concurrent.duration._
 
 object GroupRouterSpec {
   def config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = debug
       actor.provider = cluster
       remote.classic.netty.tcp.port = 0

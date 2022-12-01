@@ -37,7 +37,7 @@ import pekko.testkit.TestProbe
 import pekko.testkit.TimingTest
 
 class RestartSpec
-    extends StreamSpec(Map("akka.test.single-expect-default" -> "10s", "akka.loglevel" -> "INFO"))
+    extends StreamSpec(Map("pekko.test.single-expect-default" -> "10s", "pekko.loglevel" -> "INFO"))
     with DefaultTimeout {
 
   import system.dispatcher

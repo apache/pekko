@@ -25,14 +25,14 @@ object RemoteNodeShutdownAndComesBackSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false).withFallback(
       ConfigFactory.parseString("""
-      akka.loglevel = INFO
-      akka.remote.artery.enabled = off
-      akka.remote.classic.log-remote-lifecycle-events = INFO
+      pekko.loglevel = INFO
+      pekko.remote.artery.enabled = off
+      pekko.remote.classic.log-remote-lifecycle-events = INFO
       ## Keep it tight, otherwise reestablishing a connection takes too much time
-      akka.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
-      akka.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
-      akka.remote.watch-failure-detector.acceptable-heartbeat-pause = 60 s
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
+      pekko.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
+      pekko.remote.watch-failure-detector.acceptable-heartbeat-pause = 60 s
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
     """)))
 
   testTransport(on = true)
@@ -140,8 +140,8 @@ abstract class RemoteNodeShutdownAndComesBackSpec extends RemotingMultiNodeSpec(
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-          akka.remote.classic.netty.tcp.port = ${address.port.get}
-          akka.remote.artery.canonical.port = ${address.port.get}
+          pekko.remote.classic.netty.tcp.port = ${address.port.get}
+          pekko.remote.artery.canonical.port = ${address.port.get}
           """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject")
 

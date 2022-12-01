@@ -22,15 +22,15 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 
 object ClusterSingletonPersistenceSpec {
   val config = ConfigFactory.parseString("""
-      akka.actor.provider = cluster
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.actor.provider = cluster
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.coordinated-shutdown.terminate-actor-system = off
-      akka.coordinated-shutdown.run-by-actor-system-terminate = off
+      pekko.coordinated-shutdown.terminate-actor-system = off
+      pekko.coordinated-shutdown.run-by-actor-system-terminate = off
 
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
     """.stripMargin)
 
   sealed trait Command

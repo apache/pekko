@@ -28,7 +28,7 @@ import pekko.util.ByteString
 object StreamRefsSpec {
 
   object DataSourceActor {
-    def props(): Props = Props(new DataSourceActor()).withDispatcher("akka.test.stream-dispatcher")
+    def props(): Props = Props(new DataSourceActor()).withDispatcher("pekko.test.stream-dispatcher")
   }
 
   case class Command(cmd: String, probe: ActorRef)
@@ -170,7 +170,7 @@ object StreamRefsSpec {
 
   def config(): Config = {
     ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = DEBUG
 
       actor {

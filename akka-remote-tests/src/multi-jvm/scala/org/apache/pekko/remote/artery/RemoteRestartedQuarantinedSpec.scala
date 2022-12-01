@@ -24,12 +24,12 @@ object RemoteRestartedQuarantinedSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.loglevel = WARNING
-      akka.remote.log-remote-lifecycle-events = WARNING
-      akka.remote.artery.enabled = on
+      pekko.loglevel = WARNING
+      pekko.remote.log-remote-lifecycle-events = WARNING
+      pekko.remote.artery.enabled = on
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
       """))
       .withFallback(RemotingMultiNodeSpec.commonConfig))
 
@@ -119,7 +119,7 @@ abstract class RemoteRestartedQuarantinedSpec extends RemotingMultiNodeSpec(Remo
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-              akka.remote.artery.canonical.port = ${address.port.get}
+              pekko.remote.artery.canonical.port = ${address.port.get}
               """).withFallback(system.settings.config))
 
         val probe = TestProbe()(freshSystem)

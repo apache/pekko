@@ -38,7 +38,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   private var reporters: List[ScheduledReporter] = Nil
 
   /**
-   * A configuration containing [[MetricsKitSettings]] under the key `akka.test.registry` must be provided.
+   * A configuration containing [[MetricsKitSettings]] under the key `pekko.test.registry` must be provided.
    * This can be the ActorSystems config.
    *
    * The reason this is not handled by an Extension is thatwe do not want to enforce having to start an ActorSystem,
@@ -208,12 +208,12 @@ private[pekko] class MetricsKitSettings(config: Config) {
 
   import pekko.util.Helpers._
 
-  val Reporters = config.getStringList("akka.test.metrics.reporters")
+  val Reporters = config.getStringList("pekko.test.metrics.reporters")
 
   object ConsoleReporter {
     val ScheduledReportInterval =
-      config.getMillisDuration("akka.test.metrics.reporter.console.scheduled-report-interval")
-    val Verbose = config.getBoolean("akka.test.metrics.reporter.console.verbose")
+      config.getMillisDuration("pekko.test.metrics.reporter.console.scheduled-report-interval")
+    val Verbose = config.getBoolean("pekko.test.metrics.reporter.console.verbose")
   }
 
 }

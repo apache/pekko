@@ -26,16 +26,16 @@ object DowningWhenOtherHasQuarantinedThisActorSystemSpec extends MultiNodeConfig
       .withFallback(MultiNodeClusterSpec.clusterConfig)
       .withFallback(
         ConfigFactory.parseString("""
-        akka.remote.artery.enabled = on
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.remote.artery.enabled = on
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         # speed up decision
-        akka.cluster.split-brain-resolver.stable-after = 5s
+        pekko.cluster.split-brain-resolver.stable-after = 5s
         """)))
 
   // exaggerate the timing issue by ,making the second node decide slower
   // this is to more consistently repeat the scenario where the other side completes downing
   // while the isolated part still has not made a decision and then see quarantined connections from the other nodes
-  nodeConfig(second)(ConfigFactory.parseString("akka.cluster.split-brain-resolver.stable-after = 15s"))
+  nodeConfig(second)(ConfigFactory.parseString("pekko.cluster.split-brain-resolver.stable-after = 15s"))
 
   testTransport(on = true)
 }
@@ -53,7 +53,7 @@ abstract class DowningWhenOtherHasQuarantinedThisActorSystemSpec
 
   "Cluster node downed by other" must {
 
-    if (!ArterySettings(system.settings.config.getConfig("akka.remote.artery")).Enabled) {
+    if (!ArterySettings(system.settings.config.getConfig("pekko.remote.artery")).Enabled) {
       // this feature only works in Artery, because classic remoting will not accept connections from
       // a quarantined node, and that is too high risk of introducing regressions if changing that
       pending

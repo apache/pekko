@@ -28,8 +28,8 @@ import pekko.stream.testkit.scaladsl.TestSink
 
 @nowarn("msg=deprecated")
 class LazySinkSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) {
 
   import system.dispatcher

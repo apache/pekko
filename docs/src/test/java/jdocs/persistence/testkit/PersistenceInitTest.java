@@ -28,10 +28,10 @@ public class PersistenceInitTest extends AbstractJavaTest {
   public static final TestKitJunitResource testKit =
       new TestKitJunitResource(
           ConfigFactory.parseString(
-                  "akka.persistence.journal.plugin = \"akka.persistence.journal.inmem\" \n"
-                      + "akka.persistence.journal.inmem.test-serialization = on \n"
-                      + "akka.persistence.snapshot-store.plugin = \"akka.persistence.snapshot-store.local\" \n"
-                      + "akka.persistence.snapshot-store.local.dir = \"target/snapshot-"
+                  "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
+                      + "pekko.persistence.journal.inmem.test-serialization = on \n"
+                      + "pekko.persistence.snapshot-store.plugin = \"pekko.persistence.snapshot-store.local\" \n"
+                      + "pekko.persistence.snapshot-store.local.dir = \"target/snapshot-"
                       + UUID.randomUUID().toString()
                       + "\" \n")
               .withFallback(ConfigFactory.defaultApplication()));

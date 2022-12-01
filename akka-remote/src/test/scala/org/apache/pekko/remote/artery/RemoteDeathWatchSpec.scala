@@ -20,7 +20,7 @@ object RemoteDeathWatchSpec {
   val otherPort = ArteryMultiNodeSpec.freePort(ConfigFactory.load())
 
   val config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
         actor {
             provider = remote
             deployment {
@@ -39,8 +39,8 @@ object RemoteDeathWatchSpec {
         }
     }
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """).withFallback(ArterySpecSupport.defaultConfig)
 }
 
@@ -53,7 +53,8 @@ class RemoteDeathWatchSpec
 
   system.eventStream.publish(TestEvent.Mute(EventFilter[io.aeron.exceptions.RegistrationException]()))
 
-  val other = newRemoteSystem(name = Some("other"), extraConfig = Some(s"akka.remote.artery.canonical.port=$otherPort"))
+  val other =
+    newRemoteSystem(name = Some("other"), extraConfig = Some(s"pekko.remote.artery.canonical.port=$otherPort"))
 
   override def expectedTestDuration: FiniteDuration = 120.seconds
 

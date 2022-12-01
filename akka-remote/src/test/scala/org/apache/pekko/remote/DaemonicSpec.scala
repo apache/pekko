@@ -26,12 +26,12 @@ class DaemonicSpec extends AkkaSpec {
       val daemonicSystem = ActorSystem(
         "daemonic",
         ConfigFactory.parseString("""
-        akka.daemonic = on
-        akka.actor.provider = remote
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.log-dead-letters-during-shutdown = off
-        #akka.remote.artery.advanced.aeron.idle-cpu = 5
+        pekko.daemonic = on
+        pekko.actor.provider = remote
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.log-dead-letters-during-shutdown = off
+        #pekko.remote.artery.advanced.aeron.idle-cpu = 5
       """))
 
       try {

@@ -44,7 +44,8 @@ public class TestKitDocTest extends AbstractJavaTest {
   public static AkkaJUnitActorSystemResource actorSystemResource =
       new AkkaJUnitActorSystemResource(
           "TestKitDocTest",
-          ConfigFactory.parseString("akka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
+          ConfigFactory.parseString(
+              "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

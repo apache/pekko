@@ -222,7 +222,7 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
 
   import Udp.UdpSettings
 
-  val settings: UdpSettings = new UdpSettings(system.settings.config.getConfig("akka.io.udp"))
+  val settings: UdpSettings = new UdpSettings(system.settings.config.getConfig("pekko.io.udp"))
 
   val manager: ActorRef = {
     system.systemActorOf(

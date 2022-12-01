@@ -24,7 +24,7 @@ import pekko.persistence.Persistence
     apply(system.settings.config, journalPluginId, snapshotPluginId)
 
   def apply(config: Config, journalPluginId: String, snapshotPluginId: String): EventSourcedSettings = {
-    val typedConfig = config.getConfig("akka.persistence.typed")
+    val typedConfig = config.getConfig("pekko.persistence.typed")
 
     val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
       case "drop" => StashOverflowStrategy.Drop
@@ -58,7 +58,7 @@ import pekko.persistence.Persistence
 
   private def journalConfigFor(config: Config, journalPluginId: String): Config = {
     def defaultJournalPluginId = {
-      val configPath = config.getString("akka.persistence.journal.plugin")
+      val configPath = config.getString("pekko.persistence.journal.plugin")
       Persistence.verifyPluginConfigIsDefined(configPath, "Default journal")
       configPath
     }

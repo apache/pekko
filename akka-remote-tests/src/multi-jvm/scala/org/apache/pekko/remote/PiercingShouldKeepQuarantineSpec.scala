@@ -18,8 +18,8 @@ class PiercingShouldKeepQuarantineConfig(artery: Boolean) extends MultiNodeConfi
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.remote.retry-gate-closed-for = 0.5s
-      akka.remote.artery.enabled = $artery
+      pekko.remote.retry-gate-closed-for = 0.5s
+      pekko.remote.artery.enabled = $artery
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
 }

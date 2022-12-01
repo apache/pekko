@@ -19,7 +19,7 @@ import pekko.util.Timeout
  */
 class ActorRefResolveCacheQuarantineSpec
     extends ArteryMultiNodeSpec("""
-      akka.remote.artery.advanced.remove-quarantined-association-after = 2 seconds
+      pekko.remote.artery.advanced.remove-quarantined-association-after = 2 seconds
       """)
     with ImplicitSender {
   import RemoteFailureSpec._
@@ -49,7 +49,7 @@ class ActorRefResolveCacheQuarantineSpec
       val clientSystem2 =
         newRemoteSystem(
           name = Some(clientSystem1.name),
-          extraConfig = Some(s"akka.remote.artery.canonical.port = $port1"))
+          extraConfig = Some(s"pekko.remote.artery.canonical.port = $port1"))
       val remoteSelection2 = clientSystem2.actorSelection(rootActorPath(system) / "user" / "echo")
 
       val reply2 = (remoteSelection2 ? "hello-2").futureValue

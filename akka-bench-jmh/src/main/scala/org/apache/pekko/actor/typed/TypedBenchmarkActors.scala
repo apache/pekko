@@ -89,7 +89,7 @@ object TypedBenchmarkActors {
 
     Behaviors
       .setup[Any] { ctx =>
-        val props = Props.empty.withDispatcherFromConfig("akka.actor." + dispatcher)
+        val props = Props.empty.withDispatcherFromConfig("pekko.actor." + dispatcher)
         val pairs = (1 to numPairs).map { _ =>
           ctx.spawnAnonymous(echoSender(messagesPerPair, ctx.self.narrow[Done], batchSize, props), props)
         }
@@ -156,7 +156,7 @@ object TypedBenchmarkActors {
       messagesPerPair: Int,
       numPairs: Int,
       dispatcher: String): (Vector[(ActorRef[Message], ActorRef[Message])], CountDownLatch) = {
-    val fullPathToDispatcher = "akka.actor." + dispatcher
+    val fullPathToDispatcher = "pekko.actor." + dispatcher
     val latch = new CountDownLatch(numPairs * 2)
     val pingPongBehavior = newPingPongBehavior(messagesPerPair, latch)
     val pingPongProps = Props.empty.withDispatcherFromConfig(fullPathToDispatcher)

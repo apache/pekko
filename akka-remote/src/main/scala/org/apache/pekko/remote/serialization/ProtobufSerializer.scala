@@ -50,7 +50,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
   private val allowedClassNames: Set[String] = {
     import org.apache.pekko.util.ccompat.JavaConverters._
-    system.settings.config.getStringList("akka.serialization.protobuf.allowed-classes").asScala.toSet
+    system.settings.config.getStringList("pekko.serialization.protobuf.allowed-classes").asScala.toSet
   }
 
   // This must lazy otherwise it will deadlock the ActorSystem creation
@@ -114,8 +114,8 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     if (!isInAllowList(clazz)) {
       val warnMsg = s"Can't deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         "Only classes that are on the allow list are allowed for security reasons. " +
-        "Configure allowed classes with akka.actor.serialization-bindings or " +
-        "akka.serialization.protobuf.allowed-classes"
+        "Configure allowed classes with pekko.actor.serialization-bindings or " +
+        "pekko.serialization.protobuf.allowed-classes"
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }
@@ -131,7 +131,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    *
    * If an old class is removed from `serialization-bindings` when it's not used for serialization
    * but still used for deserialization (e.g. rolling update with serialization changes) it can
-   * be allowed by specifying in `akka.protobuf.allowed-classes`.
+   * be allowed by specifying in `pekko.protobuf.allowed-classes`.
    *
    * That is also possible when changing a binding from a ProtobufSerializer to another serializer (e.g. Jackson)
    * and still bind with the same class (interface).

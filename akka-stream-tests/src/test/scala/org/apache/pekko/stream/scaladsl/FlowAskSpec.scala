@@ -85,25 +85,26 @@ class FlowAskSpec extends StreamSpec {
     implicit val timeout: Timeout = pekko.util.Timeout(10.seconds)
 
     val replyOnInts =
-      system.actorOf(Props(classOf[Replier]).withDispatcher("akka.test.stream-dispatcher"), "replyOnInts")
+      system.actorOf(Props(classOf[Replier]).withDispatcher("pekko.test.stream-dispatcher"), "replyOnInts")
 
-    val dontReply = system.actorOf(TestActors.blackholeProps.withDispatcher("akka.test.stream-dispatcher"), "dontReply")
+    val dontReply =
+      system.actorOf(TestActors.blackholeProps.withDispatcher("pekko.test.stream-dispatcher"), "dontReply")
 
     val replyRandomDelays =
       system.actorOf(
-        Props(classOf[RandomDelaysReplier]).withDispatcher("akka.test.stream-dispatcher"),
+        Props(classOf[RandomDelaysReplier]).withDispatcher("pekko.test.stream-dispatcher"),
         "replyRandomDelays")
 
     val statusReplier =
-      system.actorOf(Props(new StatusReplier).withDispatcher("akka.test.stream-dispatcher"), "statusReplier")
+      system.actorOf(Props(new StatusReplier).withDispatcher("pekko.test.stream-dispatcher"), "statusReplier")
 
     def replierFailOn(n: Int) =
-      system.actorOf(Props(new FailOn(n)).withDispatcher("akka.test.stream-dispatcher"), s"failureReplier-$n")
+      system.actorOf(Props(new FailOn(n)).withDispatcher("pekko.test.stream-dispatcher"), s"failureReplier-$n")
     val failsOn1 = replierFailOn(1)
     val failsOn3 = replierFailOn(3)
 
     def replierFailAllExceptOn(n: Int) =
-      system.actorOf(Props(new FailOnAllExcept(n)).withDispatcher("akka.test.stream-dispatcher"), s"failureReplier-$n")
+      system.actorOf(Props(new FailOnAllExcept(n)).withDispatcher("pekko.test.stream-dispatcher"), s"failureReplier-$n")
     val failAllExcept6 = replierFailAllExceptOn(6)
 
     "produce asked elements" in {
@@ -173,7 +174,7 @@ class FlowAskSpec extends StreamSpec {
     }
 
     "signal failure when target actor is terminated" in {
-      val r = system.actorOf(Props(classOf[Replier]).withDispatcher("akka.test.stream-dispatcher"), "wanna-fail")
+      val r = system.actorOf(Props(classOf[Replier]).withDispatcher("pekko.test.stream-dispatcher"), "wanna-fail")
       val done = Source.maybe[Int].ask[Reply](4)(r).runWith(Sink.ignore)
 
       intercept[RuntimeException] {

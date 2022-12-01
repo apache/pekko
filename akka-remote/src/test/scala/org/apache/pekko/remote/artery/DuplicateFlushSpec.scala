@@ -20,7 +20,7 @@ import pekko.testkit.ImplicitSender
 import pekko.util.OptionVal
 
 class DuplicateFlushSpec extends AkkaSpec("""
-      akka.stream.materializer.debug.fuzzing-mode = on
+      pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 
   private val pool = new EnvelopeBufferPool(1034 * 1024, 128)

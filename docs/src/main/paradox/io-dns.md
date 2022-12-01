@@ -36,7 +36,7 @@ block that specifies the implementation via `provider-object`.
 
 @@@
 
-To select which `DnsProvider` to use set `akka.io.dns.resolver ` to the location of the configuration.
+To select which `DnsProvider` to use set `pekko.io.dns.resolver ` to the location of the configuration.
 
 There are currently two implementations:
 
@@ -83,7 +83,7 @@ The Async DNS provider has the following advantages:
 
 ## SRV Records
 
-To get DNS SRV records `akka.io.dns.resolver` must be set to `async-dns` and `DnsProtocol.Resolve`'s requestType
+To get DNS SRV records `pekko.io.dns.resolver` must be set to `async-dns` and `DnsProtocol.Resolve`'s requestType
 must be set to `DnsProtocol.Srv` 
 
 Scala

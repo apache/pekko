@@ -22,7 +22,7 @@ class ProviderSelectionSpec extends AbstractSpec {
     val classLoader = findClassLoader()
 
     def settingsWith(key: String): Settings = {
-      val c = ConfigFactory.parseString(s"""akka.actor.provider = "$key"""").withFallback(localConfig)
+      val c = ConfigFactory.parseString(s"""pekko.actor.provider = "$key"""").withFallback(localConfig)
       new Settings(classLoader, c, "test", setup)
     }
 

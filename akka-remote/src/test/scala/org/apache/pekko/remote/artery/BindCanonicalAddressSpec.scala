@@ -26,7 +26,7 @@ trait BindCanonicalAddressBehaviors {
 
     "bind to a random port" in {
       val config = ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port = 0
+        pekko.remote.artery.canonical.port = 0
       """)
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
@@ -39,8 +39,8 @@ trait BindCanonicalAddressBehaviors {
       val address = SocketUtil.temporaryServerAddress(InetAddress.getLocalHost.getHostAddress, udp = isUDP)
 
       val config = ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port = ${address.getPort}
-        akka.remote.artery.bind.port = 0
+        pekko.remote.artery.canonical.port = ${address.getPort}
+        pekko.remote.artery.bind.port = 0
       """)
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
@@ -62,9 +62,9 @@ trait BindCanonicalAddressBehaviors {
 
     "bind to a specified bind hostname and remoting aspects from canonical hostname" in {
       val config = ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port = 0
-        akka.remote.artery.canonical.hostname = "127.0.0.1"
-        akka.remote.artery.bind.hostname = "localhost"
+        pekko.remote.artery.canonical.port = 0
+        pekko.remote.artery.canonical.hostname = "127.0.0.1"
+        pekko.remote.artery.bind.hostname = "localhost"
       """)
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
@@ -77,8 +77,8 @@ trait BindCanonicalAddressBehaviors {
       val address = SocketUtil.temporaryServerAddress(InetAddress.getLocalHost.getHostAddress, udp = isUDP)
 
       val config = ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port = 0
-        akka.remote.artery.bind.port = ${address.getPort}
+        pekko.remote.artery.canonical.port = 0
+        pekko.remote.artery.bind.port = ${address.getPort}
       """)
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
@@ -89,7 +89,7 @@ trait BindCanonicalAddressBehaviors {
 
     "bind to all interfaces" in {
       val config = ConfigFactory.parseString(s"""
-        akka.remote.artery.bind.hostname = "0.0.0.0"
+        pekko.remote.artery.bind.hostname = "0.0.0.0"
       """)
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
@@ -116,7 +116,7 @@ class BindCanonicalAddressSpec extends AnyWordSpec with Matchers with BindCanoni
 
 object BindCanonicalAddressSpec {
   def commonConfig(transport: String) = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       actor.provider = remote
       remote.artery.enabled = true
       remote.artery.transport = "$transport"

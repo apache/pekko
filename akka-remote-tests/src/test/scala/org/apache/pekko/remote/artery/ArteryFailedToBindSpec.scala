@@ -20,14 +20,14 @@ class ArteryFailedToBindSpec extends AnyWordSpec with Matchers {
   "an ActorSystem" must {
     "not start if port is taken" in {
 
-      // this test is tweaked in Jenkins CI by passing -Dakka.remote.artery.transport
+      // this test is tweaked in Jenkins CI by passing -Dpekko.remote.artery.transport
       // therefore we must decide whether to use UDP or not based on the runtime config
-      val arterySettings = ArterySettings(ConfigFactory.load().getConfig("akka.remote.artery"))
+      val arterySettings = ArterySettings(ConfigFactory.load().getConfig("pekko.remote.artery"))
       val useUdp = arterySettings.Transport == ArterySettings.AeronUpd
       val port = SocketUtil.temporaryLocalPort(useUdp)
 
       val config = ConfigFactory.parseString(s"""
-           |akka {
+           |pekko {
            |  actor {
            |    provider = remote
            |  }

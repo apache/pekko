@@ -60,9 +60,9 @@ object UntrustedSpec {
   }
 
   val config = ConfigFactory.parseString("""
-      akka.remote.artery.untrusted-mode = on
-      akka.remote.artery.trusted-selection-paths = ["/user/receptionist", ]
-      akka.loglevel = DEBUG # test verifies debug
+      pekko.remote.artery.untrusted-mode = on
+      pekko.remote.artery.trusted-selection-paths = ["/user/receptionist", ]
+      pekko.loglevel = DEBUG # test verifies debug
     """).withFallback(ArterySpecSupport.defaultConfig)
 
 }

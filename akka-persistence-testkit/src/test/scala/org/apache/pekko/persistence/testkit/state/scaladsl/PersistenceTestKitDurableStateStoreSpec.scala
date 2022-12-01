@@ -21,7 +21,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 object PersistenceTestKitDurableStateStoreSpec {
   val config =
     PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString("""
-    akka.loglevel = DEBUG
+    pekko.loglevel = DEBUG
       """))
   case class Record(id: Int, name: String)
 }

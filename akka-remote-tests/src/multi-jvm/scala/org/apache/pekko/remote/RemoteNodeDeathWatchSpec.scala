@@ -27,12 +27,12 @@ class RemoteNodeDeathWatchConfig(artery: Boolean) extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.remote.log-remote-lifecycle-events = off
+      pekko.loglevel = INFO
+      pekko.remote.log-remote-lifecycle-events = off
       ## Use a tighter setting than the default, otherwise it takes 20s for DeathWatch to trigger
-      akka.remote.watch-failure-detector.acceptable-heartbeat-pause = 3 s
-      akka.remote.artery.enabled = $artery
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.remote.watch-failure-detector.acceptable-heartbeat-pause = 3 s
+      pekko.remote.artery.enabled = $artery
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
 }

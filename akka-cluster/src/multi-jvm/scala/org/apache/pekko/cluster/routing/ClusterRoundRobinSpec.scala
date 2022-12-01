@@ -51,7 +51,7 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.actor {
+      pekko.actor {
         serialization-bindings {
           "org.apache.pekko.cluster.routing.ClusterRoundRobinMultiJvmSpec$$Reply" = java-test
         }
@@ -92,8 +92,8 @@ object ClusterRoundRobinMultiJvmSpec extends MultiNodeConfig {
       }
       """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
-  nodeConfig(first, second)(ConfigFactory.parseString("""akka.cluster.roles =["a", "c"]"""))
-  nodeConfig(third)(ConfigFactory.parseString("""akka.cluster.roles =["b", "c"]"""))
+  nodeConfig(first, second)(ConfigFactory.parseString("""pekko.cluster.roles =["a", "c"]"""))
+  nodeConfig(third)(ConfigFactory.parseString("""pekko.cluster.roles =["b", "c"]"""))
 
   testTransport(on = true)
 

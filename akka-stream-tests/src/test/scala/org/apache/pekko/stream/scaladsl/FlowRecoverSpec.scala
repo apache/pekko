@@ -12,8 +12,8 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.EventFilter
 
 class FlowRecoverSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) {
 
   val ex = new RuntimeException("ex") with NoStackTrace

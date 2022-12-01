@@ -17,7 +17,7 @@ object DisabledJavaSerializerWarningSpec {
 }
 
 class DisabledJavaSerializerWarningSpec extends AkkaSpec("""
-  akka.actor {
+  pekko.actor {
     allow-java-serialization = off
     serialize-messages = on
     no-serialization-verification-needed-class-prefix = []

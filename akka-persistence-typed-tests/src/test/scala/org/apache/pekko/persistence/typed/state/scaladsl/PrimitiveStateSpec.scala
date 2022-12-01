@@ -18,7 +18,7 @@ import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 object PrimitiveStateSpec {
 
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     """))
 }
 

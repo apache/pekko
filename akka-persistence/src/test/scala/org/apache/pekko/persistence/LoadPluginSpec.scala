@@ -36,8 +36,8 @@ class LoadPluginSpec
         "inmem",
         "LoadJournalSpec",
         extraConfig = Some("""
-  akka.persistence.journal.inmem.class = "org.apache.pekko.persistence.LoadPluginSpec$JournalWithConfig"
-  akka.persistence.journal.inmem.extra-property = 17
+  pekko.persistence.journal.inmem.class = "org.apache.pekko.persistence.LoadPluginSpec$JournalWithConfig"
+  pekko.persistence.journal.inmem.extra-property = 17
   
   test-plugin {
     class = "org.apache.pekko.persistence.LoadPluginSpec$JournalWithStartupNotification"
@@ -48,7 +48,7 @@ class LoadPluginSpec
 
   "A journal" must {
     "be created with plugin config" in {
-      val journalRef = Persistence(system).journalFor("akka.persistence.journal.inmem")
+      val journalRef = Persistence(system).journalFor("pekko.persistence.journal.inmem")
       journalRef ! GetConfig
       expectMsgType[Config].getInt("extra-property") should be(17)
     }

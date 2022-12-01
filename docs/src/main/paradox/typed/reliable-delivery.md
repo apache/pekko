@@ -20,7 +20,7 @@ To use reliable delivery, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-actor-typed_$scala.binary.version$
   version=AkkaVersion
@@ -257,7 +257,7 @@ To use reliable delivery with Cluster Sharding, add the following module to your
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-sharding-typed_$scala.binary.version$
   version=AkkaVersion
@@ -366,7 +366,7 @@ When using the `EventSourcedProducerQueue` the following dependency is needed:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-persistence-typed_$scala.binary.version$
   version=AkkaVersion
@@ -426,7 +426,7 @@ again on the consumer side.
 Serialization and deserialization is performed by the `ProducerController` and `ConsumerController` respectively
 instead of in the remote transport layer.
 
-This is enabled by configuration `akka.reliable-delivery.producer-controller.chunk-large-messages` and defines
+This is enabled by configuration `pekko.reliable-delivery.producer-controller.chunk-large-messages` and defines
 the maximum size in bytes of the chunked pieces. Messages smaller than the configured size are not chunked, but
 serialization still takes place in the `ProducerController` and `ConsumerController`. 
 
@@ -438,7 +438,7 @@ This feature is not implemented for @ref:[Work pulling](#work-pulling) and @ref:
 
 ## Configuration
 
-There are several configuration properties, please refer to `akka.reliable-delivery` config section in the
+There are several configuration properties, please refer to `pekko.reliable-delivery` config section in the
 reference configuration:
 
 * @ref:[akka-actor-typed reference configuration](../general/configuration-reference.md#config-akka-actor-typed)

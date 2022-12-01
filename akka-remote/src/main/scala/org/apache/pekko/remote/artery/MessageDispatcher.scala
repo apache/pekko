@@ -67,7 +67,7 @@ private[remote] class MessageDispatcher(system: ExtendedActorSystem, provider: R
                 log.debug(
                   LogMarker.Security,
                   "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
-                  "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
+                  "allow it by adding the path to 'pekko.remote.trusted-selection-paths' configuration",
                   sel.elements.mkString("/", "/", ""))
             } else
               // run the receive logic for ActorSelectionMessage here to make sure it is not stuck on busy user actor

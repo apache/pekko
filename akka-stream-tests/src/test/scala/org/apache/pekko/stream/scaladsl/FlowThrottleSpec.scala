@@ -23,8 +23,8 @@ import pekko.testkit.TimingTest
 import pekko.util.ByteString
 
 class FlowThrottleSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   def genByteString(length: Int) =

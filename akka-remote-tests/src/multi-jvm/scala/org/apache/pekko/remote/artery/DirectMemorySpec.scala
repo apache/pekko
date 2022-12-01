@@ -22,14 +22,14 @@ object DirectMemorySpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.loglevel = WARNING
-      akka.remote.log-remote-lifecycle-events = WARNING
-      akka.remote.artery.enabled = on
-      akka.remote.artery.large-message-destinations = ["/user/large"]
-      akka.remote.artery.buffer-pool-size = 32
-      akka.remote.artery.maximum-frame-size = 256 KiB
-      akka.remote.artery.large-buffer-pool-size = 4
-      akka.remote.artery.maximum-large-frame-size = 2 MiB
+      pekko.loglevel = WARNING
+      pekko.remote.log-remote-lifecycle-events = WARNING
+      pekko.remote.artery.enabled = on
+      pekko.remote.artery.large-message-destinations = ["/user/large"]
+      pekko.remote.artery.buffer-pool-size = 32
+      pekko.remote.artery.maximum-frame-size = 256 KiB
+      pekko.remote.artery.large-buffer-pool-size = 4
+      pekko.remote.artery.maximum-large-frame-size = 2 MiB
       """))
       .withFallback(RemotingMultiNodeSpec.commonConfig))
 
@@ -71,8 +71,8 @@ abstract class DirectMemorySpec extends MultiNodeSpec(DirectMemorySpec) with STM
   "Direct memory allocation" should {
     "not cause OutOfMemoryError" in within(10.seconds) {
       // twice the buffer pool size
-      val nrOfRegularMessages = 2 * system.settings.config.getInt("akka.remote.artery.buffer-pool-size")
-      val nrOfLargeMessages = 2 * system.settings.config.getInt("akka.remote.artery.large-buffer-pool-size")
+      val nrOfRegularMessages = 2 * system.settings.config.getInt("pekko.remote.artery.buffer-pool-size")
+      val nrOfLargeMessages = 2 * system.settings.config.getInt("pekko.remote.artery.large-buffer-pool-size")
 
       val large = system.actorOf(Props(classOf[CountingEcho], testActor, nrOfLargeMessages), "large")
       val regular = system.actorOf(Props(classOf[CountingEcho], testActor, nrOfRegularMessages), "regular")

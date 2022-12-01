@@ -26,7 +26,7 @@ object ClusterShardingSettings {
 
   /** Scala API: Creates new cluster sharding settings object */
   def apply(system: ActorSystem[_]): ClusterShardingSettings =
-    fromConfig(system.settings.config.getConfig("akka.cluster.sharding"))
+    fromConfig(system.settings.config.getConfig("pekko.cluster.sharding"))
 
   def fromConfig(config: Config): ClusterShardingSettings = {
     val classicSettings = ClassicShardingSettings(config)

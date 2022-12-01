@@ -19,7 +19,7 @@ import pekko.actor.typed.receptionist.ServiceKey
 
 class WorkPullingSpec
     extends ScalaTestWithActorTestKit("""
-  akka.reliable-delivery.consumer-controller.flow-control-window = 20
+  pekko.reliable-delivery.consumer-controller.flow-control-window = 20
   """)
     with AnyWordSpecLike
     with LogCapturing {

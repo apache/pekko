@@ -625,7 +625,7 @@ private[pekko] class ShardRegion(
 
   val cluster = Cluster(context.system)
 
-  private val verboseDebug = context.system.settings.config.getBoolean("akka.cluster.sharding.verbose-debug-logging")
+  private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
 
   // sort by age, oldest first
   val ageOrdering = Member.ageOrdering
@@ -681,8 +681,8 @@ private[pekko] class ShardRegion(
   private def logPassivationStrategy(): Unit = {
     if (settings.passivationStrategySettings.oldSettingUsed) {
       log.warning(
-        "The `akka.cluster.sharding.passivate-idle-entity-after` setting and associated methods are deprecated. " +
-        "Use the `akka.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` setting instead. " +
+        "The `pekko.cluster.sharding.passivate-idle-entity-after` setting and associated methods are deprecated. " +
+        "Use the `pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout` setting instead. " +
         "See the documentation and reference config for more information on automatic passivation strategies.")
     }
     if (settings.rememberEntities) {

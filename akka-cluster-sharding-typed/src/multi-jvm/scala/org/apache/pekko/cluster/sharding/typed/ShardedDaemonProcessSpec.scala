@@ -49,8 +49,8 @@ object ShardedDaemonProcessSpec extends MultiNodeConfig {
   }
 
   commonConfig(ConfigFactory.parseString("""
-        akka.loglevel = DEBUG
-        akka.cluster.sharded-daemon-process {
+        pekko.loglevel = DEBUG
+        pekko.cluster.sharded-daemon-process {
           sharding {
             # First is likely to be ignored as shard coordinator not ready
             retry-interval = 0.2s

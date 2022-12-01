@@ -100,8 +100,8 @@ public class PersistenceQueryDocTest {
      * You can use `NoOffset` to retrieve all events with a given tag or retrieve a subset of all
      * events by specifying a `Sequence` `offset`. The `offset` corresponds to an ordered sequence
      * number for the specific tag. Note that the corresponding offset of each event is provided in
-     * the [[akka.persistence.query.EventEnvelope]], which makes it possible to resume the stream at
-     * a later point from a given offset.
+     * the [[pekko.persistence.query.EventEnvelope]], which makes it possible to resume the stream
+     * at a later point from a given offset.
      *
      * <p>The `offset` is exclusive, i.e. the event with the exact same sequence number will not be
      * included in the returned stream. This means that you can use the offset that is returned in
@@ -207,7 +207,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // issue query to journal
     Source<EventEnvelope, NotUsed> source =
@@ -222,7 +222,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #all-persistence-ids-live
     readJournal.persistenceIds();
@@ -235,7 +235,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #all-persistence-ids-snap
     readJournal.currentPersistenceIds();
@@ -248,7 +248,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #events-by-persistent-id
     readJournal.eventsByPersistenceId("user-us-1337", 0L, Long.MAX_VALUE);
@@ -261,7 +261,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #events-by-tag
     // assuming journal is able to work with numeric offsets we can:
@@ -294,7 +294,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #advanced-journal-query-usage
 
@@ -339,7 +339,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #projection-into-different-store-rs
     final ReactiveStreamsCompatibleDBDriver driver = new ReactiveStreamsCompatibleDBDriver();
@@ -371,7 +371,7 @@ public class PersistenceQueryDocTest {
     final MyJavadslReadJournal readJournal =
         PersistenceQuery.get(system)
             .getReadJournalFor(
-                MyJavadslReadJournal.class, "akka.persistence.query.my-read-journal");
+                MyJavadslReadJournal.class, "pekko.persistence.query.my-read-journal");
 
     // #projection-into-different-store-simple
     final ExampleStore store = new ExampleStore();

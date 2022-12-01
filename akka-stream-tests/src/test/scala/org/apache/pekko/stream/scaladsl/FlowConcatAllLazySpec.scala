@@ -13,8 +13,8 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.util.control.NoStackTrace
 
 class FlowConcatAllLazySpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "ConcatAllLazy" must {

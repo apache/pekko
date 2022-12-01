@@ -25,10 +25,10 @@ object SurviveNetworkPartitionSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.loglevel = INFO
-      akka.remote.artery.enabled = on
-      akka.remote.artery.advanced.give-up-system-message-after = 4s
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.loglevel = INFO
+      pekko.remote.artery.enabled = on
+      pekko.remote.artery.advanced.give-up-system-message-after = 4s
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
       """))
       .withFallback(RemotingMultiNodeSpec.commonConfig))
 

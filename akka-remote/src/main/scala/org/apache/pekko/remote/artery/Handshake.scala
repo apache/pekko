@@ -281,7 +281,7 @@ private[remote] class InboundHandshake(inboundContext: InboundContext, inControl
             "Dropping Handshake Request from [{}] addressed to unknown local address [{}]. " +
             "Local address is [{}]. Check that the sending system uses the same " +
             "address to contact recipient system as defined in the " +
-            "'akka.remote.artery.canonical.hostname' of the recipient system. " +
+            "'pekko.remote.artery.canonical.hostname' of the recipient system. " +
             "The name of the ActorSystem must also match.",
             from,
             to,

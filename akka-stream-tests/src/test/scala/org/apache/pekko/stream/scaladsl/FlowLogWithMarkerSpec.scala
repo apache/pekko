@@ -19,7 +19,7 @@ import pekko.stream.testkit.{ ScriptedTest, StreamSpec }
 import pekko.testkit.TestProbe
 
 class FlowLogWithMarkerSpec extends StreamSpec("""
-     akka.loglevel = DEBUG # test verifies logging
+     pekko.loglevel = DEBUG # test verifies logging
      """) with ScriptedTest {
 
   val logProbe = {

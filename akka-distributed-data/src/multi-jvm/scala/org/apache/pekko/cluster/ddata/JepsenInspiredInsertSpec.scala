@@ -27,12 +27,12 @@ object JepsenInspiredInsertSpec extends MultiNodeConfig {
   val n5 = role("n5")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.log-dead-letters = off
-    akka.log-dead-letters-during-shutdown = off
-    akka.remote.log-remote-lifecycle-events = ERROR
-    akka.testconductor.barrier-timeout = 60 s
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.log-dead-letters = off
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.remote.log-remote-lifecycle-events = ERROR
+    pekko.testconductor.barrier-timeout = 60 s
     """))
 
   testTransport(on = true)

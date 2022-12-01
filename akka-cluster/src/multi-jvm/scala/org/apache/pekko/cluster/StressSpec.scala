@@ -57,12 +57,12 @@ import pekko.util.Helpers.Requiring
  *
  * By default it uses 13 nodes.
  * Example of sbt command line parameters to double that:
- * `-DMultiJvm.akka.cluster.Stress.nrOfNodes=26 -Dmultinode.Dakka.test.cluster-stress-spec.nr-of-nodes-factor=2`
+ * `-DMultiJvm.pekko.cluster.Stress.nrOfNodes=26 -Dmultinode.Dakka.test.cluster-stress-spec.nr-of-nodes-factor=2`
  */
 private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
   val totalNumberOfNodes =
-    System.getProperty("MultiJvm.akka.cluster.Stress.nrOfNodes") match {
+    System.getProperty("MultiJvm.pekko.cluster.Stress.nrOfNodes") match {
       case null  => 10
       case value => value.toInt.requiring(_ >= 10, "nrOfNodes should be >= 10")
     }
@@ -72,7 +72,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   // Note that this test uses default configuration,
   // not MultiNodeClusterSpec.clusterConfig
   commonConfig(ConfigFactory.parseString("""
-    akka.test.cluster-stress-spec {
+    pekko.test.cluster-stress-spec {
       infolog = off
       # scale the nr-of-nodes* settings with this factor
       nr-of-nodes-factor = 1
@@ -100,8 +100,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       convergence-within-factor = 1.0
     }
 
-    akka.actor.provider = cluster
-    akka.cluster {
+    pekko.actor.provider = cluster
+    pekko.cluster {
       failure-detector.acceptable-heartbeat-pause =  3s
       downing-provider-class = org.apache.pekko.cluster.sbr.SplitBrainResolverProvider
       split-brain-resolver {
@@ -109,23 +109,23 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       }
       publish-stats-interval = 1s
     }
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
-    akka.loglevel = INFO
-    akka.remote.log-remote-lifecycle-events = off
-    akka.actor.default-dispatcher.fork-join-executor {
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.loglevel = INFO
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.actor.default-dispatcher.fork-join-executor {
       parallelism-min = 8
       parallelism-max = 8
     }
 
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """))
 
   testTransport(on = true)
 
   class Settings(conf: Config) {
-    private val testConfig = conf.getConfig("akka.test.cluster-stress-spec")
+    private val testConfig = conf.getConfig("pekko.test.cluster-stress-spec")
     import testConfig._
 
     val infolog = getBoolean("infolog")

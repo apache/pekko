@@ -28,7 +28,7 @@ To use Akka Cluster add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
   version=AkkaVersion
@@ -57,7 +57,7 @@ Java
 :  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-imports }
 
 <a id="basic-cluster-configuration"></a>
-The minimum configuration required is to set a host/port for remoting and the `akka.actor.provider = "cluster"`.
+The minimum configuration required is to set a host/port for remoting and the `pekko.actor.provider = "cluster"`.
 
 @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
@@ -155,7 +155,7 @@ it retries this procedure until success or shutdown.
 You can define the seed nodes in the @ref:[configuration](#configuration) file (application.conf):
 
 ```
-akka.cluster.seed-nodes = [
+pekko.cluster.seed-nodes = [
   "akka://ClusterSystem@host1:2552",
   "akka://ClusterSystem@host2:2552"]
 ```
@@ -163,8 +163,8 @@ akka.cluster.seed-nodes = [
 This can also be defined as Java system properties when starting the JVM using the following syntax:
 
 ```
--Dakka.cluster.seed-nodes.0=akka://ClusterSystem@host1:2552
--Dakka.cluster.seed-nodes.1=akka://ClusterSystem@host2:2552
+-Dpekko.cluster.seed-nodes.0=akka://ClusterSystem@host1:2552
+-Dpekko.cluster.seed-nodes.1=akka://ClusterSystem@host2:2552
 ```
 
 
@@ -228,8 +228,8 @@ the JVM. If the `seed-nodes` are assembled dynamically, it is useful to define t
 and a restart with new seed-nodes should be tried after unsuccessful attempts.
 
 ```
-akka.cluster.shutdown-after-unsuccessful-join-seed-nodes = 20s
-akka.coordinated-shutdown.exit-jvm = on
+pekko.cluster.shutdown-after-unsuccessful-join-seed-nodes = 20s
+pekko.coordinated-shutdown.exit-jvm = on
 ```
 
 If you don't configure seed nodes or use one of the join seed node functions, you need to join the cluster manually
@@ -284,7 +284,7 @@ We recommend that you enable the @ref:[Split Brain Resolver](../split-brain-reso
 Akka Cluster module. You enable it with configuration:
 
 ```
-akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
 ```
 
 You should also consider the different available @ref:[downing strategies](../split-brain-resolver.md#strategies).
@@ -313,7 +313,7 @@ Not all nodes of a cluster need to perform the same function. For example, there
 one which runs the data access layer and one for the number-crunching. Choosing which actors to start on each node,
 for example cluster-aware routers, can take node roles into account to achieve this distribution of responsibilities.
 
-The node roles are defined in the configuration property named `akka.cluster.roles`
+The node roles are defined in the configuration property named `pekko.cluster.roles`
 and typically defined in the start script as a system property or environment variable.
 
 The roles are part of the membership information in @apidoc[MemberEvent](ClusterEvent.MemberEvent) that you can subscribe to. The roles
@@ -341,14 +341,14 @@ Cluster uses the @apidoc[remote.PhiAccrualFailureDetector](PhiAccrualFailureDete
 implementing the @apidoc[remote.FailureDetector](FailureDetector) and configuring it:
 
 ```
-akka.cluster.implementation-class = "com.example.CustomFailureDetector"
+pekko.cluster.implementation-class = "com.example.CustomFailureDetector"
 ```
 
 In the @ref:[Cluster Configuration](#configuration) you may want to adjust these
 depending on you environment:
 
-* When a *phi* value is considered to be a failure `akka.cluster.failure-detector.threshold`
-* Margin of error for sudden abnormalities `akka.cluster.failure-detector.acceptable-heartbeat-pause`  
+* When a *phi* value is considered to be a failure `pekko.cluster.failure-detector.threshold`
+* Margin of error for sudden abnormalities `pekko.cluster.failure-detector.acceptable-heartbeat-pause`  
 
 ## How to test
 
@@ -373,14 +373,14 @@ With a configuration option you can define the required number of members
 before the leader changes member status of 'Joining' members to 'Up'.:
 
 ```
-akka.cluster.min-nr-of-members = 3
+pekko.cluster.min-nr-of-members = 3
 ```
 
 In a similar way you can define the required number of members of a certain role
 before the leader changes member status of 'Joining' members to 'Up'.:
 
 ```
-akka.cluster.role {
+pekko.cluster.role {
   frontend.min-nr-of-members = 1
   backend.min-nr-of-members = 2
 }
@@ -391,21 +391,21 @@ akka.cluster.role {
 You can silence the logging of cluster events at info level with configuration property:
 
 ```
-akka.cluster.log-info = off
+pekko.cluster.log-info = off
 ```
 
 You can enable verbose logging of cluster events at info level, e.g. for temporary troubleshooting, with configuration property:
 
 ```
-akka.cluster.log-info-verbose = on
+pekko.cluster.log-info-verbose = on
 ```
 
 ### Cluster Dispatcher
 
 The Cluster extension is implemented with actors. To protect them against
 disturbance from user actors they are by default run on the internal dispatcher configured
-under `akka.actor.internal-dispatcher`. The cluster actors can potentially be isolated even
-further, onto their own dispatcher using the setting `akka.cluster.use-dispatcher`
+under `pekko.actor.internal-dispatcher`. The cluster actors can potentially be isolated even
+further, onto their own dispatcher using the setting `pekko.cluster.use-dispatcher`
 or made run on the same dispatcher to keep the number of threads down.
 
 ### Configuration Compatibility Check
@@ -417,14 +417,14 @@ The Configuration Compatibility Check feature ensures that all nodes in a cluste
 New custom checkers can be added by extending @apidoc[cluster.JoinConfigCompatChecker](JoinConfigCompatChecker) and including them in the configuration. Each checker must be associated with a unique key:
 
 ```
-akka.cluster.configuration-compatibility-check.checkers {
+pekko.cluster.configuration-compatibility-check.checkers {
   my-custom-config = "com.company.MyCustomJoinConfigCompatChecker"
 }
 ``` 
 
 @@@ note
 
-Configuration Compatibility Check is enabled by default, but can be disabled by setting `akka.cluster.configuration-compatibility-check.enforce-on-join = off`. This is specially useful when performing rolling updates. Obviously this should only be done if a complete cluster shutdown isn't an option. A cluster with nodes with different configuration settings may lead to data loss or data corruption. 
+Configuration Compatibility Check is enabled by default, but can be disabled by setting `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`. This is specially useful when performing rolling updates. Obviously this should only be done if a complete cluster shutdown isn't an option. A cluster with nodes with different configuration settings may lead to data loss or data corruption. 
 
 This setting should only be disabled on the joining nodes. The checks are always performed on both sides, and warnings are logged. In case of incompatibilities, it is the responsibility of the joining node to decide if the process should be interrupted or not.  
 

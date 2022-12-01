@@ -44,7 +44,7 @@ object TypedSupervisingClassicSpec {
 }
 
 class TypedSupervisingClassicSpec extends ScalaTestWithActorTestKit("""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
   """.stripMargin) with AnyWordSpecLike with LogCapturing {
   import TypedSupervisingClassicSpec._
 

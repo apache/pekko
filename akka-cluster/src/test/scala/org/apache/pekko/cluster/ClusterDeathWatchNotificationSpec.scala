@@ -17,14 +17,14 @@ import pekko.remote.artery.ArterySpecSupport
 object ClusterDeathWatchNotificationSpec {
 
   val config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
         loglevel = INFO
         actor {
             provider = cluster
         }
     }
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
     """).withFallback(ArterySpecSupport.defaultConfig)
 
   object Sender {

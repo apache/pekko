@@ -17,18 +17,18 @@ import pekko.testkit._
 
 object AtLeastOnceDeliveryFailureSpec {
   val config = ConfigFactory.parseString(s"""
-      akka.persistence.sender.chaos.live-processing-failure-rate = 0.3
-      akka.persistence.sender.chaos.replay-processing-failure-rate = 0.1
-      akka.persistence.destination.chaos.confirm-failure-rate = 0.3
-      akka.persistence.journal.plugin = "akka.persistence.journal.chaos"
-      akka.persistence.journal.chaos.write-failure-rate = 0.3
-      akka.persistence.journal.chaos.confirm-failure-rate = 0.2
-      akka.persistence.journal.chaos.delete-failure-rate = 0.3
-      akka.persistence.journal.chaos.replay-failure-rate = 0.25
-      akka.persistence.journal.chaos.read-highest-failure-rate = 0.1
-      akka.persistence.journal.chaos.class = org.apache.pekko.persistence.journal.chaos.ChaosJournal
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-      akka.persistence.snapshot-store.local.dir = "target/snapshots-at-least-once-delivery-failure-spec/"
+      pekko.persistence.sender.chaos.live-processing-failure-rate = 0.3
+      pekko.persistence.sender.chaos.replay-processing-failure-rate = 0.1
+      pekko.persistence.destination.chaos.confirm-failure-rate = 0.3
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.chaos"
+      pekko.persistence.journal.chaos.write-failure-rate = 0.3
+      pekko.persistence.journal.chaos.confirm-failure-rate = 0.2
+      pekko.persistence.journal.chaos.delete-failure-rate = 0.3
+      pekko.persistence.journal.chaos.replay-failure-rate = 0.25
+      pekko.persistence.journal.chaos.read-highest-failure-rate = 0.1
+      pekko.persistence.journal.chaos.class = org.apache.pekko.persistence.journal.chaos.ChaosJournal
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.local.dir = "target/snapshots-at-least-once-delivery-failure-spec/"
     """)
 
   val numMessages = 10
@@ -69,7 +69,7 @@ object AtLeastOnceDeliveryFailureSpec {
       with ChaosSupport
       with ActorLogging
       with AtLeastOnceDelivery {
-    val config = context.system.settings.config.getConfig("akka.persistence.sender.chaos")
+    val config = context.system.settings.config.getConfig("pekko.persistence.sender.chaos")
     val liveProcessingFailureRate = config.getDouble("live-processing-failure-rate")
     val replayProcessingFailureRate = config.getDouble("replay-processing-failure-rate")
 
@@ -128,7 +128,7 @@ object AtLeastOnceDeliveryFailureSpec {
   }
 
   class ChaosDestination(val probe: ActorRef) extends Actor with ChaosSupport with ActorLogging {
-    val config = context.system.settings.config.getConfig("akka.persistence.destination.chaos")
+    val config = context.system.settings.config.getConfig("pekko.persistence.destination.chaos")
     val confirmFailureRate = config.getDouble("confirm-failure-rate")
 
     def receive = {

@@ -179,7 +179,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
    * Interval between redelivery attempts.
    *
    * The default value can be configured with the
-   * `akka.persistence.at-least-once-delivery.redeliver-interval`
+   * `pekko.persistence.at-least-once-delivery.redeliver-interval`
    * configuration key. This method can be overridden by implementation classes to return
    * non-default values.
    */
@@ -195,7 +195,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
    * this helps to prevent an overwhelming amount of messages to be sent at once.
    *
    * The default value can be configured with the
-   * `akka.persistence.at-least-once-delivery.redelivery-burst-limit`
+   * `pekko.persistence.at-least-once-delivery.redelivery-burst-limit`
    * configuration key. This method can be overridden by implementation classes to return
    * non-default values.
    */
@@ -209,7 +209,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
    * will be sent to `self`. The count is reset after a restart.
    *
    * The default value can be configured with the
-   * `akka.persistence.at-least-once-delivery.warn-after-number-of-unconfirmed-attempts`
+   * `pekko.persistence.at-least-once-delivery.warn-after-number-of-unconfirmed-attempts`
    * configuration key. This method can be overridden by implementation classes to return
    * non-default values.
    */
@@ -224,7 +224,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
    * [[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException]].
    *
    * The default value can be configured with the
-   * `akka.persistence.at-least-once-delivery.max-unconfirmed-messages`
+   * `pekko.persistence.at-least-once-delivery.max-unconfirmed-messages`
    * configuration key. This method can be overridden by implementation classes to return
    * non-default values.
    */

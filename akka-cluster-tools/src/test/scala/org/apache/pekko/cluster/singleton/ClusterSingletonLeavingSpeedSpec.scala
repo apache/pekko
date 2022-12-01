@@ -44,17 +44,17 @@ object ClusterSingletonLeavingSpeedSpec {
 class ClusterSingletonLeavingSpeedSpec
     extends AkkaSpec(
       """
-  akka.loglevel = DEBUG
-  akka.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
-  akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-  akka.cluster.testkit.auto-down-unreachable-after = 2s
+  pekko.loglevel = DEBUG
+  pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
+  pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+  pekko.cluster.testkit.auto-down-unreachable-after = 2s
 
   # With 10 systems and setting min-number-of-hand-over-retries to 5 and gossip-interval to 2s it's possible to
   # reproduce the ClusterSingletonManagerIsStuck and slow hand over in issue #25639
-  # akka.cluster.singleton.min-number-of-hand-over-retries = 5
-  # akka.cluster.gossip-interval = 2s
+  # pekko.cluster.singleton.min-number-of-hand-over-retries = 5
+  # pekko.cluster.gossip-interval = 2s
 
-  akka.remote {
+  pekko.remote {
     classic.netty.tcp {
       hostname = "127.0.0.1"
       port = 0
@@ -67,7 +67,7 @@ class ClusterSingletonLeavingSpeedSpec
   """) {
 
   private val systems = (1 to 3).map { n =>
-    val roleConfig = ConfigFactory.parseString(s"""akka.cluster.roles=[role-${n % 3}]""")
+    val roleConfig = ConfigFactory.parseString(s"""pekko.cluster.roles=[role-${n % 3}]""")
     ActorSystem(system.name, roleConfig.withFallback(system.settings.config))
   }
   private val probes = systems.map(TestProbe()(_))

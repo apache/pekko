@@ -702,7 +702,7 @@ class TypedActorExtension(val system: ExtendedActorSystem) extends TypedActorFac
   /**
    * Default timeout for typed actor methods with non-void return type
    */
-  final val DefaultReturnTimeout = Timeout(settings.config.getMillisDuration("akka.actor.typed.timeout"))
+  final val DefaultReturnTimeout = Timeout(settings.config.getMillisDuration("pekko.actor.typed.timeout"))
 
   /**
    * Retrieves the underlying ActorRef for the supplied TypedActor proxy, or null if none found

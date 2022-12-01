@@ -74,11 +74,11 @@ private[pekko] class RemoteSystemDaemon(
 
   private val parent2children = new ConcurrentHashMap[ActorRef, Set[ActorRef]]
 
-  private val allowListEnabled = system.settings.config.getBoolean("akka.remote.deployment.enable-allow-list")
+  private val allowListEnabled = system.settings.config.getBoolean("pekko.remote.deployment.enable-allow-list")
   private val remoteDeploymentAllowList: immutable.Set[String] = {
     import pekko.util.ccompat.JavaConverters._
     if (allowListEnabled)
-      system.settings.config.getStringList("akka.remote.deployment.allowed-actor-classes").asScala.toSet
+      system.settings.config.getStringList("pekko.remote.deployment.allowed-actor-classes").asScala.toSet
     else Set.empty
   }
 

@@ -16,7 +16,7 @@ import pekko.stream.testkit._
 import pekko.testkit.TestProbe
 
 class FlowOnCompleteSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "A Flow with onComplete" must {

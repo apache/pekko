@@ -7,7 +7,7 @@ To use Akka Streams, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream_$scala.binary.version$"
   version=AkkaVersion
@@ -75,7 +75,7 @@ and increase them only to a level suitable for the throughput requirements of th
 can be set through configuration:
 
 ```
-akka.stream.materializer.max-input-buffer-size = 16
+pekko.stream.materializer.max-input-buffer-size = 16
 ```
 
 Alternatively they can be set per stream by adding an attribute to the complete `RunnableGraph` or on smaller segments

@@ -38,17 +38,17 @@ object OptionalSnapshotStoreSpec {
       }).snapshotWhen { case _ => true }
 
   def persistentBehaviorWithSnapshotPlugin(probe: TestProbe[State]) =
-    persistentBehavior(probe).withSnapshotPluginId("akka.persistence.snapshot-store.local")
+    persistentBehavior(probe).withSnapshotPluginId("pekko.persistence.snapshot-store.local")
 
 }
 
 class OptionalSnapshotStoreSpec extends ScalaTestWithActorTestKit(s"""
-    akka.persistence.publish-plugin-commands = on
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.journal.inmem.test-serialization = on
+    pekko.persistence.publish-plugin-commands = on
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.journal.inmem.test-serialization = on
 
     # snapshot store plugin is NOT defined, things should still work
-    akka.persistence.snapshot-store.local.dir = "target/snapshots-${classOf[OptionalSnapshotStoreSpec].getName}/"
+    pekko.persistence.snapshot-store.local.dir = "target/snapshots-${classOf[OptionalSnapshotStoreSpec].getName}/"
     """) with AnyWordSpecLike with LogCapturing {
 
   import OptionalSnapshotStoreSpec._

@@ -17,7 +17,7 @@ object Utils {
   /** Sets the default-mailbox to the usual [[pekko.dispatch.UnboundedMailbox]] instead of [[StreamTestDefaultMailbox]]. */
   val UnboundedMailboxConfig =
     ConfigFactory.parseString(
-      """akka.actor.default-mailbox.mailbox-type = "org.apache.pekko.dispatch.UnboundedMailbox"""")
+      """pekko.actor.default-mailbox.mailbox-type = "org.apache.pekko.dispatch.UnboundedMailbox"""")
 
   case class TE(message: String) extends RuntimeException(message) with NoStackTrace
 

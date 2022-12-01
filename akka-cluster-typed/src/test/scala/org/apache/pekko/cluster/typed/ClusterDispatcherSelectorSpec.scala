@@ -10,7 +10,7 @@ import org.apache.pekko.actor.typed.scaladsl.DispatcherSelectorSpec
 
 class ClusterDispatcherSelectorSpec
     extends DispatcherSelectorSpec(ConfigFactory.parseString("""
-    akka.actor.provider = cluster
+    pekko.actor.provider = cluster
     """).withFallback(DispatcherSelectorSpec.config)) {
 
   // same tests as in DispatcherSelectorSpec

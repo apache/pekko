@@ -16,11 +16,11 @@ import pekko.testkit._
 object ShutdownAfterJoinSeedNodesSpec {
 
   val config = """
-       akka.actor.provider = "cluster"
-       akka.coordinated-shutdown.terminate-actor-system = on
-       akka.remote.classic.netty.tcp.port = 0
-       akka.remote.artery.canonical.port = 0
-       akka.cluster {
+       pekko.actor.provider = "cluster"
+       pekko.coordinated-shutdown.terminate-actor-system = on
+       pekko.remote.classic.netty.tcp.port = 0
+       pekko.remote.artery.canonical.port = 0
+       pekko.cluster {
          seed-node-timeout = 2s
          retry-unsuccessful-join-after = 2s
          shutdown-after-unsuccessful-join-seed-nodes = 5s

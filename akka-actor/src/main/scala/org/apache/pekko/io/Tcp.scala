@@ -596,7 +596,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
 
 class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
 
-  val Settings = new Settings(system.settings.config.getConfig("akka.io.tcp"))
+  val Settings = new Settings(system.settings.config.getConfig("pekko.io.tcp"))
   class Settings private[TcpExt] (_config: Config) extends SelectionHandlerSettings(_config) {
     import _config._
 

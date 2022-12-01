@@ -661,7 +661,7 @@ abstract class ShardCoordinator(
   import settings.tuningParameters._
 
   val log = Logging.withMarker(context.system, this)
-  private val verboseDebug = context.system.settings.config.getBoolean("akka.cluster.sharding.verbose-debug-logging")
+  private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
   private val ignoreRef = context.system.asInstanceOf[ExtendedActorSystem].provider.ignoreRef
 
   val cluster = Cluster(context.system)
@@ -1307,7 +1307,7 @@ class PersistentShardCoordinator(
   import ShardCoordinator.Internal._
   import settings.tuningParameters._
 
-  private val verboseDebug = context.system.settings.config.getBoolean("akka.cluster.sharding.verbose-debug-logging")
+  private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
 
   override def persistenceId = s"/sharding/${typeName}Coordinator"
 
@@ -1460,7 +1460,7 @@ private[pekko] class DDataShardCoordinator(
 
   import pekko.cluster.ddata.Replicator.Update
 
-  private val verboseDebug = context.system.settings.config.getBoolean("akka.cluster.sharding.verbose-debug-logging")
+  private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
 
   private val stateReadConsistency = settings.tuningParameters.coordinatorStateReadMajorityPlus match {
     case Int.MaxValue => ReadAll(settings.tuningParameters.waitingForStateTimeout)

@@ -116,7 +116,7 @@ class DispatcherSelectorSpec(config: Config)
         sys ! Ping(probe.ref)
 
         val response = probe.receiveMessage()
-        response.threadName should startWith("DispatcherSelectorSpec2-akka.actor.default-dispatcher")
+        response.threadName should startWith("DispatcherSelectorSpec2-pekko.actor.default-dispatcher")
       } finally {
         ActorTestKit.shutdown(sys)
       }

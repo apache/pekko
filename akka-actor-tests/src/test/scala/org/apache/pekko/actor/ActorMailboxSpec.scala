@@ -84,7 +84,7 @@ object ActorMailboxSpec {
       mailbox-type = "org.apache.pekko.actor.ActorMailboxSpec$$MCBoundedMailbox"
     }
 
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /default-default {
       }
       /default-override-from-props {
@@ -110,10 +110,10 @@ object ActorMailboxSpec {
         mailbox = bounded-mailbox-with-zero-pushtimeout
       }
       /default-unbounded-deque {
-        mailbox = akka.actor.mailbox.unbounded-deque-based
+        mailbox = pekko.actor.mailbox.unbounded-deque-based
       }
       /default-unbounded-deque-override-trait {
-        mailbox = akka.actor.mailbox.unbounded-deque-based
+        mailbox = pekko.actor.mailbox.unbounded-deque-based
       }
       /unbounded-default {
         dispatcher = unbounded-dispatcher
@@ -138,20 +138,20 @@ object ActorMailboxSpec {
       }
       /bounded-deque-requirements-configured {
         dispatcher = requiring-bounded-dispatcher
-        mailbox = akka.actor.mailbox.bounded-deque-based
+        mailbox = pekko.actor.mailbox.bounded-deque-based
       }
       /bounded-deque-require-unbounded-configured {
         dispatcher = requiring-bounded-dispatcher
-        mailbox = akka.actor.mailbox.unbounded-deque-based
+        mailbox = pekko.actor.mailbox.unbounded-deque-based
       }
       /bounded-deque-require-unbounded-unconfigured {
         dispatcher = requiring-bounded-dispatcher
       }
       /bounded-deque-requirements-configured-props-disp {
-        mailbox = akka.actor.mailbox.bounded-deque-based
+        mailbox = pekko.actor.mailbox.bounded-deque-based
       }
       /bounded-deque-require-unbounded-configured-props-disp {
-        mailbox = akka.actor.mailbox.unbounded-deque-based
+        mailbox = pekko.actor.mailbox.unbounded-deque-based
       }
       /bounded-deque-requirements-configured-props-mail {
         dispatcher = requiring-bounded-dispatcher
@@ -164,7 +164,7 @@ object ActorMailboxSpec {
       }
     }
 
-    akka.actor.mailbox.requirements {
+    pekko.actor.mailbox.requirements {
       "org.apache.pekko.actor.ActorMailboxSpec$$MCBoundedMessageQueueSemantics" =
         mc-bounded-mailbox
     }
@@ -249,7 +249,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
 
     "get an unbounded deque message queue when it is only configured on the props" in {
       checkMailboxQueue(
-        Props[QueueReportingActor]().withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+        Props[QueueReportingActor]().withMailbox("pekko.actor.mailbox.unbounded-deque-based"),
         "default-override-from-props",
         UnboundedDeqMailboxTypes)
     }
@@ -340,7 +340,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
 
     "get an unbounded message queue overriding configuration on the props" in {
       checkMailboxQueue(
-        Props[QueueReportingActor]().withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+        Props[QueueReportingActor]().withMailbox("pekko.actor.mailbox.unbounded-deque-based"),
         "bounded-unbounded-override-props",
         UnboundedMailboxTypes)
     }
@@ -366,7 +366,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
       checkMailboxQueue(
         Props[StashQueueReportingActor]()
           .withDispatcher("requiring-bounded-dispatcher")
-          .withMailbox("akka.actor.mailbox.bounded-deque-based"),
+          .withMailbox("pekko.actor.mailbox.bounded-deque-based"),
         "bounded-deque-requirements-configured-props",
         BoundedDeqMailboxTypes)
     }
@@ -376,7 +376,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
         system.actorOf(
           Props[StashQueueReportingActor]()
             .withDispatcher("requiring-bounded-dispatcher")
-            .withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+            .withMailbox("pekko.actor.mailbox.unbounded-deque-based"),
           "bounded-deque-require-unbounded-configured-props"))
     }
 
@@ -410,7 +410,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
 
     "get a bounded deque-based message queue if configured and required with Props (mailbox)" in {
       checkMailboxQueue(
-        Props[StashQueueReportingActor]().withMailbox("akka.actor.mailbox.bounded-deque-based"),
+        Props[StashQueueReportingActor]().withMailbox("pekko.actor.mailbox.bounded-deque-based"),
         "bounded-deque-requirements-configured-props-mail",
         BoundedDeqMailboxTypes)
     }
@@ -418,7 +418,7 @@ class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout 
     "fail with a unbounded deque-based message queue if configured and required with Props (mailbox)" in {
       intercept[ConfigurationException](
         system.actorOf(
-          Props[StashQueueReportingActor]().withMailbox("akka.actor.mailbox.unbounded-deque-based"),
+          Props[StashQueueReportingActor]().withMailbox("pekko.actor.mailbox.unbounded-deque-based"),
           "bounded-deque-require-unbounded-configured-props-mail"))
     }
 

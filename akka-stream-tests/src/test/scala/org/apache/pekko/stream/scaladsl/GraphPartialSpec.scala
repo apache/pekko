@@ -13,7 +13,7 @@ import pekko.stream.FlowShape
 import pekko.stream.testkit.StreamSpec
 
 class GraphPartialSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "GraphDSL.partial" must {

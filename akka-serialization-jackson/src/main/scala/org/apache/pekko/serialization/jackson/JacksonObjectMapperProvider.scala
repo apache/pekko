@@ -59,8 +59,8 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
    * The configuration for a given `bindingName`.
    */
   def configForBinding(bindingName: String, systemConfig: Config): Config = {
-    val basePath = "akka.serialization.jackson"
-    val baseConf = systemConfig.getConfig("akka.serialization.jackson")
+    val basePath = "pekko.serialization.jackson"
+    val baseConf = systemConfig.getConfig("pekko.serialization.jackson")
     if (systemConfig.hasPath(s"$basePath.$bindingName"))
       systemConfig.getConfig(s"$basePath.$bindingName").withFallback(baseConf)
     else
@@ -221,7 +221,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
                   e,
                   s"Could not load configured Jackson module [$fqcn], " +
                   "please verify classpath dependencies or amend the configuration " +
-                  "[akka.serialization.jackson-modules]. Continuing without this module."))
+                  "[pekko.serialization.jackson-modules]. Continuing without this module."))
               None
           }
         } else
@@ -304,7 +304,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * creates a new instance.
    *
    * The `ObjectMapper` is created with sensible defaults and modules configured
-   * in `akka.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * in `pekko.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
    * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
    *
    * The returned `ObjectMapper` must not be modified, because it may already be in use and such
@@ -323,7 +323,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * creates a new instance.
    *
    * The `ObjectMapper` is created with sensible defaults and modules configured
-   * in `akka.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * in `pekko.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
    * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
    *
    * The returned `ObjectMapper` must not be modified, because it may already be in use and such
@@ -338,7 +338,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
 
   /**
    * Scala API: Creates a new instance of a Jackson `ObjectMapper` with sensible defaults and modules configured
-   * in `akka.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * in `pekko.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
    * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
    *
    * @param bindingName name of this `ObjectMapper`
@@ -362,7 +362,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
 
   /**
    * Java API: Creates a new instance of a Jackson `ObjectMapper` with sensible defaults and modules configured
-   * in `akka.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
+   * in `pekko.serialization.jackson.jackson-modules`. It's using [[JacksonObjectMapperProviderSetup]]
    * if the `ActorSystem` is started with such [[pekko.actor.setup.ActorSystemSetup]].
    *
    * @param bindingName name of this `ObjectMapper`
@@ -427,7 +427,7 @@ class JacksonObjectMapperFactory {
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredModules the list of `Modules` that were configured in
-   *                           `akka.serialization.jackson.deserialization-features`
+   *                           `pekko.serialization.jackson.deserialization-features`
    */
   def overrideConfiguredModules(
       @unused bindingName: String,
@@ -444,7 +444,7 @@ class JacksonObjectMapperFactory {
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `SerializationFeature` that were configured in
-   *                           `akka.serialization.jackson.serialization-features`
+   *                           `pekko.serialization.jackson.serialization-features`
    */
   def overrideConfiguredSerializationFeatures(
       @unused bindingName: String,
@@ -462,7 +462,7 @@ class JacksonObjectMapperFactory {
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `DeserializationFeature` that were configured in
-   *                           `akka.serialization.jackson.deserialization-features`
+   *                           `pekko.serialization.jackson.deserialization-features`
    */
   def overrideConfiguredDeserializationFeatures(
       @unused bindingName: String,
@@ -476,7 +476,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `MapperFeatures` that were configured in `akka.serialization.jackson.mapper-features`
+   * @param configuredFeatures the list of `MapperFeatures` that were configured in `pekko.serialization.jackson.mapper-features`
    */
   def overrideConfiguredMapperFeatures(
       @unused bindingName: String,
@@ -489,7 +489,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `JsonParser.Feature` that were configured in `akka.serialization.jackson.json-parser-features`
+   * @param configuredFeatures the list of `JsonParser.Feature` that were configured in `pekko.serialization.jackson.json-parser-features`
    */
   def overrideConfiguredJsonParserFeatures(
       @unused bindingName: String,
@@ -502,7 +502,7 @@ class JacksonObjectMapperFactory {
    * return the features that are to be applied to the `ObjectMapper`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `JsonGenerator.Feature` that were configured in `akka.serialization.jackson.json-generator-features`
+   * @param configuredFeatures the list of `JsonGenerator.Feature` that were configured in `pekko.serialization.jackson.json-generator-features`
    */
   def overrideConfiguredJsonGeneratorFeatures(
       @unused bindingName: String,
@@ -516,7 +516,7 @@ class JacksonObjectMapperFactory {
    * that are to be applied to the `JsonFactoryBuilder`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `StreamReadFeature` that were configured in `akka.serialization.jackson.stream-read-features`
+   * @param configuredFeatures the list of `StreamReadFeature` that were configured in `pekko.serialization.jackson.stream-read-features`
    */
   def overrideConfiguredStreamReadFeatures(
       @unused bindingName: String,
@@ -529,7 +529,7 @@ class JacksonObjectMapperFactory {
    * that are to be applied to the `JsonFactoryBuilder`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `StreamWriterFeature` that were configured in `akka.serialization.jackson.stream-write-features`
+   * @param configuredFeatures the list of `StreamWriterFeature` that were configured in `pekko.serialization.jackson.stream-write-features`
    */
   def overrideConfiguredStreamWriteFeatures(
       @unused bindingName: String,
@@ -542,7 +542,7 @@ class JacksonObjectMapperFactory {
    * that are to be applied to the `JsonFactoryBuilder`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `JsonReadFeature` that were configured in `akka.serialization.jackson.json-read-features`
+   * @param configuredFeatures the list of `JsonReadFeature` that were configured in `pekko.serialization.jackson.json-read-features`
    */
   def overrideConfiguredJsonReadFeatures(
       @unused bindingName: String,
@@ -555,7 +555,7 @@ class JacksonObjectMapperFactory {
    * that are to be applied to the `JsonFactoryBuilder`.
    *
    * @param bindingName bindingName name of this `ObjectMapper`
-   * @param configuredFeatures the list of `JsonWriteFeature` that were configured in `akka.serialization.jackson.json-write-features`
+   * @param configuredFeatures the list of `JsonWriteFeature` that were configured in `pekko.serialization.jackson.json-write-features`
    */
   def overrideConfiguredJsonWriteFeatures(
       @unused bindingName: String,
@@ -569,7 +569,7 @@ class JacksonObjectMapperFactory {
    *
    * @param bindingName bindingName name of this `ObjectMapper`
    * @param configuredFeatures the list of `PropertyAccessor`/`JsonAutoDetect.Visibility` that were configured in
-   *                           `akka.serialization.jackson.visibility`
+   *                           `pekko.serialization.jackson.visibility`
    */
   def overrideConfiguredVisibility(
       @unused bindingName: String,

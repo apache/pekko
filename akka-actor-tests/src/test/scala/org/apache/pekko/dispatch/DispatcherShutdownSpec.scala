@@ -29,8 +29,8 @@ class DispatcherShutdownSpec extends AnyWordSpec with Matchers {
           .toList
           .map(_.getThreadName)
           .filter(name =>
-            name.startsWith("DispatcherShutdownSpec-akka.actor.default") || name.startsWith(
-              "DispatcherShutdownSpec-akka.actor.internal")) // nothing is run on default without any user actors started
+            name.startsWith("DispatcherShutdownSpec-pekko.actor.default") || name.startsWith(
+              "DispatcherShutdownSpec-pekko.actor.internal")) // nothing is run on default without any user actors started
           .size
 
       val system = ActorSystem("DispatcherShutdownSpec")

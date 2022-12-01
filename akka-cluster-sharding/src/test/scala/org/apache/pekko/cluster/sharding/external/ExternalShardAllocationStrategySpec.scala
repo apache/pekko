@@ -15,9 +15,9 @@ import pekko.testkit.TestProbe
 import pekko.util.Timeout
 
 class ExternalShardAllocationStrategySpec extends AkkaSpec("""
-    akka.actor.provider = cluster 
-    akka.loglevel = INFO 
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = cluster 
+    pekko.loglevel = INFO 
+    pekko.remote.artery.canonical.port = 0
     """) {
 
   val requester = TestProbe()

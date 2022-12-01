@@ -28,9 +28,9 @@ import pekko.testkit.JavaSerializable
 object MiscMessageSerializerSpec {
   val serializationTestOverrides =
     s"""
-    akka.actor {
+    pekko.actor {
       serialization-bindings = { 
-        "org.apache.pekko.remote.serialization.MiscMessageSerializerSpec$$TestException" = akka-misc
+        "org.apache.pekko.remote.serialization.MiscMessageSerializerSpec$$TestException" = pekko-misc
       }
     }
     """

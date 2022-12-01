@@ -16,7 +16,7 @@ import pekko.stream.impl.RequestMore
 import pekko.stream.testkit._
 
 class FlowTakeSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   muteDeadLetters(classOf[OnNext], OnComplete.getClass, classOf[RequestMore[_]])()

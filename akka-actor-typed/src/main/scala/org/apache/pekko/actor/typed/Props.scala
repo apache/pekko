@@ -166,7 +166,7 @@ object DispatcherSelector {
    *  Run the actor on the default blocking dispatcher that is
    *  configured under default-blocking-io-dispatcher
    */
-  def blocking(): DispatcherSelector = fromConfig("akka.actor.default-blocking-io-dispatcher")
+  def blocking(): DispatcherSelector = fromConfig("pekko.actor.default-blocking-io-dispatcher")
 
   /**
    * Look up an executor definition in the [[ActorSystem]] configuration.
@@ -193,7 +193,7 @@ object MailboxSelector {
   /**
    * Scala API: The default mailbox is SingleConsumerOnlyUnboundedMailbox
    */
-  def default(): MailboxSelector = fromConfig("akka.actor.typed.default-mailbox")
+  def default(): MailboxSelector = fromConfig("pekko.actor.typed.default-mailbox")
 
   /**
    * Java API: The default mailbox is SingleConsumerOnlyUnboundedMailbox

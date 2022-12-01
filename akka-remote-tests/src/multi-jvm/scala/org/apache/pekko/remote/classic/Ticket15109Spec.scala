@@ -26,13 +26,13 @@ object Ticket15109Spec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false).withFallback(
       ConfigFactory.parseString("""
-      akka.loglevel = INFO
-      akka.remote.artery.enabled = off
-      akka.remote.classic.log-remote-lifecycle-events = INFO
+      pekko.loglevel = INFO
+      pekko.remote.artery.enabled = off
+      pekko.remote.classic.log-remote-lifecycle-events = INFO
       ## Keep it tight, otherwise reestablishing a connection takes too much time
-      akka.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
-      akka.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
-      akka.remote.classic.retry-gate-closed-for = 0.5 s
+      pekko.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
+      pekko.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
+      pekko.remote.classic.retry-gate-closed-for = 0.5 s
                               """)))
 
   testTransport(on = true)

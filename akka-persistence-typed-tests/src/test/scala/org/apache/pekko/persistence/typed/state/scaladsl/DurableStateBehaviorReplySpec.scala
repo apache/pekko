@@ -24,7 +24,7 @@ import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 
 object DurableStateBehaviorReplySpec {
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     """))
 
   sealed trait Command[ReplyMessage] extends CborSerializable

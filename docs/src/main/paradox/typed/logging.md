@@ -13,7 +13,7 @@ via the SLF4J backend, such as Logback configuration.
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor-typed_$scala.binary.version$"
   version=AkkaVersion
@@ -259,7 +259,7 @@ SLF4J or directly to standard out.
 
 When `akka-actor-typed` and `akka-slf4j` are on the classpath this event handler actor will emit the events to SLF4J.
 The @apidoc[event.slf4j.Slf4jLogger](Slf4jLogger) and @apidoc[event.slf4j.Slf4jLoggingFilter](Slf4jLoggingFilter) are enabled automatically
-without additional configuration. This can be disabled by `akka.use-slf4j=off` configuration property.
+without additional configuration. This can be disabled by `pekko.use-slf4j=off` configuration property.
 
 In other words, you don't have to do anything for the Akka internal logging to end up in your configured
 SLF4J backend.
@@ -270,23 +270,23 @@ Ultimately the log level defined in the SLF4J backend is used. For the Akka inte
 also check the level defined by the SLF4J backend before constructing the final log message and
 emitting it to the event bus.
 
-However, there is an additional `akka.loglevel` configuration property that defines if logging events
+However, there is an additional `pekko.loglevel` configuration property that defines if logging events
 with lower log level should be discarded immediately without consulting the SLF4J backend. By default
 this is at `INFO` level, which means that `DEBUG` level logging from the Akka internals will not
 reach the SLF4J backend even if `DEBUG` is enabled in the backend.
 
-You can enable `DEBUG` level for `akka.loglevel` and control the actual level in the SLF4j backend
+You can enable `DEBUG` level for `pekko.loglevel` and control the actual level in the SLF4j backend
 without any significant overhead, also for production.
 
 ```
-akka.loglevel = "DEBUG"
+pekko.loglevel = "DEBUG"
 ```
 
 To turn off all Akka internal logging (not recommended) you can configure the log levels to be
 `OFF` like this.
 
 ```
-akka {
+pekko {
   stdout-loglevel = "OFF"
   loglevel = "OFF"
 }
@@ -303,7 +303,7 @@ modules of Akka.
 When the actor system is starting up and shutting down the configured `loggers` are not used.
 Instead log messages are printed to stdout (System.out). The default log level for this
 stdout logger is `WARNING` and it can be silenced completely by setting
-`akka.stdout-loglevel=OFF`.
+`pekko.stdout-loglevel=OFF`.
 
 ### Logging of Dead Letters
 
@@ -316,7 +316,7 @@ messages in the actor mailboxes are sent to dead letters. You can also disable l
 of dead letters during shutdown.
 
 ```
-akka {
+pekko {
   log-dead-letters = 10
   log-dead-letters-during-shutdown = on
 }
@@ -332,7 +332,7 @@ Akka has a few configuration options for very low level debugging. These make mo
 You almost definitely need to have logging set to DEBUG to use any of the options below:
 
 ```
-akka {
+pekko {
   loglevel = "DEBUG"
 }
 ```
@@ -340,7 +340,7 @@ akka {
 This config option is very good if you want to know what config settings are loaded by Akka:
 
 ```
-akka {
+pekko {
   # Log the complete configuration at INFO level when the actor system is started.
   # This is useful when you are uncertain of what configuration is used.
   log-config-on-start = on
@@ -350,7 +350,7 @@ akka {
 If you want unhandled messages logged at DEBUG:
 
 ```
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of unhandled messages
@@ -363,7 +363,7 @@ akka {
 If you want to monitor subscriptions (subscribe/unsubscribe) on the ActorSystem.eventStream:
 
 ```
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of subscription changes on the eventStream
@@ -380,7 +380,7 @@ If you want to see all messages that are sent through remoting at DEBUG log leve
 Note that this logs the messages as they are sent by the transport layer, not by an actor.
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   # If this is "on", Akka will log all outbound messages at DEBUG level,
   # if off then they are not logged
   log-sent-messages = on
@@ -391,7 +391,7 @@ If you want to see all messages that are received through remoting at DEBUG log 
 Note that this logs the messages as they are received by the transport layer, not by an actor.
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   # If this is "on", Akka will log all inbound messages at DEBUG level,
   # if off then they are not logged
   log-received-messages = on
@@ -401,7 +401,7 @@ akka.remote.artery {
 Logging of message types with payload size in bytes larger than the configured `log-frame-size-exceeding`.
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   log-frame-size-exceeding = 10000b
 }
 ```
@@ -451,7 +451,7 @@ troubleshooting. Those logger names are typically prefixed with the package name
 For example, in Logback the configuration may look like this to enable debug logging for Cluster Sharding: 
 
 ```
-   <logger name="akka.cluster.sharding" level="DEBUG" />
+   <logger name="pekko.cluster.sharding" level="DEBUG" />
 
     <root level="INFO">
         <appender-ref ref="ASYNC"/>
@@ -461,18 +461,18 @@ For example, in Logback the configuration may look like this to enable debug log
 Other examples of logger names or prefixes:
 
 ```
-akka.cluster
-akka.cluster.Cluster
-akka.cluster.ClusterHeartbeat
-akka.cluster.ClusterGossip
-akka.cluster.ddata
-akka.cluster.pubsub
-akka.cluster.singleton
-akka.cluster.sharding
-akka.coordination.lease
-akka.discovery
-akka.persistence
-akka.remote
+pekko.cluster
+pekko.cluster.Cluster
+pekko.cluster.ClusterHeartbeat
+pekko.cluster.ClusterGossip
+pekko.cluster.ddata
+pekko.cluster.pubsub
+pekko.cluster.singleton
+pekko.cluster.sharding
+pekko.coordination.lease
+pekko.discovery
+pekko.persistence
+pekko.remote
 ```
 
 ## Logging in tests

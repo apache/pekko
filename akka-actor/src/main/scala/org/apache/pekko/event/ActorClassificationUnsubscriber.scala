@@ -81,7 +81,7 @@ private[pekko] object ActorClassificationUnsubscriber {
       busName: String,
       unsubscribe: ActorRef => Unit,
       @unused debug: Boolean = false): ActorRef = {
-    val debug = system.settings.config.getBoolean("akka.actor.debug.event-stream")
+    val debug = system.settings.config.getBoolean("pekko.actor.debug.event-stream")
     system
       .asInstanceOf[ExtendedActorSystem]
       .systemActorOf(

@@ -7,7 +7,7 @@ To use Akka Streams, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream_$scala.binary.version$"
   version=AkkaVersion
@@ -198,7 +198,7 @@ timeout has triggered, materialization of the target side will fail, pointing ou
 
 Since these timeouts are often very different based on the kind of stream offered, and there can be 
 many different kinds of them in the same application, it is possible to not only configure this setting
-globally (`akka.stream.materializer.stream-ref.subscription-timeout`), but also via attributes:
+globally (`pekko.stream.materializer.stream-ref.subscription-timeout`), but also via attributes:
 
 Scala
 :   @@snip [FlowStreamRefsDocSpec.scala](/docs/src/test/scala/docs/stream/FlowStreamRefsDocSpec.scala) { #attr-sub-timeout }
@@ -209,6 +209,6 @@ Java
 ### General configuration
 
 Other settings can be set globally in your `application.conf`, by overriding any of the following values
-in the `akka.stream.materializer.stream-ref.*` keyspace:
+in the `pekko.stream.materializer.stream-ref.*` keyspace:
 
 @@snip [reference.conf](/akka-stream/src/main/resources/reference.conf) { #stream-ref }

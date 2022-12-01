@@ -19,8 +19,8 @@ import pekko.util.Timeout
 
 @nowarn
 class AskSpec extends AkkaSpec("""
-     akka.loglevel = DEBUG
-     akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+     pekko.loglevel = DEBUG
+     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     """) with WithLogCapturing {
 
   "The “ask” pattern" must {

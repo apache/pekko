@@ -32,7 +32,7 @@ import pekko.util.Version
 
 object ClusterSpec {
   val config = """
-    akka.cluster {
+    pekko.cluster {
       downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
       testkit.auto-down-unreachable-after = 0s
       periodic-tasks-initial-delay = 120 seconds // turn off scheduled tasks
@@ -40,10 +40,10 @@ object ClusterSpec {
       failure-detector.implementation-class = org.apache.pekko.cluster.FailureDetectorPuppet
       app-version = "1.2.3"
     }
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
     """
 
   final case class GossipTo(address: Address)
@@ -150,9 +150,9 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys2 = ActorSystem(
         "ClusterSpec2",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
         """))
       try {
         val ref = sys2.actorOf(Props.empty)
@@ -184,9 +184,9 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys2 = ActorSystem(
         "ClusterSpec2",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
         """))
       try {
         val probe = TestProbe()(sys2)
@@ -214,10 +214,10 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys2 = ActorSystem(
         "ClusterSpec2",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.coordinated-shutdown.terminate-actor-system = on
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.coordinated-shutdown.terminate-actor-system = on
         """))
       try {
         val probe = TestProbe()(sys2)
@@ -252,10 +252,10 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys2 = ActorSystem(
         "ClusterSpec2",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.cluster.min-nr-of-members = 2
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.cluster.min-nr-of-members = 2
         """))
       try {
         val probe = TestProbe()(sys2)
@@ -283,10 +283,10 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys2 = ActorSystem(
         "ClusterSpec2",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.coordinated-shutdown.terminate-actor-system = on
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.coordinated-shutdown.terminate-actor-system = on
         """))
       try {
         val probe = TestProbe()(sys2)
@@ -317,11 +317,11 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       val sys3 = ActorSystem(
         "ClusterSpec3",
         ConfigFactory.parseString("""
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.coordinated-shutdown.terminate-actor-system = on
-        akka.cluster.run-coordinated-shutdown-when-down = on
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.coordinated-shutdown.terminate-actor-system = on
+        pekko.cluster.run-coordinated-shutdown-when-down = on
         """))
       try {
         val probe = TestProbe()(sys3)
@@ -341,11 +341,11 @@ class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
       }
     }
 
-    "register multiple cluster JMX MBeans with akka.cluster.jmx.multi-mbeans-in-same-jvm = on" in {
+    "register multiple cluster JMX MBeans with pekko.cluster.jmx.multi-mbeans-in-same-jvm = on" in {
       def getConfig = (port: Int) => ConfigFactory.parseString(s"""
-             akka.cluster.jmx.multi-mbeans-in-same-jvm = on
-             akka.remote.classic.netty.tcp.port = ${port}
-             akka.remote.artery.canonical.port = ${port}
+             pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+             pekko.remote.classic.netty.tcp.port = ${port}
+             pekko.remote.artery.canonical.port = ${port}
           """).withFallback(ConfigFactory.parseString(ClusterSpec.config))
 
       val sys1 = ActorSystem("ClusterSpec4", getConfig(2552))

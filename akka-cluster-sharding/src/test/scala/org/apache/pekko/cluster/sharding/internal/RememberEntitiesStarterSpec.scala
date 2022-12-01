@@ -61,7 +61,7 @@ class RememberEntitiesStarterSpec extends AkkaSpec {
             """
              retry-interval = 1 second
             """)
-          .withFallback(system.settings.config.getConfig("akka.cluster.sharding")))
+          .withFallback(system.settings.config.getConfig("pekko.cluster.sharding")))
 
       val rememberEntityStarter = system.actorOf(
         RememberEntityStarter.props(regionProbe.ref, shardProbe.ref, shardId, Set("1", "2", "3"), customSettings))
@@ -94,7 +94,7 @@ class RememberEntitiesStarterSpec extends AkkaSpec {
             """
              retry-interval = 1 second
             """)
-          .withFallback(system.settings.config.getConfig("akka.cluster.sharding")))
+          .withFallback(system.settings.config.getConfig("pekko.cluster.sharding")))
 
       val rememberEntityStarter = system.actorOf(
         RememberEntityStarter.props(regionProbe.ref, shardProbe.ref, shardId, Set("1", "2", "3"), customSettings))
@@ -130,7 +130,7 @@ class RememberEntitiesStarterSpec extends AkkaSpec {
              }
              retry-interval = 1 second
             """)
-          .withFallback(system.settings.config.getConfig("akka.cluster.sharding")))
+          .withFallback(system.settings.config.getConfig("pekko.cluster.sharding")))
 
       val rememberEntityStarter = system.actorOf(
         RememberEntityStarter

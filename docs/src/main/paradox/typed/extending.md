@@ -60,14 +60,14 @@ The `DatabaseConnectionPool` can be looked up in this way any number of times an
 ## Loading from configuration
 
 To be able to load extensions from your Akka configuration you must add FQCNs of implementations of the `ExtensionId`
-in the `akka.actor.typed.extensions` section of the config you provide to your `ActorSystem`.
+in the `pekko.actor.typed.extensions` section of the config you provide to your `ActorSystem`.
 
 Scala
 :  @@snip [ExtensionDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/extensions/ExtensionDocSpec.scala) { #config }
 
 Java
 :   ```ruby
-   akka.actor.typed {
+   pekko.actor.typed {
      extensions = ["jdocs.org.apache.pekko.typed.extensions.ExtensionDocTest$DatabaseConnectionPool$Id"]
    }
    ```

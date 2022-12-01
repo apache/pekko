@@ -52,7 +52,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
   private val systemConfig = system.settings.config
 
   private lazy val defaultPluginId = {
-    val configPath = systemConfig.getString("akka.persistence.state.plugin")
+    val configPath = systemConfig.getString("pekko.persistence.state.plugin")
     Persistence.verifyPluginConfigIsDefined(configPath, "Default DurableStateStore")
     Persistence.verifyPluginConfigExists(systemConfig, configPath, "DurableStateStore")
     configPath
@@ -66,7 +66,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
 
   private def pluginConfig(pluginId: String): Config = {
     val configPath = pluginIdOrDefault(pluginId)
-    systemConfig.getConfig(configPath).withFallback(systemConfig.getConfig("akka.persistence.state-plugin-fallback"))
+    systemConfig.getConfig(configPath).withFallback(systemConfig.getConfig("pekko.persistence.state-plugin-fallback"))
   }
 
   /** Check for default or missing identity. */

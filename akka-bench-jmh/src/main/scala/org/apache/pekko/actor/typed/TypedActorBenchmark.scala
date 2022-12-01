@@ -58,7 +58,7 @@ class TypedActorBenchmark {
       TypedBenchmarkActors.echoActorsSupervisor(numMessagesPerActorPair, numActors, dispatcher, batchSize),
       "TypedActorBenchmark",
       ConfigFactory.parseString(s"""
-       akka.actor {
+       pekko.actor {
 
          default-mailbox.mailbox-capacity = 512
 

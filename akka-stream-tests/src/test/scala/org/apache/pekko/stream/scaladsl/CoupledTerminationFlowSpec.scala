@@ -24,7 +24,7 @@ import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.TestProbe
 
 class CoupledTerminationFlowSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   import system.dispatcher

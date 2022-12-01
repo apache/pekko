@@ -21,7 +21,7 @@ import com.typesafe.config.Config
 
 object ClusterSingletonSettings {
   def apply(system: ActorSystem[_]): ClusterSingletonSettings =
-    fromConfig(system.settings.config.getConfig("akka.cluster"))
+    fromConfig(system.settings.config.getConfig("pekko.cluster"))
 
   /**
    * Java API
@@ -225,15 +225,15 @@ object ClusterSingletonManagerSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.singleton`.
+   * `pekko.cluster.singleton`.
    */
   def apply(system: ActorSystem[_]): ClusterSingletonManagerSettings =
-    apply(system.settings.config.getConfig("akka.cluster.singleton"))
+    apply(system.settings.config.getConfig("pekko.cluster.singleton"))
       .withRemovalMargin(pekko.cluster.Cluster(system).downingProvider.downRemovalMargin)
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.singleton`.
+   * the default configuration `pekko.cluster.singleton`.
    */
   def apply(config: Config): ClusterSingletonManagerSettings = {
     val lease = config.getString("use-lease") match {
@@ -251,13 +251,13 @@ object ClusterSingletonManagerSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.singleton`.
+   * `pekko.cluster.singleton`.
    */
   def create(system: ActorSystem[_]): ClusterSingletonManagerSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.singleton`.
+   * the default configuration `pekko.cluster.singleton`.
    */
   def create(config: Config): ClusterSingletonManagerSettings = apply(config)
 

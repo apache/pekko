@@ -18,11 +18,11 @@ object DistributedDataDocSpec {
 
   val config =
     """
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
 
     #//#serializer-config
-    akka.actor {
+    pekko.actor {
       serializers {
         two-phase-set = "docs.ddata.protobuf.TwoPhaseSetSerializer"
       }
@@ -33,7 +33,7 @@ object DistributedDataDocSpec {
     #//#serializer-config
 
     #//#japi-serializer-config
-    akka.actor {
+    pekko.actor {
       serializers {
         twophaseset = "jdocs.ddata.protobuf.TwoPhaseSetSerializer"
       }

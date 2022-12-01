@@ -22,9 +22,9 @@ import scala.concurrent.duration._
 object EventsByPersistenceIdSpec {
   val config = PersistenceTestKitPlugin.config.withFallback(
     ConfigFactory.parseString("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.persistence.testkit.events.serialize = off
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.persistence.testkit.events.serialize = off
       """))
 
   case class Command(evt: String, ack: ActorRef[Done])

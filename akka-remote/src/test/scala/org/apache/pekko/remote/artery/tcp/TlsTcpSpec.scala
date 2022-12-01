@@ -28,7 +28,7 @@ class TlsTcpWithDefaultConfigSpec extends TlsTcpSpec(ConfigFactory.empty())
 
 class TlsTcpWithSHA1PRNGSpec
     extends TlsTcpSpec(ConfigFactory.parseString("""
-    akka.remote.artery.ssl.config-ssl-engine {
+    pekko.remote.artery.ssl.config-ssl-engine {
       random-number-generator = "SHA1PRNG"
       enabled-algorithms = ["TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"]
     }
@@ -36,7 +36,7 @@ class TlsTcpWithSHA1PRNGSpec
 
 class TlsTcpWithDefaultRNGSecureSpec
     extends TlsTcpSpec(ConfigFactory.parseString("""
-    akka.remote.artery.ssl.config-ssl-engine {
+    pekko.remote.artery.ssl.config-ssl-engine {
       random-number-generator = ""
       enabled-algorithms = ["TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"]
     }
@@ -44,14 +44,14 @@ class TlsTcpWithDefaultRNGSecureSpec
 
 class TlsTcpWithCrappyRSAWithMD5OnlyHereToMakeSureThingsWorkSpec
     extends TlsTcpSpec(ConfigFactory.parseString("""
-    akka.remote.artery.ssl.config-ssl-engine {
+    pekko.remote.artery.ssl.config-ssl-engine {
       random-number-generator = ""
       enabled-algorithms = [""SSL_RSA_WITH_NULL_MD5""]
     }
     """))
 
 class TlsTcpWithRotatingKeysSSLEngineSpec extends TlsTcpSpec(ConfigFactory.parseString(s"""
-    akka.remote.artery.ssl {
+    pekko.remote.artery.ssl {
        ssl-engine-provider = org.apache.pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider
        rotating-keys-engine {
          key-file = ${TlsTcpSpec.resourcePath("ssl/node.example.com.pem")}
@@ -66,7 +66,7 @@ object TlsTcpSpec {
 
   lazy val config: Config = {
     ConfigFactory.parseString(s"""
-      akka.remote.artery {
+      pekko.remote.artery {
         transport = tls-tcp
         large-message-destinations = [ "/user/large" ]
       }
@@ -85,11 +85,11 @@ abstract class TlsTcpSpec(config: Config)
   val rootB = RootActorPath(addressB)
 
   def isSupported: Boolean = {
-    val checked = system.settings.config.getString("akka.remote.artery.ssl.ssl-engine-provider") match {
+    val checked = system.settings.config.getString("pekko.remote.artery.ssl.ssl-engine-provider") match {
       case "org.apache.pekko.remote.artery.tcp.ConfigSSLEngineProvider" =>
-        CipherSuiteSupportCheck.isSupported(system, "akka.remote.artery.ssl.config-ssl-engine")
+        CipherSuiteSupportCheck.isSupported(system, "pekko.remote.artery.ssl.config-ssl-engine")
       case "org.apache.pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider" =>
-        CipherSuiteSupportCheck.isSupported(system, "akka.remote.artery.ssl.rotating-keys-engine")
+        CipherSuiteSupportCheck.isSupported(system, "pekko.remote.artery.ssl.rotating-keys-engine")
       case other =>
         fail(
           s"Don't know how to determine whether the crypto building blocks in [$other] are available on this platform")
@@ -148,12 +148,12 @@ abstract class TlsTcpSpec(config: Config)
 
 class TlsTcpWithHostnameVerificationSpec
     extends ArteryMultiNodeSpec(ConfigFactory.parseString("""
-    akka.remote.artery.ssl.config-ssl-engine {
+    pekko.remote.artery.ssl.config-ssl-engine {
       hostname-verification = on
     }
-    akka.remote.use-unsafe-remote-features-outside-cluster = on
+    pekko.remote.use-unsafe-remote-features-outside-cluster = on
 
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """).withFallback(TlsTcpSpec.config))
     with ImplicitSender {
 
@@ -166,7 +166,7 @@ class TlsTcpWithHostnameVerificationSpec
       val systemB = newRemoteSystem(
         // The subjectAltName is 'localhost', so connecting to '127.0.0.1' should not
         // work when using hostname verification:
-        extraConfig = Some("""akka.remote.artery.canonical.hostname = "127.0.0.1""""),
+        extraConfig = Some("""pekko.remote.artery.canonical.hostname = "127.0.0.1""""),
         name = Some("systemB"))
 
       val addressB = address(systemB)
@@ -195,10 +195,10 @@ class TlsTcpWithHostnameVerificationSpec
       val systemB = newRemoteSystem(
         extraConfig = Some("""
           // The subjectAltName is 'localhost', so this is how we want to be known:
-          akka.remote.artery.canonical.hostname = "localhost"
+          pekko.remote.artery.canonical.hostname = "localhost"
 
           // Though we will still bind to 127.0.0.1 (make sure it's not ipv6)
-          akka.remote.artery.bind.hostname = "127.0.0.1"
+          pekko.remote.artery.bind.hostname = "127.0.0.1"
         """),
         name = Some("systemB"))
 

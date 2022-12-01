@@ -91,12 +91,12 @@ class FailingDnsResolver extends DnsProvider {
 }
 
 class TcpSpec extends StreamSpec("""
-    akka.loglevel = debug
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.io.tcp.trace-logging = true
-    akka.stream.materializer.subscription-timeout.timeout = 2s
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.loglevel = debug
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.tcp.trace-logging = true
+    pekko.stream.materializer.subscription-timeout.timeout = 2s
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) with TcpHelper with WithLogCapturing {
 
   "Outgoing TCP stream" must {
@@ -542,7 +542,7 @@ class TcpSpec extends StreamSpec("""
       val system2 = ActorSystem(
         "TcpSpec-unexpected-system2",
         ConfigFactory.parseString("""
-          akka.loglevel = DEBUG # issue #21660
+          pekko.loglevel = DEBUG # issue #21660
         """).withFallback(system.settings.config))
 
       try {
@@ -592,7 +592,7 @@ class TcpSpec extends StreamSpec("""
       val systemWithBrokenDns = ActorSystem(
         "TcpSpec-resolution-failure",
         ConfigFactory.parseString("""
-          akka.io.dns.inet-address.provider-object = org.apache.pekko.stream.io.FailingDnsResolver
+          pekko.io.dns.inet-address.provider-object = org.apache.pekko.stream.io.FailingDnsResolver
           """).withFallback(system.settings.config))
       try {
         val unknownHostName = "abcdefghijklmnopkuh"
@@ -703,10 +703,10 @@ class TcpSpec extends StreamSpec("""
 
       // configure a few timeouts we do not want to hit
       val config = ConfigFactory.parseString("""
-        akka.actor.serializer-messages = off
-        akka.io.tcp.register-timeout = 42s
-        akka.stream.materializer.subscription-timeout.mode = cancel
-        akka.stream.materializer.subscription-timeout.timeout = 42s
+        pekko.actor.serializer-messages = off
+        pekko.io.tcp.register-timeout = 42s
+        pekko.stream.materializer.subscription-timeout.mode = cancel
+        pekko.stream.materializer.subscription-timeout.timeout = 42s
       """)
       val serverSystem = ActorSystem("server", config)
       val clientSystem = ActorSystem("client", config)

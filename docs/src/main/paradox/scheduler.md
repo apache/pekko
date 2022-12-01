@@ -13,7 +13,7 @@ To use Scheduler, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -55,7 +55,7 @@ The default implementation of @apidoc[actor.Scheduler] used by Akka is based on 
 buckets which are emptied according to a fixed schedule.  It does not
 execute tasks at the exact time, but on every tick, it will run everything
 that is (over)due.  The accuracy of the default Scheduler can be modified
-by the `akka.scheduler.tick-duration` configuration property.
+by the `pekko.scheduler.tick-duration` configuration property.
 
 @@@
 
@@ -156,7 +156,7 @@ which may in worst case cause undesired load on the system. `scheduleWithFixedDe
 
 The actual scheduler implementation is loaded reflectively upon
 @apidoc[actor.ActorSystem] start-up, which means that it is possible to provide a
-different one using the `akka.scheduler.implementation` configuration
+different one using the `pekko.scheduler.implementation` configuration
 property. The referenced class must implement the @scala[@apidoc[actor.Scheduler]]@java[@apidoc[actor.AbstractScheduler]]
 interface.
 

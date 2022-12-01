@@ -225,7 +225,7 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         } else {
           log.warning(
             s"Could not register Cluster JMX MBean with name=$clusterMBeanName as it is already registered. " +
-            "If you are running multiple clusters in the same JVM, set 'akka.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
+            "If you are running multiple clusters in the same JVM, set 'pekko.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
         }
       }
     }
@@ -244,7 +244,7 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         } else {
           log.warning(
             s"Could not unregister Cluster JMX MBean with name=$clusterMBeanName as it was not found. " +
-            "If you are running multiple clusters in the same JVM, set 'akka.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
+            "If you are running multiple clusters in the same JVM, set 'pekko.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
         }
       }
     }

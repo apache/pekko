@@ -28,9 +28,9 @@ import scala.concurrent.duration._
 
 object BasicClusterExampleSpec {
   val configSystem1 = ConfigFactory.parseString(s"""
-akka.loglevel = DEBUG
+pekko.loglevel = DEBUG
 #config-seeds
-akka {
+pekko {
   actor {
     provider = "cluster"
   }
@@ -53,8 +53,8 @@ akka {
      """)
 
   val configSystem2 = ConfigFactory.parseString(s"""
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
      """).withFallback(configSystem1)
 
   def illustrateJoinSeedNodes(): Unit = {
@@ -121,10 +121,10 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
       val sys1Port = SocketUtil.temporaryLocalPort()
       val sys2Port = SocketUtil.temporaryLocalPort()
       def config(port: Int) = ConfigFactory.parseString(s"""
-          akka.remote.classic.netty.tcp.port = $port
-          akka.remote.artery.canonical.port = $port
-          akka.cluster.jmx.multi-mbeans-in-same-jvm = on
-          akka.cluster.seed-nodes = [ "akka://ClusterSystem@127.0.0.1:$sys1Port", "akka://ClusterSystem@127.0.0.1:$sys2Port" ]
+          pekko.remote.classic.netty.tcp.port = $port
+          pekko.remote.artery.canonical.port = $port
+          pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+          pekko.cluster.seed-nodes = [ "akka://ClusterSystem@127.0.0.1:$sys1Port", "akka://ClusterSystem@127.0.0.1:$sys2Port" ]
         """)
 
       val system1 =
@@ -145,10 +145,10 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
 
 object BasicClusterManualSpec {
   val clusterConfig = ConfigFactory.parseString(s"""
-akka.loglevel = DEBUG
-akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+pekko.loglevel = DEBUG
+pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
 #config
-akka {
+pekko {
   actor.provider = "cluster"
   remote.artery {
     canonical {
@@ -161,8 +161,8 @@ akka {
      """)
 
   val noPort = ConfigFactory.parseString("""
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
     """)
 
 }

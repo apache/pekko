@@ -18,7 +18,7 @@ object CustomRouterDocSpec {
 
   val config = """
 #//#config
-akka.actor.deployment {
+pekko.actor.deployment {
   /redundancy2 {
     router = "jdocs.routing.RedundancyGroup"
     routees.paths = ["/user/s1", "/user/s2", "/user/s3"]
@@ -30,7 +30,7 @@ akka.actor.deployment {
 
   val jconfig = """
 #//#jconfig
-akka.actor.deployment {
+pekko.actor.deployment {
   /redundancy2 {
     router = "jdocs.routing.RedundancyGroup"
     routees.paths = ["/user/s1", "/user/s2", "/user/s3"]

@@ -19,15 +19,15 @@ import scala.concurrent.duration._
 object RollingUpdateShardAllocationSpecConfig
     extends MultiNodeClusterShardingConfig(
       additionalConfig = """
-      akka.cluster.sharding {
+      pekko.cluster.sharding {
         # speed up forming and handovers a bit
         retry-interval = 500ms
         waiting-for-state-timeout = 500ms
         rebalance-interval = 1s
         # we are leaving cluster nodes but they need to stay in test
-        akka.coordinated-shutdown.terminate-actor-system = off
+        pekko.coordinated-shutdown.terminate-actor-system = off
         # use the new LeastShardAllocationStrategy
-        akka.cluster.sharding.least-shard-allocation-strategy.rebalance-absolute-limit = 1
+        pekko.cluster.sharding.least-shard-allocation-strategy.rebalance-absolute-limit = 1
       }
      """) {
 
@@ -37,11 +37,11 @@ object RollingUpdateShardAllocationSpecConfig
   val fourth = role("fourth")
 
   nodeConfig(first, second)(ConfigFactory.parseString("""
-      akka.cluster.app-version = 1.0.0
+      pekko.cluster.app-version = 1.0.0
       """))
 
   nodeConfig(third, fourth)(ConfigFactory.parseString("""
-      akka.cluster.app-version = 1.0.1
+      pekko.cluster.app-version = 1.0.1
       """))
 
 }

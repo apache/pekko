@@ -29,10 +29,10 @@ object FlowSplitAfterSpec {
 }
 
 class FlowSplitAfterSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
-    akka.stream.materializer.subscription-timeout.timeout = 1s
-    akka.stream.materializer.subscription-timeout.mode = cancel
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.subscription-timeout.timeout = 1s
+    pekko.stream.materializer.subscription-timeout.mode = cancel
   """) {
   import FlowSplitAfterSpec._
 

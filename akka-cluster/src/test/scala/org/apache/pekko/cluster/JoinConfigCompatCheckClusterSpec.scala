@@ -54,10 +54,10 @@ class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
   "JoinConfigCompatCheckCluster" must {
     "be valid when no downing-provider" in {
       val oldConfig = ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = ""
+        pekko.cluster.downing-provider-class = ""
         """).withFallback(system.settings.config)
       val newConfig = ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = ""
+        pekko.cluster.downing-provider-class = ""
         """).withFallback(system.settings.config)
       checkInitJoin(oldConfig, newConfig) should ===(Valid)
     }
@@ -65,11 +65,11 @@ class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
     "be valid when same downing-provider" in {
       val oldConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         """).withFallback(system.settings.config)
       val newConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         """).withFallback(system.settings.config)
       checkInitJoin(oldConfig, newConfig) should ===(Valid)
     }
@@ -78,12 +78,12 @@ class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
       val oldConfig =
         ConfigFactory
           .parseString("""
-        akka.cluster.downing-provider-class = "com.lightbend.akka.sbr.SplitBrainResolverProvider"
+        pekko.cluster.downing-provider-class = "com.lightbend.pekko.sbr.SplitBrainResolverProvider"
         """)
           .withFallback(system.settings.config)
       val newConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         """).withFallback(system.settings.config)
       checkInitJoin(oldConfig, newConfig) should ===(Valid)
     }
@@ -91,11 +91,11 @@ class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
     "be invalid when different downing-provider" in {
       val oldConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.testkit.AutoDowning"
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.testkit.AutoDowning"
         """).withFallback(system.settings.config)
       val newConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         """).withFallback(system.settings.config)
       checkInitJoin(oldConfig, newConfig).getClass should ===(classOf[Invalid])
     }
@@ -103,13 +103,13 @@ class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
     "be invalid when different sbr strategy" in {
       val oldConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
-        akka.cluster.split-brain-resolver.active-strategy = keep-majority
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.split-brain-resolver.active-strategy = keep-majority
         """).withFallback(system.settings.config)
       val newConfig =
         ConfigFactory.parseString("""
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
-        akka.cluster.split-brain-resolver.active-strategy = keep-oldest
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.cluster.split-brain-resolver.active-strategy = keep-oldest
         """).withFallback(system.settings.config)
       checkInitJoin(oldConfig, newConfig).getClass should ===(classOf[Invalid])
       checkInitJoinAck(oldConfig, newConfig).getClass should ===(classOf[Invalid])

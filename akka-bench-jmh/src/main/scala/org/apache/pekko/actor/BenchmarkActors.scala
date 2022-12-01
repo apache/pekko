@@ -95,7 +95,7 @@ object BenchmarkActors {
 
   private def startPingPongActorPairs(messagesPerPair: Int, numPairs: Int, dispatcher: String)(
       implicit system: ActorSystem): (Vector[(ActorRef, ActorRef)], CountDownLatch) = {
-    val fullPathToDispatcher = "akka.actor." + dispatcher
+    val fullPathToDispatcher = "pekko.actor." + dispatcher
     val latch = new CountDownLatch(numPairs * 2)
     val actors = List
       .fill(numPairs) {
@@ -119,7 +119,7 @@ object BenchmarkActors {
   private def startEchoActorPairs(messagesPerPair: Int, numPairs: Int, dispatcher: String, batchSize: Int)(
       implicit system: ActorSystem): (Vector[ActorRef], CountDownLatch) = {
 
-    val fullPathToDispatcher = "akka.actor." + dispatcher
+    val fullPathToDispatcher = "pekko.actor." + dispatcher
     val latch = new CountDownLatch(numPairs)
     val actors = (1 to numPairs).map { _ =>
       system.actorOf(EchoSender.props(messagesPerPair, latch, batchSize).withDispatcher(fullPathToDispatcher))

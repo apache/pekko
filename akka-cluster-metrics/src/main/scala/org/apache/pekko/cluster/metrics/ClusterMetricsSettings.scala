@@ -18,7 +18,7 @@ import pekko.util.Helpers.Requiring
  */
 case class ClusterMetricsSettings(config: Config) {
 
-  private val cc = config.getConfig("akka.cluster.metrics")
+  private val cc = config.getConfig("pekko.cluster.metrics")
 
   // Extension.
   val MetricsDispatcher: String = cc.getString("dispatcher")

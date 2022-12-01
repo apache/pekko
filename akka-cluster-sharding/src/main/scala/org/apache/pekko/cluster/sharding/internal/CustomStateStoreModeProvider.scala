@@ -26,8 +26,8 @@ private[pekko] final class CustomStateStoreModeProvider(
 
   private val log = Logging(system, classOf[CustomStateStoreModeProvider])
   log.warning("Using custom remember entities store for [{}], not intended for production use.", typeName)
-  val customStore = if (system.settings.config.hasPath("akka.cluster.sharding.remember-entities-custom-store")) {
-    val customClassName = system.settings.config.getString("akka.cluster.sharding.remember-entities-custom-store")
+  val customStore = if (system.settings.config.hasPath("pekko.cluster.sharding.remember-entities-custom-store")) {
+    val customClassName = system.settings.config.getString("pekko.cluster.sharding.remember-entities-custom-store")
 
     val store = system
       .asInstanceOf[ExtendedActorSystem]

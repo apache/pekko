@@ -36,7 +36,7 @@ class ActorRefSinkSpec extends StreamSpec {
     }
 
     "cancel stream when actor terminates" in {
-      val fw = system.actorOf(Props(classOf[Fw], testActor).withDispatcher("akka.test.stream-dispatcher"))
+      val fw = system.actorOf(Props(classOf[Fw], testActor).withDispatcher("pekko.test.stream-dispatcher"))
       val publisher =
         TestSource
           .probe[Int]

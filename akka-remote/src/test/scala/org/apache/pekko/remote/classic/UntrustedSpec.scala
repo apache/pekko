@@ -64,18 +64,18 @@ object UntrustedSpec {
 }
 
 class UntrustedSpec extends AkkaSpec("""
-akka.loglevel = DEBUG
-akka.actor.provider = remote
-akka.remote.artery.enabled = off
-akka.remote.warn-about-direct-use = off
-akka.remote.classic.untrusted-mode = on
-akka.remote.classic.trusted-selection-paths = ["/user/receptionist", ]    
-akka.remote.classic.netty.tcp.port = 0
-akka.loglevel = DEBUG # test verifies debug
+pekko.loglevel = DEBUG
+pekko.actor.provider = remote
+pekko.remote.artery.enabled = off
+pekko.remote.warn-about-direct-use = off
+pekko.remote.classic.untrusted-mode = on
+pekko.remote.classic.trusted-selection-paths = ["/user/receptionist", ]    
+pekko.remote.classic.netty.tcp.port = 0
+pekko.loglevel = DEBUG # test verifies debug
 # test is using Java serialization and not priority to rewrite
-akka.actor.allow-java-serialization = on
-akka.actor.warn-about-java-serializer-usage = off
-akka.actor.serialization-bindings {
+pekko.actor.allow-java-serialization = on
+pekko.actor.warn-about-java-serializer-usage = off
+pekko.actor.serialization-bindings {
   "org.apache.pekko.actor.Terminated" = java-test
 }
 """) with ImplicitSender {
@@ -85,15 +85,15 @@ akka.actor.serialization-bindings {
   val client = ActorSystem(
     "UntrustedSpec-client",
     ConfigFactory.parseString("""
-      akka.loglevel = DEBUG
-      akka.actor.provider = remote
-      akka.remote.artery.enabled = off
-      akka.remote.warn-about-direct-use = off
-      akka.remote.classic.netty.tcp.port = 0
+      pekko.loglevel = DEBUG
+      pekko.actor.provider = remote
+      pekko.remote.artery.enabled = off
+      pekko.remote.warn-about-direct-use = off
+      pekko.remote.classic.netty.tcp.port = 0
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = off
-      akka.actor.warn-about-java-serializer-usage = off
-      akka.actor.serialization-bindings {
+      pekko.actor.allow-java-serialization = off
+      pekko.actor.warn-about-java-serializer-usage = off
+      pekko.actor.serialization-bindings {
         "org.apache.pekko.actor.Terminated" = java-test
       }
   """))

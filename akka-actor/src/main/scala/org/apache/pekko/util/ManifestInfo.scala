@@ -154,7 +154,7 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
   /**
    * Verify that the version is the same for all given artifacts.
    *
-   * If configuration `akka.fail-mixed-versions=on` it will throw an `IllegalStateException` if the
+   * If configuration `pekko.fail-mixed-versions=on` it will throw an `IllegalStateException` if the
    * versions are not the same for all given artifacts.
    *
    * @return `true` if versions are the same

@@ -21,7 +21,7 @@ import pekko.util.Timeout
 
 object HandshakeShouldDropCompressionTableSpec {
   val commonConfig = ConfigFactory.parseString(s"""
-     akka {
+     pekko {
        remote.artery.advanced.handshake-timeout = 10s
        remote.artery.advanced.aeron.image-liveness-timeout = 7s
 
@@ -46,7 +46,8 @@ class HandshakeShouldDropCompressionTableSpec
   val portB = freePort()
 
   before {
-    systemB = newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"akka.remote.artery.canonical.port = $portB"))
+    systemB =
+      newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
   }
 
   "Outgoing compression table" must {
@@ -93,7 +94,7 @@ class HandshakeShouldDropCompressionTableSpec
       log.info("SHUTTING DOWN system {}...", systemB)
       shutdown(systemB)
       systemB =
-        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"akka.remote.artery.canonical.port = $portB"))
+        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
       Thread.sleep(1000)
       log.info("SYSTEM READY {}...", systemB)
 

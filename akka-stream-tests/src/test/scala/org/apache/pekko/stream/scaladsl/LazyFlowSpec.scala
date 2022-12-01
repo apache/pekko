@@ -24,8 +24,8 @@ import pekko.testkit.TestProbe
 
 @nowarn("msg=deprecated") // tests deprecated API as well
 class LazyFlowSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) {
 
   import system.dispatcher

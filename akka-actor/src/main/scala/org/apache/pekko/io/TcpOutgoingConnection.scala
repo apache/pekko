@@ -122,7 +122,7 @@ private[io] class TcpOutgoingConnection(
             } else {
               log.debug(
                 "Could not establish connection because finishConnect " +
-                "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
+                "never returned true (consider increasing pekko.io.tcp.finish-connect-retries)")
               stop(FinishConnectNeverReturnedTrueException)
             }
           }

@@ -16,7 +16,7 @@ To use Cluster Client, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
 bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
 symbol1=AkkaVersion
-value1="$akka.version$"
+value1="$pekko.version$"
 group=com.typesafe.akka
 artifact=akka-cluster-tools_$scala.binary.version$
 version=AkkaVersion
@@ -114,10 +114,10 @@ of these actors. As always, additional logic should be implemented in the destin
 ## An Example
 
 On the cluster nodes, first start the receptionist. Note, it is recommended to load the extension
-when the actor system is started by defining it in the `akka.extensions` configuration property:
+when the actor system is started by defining it in the `pekko.extensions` configuration property:
 
 ```
-akka.extensions = ["org.apache.pekko.cluster.client.ClusterClientReceptionist"]
+pekko.extensions = ["org.apache.pekko.cluster.client.ClusterClientReceptionist"]
 ```
 
 Next, register the actors that should be available for the client.
@@ -164,10 +164,10 @@ Note that the @apidoc[ClusterClientReceptionist] uses the @apidoc[DistributedPub
 in @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md).
 
 It is recommended to load the extension when the actor system is started by defining it in the
-`akka.extensions` configuration property:
+`pekko.extensions` configuration property:
 
 ```
-akka.extensions = ["akka.cluster.client.ClusterClientReceptionist"]
+pekko.extensions = ["pekko.cluster.client.ClusterClientReceptionist"]
 ```
 
 ## Events

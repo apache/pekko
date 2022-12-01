@@ -31,7 +31,7 @@ public class RecipeLoggingElements extends RecipeTest {
         ActorSystem.create(
             "RecipeLoggingElements",
             ConfigFactory.parseString(
-                "akka.loglevel=DEBUG\nakka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
+                "pekko.loglevel=DEBUG\npekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
   @AfterClass

@@ -34,7 +34,7 @@ object LeveldbPersistenceQueryDocSpec {
 }
 
 class LeveldbPersistenceQueryDocSpec
-    extends AkkaSpec("akka.persistence.journal.plugin = akka.persistence.journal.leveldb") {
+    extends AkkaSpec("pekko.persistence.journal.plugin = pekko.persistence.journal.leveldb") {
 
   "LeveldbPersistentQuery" must {
     "demonstrate how get ReadJournal" in {

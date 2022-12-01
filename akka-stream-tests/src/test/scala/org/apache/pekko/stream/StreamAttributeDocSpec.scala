@@ -15,7 +15,7 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.TcpAttributes
 import pekko.stream.testkit.StreamSpec
 
-class StreamAttributeDocSpec extends StreamSpec("my-stream-dispatcher = \"akka.test.stream-dispatcher\"") {
+class StreamAttributeDocSpec extends StreamSpec("my-stream-dispatcher = \"pekko.test.stream-dispatcher\"") {
 
   "Setting attributes on the runnable stream" must {
 

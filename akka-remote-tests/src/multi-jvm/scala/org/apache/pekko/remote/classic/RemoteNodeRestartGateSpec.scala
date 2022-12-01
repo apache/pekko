@@ -26,10 +26,10 @@ object RemoteNodeRestartGateSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.remote.artery.enabled = off
-      akka.loglevel = INFO
-      akka.remote.classic.log-remote-lifecycle-events = INFO
-      akka.remote.classic.retry-gate-closed-for  = 1d # Keep it long
+      pekko.remote.artery.enabled = off
+      pekko.loglevel = INFO
+      pekko.remote.classic.log-remote-lifecycle-events = INFO
+      pekko.remote.classic.retry-gate-closed-for  = 1d # Keep it long
                               """)))
 
   testTransport(on = true)
@@ -102,8 +102,8 @@ abstract class RemoteNodeRestartGateSpec extends RemotingMultiNodeSpec(RemoteNod
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-                    akka.remote.retry-gate-closed-for = 0.5 s
-                    akka.remote.classic.netty.tcp {
+                    pekko.remote.retry-gate-closed-for = 0.5 s
+                    pekko.remote.classic.netty.tcp {
                       hostname = ${address.host.get}
                       port = ${address.port.get}
                     }

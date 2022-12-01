@@ -42,7 +42,7 @@ object SnapshotFailureRobustnessSpec {
 
     // TODO do we call it "snapshot store" or "snapshot plugin", small inconsistency here
     override def snapshotPluginId: String =
-      "akka.persistence.snapshot-store.local-delete-fail"
+      "pekko.persistence.snapshot-store.local-delete-fail"
 
     override def receiveRecover: Receive = {
       case SnapshotOffer(md, s) => probe ! ((md, s))
@@ -105,9 +105,9 @@ class SnapshotFailureRobustnessSpec
         "SnapshotFailureRobustnessSpec",
         serialization = "off",
         extraConfig = Some(s"""
-  akka.persistence.snapshot-store.local.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$FailingLocalSnapshotStore"
-  akka.persistence.snapshot-store.local-delete-fail = $${akka.persistence.snapshot-store.local}
-  akka.persistence.snapshot-store.local-delete-fail.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$DeleteFailingLocalSnapshotStore"
+  pekko.persistence.snapshot-store.local.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$FailingLocalSnapshotStore"
+  pekko.persistence.snapshot-store.local-delete-fail = $${pekko.persistence.snapshot-store.local}
+  pekko.persistence.snapshot-store.local-delete-fail.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$DeleteFailingLocalSnapshotStore"
   """)))
     with ImplicitSender {
 
@@ -215,10 +215,10 @@ class SnapshotIsOptionalSpec
         "SnapshotFailureReplayEventsSpec",
         serialization = "off",
         extraConfig = Some(s"""
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$FailingLocalSnapshotStore"
-    akka.persistence.snapshot-store.local.dir = "target/persistence-${UUID.randomUUID().toString}"
-    akka.persistence.snapshot-store.local.snapshot-is-optional = true
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.class = "org.apache.pekko.persistence.SnapshotFailureRobustnessSpec$$FailingLocalSnapshotStore"
+    pekko.persistence.snapshot-store.local.dir = "target/persistence-${UUID.randomUUID().toString}"
+    pekko.persistence.snapshot-store.local.snapshot-is-optional = true
   """)))
     with ImplicitSender {
 

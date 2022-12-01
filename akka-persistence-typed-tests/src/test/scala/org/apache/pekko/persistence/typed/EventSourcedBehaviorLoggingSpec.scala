@@ -127,7 +127,7 @@ class EventSourcedBehaviorLoggingInternalLoggerSpec
 object EventSourcedBehaviorLoggingContextLoggerSpec {
   val config =
     ConfigFactory
-      .parseString("akka.persistence.typed.use-context-logger-for-internal-logging = true")
+      .parseString("pekko.persistence.typed.use-context-logger-for-internal-logging = true")
       .withFallback(PersistenceTestKitPlugin.config)
 }
 class EventSourcedBehaviorLoggingContextLoggerSpec

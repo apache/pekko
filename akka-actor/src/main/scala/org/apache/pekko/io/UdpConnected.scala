@@ -160,7 +160,7 @@ object UdpConnected extends ExtensionId[UdpConnectedExt] with ExtensionIdProvide
 
 class UdpConnectedExt(system: ExtendedActorSystem) extends IO.Extension {
 
-  val settings: UdpSettings = new UdpSettings(system.settings.config.getConfig("akka.io.udp-connected"))
+  val settings: UdpSettings = new UdpSettings(system.settings.config.getConfig("pekko.io.udp-connected"))
 
   val manager: ActorRef = {
     system.systemActorOf(

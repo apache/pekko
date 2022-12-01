@@ -32,13 +32,13 @@ import scala.concurrent.duration._
 
 object EventSourcedBehaviorStashSpec {
   def conf: Config = ConfigFactory.parseString(s"""
-    #akka.loglevel = DEBUG
-    #akka.persistence.typed.log-stashing = on
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.journal.plugin = "failure-journal"
+    #pekko.loglevel = DEBUG
+    #pekko.persistence.typed.log-stashing = on
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.journal.plugin = "failure-journal"
     # tune it down a bit so we can hit limit
-    akka.persistence.typed.stash-capacity = 500
-    failure-journal = $${akka.persistence.journal.inmem}
+    pekko.persistence.typed.stash-capacity = 500
+    failure-journal = $${pekko.persistence.journal.inmem}
     failure-journal {
       class = "org.apache.pekko.persistence.typed.scaladsl.ChaosJournal"
     }
@@ -573,7 +573,7 @@ class EventSourcedBehaviorStashSpec
 
       c ! "start-stashing"
 
-      val limit = system.settings.config.getInt("akka.persistence.typed.stash-capacity")
+      val limit = system.settings.config.getInt("pekko.persistence.typed.stash-capacity")
       LoggingTestKit.warn("Stash buffer is full, dropping message").expect {
         (0 to limit).foreach { n =>
           c ! s"cmd-$n" // limit triggers overflow
@@ -597,7 +597,7 @@ class EventSourcedBehaviorStashSpec
       val failStashTestKit = ActorTestKit(
         "EventSourcedBehaviorStashSpec-stash-overflow-fail",
         ConfigFactory
-          .parseString("akka.persistence.typed.stash-overflow-strategy=fail")
+          .parseString("pekko.persistence.typed.stash-overflow-strategy=fail")
           .withFallback(EventSourcedBehaviorStashSpec.conf))
       try {
         val probe = failStashTestKit.createTestProbe[AnyRef]()
@@ -623,7 +623,7 @@ class EventSourcedBehaviorStashSpec
         LoggingTestKit
           .error[StashOverflowException]
           .expect {
-            val limit = system.settings.config.getInt("akka.persistence.typed.stash-capacity")
+            val limit = system.settings.config.getInt("pekko.persistence.typed.stash-capacity")
             (0 to limit).foreach { n =>
               c ! s"cmd-$n" // limit triggers overflow
             }

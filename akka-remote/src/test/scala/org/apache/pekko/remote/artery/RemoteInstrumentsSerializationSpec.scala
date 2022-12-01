@@ -16,7 +16,7 @@ import pekko.util.{ unused, OptionVal }
 
 import java.nio.ByteOrder
 
-class RemoteInstrumentsSerializationSpec extends AkkaSpec("akka.loglevel = DEBUG") {
+class RemoteInstrumentsSerializationSpec extends AkkaSpec("pekko.loglevel = DEBUG") {
   import RemoteInstrumentsSerializationSpec._
 
   def remoteInstruments(instruments: RemoteInstrument*): RemoteInstruments = {

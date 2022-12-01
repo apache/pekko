@@ -20,7 +20,7 @@ public class ConfigDocTest {
 
   public void customConfig() {
     // #custom-config
-    Config customConf = ConfigFactory.parseString("akka.log-config-on-start = on");
+    Config customConf = ConfigFactory.parseString("pekko.log-config-on-start = on");
     // ConfigFactory.load sandwiches customConfig between default reference
     // config and default overrides, and then resolves it.
     ActorSystem<Void> system =

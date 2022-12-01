@@ -61,7 +61,7 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
         override def apply(t: LeaseKey): Lease = {
           val leaseConfig = system.settings.config
             .getConfig(configPath)
-            .withFallback(system.settings.config.getConfig("akka.coordination.lease"))
+            .withFallback(system.settings.config.getConfig("pekko.coordination.lease"))
 
           val settings = LeaseSettings(leaseConfig, leaseName, ownerName)
 

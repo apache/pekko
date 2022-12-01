@@ -16,18 +16,18 @@ import pekko.testkit.ImplicitSender
 
 object StartupWithOneThreadSpec {
   val config = """
-    akka.actor.provider = "cluster"
-    akka.actor.creation-timeout = 10s
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.actor.creation-timeout = 10s
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
 
-    akka.actor.default-dispatcher {
+    pekko.actor.default-dispatcher {
       executor = thread-pool-executor
       thread-pool-executor {
         fixed-pool-size = 1
       }
     }
-    akka.actor.internal-dispatcher = akka.actor.default-dispatcher 
+    pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher 
     """
 
   final case class GossipTo(address: Address)

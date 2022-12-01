@@ -41,10 +41,10 @@ class AkkaSpecSpec extends AnyWordSpec with Matchers {
       // verbose config just for demonstration purposes, please leave in in case of debugging
       import pekko.util.ccompat.JavaConverters._
       val conf = Map(
-        "akka.actor.debug.lifecycle" -> true,
-        "akka.actor.debug.event-stream" -> true,
-        "akka.loglevel" -> "DEBUG",
-        "akka.stdout-loglevel" -> "DEBUG")
+        "pekko.actor.debug.lifecycle" -> true,
+        "pekko.actor.debug.event-stream" -> true,
+        "pekko.loglevel" -> "DEBUG",
+        "pekko.stdout-loglevel" -> "DEBUG")
       val localSystem = ActorSystem("AkkaSpec1", ConfigFactory.parseMap(conf.asJava).withFallback(AkkaSpec.testConf))
       var refs = Seq.empty[ActorRef]
       val spec = new AkkaSpec(localSystem) { refs = Seq(testActor, localSystem.actorOf(Props.empty, "name")) }

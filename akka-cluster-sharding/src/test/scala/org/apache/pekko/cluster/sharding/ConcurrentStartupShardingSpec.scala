@@ -20,15 +20,15 @@ object ConcurrentStartupShardingSpec {
 
   val config =
     """
-    akka.actor.provider = "cluster"
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.log-dead-letters = off
-    akka.log-dead-letters-during-shutdown = off
-    akka.cluster.sharding.verbose-debug-logging = on
-    akka.actor {
+    pekko.actor.provider = "cluster"
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.log-dead-letters = off
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.cluster.sharding.verbose-debug-logging = on
+    pekko.actor {
       default-dispatcher {
         executor = "fork-join-executor"
         fork-join-executor {

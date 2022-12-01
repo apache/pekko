@@ -10,7 +10,7 @@ To use Logging, you must at least use the Akka actors dependency in your project
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -98,7 +98,7 @@ messages in the actor mailboxes are sent to dead letters. You can also disable l
 of dead letters during shutdown.
 
 ```ruby
-akka {
+pekko {
   log-dead-letters = 10
   log-dead-letters-during-shutdown = on
 }
@@ -114,7 +114,7 @@ Akka has a few configuration options for very low level debugging. These make mo
 You almost definitely need to have logging set to `DEBUG` to use any of the options below:
 
 ```ruby
-akka {
+pekko {
   loglevel = "DEBUG"
 }
 ```
@@ -122,7 +122,7 @@ akka {
 This config option is very good if you want to know what config settings are loaded by Akka:
 
 ```ruby
-akka {
+pekko {
   # Log the complete configuration at INFO level when the actor system is started.
   # This is useful when you are uncertain of what configuration is used.
   log-config-on-start = on
@@ -135,7 +135,7 @@ If you want very detailed logging of user-level messages then wrap your actors' 
 @scaladoc[LoggingReceive](pekko.event.LoggingReceive) and enable the `receive` option:
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable function of LoggingReceive, which is to log any received message at
@@ -152,7 +152,7 @@ If you want very detailed logging of all automatically received messages that ar
 by Actors:
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of all AutoReceiveMessages (Kill, PoisonPill etc.)
@@ -165,7 +165,7 @@ akka {
 If you want very detailed logging of all lifecycle changes of Actors (restarts, deaths etc.):
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of actor lifecycle changes
@@ -178,7 +178,7 @@ akka {
 If you want unhandled messages logged at `DEBUG`:
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of unhandled messages
@@ -191,7 +191,7 @@ akka {
 If you want very detailed logging of all events, transitions and timers of FSM Actors that extend LoggingFSM:
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of all LoggingFSMs for events, transitions and timers
@@ -204,7 +204,7 @@ akka {
 If you want to monitor subscriptions (subscribe/unsubscribe) on the ActorSystem.eventStream:
 
 ```ruby
-akka {
+pekko {
   actor {
     debug {
       # enable DEBUG logging of subscription changes on the eventStream
@@ -220,7 +220,7 @@ akka {
 If you want to see all messages that are sent through remoting at `DEBUG` log level, use the following config option. Note that this logs the messages as they are sent by the transport layer, not by an actor.
 
 ```ruby
-akka.remote.artery {
+pekko.remote.artery {
   # If this is "on", Akka will log all outbound messages at DEBUG level,
   # if off then they are not logged
   log-sent-messages = on
@@ -230,7 +230,7 @@ akka.remote.artery {
 If you want to see all messages that are received through remoting at `DEBUG` log level, use the following config option. Note that this logs the messages as they are received by the transport layer, not by an actor.
 
 ```ruby
-akka.remote.artery {
+pekko.remote.artery {
   # If this is "on", Akka will log all inbound messages at DEBUG level,
   # if off then they are not logged
   log-received-messages = on
@@ -277,7 +277,7 @@ might want to do this also in case you implement your own logging adapter.
 To turn off logging you can configure the log levels to be `OFF` like this.
 
 ```ruby
-akka {
+pekko {
   stdout-loglevel = "OFF"
   loglevel = "OFF"
 }
@@ -306,7 +306,7 @@ can be implemented in a custom @apidoc[LoggingFilter], which can be defined in t
 configuration property.
 
 ```ruby
-akka {
+pekko {
   # Loggers to register at boot time (org.apache.pekko.event.Logging$DefaultLogger logs
   # to STDOUT)
   loggers = ["org.apache.pekko.event.Logging$DefaultLogger"]
@@ -340,7 +340,7 @@ Java
 When the actor system is starting up and shutting down the configured `loggers` are not used.
 Instead log messages are printed to stdout (System.out). The default log level for this
 stdout logger is `WARNING` and it can be silenced completely by setting
-`akka.stdout-loglevel=OFF`.
+`pekko.stdout-loglevel=OFF`.
 
 ## SLF4J
 
@@ -350,7 +350,7 @@ It has a single dependency: the slf4j-api jar. In your runtime, you also need a 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-slf4j_$scala.binary.version$"
   version=AkkaVersion
@@ -372,13 +372,13 @@ If you set the `loglevel` to a higher level than `DEBUG`, any `DEBUG` events wil
 out already at the source and will never reach the logging backend, regardless of how the backend
 is configured.
 
-You can enable `DEBUG` level for `akka.loglevel` and control the actual level in the SLF4J backend
+You can enable `DEBUG` level for `pekko.loglevel` and control the actual level in the SLF4J backend
 without any significant overhead, also for production.
 
 @@@
 
 ```ruby
-akka {
+pekko {
   loggers = ["org.apache.pekko.event.slf4j.Slf4jLogger"]
   loglevel = "DEBUG"
   logging-filter = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"

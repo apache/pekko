@@ -81,7 +81,7 @@ object FaultToleranceDocSpec {
 @nowarn("msg=never used")
 class FaultToleranceDocSpec extends ScalaTestWithActorTestKit("""
       # silenced to not put noise in test logs
-      akka.loglevel = off
+      pekko.loglevel = off
     """) with AnyWordSpecLike {
   import FaultToleranceDocSpec._
 

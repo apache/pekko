@@ -171,8 +171,8 @@ class TestProbeSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
 object TestProbeSpec {
 
   val timeoutConfig = ConfigFactory.parseString("""
-      akka.actor.testkit.typed.default-timeout = 100ms
-      akka.test.default-timeout = 100ms""")
+      pekko.actor.testkit.typed.default-timeout = 100ms
+      pekko.test.default-timeout = 100ms""")
 
   /** Helper events for tests. */
   final case class EventT(id: Long)

@@ -21,7 +21,7 @@ import pekko.stream.javadsl.Source
 import pekko.persistence.testkit.query.scaladsl
 
 object PersistenceTestKitReadJournal {
-  val Identifier = "akka.persistence.testkit.query"
+  val Identifier = "pekko.persistence.testkit.query"
 }
 
 final class PersistenceTestKitReadJournal(delegate: scaladsl.PersistenceTestKitReadJournal)

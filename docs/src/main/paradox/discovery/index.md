@@ -36,7 +36,7 @@ See @ref:[Migration hints](#migrating-from-akka-management-discovery-before-1-0-
 @@dependency[sbt,Gradle,Maven] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-discovery_$scala.binary.version$"
   version=AkkaVersion
@@ -78,7 +78,7 @@ Port can be used when a service opens multiple ports e.g. a HTTP port and an Akk
 
 @@@ note { title="Async DNS" }
 
-Akka Discovery with DNS does always use the @ref[Akka-native "async-dns" implementation](../io-dns.md) (it is independent of the `akka.io.dns.resolver` setting).
+Akka Discovery with DNS does always use the @ref[Akka-native "async-dns" implementation](../io-dns.md) (it is independent of the `pekko.io.dns.resolver` setting).
 
 @@@
 
@@ -93,7 +93,7 @@ The mapping between Akka service discovery terminology and SRV terminology:
 * SRV name = serviceName
 * SRV protocol = protocol
 
-Configure `akka-dns` to be used as the discovery implementation in your `application.conf`:
+Configure `pekko-dns` to be used as the discovery implementation in your `application.conf`:
 
 @@snip[application.conf](/docs/src/test/scala/docs/discovery/DnsDiscoveryDocSpec.scala){ #configure-dns }
 
@@ -115,9 +115,9 @@ The advantage of SRV records is that they can include a port.
 Lookups with all the fields set become SRV queries. For example:
 
 ```
-dig srv _service._tcp.akka.test
+dig srv _service._tcp.pekko.test
 
-; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv service.tcp.akka.test
+; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> srv service.tcp.pekko.test
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 60023
@@ -127,25 +127,25 @@ dig srv _service._tcp.akka.test
 ; EDNS: version: 0, flags:; udp: 4096
 ; COOKIE: 5ab8dd4622e632f6190f54de5b28bb8fb1b930a5333c3862 (good)
 ;; QUESTION SECTION:
-;service.tcp.akka.test.         IN      SRV
+;service.tcp.pekko.test.         IN      SRV
 
 ;; ANSWER SECTION:
-_service._tcp.akka.test.  86400   IN      SRV     10 60 5060 a-single.akka.test.
-_service._tcp.akka.test.  86400   IN      SRV     10 40 5070 a-double.akka.test.
+_service._tcp.pekko.test.  86400   IN      SRV     10 60 5060 a-single.pekko.test.
+_service._tcp.pekko.test.  86400   IN      SRV     10 40 5070 a-double.pekko.test.
 
 ```
 
-In this case `service.tcp.akka.test` resolves to `a-single.akka.test` on port `5060`
-and `a-double.akka.test` on port `5070`. Currently discovery does not support the weightings.
+In this case `service.tcp.pekko.test` resolves to `a-single.pekko.test` on port `5060`
+and `a-double.pekko.test` on port `5070`. Currently discovery does not support the weightings.
 
 #### A/AAAA records
 
 Lookups with any fields missing become A/AAAA record queries. For example:
 
 ```
-dig a-double.akka.test
+dig a-double.pekko.test
 
-; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> a-double.akka.test
+; <<>> DiG 9.11.3-RedHat-9.11.3-6.fc28 <<>> a-double.pekko.test
 ;; global options: +cmd
 ;; Got answer:
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 11983
@@ -155,15 +155,15 @@ dig a-double.akka.test
 ; EDNS: version: 0, flags:; udp: 4096
 ; COOKIE: 16e9815d9ca2514d2f3879265b28bad05ff7b4a82721edd0 (good)
 ;; QUESTION SECTION:
-;a-double.akka.test.            IN      A
+;a-double.pekko.test.            IN      A
 
 ;; ANSWER SECTION:
-a-double.akka.test.     86400   IN      A       192.168.1.21
-a-double.akka.test.     86400   IN      A       192.168.1.22
+a-double.pekko.test.     86400   IN      A       192.168.1.21
+a-double.pekko.test.     86400   IN      A       192.168.1.22
 
 ```
 
-In this case `a-double.akka.test` would resolve to `192.168.1.21` and `192.168.1.22`.
+In this case `a-double.pekko.test` would resolve to `192.168.1.21` and `192.168.1.22`.
 
 ## Discovery Method: Configuration
 
@@ -177,15 +177,15 @@ sophisticated discovery method without any code changes.
 Configure it to be used as discovery method in your `application.conf`
 
 ```
-akka {
+pekko {
   discovery.method = config
 }
 ```
 
-By default the services discoverable are defined in `akka.discovery.config.services` and have the following format:
+By default the services discoverable are defined in `pekko.discovery.config.services` and have the following format:
 
 ```
-akka.discovery.config.services = {
+pekko.discovery.config.services = {
   service1 = {
     endpoints = [
       {
@@ -215,14 +215,14 @@ via DNS and fall back to configuration.
 To use aggregate discovery add its dependency as well as all of the discovery that you
 want to aggregate.
 
-Configure `aggregate` as `akka.discovery.method` and which discovery methods are tried and in which order.
+Configure `aggregate` as `pekko.discovery.method` and which discovery methods are tried and in which order.
 
 ```
-akka {
+pekko {
   discovery {
     method = aggregate
     aggregate {
-      discovery-methods = ["akka-dns", "config"]
+      discovery-methods = ["pekko-dns", "config"]
     }
     config {
       services {
@@ -245,7 +245,7 @@ akka {
 
 ```
 
-The above configuration will result in `akka-dns` first being checked and if it fails or returns no
+The above configuration will result in `pekko-dns` first being checked and if it fails or returns no
 targets for the given service name then `config` is queried which i configured with one service called
 `service1` which two hosts `host1` and `host2`.
 
@@ -258,8 +258,8 @@ At least version `1.0.0` of any Akka Management module should be used if also us
 Migration steps:
 
 * Any custom discovery method should now implement `org.apache.pekko.discovery.ServiceDiscovery`
-* `discovery-method` now has to be a configuration location under `akka.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `org.apache.pekko.discovery.ServiceDiscovery`.
-  Previous versions allowed this to be a class name or a fully qualified config location e.g. `akka.discovery.kubernetes-api` rather than just `kubernetes-api`
+* `discovery-method` now has to be a configuration location under `pekko.discovery` with at minimum a property `class` specifying the fully qualified name of the implementation of `org.apache.pekko.discovery.ServiceDiscovery`.
+  Previous versions allowed this to be a class name or a fully qualified config location e.g. `pekko.discovery.kubernetes-api` rather than just `kubernetes-api`
 
 
 

@@ -23899,7 +23899,7 @@ public final class ReplicatorMessages {
   static {
     java.lang.String[] descriptorData = {
       "\n\030ReplicatorMessages.proto\022\022org.apache.pekko.cluster" +
-      ".ddata\"\307\001\n\003Get\022-\n\003key\030\001 \002(\0132 .akka.clust" +
+      ".ddata\"\307\001\n\003Get\022-\n\003key\030\001 \002(\0132 .pekko.clust" +
       "er.ddata.OtherMessage\022\023\n\013consistency\030\002 \002" +
       "(\021\022\017\n\007timeout\030\003 \002(\r\0221\n\007request\030\004 \001(\0132 .a" +
       "kka.cluster.ddata.OtherMessage\022\031\n\021consis" +
@@ -23911,7 +23911,7 @@ public final class ReplicatorMessages {
       "erMessage\"l\n\010NotFound\022-\n\003key\030\001 \002(\0132 .akk" +
       "a.cluster.ddata.OtherMessage\0221\n\007request\030" +
       "\002 \001(\0132 .org.apache.pekko.cluster.ddata.OtherMessage\"" +
-      "n\n\nGetFailure\022-\n\003key\030\001 \002(\0132 .akka.cluste" +
+      "n\n\nGetFailure\022-\n\003key\030\001 \002(\0132 .pekko.cluste" +
       "r.ddata.OtherMessage\0221\n\007request\030\002 \001(\0132 ." +
       "org.apache.pekko.cluster.ddata.OtherMessage\"G\n\tSubsc" +
       "ribe\022-\n\003key\030\001 \002(\0132 .org.apache.pekko.cluster.ddata.O" +
@@ -23932,20 +23932,20 @@ public final class ReplicatorMessages {
       "\003(\0132-.org.apache.pekko.cluster.ddata.DataEnvelope.Pr" +
       "uningEntry\0228\n\rdeltaVersions\030\003 \001(\0132!.akka" +
       ".cluster.ddata.VersionVector\032\326\001\n\014Pruning" +
-      "Entry\0229\n\016removedAddress\030\001 \002(\0132!.akka.clu" +
+      "Entry\0229\n\016removedAddress\030\001 \002(\0132!.pekko.clu" +
       "ster.ddata.UniqueAddress\0227\n\014ownerAddress" +
       "\030\002 \002(\0132!.org.apache.pekko.cluster.ddata.UniqueAddres" +
       "s\022\021\n\tperformed\030\003 \002(\010\022)\n\004seen\030\004 \003(\0132\033.akk" +
       "a.cluster.ddata.Address\022\024\n\014obsoleteTime\030" +
       "\005 \001(\022\"\257\001\n\006Status\022\r\n\005chunk\030\001 \002(\r\022\021\n\ttotCh" +
-      "unks\030\002 \002(\r\0221\n\007entries\030\003 \003(\0132 .akka.clust" +
+      "unks\030\002 \002(\r\0221\n\007entries\030\003 \003(\0132 .pekko.clust" +
       "er.ddata.Status.Entry\022\023\n\013toSystemUid\030\004 \001" +
       "(\020\022\025\n\rfromSystemUid\030\005 \001(\020\032$\n\005Entry\022\013\n\003ke" +
       "y\030\001 \002(\t\022\016\n\006digest\030\002 \002(\014\"\303\001\n\006Gossip\022\020\n\010se" +
-      "ndBack\030\001 \002(\010\0221\n\007entries\030\002 \003(\0132 .akka.clu" +
+      "ndBack\030\001 \002(\010\0221\n\007entries\030\002 \003(\0132 .pekko.clu" +
       "ster.ddata.Gossip.Entry\022\023\n\013toSystemUid\030\003" +
       " \001(\020\022\025\n\rfromSystemUid\030\004 \001(\020\032H\n\005Entry\022\013\n\003" +
-      "key\030\001 \002(\t\0222\n\010envelope\030\002 \002(\0132 .akka.clust" +
+      "key\030\001 \002(\t\0222\n\010envelope\030\002 \002(\0132 .pekko.clust" +
       "er.ddata.DataEnvelope\"\201\002\n\020DeltaPropagati" +
       "on\0223\n\010fromNode\030\001 \002(\0132!.org.apache.pekko.cluster.ddat" +
       "a.UniqueAddress\022;\n\007entries\030\002 \003(\0132*.akka." +

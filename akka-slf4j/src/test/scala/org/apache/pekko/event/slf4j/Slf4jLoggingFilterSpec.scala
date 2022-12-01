@@ -26,7 +26,7 @@ object Slf4jLoggingFilterSpec {
   // This test depends on logback configuration in src/test/resources/logback-test.xml
 
   val config = """
-    akka {
+    pekko {
       loglevel = DEBUG # test verifies debug
       loggers = ["org.apache.pekko.event.slf4j.Slf4jLoggingFilterSpec$TestLogger"]
       logging-filter = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"

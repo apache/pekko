@@ -13,9 +13,9 @@ import scala.concurrent.Future
 object DnsDiscoveryDocSpec {
   val config = ConfigFactory.parseString("""
     // #configure-dns
-    akka {
+    pekko {
       discovery {
-        method = akka-dns
+        method = pekko-dns
       }
     }
     // #configure-dns
@@ -25,7 +25,7 @@ object DnsDiscoveryDocSpec {
 class DnsDiscoveryDocSpec extends AkkaSpec(DnsDiscoveryDocSpec.config) {
 
   "DNS Discovery" should {
-    "find akka.io" in {
+    "find pekko.io" in {
       // #lookup-dns
       import org.apache.pekko
       import pekko.discovery.Discovery
@@ -33,16 +33,16 @@ class DnsDiscoveryDocSpec extends AkkaSpec(DnsDiscoveryDocSpec.config) {
 
       val discovery: ServiceDiscovery = Discovery(system).discovery
       // ...
-      val result: Future[ServiceDiscovery.Resolved] = discovery.lookup("akka.io", resolveTimeout = 3.seconds)
+      val result: Future[ServiceDiscovery.Resolved] = discovery.lookup("pekko.io", resolveTimeout = 3.seconds)
       // #lookup-dns
 
       try {
         val resolved = result.futureValue
-        resolved.serviceName shouldBe "akka.io"
+        resolved.serviceName shouldBe "pekko.io"
         resolved.addresses shouldNot be(Symbol("empty"))
       } catch {
         case e: Exception =>
-          info("Failed lookup akka.io, but ignoring: " + e)
+          info("Failed lookup pekko.io, but ignoring: " + e)
           pending
       }
     }

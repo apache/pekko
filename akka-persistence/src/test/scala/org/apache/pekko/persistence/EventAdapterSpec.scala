@@ -110,7 +110,7 @@ class EventAdapterSpec(journalName: String, journalConfig: Config, adapterConfig
       "inmem",
       PersistenceSpec.config("inmem", "InmemPersistentTaggingSpec"),
       ConfigFactory.parseString(s"""
-         |akka.persistence.journal {
+         |pekko.persistence.journal {
          |
          |  common-event-adapters {
          |    age                 = "${classOf[EventAdapterSpec].getCanonicalName}$$UserAgeTaggingAdapter"
@@ -118,7 +118,7 @@ class EventAdapterSpec(journalName: String, journalConfig: Config, adapterConfig
          |  }
          |
          |  inmem {
-         |    event-adapters = $${akka.persistence.journal.common-event-adapters}
+         |    event-adapters = $${pekko.persistence.journal.common-event-adapters}
          |    event-adapter-bindings {
          |      "${EventAdapterSpec.DomainEventClassName}"  = age
          |      "${EventAdapterSpec.JournalModelClassName}" = age
@@ -126,7 +126,7 @@ class EventAdapterSpec(journalName: String, journalConfig: Config, adapterConfig
          |  }
          |
          |  with-actor-system {
-         |    class = $${akka.persistence.journal.inmem.class}
+         |    class = $${pekko.persistence.journal.inmem.class}
          |    dir = "journal-1"
          |
          |    event-adapters {
@@ -138,10 +138,10 @@ class EventAdapterSpec(journalName: String, journalConfig: Config, adapterConfig
          |  }
          |
          |  replay-pass-through-adapter-journal {
-         |    class = $${akka.persistence.journal.inmem.class}
+         |    class = $${pekko.persistence.journal.inmem.class}
          |    dir = "journal-2"
          |
-         |    event-adapters = $${akka.persistence.journal.common-event-adapters}
+         |    event-adapters = $${pekko.persistence.journal.common-event-adapters}
          |    event-adapter-bindings {
          |      "${EventAdapterSpec.JournalModelClassName}" = replay-pass-through
          |      "${EventAdapterSpec.DomainEventClassName}"  = replay-pass-through
@@ -149,20 +149,20 @@ class EventAdapterSpec(journalName: String, journalConfig: Config, adapterConfig
          |  }
          |
          |  no-adapter {
-         |    class = $${akka.persistence.journal.inmem.class}
+         |    class = $${pekko.persistence.journal.inmem.class}
          |    dir = "journal-3"
          |  }
          |}
       """.stripMargin))
 
   def persister(name: String, journalId: String = journalName) =
-    system.actorOf(Props(classOf[PersistAllIncomingActor], name, "akka.persistence.journal." + journalId))
+    system.actorOf(Props(classOf[PersistAllIncomingActor], name, "pekko.persistence.journal." + journalId))
 
   def toJournal(in: Any, journalId: String = journalName) =
-    Persistence(system).adaptersFor("akka.persistence.journal." + journalId).get(in.getClass).toJournal(in)
+    Persistence(system).adaptersFor("pekko.persistence.journal." + journalId).get(in.getClass).toJournal(in)
 
   def fromJournal(in: Any, journalId: String = journalName) =
-    Persistence(system).adaptersFor("akka.persistence.journal." + journalId).get(in.getClass).fromJournal(in, "")
+    Persistence(system).adaptersFor("pekko.persistence.journal." + journalId).get(in.getClass).fromJournal(in, "")
 
   "EventAdapter" must {
 

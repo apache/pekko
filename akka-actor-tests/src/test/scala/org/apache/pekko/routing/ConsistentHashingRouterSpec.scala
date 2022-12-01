@@ -21,11 +21,11 @@ import pekko.testkit.AkkaSpec
 object ConsistentHashingRouterSpec {
 
   val config = """
-    akka.actor {
+    pekko.actor {
       # consistent hashing is serializing the hash key, unless it's bytes or string
       allow-java-serialization = on
     }
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /router1 {
         router = consistent-hashing-pool
         nr-of-instances = 3

@@ -28,7 +28,7 @@ object DistributedData extends ExtensionId[DistributedData] with ExtensionIdProv
 /**
  * Akka extension for convenient configuration and use of the
  * [[Replicator]]. Configuration settings are defined in the
- * `akka.cluster.ddata` section, see `reference.conf`.
+ * `pekko.cluster.ddata` section, see `reference.conf`.
  */
 class DistributedData(system: ExtendedActorSystem) extends Extension {
 

@@ -67,8 +67,8 @@ class FlowIterableSpec extends AbstractFlowIteratorSpec {
 }
 
 abstract class AbstractFlowIteratorSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
 """) {
 
   def testName: String

@@ -287,14 +287,14 @@ object DistributedPubSubExample {
   import Ontology._
 
   val config: Config = ConfigFactory.parseString(s"""
-        akka.actor.provider = "cluster"
-        akka.cluster.pub-sub.max-delta-elements = 500
-        akka.cluster.jmx.enabled = off
-        akka.remote.artery.canonical.hostname = 127.0.0.1
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.loglevel = INFO
-        akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+        pekko.actor.provider = "cluster"
+        pekko.cluster.pub-sub.max-delta-elements = 500
+        pekko.cluster.jmx.enabled = off
+        pekko.remote.artery.canonical.hostname = 127.0.0.1
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.loglevel = INFO
+        pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """)
 
   def createCluster(nodes: List[ActorSystem[_]]): Unit = {

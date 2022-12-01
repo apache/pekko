@@ -22,7 +22,7 @@ public class BubblingSampleTest extends JUnitSuite {
 
   @ClassRule
   public static final TestKitJunitResource testKit =
-      new TestKitJunitResource("akka.loglevel = off");
+      new TestKitJunitResource("pekko.loglevel = off");
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

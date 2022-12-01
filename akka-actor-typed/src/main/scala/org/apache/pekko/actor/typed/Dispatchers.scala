@@ -14,12 +14,12 @@ object Dispatchers {
    * The id of the default dispatcher, also the full key of the
    * configuration of the default dispatcher.
    */
-  final val DefaultDispatcherId = "akka.actor.default-dispatcher"
+  final val DefaultDispatcherId = "pekko.actor.default-dispatcher"
 
   /**
    * INTERNAL API
    */
-  @InternalApi final val InternalDispatcherId = "akka.actor.internal-dispatcher"
+  @InternalApi final val InternalDispatcherId = "pekko.actor.internal-dispatcher"
 }
 
 /**

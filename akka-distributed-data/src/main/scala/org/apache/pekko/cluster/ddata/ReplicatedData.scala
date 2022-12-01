@@ -125,7 +125,7 @@ trait RequiresCausalDeliveryOfDeltas extends ReplicatedDelta
  * threshold such deltas are discarded and sent as full state instead. This
  * interface should be implemented by such deltas to define its size.
  * This is number of elements or similar size hint, not size in bytes.
- * The threshold is defined in `akka.cluster.distributed-data.delta-crdt.max-delta-size`
+ * The threshold is defined in `pekko.cluster.distributed-data.delta-crdt.max-delta-size`
  * or corresponding [[ReplicatorSettings]].
  */
 trait ReplicatedDeltaSize {

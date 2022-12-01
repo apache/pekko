@@ -74,7 +74,7 @@ import pekko.util.ccompat.JavaConverters._
  *   1. At system startup on each cluster node by registering the supported entity types with
  * the [[ClusterSharding#start]] method
  *   1. Retrieve the `ShardRegion` actor for a named entity type with [[ClusterSharding#shardRegion]]
- * Settings can be configured as described in the `akka.cluster.sharding` section of the `reference.conf`.
+ * Settings can be configured as described in the `pekko.cluster.sharding` section of the `reference.conf`.
  *
  * '''Shard and ShardCoordinator''':
  * A shard is a group of entities that will be managed together. For the first message in a
@@ -182,8 +182,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
 
   private lazy val guardian: ActorRef = {
     val guardianName: String =
-      system.settings.config.getString("akka.cluster.sharding.guardian-name")
-    val dispatcher = system.settings.config.getString("akka.cluster.sharding.use-dispatcher")
+      system.settings.config.getString("pekko.cluster.sharding.guardian-name")
+    val dispatcher = system.settings.config.getString("pekko.cluster.sharding.use-dispatcher")
     system.systemActorOf(Props[ClusterShardingGuardian]().withDispatcher(dispatcher), guardianName)
   }
 
@@ -195,7 +195,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -239,7 +239,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the roles of
    * the current cluster node and the role specified in [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -329,7 +329,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -365,7 +365,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -394,7 +394,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -440,7 +440,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -472,7 +472,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * This method will start a [[ShardRegion]] in proxy mode when there is no match between the
    * node roles and the role specified in the [[ClusterShardingSettings]] passed to this method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -491,7 +491,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -517,7 +517,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -566,7 +566,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -585,7 +585,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
    * entity actors itself. The [[ShardRegion]] actor for this type can later be retrieved with the
    * [[#shardRegion]] method.
    *
-   * Some settings can be configured as described in the `akka.cluster.sharding` section
+   * Some settings can be configured as described in the `pekko.cluster.sharding` section
    * of the `reference.conf`.
    *
    * @param typeName the name of the entity type
@@ -706,7 +706,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
   val cluster = Cluster(context.system)
   val sharding = ClusterSharding(context.system)
 
-  val majorityMinCap = context.system.settings.config.getInt("akka.cluster.sharding.distributed-data.majority-min-cap")
+  val majorityMinCap = context.system.settings.config.getInt("pekko.cluster.sharding.distributed-data.majority-min-cap")
   private var replicatorByRole = Map.empty[Option[String], ActorRef]
 
   private def coordinatorSingletonManagerName(encName: String): String =
@@ -717,7 +717,7 @@ private[pekko] class ClusterShardingGuardian extends Actor {
 
   private def replicatorSettings(shardingSettings: ClusterShardingSettings) = {
     val configuredSettings =
-      ReplicatorSettings(context.system.settings.config.getConfig("akka.cluster.sharding.distributed-data"))
+      ReplicatorSettings(context.system.settings.config.getConfig("pekko.cluster.sharding.distributed-data"))
     // Use members within the data center and with the given role (if any)
     val replicatorRoles = Set(ClusterSettings.DcRolePrefix + cluster.settings.SelfDataCenter) ++ shardingSettings.role
     val settingsWithRoles = configuredSettings.withRoles(replicatorRoles)

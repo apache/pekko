@@ -18,7 +18,7 @@ dependency included. Otherwise, add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster_$scala.binary.version$
   version=AkkaVersion
@@ -32,7 +32,7 @@ You need to enable the Split Brain Resolver by configuring it as downing provide
 the `ActorSystem` (`application.conf`):
 
 ```
-akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
 ```
 
 You should also consider the different available @ref:[downing strategies](#strategies).
@@ -118,7 +118,7 @@ When there is uncertainty it selects to down more nodes than necessary, or even 
 Therefore Split Brain Resolver should always be combined with a mechanism to automatically start up nodes that
 have been shutdown, and join them to the existing cluster or form a new cluster again.
 
-You enable a strategy with the configuration property `akka.cluster.split-brain-resolver.active-strategy`.
+You enable a strategy with the configuration property `pekko.cluster.split-brain-resolver.active-strategy`.
 
 ### Stable after
 
@@ -129,7 +129,7 @@ while there are unreachable nodes. Joining nodes are not counted in the logic of
 
 @@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #split-brain-resolver }
 
-Set `akka.cluster.split-brain-resolver.stable-after` to a shorter duration to have quicker removal of crashed nodes,
+Set `pekko.cluster.split-brain-resolver.stable-after` to a shorter duration to have quicker removal of crashed nodes,
 at the price of risking too early action on transient network partitions that otherwise would have healed. Do not
 set this to a shorter duration than the membership dissemination time in the cluster, which depends
 on the cluster size. Recommended minimum duration for different cluster sizes:
@@ -161,7 +161,7 @@ That is handled by @ref:[Coordinated Shutdown](coordinated-shutdown.md)
 but to exit the JVM it's recommended that you enable:
 
 ```
-akka.coordinated-shutdown.exit-jvm = on
+pekko.coordinated-shutdown.exit-jvm = on
 ```
 
 @@@ note
@@ -207,7 +207,7 @@ it means shutting down more worker nodes.
 Configuration:
 
 ```
-akka.cluster.split-brain-resolver.active-strategy=keep-majority
+pekko.cluster.split-brain-resolver.active-strategy=keep-majority
 ```
 
 @@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #keep-majority }
@@ -231,7 +231,7 @@ Therefore it is important that you join new nodes when old nodes have been remov
 
 Another consequence of this is that if there are unreachable nodes when starting up the cluster,
 before reaching this limit, the cluster may shut itself down immediately. This is not an issue
-if you start all nodes at approximately the same time or use the `akka.cluster.min-nr-of-members`
+if you start all nodes at approximately the same time or use the `pekko.cluster.min-nr-of-members`
 to define required number of members before the leader changes member status of 'Joining' members to 'Up'
 You can tune the timeout after which downing decisions are made using the `stable-after` setting.
 
@@ -273,7 +273,7 @@ in the cluster, as described above.
 Configuration:
 
 ```
-akka.cluster.split-brain-resolver.active-strategy=static-quorum
+pekko.cluster.split-brain-resolver.active-strategy=static-quorum
 ```
 
 @@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #static-quorum }
@@ -312,7 +312,7 @@ i.e. using the oldest member (singleton) within the nodes with that role.
 Configuration:
 
 ```
-akka.cluster.split-brain-resolver.active-strategy=keep-oldest
+pekko.cluster.split-brain-resolver.active-strategy=keep-oldest
 ```
 
 @@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #keep-oldest }
@@ -361,13 +361,13 @@ on another side of a network partition, and then all nodes will be downed.
 Configuration:
 
 ```
-akka {
+pekko {
   cluster {
     downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
     split-brain-resolver {
       active-strategy = "lease-majority"
       lease-majority {
-        lease-implementation = "akka.coordination.lease.kubernetes"
+        lease-implementation = "pekko.coordination.lease.kubernetes"
       }
     }
   }
@@ -411,7 +411,7 @@ continue after the `stable-after` or it can be set to `off` to disable this feat
 
 
 ```
-akka.cluster.split-brain-resolver {
+pekko.cluster.split-brain-resolver {
   down-all-when-unstable = 15s
   stable-after = 20s
 }
@@ -453,9 +453,9 @@ You would like to configure this to a short duration to have quick failover, but
 risk of having multiple singleton/sharded instances running at the same time and it may take a different
 amount of time to act on the decision (dissemination of the down/removal). The duration is by default
 the same as the `stable-after` property (see @ref:[Stable after](#stable-after) above). It is recommended to
-leave this value as is, but it can also be separately overriden with the `akka.cluster.down-removal-margin` property.
+leave this value as is, but it can also be separately overriden with the `pekko.cluster.down-removal-margin` property.
 
-Another concern for setting this `stable-after`/`akka.cluster.down-removal-margin` is dealing with JVM pauses e.g.
+Another concern for setting this `stable-after`/`pekko.cluster.down-removal-margin` is dealing with JVM pauses e.g.
 garbage collection. When a node is unresponsive it is not known if it is due to a pause, overload, a crash or a 
 network partition. If it is pause that lasts longer than `stable-after` * 2 it gives time for SBR to down the node
 and for singletons and shards to be started on other nodes. When the node un-pauses there will be a short time before

@@ -59,16 +59,16 @@ object MultiNodeClusterShardingConfig {
 
   def persistenceConfig(targetDir: String): Config =
     ConfigFactory.parseString(s"""
-      akka.persistence.journal.plugin = "akka.persistence.journal.leveldb-shared"
-      akka.persistence.journal.leveldb-shared {
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb-shared"
+      pekko.persistence.journal.leveldb-shared {
         timeout = 5s
         store {
           native = off
           dir = "$targetDir/journal"
         }
       }
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-      akka.persistence.snapshot-store.local.dir = "$targetDir/snapshots"
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.local.dir = "$targetDir/snapshots"
       """)
 
 }
@@ -106,19 +106,19 @@ abstract class MultiNodeClusterShardingConfig(
   val common: Config =
     ConfigFactory
       .parseString(s"""
-        akka.actor.provider = "cluster"
-        akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-        akka.cluster.testkit.auto-down-unreachable-after = 0s
-        akka.cluster.sharding.state-store-mode = "$mode"
-        akka.cluster.sharding.remember-entities = $rememberEntities
-        akka.cluster.sharding.remember-entities-store = "$rememberEntitiesStore"
-        akka.cluster.sharding.distributed-data.durable.lmdb {
+        pekko.actor.provider = "cluster"
+        pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+        pekko.cluster.testkit.auto-down-unreachable-after = 0s
+        pekko.cluster.sharding.state-store-mode = "$mode"
+        pekko.cluster.sharding.remember-entities = $rememberEntities
+        pekko.cluster.sharding.remember-entities-store = "$rememberEntitiesStore"
+        pekko.cluster.sharding.distributed-data.durable.lmdb {
           dir = $targetDir/sharding-ddata
           map-size = 10 MiB
         }
-        akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
-        akka.loglevel = $loglevel
-        akka.remote.log-remote-lifecycle-events = off
+        pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
+        pekko.loglevel = $loglevel
+        pekko.remote.log-remote-lifecycle-events = off
         """)
       .withFallback(SharedLeveldbJournal.configToEnableJavaSerializationForTest)
       .withFallback(MultiNodeClusterSpec.clusterConfig)

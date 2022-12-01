@@ -19,7 +19,7 @@ import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender, TimingTest, _ }
 object AkkaProtocolStressTest {
   val configA: Config =
     ConfigFactory.parseString("""
-    akka {
+    pekko {
       #loglevel = DEBUG
       actor.provider = remote
       remote.artery.enabled = off
@@ -43,8 +43,8 @@ object AkkaProtocolStressTest {
 
     }
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """)
 
   object ResendFinal

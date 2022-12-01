@@ -15,9 +15,9 @@ import pekko.testkit._
 object PerformanceSpec {
   val config =
     """
-      akka.persistence.performance.cycles.load = 100
+      pekko.persistence.performance.cycles.load = 100
       # more accurate throughput measurements
-      #akka.persistence.performance.cycles.load = 200000
+      #pekko.persistence.performance.cycles.load = 200000
     """
 
   case object StopMeasure
@@ -122,7 +122,7 @@ class PerformanceSpec
     with ImplicitSender {
   import PerformanceSpec._
 
-  val loadCycles = system.settings.config.getInt("akka.persistence.performance.cycles.load")
+  val loadCycles = system.settings.config.getInt("pekko.persistence.performance.cycles.load")
 
   def stressPersistentActor(persistentActor: ActorRef, failAt: Option[Long], description: String): Unit = {
     failAt.foreach { persistentActor ! FailAt(_) }

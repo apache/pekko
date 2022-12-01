@@ -35,7 +35,7 @@ object FanInThroughputSpec extends MultiNodeConfig {
        org.apache.pekko.test.FanInThroughputSpec.totalMessagesFactor = 10.0
        org.apache.pekko.test.FanInThroughputSpec.real-message = off
        org.apache.pekko.test.FanInThroughputSpec.actor-selection = off
-       akka.remote.artery.advanced {
+       pekko.remote.artery.advanced {
          # inbound-lanes = 4
        }
        """)).withFallback(MaxThroughputSpec.cfg).withFallback(RemotingMultiNodeSpec.commonConfig))

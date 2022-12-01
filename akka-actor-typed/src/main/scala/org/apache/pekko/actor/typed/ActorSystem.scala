@@ -96,7 +96,7 @@ abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicA
   def dispatchers: Dispatchers
 
   /**
-   * The default thread pool of this ActorSystem, configured with settings in `akka.actor.default-dispatcher`.
+   * The default thread pool of this ActorSystem, configured with settings in `pekko.actor.default-dispatcher`.
    */
   implicit def executionContext: ExecutionContextExecutor
 
@@ -104,7 +104,7 @@ abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicA
    * Terminates this actor system by running [[pekko.actor.CoordinatedShutdown]] with reason
    * [[pekko.actor.CoordinatedShutdown.ActorSystemTerminateReason]].
    *
-   * If `akka.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
    * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
    * will still be terminated.
    *
@@ -317,7 +317,7 @@ final class Settings(val config: Config, val classicSettings: classic.ActorSyste
    */
   override def toString: String = config.root.render
 
-  private val typedConfig = config.getConfig("akka.actor.typed")
+  private val typedConfig = config.getConfig("pekko.actor.typed")
 
   val RestartStashCapacity: Int =
     typedConfig.getInt("restart-stash-capacity").requiring(_ >= 0, "restart-stash-capacity must be >= 0")

@@ -47,9 +47,9 @@ object PersistentActorBoundedStashingSpec {
 
   val templateConfig =
     s"""
-       |akka.actor.default-mailbox.stash-capacity=$capacity
-       |akka.actor.guardian-supervisor-strategy="org.apache.pekko.actor.StoppingSupervisorStrategy"
-       |akka.persistence.internal-stash-overflow-strategy = "%s"
+       |pekko.actor.default-mailbox.stash-capacity=$capacity
+       |pekko.actor.guardian-supervisor-strategy="org.apache.pekko.actor.StoppingSupervisorStrategy"
+       |pekko.persistence.internal-stash-overflow-strategy = "%s"
        |""".stripMargin
 
   val throwConfig = String.format(templateConfig, "org.apache.pekko.persistence.ThrowExceptionConfigurator")

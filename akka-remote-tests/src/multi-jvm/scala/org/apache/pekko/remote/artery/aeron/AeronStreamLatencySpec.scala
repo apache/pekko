@@ -45,7 +45,7 @@ object AeronStreamLatencySpec extends MultiNodeConfig {
        # for serious measurements you should increase the totalMessagesFactor (10) and repeatCount (3)
        org.apache.pekko.test.AeronStreamLatencySpec.totalMessagesFactor = 1.0
        org.apache.pekko.test.AeronStreamLatencySpec.repeatCount = 1
-       akka {
+       pekko {
          loglevel = INFO
          testconductor.barrier-timeout = ${barrierTimeout.toSeconds}s
          actor {
@@ -96,7 +96,7 @@ abstract class AeronStreamLatencySpec
     Aeron.connect(ctx)
   }
 
-  val idleCpuLevel = system.settings.config.getInt("akka.remote.artery.advanced.aeron.idle-cpu-level")
+  val idleCpuLevel = system.settings.config.getInt("pekko.remote.artery.advanced.aeron.idle-cpu-level")
   val taskRunner = {
     val r = new TaskRunner(system.asInstanceOf[ExtendedActorSystem], idleCpuLevel)
     r.start()

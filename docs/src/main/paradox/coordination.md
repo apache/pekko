@@ -10,7 +10,7 @@ Akka Coordination is a set of tools for distributed coordination.
 @@dependency[sbt,Gradle,Maven] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-coordination_$scala.binary.version$"
   version=AkkaVersion
@@ -105,7 +105,7 @@ If a user prefers to have outside intervention in this case for maximum safety t
 
 The configuration must define the `lease-class` property for the FQCN of the lease implementation.
 
-The lease implementation should have support for the following properties where the defaults come from `akka.coordination.lease`:
+The lease implementation should have support for the following properties where the defaults come from `pekko.coordination.lease`:
 
 @@snip [reference.conf](/akka-coordination/src/main/resources/reference.conf) { #defaults }
 

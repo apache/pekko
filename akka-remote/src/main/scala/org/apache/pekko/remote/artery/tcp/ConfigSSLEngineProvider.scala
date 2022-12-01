@@ -31,7 +31,7 @@ import javax.net.ssl.TrustManagerFactory
 import scala.util.Try
 
 /**
- * Config in akka.remote.artery.ssl.config-ssl-engine
+ * Config in pekko.remote.artery.ssl.config-ssl-engine
  *
  * Subclass may override protected methods to replace certain parts, such as key and trust manager.
  */
@@ -40,7 +40,7 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
 
   def this(system: ActorSystem) =
     this(
-      system.settings.config.getConfig("akka.remote.artery.ssl.config-ssl-engine"),
+      system.settings.config.getConfig("pekko.remote.artery.ssl.config-ssl-engine"),
       Logging.withMarker(system, classOf[ConfigSSLEngineProvider].getName))
 
   private val sslEngineConfig = new SSLEngineConfig(config)

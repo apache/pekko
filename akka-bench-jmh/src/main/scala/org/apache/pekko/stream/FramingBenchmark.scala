@@ -30,7 +30,7 @@ import pekko.util.ByteString
 class FramingBenchmark {
 
   val config: Config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         log-config-on-start = off
         log-dead-letters-during-shutdown = off
         stdout-loglevel = "OFF"

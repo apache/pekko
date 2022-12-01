@@ -46,7 +46,7 @@ object TestConductor extends ExtensionId[TestConductorExt] with ExtensionIdProvi
  * more information.
  *
  * ====Note====
- * This extension requires the `akka.actor.provider`
+ * This extension requires the `pekko.actor.provider`
  * to be a [[pekko.remote.RemoteActorRefProvider]].
  *
  * To use ``blackhole``, ``passThrough``, and ``throttle`` you must activate the
@@ -56,7 +56,7 @@ object TestConductor extends ExtensionId[TestConductorExt] with ExtensionIdProvi
 class TestConductorExt(val system: ExtendedActorSystem) extends Extension with Conductor with Player {
 
   object Settings {
-    val config = system.settings.config.getConfig("akka.testconductor")
+    val config = system.settings.config.getConfig("pekko.testconductor")
     import org.apache.pekko.util.Helpers.ConfigOps
 
     val ConnectTimeout = config.getMillisDuration("connect-timeout")

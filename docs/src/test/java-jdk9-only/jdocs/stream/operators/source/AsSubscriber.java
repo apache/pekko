@@ -23,10 +23,10 @@ public interface AsSubscriber {
         public static final class Source {
             public
             // #api
-            static <T> akka.stream.javadsl.Source<T, Subscriber<T>> asSubscriber()
+            static <T> pekko.stream.javadsl.Source<T, Subscriber<T>> asSubscriber()
             // #api
             {
-                return akka.stream.javadsl.JavaFlowSupport.Source.<T>asSubscriber();
+                return pekko.stream.javadsl.JavaFlowSupport.Source.<T>asSubscriber();
             }
         }
     }

@@ -11,7 +11,7 @@ import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.testkit.{ AkkaSpec, EventFilter }
 import scala.concurrent.ExecutionContext
 
-class GraphStageLoggingDocSpec extends AkkaSpec("akka.loglevel = DEBUG") {
+class GraphStageLoggingDocSpec extends AkkaSpec("pekko.loglevel = DEBUG") {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

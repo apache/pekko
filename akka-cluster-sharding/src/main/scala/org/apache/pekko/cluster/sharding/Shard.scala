@@ -432,7 +432,7 @@ private[pekko] class Shard(
 
   import pekko.cluster.sharding.ShardCoordinator.Internal.CoordinatorMessage
 
-  private val verboseDebug = context.system.settings.config.getBoolean("akka.cluster.sharding.verbose-debug-logging")
+  private val verboseDebug = context.system.settings.config.getBoolean("pekko.cluster.sharding.verbose-debug-logging")
 
   private val rememberEntitiesStore: Option[ActorRef] =
     rememberEntitiesProvider.map { provider =>
@@ -448,7 +448,7 @@ private[pekko] class Shard(
   @InternalStableApi
   private val entities = {
     val failOnInvalidStateTransition =
-      context.system.settings.config.getBoolean("akka.cluster.sharding.fail-on-invalid-entity-state-transition")
+      context.system.settings.config.getBoolean("pekko.cluster.sharding.fail-on-invalid-entity-state-transition")
     new Entities(log, settings.rememberEntities, verboseDebug, failOnInvalidStateTransition)
   }
 

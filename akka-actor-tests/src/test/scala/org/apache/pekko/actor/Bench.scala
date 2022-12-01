@@ -109,7 +109,7 @@ object Chameneos {
   }
 
   def run(): Unit = {
-    //    System.setProperty("akka.config", "akka.conf")
+    //    System.setProperty("pekko.config", "pekko.conf")
     Chameneos.start = System.currentTimeMillis
     val system = ActorSystem()
     system.actorOf(Props(new Mall(1000000, 4)))

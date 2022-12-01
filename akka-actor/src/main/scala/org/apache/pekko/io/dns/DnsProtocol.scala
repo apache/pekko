@@ -21,7 +21,7 @@ import pekko.util.ccompat.JavaConverters._
 /**
  * Supersedes [[pekko.io.Dns]] protocol.
  *
- * Note that one MUST configure `akka.io.dns.resolver = async-dns` to make use of this protocol and resolver.
+ * Note that one MUST configure `pekko.io.dns.resolver = async-dns` to make use of this protocol and resolver.
  *
  * Allows for more detailed lookups, by specifying which records should be checked,
  * and responses can more information than plain IP addresses (e.g. ports for SRV records).

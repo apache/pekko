@@ -21,17 +21,17 @@ object ClusterClientHandoverSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.client {
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.client {
       heartbeat-interval = 1d
       acceptable-heartbeat-pause = 1d
       reconnect-timeout = 3s
       refresh-contacts-interval = 1d
 
     }
-    akka.test.filter-leeway = 10s
+    pekko.test.filter-leeway = 10s
   """).withFallback(MultiNodeClusterSpec.clusterConfig))
 }
 

@@ -35,9 +35,9 @@ object SteppingInmemJournal {
 
   def config(instanceId: String): Config =
     ConfigFactory.parseString(s"""
-        |akka.persistence.journal.stepping-inmem.class=${classOf[SteppingInmemJournal].getName}
-        |akka.persistence.journal.plugin = "akka.persistence.journal.stepping-inmem"
-        |akka.persistence.journal.stepping-inmem.instance-id = "$instanceId"
+        |pekko.persistence.journal.stepping-inmem.class=${classOf[SteppingInmemJournal].getName}
+        |pekko.persistence.journal.plugin = "pekko.persistence.journal.stepping-inmem"
+        |pekko.persistence.journal.stepping-inmem.instance-id = "$instanceId"
       """.stripMargin)
 
   // keep it in a thread safe:d global so that tests can get their
@@ -68,7 +68,7 @@ final class SteppingInmemJournal extends InmemJournal {
   import SteppingInmemJournal._
   import context.dispatcher
 
-  val instanceId = context.system.settings.config.getString("akka.persistence.journal.stepping-inmem.instance-id")
+  val instanceId = context.system.settings.config.getString("pekko.persistence.journal.stepping-inmem.instance-id")
 
   var queuedOps: Seq[() => Future[Unit]] = Seq.empty
   var queuedTokenRecipients = List.empty[ActorRef]

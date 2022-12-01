@@ -13,7 +13,7 @@ page describes how to use dispatchers with `akka-actor-typed`, which has depende
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor-typed_$scala.binary.version$"
   version=AkkaVersion
@@ -28,15 +28,15 @@ to execute arbitrary code, for instance @scala[`Future`s]@java[`CompletableFutur
 ## Default dispatcher
 
 Every `ActorSystem` will have a default dispatcher that will be used in case nothing else is configured for an `Actor`.
-The default dispatcher can be configured, and is by default a `Dispatcher` with the configured `akka.actor.default-dispatcher.executor`.
+The default dispatcher can be configured, and is by default a `Dispatcher` with the configured `pekko.actor.default-dispatcher.executor`.
 If no executor is selected a "fork-join-executor" is selected, which
 gives excellent performance in most cases.
 
 ## Internal dispatcher
 
 To protect the internal Actors that are spawned by the various Akka modules, a separate internal dispatcher is used by default.
-The internal dispatcher can be tuned in a fine-grained way with the setting `akka.actor.internal-dispatcher`, it can also
-be replaced by another dispatcher by making `akka.actor.internal-dispatcher` an @ref[alias](#dispatcher-aliases).
+The internal dispatcher can be tuned in a fine-grained way with the setting `pekko.actor.internal-dispatcher`, it can also
+be replaced by another dispatcher by making `pekko.actor.internal-dispatcher` an @ref[alias](#dispatcher-aliases).
 
 <a id="dispatcher-lookup"></a>
 ## Looking up a Dispatcher
@@ -135,7 +135,7 @@ be used and shared among the two ids.
 Example: configuring `internal-dispatcher` to be an alias for `default-dispatcher`:
 
 ```
-akka.actor.internal-dispatcher = akka.actor.default-dispatcher
+pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher
 ```
 
 <a id="blocking-management"></a>
@@ -196,7 +196,7 @@ Java
 
 
 Here the app is sending 100 messages to `BlockingActor`s and `PrintActor`s and large numbers
-of `akka.actor.default-dispatcher` threads are handling requests. When you run the above code,
+of `pekko.actor.default-dispatcher` threads are handling requests. When you run the above code,
 you will likely to see the entire application gets stuck somewhere like this:
 
 ```
@@ -234,7 +234,7 @@ and then you can apply the proposed solutions as explained below.
 In the above example we put the code under load by sending hundreds of messages to blocking actors
 which causes threads of the default dispatcher to be blocked.
 The fork join pool based dispatcher in Akka then attempts to compensate for this blocking by adding more threads to the pool
-(`default-akka.actor.default-dispatcher 18,19,20,...`).
+(`default-pekko.actor.default-dispatcher 18,19,20,...`).
 This however is not able to help if those too will immediately get blocked,
 and eventually the blocking operations will dominate the entire dispatcher.
 

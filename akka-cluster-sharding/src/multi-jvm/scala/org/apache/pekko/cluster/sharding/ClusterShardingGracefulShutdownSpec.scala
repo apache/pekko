@@ -21,11 +21,11 @@ abstract class ClusterShardingGracefulShutdownSpecConfig(mode: String)
       mode,
       additionalConfig =
         """
-        akka.loglevel = info
-        akka.persistence.journal.leveldb-shared.store.native = off
+        pekko.loglevel = info
+        pekko.persistence.journal.leveldb-shared.store.native = off
         # We set this high to allow pausing coordinated shutdown make sure the handoff completes 'immediately' and not
         # relies on the member removal, which could make things take longer then necessary
-        akka.coordinated-shutdown.phases.cluster-sharding-shutdown-region.timeout = 60s
+        pekko.coordinated-shutdown.phases.cluster-sharding-shutdown-region.timeout = 60s
         """) {
   val first = role("first")
   val second = role("second")

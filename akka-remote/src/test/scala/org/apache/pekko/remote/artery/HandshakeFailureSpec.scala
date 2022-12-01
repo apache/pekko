@@ -17,8 +17,8 @@ import pekko.testkit.TestProbe
 object HandshakeFailureSpec {
 
   val commonConfig = ConfigFactory.parseString(s"""
-     akka.remote.artery.advanced.handshake-timeout = 2s
-     akka.remote.artery.advanced.aeron.image-liveness-timeout = 1.9s
+     pekko.remote.artery.advanced.handshake-timeout = 2s
+     pekko.remote.artery.advanced.aeron.image-liveness-timeout = 1.9s
   """).withFallback(ArterySpecSupport.defaultConfig)
 
 }
@@ -35,7 +35,7 @@ class HandshakeFailureSpec extends ArteryMultiNodeSpec(HandshakeFailureSpec.comm
       expectNoMessage(3.seconds) // longer than handshake-timeout
 
       val systemB =
-        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"akka.remote.artery.canonical.port = $portB"))
+        newRemoteSystem(name = Some("systemB"), extraConfig = Some(s"pekko.remote.artery.canonical.port = $portB"))
       systemB.actorOf(TestActors.echoActorProps, "echo")
 
       within(10.seconds) {

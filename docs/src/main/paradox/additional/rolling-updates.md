@@ -52,7 +52,7 @@ different configured `app-version`.
 To make use of this feature you need to define the `app-version` and increase it for each rolling update.
 
 ```
-akka.cluster.app-version = 1.2.3
+pekko.cluster.app-version = 1.2.3
 ```
 
 To understand which is old and new it compares the version numbers using normal conventions,
@@ -104,9 +104,9 @@ During rolling updates the configuration from existing nodes should pass the Clu
 For example, it is possible to migrate Cluster Sharding from Classic to Typed Actors in a rolling update using a two step approach
 as of Akka version `2.5.23`:
 
-* Deploy with the new nodes set to `akka.cluster.configuration-compatibility-check.enforce-on-join = off`
+* Deploy with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`
 and ensure all nodes are in this state
-* Deploy again and with the new nodes set to `akka.cluster.configuration-compatibility-check.enforce-on-join = on`. 
+* Deploy again and with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
   
 Full documentation about enforcing these checks on joining nodes and optionally adding custom checks can be found in  
 @ref:[Akka Cluster configuration compatibility checks](../typed/cluster.md#configuration-compatibility-check).
@@ -122,7 +122,7 @@ without bringing down the entire cluster.
 The procedure for changing from Java serialization to Jackson would look like:
 
 1. Rolling update from 2.5.24 (or later) to 2.6.0
-    * Use config `akka.actor.allow-java-serialization=on`.
+    * Use config `pekko.actor.allow-java-serialization=on`.
     * Roll out the change.
     * Java serialization will be used as before.
     * This step is optional and you could combine it with next step if you like, but could be good to
@@ -131,15 +131,15 @@ The procedure for changing from Java serialization to Jackson would look like:
     * Change message classes by adding the marker interface and possibly needed annotations as
       described in @ref:[Serialization with Jackson](../serialization-jackson.md).
     * Test the system with the new serialization in a new test cluster (no rolling update).
-    * Remove the binding for the marker interface in `akka.actor.serialization-bindings`, so that Jackson is not used for serialization (toBinary) yet.
-    * Configure `akka.serialization.jackson.allowed-class-prefix=["com.myapp"]`
+    * Remove the binding for the marker interface in `pekko.actor.serialization-bindings`, so that Jackson is not used for serialization (toBinary) yet.
+    * Configure `pekko.serialization.jackson.allowed-class-prefix=["com.myapp"]`
         * This is needed for Jackson deserialization when the `serialization-bindings` isn't defined.
         * Replace `com.myapp` with the name of the root package of your application to trust all classes.
     * Roll out the change.
     * Java serialization is still used, but this version is prepared for next roll out.
 1. Rolling update to enable serialization with Jackson.
-    * Add the binding to the marker interface in `akka.actor.serialization-bindings` to the Jackson serializer.
-    * Remove `akka.serialization.jackson.allowed-class-prefix`.
+    * Add the binding to the marker interface in `pekko.actor.serialization-bindings` to the Jackson serializer.
+    * Remove `pekko.serialization.jackson.allowed-class-prefix`.
     * Roll out the change.
     * Old nodes will still send messages with Java serialization, and that can still be deserialized by new nodes.
     * New nodes will send messages with Jackson serialization, and old node can deserialize those because they were

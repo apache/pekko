@@ -37,7 +37,7 @@ class PoolRouterSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
       pool ! WhichDispatcher(probe.ref)
 
       val response = probe.receiveMessage()
-      response should startWith("PoolRouterSpec-akka.actor.default-dispatcher")
+      response should startWith("PoolRouterSpec-pekko.actor.default-dispatcher")
     }
 
     "use the specified dispatcher for its routees" in {
@@ -48,7 +48,7 @@ class PoolRouterSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
       pool ! WhichDispatcher(probe.ref)
 
       val response = probe.receiveMessage()
-      response should startWith("PoolRouterSpec-akka.actor.default-blocking-io-dispatcher")
+      response should startWith("PoolRouterSpec-pekko.actor.default-blocking-io-dispatcher")
     }
   }
 }

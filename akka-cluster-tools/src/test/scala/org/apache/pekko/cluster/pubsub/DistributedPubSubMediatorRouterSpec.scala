@@ -20,12 +20,12 @@ case class UnwrappedMessage(msg: String)
 
 object DistributedPubSubMediatorRouterSpec {
   def config(routingLogic: String) = s"""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port=0
-    akka.remote.artery.canonical.port=0
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.pub-sub.routing-logic = $routingLogic
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port=0
+    pekko.remote.artery.canonical.port=0
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.pub-sub.routing-logic = $routingLogic
   """
 }
 
@@ -127,7 +127,7 @@ class DistributedPubSubMediatorWithHashRouterSpec
           val config = ConfigFactory
             .parseString(DistributedPubSubMediatorRouterSpec.config("random"))
             .withFallback(system.settings.config)
-            .getConfig("akka.cluster.pub-sub")
+            .getConfig("pekko.cluster.pub-sub")
           DistributedPubSubSettings(config).withRoutingLogic(ConsistentHashingRoutingLogic(system))
         }
       }

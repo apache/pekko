@@ -15,8 +15,8 @@ import scala.concurrent.duration._
 
 object ClusterShardingHealthCheckSpec {
   val config = ConfigFactory.parseString("""
-          akka.loglevel = DEBUG
-          akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+          pekko.loglevel = DEBUG
+          pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
             """.stripMargin)
 }
 

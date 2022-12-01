@@ -26,7 +26,7 @@ import pekko.testkit.TestProbe
 
 object ConfiguredLocalRoutingSpec {
   val config = """
-    akka {
+    pekko {
       actor {
         default-dispatcher {
           executor = "thread-pool-executor"

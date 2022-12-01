@@ -52,9 +52,9 @@ class LocalConcurrencySpec(_system: ActorSystem)
       ActorSystem(
         "LocalConcurrencySpec",
         ConfigFactory.parseString("""
-      akka.actor.provider = "cluster"
-      akka.remote.classic.netty.tcp.port=0
-      akka.remote.artery.canonical.port = 0
+      pekko.actor.provider = "cluster"
+      pekko.remote.classic.netty.tcp.port=0
+      pekko.remote.artery.canonical.port = 0
       """)))
 
   override def afterAll(): Unit = {

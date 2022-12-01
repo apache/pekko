@@ -33,7 +33,7 @@ object DispatcherDocSpec {
       "jdocs.dispatcher.MyUnboundedMessageQueueSemantics"
     }
 
-    akka.actor.mailbox.requirements {
+    pekko.actor.mailbox.requirements {
       "jdocs.dispatcher.MyUnboundedMessageQueueSemantics" =
       custom-dispatcher-mailbox
     }
@@ -167,7 +167,7 @@ object DispatcherDocSpec {
     //#prio-dispatcher-config
 
     //#dispatcher-deployment-config
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /myactor {
         dispatcher = my-dispatcher
       }
@@ -183,7 +183,7 @@ object DispatcherDocSpec {
 
     //#mailbox-deployment-config
 
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /priomailboxactor {
         mailbox = prio-mailbox
       }
@@ -199,7 +199,7 @@ object DispatcherDocSpec {
 
     //#required-mailbox-config
 
-    akka.actor.mailbox.requirements {
+    pekko.actor.mailbox.requirements {
       "org.apache.pekko.dispatch.BoundedMessageQueueSemantics" = bounded-mailbox
     }
     //#required-mailbox-config
@@ -210,7 +210,7 @@ object DispatcherDocSpec {
       "docs.dispatcher.MyUnboundedMessageQueueSemantics"
     }
 
-    akka.actor.mailbox.requirements {
+    pekko.actor.mailbox.requirements {
       "docs.dispatcher.MyUnboundedMessageQueueSemantics" =
       custom-dispatcher-mailbox
     }

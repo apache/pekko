@@ -18,7 +18,7 @@ import pekko.util.ccompat.JavaConverters._
  * and [[ExtendedActorSystem]]. To setup your implementation, add a setting in your `application.conf`:
  *
  * {{{
- * akka.circuit-breaker.telemetry.implementations += com.example.MyMetrics
+ * pekko.circuit-breaker.telemetry.implementations += com.example.MyMetrics
  * }}}
  */
 @InternalStableApi
@@ -80,7 +80,7 @@ trait CircuitBreakerTelemetry {
  */
 @InternalApi private[pekko] object CircuitBreakerTelemetryProvider {
   def start(breakerId: String, system: ExtendedActorSystem): CircuitBreakerTelemetry = {
-    val configPath = "akka.circuit-breaker.telemetry.implementations"
+    val configPath = "pekko.circuit-breaker.telemetry.implementations"
     if (!system.settings.config.hasPath(configPath)) {
       CircuitBreakerNoopTelemetry
     } else {

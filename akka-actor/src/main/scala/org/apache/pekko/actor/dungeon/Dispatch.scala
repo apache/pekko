@@ -28,7 +28,7 @@ import pekko.util.Unsafe
 final case class SerializationCheckFailedException private[dungeon] (msg: Object, cause: Throwable)
     extends AkkaException(
       s"Failed to serialize and deserialize message of type ${msg.getClass.getName} for testing. " +
-      "To avoid this error, either disable 'akka.actor.serialize-messages', mark the message with 'org.apache.pekko.actor.NoSerializationVerificationNeeded', or configure serialization to support this message",
+      "To avoid this error, either disable 'pekko.actor.serialize-messages', mark the message with 'org.apache.pekko.actor.NoSerializationVerificationNeeded', or configure serialization to support this message",
       cause)
 
 /**

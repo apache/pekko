@@ -10,7 +10,7 @@ To use Serialization, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -36,13 +36,13 @@ Akka itself uses Protocol Buffers to serialize internal messages (for example cl
 ### Configuration
 
 For Akka to know which `Serializer` to use for what, you need to edit your configuration: 
-in the `akka.actor.serializers`-section, you bind names to implementations of the @apidoc[serialization.Serializer](Serializer)
+in the `pekko.actor.serializers`-section, you bind names to implementations of the @apidoc[serialization.Serializer](Serializer)
 you wish to use, like this:
 
 @@snip [SerializationDocSpec.scala](/docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #serialize-serializers-config }
 
 After you've bound names to different implementations of `Serializer` you need to wire which classes
-should be serialized using which `Serializer`, this is done in the `akka.actor.serialization-bindings`-section:
+should be serialized using which `Serializer`, this is done in the `pekko.actor.serialization-bindings`-section:
 
 @@snip [SerializationDocSpec.scala](/docs/src/test/scala/docs/serialization/SerializationDocSpec.scala) { #serialization-bindings-config }
 
@@ -239,13 +239,13 @@ However, for early prototyping it is very convenient to use. For that reason and
 older systems that rely on Java serialization it can be enabled with the following configuration:
 
 ```ruby
-akka.actor.allow-java-serialization = on
+pekko.actor.allow-java-serialization = on
 ```
 
 Akka will still log warning when Java serialization is used and to silent that you may add:
 
 ```ruby
-akka.actor.warn-about-java-serializer-usage = off
+pekko.actor.warn-about-java-serializer-usage = off
 ```
 
 ### Java serialization compatibility
@@ -263,14 +263,14 @@ The message class (the bindings) is not used for deserialization. The manifest i
 That means that it is possible to change serialization for a message by performing two rolling update steps to
 switch to the new serializer.
 
-1. Add the @scala[`Serializer`]@java[`JSerializer`] class and define it in `akka.actor.serializers` config section, but not in
-  `akka.actor.serialization-bindings`. Perform a rolling update for this change. This means that the
+1. Add the @scala[`Serializer`]@java[`JSerializer`] class and define it in `pekko.actor.serializers` config section, but not in
+  `pekko.actor.serialization-bindings`. Perform a rolling update for this change. This means that the
   serializer class exists on all nodes and is registered, but it is still not used for serializing any
   messages. That is important because during the rolling update the old nodes still don't know about
   the new serializer and would not be able to deserialize messages with that format.
 
 1. The second change is to register that the serializer is to be used for certain classes by defining
-   those in the `akka.actor.serialization-bindings` config section. Perform a rolling update for this
+   those in the `pekko.actor.serialization-bindings` config section. Perform a rolling update for this
    change. This means that new nodes will use the new serializer when sending messages and old nodes will
    be able to deserialize the new format. Old nodes will continue to use the old serializer when sending
    messages and new nodes will be able to deserialize the old format.
@@ -286,7 +286,7 @@ Normally, messages sent between local actors (i.e. same JVM) do not undergo seri
 
 Certain messages can be excluded from verification by extending the marker @scala[trait]@java[interface]
 @apidoc[actor.NoSerializationVerificationNeeded](NoSerializationVerificationNeeded) or define a class name prefix in configuration
-`akka.actor.no-serialization-verification-needed-class-prefix`.
+`pekko.actor.no-serialization-verification-needed-class-prefix`.
 
 If you want to verify that your @apidoc[actor.Props] are serializable you can enable the following config option:
 

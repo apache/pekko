@@ -33,7 +33,7 @@ private[persistence] class LeveldbJournal(cfg: Config) extends AsyncWriteJournal
 
   override def prepareConfig: Config =
     if (cfg ne LeveldbStore.emptyConfig) cfg
-    else context.system.settings.config.getConfig("akka.persistence.journal.leveldb")
+    else context.system.settings.config.getConfig("pekko.persistence.journal.leveldb")
 
   override def receivePluginInternal: Receive = receiveCompactionInternal.orElse {
     case ReplayTaggedMessages(fromSequenceNr, toSequenceNr, max, tag, replyTo) =>
@@ -132,7 +132,7 @@ private[persistence] object LeveldbJournal {
  */
 private[persistence] class SharedLeveldbJournal extends AsyncWriteProxy {
   val timeout: Timeout =
-    context.system.settings.config.getMillisDuration("akka.persistence.journal.leveldb-shared.timeout")
+    context.system.settings.config.getMillisDuration("pekko.persistence.journal.leveldb-shared.timeout")
 
   override def receivePluginInternal: Receive = {
     case cmd: LeveldbJournal.SubscriptionCommand =>
@@ -170,7 +170,7 @@ object SharedLeveldbJournal {
    */
   def configToEnableJavaSerializationForTest: Config = {
     ConfigFactory.parseString(s"""
-    akka.actor.serialization-bindings {
+    pekko.actor.serialization-bindings {
       "org.apache.pekko.persistence.journal.AsyncWriteTarget$$WriteMessages" = java-test
       "org.apache.pekko.persistence.journal.AsyncWriteTarget$$DeleteMessagesTo" = java-test
       "org.apache.pekko.persistence.journal.AsyncWriteTarget$$ReplayMessages" = java-test

@@ -26,7 +26,7 @@ import pekko.util.Timeout
 
 object RemoteContextAskSpec {
   def config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = debug
       actor.provider = cluster
       remote.classic.netty.tcp.port = 0

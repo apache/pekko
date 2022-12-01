@@ -7,7 +7,7 @@ To use Akka Streams, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream_$scala.binary.version$"
   version=AkkaVersion
@@ -176,7 +176,7 @@ Java
 Please note that these operators are backed by Actors and by default are configured to run on a pre-configured
 threadpool-backed dispatcher dedicated for File IO. This is very important as it isolates the blocking file IO operations from the rest
 of the ActorSystem allowing each dispatcher to be utilised in the most efficient way. If you want to configure a custom
-dispatcher for file IO operations globally, you can do so by changing the `akka.stream.materializer.blocking-io-dispatcher`,
+dispatcher for file IO operations globally, you can do so by changing the `pekko.stream.materializer.blocking-io-dispatcher`,
 or for a specific operator by specifying a custom Dispatcher in code, like this:
 
 Scala

@@ -73,7 +73,7 @@ object RequestResponseActors {
 
   def startUserQueryActorPairs(numActors: Int, numQueriesPerActor: Int, numUsersInDBPerActor: Int, dispatcher: String)(
       implicit system: ActorSystem) = {
-    val fullPathToDispatcher = "akka.actor." + dispatcher
+    val fullPathToDispatcher = "pekko.actor." + dispatcher
     val latch = new CountDownLatch(numActors)
     val actorsPairs = for {
       i <- (1 to (numActors / 2)).toVector

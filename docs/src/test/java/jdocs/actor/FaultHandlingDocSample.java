@@ -41,8 +41,8 @@ public class FaultHandlingDocSample {
   public static void main(String[] args) {
     Config config =
         ConfigFactory.parseString(
-            "akka.loglevel = \"DEBUG\"\n"
-                + "akka.actor.debug {\n"
+            "pekko.loglevel = \"DEBUG\"\n"
+                + "pekko.actor.debug {\n"
                 + "  receive = on\n"
                 + "  lifecycle = on\n"
                 + "}\n");

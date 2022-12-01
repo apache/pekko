@@ -104,7 +104,7 @@ You can start using CBOR format already with Akka 2.6.5 without waiting for the 
 a rolling update to Akka 2.6.5 using default configuration. Then change the configuration to:
 
 ```
-akka.actor {
+pekko.actor {
   serializers {
     jackson-cbor = "org.apache.pekko.serialization.jackson.JacksonCborSerializer"
   }

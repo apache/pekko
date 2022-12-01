@@ -19,7 +19,7 @@ import pekko.testkit.AkkaSpec
 import pekko.util.Version
 
 @nowarn
-class ClusterMessageSerializerSpec extends AkkaSpec("akka.actor.provider = cluster") {
+class ClusterMessageSerializerSpec extends AkkaSpec("pekko.actor.provider = cluster") {
 
   val serializer = new ClusterMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 

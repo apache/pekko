@@ -32,8 +32,8 @@ import pekko.stream.testkit.Utils.TE
 import pekko.testkit._
 import pekko.testkit.WithLogCapturing
 
-class CancellationStrategySpec extends StreamSpec("""akka.loglevel = DEBUG
-       akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]""") with WithLogCapturing {
+class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
+       pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]""") with WithLogCapturing {
   "CancellationStrategyAttribute" should {
     "support strategies" should {
       "CompleteStage" should {

@@ -17,7 +17,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 
 object RemoteDeployNotAllowedSpec {
   def config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = warning
       actor {
         provider = cluster
@@ -34,7 +34,7 @@ object RemoteDeployNotAllowedSpec {
     """)
 
   def configWithRemoteDeployment(otherSystemPort: Int) = ConfigFactory.parseString(s"""
-      akka.actor.deployment {
+      pekko.actor.deployment {
         "/*" {
           remote = "akka://sampleActorSystem@127.0.0.1:$otherSystemPort"
         }

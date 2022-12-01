@@ -10,7 +10,7 @@ To use Cluster Sharding, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-sharding_$scala.binary.version$
   version=AkkaVersion
@@ -229,7 +229,7 @@ the identifiers of the shards running in a Region and what entities are alive fo
 a `ShardRegion.ClusterShardingStats` containing the identifiers of the shards running in each region and a count
 of entities that are alive in each shard. 
 
-If any shard queries failed, for example due to timeout if a shard was too busy to reply within the configured `akka.cluster.sharding.shard-region-query-timeout`, 
+If any shard queries failed, for example due to timeout if a shard was too busy to reply within the configured `pekko.cluster.sharding.shard-region-query-timeout`, 
 `ShardRegion.CurrentShardRegionState` and `ShardRegion.ClusterShardingStats` will also include the set of shard identifiers by region that failed.
 
 The type names of all started shards can be acquired via @scala[`ClusterSharding.shardTypeNames`]  @java[`ClusterSharding.getShardTypeNames`].

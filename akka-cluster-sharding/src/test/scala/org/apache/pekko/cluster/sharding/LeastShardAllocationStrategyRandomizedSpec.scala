@@ -19,7 +19,7 @@ import pekko.testkit.AkkaSpec
 
 import scala.collection.immutable.SortedSet
 
-class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("akka.loglevel = INFO") {
+class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("pekko.loglevel = INFO") {
   import LeastShardAllocationStrategySpec.{
     afterRebalance,
     countShards,

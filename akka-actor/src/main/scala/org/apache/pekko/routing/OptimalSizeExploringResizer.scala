@@ -114,7 +114,7 @@ case object OptimalSizeExploringResizer {
  * you allow, i.e. upperBound - lowerBound.
  *
  * For documentation about the parameters, see the reference.conf -
- * akka.actor.deployment.default.optimal-size-exploring-resizer
+ * pekko.actor.deployment.default.optimal-size-exploring-resizer
  */
 @SerialVersionUID(1L)
 case class DefaultOptimalSizeExploringResizer(

@@ -18,14 +18,14 @@ import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 
 class UdpConnectedIntegrationSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.actor.debug.lifecycle = on
-    akka.actor.debug.autoreceive = on
-    akka.io.udp-connected.trace-logging = on
+    pekko.loglevel = DEBUG
+    pekko.actor.debug.lifecycle = on
+    pekko.actor.debug.autoreceive = on
+    pekko.io.udp-connected.trace-logging = on
     # issues with dns resolution of non existent host hanging with the
     # Java native host resolution
-    akka.io.dns.resolver = async-dns
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.dns.resolver = async-dns
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     """) with ImplicitSender with WithLogCapturing {
 
   val addresses = temporaryServerAddresses(5, udp = true)

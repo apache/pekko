@@ -15,8 +15,8 @@ import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.testkit.AkkaSpec
 
 abstract class BaseTwoStreamsSetup extends AkkaSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   val TestException = new RuntimeException("test") with NoStackTrace

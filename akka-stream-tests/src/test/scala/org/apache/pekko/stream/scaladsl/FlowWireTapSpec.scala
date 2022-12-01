@@ -11,7 +11,7 @@ import pekko.Done
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 
-class FlowWireTapSpec extends StreamSpec("akka.stream.materializer.debug.fuzzing-mode = off") {
+class FlowWireTapSpec extends StreamSpec("pekko.stream.materializer.debug.fuzzing-mode = off") {
 
   import system.dispatcher
 

@@ -15,17 +15,17 @@ object JoinConfigCompatCheckerSpec {
 
   val baseConfig: Config =
     ConfigFactory.parseString("""
-     akka.actor.provider = "cluster"
-     akka.coordinated-shutdown.terminate-actor-system = on
-     akka.remote.classic.netty.tcp.port = 0
-     akka.remote.artery.canonical.port = 0
-     akka.cluster.jmx.multi-mbeans-in-same-jvm = on
-     akka.remote.artery.advanced.aeron.idle-cpu-level = 3
+     pekko.actor.provider = "cluster"
+     pekko.coordinated-shutdown.terminate-actor-system = on
+     pekko.remote.classic.netty.tcp.port = 0
+     pekko.remote.artery.canonical.port = 0
+     pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+     pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
      """)
 
   val configWithChecker: Config =
     ConfigFactory.parseString("""
-      akka.cluster {
+      pekko.cluster {
         config-compat-test = "test"
         sensitive.properties {
           username = "abc"
@@ -35,10 +35,10 @@ object JoinConfigCompatCheckerSpec {
         configuration-compatibility-check {
           enforce-on-join = on
           checkers {
-           akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+           pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
           }
           sensitive-config-paths {
-            akka = [ "akka.cluster.sensitive.properties" ]
+            akka = [ "pekko.cluster.sensitive.properties" ]
           }
         }
       }
@@ -70,14 +70,14 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // this config is NOT compatible with the cluster config
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is incompatible
               config-compat-test = "test2"
               configuration-compatibility-check {
                 enforce-on-join = on
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
                 }
               }
             }
@@ -110,16 +110,16 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that cluster config are being sent back and checked on joining node as well
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is not available on cluster side
-              akka.cluster.config-compat-test-extra = on
+              pekko.cluster.config-compat-test-extra = on
 
               configuration-compatibility-check {
                 enforce-on-join = on
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
-                 akka-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
                 }
               }
             }
@@ -151,7 +151,7 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that cluster config are being sent back and checked on joining node as well
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is required on cluster side
               # config-compat-test = "test"
@@ -188,16 +188,16 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that validation on joining side takes 'configuration-compatibility-check.enforce-on-join' in consideration
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is not available on cluster side
-              akka.cluster.config-compat-test-extra = on
+              pekko.cluster.config-compat-test-extra = on
 
               configuration-compatibility-check {
                 enforce-on-join = off
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
-                 akka-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
+                  pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                  pekko-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
                 }
               }
             }
@@ -224,13 +224,13 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // but node will ignore the the config check and join anyway
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               configuration-compatibility-check {
                 # not enforcing config compat check
                 enforce-on-join = off
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
                 }
               }
              # this config is incompatible
@@ -254,11 +254,11 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
     }
 
     /** This test verifies the built-in JoinConfigCompatCheckerAkkaCluster */
-    "NOT be allowed to join a cluster using a different value for akka.cluster.downing-provider-class" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster using a different value for pekko.cluster.downing-provider-class" taggedAs LongRunningTest in {
 
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # using explicit downing provider class
               downing-provider-class = "org.apache.pekko.cluster.testkit.AutoDowning"
@@ -324,14 +324,14 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // this config is NOT compatible with the cluster config
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is incompatible
               config-compat-test = "test2"
               configuration-compatibility-check {
                 enforce-on-join = on
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
                 }
               }
             }
@@ -370,16 +370,16 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that cluster config are being sent back and checked on joining node as well
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is not available on cluster side
-              akka.cluster.config-compat-test-extra = on
+              pekko.cluster.config-compat-test-extra = on
 
               configuration-compatibility-check {
                 enforce-on-join = on
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
-                 akka-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
                 }
               }
             }
@@ -418,7 +418,7 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that cluster config are being sent back and checked on joining node as well
       val joinNodeConfig =
         ConfigFactory.parseString("""
-              akka.cluster {
+              pekko.cluster {
 
                 # this config is required on cluster side
                 # config-compat-test = "test"
@@ -462,16 +462,16 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // This test verifies that validation on joining side takes 'configuration-compatibility-check.enforce-on-join' in consideration
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # this config is not available on cluster side
-              akka.cluster.config-compat-test-extra = on
+              pekko.cluster.config-compat-test-extra = on
 
               configuration-compatibility-check {
                 enforce-on-join = off
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
-                 akka-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-extra = "org.apache.pekko.cluster.JoinConfigCompatCheckerExtraTest"
                 }
               }
             }
@@ -508,13 +508,13 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // but node will ignore the the config check and join anyway
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               configuration-compatibility-check {
                 # not enforcing config compat check
                 enforce-on-join = off
                 checkers {
-                 akka-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
+                 pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
                 }
               }
              # this config is incompatible
@@ -557,7 +557,7 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // the cluster won't let it be leaked back to the joining node neither which will fail the join attempt.
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
 
               # these config are compatible,
               # but won't be leaked back to joining node which will cause it to fail to join
@@ -607,12 +607,12 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       // the cluster won't let it be leaked back to the joining node neither which will fail the join attempt.
       val joinNodeConfig =
         ConfigFactory.parseString("""
-            akka.cluster {
+            pekko.cluster {
               configuration-compatibility-check {
                 checkers {
                   # disable what is defined in reference.conf
-                  akka-cluster = ""
-                  akka-cluster-test = ""
+                  pekko-cluster = ""
+                  pekko-cluster-test = ""
                 }
               }
             }
@@ -630,14 +630,14 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
 }
 
 class JoinConfigCompatCheckerTest extends JoinConfigCompatChecker {
-  override def requiredKeys = im.Seq("akka.cluster.config-compat-test")
+  override def requiredKeys = im.Seq("pekko.cluster.config-compat-test")
 
   override def check(toValidate: Config, actualConfig: Config): ConfigValidation =
     JoinConfigCompatChecker.fullMatch(requiredKeys, toValidate, actualConfig)
 }
 
 class JoinConfigCompatCheckerExtraTest extends JoinConfigCompatChecker {
-  override def requiredKeys = im.Seq("akka.cluster.config-compat-test-extra")
+  override def requiredKeys = im.Seq("pekko.cluster.config-compat-test-extra")
 
   override def check(toValidate: Config, actualConfig: Config): ConfigValidation =
     JoinConfigCompatChecker.fullMatch(requiredKeys, toValidate, actualConfig)
@@ -647,7 +647,7 @@ class JoinConfigCompatCheckerExtraTest extends JoinConfigCompatChecker {
 class RogueJoinConfigCompatCheckerTest extends JoinConfigCompatChecker {
 
   override def requiredKeys =
-    im.Seq("akka.cluster.sensitive.properties.password", "akka.cluster.sensitive.properties.username")
+    im.Seq("pekko.cluster.sensitive.properties.password", "pekko.cluster.sensitive.properties.username")
 
   /** this check always returns Valid. The goal is to try to make the cluster leak those properties */
   override def check(toValidate: Config, actualConfig: Config): ConfigValidation =

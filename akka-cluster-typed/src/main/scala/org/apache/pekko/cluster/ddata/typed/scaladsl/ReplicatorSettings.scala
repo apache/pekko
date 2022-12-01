@@ -19,14 +19,14 @@ object ReplicatorSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.distributed-data`.
+   * `pekko.cluster.distributed-data`.
    */
   def apply(system: ActorSystem[_]): ReplicatorSettings =
     dd.ReplicatorSettings(system.toClassic)
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.distributed-data`.
+   * the default configuration `pekko.cluster.distributed-data`.
    */
   def apply(config: Config): ReplicatorSettings =
     dd.ReplicatorSettings(config)

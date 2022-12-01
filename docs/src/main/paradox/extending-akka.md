@@ -67,7 +67,7 @@ That's all there is to it!
 ## Loading from Configuration
 
 To be able to load extensions from your Akka configuration you must add FQCNs of implementations of either @apidoc[ExtensionId](actor.ExtensionId) or @apidoc[ExtensionIdProvider](ExtensionIdProvider)
-in the `akka.extensions` section of the config you provide to your @apidoc[ActorSystem](actor.ActorSystem).
+in the `pekko.extensions` section of the config you provide to your @apidoc[ActorSystem](actor.ActorSystem).
 
 Scala
 :  @@snip [ExtensionDocSpec.scala](/docs/src/test/scala/docs/extension/ExtensionDocSpec.scala) { #config }
@@ -75,7 +75,7 @@ Scala
 Java
 :   @@@vars
     ```
-    akka {
+    pekko {
       extensions = ["docs.extension.ExtensionDocTest.CountExtension"]
     }
     ```
@@ -114,10 +114,10 @@ Java
 ## Library extensions
 
 A third part library may register its extension for auto-loading on actor system startup by appending it to
-`akka.library-extensions` in its `reference.conf`.
+`pekko.library-extensions` in its `reference.conf`.
 
 ```
-akka.library-extensions += "docs.extension.ExampleExtension"
+pekko.library-extensions += "docs.extension.ExampleExtension"
 ```
 
 As there is no way to selectively remove such extensions, it should be used with care and only when there is no case
@@ -126,7 +126,7 @@ this could be important is in tests.
 
 @@@ warning
 
-The``akka.library-extensions`` must never be assigned (`= ["Extension"]`) instead of appending as this will break
+The``pekko.library-extensions`` must never be assigned (`= ["Extension"]`) instead of appending as this will break
 the library-extension mechanism and make behavior depend on class path ordering.
 
 @@@

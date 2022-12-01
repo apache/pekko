@@ -158,21 +158,21 @@ object RotatingKeysSSLEngineProviderSpec {
   private val arteryNode001Id = "ssl/artery-nodes/artery-node001.example.com"
 
   private val baseConfig = """
-      akka.loglevel = debug
+      pekko.loglevel = debug
 
-      akka.remote.artery {
+      pekko.remote.artery {
         ## the large-messages channel in artery is not used for this tests
         ## but we're enabling it to test it also creates its own SSLEngine
         large-message-destinations = [ "/user/large" ]
       }
-      akka.remote.artery.ssl {
+      pekko.remote.artery.ssl {
         ssl-engine-provider = org.apache.pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider
       }
     """
 
   val resourcesConfig: String = baseConfig +
     s"""
-      akka.remote.artery.ssl.rotating-keys-engine {
+      pekko.remote.artery.ssl.rotating-keys-engine {
         key-file = ${getClass.getClassLoader.getResource(s"$arteryNode001Id.pem").getPath}
         cert-file = ${getClass.getClassLoader.getResource(s"$arteryNode001Id.crt").getPath}
         ca-cert-file = ${getClass.getClassLoader.getResource("ssl/exampleca.crt").getPath}
@@ -186,7 +186,7 @@ object RotatingKeysSSLEngineProviderSpec {
   val cacertLocation = new File(temporaryDirectory.toFile, "ca.crt")
   val tempFileConfig: String = baseConfig +
     s"""
-      akka.remote.artery.ssl.rotating-keys-engine {
+      pekko.remote.artery.ssl.rotating-keys-engine {
         key-file = ${temporaryDirectory.toFile.getAbsolutePath}/tls.key
         cert-file = ${temporaryDirectory.toFile.getAbsolutePath}/tls.crt
         ca-cert-file = ${temporaryDirectory.toFile.getAbsolutePath}/ca.crt

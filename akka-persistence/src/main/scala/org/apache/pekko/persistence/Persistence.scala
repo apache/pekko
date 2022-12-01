@@ -74,7 +74,7 @@ trait PersistenceIdentity {
 
   /**
    * Configuration id of the journal plugin servicing this persistent actor.
-   * When empty, looks in `akka.persistence.journal.plugin` to find configuration entry path.
+   * When empty, looks in `pekko.persistence.journal.plugin` to find configuration entry path.
    * When configured, uses `journalPluginId` as absolute path to the journal configuration entry.
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */
@@ -82,7 +82,7 @@ trait PersistenceIdentity {
 
   /**
    * Configuration id of the snapshot plugin servicing this persistent actor.
-   * When empty, looks in `akka.persistence.snapshot-store.plugin` to find configuration entry path.
+   * When empty, looks in `pekko.persistence.snapshot-store.plugin` to find configuration entry path.
    * When configured, uses `snapshotPluginId` as absolute path to the snapshot store configuration entry.
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */
@@ -162,10 +162,10 @@ object Persistence extends ExtensionId[Persistence] with ExtensionIdProvider {
   }
 
   /** Config path to fall-back to if a setting is not defined in a specific plugin's config section */
-  val JournalFallbackConfigPath = "akka.persistence.journal-plugin-fallback"
+  val JournalFallbackConfigPath = "pekko.persistence.journal-plugin-fallback"
 
   /** Config path to fall-back to if a setting is not defined in a specific snapshot plugin's config section */
-  val SnapshotStoreFallbackConfigPath = "akka.persistence.snapshot-store-plugin-fallback"
+  val SnapshotStoreFallbackConfigPath = "pekko.persistence.snapshot-store-plugin-fallback"
 
   /**
    * INTERNAL API
@@ -203,9 +203,9 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   private def log: LoggingAdapter = Logging(system, classOf[Persistence])
 
-  private val NoSnapshotStorePluginId = "akka.persistence.no-snapshot-store"
+  private val NoSnapshotStorePluginId = "pekko.persistence.no-snapshot-store"
 
-  private val config = system.settings.config.getConfig("akka.persistence")
+  private val config = system.settings.config.getConfig("pekko.persistence")
 
   /**
    * INTERNAL API: When starting many persistent actors at the same time the journal
@@ -232,7 +232,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     if (isEmpty(configPath)) {
       log.warning(
         "No default snapshot store configured! " +
-        "To configure a default snapshot-store plugin set the `akka.persistence.snapshot-store.plugin` key. " +
+        "To configure a default snapshot-store plugin set the `pekko.persistence.snapshot-store.plugin` key. " +
         "For details see 'reference.conf'")
       NoSnapshotStorePluginId
     } else {
@@ -322,7 +322,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   /**
    * INTERNAL API
    * Returns the plugin config identified by `pluginId`.
-   * When empty, looks in `akka.persistence.journal.plugin` to find configuration entry path.
+   * When empty, looks in `pekko.persistence.journal.plugin` to find configuration entry path.
    * When configured, uses `journalPluginId` as absolute path to the journal configuration entry.
    */
   private[pekko] final def journalConfigFor(
@@ -348,7 +348,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
   /**
    * INTERNAL API
    * Returns a journal plugin actor identified by `journalPluginId`.
-   * When empty, looks in `akka.persistence.journal.plugin` to find configuration entry path.
+   * When empty, looks in `pekko.persistence.journal.plugin` to find configuration entry path.
    * When configured, uses `journalPluginId` as absolute path to the journal configuration entry.
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */
@@ -365,7 +365,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * INTERNAL API
    *
    * Returns a snapshot store plugin actor identified by `snapshotPluginId`.
-   * When empty, looks in `akka.persistence.snapshot-store.plugin` to find configuration entry path.
+   * When empty, looks in `pekko.persistence.snapshot-store.plugin` to find configuration entry path.
    * When configured, uses `snapshotPluginId` as absolute path to the snapshot store configuration entry.
    * Configuration entry must contain few required fields, such as `class`. See `src/main/resources/reference.conf`.
    */

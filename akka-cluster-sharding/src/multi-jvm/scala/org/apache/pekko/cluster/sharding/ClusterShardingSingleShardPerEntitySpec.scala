@@ -16,7 +16,7 @@ import pekko.testkit._
  * one-to-one mapping between shards and entities is not efficient but some use that anyway
  */
 object ClusterShardingSingleShardPerEntitySpecConfig
-    extends MultiNodeClusterShardingConfig(additionalConfig = "akka.cluster.sharding.updating-state-timeout = 1s") {
+    extends MultiNodeClusterShardingConfig(additionalConfig = "pekko.cluster.sharding.updating-state-timeout = 1s") {
 
   val first = role("first")
   val second = role("second")

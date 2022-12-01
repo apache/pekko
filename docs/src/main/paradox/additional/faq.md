@@ -18,7 +18,7 @@ Akka is also:
 
  * the name of the goose that Nils traveled across Sweden on in [The Wonderful Adventures of Nils](https://en.wikipedia.org/wiki/The_Wonderful_Adventures_of_Nils) by the Swedish writer Selma Lagerlöf.
  * the Finnish word for 'nasty elderly woman' and the word for 'elder sister' in the Indian languages Tamil, Telugu, Kannada and Marathi.
- * a [font](https://www.dafont.com/akka.font)
+ * a [font](https://www.dafont.com/pekko.font)
  * a town in Morocco
  * a near-earth asteroid
 
@@ -67,7 +67,7 @@ Read more in @ref:[Message Delivery Reliability](../general/message-delivery-rel
 To turn on debug logging in your actor system add the following to your configuration:
 
 ```
-akka.loglevel = DEBUG
+pekko.loglevel = DEBUG
 ```
 
 Read more about it in the docs for @ref:[Logging](../typed/logging.md).

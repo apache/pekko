@@ -47,7 +47,7 @@ object Cluster extends ExtensionId[Cluster] with ExtensionIdProvider {
    * INTERNAL API
    */
   private[cluster] final val isAssertInvariantsEnabled: Boolean =
-    System.getProperty("akka.cluster.assert", "off").toLowerCase match {
+    System.getProperty("pekko.cluster.assert", "off").toLowerCase match {
       case "on" | "true" => true
       case _             => false
     }
@@ -82,7 +82,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       UniqueAddress(c.transport.defaultAddress, AddressUidExtension(system).longAddressUid)
     case other =>
       throw new ConfigurationException(
-        s"ActorSystem [${system}] needs to have 'akka.actor.provider' set to 'cluster' in the configuration, currently uses [${other.getClass.getName}]")
+        s"ActorSystem [${system}] needs to have 'pekko.actor.provider' set to 'cluster' in the configuration, currently uses [${other.getClass.getName}]")
   }
 
   /**
@@ -155,12 +155,12 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     if (system.scheduler.maxFrequency < 1.second / SchedulerTickDuration) {
       logInfo(
         "Using a dedicated scheduler for cluster. Default scheduler can be used if configured " +
-        "with 'akka.scheduler.tick-duration' [{} ms] <=  'akka.cluster.scheduler.tick-duration' [{} ms].",
+        "with 'pekko.scheduler.tick-duration' [{} ms] <=  'pekko.cluster.scheduler.tick-duration' [{} ms].",
         (1000 / system.scheduler.maxFrequency).toInt,
         SchedulerTickDuration.toMillis)
 
       val cfg = ConfigFactory
-        .parseString(s"akka.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
+        .parseString(s"pekko.scheduler.tick-duration=${SchedulerTickDuration.toMillis}ms")
         .withFallback(system.settings.config)
       val threadFactory = system.threadFactory match {
         case tf: MonitorableThreadFactory => tf.withName(tf.name + "-cluster-scheduler")
@@ -208,7 +208,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       Await.result((clusterDaemons ? InternalClusterAction.GetClusterCoreRef).mapTo[ActorRef], timeout.duration)
     } catch {
       case NonFatal(e) =>
-        log.error(e, "Failed to startup Cluster. You can try to increase 'akka.actor.creation-timeout'.")
+        log.error(e, "Failed to startup Cluster. You can try to increase 'pekko.actor.creation-timeout'.")
         shutdown()
         // don't re-throw, that would cause the extension to be re-recreated
         // from shutdown() or other places, which may result in
@@ -389,7 +389,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
   /**
    * The supplied thunk will be run, once, when current cluster member is `Up`.
-   * Typically used together with configuration option `akka.cluster.min-nr-of-members`
+   * Typically used together with configuration option `pekko.cluster.min-nr-of-members`
    * to defer some action, such as starting actors, until the cluster has reached
    * a certain size.
    */
@@ -398,7 +398,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
 
   /**
    * Java API: The supplied callback will be run, once, when current cluster member is `Up`.
-   * Typically used together with configuration option `akka.cluster.min-nr-of-members`
+   * Typically used together with configuration option `pekko.cluster.min-nr-of-members`
    * to defer some action, such as starting actors, until the cluster has reached
    * a certain size.
    */

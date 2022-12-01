@@ -46,12 +46,12 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
   val cfg = ConfigFactory.parseString(s"""
      # for serious measurements you should increase the totalMessagesFactor (30)
      org.apache.pekko.test.DeliveryThroughputSpec.totalMessagesFactor = 10.0
-     akka.reliable-delivery {
+     pekko.reliable-delivery {
        consumer-controller.flow-control-window = 50
        sharding.consumer-controller.flow-control-window = 50
        sharding.producer-controller.cleanup-unused-after = 5s
      }
-     akka {
+     pekko {
        loglevel = INFO
        log-dead-letters = off
        testconductor.barrier-timeout = ${barrierTimeout.toSeconds}s
@@ -66,7 +66,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
 
   nodeConfig(second, third) {
     ConfigFactory.parseString("""
-    akka.cluster.roles = ["worker"]
+    pekko.cluster.roles = ["worker"]
     """)
   }
 
@@ -199,7 +199,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
           context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
         var startTime = System.nanoTime()
         var remaining = numberOfMessages + context.system.settings.config
-          .getInt("akka.reliable-delivery.consumer-controller.flow-control-window")
+          .getInt("pekko.reliable-delivery.consumer-controller.flow-control-window")
 
         Behaviors.receiveMessage {
           case WrappedRequestNext(next) =>
@@ -246,7 +246,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
             context.messageAdapter[ShardingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
           var startTime = System.nanoTime()
           var remaining = numberOfMessages + context.system.settings.config
-            .getInt("akka.reliable-delivery.sharding.consumer-controller.flow-control-window")
+            .getInt("pekko.reliable-delivery.sharding.consumer-controller.flow-control-window")
           var latestDemand: ShardingProducerController.RequestNext[Consumer.Command] = null
           var messagesSentToEachEntity: Map[String, Long] = Map.empty[String, Long].withDefaultValue(0L)
 
@@ -323,7 +323,7 @@ abstract class DeliveryThroughputSpec
 
   private val settingsToReport = List(
     "org.apache.pekko.test.DeliveryThroughputSpec.totalMessagesFactor",
-    "akka.reliable-delivery.consumer-controller.flow-control-window")
+    "pekko.reliable-delivery.consumer-controller.flow-control-window")
   private val resultReporter = BenchmarkFileReporter("DeliveryThroughputSpec", system, settingsToReport)
 
   def testPointToPoint(testSettings: TestSettings): Unit = {

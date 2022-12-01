@@ -126,8 +126,8 @@ class TestConsumer(
 
 object TestSerializer {
   val config: Config = ConfigFactory.parseString(s"""
-    akka.actor.serializers.delivery-test = ${classOf[TestSerializer].getName}
-    akka.actor.serialization-bindings {
+    pekko.actor.serializers.delivery-test = ${classOf[TestSerializer].getName}
+    pekko.actor.serialization-bindings {
       "${classOf[TestConsumer.Job].getName}" = delivery-test
     }
     """)

@@ -32,7 +32,7 @@ import pekko.stream.OverflowStrategy
 import scala.collection.immutable
 
 object PersistenceTestKitDurableStateStore {
-  val Identifier = "akka.persistence.testkit.state"
+  val Identifier = "pekko.persistence.testkit.state"
 }
 
 class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)

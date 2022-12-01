@@ -12,7 +12,7 @@ To use Akka Actors, add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-actor-typed_$scala.binary.version$
   version=AkkaVersion
@@ -148,18 +148,18 @@ An application normally consists of a single @apidoc[typed.ActorSystem], running
 The console output may look like this:
 
 ```
-[INFO] [03/13/2018 15:50:05.814] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-2] [akka://hello/user/World] Greeting 1 for World
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 1 for Akka
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 2 for World
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 2 for Akka
-[INFO] [03/13/2018 15:50:05.816] [hello-akka.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.816] [hello-akka.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 3 for World
-[INFO] [03/13/2018 15:50:05.816] [hello-akka.actor.default-dispatcher-6] [akka://hello/user/Akka] Greeting 3 for Akka
+[INFO] [03/13/2018 15:50:05.814] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello Akka!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-2] [akka://hello/user/World] Greeting 1 for World
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 1 for Akka
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 2 for World
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 2 for Akka
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 3 for World
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-6] [akka://hello/user/Akka] Greeting 3 for Akka
 ```
 
 You will also need to add a @ref:[logging dependency](logging.md) to see that output when running.

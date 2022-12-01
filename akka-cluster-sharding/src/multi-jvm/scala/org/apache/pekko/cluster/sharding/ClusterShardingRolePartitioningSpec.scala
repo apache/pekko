@@ -46,14 +46,14 @@ abstract class ClusterShardingMinMembersPerRoleConfig extends MultiNodeClusterSh
   val fourth = role("fourth")
   val fifth = role("fifth")
 
-  val r1Config: Config = ConfigFactory.parseString("""akka.cluster.roles = [ "R1" ]""")
-  val r2Config: Config = ConfigFactory.parseString("""akka.cluster.roles = [ "R2" ]""")
+  val r1Config: Config = ConfigFactory.parseString("""pekko.cluster.roles = [ "R1" ]""")
+  val r2Config: Config = ConfigFactory.parseString("""pekko.cluster.roles = [ "R2" ]""")
 
 }
 
 object ClusterShardingMinMembersPerRoleNotConfiguredConfig extends ClusterShardingMinMembersPerRoleConfig {
 
-  val commonRoleConfig: Config = ConfigFactory.parseString("akka.cluster.min-nr-of-members = 2")
+  val commonRoleConfig: Config = ConfigFactory.parseString("pekko.cluster.min-nr-of-members = 2")
 
   nodeConfig(first, second, third)(r1Config.withFallback(commonRoleConfig))
 
@@ -64,9 +64,9 @@ object ClusterShardingMinMembersPerRoleConfiguredConfig extends ClusterShardingM
 
   val commonRoleConfig =
     ConfigFactory.parseString("""
-    akka.cluster.min-nr-of-members = 3                                                  
-    akka.cluster.role.R1.min-nr-of-members = 3
-    akka.cluster.role.R2.min-nr-of-members = 2
+    pekko.cluster.min-nr-of-members = 3                                                  
+    pekko.cluster.role.R1.min-nr-of-members = 3
+    pekko.cluster.role.R2.min-nr-of-members = 2
     """)
 
   nodeConfig(first, second, third)(r1Config.withFallback(commonRoleConfig))
@@ -108,7 +108,7 @@ abstract class ClusterShardingRolePartitioningSpec(multiNodeConfig: ClusterShard
 
   "Cluster Sharding with roles" must {
 
-    "start the cluster, await convergence, init sharding on every node: 2 data types, 'akka.cluster.min-nr-of-members=2', partition shard location by 2 roles" in {
+    "start the cluster, await convergence, init sharding on every node: 2 data types, 'pekko.cluster.min-nr-of-members=2', partition shard location by 2 roles" in {
       // start sharding early
       startSharding(
         system,

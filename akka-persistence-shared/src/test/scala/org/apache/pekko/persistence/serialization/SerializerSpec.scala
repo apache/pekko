@@ -24,7 +24,7 @@ import pekko.util.ByteString.UTF_8
 object SerializerSpecConfigs {
   val customSerializers =
     ConfigFactory.parseString("""
-      akka.actor {
+      pekko.actor {
         serializers {
           my-payload = "org.apache.pekko.persistence.serialization.MyPayloadSerializer"
           my-payload2 = "org.apache.pekko.persistence.serialization.MyPayload2Serializer"
@@ -45,12 +45,12 @@ object SerializerSpecConfigs {
     """)
 
   val remote = ConfigFactory.parseString("""
-      akka {
+      pekko {
         actor {
           provider = remote
         }
         remote {
-          enabled-transports = ["akka.remote.classic.netty.tcp"]
+          enabled-transports = ["pekko.remote.classic.netty.tcp"]
           classic.netty.tcp {
             hostname = "127.0.0.1"
             port = 0

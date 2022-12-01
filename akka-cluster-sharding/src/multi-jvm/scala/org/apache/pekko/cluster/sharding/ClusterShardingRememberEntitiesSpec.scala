@@ -39,9 +39,9 @@ abstract class ClusterShardingRememberEntitiesSpecConfig(
       rememberEntities,
       rememberEntitiesStore = rememberEntitiesStore,
       additionalConfig = s"""
-      akka.testconductor.barrier-timeout = 60 s
-      akka.test.single-expect-default = 60 s
-      akka.persistence.journal.leveldb-shared.store.native = off
+      pekko.testconductor.barrier-timeout = 60 s
+      pekko.test.single-expect-default = 60 s
+      pekko.persistence.journal.leveldb-shared.store.native = off
       """) {
 
   val first = role("first")
@@ -49,7 +49,7 @@ abstract class ClusterShardingRememberEntitiesSpecConfig(
   val third = role("third")
 
   nodeConfig(third)(ConfigFactory.parseString(s"""
-    akka.cluster.sharding.distributed-data.durable.lmdb {
+    pekko.cluster.sharding.distributed-data.durable.lmdb {
       # use same directory when starting new node on third (not used at same time)
       dir = $targetDir/sharding-third
     }

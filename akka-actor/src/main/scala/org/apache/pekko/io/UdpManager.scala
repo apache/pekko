@@ -27,7 +27,7 @@ import pekko.io.Udp._
  * listening to server events). To unbind the port an [[pekko.io.Tcp.Unbind]] message must be sent to the Listener actor.
  *
  * If the bind request is rejected because the Udp system is not able to register more channels (see the nr-of-selectors
- * and max-channels configuration options in the akka.io.udp section of the configuration) the sender will be notified
+ * and max-channels configuration options in the pekko.io.udp section of the configuration) the sender will be notified
  * with a [[pekko.io.Udp.CommandFailed]] message. This message contains the original command for reference.
  *
  * The handler provided in the [[pekko.io.Udp.Bind]] message will receive inbound datagrams to the bound port

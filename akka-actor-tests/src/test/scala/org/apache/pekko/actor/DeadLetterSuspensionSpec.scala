@@ -35,9 +35,9 @@ object DeadLetterSuspensionSpec {
 }
 
 class DeadLetterSuspensionSpec extends AkkaSpec("""
-  akka.loglevel = INFO
-  akka.log-dead-letters = 4
-  akka.log-dead-letters-suspend-duration = 2s
+  pekko.loglevel = INFO
+  pekko.log-dead-letters = 4
+  pekko.log-dead-letters-suspend-duration = 2s
   """) with ImplicitSender {
   import DeadLetterSuspensionSpec._
 
@@ -58,7 +58,7 @@ class DeadLetterSuspensionSpec extends AkkaSpec("""
   private def expectedUnhandledLogMessage(count: Int): String =
     s"Message [java.lang.Integer] from $testActor to $unhandledActor was unhandled. [$count] dead letters encountered"
 
-  "must suspend dead-letters logging when reaching 'akka.log-dead-letters', and then re-enable" in {
+  "must suspend dead-letters logging when reaching 'pekko.log-dead-letters', and then re-enable" in {
     EventFilter.info(start = expectedDeadLettersLogMessage(1), occurrences = 1).intercept {
       deadActor ! 1
     }

@@ -15,7 +15,7 @@ import pekko.testkit._
 
 object RemoteDeployerSpec {
   val deployerConf = ConfigFactory.parseString("""
-      akka.actor.deployment {
+      pekko.actor.deployment {
         /service2 {
           router = round-robin-pool
           nr-of-instances = 3
@@ -35,7 +35,7 @@ class RemoteDeployerSpec extends AkkaSpec(RemoteDeployerSpec.deployerConf) {
 
   "A RemoteDeployer" must {
 
-    "be able to parse 'akka.actor.deployment._' with specified remote nodes" in {
+    "be able to parse 'pekko.actor.deployment._' with specified remote nodes" in {
       val service = "/service2"
       val deployment = system.asInstanceOf[ActorSystemImpl].provider.deployer.lookup(service.split("/").drop(1))
 

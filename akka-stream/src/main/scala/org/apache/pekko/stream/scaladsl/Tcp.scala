@@ -103,9 +103,9 @@ object Tcp extends ExtensionId[Tcp] with ExtensionIdProvider {
 final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   import Tcp._
 
-  // TODO maybe this should be a new setting, like `akka.stream.tcp.bind.timeout` / `shutdown-timeout` instead?
+  // TODO maybe this should be a new setting, like `pekko.stream.tcp.bind.timeout` / `shutdown-timeout` instead?
   val bindShutdownTimeout: FiniteDuration =
-    system.settings.config.getDuration("akka.stream.materializer.subscription-timeout.timeout").asScala
+    system.settings.config.getDuration("pekko.stream.materializer.subscription-timeout.timeout").asScala
 
   /**
    * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`.

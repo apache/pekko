@@ -145,15 +145,15 @@ object ProducerController {
   object Settings {
 
     /**
-     * Scala API: Factory method from config `akka.reliable-delivery.producer-controller`
+     * Scala API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
     def apply(system: ActorSystem[_]): Settings =
-      apply(system.settings.config.getConfig("akka.reliable-delivery.producer-controller"))
+      apply(system.settings.config.getConfig("pekko.reliable-delivery.producer-controller"))
 
     /**
      * Scala API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.producer-controller`.
+     * `pekko.reliable-delivery.producer-controller`.
      */
     def apply(config: Config): Settings = {
       val chunkLargeMessagesBytes = toRootLowerCase(config.getString("chunk-large-messages")) match {
@@ -169,7 +169,7 @@ object ProducerController {
     }
 
     /**
-     * Java API: Factory method from config `akka.reliable-delivery.producer-controller`
+     * Java API: Factory method from config `pekko.reliable-delivery.producer-controller`
      * of the `ActorSystem`.
      */
     def create(system: ActorSystem[_]): Settings =
@@ -177,7 +177,7 @@ object ProducerController {
 
     /**
      * Java API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.producer-controller`.
+     * `pekko.reliable-delivery.producer-controller`.
      */
     def create(config: Config): Settings =
       apply(config)

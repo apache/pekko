@@ -19,21 +19,21 @@ import pekko.testkit.{ SocketUtil, TestKit }
 object DnsDiscoverySpec {
 
   val config = ConfigFactory.parseString(s"""
-     akka {
+     pekko {
        discovery {
-         method = akka-dns
+         method = pekko-dns
        }
      }
-     akka {
+     pekko {
        loglevel = DEBUG
      }
-     akka.io.dns.async-dns.nameservers = ["localhost:${DnsDiscoverySpec.dockerDnsServerPort}"]
+     pekko.io.dns.async-dns.nameservers = ["localhost:${DnsDiscoverySpec.dockerDnsServerPort}"]
     """)
 
   lazy val dockerDnsServerPort = SocketUtil.temporaryLocalPort()
 
   val configWithAsyncDnsResolverAsDefault = ConfigFactory.parseString("""
-      akka.io.dns.resolver = "async-dns"
+      pekko.io.dns.resolver = "async-dns"
     """).withFallback(config)
 
 }

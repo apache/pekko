@@ -75,7 +75,7 @@ private[pekko] object EventStreamUnsubscriber {
     Props(classOf[EventStreamUnsubscriber], eventStream, debug).withDispatcher(Dispatchers.InternalDispatcherId)
 
   def start(system: ActorSystem, stream: EventStream) = {
-    val debug = system.settings.config.getBoolean("akka.actor.debug.event-stream")
+    val debug = system.settings.config.getBoolean("pekko.actor.debug.event-stream")
     val unsubscriber = system
       .asInstanceOf[ExtendedActorSystem]
       .systemActorOf(props(stream, debug), "eventStreamUnsubscriber-" + unsubscribersCount.incrementAndGet())

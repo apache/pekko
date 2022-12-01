@@ -53,7 +53,7 @@ class AffinityPoolRequestResponseBenchmark {
 
     system = ActorSystem(
       "AffinityPoolComparativeBenchmark",
-      ConfigFactory.parseString(s"""| akka {
+      ConfigFactory.parseString(s"""| pekko {
           |   log-dead-letters = off
           |   actor {
           |     default-fj-dispatcher {

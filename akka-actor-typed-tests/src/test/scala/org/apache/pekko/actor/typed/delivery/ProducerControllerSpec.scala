@@ -19,7 +19,7 @@ import pekko.actor.typed.delivery.internal.ProducerControllerImpl
 class ProducerControllerSpec
     extends ScalaTestWithActorTestKit(
       ConfigFactory.parseString("""
-  akka.reliable-delivery.consumer-controller.flow-control-window = 20
+  pekko.reliable-delivery.consumer-controller.flow-control-window = 20
   """).withFallback(TestSerializer.config))
     with AnyWordSpecLike
     with LogCapturing {

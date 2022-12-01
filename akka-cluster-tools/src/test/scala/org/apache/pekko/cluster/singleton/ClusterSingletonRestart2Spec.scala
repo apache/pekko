@@ -31,13 +31,13 @@ object ClusterSingletonRestart2Spec {
 
 class ClusterSingletonRestart2Spec
     extends AkkaSpec("""
-  akka.loglevel = INFO
-  akka.cluster.roles = [singleton]
-  akka.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
-  akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-  akka.cluster.testkit.auto-down-unreachable-after = 2s
-  akka.cluster.singleton.min-number-of-hand-over-retries = 5
-  akka.remote {
+  pekko.loglevel = INFO
+  pekko.cluster.roles = [singleton]
+  pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
+  pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+  pekko.cluster.testkit.auto-down-unreachable-after = 2s
+  pekko.cluster.singleton.min-number-of-hand-over-retries = 5
+  pekko.remote {
     classic.netty.tcp {
       hostname = "127.0.0.1"
       port = 0
@@ -47,7 +47,7 @@ class ClusterSingletonRestart2Spec
       port = 0
     }
   }
-  akka.actor.serialization-bindings {
+  pekko.actor.serialization-bindings {
     # there is no serializer for UniqueAddress, not intended to be sent as a standalone message
     "org.apache.pekko.cluster.UniqueAddress" = jackson-cbor
   }
@@ -57,7 +57,7 @@ class ClusterSingletonRestart2Spec
   val sys2 = ActorSystem(system.name, system.settings.config)
   val sys3 = ActorSystem(
     system.name,
-    ConfigFactory.parseString("akka.cluster.roles = [other]").withFallback(system.settings.config))
+    ConfigFactory.parseString("pekko.cluster.roles = [other]").withFallback(system.settings.config))
   var sys4: ActorSystem = null
 
   import pekko.util.ccompat._
@@ -110,8 +110,8 @@ class ClusterSingletonRestart2Spec
 
         val sys4Config =
           ConfigFactory.parseString(s"""
-            akka.remote.artery.canonical.port=$sys2port
-            akka.remote.classic.netty.tcp.port=$sys2port
+            pekko.remote.artery.canonical.port=$sys2port
+            pekko.remote.classic.netty.tcp.port=$sys2port
             """).withFallback(system.settings.config)
 
         ActorSystem(system.name, sys4Config)

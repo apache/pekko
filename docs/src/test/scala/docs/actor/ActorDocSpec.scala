@@ -320,8 +320,8 @@ case class Register(user: User)
 //#immutable-message-definition
 
 class ActorDocSpec extends AkkaSpec("""
-  akka.loglevel = INFO
-  akka.loggers = []
+  pekko.loglevel = INFO
+  pekko.loggers = []
   """) {
 
   "import context" in {

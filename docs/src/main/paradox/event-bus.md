@@ -206,7 +206,7 @@ stream for logging: these are the handlers which are configured for example in
 `application.conf`:
 
 ```text
-akka {
+pekko {
   loggers = ["org.apache.pekko.event.Logging$DefaultLogger"]
 }
 ```

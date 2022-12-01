@@ -21,7 +21,7 @@ import pekko.testkit.{ AkkaSpec, EventFilter, TestActorRef, TestProbe }
 import pekko.testkit.SocketUtil
 
 class TcpListenerSpec extends AkkaSpec("""
-    akka.io.tcp.batch-accept-limit = 2
+    pekko.io.tcp.batch-accept-limit = 2
     """) {
 
   "A TcpListener" must {

@@ -34,7 +34,7 @@ To use Cluster aware routers, you must add the following dependency in your proj
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-cluster_$scala.binary.version$"
   version=AkkaVersion
@@ -46,7 +46,7 @@ When using a `Group` you must start the routee actors on the cluster member node
 That is not done by the router. The configuration for a group looks like this::
 
 ```
-akka.actor.deployment {
+pekko.actor.deployment {
   /statsService/workerRouter {
       router = consistent-hashing-group
       routees.paths = ["/user/statsWorker"]
@@ -133,7 +133,7 @@ All nodes start `StatsService` and `StatsWorker` actors. Remember, routees are t
 The router is configured with `routees.paths`::
 
 ```
-akka.actor.deployment {
+pekko.actor.deployment {
   /statsService/workerRouter {
     router = consistent-hashing-group
     routees.paths = ["/user/statsWorker"]
@@ -155,7 +155,7 @@ When using a `Pool` with routees created and deployed on the cluster member node
 the configuration for a router looks like this::
 
 ```
-akka.actor.deployment {
+pekko.actor.deployment {
   /statsService/singleton/workerRouter {
       router = consistent-hashing-pool
       cluster {
@@ -233,7 +233,7 @@ master. It listens to cluster events to lookup the `StatsService` on the oldest 
 All nodes start `ClusterSingletonProxy` and the `ClusterSingletonManager`. The router is now configured like this::
 
 ```
-akka.actor.deployment {
+pekko.actor.deployment {
   /statsService/singleton/workerRouter {
     router = consistent-hashing-pool
     cluster {

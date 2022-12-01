@@ -52,14 +52,14 @@ jobs:
         run: |
           cat multi-node-test.hosts
           sbtx -jvm-opts .jvmopts-ci \
-            -Dakka.test.timefactor=2 \
-            -Dakka.actor.testkit.typed.timefactor=2 \
-            -Dakka.test.tags.exclude=gh-exclude,timing \
-            -Dakka.cluster.assert=on \
+            -Dpekko.test.timefactor=2 \
+            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.test.tags.exclude=gh-exclude,timing \
+            -Dpekko.cluster.assert=on \
             -Dsbt.override.build.repos=false \
-            -Dakka.test.multi-node=true \
-            -Dakka.test.multi-node.targetDirName=${PWD}/target/${{ github.run_id }} \
-            -Dakka.test.multi-node.java=${JAVA_HOME}/bin/java \
+            -Dpekko.test.multi-node=true \
+            -Dpekko.test.multi-node.targetDirName=${PWD}/target/${{ github.run_id }} \
+            -Dpekko.test.multi-node.java=${JAVA_HOME}/bin/java \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms512M \
             -Dmultinode.Xmx512M \
@@ -136,15 +136,15 @@ jobs:
         run: |
           cat multi-node-test.hosts
           sbtx -jvm-opts .jvmopts-ci \
-            -Dakka.test.timefactor=2 \
-            -Dakka.actor.testkit.typed.timefactor=2 \
-            -Dakka.cluster.assert=on \
-            -Dakka.remote.artery.transport=aeron-udp \
+            -Dpekko.test.timefactor=2 \
+            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.cluster.assert=on \
+            -Dpekko.remote.artery.transport=aeron-udp \
             -Dsbt.override.build.repos=false \
-            -Dakka.test.tags.exclude=gh-exclude,gh-exclude-aeron,timing \
-            -Dakka.test.multi-node=true \
-            -Dakka.test.multi-node.targetDirName=${PWD}/target/${{ github.run_id }} \
-            -Dakka.test.multi-node.java=${JAVA_HOME}/bin/java \
+            -Dpekko.test.tags.exclude=gh-exclude,gh-exclude-aeron,timing \
+            -Dpekko.test.multi-node=true \
+            -Dpekko.test.multi-node.targetDirName=${PWD}/target/${{ github.run_id }} \
+            -Dpekko.test.multi-node.java=${JAVA_HOME}/bin/java \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms512M \
             -Dmultinode.Xmx512M \

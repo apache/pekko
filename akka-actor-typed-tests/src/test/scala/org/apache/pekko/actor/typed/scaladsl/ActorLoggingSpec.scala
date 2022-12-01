@@ -54,7 +54,7 @@ class BehaviorWhereTheLoggerIsUsed(context: ActorContext[String]) extends Abstra
 }
 
 class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
-    akka.loglevel = DEBUG # test verifies debug
+    pekko.loglevel = DEBUG # test verifies debug
     """) with AnyWordSpecLike with LogCapturing {
 
   val marker = new BasicMarkerFactory().getMarker("marker")
@@ -287,9 +287,9 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     import pekko.actor.typed.scaladsl.adapter._
 
     "by default be amended to use Slf4jLogger" in {
-      system.settings.config.getStringList("akka.loggers").size() should ===(1)
-      system.settings.config.getStringList("akka.loggers").get(0) should ===(classOf[Slf4jLogger].getName)
-      system.settings.config.getString("akka.logging-filter") should ===(classOf[Slf4jLoggingFilter].getName)
+      system.settings.config.getStringList("pekko.loggers").size() should ===(1)
+      system.settings.config.getStringList("pekko.loggers").get(0) should ===(classOf[Slf4jLogger].getName)
+      system.settings.config.getString("pekko.logging-filter") should ===(classOf[Slf4jLoggingFilter].getName)
 
       system.toClassic.settings.Loggers should ===(List(classOf[Slf4jLogger].getName))
       system.toClassic.settings.LoggingFilter should ===(classOf[Slf4jLoggingFilter].getName)
@@ -298,9 +298,9 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     "by default be amended to use Slf4jLogger when starting classic ActorSystem" in {
       val classicSys = pekko.actor.ActorSystem(system.name)
       try {
-        classicSys.settings.config.getStringList("akka.loggers").size() should ===(1)
-        classicSys.settings.config.getStringList("akka.loggers").get(0) should ===(classOf[Slf4jLogger].getName)
-        classicSys.settings.config.getString("akka.logging-filter") should ===(classOf[Slf4jLoggingFilter].getName)
+        classicSys.settings.config.getStringList("pekko.loggers").size() should ===(1)
+        classicSys.settings.config.getStringList("pekko.loggers").get(0) should ===(classOf[Slf4jLogger].getName)
+        classicSys.settings.config.getString("pekko.logging-filter") should ===(classOf[Slf4jLoggingFilter].getName)
 
         classicSys.settings.Loggers should ===(List(classOf[Slf4jLogger].getName))
         classicSys.settings.LoggingFilter should ===(classOf[Slf4jLoggingFilter].getName)
@@ -313,11 +313,11 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
     "not be amended when use-slf4j=off" in {
       val dynamicAccess = system.toClassic.asInstanceOf[ExtendedActorSystem].dynamicAccess
       val config = ClassicActorSystem.Settings.amendSlf4jConfig(
-        ConfigFactory.parseString("akka.use-slf4j = off").withFallback(ConfigFactory.defaultReference()),
+        ConfigFactory.parseString("pekko.use-slf4j = off").withFallback(ConfigFactory.defaultReference()),
         dynamicAccess)
-      config.getStringList("akka.loggers").size() should ===(1)
-      config.getStringList("akka.loggers").get(0) should ===(classOf[DefaultLogger].getName)
-      config.getString("akka.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
+      config.getStringList("pekko.loggers").size() should ===(1)
+      config.getStringList("pekko.loggers").get(0) should ===(classOf[DefaultLogger].getName)
+      config.getString("pekko.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
     }
   }
 

@@ -78,7 +78,7 @@ object ClusterSharding {
  * Messages can also be sent via the [[EntityRef]] retrieved with [[ClusterSharding#entityRefFor]],
  * which will also send via the local `ShardRegion`.
  *
- * Some settings can be configured as described in the `akka.cluster.sharding`
+ * Some settings can be configured as described in the `pekko.cluster.sharding`
  * section of the `reference.conf`.
  *
  * The `ShardRegion` actor is started on each node in the cluster, or group of nodes
@@ -285,7 +285,7 @@ final class Entity[M, E] private (
    * them in [[ShardingEnvelope]] with the entityId of the recipient actor. That envelope
    * is used by the [[HashCodeMessageExtractor]] for extracting entityId and shardId. The number of
    * shards is then defined by `numberOfShards` in `ClusterShardingSettings`, which by default
-   * is configured with `akka.cluster.sharding.number-of-shards`.
+   * is configured with `pekko.cluster.sharding.number-of-shards`.
    */
   def withMessageExtractor[Envelope](newExtractor: ShardingMessageExtractor[Envelope, M]): Entity[M, Envelope] =
     new Entity(

@@ -29,7 +29,7 @@ import pekko.util.ByteString
 @nowarn
 class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher("akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
   implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
   val fs = Jimfs.newFileSystem("FileSinkSpec", Configuration.unix())
 
@@ -182,7 +182,8 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
     "allow overriding the dispatcher using Attributes" in {
       targetFile { f =>
         val forever = Source.maybe
-          .toMat(FileIO.toPath(f).addAttributes(ActorAttributes.dispatcher("akka.actor.default-dispatcher")))(Keep.left)
+          .toMat(FileIO.toPath(f).addAttributes(ActorAttributes.dispatcher("pekko.actor.default-dispatcher")))(
+            Keep.left)
           .run()
         try {
           materializer
@@ -190,7 +191,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
             .supervisor
             .tell(StreamSupervisor.GetChildren, testActor)
           val ref = expectMsgType[Children].children.find(_.path.toString contains "fileSink").get
-          assertDispatcher(ref, "akka.actor.default-dispatcher")
+          assertDispatcher(ref, "pekko.actor.default-dispatcher")
         } finally {
           forever.complete(Success(None))
         }

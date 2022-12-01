@@ -23,11 +23,11 @@ import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
 
 class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
-  akka.loglevel=INFO
-  akka.remote.artery.advanced.stop-idle-outbound-after = 1 s
-  akka.remote.artery.advanced.connection-timeout = 2 s
-  akka.remote.artery.advanced.remove-quarantined-association-after = 1 s
-  akka.remote.artery.advanced.compression {
+  pekko.loglevel=INFO
+  pekko.remote.artery.advanced.stop-idle-outbound-after = 1 s
+  pekko.remote.artery.advanced.connection-timeout = 2 s
+  pekko.remote.artery.advanced.remove-quarantined-association-after = 1 s
+  pekko.remote.artery.advanced.compression {
     actor-refs.advertisement-interval = 5 seconds
   }
   """) with ImplicitSender with Eventually {
@@ -149,8 +149,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
 
         val remoteSystem2 = newRemoteSystem(
           Some(s"""
-          akka.remote.artery.canonical.hostname = ${remoteAddress.host.get}
-          akka.remote.artery.canonical.port = ${remoteAddress.port.get}
+          pekko.remote.artery.canonical.hostname = ${remoteAddress.host.get}
+          pekko.remote.artery.canonical.port = ${remoteAddress.port.get}
           """),
           name = Some(remoteAddress.system))
         try {

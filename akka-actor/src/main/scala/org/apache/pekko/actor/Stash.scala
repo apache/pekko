@@ -45,7 +45,7 @@ import pekko.dispatch.{
  *  trait extends `RequiresMessageQueue[DequeBasedMessageQueueSemantics]`.
  *  You can override the default mailbox provided when `DequeBasedMessageQueueSemantics` are requested via config:
  *  <pre>
- *    akka.actor.mailbox.requirements {
+ *    pekko.actor.mailbox.requirements {
  *      "org.apache.pekko.dispatch.BoundedDequeBasedMessageQueueSemantics" = your-custom-mailbox
  *    }
  *  </pre>

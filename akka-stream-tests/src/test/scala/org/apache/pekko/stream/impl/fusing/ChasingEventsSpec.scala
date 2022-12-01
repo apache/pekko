@@ -18,7 +18,7 @@ import pekko.stream.testkit.Utils.TE
 import pekko.testkit.AkkaSpec
 
 class ChasingEventsSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = off
+    pekko.stream.materializer.debug.fuzzing-mode = off
   """) {
 
   class CancelInChasedPull extends GraphStage[FlowShape[Int, Int]] {

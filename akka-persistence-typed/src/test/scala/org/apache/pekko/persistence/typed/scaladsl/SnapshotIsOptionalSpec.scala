@@ -21,10 +21,10 @@ import pekko.serialization.jackson.CborSerializable
 
 object SnapshotIsOptionalSpec {
   private val conf: Config = ConfigFactory.parseString(s"""
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
-    akka.persistence.snapshot-store.local.snapshot-is-optional = true
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
+    pekko.persistence.snapshot-store.local.snapshot-is-optional = true
   """)
   case class State1(field1: String) extends CborSerializable {
     @JsonCreator

@@ -25,9 +25,9 @@ object LogSourceSpec {
 }
 
 class LogSourceSpec extends AkkaSpec("""
-    akka.loglevel = INFO
-    akka.actor.provider = remote
-    akka.remote.classic.netty.tcp.port = 0
+    pekko.loglevel = INFO
+    pekko.actor.provider = remote
+    pekko.remote.classic.netty.tcp.port = 0
   """) {
 
   import LogSourceSpec._

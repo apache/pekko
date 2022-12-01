@@ -24,8 +24,8 @@ object SurviveInboundStreamRestartWithCompressionInFlightSpec extends MultiNodeC
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-        akka.loglevel = INFO
-        akka.remote.artery {
+        pekko.loglevel = INFO
+        pekko.remote.artery {
           enabled = on
           advanced {
             inbound-lanes = 4

@@ -36,7 +36,7 @@ private[cluster] object DowningProvider {
  * API for plugins that will handle downing of cluster nodes. Concrete plugins must subclass and
  * have a public one argument constructor accepting an [[pekko.actor.ActorSystem]].
  *
- * A custom `DowningProvider` can be configured with `akka.cluster.downing-provider-class`
+ * A custom `DowningProvider` can be configured with `pekko.cluster.downing-provider-class`
  *
  * When implementing a downing provider you should make sure that it will not split the cluster into
  * several separate clusters in case of network problems or system overload (long GC pauses). This

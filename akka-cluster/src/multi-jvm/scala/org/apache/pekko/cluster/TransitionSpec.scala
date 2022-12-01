@@ -24,8 +24,8 @@ object TransitionMultiJvmSpec extends MultiNodeConfig {
     debugConfig(on = false)
       .withFallback(
         ConfigFactory.parseString("""
-      akka.cluster.periodic-tasks-initial-delay = 300 s # turn off all periodic tasks
-      akka.cluster.publish-stats-interval = 0 s # always, when it happens
+      pekko.cluster.periodic-tasks-initial-delay = 300 s # turn off all periodic tasks
+      pekko.cluster.publish-stats-interval = 0 s # always, when it happens
       """))
       .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }

@@ -7,7 +7,7 @@ Add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor-typed_$scala.binary.version$"
   version=AkkaVersion
@@ -126,7 +126,7 @@ supervised actor started
 supervised actor fails now
 supervised actor will be restarted
 supervised actor started
-[ERROR] [11/12/2018 12:03:27.171] [ActorHierarchyExperiments-akka.actor.default-dispatcher-2] [akka://ActorHierarchyExperiments/user/supervising-actor/supervised-actor] Supervisor akka.actor.typed.internal.RestartSupervisor@1c452254 saw failure: I failed!
+[ERROR] [11/12/2018 12:03:27.171] [ActorHierarchyExperiments-pekko.actor.default-dispatcher-2] [akka://ActorHierarchyExperiments/user/supervising-actor/supervised-actor] Supervisor pekko.actor.typed.internal.RestartSupervisor@1c452254 saw failure: I failed!
 java.lang.Exception: I failed!
 	at typed.tutorial_1.SupervisedActor.onMessage(ActorHierarchyExperiments.scala:113)
 	at typed.tutorial_1.SupervisedActor.onMessage(ActorHierarchyExperiments.scala:106)

@@ -732,7 +732,7 @@ object ActorAttributes {
 
   final case class SupervisionStrategy(decider: Supervision.Decider) extends MandatoryAttribute
 
-  val IODispatcher: Dispatcher = ActorAttributes.Dispatcher("akka.stream.materializer.blocking-io-dispatcher")
+  val IODispatcher: Dispatcher = ActorAttributes.Dispatcher("pekko.stream.materializer.blocking-io-dispatcher")
 
   /**
    * Specifies the name of the dispatcher. This also adds an async boundary.

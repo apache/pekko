@@ -71,7 +71,7 @@ object RemoteWatcherSpec {
 
 @nowarn("msg=deprecated")
 class RemoteWatcherSpec extends AkkaSpec("""
-     akka {
+     pekko {
        loglevel = INFO
        log-dead-letters-during-shutdown = false
        actor.provider = remote
@@ -83,8 +83,8 @@ class RemoteWatcherSpec extends AkkaSpec("""
        remote.use-unsafe-remote-features-outside-cluster = on
      }
      # test is using Java serialization and not priority to rewrite
-     akka.actor.allow-java-serialization = on
-     akka.actor.warn-about-java-serializer-usage = off
+     pekko.actor.allow-java-serialization = on
+     pekko.actor.warn-about-java-serializer-usage = off
      """) with ImplicitSender {
 
   import RemoteWatcher._

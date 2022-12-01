@@ -23,12 +23,12 @@ import pekko.persistence.typed.PersistenceId
 object WorkPullingWithEventSourcedProducerQueueSpec {
   def conf: Config =
     ConfigFactory.parseString(s"""
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/WorkPullingWithEventSourcedProducerQueueSpec-${UUID
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/WorkPullingWithEventSourcedProducerQueueSpec-${UUID
         .randomUUID()
         .toString}"
-    akka.reliable-delivery.consumer-controller.flow-control-window = 20  
+    pekko.reliable-delivery.consumer-controller.flow-control-window = 20  
     """)
 }
 

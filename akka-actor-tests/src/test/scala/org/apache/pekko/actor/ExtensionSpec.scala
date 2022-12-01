@@ -59,7 +59,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
   "The ActorSystem extensions support" should {
 
     "support extensions" in {
-      val config = ConfigFactory.parseString("""akka.extensions = ["org.apache.pekko.actor.TestExtension"]""")
+      val config = ConfigFactory.parseString("""pekko.extensions = ["org.apache.pekko.actor.TestExtension"]""")
       val system = ActorSystem("extensions", config)
 
       // TestExtension is configured and should be loaded at startup
@@ -87,23 +87,23 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
       shutdownActorSystem(system)
     }
 
-    "fail the actor system if an extension listed in akka.extensions fails to start" in {
+    "fail the actor system if an extension listed in pekko.extensions fails to start" in {
       intercept[RuntimeException] {
         val system = ActorSystem(
           "failing",
           ConfigFactory.parseString("""
-            akka.extensions = ["org.apache.pekko.actor.FailingTestExtension"]
+            pekko.extensions = ["org.apache.pekko.actor.FailingTestExtension"]
           """))
 
         shutdownActorSystem(system)
       }
     }
 
-    "log an error if an extension listed in akka.extensions cannot be loaded" in {
+    "log an error if an extension listed in pekko.extensions cannot be loaded" in {
       val system = ActorSystem(
         "failing",
         ConfigFactory.parseString("""
-          akka.extensions = ["org.apache.pekko.actor.MissingExtension"]
+          pekko.extensions = ["org.apache.pekko.actor.MissingExtension"]
         """))
       EventFilter.error(
         "While trying to load extension [org.apache.pekko.actor.MissingExtension], skipping.").intercept(())(system)
@@ -115,7 +115,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
       // could be initialized by other tests, but assuming tests are not running in parallel
       val countBefore = InstanceCountingExtension.createCount.get()
       val system = ActorSystem("extensions")
-      val listedExtensions = system.settings.config.getStringList("akka.library-extensions").asScala
+      val listedExtensions = system.settings.config.getStringList("pekko.library-extensions").asScala
       listedExtensions.count(_.contains("InstanceCountingExtension")) should ===(1)
 
       InstanceCountingExtension.createCount.get() - countBefore should ===(1)
@@ -131,9 +131,9 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
         "extensions",
         ConfigFactory.parseString(
           """
-      akka.library-extensions = ["org.apache.pekko.actor.InstanceCountingExtension", "org.apache.pekko.actor.InstanceCountingExtension", "org.apache.pekko.actor.InstanceCountingExtension$"]
+      pekko.library-extensions = ["org.apache.pekko.actor.InstanceCountingExtension", "org.apache.pekko.actor.InstanceCountingExtension", "org.apache.pekko.actor.InstanceCountingExtension$"]
       """))
-      val listedExtensions = system.settings.config.getStringList("akka.library-extensions").asScala
+      val listedExtensions = system.settings.config.getStringList("pekko.library-extensions").asScala
       listedExtensions.count(_.contains("InstanceCountingExtension")) should ===(3) // testing duplicate names
 
       InstanceCountingExtension.createCount.get() - countBefore should ===(1)
@@ -146,7 +146,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
         ActorSystem(
           "failing",
           ConfigFactory.parseString("""
-            akka.library-extensions += "org.apache.pekko.actor.FailingTestExtension"
+            pekko.library-extensions += "org.apache.pekko.actor.FailingTestExtension"
           """).withFallback(ConfigFactory.load()).resolve())
       }
 
@@ -157,7 +157,7 @@ class ExtensionSpec extends AnyWordSpec with Matchers {
         ActorSystem(
           "failing",
           ConfigFactory.parseString("""
-            akka.library-extensions += "org.apache.pekko.actor.MissingExtension"
+            pekko.library-extensions += "org.apache.pekko.actor.MissingExtension"
           """).withFallback(ConfigFactory.load()))
       }
     }

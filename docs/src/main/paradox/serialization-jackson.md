@@ -10,7 +10,7 @@ To use Jackson Serialization, you must add the following dependency in your proj
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-serialization-jackson_$scala.binary.version$"
   version=AkkaVersion
@@ -436,7 +436,7 @@ The following Jackson modules are enabled by default:
 
 @@snip [reference.conf](/akka-serialization-jackson/src/main/resources/reference.conf) { #jackson-modules }
 
-You can amend the configuration `akka.serialization.jackson.jackson-modules` to enable other modules.
+You can amend the configuration `pekko.serialization.jackson.jackson-modules` to enable other modules.
 
 The [ParameterNamesModule](https://github.com/FasterXML/jackson-modules-java8/tree/master/parameter-names) requires that the `-parameters`
 Java compiler option is enabled.
@@ -478,8 +478,8 @@ The type will be embedded as an object with the fields:
 ### Configuration per binding
 
 By default the configuration for the Jackson serializers and their @javadoc[ObjectMapper](com.fasterxml.jackson.databind.ObjectMapper)s is defined in
-the `akka.serialization.jackson` section. It is possible to override that configuration in a more
-specific `akka.serialization.jackson.<binding name>` section.
+the `pekko.serialization.jackson` section. It is possible to override that configuration in a more
+specific `pekko.serialization.jackson.<binding name>` section.
 
 @@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #specific-config }
 

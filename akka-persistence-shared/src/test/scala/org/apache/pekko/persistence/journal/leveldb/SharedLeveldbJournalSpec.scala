@@ -13,17 +13,17 @@ import pekko.testkit.{ AkkaSpec, TestProbe }
 
 object SharedLeveldbJournalSpec {
   val config = ConfigFactory.parseString(s"""
-      akka {
+      pekko {
         actor {
           provider = remote
         }
         persistence {
           journal {
-            plugin = "akka.persistence.journal.leveldb-shared"
+            plugin = "pekko.persistence.journal.leveldb-shared"
             leveldb-shared.store.dir = target/journal-SharedLeveldbJournalSpec
           }
           snapshot-store {
-            plugin = "akka.persistence.snapshot-store.local"
+            plugin = "pekko.persistence.snapshot-store.local"
             local.dir = target/snapshots-SharedLeveldbJournalSpec
           }
         }
@@ -90,7 +90,7 @@ class SharedLeveldbJournalSpec extends AkkaSpec(SharedLeveldbJournalSpec.config)
       val probeA = new TestProbe(systemA)
       val probeB = new TestProbe(systemB)
 
-      val storeConfig = system.settings.config.getConfig("akka.persistence.journal.leveldb-shared")
+      val storeConfig = system.settings.config.getConfig("pekko.persistence.journal.leveldb-shared")
       @nowarn
       val sharedLeveldbStoreCls = classOf[SharedLeveldbStore]
       system.actorOf(Props(sharedLeveldbStoreCls, storeConfig), "store")

@@ -12,9 +12,9 @@ import pekko.cluster.metrics._
 import pekko.testkit.AkkaSpec
 
 class MessageSerializerSpec extends AkkaSpec("""
-     akka.actor.provider = cluster
-     akka.remote.classic.netty.tcp.port = 0
-     akka.remote.artery.canonical.port = 0
+     pekko.actor.provider = cluster
+     pekko.remote.classic.netty.tcp.port = 0
+     pekko.remote.artery.canonical.port = 0
   """) {
 
   val serializer = new MessageSerializer(system.asInstanceOf[ExtendedActorSystem])

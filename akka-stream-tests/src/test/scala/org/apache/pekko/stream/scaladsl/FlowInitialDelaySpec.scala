@@ -14,7 +14,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 
 class FlowInitialDelaySpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "Flow initialDelay" must {

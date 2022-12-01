@@ -17,7 +17,7 @@ import com.typesafe.config.ConfigFactory;
 public class EchoServer {
 
   public static void main(String[] args) throws InterruptedException {
-    final Config config = ConfigFactory.parseString("akka.loglevel=DEBUG");
+    final Config config = ConfigFactory.parseString("pekko.loglevel=DEBUG");
     final ActorSystem system = ActorSystem.create("EchoServer", config);
     try {
       final CountDownLatch latch = new CountDownLatch(1);

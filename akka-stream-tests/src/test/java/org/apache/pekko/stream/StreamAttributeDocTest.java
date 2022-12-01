@@ -31,7 +31,7 @@ public class StreamAttributeDocTest extends StreamTest {
   public static AkkaJUnitActorSystemResource actorSystemResource =
       new AkkaJUnitActorSystemResource(
           "StreamAttributeDocTest",
-          ConfigFactory.parseString("my-stream-dispatcher = akka.test.stream-dispatcher")
+          ConfigFactory.parseString("my-stream-dispatcher = pekko.test.stream-dispatcher")
               .withFallback(AkkaSpec.testConf()));
 
   @Test

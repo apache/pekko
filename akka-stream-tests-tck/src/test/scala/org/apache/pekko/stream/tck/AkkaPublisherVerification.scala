@@ -22,8 +22,8 @@ abstract class AkkaPublisherVerification[T](val env: TestEnvironment, publisherS
 
   override def additionalConfig: Config =
     ConfigFactory.parseString("""
-      akka.stream.materializer.initial-input-buffer-size = 512
-      akka.stream.materializer.max-input-buffer-size = 512
+      pekko.stream.materializer.initial-input-buffer-size = 512
+      pekko.stream.materializer.max-input-buffer-size = 512
     """)
 
   def this(printlnDebug: Boolean) =

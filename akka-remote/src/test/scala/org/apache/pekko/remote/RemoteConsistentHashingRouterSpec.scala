@@ -13,8 +13,8 @@ import pekko.testkit.AkkaSpec
 
 class RemoteConsistentHashingRouterSpec
     extends AkkaSpec("""
-    akka.remote.artery.canonical.port = 0                                                         
-    akka.actor.provider = remote """) {
+    pekko.remote.artery.canonical.port = 0                                                         
+    pekko.actor.provider = remote """) {
 
   "ConsistentHashingGroup" must {
 

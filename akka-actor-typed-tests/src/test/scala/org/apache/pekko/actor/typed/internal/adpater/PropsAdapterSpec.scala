@@ -19,7 +19,7 @@ class PropsAdapterSpec extends AnyWordSpec with Matchers {
     "default to org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox" in {
       val props: Props = Props.empty
       val pa: actor.Props = PropsAdapter(() => Behaviors.empty, props, rethrowTypedFailure = false)
-      pa.mailbox shouldEqual "akka.actor.typed.default-mailbox"
+      pa.mailbox shouldEqual "pekko.actor.typed.default-mailbox"
     }
   }
 }

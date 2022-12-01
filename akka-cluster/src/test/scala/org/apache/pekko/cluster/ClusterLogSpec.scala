@@ -12,18 +12,18 @@ import pekko.testkit.{ AkkaSpec, EventFilter, ImplicitSender }
 
 object ClusterLogSpec {
   val config = """
-    akka.cluster {
+    pekko.cluster {
       downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
       testkit.auto-down-unreachable-after = 0s
       publish-stats-interval = 0 s # always, when it happens
       failure-detector.implementation-class = org.apache.pekko.cluster.FailureDetectorPuppet
     }
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.loglevel = "INFO"
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.loglevel = "INFO"
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """
 
 }
@@ -88,7 +88,7 @@ class ClusterLogVerboseDefaultSpec extends ClusterLogSpec(ConfigFactory.parseStr
 class ClusterLogVerboseEnabledSpec
     extends ClusterLogSpec(
       ConfigFactory
-        .parseString("akka.cluster.log-info-verbose = on")
+        .parseString("pekko.cluster.log-info-verbose = on")
         .withFallback(ConfigFactory.parseString(ClusterLogSpec.config))) {
 
   "A Cluster" must {

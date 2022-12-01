@@ -32,13 +32,13 @@ object PersistencePluginProxy {
 
   def setTargetLocation(system: ActorSystem, address: Address): Unit = {
     Persistence(system).journalFor(null) ! TargetLocation(address)
-    if (system.settings.config.getString("akka.persistence.snapshot-store.plugin") != "")
+    if (system.settings.config.getString("pekko.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null) ! TargetLocation(address)
   }
 
   def start(system: ActorSystem): Unit = {
     Persistence(system).journalFor(null)
-    if (system.settings.config.getString("akka.persistence.snapshot-store.plugin") != "")
+    if (system.settings.config.getString("pekko.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null)
 
   }
@@ -80,8 +80,8 @@ final class PersistencePluginProxy(config: Config) extends Actor with Stash with
 
   private val pluginId = self.path.name
   private val pluginType: PluginType = pluginId match {
-    case "akka.persistence.journal.proxy"        => Journal
-    case "akka.persistence.snapshot-store.proxy" => SnapshotStore
+    case "pekko.persistence.journal.proxy"        => Journal
+    case "pekko.persistence.snapshot-store.proxy" => SnapshotStore
     case other =>
       throw new IllegalArgumentException("Unknown plugin type: " + other)
   }

@@ -61,8 +61,8 @@ object BalancingSpec {
 }
 
 class BalancingSpec extends AkkaSpec("""
-    akka.loglevel=debug
-    akka.actor.deployment {
+    pekko.loglevel=debug
+    pekko.actor.deployment {
       /balancingPool-2 {
         router = balancing-pool
         nr-of-instances = 5

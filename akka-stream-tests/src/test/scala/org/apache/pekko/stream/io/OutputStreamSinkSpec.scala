@@ -23,7 +23,7 @@ import pekko.util.ByteString
 @nowarn
 class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher("akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
   implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
 
   "OutputStreamSink" must {

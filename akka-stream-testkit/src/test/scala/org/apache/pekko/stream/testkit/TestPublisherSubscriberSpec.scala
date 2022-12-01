@@ -15,8 +15,8 @@ import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.testkit.AkkaSpec
 
 class TestPublisherSubscriberSpec extends AkkaSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "TestPublisher and TestSubscriber" must {

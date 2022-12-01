@@ -26,9 +26,9 @@ object ReplicatorDeltaSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.log-dead-letters-during-shutdown = off
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.log-dead-letters-during-shutdown = off
     """))
 
   testTransport(on = true)

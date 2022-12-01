@@ -18,7 +18,7 @@ import pekko.testkit.AkkaSpec
 object JavaLoggerSpec {
 
   val config = ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = INFO
       loggers = ["org.apache.pekko.event.jul.JavaLogger"]
       logging-filter = "org.apache.pekko.event.jul.JavaLoggingFilter"

@@ -20,8 +20,8 @@ puppet {
   class = "org.apache.pekko.persistence.JournalPuppet"
   max-message-batch-size = 10
 }
-akka.persistence.journal.plugin = puppet
-akka.persistence.snapshot-store.plugin = "akka.persistence.no-snapshot-store"
+pekko.persistence.journal.plugin = puppet
+pekko.persistence.snapshot-store.plugin = "pekko.persistence.no-snapshot-store"
 """)
 
   sealed trait Command

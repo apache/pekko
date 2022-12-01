@@ -35,7 +35,7 @@ object AeronStreamMaxThroughputSpec extends MultiNodeConfig {
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
        # for serious measurements you should increase the totalMessagesFactor (20)
        org.apache.pekko.test.AeronStreamMaxThroughputSpec.totalMessagesFactor = 1.0
-       akka {
+       pekko {
          loglevel = ERROR
          testconductor.barrier-timeout = ${barrierTimeout.toSeconds}s
          actor {
@@ -91,7 +91,7 @@ abstract class AeronStreamMaxThroughputSpec
     Aeron.connect(ctx)
   }
 
-  val idleCpuLevel = system.settings.config.getInt("akka.remote.artery.advanced.aeron.idle-cpu-level")
+  val idleCpuLevel = system.settings.config.getInt("pekko.remote.artery.advanced.aeron.idle-cpu-level")
   val taskRunner = {
     val r = new TaskRunner(system.asInstanceOf[ExtendedActorSystem], idleCpuLevel)
     r.start()

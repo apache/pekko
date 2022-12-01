@@ -19,11 +19,11 @@ import pekko.testkit.TestProbe
 
 class ClusterSingletonRestartSpec
     extends AkkaSpec("""
-  akka.loglevel = INFO
-  akka.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
-  akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-  akka.cluster.testkit.auto-down-unreachable-after = 2s
-  akka.remote {
+  pekko.loglevel = INFO
+  pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
+  pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+  pekko.cluster.testkit.auto-down-unreachable-after = 2s
+  pekko.remote {
     classic.netty.tcp {
       hostname = "127.0.0.1"
       port = 0
@@ -81,8 +81,8 @@ class ClusterSingletonRestartSpec
 
         val sys3Config =
           ConfigFactory.parseString(s"""
-            akka.remote.artery.canonical.port=$sys1port
-            akka.remote.classic.netty.tcp.port=$sys1port
+            pekko.remote.artery.canonical.port=$sys1port
+            pekko.remote.classic.netty.tcp.port=$sys1port
             """).withFallback(system.settings.config)
 
         ActorSystem(system.name, sys3Config)

@@ -25,7 +25,7 @@ object SystemMessageDeliveryStressTest {
   val burstDelay = 500.millis
 
   val baseConfig: Config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       #loglevel = DEBUG
       remote.artery.enabled = false
       actor.provider = remote
@@ -196,9 +196,9 @@ abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
 class SystemMessageDeliveryRetryGate
     extends SystemMessageDeliveryStressTest(
       "passive connections on",
-      """akka.remote.classic.retry-gate-closed-for = 0.5 s""")
+      """pekko.remote.classic.retry-gate-closed-for = 0.5 s""")
 class SystemMessageDeliveryNoPassiveRetryGate
     extends SystemMessageDeliveryStressTest("passive connections off", """
-    akka.remote.classic.use-passive-connections = off
-    akka.remote.classic.retry-gate-closed-for = 0.5 s
+    pekko.remote.classic.use-passive-connections = off
+    pekko.remote.classic.retry-gate-closed-for = 0.5 s
   """)

@@ -82,7 +82,7 @@ object RemotingSpec {
       hostname = "localhost"
     }
 
-    akka {
+    pekko {
       actor.provider = remote
       # test is using Java serialization and not priority to rewrite
       actor.allow-java-serialization = on
@@ -96,9 +96,9 @@ object RemotingSpec {
           log-remote-lifecycle-events = on
 
           enabled-transports = [
-            "akka.remote.classic.test",
-            "akka.remote.classic.netty.tcp",
-            "akka.remote.classic.netty.ssl"
+            "pekko.remote.classic.test",
+            "pekko.remote.classic.netty.tcp",
+            "pekko.remote.classic.netty.ssl"
           ]
 
           netty.tcp = $${common-netty-settings}
@@ -141,8 +141,8 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
   import RemotingSpec._
 
   val conf = ConfigFactory.parseString("""
-      akka.remote.artery.enabled = false
-      akka.remote.classic.test {
+      pekko.remote.artery.enabled = false
+      pekko.remote.classic.test {
         local-address = "test://remote-sys@localhost:12346"
         maximum-payload-bytes = 48000 bytes
       }
@@ -204,7 +204,7 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
   private def byteStringOfSize(size: Int) = ByteString.fromArray(Array.fill(size)(42: Byte))
 
-  val maxPayloadBytes = system.settings.config.getBytes("akka.remote.classic.test.maximum-payload-bytes").toInt
+  val maxPayloadBytes = system.settings.config.getBytes("pekko.remote.classic.test.maximum-payload-bytes").toInt
 
   override def afterTermination(): Unit = {
     shutdown(remoteSystem)
@@ -241,7 +241,7 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
     "not be exhausted by sending to broken connections" in {
       val tcpOnlyConfig = ConfigFactory
-        .parseString("""akka.remote.enabled-transports = ["akka.remote.classic.netty.tcp"]""")
+        .parseString("""pekko.remote.enabled-transports = ["pekko.remote.classic.netty.tcp"]""")
         .withFallback(remoteSystem.settings.config)
       val moreSystems = Vector.fill(5)(ActorSystem(remoteSystem.name, tcpOnlyConfig))
       moreSystems.foreach { sys =>
@@ -508,8 +508,8 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
       val config = ConfigFactory
         .parseString(
           """
-            akka.remote.classic.enabled-transports = ["akka.remote.classic.test", "akka.remote.classic.netty.tcp"]
-            akka.remote.classic.test.local-address = "test://other-system@localhost:12347"
+            pekko.remote.classic.enabled-transports = ["pekko.remote.classic.test", "pekko.remote.classic.netty.tcp"]
+            pekko.remote.classic.test.local-address = "test://other-system@localhost:12347"
           """)
         .withFallback(remoteSystem.settings.config)
       val otherSystem = ActorSystem("other-system", config)
@@ -546,10 +546,10 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
       val remoteAddress = Address("akka.test", "system2", "localhost", 2)
 
       val config = ConfigFactory.parseString(s"""
-            akka.remote.enabled-transports = ["akka.remote.classic.test"]
-            akka.remote.retry-gate-closed-for = 5s
+            pekko.remote.enabled-transports = ["pekko.remote.classic.test"]
+            pekko.remote.retry-gate-closed-for = 5s
 
-            akka.remote.classic.test {
+            pekko.remote.classic.test {
               registry-key = tFdVxq
               local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
             }
@@ -604,11 +604,11 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
 
       val config = ConfigFactory.parseString(s"""
-        akka.remote.classic.enabled-transports = ["akka.remote.classic.test"]
-        akka.remote.classic.retry-gate-closed-for = 5s
-        akka.remote.classic.log-remote-lifecycle-events = on
+        pekko.remote.classic.enabled-transports = ["pekko.remote.classic.test"]
+        pekko.remote.classic.retry-gate-closed-for = 5s
+        pekko.remote.classic.log-remote-lifecycle-events = on
 
-        akka.remote.classic.test {
+        pekko.remote.classic.test {
           registry-key = TRKAzR
           local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
         }
@@ -686,11 +686,11 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
       val remoteUID = 16
 
       val config = ConfigFactory.parseString(s"""
-        akka.remote.classic.enabled-transports = ["akka.remote.classic.test"]
-        akka.remote.classic.retry-gate-closed-for = 5s
-        akka.remote.classic.log-remote-lifecycle-events = on
+        pekko.remote.classic.enabled-transports = ["pekko.remote.classic.test"]
+        pekko.remote.classic.retry-gate-closed-for = 5s
+        pekko.remote.classic.log-remote-lifecycle-events = on
 
-        akka.remote.classic.test {
+        pekko.remote.classic.test {
           registry-key = JMeMndLLsw
           local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
         }
@@ -771,7 +771,7 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
         retries: Int = 3): (ActorSystem, ActorSelection) = {
       val otherAddress = temporaryServerAddress()
       val otherConfig = ConfigFactory.parseString(s"""
-              akka.remote.classic.netty.tcp.port = ${otherAddress.getPort}
+              pekko.remote.classic.netty.tcp.port = ${otherAddress.getPort}
               """).withFallback(config)
       val otherSelection =
         thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
@@ -789,9 +789,9 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
     "be able to connect to system even if it's not there at first" in {
       val config = ConfigFactory.parseString(s"""
-            akka.remote.classic.enabled-transports = ["akka.remote.classic.netty.tcp"]
-            akka.remote.classic.netty.tcp.port = 0
-            akka.remote.classic.retry-gate-closed-for = 5s
+            pekko.remote.classic.enabled-transports = ["pekko.remote.classic.netty.tcp"]
+            pekko.remote.classic.netty.tcp.port = 0
+            pekko.remote.classic.retry-gate-closed-for = 5s
             """).withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       try {
@@ -818,9 +818,9 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
 
     "allow other system to connect even if it's not there at first" in {
       val config = ConfigFactory.parseString(s"""
-            akka.remote.classic.enabled-transports = ["akka.remote.classic.netty.tcp"]
-            akka.remote.classic.netty.tcp.port = 0
-            akka.remote.classic.retry-gate-closed-for = 5s
+            pekko.remote.classic.enabled-transports = ["pekko.remote.classic.netty.tcp"]
+            pekko.remote.classic.netty.tcp.port = 0
+            pekko.remote.classic.retry-gate-closed-for = 5s
             """).withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       try {
@@ -830,7 +830,7 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
         thisSystem.actorOf(Props[Echo2](), "echo")
         val otherAddress = temporaryServerAddress()
         val otherConfig = ConfigFactory.parseString(s"""
-              akka.remote.classic.netty.tcp.port = ${otherAddress.getPort}
+              pekko.remote.classic.netty.tcp.port = ${otherAddress.getPort}
               """).withFallback(config)
         val otherSelection =
           thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")

@@ -22,8 +22,8 @@ import java.util.concurrent.atomic.AtomicInteger
 object SnapshotMutableStateSpec {
 
   def conf: Config = PersistenceTestKitPlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
-    akka.persistence.snapshot-store.plugin = "slow-snapshot-store"
+    pekko.loglevel = INFO
+    pekko.persistence.snapshot-store.plugin = "slow-snapshot-store"
 
     slow-snapshot-store.class = "${classOf[SlowInMemorySnapshotStore].getName}"
     """))

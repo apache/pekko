@@ -261,7 +261,7 @@ class StubbedSupervisionSpec extends AnyWordSpec with Matchers with LogCapturing
 }
 
 class SupervisionSpec extends ScalaTestWithActorTestKit("""
-    akka.log-dead-letters = off
+    pekko.log-dead-letters = off
     """) with AnyWordSpecLike with LogCapturing {
 
   import BehaviorInterceptor._

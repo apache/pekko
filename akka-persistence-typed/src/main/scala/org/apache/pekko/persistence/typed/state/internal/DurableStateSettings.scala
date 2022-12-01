@@ -25,7 +25,7 @@ import pekko.persistence.Persistence
     apply(system.settings.config, durableStateStorePluginId)
 
   def apply(config: Config, durableStateStorePluginId: String): DurableStateSettings = {
-    val typedConfig = config.getConfig("akka.persistence.typed")
+    val typedConfig = config.getConfig("pekko.persistence.typed")
 
     val stashOverflowStrategy = typedConfig.getString("stash-overflow-strategy").toLowerCase match {
       case "drop" => StashOverflowStrategy.Drop
@@ -56,14 +56,14 @@ import pekko.persistence.Persistence
 
   private def durableStateStoreConfigFor(config: Config, pluginId: String): Config = {
     def defaultPluginId = {
-      val configPath = config.getString("akka.persistence.state.plugin")
+      val configPath = config.getString("pekko.persistence.state.plugin")
       Persistence.verifyPluginConfigIsDefined(configPath, "Default DurableStateStore")
       configPath
     }
 
     val configPath = if (pluginId == "") defaultPluginId else pluginId
     Persistence.verifyPluginConfigExists(config, configPath, "DurableStateStore")
-    config.getConfig(configPath).withFallback(config.getConfig("akka.persistence.state-plugin-fallback"))
+    config.getConfig(configPath).withFallback(config.getConfig("pekko.persistence.state-plugin-fallback"))
   }
 
 }

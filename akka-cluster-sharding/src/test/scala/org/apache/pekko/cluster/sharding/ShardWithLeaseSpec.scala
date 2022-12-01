@@ -26,19 +26,19 @@ import scala.util.control.NoStackTrace
 object ShardWithLeaseSpec {
   val config =
     """
-      akka.loglevel = DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = "cluster"
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
+      pekko.loglevel = DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = "cluster"
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
       test-lease {
           lease-class = org.apache.pekko.coordination.lease.TestLease
           heartbeat-interval = 1s
           heartbeat-timeout = 120s
           lease-operation-timeout = 3s
       }
-      akka.cluster.sharding.verbose-debug-logging = on
-      akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+      pekko.cluster.sharding.verbose-debug-logging = on
+      pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
     """
 
   class EntityActor extends Actor with ActorLogging {

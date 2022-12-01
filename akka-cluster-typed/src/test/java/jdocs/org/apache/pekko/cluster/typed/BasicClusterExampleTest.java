@@ -31,7 +31,7 @@ public class BasicClusterExampleTest { // extends JUnitSuite {
 
   private Config clusterConfig =
       ConfigFactory.parseString(
-          "akka { \n"
+          "pekko { \n"
               + "  actor.provider = cluster \n"
               + "  remote.artery { \n"
               + "    canonical { \n"
@@ -43,8 +43,8 @@ public class BasicClusterExampleTest { // extends JUnitSuite {
 
   private Config noPort =
       ConfigFactory.parseString(
-          "      akka.remote.classic.netty.tcp.port = 0 \n"
-              + "      akka.remote.artery.canonical.port = 0 \n");
+          "      pekko.remote.classic.netty.tcp.port = 0 \n"
+              + "      pekko.remote.artery.canonical.port = 0 \n");
 
   // @Test
   public void clusterApiExample() {

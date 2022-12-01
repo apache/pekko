@@ -126,7 +126,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
 }
 
 object CallingThreadDispatcher {
-  val Id = "akka.test.calling-thread-dispatcher"
+  val Id = "pekko.test.calling-thread-dispatcher"
 }
 
 /**

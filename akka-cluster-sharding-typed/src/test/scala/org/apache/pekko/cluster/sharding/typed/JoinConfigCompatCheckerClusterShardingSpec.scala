@@ -22,16 +22,16 @@ object JoinConfigCompatCheckerClusterShardingSpec {
 
   val Shards = 2
 
-  val Key = "akka.cluster.sharding.number-of-shards"
+  val Key = "pekko.cluster.sharding.number-of-shards"
 
   val baseConfig: Config =
     ConfigFactory.parseString("""
-      akka.actor.provider = "cluster"
-      akka.cluster.sharding.state-store-mode = "persistence"
-      akka.cluster.configuration-compatibility-check.enforce-on-join = on
-      akka.cluster.jmx.enabled = off
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
+      pekko.actor.provider = "cluster"
+      pekko.cluster.sharding.state-store-mode = "persistence"
+      pekko.cluster.configuration-compatibility-check.enforce-on-join = on
+      pekko.cluster.jmx.enabled = off
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
     """)
 
   def clusterConfig: Config =

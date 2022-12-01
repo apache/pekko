@@ -34,7 +34,7 @@ object FileSourceSpec {
 @nowarn
 class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher("akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
   implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
 
   val fs = Jimfs.newFileSystem("FileSourceSpec", Configuration.unix())
@@ -274,7 +274,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       try {
         val p = FileIO
           .fromPath(manyLines)
-          .addAttributes(ActorAttributes.dispatcher("akka.actor.default-dispatcher"))
+          .addAttributes(ActorAttributes.dispatcher("pekko.actor.default-dispatcher"))
           .runWith(TestSink.probe)(materializer)
 
         materializer
@@ -282,7 +282,7 @@ class FileSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           .supervisor
           .tell(StreamSupervisor.GetChildren, testActor)
         val ref = expectMsgType[Children].children.find(_.path.toString contains "fileSource").get
-        try assertDispatcher(ref, "akka.actor.default-dispatcher")
+        try assertDispatcher(ref, "pekko.actor.default-dispatcher")
         finally p.cancel()
       } finally shutdown(sys)
     }

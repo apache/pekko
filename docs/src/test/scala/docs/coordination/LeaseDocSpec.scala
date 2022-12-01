@@ -41,7 +41,7 @@ object LeaseDocSpec {
     ConfigFactory.parseString("""
       jdocs-lease.lease-class = "jdocs.coordination.LeaseDocTest$SampleLease"
       #lease-config
-      akka.actor.provider = cluster
+      pekko.actor.provider = cluster
       docs-lease {
         lease-class = "docs.coordination.SampleLease"
         heartbeat-timeout = 100s

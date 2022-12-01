@@ -50,11 +50,11 @@ object MultipleJournalsSpec {
     journal1 {
       # journal and query expected to be next to each other under config path
       journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      query = $${akka.persistence.testkit.query}
+      query = $${pekko.persistence.testkit.query}
     }
     journal2 {
       journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      query = $${akka.persistence.testkit.query}
+      query = $${pekko.persistence.testkit.query}
     }
   """).withFallback(ConfigFactory.load()).resolve()
 

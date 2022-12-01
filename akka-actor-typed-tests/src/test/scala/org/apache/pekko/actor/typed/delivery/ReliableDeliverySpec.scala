@@ -16,7 +16,7 @@ import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 
 object ReliableDeliverySpec {
   val config: Config = ConfigFactory.parseString("""
-    akka.reliable-delivery.consumer-controller.flow-control-window = 20
+    pekko.reliable-delivery.consumer-controller.flow-control-window = 20
     """)
 }
 
@@ -209,5 +209,5 @@ class ReliableDeliverySpec(config: Config)
 class ReliableDeliveryChunkedSpec
     extends ReliableDeliverySpec(
       ConfigFactory.parseString("""
-    akka.reliable-delivery.producer-controller.chunk-large-messages = 1b
+    pekko.reliable-delivery.producer-controller.chunk-large-messages = 1b
     """).withFallback(TestSerializer.config).withFallback(ReliableDeliverySpec.config))

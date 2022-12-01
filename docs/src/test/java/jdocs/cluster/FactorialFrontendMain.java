@@ -18,7 +18,7 @@ public class FactorialFrontendMain {
     final int upToN = 200;
 
     final Config config =
-        ConfigFactory.parseString("akka.cluster.roles = [frontend]")
+        ConfigFactory.parseString("pekko.cluster.roles = [frontend]")
             .withFallback(ConfigFactory.load("factorial"));
 
     final ActorSystem system = ActorSystem.create("ClusterSystem", config);

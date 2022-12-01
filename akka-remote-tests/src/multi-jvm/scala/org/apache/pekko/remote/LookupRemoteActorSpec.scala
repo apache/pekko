@@ -19,7 +19,7 @@ import pekko.testkit._
 class LookupRemoteActorMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.remote.artery.enabled = $artery
+      pekko.remote.artery.enabled = $artery
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
   val leader = role("leader")

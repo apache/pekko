@@ -22,7 +22,7 @@ import pekko.testkit.TestProbe
 import pekko.util.unused
 
 class GraphUnzipWithSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   import GraphDSL.Implicits._

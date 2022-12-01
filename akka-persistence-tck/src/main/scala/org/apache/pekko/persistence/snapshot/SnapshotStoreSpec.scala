@@ -18,8 +18,8 @@ import pekko.testkit.TestProbe
 
 object SnapshotStoreSpec {
   val config: Config = ConfigFactory.parseString(s"""
-    akka.persistence.publish-plugin-commands = on
-    akka.actor {
+    pekko.persistence.publish-plugin-commands = on
+    pekko.actor {
       serializers {
         persistence-tck-test = "${classOf[TestSerializer].getName}"
       }

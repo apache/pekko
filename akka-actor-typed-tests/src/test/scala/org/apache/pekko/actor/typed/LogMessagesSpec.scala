@@ -16,7 +16,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 
 class LogMessagesSpec extends ScalaTestWithActorTestKit("""
-    akka.loglevel = DEBUG # test verifies debug
+    pekko.loglevel = DEBUG # test verifies debug
     """) with AnyWordSpecLike with LogCapturing {
 
   implicit val classic: actor.ActorSystem = system.toClassic

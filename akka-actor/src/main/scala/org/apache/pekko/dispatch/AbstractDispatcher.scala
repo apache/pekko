@@ -257,7 +257,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
 
   /**
    * When the dispatcher no longer has any actors registered, how long will it wait until it shuts itself down,
-   * defaulting to your akka configs "akka.actor.default-dispatcher.shutdown-timeout" or default specified in
+   * defaulting to your akka configs "pekko.actor.default-dispatcher.shutdown-timeout" or default specified in
    * reference.conf
    *
    * INTERNAL API
@@ -450,7 +450,7 @@ class DefaultExecutorServiceConfigurator(
           Debug(
             "DefaultExecutorServiceConfigurator",
             this.getClass,
-            s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in akka.actor.default-dispatcher.default-executor."))
+            s"Using passed in ExecutionContext as default executor for this ActorSystem. If you want to use a different executor, please specify one in pekko.actor.default-dispatcher.default-executor."))
 
         new AbstractExecutorService with ExecutorServiceFactory with ExecutorServiceFactoryProvider {
           def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = this

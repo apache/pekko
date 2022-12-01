@@ -50,12 +50,12 @@ object MultiDcClusterShardingSpecConfig
     extends MultiNodeClusterShardingConfig(
       loglevel = "DEBUG", // issue #23741
       additionalConfig = s"""
-    akka.cluster {
+    pekko.cluster {
       debug.verbose-heartbeat-logging = on
       debug.verbose-gossip-logging = on
       sharding.retry-interval = 200ms
     }
-    akka.remote.log-remote-lifecycle-events = on
+    pekko.remote.log-remote-lifecycle-events = on
     """) {
 
   val first = role("first")
@@ -64,11 +64,11 @@ object MultiDcClusterShardingSpecConfig
   val fourth = role("fourth")
 
   nodeConfig(first, second) {
-    ConfigFactory.parseString("akka.cluster.multi-data-center.self-data-center = DC1")
+    ConfigFactory.parseString("pekko.cluster.multi-data-center.self-data-center = DC1")
   }
 
   nodeConfig(third, fourth) {
-    ConfigFactory.parseString("akka.cluster.multi-data-center.self-data-center = DC2")
+    ConfigFactory.parseString("pekko.cluster.multi-data-center.self-data-center = DC2")
   }
 }
 

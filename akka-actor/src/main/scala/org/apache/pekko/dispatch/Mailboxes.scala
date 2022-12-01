@@ -29,7 +29,7 @@ import pekko.event.Logging.Warning
 import pekko.util.Reflect
 
 object Mailboxes {
-  final val DefaultMailboxId = "akka.actor.default-mailbox"
+  final val DefaultMailboxId = "pekko.actor.default-mailbox"
   final val NoMailboxRequirement = ""
   final val BoundedCapacityPrefix = "bounded-capacity:"
 }
@@ -67,7 +67,7 @@ private[pekko] class Mailboxes(
   private val mailboxBindings: Map[Class[_ <: Any], String] = {
     import pekko.util.ccompat.JavaConverters._
     settings.config
-      .getConfig("akka.actor.mailbox.requirements")
+      .getConfig("pekko.actor.mailbox.requirements")
       .root
       .unwrapped
       .asScala
@@ -82,7 +82,7 @@ private[pekko] class Mailboxes(
             .recover {
               case e =>
                 throw new ConfigurationException(
-                  s"Type [$k] specified as akka.actor.mailbox.requirement " +
+                  s"Type [$k] specified as pekko.actor.mailbox.requirement " +
                   s"[$v] in config can't be loaded due to [${e.getMessage}]",
                   e)
             }

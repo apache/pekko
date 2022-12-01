@@ -41,17 +41,17 @@ object RememberEntitiesBatchedUpdatesSpec {
   }
 
   def config = ConfigFactory.parseString("""
-      akka.loglevel=DEBUG
-      # akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = cluster
-      akka.remote.artery.canonical.port = 0
-      akka.remote.classic.netty.tcp.port = 0
-      akka.cluster.sharding.state-store-mode = ddata
-      akka.cluster.sharding.remember-entities = on
+      pekko.loglevel=DEBUG
+      # pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = cluster
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.cluster.sharding.state-store-mode = ddata
+      pekko.cluster.sharding.remember-entities = on
       # no leaks between test runs thank you
-      akka.cluster.sharding.distributed-data.durable.keys = []
-      akka.cluster.sharding.verbose-debug-logging = on
-      akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+      pekko.cluster.sharding.distributed-data.durable.keys = []
+      pekko.cluster.sharding.verbose-debug-logging = on
+      pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
     """.stripMargin)
 }
 class RememberEntitiesBatchedUpdatesSpec

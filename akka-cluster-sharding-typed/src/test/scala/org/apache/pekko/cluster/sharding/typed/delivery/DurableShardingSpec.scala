@@ -36,13 +36,13 @@ import pekko.persistence.typed.delivery.EventSourcedProducerQueue
 object DurableShardingSpec {
   def conf: Config =
     ConfigFactory.parseString(s"""
-    akka.actor.provider = cluster
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/DurableShardingSpec-${UUID.randomUUID().toString}"
-    akka.reliable-delivery.consumer-controller.flow-control-window = 20
+    pekko.actor.provider = cluster
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/DurableShardingSpec-${UUID.randomUUID().toString}"
+    pekko.reliable-delivery.consumer-controller.flow-control-window = 20
     """)
 }
 

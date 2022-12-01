@@ -7,7 +7,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-actor-typed_$scala.binary.version$
   version=AkkaVersion
@@ -31,7 +31,7 @@ Typed and classic can interact the following ways:
 * classic actor system can be converted to a typed actor system
 
 @@@ div { .group-scala }
-In the examples the `akka.actor` package is aliased to `classic`.
+In the examples the `pekko.actor` package is aliased to `classic`.
 
 Scala
 :  @@snip [ClassicWatchingTypedSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/coexistence/ClassicWatchingTypedSpec.scala) { #import-alias }

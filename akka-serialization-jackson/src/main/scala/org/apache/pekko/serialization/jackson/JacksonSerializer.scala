@@ -162,7 +162,7 @@ import pekko.util.OptionVal
 /**
  * INTERNAL API: Base class for Jackson serializers.
  *
- * Configuration in `akka.serialization.jackson` section.
+ * Configuration in `pekko.serialization.jackson` section.
  * It will load Jackson modules defined in configuration `jackson-modules`.
  *
  * It will compress the payload if the compression `algorithm` is enabled and the the
@@ -426,8 +426,8 @@ import pekko.util.OptionVal
     } else if (!isInAllowList(clazz)) {
       val warnMsg = s"Can't serialize/deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         "Only classes that are listed as allowed are allowed for security reasons. " +
-        "Configure allowed classes with akka.actor.serialization-bindings or " +
-        "akka.serialization.jackson.allowed-class-prefix."
+        "Configure allowed classes with pekko.actor.serialization-bindings or " +
+        "pekko.serialization.jackson.allowed-class-prefix."
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }
@@ -487,7 +487,7 @@ import pekko.util.OptionVal
         if (!isBindingOk(clazz)) {
           val warnMsg = "For security reasons it's not allowed to bind open-ended interfaces like " +
             s"[${clazz.getName}] to [${getClass.getName}]. " +
-            "Change your akka.actor.serialization-bindings configuration."
+            "Change your pekko.actor.serialization-bindings configuration."
           log.warning(LogMarker.Security, warnMsg)
           throw new IllegalArgumentException(warnMsg)
         }

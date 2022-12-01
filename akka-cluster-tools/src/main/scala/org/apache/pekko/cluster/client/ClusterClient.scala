@@ -53,14 +53,14 @@ object ClusterClientSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.client`.
+   * `pekko.cluster.client`.
    */
   def apply(system: ActorSystem): ClusterClientSettings =
-    apply(system.settings.config.getConfig("akka.cluster.client"))
+    apply(system.settings.config.getConfig("pekko.cluster.client"))
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.client`.
+   * the default configuration `pekko.cluster.client`.
    */
   def apply(config: Config): ClusterClientSettings = {
     val initialContacts = immutableSeq(config.getStringList("initial-contacts")).map(ActorPath.fromString).toSet
@@ -79,13 +79,13 @@ object ClusterClientSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.client`.
+   * `pekko.cluster.client`.
    */
   def create(system: ActorSystem): ClusterClientSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.client`.
+   * the default configuration `pekko.cluster.client`.
    */
   def create(config: Config): ClusterClientSettings = apply(config)
 
@@ -570,7 +570,7 @@ object ClusterClientReceptionist extends ExtensionId[ClusterClientReceptionist] 
 
 /**
  * Extension that starts [[ClusterReceptionist]] and accompanying [[pekko.cluster.pubsub.DistributedPubSubMediator]]
- * with settings defined in config section `akka.cluster.client.receptionist`.
+ * with settings defined in config section `pekko.cluster.client.receptionist`.
  * The [[pekko.cluster.pubsub.DistributedPubSubMediator]] is started by the [[pekko.cluster.pubsub.DistributedPubSub]] extension.
  */
 @deprecated(
@@ -578,7 +578,7 @@ object ClusterClientReceptionist extends ExtensionId[ClusterClientReceptionist] 
   since = "2.6.0")
 final class ClusterClientReceptionist(system: ExtendedActorSystem) extends Extension {
 
-  private val config = system.settings.config.getConfig("akka.cluster.client.receptionist")
+  private val config = system.settings.config.getConfig("pekko.cluster.client.receptionist")
   private val role: Option[String] = config.getString("role") match {
     case "" => None
     case r  => Some(r)
@@ -658,14 +658,14 @@ object ClusterReceptionistSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.client.receptionist`.
+   * `pekko.cluster.client.receptionist`.
    */
   def apply(system: ActorSystem): ClusterReceptionistSettings =
-    apply(system.settings.config.getConfig("akka.cluster.client.receptionist"))
+    apply(system.settings.config.getConfig("pekko.cluster.client.receptionist"))
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.client.receptionist`.
+   * the default configuration `pekko.cluster.client.receptionist`.
    */
   def apply(config: Config): ClusterReceptionistSettings =
     new ClusterReceptionistSettings(
@@ -678,13 +678,13 @@ object ClusterReceptionistSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.client.receptionist`.
+   * `pekko.cluster.client.receptionist`.
    */
   def create(system: ActorSystem): ClusterReceptionistSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.client.receptionist`.
+   * the default configuration `pekko.cluster.client.receptionist`.
    */
   def create(config: Config): ClusterReceptionistSettings = apply(config)
 

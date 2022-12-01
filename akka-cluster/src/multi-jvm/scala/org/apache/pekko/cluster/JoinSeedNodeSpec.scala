@@ -23,10 +23,10 @@ object JoinSeedNodeMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("""akka.cluster.app-version="1.0""""))
+      .withFallback(ConfigFactory.parseString("""pekko.cluster.app-version="1.0""""))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
-  nodeConfig(ordinary1, ordinary2)(ConfigFactory.parseString("""akka.cluster.app-version="2.0""""))
+  nodeConfig(ordinary1, ordinary2)(ConfigFactory.parseString("""pekko.cluster.app-version="2.0""""))
 }
 
 class JoinSeedNodeMultiJvmNode1 extends JoinSeedNodeSpec

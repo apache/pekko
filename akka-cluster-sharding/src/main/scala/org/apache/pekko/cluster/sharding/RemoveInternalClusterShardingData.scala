@@ -70,7 +70,7 @@ object RemoveInternalClusterShardingData {
       if (typeNames.isEmpty)
         println("Specify the Cluster Sharding type names to remove in program arguments")
       else {
-        val journalPluginId = system.settings.config.getString("akka.cluster.sharding.journal-plugin-id")
+        val journalPluginId = system.settings.config.getString("pekko.cluster.sharding.journal-plugin-id")
         import system.dispatcher
         remove(system, journalPluginId, typeNames, remove2dot3Data).onComplete { _ =>
           system.terminate()
@@ -90,9 +90,9 @@ object RemoveInternalClusterShardingData {
       remove2dot3Data: Boolean): Future[Unit] = {
 
     val resolvedJournalPluginId =
-      if (journalPluginId == "") system.settings.config.getString("akka.persistence.journal.plugin")
+      if (journalPluginId == "") system.settings.config.getString("pekko.persistence.journal.plugin")
       else journalPluginId
-    if (resolvedJournalPluginId == "akka.persistence.journal.leveldb-shared") {
+    if (resolvedJournalPluginId == "pekko.persistence.journal.leveldb-shared") {
       @nowarn("msg=deprecated")
       val store = system.actorOf(Props[SharedLeveldbStore](), "store")
       SharedLeveldbJournal.setStore(store, system)

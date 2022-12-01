@@ -20,7 +20,7 @@ import pekko.testkit.AkkaSpec
 
 object RemoteMessageSpec {
   def config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = debug
       actor.provider = cluster
       remote.classic.netty.tcp.port = 0

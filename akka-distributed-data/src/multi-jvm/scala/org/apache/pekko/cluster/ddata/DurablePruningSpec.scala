@@ -26,11 +26,11 @@ object DurablePruningSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.log-dead-letters-during-shutdown = off
-    akka.cluster.distributed-data.durable.keys = ["*"]
-    akka.cluster.distributed-data.durable.lmdb {
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.cluster.distributed-data.durable.keys = ["*"]
+    pekko.cluster.distributed-data.durable.lmdb {
       dir = target/DurablePruningSpec-${System.currentTimeMillis}-ddata
       map-size = 10 MiB
     }
@@ -162,8 +162,8 @@ class DurablePruningSpec extends MultiNodeSpec(DurablePruningSpec) with STMultiN
         val sys3 = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-                  akka.remote.artery.canonical.port = ${address.port.get}
-                  akka.remote.classic.netty.tcp.port = ${address.port.get}
+                  pekko.remote.artery.canonical.port = ${address.port.get}
+                  pekko.remote.classic.netty.tcp.port = ${address.port.get}
                   """).withFallback(system.settings.config))
         val cluster3 = Cluster(sys3)
         val replicator3 = startReplicator(sys3)

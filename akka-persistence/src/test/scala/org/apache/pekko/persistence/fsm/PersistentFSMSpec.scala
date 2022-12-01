@@ -364,12 +364,12 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
 
     }
 
-    "save periodical snapshots if akka.persistence.fsm.enable-snapshot-after = on" in {
+    "save periodical snapshots if pekko.persistence.fsm.enable-snapshot-after = on" in {
       val sys2 = ActorSystem(
         "PersistentFsmSpec2",
         ConfigFactory.parseString("""
-            akka.persistence.fsm.enable-snapshot-after = on
-            akka.persistence.fsm.snapshot-after = 3
+            pekko.persistence.fsm.enable-snapshot-after = on
+            pekko.persistence.fsm.snapshot-after = 3
           """).withFallback(PersistenceSpec.config("inmem", "PersistentFSMSpec2")))
 
       try {
@@ -391,7 +391,7 @@ abstract class PersistentFSMSpec(config: Config) extends PersistenceSpec(config)
 
       } finally {
         val storageLocations =
-          List("akka.persistence.snapshot-store.local.dir").map(s => new File(sys2.settings.config.getString(s)))
+          List("pekko.persistence.snapshot-store.local.dir").map(s => new File(sys2.settings.config.getString(s)))
         shutdown(sys2)
         storageLocations.foreach(FileUtils.deleteDirectory)
       }

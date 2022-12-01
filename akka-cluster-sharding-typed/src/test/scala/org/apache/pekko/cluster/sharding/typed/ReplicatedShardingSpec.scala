@@ -39,26 +39,26 @@ import org.scalatest.time.Span
 @ccompatUsedUntil213
 object ReplicatedShardingSpec {
   def commonConfig = ConfigFactory.parseString("""
-      akka.loglevel = DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = "cluster"
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0""").withFallback(PersistenceTestKitPlugin.config)
+      pekko.loglevel = DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = "cluster"
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0""").withFallback(PersistenceTestKitPlugin.config)
 
   def roleAConfig = ConfigFactory.parseString("""
-            akka.cluster.roles = ["DC-A"]
+            pekko.cluster.roles = ["DC-A"]
             """.stripMargin).withFallback(commonConfig)
 
   def roleBConfig = ConfigFactory.parseString("""
-            akka.cluster.roles = ["DC-B"]
+            pekko.cluster.roles = ["DC-B"]
             """.stripMargin).withFallback(commonConfig)
 
   def dcAConfig = ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "DC-A"
+      pekko.cluster.multi-data-center.self-data-center = "DC-A"
       """).withFallback(commonConfig)
 
   def dcBConfig = ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "DC-B"
+      pekko.cluster.multi-data-center.self-data-center = "DC-B"
       """).withFallback(commonConfig)
 
   sealed trait ReplicationType

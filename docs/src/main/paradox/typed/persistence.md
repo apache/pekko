@@ -12,7 +12,7 @@ To use Akka Persistence, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-persistence-typed_$scala.binary.version$
   version=AkkaVersion
@@ -479,7 +479,7 @@ to not overload the system and the backend data store. When exceeding the limit 
 until other recoveries have been completed. This is configured by:
 
 ```
-akka.persistence.max-concurrent-recoveries = 50
+pekko.persistence.max-concurrent-recoveries = 50
 ```
 
 The @ref:[event handler](#event-handler) is used for updating the state when replaying the journaled events.
@@ -507,7 +507,7 @@ There could be cases where event streams are corrupted and multiple writers (i.e
 journaled different messages with the same sequence number.
 In such a case, you can configure how you filter replayed messages from multiple writers, upon recovery.
 
-In your configuration, under the `akka.persistence.journal.xxx.replay-filter` section (where `xxx` is your journal plugin id),
+In your configuration, under the `pekko.persistence.journal.xxx.replay-filter` section (where `xxx` is your journal plugin id),
 you can select the replay filter `mode` from one of the following values:
 
  * repair-by-discard-old
@@ -520,7 +520,7 @@ For example, if you configure the replay filter for leveldb plugin, it looks lik
 ```
 # The replay filter can detect a corrupt event stream by inspecting
 # sequence numbers and writerUuid when replaying events.
-akka.persistence.journal.leveldb.replay-filter {
+pekko.persistence.journal.leveldb.replay-filter {
   # What the filter should do when detecting invalid events.
   # Supported values:
   # `repair-by-discard-old` : discard events from old writers,
@@ -643,7 +643,7 @@ You should be careful to not send more messages to a persistent actor than it ca
 buffer will fill up and when reaching its maximum capacity the commands will be dropped. The capacity can be configured with:
 
 ```
-akka.persistence.typed.stash-capacity = 10000
+pekko.persistence.typed.stash-capacity = 10000
 ```
 
 Note that the stashed commands are kept in an in-memory buffer, so in case of a crash they will not be

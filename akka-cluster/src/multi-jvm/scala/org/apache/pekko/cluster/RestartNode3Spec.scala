@@ -32,11 +32,11 @@ object RestartNode3MultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster.testkit.auto-down-unreachable-after = off
-      akka.cluster.allow-weakly-up-members = off
+      pekko.cluster.testkit.auto-down-unreachable-after = off
+      pekko.cluster.allow-weakly-up-members = off
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
       """))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
@@ -63,8 +63,8 @@ abstract class RestartNode3Spec extends MultiNodeClusterSpec(RestartNode3MultiJv
   lazy val restartedSecondSystem = ActorSystem(
     system.name,
     ConfigFactory.parseString(s"""
-        akka.remote.artery.canonical.port = ${secondUniqueAddress.address.port.get}
-        akka.remote.classic.netty.tcp.port = ${secondUniqueAddress.address.port.get}
+        pekko.remote.artery.canonical.port = ${secondUniqueAddress.address.port.get}
+        pekko.remote.classic.netty.tcp.port = ${secondUniqueAddress.address.port.get}
         """).withFallback(system.settings.config))
 
   override def afterAll(): Unit = {

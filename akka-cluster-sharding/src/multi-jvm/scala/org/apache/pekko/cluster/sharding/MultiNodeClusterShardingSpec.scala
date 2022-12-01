@@ -92,7 +92,8 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
     ClusterSharding(system).defaultShardAllocationStrategy(settings)
 
   protected lazy val storageLocations = List(
-    new File(system.settings.config.getString("akka.cluster.sharding.distributed-data.durable.lmdb.dir")).getParentFile)
+    new File(
+      system.settings.config.getString("pekko.cluster.sharding.distributed-data.durable.lmdb.dir")).getParentFile)
 
   override def expectedTestDuration = 120.seconds
 
@@ -175,7 +176,7 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
     mode == ClusterShardingSettings.StateStoreModePersistence ||
     system.settings.config
       .getString(
-        "akka.cluster.sharding.remember-entities-store") == ClusterShardingSettings.RememberEntitiesStoreEventsourced
+        "pekko.cluster.sharding.remember-entities-store") == ClusterShardingSettings.RememberEntitiesStoreEventsourced
 
   protected def setStoreIfNeeded(sys: ActorSystem, storeOn: RoleName): Unit =
     if (persistenceIsNeeded) setStore(sys, storeOn)

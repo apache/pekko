@@ -103,7 +103,7 @@ object MetadataCarryingSpec {
 }
 
 class MetadataCarryingSpec extends ArteryMultiNodeSpec("""
-    akka {
+    pekko {
       remote.artery.advanced {
         instruments = [ "org.apache.pekko.remote.artery.TestInstrument" ]
       }

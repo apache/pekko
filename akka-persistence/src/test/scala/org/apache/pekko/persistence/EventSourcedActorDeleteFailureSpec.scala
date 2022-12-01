@@ -52,7 +52,7 @@ class EventSourcedActorDeleteFailureSpec
         "SnapshotFailureRobustnessSpec",
         extraConfig = Some(
           """
-  akka.persistence.journal.inmem.class = "org.apache.pekko.persistence.EventSourcedActorDeleteFailureSpec$DeleteFailingInmemJournal"
+  pekko.persistence.journal.inmem.class = "org.apache.pekko.persistence.EventSourcedActorDeleteFailureSpec$DeleteFailingInmemJournal"
   """)))
     with ImplicitSender {
   import EventSourcedActorDeleteFailureSpec._

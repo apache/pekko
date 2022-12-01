@@ -40,8 +40,8 @@ object AutoDownSpec {
 }
 
 class AutoDownSpec extends AkkaSpec("""
-    |akka.actor.provider=remote
-    |akka.remote.warn-about-direct-use=off
+    |pekko.actor.provider=remote
+    |pekko.remote.warn-about-direct-use=off
     |""".stripMargin) {
   import AutoDownSpec._
 

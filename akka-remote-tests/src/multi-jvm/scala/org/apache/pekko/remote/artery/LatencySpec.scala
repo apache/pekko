@@ -35,7 +35,7 @@ object LatencySpec extends MultiNodeConfig {
        org.apache.pekko.test.LatencySpec.totalMessagesFactor = 1.0
        org.apache.pekko.test.LatencySpec.repeatCount = 1
        org.apache.pekko.test.LatencySpec.real-message = off
-       akka {
+       pekko {
          loglevel = ERROR
          # avoid TestEventListener
          loggers = ["org.apache.pekko.event.Logging$$DefaultLogger"]

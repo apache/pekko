@@ -22,8 +22,8 @@ final case class ConvergenceMultiNodeConfig(failureDetectorPuppet: Boolean) exte
 
   commonConfig(
     debugConfig(on = false).withFallback(ConfigFactory.parseString("""
-      akka.cluster.failure-detector.threshold = 4
-      akka.cluster.allow-weakly-up-members = off
+      pekko.cluster.failure-detector.threshold = 4
+      pekko.cluster.allow-weakly-up-members = off
       """)).withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 }
 

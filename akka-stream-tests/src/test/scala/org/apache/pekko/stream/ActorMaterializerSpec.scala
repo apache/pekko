@@ -54,7 +54,7 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
       implicit val deadlockSystem = ActorSystem(
         "ActorMaterializerSpec-deadlock",
         ConfigFactory.parseString(s"""
-          akka.actor.default-dispatcher {
+          pekko.actor.default-dispatcher {
             executor = "fork-join-executor"
             fork-join-executor {
               parallelism-min = $n
@@ -63,8 +63,8 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
             }
           }
           # undo stream testkit specific dispatcher and run "normally"
-          akka.actor.default-mailbox.mailbox-type = "org.apache.pekko.dispatch.UnboundedMailbox"
-          akka.stream.materializer.dispatcher = "akka.actor.default-dispatcher"
+          pekko.actor.default-mailbox.mailbox-type = "org.apache.pekko.dispatch.UnboundedMailbox"
+          pekko.stream.materializer.dispatcher = "pekko.actor.default-dispatcher"
           """))
       try {
         import deadlockSystem.dispatcher
@@ -139,7 +139,7 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
     "terminate if ActorContext it was created from terminates" in {
       val p = TestProbe()
 
-      val a = system.actorOf(Props(new ActorWithMaterializer(p)).withDispatcher("akka.test.stream-dispatcher"))
+      val a = system.actorOf(Props(new ActorWithMaterializer(p)).withDispatcher("pekko.test.stream-dispatcher"))
 
       p.expectMsg("hello")
       a ! PoisonPill
@@ -161,7 +161,7 @@ object ActorMaterializerSpec {
   @nowarn("msg=deprecated")
   class ActorWithMaterializer(p: TestProbe) extends Actor {
     private val settings: ActorMaterializerSettings =
-      ActorMaterializerSettings(context.system).withDispatcher("akka.test.stream-dispatcher")
+      ActorMaterializerSettings(context.system).withDispatcher("pekko.test.stream-dispatcher")
     implicit val mat: ActorMaterializer = ActorMaterializer(settings)(context)
 
     Source

@@ -36,10 +36,10 @@ private[pekko] object SnapshotAfter extends ExtensionId[SnapshotAfter] with Exte
 
 /**
  * SnapshotAfter enables PersistentFSM to take periodical snapshot.
- * See `akka.persistence.fsm.snapshot-after` for configuration options.
+ * See `pekko.persistence.fsm.snapshot-after` for configuration options.
  */
 private[pekko] class SnapshotAfter(config: Config) extends Extension {
-  val key = "akka.persistence.fsm.snapshot-after"
+  val key = "pekko.persistence.fsm.snapshot-after"
   val snapshotAfterValue = config.getString(key).toLowerCase match {
     case "off" => None
     case _     => Some(config.getInt(key))

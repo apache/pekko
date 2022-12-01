@@ -85,7 +85,7 @@ trait LoggingBus extends ActorEventBus {
           new LoggerException,
           simpleName(this),
           this.getClass,
-          "unknown akka.stdout-loglevel " + config.StdoutLogLevel))
+          "unknown pekko.stdout-loglevel " + config.StdoutLogLevel))
       ErrorLevel
     }
     AllLogLevels.filter(level >= _).foreach(l => subscribe(StandardOutLogger, classFor(l)))
@@ -111,7 +111,7 @@ trait LoggingBus extends ActorEventBus {
     val level = levelFor(system.settings.LogLevel).getOrElse {
       // only log initialization errors directly with StandardOutLogger.print
       StandardOutLogger.print(
-        Error(new LoggerException, logName, this.getClass, "unknown akka.loglevel " + system.settings.LogLevel))
+        Error(new LoggerException, logName, this.getClass, "unknown pekko.loglevel " + system.settings.LogLevel))
       ErrorLevel
     }
     try {
@@ -420,7 +420,7 @@ object LogSource {
  * Logging is configured by setting (some of) the following:
  *
  * <pre><code>
- * akka {
+ * pekko {
  *   loggers = ["org.apache.pekko.slf4j.Slf4jLogger"] # for example
  *   loglevel = "INFO"        # used when normal logging ("loggers") has been started
  *   stdout-loglevel = "WARN" # used during application start-up until normal logging is available
@@ -1101,7 +1101,7 @@ object Logging {
    * output. This logger is always attached first in order to be able to log
    * failures during application start-up, even before normal logging is
    * started. Its log level can be defined by configuration setting
-   * <code>akka.stdout-loglevel</code>.
+   * <code>pekko.stdout-loglevel</code>.
    */
   class StandardOutLogger extends MinimalActorRef with StdOutLogger {
     val path: ActorPath = RootActorPath(Address("akka", "all-systems"), "/StandardOutLogger")
@@ -1129,7 +1129,7 @@ object Logging {
 
   /**
    * Actor wrapper around the standard output logger. If
-   * <code>akka.loggers</code> is not set, it defaults to just this
+   * <code>pekko.loggers</code> is not set, it defaults to just this
    * logger.
    */
   class DefaultLogger extends Actor with StdOutLogger with RequiresMessageQueue[LoggerMessageQueueSemantics] {

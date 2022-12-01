@@ -9,7 +9,7 @@ Emit each integer in a range, with an option to take bigger steps than 1.
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream_$scala.binary.version$"
   version=AkkaVersion

@@ -18,13 +18,13 @@ object DispatchSpec {
   }
 }
 class DispatchSpec extends AkkaSpec("""
-  akka.actor.serialize-messages = on
-  akka.actor.no-serialization-verification-needed-class-prefix = []
+  pekko.actor.serialize-messages = on
+  pekko.actor.no-serialization-verification-needed-class-prefix = []
   """) with DefaultTimeout {
   import DispatchSpec._
 
   "The dispatcher" should {
-    "log an appropriate message when akka.actor.serialize-messages triggers a serialization error" in {
+    "log an appropriate message when pekko.actor.serialize-messages triggers a serialization error" in {
       val actor = system.actorOf(Props[EmptyActor]())
       EventFilter[Exception](pattern = ".*NoSerializationVerificationNeeded.*", occurrences = 1).intercept {
         actor ! new UnserializableMessageClass

@@ -10,7 +10,7 @@ An attacker that can connect to an `ActorSystem` exposed via Akka Remote over TC
 capabilities in the context of the JVM process that runs the ActorSystem if:
 
  * `JavaSerializer` is enabled (default in Akka 2.4.x)
- * and TLS is disabled *or* TLS is enabled with `akka.remote.netty.ssl.security.require-mutual-authentication = false`
+ * and TLS is disabled *or* TLS is enabled with `pekko.remote.netty.ssl.security.require-mutual-authentication = false`
 (which is still the default in Akka 2.4.x)
  * or if TLS is enabled with mutual authentication and the authentication keys of a host that is allowed to connect have been compromised, an attacker gained access to a valid certificate (e.g. by compromising a node with certificates issued by the same internal PKI tree to get access of the certificate)
  * regardless of whether `untrusted` mode is enabled or not

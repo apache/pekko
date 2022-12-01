@@ -36,11 +36,11 @@ object TypedActorSpec {
         fixed-pool-size = 60
       }
     }
-    akka.actor.serializers.sample = "org.apache.pekko.actor.TypedActorSpec$SampleSerializerWithStringManifest$"
-    akka.actor.serialization-bindings."org.apache.pekko.actor.TypedActorSpec$WithStringSerializedClass" = sample
+    pekko.actor.serializers.sample = "org.apache.pekko.actor.TypedActorSpec$SampleSerializerWithStringManifest$"
+    pekko.actor.serialization-bindings."org.apache.pekko.actor.TypedActorSpec$WithStringSerializedClass" = sample
     # test is using Java serialization and not priority to convert
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """
 
   class CyclicIterator[T](val items: immutable.Seq[T]) extends Iterator[T] {

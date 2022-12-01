@@ -52,7 +52,7 @@ object FactorialFrontend {
     val upToN = 200
 
     val config =
-      ConfigFactory.parseString("akka.cluster.roles = [frontend]").withFallback(ConfigFactory.load("factorial"))
+      ConfigFactory.parseString("pekko.cluster.roles = [frontend]").withFallback(ConfigFactory.load("factorial"))
 
     val system = ActorSystem("ClusterSystem", config)
     system.log.info("Factorials will start when 2 backend members in the cluster.")

@@ -23,11 +23,11 @@ import pekko.serialization.jackson.CborSerializable
 object ClusterSingletonApiSpec {
 
   val config = ConfigFactory.parseString(s"""
-      akka.actor.provider = cluster
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
-      akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+      pekko.actor.provider = cluster
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
     """)
 
   sealed trait PingProtocol
@@ -61,7 +61,7 @@ class ClusterSingletonApiSpec
   val system2 = pekko.actor.ActorSystem(
     system.name,
     ConfigFactory.parseString("""
-        akka.cluster.roles = ["singleton"]
+        pekko.cluster.roles = ["singleton"]
       """).withFallback(system.settings.config))
   val adaptedSystem2 = system2.toTyped
   val clusterNode2 = Cluster(adaptedSystem2)

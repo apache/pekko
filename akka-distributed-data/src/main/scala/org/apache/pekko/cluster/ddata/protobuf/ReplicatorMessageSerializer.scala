@@ -156,7 +156,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   import ReplicatorMessageSerializer.SmallCache
 
   private val cacheTimeToLive = system.settings.config
-    .getDuration("akka.cluster.distributed-data.serializer-cache-time-to-live", TimeUnit.MILLISECONDS)
+    .getDuration("pekko.cluster.distributed-data.serializer-cache-time-to-live", TimeUnit.MILLISECONDS)
     .millis
   private val readCache = new SmallCache[Read, Array[Byte]](4, cacheTimeToLive, m => readToProto(m).toByteArray)
   private val writeCache = new SmallCache[Write, Array[Byte]](4, cacheTimeToLive, m => writeToProto(m).toByteArray)

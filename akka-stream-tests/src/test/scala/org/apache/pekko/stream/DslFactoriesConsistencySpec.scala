@@ -239,7 +239,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
   }
 
   def returnTypeString(m: Method): String =
-    m.returnType.getName.drop("akka.stream.".length)
+    m.returnType.getName.drop("pekko.stream.".length)
 
   case class Method(name: String, parameterTypes: List[Class[_]], returnType: Class[_], declaringClass: Class[_])
 

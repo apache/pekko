@@ -18,27 +18,27 @@ import pekko.util.Timeout
 object TestKitSettings {
 
   /**
-   * Reads configuration settings from `akka.actor.testkit.typed` section.
+   * Reads configuration settings from `pekko.actor.testkit.typed` section.
    */
   def apply(system: ActorSystem[_]): TestKitSettings =
     Ext(system).settings
 
   /**
    * Reads configuration settings from given `Config` that
-   * must have the same layout as the `akka.actor.testkit.typed` section.
+   * must have the same layout as the `pekko.actor.testkit.typed` section.
    */
   def apply(config: Config): TestKitSettings =
     new TestKitSettings(config)
 
   /**
-   * Java API: Reads configuration settings from `akka.actor.testkit.typed` section.
+   * Java API: Reads configuration settings from `pekko.actor.testkit.typed` section.
    */
   def create(system: ActorSystem[_]): TestKitSettings =
     apply(system)
 
   /**
    * Reads configuration settings from given `Config` that
-   * must have the same layout as the `akka.actor.testkit.typed` section.
+   * must have the same layout as the `pekko.actor.testkit.typed` section.
    */
   def create(config: Config): TestKitSettings =
     new TestKitSettings(config)
@@ -49,7 +49,7 @@ object TestKitSettings {
   }
 
   private class Ext(system: ActorSystem[_]) extends Extension {
-    val settings: TestKitSettings = TestKitSettings(system.settings.config.getConfig("akka.actor.testkit.typed"))
+    val settings: TestKitSettings = TestKitSettings(system.settings.config.getConfig("pekko.actor.testkit.typed"))
   }
 }
 

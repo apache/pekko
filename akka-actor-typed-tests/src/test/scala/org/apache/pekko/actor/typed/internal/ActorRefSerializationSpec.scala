@@ -16,13 +16,13 @@ import pekko.serialization.{ JavaSerializer, SerializationExtension }
 
 object ActorRefSerializationSpec {
   def config = ConfigFactory.parseString("""
-      akka.actor {
+      pekko.actor {
         # test is verifying Java serialization of ActorRef
         allow-java-serialization = on
         warn-about-java-serializer-usage = off
       }
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
     """)
 
   case class MessageWrappingActorRef(s: String, ref: ActorRef[Unit]) extends java.io.Serializable

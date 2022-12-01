@@ -32,7 +32,7 @@ object Configuration {
   private val trustStore = getClass.getClassLoader.getResource("truststore").getPath
   private val keyStore = getClass.getClassLoader.getResource("keystore").getPath
   private val conf = """
-    akka {
+    pekko {
       actor.provider = remote
       test {
         single-expect-default = 10s
@@ -42,7 +42,7 @@ object Configuration {
       
       remote.artery.enabled = off 
 
-      remote.classic.enabled-transports = ["akka.remote.classic.netty.ssl"]
+      remote.classic.enabled-transports = ["pekko.remote.classic.netty.ssl"]
 
       remote.classic.netty.ssl {
         hostname = localhost
@@ -60,8 +60,8 @@ object Configuration {
       }
     }
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
                      """
 
   final case class CipherConfig(
@@ -84,7 +84,7 @@ object Configuration {
       val fullConfig = config
         .withFallback(AkkaSpec.testConf)
         .withFallback(ConfigFactory.load)
-        .getConfig("akka.remote.classic.netty.ssl.security")
+        .getConfig("pekko.remote.classic.netty.ssl.security")
       val settings = new SSLSettings(fullConfig)
 
       val sslEngineProvider = new ConfigSSLEngineProvider(NoMarkerLogging, settings)
@@ -135,7 +135,7 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
   lazy val other: ActorSystem = ActorSystem(
     "remote-sys",
     ConfigFactory
-      .parseString("akka.remote.classic.netty.ssl.port = " + cipherConfig.remotePort)
+      .parseString("pekko.remote.classic.netty.ssl.port = " + cipherConfig.remotePort)
       .withFallback(system.settings.config))
 
   override def afterTermination(): Unit = {

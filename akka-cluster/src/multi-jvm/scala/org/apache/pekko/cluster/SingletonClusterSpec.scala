@@ -21,7 +21,7 @@ final case class SingletonClusterMultiNodeConfig(failureDetectorPuppet: Boolean)
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster {
+      pekko.cluster {
         downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
         testkit.auto-down-unreachable-after = 0s
         failure-detector.threshold = 4
