@@ -26,19 +26,19 @@ class RemoteReDeploymentConfig(artery: Boolean) extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(
-    debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""akka.remote.classic.transport-failure-detector {
+    debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""pekko.remote.classic.transport-failure-detector {
          threshold=0.1
          heartbeat-interval=0.1s
          acceptable-heartbeat-pause=1s
        }
-       akka.remote.watch-failure-detector {
+       pekko.remote.watch-failure-detector {
          threshold=0.1
          heartbeat-interval=0.1s
          acceptable-heartbeat-pause=2.5s
        }
-       akka.remote.artery.enabled = $artery
-       akka.remote.use-unsafe-remote-features-outside-cluster = on
-       akka.loglevel = INFO
+       pekko.remote.artery.enabled = $artery
+       pekko.remote.use-unsafe-remote-features-outside-cluster = on
+       pekko.loglevel = INFO
        """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
   testTransport(on = true)

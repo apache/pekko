@@ -13,7 +13,7 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 
 class FlowIdleInjectSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "keepAlive" must {

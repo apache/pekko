@@ -61,7 +61,7 @@ object DistributedData extends ExtensionId[DistributedData] {
 /**
  * Akka extension for convenient configuration and use of the
  * [[Replicator]]. Configuration settings are defined in the
- * `akka.cluster.ddata` section, see `reference.conf`.
+ * `pekko.cluster.ddata` section, see `reference.conf`.
  *
  * This is using the same underlying `Replicator` instance as
  * [[pekko.cluster.ddata.DistributedData]] and that means that typed
@@ -75,7 +75,7 @@ class DistributedData(system: ActorSystem[_]) extends Extension {
   /** INTERNAL API */
   @InternalApi private[pekko] val unexpectedAskTimeout: FiniteDuration =
     system.settings.config
-      .getDuration("akka.cluster.ddata.typed.replicator-message-adapter-unexpected-ask-timeout")
+      .getDuration("pekko.cluster.ddata.typed.replicator-message-adapter-unexpected-ask-timeout")
       .asScala
 
   private val classicSystem = system.toClassic.asInstanceOf[ExtendedActorSystem]

@@ -39,15 +39,15 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
   val sixth = role("sixth")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-    akka.cluster.testkit.auto-down-unreachable-after = 0s
-    akka.remote.artery.advanced.aeron.idle-cpu-level = 3
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+    pekko.cluster.testkit.auto-down-unreachable-after = 0s
+    pekko.remote.artery.advanced.aeron.idle-cpu-level = 3
     """))
 
-  nodeConfig(first, second, third, fourth, fifth, sixth)(ConfigFactory.parseString("akka.cluster.roles =[worker]"))
+  nodeConfig(first, second, third, fourth, fifth, sixth)(ConfigFactory.parseString("pekko.cluster.roles =[worker]"))
 
   // #singleton-message-classes
   object PointToPointChannel {

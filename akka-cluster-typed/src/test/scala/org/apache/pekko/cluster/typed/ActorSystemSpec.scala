@@ -69,17 +69,17 @@ class ActorSystemSpec
     with Eventually
     with LogCapturing {
 
-  private val testKitSettings = TestKitSettings(ConfigFactory.load().getConfig("akka.actor.testkit.typed"))
+  private val testKitSettings = TestKitSettings(ConfigFactory.load().getConfig("pekko.actor.testkit.typed"))
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(testKitSettings.SingleExpectDefaultTimeout, Span(100, org.scalatest.time.Millis))
 
   val config = ConfigFactory.parseString("""
-      akka.actor.provider = cluster
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.actor.provider = cluster
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.actor {
+      pekko.actor {
         serializers {
           test = "org.apache.pekko.cluster.typed.ActorSystemSpec$TestSerializer"
         }

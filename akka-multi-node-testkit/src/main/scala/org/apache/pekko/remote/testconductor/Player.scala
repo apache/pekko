@@ -83,7 +83,7 @@ trait Player { this: TestConductorExt =>
 
   /**
    * Connect to the conductor on the given port (the host is taken from setting
-   * `akka.testconductor.host`). The connection is made asynchronously, but you
+   * `pekko.testconductor.host`). The connection is made asynchronously, but you
    * should await completion of the returned Future because that implies that
    * all expected participants of this test have successfully connected (i.e.
    * this is a first barrier in itself). The number of expected participants is

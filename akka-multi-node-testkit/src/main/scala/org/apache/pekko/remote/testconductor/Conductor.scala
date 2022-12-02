@@ -66,7 +66,7 @@ trait Conductor { this: TestConductorExt =>
 
   /**
    * Start the [[pekko.remote.testconductor.Controller]], which in turn will
-   * bind to a TCP port as specified in the `akka.testconductor.port` config
+   * bind to a TCP port as specified in the `pekko.testconductor.port` config
    * property, where 0 denotes automatic allocation. Since the latter is
    * actually preferred, a `Future[Int]` is returned which will be completed
    * with the port number actually chosen, so that this can then be communicated
@@ -96,7 +96,7 @@ trait Conductor { this: TestConductorExt =>
 
   /**
    * Obtain the port to which the controller’s socket is actually bound. This
-   * will deviate from the configuration in `akka.testconductor.port` in case
+   * will deviate from the configuration in `pekko.testconductor.port` in case
    * that was given as zero.
    */
   def sockAddr: Future[InetSocketAddress] = {
@@ -110,7 +110,7 @@ trait Conductor { this: TestConductorExt =>
    * within the netty pipeline until the packet would have been completely sent
    * according to the given rate, the previous packet completion and the current
    * packet length. In case of large packets they are split up if the calculated
-   * send pause would exceed `akka.testconductor.packet-split-threshold`
+   * send pause would exceed `pekko.testconductor.packet-split-threshold`
    * (roughly). All of this uses the system’s scheduler, which is not
    * terribly precise and will execute tasks later than they are schedule (even
    * on average), but that is countered by using the actual execution time for

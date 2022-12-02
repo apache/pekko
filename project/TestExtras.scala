@@ -12,11 +12,11 @@ object TestExtras {
   object Filter {
     object Keys {
       val excludeTestNames = settingKey[Set[String]](
-        "Names of tests to be excluded. Not supported by MultiJVM tests. Example usage: -Dakka.test.names.exclude=TimingSpec")
+        "Names of tests to be excluded. Not supported by MultiJVM tests. Example usage: -Dpekko.test.names.exclude=TimingSpec")
       val excludeTestTags = settingKey[Set[String]](
-        "Tags of tests to be excluded. It will not be used if you specify -Dakka.test.tags.only. Example usage: -Dakka.test.tags.exclude=long-running")
+        "Tags of tests to be excluded. It will not be used if you specify -Dpekko.test.tags.only. Example usage: -Dpekko.test.tags.exclude=long-running")
       val onlyTestTags =
-        settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dakka.test.tags.only=long-running")
+        settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dpekko.test.tags.only=long-running")
 
       val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run");
     }

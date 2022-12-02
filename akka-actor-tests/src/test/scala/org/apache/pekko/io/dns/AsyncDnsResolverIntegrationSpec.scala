@@ -33,13 +33,13 @@ object AsyncDnsResolverIntegrationSpec {
   lazy val dockerDnsServerPort: Int = SocketUtil.temporaryLocalPort(Both)
   implicit val defaultTimeout: Timeout = Timeout(10.seconds)
   def conf = ConfigFactory.parseString(s"""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.io.dns.resolver = async-dns
-    akka.io.dns.async-dns.nameservers = ["localhost:${dockerDnsServerPort}"]
-    akka.io.dns.async-dns.search-domains = ["foo.test", "test"]
-    akka.io.dns.async-dns.ndots = 2
-    akka.io.dns.async-dns.resolve-timeout = ${defaultTimeout.duration.toSeconds}s
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.dns.resolver = async-dns
+    pekko.io.dns.async-dns.nameservers = ["localhost:${dockerDnsServerPort}"]
+    pekko.io.dns.async-dns.search-domains = ["foo.test", "test"]
+    pekko.io.dns.async-dns.ndots = 2
+    pekko.io.dns.async-dns.resolve-timeout = ${defaultTimeout.duration.toSeconds}s
   """)
 }
 

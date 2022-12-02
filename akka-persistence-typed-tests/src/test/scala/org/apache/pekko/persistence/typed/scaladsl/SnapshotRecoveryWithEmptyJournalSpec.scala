@@ -27,11 +27,11 @@ object SnapshotRecoveryWithEmptyJournalSpec {
   val survivingSnapshotPath = s"target/survivingSnapshotPath-${UUID.randomUUID().toString}"
 
   def conf: Config = PersistenceTestKitPlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "${SnapshotRecoveryWithEmptyJournalSpec.survivingSnapshotPath}"
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.loglevel = INFO
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "${SnapshotRecoveryWithEmptyJournalSpec.survivingSnapshotPath}"
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """))
 
   object TestActor {

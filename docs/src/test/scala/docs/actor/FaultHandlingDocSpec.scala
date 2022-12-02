@@ -99,7 +99,7 @@ object FaultHandlingDocSpec {
   // #child
 
   val testConf: Config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         loggers = ["org.apache.pekko.testkit.TestEventListener"]
       }
   """)
@@ -117,7 +117,7 @@ class FaultHandlingDocSpec(_system: ActorSystem)
       ActorSystem(
         "FaultHandlingDocSpec",
         ConfigFactory.parseString("""
-      akka {
+      pekko {
         loggers = ["org.apache.pekko.testkit.TestEventListener"]
         loglevel = "WARNING"
       }

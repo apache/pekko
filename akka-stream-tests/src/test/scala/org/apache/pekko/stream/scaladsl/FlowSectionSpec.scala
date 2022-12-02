@@ -14,8 +14,8 @@ import pekko.testkit.TestProbe
 object FlowSectionSpec {
   val config =
     s"""
-      my-dispatcher1 = $${akka.test.stream-dispatcher}
-      my-dispatcher2 = $${akka.test.stream-dispatcher}
+      my-dispatcher1 = $${pekko.test.stream-dispatcher}
+      my-dispatcher2 = $${pekko.test.stream-dispatcher}
     """
 }
 
@@ -79,7 +79,7 @@ class FlowSectionSpec extends StreamSpec(FlowSectionSpec.config) {
       Source(0 to 2).via(f1).via(f2).runWith(Sink.ignore)
 
       defaultDispatcher.receiveN(3).foreach {
-        case s: String  => s should include("akka.test.stream-dispatcher")
+        case s: String  => s should include("pekko.test.stream-dispatcher")
         case unexpected => throw new RuntimeException(s"Unexpected: $unexpected")
       }
 

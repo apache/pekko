@@ -28,7 +28,7 @@ object LargeMessagesStreamSpec {
 class LargeMessagesStreamSpec
     extends ArteryMultiNodeSpec(
       """
-    akka {
+    pekko {
       remote.artery.large-message-destinations = [ "/user/large1", "/user/large2", "/user/large3" , "/user/largeWildcard*" ]
     }
   """.stripMargin) {

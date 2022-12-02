@@ -60,7 +60,7 @@ final class AutoDowning(system: ActorSystem) extends DowningProvider {
   private def clusterSettings = Cluster(system).settings
 
   private val AutoDownUnreachableAfter: Duration = {
-    val key = "akka.cluster.testkit.auto-down-unreachable-after"
+    val key = "pekko.cluster.testkit.auto-down-unreachable-after"
     // it's not in reference.conf, since only used in tests
     if (clusterSettings.config.hasPath(key)) {
       toRootLowerCase(clusterSettings.config.getString(key)) match {

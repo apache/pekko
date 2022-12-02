@@ -27,22 +27,22 @@ import scala.concurrent.duration._
  */
 object RememberEntitiesShardIdExtractorChangeSpec {
   val config = ConfigFactory.parseString(s"""
-       akka.loglevel = INFO
-       akka.actor.provider = "cluster"
-       akka.remote.artery.canonical.port = 0 
-       akka.remote.classic.netty.tcp.port = 0
-       akka.cluster.sharding {
+       pekko.loglevel = INFO
+       pekko.actor.provider = "cluster"
+       pekko.remote.artery.canonical.port = 0 
+       pekko.remote.classic.netty.tcp.port = 0
+       pekko.cluster.sharding {
         remember-entities = on
         remember-entities-store = "eventsourced"
         state-store-mode = "ddata"
        }
-       akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
-       akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
-       akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-       akka.persistence.snapshot-store.local.dir = "target/RememberEntitiesShardIdExtractorChangeSpec-${UUID
+       pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
+       pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
+       pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+       pekko.persistence.snapshot-store.local.dir = "target/RememberEntitiesShardIdExtractorChangeSpec-${UUID
       .randomUUID()
       .toString}"
-       akka.persistence.journal.leveldb {
+       pekko.persistence.journal.leveldb {
          native = off
           dir = "target/journal-PersistentShardingMigrationSpec-${UUID.randomUUID()}"
       }

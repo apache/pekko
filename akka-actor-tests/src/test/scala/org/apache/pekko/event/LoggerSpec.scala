@@ -29,7 +29,7 @@ import pekko.util.Helpers
 object LoggerSpec {
 
   val defaultConfig = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = "WARNING"
         loglevel = "DEBUG" # test verifies debug
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
@@ -37,7 +37,7 @@ object LoggerSpec {
     """).withFallback(AkkaSpec.testConf)
 
   val slowConfig = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = "ERROR"
         loglevel = "ERROR"
         loggers = ["org.apache.pekko.event.LoggerSpec$SlowLogger"]
@@ -45,7 +45,7 @@ object LoggerSpec {
     """).withFallback(AkkaSpec.testConf)
 
   val noLoggingConfig = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = "OFF"
         loglevel = "OFF"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
@@ -54,7 +54,7 @@ object LoggerSpec {
 
   val multipleConfig =
     ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = "OFF"
         loglevel = "WARNING"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1", "org.apache.pekko.event.LoggerSpec$TestLogger2"]
@@ -62,7 +62,7 @@ object LoggerSpec {
     """).withFallback(AkkaSpec.testConf)
 
   val ticket3165Config = ConfigFactory.parseString(s"""
-      akka {
+      pekko {
         stdout-loglevel = "WARNING"
         loglevel = "DEBUG" # test verifies debug
         loggers = ["org.apache.pekko.event.LoggerSpec$$TestLogger1"]
@@ -78,7 +78,7 @@ object LoggerSpec {
     """).withFallback(AkkaSpec.testConf)
 
   val ticket3671Config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = "WARNING"
         loglevel = "WARNING"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]

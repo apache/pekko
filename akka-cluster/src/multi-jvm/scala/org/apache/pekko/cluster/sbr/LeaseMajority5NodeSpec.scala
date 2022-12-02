@@ -26,7 +26,7 @@ object LeaseMajority5NodeSpec extends MultiNodeConfig {
   val node5 = role("node5")
 
   commonConfig(ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = INFO
       cluster {
         gossip-interval                     = 200 ms

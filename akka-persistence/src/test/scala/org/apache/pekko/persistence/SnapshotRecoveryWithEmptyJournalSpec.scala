@@ -67,7 +67,7 @@ class SnapshotRecoveryWithEmptyJournalSpec
         "inmem",
         "SnapshotRecoveryWithEmptyJournalSpec",
         extraConfig = Some(s"""
-  akka.persistence.snapshot-store.local.dir = "${SnapshotRecoveryWithEmptyJournalSpec.survivingSnapshotPath}"
+  pekko.persistence.snapshot-store.local.dir = "${SnapshotRecoveryWithEmptyJournalSpec.survivingSnapshotPath}"
   """)))
     with ImplicitSender {
 

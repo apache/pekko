@@ -23,7 +23,7 @@ class ActorRefIgnoreSerializationSpec extends AnyWordSpec with ScalaFutures with
   private var system2: ActorSystem[String] = _
 
   val config = ConfigFactory.parseString(s"""
-      akka {
+      pekko {
         loglevel = debug
         actor.provider = cluster
         remote.classic.netty.tcp.port = 0

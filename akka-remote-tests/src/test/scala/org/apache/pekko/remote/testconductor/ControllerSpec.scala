@@ -14,10 +14,10 @@ import org.apache.pekko.testkit.ImplicitSender
 
 object ControllerSpec {
   val config = """
-    akka.testconductor.barrier-timeout = 5s
-    akka.actor.provider = remote
-    akka.actor.debug.fsm = on
-    akka.actor.debug.lifecycle = on
+    pekko.testconductor.barrier-timeout = 5s
+    pekko.actor.provider = remote
+    pekko.actor.debug.fsm = on
+    pekko.actor.debug.lifecycle = on
     """
 }
 

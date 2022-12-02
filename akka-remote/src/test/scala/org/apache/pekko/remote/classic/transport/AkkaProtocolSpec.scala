@@ -46,10 +46,10 @@ object AkkaProtocolSpec {
 }
 
 @nowarn("msg=deprecated")
-class AkkaProtocolSpec extends AkkaSpec("""akka.actor.provider = remote """) with ImplicitSender {
+class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) with ImplicitSender {
 
   val conf = ConfigFactory.parseString("""
-      akka.remote {
+      pekko.remote {
 
         
         
@@ -69,8 +69,8 @@ class AkkaProtocolSpec extends AkkaSpec("""akka.actor.provider = remote """) wit
 
       }
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
   """).withFallback(system.settings.config)
 
   val localAddress = Address("test", "testsystem", "testhost", 1234)
@@ -408,7 +408,7 @@ class AkkaProtocolSpec extends AkkaSpec("""akka.actor.provider = remote """) wit
       val statusPromise: Promise[AssociationHandle] = Promise()
 
       val conf2 =
-        ConfigFactory.parseString("akka.remote.classic.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
+        ConfigFactory.parseString("pekko.remote.classic.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
 
       val stateActor = system.actorOf(
         ProtocolStateActor.outboundProps(
@@ -432,7 +432,7 @@ class AkkaProtocolSpec extends AkkaSpec("""akka.actor.provider = remote """) wit
       val (failureDetector, _, _, handle) = collaborators
 
       val conf2 =
-        ConfigFactory.parseString("akka.remote.classic.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
+        ConfigFactory.parseString("pekko.remote.classic.netty.tcp.connection-timeout = 500 ms").withFallback(conf)
 
       val reader = system.actorOf(
         ProtocolStateActor.inboundProps(

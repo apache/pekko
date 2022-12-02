@@ -12,7 +12,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.util.unused
 
 class FlowLimitWeightedSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "Limit" must {

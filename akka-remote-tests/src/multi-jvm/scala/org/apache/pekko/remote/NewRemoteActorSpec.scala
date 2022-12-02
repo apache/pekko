@@ -20,9 +20,9 @@ import pekko.util.unused
 class NewRemoteActorMultiJvmSpec(artery: Boolean) extends MultiNodeConfig {
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.remote.log-remote-lifecycle-events = off
-      akka.remote.artery.enabled = $artery
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.remote.log-remote-lifecycle-events = off
+      pekko.remote.artery.enabled = $artery
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
       """).withFallback(RemotingMultiNodeSpec.commonConfig)))
 
   val leader = role("leader")

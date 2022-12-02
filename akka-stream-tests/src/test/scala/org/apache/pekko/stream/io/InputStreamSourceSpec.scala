@@ -22,7 +22,7 @@ import pekko.util.ByteString
 @nowarn
 class InputStreamSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
-  val settings = ActorMaterializerSettings(system).withDispatcher("akka.actor.default-dispatcher")
+  val settings = ActorMaterializerSettings(system).withDispatcher("pekko.actor.default-dispatcher")
   implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
 
   private def inputStreamFor(bytes: Array[Byte]): InputStream =

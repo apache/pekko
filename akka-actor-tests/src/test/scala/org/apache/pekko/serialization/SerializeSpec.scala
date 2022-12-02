@@ -28,7 +28,7 @@ import pekko.util.ByteString
 object SerializationTests {
 
   val serializeConf = s"""
-    akka {
+    pekko {
       actor {
         serializers {
           test = "org.apache.pekko.serialization.NoopSerializer"
@@ -92,7 +92,7 @@ object SerializationTests {
   }
 
   val verifySerializabilityConf = """
-    akka {
+    pekko {
       actor {
         serialize-messages = on
         serialize-creators = on
@@ -128,8 +128,8 @@ object SerializationTests {
     val referenceConf = ConfigFactory.defaultReference()
     val conf = ConfigFactory
       .parseString("""
-      akka.actor.warn-about-java-serializer-usage = on
-      akka.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = on
+      pekko.actor.allow-java-serialization = on
       """)
       .withFallback(ConfigFactory.parseString(serializeConf))
       .withFallback(AkkaSpec.testConf.withFallback(referenceConf))
@@ -137,7 +137,7 @@ object SerializationTests {
   }
 
   val systemMessageMultiSerializerConf = """
-    akka {
+    pekko {
       actor {
         serializers {
           test = "org.apache.pekko.serialization.NoopSerializer"
@@ -277,7 +277,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         val sys = ActorSystem(
           "SerializeSpec",
           ConfigFactory.parseString(s"""
-          akka {
+          pekko {
             actor {
               serializers {
                 test = "org.apache.pekko.serialization.NoopSerializer"
@@ -504,9 +504,9 @@ class AllowJavaSerializationSpec extends AkkaSpec(SerializationTests.allowJavaSe
 
 class NoVerificationWarningSpec
     extends AkkaSpec(ConfigFactory.parseString("""
-        akka.actor.allow-java-serialization = on
-        akka.actor.warn-about-java-serializer-usage = on
-        akka.actor.warn-on-no-serialization-verification = on
+        pekko.actor.allow-java-serialization = on
+        pekko.actor.warn-about-java-serializer-usage = on
+        pekko.actor.warn-on-no-serialization-verification = on
         """)) {
 
   val ser = SerializationExtension(system)
@@ -530,9 +530,9 @@ class NoVerificationWarningSpec
 
 class NoVerificationWarningOffSpec
     extends AkkaSpec(ConfigFactory.parseString("""
-        akka.actor.allow-java-serialization = on
-        akka.actor.warn-about-java-serializer-usage = on
-        akka.actor.warn-on-no-serialization-verification = off
+        pekko.actor.allow-java-serialization = on
+        pekko.actor.warn-about-java-serializer-usage = on
+        pekko.actor.warn-on-no-serialization-verification = off
         """)) {
 
   val ser = SerializationExtension(system)
@@ -563,7 +563,7 @@ class SerializerDeadlockSpec extends AkkaSpec {
         val sys = ActorSystem(
           "SerializerDeadlockSpec",
           ConfigFactory.parseString("""
-          akka {
+          pekko {
             actor {
               creation-timeout = 1s
               serializers {

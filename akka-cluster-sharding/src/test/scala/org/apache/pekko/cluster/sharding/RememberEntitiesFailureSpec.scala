@@ -27,24 +27,24 @@ import org.apache.pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrateg
 
 object RememberEntitiesFailureSpec {
   val config = ConfigFactory.parseString(s"""
-      akka.loglevel = DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = cluster
-      akka.remote.artery.canonical.port = 0
-      akka.remote.classic.netty.tcp.port = 0
-      akka.cluster.sharding.distributed-data.durable.keys = []
+      pekko.loglevel = DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = cluster
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.cluster.sharding.distributed-data.durable.keys = []
       # must be ddata or else remember entities store is ignored
-      akka.cluster.sharding.state-store-mode = ddata
-      akka.cluster.sharding.remember-entities = on
-      akka.cluster.sharding.remember-entities-store = custom
-      akka.cluster.sharding.remember-entities-custom-store = "org.apache.pekko.cluster.sharding.RememberEntitiesFailureSpec$$FakeStore"
+      pekko.cluster.sharding.state-store-mode = ddata
+      pekko.cluster.sharding.remember-entities = on
+      pekko.cluster.sharding.remember-entities-store = custom
+      pekko.cluster.sharding.remember-entities-custom-store = "org.apache.pekko.cluster.sharding.RememberEntitiesFailureSpec$$FakeStore"
       # quick backoffs
-      akka.cluster.sharding.entity-restart-backoff = 1s
-      akka.cluster.sharding.shard-failure-backoff = 1s
-      akka.cluster.sharding.coordinator-failure-backoff = 1s
-      akka.cluster.sharding.updating-state-timeout = 1s
-      akka.cluster.sharding.verbose-debug-logging = on
-      akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+      pekko.cluster.sharding.entity-restart-backoff = 1s
+      pekko.cluster.sharding.shard-failure-backoff = 1s
+      pekko.cluster.sharding.coordinator-failure-backoff = 1s
+      pekko.cluster.sharding.updating-state-timeout = 1s
+      pekko.cluster.sharding.verbose-debug-logging = on
+      pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
     """)
 
   class EntityActor extends Actor with ActorLogging {

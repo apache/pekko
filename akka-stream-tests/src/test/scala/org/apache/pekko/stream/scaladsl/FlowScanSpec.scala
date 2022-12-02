@@ -19,7 +19,7 @@ import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowScanSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "A Scan" must {

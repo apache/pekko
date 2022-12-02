@@ -25,10 +25,10 @@ class RemoteDeploymentDeathWatchMultiJvmSpec(artery: Boolean) extends MultiNodeC
   val third = role("third")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.remote.log-remote-lifecycle-events = off
-      akka.remote.artery.enabled = $artery
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.loglevel = INFO
+      pekko.remote.log-remote-lifecycle-events = off
+      pekko.remote.artery.enabled = $artery
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
   deployOn(second, """/hello.remote = "@third@" """)

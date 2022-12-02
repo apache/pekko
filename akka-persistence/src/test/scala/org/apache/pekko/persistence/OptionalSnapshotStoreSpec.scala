@@ -29,18 +29,18 @@ object OptionalSnapshotStoreSpec {
   }
 
   class PickedSnapshotStorePersistentActor(name: String) extends AnyPersistentActor(name) {
-    override def snapshotPluginId: String = "akka.persistence.snapshot-store.local"
+    override def snapshotPluginId: String = "pekko.persistence.snapshot-store.local"
   }
 }
 
 class OptionalSnapshotStoreSpec extends PersistenceSpec(ConfigFactory.parseString(s"""
-    akka.persistence.publish-plugin-commands = on
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+    pekko.persistence.publish-plugin-commands = on
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
 
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.warn-about-java-serializer-usage = off
 
     # snapshot store plugin is NOT defined, things should still work
-    akka.persistence.snapshot-store.local.dir = "target/snapshots-${classOf[OptionalSnapshotStoreSpec].getName}/"
+    pekko.persistence.snapshot-store.local.dir = "target/snapshots-${classOf[OptionalSnapshotStoreSpec].getName}/"
   """)) with ImplicitSender {
   import OptionalSnapshotStoreSpec._
 

@@ -89,8 +89,8 @@ import pekko.stream.scaladsl.Sink
   import EventSourcedBehaviorTestKitImpl._
 
   private def system: ActorSystem[_] = actorTestKit.system
-  if (system.settings.config.getBoolean("akka.persistence.testkit.events.serialize") ||
-    system.settings.config.getBoolean("akka.persistence.testkit.snapshots.serialize")) {
+  if (system.settings.config.getBoolean("pekko.persistence.testkit.events.serialize") ||
+    system.settings.config.getBoolean("pekko.persistence.testkit.snapshots.serialize")) {
     system.log.warn(
       "Persistence TestKit serialization enabled when using EventSourcedBehaviorTestKit, this is not intended. " +
       "make sure you create the system used in the test with the config from EventSourcedBehaviorTestKit.config " +
@@ -101,7 +101,7 @@ import pekko.stream.scaladsl.Sink
   persistenceTestKit.clearAll()
 
   override val snapshotTestKit: Option[SnapshotTestKit] =
-    if (system.settings.config.getString("akka.persistence.snapshot-store.plugin") != "")
+    if (system.settings.config.getString("pekko.persistence.snapshot-store.plugin") != "")
       Some(SnapshotTestKit(system))
     else None
   snapshotTestKit.foreach(_.clearAll())

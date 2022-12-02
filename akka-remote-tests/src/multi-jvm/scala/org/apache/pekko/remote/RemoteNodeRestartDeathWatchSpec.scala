@@ -28,12 +28,12 @@ class RemoteNodeRestartDeathWatchConfig(artery: Boolean) extends MultiNodeConfig
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.remote.log-remote-lifecycle-events = off
-      akka.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
-      akka.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
-      akka.remote.artery.enabled = $artery
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.loglevel = INFO
+      pekko.remote.log-remote-lifecycle-events = off
+      pekko.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
+      pekko.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
+      pekko.remote.artery.enabled = $artery
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
     """)))
 
   testTransport(on = true)
@@ -114,8 +114,8 @@ abstract class RemoteNodeRestartDeathWatchSpec(multiNodeConfig: RemoteNodeRestar
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-          akka.remote.classic.netty.tcp.port = ${address.port.get}
-          akka.remote.artery.canonical.port = ${address.port.get}
+          pekko.remote.classic.netty.tcp.port = ${address.port.get}
+          pekko.remote.artery.canonical.port = ${address.port.get}
           """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject")
 

@@ -13,7 +13,7 @@ To use Akka Persistence, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence_$scala.binary.version$"
   version=AkkaVersion
@@ -134,7 +134,7 @@ to not overload the system and the backend data store. When exceeding the limit 
 until other recoveries have been completed. This is configured by:
 
 ```
-akka.persistence.max-concurrent-recoveries = 50
+pekko.persistence.max-concurrent-recoveries = 50
 ```
 
 @@@ note
@@ -220,7 +220,7 @@ of stashed messages will grow without bounds. It can be wise to protect against 
 maximum stash capacity in the mailbox configuration:
 
 ```
-akka.actor.default-mailbox.stash-capacity=10000
+pekko.actor.default-mailbox.stash-capacity=10000
 ```
 
 Note that the stash capacity is per actor. If you have many persistent actors, e.g. when using cluster sharding,
@@ -234,7 +234,7 @@ for all persistent actors by providing FQCN, which must be a subclass of @apidoc
 persistence configuration:
 
 ```
-akka.persistence.internal-stash-overflow-strategy=
+pekko.persistence.internal-stash-overflow-strategy=
   "org.apache.pekko.persistence.ThrowExceptionConfigurator"
 ```
 
@@ -604,7 +604,7 @@ saved snapshot matches the specified `SnapshotSelectionCriteria` will replay all
 
 @@@ note
 
-In order to use snapshots, a default snapshot-store (`akka.persistence.snapshot-store.plugin`) must be configured,
+In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot-store.plugin`) must be configured,
 or the @scala[`PersistentActor`]@java[persistent actor] can pick a snapshot store explicitly by overriding @scala[`def snapshotPluginId: String`]@java[`String snapshotPluginId()`].
 
 Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
@@ -742,28 +742,28 @@ serialization mechanism. It is easiest to include the bytes of the `AtLeastOnceD
 as a blob in your custom snapshot.
 
 The interval between redelivery attempts is defined by the @apidoc[redeliverInterval](persistence.AtLeastOnceDeliveryLike) {scala="#redeliverInterval:scala.concurrent.duration.FiniteDuration" java="#redeliverInterval()"} method.
-The default value can be configured with the `akka.persistence.at-least-once-delivery.redeliver-interval`
+The default value can be configured with the `pekko.persistence.at-least-once-delivery.redeliver-interval`
 configuration key. The method can be overridden by implementation classes to return non-default values.
 
 The maximum number of messages that will be sent at each redelivery burst is defined by the
 @apidoc[redeliverBurstLimit](persistence.AtLeastOnceDeliveryLike) {scala="#redeliveryBurstLimit:Int" java="#redeliveryBurstLimit()"} method (burst frequency is half of the redelivery interval). If there's a lot of
 unconfirmed messages (e.g. if the destination is not available for a long time), this helps to prevent an overwhelming
 amount of messages to be sent at once. The default value can be configured with the
-`akka.persistence.at-least-once-delivery.redelivery-burst-limit` configuration key. The method can be overridden
+`pekko.persistence.at-least-once-delivery.redelivery-burst-limit` configuration key. The method can be overridden
 by implementation classes to return non-default values.
 
 After a number of delivery attempts a @apidoc[persistence.AtLeastOnceDelivery.UnconfirmedWarning] message
 will be sent to `self`. The re-sending will still continue, but you can choose to call
 `confirmDelivery` to cancel the re-sending. The number of delivery attempts before emitting the
 warning is defined by the @apidoc[warnAfterNumberOfUnconfirmedAttempts](persistence.AtLeastOnceDeliveryLike) {scala="#warnAfterNumberOfUnconfirmedAttempts:Int" java="#warnAfterNumberOfUnconfirmedAttempts()"} method. The default value can be
-configured with the `akka.persistence.at-least-once-delivery.warn-after-number-of-unconfirmed-attempts`
+configured with the `pekko.persistence.at-least-once-delivery.warn-after-number-of-unconfirmed-attempts`
 configuration key. The method can be overridden by implementation classes to return non-default values.
 
 The @scala[@scaladoc[AtLeastOnceDelivery](pekko.persistence.AtLeastOnceDelivery) trait]@java[@javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class] holds messages in memory until their successful delivery has been confirmed.
 The maximum number of unconfirmed messages that the actor is allowed to hold in memory
 is defined by the @apidoc[maxUnconfirmedMessages](persistence.AtLeastOnceDeliveryLike) {scala="#maxUnconfirmedMessages:Int" java="#maxUnconfirmedMessages()"} method. If this limit is exceed the `deliver` method will
 not accept more messages and it will throw @apidoc[AtLeastOnceDelivery.MaxUnconfirmedMessagesExceededException].
-The default value can be configured with the `akka.persistence.at-least-once-delivery.max-unconfirmed-messages`
+The default value can be configured with the `pekko.persistence.at-least-once-delivery.max-unconfirmed-messages`
 configuration key. The method can be overridden by implementation classes to return non-default values.
 
 ## Event Adapters

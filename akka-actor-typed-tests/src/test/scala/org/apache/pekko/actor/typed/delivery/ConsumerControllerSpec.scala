@@ -18,7 +18,7 @@ import pekko.serialization.SerializationExtension
 
 class ConsumerControllerSpec
     extends ScalaTestWithActorTestKit(ConfigFactory.parseString("""
-  akka.reliable-delivery.consumer-controller {
+  pekko.reliable-delivery.consumer-controller {
     flow-control-window = 20
     resend-interval-min = 1s
   }

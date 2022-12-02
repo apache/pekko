@@ -18,9 +18,9 @@ import pekko.testkit.TestActors
  * Reproducer for issue #24847
  */
 class ResetSystemMessageSeqNrSpec extends ArteryMultiNodeSpec("""
-  akka.loglevel = INFO
-  akka.actor.provider=cluster
-  akka.cluster.jmx.multi-mbeans-in-same-jvm = on
+  pekko.loglevel = INFO
+  pekko.actor.provider=cluster
+  pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
   """) with ImplicitSender {
 
   "System messages sequence numbers" should {
@@ -64,7 +64,7 @@ class ResetSystemMessageSeqNrSpec extends ArteryMultiNodeSpec("""
 
       val sys3 = newRemoteSystem(
         name = Some(system.name),
-        extraConfig = Some(s"akka.remote.artery.canonical.port=${Cluster(sys2).selfAddress.port.get}"))
+        extraConfig = Some(s"pekko.remote.artery.canonical.port=${Cluster(sys2).selfAddress.port.get}"))
       Cluster(sys3).join(Cluster(system).selfAddress)
       within(10.seconds) {
         awaitAssert {

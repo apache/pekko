@@ -17,7 +17,7 @@ import pekko.testkit.ImplicitSender
 import pekko.util.ByteString
 
 class TcpFramingSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = on
+    pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
   import TcpFraming.encodeFrameHeader
 

@@ -95,7 +95,7 @@ object SplitBrainResolverSpec {
 
 class SplitBrainResolverSpec
     extends AkkaSpec("""
-  |akka {
+  |pekko {
   |  actor.provider = cluster
   |  cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
   |  cluster.split-brain-resolver.active-strategy=keep-majority

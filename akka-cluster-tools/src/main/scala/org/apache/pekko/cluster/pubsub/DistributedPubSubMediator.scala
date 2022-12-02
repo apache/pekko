@@ -36,14 +36,14 @@ object DistributedPubSubSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.pub-sub`.
+   * `pekko.cluster.pub-sub`.
    */
   def apply(system: ActorSystem): DistributedPubSubSettings =
-    apply(system.settings.config.getConfig("akka.cluster.pub-sub"))
+    apply(system.settings.config.getConfig("pekko.cluster.pub-sub"))
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.pub-sub`.
+   * the default configuration `pekko.cluster.pub-sub`.
    */
   def apply(config: Config): DistributedPubSubSettings =
     new DistributedPubSubSettings(
@@ -64,13 +64,13 @@ object DistributedPubSubSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.pub-sub`.
+   * `pekko.cluster.pub-sub`.
    */
   def create(system: ActorSystem): DistributedPubSubSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.pub-sub`.
+   * the default configuration `pekko.cluster.pub-sub`.
    */
   def create(config: Config): DistributedPubSubSettings = apply(config)
 
@@ -935,7 +935,7 @@ object DistributedPubSub extends ExtensionId[DistributedPubSub] with ExtensionId
 
 /**
  * Extension that starts a [[DistributedPubSubMediator]] actor
- * with settings defined in config section `akka.cluster.pub-sub`.
+ * with settings defined in config section `pekko.cluster.pub-sub`.
  */
 class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
 
@@ -955,8 +955,8 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
     if (isTerminated)
       system.deadLetters
     else {
-      val name = system.settings.config.getString("akka.cluster.pub-sub.name")
-      val dispatcher = system.settings.config.getString("akka.cluster.pub-sub.use-dispatcher")
+      val name = system.settings.config.getString("pekko.cluster.pub-sub.name")
+      val dispatcher = system.settings.config.getString("pekko.cluster.pub-sub.use-dispatcher")
       system.systemActorOf(DistributedPubSubMediator.props(settings).withDispatcher(dispatcher), name)
     }
   }

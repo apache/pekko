@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 object LeastRecentlyUsedSpec {
 
   val config: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lru
         lru {
@@ -25,7 +25,7 @@ object LeastRecentlyUsedSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val segmentedConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = slru
         slru {
@@ -46,11 +46,11 @@ object LeastRecentlyUsedSpec {
 
   val segmentedInitialLimitConfig: Config =
     ConfigFactory.parseString("""
-      akka.cluster.sharding.passivation.slru.active-entity-limit = 20
+      pekko.cluster.sharding.passivation.slru.active-entity-limit = 20
     """).withFallback(segmentedConfig)
 
   val idleConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lru-idle
         lru-idle {

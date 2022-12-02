@@ -9,8 +9,8 @@ import scala.concurrent.duration._
 import org.apache.pekko.stream.testkit._
 
 class FlowBatchWeightedSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "BatchWeighted" must {

@@ -55,7 +55,7 @@ public class ActorDocTest extends AbstractJavaTest {
 
   public static Config config =
       ConfigFactory.parseString(
-          "akka {\n"
+          "pekko {\n"
               + "  loggers = [\"org.apache.pekko.testkit.TestEventListener\"]\n"
               + "  loglevel = \"WARNING\"\n"
               + "  stdout-loglevel = \"WARNING\"\n"

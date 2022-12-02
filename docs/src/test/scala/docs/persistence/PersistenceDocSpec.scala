@@ -20,10 +20,10 @@ object PersistenceDocSpec {
   val config =
     """
       //#auto-update-interval
-      akka.persistence.view.auto-update-interval = 5s
+      pekko.persistence.view.auto-update-interval = 5s
       //#auto-update-interval
       //#auto-update
-      akka.persistence.view.auto-update = off
+      pekko.persistence.view.auto-update = off
       //#auto-update
     """
 

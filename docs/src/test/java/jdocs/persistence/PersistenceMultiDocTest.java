@@ -30,13 +30,13 @@ public class PersistenceMultiDocTest {
     // Absolute path to the journal plugin configuration entry in the `reference.conf`
     @Override
     public String journalPluginId() {
-      return "akka.persistence.chronicle.journal";
+      return "pekko.persistence.chronicle.journal";
     }
 
     // Absolute path to the snapshot store plugin configuration entry in the `reference.conf`
     @Override
     public String snapshotPluginId() {
-      return "akka.persistence.chronicle.snapshot-store";
+      return "pekko.persistence.chronicle.snapshot-store";
     }
   }
   // #override-plugins

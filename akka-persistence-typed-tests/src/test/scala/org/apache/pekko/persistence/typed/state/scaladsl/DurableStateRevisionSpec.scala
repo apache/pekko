@@ -22,7 +22,7 @@ import pekko.persistence.typed.state.RecoveryCompleted
 object DurableStateRevisionSpec {
 
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     """))
 
 }

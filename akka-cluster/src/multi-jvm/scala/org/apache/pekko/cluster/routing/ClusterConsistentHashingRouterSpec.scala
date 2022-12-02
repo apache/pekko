@@ -47,7 +47,7 @@ object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
         }
       }
 
-      akka.actor.deployment {
+      pekko.actor.deployment {
         /router1 = $${common-router-settings}
         /router3 = $${common-router-settings}
         /router4 = $${common-router-settings}

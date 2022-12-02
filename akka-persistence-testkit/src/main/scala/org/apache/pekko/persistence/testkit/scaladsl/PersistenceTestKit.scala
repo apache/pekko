@@ -405,7 +405,7 @@ object SnapshotTestKit {
 
   object Settings extends ExtensionId[Settings] {
 
-    val configPath = "akka.persistence.testkit.snapshots"
+    val configPath = "pekko.persistence.testkit.snapshots"
 
     override def createExtension(system: ExtendedActorSystem): Settings =
       new Settings(system.settings.config.getConfig(configPath))
@@ -519,7 +519,7 @@ object PersistenceTestKit {
 
   object Settings extends ExtensionId[Settings] {
 
-    val configPath = "akka.persistence.testkit.events"
+    val configPath = "pekko.persistence.testkit.events"
 
     override def get(system: ActorSystem): Settings = super.get(system)
 

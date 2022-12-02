@@ -12,8 +12,8 @@ import pekko.stream.testkit._
 import pekko.util.ConstantFun
 
 class FlowConcatAllSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "ConcatAll" must {

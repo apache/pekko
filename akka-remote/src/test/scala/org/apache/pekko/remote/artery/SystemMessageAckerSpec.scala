@@ -19,7 +19,7 @@ import pekko.testkit.TestProbe
 import pekko.util.OptionVal
 
 class SystemMessageAckerSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = on
+    pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 
   val addressA = UniqueAddress(Address("akka", "sysA", "hostA", 1001), 1)

@@ -28,9 +28,9 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(ConfigFactory.parseString("""
-        akka.loglevel = INFO
-        #akka.serialization.jackson.verbose-debug-logging = on
-        akka.remote.artery {
+        pekko.loglevel = INFO
+        #pekko.serialization.jackson.verbose-debug-logging = on
+        pekko.remote.artery {
           advanced.inbound-lanes = 1
           advanced.maximum-frame-size = 2 MB
         }

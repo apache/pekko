@@ -26,7 +26,7 @@ object ManualTime {
    */
   val config: Config =
     ConfigFactory.parseString(
-      """akka.scheduler.implementation = "org.apache.pekko.testkit.ExplicitlyTriggeredScheduler"""")
+      """pekko.scheduler.implementation = "org.apache.pekko.testkit.ExplicitlyTriggeredScheduler"""")
 
   /**
    * Access the manual scheduler, note that you need to setup the actor system/testkit with [[ManualTime.config]]

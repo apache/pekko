@@ -37,7 +37,7 @@ import pekko.util.ByteString
  * Corresponding Java API is in [[pekko.persistence.query.journal.leveldb.javadsl.LeveldbReadJournal]].
  *
  * Configuration settings can be defined in the configuration section with the
- * absolute path corresponding to the identifier, which is `"akka.persistence.query.journal.leveldb"`
+ * absolute path corresponding to the identifier, which is `"pekko.persistence.query.journal.leveldb"`
  * for the default [[LeveldbReadJournal#Identifier]]. See `reference.conf`.
  */
 @deprecated("Use another journal implementation", "2.6.15")
@@ -56,7 +56,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
 
   private val resolvedWriteJournalPluginId =
     if (writeJournalPluginId.isEmpty)
-      system.settings.config.getString("akka.persistence.journal.plugin")
+      system.settings.config.getString("pekko.persistence.journal.plugin")
     else
       writeJournalPluginId
   require(
@@ -275,8 +275,8 @@ object LeveldbReadJournal {
    * The default identifier for [[LeveldbReadJournal]] to be used with
    * [[pekko.persistence.query.PersistenceQuery#readJournalFor]].
    *
-   * The value is `"akka.persistence.query.journal.leveldb"` and corresponds
+   * The value is `"pekko.persistence.query.journal.leveldb"` and corresponds
    * to the absolute path to the read journal configuration entry.
    */
-  final val Identifier = "akka.persistence.query.journal.leveldb"
+  final val Identifier = "pekko.persistence.query.journal.leveldb"
 }

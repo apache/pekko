@@ -20,15 +20,15 @@ public class CompileOnlyTest {
     // #loading
 
     // #basic
-    serviceDiscovery.lookup(Lookup.create("akka.io"), Duration.ofSeconds(1));
+    serviceDiscovery.lookup(Lookup.create("pekko.io"), Duration.ofSeconds(1));
     // convenience for a Lookup with only a serviceName
-    serviceDiscovery.lookup("akka.io", Duration.ofSeconds(1));
+    serviceDiscovery.lookup("pekko.io", Duration.ofSeconds(1));
     // #basic
 
     // #full
     CompletionStage<ServiceDiscovery.Resolved> lookup =
         serviceDiscovery.lookup(
-            Lookup.create("akka.io").withPortName("remoting").withProtocol("tcp"),
+            Lookup.create("pekko.io").withPortName("remoting").withProtocol("tcp"),
             Duration.ofSeconds(1));
     // #full
 

@@ -25,8 +25,8 @@ object MultiDcClusterShardingSpecConfig extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(ConfigFactory.parseString("""
-        akka.loglevel = DEBUG
-        akka.cluster.sharding {
+        pekko.loglevel = DEBUG
+        pekko.cluster.sharding {
           number-of-shards = 10
           # First is likely to be ignored as shard coordinator not ready
           retry-interval = 0.2s
@@ -34,11 +34,11 @@ object MultiDcClusterShardingSpecConfig extends MultiNodeConfig {
       """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first, second)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc1"
+      pekko.cluster.multi-data-center.self-data-center = "dc1"
     """))
 
   nodeConfig(third, fourth)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc2"
+      pekko.cluster.multi-data-center.self-data-center = "dc2"
     """))
 
   testTransport(on = true)

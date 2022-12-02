@@ -110,7 +110,7 @@ object JoinConfigCompatChecker {
 
   /**
    * INTERNAL API
-   * Removes sensitive keys, as defined in 'akka.cluster.configuration-compatibility-check.sensitive-config-paths',
+   * Removes sensitive keys, as defined in 'pekko.cluster.configuration-compatibility-check.sensitive-config-paths',
    * from the passed `requiredKeys` Seq.
    */
   @InternalApi
@@ -125,7 +125,7 @@ object JoinConfigCompatChecker {
   /**
    * INTERNAL API
    * Builds a Seq of keys using the passed `Config` not including any sensitive keys,
-   * as defined in 'akka.cluster.configuration-compatibility-check.sensitive-config-paths'.
+   * as defined in 'pekko.cluster.configuration-compatibility-check.sensitive-config-paths'.
    */
   @InternalApi
   private[cluster] def removeSensitiveKeys(config: Config, clusterSettings: ClusterSettings): im.Seq[String] = {
@@ -152,8 +152,8 @@ object JoinConfigCompatChecker {
     // composite checker
     new JoinConfigCompatChecker {
       override val requiredKeys: im.Seq[String] = {
-        // Always include akka.version (used in join logging)
-        "akka.version" +: checkers.flatMap(_.requiredKeys).to(im.Seq)
+        // Always include pekko.version (used in join logging)
+        "pekko.version" +: checkers.flatMap(_.requiredKeys).to(im.Seq)
       }
       override def check(toValidate: Config, clusterConfig: Config): ConfigValidation =
         checkers.foldLeft(Valid: ConfigValidation) { (acc, checker) =>

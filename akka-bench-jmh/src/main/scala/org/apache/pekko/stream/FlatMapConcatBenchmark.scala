@@ -33,7 +33,7 @@ class FlatMapConcatBenchmark {
   import FlatMapConcatBenchmark._
 
   private val config = ConfigFactory.parseString("""
-    akka.actor.default-dispatcher {
+    pekko.actor.default-dispatcher {
       executor = "fork-join-executor"
       fork-join-executor {
         parallelism-factor = 1

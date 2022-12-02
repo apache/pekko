@@ -51,7 +51,7 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
 
   def this(system: ActorSystem) =
     this(
-      system.settings.config.getConfig("akka.remote.artery.ssl.rotating-keys-engine"),
+      system.settings.config.getConfig("pekko.remote.artery.ssl.rotating-keys-engine"),
       Logging.withMarker(system, classOf[RotatingKeysSSLEngineProvider].getName))
 
   // read config

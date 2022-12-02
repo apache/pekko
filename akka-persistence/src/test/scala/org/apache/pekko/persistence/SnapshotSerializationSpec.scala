@@ -73,7 +73,7 @@ class SnapshotSerializationSpec
         "SnapshotSerializationSpec",
         serialization = "off",
         extraConfig = Some("""
-    akka.actor {
+    pekko.actor {
       serializers {
         my-snapshot = "org.apache.pekko.persistence.SnapshotSerializationSpec$MySerializer"
       }

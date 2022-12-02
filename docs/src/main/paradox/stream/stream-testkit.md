@@ -7,7 +7,7 @@ To use Akka Stream TestKit, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream-testkit_$scala.binary.version$"
   version=AkkaVersion
@@ -152,7 +152,7 @@ more aggressively (at the cost of reduced performance) and therefore helps expos
 enable this setting add the following line to your configuration:
 
 ```
-akka.stream.materializer.debug.fuzzing-mode = on
+pekko.stream.materializer.debug.fuzzing-mode = on
 ```
 
 @@@ warning

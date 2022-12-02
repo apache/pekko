@@ -14,9 +14,9 @@ class LeveldbJournalNoAtomicPersistMultipleEventsSpec
         "leveldb",
         "LeveldbJournalNoAtomicPersistMultipleEventsSpec",
         extraConfig = Some("""
-        akka.persistence.journal.leveldb.native = off
-        akka.actor.allow-java-serialization = off
-        akka.actor.warn-about-java-serializer-usage = on
+        pekko.persistence.journal.leveldb.native = off
+        pekko.actor.allow-java-serialization = off
+        pekko.actor.warn-about-java-serializer-usage = on
         """)))
     with PluginCleanup {
 

@@ -34,10 +34,10 @@ object RemoteFeaturesSpec {
 
   // string config to pass into `ArteryMultiNodeSpec.extraConfig: Option[String]` for `other` system
   def common(useUnsafe: Boolean): String = s"""
-       akka.remote.use-unsafe-remote-features-outside-cluster = $useUnsafe
-       akka.remote.artery.enabled = on
-       akka.remote.artery.canonical.port = 0
-       akka.log-dead-letters-during-shutdown = off
+       pekko.remote.use-unsafe-remote-features-outside-cluster = $useUnsafe
+       pekko.remote.artery.enabled = on
+       pekko.remote.artery.canonical.port = 0
+       pekko.log-dead-letters-during-shutdown = off
        """
 
   def disabled: Config =
@@ -140,7 +140,7 @@ class RemoteFeaturesDisabledSpec extends RemoteFeaturesSpec(RemoteFeaturesSpec.d
       val masterSystem = newRemoteSystem(
         name = Some("RS2"),
         extraConfig = Some(s"""
-      akka.actor.deployment {
+      pekko.actor.deployment {
         /$actorName.remote = "akka://${system.name}@localhost:$port"
         "/parent*/*".remote = "akka://${system.name}@localhost:$port"
       }

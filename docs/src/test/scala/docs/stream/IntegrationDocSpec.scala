@@ -38,7 +38,7 @@ object IntegrationDocSpec {
     }
     #//#blocking-dispatcher-config
 
-    akka.actor.default-mailbox.mailbox-type = org.apache.pekko.dispatch.UnboundedMailbox
+    pekko.actor.default-mailbox.mailbox-type = org.apache.pekko.dispatch.UnboundedMailbox
     """)
 
   class AddressSystem {

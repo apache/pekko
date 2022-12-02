@@ -164,7 +164,7 @@ object TestPublisher {
 
     /**
      * Expect no messages.
-     * Waits for the default period configured as `akka.actor.testkit.expect-no-message-default`.
+     * Waits for the default period configured as `pekko.actor.testkit.expect-no-message-default`.
      */
     def expectNoMessage(): Self = executeAfterSubscription {
       probe.expectNoMessage()
@@ -200,7 +200,7 @@ object TestPublisher {
      * the remaining time governed by the innermost enclosing `within` block.
      *
      * Note that the timeout is scaled using Duration.dilated, which uses the
-     * configuration entry "akka.test.timefactor", while the min Duration is not.
+     * configuration entry "pekko.test.timefactor", while the min Duration is not.
      *
      * {{{
      * val ret = within(50 millis) {
@@ -672,8 +672,8 @@ object TestSubscriber {
      * Fluent DSL
      *
      * Assert that no message is received for the specified time.
-     * Waits for the default period configured as `akka.test.expect-no-message-default`.
-     * That timeout is scaled using the configuration entry "akka.test.timefactor".
+     * Waits for the default period configured as `pekko.test.expect-no-message-default`.
+     * That timeout is scaled using the configuration entry "pekko.test.timefactor".
      */
     def expectNoMessage(): Self = {
       probe.expectNoMessage()
@@ -787,7 +787,7 @@ object TestSubscriber {
      * the remaining time governed by the innermost enclosing `within` block.
      *
      * Note that the timeout is scaled using Duration.dilated, which uses the
-     * configuration entry "akka.test.timefactor", while the min Duration is not.
+     * configuration entry "pekko.test.timefactor", while the min Duration is not.
      *
      * {{{
      * val ret = within(50 millis) {

@@ -30,9 +30,9 @@ object TransportFailConfig extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
-      akka.remote.classic {
+      pekko.loglevel = INFO
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.remote.classic {
         transport-failure-detector {
           implementation-class = "org.apache.pekko.remote.TransportFailSpec$$TestFailureDetector"
           heartbeat-interval = 1 s

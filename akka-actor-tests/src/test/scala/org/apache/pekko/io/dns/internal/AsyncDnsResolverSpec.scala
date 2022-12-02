@@ -23,8 +23,8 @@ import pekko.io.dns.internal.DnsClient.{ Answer, Question4, Question6, SrvQuesti
 import pekko.testkit.{ AkkaSpec, TestProbe, WithLogCapturing }
 
 class AsyncDnsResolverSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
   """) with WithLogCapturing {
 
   val defaultConfig = ConfigFactory.parseString("""

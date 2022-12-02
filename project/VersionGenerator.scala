@@ -8,20 +8,24 @@ import sbt._
 import sbt.Keys._
 
 /**
- * Generate version.conf and akka/Version.scala files based on the version setting.
+ * Generate version.conf and org/apache/pekko/Version.scala files based on the version setting.
  */
 object VersionGenerator {
 
   val settings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
-      resourceGenerators += generateVersion(resourceManaged, _ / "version.conf", """|akka.version = "%s"
-         |"""),
-      sourceGenerators += generateVersion(sourceManaged, _ / "akka" / "Version.scala", """|package org.apache.pekko
-         |
-         |object Version {
-         |  val current: String = "%s"
-         |}
-         |""")))
+      resourceGenerators += generateVersion(
+        resourceManaged, _ / "version.conf",
+        """|pekko.version = "%s"
+           |"""),
+      sourceGenerators += generateVersion(
+        sourceManaged, _ / "org" / "apache" / "pekko" / "Version.scala",
+        """|package org.apache.pekko
+           |
+           |object Version {
+           |  val current: String = "%s"
+           |}
+           |""")))
 
   def generateVersion(dir: SettingKey[File], locate: File => File, template: String) = Def.task[Seq[File]] {
     val file = locate(dir.value)

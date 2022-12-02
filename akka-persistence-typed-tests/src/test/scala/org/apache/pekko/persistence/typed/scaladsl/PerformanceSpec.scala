@@ -27,11 +27,11 @@ object PerformanceSpec {
 
   val config =
     """
-      akka.persistence.performance.cycles.load = 100
+      pekko.persistence.performance.cycles.load = 100
       # more accurate throughput measurements
-      #akka.persistence.performance.cycles.load = 10000
+      #pekko.persistence.performance.cycles.load = 10000
       # no stash capacity limit
-      akka.persistence.typed.stash-capacity = 1000000
+      pekko.persistence.typed.stash-capacity = 1000000
     """
 
   sealed trait Command
@@ -117,8 +117,8 @@ class PerformanceSpec
       PersistenceTestKitPlugin.config
         .withFallback(PersistenceTestKitSnapshotPlugin.config)
         .withFallback(ConfigFactory.parseString(s"""
-      akka.persistence.publish-plugin-commands = on
-      akka.actor.testkit.typed.single-expect-default = 10s
+      pekko.persistence.publish-plugin-commands = on
+      pekko.actor.testkit.typed.single-expect-default = 10s
       """))
         .withFallback(ConfigFactory.parseString(PerformanceSpec.config)))
     with AnyWordSpecLike
@@ -126,7 +126,7 @@ class PerformanceSpec
 
   import PerformanceSpec._
 
-  val loadCycles = system.settings.config.getInt("akka.persistence.performance.cycles.load")
+  val loadCycles = system.settings.config.getInt("pekko.persistence.performance.cycles.load")
 
   def stressPersistentActor(
       persistentActor: ActorRef[Command],

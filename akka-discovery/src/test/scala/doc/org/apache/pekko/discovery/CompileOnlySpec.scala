@@ -22,9 +22,9 @@ object CompileOnlySpec {
   // #basic
   import org.apache.pekko.discovery.Lookup
 
-  serviceDiscovery.lookup(Lookup("akka.io"), 1.second)
+  serviceDiscovery.lookup(Lookup("pekko.io"), 1.second)
   // Convenience for a Lookup with only a serviceName
-  serviceDiscovery.lookup("akka.io", 1.second)
+  serviceDiscovery.lookup("pekko.io", 1.second)
   // #basic
 
   // #full
@@ -33,7 +33,7 @@ object CompileOnlySpec {
   import pekko.discovery.ServiceDiscovery.Resolved
 
   val lookup: Future[Resolved] =
-    serviceDiscovery.lookup(Lookup("akka.io").withPortName("remoting").withProtocol("tcp"), 1.second)
+    serviceDiscovery.lookup(Lookup("pekko.io").withPortName("remoting").withProtocol("tcp"), 1.second)
   // #full
 
   // compiler

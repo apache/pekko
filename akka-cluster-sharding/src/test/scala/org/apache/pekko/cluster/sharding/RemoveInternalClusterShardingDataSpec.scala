@@ -30,22 +30,22 @@ import pekko.testkit.WithLogCapturing
 
 object RemoveInternalClusterShardingDataSpec {
   val config = """
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
-    akka.persistence.journal.leveldb {
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
+    pekko.persistence.journal.leveldb {
       native = off
       dir = "target/journal-RemoveInternalClusterShardingDataSpec"
     }
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/snapshots-RemoveInternalClusterShardingDataSpec"
-    akka.cluster.sharding.snapshot-after = 5
-    akka.cluster.sharding.state-store-mode = persistence
-    akka.cluster.sharding.keep-nr-of-batches = 0
-    akka.cluster.sharding.verbose-debug-logging = on
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/snapshots-RemoveInternalClusterShardingDataSpec"
+    pekko.cluster.sharding.snapshot-after = 5
+    pekko.cluster.sharding.state-store-mode = persistence
+    pekko.cluster.sharding.keep-nr-of-batches = 0
+    pekko.cluster.sharding.verbose-debug-logging = on
     """
 
   val extractEntityId: ShardRegion.ExtractEntityId = {
@@ -105,7 +105,7 @@ class RemoveInternalClusterShardingDataSpec
   import RemoveInternalClusterShardingDataSpec._
 
   val storageLocations =
-    List("akka.persistence.journal.leveldb.dir", "akka.persistence.snapshot-store.local.dir").map(s =>
+    List("pekko.persistence.journal.leveldb.dir", "pekko.persistence.snapshot-store.local.dir").map(s =>
       new File(system.settings.config.getString(s)))
 
   override protected def atStartup(): Unit = {

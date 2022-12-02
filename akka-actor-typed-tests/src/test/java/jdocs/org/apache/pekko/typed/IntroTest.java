@@ -170,7 +170,7 @@ public interface IntroTest {
       private HelloWorldMain(ActorContext<SayHello> context) {
         super(context);
 
-        final String dispatcherPath = "akka.actor.default-blocking-io-dispatcher";
+        final String dispatcherPath = "pekko.actor.default-blocking-io-dispatcher";
         Props greeterProps = DispatcherSelector.fromConfig(dispatcherPath);
         greeter = getContext().spawn(HelloWorld.create(), "greeter", greeterProps);
       }

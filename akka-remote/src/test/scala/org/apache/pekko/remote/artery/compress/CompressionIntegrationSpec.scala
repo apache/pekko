@@ -19,7 +19,7 @@ import java.io.NotSerializableException
 object CompressionIntegrationSpec {
 
   val commonConfig = ConfigFactory.parseString(s"""
-     akka {
+     pekko {
        loglevel = INFO
 
        actor {
@@ -137,8 +137,8 @@ class CompressionIntegrationSpec
 
     "not be advertised if ActorRef compression disabled" in {
       val config = """
-       akka.remote.artery.advanced.compression.actor-refs.max = off
-       akka.remote.artery.advanced.compression {
+       pekko.remote.artery.advanced.compression.actor-refs.max = off
+       pekko.remote.artery.advanced.compression {
          actor-refs.advertisement-interval = 50 ms
          manifests.advertisement-interval = 50 ms
        }
@@ -169,8 +169,8 @@ class CompressionIntegrationSpec
 
     "not be advertised if manifest compression disabled" in {
       val config = """
-       akka.remote.artery.advanced.compression.manifests.max = off
-       akka.remote.artery.advanced.compression {
+       pekko.remote.artery.advanced.compression.manifests.max = off
+       pekko.remote.artery.advanced.compression {
          actor-refs.advertisement-interval = 50 ms
          manifests.advertisement-interval = 50 ms
        }
@@ -261,7 +261,7 @@ class CompressionIntegrationSpec
     val port = address(systemB).port.get
     shutdown(systemB)
     val systemB2 =
-      newRemoteSystem(extraConfig = Some(s"akka.remote.artery.canonical.port=$port"), name = Some("systemB"))
+      newRemoteSystem(extraConfig = Some(s"pekko.remote.artery.canonical.port=$port"), name = Some("systemB"))
 
     // listen for compression table events
     val aManifestProbe = TestProbe()(system)
@@ -332,7 +332,7 @@ class CompressionIntegrationSpec
   "wrap around" in {
     val extraConfig =
       """
-      akka.remote.artery.advanced.compression {
+      pekko.remote.artery.advanced.compression {
         actor-refs.advertisement-interval = 100 millis
         manifests.advertisement-interval = 10 minutes
       }

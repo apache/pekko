@@ -114,7 +114,7 @@ package docs.serialization {
     val config =
       """
         #//#serialization-identifiers-config
-        akka {
+        pekko {
           actor {
             serialization-identifiers {
               "docs.serialization.MyOwnSerializer" = 1234567
@@ -129,7 +129,7 @@ package docs.serialization {
     "demonstrate configuration of serialize messages" in {
       val config = ConfigFactory.parseString("""
       #//#serialize-messages-config
-      akka {
+      pekko {
         actor {
           serialize-messages = on
         }
@@ -144,7 +144,7 @@ package docs.serialization {
     "demonstrate configuration of serialize creators" in {
       val config = ConfigFactory.parseString("""
       #//#serialize-creators-config
-      akka {
+      pekko {
         actor {
           serialize-creators = on
         }
@@ -159,7 +159,7 @@ package docs.serialization {
     "demonstrate configuration of serializers" in {
       val config = ConfigFactory.parseString("""
       #//#serialize-serializers-config
-      akka {
+      pekko {
         actor {
           serializers {
             jackson-json = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
@@ -178,7 +178,7 @@ package docs.serialization {
     "demonstrate configuration of serialization-bindings" in {
       val config = ConfigFactory.parseString("""
       #//#serialization-bindings-config
-      akka {
+      pekko {
         actor {
           serializers {
             jackson-json = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"

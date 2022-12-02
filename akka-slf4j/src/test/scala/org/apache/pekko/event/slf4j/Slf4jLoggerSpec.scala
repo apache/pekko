@@ -23,7 +23,7 @@ object Slf4jLoggerSpec {
   // This test depends on logback configuration in src/test/resources/logback-test.xml
 
   val config = """
-    akka {
+    pekko {
       loglevel = INFO
       loggers = ["org.apache.pekko.event.slf4j.Slf4jLogger"]
       logger-startup-timeout = 30s
@@ -83,7 +83,7 @@ class Slf4jLoggerSpec extends AkkaSpec(Slf4jLoggerSpec.config) with BeforeAndAft
     output.reset()
   }
 
-  val sourceThreadRegex = "sourceThread=Slf4jLoggerSpec-akka.actor.default-dispatcher-[1-9][0-9]*"
+  val sourceThreadRegex = "sourceThread=Slf4jLoggerSpec-pekko.actor.default-dispatcher-[1-9][0-9]*"
 
   "Slf4jLogger" must {
 

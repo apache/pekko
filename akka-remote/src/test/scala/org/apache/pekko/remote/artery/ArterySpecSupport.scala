@@ -9,7 +9,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 object ArterySpecSupport {
   // same for all artery enabled remoting tests
   private val staticArteryRemotingConfig = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       actor {
         provider = remote
       }
@@ -40,7 +40,7 @@ object ArterySpecSupport {
     val keyStore = getClass.getClassLoader.getResource("keystore").getPath
 
     ConfigFactory.parseString(s"""
-      akka.remote.artery.ssl.config-ssl-engine {
+      pekko.remote.artery.ssl.config-ssl-engine {
         key-store = "$keyStore"
         trust-store = "$trustStore"
       }

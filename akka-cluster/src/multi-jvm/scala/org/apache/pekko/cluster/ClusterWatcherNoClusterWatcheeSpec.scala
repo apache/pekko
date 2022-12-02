@@ -30,20 +30,20 @@ class ClusterWatcherNoClusterWatcheeConfig(val useUnsafe: Boolean, artery: Boole
   val remoting = role("remoting")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.remote.use-unsafe-remote-features-outside-cluster = $useUnsafe
-      akka.remote.log-remote-lifecycle-events = off
-      akka.remote.artery.enabled = $artery
-      akka.log-dead-letters = off
-      akka.loggers =["org.apache.pekko.testkit.TestEventListener"]
-      akka.actor.allow-java-serialization = on
+      pekko.remote.use-unsafe-remote-features-outside-cluster = $useUnsafe
+      pekko.remote.log-remote-lifecycle-events = off
+      pekko.remote.artery.enabled = $artery
+      pekko.log-dead-letters = off
+      pekko.loggers =["org.apache.pekko.testkit.TestEventListener"]
+      pekko.actor.allow-java-serialization = on
      """)))
 
   nodeConfig(remoting)(ConfigFactory.parseString(s"""
-      akka.actor.provider = remote"""))
+      pekko.actor.provider = remote"""))
 
   nodeConfig(clustered)(ConfigFactory.parseString("""
-      akka.actor.provider = cluster
-      akka.cluster.jmx.enabled = off"""))
+      pekko.actor.provider = cluster
+      pekko.cluster.jmx.enabled = off"""))
 
 }
 

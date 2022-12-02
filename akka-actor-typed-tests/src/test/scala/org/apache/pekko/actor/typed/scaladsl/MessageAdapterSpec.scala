@@ -24,7 +24,7 @@ import pekko.actor.typed.internal.AdaptMessage
 
 object MessageAdapterSpec {
   val config = ConfigFactory.parseString("""
-      akka.log-dead-letters = on
+      pekko.log-dead-letters = on
       ping-pong-dispatcher {
         executor = thread-pool-executor
         type = PinnedDispatcher

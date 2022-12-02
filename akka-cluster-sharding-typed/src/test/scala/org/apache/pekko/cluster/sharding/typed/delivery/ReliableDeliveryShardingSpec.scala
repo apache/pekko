@@ -33,10 +33,10 @@ import pekko.cluster.typed.Join
 
 object ReliableDeliveryShardingSpec {
   val config = ConfigFactory.parseString("""
-    akka.actor.provider = cluster
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.reliable-delivery.consumer-controller.flow-control-window = 20
+    pekko.actor.provider = cluster
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.reliable-delivery.consumer-controller.flow-control-window = 20
     """)
 
   object TestShardingProducer {

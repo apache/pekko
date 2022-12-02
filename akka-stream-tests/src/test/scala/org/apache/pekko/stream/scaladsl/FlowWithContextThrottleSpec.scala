@@ -12,8 +12,8 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowWithContextThrottleSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   private def toMessage(i: Int) = Message(s"data-$i", i.toLong)

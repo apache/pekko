@@ -71,9 +71,9 @@ class ChaosJournal extends InmemJournal {
 object EventSourcedBehaviorFailureSpec {
 
   val conf: Config = ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.persistence.journal.plugin = "failure-journal"
-      failure-journal = $${akka.persistence.journal.inmem}
+      pekko.loglevel = INFO
+      pekko.persistence.journal.plugin = "failure-journal"
+      failure-journal = $${pekko.persistence.journal.inmem}
       failure-journal {
         class = "org.apache.pekko.persistence.typed.scaladsl.ChaosJournal"
       }

@@ -57,7 +57,7 @@ import pekko.stream.StreamSubscriptionTimeoutTerminationMode.{ CancelTermination
  * Provides support methods to create Publishers and Subscribers which time-out gracefully,
  * and are canceled subscribing an `CancellingSubscriber` to the publisher, or by calling `onError` on the timed-out subscriber.
  *
- * See `akka.stream.materializer.subscription-timeout` for configuration options.
+ * See `pekko.stream.materializer.subscription-timeout` for configuration options.
  */
 @nowarn("msg=deprecated")
 @InternalApi private[pekko] trait StreamSubscriptionTimeoutSupport {

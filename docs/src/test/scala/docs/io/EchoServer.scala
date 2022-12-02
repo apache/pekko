@@ -15,7 +15,7 @@ import scala.io.StdIn
 
 object EchoServer extends App {
 
-  val config = ConfigFactory.parseString("akka.loglevel = DEBUG")
+  val config = ConfigFactory.parseString("pekko.loglevel = DEBUG")
   implicit val system: ActorSystem = ActorSystem("EchoServer", config)
 
   system.actorOf(Props(classOf[EchoManager], classOf[EchoHandler]), "echo")

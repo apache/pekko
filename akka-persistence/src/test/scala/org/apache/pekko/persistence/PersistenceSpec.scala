@@ -63,24 +63,24 @@ object PersistenceSpec {
       .map(ConfigFactory.parseString(_))
       .getOrElse(ConfigFactory.empty())
       .withFallback(ConfigFactory.parseString(s"""
-      akka.actor.serialize-creators = $serialization
-      akka.actor.serialize-messages = $serialization
-      akka.actor.no-serialization-verification-needed-class-prefix = []
+      pekko.actor.serialize-creators = $serialization
+      pekko.actor.serialize-messages = $serialization
+      pekko.actor.no-serialization-verification-needed-class-prefix = []
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
-      akka.persistence.publish-plugin-commands = on
-      akka.persistence.journal.plugin = "akka.persistence.journal.${plugin}"
-      akka.persistence.journal.leveldb.dir = "target/journal-${test}"
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-      akka.persistence.snapshot-store.local.dir = "target/snapshots-${test}/"
-      akka.test.single-expect-default = 10s
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
+      pekko.persistence.publish-plugin-commands = on
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.${plugin}"
+      pekko.persistence.journal.leveldb.dir = "target/journal-${test}"
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.local.dir = "target/snapshots-${test}/"
+      pekko.test.single-expect-default = 10s
     """))
 }
 
 trait Cleanup { this: AkkaSpec =>
   val storageLocations =
-    List("akka.persistence.snapshot-store.local.dir").map(s => new File(system.settings.config.getString(s)))
+    List("pekko.persistence.snapshot-store.local.dir").map(s => new File(system.settings.config.getString(s)))
 
   override protected def atStartup(): Unit = {
     storageLocations.foreach(FileUtils.deleteDirectory)

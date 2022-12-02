@@ -113,7 +113,7 @@ object IntroSpec {
       // #hello-world-main-with-dispatchers
       def apply(): Behavior[SayHello] =
         Behaviors.setup { context =>
-          val dispatcherPath = "akka.actor.default-blocking-io-dispatcher"
+          val dispatcherPath = "pekko.actor.default-blocking-io-dispatcher"
 
           val props = DispatcherSelector.fromConfig(dispatcherPath)
           val greeter = context.spawn(HelloWorld(), "greeter", props)

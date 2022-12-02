@@ -37,26 +37,26 @@ object ReplicatedShardingSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = DEBUG
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+    pekko.loglevel = DEBUG
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
     // for the proxy plugin
-    akka.actor.allow-java-serialization = on 
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on 
+    pekko.actor.warn-about-java-serializer-usage = off
       """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first)(ConfigFactory.parseString("""
-    akka.persistence.journal.plugin = "akka.persistence.journal.proxy"
-    akka.persistence.journal.proxy {
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.proxy"
+    pekko.persistence.journal.proxy {
       start-target-journal = on
-      target-journal-plugin = "akka.persistence.journal.inmem"
+      target-journal-plugin = "pekko.persistence.journal.inmem"
     }
       """))
 
   nodeConfig(second)(ConfigFactory.parseString("""
-    akka.persistence.journal.plugin = "akka.persistence.journal.proxy"
-    akka.persistence.journal.proxy {
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.proxy"
+    pekko.persistence.journal.proxy {
       start-target-journal = off
-      target-journal-plugin = "akka.persistence.journal.inmem"
+      target-journal-plugin = "pekko.persistence.journal.inmem"
     }
       """))
 

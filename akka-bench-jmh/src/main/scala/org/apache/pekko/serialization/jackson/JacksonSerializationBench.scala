@@ -198,7 +198,7 @@ class JacksonSerializationBench {
   @Setup(Level.Trial)
   def setupTrial(): Unit = {
     val config = ConfigFactory.parseString(s"""
-        akka {
+        pekko {
           loglevel = WARNING
           actor {
             serialization-bindings {
@@ -212,7 +212,7 @@ class JacksonSerializationBench {
             }
           }
         }
-        akka.serialization.jackson.jackson-json.compression {
+        pekko.serialization.jackson.jackson-json.compression {
           algorithm = $compression
           compress-larger-than = 100 b
         }
@@ -237,7 +237,7 @@ class JacksonSerializationBench {
           size = blob.length
           println(
             s"# Size is $size of ${msg.getClass.getName} with " +
-            s"${system.settings.config.getString("akka.serialization.jackson.jackson-json.compression.algorithm")}")
+            s"${system.settings.config.getString("pekko.serialization.jackson.jackson-json.compression.algorithm")}")
         }
         serializer.fromBinary(blob, serializer.manifest(msg)).asInstanceOf[T]
       case serializer =>

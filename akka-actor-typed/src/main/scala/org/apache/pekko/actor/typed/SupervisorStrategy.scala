@@ -284,7 +284,7 @@ sealed abstract class RestartSupervisorStrategy extends SupervisorStrategy {
    * the capacity in number of messages of the stash buffer. If the capacity is exceed
    * then additional incoming messages are dropped.
    *
-   * By default the capacity is defined by config property `akka.actor.typed.restart-stash-capacity`.
+   * By default the capacity is defined by config property `pekko.actor.typed.restart-stash-capacity`.
    */
   def withStashCapacity(capacity: Int): RestartSupervisorStrategy
 
@@ -336,7 +336,7 @@ sealed abstract class BackoffSupervisorStrategy extends SupervisorStrategy {
    * behavior. This property defines the capacity in number of messages of the stash
    * buffer. If the capacity is exceed then additional incoming messages are dropped.
    *
-   * By default the capacity is defined by config property `akka.actor.typed.restart-stash-capacity`.
+   * By default the capacity is defined by config property `pekko.actor.typed.restart-stash-capacity`.
    */
   def withStashCapacity(capacity: Int): BackoffSupervisorStrategy
 

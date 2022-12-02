@@ -46,7 +46,7 @@ object MaliciousMessage {
 }
 
 class ProtobufSerializerSpec extends AkkaSpec(s"""
-  akka.serialization.protobuf.allowed-classes = [
+  pekko.serialization.protobuf.allowed-classes = [
       "com.google.protobuf.GeneratedMessage",
       "com.google.protobuf.GeneratedMessageV3",
       "scalapb.GeneratedMessageCompanion",

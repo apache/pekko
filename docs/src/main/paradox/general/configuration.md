@@ -75,7 +75,7 @@ A custom `application.conf` might look like this:
 # In this file you can override any option defined in the reference files.
 # Copy in parts of the reference files and modify as you please.
 
-akka {
+pekko {
 
   # Logger config for Akka internals and classic actors, the new API relies
   # directly on SLF4J and your config for the logger backend.
@@ -126,7 +126,7 @@ Specifying system property with `-Dconfig.resource=/dev.conf` will load the `dev
 ```
 include "application"
 
-akka {
+pekko {
   loglevel = "DEBUG"
 }
 ```
@@ -137,7 +137,7 @@ specification.
 <a id="dakka-log-config-on-start"></a>
 ## Logging of Configuration
 
-If the system or config property `akka.log-config-on-start` is set to `on`, then the
+If the system or config property `pekko.log-config-on-start` is set to `on`, then the
 complete configuration is logged at INFO level when the actor system is started. This is
 useful when you are uncertain of what configuration is used.
 
@@ -198,7 +198,7 @@ This implies that putting Akka on the boot class path will yield
 ## Application specific settings
 
 The configuration can also be used for application specific settings.
-A good practice is to place those settings in an @ref:[Extension](../extending-akka.md#extending-akka-settings). 
+A good practice is to place those settings in an @ref:[Extension](../extending-akka.md#extending-akka-settings).
 
 ## Configuring multiple ActorSystem
 
@@ -213,11 +213,11 @@ differentiate actor systems within the hierarchy of the configuration:
 
 ```
 myapp1 {
-  akka.loglevel = "WARNING"
+  pekko.loglevel = "WARNING"
   my.own.setting = 43
 }
 myapp2 {
-  akka.loglevel = "ERROR"
+  pekko.loglevel = "ERROR"
   app2.setting = "appname"
 }
 my.own.setting = 42
@@ -235,7 +235,7 @@ trick: in the first case, the configuration accessible from within the actor
 system is this
 
 ```ruby
-akka.loglevel = "WARNING"
+pekko.loglevel = "WARNING"
 my.own.setting = 43
 my.other.setting = "hello"
 // plus myapp1 and myapp2 subtrees
@@ -245,7 +245,7 @@ while in the second one, only the “akka” subtree is lifted, with the followi
 result
 
 ```ruby
-akka.loglevel = "ERROR"
+pekko.loglevel = "ERROR"
 my.own.setting = 42
 my.other.setting = "hello"
 // plus myapp1 and myapp2 subtrees

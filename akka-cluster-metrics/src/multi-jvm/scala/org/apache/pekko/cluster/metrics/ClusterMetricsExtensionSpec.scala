@@ -28,26 +28,26 @@ trait ClusterMetricsCommonConfig extends MultiNodeConfig {
   // Extract individual sigar library for every node.
   nodeList.foreach { role =>
     nodeConfig(role) {
-      parseString(s"akka.cluster.metrics.native-library-extract-folder=$${user.dir}/target/native/" + role.name)
+      parseString(s"pekko.cluster.metrics.native-library-extract-folder=$${user.dir}/target/native/" + role.name)
     }
   }
 
   // Enable metrics extension in akka-cluster-metrics.
   def enableMetricsExtension = parseString("""
-    akka.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
-    akka.cluster.metrics.collector.enabled = on
+    pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
+    pekko.cluster.metrics.collector.enabled = on
     """)
 
   // Disable metrics extension in akka-cluster-metrics.
   def disableMetricsExtension = parseString("""
-    akka.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
-    akka.cluster.metrics.collector.enabled = off
+    pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
+    pekko.cluster.metrics.collector.enabled = off
     """)
 
   // Activate slf4j logging along with test listener.
   def customLogging = parseString("""
-      akka.loggers=["org.apache.pekko.testkit.TestEventListener","org.apache.pekko.event.slf4j.Slf4jLogger"]
-      akka.logger-startup-timeout = 15s
+      pekko.loggers=["org.apache.pekko.testkit.TestEventListener","org.apache.pekko.event.slf4j.Slf4jLogger"]
+      pekko.logger-startup-timeout = 15s
     """)
 }
 

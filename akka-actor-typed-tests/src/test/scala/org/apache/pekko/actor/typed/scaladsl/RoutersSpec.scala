@@ -20,7 +20,7 @@ import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.adapter._
 
 class RoutersSpec extends ScalaTestWithActorTestKit("""
-    akka.loglevel=debug
+    pekko.loglevel=debug
   """) with AnyWordSpecLike with Matchers with LogCapturing {
 
   // needed for the event filter

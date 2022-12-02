@@ -14,8 +14,8 @@ import pekko.stream.OverflowStrategy
 import pekko.stream.testkit._
 
 class FlowBatchSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "Batch" must {

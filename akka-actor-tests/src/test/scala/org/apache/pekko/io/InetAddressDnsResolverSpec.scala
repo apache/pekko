@@ -15,8 +15,8 @@ import pekko.testkit.{ AkkaSpec, TestActorRef }
 
 @nowarn
 class InetAddressDnsResolverSpec extends AkkaSpec("""
-    akka.io.dns.inet-address.positive-ttl = default
-    akka.io.dns.inet-address.negative-ttl = default
+    pekko.io.dns.inet-address.positive-ttl = default
+    pekko.io.dns.inet-address.negative-ttl = default
     """) { thisSpecs =>
 
   "The DNS resolver default ttl's" must {
@@ -95,7 +95,7 @@ class InetAddressDnsResolverSpec extends AkkaSpec("""
       Props(
         classOf[InetAddressDnsResolver],
         new SimpleDnsCache(),
-        system.settings.config.getConfig("akka.io.dns.inet-address")))
+        system.settings.config.getConfig("pekko.io.dns.inet-address")))
     actorRef.underlyingActor
   }
 
@@ -123,8 +123,8 @@ class InetAddressDnsResolverSpec extends AkkaSpec("""
 
 @nowarn
 class InetAddressDnsResolverConfigSpec extends AkkaSpec("""
-    akka.io.dns.inet-address.positive-ttl = forever
-    akka.io.dns.inet-address.negative-ttl = never
+    pekko.io.dns.inet-address.positive-ttl = forever
+    pekko.io.dns.inet-address.negative-ttl = never
     """) {
   thisSpecs =>
 
@@ -144,7 +144,7 @@ class InetAddressDnsResolverConfigSpec extends AkkaSpec("""
       Props(
         classOf[InetAddressDnsResolver],
         new SimpleDnsCache(),
-        system.settings.config.getConfig("akka.io.dns.inet-address")))
+        system.settings.config.getConfig("pekko.io.dns.inet-address")))
     actorRef.underlyingActor
   }
 }

@@ -18,8 +18,8 @@ abstract class ClusterShardingMinMembersSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(
       mode,
       additionalConfig = s"""
-        akka.cluster.sharding.rebalance-interval = 120s #disable rebalance
-        akka.cluster.min-nr-of-members = 3
+        pekko.cluster.sharding.rebalance-interval = 120s #disable rebalance
+        pekko.cluster.min-nr-of-members = 3
         """) {
 
   val first = role("first")

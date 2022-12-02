@@ -21,17 +21,17 @@ import pekko.cluster.MemberStatus
 object ClusterApiSpec {
   val config =
     ConfigFactory.parseString("""
-      akka.actor.provider = cluster
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
-      akka.cluster.jmx.multi-mbeans-in-same-jvm = on
-      akka.coordinated-shutdown.terminate-actor-system = off
-      akka.coordinated-shutdown.run-by-actor-system-terminate = off
+      pekko.actor.provider = cluster
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
+      pekko.coordinated-shutdown.terminate-actor-system = off
+      pekko.coordinated-shutdown.run-by-actor-system-terminate = off
       # generous timeout for cluster forming probes
-      akka.actor.testkit.typed.default-timeout = 10s
+      pekko.actor.testkit.typed.default-timeout = 10s
       # disable this or we cannot be sure to observe node end state on the leaving side
-      akka.cluster.run-coordinated-shutdown-when-down = off
+      pekko.cluster.run-coordinated-shutdown-when-down = off
     """)
 }
 

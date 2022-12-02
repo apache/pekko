@@ -39,7 +39,7 @@ class DummyDowningProvider(@unused system: ActorSystem) extends DowningProvider 
 class DowningProviderSpec extends AnyWordSpec with Matchers {
 
   val baseConf = ConfigFactory.parseString("""
-      akka {
+      pekko {
         loglevel = WARNING
         actor.provider = "cluster"
         remote {
@@ -67,7 +67,7 @@ class DowningProviderSpec extends AnyWordSpec with Matchers {
       val system = ActorSystem(
         "auto-downing",
         ConfigFactory.parseString("""
-          akka.cluster.downing-provider-class="org.apache.pekko.cluster.DummyDowningProvider"
+          pekko.cluster.downing-provider-class="org.apache.pekko.cluster.DummyDowningProvider"
         """).withFallback(baseConf))
 
       Cluster(system).downingProvider shouldBe a[DummyDowningProvider]
@@ -85,7 +85,7 @@ class DowningProviderSpec extends AnyWordSpec with Matchers {
             ActorSystem(
               "auto-downing",
               ConfigFactory.parseString("""
-          akka.cluster.downing-provider-class="org.apache.pekko.cluster.FailingDowningProvider"
+          pekko.cluster.downing-provider-class="org.apache.pekko.cluster.FailingDowningProvider"
         """).withFallback(baseConf)))
         } catch {
           case NonFatal(_) =>

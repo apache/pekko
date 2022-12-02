@@ -53,24 +53,24 @@ object ClusterShardingRememberEntitiesNewExtractorSpec {
 abstract class ClusterShardingRememberEntitiesNewExtractorSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(
       mode,
-      additionalConfig = "akka.persistence.journal.leveldb-shared.store.native = off") {
+      additionalConfig = "pekko.persistence.journal.leveldb-shared.store.native = off") {
   val first = role("first")
   val second = role("second")
   val third = role("third")
 
   val roleConfig = ConfigFactory.parseString("""
-      akka.cluster.roles = [sharding]
+      pekko.cluster.roles = [sharding]
     """)
 
   // we pretend node 4 and 5 are new incarnations of node 2 and 3 as they never run in parallel
   // so we can use the same lmdb store for them and have node 4 pick up the persisted data of node 2
   val ddataNodeAConfig = ConfigFactory.parseString("""
-      akka.cluster.sharding.distributed-data.durable.lmdb {
+      pekko.cluster.sharding.distributed-data.durable.lmdb {
         dir = target/ShardingRememberEntitiesNewExtractorSpec/sharding-node-a
       }
     """)
   val ddataNodeBConfig = ConfigFactory.parseString("""
-      akka.cluster.sharding.distributed-data.durable.lmdb {
+      pekko.cluster.sharding.distributed-data.durable.lmdb {
         dir = target/ShardingRememberEntitiesNewExtractorSpec/sharding-node-b
       }
     """)

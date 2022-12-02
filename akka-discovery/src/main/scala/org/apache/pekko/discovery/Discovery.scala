@@ -23,19 +23,19 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
   }
 
   private lazy val _defaultImplMethod =
-    system.settings.config.getString("akka.discovery.method") match {
+    system.settings.config.getString("pekko.discovery.method") match {
       case "<method>" =>
         throw new IllegalArgumentException(
           "No default service discovery implementation configured in " +
-          "`akka.discovery.method`. Make sure to configure this setting to your preferred implementation such as " +
-          "'akka-dns' in your application.conf (from the akka-discovery module).")
+          "`pekko.discovery.method`. Make sure to configure this setting to your preferred implementation such as " +
+          "'pekko-dns' in your application.conf (from the akka-discovery module).")
       case method => method
     }
 
   private lazy val defaultImpl = loadServiceDiscovery(_defaultImplMethod)
 
   /**
-   * Default [[ServiceDiscovery]] as configured in `akka.discovery.method`.
+   * Default [[ServiceDiscovery]] as configured in `pekko.discovery.method`.
    */
   @throws[IllegalArgumentException]
   def discovery: ServiceDiscovery = defaultImpl
@@ -43,7 +43,7 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
   /**
    * Create a [[ServiceDiscovery]] from configuration property.
    * The given `method` parameter is used to find configuration property
-   * "akka.discovery.[method].class".
+   * "pekko.discovery.[method].class".
    *
    * The `ServiceDiscovery` instance for a given `method` will be created
    * once and subsequent requests for the same `method` will return the same instance.
@@ -63,15 +63,9 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
     def classNameFromConfig(path: String): String = {
       if (config.hasPath(path))
         config.getString(path)
-      else {
-        // TODO: Update the org.apache.pekko to akka workaround when HOCON config gets updated
-        val replacePath = path.replace("org.apache.pekko", "akka")
-        if (config.hasPath(replacePath))
-          config.getString(replacePath)
-        else
-          throw new IllegalArgumentException(
-            s"$path must point to a FQN of a `org.apache.pekko.discovery.ServiceDiscovery` implementation")
-      }
+      else
+        throw new IllegalArgumentException(
+          s"$path must point to a FQN of a `org.apache.pekko.discovery.ServiceDiscovery` implementation")
     }
 
     def create(clazzName: String): Try[ServiceDiscovery] = {
@@ -87,7 +81,7 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
         }
     }
 
-    val configName = "org.apache.pekko.discovery." + method + ".class"
+    val configName = s"pekko.discovery.$method.class"
     val instanceTry = create(classNameFromConfig(configName))
 
     instanceTry match {
@@ -124,11 +118,11 @@ object Discovery extends ExtensionId[Discovery] with ExtensionIdProvider {
     try {
       system.dynamicAccess.getClassFor[Any]("org.apache.pekko.discovery.SimpleServiceDiscovery").get
       throw new RuntimeException(
-        "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.akka.discovery:akka-discovery` from the classpath..")
+        "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.pekko.discovery:akka-discovery` from the classpath..")
     } catch {
       case _: ClassCastException =>
         throw new RuntimeException(
-          "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.akka.discovery:akka-discovery` from the classpath..")
+          "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.pekko.discovery:akka-discovery` from the classpath..")
       case _: ClassNotFoundException =>
       // all good
     }

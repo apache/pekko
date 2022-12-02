@@ -23,8 +23,8 @@ import pekko.util.ByteString
 class DurableProducerControllerSpec
     extends ScalaTestWithActorTestKit(
       ConfigFactory.parseString("""
-  akka.reliable-delivery.consumer-controller.flow-control-window = 20
-  akka.reliable-delivery.consumer-controller.resend-interval-min = 1s
+  pekko.reliable-delivery.consumer-controller.flow-control-window = 20
+  pekko.reliable-delivery.consumer-controller.resend-interval-min = 1s
   """).withFallback(TestSerializer.config))
     with AnyWordSpecLike
     with LogCapturing {

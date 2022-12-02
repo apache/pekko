@@ -139,8 +139,8 @@ public class LambdaPersistencePluginDocTest {
           public MyJournalSpecTest() {
             super(
                 ConfigFactory.parseString(
-                    "akka.persistence.journal.plugin = "
-                        + "\"akka.persistence.journal.leveldb-shared\""));
+                    "pekko.persistence.journal.plugin = "
+                        + "\"pekko.persistence.journal.leveldb-shared\""));
           }
 
           @Override
@@ -160,8 +160,8 @@ public class LambdaPersistencePluginDocTest {
           public MySnapshotStoreTest() {
             super(
                 ConfigFactory.parseString(
-                    "akka.persistence.snapshot-store.plugin = "
-                        + "\"akka.persistence.snapshot-store.local\""));
+                    "pekko.persistence.snapshot-store.plugin = "
+                        + "\"pekko.persistence.snapshot-store.local\""));
           }
         }
         // #snapshot-store-tck-java
@@ -180,13 +180,13 @@ public class LambdaPersistencePluginDocTest {
             super(
                 ConfigFactory.parseString(
                     "persistence.journal.plugin = "
-                        + "\"akka.persistence.journal.leveldb-shared\""));
+                        + "\"pekko.persistence.journal.leveldb-shared\""));
 
             Config config = system().settings().config();
             storageLocations.add(
-                new File(config.getString("akka.persistence.journal.leveldb.dir")));
+                new File(config.getString("pekko.persistence.journal.leveldb.dir")));
             storageLocations.add(
-                new File(config.getString("akka.persistence.snapshot-store.local.dir")));
+                new File(config.getString("pekko.persistence.snapshot-store.local.dir")));
           }
 
           @Override

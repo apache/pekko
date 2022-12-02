@@ -32,7 +32,7 @@ import pekko.persistence.typed.PersistenceId
 import scala.collection.immutable
 
 object PersistenceTestKitReadJournal {
-  val Identifier = "akka.persistence.testkit.query"
+  val Identifier = "pekko.persistence.testkit.query"
 }
 
 final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused config: Config, configPath: String)

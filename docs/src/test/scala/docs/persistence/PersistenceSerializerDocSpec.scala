@@ -17,7 +17,7 @@ class PersistenceSerializerDocSpec extends AnyWordSpec {
   val customSerializerConfig =
     """
       //#custom-serializer-config
-      akka.actor {
+      pekko.actor {
         serializers {
           my-payload = "docs.persistence.MyPayloadSerializer"
           my-snapshot = "docs.persistence.MySnapshotSerializer"

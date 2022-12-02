@@ -8,7 +8,7 @@ The @apidoc[CoordinatedShutdown$] extension registers internal and user-defined 
 Especially the phases `before-service-unbind`, `before-cluster-shutdown` and
 `before-actor-system-terminate` are intended for application specific phases or tasks.
 
-The order of the shutdown phases is defined in configuration `akka.coordinated-shutdown.phases`. See the default phases in the `reference.conf` tab:
+The order of the shutdown phases is defined in configuration `pekko.coordinated-shutdown.phases`. See the default phases in the `reference.conf` tab:
 
 Most relevant default phases
 :   | Phase | Description |
@@ -83,7 +83,7 @@ JVM is not forcefully stopped (it will be stopped if all non-daemon threads have
 To enable a hard `System.exit` as a final action you can configure:
 
 ```
-akka.coordinated-shutdown.exit-jvm = on
+pekko.coordinated-shutdown.exit-jvm = on
 ```
 
 The coordinated shutdown process is also started once the actor system's root actor is stopped.
@@ -98,7 +98,7 @@ By default, the `CoordinatedShutdown` will be run when the JVM process exits, e.
 via `kill SIGTERM` signal (`SIGINT` ctrl-c doesn't work). This behavior can be disabled with:
 
 ```
-akka.coordinated-shutdown.run-by-jvm-shutdown-hook=off
+pekko.coordinated-shutdown.run-by-jvm-shutdown-hook=off
 ```
 
 If you have application specific JVM shutdown hooks it's recommended that you register them via the
@@ -117,8 +117,8 @@ used in the test:
 
 ```
 # Don't terminate ActorSystem via CoordinatedShutdown in tests
-akka.coordinated-shutdown.terminate-actor-system = off
-akka.coordinated-shutdown.run-by-actor-system-terminate = off
-akka.coordinated-shutdown.run-by-jvm-shutdown-hook = off
-akka.cluster.run-coordinated-shutdown-when-down = off
+pekko.coordinated-shutdown.terminate-actor-system = off
+pekko.coordinated-shutdown.run-by-actor-system-terminate = off
+pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = off
+pekko.cluster.run-coordinated-shutdown-when-down = off
 ```

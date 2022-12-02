@@ -69,7 +69,7 @@ class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
       val ecProbe = TestProbe()
       val ec = new SnitchingExecutionContext(ecProbe.ref, ExecutionContexts.global())
 
-      val config = ConfigFactory.parseString("akka.actor.default-dispatcher.executor = \"fork-join-executor\"")
+      val config = ConfigFactory.parseString("pekko.actor.default-dispatcher.executor = \"fork-join-executor\"")
       val system2 = ActorSystem(
         name = "ActorSystemDispatchersSpec-ec-configured",
         config = Some(config),
@@ -97,13 +97,13 @@ class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
       val sys = ActorSystem(
         "ActorSystemDispatchersSpec-override-internal-disp",
         ConfigFactory.parseString("""
-             akka.actor.internal-dispatcher = akka.actor.default-dispatcher
+             pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher
            """))
       try {
         // that the user guardian runs on the overridden dispatcher instead of internal
         // isn't really a guarantee any internal actor has been made running on the right one
         // but it's better than no test coverage at all
-        userGuardianDispatcher(sys) should ===("akka.actor.default-dispatcher")
+        userGuardianDispatcher(sys) should ===("pekko.actor.default-dispatcher")
       } finally {
         shutdown(sys)
       }
@@ -118,7 +118,7 @@ class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
         ActorSystem(
           name = "ActorSystemDispatchersSpec-passed-in-ec-for-internal",
           config = Some(ConfigFactory.parseString("""
-            akka.actor.internal-dispatcher = akka.actor.default-dispatcher
+            pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher
           """)),
           defaultExecutionContext = Some(ec))
 
@@ -141,7 +141,7 @@ class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
     }
 
     "use an internal dispatcher for the guardian by default" in {
-      userGuardianDispatcher(system) should ===("akka.actor.internal-dispatcher")
+      userGuardianDispatcher(system) should ===("pekko.actor.internal-dispatcher")
     }
 
     "use the default dispatcher by a user provided user guardian" in {
@@ -154,7 +154,7 @@ class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
         ActorSystemSetup.empty)
       sys.start()
       try {
-        userGuardianDispatcher(sys) should ===("akka.actor.default-dispatcher")
+        userGuardianDispatcher(sys) should ===("pekko.actor.default-dispatcher")
       } finally shutdown(sys)
     }
 

@@ -21,7 +21,7 @@ To use Akka Cluster add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
   version=AkkaVersion
@@ -78,7 +78,7 @@ Cluster can span multiple data centers and still be tolerant to network partitio
 ## Defining the data centers
 
 The features are based on the idea that nodes can be assigned to a group of nodes
-by setting the `akka.cluster.multi-data-center.self-data-center` configuration property.
+by setting the `pekko.cluster.multi-data-center.self-data-center` configuration property.
 A node can only belong to one data center and if nothing is specified a node will belong 
 to the `default` data center.
 
@@ -125,8 +125,8 @@ be interpreted as an indication of problem with the network link between the dat
 
 Two different failure detectors can be configured for these two purposes:
 
-* `akka.cluster.failure-detector` for failure detection within own data center
-* `akka.cluster.multi-data-center.failure-detector` for failure detection across different data centers
+* `pekko.cluster.failure-detector` for failure detection within own data center
+* `pekko.cluster.multi-data-center.failure-detector` for failure detection across different data centers
 
 When @ref[subscribing to cluster events](cluster.md#cluster-subscriptions) the `UnreachableMember` and
 `ReachableMember` events are for observations within the own data center. The same data center as where the
@@ -136,7 +136,7 @@ For cross data center unreachability notifications you can subscribe to `Unreach
 events.
 
 Heartbeat messages for failure detection across data centers are only performed between a number of the
-oldest nodes on each side. The number of nodes is configured with `akka.cluster.multi-data-center.cross-data-center-connections`.
+oldest nodes on each side. The number of nodes is configured with `pekko.cluster.multi-data-center.cross-data-center-connections`.
 The reason for only using a limited number of nodes is to keep the number of connections across data
 centers low. The same nodes are also used for the gossip protocol when disseminating the membership
 information across data centers. Within a data center all nodes are involved in gossip and failure detection.

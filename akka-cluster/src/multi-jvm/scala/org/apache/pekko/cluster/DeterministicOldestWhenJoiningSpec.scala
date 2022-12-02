@@ -25,8 +25,8 @@ object DeterministicOldestWhenJoiningMultiJvmSpec extends MultiNodeConfig {
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
     # not too quick to trigger problematic scenario more often
-    akka.cluster.leader-actions-interval = 2000 ms
-    akka.cluster.gossip-interval = 500 ms
+    pekko.cluster.leader-actions-interval = 2000 ms
+    pekko.cluster.gossip-interval = 500 ms
     """))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 }

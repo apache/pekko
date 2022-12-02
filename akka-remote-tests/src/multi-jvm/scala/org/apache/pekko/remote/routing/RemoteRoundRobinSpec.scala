@@ -26,8 +26,8 @@ class RemoteRoundRobinConfig(artery: Boolean) extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.remote.artery.enabled = $artery
-      akka.remote.use-unsafe-remote-features-outside-cluster = on
+      pekko.remote.artery.enabled = $artery
+      pekko.remote.use-unsafe-remote-features-outside-cluster = on
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
   deployOnAll("""

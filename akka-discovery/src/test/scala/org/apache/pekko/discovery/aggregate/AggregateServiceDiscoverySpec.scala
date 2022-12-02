@@ -39,7 +39,7 @@ class StubbedServiceDiscovery(@unused system: ExtendedActorSystem) extends Servi
 
 object AggregateServiceDiscoverySpec {
   val config: Config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         loglevel = DEBUG
         discovery {
           method = aggregate
@@ -50,11 +50,11 @@ object AggregateServiceDiscoverySpec {
         }
       }
 
-      akka.discovery.stubbed1 {
+      pekko.discovery.stubbed1 {
         class = org.apache.pekko.discovery.aggregate.StubbedServiceDiscovery
       }
 
-      akka.discovery.config.services = {
+      pekko.discovery.config.services = {
         config1 = {
           endpoints = [
             {

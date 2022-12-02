@@ -24,17 +24,17 @@ import scala.concurrent.duration._
 object EntityPassivationSpec {
 
   val config: Config = ConfigFactory.parseString("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.cluster.sharding.verbose-debug-logging = on
-    akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.cluster.sharding.verbose-debug-logging = on
+    pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
     """)
 
   val disabledConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = none
       }

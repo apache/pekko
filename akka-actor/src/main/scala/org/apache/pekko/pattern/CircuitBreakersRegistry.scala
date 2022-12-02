@@ -55,7 +55,7 @@ final class CircuitBreakersRegistry(system: ExtendedActorSystem) extends Extensi
 
   private val breakers = new ConcurrentHashMap[String, CircuitBreaker]
 
-  private val config = system.settings.config.getConfig("akka.circuit-breaker")
+  private val config = system.settings.config.getConfig("pekko.circuit-breaker")
   private val defaultBreakerConfig = config.getConfig("default")
 
   private def createCircuitBreaker(id: String): CircuitBreaker = {

@@ -24,9 +24,9 @@ import pekko.testkit.TestProbe
 
 object ClusterDomainEventPublisherSpec {
   val config = """
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
     """
 }
 

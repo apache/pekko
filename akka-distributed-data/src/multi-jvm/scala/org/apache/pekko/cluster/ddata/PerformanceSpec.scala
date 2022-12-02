@@ -28,23 +28,23 @@ object PerformanceSpec extends MultiNodeConfig {
   val n5 = role("n5")
 
   commonConfig(ConfigFactory.parseString(s"""
-    akka.loglevel = ERROR
-    akka.stdout-loglevel = ERROR
-    akka.loggers = ["org.apache.pekko.event.Logging$$DefaultLogger"]
-    akka.actor.provider = "cluster"
-    akka.log-dead-letters = off
-    akka.log-dead-letters-during-shutdown = off
-    akka.remote.classic.log-remote-lifecycle-events = ERROR
-    akka.remote.classic.log-frame-size-exceeding=1000b
-    akka.remote.artery.log-frame-size-exceeding=1000b
-    akka.testconductor.barrier-timeout = 60 s
-    akka.cluster.distributed-data.gossip-interval = 1 s
+    pekko.loglevel = ERROR
+    pekko.stdout-loglevel = ERROR
+    pekko.loggers = ["org.apache.pekko.event.Logging$$DefaultLogger"]
+    pekko.actor.provider = "cluster"
+    pekko.log-dead-letters = off
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.remote.classic.log-remote-lifecycle-events = ERROR
+    pekko.remote.classic.log-frame-size-exceeding=1000b
+    pekko.remote.artery.log-frame-size-exceeding=1000b
+    pekko.testconductor.barrier-timeout = 60 s
+    pekko.cluster.distributed-data.gossip-interval = 1 s
 
-    #akka.cluster.distributed-data.durable.keys = ["*"]
-    #akka.cluster.distributed-data.durable.lmdb.dir = target/PerformanceSpec-${System.currentTimeMillis}-ddata
-    #akka.cluster.distributed-data.durable.lmdb.write-behind-interval = 200ms
+    #pekko.cluster.distributed-data.durable.keys = ["*"]
+    #pekko.cluster.distributed-data.durable.lmdb.dir = target/PerformanceSpec-${System.currentTimeMillis}-ddata
+    #pekko.cluster.distributed-data.durable.lmdb.write-behind-interval = 200ms
 
-    #akka.cluster.distributed-data.delta-crdt.enabled = off
+    #pekko.cluster.distributed-data.delta-crdt.enabled = off
     """))
 
   def countDownProps(latch: TestLatch): Props = Props(new CountDown(latch)).withDeploy(Deploy.local)

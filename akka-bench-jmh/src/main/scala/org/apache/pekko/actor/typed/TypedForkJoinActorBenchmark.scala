@@ -62,7 +62,7 @@ class TypedForkJoinActorBenchmark {
       TypedBenchmarkActors.benchmarkPingPongSupervisor(),
       "TypedForkJoinActorBenchmark",
       ConfigFactory.parseString(s"""
-       akka.actor {
+       pekko.actor {
 
          default-mailbox.mailbox-capacity = 512
 

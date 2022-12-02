@@ -26,15 +26,15 @@ object RemoteGatePiercingSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false).withFallback(
       ConfigFactory.parseString("""
-      akka.loglevel = INFO
-      akka.remote.artery.enabled = false
-      akka.remote.classic.log-remote-lifecycle-events = INFO
-      akka.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 5 s
+      pekko.loglevel = INFO
+      pekko.remote.artery.enabled = false
+      pekko.remote.classic.log-remote-lifecycle-events = INFO
+      pekko.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 5 s
     """)))
 
-  nodeConfig(first)(ConfigFactory.parseString("akka.remote.classic.retry-gate-closed-for  = 1 d # Keep it long"))
+  nodeConfig(first)(ConfigFactory.parseString("pekko.remote.classic.retry-gate-closed-for  = 1 d # Keep it long"))
 
-  nodeConfig(second)(ConfigFactory.parseString("akka.remote.classic.retry-gate-closed-for  = 1 s # Keep it short"))
+  nodeConfig(second)(ConfigFactory.parseString("pekko.remote.classic.retry-gate-closed-for  = 1 s # Keep it short"))
 
   testTransport(on = true)
 

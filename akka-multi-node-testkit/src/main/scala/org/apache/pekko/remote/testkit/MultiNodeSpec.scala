@@ -59,20 +59,20 @@ abstract class MultiNodeConfig {
   def debugConfig(on: Boolean): Config =
     if (on)
       ConfigFactory.parseString("""
-        akka.loglevel = DEBUG
-        akka.remote {
+        pekko.loglevel = DEBUG
+        pekko.remote {
           log-received-messages = on
           log-sent-messages = on
         }
-        akka.remote.artery {
+        pekko.remote.artery {
           log-received-messages = on
           log-sent-messages = on
         }
-        akka.actor.debug {
+        pekko.actor.debug {
           receive = on
           fsm = on
         }
-        akka.remote.log-remote-lifecycle-events = on
+        pekko.remote.log-remote-lifecycle-events = on
         """)
     else
       ConfigFactory.empty
@@ -109,8 +109,8 @@ abstract class MultiNodeConfig {
   private[pekko] def config: Config = {
     val transportConfig =
       if (_testTransport) ConfigFactory.parseString("""
-           akka.remote.classic.netty.tcp.applied-adapters = [trttl, gremlin]
-           akka.remote.artery.advanced.test-mode = on
+           pekko.remote.classic.netty.tcp.applied-adapters = [trttl, gremlin]
+           pekko.remote.artery.advanced.test-mode = on
         """)
       else ConfigFactory.empty
 
@@ -237,15 +237,15 @@ object MultiNodeSpec {
 
   private[testkit] val nodeConfig = mapToConfig(
     Map(
-      "akka.actor.provider" -> "remote",
-      "akka.remote.artery.canonical.hostname" -> selfName,
-      "akka.remote.classic.netty.tcp.hostname" -> selfName,
-      "akka.remote.classic.netty.tcp.port" -> tcpPort,
-      "akka.remote.artery.canonical.port" -> selfPort))
+      "pekko.actor.provider" -> "remote",
+      "pekko.remote.artery.canonical.hostname" -> selfName,
+      "pekko.remote.classic.netty.tcp.hostname" -> selfName,
+      "pekko.remote.classic.netty.tcp.port" -> tcpPort,
+      "pekko.remote.artery.canonical.port" -> selfPort))
 
   private[testkit] val baseConfig: Config =
     ConfigFactory.parseString("""
-      akka {
+      pekko {
         loggers = ["org.apache.pekko.testkit.TestEventListener"]
         loglevel = "WARNING"
         stdout-loglevel = "WARNING"
@@ -275,8 +275,8 @@ object MultiNodeSpec {
   // Please note that with the current setup only port 5000 and 5001 (or 6000 and 6001 when using UDP)
   // are exposed in kubernetes
   def configureNextPortIfFixed(config: Config): Config = {
-    val arteryPortConfig = getNextPortString("akka.remote.artery.canonical.port", config)
-    val nettyPortConfig = getNextPortString("akka.remote.classic.netty.tcp.port", config)
+    val arteryPortConfig = getNextPortString("pekko.remote.artery.canonical.port", config)
+    val nettyPortConfig = getNextPortString("pekko.remote.classic.netty.tcp.port", config)
     ConfigFactory.parseString(s"""{
       $arteryPortConfig
       $nettyPortConfig
@@ -439,7 +439,7 @@ abstract class MultiNodeSpec(
    * the innermost enclosing `within` block or the passed `max` timeout.
    *
    * Note that the `max` timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def enterBarrier(max: FiniteDuration, name: String*): Unit =
     testConductor.enter(Timeout.durationToTimeout(remainingOr(max.dilated)), name.to(immutable.Seq))
@@ -542,7 +542,7 @@ abstract class MultiNodeSpec(
    */
   protected def startNewSystem(): ActorSystem = {
     val config = ConfigFactory
-      .parseString(s"akka.remote.classic.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
+      .parseString(s"pekko.remote.classic.netty.tcp{port=${myAddress.port.get}\nhostname=${myAddress.host.get}}")
       .withFallback(system.settings.config)
     val sys = ActorSystem(system.name, config)
     injectDeployments(sys, myself)

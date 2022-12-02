@@ -25,7 +25,7 @@ import pekko.actor.typed.scaladsl.LoggerOps
 
 object ReliableDeliveryRandomSpec {
   val config: Config = ConfigFactory.parseString("""
-    akka.reliable-delivery.consumer-controller {
+    pekko.reliable-delivery.consumer-controller {
       flow-control-window = 20
       resend-interval-min = 500 ms
       resend-interval-max = 2 s
@@ -215,5 +215,5 @@ class ReliableDeliveryRandomSpec(config: Config)
 class ReliableDeliveryRandomChunkedSpec
     extends ReliableDeliveryRandomSpec(
       ConfigFactory.parseString("""
-        akka.reliable-delivery.producer-controller.chunk-large-messages = 1b
+        pekko.reliable-delivery.producer-controller.chunk-large-messages = 1b
         """).withFallback(TestSerializer.config).withFallback(ReliableDeliveryRandomSpec.config))

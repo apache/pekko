@@ -347,7 +347,7 @@ For further hints on how to disambiguate links in ScalaDoc comments see
 [this StackOverflow answer](https://stackoverflow.com/a/31569861/354132),
 though note that this syntax may not correctly render as Javadoc.
 
-The Scaladoc tool needs the `dot` command from the [Graphviz](https://graphviz.org/#download) software package to be installed to avoid errors. You can disable the diagram generation by adding the flag `-Dakka.scaladoc.diagrams=false`. After installing Graphviz, make sure you add the toolset to the `PATH` (definitely on Windows).
+The Scaladoc tool needs the `dot` command from the [Graphviz](https://graphviz.org/#download) software package to be installed to avoid errors. You can disable the diagram generation by adding the flag `-Dpekko.scaladoc.diagrams=false`. After installing Graphviz, make sure you add the toolset to the `PATH` (definitely on Windows).
 
 #### JavaDoc
 
@@ -357,7 +357,7 @@ Generating JavaDoc is not enabled by default, as it's not needed on day-to-day d
 If you'd like to check if your links and formatting look good in JavaDoc (and not only in ScalaDoc), you can generate it by running:
 
 ```shell
-sbt -Dakka.genjavadoc.enabled=true Javaunidoc/doc
+sbt -Dpekko.genjavadoc.enabled=true Javaunidoc/doc
 ```
 
 Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 11 or later.
@@ -431,13 +431,13 @@ Also, tests tagged as `PerformanceTest`, `TimingTest`, `LongRunningTest`, and al
 You can exclude the same kind of tests in your local build by starting sbt with:
 
 ```shell
-sbt -Dakka.test.tags.exclude=performance,timing,long-running -Dakka.test.multi-in-test=false
+sbt -Dpekko.test.tags.exclude=performance,timing,long-running -Dpekko.test.multi-in-test=false
 ```
 
 It is also possible to exclude groups of test by their names. For example:
 
 ```shell
-sbt -Dakka.test.names.exclude=akka.cluster.Stress
+sbt -Dpekko.test.names.exclude=akka.cluster.Stress
 ```
 
 Will exclude any tests that have names containing `akka.cluster.Stress`.
@@ -476,7 +476,7 @@ In addition to formatting, the Pekko build enforces code discipline through a se
 to any non-empty string value when starting up sbt:
 
 ```shell
-sbt -Dakka.no.discipline=youbet
+sbt -Dpekko.no.discipline=youbet
 ```
 
 PR validation includes the discipline flags and hence may fail if the flags were disabled during development. Make sure you compile your code at least once with discipline enabled before sending a PR.

@@ -44,15 +44,15 @@ object RememberEntitiesAndStartEntitySpec {
   }
 
   val config = ConfigFactory.parseString("""
-      akka.loglevel=DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = cluster
-      akka.remote.artery.canonical.port = 0
-      akka.remote.classic.netty.tcp.port = 0
-      akka.cluster.sharding.verbose-debug-logging = on
-      akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+      pekko.loglevel=DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = cluster
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.cluster.sharding.verbose-debug-logging = on
+      pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
       # no leaks between test runs thank you
-      akka.cluster.sharding.distributed-data.durable.keys = []
+      pekko.cluster.sharding.distributed-data.durable.keys = []
     """.stripMargin)
 }
 

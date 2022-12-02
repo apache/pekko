@@ -13,7 +13,7 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowStatefulMapConcatSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   val ex = new Exception("TEST") with NoStackTrace

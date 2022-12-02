@@ -36,7 +36,7 @@ class ActorSystemSpec
     with Eventually
     with LogCapturing {
 
-  private val testKitSettings = TestKitSettings(ConfigFactory.load().getConfig("akka.actor.testkit.typed"))
+  private val testKitSettings = TestKitSettings(ConfigFactory.load().getConfig("pekko.actor.testkit.typed"))
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(testKitSettings.SingleExpectDefaultTimeout, Span(100, org.scalatest.time.Millis))
   def system[T](behavior: Behavior[T], name: String, props: Props = Props.empty) =

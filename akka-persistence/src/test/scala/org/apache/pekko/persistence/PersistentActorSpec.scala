@@ -1667,10 +1667,10 @@ class InmemPersistentActorWithRuntimePluginConfigSpec
      """.stripMargin)
       .withValue(
         s"custom.persistence.journal.inmem",
-        system.settings.config.getValue(s"akka.persistence.journal.inmem"))
+        system.settings.config.getValue(s"pekko.persistence.journal.inmem"))
       .withValue(
         "custom.persistence.snapshot-store.local",
-        system.settings.config.getValue("akka.persistence.snapshot-store.local"))
+        system.settings.config.getValue("pekko.persistence.snapshot-store.local"))
   }
 
   override protected def behavior1PersistentActor: ActorRef =

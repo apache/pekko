@@ -14,7 +14,7 @@ import pekko.testkit.TimingTest
 import pekko.util.unused
 
 class FlowGroupedWeightedSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "A GroupedWeighted" must {

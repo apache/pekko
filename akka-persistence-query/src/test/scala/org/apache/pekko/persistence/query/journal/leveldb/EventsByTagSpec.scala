@@ -22,10 +22,10 @@ import scala.annotation.nowarn
 
 object EventsByTagSpec {
   val config = s"""
-    akka.loglevel = INFO
-    akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
+    pekko.loglevel = INFO
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
 
-    akka.persistence.journal.leveldb {
+    pekko.persistence.journal.leveldb {
       dir = "target/journal-EventsByTagSpec"
       event-adapters {
         color-tagger  = org.apache.pekko.persistence.query.journal.leveldb.ColorTagger
@@ -34,13 +34,13 @@ object EventsByTagSpec {
         "java.lang.String" = color-tagger
       }
     }
-    akka.persistence.query.journal.leveldb {
+    pekko.persistence.query.journal.leveldb {
       refresh-interval = 1s
       max-buffer-size = 2
     }
-    akka.test.single-expect-default = 10s
+    pekko.test.single-expect-default = 10s
     
-    leveldb-no-refresh = $${akka.persistence.query.journal.leveldb}
+    leveldb-no-refresh = $${pekko.persistence.query.journal.leveldb}
     leveldb-no-refresh {
       refresh-interval = 10m
     }

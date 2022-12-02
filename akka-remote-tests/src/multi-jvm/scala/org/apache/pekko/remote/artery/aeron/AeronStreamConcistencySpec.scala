@@ -34,7 +34,7 @@ object AeronStreamConsistencySpec extends MultiNodeConfig {
   val barrierTimeout = 5.minutes
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-       akka {
+       pekko {
          loglevel = INFO
          actor {
            provider = remote
@@ -62,7 +62,7 @@ abstract class AeronStreamConsistencySpec
     Aeron.connect(ctx)
   }
 
-  val idleCpuLevel = system.settings.config.getInt("akka.remote.artery.advanced.aeron.idle-cpu-level")
+  val idleCpuLevel = system.settings.config.getInt("pekko.remote.artery.advanced.aeron.idle-cpu-level")
   val taskRunner = {
     val r = new TaskRunner(system.asInstanceOf[ExtendedActorSystem], idleCpuLevel)
     r.start()

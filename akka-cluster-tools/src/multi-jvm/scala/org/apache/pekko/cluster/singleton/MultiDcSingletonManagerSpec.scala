@@ -23,24 +23,24 @@ object MultiDcSingletonManagerSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off"""))
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off"""))
 
   nodeConfig(controller) {
     ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = one
-      akka.cluster.roles = []""")
+      pekko.cluster.multi-data-center.self-data-center = one
+      pekko.cluster.roles = []""")
   }
 
   nodeConfig(first) {
     ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = one
-      akka.cluster.roles = [ worker ]""")
+      pekko.cluster.multi-data-center.self-data-center = one
+      pekko.cluster.roles = [ worker ]""")
   }
   nodeConfig(second, third) {
     ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = two
-      akka.cluster.roles = [ worker ]""")
+      pekko.cluster.multi-data-center.self-data-center = two
+      pekko.cluster.roles = [ worker ]""")
   }
 }
 

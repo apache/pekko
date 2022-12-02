@@ -19,7 +19,7 @@ import pekko.testkit.TestEvent._
 object ResizerSpec {
 
   val config = """
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /router1 {
         router = round-robin-pool
         resizer {
@@ -53,7 +53,7 @@ class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with 
   "Resizer fromConfig" must {
     def parseCfg(cfgString: String): Config = {
       val referenceCfg = ConfigFactory.defaultReference(ActorSystem.findClassLoader())
-      ConfigFactory.parseString(cfgString).withFallback(referenceCfg.getConfig("akka.actor.deployment.default"))
+      ConfigFactory.parseString(cfgString).withFallback(referenceCfg.getConfig("pekko.actor.deployment.default"))
     }
 
     "load DefaultResizer from config when resizer is enabled" in {

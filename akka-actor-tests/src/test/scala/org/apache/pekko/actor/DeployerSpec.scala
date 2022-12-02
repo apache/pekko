@@ -17,7 +17,7 @@ import pekko.testkit.AkkaSpec
 object DeployerSpec {
   val deployerConf = ConfigFactory.parseString(
     """
-      akka.actor.deployment {
+      pekko.actor.deployment {
         /service1 {
         }
         /service-direct {
@@ -82,7 +82,7 @@ object DeployerSpec {
 class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
   "A Deployer" must {
 
-    "be able to parse 'akka.actor.deployment._' with all default values" in {
+    "be able to parse 'pekko.actor.deployment._' with all default values" in {
       val service = "/service1"
       val deployment = system.asInstanceOf[ExtendedActorSystem].provider.deployer.lookup(service.split("/").drop(1))
 
@@ -103,7 +103,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
       deployment should ===(None)
     }
 
-    "be able to parse 'akka.actor.deployment._' with dispatcher config" in {
+    "be able to parse 'pekko.actor.deployment._' with dispatcher config" in {
       val service = "/service3"
       val deployment = system.asInstanceOf[ExtendedActorSystem].provider.deployer.lookup(service.split("/").drop(1))
 
@@ -118,7 +118,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
             Deploy.NoMailboxGiven)))
     }
 
-    "be able to parse 'akka.actor.deployment._' with mailbox config" in {
+    "be able to parse 'pekko.actor.deployment._' with mailbox config" in {
       val service = "/service4"
       val deployment = system.asInstanceOf[ExtendedActorSystem].provider.deployer.lookup(service.split("/").drop(1))
 
@@ -138,7 +138,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         val invalidDeployerConf = ConfigFactory
           .parseString(
             """
-            akka.actor.deployment {
+            pekko.actor.deployment {
               /service-invalid-number-of-instances {
                 router = round-robin-pool
                 nr-of-instances = boom
@@ -157,7 +157,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         val invalidDeployerConf = ConfigFactory
           .parseString(
             """
-            akka.actor.deployment {
+            pekko.actor.deployment {
               /gul/ubåt {
                 router = round-robin-pool
                 nr-of-instances = 2
@@ -173,7 +173,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
       e.getMessage should include("[/gul/ubåt]")
     }
 
-    "be able to parse 'akka.actor.deployment._' with from-code router" in {
+    "be able to parse 'pekko.actor.deployment._' with from-code router" in {
       assertRouting("/service-direct", NoRouter, "/service-direct")
     }
 
@@ -181,26 +181,26 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
       assertRouting("/service-direct2", NoRouter, "/service-direct2")
     }
 
-    "be able to parse 'akka.actor.deployment._' with round-robin router" in {
+    "be able to parse 'pekko.actor.deployment._' with round-robin router" in {
       assertRouting("/service-round-robin", RoundRobinPool(1), "/service-round-robin")
     }
 
-    "be able to parse 'akka.actor.deployment._' with random router" in {
+    "be able to parse 'pekko.actor.deployment._' with random router" in {
       assertRouting("/service-random", RandomPool(1), "/service-random")
     }
 
-    "be able to parse 'akka.actor.deployment._' with scatter-gather router" in {
+    "be able to parse 'pekko.actor.deployment._' with scatter-gather router" in {
       assertRouting(
         "/service-scatter-gather",
         ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 2 seconds),
         "/service-scatter-gather")
     }
 
-    "be able to parse 'akka.actor.deployment._' with consistent-hashing router" in {
+    "be able to parse 'pekko.actor.deployment._' with consistent-hashing router" in {
       assertRouting("/service-consistent-hashing", ConsistentHashingPool(1), "/service-consistent-hashing")
     }
 
-    "be able to parse 'akka.actor.deployment._' with router resizer" in {
+    "be able to parse 'pekko.actor.deployment._' with router resizer" in {
       val resizer = DefaultResizer()
       assertRouting("/service-resizer", RoundRobinPool(nrOfInstances = 0, resizer = Some(resizer)), "/service-resizer")
     }

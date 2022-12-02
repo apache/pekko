@@ -22,7 +22,7 @@ class DummyReadJournal(val dummyValue: String) extends scaladsl.ReadJournal with
 }
 
 object DummyReadJournal {
-  final val Identifier = "akka.persistence.query.journal.dummy"
+  final val Identifier = "pekko.persistence.query.journal.dummy"
 }
 
 class DummyReadJournalForJava(readJournal: DummyReadJournal)

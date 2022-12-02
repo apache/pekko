@@ -82,7 +82,7 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
 
 object PersistenceTestKitPlugin {
 
-  val PluginId = "akka.persistence.testkit.journal"
+  val PluginId = "pekko.persistence.testkit.journal"
 
   import pekko.util.ccompat.JavaConverters._
 
@@ -90,7 +90,7 @@ object PersistenceTestKitPlugin {
 
   val config: Config = ConfigFactory.parseMap(
     Map(
-      "akka.persistence.journal.plugin" -> PluginId,
+      "pekko.persistence.journal.plugin" -> PluginId,
       s"$PluginId.class" -> s"${classOf[PersistenceTestKitPlugin].getName}").asJava)
 
   private[testkit] case class Write(persistenceId: String, toSequenceNr: Long)
@@ -123,7 +123,7 @@ class PersistenceTestKitSnapshotPlugin extends SnapshotStore {
 
 object PersistenceTestKitSnapshotPlugin {
 
-  val PluginId = "akka.persistence.testkit.snapshotstore.pluginid"
+  val PluginId = "pekko.persistence.testkit.snapshotstore.pluginid"
 
   import pekko.util.ccompat.JavaConverters._
 
@@ -131,7 +131,7 @@ object PersistenceTestKitSnapshotPlugin {
 
   val config: Config = ConfigFactory.parseMap(
     Map(
-      "akka.persistence.snapshot-store.plugin" -> PluginId,
+      "pekko.persistence.snapshot-store.plugin" -> PluginId,
       s"$PluginId.class" -> classOf[PersistenceTestKitSnapshotPlugin].getName,
       s"$PluginId.snapshot-is-optional" -> false // fallback isn't used by the testkit
     ).asJava)
@@ -140,11 +140,11 @@ object PersistenceTestKitSnapshotPlugin {
 
 object PersistenceTestKitDurableStateStorePlugin {
 
-  val PluginId = "akka.persistence.testkit.state"
+  val PluginId = "pekko.persistence.testkit.state"
 
   import pekko.util.ccompat.JavaConverters._
 
   def getInstance() = this
 
-  val config: Config = ConfigFactory.parseMap(Map("akka.persistence.state.plugin" -> PluginId).asJava)
+  val config: Config = ConfigFactory.parseMap(Map("pekko.persistence.state.plugin" -> PluginId).asJava)
 }

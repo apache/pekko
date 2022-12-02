@@ -12,7 +12,7 @@ import pekko.stream.OverflowStrategy
 import pekko.stream.testkit._
 
 class GraphUnzipSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "A unzip" must {

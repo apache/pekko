@@ -151,33 +151,33 @@ object MetricsConfig {
 
   /** Test w/o cluster, with collection enabled. */
   val defaultEnabled = """
-    akka.cluster.metrics {
+    pekko.cluster.metrics {
       collector {
         enabled = on
         sample-interval = 1s
         gossip-interval = 1s
       }
     }
-    akka.actor.provider = remote
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = remote
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
   """
 
   /** Test w/o cluster, with collection disabled. */
   val defaultDisabled = """
-    akka.cluster.metrics {
+    pekko.cluster.metrics {
       collector {
         enabled = off
       }
     }
-    akka.actor.provider = remote
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = remote
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
   """
 
   /** Test in cluster, with manual collection activation, collector mock, fast. */
   val clusterSigarMock = """
-    akka.cluster.metrics {
+    pekko.cluster.metrics {
       periodic-tasks-initial-delay = 100ms
       collector {
         enabled = off
@@ -187,9 +187,9 @@ object MetricsConfig {
         fallback = false
       }
     }
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
   """
 }
 

@@ -22,7 +22,7 @@ class SerializationErrorSpec extends ArteryMultiNodeSpec(ArterySpecSupport.defau
   val systemB = newRemoteSystem(
     name = Some("systemB"),
     extraConfig = Some("""
-       akka.actor.serialization-identifiers {
+       pekko.actor.serialization-identifiers {
          # this will cause deserialization error
          "org.apache.pekko.serialization.ByteArraySerializer" = -4
        }

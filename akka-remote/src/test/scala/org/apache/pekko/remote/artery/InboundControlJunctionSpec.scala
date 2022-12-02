@@ -29,10 +29,10 @@ object InboundControlJunctionSpec {
 
 class InboundControlJunctionSpec
     extends AkkaSpec("""
-                   akka.actor.serialization-bindings {
+                   pekko.actor.serialization-bindings {
                      "org.apache.pekko.remote.artery.InboundControlJunctionSpec$TestControlMessage" = java
                    }
-                   akka.stream.materializer.debug.fuzzing-mode = on
+                   pekko.stream.materializer.debug.fuzzing-mode = on
                    """)
     with ImplicitSender {
   import InboundControlJunctionSpec._

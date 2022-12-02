@@ -7,7 +7,7 @@ package org.apache.pekko.stream.scaladsl
 import org.apache.pekko.stream.testkit._
 
 class SubscriberSinkSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "A Flow with SubscriberSink" must {

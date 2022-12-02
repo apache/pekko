@@ -23,17 +23,17 @@ object ClusterClientStopSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.client {
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.client {
       heartbeat-interval = 1s
       acceptable-heartbeat-pause = 1s
       reconnect-timeout = 3s
       receptionist.number-of-contacts = 1
 
     }
-    akka.test.filter-leeway = 10s
+    pekko.test.filter-leeway = 10s
   """))
 
   class Service extends Actor {

@@ -25,8 +25,8 @@ object FaultHandlingDocSample extends App {
   import Worker._
 
   val config = ConfigFactory.parseString("""
-    akka.loglevel = "DEBUG"
-    akka.actor.debug {
+    pekko.loglevel = "DEBUG"
+    pekko.actor.debug {
       receive = on
       lifecycle = on
     }

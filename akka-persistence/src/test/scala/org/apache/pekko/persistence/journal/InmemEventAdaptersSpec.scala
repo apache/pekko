@@ -15,8 +15,8 @@ import scala.annotation.nowarn
 class InmemEventAdaptersSpec extends AkkaSpec {
 
   val config = ConfigFactory.parseString(s"""
-      |akka.persistence.journal {
-      |  plugin = "akka.persistence.journal.inmem"
+      |pekko.persistence.journal {
+      |  plugin = "pekko.persistence.journal.inmem"
       |
       |
       |  # adapters defined for all plugins
@@ -47,7 +47,7 @@ class InmemEventAdaptersSpec extends AkkaSpec {
     """.stripMargin).withFallback(ConfigFactory.load())
 
   val extendedActorSystem = system.asInstanceOf[ExtendedActorSystem]
-  val inmemConfig = config.getConfig("akka.persistence.journal.inmem")
+  val inmemConfig = config.getConfig("pekko.persistence.journal.inmem")
 
   "EventAdapters" must {
     "parse configuration and resolve adapter definitions" in {
@@ -74,14 +74,14 @@ class InmemEventAdaptersSpec extends AkkaSpec {
 
     "fail with useful message when binding to not defined adapter" in {
       val badConfig = ConfigFactory.parseString("""
-          |akka.persistence.journal.inmem {
+          |pekko.persistence.journal.inmem {
           |  event-adapter-bindings {
           |    "java.lang.Integer" = undefined-adapter
           |  }
           |}
         """.stripMargin)
 
-      val combinedConfig = badConfig.getConfig("akka.persistence.journal.inmem")
+      val combinedConfig = badConfig.getConfig("pekko.persistence.journal.inmem")
       val ex = intercept[IllegalArgumentException] {
         EventAdapters(extendedActorSystem, combinedConfig)
       }

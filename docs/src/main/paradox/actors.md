@@ -9,7 +9,7 @@ To use Classic Actors, add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -311,7 +311,7 @@ If the current actor behavior does not match a received message,
 `unhandled` is called, which by default publishes an
 @apidoc[actor.UnhandledMessage(message, sender, recipient)](actor.UnhandledMessage) on the actor
 system’s event stream (set configuration item
-`akka.actor.debug.unhandled` to `on` to have them converted into
+`pekko.actor.debug.unhandled` to `on` to have them converted into
 actual Debug messages).
 
 In addition, it offers:

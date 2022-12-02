@@ -132,8 +132,8 @@ class DeadLetterListener extends Actor {
         d.recipient.path.toString,
         d.recipient.getClass,
         logMessage +
-        "This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' " +
-        "and 'akka.log-dead-letters-during-shutdown'.",
+        "This logging can be turned off or adjusted with configuration settings 'pekko.log-dead-letters' " +
+        "and 'pekko.log-dead-letters-during-shutdown'.",
         Logging.emptyMDC,
         ActorLogMarker.deadLetter(messageStr)))
   }

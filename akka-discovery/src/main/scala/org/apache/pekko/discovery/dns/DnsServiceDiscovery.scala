@@ -77,7 +77,7 @@ private[pekko] class DnsServiceDiscovery(system: ExtendedActorSystem) extends Se
 
   // exposed for testing
   private[dns] def initializeDns(): ActorRef = {
-    if (system.settings.config.getString("akka.io.dns.resolver") == "async-dns") {
+    if (system.settings.config.getString("pekko.io.dns.resolver") == "async-dns") {
       log.debug("using system resolver as it is set to async-dns")
       IO(Dns)(system)
     } else {

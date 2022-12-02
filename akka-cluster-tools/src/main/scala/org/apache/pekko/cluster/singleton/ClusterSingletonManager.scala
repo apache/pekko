@@ -45,17 +45,17 @@ object ClusterSingletonManagerSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.singleton`.
+   * `pekko.cluster.singleton`.
    */
   def apply(system: ActorSystem): ClusterSingletonManagerSettings =
-    apply(system.settings.config.getConfig("akka.cluster.singleton"))
+    apply(system.settings.config.getConfig("pekko.cluster.singleton"))
       // note that this setting has some additional logic inside the ClusterSingletonManager
       // falling back to DowningProvider.downRemovalMargin if it is off/Zero
       .withRemovalMargin(Cluster(system).settings.DownRemovalMargin)
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.singleton`.
+   * the default configuration `pekko.cluster.singleton`.
    */
   def apply(config: Config): ClusterSingletonManagerSettings = {
     val lease = config.getString("use-lease") match {
@@ -73,13 +73,13 @@ object ClusterSingletonManagerSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.singleton`.
+   * `pekko.cluster.singleton`.
    */
   def create(system: ActorSystem): ClusterSingletonManagerSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.singleton`.
+   * the default configuration `pekko.cluster.singleton`.
    */
   def create(config: Config): ClusterSingletonManagerSettings = apply(config)
 
@@ -512,7 +512,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   val (maxHandOverRetries, maxTakeOverRetries) = {
     val n = (removalMargin.toMillis / handOverRetryInterval.toMillis).toInt
-    val minRetries = context.system.settings.config.getInt("akka.cluster.singleton.min-number-of-hand-over-retries")
+    val minRetries = context.system.settings.config.getInt("pekko.cluster.singleton.min-number-of-hand-over-retries")
     require(minRetries >= 1, "min-number-of-hand-over-retries must be >= 1")
     val handOverRetries = math.max(minRetries, n + 3)
     val takeOverRetries = math.max(1, handOverRetries - 3)

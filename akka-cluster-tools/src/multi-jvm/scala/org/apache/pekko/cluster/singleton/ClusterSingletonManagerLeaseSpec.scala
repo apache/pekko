@@ -29,23 +29,23 @@ object ClusterSingletonManagerLeaseSpec extends MultiNodeConfig {
   testTransport(true)
 
   commonConfig(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-    akka.cluster.testkit.auto-down-unreachable-after = 0s
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+    pekko.cluster.testkit.auto-down-unreachable-after = 0s
     test-lease {
         lease-class = ${classOf[TestLeaseActorClient].getName}
         heartbeat-interval = 1s
         heartbeat-timeout = 120s
         lease-operation-timeout = 3s
    }
-   akka.cluster.singleton {
+   pekko.cluster.singleton {
     use-lease = "test-lease"
    }
                                           """))
 
-  nodeConfig(first, second, third)(ConfigFactory.parseString("akka.cluster.roles = [worker]"))
+  nodeConfig(first, second, third)(ConfigFactory.parseString("pekko.cluster.roles = [worker]"))
 
   object ImportantSingleton {
     case class Response(msg: Any, address: Address) extends JavaSerializable

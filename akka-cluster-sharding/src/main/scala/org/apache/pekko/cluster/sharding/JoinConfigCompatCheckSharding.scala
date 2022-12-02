@@ -19,7 +19,7 @@ import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker }
 final class JoinConfigCompatCheckSharding extends JoinConfigCompatChecker {
 
   override def requiredKeys: im.Seq[String] =
-    im.Seq("akka.cluster.sharding.state-store-mode")
+    im.Seq("pekko.cluster.sharding.state-store-mode")
 
   override def check(toCheck: Config, actualConfig: Config): ConfigValidation =
     JoinConfigCompatChecker.fullMatch(requiredKeys, toCheck, actualConfig)

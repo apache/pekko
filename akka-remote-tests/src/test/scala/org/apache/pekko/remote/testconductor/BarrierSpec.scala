@@ -17,10 +17,10 @@ import pekko.testkit.{ AkkaSpec, EventFilter, ImplicitSender, TestProbe, TimingT
 object BarrierSpec {
   final case class Failed(ref: ActorRef, thr: Throwable)
   val config = """
-    akka.testconductor.barrier-timeout = 5s
-    akka.actor.provider = remote
-    akka.actor.debug.fsm = on
-    akka.actor.debug.lifecycle = on
+    pekko.testconductor.barrier-timeout = 5s
+    pekko.actor.provider = remote
+    pekko.actor.debug.fsm = on
+    pekko.actor.debug.lifecycle = on
                """
 }
 

@@ -133,9 +133,9 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
       val shardingBaseSettings =
         settings.shardingSettings match {
           case None =>
-            // defaults in akka.cluster.sharding but allow overrides specifically for sharded-daemon-process
+            // defaults in pekko.cluster.sharding but allow overrides specifically for sharded-daemon-process
             ClusterShardingSettings.fromConfig(
-              system.settings.config.getConfig("akka.cluster.sharded-daemon-process.sharding"))
+              system.settings.config.getConfig("pekko.cluster.sharded-daemon-process.sharding"))
           case Some(shardingSettings) => shardingSettings
         }
 

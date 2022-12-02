@@ -673,7 +673,7 @@ class AttributesSpec
             .futureValue
 
         // should not override stage specific dispatcher
-        dispatcher should startWith("AttributesSpec-akka.actor.default-blocking-io-dispatcher")
+        dispatcher should startWith("AttributesSpec-pekko.actor.default-blocking-io-dispatcher")
 
       } finally {
         myDispatcherMaterializer.shutdown()
@@ -696,8 +696,8 @@ class AttributesSpec
           throughput = 1
         }
         my-io-dispatcher = $${my-dispatcher}
-        akka.stream.materializer.dispatcher = "my-dispatcher"
-        akka.stream.materializer.blocking-io-dispatcher = "my-io-dispatcher"
+        pekko.stream.materializer.dispatcher = "my-dispatcher"
+        pekko.stream.materializer.blocking-io-dispatcher = "my-io-dispatcher"
       """)
       // we need to revert to the regular mailbox or else the test suite will complain
       // about using non-test worthy dispatchers
@@ -726,7 +726,7 @@ class AttributesSpec
       val threadName =
         Source.fromGraph(new ThreadNameSnitchingStage(None).addAttributes(Attributes(IODispatcher))).runWith(Sink.head)
 
-      threadName.futureValue should startWith("AttributesSpec-akka.actor.default-blocking-io-dispatcher")
+      threadName.futureValue should startWith("AttributesSpec-pekko.actor.default-blocking-io-dispatcher")
     }
 
     "allow for specifying a custom default io-dispatcher" in {

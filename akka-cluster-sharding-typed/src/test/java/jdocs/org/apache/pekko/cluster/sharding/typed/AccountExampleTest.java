@@ -37,12 +37,12 @@ public class AccountExampleTest extends JUnitSuite {
 
   public static final Config config =
       ConfigFactory.parseString(
-          "akka.actor.provider = cluster \n"
-              + "akka.remote.classic.netty.tcp.port = 0 \n"
-              + "akka.remote.artery.canonical.port = 0 \n"
-              + "akka.remote.artery.canonical.hostname = 127.0.0.1 \n"
-              + "akka.persistence.journal.plugin = \"akka.persistence.journal.inmem\" \n"
-              + "akka.persistence.journal.inmem.test-serialization = on \n");
+          "pekko.actor.provider = cluster \n"
+              + "pekko.remote.classic.netty.tcp.port = 0 \n"
+              + "pekko.remote.artery.canonical.port = 0 \n"
+              + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n"
+              + "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
+              + "pekko.persistence.journal.inmem.test-serialization = on \n");
 
   @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource(config);
 

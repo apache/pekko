@@ -25,7 +25,7 @@ import pekko.testkit.ImplicitSender
 import pekko.testkit.SocketUtil
 
 class AeronSinkSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = on
+    pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 
   val driver = MediaDriver.launchEmbedded()

@@ -16,8 +16,8 @@ import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 
 class RetryFlowSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) with CustomMatchers {
 
   final val Failed = new Exception("prepared failure")

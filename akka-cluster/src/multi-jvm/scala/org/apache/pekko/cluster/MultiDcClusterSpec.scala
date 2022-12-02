@@ -21,15 +21,15 @@ class MultiDcSpecConfig(crossDcConnections: Int = 5) extends MultiNodeConfig {
   val fifth = role("fifth")
 
   commonConfig(ConfigFactory.parseString(s"""
-      akka.cluster.multi-data-center.cross-data-center-connections = $crossDcConnections
+      pekko.cluster.multi-data-center.cross-data-center-connections = $crossDcConnections
     """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first, second)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc1"
+      pekko.cluster.multi-data-center.self-data-center = "dc1"
     """))
 
   nodeConfig(third, fourth, fifth)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc2"
+      pekko.cluster.multi-data-center.self-data-center = "dc2"
     """))
 
   testTransport(on = true)

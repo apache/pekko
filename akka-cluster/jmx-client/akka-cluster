@@ -201,7 +201,7 @@ do
     *)
         printf "Usage: $0 <node-hostname> <jmx-port> <optional: -p cluster-port> <command> ...\n"
         printf "\n"
-        printf "-p parameter needs is needed when cluster is run with akka.cluster.jmx.multi-mbeans-in-same-jvm = on.¥n"
+        printf "-p parameter needs is needed when cluster is run with pekko.cluster.jmx.multi-mbeans-in-same-jvm = on.¥n"
         printf "\n"
         printf "Supported commands are:\n"
         printf "%26s - %s\n" "join <node-url>"   "Sends request a JOIN node with the specified URL"

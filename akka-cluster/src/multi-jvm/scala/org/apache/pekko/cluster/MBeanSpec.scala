@@ -24,9 +24,9 @@ object MBeanMultiJvmSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
-    akka.cluster.jmx.enabled = on
-    akka.cluster.roles = [testNode]
-    akka.cluster.app-version = "1.2.3"
+    pekko.cluster.jmx.enabled = on
+    pekko.cluster.roles = [testNode]
+    pekko.cluster.app-version = "1.2.3"
     """)).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }

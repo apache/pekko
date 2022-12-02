@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 object CompositeSpec {
 
   val admissionWindowAndFilterConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lru-fs-slru
         lru-fs-slru {
@@ -41,7 +41,7 @@ object CompositeSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val admissionFilterNoWindowConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = fs-lru
         fs-lru {
@@ -57,7 +57,7 @@ object CompositeSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val adaptiveWindowConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = lru-fs-lru-hc
         lru-fs-lru-hc {
@@ -88,7 +88,7 @@ object CompositeSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val idleConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = default-strategy
         default-strategy {

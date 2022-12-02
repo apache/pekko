@@ -82,8 +82,8 @@ object TimerPersistentActorSpec {
 }
 
 class TimerPersistentActorSpec extends PersistenceSpec(ConfigFactory.parseString(s"""
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.actor.warn-about-java-serializer-usage = off
   """)) with ImplicitSender {
   import TimerPersistentActorSpec._
 

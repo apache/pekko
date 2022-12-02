@@ -13,7 +13,7 @@ It also provides the Lightbend Reactive Platform, which is powered by an open so
 
 ## Akka Discuss Forums
 
-[Akka Discuss Forums](https://discuss.akka.io)
+[Akka Discuss Forums](https://discuss.pekko.io)
 
 ## Gitter
 

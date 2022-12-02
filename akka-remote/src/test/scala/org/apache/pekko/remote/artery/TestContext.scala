@@ -64,7 +64,7 @@ private[remote] class TestInboundContext(
     new TestOutboundContext(localAddress, remoteAddress, controlSubject, controlProbe)
 
   override lazy val settings: ArterySettings =
-    ArterySettings(ConfigFactory.load().getConfig("akka.remote.artery"))
+    ArterySettings(ConfigFactory.load().getConfig("pekko.remote.artery"))
 
   override def publishDropped(env: InboundEnvelope, reason: String): Unit = ()
 }
@@ -106,7 +106,7 @@ private[remote] class TestOutboundContext(
   }
 
   override lazy val settings: ArterySettings =
-    ArterySettings(ConfigFactory.load().getConfig("akka.remote.artery"))
+    ArterySettings(ConfigFactory.load().getConfig("pekko.remote.artery"))
 
 }
 

@@ -71,12 +71,12 @@ class DispatchersDocSpec
       val withDefault: Future[ActorRef[WhichDispatcher]] =
         actor.ask(Spawn(giveMeYourDispatcher, "default", Props.empty, _))
       withDefault.futureValue ! WhichDispatcher(probe.ref)
-      probe.receiveMessage().id shouldEqual "akka.actor.default-dispatcher"
+      probe.receiveMessage().id shouldEqual "pekko.actor.default-dispatcher"
 
       val withBlocking: Future[ActorRef[WhichDispatcher]] =
         actor.ask(Spawn(giveMeYourDispatcher, "default", DispatcherSelector.blocking(), _))
       withBlocking.futureValue ! WhichDispatcher(probe.ref)
-      probe.receiveMessage().id shouldEqual "akka.actor.default-blocking-io-dispatcher"
+      probe.receiveMessage().id shouldEqual "pekko.actor.default-blocking-io-dispatcher"
 
       val withCustom: Future[ActorRef[WhichDispatcher]] =
         actor.ask(Spawn(giveMeYourDispatcher, "default", DispatcherSelector.fromConfig("your-dispatcher"), _))

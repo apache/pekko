@@ -1035,7 +1035,7 @@ object BoundedControlAwareMailbox {
 /**
  * Trait to signal that an Actor requires a certain type of message queue semantics.
  *
- * The mailbox type will be looked up by mapping the type T via akka.actor.mailbox.requirements in the config,
+ * The mailbox type will be looked up by mapping the type T via pekko.actor.mailbox.requirements in the config,
  * to a mailbox configuration. If no mailbox is assigned on Props or in deployment config then this one will be used.
  *
  * The queue type of the created mailbox will be checked against the type T and actor creation will fail if it doesn't

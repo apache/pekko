@@ -22,19 +22,19 @@ import org.scalatest.wordspec.AnyWordSpecLike
 object RememberEntitiesShardStoreSpec {
   def config =
     ConfigFactory.parseString(s"""
-      akka.loglevel=DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = cluster
-      akka.remote.artery.canonical.port = 0
-      akka.remote.classic.netty.tcp.port = 0
-      akka.cluster.sharding.state-store-mode = ddata
-      akka.cluster.sharding.snapshot-after = 2
-      akka.cluster.sharding.remember-entities = on
+      pekko.loglevel=DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = cluster
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.cluster.sharding.state-store-mode = ddata
+      pekko.cluster.sharding.snapshot-after = 2
+      pekko.cluster.sharding.remember-entities = on
       # no leaks between test runs thank you
-      akka.cluster.sharding.distributed-data.durable.keys = []
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-      akka.persistence.snapshot-store.local.dir = "target/${classOf[RememberEntitiesShardStoreSpec].getName}-${UUID
+      pekko.cluster.sharding.distributed-data.durable.keys = []
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.local.dir = "target/${classOf[RememberEntitiesShardStoreSpec].getName}-${UUID
                                   .randomUUID()
                                   .toString}"
     """.stripMargin)

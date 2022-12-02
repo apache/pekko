@@ -45,14 +45,14 @@ object ClusterShardingSettings {
 
   /**
    * Create settings from the default configuration
-   * `akka.cluster.sharding`.
+   * `pekko.cluster.sharding`.
    */
   def apply(system: ActorSystem): ClusterShardingSettings =
-    apply(system.settings.config.getConfig("akka.cluster.sharding"))
+    apply(system.settings.config.getConfig("pekko.cluster.sharding"))
 
   /**
    * Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.sharding`.
+   * the default configuration `pekko.cluster.sharding`.
    */
   def apply(config: Config): ClusterShardingSettings = {
 
@@ -115,13 +115,13 @@ object ClusterShardingSettings {
 
   /**
    * Java API: Create settings from the default configuration
-   * `akka.cluster.sharding`.
+   * `pekko.cluster.sharding`.
    */
   def create(system: ActorSystem): ClusterShardingSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
-   * the default configuration `akka.cluster.sharding`.
+   * the default configuration `pekko.cluster.sharding`.
    */
   def create(config: Config): ClusterShardingSettings = apply(config)
 

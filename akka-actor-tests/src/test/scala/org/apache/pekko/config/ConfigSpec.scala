@@ -29,66 +29,66 @@ class ConfigSpec extends AkkaSpec(ConfigFactory.defaultReference(ActorSystem.fin
       {
         import config._
 
-        getString("akka.version") should ===(ActorSystem.Version)
+        getString("pekko.version") should ===(ActorSystem.Version)
         settings.ConfigVersion should ===(ActorSystem.Version)
 
-        getBoolean("akka.daemonic") should ===(false)
+        getBoolean("pekko.daemonic") should ===(false)
 
-        getBoolean("akka.actor.serialize-messages") should ===(false)
+        getBoolean("pekko.actor.serialize-messages") should ===(false)
         settings.SerializeAllMessages should ===(false)
 
         settings.NoSerializationVerificationNeededClassPrefix should ===(Set("org.apache.pekko."))
 
-        getInt("akka.scheduler.ticks-per-wheel") should ===(512)
-        getDuration("akka.scheduler.tick-duration", TimeUnit.MILLISECONDS) should ===(10L)
-        getString("akka.scheduler.implementation") should ===("org.apache.pekko.actor.LightArrayRevolverScheduler")
+        getInt("pekko.scheduler.ticks-per-wheel") should ===(512)
+        getDuration("pekko.scheduler.tick-duration", TimeUnit.MILLISECONDS) should ===(10L)
+        getString("pekko.scheduler.implementation") should ===("org.apache.pekko.actor.LightArrayRevolverScheduler")
 
-        getBoolean("akka.daemonic") should ===(false)
+        getBoolean("pekko.daemonic") should ===(false)
         settings.Daemonicity should ===(false)
 
-        getBoolean("akka.jvm-exit-on-fatal-error") should ===(true)
+        getBoolean("pekko.jvm-exit-on-fatal-error") should ===(true)
         settings.JvmExitOnFatalError should ===(true)
         settings.JvmShutdownHooks should ===(true)
 
-        getBoolean("akka.fail-mixed-versions") should ===(true)
+        getBoolean("pekko.fail-mixed-versions") should ===(true)
         settings.FailMixedVersions should ===(true)
 
-        getInt("akka.actor.deployment.default.virtual-nodes-factor") should ===(10)
+        getInt("pekko.actor.deployment.default.virtual-nodes-factor") should ===(10)
         settings.DefaultVirtualNodesFactor should ===(10)
 
-        getDuration("akka.actor.unstarted-push-timeout", TimeUnit.MILLISECONDS) should ===(10.seconds.toMillis)
+        getDuration("pekko.actor.unstarted-push-timeout", TimeUnit.MILLISECONDS) should ===(10.seconds.toMillis)
         settings.UnstartedPushTimeout.duration should ===(10.seconds)
 
         settings.Loggers.size should ===(1)
         settings.Loggers.head should ===(classOf[DefaultLogger].getName)
-        getStringList("akka.loggers").get(0) should ===(classOf[DefaultLogger].getName)
+        getStringList("pekko.loggers").get(0) should ===(classOf[DefaultLogger].getName)
 
-        getDuration("akka.logger-startup-timeout", TimeUnit.MILLISECONDS) should ===(5.seconds.toMillis)
+        getDuration("pekko.logger-startup-timeout", TimeUnit.MILLISECONDS) should ===(5.seconds.toMillis)
         settings.LoggerStartTimeout.duration should ===(5.seconds)
 
-        getString("akka.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
+        getString("pekko.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
 
-        getInt("akka.log-dead-letters") should ===(10)
+        getInt("pekko.log-dead-letters") should ===(10)
         settings.LogDeadLetters should ===(10)
 
-        getBoolean("akka.log-dead-letters-during-shutdown") should ===(false)
+        getBoolean("pekko.log-dead-letters-during-shutdown") should ===(false)
         settings.LogDeadLettersDuringShutdown should ===(false)
 
-        getDuration("akka.log-dead-letters-suspend-duration", TimeUnit.MILLISECONDS) should ===(5 * 60 * 1000L)
+        getDuration("pekko.log-dead-letters-suspend-duration", TimeUnit.MILLISECONDS) should ===(5 * 60 * 1000L)
         settings.LogDeadLettersSuspendDuration should ===(5.minutes)
 
-        getBoolean("akka.coordinated-shutdown.terminate-actor-system") should ===(true)
+        getBoolean("pekko.coordinated-shutdown.terminate-actor-system") should ===(true)
         settings.CoordinatedShutdownTerminateActorSystem should ===(true)
 
-        getBoolean("akka.coordinated-shutdown.run-by-actor-system-terminate") should ===(true)
+        getBoolean("pekko.coordinated-shutdown.run-by-actor-system-terminate") should ===(true)
         settings.CoordinatedShutdownRunByActorSystemTerminate should ===(true)
 
-        getBoolean("akka.actor.allow-java-serialization") should ===(false)
+        getBoolean("pekko.actor.allow-java-serialization") should ===(false)
         settings.AllowJavaSerialization should ===(false)
       }
 
       {
-        val c = config.getConfig("akka.actor.default-dispatcher")
+        val c = config.getConfig("pekko.actor.default-dispatcher")
 
         // General dispatcher config
 
@@ -133,7 +133,7 @@ class ConfigSpec extends AkkaSpec(ConfigFactory.defaultReference(ActorSystem.fin
 
         // Debug config
         {
-          val debug = config.getConfig("akka.actor.debug")
+          val debug = config.getConfig("pekko.actor.debug")
           import debug._
           getBoolean("receive") should ===(false)
           settings.AddLoggingReceive should ===(false)
@@ -160,7 +160,7 @@ class ConfigSpec extends AkkaSpec(ConfigFactory.defaultReference(ActorSystem.fin
       }
 
       {
-        val c = config.getConfig("akka.actor.default-mailbox")
+        val c = config.getConfig("pekko.actor.default-mailbox")
 
         // general mailbox config
 
@@ -177,19 +177,19 @@ class ConfigSpec extends AkkaSpec(ConfigFactory.defaultReference(ActorSystem.fin
     "not be amended for default reference in akka-actor" in {
       val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
       val config = ActorSystem.Settings.amendSlf4jConfig(ConfigFactory.defaultReference(), dynamicAccess)
-      config.getStringList("akka.loggers").size() should ===(1)
-      config.getStringList("akka.loggers").get(0) should ===(classOf[DefaultLogger].getName)
-      config.getString("akka.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
+      config.getStringList("pekko.loggers").size() should ===(1)
+      config.getStringList("pekko.loggers").get(0) should ===(classOf[DefaultLogger].getName)
+      config.getString("pekko.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
     }
 
     "not be amended when akka-slf4j is not in classpath" in {
       val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
       val config = ActorSystem.Settings.amendSlf4jConfig(
-        ConfigFactory.parseString("akka.use-slf4j = on").withFallback(ConfigFactory.defaultReference()),
+        ConfigFactory.parseString("pekko.use-slf4j = on").withFallback(ConfigFactory.defaultReference()),
         dynamicAccess)
-      config.getStringList("akka.loggers").size() should ===(1)
-      config.getStringList("akka.loggers").get(0) should ===(classOf[DefaultLogger].getName)
-      config.getString("akka.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
+      config.getStringList("pekko.loggers").size() should ===(1)
+      config.getStringList("pekko.loggers").get(0) should ===(classOf[DefaultLogger].getName)
+      config.getString("pekko.logging-filter") should ===(classOf[DefaultLoggingFilter].getName)
     }
   }
 }

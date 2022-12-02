@@ -36,13 +36,13 @@ class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAft
   val eDown = TestMember(Address("akka", "sys", "e", 2552), Down, eRoles)
   val selfDummyAddress = UniqueAddress(Address("akka", "sys", "selfDummy", 2552), 17L)
 
-  private val originalClusterAssert = sys.props.get("akka.cluster.assert").getOrElse("false")
+  private val originalClusterAssert = sys.props.get("pekko.cluster.assert").getOrElse("false")
   override protected def beforeAll(): Unit = {
-    System.setProperty("akka.cluster.assert", "on")
+    System.setProperty("pekko.cluster.assert", "on")
   }
 
   override protected def afterAll(): Unit = {
-    System.setProperty("akka.cluster.assert", originalClusterAssert)
+    System.setProperty("pekko.cluster.assert", originalClusterAssert)
   }
 
   private[cluster] def converge(gossip: Gossip): (Gossip, Set[UniqueAddress]) =

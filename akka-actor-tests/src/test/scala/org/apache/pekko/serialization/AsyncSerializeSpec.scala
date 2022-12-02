@@ -20,7 +20,7 @@ object AsyncSerializeSpec {
   case class Message4(str: String)
 
   val config = ConfigFactory.parseString(s"""
-       akka {
+       pekko {
         actor {
           serializers {
             async = "org.apache.pekko.serialization.AsyncSerializeSpec$$TestAsyncSerializer"

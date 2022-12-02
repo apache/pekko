@@ -22,7 +22,7 @@ class PersistenceQuerySpec extends AnyWordSpecLike with Matchers with BeforeAndA
 
   val eventAdaptersConfig =
     s"""
-       |akka.persistence.query.journal.dummy {
+       |pekko.persistence.query.journal.dummy {
        |  event-adapters {
        |    adapt = ${classOf[PrefixStringWithPAdapter].getCanonicalName}
        |  }

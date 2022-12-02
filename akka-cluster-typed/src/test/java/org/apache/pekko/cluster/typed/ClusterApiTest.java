@@ -20,13 +20,13 @@ public class ClusterApiTest extends JUnitSuite {
   public void joinLeaveAndObserve() throws Exception {
     Config config =
         ConfigFactory.parseString(
-            "akka.actor.provider = cluster \n"
-                + "akka.remote.classic.netty.tcp.port = 0 \n"
-                + "akka.remote.artery.canonical.port = 0 \n"
-                + "akka.remote.artery.canonical.hostname = 127.0.0.1 \n"
-                + "akka.cluster.jmx.multi-mbeans-in-same-jvm = on \n"
-                + "akka.coordinated-shutdown.terminate-actor-system = off \n"
-                + "akka.coordinated-shutdown.run-by-actor-system-terminate = off \n");
+            "pekko.actor.provider = cluster \n"
+                + "pekko.remote.classic.netty.tcp.port = 0 \n"
+                + "pekko.remote.artery.canonical.port = 0 \n"
+                + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n"
+                + "pekko.cluster.jmx.multi-mbeans-in-same-jvm = on \n"
+                + "pekko.coordinated-shutdown.terminate-actor-system = off \n"
+                + "pekko.coordinated-shutdown.run-by-actor-system-terminate = off \n");
 
     ActorSystem<?> system1 =
         ActorSystem.wrap(org.apache.pekko.actor.ActorSystem.create("ClusterApiTest", config));

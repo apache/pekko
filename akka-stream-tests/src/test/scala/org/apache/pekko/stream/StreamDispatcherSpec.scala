@@ -24,7 +24,7 @@ class StreamDispatcherSpec extends StreamSpec {
   "The deprecated default stream io dispatcher" must {
     "be the same as the default blocking io dispatcher for actors" in {
       // in case it is still used
-      val streamIoDispatcher = system.dispatchers.lookup("akka.stream.default-blocking-io-dispatcher")
+      val streamIoDispatcher = system.dispatchers.lookup("pekko.stream.default-blocking-io-dispatcher")
       val actorIoDispatcher = system.dispatchers.lookup(Dispatchers.DefaultBlockingDispatcherId)
 
       streamIoDispatcher shouldBe theSameInstanceAs(actorIoDispatcher)

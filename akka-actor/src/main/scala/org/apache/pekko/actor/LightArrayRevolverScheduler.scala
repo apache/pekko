@@ -47,16 +47,16 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   val WheelSize =
     config
-      .getInt("akka.scheduler.ticks-per-wheel")
+      .getInt("pekko.scheduler.ticks-per-wheel")
       .requiring(ticks => (ticks & (ticks - 1)) == 0, "ticks-per-wheel must be a power of 2")
   val TickDuration =
     config
-      .getMillisDuration("akka.scheduler.tick-duration")
+      .getMillisDuration("pekko.scheduler.tick-duration")
       .requiring(
         _ >= 10.millis || !Helpers.isWindows,
-        "minimum supported akka.scheduler.tick-duration on Windows is 10ms")
-      .requiring(_ >= 1.millis, "minimum supported akka.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout = config.getMillisDuration("akka.scheduler.shutdown-timeout")
+        "minimum supported pekko.scheduler.tick-duration on Windows is 10ms")
+      .requiring(_ >= 1.millis, "minimum supported pekko.scheduler.tick-duration is 1ms")
+  val ShutdownTimeout = config.getMillisDuration("pekko.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 

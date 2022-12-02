@@ -69,7 +69,7 @@ object ClusterSingletonProxySpec {
   }
 
   val cfg = """
-    akka {
+    pekko {
       loglevel = INFO
       cluster.jmx.enabled = off
       actor.provider = "cluster"

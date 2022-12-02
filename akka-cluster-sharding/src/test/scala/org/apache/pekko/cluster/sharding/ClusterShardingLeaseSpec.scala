@@ -19,12 +19,12 @@ import pekko.testkit.TestActors.EchoActor
 
 object ClusterShardingLeaseSpec {
   val config = ConfigFactory.parseString("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.cluster.sharding {
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.cluster.sharding {
        use-lease = "test-lease"
        lease-retry-interval = 200ms
        distributed-data.durable {
@@ -36,14 +36,14 @@ object ClusterShardingLeaseSpec {
     """).withFallback(TestLease.config)
 
   val persistenceConfig = ConfigFactory.parseString("""
-      akka.cluster.sharding {
+      pekko.cluster.sharding {
         state-store-mode = persistence
-        journal-plugin-id = "akka.persistence.journal.inmem"
+        journal-plugin-id = "pekko.persistence.journal.inmem"
       }
     """)
 
   val ddataConfig = ConfigFactory.parseString("""
-      akka.cluster.sharding {
+      pekko.cluster.sharding {
         state-store-mode = ddata
       }
     """)

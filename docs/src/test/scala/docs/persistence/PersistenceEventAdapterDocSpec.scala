@@ -16,10 +16,10 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
 
   def this() =
     this("""
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
 
       //#event-adapters-config
-      akka.persistence.journal {
+      pekko.persistence.journal {
         inmem {
           event-adapters {
             tagging        = "docs.persistence.MyTaggingEventAdapter"
@@ -37,7 +37,7 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
       //#event-adapters-config
 
 
-      akka.persistence.journal {
+      pekko.persistence.journal {
         auto-json-store {
           class = "org.apache.pekko.persistence.journal.inmem.InmemJournal" # reuse inmem, as an example
 
@@ -72,7 +72,7 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
 
       val props = Props(new PersistentActor {
         override def persistenceId: String = "json-actor"
-        override def journalPluginId: String = "akka.persistence.journal.auto-json-store"
+        override def journalPluginId: String = "pekko.persistence.journal.auto-json-store"
 
         override def receiveRecover: Receive = {
           case RecoveryCompleted => // ignore...
@@ -107,7 +107,7 @@ class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
 
       val props = Props(new PersistentActor {
         override def persistenceId: String = "json-actor"
-        override def journalPluginId: String = "akka.persistence.journal.manual-json-store"
+        override def journalPluginId: String = "pekko.persistence.journal.manual-json-store"
 
         override def receiveRecover: Receive = {
           case RecoveryCompleted => // ignore...

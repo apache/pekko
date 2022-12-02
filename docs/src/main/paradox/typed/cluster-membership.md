@@ -35,7 +35,7 @@ merged and converge to the same end result.
 
  * **joining** - transient state when joining a cluster
    
- * **weakly up** - transient state while network split (only if `akka.cluster.allow-weakly-up-members=on`)
+ * **weakly up** - transient state while network split (only if `pekko.cluster.allow-weakly-up-members=on`)
    
  * **up** - normal operating state
  
@@ -121,7 +121,7 @@ Another transition that is possible without convergence is marking members as `W
 
 If a node is `unreachable` then gossip convergence is not
 possible and therefore most `leader` actions are impossible. By enabling
-`akka.cluster.allow-weakly-up-members` (which is enabled by default), joining nodes can be promoted to `WeaklyUp`
+`pekko.cluster.allow-weakly-up-members` (which is enabled by default), joining nodes can be promoted to `WeaklyUp`
 even while convergence is not yet reached. Once gossip convergence can be established again, the leader will move
 `WeaklyUp` members to `Up`.
 

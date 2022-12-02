@@ -93,7 +93,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       case _ => {
         val finiteTtl = config
           .getDuration(path, TimeUnit.SECONDS)
-          .requiring(_ > 0, s"akka.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
+          .requiring(_ > 0, s"pekko.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
         Ttl.fromPositive(finiteTtl.seconds)
       }
     }

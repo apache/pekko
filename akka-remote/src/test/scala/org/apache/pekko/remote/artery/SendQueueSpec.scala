@@ -51,8 +51,8 @@ object SendQueueSpec {
 }
 
 class SendQueueSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = on
-    akka.stream.secret-test-fuzzing-warning-disable = yep
+    pekko.stream.materializer.debug.fuzzing-mode = on
+    pekko.stream.secret-test-fuzzing-warning-disable = yep
   """) with ImplicitSender {
   import SendQueueSpec._
 

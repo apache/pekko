@@ -77,7 +77,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
       s"ActorSystemWithExplicitlyTriggeredScheduler-$id",
       ConfigFactory.load(
         AkkaSpec.testConf.withValue(
-          "akka.scheduler.implementation",
+          "pekko.scheduler.implementation",
           ConfigValueFactory.fromAnyRef("org.apache.pekko.testkit.ExplicitlyTriggeredScheduler"))))
 
   private def getEts(actor: ActorSystem): ExplicitlyTriggeredScheduler = {

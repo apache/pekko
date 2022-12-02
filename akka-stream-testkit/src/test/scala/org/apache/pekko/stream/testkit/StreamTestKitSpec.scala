@@ -125,7 +125,7 @@ class StreamTestKitSpec extends AkkaSpec {
         val timeout = 100.millis
         // Initial delay is longer than the timeout so an exception will be thrown.
         // It also needs to be dilated since the testkit will dilate the timeout
-        // accordingly to `-Dakka.test.timefactor` value.
+        // accordingly to `-Dpekko.test.timefactor` value.
         val initialDelay = (timeout * 2).dilated
         Source
           .tick(initialDelay, 1.millis, 1)
@@ -169,7 +169,7 @@ class StreamTestKitSpec extends AkkaSpec {
         val timeout = 100.millis
         // Initial delay is longer than the timeout so an exception will be thrown.
         // It also needs to be dilated since the testkit will dilate the timeout
-        // accordingly to `-Dakka.test.timefactor` value.
+        // accordingly to `-Dpekko.test.timefactor` value.
         val initialDelay = (timeout * 2).dilated
         Source
           .tick(initialDelay, 1.millis, 1)

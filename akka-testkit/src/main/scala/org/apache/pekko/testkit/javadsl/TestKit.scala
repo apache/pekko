@@ -36,8 +36,8 @@ import pekko.util.ccompat.JavaConverters._
  *
  *  - It should be noted that for CI servers and the like all maximum Durations
  *    are scaled using the `dilated` method, which uses the
- *    TestKitExtension.Settings.TestTimeFactor settable via akka.conf entry
- *    "akka.test.timefactor".
+ *    TestKitExtension.Settings.TestTimeFactor settable via pekko.conf entry
+ *    "pekko.test.timefactor".
  */
 class TestKit(system: ActorSystem) {
 
@@ -172,7 +172,7 @@ class TestKit(system: ActorSystem) {
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the properly dilated default for this
-   * case from settings (key "akka.test.single-expect-default").
+   * case from settings (key "pekko.test.single-expect-default").
    */
   @Deprecated
   @deprecated("Use getRemainingOrDefault which returns java.time.Duration instead.", since = "2.5.12")
@@ -181,7 +181,7 @@ class TestKit(system: ActorSystem) {
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the properly dilated default for this
-   * case from settings (key "akka.test.single-expect-default").
+   * case from settings (key "pekko.test.single-expect-default").
    */
   def getRemainingOrDefault: java.time.Duration = tp.remainingOrDefault.asJava
 
@@ -192,7 +192,7 @@ class TestKit(system: ActorSystem) {
    * the remaining time governed by the innermost enclosing `within` block.
    *
    * Note that the timeout is scaled using Duration.dilated, which uses the
-   * configuration entry "akka.test.timefactor", while the min Duration is not.
+   * configuration entry "pekko.test.timefactor", while the min Duration is not.
    *
    * {{{
    *
@@ -214,7 +214,7 @@ class TestKit(system: ActorSystem) {
    * the remaining time governed by the innermost enclosing `within` block.
    *
    * Note that the timeout is scaled using Duration.dilated, which uses the
-   * configuration entry "akka.test.timefactor", while the min Duration is not.
+   * configuration entry "pekko.test.timefactor", while the min Duration is not.
    *
    * {{{
    *
@@ -235,7 +235,7 @@ class TestKit(system: ActorSystem) {
    * the remaining time governed by the innermost enclosing `within` block.
    *
    * Note that the timeout is scaled using Duration.dilated, which uses the
-   * configuration entry "akka.test.timefactor", while the min Duration is not.
+   * configuration entry "pekko.test.timefactor", while the min Duration is not.
    *
    * {{{
    *
@@ -257,7 +257,7 @@ class TestKit(system: ActorSystem) {
    * the remaining time governed by the innermost enclosing `within` block.
    *
    * Note that the timeout is scaled using Duration.dilated, which uses the
-   * configuration entry "akka.test.timefactor", while the min Duration is not.
+   * configuration entry "pekko.test.timefactor", while the min Duration is not.
    *
    * {{{
    *
@@ -278,7 +278,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitCond(p: Supplier[Boolean]): Unit = tp.awaitCond(p.get)
 
@@ -290,7 +290,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -304,7 +304,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitCond(max: java.time.Duration, p: Supplier[Boolean]): Unit = tp.awaitCond(p.get, max.asScala)
 
@@ -316,7 +316,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -331,7 +331,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitCond(max: java.time.Duration, interval: java.time.Duration, p: Supplier[Boolean]): Unit =
     tp.awaitCond(p.get, max.asScala, interval.asScala)
@@ -344,7 +344,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
@@ -359,7 +359,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitCond(max: java.time.Duration, interval: java.time.Duration, message: String, p: Supplier[Boolean]): Unit =
     tp.awaitCond(p.get, max.asScala, interval.asScala, message)
@@ -374,7 +374,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitAssert[A](a: Supplier[A]): A = tp.awaitAssert(a.get)
 
@@ -388,7 +388,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.13")
@@ -404,7 +404,7 @@ class TestKit(system: ActorSystem) {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitAssert[A](max: java.time.Duration, a: Supplier[A]): A = tp.awaitAssert(a.get, max.asScala)
 
@@ -413,7 +413,7 @@ class TestKit(system: ActorSystem) {
    * If the `max` timeout expires the last exception is thrown.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    *
    * @return an arbitrary value that would be returned from awaitAssert if successful, if not interested in such value you can return null.
    */
@@ -426,7 +426,7 @@ class TestKit(system: ActorSystem) {
    * If the `max` timeout expires the last exception is thrown.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    *
    * @return an arbitrary value that would be returned from awaitAssert if successful, if not interested in such value you can return null.
    */
@@ -639,16 +639,16 @@ class TestKit(system: ActorSystem) {
 
   /**
    * Assert that no message is received. Waits for the default period configured as
-   * `akka.actor.testkit.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * `pekko.actor.testkit.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   @deprecated(message = "Use expectNoMessage instead", since = "2.5.10")
   def expectNoMsg(): Unit = tp.expectNoMessage()
 
   /**
    * Assert that no message is received. Waits for the default period configured as
-   * `akka.actor.testkit.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * `pekko.actor.testkit.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def expectNoMessage(): Unit = tp.expectNoMessage()
 

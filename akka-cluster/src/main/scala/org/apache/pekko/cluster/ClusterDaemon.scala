@@ -453,7 +453,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   }
 
   private def isClusterBootstrapAvailable: Boolean =
-    context.system.settings.config.hasPath("akka.management.cluster.bootstrap")
+    context.system.settings.config.hasPath("pekko.management.cluster.bootstrap")
 
   override def postStop(): Unit = {
     context.system.eventStream.unsubscribe(self)
@@ -594,7 +594,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
 
   def initJoin(joiningNodeConfig: Config): Unit = {
     val joiningNodeVersion =
-      if (joiningNodeConfig.hasPath("akka.version")) joiningNodeConfig.getString("akka.version")
+      if (joiningNodeConfig.hasPath("pekko.version")) joiningNodeConfig.getString("pekko.version")
       else "unknown"
     // When joiningNodeConfig is empty the joining node has version 2.5.9 or earlier.
     val configCheckUnsupportedByJoiningNode = joiningNodeConfig.isEmpty

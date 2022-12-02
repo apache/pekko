@@ -41,7 +41,7 @@ private[remote] class AkkaProtocolSettings(config: Config) {
 
   import org.apache.pekko.util.Helpers.ConfigOps
 
-  val TransportFailureDetectorConfig: Config = getConfig("akka.remote.classic.transport-failure-detector")
+  val TransportFailureDetectorConfig: Config = getConfig("pekko.remote.classic.transport-failure-detector")
   val TransportFailureDetectorImplementationClass: String =
     TransportFailureDetectorConfig.getString("implementation-class")
   val TransportHeartBeatInterval: FiniteDuration = {
@@ -49,14 +49,14 @@ private[remote] class AkkaProtocolSettings(config: Config) {
   }.requiring(_ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0")
 
   val HandshakeTimeout: FiniteDuration = {
-    val enabledTransports = config.getStringList("akka.remote.classic.enabled-transports")
-    if (enabledTransports.contains("akka.remote.classic.netty.tcp"))
-      config.getMillisDuration("akka.remote.classic.netty.tcp.connection-timeout")
-    else if (enabledTransports.contains("akka.remote.classic.netty.ssl"))
-      config.getMillisDuration("akka.remote.classic.netty.ssl.connection-timeout")
+    val enabledTransports = config.getStringList("pekko.remote.classic.enabled-transports")
+    if (enabledTransports.contains("pekko.remote.classic.netty.tcp"))
+      config.getMillisDuration("pekko.remote.classic.netty.tcp.connection-timeout")
+    else if (enabledTransports.contains("pekko.remote.classic.netty.ssl"))
+      config.getMillisDuration("pekko.remote.classic.netty.ssl.connection-timeout")
     else
       config
-        .getMillisDuration("akka.remote.classic.handshake-timeout")
+        .getMillisDuration("pekko.remote.classic.handshake-timeout")
         .requiring(_ > Duration.Zero, "handshake-timeout must be > 0")
   }
 }

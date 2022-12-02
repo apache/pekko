@@ -71,10 +71,10 @@ object RecoveryPermitterSpec {
 }
 
 class RecoveryPermitterSpec extends ScalaTestWithActorTestKit(s"""
-      akka.persistence.max-concurrent-recoveries = 3
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.journal.inmem.test-serialization = on
-      akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+      pekko.persistence.max-concurrent-recoveries = 3
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+      pekko.persistence.journal.inmem.test-serialization = on
+      pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
       """) with AnyWordSpecLike with LogCapturing {
 
   import RecoveryPermitterSpec._

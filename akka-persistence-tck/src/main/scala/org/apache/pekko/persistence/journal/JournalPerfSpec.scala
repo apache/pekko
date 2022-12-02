@@ -98,7 +98,7 @@ object JournalPerfSpec {
   }
 
   private val cmdSerializerConfig = ConfigFactory.parseString(s"""
-  akka.actor {
+  pekko.actor {
     serializers {
       JournalPerfSpec = "${classOf[CmdSerializer].getName}"
     }

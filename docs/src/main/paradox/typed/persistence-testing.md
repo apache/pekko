@@ -7,7 +7,7 @@ To use Akka Persistence TestKit, add the module to your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group1=com.typesafe.akka
   artifact1=akka-persistence-typed_$scala.binary.version$
   version1=AkkaVersion
@@ -65,7 +65,7 @@ To use the testkit you need to add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence-testkit_$scala.binary.version$"
   version=AkkaVersion
@@ -202,7 +202,7 @@ the plugins at the same time. To coordinate initialization you can use the `Pers
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence-testkit_$scala.binary.version$"
   version=AkkaVersion

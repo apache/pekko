@@ -28,12 +28,12 @@ object SplitBrainQuarantineSpec extends MultiNodeConfig {
       .withFallback(MultiNodeClusterSpec.clusterConfig)
       .withFallback(ConfigFactory.parseString(
         """
-        akka.remote.artery.enabled = on
-        akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+        pekko.remote.artery.enabled = on
+        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
         # we dont really want this to hit, but we need the sbr enabled to know the quarantining
         # downing does not trigger
-        akka.cluster.split-brain-resolver.stable-after = 5 minutes
-        akka.cluster.debug.verbose-gossip-logging = on
+        pekko.cluster.split-brain-resolver.stable-after = 5 minutes
+        pekko.cluster.debug.verbose-gossip-logging = on
         """)))
 }
 
@@ -50,7 +50,7 @@ abstract class SplitBrainQuarantineSpec extends MultiNodeClusterSpec(SplitBrainQ
 
   "Cluster node downed by other" must {
 
-    if (!ArterySettings(system.settings.config.getConfig("akka.remote.artery")).Enabled) {
+    if (!ArterySettings(system.settings.config.getConfig("pekko.remote.artery")).Enabled) {
       // this feature only works in Artery, because classic remoting will not accept connections from
       // a quarantined node, and that is too high risk of introducing regressions if changing that
       pending

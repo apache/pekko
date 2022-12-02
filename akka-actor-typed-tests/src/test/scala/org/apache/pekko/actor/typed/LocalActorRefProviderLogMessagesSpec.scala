@@ -11,7 +11,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 object LocalActorRefProviderLogMessagesSpec {
   val config = """
-    akka {
+    pekko {
       loglevel = DEBUG # test verifies debug
       log-dead-letters = on
       actor {

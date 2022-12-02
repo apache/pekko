@@ -82,7 +82,7 @@ by long (unexpected) garbage collection pauses, overloading the system, too rest
 and similar.  
 
 ```
-akka.cluster.failure-detector.acceptable-heartbeat-pause = 7s
+pekko.cluster.failure-detector.acceptable-heartbeat-pause = 7s
 ```
 
 Another log message to watch out for that typically requires investigation of the root cause:

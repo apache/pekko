@@ -181,7 +181,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
               if (!flushSuccessful)
                 log.warning(
                   "Shutdown finished, but flushing might not have been successful and some messages might have been dropped. " +
-                  "Increase akka.remote.flush-wait-on-shutdown to a larger value to avoid this.")
+                  "Increase pekko.remote.flush-wait-on-shutdown to a larger value to avoid this.")
               finalize()
 
             case Failure(e) =>

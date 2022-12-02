@@ -134,15 +134,15 @@ abstract class ClusterShardingSpecConfig(
    * mode, then leverage the common config and fallbacks after these specific test configs:
    */
   commonConfig(ConfigFactory.parseString(s"""
-    akka.loglevel = "DEBUG"
+    pekko.loglevel = "DEBUG"
     
-    akka.cluster.sharding.verbose-debug-logging = on
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.cluster.sharding.verbose-debug-logging = on
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     
-    akka.cluster.roles = ["backend"]
-    akka.cluster.distributed-data.gossip-interval = 1s
-    akka.persistence.journal.leveldb-shared.timeout = 10s #the original default, base test uses 5s
-    akka.cluster.sharding {
+    pekko.cluster.roles = ["backend"]
+    pekko.cluster.distributed-data.gossip-interval = 1s
+    pekko.persistence.journal.leveldb-shared.timeout = 10s #the original default, base test uses 5s
+    pekko.cluster.sharding {
       retry-interval = 1 s
       handoff-timeout = 10 s
       shard-start-timeout = 5s
@@ -158,11 +158,11 @@ abstract class ClusterShardingSpecConfig(
         rebalance-relative-limit = 1.0
       }
     }
-    akka.testconductor.barrier-timeout = 70s
+    pekko.testconductor.barrier-timeout = 70s
 
     # using Java serialization for the messages here because would be to much (unrelated)
     # to show full Jackson serialization in docs (requires annotations because of envelope and such)
-    akka.actor.serialization-bindings {
+    pekko.actor.serialization-bindings {
       "${ClusterShardingSpec.Increment.getClass.getName}" = java-test
       "${ClusterShardingSpec.Decrement.getClass.getName}" = java-test
       "${classOf[ClusterShardingSpec.Get].getName}" = java-test
@@ -176,7 +176,7 @@ abstract class ClusterShardingSpecConfig(
     """).withFallback(MultiNodeClusterShardingConfig.persistenceConfig(targetDir)).withFallback(common))
 
   nodeConfig(sixth) {
-    ConfigFactory.parseString("""akka.cluster.roles = ["frontend"]""")
+    ConfigFactory.parseString("""pekko.cluster.roles = ["frontend"]""")
   }
 }
 
@@ -294,7 +294,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
     "replicator")
 
   def ddataRememberEntitiesProvider(typeName: String) = {
-    val majorityMinCap = system.settings.config.getInt("akka.cluster.sharding.distributed-data.majority-min-cap")
+    val majorityMinCap = system.settings.config.getInt("pekko.cluster.sharding.distributed-data.majority-min-cap")
     new DDataRememberEntitiesProvider(typeName, settings, majorityMinCap, replicator)
   }
 
@@ -311,13 +311,13 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       handoff-timeout = 10s
       shard-start-timeout = 10s
       rebalance-interval = ${if (rebalanceEnabled) "2s" else "3600s"}
-      """).withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
+      """).withFallback(system.settings.config.getConfig("pekko.cluster.sharding"))
       val settings = ClusterShardingSettings(cfg).withRememberEntities(rememberEntities)
 
       if (settings.stateStoreMode == "persistence")
         ShardCoordinator.props(typeName, settings, allocationStrategy)
       else {
-        val majorityMinCap = system.settings.config.getInt("akka.cluster.sharding.distributed-data.majority-min-cap")
+        val majorityMinCap = system.settings.config.getInt("pekko.cluster.sharding.distributed-data.majority-min-cap")
         val rememberEntitiesStore =
           // only store provider if ddata for now, persistence uses all-in-one-coordinator
           if (settings.rememberEntities) Some(ddataRememberEntitiesProvider(typeName))
@@ -367,7 +367,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
       shard-failure-backoff = 1s
       entity-restart-backoff = 1s
       buffer-size = 1000
-      """).withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
+      """).withFallback(system.settings.config.getConfig("pekko.cluster.sharding"))
     val settings = ClusterShardingSettings(cfg).withRememberEntities(rememberEntities)
     val rememberEntitiesProvider =
       if (!rememberEntities) None
@@ -505,7 +505,7 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
         val cfg = ConfigFactory.parseString("""
           retry-interval = 1s
           buffer-size = 1000
-        """).withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
+        """).withFallback(system.settings.config.getConfig("pekko.cluster.sharding"))
         val settings = ClusterShardingSettings(cfg)
         val proxy = system.actorOf(
           ShardRegion.proxyProps(

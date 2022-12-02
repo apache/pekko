@@ -10,7 +10,7 @@ To use Akka Testkit, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-testkit_$scala.binary.version$"
   version=AkkaVersion
@@ -87,7 +87,7 @@ Java
 
 In these examples, the maximum durations you will find mentioned below are left
 out, in which case they use the default value from the configuration item
-`akka.test.single-expect-default` which itself defaults to 3 seconds (or they
+`pekko.test.single-expect-default` which itself defaults to 3 seconds (or they
 obey the innermost enclosing `Within` as detailed @ref:[below](#testkit-within)). The full signatures are:
 
 * @scala[`expectMsg[T](d: Duration, msg: T): T`]@java[`public <T> T expectMsgEquals(Duration max, T msg)`]
@@ -233,7 +233,7 @@ Java
 
 If the number of occurrences is specific—as demonstrated above—then `intercept`
 will block until that number of matching messages have been received or the
-timeout configured in `akka.test.filter-leeway` is used up (time starts
+timeout configured in `pekko.test.filter-leeway` is used up (time starts
 counting after the passed-in block of code returns). In case of a timeout the
 test fails.
 
@@ -244,7 +244,7 @@ Be sure to exchange the default logger with the
 function:
 
 ```
-akka.loggers = [org.apache.pekko.testkit.TestEventListener]
+pekko.loggers = [org.apache.pekko.testkit.TestEventListener]
 ```
 
 @@@
@@ -321,10 +321,10 @@ The tight timeouts you use during testing on your lightning-fast notebook will
 invariably lead to spurious test failures on the heavily loaded Jenkins server
 (or similar). To account for this situation, all maximum durations are
 internally scaled by a factor taken from the @ref:[Configuration](general/configuration-reference.md#config-akka-testkit),
-`akka.test.timefactor`, which defaults to 1.
+`pekko.test.timefactor`, which defaults to 1.
 
 You can scale other durations with the same factor by using the @scala[implicit conversion
-in `akka.testkit` package object to add dilated function to `Duration`]@java[`dilated` method in `TestKit`].
+in `pekko.testkit` package object to add dilated function to `Duration`]@java[`dilated` method in `TestKit`].
 
 Scala
 :   @@snip [TestkitDocSpec.scala](/docs/src/test/scala/docs/testkit/TestkitDocSpec.scala) { #duration-dilation }
@@ -715,7 +715,7 @@ options:
 @@@ div { .group-scala }
 * *Logging of message invocations on certain actors*
    This is enabled by a setting in the @ref:[Configuration](general/configuration-reference.md#config-akka-actor) — namely
-`akka.actor.debug.receive` — which enables the `loggable`
+`pekko.actor.debug.receive` — which enables the `loggable`
 statement to be applied to an actor’s `receive` function:
 
 @@snip [TestkitDocSpec.scala](/docs/src/test/scala/docs/testkit/TestkitDocSpec.scala) { #logging-receive }
@@ -733,18 +733,18 @@ would lead to endless loops if it were applied to event bus logger listeners.
 * *Logging of special messages*
    Actors handle certain special messages automatically, e.g. `Kill`,
 `PoisonPill`, etc. Tracing of these message invocations is enabled by
-the setting `akka.actor.debug.autoreceive`, which enables this on all
+the setting `pekko.actor.debug.autoreceive`, which enables this on all
 actors.
 * *Logging of the actor lifecycle*
    Actor creation, start, restart, monitor start, monitor stop and stop may be traced by
-enabling the setting `akka.actor.debug.lifecycle`; this, too, is enabled
+enabling the setting `pekko.actor.debug.lifecycle`; this, too, is enabled
 uniformly on all actors.
 
 Logging of these messages is at `DEBUG` level. To summarize, you can enable
 full logging of actor activities using this configuration fragment:
 
 ```
-akka {
+pekko {
   loglevel = "DEBUG"
   actor {
     debug {

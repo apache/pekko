@@ -146,8 +146,8 @@ public class ReplicatedEventSourcingTest extends JUnitSuite {
   public static final TestKitJunitResource testKit =
       new TestKitJunitResource(
           ConfigFactory.parseString(
-                  "akka.loglevel = INFO\n"
-                      + "akka.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")
+                  "pekko.loglevel = INFO\n"
+                      + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")
               .withFallback(PersistenceTestKitPlugin.getInstance().config()));
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();

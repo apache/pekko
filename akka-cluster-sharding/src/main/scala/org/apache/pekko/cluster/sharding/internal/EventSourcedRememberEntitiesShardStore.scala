@@ -74,7 +74,7 @@ private[pekko] final class EventSourcedRememberEntitiesShardStore(
   import settings.tuningParameters._
 
   private val maxUpdatesPerWrite = context.system.settings.config
-    .getInt("akka.cluster.sharding.event-sourced-remember-entities-store.max-updates-per-write")
+    .getInt("pekko.cluster.sharding.event-sourced-remember-entities-store.max-updates-per-write")
 
   log.debug("Starting up EventSourcedRememberEntitiesStore")
   private var state = State()

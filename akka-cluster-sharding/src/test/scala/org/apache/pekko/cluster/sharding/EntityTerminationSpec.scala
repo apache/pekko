@@ -25,17 +25,17 @@ object EntityTerminationSpec {
   final case class EntityEnvelope(id: String, msg: Any)
 
   def config = ConfigFactory.parseString("""
-      akka.loglevel=DEBUG
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.provider = cluster
-      akka.remote.artery.canonical.port = 0
-      akka.remote.classic.netty.tcp.port = 0
-      akka.cluster.sharding.state-store-mode = ddata
+      pekko.loglevel=DEBUG
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.provider = cluster
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.cluster.sharding.state-store-mode = ddata
       # no leaks between test runs thank you
-      akka.cluster.sharding.distributed-data.durable.keys = []
-      akka.cluster.sharding.verbose-debug-logging = on
-      akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
-      akka.cluster.sharding.entity-restart-backoff = 250ms
+      pekko.cluster.sharding.distributed-data.durable.keys = []
+      pekko.cluster.sharding.verbose-debug-logging = on
+      pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
+      pekko.cluster.sharding.entity-restart-backoff = 250ms
     """.stripMargin)
 
   object StoppingActor {

@@ -46,7 +46,7 @@ object RandomizedSplitBrainResolverIntegrationSpec extends MultiNodeConfig {
   val node9 = role("node9")
 
   commonConfig(ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       loglevel = INFO
       cluster {
         downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
@@ -80,8 +80,8 @@ object RandomizedSplitBrainResolverIntegrationSpec extends MultiNodeConfig {
 
     test.random-seed = ${System.currentTimeMillis()}
 
-    akka.testconductor.barrier-timeout = 120 s
-    akka.cluster.run-coordinated-shutdown-when-down = off
+    pekko.testconductor.barrier-timeout = 120 s
+    pekko.cluster.run-coordinated-shutdown-when-down = off
     """))
 
   testTransport(on = true)
@@ -385,13 +385,13 @@ class RandomizedSplitBrainResolverIntegrationSpec
 
   }
 
-  private val leaseMajorityConfig = ConfigFactory.parseString("""akka.cluster.split-brain-resolver {
+  private val leaseMajorityConfig = ConfigFactory.parseString("""pekko.cluster.split-brain-resolver {
         active-strategy = lease-majority
       }""")
 
   case class Scenario(cfg: Config, numberOfNodes: Int) {
 
-    val activeStrategy: String = cfg.getString("akka.cluster.split-brain-resolver.active-strategy")
+    val activeStrategy: String = cfg.getString("pekko.cluster.split-brain-resolver.active-strategy")
 
     override def toString: String =
       s"Scenario($activeStrategy, $numberOfNodes)"
@@ -407,7 +407,7 @@ class RandomizedSplitBrainResolverIntegrationSpec
     for (scenario <- scenarios) {
       scenario.toString taggedAs LongRunningTest in {
         // temporarily disabled for aeron-udp in multi-node: https://github.com/akka/akka/pull/30706/
-        val arteryConfig = system.settings.config.getConfig("akka.remote.artery")
+        val arteryConfig = system.settings.config.getConfig("pekko.remote.artery")
         if (arteryConfig.getInt("canonical.port") == 6000 &&
           arteryConfig.getString("transport") == "aeron-udp") {
           pending

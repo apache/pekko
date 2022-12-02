@@ -15,7 +15,7 @@ import pekko.testkit.{ AkkaSpec, TestProbe }
 object EventStreamSpec {
 
   val config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = WARNING
         loglevel = INFO
         loggers = ["org.apache.pekko.event.EventStreamSpec$MyLog", "%s"]
@@ -23,7 +23,7 @@ object EventStreamSpec {
       """.format(Logging.StandardOutLogger.getClass.getName))
 
   val configUnhandled = ConfigFactory.parseString("""
-      akka {
+      pekko {
         stdout-loglevel = WARNING
         loglevel = WARNING
         actor.debug.unhandled = on
@@ -32,7 +32,7 @@ object EventStreamSpec {
       """)
 
   val configUnhandledWithDebug =
-    ConfigFactory.parseString("akka.actor.debug.event-stream = on").withFallback(configUnhandled)
+    ConfigFactory.parseString("pekko.actor.debug.event-stream = on").withFallback(configUnhandled)
 
   final case class M(i: Int)
 

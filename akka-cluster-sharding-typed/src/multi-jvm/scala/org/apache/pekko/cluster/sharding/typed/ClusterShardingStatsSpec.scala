@@ -29,9 +29,9 @@ object ClusterShardingStatsSpecConfig extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-        akka.log-dead-letters-during-shutdown = off
-        akka.cluster.sharding.updating-state-timeout = 2s
-        akka.cluster.sharding.waiting-for-state-timeout = 2s
+        pekko.log-dead-letters-during-shutdown = off
+        pekko.cluster.sharding.updating-state-timeout = 2s
+        pekko.cluster.sharding.waiting-for-state-timeout = 2s
       """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }

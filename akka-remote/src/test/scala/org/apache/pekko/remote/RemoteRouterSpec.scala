@@ -25,17 +25,17 @@ object RemoteRouterSpec {
 }
 
 class RemoteRouterSpec extends AkkaSpec(s"""
-    akka.actor.provider = remote
-    akka.remote.use-unsafe-remote-features-outside-cluster = on
-    akka.remote.classic.netty.tcp {
+    pekko.actor.provider = remote
+    pekko.remote.use-unsafe-remote-features-outside-cluster = on
+    pekko.remote.classic.netty.tcp {
       hostname = localhost
       port = 0
     }
-    akka.remote.artery.canonical {
+    pekko.remote.artery.canonical {
       hostname = "localhost"
       port = 0
     }
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /remote-override {
         router = round-robin-pool
         nr-of-instances = 4
@@ -59,7 +59,7 @@ class RemoteRouterSpec extends AkkaSpec(s"""
     if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
     else "akka.tcp"
   val conf = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       actor.deployment {
         /blub {
           router = round-robin-pool

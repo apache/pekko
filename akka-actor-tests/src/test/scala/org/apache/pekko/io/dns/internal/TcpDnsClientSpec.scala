@@ -21,7 +21,7 @@ class TcpDnsClientSpec extends AkkaSpec with ImplicitSender {
 
   "The async TCP DNS client" should {
     val exampleRequestMessage =
-      Message(42, MessageFlags(), questions = Seq(Question("akka.io", RecordType.A, RecordClass.IN)))
+      Message(42, MessageFlags(), questions = Seq(Question("pekko.io", RecordType.A, RecordClass.IN)))
     val exampleResponseMessage = Message(42, MessageFlags(answer = true))
     val dnsServerAddress = InetSocketAddress.createUnresolved("foo", 53)
     val localAddress = InetSocketAddress.createUnresolved("localhost", 13441)

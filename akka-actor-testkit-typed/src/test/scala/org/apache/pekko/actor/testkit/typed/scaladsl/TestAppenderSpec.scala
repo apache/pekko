@@ -17,7 +17,7 @@ class TestAppenderSpec
     extends ScalaTestWithActorTestKit(
       """
   # increase to avoid spurious failures in "find unexpected async events withOccurrences(0)"
-  akka.actor.testkit.typed.expect-no-message-default = 1000 ms
+  pekko.actor.testkit.typed.expect-no-message-default = 1000 ms
   """)
     with AnyWordSpecLike
     with LogCapturing {

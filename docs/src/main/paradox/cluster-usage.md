@@ -26,7 +26,7 @@ To use Akka Cluster add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-cluster_$scala.binary.version$"
   version=AkkaVersion
@@ -51,7 +51,7 @@ Scala
 Java
 :  @@snip [SimpleClusterListener.java](/docs/src/test/java/jdocs/cluster/SimpleClusterListener.java) { type=java }
 
-And the minimum configuration required is to set a host/port for remoting and the `akka.actor.provider = "cluster"`.
+And the minimum configuration required is to set a host/port for remoting and the `pekko.actor.provider = "cluster"`.
 
 @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
@@ -219,14 +219,14 @@ With a configuration option you can define required number of members
 before the leader changes member status of 'Joining' members to 'Up'.:
 
 ```
-akka.cluster.min-nr-of-members = 3
+pekko.cluster.min-nr-of-members = 3
 ```
 
 In a similar way you can define required number of members of a certain role
 before the leader changes member status of 'Joining' members to 'Up'.:
 
 ```
-akka.cluster.role {
+pekko.cluster.role {
   frontend.min-nr-of-members = 1
   backend.min-nr-of-members = 2
 }
@@ -234,7 +234,7 @@ akka.cluster.role {
 
 You can start actors or trigger any functions using the @apidoc[registerOnMemberUp](cluster.Cluster) {scala="#registerOnMemberUp[T](code:=%3ET):Unit" java="#registerOnMemberUp(java.lang.Runnable)"} callback, which will
 be invoked when the current member status is changed to 'Up'. This can additionally be used with 
-`akka.cluster.min-nr-of-members` optional configuration to defer an action until the cluster has reached a certain size.
+`pekko.cluster.min-nr-of-members` optional configuration to defer an action until the cluster has reached a certain size.
 
 Scala
 :  @@snip [FactorialFrontend.scala](/docs/src/test/scala/docs/cluster/FactorialFrontend.scala) { #registerOnUp }

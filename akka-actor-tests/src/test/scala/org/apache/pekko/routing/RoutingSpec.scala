@@ -21,7 +21,7 @@ import pekko.testkit._
 object RoutingSpec {
 
   val config = """
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /router1 {
         router = round-robin-pool
         nr-of-instances = 3
@@ -239,7 +239,7 @@ class RoutingSpec extends AkkaSpec(RoutingSpec.config) with DefaultTimeout with 
       val sys = ActorSystem(
         "FromConfig",
         ConfigFactory
-          .parseString("akka.actor.deployment./routed.router=round-robin-pool")
+          .parseString("pekko.actor.deployment./routed.router=round-robin-pool")
           .withFallback(system.settings.config))
       try {
         sys.actorOf(FromConfig.props(routeeProps = Props[TestActor]()), "routed")

@@ -18,7 +18,7 @@ import pekko.testkit.{ SocketUtil, _ }
 @nowarn // classic deprecated
 class RemoteDeathWatchSpec
     extends AkkaSpec(ConfigFactory.parseString("""
-akka {
+pekko {
     actor {
         provider = remote
         deployment {
@@ -38,8 +38,8 @@ akka {
     }
 }
 # test is using Java serialization and not priority to rewrite
-akka.actor.allow-java-serialization = on
-akka.actor.warn-about-java-serializer-usage = off
+pekko.actor.allow-java-serialization = on
+pekko.actor.warn-about-java-serializer-usage = off
 """))
     with ImplicitSender
     with DefaultTimeout
@@ -52,9 +52,9 @@ akka.actor.warn-about-java-serializer-usage = off
   val other = ActorSystem(
     "other",
     ConfigFactory.parseString("""
-        akka.loglevel = DEBUG
-        akka.remote.artery.enabled = off
-        akka.remote.classic.netty.tcp.port=2666
+        pekko.loglevel = DEBUG
+        pekko.remote.artery.enabled = off
+        pekko.remote.classic.netty.tcp.port=2666
                               """).withFallback(system.settings.config))
 
   override def beforeTermination(): Unit = {

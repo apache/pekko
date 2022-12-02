@@ -63,8 +63,8 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
           }
       }
 
-    loadExtensions("akka.actor.typed.library-extensions", throwOnLoadFail = true)
-    loadExtensions("akka.actor.typed.extensions", throwOnLoadFail = false)
+    loadExtensions("pekko.actor.typed.library-extensions", throwOnLoadFail = true)
+    loadExtensions("pekko.actor.typed.extensions", throwOnLoadFail = false)
   }
 
   final override def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null

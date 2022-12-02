@@ -186,7 +186,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
   override def lookup = CoordinatedShutdown
 
   override def createExtension(system: ExtendedActorSystem): CoordinatedShutdown = {
-    val conf = system.settings.config.getConfig("akka.coordinated-shutdown")
+    val conf = system.settings.config.getConfig("pekko.coordinated-shutdown")
     val phases = phasesFromConfig(conf)
     val coord = new CoordinatedShutdown(system, phases)
     init(system, conf, coord)

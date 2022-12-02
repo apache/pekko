@@ -13,7 +13,7 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowMapConcatSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "A MapConcat" must {

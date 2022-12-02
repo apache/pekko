@@ -25,7 +25,7 @@ To use Artery Remoting, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-remote_$scala.binary.version$
   version=AkkaVersion
@@ -49,7 +49,7 @@ To enable remote capabilities in your Akka project you should, at a minimum, add
 to your `application.conf` file:
 
 ```
-akka {
+pekko {
   actor {
     # provider=remote is possible, but prefer cluster
     provider = cluster 
@@ -117,7 +117,7 @@ acts as a "server" to which arbitrary systems on the same network can connect to
 ## Selecting a transport
 
 There are three alternatives of which underlying transport to use. It is configured by property
-`akka.remote.artery.transport` with the possible values:
+`pekko.remote.artery.transport` with the possible values:
 
 * `tcp` - Based on @ref:[Akka Streams TCP](stream/stream-io.md#streaming-tcp) (default if other not configured)
 * `tls-tcp` - Same as `tcp` with encryption using @ref:[Akka Streams TLS](stream/stream-io.md#tls)
@@ -277,7 +277,7 @@ In addition to what is described here, read the blog post about [Securing Akka c
 SSL can be used as the remote transport by using the `tls-tcp` transport:
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   transport = tls-tcp
 }
 ```
@@ -285,7 +285,7 @@ akka.remote.artery {
 Next the actual SSL/TLS parameters have to be configured:
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   transport = tls-tcp
 
   ssl.config-ssl-engine {
@@ -336,7 +336,7 @@ Note that if TLS is enabled with mutual authentication there is still a risk tha
 valid certificate by compromising any node with certificates issued by the same internal PKI tree.
 
 It's recommended that you enable hostname verification with
-`akka.remote.artery.ssl.config-ssl-engine.hostname-verification=on`.
+`pekko.remote.artery.ssl.config-ssl-engine.hostname-verification=on`.
 When enabled it will verify that the destination hostname matches the hostname in the peer's certificate.
 
 In deployments where hostnames are dynamic and not known up front it can make sense to leave the hostname verification off.
@@ -390,7 +390,7 @@ that system down. This is not always desired, and it can be disabled with the
 following setting:
 
 ```
-akka.remote.artery.untrusted-mode = on
+pekko.remote.artery.untrusted-mode = on
 ```
 
 This disallows sending of system messages (actor life-cycle commands,
@@ -417,7 +417,7 @@ permission to receive actor selection messages can be granted to specific actors
 defined in configuration:
 
 ```
-akka.remote.artery.trusted-selection-paths = ["/user/receptionist", "/user/namingService"]
+pekko.remote.artery.trusted-selection-paths = ["/user/receptionist", "/user/namingService"]
 ```
 
 
@@ -530,7 +530,7 @@ phi = -log10(1 - F(timeSinceLastHeartbeat))
 where F is the cumulative distribution function of a normal distribution with mean
 and standard deviation estimated from historical heartbeat inter-arrival times.
 
-In the @ref:[Remote Configuration](#remote-configuration-artery) you can adjust the `akka.remote.watch-failure-detector.threshold`
+In the @ref:[Remote Configuration](#remote-configuration-artery) you can adjust the `pekko.remote.watch-failure-detector.threshold`
 to define when a *phi* value is considered to be a failure.
 
 A low `threshold` is prone to generate many false positives but ensures
@@ -555,7 +555,7 @@ a standard deviation of 100 ms.
 
 To be able to survive sudden abnormalities, such as garbage collection pauses and
 transient network failures the failure detector is configured with a margin,
-`akka.remote.watch-failure-detector.acceptable-heartbeat-pause`. You may want to
+`pekko.remote.watch-failure-detector.acceptable-heartbeat-pause`. You may want to
 adjust the @ref:[Remote Configuration](#remote-configuration-artery) of this depending on you environment.
 This is how the curve looks like for `acceptable-heartbeat-pause` configured to
 3 seconds.
@@ -679,7 +679,7 @@ arrive in send order. It is possible to assign actors on given paths to use this
 path patterns that have to be specified in the actor system's configuration on both the sending and the receiving side:
 
 ```
-akka.remote.artery.large-message-destinations = [
+pekko.remote.artery.large-message-destinations = [
    "/user/largeMessageActor",
    "/user/largeMessagesGroup/*",
    "/user/anotherGroup/*/largeMesssages",
@@ -706,7 +706,7 @@ To notice large messages you can enable logging of message types with payload si
 configured `log-frame-size-exceeding`.
 
 ```
-akka.remote.artery {
+pekko.remote.artery {
   log-frame-size-exceeding = 10000b
 }
 ```
@@ -780,7 +780,7 @@ aeron.threading.mode=SHARED_NETWORK
 #aeron.sender.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 #aeron.receiver.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 
-# use same director in akka.remote.artery.advanced.aeron-dir config
+# use same director in pekko.remote.artery.advanced.aeron-dir config
 # of the Akka application
 aeron.dir=/dev/shm/aeron
 ```
@@ -791,7 +791,7 @@ To use the external media driver from the Akka application you need to define th
 configuration properties:
 
 ```
-akka.remote.artery.advanced.aeron {
+pekko.remote.artery.advanced.aeron {
   embedded-media-driver = off
   aeron-dir = /dev/shm/aeron
 }
@@ -817,7 +817,7 @@ usage and latency with the following configuration:
 ```
 # Values can be from 1 to 10, where 10 strongly prefers low latency
 # and 1 strongly prefers less CPU usage
-akka.remote.artery.advanced.aeron.idle-cpu-level = 1
+pekko.remote.artery.advanced.aeron.idle-cpu-level = 1
 ```
 
 By setting this value to a lower number, it tells Akka to do longer "sleeping" periods on its thread dedicated
@@ -851,7 +851,7 @@ host name and port pair that is used to connect to the system from the outside. 
 special configuration that sets both the logical and the bind pairs for remoting.
 
 ```
-akka {
+pekko {
   remote {
     artery {
       canonical.hostname = my.domain.com      # external (logical) hostname
@@ -902,7 +902,7 @@ Any space used in the mount will count towards your container's memory usage.
 ### Flight Recorder
 
 When running on JDK 11 Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328).
-The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `akka.java-flight-recorder.enabled = false`.
+The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `pekko.java-flight-recorder.enabled = false`.
 
 Low overhead Artery specific events are emitted by default when JFR is enabled, higher overhead events needs a custom settings template and are not enabled automatically with the `profiling` JFR template.
 To enable those create a copy of the `profiling` template and enable all `Akka` sub category events, for example through the JMC GUI. 

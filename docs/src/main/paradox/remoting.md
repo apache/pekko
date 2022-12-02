@@ -27,7 +27,7 @@ To use Akka Remoting, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-remote_$scala.binary.version$
   version=AkkaVersion
@@ -50,14 +50,14 @@ To enable classic remoting in your Akka project you should, at a minimum, add th
 to your `application.conf` file:
 
 ```
-akka {
+pekko {
   actor {
     # provider=remote is possible, but prefer cluster
     provider = cluster
   }
   remote.artery.enabled = false
   remote.classic {
-    enabled-transports = ["akka.remote.classic.netty.tcp"]
+    enabled-transports = ["pekko.remote.classic.netty.tcp"]
     netty.tcp {
       hostname = "127.0.0.1"
       port = 2552
@@ -186,7 +186,7 @@ If you want to use the creation functionality in Akka remoting you have to furth
 `application.conf` file in the following way (only showing deployment section):
 
 ```
-akka {
+pekko {
   actor {
     deployment {
       /sampleActor {
@@ -226,7 +226,7 @@ companion object of the actor’s class]@java[make a static
 inner class which implements `Creator<T extends Actor>`].
 
 Serializability of all Props can be tested by setting the configuration item
-`akka.actor.serialize-creators=on`. Only Props whose `deploy` has
+`pekko.actor.serialize-creators=on`. Only Props whose `deploy` has
 `LocalScope` are exempt from this check.
 
 @@@
@@ -282,7 +282,7 @@ is *not* remote code loading, the Actors class to be deployed onto a remote syst
 remote system. This still however may pose a security risk, and one may want to restrict remote deployment to
 only a specific set of known actors by enabling the allow list feature.
 
-To enable remote deployment allow list set the `akka.remote.deployment.enable-allow-list` value to `on`.
+To enable remote deployment allow list set the `pekko.remote.deployment.enable-allow-list` value to `on`.
 The list of allowed classes has to be configured on the "remote" system, in other words on the system onto which
 others will be attempting to remote deploy Actors. That system, locally, knows best which Actors it should or
 should not allow others to remote deploy onto it. The full settings section may for example look like this:
@@ -302,7 +302,7 @@ is attempted to be sent to the remote system or an inbound connection is accepte
 When a communication failure happens and the connection is lost between the two systems the link becomes `Gated`.
 
 In this state the system will not attempt to connect to the remote host and all outbound messages will be dropped. The time
-while the link is in the `Gated` state is controlled by the setting `akka.remote.retry-gate-closed-for`:
+while the link is in the `Gated` state is controlled by the setting `pekko.remote.retry-gate-closed-for`:
 after this time elapses the link state transitions to `Idle` again. `Gate` is one-sided in the
 sense that whenever a successful *inbound* connection is accepted from a remote system during `Gate` it automatically
 transitions to `Active` and communication resumes immediately.
@@ -329,14 +329,14 @@ Remoting uses the `org.apache.pekko.remote.PhiAccrualFailureDetector` failure de
 implementing the `org.apache.pekko.remote.FailureDetector` and configuring it:
 
 ```
-akka.remote.watch-failure-detector.implementation-class = "com.example.CustomFailureDetector"
+pekko.remote.watch-failure-detector.implementation-class = "com.example.CustomFailureDetector"
 ``` 
  
 In the @ref:[Remote Configuration](#remote-configuration) you may want to adjust these
 depending on you environment:
 
-* When a *phi* value is considered to be a failure `akka.remote.watch-failure-detector.threshold`
-* Margin of error for sudden abnormalities `akka.remote.watch-failure-detector.acceptable-heartbeat-pause`  
+* When a *phi* value is considered to be a failure `pekko.remote.watch-failure-detector.threshold`
+* Margin of error for sudden abnormalities `pekko.remote.watch-failure-detector.acceptable-heartbeat-pause`  
  
 ## Serialization
 
@@ -397,7 +397,7 @@ finished.
 @@@ note
 
 In order to disable the logging, set
-`akka.remote.classic.log-remote-lifecycle-events = off` in your
+`pekko.remote.classic.log-remote-lifecycle-events = off` in your
 `application.conf`.
 
 @@@
@@ -439,13 +439,13 @@ That is also security best-practice because of its multiple
 <a id="remote-tls"></a>
 ### Configuring SSL/TLS for Akka Remoting
 
-SSL can be used as the remote transport by adding `akka.remote.classic.netty.ssl` to the `enabled-transport` configuration section.
+SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transport` configuration section.
 An example of setting up the default Netty based SSL driver as default:
 
 ```
-akka {
+pekko {
   remote.classic {
-    enabled-transports = [akka.remote.classic.netty.ssl]
+    enabled-transports = [pekko.remote.classic.netty.ssl]
   }
 }
 ```
@@ -453,7 +453,7 @@ akka {
 Next the actual SSL/TLS parameters have to be configured:
 
 ```
-akka {
+pekko {
   remote.classic {
     netty.ssl {
       hostname = "127.0.0.1"
@@ -528,7 +528,7 @@ that system down. This is not always desired, and it can be disabled with the
 following setting:
 
 ```
-akka.remote.classic.untrusted-mode = on
+pekko.remote.classic.untrusted-mode = on
 ```
 
 This disallows sending of system messages (actor life-cycle commands,
@@ -555,7 +555,7 @@ permission to receive actor selection messages can be granted to specific actors
 defined in configuration:
 
 ```
-akka.remote.classic.trusted-selection-paths = ["/user/receptionist", "/user/namingService"]
+pekko.remote.classic.trusted-selection-paths = ["/user/receptionist", "/user/namingService"]
 ```
 
 The actual message must still not be of type `PossiblyHarmful`.
@@ -608,7 +608,7 @@ host name and port pair that is used to connect to the system from the outside. 
 special configuration that sets both the logical and the bind pairs for remoting.
 
 ```
-akka.remote.classic.netty.tcp {
+pekko.remote.classic.netty.tcp {
       hostname = my.domain.com      # external (logical) hostname
       port = 8000                   # external (logical) port
 

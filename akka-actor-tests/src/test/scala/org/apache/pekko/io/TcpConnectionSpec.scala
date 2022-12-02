@@ -41,10 +41,10 @@ object TcpConnectionSpec {
 }
 
 class TcpConnectionSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.io.tcp.trace-logging = on
-    akka.io.tcp.register-timeout = 500ms
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.tcp.trace-logging = on
+    pekko.io.tcp.register-timeout = 500ms
     """) with WithLogCapturing { thisSpecs =>
   import TcpConnectionSpec._
 
@@ -377,7 +377,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     "respect pull mode" in new EstablishedConnectionTest(pullMode = true) {
       // override config to decrease default buffer size
       def config =
-        ConfigFactory.parseString("akka.io.tcp.direct-buffer-size = 1k").withFallback(AkkaSpec.testConf)
+        ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 1k").withFallback(AkkaSpec.testConf)
       override implicit lazy val system: ActorSystem = ActorSystem("respectPullModeTest", config)
 
       try run {

@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 public class LoggingAdapterTest extends JUnitSuite {
 
-  private static final Config config = ConfigFactory.parseString("akka.loglevel = DEBUG\n");
+  private static final Config config = ConfigFactory.parseString("pekko.loglevel = DEBUG\n");
 
   @Rule
   public AkkaJUnitActorSystemResource actorSystemResource =

@@ -9,7 +9,7 @@ To use Cluster Singleton, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
   version=AkkaVersion
@@ -174,7 +174,7 @@ don't run at the same time. Reasons for how this can happen:
 A lease can be a final backup that means that the singleton actor won't be created unless
 the lease can be acquired. 
 
-To use a lease for singleton set `akka.cluster.singleton.use-lease` to the configuration location
+To use a lease for singleton set `pekko.cluster.singleton.use-lease` to the configuration location
 of the lease to use. A lease with with the name `<actor system name>-singleton-<singleton actor path>` is used and
 the owner is set to the @scala[`Cluster(system).selfAddress.hostPort`]@java[`Cluster.get(system).selfAddress().hostPort()`].
 

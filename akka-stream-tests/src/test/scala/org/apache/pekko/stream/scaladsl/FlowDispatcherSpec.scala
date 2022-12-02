@@ -13,13 +13,13 @@ import pekko.stream.testkit.StreamSpec
 import pekko.testkit.TestProbe
 
 @nowarn("msg=deprecated")
-class FlowDispatcherSpec extends StreamSpec(s"my-dispatcher = $${akka.test.stream-dispatcher}") {
+class FlowDispatcherSpec extends StreamSpec(s"my-dispatcher = $${pekko.test.stream-dispatcher}") {
 
   val defaultSettings = ActorMaterializerSettings(system)
 
   def testDispatcher(
       settings: ActorMaterializerSettings = defaultSettings,
-      dispatcher: String = "akka.test.stream-dispatcher") = {
+      dispatcher: String = "pekko.test.stream-dispatcher") = {
 
     implicit val materializer: ActorMaterializer = ActorMaterializer(settings)
 

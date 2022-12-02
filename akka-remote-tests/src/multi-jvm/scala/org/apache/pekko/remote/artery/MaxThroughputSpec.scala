@@ -32,7 +32,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
      org.apache.pekko.test.MaxThroughputSpec.totalMessagesFactor = 160.0
      org.apache.pekko.test.MaxThroughputSpec.real-message = off
      org.apache.pekko.test.MaxThroughputSpec.actor-selection = off
-     akka {
+     pekko {
        loglevel = INFO
        log-dead-letters = 100
        # avoid TestEventListener
@@ -72,7 +72,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
          }
        }
      }
-     akka.remote.default-remote-dispatcher {
+     pekko.remote.default-remote-dispatcher {
        fork-join-executor {
          # parallelism-factor = 0.5
          parallelism-min = 4
@@ -108,7 +108,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
   }
 
   def receiverProps(reporter: RateReporter, payloadSize: Int, numSenders: Int): Props =
-    Props(new Receiver(reporter, payloadSize, numSenders)).withDispatcher("akka.remote.default-remote-dispatcher")
+    Props(new Receiver(reporter, payloadSize, numSenders)).withDispatcher("pekko.remote.default-remote-dispatcher")
 
   class Receiver(reporter: RateReporter, payloadSize: Int, numSenders: Int) extends Actor {
     private var c = 0L

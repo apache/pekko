@@ -30,8 +30,8 @@ object ClusterShardingQueriesSpec {
 }
 
 object ClusterShardingQueriesSpecConfig extends MultiNodeClusterShardingConfig(additionalConfig = s"""
-        akka.log-dead-letters-during-shutdown = off
-        akka.cluster.sharding {
+        pekko.log-dead-letters-during-shutdown = off
+        pekko.cluster.sharding {
           shard-region-query-timeout = 2ms
           updating-state-timeout = 2s
           waiting-for-state-timeout = 2s
@@ -43,10 +43,10 @@ object ClusterShardingQueriesSpecConfig extends MultiNodeClusterShardingConfig(a
   val second = role("second")
   val third = role("third")
 
-  val shardRoles = ConfigFactory.parseString("""akka.cluster.roles=["shard"]""")
+  val shardRoles = ConfigFactory.parseString("""pekko.cluster.roles=["shard"]""")
 
   nodeConfig(busy)(
-    ConfigFactory.parseString("akka.cluster.sharding.shard-region-query-timeout = 0ms").withFallback(shardRoles))
+    ConfigFactory.parseString("pekko.cluster.sharding.shard-region-query-timeout = 0ms").withFallback(shardRoles))
   nodeConfig(second, third)(shardRoles)
 
 }

@@ -10,7 +10,7 @@ To use Routing, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -823,7 +823,7 @@ Scala
 Java
 :  @@snip [RouterDocTest.java](/docs/src/test/java/jdocs/routing/RouterDocTest.java) { #resize-pool-1 }
 
-Several more configuration options are available and described in `akka.actor.deployment.default.resizer`
+Several more configuration options are available and described in `pekko.actor.deployment.default.resizer`
 section of the reference @ref:[configuration](general/configuration.md).
 
 Pool with resizer defined in code:
@@ -873,7 +873,7 @@ Scala
 Java
 :  @@snip [RouterDocTest.java](/docs/src/test/java/jdocs/routing/RouterDocTest.java) { #optimal-size-exploring-resize-pool }
 
-Several more configuration options are available and described in `akka.actor.deployment.default.optimal-size-exploring-resizer`
+Several more configuration options are available and described in `pekko.actor.deployment.default.optimal-size-exploring-resizer`
 section of the reference @ref:[configuration](general/configuration.md).
 
 @@@ note

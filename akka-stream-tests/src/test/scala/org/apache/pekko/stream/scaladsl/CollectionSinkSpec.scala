@@ -15,7 +15,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 
 class CollectionSinkSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) {
 
   "Sink.collection" when {

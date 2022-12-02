@@ -54,7 +54,7 @@ final class ClusterShardingHealthCheck private[pekko] (
   def this(system: ActorSystem) =
     this(
       system,
-      ClusterShardingHealthCheckSettings(system.settings.config.getConfig("akka.cluster.sharding.healthcheck")),
+      ClusterShardingHealthCheckSettings(system.settings.config.getConfig("pekko.cluster.sharding.healthcheck")),
       name => ClusterSharding(system).shardRegion(name))
 
   private implicit val timeout: Timeout = settings.timeout

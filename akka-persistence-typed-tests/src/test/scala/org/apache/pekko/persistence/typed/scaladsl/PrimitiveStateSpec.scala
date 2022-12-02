@@ -16,8 +16,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 object PrimitiveStateSpec {
 
   private val conf = ConfigFactory.parseString(s"""
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.journal.inmem.test-serialization = on
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+      pekko.persistence.journal.inmem.test-serialization = on
     """)
 }
 

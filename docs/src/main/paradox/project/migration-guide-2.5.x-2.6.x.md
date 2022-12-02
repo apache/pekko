@@ -31,7 +31,7 @@ If you are still using Scala 2.11 then you must upgrade to 2.12 or 2.13
 
 Auto-downing of unreachable Cluster members have been removed after warnings and recommendations against using it
 for many years. It was by default disabled, but could be enabled with configuration
-`akka.cluster.auto-down-unreachable-after`.
+`pekko.cluster.auto-down-unreachable-after`.
 
 For alternatives see the @ref:[documentation about Downing](../typed/cluster.md#downing).
 
@@ -122,7 +122,7 @@ After being deprecated since 2.2, the following have been removed in Akka 2.6.0.
 ### TypedActor
 
 `org.apache.pekko.actor.TypedActor` has been deprecated as of 2.6.0 in favor of the
-`akka.actor.typed` API which should be used instead.
+`pekko.actor.typed` API which should be used instead.
 
 There are several reasons for phasing out the old `TypedActor`. The primary reason is they use transparent
 remoting which is not our recommended way of implementing and interacting with actors. Transparent remoting
@@ -225,7 +225,7 @@ misconfiguration. You can run Artery on 2552 if you prefer that (e.g. existing f
 have to configure the port with:
 
 ```
-akka.remote.artery.canonical.port = 2552
+pekko.remote.artery.canonical.port = 2552
 ```
 
 The configuration for Artery is different, so you might have to revisit any custom configuration. See the full
@@ -234,8 +234,8 @@ The configuration for Artery is different, so you might have to revisit any cust
 
 Configuration that is likely required to be ported:
 
-* `akka.remote.netty.tcp.hostname` => `akka.remote.artery.canonical.hostname`
-* `akka.remote.netty.tcp.port`=> `akka.remote.artery.canonical.port`
+* `pekko.remote.netty.tcp.hostname` => `pekko.remote.artery.canonical.hostname`
+* `pekko.remote.netty.tcp.port`=> `pekko.remote.artery.canonical.port`
 
 If using SSL then `tcp-tls` needs to be enabled and setup. See @ref[Artery docs for SSL](../remoting-artery.md#configuring-ssl-tls-for-akka-remoting)
 for how to do this.
@@ -250,25 +250,25 @@ The following events that are published to the `eventStream` have changed:
 
 The following defaults have changed:
 
-* `akka.remote.artery.transport` default has changed from `aeron-udp` to `tcp`
+* `pekko.remote.artery.transport` default has changed from `aeron-udp` to `tcp`
 
 The following properties have moved. If you don't adjust these from their defaults no changes are required:
 
 For Aeron-UDP:
 
-* `akka.remote.artery.log-aeron-counters` to `akka.remote.artery.advanced.aeron.log-aeron-counters`
-* `akka.remote.artery.advanced.embedded-media-driver` to `akka.remote.artery.advanced.aeron.embedded-media-driver`
-* `akka.remote.artery.advanced.aeron-dir` to `akka.remote.artery.advanced.aeron.aeron-dir`
-* `akka.remote.artery.advanced.delete-aeron-dir` to `akka.remote.artery.advanced.aeron.aeron-delete-dir`
-* `akka.remote.artery.advanced.idle-cpu-level` to `akka.remote.artery.advanced.aeron.idle-cpu-level`
-* `akka.remote.artery.advanced.give-up-message-after` to `akka.remote.artery.advanced.aeron.give-up-message-after`
-* `akka.remote.artery.advanced.client-liveness-timeout` to `akka.remote.artery.advanced.aeron.client-liveness-timeout`
-* `akka.remote.artery.advanced.image-liveless-timeout` to `akka.remote.artery.advanced.aeron.image-liveness-timeout`
-* `akka.remote.artery.advanced.driver-timeout` to `akka.remote.artery.advanced.aeron.driver-timeout`
+* `pekko.remote.artery.log-aeron-counters` to `pekko.remote.artery.advanced.aeron.log-aeron-counters`
+* `pekko.remote.artery.advanced.embedded-media-driver` to `pekko.remote.artery.advanced.aeron.embedded-media-driver`
+* `pekko.remote.artery.advanced.aeron-dir` to `pekko.remote.artery.advanced.aeron.aeron-dir`
+* `pekko.remote.artery.advanced.delete-aeron-dir` to `pekko.remote.artery.advanced.aeron.aeron-delete-dir`
+* `pekko.remote.artery.advanced.idle-cpu-level` to `pekko.remote.artery.advanced.aeron.idle-cpu-level`
+* `pekko.remote.artery.advanced.give-up-message-after` to `pekko.remote.artery.advanced.aeron.give-up-message-after`
+* `pekko.remote.artery.advanced.client-liveness-timeout` to `pekko.remote.artery.advanced.aeron.client-liveness-timeout`
+* `pekko.remote.artery.advanced.image-liveless-timeout` to `pekko.remote.artery.advanced.aeron.image-liveness-timeout`
+* `pekko.remote.artery.advanced.driver-timeout` to `pekko.remote.artery.advanced.aeron.driver-timeout`
 
 For TCP:
 
-* `akka.remote.artery.advanced.connection-timeout` to `akka.remote.artery.advanced.tcp.connection-timeout`
+* `pekko.remote.artery.advanced.connection-timeout` to `pekko.remote.artery.advanced.tcp.connection-timeout`
 
 
 #### Remaining with Classic remoting (not recommended)
@@ -278,8 +278,8 @@ not supported so if you want to update from Akka 2.5.x with Classic remoting to 
 down of the Cluster you have to enable Classic remoting. Later, you can plan for a full shutdown and
 @ref:[migrate from classic remoting to Artery](#migrating-from-classic-remoting-to-artery) as a separate step.
 
-Explicitly disable Artery by setting property `akka.remote.artery.enabled` to `false`. Further, any configuration under `akka.remote` that is
-specific to classic remoting needs to be moved to `akka.remote.classic`. To see which configuration options
+Explicitly disable Artery by setting property `pekko.remote.artery.enabled` to `false`. Further, any configuration under `pekko.remote` that is
+specific to classic remoting needs to be moved to `pekko.remote.classic`. To see which configuration options
 are specific to classic search for them in: @ref:[`akka-remote/reference.conf`](../general/configuration-reference.md#config-akka-remote).
 
 If you have a [Lightbend Subscription](https://www.lightbend.com/lightbend-subscription) you can use our [Config Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html) enhancement to flag any settings that have not been properly migrated.
@@ -306,13 +306,13 @@ recommendation if you don't have other preferences or constraints.
 For compatibility with older systems that rely on Java serialization it can be enabled with the following configuration:
 
 ```ruby
-akka.actor.allow-java-serialization = on
+pekko.actor.allow-java-serialization = on
 ```
 
 Akka will still log warning when Java serialization is used and to silent that you may add:
 
 ```ruby
-akka.actor.warn-about-java-serializer-usage = off
+pekko.actor.warn-about-java-serializer-usage = off
 ```
 
 ### Rolling update
@@ -355,7 +355,7 @@ will log a warning and be ignored, it must be done after the node has joined.
 To optionally enable a watch without Akka Cluster or across a Cluster boundary between Cluster and non Cluster, 
 knowing the consequences, all watchers (cluster as well as remote) need to set:
 ```
-akka.remote.use-unsafe-remote-features-outside-cluster = on`.
+pekko.remote.use-unsafe-remote-features-outside-cluster = on`.
 ```
 
 When enabled
@@ -363,7 +363,7 @@ When enabled
 * An initial warning is logged on startup of `RemoteActorRefProvider`
 * A warning will be logged on remote watch attempts, which you can suppress by setting
 ```
-akka.remote.warn-unsafe-watch-outside-cluster = off
+pekko.remote.warn-unsafe-watch-outside-cluster = off
 ```
 
 ### Schedule periodically with fixed-delay vs. fixed-rate
@@ -391,16 +391,16 @@ To protect the Akka internals against starvation when user code blocks the defau
 use of blocking APIs from actors) a new internal dispatcher has been added. All of Akka's internal, non-blocking actors
 now run on the internal dispatcher by default.
 
-The dispatcher can be configured through `akka.actor.internal-dispatcher`.
+The dispatcher can be configured through `pekko.actor.internal-dispatcher`.
 
 For maximum performance, you might want to use a single shared dispatcher for all non-blocking,
 asynchronous actors, user actors and Akka internal actors. In that case, you can configure the
-`akka.actor.internal-dispatcher` with a string value of `akka.actor.default-dispatcher`.
+`pekko.actor.internal-dispatcher` with a string value of `pekko.actor.default-dispatcher`.
 This reinstantiates the behavior from previous Akka versions but also removes the isolation between
 user and Akka internals. So, use at your own risk!
 
 Several `use-dispatcher` configuration settings that previously accepted an empty value to fall back to the default
-dispatcher has now gotten an explicit value of `akka.actor.internal-dispatcher` and no longer accept an empty
+dispatcher has now gotten an explicit value of `pekko.actor.internal-dispatcher` and no longer accept an empty
 string as value. If such an empty value is used in your `application.conf` the same result is achieved by simply removing
 that entry completely and having the default apply.
 
@@ -411,7 +411,7 @@ For more details about configuring dispatchers, see the @ref[Dispatchers](../dis
 Previously the factor for the default dispatcher was set a bit high (`3.0`) to give some extra threads in case of accidental
 blocking and protect a bit against starving the internal actors. Since the internal actors are now on a separate dispatcher
 the default dispatcher has been adjusted down to `1.0` which means the number of threads will be one per core, but at least
-`8` and at most `64`. This can be tuned using the individual settings in `akka.actor.default-dispatcher.fork-join-executor`.
+`8` and at most `64`. This can be tuned using the individual settings in `pekko.actor.default-dispatcher.fork-join-executor`.
 
 ### Mixed version
 
@@ -429,12 +429,12 @@ so it is more likely to timeout if there are nodes restarting, for example when 
 
 #### Passivate idle entity
 
-The configuration `akka.cluster.sharding.passivate-idle-entity-after` is now enabled by default.
+The configuration `pekko.cluster.sharding.passivate-idle-entity-after` is now enabled by default.
 Sharding will passivate entities when they have not received any messages after this duration.
 To disable passivation you can use configuration:
 
 ```
-akka.cluster.sharding.passivate-idle-entity-after = off
+pekko.cluster.sharding.passivate-idle-entity-after = off
 ```
 
 It is always disabled if @ref:[Remembering Entities](../cluster-sharding.md#remembering-entities) is enabled.
@@ -442,7 +442,7 @@ It is always disabled if @ref:[Remembering Entities](../cluster-sharding.md#reme
 #### Cluster Sharding stats
 
 A new field has been added to the response of a `ShardRegion.GetClusterShardingStats` command
-for any shards per region that may have failed or not responded within the new configurable `akka.cluster.sharding.shard-region-query-timeout`. 
+for any shards per region that may have failed or not responded within the new configurable `pekko.cluster.sharding.shard-region-query-timeout`. 
 This is described further in @ref:[inspecting sharding state](../cluster-sharding.md#inspecting-cluster-sharding-state).
 
 ### Distributed Data
@@ -456,8 +456,8 @@ actor messages.
 The new configuration properties are:
 
 ```
-akka.cluster.distributed-data.max-delta-elements = 500
-akka.cluster.distributed-data.delta-crdt.max-delta-size = 50
+pekko.cluster.distributed-data.max-delta-elements = 500
+pekko.cluster.distributed-data.delta-crdt.max-delta-size = 50
 ```
 
 #### DataDeleted
@@ -483,7 +483,7 @@ If this is not desired behavior, for example in tests, you can disable this feat
 and then it will behave as in Akka 2.5.x:
 
 ```
-akka.coordinated-shutdown.run-by-actor-system-terminate = off
+pekko.coordinated-shutdown.run-by-actor-system-terminate = off
 ```
 
 ### Scheduler not running tasks when shutdown
@@ -511,10 +511,10 @@ keeping our own copy, so from Akka 2.6.0 on, the default FJP from the JDK will b
 
 ### Logging of dead letters
 
-When the number of dead letters have reached configured `akka.log-dead-letters` value it didn't log
-more dead letters in Akka 2.5.x. In Akka 2.6.x the count is reset after configured `akka.log-dead-letters-suspend-duration`.
+When the number of dead letters have reached configured `pekko.log-dead-letters` value it didn't log
+more dead letters in Akka 2.5.x. In Akka 2.6.x the count is reset after configured `pekko.log-dead-letters-suspend-duration`.
 
-`akka.log-dead-letters-during-shutdown` default configuration changed from `on` to `off`.
+`pekko.log-dead-letters-during-shutdown` default configuration changed from `on` to `off`.
 
 ### Cluster failure detection
 
@@ -524,13 +524,13 @@ The reason is to have better coverage and unreachability information for downing
 Configuration property:
 
 ```
-akka.cluster.monitored-by-nr-of-members = 9
+pekko.cluster.monitored-by-nr-of-members = 9
 ```
 
 ### TestKit
 
 `expectNoMessage()` without timeout parameter is now using a new configuration property
-`akka.test.expect-no-message-default` (short timeout) instead of `remainingOrDefault` (long timeout).
+`pekko.test.expect-no-message-default` (short timeout) instead of `remainingOrDefault` (long timeout).
 
 ### Config library resolution change
 
@@ -542,34 +542,34 @@ For example, the default config for Cluster Sharding, refers to the default conf
 `reference.conf` like this:
 
 ```ruby
-akka.cluster.sharding.distributed-data = ${akka.cluster.distributed-data}
+pekko.cluster.sharding.distributed-data = ${pekko.cluster.distributed-data}
 ``` 
 
 In Akka 2.5.x this meant that to override default gossip interval for both direct use of Distributed Data and Cluster Sharding
 in the same application you would have to change two settings:
 
 ```ruby
-akka.cluster.distributed-data.gossip-interval = 3s
-akka.cluster.sharding.distributed-data = 3s
+pekko.cluster.distributed-data.gossip-interval = 3s
+pekko.cluster.sharding.distributed-data = 3s
 ```
 
-In Akka 2.6.0 and forward, changing the default in the `akka.cluster.distributed-data` config block will be done before
+In Akka 2.6.0 and forward, changing the default in the `pekko.cluster.distributed-data` config block will be done before
 the variable in `reference.conf` is resolved, so that the same change only needs to be done once:
 
 ```ruby
-akka.cluster.distributed-data.gossip-interval = 3s
+pekko.cluster.distributed-data.gossip-interval = 3s
 ```
 
 The following default settings in Akka are using such substitution and may be affected if you are changing the right
 hand config path in your `application.conf`:
 
 ```ruby
-akka.cluster.sharding.coordinator-singleton = ${akka.cluster.singleton}
-akka.cluster.sharding.distributed-data = ${akka.cluster.distributed-data}
-akka.cluster.singleton-proxy.singleton-name = ${akka.cluster.singleton.singleton-name}
-akka.cluster.typed.receptionist.distributed-data = ${akka.cluster.distributed-data}
-akka.remote.classic.netty.ssl = ${akka.remote.classic.netty.tcp}
-akka.remote.artery.advanced.materializer = ${akka.stream.materializer}
+pekko.cluster.sharding.coordinator-singleton = ${pekko.cluster.singleton}
+pekko.cluster.sharding.distributed-data = ${pekko.cluster.distributed-data}
+pekko.cluster.singleton-proxy.singleton-name = ${pekko.cluster.singleton.singleton-name}
+pekko.cluster.typed.receptionist.distributed-data = ${pekko.cluster.distributed-data}
+pekko.remote.classic.netty.ssl = ${pekko.remote.classic.netty.tcp}
+pekko.remote.artery.advanced.materializer = ${pekko.stream.materializer}
 ``` 
 
 
@@ -695,32 +695,32 @@ used for individual streams when they are materialized.
 
 | MaterializerSettings   | Corresponding attribute                           | Config  |
 -------------------------|---------------------------------------------------|---------|
-| `initialInputBufferSize`        | `Attributes.inputBuffer(initial, max)`   | `akka.stream.materializer.initial-input-buffer-size` |
-| `maxInputBufferSize`            | `Attributes.inputBuffer(initial, max)`   | `akka.stream.materializer.max-input-buffer-size` |
-| `dispatcher`                    | `ActorAttributes.dispatcher(name)`       | `akka.stream.materializer.dispatcher` |
+| `initialInputBufferSize`        | `Attributes.inputBuffer(initial, max)`   | `pekko.stream.materializer.initial-input-buffer-size` |
+| `maxInputBufferSize`            | `Attributes.inputBuffer(initial, max)`   | `pekko.stream.materializer.max-input-buffer-size` |
+| `dispatcher`                    | `ActorAttributes.dispatcher(name)`       | `pekko.stream.materializer.dispatcher` |
 | `supervisionDecider`            | `ActorAttributes.supervisionStrategy`    | na |
-| `debugLogging`                  | `ActorAttributes.debugLogging`           | `akka.stream.materializer.debug-logging` |
-| `outputBurstLimit`              | `ActorAttributes.outputBurstLimit`       | `akka.stream.materializer.output-burst-limit` |
-| `fuzzingMode`                   | `ActorAttributes.fuzzingMode`            | `akka.stream.materializer.debug.fuzzing-mode` |
+| `debugLogging`                  | `ActorAttributes.debugLogging`           | `pekko.stream.materializer.debug-logging` |
+| `outputBurstLimit`              | `ActorAttributes.outputBurstLimit`       | `pekko.stream.materializer.output-burst-limit` |
+| `fuzzingMode`                   | `ActorAttributes.fuzzingMode`            | `pekko.stream.materializer.debug.fuzzing-mode` |
 | `autoFusing`                    | no longer used (since 2.5.0)             | na |
-| `maxFixedBufferSize`            | `ActorAttributes.maxFixedBufferSize`     | `akka.stream.materializer.max-fixed-buffer-size` |
-| `syncProcessingLimit`           | `ActorAttributes.syncProcessingLimit`    | `akka.stream.materializer.sync-processing-limit` |
-| `IOSettings.tcpWriteBufferSize` | `Tcp.writeBufferSize`                    | `akka.stream.materializer.io.tcp.write-buffer-size` |
-| `blockingIoDispatcher`          | na                                       | `akka.stream.materializer.blocking-io-dispatcher` |
+| `maxFixedBufferSize`            | `ActorAttributes.maxFixedBufferSize`     | `pekko.stream.materializer.max-fixed-buffer-size` |
+| `syncProcessingLimit`           | `ActorAttributes.syncProcessingLimit`    | `pekko.stream.materializer.sync-processing-limit` |
+| `IOSettings.tcpWriteBufferSize` | `Tcp.writeBufferSize`                    | `pekko.stream.materializer.io.tcp.write-buffer-size` |
+| `blockingIoDispatcher`          | na                                       | `pekko.stream.materializer.blocking-io-dispatcher` |
 
 
 | StreamRefSettings                | Corresponding StreamRefAttributes | Config  |
 -----------------------------------|-----------------------------------|---------|
-| `bufferCapacity`                 | `bufferCapacity`                  | `akka.stream.materializer.stream-ref.buffer-capacity` |
-| `demandRedeliveryInterval`       | `demandRedeliveryInterval`        | `akka.stream.materializer.stream-ref.demand-redelivery-interval` |
-| `subscriptionTimeout`            | `subscriptionTimeout`             | `akka.stream.materializer.stream-ref.subscription-timeout` |
-| `finalTerminationSignalDeadline` | `finalTerminationSignalDeadline`  | `akka.stream.materializer.stream-ref.final-termination-signal-deadline` |
+| `bufferCapacity`                 | `bufferCapacity`                  | `pekko.stream.materializer.stream-ref.buffer-capacity` |
+| `demandRedeliveryInterval`       | `demandRedeliveryInterval`        | `pekko.stream.materializer.stream-ref.demand-redelivery-interval` |
+| `subscriptionTimeout`            | `subscriptionTimeout`             | `pekko.stream.materializer.stream-ref.subscription-timeout` |
+| `finalTerminationSignalDeadline` | `finalTerminationSignalDeadline`  | `pekko.stream.materializer.stream-ref.final-termination-signal-deadline` |
 
 
 | SubscriptionTimeoutSettings      | Corresponding ActorAttributes               | Config  |
 -----------------------------------|---------------------------------------------|---------|
-| `subscriptionTimeoutSettings.mode`           | `streamSubscriptionTimeoutMode` | `akka.stream.materializer.subscription-timeout.mode` |
-| `subscriptionTimeoutSettings.timeout`        | `streamSubscriptionTimeout`     | `akka.stream.materializer.subscription-timeout.timeout` |
+| `subscriptionTimeoutSettings.mode`           | `streamSubscriptionTimeoutMode` | `pekko.stream.materializer.subscription-timeout.mode` |
+| `subscriptionTimeoutSettings.timeout`        | `streamSubscriptionTimeout`     | `pekko.stream.materializer.subscription-timeout.timeout` |
 
 Setting attributes on individual streams can be done like so:
 

@@ -31,7 +31,7 @@ class SharedLeveldbStore(cfg: Config) extends LeveldbStore {
 
   override def prepareConfig: Config =
     if (cfg ne LeveldbStore.emptyConfig) cfg.getConfig("store")
-    else context.system.settings.config.getConfig("akka.persistence.journal.leveldb-shared.store")
+    else context.system.settings.config.getConfig("pekko.persistence.journal.leveldb-shared.store")
 
   def receive = receiveCompactionInternal.orElse {
     case WriteMessages(messages) =>

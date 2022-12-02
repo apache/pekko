@@ -37,7 +37,7 @@ object ClusterSettings {
 
 final class ClusterSettings(val config: Config, val systemName: String) {
   import ClusterSettings._
-  private val cc = config.getConfig("akka.cluster")
+  private val cc = config.getConfig("pekko.cluster")
 
   val LogInfoVerbose: Boolean = cc.getBoolean("log-info-verbose")
   val LogInfo: Boolean = LogInfoVerbose || cc.getBoolean("log-info")

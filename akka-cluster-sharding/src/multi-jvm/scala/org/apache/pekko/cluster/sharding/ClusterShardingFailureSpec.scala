@@ -55,18 +55,18 @@ abstract class ClusterShardingFailureSpecConfig(override val mode: String)
     extends MultiNodeClusterShardingConfig(
       mode,
       additionalConfig = s"""
-        akka.loglevel=DEBUG
-        akka.cluster.roles = ["backend"]
-        akka.cluster.sharding {
+        pekko.loglevel=DEBUG
+        pekko.cluster.roles = ["backend"]
+        pekko.cluster.sharding {
           coordinator-failure-backoff = 3s
           shard-failure-backoff = 3s
         }
         # don't leak ddata state across runs
-        akka.cluster.sharding.distributed-data.durable.keys = []
-        akka.persistence.journal.leveldb-shared.store.native = off
+        pekko.cluster.sharding.distributed-data.durable.keys = []
+        pekko.persistence.journal.leveldb-shared.store.native = off
         # using Java serialization for these messages because test is sending them
         # to other nodes, which isn't normal usage.
-        akka.actor.serialization-bindings {
+        pekko.actor.serialization-bindings {
           "${classOf[ShardRegion.Passivate].getName}" = java-test
         }
         """,

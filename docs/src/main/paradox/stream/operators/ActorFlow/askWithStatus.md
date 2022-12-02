@@ -10,7 +10,7 @@ This operator is included in:
 
 @@dependency[sbt,Maven,Gradle] {
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream-typed_$scala.binary.version$"
   version=AkkaVersion

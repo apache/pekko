@@ -142,15 +142,15 @@ object WorkPullingProducerController {
   object Settings {
 
     /**
-     * Scala API: Factory method from config `akka.reliable-delivery.work-pulling.producer-controller`
+     * Scala API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
     def apply(system: ActorSystem[_]): Settings =
-      apply(system.settings.config.getConfig("akka.reliable-delivery.work-pulling.producer-controller"))
+      apply(system.settings.config.getConfig("pekko.reliable-delivery.work-pulling.producer-controller"))
 
     /**
      * Scala API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.work-pulling.producer-controller`.
+     * `pekko.reliable-delivery.work-pulling.producer-controller`.
      */
     def apply(config: Config): Settings = {
       new Settings(
@@ -160,7 +160,7 @@ object WorkPullingProducerController {
     }
 
     /**
-     * Java API: Factory method from config `akka.reliable-delivery.work-pulling.producer-controller`
+     * Java API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
      * of the `ActorSystem`.
      */
     def create(system: ActorSystem[_]): Settings =
@@ -168,7 +168,7 @@ object WorkPullingProducerController {
 
     /**
      * Java API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.work-pulling.producer-controller`.
+     * `pekko.reliable-delivery.work-pulling.producer-controller`.
      */
     def create(config: Config): Settings =
       apply(config)

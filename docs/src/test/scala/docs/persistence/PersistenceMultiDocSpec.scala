@@ -11,9 +11,9 @@ object PersistenceMultiDocSpec {
     """
   //#default-config
   # Absolute path to the default journal plugin configuration entry.
-  akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+  pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
   # Absolute path to the default snapshot store plugin configuration entry.
-  akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
+  pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
   //#default-config
   """
 
@@ -28,14 +28,14 @@ object PersistenceMultiDocSpec {
     s"""
   //#override-config
   # Configuration entry for the custom journal plugin, see `journalPluginId`.
-  akka.persistence.chronicle.journal {
+  pekko.persistence.chronicle.journal {
     # Standard persistence extension property: provider FQCN.
     class = "org.apache.pekko.persistence.chronicle.ChronicleSyncJournal"
     # Custom setting specific for the journal `ChronicleSyncJournal`.
     folder = $${user.dir}/store/journal
   }
   # Configuration entry for the custom snapshot store plugin, see `snapshotPluginId`.
-  akka.persistence.chronicle.snapshot-store {
+  pekko.persistence.chronicle.snapshot-store {
     # Standard persistence extension property: provider FQCN.
     class = "org.apache.pekko.persistence.chronicle.ChronicleSnapshotStore"
     # Custom setting specific for the snapshot store `ChronicleSnapshotStore`.
@@ -49,10 +49,10 @@ object PersistenceMultiDocSpec {
     override def persistenceId = "123"
 
     // Absolute path to the journal plugin configuration entry in the `reference.conf`.
-    override def journalPluginId = "akka.persistence.chronicle.journal"
+    override def journalPluginId = "pekko.persistence.chronicle.journal"
 
     // Absolute path to the snapshot store plugin configuration entry in the `reference.conf`.
-    override def snapshotPluginId = "akka.persistence.chronicle.snapshot-store"
+    override def snapshotPluginId = "pekko.persistence.chronicle.snapshot-store"
   }
 
   // #override-plugins

@@ -19,9 +19,9 @@ import org.scalatest.wordspec.AnyWordSpecLike
 object EventSourcedSequenceNumberSpec {
 
   private val conf = ConfigFactory.parseString(s"""
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.journal.inmem.test-serialization = on
-      akka.persistence.snapshot-store.plugin = "slow-snapshot-store"
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+      pekko.persistence.journal.inmem.test-serialization = on
+      pekko.persistence.snapshot-store.plugin = "slow-snapshot-store"
       slow-snapshot-store.class = "${classOf[SlowInMemorySnapshotStore].getName}"
     """)
 

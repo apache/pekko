@@ -143,8 +143,8 @@ object ProviderSelection {
  * @param config Configuration to use for the actor system. If no Config is given, the default reference config will be obtained from the ClassLoader.
  * @param defaultExecutionContext If defined the ExecutionContext will be used as the default executor inside this ActorSystem.
  *                                If no ExecutionContext is given, the system will fallback to the executor configured under
- *                                "akka.actor.default-dispatcher.default-executor.fallback".
- * @param actorRefProvider Overrides the `akka.actor.provider` setting in config, can be `local` (default), `remote` or
+ *                                "pekko.actor.default-dispatcher.default-executor.fallback".
+ * @param actorRefProvider Overrides the `pekko.actor.provider` setting in config, can be `local` (default), `remote` or
  *                         `cluster`. It can also be a fully qualified class name of a provider.
  */
 final class BootstrapSetup private (
@@ -228,7 +228,7 @@ object ActorSystem {
    * If no ClassLoader is given, it obtains the current ClassLoader by first inspecting the current
    * threads' getContextClassLoader, then tries to walk the stack to find the callers class loader, then
    * falls back to the ClassLoader associated with the ActorSystem class. If no ExecutionContext is given, the
-   * system will fallback to the executor configured under "akka.actor.default-dispatcher.default-executor.fallback".
+   * system will fallback to the executor configured under "pekko.actor.default-dispatcher.default-executor.fallback".
    * Note that the given ExecutionContext will be used by all dispatchers that have been configured with
    * executor = "default-executor", including those that have not defined the executor setting and thereby fallback
    * to the default of "default-dispatcher.executor".
@@ -304,7 +304,7 @@ object ActorSystem {
    * threads' getContextClassLoader, then tries to walk the stack to find the callers class loader, then
    * falls back to the ClassLoader associated with the ActorSystem class.
    * If an ExecutionContext is given, it will be used as the default executor inside this ActorSystem.
-   * If no ExecutionContext is given, the system will fallback to the executor configured under "akka.actor.default-dispatcher.default-executor.fallback".
+   * If no ExecutionContext is given, the system will fallback to the executor configured under "pekko.actor.default-dispatcher.default-executor.fallback".
    * The system will use the passed in config, or falls back to the default reference configuration using the ClassLoader.
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
@@ -325,15 +325,15 @@ object ActorSystem {
      * INTERNAL API
      *
      * When using Akka Typed the Slf4jLogger should be used by default.
-     * Looking for config property `akka.use-slf4j` (defined in akka-actor-typed) and
+     * Looking for config property `pekko.use-slf4j` (defined in akka-actor-typed) and
      * that `Slf4jLogger` (akka-slf4j) is in  classpath.
      * Then adds `Slf4jLogger` to configured loggers and removes `DefaultLogger`.
      */
     @InternalApi private[pekko] def amendSlf4jConfig(config: Config, dynamicAccess: DynamicAccess): Config = {
       val slf4jLoggerClassName = "org.apache.pekko.event.slf4j.Slf4jLogger"
       val slf4jLoggingFilterClassName = "org.apache.pekko.event.slf4j.Slf4jLoggingFilter"
-      val loggersConfKey = "akka.loggers"
-      val loggingFilterConfKey = "akka.logging-filter"
+      val loggersConfKey = "pekko.loggers"
+      val loggingFilterConfKey = "pekko.logging-filter"
       val configuredLoggers = immutableSeq(config.getStringList(loggersConfKey))
       val configuredLoggingFilter = config.getString(loggingFilterConfKey)
 
@@ -350,7 +350,7 @@ object ActorSystem {
         else
           ConfigFactory.parseString(newLoggingFilterConfStr).withFallback(config)
       } else {
-        val confKey = "akka.use-slf4j"
+        val confKey = "pekko.use-slf4j"
         if (config.hasPath(confKey) && config.getBoolean(confKey) && dynamicAccess.classIsOnClasspath(
             slf4jLoggerClassName)) {
           val newLoggers = slf4jLoggerClassName +: configuredLoggers.filterNot(_ == classOf[DefaultLogger].getName)
@@ -394,13 +394,13 @@ object ActorSystem {
 
     import pekko.util.Helpers.ConfigOps
 
-    final val ConfigVersion: String = getString("akka.version")
+    final val ConfigVersion: String = getString("pekko.version")
 
     private final val providerSelectionSetup = setup
       .get[BootstrapSetup]
       .flatMap(_.actorRefProvider)
       .map(_.identifier)
-      .getOrElse(getString("akka.actor.provider"))
+      .getOrElse(getString("pekko.actor.provider"))
 
     final val ProviderSelectionType: ProviderSelection = ProviderSelection(providerSelectionSetup)
 
@@ -408,70 +408,70 @@ object ActorSystem {
 
     final val HasCluster: Boolean = ProviderSelectionType.hasCluster
 
-    final val SupervisorStrategyClass: String = getString("akka.actor.guardian-supervisor-strategy")
-    final val CreationTimeout: Timeout = Timeout(config.getMillisDuration("akka.actor.creation-timeout"))
-    final val UnstartedPushTimeout: Timeout = Timeout(config.getMillisDuration("akka.actor.unstarted-push-timeout"))
+    final val SupervisorStrategyClass: String = getString("pekko.actor.guardian-supervisor-strategy")
+    final val CreationTimeout: Timeout = Timeout(config.getMillisDuration("pekko.actor.creation-timeout"))
+    final val UnstartedPushTimeout: Timeout = Timeout(config.getMillisDuration("pekko.actor.unstarted-push-timeout"))
 
-    final val AllowJavaSerialization: Boolean = getBoolean("akka.actor.allow-java-serialization")
+    final val AllowJavaSerialization: Boolean = getBoolean("pekko.actor.allow-java-serialization")
     @deprecated("Always enabled from Akka 2.6.0", "2.6.0")
     final val EnableAdditionalSerializationBindings: Boolean = true
-    final val SerializeAllMessages: Boolean = getBoolean("akka.actor.serialize-messages")
-    final val SerializeAllCreators: Boolean = getBoolean("akka.actor.serialize-creators")
+    final val SerializeAllMessages: Boolean = getBoolean("pekko.actor.serialize-messages")
+    final val SerializeAllCreators: Boolean = getBoolean("pekko.actor.serialize-creators")
     final val NoSerializationVerificationNeededClassPrefix: Set[String] = {
       import pekko.util.ccompat.JavaConverters._
-      getStringList("akka.actor.no-serialization-verification-needed-class-prefix").asScala.toSet
+      getStringList("pekko.actor.no-serialization-verification-needed-class-prefix").asScala.toSet
     }
 
-    final val LogLevel: String = getString("akka.loglevel")
-    final val StdoutLogLevel: String = getString("akka.stdout-loglevel")
-    final val Loggers: immutable.Seq[String] = immutableSeq(getStringList("akka.loggers"))
-    final val LoggersDispatcher: String = getString("akka.loggers-dispatcher")
-    final val LoggingFilter: String = getString("akka.logging-filter")
-    final val LoggerStartTimeout: Timeout = Timeout(config.getMillisDuration("akka.logger-startup-timeout"))
-    final val LogConfigOnStart: Boolean = config.getBoolean("akka.log-config-on-start")
-    final val LogDeadLetters: Int = toRootLowerCase(config.getString("akka.log-dead-letters")) match {
+    final val LogLevel: String = getString("pekko.loglevel")
+    final val StdoutLogLevel: String = getString("pekko.stdout-loglevel")
+    final val Loggers: immutable.Seq[String] = immutableSeq(getStringList("pekko.loggers"))
+    final val LoggersDispatcher: String = getString("pekko.loggers-dispatcher")
+    final val LoggingFilter: String = getString("pekko.logging-filter")
+    final val LoggerStartTimeout: Timeout = Timeout(config.getMillisDuration("pekko.logger-startup-timeout"))
+    final val LogConfigOnStart: Boolean = config.getBoolean("pekko.log-config-on-start")
+    final val LogDeadLetters: Int = toRootLowerCase(config.getString("pekko.log-dead-letters")) match {
       case "off" | "false" => 0
       case "on" | "true"   => Int.MaxValue
-      case _               => config.getInt("akka.log-dead-letters")
+      case _               => config.getInt("pekko.log-dead-letters")
     }
-    final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean("akka.log-dead-letters-during-shutdown")
+    final val LogDeadLettersDuringShutdown: Boolean = config.getBoolean("pekko.log-dead-letters-during-shutdown")
     final val LogDeadLettersSuspendDuration: Duration = {
-      val key = "akka.log-dead-letters-suspend-duration"
+      val key = "pekko.log-dead-letters-suspend-duration"
       toRootLowerCase(config.getString(key)) match {
         case "infinite" => Duration.Inf
         case _          => config.getMillisDuration(key)
       }
     }
 
-    final val AddLoggingReceive: Boolean = getBoolean("akka.actor.debug.receive")
-    final val DebugAutoReceive: Boolean = getBoolean("akka.actor.debug.autoreceive")
-    final val DebugLifecycle: Boolean = getBoolean("akka.actor.debug.lifecycle")
-    final val FsmDebugEvent: Boolean = getBoolean("akka.actor.debug.fsm")
-    final val DebugEventStream: Boolean = getBoolean("akka.actor.debug.event-stream")
-    final val DebugUnhandledMessage: Boolean = getBoolean("akka.actor.debug.unhandled")
-    final val DebugRouterMisconfiguration: Boolean = getBoolean("akka.actor.debug.router-misconfiguration")
+    final val AddLoggingReceive: Boolean = getBoolean("pekko.actor.debug.receive")
+    final val DebugAutoReceive: Boolean = getBoolean("pekko.actor.debug.autoreceive")
+    final val DebugLifecycle: Boolean = getBoolean("pekko.actor.debug.lifecycle")
+    final val FsmDebugEvent: Boolean = getBoolean("pekko.actor.debug.fsm")
+    final val DebugEventStream: Boolean = getBoolean("pekko.actor.debug.event-stream")
+    final val DebugUnhandledMessage: Boolean = getBoolean("pekko.actor.debug.unhandled")
+    final val DebugRouterMisconfiguration: Boolean = getBoolean("pekko.actor.debug.router-misconfiguration")
 
-    final val Home: Option[String] = config.getString("akka.home") match {
+    final val Home: Option[String] = config.getString("pekko.home") match {
       case "" => None
       case x  => Some(x)
     }
 
-    final val SchedulerClass: String = getString("akka.scheduler.implementation")
-    final val Daemonicity: Boolean = getBoolean("akka.daemonic")
-    final val JvmExitOnFatalError: Boolean = getBoolean("akka.jvm-exit-on-fatal-error")
-    final val JvmShutdownHooks: Boolean = getBoolean("akka.jvm-shutdown-hooks")
-    final val FailMixedVersions: Boolean = getBoolean("akka.fail-mixed-versions")
+    final val SchedulerClass: String = getString("pekko.scheduler.implementation")
+    final val Daemonicity: Boolean = getBoolean("pekko.daemonic")
+    final val JvmExitOnFatalError: Boolean = getBoolean("pekko.jvm-exit-on-fatal-error")
+    final val JvmShutdownHooks: Boolean = getBoolean("pekko.jvm-shutdown-hooks")
+    final val FailMixedVersions: Boolean = getBoolean("pekko.fail-mixed-versions")
 
     final val CoordinatedShutdownTerminateActorSystem: Boolean = getBoolean(
-      "akka.coordinated-shutdown.terminate-actor-system")
+      "pekko.coordinated-shutdown.terminate-actor-system")
     final val CoordinatedShutdownRunByActorSystemTerminate: Boolean = getBoolean(
-      "akka.coordinated-shutdown.run-by-actor-system-terminate")
+      "pekko.coordinated-shutdown.run-by-actor-system-terminate")
     if (CoordinatedShutdownRunByActorSystemTerminate && !CoordinatedShutdownTerminateActorSystem)
       throw new ConfigurationException(
-        "akka.coordinated-shutdown.run-by-actor-system-terminate=on and " +
-        "akka.coordinated-shutdown.terminate-actor-system=off is not a supported configuration combination.")
+        "pekko.coordinated-shutdown.run-by-actor-system-terminate=on and " +
+        "pekko.coordinated-shutdown.terminate-actor-system=off is not a supported configuration combination.")
 
-    final val DefaultVirtualNodesFactor: Int = getInt("akka.actor.deployment.default.virtual-nodes-factor")
+    final val DefaultVirtualNodesFactor: Int = getInt("pekko.actor.deployment.default.virtual-nodes-factor")
 
     if (ConfigVersion != Version)
       throw new pekko.ConfigurationException(
@@ -657,7 +657,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * Terminates this actor system by running [[CoordinatedShutdown]] with reason
    * [[CoordinatedShutdown.ActorSystemTerminateReason]].
    *
-   * If `akka.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
+   * If `pekko.coordinated-shutdown.run-by-actor-system-terminate` is configured to `off`
    * it will not run `CoordinatedShutdown`, but the `ActorSystem` and its actors
    * will still be terminated.
    *
@@ -843,7 +843,7 @@ private[pekko] class ActorSystemImpl(
                  """.stripMargin.replaceAll("[\r\n]", ""))
 
             if (settings.JvmExitOnFatalError)
-              try logFatalError("shutting down JVM since 'akka.jvm-exit-on-fatal-error' is enabled for", cause, thread)
+              try logFatalError("shutting down JVM since 'pekko.jvm-exit-on-fatal-error' is enabled for", cause, thread)
               finally System.exit(-1)
             else
               try logFatalError("shutting down", cause, thread)
@@ -1221,8 +1221,8 @@ private[pekko] class ActorSystemImpl(
       }
     }
 
-    loadExtensions("akka.library-extensions", throwOnLoadFail = true)
-    loadExtensions("akka.extensions", throwOnLoadFail = false)
+    loadExtensions("pekko.library-extensions", throwOnLoadFail = true)
+    loadExtensions("pekko.extensions", throwOnLoadFail = false)
   }
 
   override def toString: String = lookupRoot.path.root.address.toString

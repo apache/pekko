@@ -54,15 +54,15 @@ object RemoteDeploymentAllowListSpec {
   }
 
   val cfg: Config = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       actor.provider = remote
       
       
       remote {
         use-unsafe-remote-features-outside-cluster = on
         classic.enabled-transports = [
-          "akka.remote.test",
-          "akka.remote.classic.netty.tcp"
+          "pekko.remote.test",
+          "pekko.remote.classic.netty.tcp"
         ]
         
         classic {
@@ -92,8 +92,8 @@ object RemoteDeploymentAllowListSpec {
       }
     }
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
   """)
 
   def muteSystem(system: ActorSystem): Unit = {
@@ -115,13 +115,13 @@ class RemoteDeploymentAllowListSpec
 
   val conf =
     ConfigFactory.parseString("""
-      akka.remote.test {
+      pekko.remote.test {
         local-address = "test://remote-sys@localhost:12346"
         maximum-payload-bytes = 48000 bytes
       }
 
       //#allow-list-config
-      akka.remote.deployment {
+      pekko.remote.deployment {
         enable-allow-list = on
         
         allowed-actor-classes = [

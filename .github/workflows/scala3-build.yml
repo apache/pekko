@@ -49,11 +49,11 @@ jobs:
         # note that this is not running any multi-jvm tests (yet) because multi-in-test=false
         run: |
           sbtx -jvm-opts .jvmopts-ci \
-          -Dakka.log.timestamps=true \
-          -Dakka.test.timefactor=2 \
-          -Dakka.actor.testkit.typed.timefactor=2 \
-          -Dakka.test.multi-in-test=false \
-          -Dakka.test.tags.exclude=gh-exclude,timing \
+          -Dpekko.log.timestamps=true \
+          -Dpekko.test.timefactor=2 \
+          -Dpekko.actor.testkit.typed.timefactor=2 \
+          -Dpekko.test.multi-in-test=false \
+          -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dmultinode.XX:MetaspaceSize=128M \
           -Dmultinode.Xms256M \
           -Dmultinode.Xmx256M \

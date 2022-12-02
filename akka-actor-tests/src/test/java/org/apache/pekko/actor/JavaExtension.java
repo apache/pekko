@@ -66,7 +66,7 @@ public class JavaExtension extends JUnitSuite {
       new AkkaJUnitActorSystemResource(
           "JavaExtension",
           ConfigFactory.parseString(
-                  "akka.extensions = [ \"org.apache.pekko.actor.JavaExtension$TestExtensionId\" ]")
+                  "pekko.extensions = [ \"org.apache.pekko.actor.JavaExtension$TestExtensionId\" ]")
               .withFallback(AkkaSpec.testConf()));
 
   private final ActorSystem system = actorSystemResource.getSystem();

@@ -12,7 +12,7 @@ To use Akka Cluster Sharding, you must add the following dependency in your proj
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-sharding-typed_$scala.binary.version$
   version=AkkaVersion
@@ -195,12 +195,12 @@ The new algorithm is recommended and will become the default in future versions 
 You enable the new algorithm by setting `rebalance-absolute-limit` > 0, for example:
 
 ```
-akka.cluster.sharding.least-shard-allocation-strategy.rebalance-absolute-limit = 20
+pekko.cluster.sharding.least-shard-allocation-strategy.rebalance-absolute-limit = 20
 ``` 
 
 The `rebalance-absolute-limit` is the maximum number of shards that will be rebalanced in one rebalance round.
 
-You may also want to tune the `akka.cluster.sharding.least-shard-allocation-strategy.rebalance-relative-limit`.
+You may also want to tune the `pekko.cluster.sharding.least-shard-allocation-strategy.rebalance-relative-limit`.
 The `rebalance-relative-limit` is a fraction (< 1.0) of total number of (known) shards that will be rebalanced
 in one rebalance round. The lower result of `rebalance-relative-limit` and `rebalance-absolute-limit` will be used.
 
@@ -304,7 +304,7 @@ testing and feedback.
 
 @@@
 
-Automatic passivation can be disabled by setting `akka.cluster.sharding.passivation.strategy = none`. It is disabled
+Automatic passivation can be disabled by setting `pekko.cluster.sharding.passivation.strategy = none`. It is disabled
 automatically if @ref:[Remembering Entities](#remembering-entities) is enabled.
 
 @@@ note
@@ -362,7 +362,7 @@ and idle entity timeouts.
 ### Custom passivation strategies
 
 To configure a custom passivation strategy, create a configuration section for the strategy under
-`akka.cluster.sharding.passivation` and select this strategy using the `strategy` setting. The strategy needs a
+`pekko.cluster.sharding.passivation` and select this strategy using the `strategy` setting. The strategy needs a
 _replacement policy_ to be chosen, an _active entity limit_ to be set, and can optionally [passivate idle
 entities](#idle-entity-passivation). For example, a custom strategy can be configured to use the [least recently used
 policy](#least-recently-used-policy):
@@ -544,7 +544,7 @@ There are two options for the state store:
 To enable distributed data store mode (the default):
 
 ```
-akka.cluster.sharding.state-store-mode = ddata
+pekko.cluster.sharding.state-store-mode = ddata
 ```
 
 The state of the `ShardCoordinator` is replicated across the cluster but is not stored to disk.
@@ -558,7 +558,7 @@ that contains the node role and therefore the role configuration must be the sam
 cluster, for example you can't change the roles when performing a rolling update.
 Changing roles requires @ref:[a full cluster restart](../additional/rolling-updates.md#cluster-sharding-configuration-change).
 
-The `akka.cluster.sharding.distributed-data` config section configures the settings for Distributed Data. 
+The `pekko.cluster.sharding.distributed-data` config section configures the settings for Distributed Data. 
 It's not possible to have different `distributed-data` settings for different sharding entity types.
 
 #### Persistence mode
@@ -566,7 +566,7 @@ It's not possible to have different `distributed-data` settings for different sh
 To enable persistence store mode:
 
 ```
-akka.cluster.sharding.state-store-mode = persistence
+pekko.cluster.sharding.state-store-mode = persistence
 ```
 
 Since it is running in a cluster @ref:[Persistence](persistence.md) must be configured with a distributed journal.
@@ -590,7 +590,7 @@ for example with @ref:[Event Sourcing](persistence.md).
 
 To enable remember entities set `rememberEntities` flag to true in
 @apidoc[typed.ClusterShardingSettings] when starting a shard region (or its proxy) for a given `entity` type or configure
-`akka.cluster.sharding.remember-entities = on`.
+`pekko.cluster.sharding.remember-entities = on`.
 
 Starting and stopping entities has an overhead but this is limited by batching operations to the
 underlying remember entities store.
@@ -618,13 +618,13 @@ There are two options for the remember entities store:
 Enable ddata mode with (enabled by default):
 
 ```
-akka.cluster.sharding.remember-entities-store = ddata
+pekko.cluster.sharding.remember-entities-store = ddata
 ```
 
 To support restarting entities after a full cluster restart (non-rolling) the remember entities store is persisted to disk by distributed data.
 This can be disabled if not needed:
 ```
-akka.cluster.sharding.distributed-data.durable.keys = []
+pekko.cluster.sharding.distributed-data.durable.keys = []
 ```
 
 Reasons for disabling:
@@ -639,15 +639,15 @@ For supporting remembered entities in an environment without disk storage use `e
 Enable `eventsourced` mode with:
 
 ```
-akka.cluster.sharding.remember-entities-store = eventsourced
+pekko.cluster.sharding.remember-entities-store = eventsourced
 ```
 
 This mode uses @ref:[Event Sourcing](./persistence.md) to store the active shards and active entities for each shard 
 so a persistence and snapshot plugin must be configured.
 
 ```
-akka.cluster.sharding.journal-plugin-id = <plugin>
-akka.cluster.sharding.snapshot-plugin-id = <plugin>
+pekko.cluster.sharding.journal-plugin-id = <plugin>
+pekko.cluster.sharding.snapshot-plugin-id = <plugin>
 ```
 
 ### Migrating from deprecated persistence mode
@@ -664,7 +664,7 @@ For migrating existing remembered entities an event adapter needs to be configur
 In this example `cassandra` is the used journal:
 
 ```
-akka.persistence.cassandra.journal {
+pekko.persistence.cassandra.journal {
   event-adapters {
     coordinator-migration = "org.apache.pekko.cluster.sharding.OldCoordinatorStateMigrationEventAdapter"
   }
@@ -679,7 +679,7 @@ Once you have migrated you cannot go back to the old persistence store, a rollin
 
 When @ref:[Distributed Data mode](#distributed-data-mode) is used the identifiers of the entities are
 stored in @ref:[Durable Storage](distributed-data.md#durable-storage) of Distributed Data. You may want to change the
-configuration of the `akka.cluster.sharding.distributed-data.durable.lmdb.dir`, since
+configuration of the `pekko.cluster.sharding.distributed-data.durable.lmdb.dir`, since
 the default directory contains the remote port of the actor system. If using a dynamically
 assigned port (0) it will be different each time and the previously stored data will not
 be loaded.
@@ -689,12 +689,12 @@ disk, is that the same entities should be started also after a complete cluster 
 you can disable durable storage and benefit from better performance by using the following configuration:
 
 ```
-akka.cluster.sharding.distributed-data.durable.keys = []
+pekko.cluster.sharding.distributed-data.durable.keys = []
 ```
 ## Startup after minimum number of members
 
-It's recommended to use Cluster Sharding with the Cluster setting `akka.cluster.min-nr-of-members` or
-`akka.cluster.role.<role-name>.min-nr-of-members`. `min-nr-of-members` will defer the allocation of the shards
+It's recommended to use Cluster Sharding with the Cluster setting `pekko.cluster.min-nr-of-members` or
+`pekko.cluster.role.<role-name>.min-nr-of-members`. `min-nr-of-members` will defer the allocation of the shards
 until at least that number of regions have been started and registered to the coordinator. This
 avoids that many shards are allocated to the first region that registers and only later are
 rebalanced to other nodes.
@@ -713,7 +713,7 @@ The health check does not fail after an initial successful check. Once a shard r
 Cluster sharding enables the health check automatically. To disable:
 
 ```ruby
-akka.management.health-checks.readiness-checks {
+pekko.management.health-checks.readiness-checks {
   sharding = ""
 }
 ```
@@ -721,7 +721,7 @@ akka.management.health-checks.readiness-checks {
 Monitoring of each shard region is off by default. Add them by defining the entity type names (`EntityTypeKey.name`):
 
 ```ruby
-akka.cluster.sharding.healthcheck.names = ["counter-1", "HelloWorld"]
+pekko.cluster.sharding.healthcheck.names = ["counter-1", "HelloWorld"]
 ```
 
 See also additional information about how to make @ref:[smooth rolling updates](../additional/rolling-updates.md#cluster-sharding).
@@ -750,7 +750,7 @@ Scala
 Java
 :  @@snip [ShardingCompileOnlyTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #get-cluster-sharding-stats }
 
-If any shard queries failed, for example due to timeout if a shard was too busy to reply within the configured `akka.cluster.sharding.shard-region-query-timeout`, 
+If any shard queries failed, for example due to timeout if a shard was too busy to reply within the configured `pekko.cluster.sharding.shard-region-query-timeout`, 
 `ShardRegion.CurrentShardRegionState` and `ShardRegion.ClusterShardingStats` will also include the set of shard identifiers by region that failed.
 
 The purpose of these messages is testing and monitoring, they are not provided to give access to
@@ -769,7 +769,7 @@ Reasons for how this can happen:
 
 A lease can be a final backup that means that each shard won't create child entity actors unless it has the lease. 
 
-To use a lease for sharding set `akka.cluster.sharding.use-lease` to the configuration location
+To use a lease for sharding set `pekko.cluster.sharding.use-lease` to the configuration location
 of the lease to use. Each shard will try and acquire a lease with with the name `<actor system name>-shard-<type name>-<shard id>` and
 the owner is set to the `Cluster(system).selfAddress.hostPort`.
 

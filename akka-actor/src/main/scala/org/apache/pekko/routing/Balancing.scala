@@ -116,7 +116,7 @@ final case class BalancingPool(
     if (!dispatchers.hasDispatcher(dispatcherId)) {
       // dynamically create the config and register the dispatcher configurator for the
       // dispatcher of this pool
-      val deployDispatcherConfigPath = s"akka.actor.deployment.$deployPath.pool-dispatcher"
+      val deployDispatcherConfigPath = s"pekko.actor.deployment.$deployPath.pool-dispatcher"
       val systemConfig = context.system.settings.config
       val dispatcherConfig = context.system.dispatchers.config(
         dispatcherId,

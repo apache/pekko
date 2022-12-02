@@ -31,9 +31,10 @@ class FlowWatchSpec extends StreamSpec {
   "A Flow with watch" must {
 
     val replyOnInts =
-      system.actorOf(Props(classOf[Replier]).withDispatcher("akka.test.stream-dispatcher"), "replyOnInts")
+      system.actorOf(Props(classOf[Replier]).withDispatcher("pekko.test.stream-dispatcher"), "replyOnInts")
 
-    val dontReply = system.actorOf(TestActors.blackholeProps.withDispatcher("akka.test.stream-dispatcher"), "dontReply")
+    val dontReply =
+      system.actorOf(TestActors.blackholeProps.withDispatcher("pekko.test.stream-dispatcher"), "dontReply")
 
     "pass through elements while actor is alive" in {
       val c = TestSubscriber.manualProbe[Int]()
@@ -49,7 +50,7 @@ class FlowWatchSpec extends StreamSpec {
     }
 
     "signal failure when target actor is terminated" in {
-      val r = system.actorOf(Props(classOf[Replier]).withDispatcher("akka.test.stream-dispatcher"), "wanna-fail")
+      val r = system.actorOf(Props(classOf[Replier]).withDispatcher("pekko.test.stream-dispatcher"), "wanna-fail")
       val done = Source.maybe[Int].watch(r).runWith(Sink.ignore)
 
       intercept[RuntimeException] {

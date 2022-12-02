@@ -118,7 +118,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
   val journalName = "leveldb"
   val journalConfig = PersistenceSpec.config("leveldb", "LeveldbEndToEndEventAdapterSpec")
 
-  val storageLocations = List("akka.persistence.journal.leveldb.dir").map(s => new File(journalConfig.getString(s)))
+  val storageLocations = List("pekko.persistence.journal.leveldb.dir").map(s => new File(journalConfig.getString(s)))
 
   override protected def beforeAll(): Unit = {
     storageLocations.foreach(FileUtils.deleteDirectory)
@@ -131,7 +131,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
   val noAdaptersConfig = ConfigFactory.parseString("")
 
   val adaptersConfig = ConfigFactory.parseString(s"""
-    |akka.persistence.journal {
+    |pekko.persistence.journal {
     |  $journalName {
     |    event-adapters {
     |      a = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$AEndToEndAdapter"
@@ -147,11 +147,11 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
     |    }
     |  }
     |}
-    |akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    |pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """.stripMargin)
 
   val newAdaptersConfig = ConfigFactory.parseString(s"""
-    |akka.persistence.journal {
+    |pekko.persistence.journal {
     |  $journalName {
     |    event-adapters {
     |      a = "${classOf[EndToEndEventAdapterSpec].getCanonicalName}$$NewAEndToEndAdapter"
@@ -170,7 +170,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
     """.stripMargin)
 
   def persister(name: String, probe: Option[ActorRef] = None)(implicit system: ActorSystem) =
-    system.actorOf(Props(classOf[EndToEndAdapterActor], name, "akka.persistence.journal." + journalName, probe))
+    system.actorOf(Props(classOf[EndToEndAdapterActor], name, "pekko.persistence.journal." + journalName, probe))
 
   def withActorSystem[T](name: String, config: Config)(block: ActorSystem => T): T = {
     val system = ActorSystem(name, journalConfig.withFallback(config))
@@ -242,7 +242,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
     "give nice error message when unable to play back as adapter does not exist" in {
       // after some time, we start the system a-new...
       // and the adapter originally used for adapting A is missing from the configuration!
-      val journalPath = s"akka.persistence.journal.$journalName"
+      val journalPath = s"pekko.persistence.journal.$journalName"
       val missingAdapterConfig = adaptersConfig
         .withoutPath(s"$journalPath.event-adapters.a")
         .withoutPath(
@@ -250,7 +250,7 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
 
       withActorSystem("MissingAdapterSystem", journalConfig.withFallback(missingAdapterConfig)) { implicit system2 =>
         intercept[IllegalArgumentException] {
-          Persistence(system2).adaptersFor(s"akka.persistence.journal.$journalName").get(classOf[String])
+          Persistence(system2).adaptersFor(s"pekko.persistence.journal.$journalName").get(classOf[String])
         }.getMessage should include("was bound to undefined event-adapter: a (bindings: [a, b], known adapters: b)")
       }
     }

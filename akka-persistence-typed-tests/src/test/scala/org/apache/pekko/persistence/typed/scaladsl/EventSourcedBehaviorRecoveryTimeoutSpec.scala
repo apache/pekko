@@ -29,10 +29,10 @@ object EventSourcedBehaviorRecoveryTimeoutSpec {
     SteppingInmemJournal
       .config(journalId)
       .withFallback(ConfigFactory.parseString("""
-        akka.persistence.journal.stepping-inmem.recovery-event-timeout=1s
+        pekko.persistence.journal.stepping-inmem.recovery-event-timeout=1s
         """))
       .withFallback(ConfigFactory.parseString(s"""
-        akka.loglevel = INFO
+        pekko.loglevel = INFO
         """))
 
   def testBehavior(persistenceId: PersistenceId, probe: ActorRef[AnyRef]): Behavior[String] =

@@ -41,7 +41,7 @@ object FutureDocSpec {
 
   // #pipe-to-usage
   class ActorUsingPipeTo(target: ActorRef) extends Actor {
-    // akka.pattern.pipe needs to be imported
+    // pekko.pattern.pipe needs to be imported
     import org.apache.pekko.pattern.{ ask, pipe }
     // implicit ExecutionContext should be in scope
     implicit val ec: ExecutionContext = context.dispatcher

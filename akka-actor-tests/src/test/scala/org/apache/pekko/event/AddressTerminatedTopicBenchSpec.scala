@@ -27,7 +27,7 @@ object AddressTerminatedTopicBenchSpec {
   }
 }
 
-class AddressTerminatedTopicBenchSpec extends AkkaSpec("akka.loglevel=INFO") {
+class AddressTerminatedTopicBenchSpec extends AkkaSpec("pekko.loglevel=INFO") {
   import AddressTerminatedTopicBenchSpec._
 
   "Subscribe and unsubscribe of AddressTerminated" must {

@@ -219,11 +219,11 @@ private[pekko] class Deployer(val settings: ActorSystem.Settings, val dynamicAcc
 
   private val resizerEnabled: Config = ConfigFactory.parseString("resizer.enabled=on")
   private val deployments = new AtomicReference(WildcardIndex[Deploy]())
-  private val config = settings.config.getConfig("akka.actor.deployment")
+  private val config = settings.config.getConfig("pekko.actor.deployment")
   protected val default = config.getConfig("default")
   val routerTypeMapping: Map[String, String] =
     settings.config
-      .getConfig("akka.actor.router.type-mapping")
+      .getConfig("pekko.actor.router.type-mapping")
       .root
       .unwrapped
       .asScala

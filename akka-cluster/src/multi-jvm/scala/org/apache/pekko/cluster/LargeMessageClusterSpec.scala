@@ -30,7 +30,7 @@ object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
   // Note that this test uses default configuration,
   // not MultiNodeClusterSpec.clusterConfig
   commonConfig(ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       cluster.debug.verbose-heartbeat-logging = on
       loggers = ["org.apache.pekko.testkit.TestEventListener"]
 
@@ -160,7 +160,7 @@ abstract class LargeMessageClusterSpec
 
       // for non Aeron transport we use the Slow message and SlowSerializer to slow down
       // to not completely overload the machine/network, see issue #24576
-      val arterySettings = ArterySettings(system.settings.config.getConfig("akka.remote.artery"))
+      val arterySettings = ArterySettings(system.settings.config.getConfig("pekko.remote.artery"))
       val aeronUdpEnabled = arterySettings.Enabled && arterySettings.Transport == ArterySettings.AeronUpd
 
       runOn(second) {

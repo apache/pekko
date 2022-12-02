@@ -70,7 +70,7 @@ object SourceOperators {
 
     val source: Source[String, ActorRef] = Source.actorRefWithBackpressure[String](
       ackMessage = "ack",
-      // complete when we send akka.actor.status.Success
+      // complete when we send pekko.actor.status.Success
       completionMatcher = {
         case _: Success => CompletionStrategy.immediately
       },

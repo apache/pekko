@@ -19,7 +19,7 @@ import pekko.util.Timeout
 
 object LocalActorRefProviderSpec {
   val config = """
-    akka {
+    pekko {
       log-dead-letters = on
       actor {
         debug.unhandled = on

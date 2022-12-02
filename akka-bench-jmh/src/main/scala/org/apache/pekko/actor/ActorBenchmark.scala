@@ -58,7 +58,7 @@ class ActorBenchmark {
     system = ActorSystem(
       "ActorBenchmark",
       ConfigFactory.parseString(s"""
-       akka.actor {
+       pekko.actor {
 
          default-mailbox.mailbox-capacity = 512
 

@@ -19,14 +19,14 @@ import scala.annotation.nowarn
 
 object EventsByPersistenceIdSpec {
   val config = """
-    akka.loglevel = INFO
-    akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
-    akka.persistence.journal.leveldb.dir = "target/journal-EventsByPersistenceIdSpec"
-    akka.test.single-expect-default = 10s
-    akka.persistence.query.journal.leveldb.refresh-interval = 1s
+    pekko.loglevel = INFO
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
+    pekko.persistence.journal.leveldb.dir = "target/journal-EventsByPersistenceIdSpec"
+    pekko.test.single-expect-default = 10s
+    pekko.persistence.query.journal.leveldb.refresh-interval = 1s
     # test is using Java serialization and not priority to rewrite
-    akka.actor.allow-java-serialization = on
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.actor.allow-java-serialization = on
+    pekko.actor.warn-about-java-serializer-usage = off
     """
 }
 

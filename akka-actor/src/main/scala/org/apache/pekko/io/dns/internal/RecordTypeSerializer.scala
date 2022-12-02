@@ -13,7 +13,7 @@ import pekko.util.{ ByteIterator, ByteStringBuilder, OptionVal }
  */
 private[pekko] object RecordTypeSerializer {
 
-  // TODO other type than ByteStringBuilder? (was used in akka-dns)
+  // TODO other type than ByteStringBuilder? (was used in pekko-dns)
   def write(out: ByteStringBuilder, value: RecordType): Unit = {
     out.putShort(value.code)
   }

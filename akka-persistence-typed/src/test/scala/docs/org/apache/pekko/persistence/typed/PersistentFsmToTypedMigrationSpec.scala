@@ -39,11 +39,11 @@ import pekko.actor.testkit.typed.scaladsl.LogCapturing
 object PersistentFsmToTypedMigrationSpec {
   // cannot be moved to testkit journals as it requires sharing journal content across actor system instances
   val config = ConfigFactory.parseString(s"""
-    akka.actor.allow-java-serialization = on
-    akka.persistence.journal.leveldb.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
-    akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
+    pekko.actor.allow-java-serialization = on
+    pekko.persistence.journal.leveldb.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
     """)
 
 }

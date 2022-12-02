@@ -46,9 +46,9 @@ object RecoveryPermitterSpec {
 }
 
 class RecoveryPermitterSpec extends PersistenceSpec(ConfigFactory.parseString(s"""
-    akka.persistence.max-concurrent-recoveries = 3
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.actor.warn-about-java-serializer-usage = off
+    pekko.persistence.max-concurrent-recoveries = 3
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.actor.warn-about-java-serializer-usage = off
   """)) with ImplicitSender {
   import RecoveryPermitter._
   import RecoveryPermitterSpec._

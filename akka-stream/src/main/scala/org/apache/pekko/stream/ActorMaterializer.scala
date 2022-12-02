@@ -314,7 +314,7 @@ object ActorMaterializerSettings {
       maxFixedBufferSize,
       1000,
       IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("akka.stream.materializer.stream-ref")),
+      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
       config.getString(ActorAttributes.IODispatcher.dispatcher))
   }
 
@@ -328,7 +328,7 @@ object ActorMaterializerSettings {
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def apply(system: ActorSystem): ActorMaterializerSettings =
-    apply(system.settings.config.getConfig("akka.stream.materializer"))
+    apply(system.settings.config.getConfig("pekko.stream.materializer"))
 
   /**
    * Create [[ActorMaterializerSettings]] from a Config subsection (Scala).
@@ -391,7 +391,7 @@ object ActorMaterializerSettings {
       maxFixedBufferSize,
       1000,
       IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(config.getConfig("akka.stream.materializer.stream-ref")),
+      StreamRefSettings(config.getConfig("pekko.stream.materializer.stream-ref")),
       config.getString(ActorAttributes.IODispatcher.dispatcher))
   }
 
@@ -495,7 +495,7 @@ final class ActorMaterializerSettings @InternalApi private (
       maxFixedBufferSize,
       syncProcessingLimit,
       ioSettings,
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("akka.stream.materializer.stream-ref")),
+      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
       ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
@@ -526,7 +526,7 @@ final class ActorMaterializerSettings @InternalApi private (
       maxFixedBufferSize,
       syncProcessingLimit,
       IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("akka.stream.materializer.stream-ref")),
+      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
       ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
@@ -556,7 +556,7 @@ final class ActorMaterializerSettings @InternalApi private (
       maxFixedBufferSize,
       1000,
       IOSettings(tcpWriteBufferSize = 16 * 1024),
-      StreamRefSettings(ConfigFactory.defaultReference().getConfig("akka.stream.materializer.stream-ref")),
+      StreamRefSettings(ConfigFactory.defaultReference().getConfig("pekko.stream.materializer.stream-ref")),
       ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   private def copy(
@@ -770,13 +770,13 @@ final class ActorMaterializerSettings @InternalApi private (
 
 object IOSettings {
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def apply(system: ActorSystem): IOSettings =
-    apply(system.settings.config.getConfig("akka.stream.materializer.io"))
+    apply(system.settings.config.getConfig("pekko.stream.materializer.io"))
 
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def apply(config: Config): IOSettings =
     new IOSettings(
@@ -784,26 +784,26 @@ object IOSettings {
       coalesceWrites = config.getInt("tcp.coalesce-writes"))
 
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def apply(tcpWriteBufferSize: Int): IOSettings =
     new IOSettings(tcpWriteBufferSize)
 
   /** Java API */
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def create(config: Config) = apply(config)
 
   /** Java API */
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def create(system: ActorSystem) = apply(system)
 
   /** Java API */
   @deprecated(
-    "Use setting 'akka.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
+    "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
     "2.6.0")
   def create(tcpWriteBufferSize: Int): IOSettings =
     apply(tcpWriteBufferSize)

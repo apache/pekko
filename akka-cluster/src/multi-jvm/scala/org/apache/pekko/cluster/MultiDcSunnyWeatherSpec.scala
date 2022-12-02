@@ -25,19 +25,19 @@ object MultiDcSunnyWeatherMultiJvmSpec extends MultiNodeConfig {
   val fifth = role("fifth")
 
   nodeConfig(first, second, third)(ConfigFactory.parseString("""
-    akka {
+    pekko {
       cluster.multi-data-center.self-data-center = alpha
     }
     """))
 
   nodeConfig(fourth, fifth)(ConfigFactory.parseString("""
-    akka {
+    pekko {
       cluster.multi-data-center.self-data-center = beta
     }
     """))
 
   commonConfig(ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor.provider = cluster
 
       loggers = ["org.apache.pekko.testkit.TestEventListener"]

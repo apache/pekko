@@ -125,7 +125,7 @@ public class FlowDocTest extends AbstractJavaTest {
     final Object tick = new Object();
 
     final Duration oneSecond = Duration.ofSeconds(1);
-    // akka.actor.Cancellable
+    // pekko.actor.Cancellable
     final Source<Object, Cancellable> timer = Source.tick(oneSecond, oneSecond, tick);
 
     Sink.ignore().runWith(timer, system);

@@ -67,7 +67,7 @@ class CodecBenchmark {
     override def association(remoteAddress: Address): OutboundContext = ???
     override def completeHandshake(peer: UniqueAddress): Future[Done] = ???
     override lazy val settings: ArterySettings =
-      ArterySettings(ConfigFactory.load().getConfig("akka.remote.artery"))
+      ArterySettings(ConfigFactory.load().getConfig("pekko.remote.artery"))
     override def publishDropped(inbound: InboundEnvelope, reason: String): Unit = ()
   }
 
@@ -83,7 +83,7 @@ class CodecBenchmark {
   @Setup(Level.Trial)
   def setupTrial(): Unit = {
     val commonConfig = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
        loglevel = WARNING
        actor.provider = remote
        remote.artery.enabled = on
@@ -97,7 +97,8 @@ class CodecBenchmark {
     val config = configType match {
       case RemoteInstrument =>
         ConfigFactory
-          .parseString(s"""akka.remote.artery.advanced.instruments = [ "${classOf[DummyRemoteInstrument].getName}" ]""")
+          .parseString(
+            s"""pekko.remote.artery.advanced.instruments = [ "${classOf[DummyRemoteInstrument].getName}" ]""")
           .withFallback(commonConfig)
       case _ =>
         commonConfig

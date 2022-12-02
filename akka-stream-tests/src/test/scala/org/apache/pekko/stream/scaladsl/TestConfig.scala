@@ -5,6 +5,6 @@
 package org.apache.pekko.stream.scaladsl
 
 object TestConfig {
-  val numberOfTestsToRun = System.getProperty("akka.stream.test.numberOfRandomizedTests", "10").toInt
+  val numberOfTestsToRun = System.getProperty("pekko.stream.test.numberOfRandomizedTests", "10").toInt
   val RandomTestRange = 1 to numberOfTestsToRun
 }

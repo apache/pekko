@@ -40,17 +40,17 @@ import pekko.persistence.typed.scaladsl.EventSourcedBehavior
 
 object ClusterShardingPersistenceSpec {
   val config = ConfigFactory.parseString("""
-      akka.loglevel = INFO
-      #akka.persistence.typed.log-stashing = on
+      pekko.loglevel = INFO
+      #pekko.persistence.typed.log-stashing = on
 
-      akka.actor.provider = cluster
+      pekko.actor.provider = cluster
 
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-      akka.persistence.journal.inmem.test-serialization = on
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+      pekko.persistence.journal.inmem.test-serialization = on
     """)
 
   sealed trait Command

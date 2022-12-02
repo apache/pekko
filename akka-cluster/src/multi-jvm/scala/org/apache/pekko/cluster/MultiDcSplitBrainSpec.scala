@@ -27,18 +27,18 @@ object MultiDcSplitBrainMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     ConfigFactory
       .parseString("""
-      akka.loglevel = DEBUG # issue #24955
-      akka.cluster.debug.verbose-heartbeat-logging = on
-      akka.cluster.debug.verbose-gossip-logging = on
-      akka.remote.classic.netty.tcp.connection-timeout = 5 s # speedup in case of connection issue
-      akka.remote.retry-gate-closed-for = 1 s
-      akka.cluster.multi-data-center {
+      pekko.loglevel = DEBUG # issue #24955
+      pekko.cluster.debug.verbose-heartbeat-logging = on
+      pekko.cluster.debug.verbose-gossip-logging = on
+      pekko.remote.classic.netty.tcp.connection-timeout = 5 s # speedup in case of connection issue
+      pekko.remote.retry-gate-closed-for = 1 s
+      pekko.cluster.multi-data-center {
         failure-detector {
           acceptable-heartbeat-pause = 4s
           heartbeat-interval = 1s
         }
       }
-      akka.cluster {
+      pekko.cluster {
         gossip-interval                     = 500ms
         leader-actions-interval             = 1s
         downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
@@ -48,11 +48,11 @@ object MultiDcSplitBrainMultiJvmSpec extends MultiNodeConfig {
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
   nodeConfig(first, second)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc1"
+      pekko.cluster.multi-data-center.self-data-center = "dc1"
     """))
 
   nodeConfig(third, fourth, fifth)(ConfigFactory.parseString("""
-      akka.cluster.multi-data-center.self-data-center = "dc2"
+      pekko.cluster.multi-data-center.self-data-center = "dc2"
     """))
 
   testTransport(on = true)
@@ -258,9 +258,9 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
         val restartedSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-            akka.remote.classic.netty.tcp.port = $port
-            akka.remote.artery.canonical.port = $port
-            akka.coordinated-shutdown.terminate-actor-system = on
+            pekko.remote.classic.netty.tcp.port = $port
+            pekko.remote.artery.canonical.port = $port
+            pekko.coordinated-shutdown.terminate-actor-system = on
             """).withFallback(system.settings.config))
         Cluster(restartedSystem).join(thirdAddress)
         Await.ready(restartedSystem.whenTerminated, remaining)

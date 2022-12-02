@@ -10,7 +10,7 @@ To use Persistence Query, you must add the following dependency in your project:
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-persistence-query_$scala.binary.version$
   version=AkkaVersion
@@ -53,7 +53,7 @@ query types for the most common query scenarios, that most journals are likely t
 
 In order to issue queries one has to first obtain an instance of a @apidoc[query.*.ReadJournal].
 Read journals are implemented as [Community plugins](https://akka.io/community/#plugins-to-akka-persistence-query), each targeting a specific datastore (for example Cassandra or JDBC
-databases). For example, given a library that provides a `akka.persistence.query.my-read-journal` obtaining the related
+databases). For example, given a library that provides a `pekko.persistence.query.my-read-journal` obtaining the related
 journal is as simple as:
 
 Scala

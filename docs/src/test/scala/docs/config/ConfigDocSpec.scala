@@ -20,7 +20,7 @@ class ConfigDocSpec extends AnyWordSpec with Matchers {
   def compileOnlyCustomConfig(): Unit = {
     // #custom-config
     val customConf = ConfigFactory.parseString("""
-      akka.log-config-on-start = on
+      pekko.log-config-on-start = on
     """)
     // ConfigFactory.load sandwiches customConfig between default reference
     // config and default overrides, and then resolves it.
@@ -64,7 +64,7 @@ class ConfigDocSpec extends AnyWordSpec with Matchers {
     val conf =
       ConfigFactory.parseString("""
   #//#deployment-section
-  akka.actor.deployment {
+  pekko.actor.deployment {
   
     # '/user/actorA/actorB' is a remote deployed actor
     /actorA/actorB {

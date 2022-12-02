@@ -32,10 +32,10 @@ object PropsCreationSpec {
 
 class PropsCreationSpec extends AkkaSpec("""
   # test is using Java serialization and relies on serialize-creators=on
-  akka.actor.serialize-creators = on
-  akka.actor.no-serialization-verification-needed-class-prefix = []
-  akka.actor.allow-java-serialization = on
-  akka.actor.warn-about-java-serializer-usage = off
+  pekko.actor.serialize-creators = on
+  pekko.actor.no-serialization-verification-needed-class-prefix = []
+  pekko.actor.allow-java-serialization = on
+  pekko.actor.warn-about-java-serializer-usage = off
   """) {
 
   import org.apache.pekko.actor.PropsCreationSpec._

@@ -32,7 +32,7 @@ import pekko.annotation.DoNotInherit
    * outside (after) the `intercept` thunk and it has already found expected number.
    *
    * When occurrences is 0 it will look for unexpected matching events, and then it will
-   * also look for excess messages during the configured `akka.actor.testkit.typed.expect-no-message-default`
+   * also look for excess messages during the configured `pekko.actor.testkit.typed.expect-no-message-default`
    * duration.
    */
   def withOccurrences(newOccurrences: Int): LoggingTestKit
@@ -95,7 +95,7 @@ import pekko.annotation.DoNotInherit
 
   /**
    * Run the given code block and assert that the criteria of this `LoggingTestKit` has
-   * matched within the configured `akka.actor.testkit.typed.filter-leeway`
+   * matched within the configured `pekko.actor.testkit.typed.filter-leeway`
    * as often as requested by its `occurrences` parameter specifies.
    *
    * Care is taken to remove the testkit when the block is finished or aborted.

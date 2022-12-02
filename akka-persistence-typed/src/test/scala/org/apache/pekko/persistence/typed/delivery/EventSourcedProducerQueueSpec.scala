@@ -30,10 +30,10 @@ import pekko.persistence.typed.PersistenceId
 object EventSourcedProducerQueueSpec {
   def conf: Config =
     ConfigFactory.parseString(s"""
-    akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
-    akka.persistence.journal.inmem.test-serialization = on
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/EventSourcedDurableProducerQueueSpec-${UUID
+    pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
+    pekko.persistence.journal.inmem.test-serialization = on
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/EventSourcedDurableProducerQueueSpec-${UUID
         .randomUUID()
         .toString}"
     """)

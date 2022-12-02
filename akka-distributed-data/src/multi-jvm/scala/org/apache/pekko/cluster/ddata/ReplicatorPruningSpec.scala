@@ -23,12 +23,12 @@ object ReplicatorPruningSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     # we use 3s as write timeouts in test, make sure we see that
     # and not time out the expectMsg at the same time
-    akka.test.single-expect-default = 5s
-    akka.actor.provider = "cluster"
-    akka.log-dead-letters-during-shutdown = off
+    pekko.test.single-expect-default = 5s
+    pekko.actor.provider = "cluster"
+    pekko.log-dead-letters-during-shutdown = off
     """))
 
 }

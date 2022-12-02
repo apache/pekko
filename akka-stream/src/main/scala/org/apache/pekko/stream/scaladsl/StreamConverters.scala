@@ -32,7 +32,7 @@ object StreamConverters {
    * [[java.io.InputStream]] returns on each read invocation. Such chunks will
    * never be larger than chunkSize though.
    *
-   * You can configure the default dispatcher for this Source by changing the `akka.stream.materializer.blocking-io-dispatcher` or
+   * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    *
    * It materializes a [[Future]] of [[IOResult]] containing the number of bytes read from the source file upon completion,
@@ -70,7 +70,7 @@ object StreamConverters {
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
    *
-   * You can configure the default dispatcher for this Source by changing the `akka.stream.materializer.blocking-io-dispatcher` or
+   * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[pekko.stream.ActorAttributes]].
    * If `autoFlush` is true the OutputStream will be flushed whenever a byte array is written, defaults to false.
    *
@@ -173,7 +173,7 @@ object StreamConverters {
    *
    * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
    * As it is interacting wit blocking API the implementation runs on a separate dispatcher
-   * configured through the ``akka.stream.blocking-io-dispatcher``.
+   * configured through the ``pekko.stream.blocking-io-dispatcher``.
    */
   def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = {
     // TODO removing the QueueSink name, see issue #22523

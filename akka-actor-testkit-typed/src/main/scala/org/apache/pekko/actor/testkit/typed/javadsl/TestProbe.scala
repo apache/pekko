@@ -85,7 +85,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the properly dilated default for this
-   * case from settings (key "akka.actor.testkit.typed.single-expect-default").
+   * case from settings (key "pekko.actor.testkit.typed.single-expect-default").
    */
   def getRemainingOrDefault: Duration
 
@@ -108,7 +108,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    * take maximum wait times are available in a version which implicitly uses
    * the remaining time governed by the innermost enclosing `within` block.
    *
-   * Note that the max timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor",
+   * Note that the max timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor",
    * while the min Duration is not.
    *
    * {{{
@@ -156,8 +156,8 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   def expectNoMessage(max: Duration): Unit
 
   /**
-   * Assert that no message is received. Waits for the default period configured as `akka.actor.testkit.typed.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Assert that no message is received. Waits for the default period configured as `pekko.actor.testkit.typed.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def expectNoMessage(): Unit
 
@@ -170,7 +170,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   /**
    * Wait for a message of type M and return it when it arrives, or fail if the `max` timeout is hit.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def expectMessageClass[T <: M](clazz: Class[T], max: Duration): T
 
@@ -193,7 +193,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
   /**
    * Receive `n` messages in a row before the given deadline.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def receiveSeveralMessages(n: Int, max: Duration): JList[M]
 
@@ -211,7 +211,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    * partial function).
    *
    * @param max Max total time without the fisher function returning `CompleteFishing` before failing.
-   *            The timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   *            The timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    * @return The messages accepted in the order they arrived
    */
   def fishForMessage(max: Duration, fisher: java.util.function.Function[M, FishingOutcome]): java.util.List[M]
@@ -228,7 +228,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    * Expect the given actor to be stopped or stop within the given timeout or
    * throw an [[AssertionError]].
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def expectTerminated[U](actorRef: ActorRef[U], max: Duration): Unit
 
@@ -243,7 +243,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    *
    * If the `max` timeout expires the last exception is thrown.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def awaitAssert[A](max: Duration, interval: Duration, creator: Creator[A]): A
 
@@ -253,7 +253,7 @@ abstract class TestProbe[M] extends RecipientRef[M] { this: InternalRecipientRef
    *
    * If the `max` timeout expires the last exception is thrown.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def awaitAssert[A](max: Duration, creator: Creator[A]): A
 

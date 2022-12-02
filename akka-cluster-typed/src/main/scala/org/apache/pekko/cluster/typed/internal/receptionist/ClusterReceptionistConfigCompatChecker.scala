@@ -18,7 +18,7 @@ import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker, Valid }
 @InternalApi
 private[pekko] final class ClusterReceptionistConfigCompatChecker extends JoinConfigCompatChecker {
 
-  override def requiredKeys = "akka.cluster.typed.receptionist.distributed-key-count" :: Nil
+  override def requiredKeys = "pekko.cluster.typed.receptionist.distributed-key-count" :: Nil
 
   override def check(toCheck: Config, actualConfig: Config): ConfigValidation =
     if (toCheck.hasPath(requiredKeys.head))

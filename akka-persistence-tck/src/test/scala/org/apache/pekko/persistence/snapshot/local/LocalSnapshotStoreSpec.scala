@@ -15,9 +15,9 @@ class LocalSnapshotStoreSpec
     extends SnapshotStoreSpec(
       config =
         ConfigFactory.parseString("""
-    akka.test.timefactor = 3
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/snapshots"
+    pekko.test.timefactor = 3
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/snapshots"
     """))
     with PluginCleanup {
 

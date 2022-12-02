@@ -32,7 +32,7 @@ object ClusterShardingGetStateSpec {
 }
 
 object ClusterShardingGetStateSpecConfig extends MultiNodeClusterShardingConfig(additionalConfig = s"""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       coordinator-failure-backoff = 3s
       shard-failure-backoff = 3s
     }
@@ -42,7 +42,7 @@ object ClusterShardingGetStateSpecConfig extends MultiNodeClusterShardingConfig(
   val first = role("first")
   val second = role("second")
 
-  nodeConfig(first, second)(ConfigFactory.parseString("""akka.cluster.roles=["shard"]"""))
+  nodeConfig(first, second)(ConfigFactory.parseString("""pekko.cluster.roles=["shard"]"""))
 
 }
 

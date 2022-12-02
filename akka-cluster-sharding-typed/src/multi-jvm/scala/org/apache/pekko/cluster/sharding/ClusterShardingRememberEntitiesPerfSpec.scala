@@ -63,13 +63,13 @@ object ClusterShardingRememberEntitiesPerfSpecConfig
     extends MultiNodeClusterShardingConfig(
       rememberEntities = true,
       additionalConfig = s"""
-    akka.loglevel = DEBUG 
-    akka.testconductor.barrier-timeout = 3 minutes
-    akka.remote.artery.advanced.outbound-message-queue-size = 10000
-    akka.remote.artery.advanced.maximum-frame-size = 512 KiB
+    pekko.loglevel = DEBUG 
+    pekko.testconductor.barrier-timeout = 3 minutes
+    pekko.remote.artery.advanced.outbound-message-queue-size = 10000
+    pekko.remote.artery.advanced.maximum-frame-size = 512 KiB
     # comment next line to enable durable lmdb storage
-    akka.cluster.sharding.distributed-data.durable.keys = []
-    akka.cluster.sharding {
+    pekko.cluster.sharding.distributed-data.durable.keys = []
+    pekko.cluster.sharding {
       remember-entities = on
     }
     """) {
@@ -79,7 +79,7 @@ object ClusterShardingRememberEntitiesPerfSpecConfig
   val third = role("third")
 
   nodeConfig(third)(ConfigFactory.parseString(s"""
-    akka.cluster.sharding.distributed-data.durable.lmdb {
+    pekko.cluster.sharding.distributed-data.durable.lmdb {
       # use same directory when starting new node on third (not used at same time)
       dir = "$targetDir/sharding-third"
     }

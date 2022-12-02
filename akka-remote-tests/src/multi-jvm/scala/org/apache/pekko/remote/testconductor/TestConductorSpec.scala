@@ -18,7 +18,7 @@ import pekko.testkit.LongRunningTest
 
 object TestConductorMultiJvmSpec extends MultiNodeConfig {
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
-      akka.remote.artery.enabled = false 
+      pekko.remote.artery.enabled = false 
     """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
   val leader = role("leader")

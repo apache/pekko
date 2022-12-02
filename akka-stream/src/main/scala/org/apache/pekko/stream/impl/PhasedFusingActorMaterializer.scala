@@ -401,7 +401,7 @@ private final case class SavedIslandData(
   private val _logger = Logging.getLogger(system, this)
   override def logger: LoggingAdapter = _logger
   private val fuzzingWarningDisabled =
-    system.settings.config.hasPath("akka.stream.secret-test-fuzzing-warning-disable")
+    system.settings.config.hasPath("pekko.stream.secret-test-fuzzing-warning-disable")
 
   override def shutdown(): Unit =
     if (haveShutDown.compareAndSet(false, true)) supervisor ! PoisonPill
@@ -461,7 +461,7 @@ private final case class SavedIslandData(
     if (defaultAndGraphAttributes.mandatoryAttribute[ActorAttributes.FuzzingMode].enabled && !fuzzingWarningDisabled) {
       _logger.warning(
         "Fuzzing mode is enabled on this system. If you see this warning on your production system then " +
-        "set 'akka.stream.materializer.debug.fuzzing-mode' to off.")
+        "set 'pekko.stream.materializer.debug.fuzzing-mode' to off.")
     }
 
     val islandTracking = new IslandTracking(

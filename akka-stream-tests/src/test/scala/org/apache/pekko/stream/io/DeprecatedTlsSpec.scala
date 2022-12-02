@@ -93,9 +93,9 @@ object DeprecatedTlsSpec {
 
   val configOverrides =
     """
-      akka.loglevel = DEBUG # issue 21660
-      akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-      akka.actor.debug.receive=off
+      pekko.loglevel = DEBUG # issue 21660
+      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+      pekko.actor.debug.receive=off
     """
 }
 

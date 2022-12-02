@@ -16,9 +16,9 @@ import pekko.testkit.{ AkkaSpec, ImplicitSender, TestKit }
 
 object MessageLoggingSpec {
   def config(artery: Boolean) = ConfigFactory.parseString(s"""
-     akka.loglevel = info // debug makes this test fail intentionally
-     akka.actor.provider = remote
-     akka.remote {
+     pekko.loglevel = info // debug makes this test fail intentionally
+     pekko.actor.provider = remote
+     pekko.remote {
      
       classic {
         log-received-messages = on

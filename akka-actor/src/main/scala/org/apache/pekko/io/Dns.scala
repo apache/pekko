@@ -36,7 +36,7 @@ abstract class Dns {
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
-   * the akka.actor.io.dns.resolver that is configured.
+   * the pekko.actor.io.dns.resolver that is configured.
    */
   @deprecated("Use cached(DnsProtocol.Resolve)", "2.6.0")
   def cached(@unused name: String): Option[Dns.Resolved] = None
@@ -106,7 +106,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
-   * the akka.actor.io.dns.resolver that is configured.
+   * the pekko.actor.io.dns.resolver that is configured.
    */
   @deprecated("use cached(DnsProtocol.Resolve)", "2.6.0")
   def cached(name: String)(system: ActorSystem): Option[Resolved] = {
@@ -125,7 +125,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
-   * the akka.actor.io.dns.resolver that is configured.
+   * the pekko.actor.io.dns.resolver that is configured.
    */
   def cached(name: DnsProtocol.Resolve)(system: ActorSystem): Option[DnsProtocol.Resolved] = {
     Dns(system).cache.cached(name)
@@ -173,7 +173,7 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
       new JFunction[String, ActorRef] {
         override def apply(r: String): ActorRef = {
           val settings =
-            new Settings(system.settings.config.getConfig("akka.io.dns"), "async-dns")
+            new Settings(system.settings.config.getConfig("pekko.io.dns"), "async-dns")
           val provider = system.dynamicAccess.createInstanceFor[DnsProvider](settings.ProviderObjectName, Nil).get
           Logging(system, classOf[DnsExt])
             .info("Creating async dns resolver {} with manager name {}", settings.Resolver, managerName)
@@ -201,7 +201,7 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
    */
   @InternalApi
   def this(system: ExtendedActorSystem) =
-    this(system, system.settings.config.getString("akka.io.dns.resolver"), "IO-DNS")
+    this(system, system.settings.config.getString("pekko.io.dns.resolver"), "IO-DNS")
 
   class Settings private[DnsExt] (config: Config, resolverName: String) {
 
@@ -219,7 +219,7 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
   }
 
   // Settings for the system resolver
-  val Settings: Settings = new Settings(system.settings.config.getConfig("akka.io.dns"), resolverName)
+  val Settings: Settings = new Settings(system.settings.config.getConfig("pekko.io.dns"), resolverName)
 
   // System DNS resolver
   @nowarn("msg=deprecated")

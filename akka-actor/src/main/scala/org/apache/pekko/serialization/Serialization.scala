@@ -41,9 +41,9 @@ object Serialization {
   @InternalApi private[pekko] val currentTransportInformation = new DynamicVariable[Information](null)
 
   class Settings(val config: Config) {
-    val Serializers: Map[String, String] = configToMap(config.getConfig("akka.actor.serializers"))
+    val Serializers: Map[String, String] = configToMap(config.getConfig("pekko.actor.serializers"))
     val SerializationBindings: Map[String, String] = {
-      val bindings = config.getConfig("akka.actor.serialization-bindings")
+      val bindings = config.getConfig("pekko.actor.serialization-bindings")
       configToMap(bindings)
     }
 
@@ -184,7 +184,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
             throw new NotSerializableException(
               s"Cannot find serializer with id [$serializerId]${clazz.map(c => " (class [" + c.getName + "])").getOrElse("")}. " +
               "The most probable reason is that the configuration entry " +
-              "akka.actor.serializers is not in sync between the two systems.")
+              "pekko.actor.serializers is not in sync between the two systems.")
         }
       withTransportInformation { () =>
         serializer.fromBinary(bytes, clazz).asInstanceOf[T]
@@ -204,7 +204,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           case _: NoSuchElementException =>
             throw new NotSerializableException(
               s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
-              "akka.actor.serializers is not in sync between the two systems.")
+              "pekko.actor.serializers is not in sync between the two systems.")
         }
       deserializeByteArray(bytes, serializer, manifest)
     }
@@ -255,7 +255,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         case _: NoSuchElementException =>
           throw new NotSerializableException(
             s"Cannot find serializer with id [$serializerId] (manifest [$manifest]). The most probable reason is that the configuration entry " +
-            "akka.actor.serializers is not in synch between the two systems.")
+            "pekko.actor.serializers is not in synch between the two systems.")
       }
 
     // not using `withTransportInformation { () =>` because deserializeByteBuffer is supposed to be the
@@ -356,7 +356,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
                 LogMarker.Security,
                 "Using the Java serializer for class [{}] which is not recommended because of " +
                 "performance implications. Use another serializer or disable this warning using the setting " +
-                "'akka.actor.warn-about-java-serializer-usage'",
+                "'pekko.actor.warn-about-java-serializer-usage'",
                 clazz.getName)
             }
 
@@ -387,7 +387,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       if (!system.settings.AllowJavaSerialization && serializerFQN == classOf[JavaSerializer].getName) {
         log.debug(
           "Replacing JavaSerializer with DisabledJavaSerializer, " +
-          "due to `akka.actor.allow-java-serialization = off`.")
+          "due to `pekko.actor.allow-java-serialization = off`.")
         classOf[DisabledJavaSerializer].getName
       } else serializerFQN
 
@@ -415,7 +415,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       case det: SerializerDetails if isDisallowedJavaSerializer(det.serializer) =>
         log.debug(
           "Replacing JavaSerializer with DisabledJavaSerializer, " +
-          "due to `akka.actor.allow-java-serialization = off`.")
+          "due to `pekko.actor.allow-java-serialization = off`.")
         SerializerDetails(det.alias, new DisabledJavaSerializer(system), det.useFor)
       case det => det
     }
@@ -549,9 +549,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   }
 
   private val isJavaSerializationWarningEnabled =
-    settings.config.getBoolean("akka.actor.warn-about-java-serializer-usage")
+    settings.config.getBoolean("pekko.actor.warn-about-java-serializer-usage")
   private val isWarningOnNoVerificationEnabled =
-    settings.config.getBoolean("akka.actor.warn-on-no-serialization-verification")
+    settings.config.getBoolean("pekko.actor.warn-on-no-serialization-verification")
 
   private def isDisallowedJavaSerializer(serializer: Serializer): Boolean = {
     serializer.isInstanceOf[JavaSerializer] && !system.settings.AllowJavaSerialization

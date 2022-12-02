@@ -28,7 +28,7 @@ import pekko.testkit.TestEvent._
 
 object AkkaSpec {
   val testConf: Config = ConfigFactory.parseString("""
-      akka {
+      pekko {
         loggers = ["org.apache.pekko.testkit.TestEventListener"]
         loglevel = "WARNING"
         stdout-loglevel = "WARNING"

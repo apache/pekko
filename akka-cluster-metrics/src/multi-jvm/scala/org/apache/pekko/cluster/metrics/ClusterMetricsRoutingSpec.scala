@@ -70,7 +70,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
   nodeList.foreach { role =>
     nodeConfig(role) {
       ConfigFactory.parseString(
-        s"akka.cluster.metrics.native-library-extract-folder=$${user.dir}/target/native/" + role.name)
+        s"pekko.cluster.metrics.native-library-extract-folder=$${user.dir}/target/native/" + role.name)
     }
   }
 
@@ -78,12 +78,12 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
       # Enable metrics estension.
-      akka.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
+      pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
 
-      akka.cluster.failure-detector.acceptable-heartbeat-pause = 10s
+      pekko.cluster.failure-detector.acceptable-heartbeat-pause = 10s
 
       # Use rapid metrics collection.
-      akka.cluster.metrics {
+      pekko.cluster.metrics {
         collector {
           sample-interval = 1s
           gossip-interval = 1s
@@ -92,7 +92,7 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
       }
 
       # Use metrics extension routing.
-      akka.actor.deployment {
+      pekko.actor.deployment {
         /router3 = {
           router = cluster-metrics-adaptive-pool
           metrics-selector = cpu

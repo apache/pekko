@@ -57,13 +57,13 @@ object StashingWhenSnapshottingSpec {
   slow-snapshot {
     class = "org.apache.pekko.persistence.typed.StashingWhenSnapshottingSpec$$ControllableSnapshotStore"
   }
-  akka.actor.allow-java-serialization = on
-  akka {
+  pekko.actor.allow-java-serialization = on
+  pekko {
     loglevel = "INFO"
 
     persistence {
       journal {
-        plugin = "akka.persistence.journal.inmem"
+        plugin = "pekko.persistence.journal.inmem"
         auto-start-journals = []
       }
 

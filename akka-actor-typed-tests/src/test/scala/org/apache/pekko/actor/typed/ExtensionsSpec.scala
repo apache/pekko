@@ -69,7 +69,7 @@ class AccessSystemFromConstructor(system: ActorSystem[_]) extends Extension {
 
 object ExtensionsSpec {
   val config = ConfigFactory.parseString("""
-akka.actor.typed {
+pekko.actor.typed {
   library-extensions += "org.apache.pekko.actor.typed.InstanceCountingExtension"
   }
    """).resolve()
@@ -115,7 +115,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
       Some(
         ConfigFactory.parseString(
           """
-          akka.actor.typed.extensions = ["org.apache.pekko.actor.typed.DummyExtension1$", "org.apache.pekko.actor.typed.SlowExtension$"]
+          pekko.actor.typed.extensions = ["org.apache.pekko.actor.typed.DummyExtension1$", "org.apache.pekko.actor.typed.SlowExtension$"]
         """))) { sys =>
       sys.hasExtension(DummyExtension1) should ===(true)
       sys.extension(DummyExtension1) shouldBe a[DummyExtension1]
@@ -130,7 +130,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
           Behaviors.empty[Any],
           "ExtensionsSpec04",
           ConfigFactory.parseString("""
-          akka.actor.typed.extensions = ["org.apache.pekko.actor.typed.FailingToLoadExtension$"]
+          pekko.actor.typed.extensions = ["org.apache.pekko.actor.typed.FailingToLoadExtension$"]
         """))
       }
 
@@ -155,7 +155,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
 
     "allow for auto-loading of library-extensions" in
     withEmptyActorSystem("ExtensionsSpec06") { sys =>
-      val listedExtensions = sys.settings.config.getStringList("akka.actor.typed.library-extensions")
+      val listedExtensions = sys.settings.config.getStringList("pekko.actor.typed.library-extensions")
       listedExtensions.size should be > 0
       // could be initialized by other tests, so at least once
       InstanceCountingExtension.createCount.get() should be > 0
@@ -167,7 +167,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         "ExtensionsSpec07",
         Some(
           ConfigFactory.parseString(
-            """akka.actor.typed.library-extensions += "org.apache.pekko.actor.typed.FailingToLoadExtension$""""))) {
+            """pekko.actor.typed.library-extensions += "org.apache.pekko.actor.typed.FailingToLoadExtension$""""))) {
         _ =>
           ()
       }
@@ -178,7 +178,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
       withEmptyActorSystem(
         "ExtensionsSpec08",
         Some(ConfigFactory.parseString(
-          """akka.actor.typed.library-extensions += "org.apache.pekko.actor.typed.MissingExtension""""))) { _ =>
+          """pekko.actor.typed.library-extensions += "org.apache.pekko.actor.typed.MissingExtension""""))) { _ =>
         ()
       }
     }
@@ -230,7 +230,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
       Some(
         ConfigFactory.parseString(
           """
-          akka.actor.typed.extensions = ["org.apache.pekko.actor.typed.DummyExtension1$", "org.apache.pekko.actor.typed.SlowExtension$"]
+          pekko.actor.typed.extensions = ["org.apache.pekko.actor.typed.DummyExtension1$", "org.apache.pekko.actor.typed.SlowExtension$"]
         """)),
       Some(ActorSystemSetup(new DummyExtension1Setup(_ => new DummyExtension1ViaSetup)))) { sys =>
       sys.hasExtension(DummyExtension1) should ===(true)
@@ -248,7 +248,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         Some(
           ConfigFactory.parseString(
             """
-          akka.actor.typed.extensions = ["org.apache.pekko.actor.typed.AccessSystemFromConstructorExtensionId$"]
+          pekko.actor.typed.extensions = ["org.apache.pekko.actor.typed.AccessSystemFromConstructorExtensionId$"]
         """)),
         None) { sys =>
         AccessSystemFromConstructorExtensionId(sys) // would throw if it couldn't

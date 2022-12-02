@@ -49,7 +49,7 @@ public class DnsDiscoveryDocTest extends JUnitSuite {
 
       result.toCompletableFuture().get(5, TimeUnit.SECONDS);
     } catch (Exception e) {
-      system.log().warning("Failed lookup akka.io, but ignoring: " + e);
+      system.log().warning("Failed lookup pekko.io, but ignoring: " + e);
       // don't fail this test
     }
   }

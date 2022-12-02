@@ -52,7 +52,7 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
     extends AkkaSpec(
       config.withFallback(
         ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = info
       actor {
         provider = remote
@@ -116,8 +116,8 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
 
 class TransientSerializationErrorSpec
     extends AbstractTransientSerializationErrorSpec(ConfigFactory.parseString("""
-  akka.remote.artery.enabled = false 
-  akka.remote.classic.netty.tcp {
+  pekko.remote.artery.enabled = false 
+  pekko.remote.classic.netty.tcp {
     hostname = localhost
     port = 0
  }

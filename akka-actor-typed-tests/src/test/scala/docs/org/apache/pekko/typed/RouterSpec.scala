@@ -49,7 +49,7 @@ object RouterSpec {
   // format: ON
 }
 
-class RouterSpec extends ScalaTestWithActorTestKit("akka.loglevel=warning") with AnyWordSpecLike with LogCapturing {
+class RouterSpec extends ScalaTestWithActorTestKit("pekko.loglevel=warning") with AnyWordSpecLike with LogCapturing {
   import RouterSpec._
 
   "The routing sample" must {

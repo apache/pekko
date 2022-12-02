@@ -27,8 +27,8 @@ object RemoteRouterSpec {
 
 class RemoteRouterSpec
     extends AkkaSpec(ConfigFactory.parseString("""
-    akka.remote.use-unsafe-remote-features-outside-cluster = on
-    akka.actor.deployment {
+    pekko.remote.use-unsafe-remote-features-outside-cluster = on
+    pekko.actor.deployment {
       /remote-override {
         router = round-robin-pool
         nr-of-instances = 4
@@ -48,7 +48,7 @@ class RemoteRouterSpec
   val port = RARP(system).provider.getDefaultAddress.port.get
   val sysName = system.name
   val conf = ConfigFactory.parseString(s"""
-    akka {
+    pekko {
       actor.deployment {
         /blub {
           router = round-robin-pool

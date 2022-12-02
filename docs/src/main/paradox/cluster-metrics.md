@@ -7,7 +7,7 @@ To use Cluster Metrics Extension, you must add the following dependency in your 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-metrics_$scala.binary.version$
   version=AkkaVersion
@@ -17,7 +17,7 @@ and add the following configuration stanza to your `application.conf`
 :
 
 ```
-akka.extensions = [ "akka.cluster.metrics.ClusterMetricsExtension" ]
+pekko.extensions = [ "pekko.cluster.metrics.ClusterMetricsExtension" ]
 ```
 
 @@project-info{ projectId="akka-cluster-metrics" }
@@ -58,7 +58,7 @@ By default, metrics extension will use collector provider fall back and will try
 
 Metrics extension periodically publishes current snapshot of the cluster metrics to the node system event bus.
 
-The publication interval is controlled by the `akka.cluster.metrics.collector.sample-interval` setting.
+The publication interval is controlled by the `pekko.cluster.metrics.collector.sample-interval` setting.
 
 The payload of the `org.apache.pekko.cluster.metrics.ClusterMetricsChanged` event will contain
 latest metrics of the node as well as other cluster member nodes metrics gossip
@@ -102,7 +102,7 @@ User is required to manage both project dependency and library deployment manual
 When using [Kamon sigar-loader](https://github.com/kamon-io/sigar-loader) and running multiple
 instances of the same application on the same host, you have to make sure that sigar library is extracted to a
 unique per instance directory. You can control the extract directory with the
-`akka.cluster.metrics.native-library-extract-folder` configuration setting.
+`pekko.cluster.metrics.native-library-extract-folder` configuration setting.
 
 @@@
 
@@ -151,7 +151,7 @@ Java
 As you can see, the router is defined in the same way as other routers, and in this case it is configured as follows:
 
 ```
-akka.actor.deployment {
+pekko.actor.deployment {
   /factorialFrontend/factorialBackendRouter = {
     # Router type provided by metrics extension.
     router = cluster-metrics-adaptive-group
@@ -202,7 +202,7 @@ You can plug-in your own metrics collector instead of built-in
 Look at those two implementations for inspiration.
 
 Custom metrics collector implementation class must be specified in the
-`akka.cluster.metrics.collector.provider` configuration property.
+`pekko.cluster.metrics.collector.provider` configuration property.
 
 ## Configuration
 

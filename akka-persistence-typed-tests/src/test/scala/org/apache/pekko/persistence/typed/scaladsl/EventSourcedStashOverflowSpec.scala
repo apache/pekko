@@ -44,7 +44,7 @@ object EventSourcedStashOverflowSpec {
 
   def conf =
     SteppingInmemJournal.config("EventSourcedStashOverflow").withFallback(ConfigFactory.parseString(s"""
-       akka.persistence {
+       pekko.persistence {
          typed {
            stash-capacity = 1000 # enough to fail on stack size
            stash-overflow-strategy = "drop"
@@ -71,7 +71,7 @@ class EventSourcedStashOverflowSpec
       val journal = SteppingInmemJournal.getRef("EventSourcedStashOverflow")
 
       val droppedMessageProbe = testKit.createDroppedMessageProbe()
-      val stashCapacity = testKit.config.getInt("akka.persistence.typed.stash-capacity")
+      val stashCapacity = testKit.config.getInt("pekko.persistence.typed.stash-capacity")
 
       for (_ <- 0 to (stashCapacity * 2)) {
         es.tell(EventSourcedStringList.DoNothing(probe.ref))

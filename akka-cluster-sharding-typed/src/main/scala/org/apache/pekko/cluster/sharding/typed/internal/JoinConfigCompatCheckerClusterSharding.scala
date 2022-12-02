@@ -19,7 +19,7 @@ import pekko.cluster.{ ConfigValidation, JoinConfigCompatChecker, Valid }
 private[pekko] final class JoinConfigCompatCheckerClusterSharding extends JoinConfigCompatChecker {
 
   override def requiredKeys: im.Seq[String] =
-    im.Seq("akka.cluster.sharding.number-of-shards")
+    im.Seq("pekko.cluster.sharding.number-of-shards")
 
   override def check(toCheck: Config, actualConfig: Config): ConfigValidation = {
     if (toCheck.hasPath(requiredKeys.head))

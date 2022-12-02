@@ -39,20 +39,20 @@ object ClusterClientSpec extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-    akka.cluster.testkit.auto-down-unreachable-after = 0s
-    akka.cluster.client.heartbeat-interval = 1s
-    akka.cluster.client.acceptable-heartbeat-pause = 3s
-    akka.cluster.client.refresh-contacts-interval = 1s
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+    pekko.cluster.testkit.auto-down-unreachable-after = 0s
+    pekko.cluster.client.heartbeat-interval = 1s
+    pekko.cluster.client.acceptable-heartbeat-pause = 3s
+    pekko.cluster.client.refresh-contacts-interval = 1s
     # number-of-contacts must be >= 4 because we shutdown all but one in the end
-    akka.cluster.client.receptionist.number-of-contacts = 4
-    akka.cluster.client.receptionist.heartbeat-interval = 10s
-    akka.cluster.client.receptionist.acceptable-heartbeat-pause = 10s
-    akka.cluster.client.receptionist.failure-detection-interval = 1s
-    akka.test.filter-leeway = 10s
+    pekko.cluster.client.receptionist.number-of-contacts = 4
+    pekko.cluster.client.receptionist.heartbeat-interval = 10s
+    pekko.cluster.client.receptionist.acceptable-heartbeat-pause = 10s
+    pekko.cluster.client.receptionist.failure-detection-interval = 1s
+    pekko.test.filter-leeway = 10s
     """))
 
   testTransport(on = true)

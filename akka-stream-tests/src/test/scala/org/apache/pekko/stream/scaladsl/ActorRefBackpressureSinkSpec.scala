@@ -54,7 +54,7 @@ class ActorRefBackpressureSinkSpec extends StreamSpec {
   import ActorRefBackpressureSinkSpec._
 
   def createActor[T](c: Class[T]) =
-    system.actorOf(Props(c, testActor).withDispatcher("akka.test.stream-dispatcher"))
+    system.actorOf(Props(c, testActor).withDispatcher("pekko.test.stream-dispatcher"))
 
   "An ActorRefBackpressureSink" must {
 

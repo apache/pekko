@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom.{ current => random }
 import org.apache.pekko.stream.testkit._
 
 class FlowMapSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "A Map" must {

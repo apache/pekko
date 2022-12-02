@@ -10,7 +10,7 @@ To use Distributed Publish Subscribe you must add the following dependency in yo
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-cluster-tools_$scala.binary.version$"
   version=AkkaVersion
@@ -224,11 +224,11 @@ The `DistributedPubSub` extension can be configured with the following propertie
 @@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #pub-sub-ext-config }
 
 It is recommended to load the extension when the actor system is started by defining it in
-`akka.extensions` configuration property. Otherwise it will be activated when first used
+`pekko.extensions` configuration property. Otherwise it will be activated when first used
 and then it takes a while for it to be populated.
 
 ```
-akka.extensions = ["org.apache.pekko.cluster.pubsub.DistributedPubSub"]
+pekko.extensions = ["org.apache.pekko.cluster.pubsub.DistributedPubSub"]
 ```
 
 ## Delivery Guarantee

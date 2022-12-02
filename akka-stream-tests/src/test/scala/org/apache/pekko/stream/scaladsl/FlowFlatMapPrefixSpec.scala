@@ -23,7 +23,7 @@ import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.Utils.TE
 
 // Debug loglevel to diagnose https://github.com/akka/akka/issues/30469
-class FlowFlatMapPrefixSpec extends StreamSpec("akka.loglevel = debug") {
+class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
   def src10(i: Int = 0) = Source(i until (i + 10))
 
   for {

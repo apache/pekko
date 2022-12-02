@@ -28,7 +28,7 @@ object ClusterReceptionistUnreachabilitySpecConfig extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-        akka.loglevel = INFO
+        pekko.loglevel = INFO
       """).withFallback(MultiNodeClusterSpec.clusterConfig))
 
   testTransport(on = true)

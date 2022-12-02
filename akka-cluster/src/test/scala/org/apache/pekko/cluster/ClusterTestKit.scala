@@ -137,8 +137,8 @@ trait ClusterTestKit extends TestKitBase {
       actorSystems = actorSystems.filterNot(_ == actorSystem)
 
       val newConfig = ConfigFactory.parseString(s"""
-          akka.remote.classic.netty.tcp.port = $port
-          akka.remote.artery.canonical.port = $port
+          pekko.remote.classic.netty.tcp.port = $port
+          pekko.remote.artery.canonical.port = $port
           """).withFallback(config)
 
       if (firstSeedNode) newActorSystemAsFirst(newConfig)
@@ -164,7 +164,7 @@ abstract class RollingUpgradeClusterSpec(config: Config) extends AkkaSpec(config
    * Starts `size`
    * Note that the two versions of config are validated against each other and have to
    * be valid both ways: v1 => v2, v2 => v1. Uses a timeout of 20 seconds and
-   * defaults to `akka.cluster.configuration-compatibility-check.enforce-on-join = on`.
+   * defaults to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`.
    *
    * @param clusterSize the cluster size - number of nodes to create for the cluster
    * @param v1Config    the version of config to base validation against
@@ -189,7 +189,7 @@ abstract class RollingUpgradeClusterSpec(config: Config) extends AkkaSpec(config
    * @param timeout       the duration to wait for each member to be [[MemberStatus.Up]] on re-join
    * @param awaitAll      the duration to wait for all members to be [[MemberStatus.Up]] on initial join,
    *                      and for the one node not upgraded to register member size  as `clusterSize` on upgrade
-   * @param enforced      toggle `akka.cluster.configuration-compatibility-check.enforce-on-join` on or off
+   * @param enforced      toggle `pekko.cluster.configuration-compatibility-check.enforce-on-join` on or off
    * @param shouldRejoin  the condition being tested on attempted re-join: members up or terminated
    */
   def upgradeCluster(
@@ -230,6 +230,6 @@ abstract class RollingUpgradeClusterSpec(config: Config) extends AkkaSpec(config
 
   def unenforced(config: Config): Config =
     ConfigFactory
-      .parseString("""akka.cluster.configuration-compatibility-check.enforce-on-join = off""")
+      .parseString("""pekko.cluster.configuration-compatibility-check.enforce-on-join = off""")
       .withFallback(config)
 }

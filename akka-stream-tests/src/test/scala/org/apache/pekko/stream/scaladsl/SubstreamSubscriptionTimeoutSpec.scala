@@ -11,7 +11,7 @@ import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.testkit._
 
 class SubstreamSubscriptionTimeoutSpec extends StreamSpec("""
-  akka.stream.materializer {
+  pekko.stream.materializer {
     initial-input-buffer-size = 2
     max-input-buffer-size = 2
     subscription-timeout {

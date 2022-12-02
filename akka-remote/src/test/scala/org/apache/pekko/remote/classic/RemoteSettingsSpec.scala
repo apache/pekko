@@ -15,14 +15,14 @@ import org.apache.pekko.remote.RemoteSettings
 class RemoteSettingsSpec extends AnyWordSpec with Matchers {
 
   "Remote settings" must {
-    "default akka.remote.classic.log-frame-size-exceeding to off" in {
+    "default pekko.remote.classic.log-frame-size-exceeding to off" in {
       new RemoteSettings(ConfigFactory.load()).LogFrameSizeExceeding shouldEqual None
     }
 
-    "parse akka.remote.classic.log-frame-size-exceeding  value as bytes" in {
+    "parse pekko.remote.classic.log-frame-size-exceeding  value as bytes" in {
       new RemoteSettings(
         ConfigFactory
-          .parseString("akka.remote.classic.log-frame-size-exceeding = 100b")
+          .parseString("pekko.remote.classic.log-frame-size-exceeding = 100b")
           .withFallback(ConfigFactory.load())).LogFrameSizeExceeding shouldEqual Some(100)
     }
   }

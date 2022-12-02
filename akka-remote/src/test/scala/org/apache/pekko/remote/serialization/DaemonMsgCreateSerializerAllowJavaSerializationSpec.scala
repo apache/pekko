@@ -69,8 +69,8 @@ private[pekko] trait SerializationVerification { self: AkkaSpec =>
 class DaemonMsgCreateSerializerAllowJavaSerializationSpec
     extends AkkaSpec("""
   # test is verifying Java serialization  
-  akka.actor.allow-java-serialization = on
-  akka.actor.warn-about-java-serializer-usage = off
+  pekko.actor.allow-java-serialization = on
+  pekko.actor.warn-about-java-serializer-usage = off
   """)
     with SerializationVerification {
 
@@ -129,7 +129,7 @@ class DaemonMsgCreateSerializerAllowJavaSerializationSpec
 }
 
 class DaemonMsgCreateSerializerNoJavaSerializationSpec extends AkkaSpec("""
-   akka.actor.allow-java-serialization=off
+   pekko.actor.allow-java-serialization=off
   """) with SerializationVerification {
 
   import DaemonMsgCreateSerializerAllowJavaSerializationSpec.MyActor

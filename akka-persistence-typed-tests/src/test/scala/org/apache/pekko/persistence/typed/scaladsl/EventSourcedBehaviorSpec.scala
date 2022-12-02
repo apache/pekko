@@ -79,10 +79,10 @@ object EventSourcedBehaviorSpec {
 
   // also used from PersistentActorTest, EventSourcedBehaviorWatchSpec
   def conf: Config = PersistenceTestKitPlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
-    # akka.persistence.typed.log-stashing = on
-    akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
-    akka.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
+    pekko.loglevel = INFO
+    # pekko.persistence.typed.log-stashing = on
+    pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
+    pekko.persistence.snapshot-store.local.dir = "target/typed-persistence-${UUID.randomUUID().toString}"
 
     slow-snapshot-store.class = "${classOf[SlowInMemorySnapshotStore].getName}"
     short-recovery-timeout {
@@ -670,7 +670,7 @@ class EventSourcedBehaviorSpec
       val testkit2 = ActorTestKit(
         ActorTestKitBase.testNameFromCallStack(),
         ConfigFactory.parseString(s"""
-          akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+          pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
           """))
       try {
         LoggingTestKit
@@ -692,7 +692,7 @@ class EventSourcedBehaviorSpec
       val testkit2 = ActorTestKit(
         ActorTestKitBase.testNameFromCallStack(),
         ConfigFactory.parseString(s"""
-          akka.persistence.journal.plugin = "akka.persistence.journal.inmem"
+          pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
           """))
       try {
         LoggingTestKit

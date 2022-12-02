@@ -13,7 +13,7 @@ import org.apache.pekko.stream.javadsl.Source;
 
 /** Use for tests only! Emits infinite stream of strings (representing queried for events). */
 public class DummyJavaReadJournal implements ReadJournal, PersistenceIdsQuery {
-  public static final String Identifier = "akka.persistence.query.journal.dummy-java";
+  public static final String Identifier = "pekko.persistence.query.journal.dummy-java";
 
   @Override
   public Source<String, NotUsed> persistenceIds() {

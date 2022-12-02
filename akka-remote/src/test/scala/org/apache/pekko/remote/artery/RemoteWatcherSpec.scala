@@ -72,7 +72,7 @@ object RemoteWatcherSpec {
 class RemoteWatcherSpec
     extends ArteryMultiNodeSpec(
       ConfigFactory
-        .parseString("akka.remote.use-unsafe-remote-features-outside-cluster = on")
+        .parseString("pekko.remote.use-unsafe-remote-features-outside-cluster = on")
         .withFallback(ArterySpecSupport.defaultConfig))
     with ImplicitSender {
 

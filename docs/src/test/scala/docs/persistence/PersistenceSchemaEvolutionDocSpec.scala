@@ -23,7 +23,7 @@ class PersistenceSchemaEvolutionDocSpec extends AnyWordSpec {
   val customSerializerConfig =
     """
       //#custom-serializer-config
-      akka.actor {
+      pekko.actor {
         serializers {
           my-payload = "docs.persistence.MyPayloadSerializer"
           my-snapshot = "docs.persistence.MySnapshotSerializer"
@@ -215,7 +215,7 @@ class PersonSerializerSettingsBox {
   val PersonSerializerSettings = """
   //#simplest-custom-serializer-config
   # application.conf
-  akka {
+  pekko {
     actor {
       serializers {
         person = "docs.persistence.SimplestPossiblePersonSerializer"

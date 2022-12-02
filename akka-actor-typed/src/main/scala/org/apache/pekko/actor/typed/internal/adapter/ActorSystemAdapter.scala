@@ -146,7 +146,7 @@ private[pekko] object ActorSystemAdapter {
 
   /**
    * A classic extension to load configured typed extensions. It is loaded via
-   * akka.library-extensions. `loadExtensions` cannot be called from the AdapterExtension
+   * pekko.library-extensions. `loadExtensions` cannot be called from the AdapterExtension
    * directly because the adapter is created too early during typed actor system creation.
    *
    * When on the classpath typed extensions will be loaded for classic ActorSystems as well.

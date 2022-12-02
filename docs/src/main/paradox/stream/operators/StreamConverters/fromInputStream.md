@@ -16,7 +16,7 @@ underlying `java.io.InputStream` returns on each read invocation. Such chunks wi
 than `chunkSize` though.
 
 You can configure the default dispatcher for this Source by changing 
-the `akka.stream.materializer.blocking-io-dispatcher` or set it for a given Source by 
+the `pekko.stream.materializer.blocking-io-dispatcher` or set it for a given Source by 
 using `org.apache.pekko.stream.ActorAttributes`.
 
 It materializes a @java[`CompletionStage`]@scala[`Future`] of `IOResult` containing the number of bytes read from the source file 

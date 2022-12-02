@@ -25,45 +25,45 @@ import pekko.testkit.{ ImplicitSender, TestActors, TestProbe }
 
 class ArteryUpdSendConsistencyWithOneLaneSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.remote.artery.transport = aeron-udp
-      akka.remote.artery.advanced.outbound-lanes = 1
-      akka.remote.artery.advanced.inbound-lanes = 1
+      pekko.remote.artery.transport = aeron-udp
+      pekko.remote.artery.advanced.outbound-lanes = 1
+      pekko.remote.artery.advanced.inbound-lanes = 1
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 class ArteryUpdSendConsistencyWithThreeLanesSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.loglevel = DEBUG
-      akka.remote.artery.transport = aeron-udp
-      akka.remote.artery.advanced.outbound-lanes = 3
-      akka.remote.artery.advanced.inbound-lanes = 3
+      pekko.loglevel = DEBUG
+      pekko.remote.artery.transport = aeron-udp
+      pekko.remote.artery.advanced.outbound-lanes = 3
+      pekko.remote.artery.advanced.inbound-lanes = 3
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 class ArteryTcpSendConsistencyWithOneLaneSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.remote.artery.transport = tcp
-      akka.remote.artery.advanced.outbound-lanes = 1
-      akka.remote.artery.advanced.inbound-lanes = 1
+      pekko.remote.artery.transport = tcp
+      pekko.remote.artery.advanced.outbound-lanes = 1
+      pekko.remote.artery.advanced.inbound-lanes = 1
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 class ArteryTcpSendConsistencyWithThreeLanesSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.remote.artery.transport = tcp
-      akka.remote.artery.advanced.outbound-lanes = 3
-      akka.remote.artery.advanced.inbound-lanes = 3
+      pekko.remote.artery.transport = tcp
+      pekko.remote.artery.advanced.outbound-lanes = 3
+      pekko.remote.artery.advanced.inbound-lanes = 3
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 class ArteryTlsTcpSendConsistencyWithOneLaneSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.remote.artery.transport = tls-tcp
-      akka.remote.artery.advanced.outbound-lanes = 1
-      akka.remote.artery.advanced.inbound-lanes = 1
+      pekko.remote.artery.transport = tls-tcp
+      pekko.remote.artery.advanced.outbound-lanes = 1
+      pekko.remote.artery.advanced.inbound-lanes = 1
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 class ArteryTlsTcpSendConsistencyWithThreeLanesSpec
     extends AbstractRemoteSendConsistencySpec(ConfigFactory.parseString("""
-      akka.remote.artery.transport = tls-tcp
-      akka.remote.artery.advanced.outbound-lanes = 1
-      akka.remote.artery.advanced.inbound-lanes = 1
+      pekko.remote.artery.transport = tls-tcp
+      pekko.remote.artery.advanced.outbound-lanes = 1
+      pekko.remote.artery.advanced.inbound-lanes = 1
     """).withFallback(ArterySpecSupport.defaultConfig))
 
 abstract class AbstractRemoteSendConsistencySpec(config: Config)

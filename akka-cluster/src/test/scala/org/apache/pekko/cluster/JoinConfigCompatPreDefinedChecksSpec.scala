@@ -16,9 +16,9 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
   "JoinConfigCompatChecker.exists" must {
 
     val requiredKeys = im.Seq(
-      "akka.cluster.min-nr-of-members",
-      "akka.cluster.retry-unsuccessful-join-after",
-      "akka.cluster.allow-weakly-up-members")
+      "pekko.cluster.min-nr-of-members",
+      "pekko.cluster.retry-unsuccessful-join-after",
+      "pekko.cluster.allow-weakly-up-members")
 
     "pass when all required keys are provided" in {
 
@@ -27,9 +27,9 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
           requiredKeys,
           config("""
               |{
-              | akka.cluster.min-nr-of-members = 1
-              | akka.cluster.retry-unsuccessful-join-after = 10s
-              | akka.cluster.allow-weakly-up-members = on
+              | pekko.cluster.min-nr-of-members = 1
+              | pekko.cluster.retry-unsuccessful-join-after = 10s
+              | pekko.cluster.allow-weakly-up-members = on
               |}
             """.stripMargin))
 
@@ -42,15 +42,15 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
         requiredKeys,
         config("""
             |{
-            | akka.cluster.min-nr-of-members = 1
+            | pekko.cluster.min-nr-of-members = 1
             |}
           """.stripMargin)) match {
         case Valid =>
           fail()
         case Invalid(incompatibleKeys) =>
           incompatibleKeys should have size 2
-          incompatibleKeys should contain("akka.cluster.retry-unsuccessful-join-after is missing")
-          incompatibleKeys should contain("akka.cluster.allow-weakly-up-members is missing")
+          incompatibleKeys should contain("pekko.cluster.retry-unsuccessful-join-after is missing")
+          incompatibleKeys should contain("pekko.cluster.allow-weakly-up-members is missing")
       }
     }
   }
@@ -58,16 +58,16 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
   "JoinConfigCompatChecker.fullMatch" must {
 
     val requiredKeys = im.Seq(
-      "akka.cluster.min-nr-of-members",
-      "akka.cluster.retry-unsuccessful-join-after",
-      "akka.cluster.allow-weakly-up-members")
+      "pekko.cluster.min-nr-of-members",
+      "pekko.cluster.retry-unsuccessful-join-after",
+      "pekko.cluster.allow-weakly-up-members")
 
     val clusterConfig =
       config("""
           |{
-          | akka.cluster.min-nr-of-members = 1
-          | akka.cluster.retry-unsuccessful-join-after = 10s
-          | akka.cluster.allow-weakly-up-members = on
+          | pekko.cluster.min-nr-of-members = 1
+          | pekko.cluster.retry-unsuccessful-join-after = 10s
+          | pekko.cluster.allow-weakly-up-members = on
           |}
         """.stripMargin)
 
@@ -78,9 +78,9 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
           requiredKeys,
           config("""
               |{
-              | akka.cluster.min-nr-of-members = 1
-              | akka.cluster.retry-unsuccessful-join-after = 10s
-              | akka.cluster.allow-weakly-up-members = on
+              | pekko.cluster.min-nr-of-members = 1
+              | pekko.cluster.retry-unsuccessful-join-after = 10s
+              | pekko.cluster.allow-weakly-up-members = on
               |}
             """.stripMargin),
           clusterConfig)
@@ -94,7 +94,7 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
         requiredKeys,
         config("""
             |{
-            | akka.cluster.min-nr-of-members = 1
+            | pekko.cluster.min-nr-of-members = 1
             |}
           """.stripMargin),
         clusterConfig) match {
@@ -102,8 +102,8 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
           fail()
         case Invalid(incompatibleKeys) =>
           incompatibleKeys should have size 2
-          incompatibleKeys should contain("akka.cluster.retry-unsuccessful-join-after is missing")
-          incompatibleKeys should contain("akka.cluster.allow-weakly-up-members is missing")
+          incompatibleKeys should contain("pekko.cluster.retry-unsuccessful-join-after is missing")
+          incompatibleKeys should contain("pekko.cluster.allow-weakly-up-members is missing")
       }
     }
 
@@ -113,9 +113,9 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
         requiredKeys,
         config("""
             |{
-            | akka.cluster.min-nr-of-members = 1
-            | akka.cluster.retry-unsuccessful-join-after = 15s
-            | akka.cluster.allow-weakly-up-members = off
+            | pekko.cluster.min-nr-of-members = 1
+            | pekko.cluster.retry-unsuccessful-join-after = 15s
+            | pekko.cluster.allow-weakly-up-members = off
             |}
           """.stripMargin),
         clusterConfig) match {
@@ -123,8 +123,8 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
           fail()
         case Invalid(incompatibleKeys) =>
           incompatibleKeys should have size 2
-          incompatibleKeys should contain("akka.cluster.retry-unsuccessful-join-after is incompatible")
-          incompatibleKeys should contain("akka.cluster.allow-weakly-up-members is incompatible")
+          incompatibleKeys should contain("pekko.cluster.retry-unsuccessful-join-after is incompatible")
+          incompatibleKeys should contain("pekko.cluster.allow-weakly-up-members is incompatible")
       }
     }
 
@@ -134,8 +134,8 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
         requiredKeys,
         config("""
             |{
-            | akka.cluster.min-nr-of-members = 1
-            | akka.cluster.allow-weakly-up-members = off
+            | pekko.cluster.min-nr-of-members = 1
+            | pekko.cluster.allow-weakly-up-members = off
             |}
           """.stripMargin),
         clusterConfig) match {
@@ -143,8 +143,8 @@ class JoinConfigCompatPreDefinedChecksSpec extends AnyWordSpec with Matchers {
           fail()
         case Invalid(incompatibleKeys) =>
           incompatibleKeys should have size 2
-          incompatibleKeys should contain("akka.cluster.retry-unsuccessful-join-after is missing")
-          incompatibleKeys should contain("akka.cluster.allow-weakly-up-members is incompatible")
+          incompatibleKeys should contain("pekko.cluster.retry-unsuccessful-join-after is missing")
+          incompatibleKeys should contain("pekko.cluster.allow-weakly-up-members is incompatible")
       }
     }
   }

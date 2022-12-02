@@ -18,9 +18,9 @@ import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
 
 class DnsClientSpec extends AkkaSpec with ImplicitSender {
   "The async DNS client" should {
-    val exampleRequest = Question4(42, "akka.io")
+    val exampleRequest = Question4(42, "pekko.io")
     val exampleRequestMessage =
-      Message(42, MessageFlags(), questions = Seq(Question("akka.io", RecordType.A, RecordClass.IN)))
+      Message(42, MessageFlags(), questions = Seq(Question("pekko.io", RecordType.A, RecordClass.IN)))
     val exampleResponseMessage = Message(42, MessageFlags(answer = true))
     val exampleResponse = Answer(42, Nil)
     val dnsServerAddress = InetSocketAddress.createUnresolved("foo", 53)

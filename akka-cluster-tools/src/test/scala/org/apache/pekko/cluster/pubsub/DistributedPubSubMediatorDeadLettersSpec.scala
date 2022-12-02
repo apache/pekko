@@ -14,12 +14,12 @@ import pekko.testkit._
 object DistributedPubSubMediatorDeadLettersSpec {
   def config(sendToDeadLettersWhenNoSubscribers: Boolean) =
     s"""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port=0
-    akka.remote.artery.canonical.port=0
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.pub-sub.send-to-dead-letters-when-no-subscribers = $sendToDeadLettersWhenNoSubscribers
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port=0
+    pekko.remote.artery.canonical.port=0
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.pub-sub.send-to-dead-letters-when-no-subscribers = $sendToDeadLettersWhenNoSubscribers
   """
 }
 

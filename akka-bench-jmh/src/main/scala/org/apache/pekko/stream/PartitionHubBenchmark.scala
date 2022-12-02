@@ -34,7 +34,7 @@ class PartitionHubBenchmark {
   import PartitionHubBenchmark._
 
   val config = ConfigFactory.parseString("""
-    akka.actor.default-dispatcher {
+    pekko.actor.default-dispatcher {
       executor = "fork-join-executor"
       fork-join-executor {
         parallelism-factor = 1

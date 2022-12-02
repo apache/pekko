@@ -29,13 +29,13 @@ object ClusterShardingInternalsSpec {
 }
 
 class ClusterShardingInternalsSpec extends AkkaSpec("""
-    |akka.actor.provider = cluster
-    |akka.remote.classic.netty.tcp.port = 0
-    |akka.remote.artery.canonical.port = 0
-    |akka.loglevel = DEBUG
-    |akka.cluster.sharding.verbose-debug-logging = on
-    |akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
-    |akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    |pekko.actor.provider = cluster
+    |pekko.remote.classic.netty.tcp.port = 0
+    |pekko.remote.artery.canonical.port = 0
+    |pekko.loglevel = DEBUG
+    |pekko.cluster.sharding.verbose-debug-logging = on
+    |pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
+    |pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     |""".stripMargin) with WithLogCapturing {
   import ClusterShardingInternalsSpec._
 

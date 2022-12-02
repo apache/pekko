@@ -22,19 +22,19 @@ import pekko.testkit.TestActors.EchoActor
 object ActorsLeakSpec {
 
   val config = ConfigFactory.parseString("""
-       akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-       akka.actor.provider = remote
-       akka.remote.artery.enabled = false
-       akka.remote.classic.netty.tcp.applied-adapters = ["trttl"]
-       #akka.remote.log-lifecycle-events = on
-       akka.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
-       akka.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
-       akka.remote.classic.quarantine-after-silence = 3 s
-       akka.remote.use-unsafe-remote-features-outside-cluster = on
-       akka.test.filter-leeway = 12 s
+       pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+       pekko.actor.provider = remote
+       pekko.remote.artery.enabled = false
+       pekko.remote.classic.netty.tcp.applied-adapters = ["trttl"]
+       #pekko.remote.log-lifecycle-events = on
+       pekko.remote.classic.transport-failure-detector.heartbeat-interval = 1 s
+       pekko.remote.classic.transport-failure-detector.acceptable-heartbeat-pause = 3 s
+       pekko.remote.classic.quarantine-after-silence = 3 s
+       pekko.remote.use-unsafe-remote-features-outside-cluster = on
+       pekko.test.filter-leeway = 12 s
        # test is using Java serialization and not priority to rewrite
-       akka.actor.allow-java-serialization = on
-       akka.actor.warn-about-java-serializer-usage = off
+       pekko.actor.allow-java-serialization = on
+       pekko.actor.warn-about-java-serializer-usage = off
       """)
 
   def collectLiveActors(root: Option[ActorRef]): immutable.Seq[ActorRef] = {
@@ -92,7 +92,7 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
         val remoteSystem =
           ActorSystem(
             "remote",
-            ConfigFactory.parseString("akka.remote.classic.netty.tcp.port = 0").withFallback(config))
+            ConfigFactory.parseString("pekko.remote.classic.netty.tcp.port = 0").withFallback(config))
 
         try {
           val probe = TestProbe()(remoteSystem)
@@ -114,8 +114,8 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
           ActorSystem(
             "remote",
             ConfigFactory.parseString("""
-                akka.remote.artery.enabled = false
-                akka.remote.classic.netty.tcp.port = 2553
+                pekko.remote.artery.enabled = false
+                pekko.remote.classic.netty.tcp.port = 2553
               """.stripMargin).withFallback(config))
 
         try {
@@ -158,8 +158,8 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
           ActorSystem(
             "remote",
             ConfigFactory.parseString("""
-                 akka.remote.artery.enabled = off
-                 akka.remote.classic.netty.tcp.port = 0
+                 pekko.remote.artery.enabled = off
+                 pekko.remote.classic.netty.tcp.port = 0
               """.stripMargin).withFallback(config))
         val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
@@ -185,7 +185,7 @@ class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender
 
       // Remote idle for too long case
       val remoteSystem =
-        ActorSystem("remote", ConfigFactory.parseString("akka.remote.classic.netty.tcp.port = 0").withFallback(config))
+        ActorSystem("remote", ConfigFactory.parseString("pekko.remote.classic.netty.tcp.port = 0").withFallback(config))
       val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress
 
       remoteSystem.actorOf(Props[StoppableActor](), "stoppable")

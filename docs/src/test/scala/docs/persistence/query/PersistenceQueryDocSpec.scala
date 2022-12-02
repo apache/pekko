@@ -144,7 +144,7 @@ object PersistenceQueryDocSpec {
   case class Record(any: Any)
   class ExampleStore { def save(record: Record) = Future.successful(42L) }
 
-  val JournalId = "akka.persistence.query.my-read-journal"
+  val JournalId = "pekko.persistence.query.my-read-journal"
 
   class X {
 
@@ -179,7 +179,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
 
   def this() =
     this("""
-        akka.persistence.query.my-read-journal {
+        pekko.persistence.query.my-read-journal {
           class = "docs.persistence.query.PersistenceQueryDocSpec$MyReadJournalProvider"
           refresh-interval = 3s
         }
@@ -189,7 +189,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
     // #basic-usage
     // obtain read journal by plugin id
     val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal]("akka.persistence.query.my-read-journal")
+      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal]("pekko.persistence.query.my-read-journal")
 
     // issue query to journal
     val source: Source[EventEnvelope, NotUsed] =
@@ -262,7 +262,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
 
   class RunWithAsyncFunction {
     val readJournal =
-      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal]("akka.persistence.query.my-read-journal")
+      PersistenceQuery(system).readJournalFor[MyScaladslReadJournal]("pekko.persistence.query.my-read-journal")
 
     // #projection-into-different-store-simple-classes
     trait ExampleStore {

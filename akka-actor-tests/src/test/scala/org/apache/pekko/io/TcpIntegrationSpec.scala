@@ -20,9 +20,9 @@ import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 
 class TcpIntegrationSpec extends AkkaSpec("""
-    akka.loglevel = debug
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.io.tcp.trace-logging = on
+    pekko.loglevel = debug
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.tcp.trace-logging = on
     """) with TcpIntegrationSpecSupport with TimeLimits with WithLogCapturing {
 
   def verifyActorTermination(actor: ActorRef): Unit = {

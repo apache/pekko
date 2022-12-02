@@ -21,7 +21,7 @@ object PersistentActorRecoveryTimeoutSpec {
     SteppingInmemJournal
       .config(PersistentActorRecoveryTimeoutSpec.journalId)
       .withFallback(ConfigFactory.parseString("""
-          |akka.persistence.journal.stepping-inmem.recovery-event-timeout=1s
+          |pekko.persistence.journal.stepping-inmem.recovery-event-timeout=1s
         """.stripMargin))
       .withFallback(PersistenceSpec.config("stepping-inmem", "PersistentActorRecoveryTimeoutSpec"))
 

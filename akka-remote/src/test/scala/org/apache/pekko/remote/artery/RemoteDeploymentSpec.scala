@@ -17,7 +17,7 @@ object RemoteDeploymentSpec {
 
     def receive = {
       case "throwInvalidActorNameException" =>
-        // InvalidActorNameException is supported by akka-misc
+        // InvalidActorNameException is supported by pekko-misc
         throw InvalidActorNameException("wrong name")
       case "throwException" =>
         // no specific serialization binding for Exception
@@ -71,9 +71,9 @@ object RemoteDeploymentSpec {
 
 class RemoteDeploymentSpec
     extends ArteryMultiNodeSpec(ConfigFactory.parseString("""
-    akka.remote.artery.advanced.inbound-lanes = 10
-    akka.remote.artery.advanced.outbound-lanes = 3
-    akka.remote.use-unsafe-remote-features-outside-cluster = on
+    pekko.remote.artery.advanced.inbound-lanes = 10
+    pekko.remote.artery.advanced.outbound-lanes = 3
+    pekko.remote.use-unsafe-remote-features-outside-cluster = on
     """).withFallback(ArterySpecSupport.defaultConfig)) {
 
   import RemoteDeploymentSpec._
@@ -81,13 +81,13 @@ class RemoteDeploymentSpec
   val port = RARP(system).provider.getDefaultAddress.port.get
   val conf =
     s"""
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /blub.remote = "akka://${system.name}@localhost:$port"
       /blub2.remote = "akka://${system.name}@localhost:$port"
       "/parent*/*".remote = "akka://${system.name}@localhost:$port"
     }
-    akka.remote.artery.advanced.inbound-lanes = 10
-    akka.remote.artery.advanced.outbound-lanes = 3
+    pekko.remote.artery.advanced.inbound-lanes = 10
+    pekko.remote.artery.advanced.outbound-lanes = 3
     """
 
   val masterSystem = newRemoteSystem(name = Some("Master" + system.name), extraConfig = Some(conf))

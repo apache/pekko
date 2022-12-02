@@ -240,7 +240,7 @@ trait TestKitBase {
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the properly dilated default for this
-   * case from settings (key "akka.test.single-expect-default").
+   * case from settings (key "pekko.test.single-expect-default").
    */
   def remainingOrDefault = remainingOr(testKitSettings.SingleExpectDefaultTimeout.dilated)
 
@@ -285,7 +285,7 @@ trait TestKitBase {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitCond(
       p: => Boolean,
@@ -317,7 +317,7 @@ trait TestKitBase {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def awaitAssert[A](a: => A, max: Duration = Duration.Undefined, interval: Duration = 100.millis): A = {
     val _max = remainingOrDilated(max)
@@ -359,7 +359,7 @@ trait TestKitBase {
    * block.
    *
    * Note that the timeout is scaled using Duration.dilated,
-   * which uses the configuration entry "akka.test.timefactor".
+   * which uses the configuration entry "pekko.test.timefactor".
    */
   def assertForDuration[A](a: => A, max: FiniteDuration, interval: Duration = 100.millis): A = {
     val _max = remainingOrDilated(max)
@@ -395,7 +395,7 @@ trait TestKitBase {
    * the remaining time governed by the innermost enclosing `within` block.
    *
    * Note that the timeout is scaled using Duration.dilated, which uses the
-   * configuration entry "akka.test.timefactor", while the min Duration is not.
+   * configuration entry "pekko.test.timefactor", while the min Duration is not.
    *
    * {{{
    * val ret = within(50 millis) {
@@ -712,8 +712,8 @@ trait TestKitBase {
 
   /**
    * Assert that no message is received. Waits for the default period configured as
-   * `akka.test.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.test.timefactor".
+   * `pekko.test.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.test.timefactor".
    */
   @deprecated(message = "Use expectNoMessage instead", since = "2.5.5")
   def expectNoMsg(): Unit = expectNoMessage()
@@ -737,8 +737,8 @@ trait TestKitBase {
 
   /**
    * Assert that no message is received. Waits for the default period configured as
-   * `akka.test.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.test.timefactor".
+   * `pekko.test.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.test.timefactor".
    */
   def expectNoMessage(): Unit =
     expectNoMsg_internal(testKitSettings.ExpectNoMessageDefaultTimeout.dilated)
@@ -967,7 +967,7 @@ trait TestKitBase {
  *
  * It should be noted that for CI servers and the like all maximum Durations
  * are scaled using their Duration.dilated method, which uses the
- * TestKitExtension.Settings.TestTimeFactor settable via akka.conf entry "akka.test.timefactor".
+ * TestKitExtension.Settings.TestTimeFactor settable via pekko.conf entry "pekko.test.timefactor".
  *
  * @since 1.1
  */

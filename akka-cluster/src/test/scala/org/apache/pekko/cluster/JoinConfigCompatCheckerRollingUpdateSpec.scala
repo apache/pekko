@@ -16,12 +16,12 @@ import pekko.testkit.LongRunningTest
 object JoinConfigCompatCheckerRollingUpdateSpec {
 
   val baseConfig = ConfigFactory.parseString(s"""
-      akka.log-dead-letters = off
-      akka.log-dead-letters-during-shutdown = off
-      akka.remote.log-remote-lifecycle-events = off
-      akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-      akka.cluster.testkit.auto-down-unreachable-after = 0s
-      akka.cluster {
+      pekko.log-dead-letters = off
+      pekko.log-dead-letters-during-shutdown = off
+      pekko.remote.log-remote-lifecycle-events = off
+      pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+      pekko.cluster.testkit.auto-down-unreachable-after = 0s
+      pekko.cluster {
         jmx.enabled                         = off
         gossip-interval                     = 200 ms
         leader-actions-interval             = 200 ms
@@ -34,8 +34,8 @@ object JoinConfigCompatCheckerRollingUpdateSpec {
   val v1Config: Config = baseConfig.withFallback(JoinConfigCompatCheckerSpec.configWithChecker)
 
   private val v2 = ConfigFactory.parseString("""
-      akka.cluster.new-configuration = "v2"
-      akka.cluster.configuration-compatibility-check.checkers {
+      pekko.cluster.new-configuration = "v2"
+      pekko.cluster.configuration-compatibility-check.checkers {
         rolling-upgrade-test = "org.apache.pekko.cluster.JoinConfigCompatRollingUpdateChecker"
       }
     """)
@@ -71,7 +71,7 @@ class JoinConfigCompatCheckerRollingUpdateSpec
 }
 
 class JoinConfigCompatRollingUpdateChecker extends JoinConfigCompatChecker {
-  override def requiredKeys: im.Seq[String] = im.Seq("akka.cluster.new-configuration")
+  override def requiredKeys: im.Seq[String] = im.Seq("pekko.cluster.new-configuration")
   override def check(toCheck: Config, actualConfig: Config): ConfigValidation = {
     if (toCheck.hasPath(requiredKeys.head))
       JoinConfigCompatChecker.fullMatch(requiredKeys, toCheck, actualConfig)

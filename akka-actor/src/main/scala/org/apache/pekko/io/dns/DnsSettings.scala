@@ -65,7 +65,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
       case _ =>
         val finiteTtl = c
           .getDuration(path)
-          .requiring(!_.isNegative, s"akka.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
+          .requiring(!_.isNegative, s"pekko.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
         Ttl.fromPositive(finiteTtl)
     }
 
@@ -125,7 +125,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   def failUnableToDetermineDefaultNameservers =
     throw new IllegalStateException(
       "Unable to obtain default nameservers from JNDI or via reflection. " +
-      "Please set `akka.io.dns.async-dns.nameservers` explicitly in order to be able to resolve domain names. ")
+      "Please set `pekko.io.dns.async-dns.nameservers` explicitly in order to be able to resolve domain names. ")
 
 }
 

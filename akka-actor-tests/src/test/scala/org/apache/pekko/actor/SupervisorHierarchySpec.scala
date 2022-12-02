@@ -85,8 +85,8 @@ object SupervisorHierarchySpec {
     hierarchy {
       type = "org.apache.pekko.actor.SupervisorHierarchySpec$MyDispatcherConfigurator"
     }
-    akka.loglevel = INFO
-    akka.actor.debug.fsm = on
+    pekko.loglevel = INFO
+    pekko.actor.debug.fsm = on
   """)
 
   class MyDispatcherConfigurator(config: Config, prerequisites: DispatcherPrerequisites)

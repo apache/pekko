@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent, TestProbe }
 
-class RemoteConnectionSpec extends ArteryMultiNodeSpec("akka.remote.retry-gate-closed-for = 5s") with ImplicitSender {
+class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-closed-for = 5s") with ImplicitSender {
 
   def muteSystem(system: ActorSystem): Unit = {
     system.eventStream.publish(
@@ -34,7 +34,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("akka.remote.retry-gate-c
       localProbe.expectNoMessage(1.seconds)
 
       // then start the remote system and try again
-      val remoteSystem = newRemoteSystem(extraConfig = Some(s"akka.remote.artery.canonical.port=$remotePort"))
+      val remoteSystem = newRemoteSystem(extraConfig = Some(s"pekko.remote.artery.canonical.port=$remotePort"))
 
       muteSystem(remoteSystem)
       localProbe.expectNoMessage(2.seconds)
@@ -65,7 +65,7 @@ class RemoteConnectionSpec extends ArteryMultiNodeSpec("akka.remote.retry-gate-c
       localProbe.expectNoMessage(1.seconds)
 
       // then when it is up, talk from other system
-      val remoteSystem = newRemoteSystem(extraConfig = Some(s"akka.remote.artery.canonical.port=$remotePort"))
+      val remoteSystem = newRemoteSystem(extraConfig = Some(s"pekko.remote.artery.canonical.port=$remotePort"))
 
       muteSystem(remoteSystem)
       localProbe.expectNoMessage(2.seconds)

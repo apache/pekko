@@ -16,7 +16,7 @@ import pekko.util.ClassLoaderObjectInputStream
  * between actor systems. It needs to be explicitly enabled in the config (or through `ActorSystemSetup`) like so:
  *
  * ```
- * akka.actor.serialization-bindings {
+ * pekko.actor.serialization-bindings {
  *   "my.test.AdHocMessage" = java-test
  * }
  * ```

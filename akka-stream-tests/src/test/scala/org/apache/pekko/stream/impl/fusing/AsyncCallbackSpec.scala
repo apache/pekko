@@ -24,7 +24,7 @@ import pekko.testkit.AkkaSpec
 import pekko.testkit.TestProbe
 
 class AsyncCallbackSpec extends AkkaSpec("""
-    akka.stream.materializer.debug.fuzzing-mode = off
+    pekko.stream.materializer.debug.fuzzing-mode = off
   """) {
 
   case object Started

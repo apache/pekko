@@ -10,4 +10,4 @@ import org.apache.pekko.actor.ActorMailboxSpec
 
 class RemoteActorMailboxSpec
     extends ActorMailboxSpec(
-      ConfigFactory.parseString("""akka.actor.provider = remote""").withFallback(ActorMailboxSpec.mailboxConf)) {}
+      ConfigFactory.parseString("""pekko.actor.provider = remote""").withFallback(ActorMailboxSpec.mailboxConf)) {}

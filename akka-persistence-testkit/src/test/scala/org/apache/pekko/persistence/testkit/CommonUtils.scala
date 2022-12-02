@@ -30,10 +30,10 @@ trait CommonUtils extends AnyWordSpecLike with TestKitBase {
             Map(
               // testing serialization of the events when persisting in the storage
               // using default java serializers for convenience
-              "akka.actor.allow-java-serialization" -> true,
-              "akka.persistence.testkit.events.serialize" -> serializeMessages,
-              "akka.persistence.testkit.snapshots.serialize" -> serializeSnapshots).asJava))
-        .withFallback(ConfigFactory.parseString("akka.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]"))
+              "pekko.actor.allow-java-serialization" -> true,
+              "pekko.persistence.testkit.events.serialize" -> serializeMessages,
+              "pekko.persistence.testkit.snapshots.serialize" -> serializeSnapshots).asJava))
+        .withFallback(ConfigFactory.parseString("pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]"))
         .withFallback(ConfigFactory.defaultApplication()))
 
 }

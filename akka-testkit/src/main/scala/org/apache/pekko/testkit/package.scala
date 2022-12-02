@@ -46,7 +46,7 @@ package object testkit {
 
   /**
    * Scala API. Scale timeouts (durations) during tests with the configured
-   * 'akka.test.timefactor'.
+   * 'pekko.test.timefactor'.
    * Implicit class providing `dilated` method.
    * {{{
    * import scala.concurrent.duration._

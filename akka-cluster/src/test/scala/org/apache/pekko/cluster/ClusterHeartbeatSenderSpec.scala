@@ -25,9 +25,9 @@ object ClusterHeartbeatSenderSpec {
 }
 
 class ClusterHeartbeatSenderSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.actor.provider = cluster 
-    akka.cluster.failure-detector.heartbeat-interval = 0.2s
+    pekko.loglevel = DEBUG
+    pekko.actor.provider = cluster 
+    pekko.cluster.failure-detector.heartbeat-interval = 0.2s
   """.stripMargin) with ImplicitSender {
 
   "ClusterHeartBeatSender" must {

@@ -27,10 +27,10 @@ import pekko.cluster.ddata.typed.scaladsl.Replicator._
 object ReplicatorDocSpec {
 
   val config = ConfigFactory.parseString("""
-    akka.actor.provider = cluster
-    akka.remote.classic.netty.tcp.port = 0
-    akka.remote.artery.canonical.port = 0
-    akka.remote.artery.canonical.hostname = 127.0.0.1
+    pekko.actor.provider = cluster
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.remote.artery.canonical.port = 0
+    pekko.remote.artery.canonical.hostname = 127.0.0.1
     """)
 
   // #sample

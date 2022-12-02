@@ -27,23 +27,23 @@ class JoinConfigCompatCheckShardingSpec extends AkkaSpec() with WithLogCapturing
 
   val baseConfig: Config =
     ConfigFactory.parseString("""
-     akka.actor.provider = "cluster"
-     akka.loglevel = DEBUG
-     akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-     akka.coordinated-shutdown.terminate-actor-system = on
-     akka.remote.classic.netty.tcp.port = 0
-     akka.remote.artery.canonical.port = 0
-     akka.cluster.sharding.verbose-debug-logging = on
+     pekko.actor.provider = "cluster"
+     pekko.loglevel = DEBUG
+     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+     pekko.coordinated-shutdown.terminate-actor-system = on
+     pekko.remote.classic.netty.tcp.port = 0
+     pekko.remote.artery.canonical.port = 0
+     pekko.cluster.sharding.verbose-debug-logging = on
      """)
 
   "A Joining Node" must {
 
     /** This test verifies the built-in JoinConfigCompatCheckerSharding */
-    "NOT be allowed to join a cluster using a different value for akka.cluster.sharding.state-store-mode" taggedAs LongRunningTest in {
+    "NOT be allowed to join a cluster using a different value for pekko.cluster.sharding.state-store-mode" taggedAs LongRunningTest in {
 
       val joinNodeConfig =
         ConfigFactory.parseString("""
-              akka.cluster {
+              pekko.cluster {
 
                 # use 'persistence' for state store
                 sharding.state-store-mode = "persistence"

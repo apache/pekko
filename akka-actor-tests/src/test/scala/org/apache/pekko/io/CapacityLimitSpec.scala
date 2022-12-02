@@ -11,8 +11,8 @@ import pekko.testkit.{ AkkaSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 
 class CapacityLimitSpec extends AkkaSpec("""
-    akka.loglevel = ERROR
-    akka.io.tcp.max-channels = 4
+    pekko.loglevel = ERROR
+    pekko.io.tcp.max-channels = 4
     """) with TcpIntegrationSpecSupport {
 
   "The TCP transport implementation" should {

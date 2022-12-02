@@ -52,7 +52,7 @@ private[pekko] final class AggregateServiceDiscovery(system: ExtendedActorSystem
   private val log = Logging(system, classOf[AggregateServiceDiscovery])
 
   private val settings =
-    new AggregateServiceDiscoverySettings(system.settings.config.getConfig("akka.discovery.aggregate"))
+    new AggregateServiceDiscoverySettings(system.settings.config.getConfig("pekko.discovery.aggregate"))
 
   private val methods = {
     val serviceDiscovery = Discovery(system)

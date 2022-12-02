@@ -32,11 +32,11 @@ object ClusterSingletonManagerLeave2Spec extends MultiNodeConfig {
   val fifth = role("fifth")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-    akka.cluster.testkit.auto-down-unreachable-after = off
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+    pekko.cluster.testkit.auto-down-unreachable-after = off
     """))
 
   case object EchoStarted

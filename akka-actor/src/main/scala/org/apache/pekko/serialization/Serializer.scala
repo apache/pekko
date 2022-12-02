@@ -261,7 +261,7 @@ object BaseSerializer {
    * where `FQCN` is fully qualified class name of the serializer implementation
    * and `ID` is globally unique serializer identifier number.
    */
-  final val SerializationIdentifiers = "akka.actor.serialization-identifiers"
+  final val SerializationIdentifiers = "pekko.actor.serialization-identifiers"
 
   /** INTERNAL API */
   @InternalApi
@@ -331,7 +331,7 @@ object JavaSerializer {
 class JavaSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
   if (!system.settings.AllowJavaSerialization)
     throw new DisabledJavaSerializer.JavaSerializationException(
-      "Attempted creation of `JavaSerializer` while `akka.actor.allow-java-serialization = off` was set!")
+      "Attempted creation of `JavaSerializer` while `pekko.actor.allow-java-serialization = off` was set!")
 
   def includeManifest: Boolean = false
 
@@ -370,7 +370,7 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = {
     log.warning(
       LogMarker.Security,
-      "Outgoing message attempted to use Java Serialization even though `akka.actor.allow-java-serialization = off` was set! " +
+      "Outgoing message attempted to use Java Serialization even though `pekko.actor.allow-java-serialization = off` was set! " +
       "Message type was: [{}]",
       o.getClass)
     throw IllegalSerialization
@@ -380,7 +380,7 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
   override def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = {
     log.warning(
       LogMarker.Security,
-      "Incoming message attempted to use Java Serialization even though `akka.actor.allow-java-serialization = off` was set!")
+      "Incoming message attempted to use Java Serialization even though `pekko.actor.allow-java-serialization = off` was set!")
     throw IllegalDeserialization
   }
 
@@ -389,7 +389,7 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
     // we don't capture the manifest or mention it in the log as the default setting for includeManifest is set to false.
     log.warning(
       LogMarker.Security,
-      "Incoming message attempted to use Java Serialization even though `akka.actor.allow-java-serialization = off` was set!")
+      "Incoming message attempted to use Java Serialization even though `pekko.actor.allow-java-serialization = off` was set!")
     throw IllegalDeserialization
   }
 
@@ -403,9 +403,9 @@ final case class DisabledJavaSerializer(system: ExtendedActorSystem) extends Ser
 object DisabledJavaSerializer {
   final class JavaSerializationException(msg: String) extends RuntimeException(msg) with NoStackTrace
   final val IllegalSerialization = new JavaSerializationException(
-    "Attempted to serialize message using Java serialization while `akka.actor.allow-java-serialization` was disabled. Check WARNING logs for more details.")
+    "Attempted to serialize message using Java serialization while `pekko.actor.allow-java-serialization` was disabled. Check WARNING logs for more details.")
   final val IllegalDeserialization = new JavaSerializationException(
-    "Attempted to deserialize message using Java serialization while `akka.actor.allow-java-serialization` was disabled. Check WARNING logs for more details.")
+    "Attempted to deserialize message using Java serialization while `pekko.actor.allow-java-serialization` was disabled. Check WARNING logs for more details.")
 }
 
 /**

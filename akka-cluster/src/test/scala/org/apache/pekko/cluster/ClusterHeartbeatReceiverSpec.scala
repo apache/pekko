@@ -9,7 +9,7 @@ import pekko.cluster.ClusterHeartbeatSender.{ Heartbeat, HeartbeatRsp }
 import pekko.testkit.{ AkkaSpec, ImplicitSender }
 
 class ClusterHeartbeatReceiverSpec extends AkkaSpec("""
-    akka.actor.provider = cluster 
+    pekko.actor.provider = cluster 
   """.stripMargin) with ImplicitSender {
   "ClusterHeartbeatReceiver" should {
     "respond to heartbeats with the same sequenceNr and sendTime" in {

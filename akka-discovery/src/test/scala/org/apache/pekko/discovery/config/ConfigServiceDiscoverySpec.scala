@@ -21,7 +21,7 @@ import org.apache.pekko.testkit.TestKit
 object ConfigServiceDiscoverySpec {
 
   val config: Config = ConfigFactory.parseString("""
-akka {
+pekko {
   loglevel = DEBUG
   discovery {
     method = config

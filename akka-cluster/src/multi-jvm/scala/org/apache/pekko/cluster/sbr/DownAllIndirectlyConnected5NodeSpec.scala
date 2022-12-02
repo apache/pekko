@@ -23,7 +23,7 @@ object DownAllIndirectlyConnected5NodeSpec extends MultiNodeConfig {
   val node5 = role("node5")
 
   commonConfig(ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = INFO
       cluster {
         downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"

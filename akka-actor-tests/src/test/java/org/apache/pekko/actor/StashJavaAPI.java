@@ -42,6 +42,6 @@ public class StashJavaAPI extends JUnitSuite {
   public void mustBeAbleToUseUnrestrictedStash() {
     testAStashApi(
         Props.create(StashJavaAPITestActors.WithUnrestrictedStash.class)
-            .withMailbox("akka.actor.mailbox.unbounded-deque-based"));
+            .withMailbox("pekko.actor.mailbox.unbounded-deque-based"));
   }
 }

@@ -10,7 +10,7 @@ The concept of fault tolerance relates to actors, so in order to use these make 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
   version=AkkaVersion
@@ -313,7 +313,7 @@ The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pat
 Options are:
 * `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behaviour with `minBackoff` as default value
 * `withManualReset`: The child must send `BackoffSupervisor.Reset` to its backoff supervisor (parent)
-* `withSupervisionStrategy`: Sets a custom `OneForOneStrategy` (as each backoff supervisor only has one child). The default strategy uses the `akka.actor.SupervisorStrategy.defaultDecider` which stops and starts the child on exceptions.
+* `withSupervisionStrategy`: Sets a custom `OneForOneStrategy` (as each backoff supervisor only has one child). The default strategy uses the `pekko.actor.SupervisorStrategy.defaultDecider` which stops and starts the child on exceptions.
 * `withMaxNrOfRetries`: Sets the maximum number of retries until the supervisor will give up (`-1` is default which means no limit of retries). Note: This is set on the supervision strategy, so setting a different strategy resets the `maxNrOfRetries`.
 * `withReplyWhileStopped`: By default all messages received while the child is stopped are forwarded to dead letters. With this set, the supervisor will reply to the sender instead.
 

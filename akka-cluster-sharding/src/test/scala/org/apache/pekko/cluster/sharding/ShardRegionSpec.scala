@@ -19,27 +19,27 @@ object ShardRegionSpec {
   val host = "127.0.0.1"
   val tempConfig =
     s"""
-       akka.remote.classic.netty.tcp.hostname = "$host"
-       akka.remote.artery.canonical.hostname = "$host"
+       pekko.remote.classic.netty.tcp.hostname = "$host"
+       pekko.remote.artery.canonical.hostname = "$host"
        """
 
   val config =
     ConfigFactory.parseString(tempConfig).withFallback(ConfigFactory.parseString(s"""
-        akka.loglevel = DEBUG
-        akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-        akka.actor.provider = "cluster"
-        akka.remote.classic.netty.tcp.port = 0
-        akka.remote.artery.canonical.port = 0
-        akka.remote.log-remote-lifecycle-events = off
-        akka.test.single-expect-default = 5 s
-        akka.cluster.sharding.distributed-data.durable.lmdb {
+        pekko.loglevel = DEBUG
+        pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+        pekko.actor.provider = "cluster"
+        pekko.remote.classic.netty.tcp.port = 0
+        pekko.remote.artery.canonical.port = 0
+        pekko.remote.log-remote-lifecycle-events = off
+        pekko.test.single-expect-default = 5 s
+        pekko.cluster.sharding.distributed-data.durable.lmdb {
             dir = "target/ShardRegionSpec/sharding-ddata"
             map-size = 10 MiB
         }
-        akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-        akka.cluster.jmx.enabled = off
-        akka.cluster.sharding.verbose-debug-logging = on
-        akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+        pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+        pekko.cluster.jmx.enabled = off
+        pekko.cluster.sharding.verbose-debug-logging = on
+        pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
         """))
 
   val shardTypeName = "Caat"
@@ -70,7 +70,8 @@ class ShardRegionSpec extends AkkaSpec(ShardRegionSpec.config) with WithLogCaptu
   import ShardRegionSpec._
 
   val storageLocation = List(
-    new File(system.settings.config.getString("akka.cluster.sharding.distributed-data.durable.lmdb.dir")).getParentFile)
+    new File(
+      system.settings.config.getString("pekko.cluster.sharding.distributed-data.durable.lmdb.dir")).getParentFile)
 
   // mute logging of deadLetters
   system.eventStream.publish(Mute(DeadLettersFilter[Any]))

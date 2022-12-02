@@ -26,17 +26,17 @@ final case class DurableDataSpecConfig(writeBehind: Boolean) extends MultiNodeCo
   val first = role("first")
   val second = role("second")
 
-  commonConfig(ConfigFactory.parseString(s"""akka.loglevel = DEBUG
-    akka.actor.provider = "org.apache.pekko.cluster.ClusterActorRefProvider"
-    akka.log-dead-letters-during-shutdown = off
-    akka.cluster.distributed-data.durable.keys = ["durable*"]
-    akka.cluster.distributed-data.durable.lmdb {
+  commonConfig(ConfigFactory.parseString(s"""pekko.loglevel = DEBUG
+    pekko.actor.provider = "org.apache.pekko.cluster.ClusterActorRefProvider"
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.cluster.distributed-data.durable.keys = ["durable*"]
+    pekko.cluster.distributed-data.durable.lmdb {
       dir = target/DurableDataSpec-${System.currentTimeMillis}-ddata
       map-size = 10 MiB
       write-behind-interval = ${if (writeBehind) "200ms" else "off"}
     }
     # initialization of lmdb can be very slow in CI environment
-    akka.test.single-expect-default = 15s
+    pekko.test.single-expect-default = 15s
     """))
 }
 
@@ -287,8 +287,8 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
         "AdditionalSys",
         // use the same port
         ConfigFactory.parseString(s"""
-            akka.remote.artery.canonical.port = ${address.port.get}
-            akka.remote.classic.netty.tcp.port = ${address.port.get}
+            pekko.remote.artery.canonical.port = ${address.port.get}
+            pekko.remote.classic.netty.tcp.port = ${address.port.get}
             """).withFallback(system.settings.config))
       try {
         Cluster(sys2).join(address)

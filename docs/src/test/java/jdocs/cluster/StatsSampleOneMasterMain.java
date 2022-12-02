@@ -30,8 +30,8 @@ public class StatsSampleOneMasterMain {
     for (String port : ports) {
       // Override the configuration of the port
       Config config =
-          ConfigFactory.parseString("akka.remote.classic.netty.tcp.port=" + port)
-              .withFallback(ConfigFactory.parseString("akka.cluster.roles = [compute]"))
+          ConfigFactory.parseString("pekko.remote.classic.netty.tcp.port=" + port)
+              .withFallback(ConfigFactory.parseString("pekko.cluster.roles = [compute]"))
               .withFallback(ConfigFactory.load("stats2"));
 
       ActorSystem system = ActorSystem.create("ClusterSystem", config);

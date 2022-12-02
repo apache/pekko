@@ -21,7 +21,7 @@ object MinMembersBeforeUpMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("akka.cluster.min-nr-of-members = 3"))
+      .withFallback(ConfigFactory.parseString("pekko.cluster.min-nr-of-members = 3"))
       .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
@@ -33,8 +33,8 @@ object MinMembersBeforeUpWithWeaklyUpMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster.min-nr-of-members = 3
-      akka.cluster.allow-weakly-up-members = 3 s"""))
+      pekko.cluster.min-nr-of-members = 3
+      pekko.cluster.allow-weakly-up-members = 3 s"""))
       .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
@@ -45,12 +45,12 @@ object MinMembersOfRoleBeforeUpMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("akka.cluster.role.backend.min-nr-of-members = 2"))
+      .withFallback(ConfigFactory.parseString("pekko.cluster.role.backend.min-nr-of-members = 2"))
       .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 
-  nodeConfig(first)(ConfigFactory.parseString("akka.cluster.roles =[frontend]"))
+  nodeConfig(first)(ConfigFactory.parseString("pekko.cluster.roles =[frontend]"))
 
-  nodeConfig(second, third)(ConfigFactory.parseString("akka.cluster.roles =[backend]"))
+  nodeConfig(second, third)(ConfigFactory.parseString("pekko.cluster.roles =[backend]"))
 }
 
 class MinMembersBeforeUpMultiJvmNode1 extends MinMembersBeforeUpSpec

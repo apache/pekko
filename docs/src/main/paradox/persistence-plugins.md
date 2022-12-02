@@ -18,9 +18,9 @@ When a persistent actor does NOT override the `journalPluginId` and `snapshotPlu
 the persistence extension will use the "default" journal, snapshot-store and durable-state plugins configured in `reference.conf`:
 
 ```
-akka.persistence.journal.plugin = ""
-akka.persistence.snapshot-store.plugin = ""
-akka.persistence.state.plugin = ""
+pekko.persistence.journal.plugin = ""
+pekko.persistence.snapshot-store.plugin = ""
+pekko.persistence.state.plugin = ""
 ```
 
 However, these entries are provided as empty "", and require explicit user configuration via override in the user `application.conf`.
@@ -33,25 +33,25 @@ However, these entries are provided as empty "", and require explicit user confi
 
 By default, persistence plugins are started on-demand, as they are used. In some case, however, it might be beneficial
 to start a certain plugin eagerly. In order to do that, you should first add `org.apache.pekko.persistence.Persistence`
-under the `akka.extensions` key. Then, specify the IDs of plugins you wish to start automatically under
-`akka.persistence.journal.auto-start-journals` and `akka.persistence.snapshot-store.auto-start-snapshot-stores`.
+under the `pekko.extensions` key. Then, specify the IDs of plugins you wish to start automatically under
+`pekko.persistence.journal.auto-start-journals` and `pekko.persistence.snapshot-store.auto-start-snapshot-stores`.
 
 For example, if you want eager initialization for the leveldb journal plugin and the local snapshot store plugin, your configuration should look like this:  
 
 ```
-akka {
+pekko {
 
   extensions = [org.apache.pekko.persistence.Persistence]
 
   persistence {
 
     journal {
-      plugin = "akka.persistence.journal.leveldb"
+      plugin = "pekko.persistence.journal.leveldb"
       auto-start-journals = ["org.apache.pekko.persistence.journal.leveldb"]
     }
 
     snapshot-store {
-      plugin = "akka.persistence.snapshot-store.local"
+      plugin = "pekko.persistence.snapshot-store.local"
       auto-start-snapshot-stores = ["org.apache.pekko.persistence.snapshot-store.local"]
     }
 
@@ -76,7 +76,7 @@ The LevelDB plugin cannot be used in an Akka Cluster since the storage is in a l
 The LevelDB journal is deprecated and it is not advised to build new applications with it.
 As a replacement we recommend using [Akka Persistence JDBC](https://doc.akka.io/docs/akka-persistence-jdbc/current/index.html).
 
-The LevelDB journal plugin config entry is `akka.persistence.journal.leveldb`. Enable this plugin by
+The LevelDB journal plugin config entry is `pekko.persistence.journal.leveldb`. Enable this plugin by
 defining config property:
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #leveldb-plugin-config }
@@ -125,7 +125,7 @@ working directory. The storage location can be changed by configuration:
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #shared-store-config }
 
-Actor systems that use a shared LevelDB store must activate the `akka.persistence.journal.leveldb-shared`
+Actor systems that use a shared LevelDB store must activate the `pekko.persistence.journal.leveldb-shared`
 plugin.
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #shared-journal-config }
@@ -150,7 +150,7 @@ This plugin writes snapshot files to the local filesystem.
 The local snapshot store plugin cannot be used in an Akka Cluster since the storage is in a local file system.
 @@@
 
-The local snapshot store plugin config entry is `akka.persistence.snapshot-store.local`. 
+The local snapshot store plugin config entry is `pekko.persistence.snapshot-store.local`. 
 Enable this plugin by defining config property:
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #leveldb-snapshot-plugin-config }
@@ -176,10 +176,10 @@ A shared journal/snapshot store is a single point of failure and should only be 
 purposes.
 @@@
 
-The journal and snapshot store proxies are controlled via the `akka.persistence.journal.proxy` and
-`akka.persistence.snapshot-store.proxy` configuration entries, respectively. Set the `target-journal-plugin` or
+The journal and snapshot store proxies are controlled via the `pekko.persistence.journal.proxy` and
+`pekko.persistence.snapshot-store.proxy` configuration entries, respectively. Set the `target-journal-plugin` or
 `target-snapshot-store-plugin` keys to the underlying plugin you wish to use (for example:
-`akka.persistence.journal.inmem`). The `start-target-journal` and `start-target-snapshot-store` keys should be
+`pekko.persistence.journal.inmem`). The `start-target-journal` and `start-target-snapshot-store` keys should be
 set to `on` in exactly one actor system - this is the system that will instantiate the shared persistence plugin.
 Next, the proxy needs to be told how to find the shared plugin. This can be done by setting the `target-journal-address`
 and `target-snapshot-store-address` configuration keys, or programmatically by calling the

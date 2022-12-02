@@ -25,8 +25,8 @@ object QuickRestartMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster.testkit.auto-down-unreachable-after = off
-      akka.cluster.allow-weakly-up-members = off
+      pekko.cluster.testkit.auto-down-unreachable-after = off
+      pekko.cluster.allow-weakly-up-members = off
       """))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 
@@ -64,15 +64,15 @@ abstract class QuickRestartSpec extends MultiNodeClusterSpec(QuickRestartMultiJv
             ActorSystem(
               system.name,
               MultiNodeSpec.configureNextPortIfFixed(
-                ConfigFactory.parseString(s"akka.cluster.roles = [round-$n]").withFallback(system.settings.config)))
+                ConfigFactory.parseString(s"pekko.cluster.roles = [round-$n]").withFallback(system.settings.config)))
           } else {
             ActorSystem(
               system.name,
               // use the same port
               ConfigFactory.parseString(s"""
-                       akka.cluster.roles = [round-$n]
-                       akka.remote.classic.netty.tcp.port = ${Cluster(restartingSystem).selfAddress.port.get}
-                       akka.remote.artery.canonical.port = ${Cluster(restartingSystem).selfAddress.port.get}
+                       pekko.cluster.roles = [round-$n]
+                       pekko.remote.classic.netty.tcp.port = ${Cluster(restartingSystem).selfAddress.port.get}
+                       pekko.remote.artery.canonical.port = ${Cluster(restartingSystem).selfAddress.port.get}
                      """).withFallback(system.settings.config))
           }
           log.info("Restarting node has address: {}", Cluster(restartingSystem).selfUniqueAddress)

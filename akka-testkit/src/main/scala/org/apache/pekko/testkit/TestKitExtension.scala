@@ -24,10 +24,10 @@ class TestKitSettings(val config: Config) extends Extension {
   import pekko.util.Helpers._
 
   val TestTimeFactor: Double = config
-    .getDouble("akka.test.timefactor")
-    .requiring(tf => !tf.isInfinite && tf > 0, "akka.test.timefactor must be positive finite double")
-  val SingleExpectDefaultTimeout: FiniteDuration = config.getMillisDuration("akka.test.single-expect-default")
-  val ExpectNoMessageDefaultTimeout: FiniteDuration = config.getMillisDuration("akka.test.expect-no-message-default")
-  val TestEventFilterLeeway: FiniteDuration = config.getMillisDuration("akka.test.filter-leeway")
-  val DefaultTimeout: Timeout = Timeout(config.getMillisDuration("akka.test.default-timeout"))
+    .getDouble("pekko.test.timefactor")
+    .requiring(tf => !tf.isInfinite && tf > 0, "pekko.test.timefactor must be positive finite double")
+  val SingleExpectDefaultTimeout: FiniteDuration = config.getMillisDuration("pekko.test.single-expect-default")
+  val ExpectNoMessageDefaultTimeout: FiniteDuration = config.getMillisDuration("pekko.test.expect-no-message-default")
+  val TestEventFilterLeeway: FiniteDuration = config.getMillisDuration("pekko.test.filter-leeway")
+  val DefaultTimeout: Timeout = Timeout(config.getMillisDuration("pekko.test.default-timeout"))
 }

@@ -12,7 +12,7 @@ To use Akka Cluster Distributed Data, you must add the following dependency in y
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
   symbol1=AkkaVersion
-  value1="$akka.version$"
+  value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
   version=AkkaVersion
@@ -48,7 +48,7 @@ accessed through the @apidoc[typed.*.DistributedData] extension.
 
 The messages for the replicator, such as @apidoc[typed.*Replicator.Update] are defined as
 subclasses of @apidoc[typed.*Replicator.Command]
-and the actual CRDTs are defined in the `akka.cluster.ddata` package, for example
+and the actual CRDTs are defined in the `pekko.cluster.ddata` package, for example
 @apidoc[cluster.ddata.GCounter]. It requires a @scala[implicit] `org.apache.pekko.cluster.ddata.SelfUniqueAddress`,
 available from:
 
@@ -171,7 +171,7 @@ for the counter our actor will receive a @scala[`Replicator.Changed[GCounter]`]@
 this is not a message in our protocol, we use a message transformation function to wrap it in the internal `InternalSubscribeResponse`
 message, which is then handled in the regular message handling of the behavior, as shown in the above example.
 Subscribers will be notified of changes, if there are any, based on the 
-configurable `akka.cluster.distributed-data.notify-subscribers-interval`.
+configurable `pekko.cluster.distributed-data.notify-subscribers-interval`.
 
 The subscriber is automatically unsubscribed if the subscriber is terminated. A subscriber can
 also be de-registered with the `replicatorAdapter.unsubscribe(key)` function.
@@ -534,7 +534,7 @@ with Cluster Singleton it's also recommended to enable:
 
 ```
 # Update and Get operations are sent to oldest nodes first.
-akka.cluster.distributed-data.prefer-oldest = on
+pekko.cluster.distributed-data.prefer-oldest = on
 ```
 
 ### Delta-CRDT
@@ -560,7 +560,7 @@ of network partitions or similar problems.
 The the delta propagation can be disabled with configuration property:
 
 ```
-akka.cluster.distributed-data.delta-crdt.enabled=off
+pekko.cluster.distributed-data.delta-crdt.enabled=off
 ```
 
 ### Custom Data Type
@@ -659,7 +659,7 @@ long as at least one node from the old cluster takes part in a new cluster. The 
 are configured with:
 
 ```
-akka.cluster.distributed-data.durable.keys = ["a", "b", "durable*"]
+pekko.cluster.distributed-data.durable.keys = ["a", "b", "durable*"]
 ```
 
 Prefix matching is supported by using `*` at the end of a key.
@@ -667,12 +667,12 @@ Prefix matching is supported by using `*` at the end of a key.
 All entries can be made durable by specifying:
 
 ```
-akka.cluster.distributed-data.durable.keys = ["*"]
+pekko.cluster.distributed-data.durable.keys = ["*"]
 ```
 
 @scala[[LMDB](https://symas.com/lmdb/technical/)]@java[[LMDB](https://github.com/lmdbjava/lmdbjava/)] is the default storage implementation. It is
 possible to replace that with another implementation by implementing the actor protocol described in
-`org.apache.pekko.cluster.ddata.DurableStore` and defining the `akka.cluster.distributed-data.durable.store-actor-class`
+`org.apache.pekko.cluster.ddata.DurableStore` and defining the `pekko.cluster.distributed-data.durable.store-actor-class`
 property for the new implementation.
 
 The location of the files for the data is configured with:
@@ -685,7 +685,7 @@ Scala
 #    and its remote port.
 # 2. Otherwise the path is used as is, as a relative or absolute path to
 #    a directory.
-akka.cluster.distributed-data.durable.lmdb.dir = "ddata"
+pekko.cluster.distributed-data.durable.lmdb.dir = "ddata"
 ```
 
 Java
@@ -696,7 +696,7 @@ Java
 #    and its remote port.
 # 2. Otherwise the path is used as is, as a relative or absolute path to
 #    a directory.
-akka.cluster.distributed-data.durable.lmdb.dir = "ddata"
+pekko.cluster.distributed-data.durable.lmdb.dir = "ddata"
 ```
 
 
@@ -715,7 +715,7 @@ that will be serialized and stored. The risk of losing writes if the JVM crashes
 data is typically replicated to other nodes immediately according to the given `WriteConsistency`.
 
 ```
-akka.cluster.distributed-data.durable.lmdb.write-behind-interval = 200 ms
+pekko.cluster.distributed-data.durable.lmdb.write-behind-interval = 200 ms
 ```
 
 Note that you should be prepared to receive `WriteFailure` as reply to an `Update` of a
@@ -726,7 +726,7 @@ There is one important caveat when it comes pruning of @ref:[CRDT Garbage](#crdt
 If an old data entry that was never pruned is injected and merged with existing data after
 that the pruning markers have been removed the value will not be correct. The time-to-live
 of the markers is defined by configuration
-`akka.cluster.distributed-data.durable.remove-pruning-marker-after` and is in the magnitude of days.
+`pekko.cluster.distributed-data.durable.remove-pruning-marker-after` and is in the magnitude of days.
 This would be possible if a node with durable data didn't participate in the pruning
 (e.g. it was shutdown) and later started after this time. A node with durable data should not
 be stopped for longer time than this duration and if it is joining again after this

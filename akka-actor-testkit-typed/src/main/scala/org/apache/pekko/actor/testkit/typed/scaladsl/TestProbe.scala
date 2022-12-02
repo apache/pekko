@@ -71,7 +71,7 @@ object TestProbe {
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the properly dilated default for this
-   * case from settings (key "akka.actor.testkit.typed.single-expect-default").
+   * case from settings (key "pekko.actor.testkit.typed.single-expect-default").
    */
   def remainingOrDefault: FiniteDuration
 
@@ -94,7 +94,7 @@ object TestProbe {
    * take maximum wait times are available in a version which implicitly uses
    * the remaining time governed by the innermost enclosing `within` block.
    *
-   * Note that the max timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor",
+   * Note that the max timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor",
    * while the min Duration is not.
    *
    * {{{
@@ -141,8 +141,8 @@ object TestProbe {
   def expectNoMessage(max: FiniteDuration): Unit
 
   /**
-   * Assert that no message is received. Waits for the default period configured as `akka.actor.testkit.typed.expect-no-message-default`.
-   * That timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Assert that no message is received. Waits for the default period configured as `pekko.actor.testkit.typed.expect-no-message-default`.
+   * That timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def expectNoMessage(): Unit
 
@@ -175,7 +175,7 @@ object TestProbe {
   /**
    * Receive `n` messages in a row before the given deadline.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def receiveMessages(n: Int, max: FiniteDuration): immutable.Seq[M]
 
@@ -194,7 +194,7 @@ object TestProbe {
    * partial function).
    *
    * @param max Max total time without the fisher function returning `CompleteFishing` before failing.
-   *            The timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   *            The timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    * @return The messages accepted in the order they arrived
    */
   def fishForMessage(max: FiniteDuration, hint: String)(fisher: M => FishingOutcome): immutable.Seq[M]
@@ -231,7 +231,7 @@ object TestProbe {
    *
    * If the `max` timeout expires the last exception is thrown.
    *
-   * Note that the timeout is scaled using the configuration entry "akka.actor.testkit.typed.timefactor".
+   * Note that the timeout is scaled using the configuration entry "pekko.actor.testkit.typed.timefactor".
    */
   def awaitAssert[A](a: => A, max: FiniteDuration, interval: FiniteDuration): A
 

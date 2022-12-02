@@ -11,8 +11,8 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowMapErrorSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) {
 
   val ex = new RuntimeException("ex") with NoStackTrace

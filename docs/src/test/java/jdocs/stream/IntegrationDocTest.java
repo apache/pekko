@@ -58,7 +58,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
                 + "    core-pool-size-max = 10            \n"
                 + "  }                                    \n"
                 + "}                                      \n"
-                + "akka.actor.default-mailbox.mailbox-type = akka.dispatch.UnboundedMailbox\n");
+                + "pekko.actor.default-mailbox.mailbox-type = pekko.dispatch.UnboundedMailbox\n");
 
     system = ActorSystem.create("IntegrationDocTest", config);
     ref = system.actorOf(Props.create(Translator.class));

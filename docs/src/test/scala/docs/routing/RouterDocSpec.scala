@@ -30,7 +30,7 @@ object RouterDocSpec {
 
   val config = """
 #//#config-round-robin-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router1 {
     router = round-robin-pool
     nr-of-instances = 5
@@ -39,7 +39,7 @@ akka.actor.deployment {
 #//#config-round-robin-pool
 
 #//#config-round-robin-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router3 {
     router = round-robin-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -48,7 +48,7 @@ akka.actor.deployment {
 #//#config-round-robin-group
 
 #//#config-random-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router5 {
     router = random-pool
     nr-of-instances = 5
@@ -57,7 +57,7 @@ akka.actor.deployment {
 #//#config-random-pool
 
 #//#config-random-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router7 {
     router = random-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -66,7 +66,7 @@ akka.actor.deployment {
 #//#config-random-group
 
 #//#config-balancing-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router9 {
     router = balancing-pool
     nr-of-instances = 5
@@ -75,7 +75,7 @@ akka.actor.deployment {
 #//#config-balancing-pool
 
 #//#config-balancing-pool2
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router9b {
     router = balancing-pool
     nr-of-instances = 5
@@ -87,7 +87,7 @@ akka.actor.deployment {
 #//#config-balancing-pool2
 
 #//#config-balancing-pool3
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router10b {
     router = balancing-pool
     nr-of-instances = 5
@@ -105,7 +105,7 @@ akka.actor.deployment {
 #//#config-balancing-pool3
 
 #//#config-balancing-pool4
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router10c {
     router = balancing-pool
     nr-of-instances = 5
@@ -117,7 +117,7 @@ akka.actor.deployment {
 #//#config-balancing-pool4
 
 #//#config-smallest-mailbox-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router11 {
     router = smallest-mailbox-pool
     nr-of-instances = 5
@@ -126,7 +126,7 @@ akka.actor.deployment {
 #//#config-smallest-mailbox-pool
 
 #//#config-broadcast-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router13 {
     router = broadcast-pool
     nr-of-instances = 5
@@ -135,7 +135,7 @@ akka.actor.deployment {
 #//#config-broadcast-pool
 
 #//#config-broadcast-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router15 {
     router = broadcast-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -144,7 +144,7 @@ akka.actor.deployment {
 #//#config-broadcast-group
 
 #//#config-scatter-gather-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router17 {
     router = scatter-gather-pool
     nr-of-instances = 5
@@ -154,7 +154,7 @@ akka.actor.deployment {
 #//#config-scatter-gather-pool
 
 #//#config-scatter-gather-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router19 {
     router = scatter-gather-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -164,7 +164,7 @@ akka.actor.deployment {
 #//#config-scatter-gather-group
 
 #//#config-tail-chopping-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router21 {
     router = tail-chopping-pool
     nr-of-instances = 5
@@ -175,7 +175,7 @@ akka.actor.deployment {
 #//#config-tail-chopping-pool
 
 #//#config-tail-chopping-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router23 {
     router = tail-chopping-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -186,7 +186,7 @@ akka.actor.deployment {
 #//#config-tail-chopping-group
 
 #//#config-consistent-hashing-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router25 {
     router = consistent-hashing-pool
     nr-of-instances = 5
@@ -196,7 +196,7 @@ akka.actor.deployment {
 #//#config-consistent-hashing-pool
 
 #//#config-consistent-hashing-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router27 {
     router = consistent-hashing-group
     routees.paths = ["/user/workers/w1", "/user/workers/w2", "/user/workers/w3"]
@@ -206,7 +206,7 @@ akka.actor.deployment {
 #//#config-consistent-hashing-group
 
 #//#config-remote-round-robin-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/remotePool {
     router = round-robin-pool
     nr-of-instances = 10
@@ -216,7 +216,7 @@ akka.actor.deployment {
 #//#config-remote-round-robin-pool
 
 #//#config-remote-round-robin-pool-artery
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/remotePool {
     router = round-robin-pool
     nr-of-instances = 10
@@ -226,7 +226,7 @@ akka.actor.deployment {
 #//#config-remote-round-robin-pool-artery
 
 #//#config-remote-round-robin-group
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/remoteGroup {
     router = round-robin-group
     routees.paths = [
@@ -238,7 +238,7 @@ akka.actor.deployment {
 #//#config-remote-round-robin-group
 
 #//#config-remote-round-robin-group-artery
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/remoteGroup2 {
     router = round-robin-group
     routees.paths = [
@@ -250,7 +250,7 @@ akka.actor.deployment {
 #//#config-remote-round-robin-group-artery
 
 #//#config-resize-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router29 {
     router = round-robin-pool
     resizer {
@@ -263,7 +263,7 @@ akka.actor.deployment {
 #//#config-resize-pool
 
 #//#config-optimal-size-exploring-resize-pool
-akka.actor.deployment {
+pekko.actor.deployment {
   /parent/router31 {
     router = round-robin-pool
     optimal-size-exploring-resizer {
@@ -276,7 +276,7 @@ akka.actor.deployment {
 #//#config-optimal-size-exploring-resize-pool
 
 #//#config-pool-dispatcher
-akka.actor.deployment {
+pekko.actor.deployment {
   /poolWithDispatcher {
     router = random-pool
     nr-of-instances = 5

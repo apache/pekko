@@ -25,7 +25,7 @@ import pekko.util.ccompat.JavaConverters._
  */
 class RemoteInitErrorSpec extends AnyWordSpec with Matchers {
   val conf = ConfigFactory.parseString("""
-      akka {
+      pekko {
         actor {
           provider = remote
         }
@@ -49,7 +49,7 @@ class RemoteInitErrorSpec extends AnyWordSpec with Matchers {
     "shut down properly on RemoteActorRefProvider initialization failure" in {
       val start = currentThreadIds()
       try {
-        ActorSystem("duplicate", ConfigFactory.parseString("akka.loglevel=OFF").withFallback(conf))
+        ActorSystem("duplicate", ConfigFactory.parseString("pekko.loglevel=OFF").withFallback(conf))
         fail("initialization should fail due to invalid IP address")
       } catch {
         case NonFatal(_) => {

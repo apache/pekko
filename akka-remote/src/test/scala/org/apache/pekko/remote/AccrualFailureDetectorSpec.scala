@@ -14,7 +14,7 @@ import pekko.remote.FailureDetector.Clock
 import pekko.testkit.AkkaSpec
 
 @nowarn
-class AccrualFailureDetectorSpec extends AkkaSpec("akka.loglevel = INFO") {
+class AccrualFailureDetectorSpec extends AkkaSpec("pekko.loglevel = INFO") {
 
   "An AccrualFailureDetector" must {
 

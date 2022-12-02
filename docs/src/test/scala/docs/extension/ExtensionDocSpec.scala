@@ -53,7 +53,7 @@ object ExtensionDocSpec {
 
   val config = """
     //#config
-    akka {
+    pekko {
       extensions = ["docs.extension.CountExtension"]
     }
     //#config

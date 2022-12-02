@@ -35,7 +35,7 @@ final case class Message(name: String, nr: Int) extends MySerializable
 object SerializationDocSpec {
   val config = """
     #//#serialization-bindings
-    akka.actor {
+    pekko.actor {
       serialization-bindings {
         "com.myservice.MySerializable" = jackson-json
       }
@@ -45,7 +45,7 @@ object SerializationDocSpec {
 
   val configMigration = """
     #//#migrations-conf
-    akka.serialization.jackson.migrations {
+    pekko.serialization.jackson.migrations {
       "com.myservice.event.ItemAdded" = "com.myservice.event.ItemAddedMigration"
     }
     #//#migrations-conf
@@ -53,7 +53,7 @@ object SerializationDocSpec {
 
   val configMigrationRenamClass = """
     #//#migrations-conf-rename
-    akka.serialization.jackson.migrations {
+    pekko.serialization.jackson.migrations {
       "com.myservice.event.OrderAdded" = "com.myservice.event.OrderPlacedMigration"
     }
     #//#migrations-conf-rename
@@ -61,12 +61,12 @@ object SerializationDocSpec {
 
   val configSpecific = """
     #//#specific-config
-    akka.serialization.jackson.jackson-json {
+    pekko.serialization.jackson.jackson-json {
       serialization-features {
         WRITE_DATES_AS_TIMESTAMPS = off
       }
     }
-    akka.serialization.jackson.jackson-cbor {
+    pekko.serialization.jackson.jackson-cbor {
       serialization-features {
         WRITE_DATES_AS_TIMESTAMPS = on
       }
@@ -76,7 +76,7 @@ object SerializationDocSpec {
 
   val configSeveral = """
     #//#several-config
-    akka.actor {
+    pekko.actor {
       serializers {
         jackson-json-message = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
         jackson-json-event   = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
@@ -90,7 +90,7 @@ object SerializationDocSpec {
         "com.myservice.MyEvent" = jackson-json-event
       }
     }
-    akka.serialization.jackson {
+    pekko.serialization.jackson {
       jackson-json-message {
         serialization-features {
           WRITE_DATES_AS_TIMESTAMPS = on
@@ -107,7 +107,7 @@ object SerializationDocSpec {
 
   val configManifestless = """
     #//#manifestless
-    akka.actor {
+    pekko.actor {
       serializers {
         jackson-json-event = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
       }
@@ -118,7 +118,7 @@ object SerializationDocSpec {
         "com.myservice.MyEvent" = jackson-json-event
       }
     }
-    akka.serialization.jackson {
+    pekko.serialization.jackson {
       jackson-json-event {
         type-in-manifest = off
         # Since there is exactly one serialization binding declared for this
@@ -178,7 +178,7 @@ object SerializationDocSpec {
 
   val configDateTime = """
     #//#date-time
-    akka.serialization.jackson.serialization-features {
+    pekko.serialization.jackson.serialization-features {
       WRITE_DATES_AS_TIMESTAMPS = on
       WRITE_DURATIONS_AS_TIMESTAMPS = on
     }
@@ -187,7 +187,7 @@ object SerializationDocSpec {
 
   val configAllowList = """
     #//#allowed-class-prefix
-    akka.serialization.jackson.allowed-class-prefix =
+    pekko.serialization.jackson.allowed-class-prefix =
       ["com.myservice.event.OrderAdded", "com.myservice.command"]
     #//#allowed-class-prefix
   """
@@ -199,7 +199,7 @@ class SerializationDocSpec
       ActorSystem(
         "SerializationDocSpec",
         ConfigFactory.parseString(s"""
-    akka.serialization.jackson.migrations {
+    pekko.serialization.jackson.migrations {
         # migrations for Java classes
         "jdoc.org.apache.pekko.serialization.jackson.v2b.ItemAdded" = "jdoc.org.apache.pekko.serialization.jackson.v2b.ItemAddedMigration"
         "jdoc.org.apache.pekko.serialization.jackson.v2c.ItemAdded" = "jdoc.org.apache.pekko.serialization.jackson.v2c.ItemAddedMigration"
@@ -212,7 +212,7 @@ class SerializationDocSpec
         "doc.org.apache.pekko.serialization.jackson.v2a.Customer" = "doc.org.apache.pekko.serialization.jackson.v2a.CustomerMigration"
         "doc.org.apache.pekko.serialization.jackson.v1.OrderAdded" = "doc.org.apache.pekko.serialization.jackson.v2a.OrderPlacedMigration"
     }
-    akka.actor {
+    pekko.actor {
       allow-java-serialization = off
       serialization-bindings {
         "${classOf[jdoc.org.apache.pekko.serialization.jackson.MySerializable].getName}" = jackson-json

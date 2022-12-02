@@ -12,8 +12,8 @@ import pekko.stream.testkit.scaladsl.TestSink
 import java.util.StringJoiner
 
 class FlowInterleaveAllSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "An InterleaveAll for Flow " must {

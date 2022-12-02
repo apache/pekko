@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 
 object IdleSpec {
   val config: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         default-idle-strategy.idle-entity.timeout = 1s
       }

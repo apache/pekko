@@ -201,9 +201,9 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     "JacksonSerializer configuration" must {
 
       withSystem("""
-        akka.actor.serializers.jackson-json2 = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
-        akka.actor.serialization-identifiers.jackson-json2 = 999
-        akka.serialization.jackson.jackson-json2 {
+        pekko.actor.serializers.jackson-json2 = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
+        pekko.actor.serialization-identifiers.jackson-json2 = 999
+        pekko.serialization.jackson.jackson-json2 {
 
           # on is Jackson's default
           serialization-features.WRITE_DURATIONS_AS_TIMESTAMPS = off
@@ -366,7 +366,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     // see SerializationFeature.WRITE_DATES_AS_TIMESTAMPS = on
     "be possible to serialize dates and durations as numeric timestamps" in {
       withSystem("""
-        akka.serialization.jackson.serialization-features {
+        pekko.serialization.jackson.serialization-features {
           WRITE_DATES_AS_TIMESTAMPS = on
           WRITE_DURATIONS_AS_TIMESTAMPS = on
         }
@@ -416,12 +416,12 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
     "be possible to tune the visibility at ObjectMapper level (FIELD, PUBLIC_ONLY)" in {
       withSystem("""
-        akka.actor {
+        pekko.actor {
           serialization-bindings {
             "org.apache.pekko.serialization.jackson.JavaTestMessages$ClassWithVisibility" = jackson-json
           }
         }
-        akka.serialization.jackson.visibility {
+        pekko.serialization.jackson.visibility {
           FIELD = PUBLIC_ONLY
         }
         """) { sys =>
@@ -436,12 +436,12 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     // (that is "FIELD = ANY") stays consistent
     "be possible to tune the visibility at ObjectMapper level (Akka default)" in {
       withSystem("""
-        akka.actor {
+        pekko.actor {
           serialization-bindings {
             "org.apache.pekko.serialization.jackson.JavaTestMessages$ClassWithVisibility" = jackson-json
           }
         }
-        akka.serialization.jackson.visibility {
+        pekko.serialization.jackson.visibility {
           ## No overrides
         }
         """) { sys =>
@@ -591,7 +591,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     }
 
     "compress large payload with lz4" in withSystem("""
-        akka.serialization.jackson.jackson-json.compression {
+        pekko.serialization.jackson.jackson-json.compression {
           algorithm = lz4
           compress-larger-than = 32 KiB
         }
@@ -608,7 +608,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     }
 
     "not compress small payload with lz4" in withSystem("""
-        akka.serialization.jackson.jackson-json.compression {
+        pekko.serialization.jackson.jackson-json.compression {
           algorithm = lz4
           compress-larger-than = 32 KiB
         }
@@ -631,14 +631,14 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
     "deserialize messages using the serialization bindings" in withSystem(
       """
-        akka.actor {
+        pekko.actor {
           serializers.animal = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
           serialization-identifiers.animal = 9091
           serialization-bindings {
             "org.apache.pekko.serialization.jackson.ScalaTestMessages$Animal" = animal
           }
         }
-        akka.serialization.jackson.animal.type-in-manifest = off
+        pekko.serialization.jackson.animal.type-in-manifest = off
         """) { sys =>
       val msg = Elephant("Dumbo", 1)
       val serializer = serializerFor(msg, sys)
@@ -650,7 +650,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
     "deserialize messages using the configured deserialization type" in withSystem(
       """
-        akka.actor {
+        pekko.actor {
           serializers.animal = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
           serialization-identifiers.animal = 9091
           serialization-bindings {
@@ -658,7 +658,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
             "org.apache.pekko.serialization.jackson.ScalaTestMessages$Lion" = animal
           }
         }
-        akka.serialization.jackson.animal {
+        pekko.serialization.jackson.animal {
           type-in-manifest = off
           deserialization-type = "org.apache.pekko.serialization.jackson.ScalaTestMessages$Animal"
         }
@@ -674,7 +674,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
     "fail if multiple serialization bindings are declared with no deserialization type" in {
       an[IllegalArgumentException] should be thrownBy {
         withSystem("""
-        akka.actor {
+        pekko.actor {
           serializers.animal = "org.apache.pekko.serialization.jackson.JacksonJsonSerializer"
           serialization-identifiers.animal = 9091
           serialization-bindings {
@@ -682,7 +682,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
             "org.apache.pekko.serialization.jackson.ScalaTestMessages$Lion" = animal
           }
         }
-        akka.serialization.jackson.animal {
+        pekko.serialization.jackson.animal {
           type-in-manifest = off
         }
       """)(sys => checkSerialization(Elephant("Dumbo", 1), sys))
@@ -704,15 +704,15 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
 object JacksonSerializerSpec {
   def baseConfig(serializerName: String): String = s"""
-    akka.actor {
+    pekko.actor {
       serialization-bindings {
         "org.apache.pekko.serialization.jackson.ScalaTestMessages$$TestMessage" = $serializerName
         "org.apache.pekko.serialization.jackson.JavaTestMessages$$TestMessage" = $serializerName
       }
     }
-    akka.serialization.jackson.allowed-class-prefix = ["org.apache.pekko.serialization.jackson.ScalaTestMessages$$OldCommand"]
+    pekko.serialization.jackson.allowed-class-prefix = ["org.apache.pekko.serialization.jackson.ScalaTestMessages$$OldCommand"]
     
-    akka.actor {
+    pekko.actor {
       serializers {
           inner-serializer = "org.apache.pekko.serialization.jackson.ScalaTestMessages$$InnerSerializationSerializer"
       }
@@ -862,7 +862,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     // TODO: Consider moving the migrations Specs to a separate Spec
     "deserialize with migrations" in withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           ## Usually the key is a FQCN but we're hacking the name to use multiple migrations for the
           ## same type in a single test.
           "deserialize-Java.Event1-into-Java.Event3" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV3"
@@ -889,7 +889,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
       val manifest = serializer.manifest(event1)
 
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event1" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2"
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2"
         }
@@ -909,7 +909,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     "use the migration's currentVersion on new serializations" in {
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV2 =>
@@ -922,7 +922,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     "use the migration's currentVersion on new serializations when supporting forward versions" in {
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2WithV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV2 =>
@@ -937,7 +937,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
       val blobV3 =
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event3" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV3 =>
@@ -949,7 +949,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
       val blobV2 =
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2WithV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV2WithV3 =>
@@ -962,7 +962,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
         }
 
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event3" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV3 =>
@@ -976,7 +976,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     "deserialize unsupported versions throws an exception" in {
       intercept[lang.IllegalStateException] {
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event1" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2"
           "org.apache.pekko.serialization.jackson.JavaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.JavaTestEventMigrationV2"
         }
@@ -1088,7 +1088,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     // TODO: Consider moving the migrations Specs to a separate Spec
     "deserialize with migrations" in withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           ## Usually the key is a FQCN but we're hacking the name to use multiple migrations for the
           ## same type in a single test.
           "deserialize-Event1-into-Event3" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV3"
@@ -1115,7 +1115,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
       val manifest = serializer.manifest(event1)
 
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event1" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2"
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2"
         }
@@ -1135,7 +1135,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
     "use the migration's currentVersion on new serializations" in {
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV2 =>
@@ -1150,7 +1150,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
       val blobV3 =
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event3" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV3 =>
@@ -1162,7 +1162,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
       val blobV2 =
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2WithV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV2WithV3 =>
@@ -1175,7 +1175,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
         }
 
       withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event3" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV3"
         }
         """ + JacksonSerializerSpec.baseConfig(serializerName)) { sysV3 =>
@@ -1189,7 +1189,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     "deserialize unsupported versions throws an exception" in {
       intercept[lang.IllegalStateException] {
         withSystem(s"""
-        akka.serialization.jackson.migrations {
+        pekko.serialization.jackson.migrations {
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event1" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2"
           "org.apache.pekko.serialization.jackson.ScalaTestMessages$$Event2" = "org.apache.pekko.serialization.jackson.ScalaTestEventMigrationV2"
         }
@@ -1256,7 +1256,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
             val sys = ActorSystem(
               system.name,
               ConfigFactory.parseString(s"""
-              akka.actor.serialization-bindings {
+              pekko.actor.serialization-bindings {
                 "$className" = $serializerName
                 "org.apache.pekko.serialization.jackson.ScalaTestMessages$$TestMessage" = $serializerName
               }

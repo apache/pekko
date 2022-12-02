@@ -30,7 +30,7 @@ object StreamRefSettings {
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     since = "2.6.0")
   def apply(system: ActorSystem): StreamRefSettings = {
-    apply(system.settings.config.getConfig("akka.stream.materializer.stream-ref"))
+    apply(system.settings.config.getConfig("pekko.stream.materializer.stream-ref"))
   }
 
   /** Java API */

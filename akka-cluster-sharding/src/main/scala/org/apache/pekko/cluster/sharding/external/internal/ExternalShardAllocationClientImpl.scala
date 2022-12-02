@@ -56,7 +56,7 @@ final private[external] class ExternalShardAllocationClientImpl(system: ActorSys
 
   private val timeout =
     system.settings.config
-      .getDuration("akka.cluster.sharding.external-shard-allocation-strategy.client-timeout")
+      .getDuration("pekko.cluster.sharding.external-shard-allocation-strategy.client-timeout")
       .asScala
   private implicit val askTimeout: Timeout = Timeout(timeout * 2)
   private implicit val ec: MessageDispatcher = system.dispatchers.internalDispatcher

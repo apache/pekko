@@ -19,7 +19,7 @@ import pekko.testkit.{ ImplicitSender, TestProbe }
 
 object ExternalShardAllocationSpecConfig
     extends MultiNodeClusterShardingConfig(additionalConfig = """
-      akka.cluster.sharding {
+      pekko.cluster.sharding {
         retry-interval = 2000ms
         waiting-for-state-timeout = 2000ms
         rebalance-interval = 1s

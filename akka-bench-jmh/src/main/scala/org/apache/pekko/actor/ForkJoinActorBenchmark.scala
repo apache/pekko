@@ -48,7 +48,7 @@ class ForkJoinActorBenchmark {
     system = ActorSystem(
       "ForkJoinActorBenchmark",
       ConfigFactory.parseString(s"""
-        akka {
+        pekko {
            log-dead-letters = off
            default-mailbox.mailbox-capacity = 512
            actor {

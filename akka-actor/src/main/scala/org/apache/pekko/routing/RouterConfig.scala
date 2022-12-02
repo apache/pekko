@@ -210,7 +210,7 @@ trait Pool extends RouterConfig {
   private[pekko] def enrichWithPoolDispatcher(routeeProps: Props, context: ActorContext): Props =
     if (usePoolDispatcher && routeeProps.dispatcher == Dispatchers.DefaultDispatcherId)
       routeeProps.withDispatcher(
-        "akka.actor.deployment." + context.self.path.elements.drop(1).mkString("/", "/", "")
+        "pekko.actor.deployment." + context.self.path.elements.drop(1).mkString("/", "/", "")
         + ".pool-dispatcher")
     else
       routeeProps
@@ -313,7 +313,7 @@ class FromConfig(
     throw new UnsupportedOperationException("FromConfig must not create RouterActor")
 
   override def verifyConfig(path: ActorPath): Unit =
-    throw new ConfigurationException(s"Configuration missing for router [$path] in 'akka.actor.deployment' section.")
+    throw new ConfigurationException(s"Configuration missing for router [$path] in 'pekko.actor.deployment' section.")
 
   /**
    * Setting the supervisor strategy to be used for the “head” Router actor.

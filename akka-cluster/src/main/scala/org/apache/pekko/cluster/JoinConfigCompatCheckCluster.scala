@@ -16,11 +16,11 @@ import pekko.cluster.sbr.SplitBrainResolverProvider
  * INTERNAL API
  */
 @InternalApi private[pekko] object JoinConfigCompatCheckCluster {
-  private val DowningProviderPath = "akka.cluster.downing-provider-class"
-  private val SbrStrategyPath = "akka.cluster.split-brain-resolver.active-strategy"
+  private val DowningProviderPath = "pekko.cluster.downing-provider-class"
+  private val SbrStrategyPath = "pekko.cluster.split-brain-resolver.active-strategy"
 
   private val AkkaSbrProviderClass = classOf[SplitBrainResolverProvider].getName
-  private val LightbendSbrProviderClass = "com.lightbend.akka.sbr.SplitBrainResolverProvider"
+  private val LightbendSbrProviderClass = "com.lightbend.pekko.sbr.SplitBrainResolverProvider"
 }
 
 /**

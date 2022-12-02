@@ -39,10 +39,10 @@ object FunctionRefSpec {
 
 class FunctionRefSpec extends AkkaSpec("""
   # test is using Java serialization and relies on serialize-messages=on
-  akka.actor.allow-java-serialization = on
-  akka.actor.warn-about-java-serializer-usage = off
-  akka.actor.serialize-messages = on
-  akka.actor.no-serialization-verification-needed-class-prefix = []
+  pekko.actor.allow-java-serialization = on
+  pekko.actor.warn-about-java-serializer-usage = off
+  pekko.actor.serialize-messages = on
+  pekko.actor.no-serialization-verification-needed-class-prefix = []
   """) with ImplicitSender {
   import FunctionRefSpec._
 

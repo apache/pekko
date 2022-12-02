@@ -29,16 +29,16 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
       } finally TestKit.shutdownActorSystem(sys)
     }
 
-    "select implementation from config by config name (inside org.apache.pekko.discovery namespace)" in {
+    "select implementation from config by config name (inside pekko.discovery namespace)" in {
       val className = classOf[FakeTestDiscovery].getCanonicalName
 
       val sys = ActorSystem(
         "DiscoveryConfigurationSpec",
         ConfigFactory.parseString(s"""
-            akka.discovery {
-              method = akka-mock-inside
+            pekko.discovery {
+              method = pekko-mock-inside
 
-              akka-mock-inside {
+              pekko-mock-inside {
                 class = $className
               }
             }
@@ -55,7 +55,7 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
       val sys = ActorSystem(
         "DiscoveryConfigurationSpec",
         ConfigFactory.parseString(s"""
-            akka.discovery {
+            pekko.discovery {
               method = mock1
 
               mock1 {
@@ -80,7 +80,7 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
       val sys = ActorSystem(
         "DiscoveryConfigurationSpec",
         ConfigFactory.parseString(s"""
-            akka.discovery {
+            pekko.discovery {
               method = mock1
 
               mock1 {
@@ -106,7 +106,7 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
       val sys = ActorSystem(
         "DiscoveryConfigurationSpec",
         ConfigFactory.parseString(s"""
-            akka.discovery {
+            pekko.discovery {
               method = "mock1"
                mock1 {
                 class = $className
@@ -125,7 +125,7 @@ class DiscoveryConfigurationSpec extends AnyWordSpec with Matchers {
       val sys = ActorSystem(
         "DiscoveryConfigurationSpec",
         ConfigFactory.parseString(s"""
-            akka.discovery {
+            pekko.discovery {
               method = "$className"
             }
         """).withFallback(ConfigFactory.load()))

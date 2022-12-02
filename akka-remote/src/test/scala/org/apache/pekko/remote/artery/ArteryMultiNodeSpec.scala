@@ -79,14 +79,14 @@ abstract class ArteryMultiNodeSpec(config: Config)
   }
 
   def arteryTcpTlsEnabled(system: ActorSystem = system): Boolean = {
-    val arterySettings = ArterySettings(system.settings.config.getConfig("akka.remote.artery"))
+    val arterySettings = ArterySettings(system.settings.config.getConfig("pekko.remote.artery"))
     arterySettings.Enabled && arterySettings.Transport == ArterySettings.TlsTcp
   }
 }
 
 object ArteryMultiNodeSpec {
   def arteryUdpEnabled(systemConfig: Config): Boolean = {
-    val arterySettings = ArterySettings(systemConfig.getConfig("akka.remote.artery"))
+    val arterySettings = ArterySettings(systemConfig.getConfig("pekko.remote.artery"))
     arterySettings.Transport == ArterySettings.AeronUpd
   }
 

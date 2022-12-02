@@ -27,30 +27,30 @@ object PersistencePluginDocSpec {
     """
       //#leveldb-plugin-config
       # Path to the journal plugin to be used
-      akka.persistence.journal.plugin = "akka.persistence.journal.leveldb"
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb"
       //#leveldb-plugin-config
 
       //#leveldb-snapshot-plugin-config
       # Path to the snapshot store plugin to be used
-      akka.persistence.snapshot-store.plugin = "akka.persistence.snapshot-store.local"
+      pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
       //#leveldb-snapshot-plugin-config
 
       //#max-message-batch-size
-      akka.persistence.journal.leveldb.max-message-batch-size = 200
+      pekko.persistence.journal.leveldb.max-message-batch-size = 200
       //#max-message-batch-size
       //#journal-config
-      akka.persistence.journal.leveldb.dir = "target/journal"
+      pekko.persistence.journal.leveldb.dir = "target/journal"
       //#journal-config
       //#snapshot-config
-      akka.persistence.snapshot-store.local.dir = "target/snapshots"
+      pekko.persistence.snapshot-store.local.dir = "target/snapshots"
       //#snapshot-config
       //#native-config
-      akka.persistence.journal.leveldb.native = off
+      pekko.persistence.journal.leveldb.native = off
       //#native-config
 
       //#compaction-intervals-config
       # Number of deleted messages per persistence id that will trigger journal compaction
-      akka.persistence.journal.leveldb.compaction-intervals {
+      pekko.persistence.journal.leveldb.compaction-intervals {
         persistence-id-1 = 100
         persistence-id-2 = 200
         # ...
@@ -68,27 +68,27 @@ class PersistencePluginDocSpec extends AnyWordSpec {
       """
         //#journal-plugin-config
         # Path to the journal plugin to be used
-        akka.persistence.journal.plugin = "my-journal"
+        pekko.persistence.journal.plugin = "my-journal"
 
         # My custom journal plugin
         my-journal {
           # Class name of the plugin.
           class = "docs.persistence.MyJournal"
           # Dispatcher for the plugin actor.
-          plugin-dispatcher = "akka.actor.default-dispatcher"
+          plugin-dispatcher = "pekko.actor.default-dispatcher"
         }
         //#journal-plugin-config
 
         //#snapshot-store-plugin-config
         # Path to the snapshot store plugin to be used
-        akka.persistence.snapshot-store.plugin = "my-snapshot-store"
+        pekko.persistence.snapshot-store.plugin = "my-snapshot-store"
 
         # My custom snapshot store plugin
         my-snapshot-store {
           # Class name of the plugin.
           class = "docs.persistence.MySnapshotStore"
           # Dispatcher for the plugin actor.
-          plugin-dispatcher = "akka.persistence.dispatchers.default-plugin-dispatcher"
+          plugin-dispatcher = "pekko.persistence.dispatchers.default-plugin-dispatcher"
         }
         //#snapshot-store-plugin-config
       """
@@ -113,16 +113,16 @@ object SharedLeveldbPluginDocSpec {
   val config =
     """
       //#shared-journal-config
-      akka.persistence.journal.plugin = "akka.persistence.journal.leveldb-shared"
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.leveldb-shared"
       //#shared-journal-config
       //#shared-store-native-config
-      akka.persistence.journal.leveldb-shared.store.native = off
+      pekko.persistence.journal.leveldb-shared.store.native = off
       //#shared-store-native-config
       //#shared-store-config
-      akka.persistence.journal.leveldb-shared.store.dir = "target/shared"
+      pekko.persistence.journal.leveldb-shared.store.dir = "target/shared"
       //#shared-store-config
       //#event-adapter-config
-      akka.persistence.journal.leveldb-shared.adapter = "com.example.MyAdapter"
+      pekko.persistence.journal.leveldb-shared.adapter = "com.example.MyAdapter"
       //#event-adapter-config
     """
 
@@ -188,7 +188,7 @@ object PersistenceTCKDoc {
     // #journal-tck-scala
     class MyJournalSpec
         extends JournalSpec(
-          config = ConfigFactory.parseString("""akka.persistence.journal.plugin = "my.journal.plugin"""")) {
+          config = ConfigFactory.parseString("""pekko.persistence.journal.plugin = "my.journal.plugin"""")) {
 
       override def supportsRejectingNonSerializableObjects: CapabilityFlag =
         false // or CapabilityFlag.off
@@ -205,7 +205,7 @@ object PersistenceTCKDoc {
     class MySnapshotStoreSpec
         extends SnapshotStoreSpec(
           config = ConfigFactory.parseString("""
-        akka.persistence.snapshot-store.plugin = "my.snapshot-store.plugin"
+        pekko.persistence.snapshot-store.plugin = "my.snapshot-store.plugin"
         """)) {
 
       override def supportsSerialization: CapabilityFlag =
@@ -222,15 +222,15 @@ object PersistenceTCKDoc {
     // #journal-tck-before-after-scala
     class MyJournalSpec
         extends JournalSpec(config = ConfigFactory.parseString("""
-        akka.persistence.journal.plugin = "my.journal.plugin"
+        pekko.persistence.journal.plugin = "my.journal.plugin"
         """)) {
 
       override def supportsRejectingNonSerializableObjects: CapabilityFlag =
         true // or CapabilityFlag.on
 
       val storageLocations = List(
-        new File(system.settings.config.getString("akka.persistence.journal.leveldb.dir")),
-        new File(config.getString("akka.persistence.snapshot-store.local.dir")))
+        new File(system.settings.config.getString("pekko.persistence.journal.leveldb.dir")),
+        new File(config.getString("pekko.persistence.snapshot-store.local.dir")))
 
       override def beforeAll(): Unit = {
         super.beforeAll()

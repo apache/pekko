@@ -22,16 +22,16 @@ object ReplicatorGossipSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.actor.provider = "cluster"
-    akka.cluster.distributed-data {
+    pekko.loglevel = INFO
+    pekko.actor.provider = "cluster"
+    pekko.cluster.distributed-data {
       # only gossip in this test
       delta-crdt.enabled = off
       gossip-interval = 1s 
       max-delta-elements = 400
       log-data-size-exceeding = 2000
     }
-    akka.remote.artery {
+    pekko.remote.artery {
       log-frame-size-exceeding = 2000
       advanced.maximum-frame-size = 50000
     }

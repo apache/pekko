@@ -55,14 +55,14 @@ jobs:
       - name: sbt validatePullRequest
         run: |-
           sbtx -jvm-opts .jvmopts-ci \
-          -Dakka.mima.enabled=false \
-          -Dakka.test.multi-in-test=false \
-          -Dakka.test.timefactor=2 \
-          -Dakka.actor.testkit.typed.timefactor=2 \
-          -Dakka.test.tags.exclude=gh-exclude,timing \
-          -Dakka.cluster.assert=on \
+          -Dpekko.mima.enabled=false \
+          -Dpekko.test.multi-in-test=false \
+          -Dpekko.test.timefactor=2 \
+          -Dpekko.actor.testkit.typed.timefactor=2 \
+          -Dpekko.test.tags.exclude=gh-exclude,timing \
+          -Dpekko.cluster.assert=on \
           -Dsbt.override.build.repos=false \
-          -Dakka.test.multi-node=false \
+          -Dpekko.test.multi-node=false \
           -Dsbt.log.noformat=false \
-          -Dakka.log.timestamps=true \
+          -Dpekko.log.timestamps=true \
           validateCompile validatePullRequest

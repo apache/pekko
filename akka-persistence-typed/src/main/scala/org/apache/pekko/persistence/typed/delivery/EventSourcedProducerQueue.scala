@@ -40,15 +40,15 @@ object EventSourcedProducerQueue {
   object Settings {
 
     /**
-     * Scala API: Factory method from config `akka.reliable-delivery.producer-controller.event-sourced-durable-queue`
+     * Scala API: Factory method from config `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`
      * of the `ActorSystem`.
      */
     def apply(system: ActorSystem[_]): Settings =
-      apply(system.settings.config.getConfig("akka.reliable-delivery.producer-controller.event-sourced-durable-queue"))
+      apply(system.settings.config.getConfig("pekko.reliable-delivery.producer-controller.event-sourced-durable-queue"))
 
     /**
      * Scala API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.producer-controller.event-sourced-durable-queue`.
+     * `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`.
      */
     def apply(config: Config): Settings = {
       new Settings(
@@ -62,7 +62,7 @@ object EventSourcedProducerQueue {
     }
 
     /**
-     * Java API: Factory method from config `akka.reliable-delivery.producer-controller.event-sourced-durable-queue`
+     * Java API: Factory method from config `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`
      * of the `ActorSystem`.
      */
     def create(system: ActorSystem[_]): Settings =
@@ -70,7 +70,7 @@ object EventSourcedProducerQueue {
 
     /**
      * Java API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.producer-controller.event-sourced-durable-queue`.
+     * `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`.
      */
     def create(config: Config): Settings =
       apply(config)

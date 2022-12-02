@@ -13,8 +13,8 @@ object ClusterDocSpec {
 
   val config =
     """
-    akka.actor.provider = "cluster"
-    akka.remote.classic.netty.tcp.port = 0
+    pekko.actor.provider = "cluster"
+    pekko.remote.classic.netty.tcp.port = 0
     """
 }
 

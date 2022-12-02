@@ -26,7 +26,7 @@ object SunnyWeatherMultiJvmSpec extends MultiNodeConfig {
   // Note that this test uses default configuration,
   // not MultiNodeClusterSpec.clusterConfig
   commonConfig(ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor.provider = cluster
       loggers = ["org.apache.pekko.testkit.TestEventListener"]
       loglevel = INFO

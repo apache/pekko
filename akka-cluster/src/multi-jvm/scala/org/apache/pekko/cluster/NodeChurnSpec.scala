@@ -25,12 +25,12 @@ object NodeChurnMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-      akka.cluster.testkit.auto-down-unreachable-after = 1s
-      akka.cluster.prune-gossip-tombstones-after = 1s
-      akka.remote.classic.log-frame-size-exceeding = 1200b
-      akka.remote.artery.log-frame-size-exceeding = 1200b
-      akka.remote.artery.advanced.aeron {
+      pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+      pekko.cluster.testkit.auto-down-unreachable-after = 1s
+      pekko.cluster.prune-gossip-tombstones-after = 1s
+      pekko.remote.classic.log-frame-size-exceeding = 1200b
+      pekko.remote.artery.log-frame-size-exceeding = 1200b
+      pekko.remote.artery.advanced.aeron {
         idle-cpu-level = 1
         embedded-media-driver = off
         aeron-dir = "target/aeron-NodeChurnSpec"

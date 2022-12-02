@@ -20,7 +20,7 @@ object NodeDowningAndBeingRemovedMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false).withFallback(
       ConfigFactory
-        .parseString("akka.cluster.testkit.auto-down-unreachable-after = off")
+        .parseString("pekko.cluster.testkit.auto-down-unreachable-after = off")
         .withFallback(MultiNodeClusterSpec.clusterConfig)))
 }
 

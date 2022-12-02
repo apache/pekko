@@ -33,20 +33,20 @@ object LotsOfDataBot {
     ports.foreach { port =>
       // Override the configuration of the port
       val config = ConfigFactory
-        .parseString("akka.remote.classic.netty.tcp.port=" + port)
+        .parseString("pekko.remote.classic.netty.tcp.port=" + port)
         .withFallback(
           ConfigFactory.load(ConfigFactory.parseString("""
             passive = off
             max-entries = 100000
-            akka.actor.provider = "cluster"
-            akka.remote {
+            pekko.actor.provider = "cluster"
+            pekko.remote {
               artery.canonical {
                 hostname = "127.0.0.1"
                 port = 0
               }
             }
 
-            akka.cluster {
+            pekko.cluster {
               seed-nodes = [
                 "akka://ClusterSystem@127.0.0.1:2551",
                 "akka://ClusterSystem@127.0.0.1:2552"]

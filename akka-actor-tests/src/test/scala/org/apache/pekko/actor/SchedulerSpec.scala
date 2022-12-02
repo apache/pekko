@@ -27,8 +27,8 @@ import pekko.testkit._
 object SchedulerSpec {
   val testConfRevolver =
     ConfigFactory.parseString("""
-    akka.scheduler.implementation = org.apache.pekko.actor.LightArrayRevolverScheduler
-    akka.scheduler.ticks-per-wheel = 32
+    pekko.scheduler.implementation = org.apache.pekko.actor.LightArrayRevolverScheduler
+    pekko.scheduler.ticks-per-wheel = 32
   """).withFallback(AkkaSpec.testConf)
 
 }
@@ -473,7 +473,7 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
       }
 
       "survive vicious enqueueing" taggedAs TimingTest in {
-        withScheduler(config = ConfigFactory.parseString("akka.scheduler.ticks-per-wheel=2")) { (sched, driver) =>
+        withScheduler(config = ConfigFactory.parseString("pekko.scheduler.ticks-per-wheel=2")) { (sched, driver) =>
           import driver._
           import system.dispatcher
           val counter = new AtomicInteger
@@ -533,7 +533,7 @@ class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRev
       }
 
       "correctly wrap around wheel rounds" taggedAs TimingTest in {
-        withScheduler(config = ConfigFactory.parseString("akka.scheduler.ticks-per-wheel=2")) { (sched, driver) =>
+        withScheduler(config = ConfigFactory.parseString("pekko.scheduler.ticks-per-wheel=2")) { (sched, driver) =>
           implicit def ec: ExecutionContext = localEC
           import driver._
           val start = step / 2

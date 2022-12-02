@@ -24,7 +24,7 @@ import pekko.actor.{ ActorLogging, Props }
  * listening to server events). To unbind the port an [[pekko.io.Tcp.Unbind]] message must be sent to the Listener actor.
  *
  * If the bind request is rejected because the Tcp system is not able to register more channels (see the nr-of-selectors
- * and max-channels configuration options in the akka.io.tcp section of the configuration) the sender will be notified
+ * and max-channels configuration options in the pekko.io.tcp section of the configuration) the sender will be notified
  * with a [[pekko.io.Tcp.CommandFailed]] message. This message contains the original command for reference.
  *
  * When an inbound TCP connection is established, the handler will be notified by a [[pekko.io.Tcp.Connected]] message.
@@ -42,7 +42,7 @@ import pekko.actor.{ ActorLogging, Props }
  * to the Connection actor.
  *
  * If the connect request is rejected because the Tcp system is not able to register more channels (see the nr-of-selectors
- * and max-channels configuration options in the akka.io.tcp section of the configuration) the sender will be notified
+ * and max-channels configuration options in the pekko.io.tcp section of the configuration) the sender will be notified
  * with a [[pekko.io.Tcp.CommandFailed]] message. This message contains the original command for reference.
  */
 private[io] class TcpManager(tcp: TcpExt)

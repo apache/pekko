@@ -31,11 +31,11 @@ object CrossDcHeartbeatSenderSpec {
 }
 
 class CrossDcHeartbeatSenderSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.actor.provider = cluster
+    pekko.loglevel = DEBUG
+    pekko.actor.provider = cluster
     # should not be used here
-    akka.cluster.failure-detector.heartbeat-interval = 5s
-    akka.cluster.multi-data-center {
+    pekko.cluster.failure-detector.heartbeat-interval = 5s
+    pekko.cluster.multi-data-center {
       self-data-center = "dc1"
       failure-detector.heartbeat-interval = 0.2s
     }

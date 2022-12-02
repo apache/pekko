@@ -15,10 +15,10 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 
 class FlowExtrapolateSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
     # see the ordering guarantee needed by the for loop below
-    akka.stream.materializer.debug.fuzzing-mode = off
+    pekko.stream.materializer.debug.fuzzing-mode = off
   """) {
 
   "Extrapolate" must {

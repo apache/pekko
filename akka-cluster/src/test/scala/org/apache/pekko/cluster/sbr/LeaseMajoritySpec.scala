@@ -13,15 +13,15 @@ class LeaseMajoritySpec extends AkkaSpec() with Eventually {
   val default = ConfigFactory
     .parseString(
       """
-    akka.cluster.split-brain-resolver.lease-majority.lease-implementation = "akka.coordination.lease.kubernetes" 
+    pekko.cluster.split-brain-resolver.lease-majority.lease-implementation = "pekko.coordination.lease.kubernetes" 
     """)
     .withFallback(ConfigFactory.load())
   val blank = ConfigFactory.parseString("""
-    akka.cluster.split-brain-resolver.lease-majority {
+    pekko.cluster.split-brain-resolver.lease-majority {
       lease-name = " "
     }""").withFallback(default)
   val named = ConfigFactory.parseString("""
-     akka.cluster.split-brain-resolver.lease-majority {
+     pekko.cluster.split-brain-resolver.lease-majority {
        lease-name = "shopping-cart-akka-sbr"
      }""").withFallback(default)
 

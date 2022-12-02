@@ -149,26 +149,26 @@ You can define specific JVM options for each of the spawned JVMs. You do that by
 a file named after the node in the test with suffix `.opts` and put them in the same
 directory as the test.
 
-For example, to feed the JVM options `-Dakka.remote.port=9991` and `-Xmx256m` to the `SampleMultiJvmNode1`
+For example, to feed the JVM options `-Dpekko.remote.port=9991` and `-Xmx256m` to the `SampleMultiJvmNode1`
 let's create three `*.opts` files and add the options to them. Separate multiple options with
 space.
 
 `SampleMultiJvmNode1.opts`:
 
 ```
--Dakka.remote.port=9991 -Xmx256m
+-Dpekko.remote.port=9991 -Xmx256m
 ```
 
 `SampleMultiJvmNode2.opts`:
 
 ```
--Dakka.remote.port=9992 -Xmx256m
+-Dpekko.remote.port=9992 -Xmx256m
 ```
 
 `SampleMultiJvmNode3.opts`:
 
 ```
--Dakka.remote.port=9993 -Xmx256m
+-Dpekko.remote.port=9993 -Xmx256m
 ```
 
 ## ScalaTest

@@ -19,7 +19,7 @@ import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 object NullEmptyStateSpec {
 
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     """))
 }
 

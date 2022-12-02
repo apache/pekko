@@ -19,7 +19,7 @@ import pekko.coordination.lease.scaladsl.LeaseProvider
  *
  * Enabled with configuration:
  * {{{
- * akka.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
+ * pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
  * }}}
  */
 final class SplitBrainResolverProvider(system: ActorSystem) extends DowningProvider {

@@ -42,7 +42,7 @@ object DispatchersSpec {
       my-aliased-dispatcher = myapp.mydispatcher
       missing-aliased-dispatcher = myapp.missing-dispatcher
     }
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /echo1 {
         dispatcher = myapp.mydispatcher
       }
@@ -123,7 +123,7 @@ class DispatchersSpec extends AkkaSpec(DispatchersSpec.config) with ImplicitSend
 
   def validTypes = typesAndValidators.keys.toList
 
-  val defaultDispatcherConfig = settings.config.getConfig("akka.actor.default-dispatcher")
+  val defaultDispatcherConfig = settings.config.getConfig("pekko.actor.default-dispatcher")
 
   lazy val allDispatchers: Map[String, MessageDispatcher] = {
     import pekko.util.ccompat.JavaConverters._
@@ -232,7 +232,7 @@ class DispatchersSpec extends AkkaSpec(DispatchersSpec.config) with ImplicitSend
 
     "include system name and dispatcher id in thread names for default-dispatcher" in {
       system.actorOf(Props[ThreadNameEcho]()) ! "what's the name?"
-      val Expected = R("(DispatchersSpec-akka.actor.default-dispatcher-[1-9][0-9]*)")
+      val Expected = R("(DispatchersSpec-pekko.actor.default-dispatcher-[1-9][0-9]*)")
       expectMsgPF() {
         case Expected(_) =>
       }
@@ -268,7 +268,7 @@ class DispatchersSpec extends AkkaSpec(DispatchersSpec.config) with ImplicitSend
       pool ! Identify(None)
       val routee = expectMsgType[ActorIdentity].ref.get
       routee ! "what's the name?"
-      val Expected = R("""(DispatchersSpec-akka\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)""")
+      val Expected = R("""(DispatchersSpec-pekko\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)""")
       expectMsgPF() {
         case Expected(_) =>
       }

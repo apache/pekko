@@ -36,7 +36,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow timeout for (default) idle passivation strategy to be configured (via config)" in {
       settings("""
         #passivation-idle-timeout
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           default-idle-strategy.idle-entity.timeout = 3 minutes
         }
         #passivation-idle-timeout
@@ -56,7 +56,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow timeout and interval for (default) idle passivation strategy to be configured (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           default-idle-strategy {
             idle-entity {
               timeout = 3 minutes
@@ -81,7 +81,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow new default passivation strategy to be enabled (via config)" in {
       settings("""
         #passivation-new-default-strategy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = default-strategy
         }
         #passivation-new-default-strategy
@@ -107,7 +107,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow new default passivation strategy limit to be configured (via config)" in {
       settings("""
         #passivation-new-default-strategy-configured
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = default-strategy
           default-strategy {
             active-entity-limit = 1000000
@@ -136,7 +136,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow new default passivation strategy with idle timeout to be configured (via config)" in {
       settings("""
         #passivation-new-default-strategy-with-idle
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = default-strategy
           default-strategy {
             idle-entity.timeout = 30.minutes
@@ -166,7 +166,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
       settings("""
         #custom-passivation-strategy
         #lru-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-lru-strategy
           custom-lru-strategy {
             active-entity-limit = 1000000
@@ -196,7 +196,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow segmented least recently used passivation strategy to be configured (via config)" in {
       settings("""
         #slru-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-slru-strategy
           custom-slru-strategy {
             active-entity-limit = 1000000
@@ -221,7 +221,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow 4-level segmented least recently used passivation strategy to be configured (via config)" in {
       settings("""
         #s4lru-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-s4lru-strategy
           custom-s4lru-strategy {
             active-entity-limit = 1000000
@@ -254,7 +254,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow least recently used passivation strategy with idle timeout to be configured (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-lru-with-idle
           custom-lru-with-idle {
             active-entity-limit = 1000000
@@ -284,7 +284,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow most recently used passivation strategy to be configured (via config)" in {
       settings("""
         #mru-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-mru-strategy
           custom-mru-strategy {
             active-entity-limit = 1000000
@@ -310,7 +310,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow most recently used passivation strategy with idle timeout to be configured (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-mru-with-idle
           custom-mru-with-idle {
             active-entity-limit = 1000000
@@ -338,7 +338,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow least frequently used passivation strategy to be configured (via config)" in {
       settings("""
         #lfu-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-lfu-strategy
           custom-lfu-strategy {
             active-entity-limit = 1000000
@@ -366,7 +366,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow least frequently used passivation strategy with idle timeout to be configured (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-lfu-with-idle
           custom-lfu-with-idle {
             active-entity-limit = 1000000
@@ -396,7 +396,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow least frequently used passivation strategy with dynamic aging to be configured (via config)" in {
       settings("""
         #lfuda-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-lfu-with-dynamic-aging
           custom-lfu-with-dynamic-aging {
             active-entity-limit = 1000
@@ -432,7 +432,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow passivation strategy admission window policy to be configured (via config)" in {
       settings("""
         #admission-window-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission-window
           custom-strategy-with-admission-window {
             active-entity-limit = 1000000
@@ -458,7 +458,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow passivation strategy admission window proportion to be configured (via config)" in {
       settings("""
         #admission-window-proportion
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission-window
           custom-strategy-with-admission-window {
             active-entity-limit = 1000000
@@ -487,7 +487,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow passivation strategy admission window optimizer to be configured (via config)" in {
       settings("""
         #admission-window-optimizer
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission-window
           custom-strategy-with-admission-window {
             active-entity-limit = 1000000
@@ -520,7 +520,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
     "allow passivation strategy admission to be configured (via config)" in {
       settings("""
         #admission-policy
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission
           custom-strategy-with-admission {
             active-entity-limit = 1000000
@@ -564,7 +564,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow passivation strategy admission parameters to be tuned (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission
           custom-strategy-with-admission {
             active-entity-limit = 1000000
@@ -702,7 +702,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "allow passivation strategy with admission and idle timeout to be configured (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation {
+        pekko.cluster.sharding.passivation {
           strategy = custom-strategy-with-admission
           custom-strategy-with-admission {
             active-entity-limit = 1000000
@@ -781,7 +781,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "disable automatic passivation if `remember-entities` is enabled (via config)" in {
       settings("""
-        akka.cluster.sharding.remember-entities = on
+        pekko.cluster.sharding.remember-entities = on
       """).passivationStrategy shouldBe ClusterShardingSettings.NoPassivationStrategy
     }
 
@@ -793,7 +793,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "disable automatic passivation if idle timeout is set to zero (via config)" in {
       settings("""
-        akka.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout = 0
+        pekko.cluster.sharding.passivation.default-idle-strategy.idle-entity.timeout = 0
       """).passivationStrategy shouldBe ClusterShardingSettings.NoPassivationStrategy
     }
 
@@ -812,7 +812,7 @@ class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
     "support old `passivate-idle-entity-after` setting (overriding new strategy settings)" in {
       settings("""
-        akka.cluster.sharding {
+        pekko.cluster.sharding {
           passivate-idle-entity-after = 5 minutes
           passivation.strategy = default-strategy
         }

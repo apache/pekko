@@ -20,8 +20,8 @@ import pekko.stream.testkit.Utils.TE
 import pekko.testkit.TestLatch
 
 class FlowConflateSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
-    akka.stream.materializer.max-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.max-input-buffer-size = 2
   """) {
 
   "Conflate" must {

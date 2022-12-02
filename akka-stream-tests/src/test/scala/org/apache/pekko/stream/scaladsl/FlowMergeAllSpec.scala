@@ -9,7 +9,7 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowMergeAllSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "Flow mergeAll" must {

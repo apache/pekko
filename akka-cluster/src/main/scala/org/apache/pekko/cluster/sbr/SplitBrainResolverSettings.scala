@@ -38,7 +38,7 @@ import pekko.util.Helpers.Requiring
 
   import SplitBrainResolverSettings._
 
-  private val cc = config.getConfig("akka.cluster.split-brain-resolver")
+  private val cc = config.getConfig("pekko.cluster.split-brain-resolver")
 
   val DowningStableAfter: FiniteDuration = {
     val key = "stable-after"
@@ -76,7 +76,7 @@ import pekko.util.Helpers.Requiring
     val c = strategyConfig(StaticQuorumName)
     val size = c
       .getInt("quorum-size")
-      .requiring(_ >= 1, s"akka.cluster.split-brain-resolver.$StaticQuorumName.quorum-size must be >= 1")
+      .requiring(_ >= 1, s"pekko.cluster.split-brain-resolver.$StaticQuorumName.quorum-size must be >= 1")
     StaticQuorumSettings(size, role(c))
   }
 
@@ -92,7 +92,7 @@ import pekko.util.Helpers.Requiring
     val leaseImplementation = c.getString("lease-implementation")
     require(
       leaseImplementation != "",
-      s"akka.cluster.split-brain-resolver.$LeaseMajorityName.lease-implementation must be defined")
+      s"pekko.cluster.split-brain-resolver.$LeaseMajorityName.lease-implementation must be defined")
 
     val acquireLeaseDelayForMinority =
       FiniteDuration(c.getDuration("acquire-lease-delay-for-minority").toMillis, TimeUnit.MILLISECONDS)

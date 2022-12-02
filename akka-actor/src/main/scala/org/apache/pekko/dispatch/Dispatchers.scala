@@ -52,20 +52,20 @@ object Dispatchers {
    * The id of the default dispatcher, also the full key of the
    * configuration of the default dispatcher.
    */
-  final val DefaultDispatcherId = "akka.actor.default-dispatcher"
+  final val DefaultDispatcherId = "pekko.actor.default-dispatcher"
 
   /**
    * The id of a default dispatcher to use for operations known to be blocking. Note that
    * for optimal performance you will want to isolate different blocking resources
    * on different thread pools.
    */
-  final val DefaultBlockingDispatcherId: String = "akka.actor.default-blocking-io-dispatcher"
+  final val DefaultBlockingDispatcherId: String = "pekko.actor.default-blocking-io-dispatcher"
 
   /**
    * INTERNAL API
    */
   @InternalApi
-  private[pekko] final val InternalDispatcherId = "akka.actor.internal-dispatcher"
+  private[pekko] final val InternalDispatcherId = "pekko.actor.internal-dispatcher"
 
   private val MaxDispatcherAliasDepth = 20
 
@@ -95,7 +95,7 @@ object Dispatchers {
  * A dispatcher config can also be an alias, in that case it is a config string value pointing
  * to the actual dispatcher config.
  *
- * Look in `akka.actor.default-dispatcher` section of the reference.conf
+ * Look in `pekko.actor.default-dispatcher` section of the reference.conf
  * for documentation of dispatcher options.
  *
  * Not for user instantiation or extension

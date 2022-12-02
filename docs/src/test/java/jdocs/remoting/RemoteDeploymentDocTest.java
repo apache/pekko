@@ -40,10 +40,10 @@ public class RemoteDeploymentDocTest extends AbstractJavaTest {
       new AkkaJUnitActorSystemResource(
           "RemoteDeploymentDocTest",
           ConfigFactory.parseString(
-                  "   akka.actor.provider = remote\n"
-                      + "    akka.remote.classic.netty.tcp.port = 0\n"
-                      + "    akka.remote.artery.canonical.port = 0\n"
-                      + "    akka.remote.use-unsafe-remote-features-outside-cluster = on")
+                  "   pekko.actor.provider = remote\n"
+                      + "    pekko.remote.classic.netty.tcp.port = 0\n"
+                      + "    pekko.remote.artery.canonical.port = 0\n"
+                      + "    pekko.remote.use-unsafe-remote-features-outside-cluster = on")
               .withFallback(AkkaSpec.testConf()));
 
   private final ActorSystem system = actorSystemResource.getSystem();
@@ -81,12 +81,12 @@ public class RemoteDeploymentDocTest extends AbstractJavaTest {
   @Test
   public void demonstrateProgrammaticConfig() {
     // #programmatic
-    ConfigFactory.parseString("akka.remote.classic.netty.tcp.hostname=\"1.2.3.4\"")
+    ConfigFactory.parseString("pekko.remote.classic.netty.tcp.hostname=\"1.2.3.4\"")
         .withFallback(ConfigFactory.load());
     // #programmatic
 
     // #programmatic-artery
-    ConfigFactory.parseString("akka.remote.artery.canonical.hostname=\"1.2.3.4\"")
+    ConfigFactory.parseString("pekko.remote.artery.canonical.hostname=\"1.2.3.4\"")
         .withFallback(ConfigFactory.load());
     // #programmatic-artery
   }

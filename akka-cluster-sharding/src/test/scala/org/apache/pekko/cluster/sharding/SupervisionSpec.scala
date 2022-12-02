@@ -18,13 +18,13 @@ import pekko.testkit.{ AkkaSpec, ImplicitSender }
 object SupervisionSpec {
   val config =
     ConfigFactory.parseString("""
-    akka.actor.provider = "cluster"
-    akka.remote.artery.canonical.port = 0
-    akka.remote.classic.netty.tcp.port = 0
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.loglevel = DEBUG
-    akka.cluster.sharding.verbose-debug-logging = on
-    akka.cluster.sharding.fail-on-invalid-entity-state-transition = on
+    pekko.actor.provider = "cluster"
+    pekko.remote.artery.canonical.port = 0
+    pekko.remote.classic.netty.tcp.port = 0
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.loglevel = DEBUG
+    pekko.cluster.sharding.verbose-debug-logging = on
+    pekko.cluster.sharding.fail-on-invalid-entity-state-transition = on
     """)
 
   case class Msg(id: Long, msg: Any)

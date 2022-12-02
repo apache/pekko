@@ -38,26 +38,26 @@ import pekko.testkit.GHExcludeAeronTest
 
 object ClusterReceptionistSpec {
   val config = ConfigFactory.parseString(s"""
-      akka.loglevel = DEBUG # issue #24960
-      akka.actor.provider = cluster
-      akka.remote.classic.netty.tcp.port = 0
-      akka.remote.classic.netty.tcp.host = 127.0.0.1
-      akka.remote.artery.canonical.port = 0
-      akka.remote.artery.canonical.hostname = 127.0.0.1
+      pekko.loglevel = DEBUG # issue #24960
+      pekko.actor.provider = cluster
+      pekko.remote.classic.netty.tcp.port = 0
+      pekko.remote.classic.netty.tcp.host = 127.0.0.1
+      pekko.remote.artery.canonical.port = 0
+      pekko.remote.artery.canonical.hostname = 127.0.0.1
 
-      akka.remote.retry-gate-closed-for = 1 s
+      pekko.remote.retry-gate-closed-for = 1 s
 
-      akka.cluster.typed.receptionist {
+      pekko.cluster.typed.receptionist {
         pruning-interval = 1 s
       }
 
-      akka.cluster {
+      pekko.cluster {
         jmx.multi-mbeans-in-same-jvm = on
         failure-detector.acceptable-heartbeat-pause = 3s
       }
       
       # test coverage that the durable store is not used
-      akka.cluster.distributed-data.durable.keys = ["*"]
+      pekko.cluster.distributed-data.durable.keys = ["*"]
     """)
 
   case object Pong extends CborSerializable
@@ -365,10 +365,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         val testKit3 = ActorTestKit(
           system1.name,
           ConfigFactory.parseString(s"""
-            akka.remote.classic.netty.tcp.port = ${clusterNode2.selfMember.address.port.get}
-            akka.remote.artery.canonical.port = ${clusterNode2.selfMember.address.port.get}
+            pekko.remote.classic.netty.tcp.port = ${clusterNode2.selfMember.address.port.get}
+            pekko.remote.artery.canonical.port = ${clusterNode2.selfMember.address.port.get}
             # retry joining when existing member removed
-            akka.cluster.retry-unsuccessful-join-after = 1s
+            pekko.cluster.retry-unsuccessful-join-after = 1s
           """).withFallback(config))
 
         try {
@@ -433,10 +433,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
       val testKit1 = ActorTestKit(
         "ClusterReceptionistSpec-test-7",
         ConfigFactory.parseString("""
-          akka.cluster {
+          pekko.cluster {
             failure-detector.acceptable-heartbeat-pause = 20s
           }
-          akka.cluster.typed.receptionist {
+          pekko.cluster.typed.receptionist {
             # it can be stressed more by using all
             write-consistency = all
           }
@@ -480,8 +480,8 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         val testKit3 = ActorTestKit(
           system1.name,
           ConfigFactory.parseString(s"""
-            akka.remote.classic.netty.tcp.port = ${clusterNode2.selfMember.address.port.get}
-            akka.remote.artery.canonical.port = ${clusterNode2.selfMember.address.port.get}
+            pekko.remote.classic.netty.tcp.port = ${clusterNode2.selfMember.address.port.get}
+            pekko.remote.artery.canonical.port = ${clusterNode2.selfMember.address.port.get}
           """).withFallback(config))
 
         try {
@@ -537,7 +537,7 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
       val config = ConfigFactory.parseString("""
           # disable delta propagation so we can have repeatable concurrent writes
           # without delta reaching between nodes already
-          akka.cluster.distributed-data.delta-crdt.enabled=false
+          pekko.cluster.distributed-data.delta-crdt.enabled=false
         """).withFallback(ClusterReceptionistSpec.config)
       val testKit1 = ActorTestKit("ClusterReceptionistSpec-test-8", config)
       val system1 = testKit1.system
@@ -788,10 +788,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
       // It's possible that the registry entry from the ddata update arrives before MemberJoined.
       val config = ConfigFactory.parseString("""
         # quick dissemination to increase the chance of the race condition
-        akka.cluster.typed.receptionist.distributed-data.write-consistency = all
-        akka.cluster.typed.receptionist.distributed-data.gossip-interval = 500ms
+        pekko.cluster.typed.receptionist.distributed-data.write-consistency = all
+        pekko.cluster.typed.receptionist.distributed-data.gossip-interval = 500ms
         # run the RemoveTick cleanup often to exercise that scenario 
-        akka.cluster.typed.receptionist.pruning-interval = 50ms
+        pekko.cluster.typed.receptionist.pruning-interval = 50ms
         """).withFallback(ClusterReceptionistSpec.config)
       val numberOfNodes = 6 // use 9 or more to stress it more
       val testKits = Vector.fill(numberOfNodes)(ActorTestKit("ClusterReceptionistSpec-13", config))

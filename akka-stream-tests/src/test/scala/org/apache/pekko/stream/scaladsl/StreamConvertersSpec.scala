@@ -320,7 +320,7 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
     "produce a single value" in {
       val source = Source.single(ByteString("ASDF"))
       val sink =
-        StreamConverters.asInputStream().withAttributes(ActorAttributes.dispatcher("akka.test.stream-dispatcher"))
+        StreamConverters.asInputStream().withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
 
       val is = source.runWith(sink)
       is.read() should be('A')
@@ -335,7 +335,7 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
     "withstand being closed twice" in {
       val source = Source.single(ByteString("ASDF"))
       val sink =
-        StreamConverters.asInputStream().withAttributes(ActorAttributes.dispatcher("akka.test.stream-dispatcher"))
+        StreamConverters.asInputStream().withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
 
       val is = source.runWith(sink)
       is.read() should be('A')
@@ -347,7 +347,7 @@ class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
   "OutputStream Source" must {
     "ignore empty arrays" in {
       val source =
-        StreamConverters.asOutputStream().withAttributes(ActorAttributes.dispatcher("akka.test.stream-dispatcher"))
+        StreamConverters.asOutputStream().withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
 
       val (out, result) = source.toMat(Sink.seq)(Keep.both).run()
 

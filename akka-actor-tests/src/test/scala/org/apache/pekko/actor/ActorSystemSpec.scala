@@ -142,7 +142,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
 
     "log dead letters" in {
       val sys =
-        ActorSystem("LogDeadLetters", ConfigFactory.parseString("akka.loglevel=INFO").withFallback(AkkaSpec.testConf))
+        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(AkkaSpec.testConf))
       try {
         val probe = TestProbe()(sys)
         val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
@@ -166,7 +166,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
 
     "log dead letters sent without sender reference" in {
       val sys =
-        ActorSystem("LogDeadLetters", ConfigFactory.parseString("akka.loglevel=INFO").withFallback(AkkaSpec.testConf))
+        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(AkkaSpec.testConf))
       try {
         val probe = TestProbe()(sys)
         val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
@@ -317,7 +317,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
         ActorSystem(
           "Stop",
           ConfigFactory
-            .parseString("akka.actor.guardian-supervisor-strategy=org.apache.pekko.actor.StoppingSupervisorStrategy")
+            .parseString("pekko.actor.guardian-supervisor-strategy=org.apache.pekko.actor.StoppingSupervisorStrategy")
             .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {
@@ -340,7 +340,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
         ActorSystem(
           "Stop",
           ConfigFactory
-            .parseString("akka.actor.guardian-supervisor-strategy=\"org.apache.pekko.actor.ActorSystemSpec$Strategy\"")
+            .parseString("pekko.actor.guardian-supervisor-strategy=\"org.apache.pekko.actor.ActorSystemSpec$Strategy\"")
             .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {

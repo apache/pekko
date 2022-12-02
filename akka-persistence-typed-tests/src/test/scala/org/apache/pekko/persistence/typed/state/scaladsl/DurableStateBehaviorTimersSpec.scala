@@ -22,7 +22,7 @@ import pekko.persistence.testkit.PersistenceTestKitDurableStateStorePlugin
 object DurableStateBehaviorTimersSpec {
 
   def conf: Config = PersistenceTestKitDurableStateStorePlugin.config.withFallback(ConfigFactory.parseString(s"""
-    akka.loglevel = INFO
+    pekko.loglevel = INFO
     """))
 
   def testBehavior(persistenceId: PersistenceId, probe: ActorRef[String]): Behavior[String] =

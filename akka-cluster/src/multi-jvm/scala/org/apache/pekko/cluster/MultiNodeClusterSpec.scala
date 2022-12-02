@@ -34,16 +34,16 @@ object MultiNodeClusterSpec {
   def clusterConfigWithFailureDetectorPuppet: Config =
     ConfigFactory
       .parseString(
-        "akka.cluster.failure-detector.implementation-class = org.apache.pekko.cluster.FailureDetectorPuppet")
+        "pekko.cluster.failure-detector.implementation-class = org.apache.pekko.cluster.FailureDetectorPuppet")
       .withFallback(clusterConfig)
 
   def clusterConfig(failureDetectorPuppet: Boolean): Config =
     if (failureDetectorPuppet) clusterConfigWithFailureDetectorPuppet else clusterConfig
 
   def clusterConfig: Config = ConfigFactory.parseString(s"""
-    akka.actor.provider = cluster
-    akka.actor.warn-about-java-serializer-usage = off
-    akka.cluster {
+    pekko.actor.provider = cluster
+    pekko.actor.warn-about-java-serializer-usage = off
+    pekko.cluster {
       jmx.enabled                         = off
       gossip-interval                     = 200 ms
       leader-actions-interval             = 200 ms
@@ -58,14 +58,14 @@ object MultiNodeClusterSpec {
         waiting-for-state-timeout = 200ms
       }
     }
-    akka.loglevel = INFO
-    akka.log-dead-letters = off
-    akka.log-dead-letters-during-shutdown = off
-    akka.remote {
+    pekko.loglevel = INFO
+    pekko.log-dead-letters = off
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.remote {
       log-remote-lifecycle-events = off
     }
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
-    akka.test {
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.test {
       single-expect-default = 5 s
     }
 

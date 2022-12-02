@@ -23,7 +23,7 @@ object AkkaBuild {
     // CI is the env var defined by Github Actions and Travis:
     // - https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
     // - https://docs.travis-ci.com/user/environment-variables/#default-environment-variables
-    val runningOnCi: CliOption[Boolean] = CliOption("akka.ci-server", sys.env.contains("CI"))
+    val runningOnCi: CliOption[Boolean] = CliOption("pekko.ci-server", sys.env.contains("CI"))
   }
 
   val enableMiMa = true
@@ -37,12 +37,12 @@ object AkkaBuild {
     UnidocRoot.akkaSettings,
     Protobuf.settings,
     GlobalScope / parallelExecution := System
-      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
+      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
       .toBoolean,
     // used for linking to API docs (overwrites `project-info.version`)
     ThisBuild / projectInfoVersion := { if (isSnapshot.value) "snapshot" else version.value })
 
-  lazy val mayChangeSettings = Seq(description := """|This module of Akka is marked as
+  lazy val mayChangeSettings = Seq(description := """|This module of Pekko is marked as
                       |'may change', which means that it is in early
                       |access mode, which also means that it is not covered
                       |by commercial support. An module marked 'may change' doesn't
@@ -55,7 +55,7 @@ object AkkaBuild {
                       |""".stripMargin)
 
   val (mavenLocalResolver, mavenLocalResolverSettings) =
-    System.getProperty("akka.build.M2Dir") match {
+    System.getProperty("pekko.build.M2Dir") match {
       case null => (Resolver.mavenLocal, Seq.empty)
       case path =>
         // Maven resolver settings
@@ -81,17 +81,17 @@ object AkkaBuild {
 
   lazy val resolverSettings = Def.settings(
     // should we be allowed to use artifacts published to the local maven repository
-    if (System.getProperty("akka.build.useLocalMavenResolver", "false").toBoolean)
+    if (System.getProperty("pekko.build.useLocalMavenResolver", "false").toBoolean)
       resolvers += mavenLocalResolver
     else Seq.empty,
     // should we be allowed to use artifacts from sonatype snapshots
-    if (System.getProperty("akka.build.useSnapshotSonatypeResolver", "false").toBoolean)
+    if (System.getProperty("pekko.build.useSnapshotSonatypeResolver", "false").toBoolean)
       resolvers ++= Resolver.sonatypeOssRepos("snapshots")
     else Seq.empty,
     pomIncludeRepository := (_ => false) // do not leak internal repositories during staging
   )
 
-  private def allWarnings: Boolean = System.getProperty("akka.allwarnings", "false").toBoolean
+  private def allWarnings: Boolean = System.getProperty("pekko.allwarnings", "false").toBoolean
 
   final val DefaultScalacOptions = Def.setting {
     if (scalaVersion.value.startsWith("3.")) {
@@ -177,8 +177,8 @@ object AkkaBuild {
          |import com.typesafe.config.ConfigFactory
          |import scala.concurrent.duration._
          |import org.apache.pekko.util.Timeout
-         |var config = ConfigFactory.parseString("akka.stdout-loglevel=INFO,akka.loglevel=DEBUG,pinned{type=PinnedDispatcher,executor=thread-pool-executor,throughput=1000}")
-         |var remoteConfig = ConfigFactory.parseString("akka.remote.classic.netty{port=0,use-dispatcher-for-io=akka.actor.default-dispatcher,execution-pool-size=0},akka.actor.provider=remote").withFallback(config)
+         |var config = ConfigFactory.parseString("pekko.stdout-loglevel=INFO,pekko.loglevel=DEBUG,pinned{type=PinnedDispatcher,executor=thread-pool-executor,throughput=1000}")
+         |var remoteConfig = ConfigFactory.parseString("pekko.remote.classic.netty{port=0,use-dispatcher-for-io=pekko.actor.default-dispatcher,execution-pool-size=0},pekko.actor.provider=remote").withFallback(config)
          |var system: ActorSystem = null
          |implicit def _system: ActorSystem = system
          |def startSystem(remoting: Boolean = false) = { system = ActorSystem("repl", if(remoting) remoteConfig else config); println("don’t forget to system.terminate()!") }
@@ -216,16 +216,16 @@ object AkkaBuild {
         .getOrElse(Nil) ++
       JdkOptions.versionSpecificJavaOptions
     },
-    // all system properties passed to sbt prefixed with "akka." or "aeron." will be passed on to the forked jvms as is
+    // all system properties passed to sbt prefixed with "pekko." or "aeron." will be passed on to the forked jvms as is
     Test / javaOptions := {
       val base = (Test / javaOptions).value
-      val knownPrefix = Set("akka.", "aeron.")
-      val akkaSysProps: Seq[String] =
+      val knownPrefix = Set("pekko.", "aeron.")
+      val pekkoSysProps: Seq[String] =
         sys.props.iterator.collect {
           case (key, value) if knownPrefix.exists(pre => key.startsWith(pre)) => s"-D$key=$value"
         }.toList
 
-      base ++ akkaSysProps
+      base ++ pekkoSysProps
     },
     // with forked tests the working directory is set to each module's home directory
     // rather than the Akka root, some tests depend on Akka root being working dir, so reset
@@ -244,9 +244,9 @@ object AkkaBuild {
       }
     },
     Test / parallelExecution := System
-      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
+      .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)
       .toBoolean,
-    Test / logBuffered := System.getProperty("akka.logBufferedTests", "false").toBoolean,
+    Test / logBuffered := System.getProperty("pekko.logBufferedTests", "false").toBoolean,
     // show full stack traces and test case durations
     Test / testOptions += Tests.Argument("-oDF"),
     mavenLocalResolverSettings,

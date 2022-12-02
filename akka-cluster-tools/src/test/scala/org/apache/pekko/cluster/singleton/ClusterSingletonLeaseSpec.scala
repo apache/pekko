@@ -46,10 +46,10 @@ class ImportantSingleton(lifeCycleProbe: ActorRef) extends Actor with ActorLoggi
 }
 
 class ClusterSingletonLeaseSpec extends AkkaSpec(ConfigFactory.parseString("""
-     akka.loglevel = INFO
-     akka.actor.provider = cluster
+     pekko.loglevel = INFO
+     pekko.actor.provider = cluster
 
-     akka.cluster.singleton {
+     pekko.cluster.singleton {
        use-lease = "test-lease"
        lease-retry-interval = 2000ms
      }

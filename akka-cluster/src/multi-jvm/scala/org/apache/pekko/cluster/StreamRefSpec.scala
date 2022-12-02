@@ -38,8 +38,8 @@ object StreamRefSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-        akka.stream.materializer.stream-ref.subscription-timeout = 10 s
-        akka.cluster {
+        pekko.stream.materializer.stream-ref.subscription-timeout = 10 s
+        pekko.cluster {
           downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
           testkit.auto-down-unreachable-after = 1s
         }"""))
@@ -256,7 +256,7 @@ abstract class StreamRefSpec extends MultiNodeClusterSpec(StreamRefSpec) with Im
         // and it triggered the subscription timeout. Therefore we must wait more than the
         // the subscription timeout for a failure
         val timeout = system.settings.config
-          .getDuration("akka.stream.materializer.stream-ref.subscription-timeout")
+          .getDuration("pekko.stream.materializer.stream-ref.subscription-timeout")
           .asScala + 2.seconds
         streamLifecycle3.expectMsg(timeout, "failed-system-42-tmp")
       }

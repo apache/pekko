@@ -43,22 +43,22 @@ object ShardingConsumerController {
   object Settings {
 
     /**
-     * Scala API: Factory method from config `akka.reliable-delivery.sharding.consumer-controller`
+     * Scala API: Factory method from config `pekko.reliable-delivery.sharding.consumer-controller`
      * of the `ActorSystem`.
      */
     def apply(system: ActorSystem[_]): Settings =
-      apply(system.settings.config.getConfig("akka.reliable-delivery.sharding.consumer-controller"))
+      apply(system.settings.config.getConfig("pekko.reliable-delivery.sharding.consumer-controller"))
 
     /**
      * Scala API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.sharding.consumer-controller`.
+     * `pekko.reliable-delivery.sharding.consumer-controller`.
      */
     def apply(config: Config): Settings = {
       new Settings(bufferSize = config.getInt("buffer-size"), ConsumerController.Settings(config))
     }
 
     /**
-     * Java API: Factory method from config `akka.reliable-delivery.sharding.consumer-controller`
+     * Java API: Factory method from config `pekko.reliable-delivery.sharding.consumer-controller`
      * of the `ActorSystem`.
      */
     def create(system: ActorSystem[_]): Settings =
@@ -66,7 +66,7 @@ object ShardingConsumerController {
 
     /**
      * Java API: Factory method from Config corresponding to
-     * `akka.reliable-delivery.sharding.consumer-controller`.
+     * `pekko.reliable-delivery.sharding.consumer-controller`.
      */
     def create(config: Config): Settings =
       apply(config)

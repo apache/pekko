@@ -27,8 +27,8 @@ import scala.concurrent.Promise
 
 class CoordinatedShutdownSpec
     extends AkkaSpec(ConfigFactory.parseString("""
-    akka.loglevel=INFO
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.loglevel=INFO
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
   """)) {
 
   def extSys = system.asInstanceOf[ExtendedActorSystem]
@@ -511,13 +511,13 @@ class CoordinatedShutdownSpec
     }
 
     "default exit code to 0" in {
-      lazy val conf = ConfigFactory.load().getConfig("akka.coordinated-shutdown")
+      lazy val conf = ConfigFactory.load().getConfig("pekko.coordinated-shutdown")
       val confWithOverrides = CoordinatedShutdown.confWithOverrides(conf, None)
       confWithOverrides.getInt("exit-code") should ===(0)
     }
 
     "default exit code to -1 when the Reason is ClusterDowning" in {
-      lazy val conf = ConfigFactory.load().getConfig("akka.coordinated-shutdown")
+      lazy val conf = ConfigFactory.load().getConfig("pekko.coordinated-shutdown")
       val confWithOverrides =
         CoordinatedShutdown.confWithOverrides(conf, Some(CoordinatedShutdown.ClusterDowningReason))
       confWithOverrides.getInt("exit-code") should ===(-1)
@@ -549,7 +549,7 @@ class CoordinatedShutdownSpec
       val sys = ActorSystem(
         system.name,
         ConfigFactory
-          .parseString("akka.coordinated-shutdown.run-by-actor-system-terminate = off")
+          .parseString("pekko.coordinated-shutdown.run-by-actor-system-terminate = off")
           .withFallback(system.settings.config))
       try {
         Await.result(sys.terminate(), 10.seconds)
@@ -565,7 +565,7 @@ class CoordinatedShutdownSpec
         val sys = ActorSystem(
           system.name,
           ConfigFactory
-            .parseString("akka.coordinated-shutdown.terminate-actor-system = off")
+            .parseString("pekko.coordinated-shutdown.terminate-actor-system = off")
             .withFallback(system.settings.config))
         // will only get here if test is failing
         shutdown(sys)
@@ -575,9 +575,9 @@ class CoordinatedShutdownSpec
     "add and remove user JVM hooks with run-by-jvm-shutdown-hook = off, terminate-actor-system = off" in new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-1-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
-          akka.coordinated-shutdown.run-by-jvm-shutdown-hook = off
-          akka.coordinated-shutdown.terminate-actor-system = off
-          akka.coordinated-shutdown.run-by-actor-system-terminate = off
+          pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = off
+          pekko.coordinated-shutdown.terminate-actor-system = off
+          pekko.coordinated-shutdown.run-by-actor-system-terminate = off
         """)
 
       override def withSystemRunning(newSystem: ActorSystem, coordinatedShutdown: CoordinatedShutdown): Unit = {
@@ -591,9 +591,9 @@ class CoordinatedShutdownSpec
     "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, terminate-actor-system = off" in new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-2-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
-          akka.coordinated-shutdown.run-by-jvm-shutdown-hook = on
-          akka.coordinated-shutdown.terminate-actor-system = off
-          akka.coordinated-shutdown.run-by-actor-system-terminate = off
+          pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = on
+          pekko.coordinated-shutdown.terminate-actor-system = off
+          pekko.coordinated-shutdown.run-by-actor-system-terminate = off
         """)
 
       override def withSystemRunning(newSystem: ActorSystem, coordinatedShutdown: CoordinatedShutdown): Unit = {
@@ -608,8 +608,8 @@ class CoordinatedShutdownSpec
     "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, terminate-actor-system = on" in new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-3-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
-          akka.coordinated-shutdown.run-by-jvm-shutdown-hook = on
-          akka.coordinated-shutdown.terminate-actor-system = on
+          pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = on
+          pekko.coordinated-shutdown.terminate-actor-system = on
         """)
 
       def withSystemRunning(newSystem: ActorSystem, coordinatedShutdown: CoordinatedShutdown): Unit = {
@@ -620,11 +620,11 @@ class CoordinatedShutdownSpec
       }
     }
 
-    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, akka.jvm-shutdown-hooks = off" in new JvmHookTest {
+    "add and remove user JVM hooks with run-by-jvm-shutdown-hook = on, pekko.jvm-shutdown-hooks = off" in new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-JvmHooks-4-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
-          akka.jvm-shutdown-hooks = off
-          akka.coordinated-shutdown.run-by-jvm-shutdown-hook = on
+          pekko.jvm-shutdown-hooks = off
+          pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = on
         """)
 
       def withSystemRunning(newSystem: ActorSystem, coordinatedShutdown: CoordinatedShutdown): Unit = {
@@ -638,8 +638,8 @@ class CoordinatedShutdownSpec
     "access extension after system termination" in new JvmHookTest {
       lazy val systemName = s"CoordinatedShutdownSpec-terminated-${System.currentTimeMillis()}"
       lazy val systemConfig = ConfigFactory.parseString("""
-          akka.coordinated-shutdown.run-by-jvm-shutdown-hook = on
-          akka.coordinated-shutdown.terminate-actor-system = on
+          pekko.coordinated-shutdown.run-by-jvm-shutdown-hook = on
+          pekko.coordinated-shutdown.terminate-actor-system = on
         """)
 
       def withSystemRunning(newSystem: ActorSystem, coordinatedShutdown: CoordinatedShutdown): Unit = {
@@ -653,7 +653,7 @@ class CoordinatedShutdownSpec
       val system = ActorSystem(
         s"CoordinatedShutdownSpec-terminated-${System.currentTimeMillis()}",
         ConfigFactory.parseString("""
-          akka.coordinated-shutdown.phases {
+          pekko.coordinated-shutdown.phases {
             before-actor-system-terminate {
 
             }
@@ -780,7 +780,7 @@ class CoordinatedShutdownSpec
         } else false
       }
     }
-    private val csConfig = newSystem.settings.config.getConfig("akka.coordinated-shutdown")
+    private val csConfig = newSystem.settings.config.getConfig("pekko.coordinated-shutdown")
     // pretend extension creation and start
     private val cs = new CoordinatedShutdown(newSystem, CoordinatedShutdown.phasesFromConfig(csConfig), mockRuntime)
     CoordinatedShutdown.init(newSystem, csConfig, cs)

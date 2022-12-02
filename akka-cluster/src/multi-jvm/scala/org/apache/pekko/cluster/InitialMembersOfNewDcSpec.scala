@@ -14,19 +14,19 @@ import pekko.testkit.ImplicitSender
 
 object InitialMembersOfNewDcSpec extends MultiNodeConfig {
   commonConfig(ConfigFactory.parseString(s"""
-    akka.actor.provider = cluster
-    akka.actor.warn-about-java-serializer-usage = off
-    akka.cluster {
+    pekko.actor.provider = cluster
+    pekko.actor.warn-about-java-serializer-usage = off
+    pekko.cluster {
       jmx.enabled                         = off
       debug.verbose-gossip-logging = on
     }
-    akka.cluster.multi-data-center {
+    pekko.cluster.multi-data-center {
        #cross-data-center-gossip-probability = 0.5
     }
-    akka.loglevel = INFO
-    akka.log-dead-letters = off
-    akka.log-dead-letters-during-shutdown = off
-    akka.loggers = ["org.apache.pekko.testkit.TestEventListener"]
+    pekko.loglevel = INFO
+    pekko.log-dead-letters = off
+    pekko.log-dead-letters-during-shutdown = off
+    pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
     """))
 
   val one = role("one")
@@ -37,11 +37,11 @@ object InitialMembersOfNewDcSpec extends MultiNodeConfig {
   val five = role("five")
 
   nodeConfig(one, two, three) {
-    ConfigFactory.parseString("akka.cluster.multi-data-center.self-data-center = DC1")
+    ConfigFactory.parseString("pekko.cluster.multi-data-center.self-data-center = DC1")
   }
 
   nodeConfig(four, five) {
-    ConfigFactory.parseString("akka.cluster.multi-data-center.self-data-center = DC2")
+    ConfigFactory.parseString("pekko.cluster.multi-data-center.self-data-center = DC2")
   }
 
 }

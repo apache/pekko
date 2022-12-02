@@ -62,7 +62,7 @@ class ClusterConfigSpec extends AkkaSpec {
     "be able to parse non-default cluster config elements" in {
       val settings = new ClusterSettings(
         ConfigFactory.parseString("""
-          |akka {
+          |pekko {
           |  cluster {
           |    roles = [ "hamlet" ]
           |    multi-data-center.self-data-center = "blue"

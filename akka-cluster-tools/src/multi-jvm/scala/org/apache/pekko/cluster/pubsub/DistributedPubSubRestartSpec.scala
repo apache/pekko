@@ -31,12 +31,12 @@ object DistributedPubSubRestartSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(ConfigFactory.parseString("""
-    akka.loglevel = INFO
-    akka.cluster.pub-sub.gossip-interval = 500ms
-    akka.actor.provider = cluster
-    akka.remote.log-remote-lifecycle-events = off
-    akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-    akka.cluster.testkit.auto-down-unreachable-after = off
+    pekko.loglevel = INFO
+    pekko.cluster.pub-sub.gossip-interval = 500ms
+    pekko.actor.provider = cluster
+    pekko.remote.log-remote-lifecycle-events = off
+    pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+    pekko.cluster.testkit.auto-down-unreachable-after = off
     """))
 
   testTransport(on = true)
@@ -142,8 +142,8 @@ class DistributedPubSubRestartSpec
         val newSystem = {
           val port = Cluster(system).selfAddress.port.get
           val config = ConfigFactory.parseString(s"""
-              akka.remote.artery.canonical.port=$port
-              akka.remote.classic.netty.tcp.port=$port
+              pekko.remote.artery.canonical.port=$port
+              pekko.remote.classic.netty.tcp.port=$port
               """).withFallback(system.settings.config)
 
           ActorSystem(system.name, config)

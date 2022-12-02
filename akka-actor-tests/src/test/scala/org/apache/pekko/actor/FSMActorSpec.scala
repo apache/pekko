@@ -101,7 +101,7 @@ object FSMActorSpec {
   final case class CodeState(soFar: String, code: String)
 }
 
-class FSMActorSpec extends AkkaSpec(Map("akka.actor.debug.fsm" -> true)) with ImplicitSender {
+class FSMActorSpec extends AkkaSpec(Map("pekko.actor.debug.fsm" -> true)) with ImplicitSender {
   import FSMActorSpec._
 
   val timeout = Timeout(2 seconds)
@@ -254,7 +254,7 @@ class FSMActorSpec extends AkkaSpec(Map("akka.actor.debug.fsm" -> true)) with Im
     "log events and transitions if asked to do so" in {
       import pekko.util.ccompat.JavaConverters._
       val config = ConfigFactory
-        .parseMap(Map("akka.loglevel" -> "DEBUG", "akka.actor.debug.fsm" -> true).asJava)
+        .parseMap(Map("pekko.loglevel" -> "DEBUG", "pekko.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)
       val fsmEventSystem = ActorSystem("fsmEvent", config)
       try {

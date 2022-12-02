@@ -16,15 +16,15 @@ object TestConfigExample {
 
     // #parse-string
     ConfigFactory.parseString("""
-      akka.loglevel = DEBUG
-      akka.log-config-on-start = on
+      pekko.loglevel = DEBUG
+      pekko.log-config-on-start = on
       """)
     // #parse-string
 
     // #fallback-application-conf
     ConfigFactory.parseString("""
-      akka.loglevel = DEBUG
-      akka.log-config-on-start = on
+      pekko.loglevel = DEBUG
+      pekko.log-config-on-start = on
       """).withFallback(ConfigFactory.load())
     // #fallback-application-conf
   }

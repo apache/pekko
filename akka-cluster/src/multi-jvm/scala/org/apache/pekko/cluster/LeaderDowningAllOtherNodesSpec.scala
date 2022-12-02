@@ -23,9 +23,9 @@ object LeaderDowningAllOtherNodesMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
-      akka.cluster.failure-detector.monitored-by-nr-of-members = 2
-      akka.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
-      akka.cluster.testkit.auto-down-unreachable-after = 1s
+      pekko.cluster.failure-detector.monitored-by-nr-of-members = 2
+      pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
+      pekko.cluster.testkit.auto-down-unreachable-after = 1s
       """))
       .withFallback(MultiNodeClusterSpec.clusterConfig))
 }

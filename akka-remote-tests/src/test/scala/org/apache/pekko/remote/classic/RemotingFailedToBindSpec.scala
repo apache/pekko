@@ -19,7 +19,7 @@ class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
     "not start if port is taken" in {
       val port = SocketUtil.temporaryLocalPort()
       val config = ConfigFactory.parseString(s"""
-           |akka {
+           |pekko {
            |  actor {
            |    provider = remote
            |  }

@@ -21,7 +21,7 @@ import pekko.testkit.ImplicitSender
 import pekko.util.OptionVal
 
 class DuplicateHandshakeSpec extends AkkaSpec("""
-      akka.stream.materializer.debug.fuzzing-mode = on
+      pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 
   val pool = new EnvelopeBufferPool(1034 * 1024, 128)

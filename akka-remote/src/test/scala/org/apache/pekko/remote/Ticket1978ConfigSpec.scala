@@ -9,14 +9,14 @@ import pekko.remote.transport.netty.SSLSettings
 import pekko.testkit._
 
 class Ticket1978ConfigSpec extends AkkaSpec("""
-    akka.remote.classic.netty.ssl.security {
+    pekko.remote.classic.netty.ssl.security {
       random-number-generator = "SecureRandom"
     }
     """) with ImplicitSender with DefaultTimeout {
 
   "SSL Remoting" must {
     "be able to parse these extra Netty config elements" in {
-      val settings = new SSLSettings(system.settings.config.getConfig("akka.remote.classic.netty.ssl.security"))
+      val settings = new SSLSettings(system.settings.config.getConfig("pekko.remote.classic.netty.ssl.security"))
 
       settings.SSLKeyStore should ===("keystore")
       settings.SSLKeyStorePassword should ===("changeme")

@@ -32,9 +32,9 @@ object ClusterShardingGetStatsSpec {
 
 object ClusterShardingGetStatsSpecConfig
     extends MultiNodeClusterShardingConfig(additionalConfig = """
-        akka.log-dead-letters-during-shutdown = off
-        akka.cluster.sharding.updating-state-timeout = 2s
-        akka.cluster.sharding.waiting-for-state-timeout = 2s
+        pekko.log-dead-letters-during-shutdown = off
+        pekko.cluster.sharding.updating-state-timeout = 2s
+        pekko.cluster.sharding.waiting-for-state-timeout = 2s
         """) {
 
   val controller = role("controller")
@@ -42,7 +42,7 @@ object ClusterShardingGetStatsSpecConfig
   val second = role("second")
   val third = role("third")
 
-  nodeConfig(first, second, third)(ConfigFactory.parseString("""akka.cluster.roles=["shard"]"""))
+  nodeConfig(first, second, third)(ConfigFactory.parseString("""pekko.cluster.roles=["shard"]"""))
 
 }
 

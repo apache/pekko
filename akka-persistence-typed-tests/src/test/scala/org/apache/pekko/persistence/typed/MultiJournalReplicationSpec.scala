@@ -56,11 +56,11 @@ object MultiJournalReplicationSpec {
   def separateJournalsConfig: Config = ConfigFactory.parseString(s"""
     journal1 {
       journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      query = $${akka.persistence.testkit.query}
+      query = $${pekko.persistence.testkit.query}
     }
     journal2 {
       journal.class = "${classOf[PersistenceTestKitPlugin].getName}"
-      query = $${akka.persistence.testkit.query}
+      query = $${pekko.persistence.testkit.query}
     }
     """).withFallback(ConfigFactory.load()).resolve()
 

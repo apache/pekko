@@ -15,8 +15,8 @@ import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.WithLogCapturing
 
-class BoundedSourceQueueSpec extends StreamSpec("""akka.loglevel = debug
-    |akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
+    |pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     |""".stripMargin) with WithLogCapturing {
 
   override implicit def patienceConfig: PatienceConfig = PatienceConfig(5.seconds)

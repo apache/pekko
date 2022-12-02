@@ -55,7 +55,7 @@ object SerializationSetupSpec {
   val bootstrapSettings = BootstrapSetup(
     None,
     Some(ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor {
         allow-java-serialization = on
 
@@ -74,7 +74,7 @@ object SerializationSetupSpec {
   val noJavaSerializationSystem = ActorSystem(
     "SerializationSettingsSpec" + "NoJavaSerialization",
     ConfigFactory.parseString("""
-    akka {
+    pekko {
       actor {
         allow-java-serialization = off
         # this is by default on, but tests are running with off, use defaults here
@@ -114,9 +114,9 @@ class SerializationSetupSpec
     "fail during ActorSystem creation when misconfigured" in {
       val config =
         ConfigFactory.parseString("""
-             akka.loglevel = OFF
-             akka.stdout-loglevel = OFF
-             akka.actor.serializers.doe = "john.is.not.here"
+             pekko.loglevel = OFF
+             pekko.stdout-loglevel = OFF
+             pekko.actor.serializers.doe = "john.is.not.here"
           """).withFallback(ConfigFactory.load())
 
       a[ClassNotFoundException] should be thrownBy {
@@ -142,7 +142,7 @@ class SerializationSetupSpec
   val addedJavaSerializationProgramaticallyButDisabledSettings = BootstrapSetup(
     None,
     Some(ConfigFactory.parseString("""
-    akka {
+    pekko {
       loglevel = debug
       actor {
         allow-java-serialization = off
@@ -163,7 +163,7 @@ class SerializationSetupSpec
     "throw if passed system to JavaSerializer has allow-java-serialization = off" in {
       intercept[DisabledJavaSerializer.JavaSerializationException] {
         new JavaSerializer(noJavaSerializationSystem.asInstanceOf[ExtendedActorSystem])
-      }.getMessage should include("akka.actor.allow-java-serialization = off")
+      }.getMessage should include("pekko.actor.allow-java-serialization = off")
 
       intercept[DisabledJavaSerializer.JavaSerializationException] {
         SerializationExtension(addedJavaSerializationViaSettingsSystem)

@@ -33,8 +33,8 @@ object ClusterDeathWatchMultiJvmSpec extends MultiNodeConfig {
     debugConfig(on = false)
       .withFallback(ConfigFactory.parseString("""
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
       """))
       .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 

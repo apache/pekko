@@ -65,8 +65,8 @@ abstract class ClusterShardingCustomShardAllocationSpecConfig(mode: String)
     extends MultiNodeClusterShardingConfig(
       mode,
       additionalConfig = s"""
-      akka.cluster.sharding.rebalance-interval = 1 s
-      akka.persistence.journal.leveldb-shared.store.native = off
+      pekko.cluster.sharding.rebalance-interval = 1 s
+      pekko.persistence.journal.leveldb-shared.store.native = off
       """) {
 
   val first = role("first")

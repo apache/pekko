@@ -29,9 +29,9 @@ object StatsSampleSpecConfig extends MultiNodeConfig {
     nodeConfig(role) {
       ConfigFactory.parseString(s"""
       # Enable metrics extension in akka-cluster-metrics.
-      akka.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
+      pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
       # Sigar native library extract location during tests.
-      akka.cluster.metrics.native-library-extract-folder=target/native/${role.name}
+      pekko.cluster.metrics.native-library-extract-folder=target/native/${role.name}
       """)
     }
   }
@@ -39,11 +39,11 @@ object StatsSampleSpecConfig extends MultiNodeConfig {
   // this configuration will be used for all nodes
   // note that no fixed host names and ports are used
   commonConfig(ConfigFactory.parseString("""
-    akka.actor.provider = cluster
-    akka.remote.classic.log-remote-lifecycle-events = off
-    akka.cluster.roles = [compute]
+    pekko.actor.provider = cluster
+    pekko.remote.classic.log-remote-lifecycle-events = off
+    pekko.cluster.roles = [compute]
     #//#router-lookup-config
-    akka.actor.deployment {
+    pekko.actor.deployment {
       /statsService/workerRouter {
           router = consistent-hashing-group
           routees.paths = ["/user/statsWorker"]

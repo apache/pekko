@@ -17,8 +17,8 @@ import pekko.stream.testkit.scaladsl._
 
 @nowarn("msg=deprecated")
 class FlowBufferSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 1
-    akka.stream.materializer.max-input-buffer-size = 1
+    pekko.stream.materializer.initial-input-buffer-size = 1
+    pekko.stream.materializer.max-input-buffer-size = 1
   """) {
 
   "Buffer" must {

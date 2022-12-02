@@ -20,12 +20,12 @@ class RemoteQuarantinePiercingConfig(artery: Boolean) extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-      akka.loglevel = INFO
-      akka.remote.log-remote-lifecycle-events = INFO
-      akka.remote.artery.enabled = $artery
+      pekko.loglevel = INFO
+      pekko.remote.log-remote-lifecycle-events = INFO
+      pekko.remote.artery.enabled = $artery
       # test is using Java serialization and not priority to rewrite
-      akka.actor.allow-java-serialization = on
-      akka.actor.warn-about-java-serializer-usage = off
+      pekko.actor.allow-java-serialization = on
+      pekko.actor.warn-about-java-serializer-usage = off
       """)).withFallback(RemotingMultiNodeSpec.commonConfig))
 
 }
@@ -116,8 +116,8 @@ abstract class RemoteQuarantinePiercingSpec(multiNodeConfig: RemoteQuarantinePie
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-          akka.remote.classic.netty.tcp.port = ${address.port.get}
-          akka.remote.artery.canonical.port = ${address.port.get}
+          pekko.remote.classic.netty.tcp.port = ${address.port.get}
+          pekko.remote.artery.canonical.port = ${address.port.get}
           """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject")
 

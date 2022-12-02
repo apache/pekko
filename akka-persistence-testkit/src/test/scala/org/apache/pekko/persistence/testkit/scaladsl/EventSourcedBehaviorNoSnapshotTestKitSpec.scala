@@ -15,8 +15,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 class EventSourcedBehaviorNoSnapshotTestKitSpec
     extends ScalaTestWithActorTestKit(ConfigFactory.parseString("""
-    akka.persistence.testkit.events.serialize = off
-    akka.persistence.testkit.snapshots.serialize = off
+    pekko.persistence.testkit.events.serialize = off
+    pekko.persistence.testkit.snapshots.serialize = off
     """).withFallback(PersistenceTestKitPlugin.config))
     with AnyWordSpecLike
     with LogCapturing {

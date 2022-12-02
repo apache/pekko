@@ -49,8 +49,8 @@ object UseRoleIgnoredMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(debugConfig(on = false).withFallback(MultiNodeClusterSpec.clusterConfig))
 
-  nodeConfig(first)(ConfigFactory.parseString("""akka.cluster.roles =["a", "c"]"""))
-  nodeConfig(second, third)(ConfigFactory.parseString("""akka.cluster.roles =["b", "c"]"""))
+  nodeConfig(first)(ConfigFactory.parseString("""pekko.cluster.roles =["a", "c"]"""))
+  nodeConfig(second, third)(ConfigFactory.parseString("""pekko.cluster.roles =["b", "c"]"""))
 
 }
 

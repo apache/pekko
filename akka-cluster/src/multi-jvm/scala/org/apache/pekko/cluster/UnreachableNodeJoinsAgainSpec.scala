@@ -31,7 +31,7 @@ object UnreachableNodeJoinsAgainMultiNodeConfig extends MultiNodeConfig {
   val fourth = role("fourth")
 
   commonConfig(ConfigFactory.parseString("""
-      akka.remote.log-remote-lifecycle-events = off
+      pekko.remote.log-remote-lifecycle-events = off
     """).withFallback(debugConfig(on = false).withFallback(MultiNodeClusterSpec.clusterConfig)))
 
   testTransport(on = true)
@@ -163,13 +163,13 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
             .parseString(
               if (RARP(system).provider.remoteSettings.Artery.Enabled)
                 s"""
-                akka.remote.artery.canonical {
+                pekko.remote.artery.canonical {
                   hostname = ${victimAddress.host.get}
                   port = ${victimAddress.port.get}
                 }
                """
               else s"""
-              akka.remote.classic.netty.tcp {
+              pekko.remote.classic.netty.tcp {
                 hostname = ${victimAddress.host.get}
                 port = ${victimAddress.port.get}
               }""")

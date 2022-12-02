@@ -14,7 +14,7 @@ import pekko.stream.Materializer
 import pekko.stream.testkit._
 
 class HeadSinkSpec extends StreamSpec("""
-    akka.stream.materializer.initial-input-buffer-size = 2
+    pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
   "A Flow with Sink.head" must {

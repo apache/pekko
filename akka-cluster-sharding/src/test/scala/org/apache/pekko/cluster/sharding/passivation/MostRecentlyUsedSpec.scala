@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 object MostRecentlyUsedSpec {
 
   val config: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = mru
         mru {
@@ -25,7 +25,7 @@ object MostRecentlyUsedSpec {
     """).withFallback(EntityPassivationSpec.config)
 
   val idleConfig: Config = ConfigFactory.parseString("""
-    akka.cluster.sharding {
+    pekko.cluster.sharding {
       passivation {
         strategy = mru-idle
         mru-idle {

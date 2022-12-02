@@ -21,10 +21,10 @@ import pekko.testkit.WithLogCapturing
 // tests deprecated DNS API
 @nowarn("msg=deprecated")
 class AsyncDnsManagerSpec extends AkkaSpec("""
-    akka.loglevel = DEBUG
-    akka.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
-    akka.io.dns.resolver = async-dns
-    akka.io.dns.async-dns.nameservers = default
+    pekko.loglevel = DEBUG
+    pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
+    pekko.io.dns.resolver = async-dns
+    pekko.io.dns.async-dns.nameservers = default
   """) with ImplicitSender with WithLogCapturing {
 
   val dns = Dns(system).manager

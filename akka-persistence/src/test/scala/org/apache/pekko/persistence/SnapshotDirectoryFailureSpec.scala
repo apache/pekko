@@ -35,7 +35,7 @@ class SnapshotDirectoryFailureSpec
         "inmem",
         "SnapshotDirectoryFailureSpec",
         extraConfig = Some(s"""
-  akka.persistence.snapshot-store.local.dir = "${SnapshotDirectoryFailureSpec.inUseSnapshotPath}"
+  pekko.persistence.snapshot-store.local.dir = "${SnapshotDirectoryFailureSpec.inUseSnapshotPath}"
   """)))
     with ImplicitSender {
 

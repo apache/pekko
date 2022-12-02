@@ -26,7 +26,7 @@ object HandshakeRestartReceiverSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
-       akka {
+       pekko {
          loglevel = INFO
          actor.provider = remote
          remote.artery {
@@ -34,8 +34,8 @@ object HandshakeRestartReceiverSpec extends MultiNodeConfig {
          }
        }
        # test is using Java serialization and not priority to rewrite
-       akka.actor.allow-java-serialization = on
-       akka.actor.warn-about-java-serializer-usage = off
+       pekko.actor.allow-java-serialization = on
+       pekko.actor.warn-about-java-serializer-usage = off
        """)))
 
   class Subject extends Actor {
@@ -124,7 +124,7 @@ abstract class HandshakeRestartReceiverSpec
         val freshSystem = ActorSystem(
           system.name,
           ConfigFactory.parseString(s"""
-              akka.remote.artery.canonical.port = ${address.port.get}
+              pekko.remote.artery.canonical.port = ${address.port.get}
               """).withFallback(system.settings.config))
         freshSystem.actorOf(Props[Subject](), "subject2")
 
