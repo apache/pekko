@@ -12,7 +12,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.coordination.lease.LeaseSettings
-import pekko.testkit.{ AkkaSpec, EventFilter }
+import pekko.testkit.{ EventFilter, PekkoSpec }
 
 object LeaseProviderSpec {
   class LeaseA(settings: LeaseSettings) extends Lease(settings) {
@@ -64,7 +64,7 @@ object LeaseProviderSpec {
   """)
 }
 
-class LeaseProviderSpec extends AkkaSpec(LeaseProviderSpec.config) {
+class LeaseProviderSpec extends PekkoSpec(LeaseProviderSpec.config) {
   import LeaseProviderSpec._
 
   "LeaseProvider" must {

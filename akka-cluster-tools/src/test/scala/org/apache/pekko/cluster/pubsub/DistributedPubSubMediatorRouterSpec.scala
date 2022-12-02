@@ -91,7 +91,7 @@ trait DistributedPubSubMediatorRouterSpec { this: AnyWordSpecLike with TestKit w
 }
 
 class DistributedPubSubMediatorWithRandomRouterSpec
-    extends AkkaSpec(DistributedPubSubMediatorRouterSpec.config("random"))
+    extends PekkoSpec(DistributedPubSubMediatorRouterSpec.config("random"))
     with DistributedPubSubMediatorRouterSpec
     with DefaultTimeout
     with ImplicitSender {
@@ -110,7 +110,7 @@ class DistributedPubSubMediatorWithRandomRouterSpec
 }
 
 class DistributedPubSubMediatorWithHashRouterSpec
-    extends AkkaSpec(DistributedPubSubMediatorRouterSpec.config("consistent-hashing"))
+    extends PekkoSpec(DistributedPubSubMediatorRouterSpec.config("consistent-hashing"))
     with DistributedPubSubMediatorRouterSpec
     with DefaultTimeout
     with ImplicitSender {

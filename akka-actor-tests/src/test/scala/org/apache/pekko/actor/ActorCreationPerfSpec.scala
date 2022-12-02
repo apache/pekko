@@ -12,7 +12,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 
 import org.apache.pekko
-import pekko.testkit.{ AkkaSpec, ImplicitSender, PerformanceTest }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, PerformanceTest }
 import pekko.testkit.metrics._
 import pekko.testkit.metrics.HeapMemoryUsage
 
@@ -118,7 +118,7 @@ object ActorCreationPerfSpec {
 }
 
 class ActorCreationPerfSpec
-    extends AkkaSpec(ActorCreationPerfSpec.config)
+    extends PekkoSpec(ActorCreationPerfSpec.config)
     with ImplicitSender
     with MetricsKit
     with BeforeAndAfterAll {

@@ -8,9 +8,9 @@ import org.apache.pekko
 import pekko.cluster.sharding.Shard.{ CurrentShardState, ShardStats }
 import pekko.cluster.sharding.ShardRegion.ShardState
 import pekko.cluster.sharding.ShardingQueries.ShardsQueryResult
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ShardingQueriesSpec extends AkkaSpec {
+class ShardingQueriesSpec extends PekkoSpec {
 
   private val shards = Seq("a", "b", "busy")
   private val failures = Set("busy")

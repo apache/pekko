@@ -14,10 +14,10 @@ import scala.util.Random
 import org.scalatest.matchers.should.Matchers
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 
-class IndexSpec extends AkkaSpec with Matchers with DefaultTimeout {
+class IndexSpec extends PekkoSpec with Matchers with DefaultTimeout {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   private def emptyIndex =
     new Index[String, Int](100,

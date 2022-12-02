@@ -17,7 +17,7 @@ import com.typesafe.config.Config
 import org.scalatest.Notifying
 
 import org.apache.pekko
-import pekko.testkit.metrics.reporter.AkkaConsoleReporter
+import pekko.testkit.metrics.reporter.PekkoConsoleReporter
 
 /**
  * Allows to easily measure performance / memory / file descriptor use in tests.
@@ -46,7 +46,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
    */
   def metricsConfig: Config
 
-  private[metrics] val registry = new MetricRegistry() with AkkaMetricRegistry
+  private[metrics] val registry = new MetricRegistry() with PekkoMetricRegistry
 
   initMetricReporters()
 
@@ -55,7 +55,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
 
     def configureConsoleReporter(): Unit = {
       if (settings.Reporters.contains("console")) {
-        val akkaConsoleReporter = new AkkaConsoleReporter(registry, settings.ConsoleReporter.Verbose)
+        val akkaConsoleReporter = new PekkoConsoleReporter(registry, settings.ConsoleReporter.Verbose)
 
         if (settings.ConsoleReporter.ScheduledReportInterval > Duration.Zero)
           akkaConsoleReporter.start(settings.ConsoleReporter.ScheduledReportInterval.toMillis, TimeUnit.MILLISECONDS)
@@ -189,7 +189,7 @@ private[pekko] object MetricsKit {
 }
 
 /** Provides access to custom Akka `com.codahale.metrics.Metric`, with named methods. */
-trait AkkaMetricRegistry {
+trait PekkoMetricRegistry {
   this: MetricRegistry =>
 
   def getKnownOpsInTimespanCounters = filterFor(classOf[KnownOpsInTimespanTimer])

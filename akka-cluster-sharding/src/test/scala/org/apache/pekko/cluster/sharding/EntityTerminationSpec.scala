@@ -9,7 +9,7 @@ import pekko.actor.Actor
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.WithLogCapturing
 import com.typesafe.config.ConfigFactory
@@ -53,7 +53,7 @@ object EntityTerminationSpec {
   }
 }
 
-class EntityTerminationSpec extends AkkaSpec(EntityTerminationSpec.config) with ImplicitSender with WithLogCapturing {
+class EntityTerminationSpec extends PekkoSpec(EntityTerminationSpec.config) with ImplicitSender with WithLogCapturing {
 
   import EntityTerminationSpec._
 

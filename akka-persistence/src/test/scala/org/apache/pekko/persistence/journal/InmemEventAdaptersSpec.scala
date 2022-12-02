@@ -7,12 +7,12 @@ package org.apache.pekko.persistence.journal
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 import scala.annotation.nowarn
 
 @nowarn("msg=Unused import")
-class InmemEventAdaptersSpec extends AkkaSpec {
+class InmemEventAdaptersSpec extends PekkoSpec {
 
   val config = ConfigFactory.parseString(s"""
       |pekko.persistence.journal {

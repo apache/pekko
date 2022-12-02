@@ -108,20 +108,20 @@ message DeployData {
  * Message format of Akka Protocol.
  * Message contains either a payload or an instruction.
  */
-message AkkaProtocolMessage {
+message PekkoProtocolMessage {
   optional bytes payload = 1;
-  optional AkkaControlMessage instruction = 2;
+  optional PekkoControlMessage instruction = 2;
 }
 
 /**
  * Defines some control messages for the remoting
  */
-message AkkaControlMessage {
+message PekkoControlMessage {
   required CommandType commandType = 1;
-  optional AkkaHandshakeInfo handshakeInfo = 2;
+  optional PekkoHandshakeInfo handshakeInfo = 2;
 }
 
-message AkkaHandshakeInfo {
+message PekkoHandshakeInfo {
   required AddressData origin = 1;
   required fixed64 uid = 2;
   optional string cookie = 3;
@@ -129,7 +129,7 @@ message AkkaHandshakeInfo {
 }
 
 /**
- * Defines the type of the AkkaControlMessage command type
+ * Defines the type of the PekkoControlMessage command type
  */
 enum CommandType {
   ASSOCIATE = 1;

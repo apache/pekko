@@ -11,7 +11,7 @@ import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.util.ConstantFun
 
-class FlattenTest extends AkkaPublisherVerification[Int] {
+class FlattenTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val s1 = Source(iterable(elements / 2))

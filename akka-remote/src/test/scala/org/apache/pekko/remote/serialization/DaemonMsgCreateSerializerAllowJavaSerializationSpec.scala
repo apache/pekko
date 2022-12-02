@@ -21,7 +21,7 @@ import pekko.routing.FromConfig
 import pekko.routing.RoundRobinPool
 import pekko.serialization.Serialization
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.JavaSerializable
 import pekko.util.unused
 
@@ -39,7 +39,7 @@ object DaemonMsgCreateSerializerAllowJavaSerializationSpec {
 
 case class DummyParameter(val inner: String) extends JavaSerializable
 
-private[pekko] trait SerializationVerification { self: AkkaSpec =>
+private[pekko] trait SerializationVerification { self: PekkoSpec =>
 
   def ser: Serialization
 
@@ -67,7 +67,7 @@ private[pekko] trait SerializationVerification { self: AkkaSpec =>
 }
 
 class DaemonMsgCreateSerializerAllowJavaSerializationSpec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
   # test is verifying Java serialization  
   pekko.actor.allow-java-serialization = on
   pekko.actor.warn-about-java-serializer-usage = off
@@ -128,7 +128,7 @@ class DaemonMsgCreateSerializerAllowJavaSerializationSpec
   }
 }
 
-class DaemonMsgCreateSerializerNoJavaSerializationSpec extends AkkaSpec("""
+class DaemonMsgCreateSerializerNoJavaSerializationSpec extends PekkoSpec("""
    pekko.actor.allow-java-serialization=off
   """) with SerializationVerification {
 

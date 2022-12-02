@@ -9,9 +9,9 @@ import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.cluster.MemberStatus
 import pekko.cluster.TestMember
 import pekko.cluster.metrics._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class MessageSerializerSpec extends AkkaSpec("""
+class MessageSerializerSpec extends PekkoSpec("""
      pekko.actor.provider = cluster
      pekko.remote.classic.netty.tcp.port = 0
      pekko.remote.artery.canonical.port = 0

@@ -10,7 +10,7 @@ import pekko.actor.{ ActorRef, ActorSystem, Props }
 import pekko.cluster.sharding.ShardRegion.CurrentRegions
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.persistence.PersistentActor
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import scala.concurrent.Await
@@ -104,7 +104,7 @@ object PersistentShardingMigrationSpec {
   }
 }
 
-class PersistentShardingMigrationSpec extends AkkaSpec(PersistentShardingMigrationSpec.config) with ImplicitSender {
+class PersistentShardingMigrationSpec extends PekkoSpec(PersistentShardingMigrationSpec.config) with ImplicitSender {
 
   import PersistentShardingMigrationSpec._
 

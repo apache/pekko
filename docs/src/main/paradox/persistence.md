@@ -11,15 +11,15 @@ For the full documentation of this feature and for new projects see @ref:[Event 
 To use Akka Persistence, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
   group2="com.typesafe.akka"
   artifact2="akka-persistence-testkit_$scala.binary.version$"
-  version2=AkkaVersion
+  version2=PekkoVersion
   scope2=test
 }
 

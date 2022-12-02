@@ -24,7 +24,7 @@ object RemoteRouterSpec {
   }
 }
 
-class RemoteRouterSpec extends AkkaSpec(s"""
+class RemoteRouterSpec extends PekkoSpec(s"""
     pekko.actor.provider = remote
     pekko.remote.use-unsafe-remote-features-outside-cluster = on
     pekko.remote.classic.netty.tcp {

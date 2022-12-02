@@ -15,13 +15,13 @@ import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.StreamConverters
 // #import
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import org.scalatest.concurrent.Futures
 
 import scala.collection.immutable
 import scala.concurrent.Future
 
-class StreamConvertersToJava extends AkkaSpec with Futures {
+class StreamConvertersToJava extends PekkoSpec with Futures {
 
   "demonstrate materialization to Java8 streams" in {
     // #asJavaStream

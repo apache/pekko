@@ -9,15 +9,15 @@ import scala.util.Failure
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.remote.transport.TestTransport.SwitchableLoggedBehavior
-import pekko.testkit.{ AkkaSpec, DefaultTimeout }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 object SwitchableLoggedBehaviorSpec {
-  object TestException extends AkkaException("Test exception") with NoStackTrace
+  object TestException extends PekkoException("Test exception") with NoStackTrace
 }
 
-class SwitchableLoggedBehaviorSpec extends AkkaSpec with DefaultTimeout {
+class SwitchableLoggedBehaviorSpec extends PekkoSpec with DefaultTimeout {
   import pekko.remote.classic.transport.SwitchableLoggedBehaviorSpec._
 
   private def defaultBehavior = new SwitchableLoggedBehavior[Unit, Int](_ => Future.successful(3), _ => ())

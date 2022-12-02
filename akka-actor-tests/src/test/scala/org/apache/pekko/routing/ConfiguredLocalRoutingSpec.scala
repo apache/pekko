@@ -20,7 +20,7 @@ import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.UnstartedCell
 import pekko.pattern.gracefulStop
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.testkit.TestActors.echoActorProps
 import pekko.testkit.TestProbe
 
@@ -104,7 +104,7 @@ object ConfiguredLocalRoutingSpec {
 }
 
 class ConfiguredLocalRoutingSpec
-    extends AkkaSpec(ConfiguredLocalRoutingSpec.config)
+    extends PekkoSpec(ConfiguredLocalRoutingSpec.config)
     with DefaultTimeout
     with ImplicitSender {
   import ConfiguredLocalRoutingSpec._

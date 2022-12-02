@@ -82,7 +82,7 @@ object Configuration {
       val config =
         ConfigFactory.parseString(conf.format(localPort, trustStore, keyStore, cipher, enabled.mkString(", ")))
       val fullConfig = config
-        .withFallback(AkkaSpec.testConf)
+        .withFallback(PekkoSpec.testConf)
         .withFallback(ConfigFactory.load)
         .getConfig("pekko.remote.classic.netty.ssl.security")
       val settings = new SSLSettings(fullConfig)
@@ -106,7 +106,7 @@ object Configuration {
       CipherConfig(true, config, cipher, localPort, remotePort, Some(sslEngineProvider))
     } catch {
       case _: IllegalArgumentException | _: NoSuchAlgorithmException =>
-        CipherConfig(false, AkkaSpec.testConf, cipher, localPort, remotePort, None) // Cannot match against the message since the message might be localized :S
+        CipherConfig(false, PekkoSpec.testConf, cipher, localPort, remotePort, None) // Cannot match against the message since the message might be localized :S
     }
   }
 }
@@ -123,11 +123,11 @@ class Ticket1978CrappyRSAWithMD5OnlyHereToMakeSureThingsWorkSpec
     extends Ticket1978CommunicationSpec(getCipherConfig("", "SSL_RSA_WITH_NULL_MD5"))
 
 class Ticket1978NonExistingRNGSecureSpec
-    extends Ticket1978CommunicationSpec(CipherConfig(false, AkkaSpec.testConf, "NonExistingRNG", 12345, 12346, None))
+    extends Ticket1978CommunicationSpec(CipherConfig(false, PekkoSpec.testConf, "NonExistingRNG", 12345, 12346, None))
 
 @nowarn("msg=deprecated")
 abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
-    extends AkkaSpec(cipherConfig.config)
+    extends PekkoSpec(cipherConfig.config)
     with ImplicitSender {
 
   implicit val timeout: Timeout = Timeout(10.seconds)

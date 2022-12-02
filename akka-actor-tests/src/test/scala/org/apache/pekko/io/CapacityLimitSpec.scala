@@ -7,10 +7,10 @@ package org.apache.pekko.io
 import Tcp._
 
 import org.apache.pekko
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 
-class CapacityLimitSpec extends AkkaSpec("""
+class CapacityLimitSpec extends PekkoSpec("""
     pekko.loglevel = ERROR
     pekko.io.tcp.max-channels = 4
     """) with TcpIntegrationSpecSupport {

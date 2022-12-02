@@ -15,15 +15,15 @@ import scala.annotation.nowarn
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.{ AkkaException, OnlyCauseStackTrace }
+import pekko.{ OnlyCauseStackTrace, PekkoException }
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.Stop
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
 import pekko.pattern.pipe
 import pekko.remote._
 import pekko.remote.transport.ActorTransportAdapter._
-import pekko.remote.transport.AkkaPduCodec._
-import pekko.remote.transport.AkkaProtocolTransport._
+import pekko.remote.transport.PekkoPduCodec._
+import pekko.remote.transport.PekkoProtocolTransport._
 import pekko.remote.transport.AssociationHandle._
 import pekko.remote.transport.ProtocolStateActor._
 import pekko.remote.transport.Transport._
@@ -31,11 +31,12 @@ import pekko.util.ByteString
 import pekko.util.Helpers.Requiring
 
 @SerialVersionUID(1L)
-class AkkaProtocolException(msg: String, cause: Throwable) extends AkkaException(msg, cause) with OnlyCauseStackTrace {
+class PekkoProtocolException(
+    msg: String, cause: Throwable) extends PekkoException(msg, cause) with OnlyCauseStackTrace {
   def this(msg: String) = this(msg, null)
 }
 
-private[remote] class AkkaProtocolSettings(config: Config) {
+private[remote] class PekkoProtocolSettings(config: Config) {
 
   import config._
 
@@ -62,7 +63,7 @@ private[remote] class AkkaProtocolSettings(config: Config) {
 }
 
 @nowarn("msg=deprecated")
-private[remote] object AkkaProtocolTransport { // Couldn't these go into the Remoting Extension/ RemoteSettings instead?
+private[remote] object PekkoProtocolTransport { // Couldn't these go into the Remoting Extension/ RemoteSettings instead?
   val AkkaScheme: String = "akka"
   val AkkaOverhead: Int = 0 // Don't know yet
   val UniqueId = new java.util.concurrent.atomic.AtomicInteger(0)
@@ -105,42 +106,42 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  *   the codec that will be used to encode/decode Akka PDUs
  */
 @nowarn("msg=deprecated")
-private[remote] class AkkaProtocolTransport(
+private[remote] class PekkoProtocolTransport(
     wrappedTransport: Transport,
     private val system: ActorSystem,
-    private val settings: AkkaProtocolSettings,
-    private val codec: AkkaPduCodec)
+    private val settings: PekkoProtocolSettings,
+    private val codec: PekkoPduCodec)
     extends ActorTransportAdapter(wrappedTransport, system) {
 
   override val addedSchemeIdentifier: String = AkkaScheme
 
   override def managementCommand(cmd: Any): Future[Boolean] = wrappedTransport.managementCommand(cmd)
 
-  def associate(remoteAddress: Address, refuseUid: Option[Int]): Future[AkkaProtocolHandle] = {
+  def associate(remoteAddress: Address, refuseUid: Option[Int]): Future[PekkoProtocolHandle] = {
     // Prepare a future, and pass its promise to the manager
     val statusPromise: Promise[AssociationHandle] = Promise()
 
     manager ! AssociateUnderlyingRefuseUid(removeScheme(remoteAddress), statusPromise, refuseUid)
 
-    statusPromise.future.mapTo[AkkaProtocolHandle]
+    statusPromise.future.mapTo[PekkoProtocolHandle]
   }
 
-  override val maximumOverhead: Int = AkkaProtocolTransport.AkkaOverhead
+  override val maximumOverhead: Int = PekkoProtocolTransport.AkkaOverhead
   protected def managerName = s"akkaprotocolmanager.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
     val s = settings
-    Props(classOf[AkkaProtocolManager], wt, s).withDeploy(Deploy.local)
+    Props(classOf[PekkoProtocolManager], wt, s).withDeploy(Deploy.local)
   }
 }
 
 @nowarn("msg=deprecated")
-private[transport] class AkkaProtocolManager(
+private[transport] class PekkoProtocolManager(
     private val wrappedTransport: Transport,
-    private val settings: AkkaProtocolSettings)
+    private val settings: PekkoProtocolSettings)
     extends ActorTransportAdapterManager {
 
-  // The AkkaProtocolTransport does not handle the recovery of associations, this task is implemented in the
+  // The PekkoProtocolTransport does not handle the recovery of associations, this task is implemented in the
   // remoting itself. Hence the strategy Stop.
   override val supervisorStrategy = OneForOneStrategy() {
     case NonFatal(_) => Stop
@@ -167,7 +168,7 @@ private[transport] class AkkaProtocolManager(
             handle,
             stateActorAssociationHandler,
             stateActorSettings,
-            AkkaPduProtobufCodec,
+            PekkoPduProtobufCodec$,
             failureDetector)),
         actorNameFor(handle.remoteAddress))
 
@@ -200,7 +201,7 @@ private[transport] class AkkaProtocolManager(
           statusPromise,
           stateActorWrappedTransport,
           stateActorSettings,
-          AkkaPduProtobufCodec,
+          PekkoPduProtobufCodec$,
           failureDetector,
           refuseUid)),
       actorNameFor(remoteAddress))
@@ -212,14 +213,14 @@ private[transport] class AkkaProtocolManager(
 }
 
 @nowarn("msg=deprecated")
-private[remote] class AkkaProtocolHandle(
+private[remote] class PekkoProtocolHandle(
     _localAddress: Address,
     _remoteAddress: Address,
     val readHandlerPromise: Promise[HandleEventListener],
     _wrappedHandle: AssociationHandle,
     val handshakeInfo: HandshakeInfo,
     private val stateActor: ActorRef,
-    private val codec: AkkaPduCodec)
+    private val codec: PekkoPduCodec)
     extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, AkkaScheme) {
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
@@ -300,8 +301,8 @@ private[remote] object ProtocolStateActor {
       remoteAddress: Address,
       statusPromise: Promise[AssociationHandle],
       transport: Transport,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
+      settings: PekkoProtocolSettings,
+      codec: PekkoPduCodec,
       failureDetector: FailureDetector,
       refuseUid: Option[Int]): Props =
     Props(
@@ -319,8 +320,8 @@ private[remote] object ProtocolStateActor {
       handshakeInfo: HandshakeInfo,
       wrappedHandle: AssociationHandle,
       associationListener: AssociationEventListener,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
+      settings: PekkoProtocolSettings,
+      codec: PekkoPduCodec,
       failureDetector: FailureDetector): Props =
     Props(
       classOf[ProtocolStateActor],
@@ -337,8 +338,8 @@ private[remote] class ProtocolStateActor(
     initialData: InitialProtocolStateData,
     private val localHandshakeInfo: HandshakeInfo,
     private val refuseUid: Option[Int],
-    private val settings: AkkaProtocolSettings,
-    private val codec: AkkaPduCodec,
+    private val settings: PekkoProtocolSettings,
+    private val codec: PekkoPduCodec,
     private val failureDetector: FailureDetector)
     extends Actor
     with FSM[AssociationState, ProtocolStateData]
@@ -353,8 +354,8 @@ private[remote] class ProtocolStateActor(
       remoteAddress: Address,
       statusPromise: Promise[AssociationHandle],
       transport: Transport,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
+      settings: PekkoProtocolSettings,
+      codec: PekkoPduCodec,
       failureDetector: FailureDetector,
       refuseUid: Option[Int]) = {
     this(
@@ -371,8 +372,8 @@ private[remote] class ProtocolStateActor(
       handshakeInfo: HandshakeInfo,
       wrappedHandle: AssociationHandle,
       associationListener: AssociationEventListener,
-      settings: AkkaProtocolSettings,
-      codec: AkkaPduCodec,
+      settings: PekkoProtocolSettings,
+      codec: PekkoPduCodec,
       failureDetector: FailureDetector) = {
     this(
       InboundUnassociated(associationListener, wrappedHandle),
@@ -555,7 +556,7 @@ private[remote] class ProtocolStateActor(
               listener.notify(InboundPayload(payload))
               stay()
             case msg =>
-              throw new AkkaProtocolException(
+              throw new PekkoProtocolException(
                 s"unhandled message in state Open(InboundPayload) with type [${safeClassName(msg)}]")
           }
 
@@ -570,7 +571,7 @@ private[remote] class ProtocolStateActor(
         case ListenerReady(_, wrappedHandle)            => wrappedHandle
         case AssociatedWaitHandler(_, wrappedHandle, _) => wrappedHandle
         case msg =>
-          throw new AkkaProtocolException(
+          throw new PekkoProtocolException(
             s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
       }
       // No debug logging here as sending DisassociateUnderlying(Unknown) should have been logged from where
@@ -627,19 +628,19 @@ private[remote] class ProtocolStateActor(
     case StopEvent(reason, _, OutboundUnassociated(_, statusPromise, _)) =>
       statusPromise.tryFailure(reason match {
         case FSM.Failure(info: DisassociateInfo) => disassociateException(info)
-        case _                                   => new AkkaProtocolException("Transport disassociated before handshake finished")
+        case _                                   => new PekkoProtocolException("Transport disassociated before handshake finished")
       })
 
     case StopEvent(reason, _, OutboundUnderlyingAssociated(statusPromise, wrappedHandle)) =>
       statusPromise.tryFailure(reason match {
         case FSM.Failure(TimeoutReason(errorMessage)) =>
-          new AkkaProtocolException(errorMessage)
+          new PekkoProtocolException(errorMessage)
         case FSM.Failure(info: DisassociateInfo) =>
           disassociateException(info)
         case FSM.Failure(ForbiddenUidReason) =>
           InvalidAssociationException("The remote system has a UID that has been quarantined. Association aborted.")
         case _ =>
-          new AkkaProtocolException("Transport disassociated before handshake finished")
+          new PekkoProtocolException("Transport disassociated before handshake finished")
       })
       wrappedHandle.disassociate(disassociationReason(reason), log)
 
@@ -668,7 +669,7 @@ private[remote] class ProtocolStateActor(
 
   private def disassociateException(info: DisassociateInfo): Exception = info match {
     case Unknown =>
-      new AkkaProtocolException("The remote system explicitly disassociated (reason unknown).")
+      new PekkoProtocolException("The remote system explicitly disassociated (reason unknown).")
     case Shutdown =>
       InvalidAssociationException("The remote system refused the association because it is shutting down.")
     case Quarantined =>
@@ -696,7 +697,7 @@ private[remote] class ProtocolStateActor(
     listenForListenerRegistration(readHandlerPromise)
 
     statusPromise.success(
-      new AkkaProtocolHandle(
+      new PekkoProtocolHandle(
         localAddress,
         wrappedHandle.remoteAddress,
         readHandlerPromise,
@@ -716,7 +717,7 @@ private[remote] class ProtocolStateActor(
 
     associationListener.notify(
       InboundAssociation(
-        new AkkaProtocolHandle(
+        new PekkoProtocolHandle(
           localAddress,
           handshakeInfo.origin,
           readHandlerPromise,
@@ -727,11 +728,11 @@ private[remote] class ProtocolStateActor(
     readHandlerPromise.future
   }
 
-  private def decodePdu(pdu: ByteString): AkkaPdu =
+  private def decodePdu(pdu: ByteString): PekkoPdu =
     try codec.decodePdu(pdu)
     catch {
       case NonFatal(e) =>
-        throw new AkkaProtocolException("Error while decoding incoming Akka PDU of length: " + pdu.length, e)
+        throw new PekkoProtocolException("Error while decoding incoming Akka PDU of length: " + pdu.length, e)
     }
 
   // Neither heartbeats neither disassociate cares about backing off if write fails:
@@ -740,20 +741,20 @@ private[remote] class ProtocolStateActor(
   private def sendHeartbeat(wrappedHandle: AssociationHandle): Boolean =
     try wrappedHandle.write(codec.constructHeartbeat)
     catch {
-      case NonFatal(e) => throw new AkkaProtocolException("Error writing HEARTBEAT to transport", e)
+      case NonFatal(e) => throw new PekkoProtocolException("Error writing HEARTBEAT to transport", e)
     }
 
   private def sendDisassociate(wrappedHandle: AssociationHandle, info: DisassociateInfo): Unit =
     try wrappedHandle.write(codec.constructDisassociate(info))
     catch {
-      case NonFatal(e) => throw new AkkaProtocolException("Error writing DISASSOCIATE to transport", e)
+      case NonFatal(e) => throw new PekkoProtocolException("Error writing DISASSOCIATE to transport", e)
     }
 
   private def sendAssociate(wrappedHandle: AssociationHandle, info: HandshakeInfo): Boolean =
     try {
       wrappedHandle.write(codec.constructAssociate(info))
     } catch {
-      case NonFatal(e) => throw new AkkaProtocolException("Error writing ASSOCIATE to transport", e)
+      case NonFatal(e) => throw new PekkoProtocolException("Error writing ASSOCIATE to transport", e)
     }
 
   private def disassociationReason(reason: FSM.Reason): String = reason match {

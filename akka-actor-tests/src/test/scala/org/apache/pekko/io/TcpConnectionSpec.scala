@@ -29,7 +29,7 @@ import pekko.actor._
 import pekko.io.Inet.SocketOption
 import pekko.io.SelectionHandler._
 import pekko.io.Tcp._
-import pekko.testkit.{ AkkaSpec, EventFilter, SocketUtil, TestActorRef, TestProbe }
+import pekko.testkit.{ EventFilter, PekkoSpec, SocketUtil, TestActorRef, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress
 import pekko.testkit.WithLogCapturing
 import pekko.util.{ ByteString, Helpers }
@@ -40,7 +40,7 @@ object TcpConnectionSpec {
   final case class Registration(channel: SelectableChannel, initialOps: Int) extends NoSerializationVerificationNeeded
 }
 
-class TcpConnectionSpec extends AkkaSpec("""
+class TcpConnectionSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     pekko.io.tcp.trace-logging = on
@@ -377,7 +377,7 @@ class TcpConnectionSpec extends AkkaSpec("""
     "respect pull mode" in new EstablishedConnectionTest(pullMode = true) {
       // override config to decrease default buffer size
       def config =
-        ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 1k").withFallback(AkkaSpec.testConf)
+        ConfigFactory.parseString("pekko.io.tcp.direct-buffer-size = 1k").withFallback(PekkoSpec.testConf)
       override implicit lazy val system: ActorSystem = ActorSystem("respectPullModeTest", config)
 
       try run {

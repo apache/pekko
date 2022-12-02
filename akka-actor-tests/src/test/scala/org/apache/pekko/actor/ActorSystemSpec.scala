@@ -116,7 +116,7 @@ object ActorSystemSpec {
 }
 
 @nowarn
-class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSender {
+class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSender {
 
   import ActorSystemSpec.FastActor
 
@@ -142,7 +142,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
 
     "log dead letters" in {
       val sys =
-        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(AkkaSpec.testConf))
+        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(PekkoSpec.testConf))
       try {
         val probe = TestProbe()(sys)
         val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
@@ -166,7 +166,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
 
     "log dead letters sent without sender reference" in {
       val sys =
-        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(AkkaSpec.testConf))
+        ActorSystem("LogDeadLetters", ConfigFactory.parseString("pekko.loglevel=INFO").withFallback(PekkoSpec.testConf))
       try {
         val probe = TestProbe()(sys)
         val a = sys.actorOf(Props[ActorSystemSpec.Terminater]())
@@ -189,7 +189,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
     }
 
     "run termination callbacks in order" in {
-      val system2 = ActorSystem("TerminationCallbacks", AkkaSpec.testConf)
+      val system2 = ActorSystem("TerminationCallbacks", PekkoSpec.testConf)
       val result = new ConcurrentLinkedQueue[Int]
       val count = 10
       val latch = TestLatch(count)
@@ -211,7 +211,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
     }
 
     "awaitTermination after termination callbacks" in {
-      val system2 = ActorSystem("AwaitTermination", AkkaSpec.testConf)
+      val system2 = ActorSystem("AwaitTermination", PekkoSpec.testConf)
       @volatile
       var callbackWasRun = false
 
@@ -240,7 +240,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
     }
 
     "throw RejectedExecutionException when shutdown" in {
-      val system2 = ActorSystem("RejectedExecution-1", AkkaSpec.testConf)
+      val system2 = ActorSystem("RejectedExecution-1", PekkoSpec.testConf)
       Await.ready(system2.terminate(), 10 seconds)
 
       intercept[RejectedExecutionException] {
@@ -249,7 +249,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
     }
 
     "throw RejectedExecutionException or run termination callback when shutting down" in {
-      val system2 = ActorSystem("RejectedExecution-2", AkkaSpec.testConf)
+      val system2 = ActorSystem("RejectedExecution-2", PekkoSpec.testConf)
       // using counter to detect double calls
       val count = new AtomicInteger
 
@@ -305,7 +305,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
     }
 
     "shut down when /user fails" in {
-      implicit val system = ActorSystem("Stop", AkkaSpec.testConf)
+      implicit val system = ActorSystem("Stop", PekkoSpec.testConf)
       EventFilter[ActorKilledException]().intercept {
         system.actorSelection("/user") ! Kill
         Await.ready(system.whenTerminated, Duration.Inf)
@@ -318,7 +318,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
           "Stop",
           ConfigFactory
             .parseString("pekko.actor.guardian-supervisor-strategy=org.apache.pekko.actor.StoppingSupervisorStrategy")
-            .withFallback(AkkaSpec.testConf))
+            .withFallback(PekkoSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "die" => throw new Exception("hello")
@@ -341,7 +341,7 @@ class ActorSystemSpec extends AkkaSpec(ActorSystemSpec.config) with ImplicitSend
           "Stop",
           ConfigFactory
             .parseString("pekko.actor.guardian-supervisor-strategy=\"org.apache.pekko.actor.ActorSystemSpec$Strategy\"")
-            .withFallback(AkkaSpec.testConf))
+            .withFallback(PekkoSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {
           case "die" => throw new Exception("hello")

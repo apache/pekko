@@ -11,7 +11,7 @@ import java.util.zip.GZIPOutputStream
 
 import org.apache.pekko
 import pekko.event.NoMarkerLogging
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 class SecureRandomFactorySHA1Spec extends SecureRandomFactorySpec("SHA1PRNG")
 class SecureRandomFactoryNativePRNGSpec extends SecureRandomFactorySpec("NativePRNG")
@@ -19,7 +19,7 @@ class SecureRandomFactoryJVMChoiceSpec extends SecureRandomFactorySpec("SecureRa
 class SecureRandomFactoryBlankSpec extends SecureRandomFactorySpec("")
 class SecureRandomFactoryInvalidPRNGSpec extends SecureRandomFactorySpec("InvalidPRNG")
 
-abstract class SecureRandomFactorySpec(alg: String) extends AkkaSpec {
+abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
   var prng: SecureRandom = null
 
   def isSupported: Boolean = {

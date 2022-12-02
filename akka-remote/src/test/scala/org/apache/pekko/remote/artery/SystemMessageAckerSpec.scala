@@ -13,12 +13,12 @@ import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import pekko.util.OptionVal
 
-class SystemMessageAckerSpec extends AkkaSpec("""
+class SystemMessageAckerSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 

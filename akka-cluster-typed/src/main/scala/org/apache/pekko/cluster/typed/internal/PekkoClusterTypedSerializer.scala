@@ -21,7 +21,7 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class AkkaClusterTypedSerializer(override val system: ExtendedActorSystem)
+private[pekko] final class PekkoClusterTypedSerializer(override val system: ExtendedActorSystem)
     extends SerializerWithStringManifest
     with BaseSerializer {
 

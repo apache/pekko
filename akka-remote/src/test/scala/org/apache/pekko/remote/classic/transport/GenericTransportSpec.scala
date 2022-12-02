@@ -13,14 +13,14 @@ import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.remote.RemoteActorRefProvider
 import pekko.remote.transport.{ AssociationRegistry => _, _ }
 import pekko.remote.transport.AssociationHandle.{ ActorHandleEventListener, Disassociated, InboundPayload }
-import pekko.remote.transport.TestTransport.{ AssociateAttempt, DisassociateAttempt, ListenAttempt, WriteAttempt, _ }
+import pekko.remote.transport.TestTransport._
 import pekko.remote.transport.Transport._
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec }
 import pekko.util.ByteString
 
 @nowarn("msg=deprecated")
 abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
-    extends AkkaSpec("""
+    extends PekkoSpec("""
          pekko.remote.artery.enabled = false
          pekko.actor.provider = remote
          # test is using Java serialization and not priority to rewrite
@@ -44,11 +44,11 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
   def wrapTransport(transport: Transport): Transport =
     if (withAkkaProtocol) {
       val provider = system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider]
-      new AkkaProtocolTransport(
+      new PekkoProtocolTransport(
         transport,
         system,
-        new AkkaProtocolSettings(provider.remoteSettings.config),
-        AkkaPduProtobufCodec)
+        new PekkoProtocolSettings(provider.remoteSettings.config),
+        PekkoPduProtobufCodec$)
     } else transport
 
   def newTransportA(registry: AssociationRegistry): Transport =
@@ -128,7 +128,7 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       handleB.readHandlerPromise.success(ActorHandleEventListener(self))
 
       val payload = ByteString("PDU")
-      val pdu = if (withAkkaProtocol) AkkaPduProtobufCodec.constructPayload(payload) else payload
+      val pdu = if (withAkkaProtocol) PekkoPduProtobufCodec$.constructPayload(payload) else payload
 
       awaitCond(registry.existsAssociation(addressATest, addressBTest))
 

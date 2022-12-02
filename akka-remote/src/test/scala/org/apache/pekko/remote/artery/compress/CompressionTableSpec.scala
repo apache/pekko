@@ -4,9 +4,9 @@
 
 package org.apache.pekko.remote.artery.compress
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class CompressionTableSpec extends AkkaSpec {
+class CompressionTableSpec extends PekkoSpec {
 
   "CompressionTable" must {
     "should invert" in {

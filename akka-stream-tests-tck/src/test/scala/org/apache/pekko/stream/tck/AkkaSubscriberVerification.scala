@@ -11,10 +11,10 @@ import org.scalatestplus.testng.TestNGSuiteLike
 
 import org.apache.pekko.actor.ActorSystem
 
-abstract class AkkaSubscriberBlackboxVerification[T](env: TestEnvironment)
+abstract class PekkoSubscriberBlackboxVerification[T](env: TestEnvironment)
     extends SubscriberBlackboxVerification[T](env)
     with TestNGSuiteLike
-    with AkkaSubscriberVerificationLike
+    with PekkoSubscriberVerificationLike
     with ActorSystemLifecycle {
 
   def this(printlnDebug: Boolean) =
@@ -23,10 +23,10 @@ abstract class AkkaSubscriberBlackboxVerification[T](env: TestEnvironment)
   def this() = this(false)
 }
 
-abstract class AkkaSubscriberWhiteboxVerification[T](env: TestEnvironment)
+abstract class PekkoSubscriberWhiteboxVerification[T](env: TestEnvironment)
     extends SubscriberWhiteboxVerification[T](env)
     with TestNGSuiteLike
-    with AkkaSubscriberVerificationLike {
+    with PekkoSubscriberVerificationLike {
 
   def this(printlnDebug: Boolean) =
     this(new TestEnvironment(Timeouts.defaultTimeoutMillis, Timeouts.defaultNoSignalsTimeoutMillis, printlnDebug))
@@ -34,6 +34,6 @@ abstract class AkkaSubscriberWhiteboxVerification[T](env: TestEnvironment)
   def this() = this(false)
 }
 
-trait AkkaSubscriberVerificationLike {
+trait PekkoSubscriberVerificationLike {
   implicit def system: ActorSystem
 }

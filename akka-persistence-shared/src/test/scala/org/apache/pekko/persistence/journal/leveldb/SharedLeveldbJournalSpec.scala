@@ -9,7 +9,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object SharedLeveldbJournalSpec {
   val config = ConfigFactory.parseString(s"""
@@ -72,7 +72,7 @@ object SharedLeveldbJournalSpec {
 
 }
 
-class SharedLeveldbJournalSpec extends AkkaSpec(SharedLeveldbJournalSpec.config) with Cleanup {
+class SharedLeveldbJournalSpec extends PekkoSpec(SharedLeveldbJournalSpec.config) with Cleanup {
   import SharedLeveldbJournalSpec._
 
   val systemA = ActorSystem("SysA", system.settings.config)

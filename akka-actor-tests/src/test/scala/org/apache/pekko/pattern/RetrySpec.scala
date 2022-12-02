@@ -11,9 +11,9 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.Scheduler
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class RetrySpec extends AkkaSpec with RetrySupport {
+class RetrySpec extends PekkoSpec with RetrySupport {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   implicit val scheduler: Scheduler = system.scheduler
 

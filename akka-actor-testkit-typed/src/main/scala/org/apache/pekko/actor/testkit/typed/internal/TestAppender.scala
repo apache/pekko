@@ -24,7 +24,7 @@ import pekko.annotation.InternalApi
 @InternalApi private[pekko] object TestAppender {
   import LogbackUtil._
 
-  private val TestAppenderName = "AkkaTestAppender"
+  private val TestAppenderName = "PekkoTestAppender"
 
   def setupTestAppender(loggerName: String): Unit = {
     val logbackLogger = getLogbackLogger(loggerName)

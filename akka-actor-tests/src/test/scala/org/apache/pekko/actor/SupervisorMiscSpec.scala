@@ -16,7 +16,7 @@ import language.postfixOps
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.testkit.{ filterEvents, EventFilter }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 
 object SupervisorMiscSpec {
@@ -31,7 +31,7 @@ object SupervisorMiscSpec {
 }
 
 @nowarn
-class SupervisorMiscSpec extends AkkaSpec(SupervisorMiscSpec.config) with DefaultTimeout {
+class SupervisorMiscSpec extends PekkoSpec(SupervisorMiscSpec.config) with DefaultTimeout {
 
   "A Supervisor" must {
 

@@ -4,7 +4,7 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
@@ -33,8 +33,8 @@ import org.apache.pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelo
 public class ConsistentHashingRouterDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("ConsistentHashingRouterDocTest");
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("ConsistentHashingRouterDocTest");
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

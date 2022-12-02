@@ -11,13 +11,13 @@ import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
-import pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem, Props, RootActorPath, _ }
+import pekko.actor._
 import pekko.dispatch.sysmsg.{ Failed, SystemMessage }
 import pekko.remote.{ EndpointException, QuarantinedEvent, RARP }
 import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.FailureInjectorTransportAdapter.{ Drop, One }
 import pekko.remote.transport.ThrottlerTransportAdapter._
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, EventFilter, ImplicitSender, TestEvent, TimingTest, _ }
+import pekko.testkit._
 
 object SystemMessageDeliveryStressTest {
   val msgCount = 5000
@@ -105,7 +105,7 @@ object SystemMessageDeliveryStressTest {
 
 @nowarn("msg=deprecated")
 abstract class SystemMessageDeliveryStressTest(msg: String, cfg: String)
-    extends AkkaSpec(ConfigFactory.parseString(cfg).withFallback(SystemMessageDeliveryStressTest.baseConfig))
+    extends PekkoSpec(ConfigFactory.parseString(cfg).withFallback(SystemMessageDeliveryStressTest.baseConfig))
     with ImplicitSender
     with DefaultTimeout {
   import SystemMessageDeliveryStressTest._

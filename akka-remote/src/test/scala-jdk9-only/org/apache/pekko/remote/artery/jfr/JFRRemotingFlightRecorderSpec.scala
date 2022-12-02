@@ -10,10 +10,10 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.remote.artery.NoOpRemotingFlightRecorder
 import pekko.remote.artery.RemotingFlightRecorder
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKit
 
-class JFRRemotingFlightRecorderSpec extends AkkaSpec {
+class JFRRemotingFlightRecorderSpec extends PekkoSpec {
 
   "The RemotingFlightRecorder" must {
 

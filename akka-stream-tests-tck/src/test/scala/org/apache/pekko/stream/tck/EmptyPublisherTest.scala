@@ -8,7 +8,7 @@ import org.reactivestreams.Publisher
 
 import org.apache.pekko.stream.impl.EmptyPublisher
 
-class EmptyPublisherTest extends AkkaPublisherVerification[Int] {
+class EmptyPublisherTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = EmptyPublisher[Int]
 

@@ -5,7 +5,7 @@
 package docs.remoting
 
 import org.apache.pekko.actor.{ Actor, ActorRef, ActorSystem, ExtendedActorSystem }
-import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender }
+import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec }
 //#import
 import org.apache.pekko
 import pekko.actor.{ Address, AddressFromURIString, Deploy, Props }
@@ -20,7 +20,7 @@ object RemoteDeploymentDocSpec {
 
 }
 
-class RemoteDeploymentDocSpec extends AkkaSpec("""
+class RemoteDeploymentDocSpec extends PekkoSpec("""
     pekko.actor.provider = remote
     pekko.remote.classic.netty.tcp.port = 0
     pekko.remote.artery.canonical.port = 0

@@ -4,7 +4,7 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -18,8 +18,8 @@ import static org.junit.Assert.assertFalse;
 public class ActorSystemTest extends JUnitSuite {
 
   @Rule
-  public final AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("ActorSystemTest");
+  public final PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("ActorSystemTest");
 
   private ActorSystem system = null;
 

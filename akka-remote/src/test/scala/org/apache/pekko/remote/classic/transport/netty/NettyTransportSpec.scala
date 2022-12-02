@@ -35,7 +35,7 @@ object NettyTransportSpec {
       Address(protocol, system.name, address.getAddress.getHostAddress, address.getPort)
   }
 
-  implicit class RichAkkaAddress(address: Address) {
+  implicit class RichPekkoAddress(address: Address) {
     def withProtocol(protocol: String) =
       address.copy(protocol = protocol)
   }

@@ -23,7 +23,7 @@ import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
 
@@ -45,7 +45,7 @@ class ImportantSingleton(lifeCycleProbe: ActorRef) extends Actor with ActorLoggi
   }
 }
 
-class ClusterSingletonLeaseSpec extends AkkaSpec(ConfigFactory.parseString("""
+class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
      pekko.loglevel = INFO
      pekko.actor.provider = cluster
 

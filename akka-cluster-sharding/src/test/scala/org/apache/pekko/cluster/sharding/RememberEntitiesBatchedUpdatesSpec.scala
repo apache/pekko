@@ -7,7 +7,7 @@ package org.apache.pekko.cluster.sharding
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
@@ -55,7 +55,7 @@ object RememberEntitiesBatchedUpdatesSpec {
     """.stripMargin)
 }
 class RememberEntitiesBatchedUpdatesSpec
-    extends AkkaSpec(RememberEntitiesBatchedUpdatesSpec.config)
+    extends PekkoSpec(RememberEntitiesBatchedUpdatesSpec.config)
     with AnyWordSpecLike
     with ImplicitSender {
 

@@ -36,7 +36,7 @@ object ActorSelectionSpec {
 
 }
 
-class ActorSelectionSpec extends AkkaSpec with DefaultTimeout {
+class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
   import ActorSelectionSpec._
 
   val c1 = system.actorOf(p, "c1")

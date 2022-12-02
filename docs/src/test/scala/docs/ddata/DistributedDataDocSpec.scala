@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.cluster.ddata._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.testkit.TestProbe
 import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.serialization.SerializationExtension
@@ -99,7 +99,7 @@ object DistributedDataDocSpec {
 
 }
 
-class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
+class DistributedDataDocSpec extends PekkoSpec(DistributedDataDocSpec.config) {
   import Replicator._
 
   "demonstrate update" in {

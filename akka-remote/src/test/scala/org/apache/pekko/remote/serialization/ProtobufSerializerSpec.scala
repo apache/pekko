@@ -11,7 +11,7 @@ import pekko.remote.ProtobufProtocol.MyMessage
 import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.protobuf.v3.ProtobufProtocolV3.MyMessageV3
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.unused
 
 // those must be defined as top level classes, to have static parseFrom
@@ -45,7 +45,7 @@ object MaliciousMessage {
     new MaliciousMessage
 }
 
-class ProtobufSerializerSpec extends AkkaSpec(s"""
+class ProtobufSerializerSpec extends PekkoSpec(s"""
   pekko.serialization.protobuf.allowed-classes = [
       "com.google.protobuf.GeneratedMessage",
       "com.google.protobuf.GeneratedMessageV3",

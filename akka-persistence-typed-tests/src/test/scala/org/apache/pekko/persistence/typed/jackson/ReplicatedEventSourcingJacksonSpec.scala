@@ -9,20 +9,20 @@ import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTest
 import pekko.persistence.typed.ReplicaId
 import pekko.persistence.typed.crdt.{ Counter, LwwTime, ORSet }
 import pekko.persistence.typed.jackson.ReplicatedEventSourcingJacksonSpec.{ WithCounter, WithLwwTime, WithOrSet }
-import pekko.serialization.jackson.{ AkkaSerializationDeserializer, AkkaSerializationSerializer, JsonSerializable }
+import pekko.serialization.jackson.{ JsonSerializable, PekkoSerializationDeserializer, PekkoSerializationSerializer }
 import com.fasterxml.jackson.databind.annotation.{ JsonDeserialize, JsonSerialize }
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object ReplicatedEventSourcingJacksonSpec {
   final case class WithLwwTime(lwwTime: LwwTime) extends JsonSerializable
   final case class WithOrSet(
-      @JsonDeserialize(`using` = classOf[AkkaSerializationDeserializer])
-      @JsonSerialize(`using` = classOf[AkkaSerializationSerializer])
+      @JsonDeserialize(`using` = classOf[PekkoSerializationDeserializer])
+      @JsonSerialize(`using` = classOf[PekkoSerializationSerializer])
       orSet: ORSet[String])
       extends JsonSerializable
   final case class WithCounter(
-      @JsonDeserialize(`using` = classOf[AkkaSerializationDeserializer])
-      @JsonSerialize(`using` = classOf[AkkaSerializationSerializer])
+      @JsonDeserialize(`using` = classOf[PekkoSerializationDeserializer])
+      @JsonSerialize(`using` = classOf[PekkoSerializationSerializer])
       counter: Counter)
       extends JsonSerializable
 

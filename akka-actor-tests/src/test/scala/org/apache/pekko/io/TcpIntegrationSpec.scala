@@ -15,11 +15,11 @@ import org.scalatest.concurrent.TimeLimits
 import org.apache.pekko
 import pekko.actor.{ ActorRef, PoisonPill }
 import pekko.io.Tcp._
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 
-class TcpIntegrationSpec extends AkkaSpec("""
+class TcpIntegrationSpec extends PekkoSpec("""
     pekko.loglevel = debug
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     pekko.io.tcp.trace-logging = on

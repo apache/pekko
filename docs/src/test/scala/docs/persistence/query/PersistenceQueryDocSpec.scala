@@ -10,7 +10,7 @@ import pekko.actor._
 import pekko.persistence.query._
 import pekko.stream.scaladsl.{ Flow, Sink, Source }
 import pekko.stream.javadsl
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Timeout
 import org.reactivestreams.Subscriber
 import scala.collection.immutable
@@ -174,7 +174,7 @@ object PersistenceQueryDocSpec {
 
 }
 
-class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
+class PersistenceQueryDocSpec(s: String) extends PekkoSpec(s) {
   import PersistenceQueryDocSpec._
 
   def this() =

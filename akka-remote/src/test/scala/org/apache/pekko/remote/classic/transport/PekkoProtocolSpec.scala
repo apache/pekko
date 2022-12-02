@@ -16,9 +16,9 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.protobufv3.internal.{ ByteString => PByteString }
 import pekko.remote.{ FailureDetector, WireFormats }
-import pekko.remote.classic.transport.AkkaProtocolSpec.TestFailureDetector
+import pekko.remote.classic.transport.PekkoProtocolSpec.TestFailureDetector
 import pekko.remote.transport.{ AssociationRegistry => _, _ }
-import pekko.remote.transport.AkkaPduCodec.{ Associate, Disassociate, Heartbeat }
+import pekko.remote.transport.PekkoPduCodec.{ Associate, Disassociate, Heartbeat }
 import pekko.remote.transport.AssociationHandle.{
   ActorHandleEventListener,
   DisassociateInfo,
@@ -28,10 +28,10 @@ import pekko.remote.transport.AssociationHandle.{
 import pekko.remote.transport.ProtocolStateActor
 import pekko.remote.transport.TestTransport._
 import pekko.remote.transport.Transport._
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.{ ByteString, OptionVal }
 
-object AkkaProtocolSpec {
+object PekkoProtocolSpec {
 
   class TestFailureDetector extends FailureDetector {
     @volatile var isAvailable: Boolean = true
@@ -46,7 +46,7 @@ object AkkaProtocolSpec {
 }
 
 @nowarn("msg=deprecated")
-class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) with ImplicitSender {
+class PekkoProtocolSpec extends PekkoSpec("""pekko.actor.provider = remote """) with ImplicitSender {
 
   val conf = ConfigFactory.parseString("""
       pekko.remote {
@@ -79,7 +79,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
   val remoteAddress = Address("test", "testsystem2", "testhost2", 1234)
   val remoteAkkaAddress = Address("akka.test", "testsystem2", "testhost2", 1234)
 
-  val codec = AkkaPduProtobufCodec
+  val codec = PekkoPduProtobufCodec$
 
   val testMsg =
     WireFormats.SerializedMessage.newBuilder().setSerializerId(0).setMessage(PByteString.copyFromUtf8("foo")).build
@@ -150,7 +150,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           HandshakeInfo(origin = localAddress, uid = 42),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector))
 
@@ -165,7 +165,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           HandshakeInfo(origin = localAddress, uid = 42),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector))
 
@@ -174,7 +174,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
       awaitCond(failureDetector.called)
 
       val wrappedHandle = expectMsgPF() {
-        case InboundAssociation(h: AkkaProtocolHandle) =>
+        case InboundAssociation(h: PekkoProtocolHandle) =>
           h.handshakeInfo.uid should ===(33)
           h
       }
@@ -201,7 +201,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           HandshakeInfo(origin = localAddress, uid = 42),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector))
 
@@ -229,7 +229,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector,
           refuseUid = None))
@@ -246,7 +246,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
       reader ! testAssociate(33)
 
       Await.result(statusPromise.future, 3.seconds) match {
-        case h: AkkaProtocolHandle =>
+        case h: PekkoProtocolHandle =>
           h.remoteAddress should ===(remoteAkkaAddress)
           h.localAddress should ===(localAkkaAddress)
           h.handshakeInfo.uid should ===(33)
@@ -268,7 +268,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector,
           refuseUid = None))
@@ -303,7 +303,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector,
           refuseUid = None))
@@ -338,7 +338,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector,
           refuseUid = None))
@@ -376,7 +376,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf),
+          new PekkoProtocolSettings(conf),
           codec,
           failureDetector,
           refuseUid = None))
@@ -416,7 +416,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           remoteAddress,
           statusPromise,
           transport,
-          new AkkaProtocolSettings(conf2),
+          new PekkoProtocolSettings(conf2),
           codec,
           failureDetector,
           refuseUid = None))
@@ -439,7 +439,7 @@ class AkkaProtocolSpec extends AkkaSpec("""pekko.actor.provider = remote """) wi
           HandshakeInfo(origin = localAddress, uid = 42),
           handle,
           ActorAssociationEventListener(testActor),
-          new AkkaProtocolSettings(conf2),
+          new PekkoProtocolSettings(conf2),
           codec,
           failureDetector))
 

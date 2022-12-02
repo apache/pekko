@@ -12,7 +12,7 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
-import pekko.testkit.{ AkkaSpec, TestLatch }
+import pekko.testkit.{ PekkoSpec, TestLatch }
 
 object PatternSpec {
   final case class Work(duration: Duration)
@@ -24,7 +24,7 @@ object PatternSpec {
   }
 }
 
-class PatternSpec extends AkkaSpec {
+class PatternSpec extends PekkoSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   import PatternSpec._
 

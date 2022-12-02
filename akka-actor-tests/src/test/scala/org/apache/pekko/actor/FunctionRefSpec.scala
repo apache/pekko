@@ -6,7 +6,7 @@ package org.apache.pekko.actor
 
 import org.apache.pekko
 import pekko.actor.dungeon.SerializationCheckFailedException
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 
@@ -37,7 +37,7 @@ object FunctionRefSpec {
 
 }
 
-class FunctionRefSpec extends AkkaSpec("""
+class FunctionRefSpec extends PekkoSpec("""
   # test is using Java serialization and relies on serialize-messages=on
   pekko.actor.allow-java-serialization = on
   pekko.actor.warn-about-java-serializer-usage = off

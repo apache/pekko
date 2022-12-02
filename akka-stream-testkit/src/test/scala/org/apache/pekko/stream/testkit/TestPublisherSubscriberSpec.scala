@@ -12,9 +12,9 @@ import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestPublisher._
 import pekko.stream.testkit.TestSubscriber._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class TestPublisherSubscriberSpec extends AkkaSpec("""
+class TestPublisherSubscriberSpec extends PekkoSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
     pekko.stream.materializer.max-input-buffer-size = 2
   """) {

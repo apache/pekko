@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.actor.{ ActorInitializationException, ExtendedActorSystem, InternalActorRef }
 import pekko.dispatch.sysmsg._
 import pekko.serialization.SerializationExtension
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.JavaSerializable
 
 object SystemMessageSerializationSpec {
@@ -18,7 +18,7 @@ object SystemMessageSerializationSpec {
     """
     """
 
-  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(AkkaSpec.testConf)
+  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(PekkoSpec.testConf)
 
   class TestException(msg: String) extends RuntimeException(msg) with JavaSerializable {
     override def equals(other: Any): Boolean = other match {
@@ -28,7 +28,7 @@ object SystemMessageSerializationSpec {
   }
 }
 
-class SystemMessageSerializationSpec extends AkkaSpec(PrimitivesSerializationSpec.testConfig) {
+class SystemMessageSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.testConfig) {
   import SystemMessageSerializationSpec._
 
   val testRef = TestProbe().ref.asInstanceOf[InternalActorRef]

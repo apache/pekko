@@ -125,7 +125,7 @@ package docs.serialization {
         """
   }
 
-  class SerializationDocSpec extends AkkaSpec {
+  class SerializationDocSpec extends PekkoSpec {
     "demonstrate configuration of serialize messages" in {
       val config = ConfigFactory.parseString("""
       #//#serialize-messages-config

@@ -7,7 +7,7 @@ package jdocs.testkit;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.Creator;
 import org.apache.pekko.japi.Function;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
@@ -18,8 +18,8 @@ import org.junit.Test;
 
 public class ParentChildTest extends AbstractJavaTest {
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "TestKitDocTest",
           ConfigFactory.parseString(
               "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));

@@ -5,9 +5,9 @@
 package docs.stream
 
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class MigrationsScala extends AkkaSpec {
+class MigrationsScala extends PekkoSpec {
 
   "Examples in migration guide" must {
     "compile" in {

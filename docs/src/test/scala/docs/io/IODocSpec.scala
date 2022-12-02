@@ -12,7 +12,7 @@ import pekko.util.ByteString
 import java.net.InetSocketAddress
 //#imports
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import scala.concurrent.duration._
 
 class DemoActor extends Actor {
@@ -104,7 +104,7 @@ class Client(remote: InetSocketAddress, listener: ActorRef) extends Actor {
 }
 //#client
 
-class IODocSpec extends AkkaSpec {
+class IODocSpec extends PekkoSpec {
 
   class Parent extends Actor {
     context.actorOf(Props[Server](), "server")

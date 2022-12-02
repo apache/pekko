@@ -15,7 +15,7 @@ import pekko.persistence.query.Sequence
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 import scala.annotation.nowarn
@@ -61,7 +61,7 @@ class ColorTagger extends WriteEventAdapter {
   override def manifest(event: Any): String = ""
 }
 
-class EventsByTagSpec extends AkkaSpec(EventsByTagSpec.config) with Cleanup with ImplicitSender {
+class EventsByTagSpec extends PekkoSpec(EventsByTagSpec.config) with Cleanup with ImplicitSender {
 
   @nowarn("msg=deprecated")
   val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)

@@ -6,7 +6,7 @@ package com.typesafe.sslconfig.pekko
 
 import java.util.Collections
 import javax.net.ssl._
-import com.typesafe.sslconfig.pekko.util.AkkaLoggerFactory
+import com.typesafe.sslconfig.pekko.util.PekkoLoggerFactory
 import com.typesafe.sslconfig.ssl._
 import com.typesafe.sslconfig.util.LoggerFactory
 import org.apache.pekko
@@ -16,18 +16,18 @@ import pekko.event.Logging
 import scala.annotation.nowarn
 
 @deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.", "2.6.0")
-object AkkaSSLConfig extends ExtensionId[AkkaSSLConfig] with ExtensionIdProvider {
+object PekkoSSLConfig extends ExtensionId[PekkoSSLConfig] with ExtensionIdProvider {
 
   //////////////////// EXTENSION SETUP ///////////////////
 
-  override def get(system: ActorSystem): AkkaSSLConfig = super.get(system)
-  override def get(system: ClassicActorSystemProvider): AkkaSSLConfig = super.get(system)
-  def apply()(implicit system: ActorSystem): AkkaSSLConfig = super.apply(system)
+  override def get(system: ActorSystem): PekkoSSLConfig = super.get(system)
+  override def get(system: ClassicActorSystemProvider): PekkoSSLConfig = super.get(system)
+  def apply()(implicit system: ActorSystem): PekkoSSLConfig = super.apply(system)
 
-  override def lookup = AkkaSSLConfig
+  override def lookup = PekkoSSLConfig
 
-  override def createExtension(system: ExtendedActorSystem): AkkaSSLConfig =
-    new AkkaSSLConfig(system, defaultSSLConfigSettings(system))
+  override def createExtension(system: ExtendedActorSystem): PekkoSSLConfig =
+    new PekkoSSLConfig(system, defaultSSLConfigSettings(system))
 
   def defaultSSLConfigSettings(system: ActorSystem): SSLConfigSettings = {
     val akkaOverrides = system.settings.config.getConfig("pekko.ssl-config")
@@ -38,35 +38,35 @@ object AkkaSSLConfig extends ExtensionId[AkkaSSLConfig] with ExtensionIdProvider
 }
 
 @deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.", "2.6.0")
-final class AkkaSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSettings) extends Extension {
+final class PekkoSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSettings) extends Extension {
 
-  private val mkLogger = new AkkaLoggerFactory(system)
+  private val mkLogger = new PekkoLoggerFactory(system)
 
-  private val log = Logging(system, classOf[AkkaSSLConfig])
-  log.debug("Initializing AkkaSSLConfig extension...")
+  private val log = Logging(system, classOf[PekkoSSLConfig])
+  log.debug("Initializing PekkoSSLConfig extension...")
 
   /** Can be used to modify the underlying config, most typically used to change a few values in the default config */
-  def withSettings(c: SSLConfigSettings): AkkaSSLConfig =
-    new AkkaSSLConfig(system, c)
+  def withSettings(c: SSLConfigSettings): PekkoSSLConfig =
+    new PekkoSSLConfig(system, c)
 
   /**
-   * Returns a new [[AkkaSSLConfig]] instance with the settings changed by the given function.
+   * Returns a new [[PekkoSSLConfig]] instance with the settings changed by the given function.
    * Please note that the ActorSystem-wide extension always remains configured via typesafe config,
    * custom ones can be created for special-handling specific connections
    */
-  def mapSettings(f: SSLConfigSettings => SSLConfigSettings): AkkaSSLConfig =
-    new AkkaSSLConfig(system, f(config))
+  def mapSettings(f: SSLConfigSettings => SSLConfigSettings): PekkoSSLConfig =
+    new PekkoSSLConfig(system, f(config))
 
   /**
-   * Returns a new [[AkkaSSLConfig]] instance with the settings changed by the given function.
+   * Returns a new [[PekkoSSLConfig]] instance with the settings changed by the given function.
    * Please note that the ActorSystem-wide extension always remains configured via typesafe config,
    * custom ones can be created for special-handling specific connections
    *
    * Java API
    */
   // Not same signature as mapSettings to allow latter deprecation of this once we hit Scala 2.12
-  def convertSettings(f: java.util.function.Function[SSLConfigSettings, SSLConfigSettings]): AkkaSSLConfig =
-    new AkkaSSLConfig(system, f.apply(config))
+  def convertSettings(f: java.util.function.Function[SSLConfigSettings, SSLConfigSettings]): PekkoSSLConfig =
+    new PekkoSSLConfig(system, f.apply(config))
 
   val hostnameVerifier = buildHostnameVerifier(config)
 
@@ -170,7 +170,7 @@ final class AkkaSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSett
   // LOOSE SETTINGS //
 
   private def looseDisableSNI(defaultParams: SSLParameters): Unit = if (config.loose.disableSNI) {
-    // this will be logged once for each AkkaSSLConfig
+    // this will be logged once for each PekkoSSLConfig
     log.warning(
       "You are using ssl-config.loose.disableSNI=true! " +
       "It is strongly discouraged to disable Server Name Indication, as it is crucial to preventing man-in-the-middle attacks.")

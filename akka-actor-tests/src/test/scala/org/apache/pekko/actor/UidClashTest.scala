@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.actor.SupervisorStrategy.{ Restart, Stop }
 import pekko.dispatch.sysmsg.SystemMessage
 import pekko.event.EventStream
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object UidClashTest {
 
@@ -88,7 +88,7 @@ object UidClashTest {
 
 }
 
-class UidClashTest extends AkkaSpec {
+class UidClashTest extends PekkoSpec {
   import UidClashTest._
 
   "The Terminated message for an old child stopped in preRestart" should {

@@ -7,7 +7,7 @@ package org.apache.pekko.stream.io;
 import org.apache.pekko.stream.IOOperationIncompleteException;
 import org.apache.pekko.stream.IOResult;
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
 import org.apache.pekko.stream.testkit.Utils;
@@ -29,8 +29,8 @@ public class OutputStreamSinkTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("OutputStreamSinkTest", Utils.UnboundedMailboxConfig());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("OutputStreamSinkTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustSignalFailureViaFailingFuture() {

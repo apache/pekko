@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
-class SingleElementSourceTest extends AkkaPublisherVerification[Int] {
+class SingleElementSourceTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] =
     Source.single(1).runWith(Sink.asPublisher(false))

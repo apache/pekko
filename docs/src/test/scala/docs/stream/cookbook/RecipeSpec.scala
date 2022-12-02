@@ -4,9 +4,9 @@
 
 package docs.stream.cookbook
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-trait RecipeSpec extends AkkaSpec {
+trait RecipeSpec extends PekkoSpec {
 
   type Message = String
 

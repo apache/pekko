@@ -26,7 +26,7 @@ import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.testkit.TestEvent._
 
-object AkkaSpec {
+object PekkoSpec {
   val testConf: Config = ConfigFactory.parseString("""
       pekko {
         loggers = ["org.apache.pekko.testkit.TestEventListener"]
@@ -52,7 +52,7 @@ object AkkaSpec {
 
 }
 
-abstract class AkkaSpec(_system: ActorSystem)
+abstract class PekkoSpec(_system: ActorSystem)
     extends TestKit(_system)
     with AnyWordSpecLike
     with Matchers
@@ -64,14 +64,14 @@ abstract class AkkaSpec(_system: ActorSystem)
   def this(config: Config) =
     this(
       ActorSystem(
-        TestKitUtils.testNameFromCallStack(classOf[AkkaSpec], "".r),
-        ConfigFactory.load(config.withFallback(AkkaSpec.testConf))))
+        TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r),
+        ConfigFactory.load(config.withFallback(PekkoSpec.testConf))))
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 
-  def this(configMap: Map[String, _]) = this(AkkaSpec.mapToConfig(configMap))
+  def this(configMap: Map[String, _]) = this(PekkoSpec.mapToConfig(configMap))
 
-  def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[AkkaSpec], "".r), AkkaSpec.testConf))
+  def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r), PekkoSpec.testConf))
 
   implicit val patience: PatienceConfig =
     PatienceConfig(testKitSettings.SingleExpectDefaultTimeout.dilated, Span(100, Millis))

@@ -5,7 +5,7 @@
 package docs.actor
 
 import org.apache.pekko.actor.{ Actor, Props }
-import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender }
+import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object InitializationDocSpec {
 
@@ -52,7 +52,7 @@ object InitializationDocSpec {
   }
 }
 
-class InitializationDocSpec extends AkkaSpec with ImplicitSender {
+class InitializationDocSpec extends PekkoSpec with ImplicitSender {
   import InitializationDocSpec._
 
   "Message based initialization example" must {

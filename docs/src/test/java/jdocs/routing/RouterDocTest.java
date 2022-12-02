@@ -4,7 +4,7 @@
 
 package jdocs.routing;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
@@ -67,8 +67,8 @@ import org.apache.pekko.routing.TailChoppingPool;
 public class RouterDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "RouterDocTest", ConfigFactory.parseString(docs.routing.RouterDocSpec.config()));
 
   private final ActorSystem system = actorSystemResource.getSystem();

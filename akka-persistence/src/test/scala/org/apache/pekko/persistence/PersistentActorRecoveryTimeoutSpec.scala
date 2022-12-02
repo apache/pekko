@@ -12,7 +12,7 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Props }
 import pekko.actor.Status.Failure
 import pekko.persistence.journal.SteppingInmemJournal
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 object PersistentActorRecoveryTimeoutSpec {
   val journalId = "persistent-actor-recovery-timeout-spec"
@@ -69,7 +69,7 @@ object PersistentActorRecoveryTimeoutSpec {
 }
 
 class PersistentActorRecoveryTimeoutSpec
-    extends AkkaSpec(PersistentActorRecoveryTimeoutSpec.config)
+    extends PekkoSpec(PersistentActorRecoveryTimeoutSpec.config)
     with ImplicitSender {
 
   import PersistentActorRecoveryTimeoutSpec.journalId

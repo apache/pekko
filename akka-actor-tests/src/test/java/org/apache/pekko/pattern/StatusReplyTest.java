@@ -5,8 +5,8 @@
 package org.apache.pekko.pattern;
 
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestException;
 import org.apache.pekko.testkit.TestProbe;
 import org.junit.Assert;
@@ -26,8 +26,8 @@ import static org.junit.Assert.*;
 public class StatusReplyTest extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("JavaAPI", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   @Test
   public void successReplyThrowsExceptionWhenGetErrorIsCalled() {

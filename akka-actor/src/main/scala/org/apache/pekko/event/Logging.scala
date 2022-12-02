@@ -16,7 +16,7 @@ import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.{ AkkaException, ConfigurationException }
+import pekko.{ ConfigurationException, PekkoException }
 import pekko.actor._
 import pekko.actor.ActorSystem.Settings
 import pekko.annotation.{ DoNotInherit, InternalApi }
@@ -700,7 +700,7 @@ object Logging {
    * Artificial exception injected into Error events if no Throwable is
    * supplied; used for getting a stack dump of error locations.
    */
-  class LoggerException extends AkkaException("")
+  class LoggerException extends PekkoException("")
 
   /**
    * Exception that wraps a LogEvent.
@@ -980,7 +980,7 @@ object Logging {
   /**
    * LoggerInitializationException is thrown to indicate that there was a problem initializing a logger
    */
-  class LoggerInitializationException(msg: String) extends AkkaException(msg)
+  class LoggerInitializationException(msg: String) extends PekkoException(msg)
 
   trait StdOutLogger {
 

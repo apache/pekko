@@ -8,8 +8,8 @@ import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -20,8 +20,8 @@ import static org.junit.Assert.assertEquals;
 public class ActorSelectionTest extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("ActorSelectionTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("ActorSelectionTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

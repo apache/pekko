@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdScalarSerializer
 import org.apache.pekko.serialization.{ SerializationExtension, Serializer, Serializers }
 
-final class AkkaSerializationSerializer extends StdScalarSerializer[AnyRef](classOf[AnyRef]) with ActorSystemAccess {
+final class PekkoSerializationSerializer extends StdScalarSerializer[AnyRef](classOf[AnyRef]) with ActorSystemAccess {
   def serialization = SerializationExtension(currentSystem())
   override def serialize(value: AnyRef, jgen: JsonGenerator, provider: SerializerProvider): Unit = {
     val serializer: Serializer = serialization.findSerializerFor(value)
@@ -25,7 +25,7 @@ final class AkkaSerializationSerializer extends StdScalarSerializer[AnyRef](clas
   }
 }
 
-final class AkkaSerializationDeserializer
+final class PekkoSerializationDeserializer
     extends StdScalarDeserializer[AnyRef](classOf[AnyRef])
     with ActorSystemAccess {
 

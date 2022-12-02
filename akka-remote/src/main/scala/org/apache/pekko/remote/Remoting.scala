@@ -31,7 +31,7 @@ import pekko.pattern.{ ask, gracefulStop, pipe }
 import pekko.remote.EndpointManager._
 import pekko.remote.Remoting.TransportSupervisor
 import pekko.remote.transport._
-import pekko.remote.transport.AkkaPduCodec.Message
+import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.Transport.{ ActorAssociationEventListener, AssociationEventListener, InboundAssociation }
 import pekko.util.ByteString.UTF_8
 import pekko.util.OptionVal
@@ -85,7 +85,7 @@ private[remote] object Remoting {
   final val EndpointManagerName = "endpointManager"
 
   def localAddressForRemote(
-      transportMapping: Map[String, Set[(AkkaProtocolTransport, Address)]],
+      transportMapping: Map[String, Set[(PekkoProtocolTransport, Address)]],
       remote: Address): Address = {
 
     transportMapping.get(remote.protocol) match {
@@ -141,7 +141,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
     extends RemoteTransport(_system, _provider) {
 
   @volatile private var endpointManager: Option[ActorRef] = None
-  @volatile private var transportMapping: Map[String, Set[(AkkaProtocolTransport, Address)]] = _
+  @volatile private var transportMapping: Map[String, Set[(PekkoProtocolTransport, Address)]] = _
   // This is effectively a write-once variable similar to a lazy val. The reason for not using a lazy val is exception
   // handling.
   @volatile var addresses: Set[Address] = _
@@ -209,10 +209,10 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
         endpointManager = Some(manager)
 
         try {
-          val addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]] = Promise()
+          val addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]] = Promise()
           manager ! Listen(addressesPromise)
 
-          val transports: Seq[(AkkaProtocolTransport, Address)] =
+          val transports: Seq[(PekkoProtocolTransport, Address)] =
             Await.result(addressesPromise.future, StartupTimeout.duration)
           if (transports.isEmpty) throw new RemoteTransportException("No transport drivers were loaded.", null)
 
@@ -297,7 +297,7 @@ private[remote] object EndpointManager {
 
   // Messages between Remoting and EndpointManager
   sealed trait RemotingCommand extends NoSerializationVerificationNeeded
-  final case class Listen(addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]]) extends RemotingCommand
+  final case class Listen(addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]]) extends RemotingCommand
   case object StartupFinished extends RemotingCommand
   case object ShutdownAndFlush extends RemotingCommand
   @InternalStableApi
@@ -321,10 +321,10 @@ private[remote] object EndpointManager {
   // Messages internal to EndpointManager
   case object Prune extends NoSerializationVerificationNeeded
   final case class ListensResult(
-      addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]],
-      results: Seq[(AkkaProtocolTransport, Address, Promise[AssociationEventListener])])
+      addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]],
+      results: Seq[(PekkoProtocolTransport, Address, Promise[AssociationEventListener])])
       extends NoSerializationVerificationNeeded
-  final case class ListensFailure(addressesPromise: Promise[Seq[(AkkaProtocolTransport, Address)]], cause: Throwable)
+  final case class ListensFailure(addressesPromise: Promise[Seq[(PekkoProtocolTransport, Address)]], cause: Throwable)
       extends NoSerializationVerificationNeeded
 
   // Helper class to store address pairs
@@ -503,14 +503,14 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   // will be not part of this map!
   val endpoints = new EndpointRegistry
   // Mapping between transports and the local addresses they listen to
-  var transportMapping: Map[Address, AkkaProtocolTransport] = Map()
+  var transportMapping: Map[Address, PekkoProtocolTransport] = Map()
 
   val pruneInterval: FiniteDuration = (settings.RetryGateClosedFor * 2).max(1.second).min(10.seconds)
 
   val pruneTimerCancellable: Cancellable =
     context.system.scheduler.scheduleWithFixedDelay(pruneInterval, pruneInterval, self, Prune)
 
-  var pendingReadHandoffs = Map[ActorRef, AkkaProtocolHandle]()
+  var pendingReadHandoffs = Map[ActorRef, PekkoProtocolHandle]()
   var stashedInbound = Map[ActorRef, Vector[InboundAssociation]]()
 
   def handleStashedInbound(endpoint: ActorRef, writerIsIdle: Boolean): Unit = {
@@ -696,7 +696,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         case _ => // nothing to stop
       }
 
-      def matchesQuarantine(handle: AkkaProtocolHandle): Boolean = {
+      def matchesQuarantine(handle: PekkoProtocolHandle): Boolean = {
         handle.remoteAddress == address &&
         uidToQuarantineOption.forall(_ == handle.handshakeInfo.uid)
       }
@@ -717,7 +717,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       stashedInbound = stashedInbound.map {
         case (writer, associations) =>
           writer -> associations.filter { assoc =>
-            val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
+            val handle = assoc.association.asInstanceOf[PekkoProtocolHandle]
             val drop = matchesQuarantine(handle)
             if (drop) handle.disassociate("the stashed inbound handle was quarantined", log)
             !drop
@@ -755,7 +755,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
 
       }
 
-    case ia @ InboundAssociation(_: AkkaProtocolHandle) =>
+    case ia @ InboundAssociation(_: PekkoProtocolHandle) =>
       handleInboundAssociation(ia, writerIsIdle = false)
     case EndpointWriter.StoppedReading(endpoint) =>
       acceptPendingReader(takingOverFrom = endpoint)
@@ -807,13 +807,13 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   }
 
   def flushing: Receive = {
-    case s: Send                                   => extendedSystem.deadLetters ! s
-    case InboundAssociation(h: AkkaProtocolHandle) => h.disassociate(AssociationHandle.Shutdown)
-    case Terminated(_)                             => // why should we care now?
+    case s: Send                                    => extendedSystem.deadLetters ! s
+    case InboundAssociation(h: PekkoProtocolHandle) => h.disassociate(AssociationHandle.Shutdown)
+    case Terminated(_)                              => // why should we care now?
   }
 
   def handleInboundAssociation(ia: InboundAssociation, writerIsIdle: Boolean): Unit = ia match {
-    case ia @ InboundAssociation(handle: AkkaProtocolHandle) =>
+    case ia @ InboundAssociation(handle: PekkoProtocolHandle) =>
       endpoints.readOnlyEndpointFor(handle.remoteAddress) match {
         case Some((endpoint, _)) =>
           pendingReadHandoffs
@@ -861,7 +861,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     case _ => // ignore
   }
 
-  private def createAndRegisterEndpoint(handle: AkkaProtocolHandle): Unit = {
+  private def createAndRegisterEndpoint(handle: PekkoProtocolHandle): Unit = {
     val writing = settings.UsePassiveConnections && !endpoints.hasWritableEndpointFor(handle.remoteAddress)
     eventPublisher.notifyListeners(AssociatedEvent(handle.localAddress, handle.remoteAddress, inbound = true))
 
@@ -882,15 +882,15 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     }
   }
 
-  private def listens: Future[Seq[(AkkaProtocolTransport, Address, Promise[AssociationEventListener])]] = {
+  private def listens: Future[Seq[(PekkoProtocolTransport, Address, Promise[AssociationEventListener])]] = {
     /*
      * Constructs chains of adapters on top of each driver as given in configuration. The resulting structure looks
      * like the following:
-     *   AkkaProtocolTransport <- Adapter <- ... <- Adapter <- Driver
+     *   PekkoProtocolTransport <- Adapter <- ... <- Adapter <- Driver
      *
-     * The transports variable contains only the heads of each chains (the AkkaProtocolTransport instances).
+     * The transports variable contains only the heads of each chains (the PekkoProtocolTransport instances).
      */
-    val transports: Seq[AkkaProtocolTransport] = for ((fqn, adapters, config) <- settings.Transports) yield {
+    val transports: Seq[PekkoProtocolTransport] = for ((fqn, adapters, config) <- settings.Transports) yield {
 
       val args = Seq(classOf[ExtendedActorSystem] -> context.system, classOf[Config] -> config)
 
@@ -921,10 +921,11 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             provider.create(t, context.system.asInstanceOf[ExtendedActorSystem])
         }
 
-      // Apply AkkaProtocolTransport wrapper to the end of the chain
+      // Apply PekkoProtocolTransport wrapper to the end of the chain
       // The chain at this point:
-      //   AkkaProtocolTransport <- Adapter <- ... <- Adapter <- Driver
-      new AkkaProtocolTransport(wrappedTransport, context.system, new AkkaProtocolSettings(conf), AkkaPduProtobufCodec)
+      //   PekkoProtocolTransport <- Adapter <- ... <- Adapter <- Driver
+      new PekkoProtocolTransport(wrappedTransport, context.system, new PekkoProtocolSettings(conf),
+        PekkoPduProtobufCodec$)
     }
 
     // Collect all transports, listen addresses and listener promises in one future
@@ -950,7 +951,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     }
   }
 
-  private def removePendingReader(takingOverFrom: ActorRef, withHandle: AkkaProtocolHandle): Unit = {
+  private def removePendingReader(takingOverFrom: ActorRef, withHandle: PekkoProtocolHandle): Unit = {
     if (pendingReadHandoffs.get(takingOverFrom).exists(handle => handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
   }
@@ -958,9 +959,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   private def createEndpoint(
       remoteAddress: Address,
       localAddress: Address,
-      transport: AkkaProtocolTransport,
+      transport: PekkoProtocolTransport,
       endpointSettings: RemoteSettings,
-      handleOption: Option[AkkaProtocolHandle],
+      handleOption: Option[PekkoProtocolHandle],
       writing: Boolean): ActorRef = {
     require(transportMapping contains localAddress, "Transport mapping is not defined for the address")
     // refuseUid is ignored for read-only endpoints since the UID of the remote system is already known and has passed
@@ -979,7 +980,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 refuseUid,
                 transport,
                 endpointSettings,
-                AkkaPduProtobufCodec,
+                PekkoPduProtobufCodec$,
                 receiveBuffers))
             .withDeploy(Deploy.local),
           "reliableEndpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId.next()))
@@ -995,7 +996,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 refuseUid,
                 transport,
                 endpointSettings,
-                AkkaPduProtobufCodec,
+                PekkoPduProtobufCodec$,
                 receiveBuffers,
                 reliableDeliverySupervisor = None))
             .withDeploy(Deploy.local),

@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.concurrent.Future
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 
-trait NetworkFailureSpec extends DefaultTimeout { self: AkkaSpec =>
+trait NetworkFailureSpec extends DefaultTimeout { self: PekkoSpec =>
   import scala.concurrent.duration.Duration
 
   import system.dispatcher

@@ -17,7 +17,7 @@ import scala.util.control.NonFatal
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.{ AkkaException, OnlyCauseStackTrace }
+import pekko.{ OnlyCauseStackTrace, PekkoException }
 import pekko.actor._
 import pekko.actor.OneForOneStrategy
 import pekko.actor.SupervisorStrategy._
@@ -29,7 +29,7 @@ import pekko.remote.EndpointManager.{ Link, ResendState, Send }
 import pekko.remote.EndpointWriter.{ FlushAndStop, StoppedReading }
 import pekko.remote.WireFormats.SerializedMessage
 import pekko.remote.transport._
-import pekko.remote.transport.AkkaPduCodec.Message
+import pekko.remote.transport.PekkoPduCodec.Message
 import pekko.remote.transport.AssociationHandle.{
   ActorHandleEventListener,
   DisassociateInfo,
@@ -150,7 +150,7 @@ private[remote] class DefaultMessageDispatcher(
  */
 @SerialVersionUID(1L)
 private[remote] class EndpointException(msg: String, cause: Throwable)
-    extends AkkaException(msg, cause)
+    extends PekkoException(msg, cause)
     with OnlyCauseStackTrace {
   def this(msg: String) = this(msg, null)
 }
@@ -223,13 +223,13 @@ private[remote] object ReliableDeliverySupervisor {
   case object TooLongIdle
 
   def props(
-      handleOrActive: Option[AkkaProtocolHandle],
+      handleOrActive: Option[PekkoProtocolHandle],
       localAddress: Address,
       remoteAddress: Address,
       refuseUid: Option[Int],
-      transport: AkkaProtocolTransport,
+      transport: PekkoProtocolTransport,
       settings: RemoteSettings,
-      codec: AkkaPduCodec,
+      codec: PekkoPduCodec,
       receiveBuffers: ConcurrentHashMap[Link, ResendState]): Props =
     Props(
       classOf[ReliableDeliverySupervisor],
@@ -248,13 +248,13 @@ private[remote] object ReliableDeliverySupervisor {
  */
 @nowarn("msg=deprecated")
 private[remote] class ReliableDeliverySupervisor(
-    handleOrActive: Option[AkkaProtocolHandle],
+    handleOrActive: Option[PekkoProtocolHandle],
     val localAddress: Address,
     val remoteAddress: Address,
     val refuseUid: Option[Int],
-    val transport: AkkaProtocolTransport,
+    val transport: PekkoProtocolTransport,
     val settings: RemoteSettings,
-    val codec: AkkaPduCodec,
+    val codec: PekkoPduCodec,
     val receiveBuffers: ConcurrentHashMap[Link, ResendState])
     extends Actor
     with ActorLogging {
@@ -286,7 +286,7 @@ private[remote] class ReliableDeliverySupervisor(
       Stop
   }
 
-  var currentHandle: Option[AkkaProtocolHandle] = handleOrActive
+  var currentHandle: Option[PekkoProtocolHandle] = handleOrActive
 
   var resendBuffer: AckedSendBuffer[Send] = _
   var seqCounter: Long = _
@@ -526,7 +526,7 @@ private[remote] class ReliableDeliverySupervisor(
             refuseUid,
             transport = transport,
             settings = settings,
-            AkkaPduProtobufCodec,
+            PekkoPduProtobufCodec$,
             receiveBuffers = receiveBuffers,
             reliableDeliverySupervisor = Some(self)))
           .withDeploy(Deploy.local),
@@ -543,7 +543,7 @@ private[remote] abstract class EndpointActor(
     val remoteAddress: Address,
     val transport: Transport,
     val settings: RemoteSettings,
-    val codec: AkkaPduCodec)
+    val codec: PekkoPduCodec)
     extends Actor
     with ActorLogging {
 
@@ -568,13 +568,13 @@ private[remote] abstract class EndpointActor(
 private[remote] object EndpointWriter {
 
   def props(
-      handleOrActive: Option[AkkaProtocolHandle],
+      handleOrActive: Option[PekkoProtocolHandle],
       localAddress: Address,
       remoteAddress: Address,
       refuseUid: Option[Int],
-      transport: AkkaProtocolTransport,
+      transport: PekkoProtocolTransport,
       settings: RemoteSettings,
-      codec: AkkaPduCodec,
+      codec: PekkoPduCodec,
       receiveBuffers: ConcurrentHashMap[Link, ResendState],
       reliableDeliverySupervisor: Option[ActorRef]): Props =
     Props(
@@ -596,8 +596,8 @@ private[remote] object EndpointWriter {
    * used instead.
    * @param handle Handle of the new inbound association.
    */
-  final case class TakeOver(handle: AkkaProtocolHandle, replyTo: ActorRef) extends NoSerializationVerificationNeeded
-  final case class TookOver(writer: ActorRef, handle: AkkaProtocolHandle) extends NoSerializationVerificationNeeded
+  final case class TakeOver(handle: PekkoProtocolHandle, replyTo: ActorRef) extends NoSerializationVerificationNeeded
+  final case class TookOver(writer: ActorRef, handle: PekkoProtocolHandle) extends NoSerializationVerificationNeeded
   case object BackoffTimer
   case object FlushAndStop
   private case object FlushAndStopTimeout
@@ -605,7 +605,7 @@ private[remote] object EndpointWriter {
   final case class StopReading(writer: ActorRef, replyTo: ActorRef)
   final case class StoppedReading(writer: ActorRef)
 
-  final case class Handle(handle: AkkaProtocolHandle) extends NoSerializationVerificationNeeded
+  final case class Handle(handle: PekkoProtocolHandle) extends NoSerializationVerificationNeeded
 
   final case class OutboundAck(ack: Ack)
 
@@ -623,13 +623,13 @@ private[remote] object EndpointWriter {
  */
 @nowarn("msg=deprecated")
 private[remote] class EndpointWriter(
-    handleOrActive: Option[AkkaProtocolHandle],
+    handleOrActive: Option[PekkoProtocolHandle],
     localAddress: Address,
     remoteAddress: Address,
     refuseUid: Option[Int],
-    transport: AkkaProtocolTransport,
+    transport: PekkoProtocolTransport,
     settings: RemoteSettings,
-    codec: AkkaPduCodec,
+    codec: PekkoPduCodec,
     val receiveBuffers: ConcurrentHashMap[Link, ResendState],
     val reliableDeliverySupervisor: Option[ActorRef])
     extends EndpointActor(localAddress, remoteAddress, transport, settings, codec) {
@@ -643,7 +643,7 @@ private[remote] class EndpointWriter(
   val backoffDispatcher = context.system.dispatchers.lookup("pekko.remote.classic.backoff-remote-dispatcher")
 
   var reader: Option[ActorRef] = None
-  var handle: Option[AkkaProtocolHandle] = handleOrActive
+  var handle: Option[PekkoProtocolHandle] = handleOrActive
   val readerId = Iterator.from(0)
 
   def newAckDeadline: Deadline = Deadline.now + settings.SysMsgAckTimeout
@@ -1007,7 +1007,7 @@ private[remote] class EndpointWriter(
       }
     }
 
-  private def startReadEndpoint(handle: AkkaProtocolHandle): Some[ActorRef] = {
+  private def startReadEndpoint(handle: PekkoProtocolHandle): Some[ActorRef] = {
     val newReader =
       context.watch(
         context.actorOf(
@@ -1052,7 +1052,7 @@ private[remote] object EndpointReader {
       remoteAddress: Address,
       transport: Transport,
       settings: RemoteSettings,
-      codec: AkkaPduCodec,
+      codec: PekkoPduCodec,
       msgDispatch: InboundMessageDispatcher,
       inbound: Boolean,
       uid: Int,
@@ -1082,7 +1082,7 @@ private[remote] class EndpointReader(
     remoteAddress: Address,
     transport: Transport,
     settings: RemoteSettings,
-    codec: AkkaPduCodec,
+    codec: PekkoPduCodec,
     msgDispatch: InboundMessageDispatcher,
     val inbound: Boolean,
     val uid: Int,
@@ -1165,7 +1165,7 @@ private[remote] class EndpointReader(
 
   }
 
-  private def logTransientSerializationError(msg: AkkaPduCodec.Message, error: Exception): Unit = {
+  private def logTransientSerializationError(msg: PekkoPduCodec.Message, error: Exception): Unit = {
     val sm = msg.serializedMessage
     log.warning(
       "Serializer not defined for message with serializer id [{}] and manifest [{}]. " +

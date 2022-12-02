@@ -4,9 +4,9 @@
 
 package docs.stream.operators
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class WithContextSpec extends AkkaSpec {
+class WithContextSpec extends PekkoSpec {
 
   "use asSourceWithContext" in {
     // #asSourceWithContext

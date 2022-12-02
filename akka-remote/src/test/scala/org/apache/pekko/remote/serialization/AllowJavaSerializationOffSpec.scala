@@ -15,7 +15,7 @@ import pekko.actor.BootstrapSetup
 import pekko.actor.ExtendedActorSystem
 import pekko.actor.setup.ActorSystemSetup
 import pekko.serialization._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestKit
 
 class ConfigurationDummy
@@ -63,7 +63,7 @@ object AllowJavaSerializationOffSpec {
 }
 
 class AllowJavaSerializationOffSpec
-    extends AkkaSpec(ActorSystem("AllowJavaSerializationOffSpec", AllowJavaSerializationOffSpec.actorSystemSettings)) {
+    extends PekkoSpec(ActorSystem("AllowJavaSerializationOffSpec", AllowJavaSerializationOffSpec.actorSystemSettings)) {
 
   import AllowJavaSerializationOffSpec._
 

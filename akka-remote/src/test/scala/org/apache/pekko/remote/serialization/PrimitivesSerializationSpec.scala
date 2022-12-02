@@ -14,7 +14,7 @@ import pekko.serialization.BaseSerializer
 import pekko.serialization.ByteBufferSerializer
 import pekko.serialization.SerializationExtension
 import pekko.serialization.Serializer
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
 import java.io.NotSerializableException
@@ -22,11 +22,11 @@ import java.io.NotSerializableException
 object PrimitivesSerializationSpec {
   val serializationTestOverrides = ""
 
-  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(AkkaSpec.testConf)
+  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(PekkoSpec.testConf)
 }
 
 @deprecated("Moved to org.apache.pekko.serialization.* in akka-actor", "2.6.0")
-class PrimitivesSerializationSpec extends AkkaSpec(PrimitivesSerializationSpec.testConfig) {
+class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.testConfig) {
 
   val buffer = {
     val b = ByteBuffer.allocate(4096)

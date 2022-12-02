@@ -14,7 +14,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, BootstrapSetup, ExtendedActorSystem }
 import pekko.actor.setup.ActorSystemSetup
-import pekko.testkit.{ AkkaSpec, TestKit }
+import pekko.testkit.{ PekkoSpec, TestKit }
 
 class ConfigurationDummy
 class ProgrammaticDummy
@@ -87,7 +87,7 @@ object SerializationSetupSpec {
 }
 
 class SerializationSetupSpec
-    extends AkkaSpec(ActorSystem("SerializationSettingsSpec", SerializationSetupSpec.actorSystemSettings)) {
+    extends PekkoSpec(ActorSystem("SerializationSettingsSpec", SerializationSetupSpec.actorSystemSettings)) {
 
   import SerializationSetupSpec._
 

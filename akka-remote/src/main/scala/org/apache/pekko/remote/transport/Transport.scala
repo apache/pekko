@@ -10,7 +10,7 @@ import scala.util.control.NoStackTrace
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, NoSerializationVerificationNeeded }
 import pekko.actor.DeadLetterSuppression
 import pekko.event.LoggingAdapter
@@ -28,7 +28,7 @@ object Transport {
    */
   @SerialVersionUID(1L)
   final case class InvalidAssociationException(msg: String, cause: Throwable = null)
-      extends AkkaException(msg, cause)
+      extends PekkoException(msg, cause)
       with NoStackTrace
 
   /**

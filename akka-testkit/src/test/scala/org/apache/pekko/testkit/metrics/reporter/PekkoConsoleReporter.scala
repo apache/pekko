@@ -16,7 +16,7 @@ import pekko.testkit.metrics._
 /**
  * Used to report `org.apache.pekko.testkit.metric.Metric` types that the original `com.codahale.metrics.ConsoleReporter` is unaware of (cannot re-use directly because of private constructor).
  */
-class AkkaConsoleReporter(registry: AkkaMetricRegistry, verbose: Boolean, output: PrintStream = System.out)
+class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, output: PrintStream = System.out)
     extends ScheduledReporter(
       registry.asInstanceOf[MetricRegistry],
       "akka-console-reporter",

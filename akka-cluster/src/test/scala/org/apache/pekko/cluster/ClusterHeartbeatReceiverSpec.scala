@@ -6,9 +6,9 @@ package org.apache.pekko.cluster
 
 import org.apache.pekko
 import pekko.cluster.ClusterHeartbeatSender.{ Heartbeat, HeartbeatRsp }
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
-class ClusterHeartbeatReceiverSpec extends AkkaSpec("""
+class ClusterHeartbeatReceiverSpec extends PekkoSpec("""
     pekko.actor.provider = cluster 
   """.stripMargin) with ImplicitSender {
   "ClusterHeartbeatReceiver" should {

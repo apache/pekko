@@ -12,16 +12,16 @@ import scala.util.Random
 import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
 object PrimitivesSerializationSpec {
   val serializationTestOverrides = ""
 
-  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(AkkaSpec.testConf)
+  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(PekkoSpec.testConf)
 }
 
-class PrimitivesSerializationSpec extends AkkaSpec(PrimitivesSerializationSpec.testConfig) {
+class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.testConfig) {
 
   val buffer = {
     val b = ByteBuffer.allocate(4096)

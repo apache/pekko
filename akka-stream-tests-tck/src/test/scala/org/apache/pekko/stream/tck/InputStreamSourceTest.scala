@@ -13,7 +13,7 @@ import pekko.stream.ActorAttributes
 import pekko.stream.scaladsl.{ Sink, StreamConverters }
 import pekko.util.ByteString
 
-class InputStreamSourceTest extends AkkaPublisherVerification[ByteString] {
+class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
 
   def createPublisher(elements: Long): Publisher[ByteString] = {
     StreamConverters

@@ -109,7 +109,7 @@ object TestActorRefSpec {
 
 }
 
-class TestActorRefSpec extends AkkaSpec("disp1.type=Dispatcher") with BeforeAndAfterEach with DefaultTimeout {
+class TestActorRefSpec extends PekkoSpec("disp1.type=Dispatcher") with BeforeAndAfterEach with DefaultTimeout {
 
   import TestActorRefSpec._
 

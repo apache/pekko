@@ -13,7 +13,7 @@ import pekko.cluster.sharding.ShardCoordinator.Internal.ShardStopped
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.{ ExtractEntityId, ExtractShardId, HandOffStopper, Msg }
 import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object ClusterShardingInternalsSpec {
   case class HandOffStopMessage() extends NoSerializationVerificationNeeded
@@ -28,7 +28,7 @@ object ClusterShardingInternalsSpec {
   }
 }
 
-class ClusterShardingInternalsSpec extends AkkaSpec("""
+class ClusterShardingInternalsSpec extends PekkoSpec("""
     |pekko.actor.provider = cluster
     |pekko.remote.classic.netty.tcp.port = 0
     |pekko.remote.artery.canonical.port = 0

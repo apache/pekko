@@ -15,7 +15,7 @@ import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 @ccompatUsedUntil213
-class DaemonicSpec extends AkkaSpec {
+class DaemonicSpec extends PekkoSpec {
 
   "Remoting configured with daemonic = on" must {
 

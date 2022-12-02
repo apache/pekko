@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko.Done
 import org.apache.pekko.NotUsed
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.stream._
 
@@ -132,7 +132,7 @@ object IntegrationDocSpec {
 
 }
 
-class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
+class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
   import TwitterStreamQuickstartDocSpec._
   import IntegrationDocSpec._
 

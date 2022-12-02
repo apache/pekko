@@ -15,7 +15,7 @@ import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorSystem
 import pekko.actor.Status
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender, TestLatch }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 import pekko.testkit.TestProbe
 
 object ScatterGatherFirstCompletedSpec {
@@ -45,7 +45,7 @@ object ScatterGatherFirstCompletedSpec {
       "Actor:" + id)
 }
 
-class ScatterGatherFirstCompletedSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class ScatterGatherFirstCompletedSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
   import ScatterGatherFirstCompletedSpec._
 
   "Scatter-gather group" must {

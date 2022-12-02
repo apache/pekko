@@ -10,10 +10,10 @@ import scala.concurrent.duration._
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.testkit.{ AkkaSpec, LongRunningTest }
+import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 @nowarn
-class EWMASpec extends AkkaSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {
+class EWMASpec extends PekkoSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {
 
   val collector = createMetricsCollector
 

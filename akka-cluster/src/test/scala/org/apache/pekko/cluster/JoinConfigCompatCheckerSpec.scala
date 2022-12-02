@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-import org.apache.pekko.testkit.{ AkkaSpec, LongRunningTest }
+import org.apache.pekko.testkit.{ LongRunningTest, PekkoSpec }
 
 object JoinConfigCompatCheckerSpec {
 
@@ -45,7 +45,7 @@ object JoinConfigCompatCheckerSpec {
     """).withFallback(baseConfig)
 }
 
-class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
+class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
   import JoinConfigCompatCheckerSpec._
 
   "A Joining Node" must {
@@ -253,7 +253,7 @@ class JoinConfigCompatCheckerSpec extends AkkaSpec with ClusterTestKit {
       }
     }
 
-    /** This test verifies the built-in JoinConfigCompatCheckerAkkaCluster */
+    /** This test verifies the built-in JoinConfigCompatCheckerPekkoCluster */
     "NOT be allowed to join a cluster using a different value for pekko.cluster.downing-provider-class" taggedAs LongRunningTest in {
 
       val joinNodeConfig =

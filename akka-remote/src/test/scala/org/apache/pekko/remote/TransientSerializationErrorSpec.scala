@@ -11,7 +11,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, ExtendedActorSystem, RootActorPath }
 import pekko.serialization.SerializerWithStringManifest
-import pekko.testkit.{ AkkaSpec, TestActors, TestKit }
+import pekko.testkit.{ PekkoSpec, TestActors, TestKit }
 import pekko.util.unused
 
 object TransientSerializationErrorSpec {
@@ -49,7 +49,7 @@ object TransientSerializationErrorSpec {
 }
 
 abstract class AbstractTransientSerializationErrorSpec(config: Config)
-    extends AkkaSpec(
+    extends PekkoSpec(
       config.withFallback(
         ConfigFactory.parseString("""
     pekko {

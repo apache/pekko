@@ -6,14 +6,14 @@ package org.apache.pekko.persistence.query;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.ClassRule;
 
 public class PersistenceQueryTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(PersistenceQueryTest.class.getName());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(PersistenceQueryTest.class.getName());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

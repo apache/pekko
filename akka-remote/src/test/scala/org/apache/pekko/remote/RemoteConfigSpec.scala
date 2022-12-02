@@ -10,14 +10,14 @@ import scala.annotation.nowarn
 import language.postfixOps
 
 import org.apache.pekko
-import pekko.remote.transport.AkkaProtocolSettings
+import pekko.remote.transport.PekkoProtocolSettings
 import pekko.remote.transport.netty.{ NettyTransportSettings, SSLSettings }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Helpers
 import pekko.util.Helpers.ConfigOps
 
 @nowarn // classic deprecated
-class RemoteConfigSpec extends AkkaSpec("""
+class RemoteConfigSpec extends PekkoSpec("""
     pekko.actor.provider = remote
     pekko.remote.classic.netty.tcp.port = 0
   """) {
@@ -67,8 +67,8 @@ class RemoteConfigSpec extends AkkaSpec("""
       remoteSettings.config.getString("pekko.remote.classic.log-frame-size-exceeding") should ===("off")
     }
 
-    "be able to parse AkkaProtocol related config elements" in {
-      val settings = new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config)
+    "be able to parse PekkoProtocol related config elements" in {
+      val settings = new PekkoProtocolSettings(RARP(system).provider.remoteSettings.config)
       import settings._
 
       TransportFailureDetectorImplementationClass should ===(classOf[DeadlineFailureDetector].getName)
@@ -84,7 +84,7 @@ class RemoteConfigSpec extends AkkaSpec("""
 
       ConnectionTimeout should ===(15.seconds)
       ConnectionTimeout should ===(
-        new AkkaProtocolSettings(RARP(system).provider.remoteSettings.config).HandshakeTimeout)
+        new PekkoProtocolSettings(RARP(system).provider.remoteSettings.config).HandshakeTimeout)
       WriteBufferHighWaterMark should ===(None)
       WriteBufferLowWaterMark should ===(None)
       SendBufferSize should ===(Some(256000))

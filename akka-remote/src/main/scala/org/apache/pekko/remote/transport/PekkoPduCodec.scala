@@ -6,7 +6,7 @@ package org.apache.pekko.remote.transport
 
 import scala.annotation.nowarn
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.{ ActorRef, Address, AddressFromURIString, InternalActorRef }
 import pekko.protobufv3.internal.InvalidProtocolBufferException
 import pekko.remote._
@@ -18,25 +18,25 @@ import pekko.util.OptionVal
  * INTERNAL API
  */
 @SerialVersionUID(1L)
-private[remote] class PduCodecException(msg: String, cause: Throwable) extends AkkaException(msg, cause)
+private[remote] class PduCodecException(msg: String, cause: Throwable) extends PekkoException(msg, cause)
 
 /**
  * INTERNAL API
  *
- * Companion object of the [[pekko.remote.transport.AkkaPduCodec]] trait. Contains the representation case classes
+ * Companion object of the [[pekko.remote.transport.PekkoPduCodec]] trait. Contains the representation case classes
  * of decoded Akka Protocol Data Units (PDUs).
  */
 @nowarn("msg=deprecated")
-private[remote] object AkkaPduCodec {
+private[remote] object PekkoPduCodec {
 
   /**
    * Trait that represents decoded Akka PDUs (Protocol Data Units)
    */
-  sealed trait AkkaPdu
-  final case class Associate(info: HandshakeInfo) extends AkkaPdu
-  final case class Disassociate(reason: AssociationHandle.DisassociateInfo) extends AkkaPdu
-  case object Heartbeat extends AkkaPdu
-  final case class Payload(bytes: ByteString) extends AkkaPdu
+  sealed trait PekkoPdu
+  final case class Associate(info: HandshakeInfo) extends PekkoPdu
+  final case class Disassociate(reason: AssociationHandle.DisassociateInfo) extends PekkoPdu
+  case object Heartbeat extends PekkoPdu
+  final case class Payload(bytes: ByteString) extends PekkoPdu
 
   final case class Message(
       recipient: InternalActorRef,
@@ -58,32 +58,33 @@ private[remote] object AkkaPduCodec {
  * A Codec that is able to convert Akka PDUs (Protocol Data Units) from and to [[pekko.util.ByteString]]s.
  */
 @nowarn("msg=deprecated")
-private[remote] trait AkkaPduCodec {
-  import AkkaPduCodec._
+private[remote] trait PekkoPduCodec {
+  import PekkoPduCodec._
 
   /**
-   * Returns an [[pekko.remote.transport.AkkaPduCodec.AkkaPdu]] instance that represents the PDU contained in the raw
+   * Returns an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] instance that represents the PDU contained in the raw
    * ByteString.
+   *
    * @param raw
    *   Encoded raw byte representation of an Akka PDU
    * @return
    *   Case class representation of the decoded PDU that can be used in a match statement
    */
-  def decodePdu(raw: ByteString): AkkaPdu
+  def decodePdu(raw: ByteString): PekkoPdu
 
   /**
-   * Takes an [[pekko.remote.transport.AkkaPduCodec.AkkaPdu]] representation of an Akka PDU and returns its encoded
+   * Takes an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of an Akka PDU and returns its encoded
    * form as a [[pekko.util.ByteString]].
    *
    * For the same effect the constructXXX methods might be called directly, taking method parameters instead of the
-   * [[pekko.remote.transport.AkkaPduCodec.AkkaPdu]] final case classes.
+   * [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] final case classes.
    *
    * @param pdu
    *   The Akka Protocol Data Unit to be encoded
    * @return
    *   Encoded form as raw bytes
    */
-  def encodePdu(pdu: AkkaPdu): ByteString = pdu match {
+  def encodePdu(pdu: PekkoPdu): ByteString = pdu match {
     case Associate(info)      => constructAssociate(info)
     case Payload(bytes)       => constructPayload(bytes)
     case Disassociate(reason) => constructDisassociate(reason)
@@ -118,8 +119,8 @@ private[remote] trait AkkaPduCodec {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
-  import AkkaPduCodec._
+private[remote] object PekkoPduProtobufCodec$ extends PekkoPduCodec {
+  import PekkoPduCodec._
 
   private def ackBuilder(ack: Ack): AcknowledgementInfo.Builder = {
     val ackBuilder = AcknowledgementInfo.newBuilder()
@@ -165,10 +166,10 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
   override def constructPayload(payload: ByteString): ByteString =
     ByteString.fromArrayUnsafe(
-      AkkaProtocolMessage.newBuilder().setPayload(ByteStringUtils.toProtoByteStringUnsafe(payload)).build.toByteArray)
+      PekkoProtocolMessage.newBuilder().setPayload(ByteStringUtils.toProtoByteStringUnsafe(payload)).build.toByteArray)
 
   override def constructAssociate(info: HandshakeInfo): ByteString = {
-    val handshakeInfo = AkkaHandshakeInfo.newBuilder.setOrigin(serializeAddress(info.origin)).setUid(info.uid.toLong)
+    val handshakeInfo = PekkoHandshakeInfo.newBuilder.setOrigin(serializeAddress(info.origin)).setUid(info.uid.toLong)
     constructControlMessagePdu(WireFormats.CommandType.ASSOCIATE, Some(handshakeInfo))
   }
 
@@ -187,9 +188,9 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
   override val constructHeartbeat: ByteString =
     constructControlMessagePdu(WireFormats.CommandType.HEARTBEAT, None)
 
-  override def decodePdu(raw: ByteString): AkkaPdu = {
+  override def decodePdu(raw: ByteString): PekkoPdu = {
     try {
-      val pdu = AkkaProtocolMessage.parseFrom(raw.toArrayUnsafe())
+      val pdu = PekkoProtocolMessage.parseFrom(raw.toArrayUnsafe())
       if (pdu.hasPayload) Payload(ByteString.fromByteBuffer(pdu.getPayload.asReadOnlyByteBuffer()))
       else if (pdu.hasInstruction) decodeControlPdu(pdu.getInstruction)
       else
@@ -230,7 +231,7 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
     (ackOption, messageOption)
   }
 
-  private def decodeControlPdu(controlPdu: AkkaControlMessage): AkkaPdu = {
+  private def decodeControlPdu(controlPdu: PekkoControlMessage): PekkoPdu = {
 
     controlPdu.getCommandType match {
       case CommandType.ASSOCIATE if controlPdu.hasHandshakeInfo =>
@@ -254,14 +255,14 @@ private[remote] object AkkaPduProtobufCodec extends AkkaPduCodec {
 
   private def constructControlMessagePdu(
       code: WireFormats.CommandType,
-      handshakeInfo: Option[AkkaHandshakeInfo.Builder]): ByteString = {
+      handshakeInfo: Option[PekkoHandshakeInfo.Builder]): ByteString = {
 
-    val controlMessageBuilder = AkkaControlMessage.newBuilder()
+    val controlMessageBuilder = PekkoControlMessage.newBuilder()
     controlMessageBuilder.setCommandType(code)
     handshakeInfo.foreach(controlMessageBuilder.setHandshakeInfo)
 
     ByteString.ByteString1C(
-      AkkaProtocolMessage
+      PekkoProtocolMessage
         .newBuilder()
         .setInstruction(controlMessageBuilder.build)
         .build

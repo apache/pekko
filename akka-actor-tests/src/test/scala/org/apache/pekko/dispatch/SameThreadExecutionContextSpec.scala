@@ -12,9 +12,9 @@ import org.scalatest.matchers.should.Matchers
 import org.apache.pekko
 import pekko.Done
 import pekko.dispatch.internal.SameThreadExecutionContext
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class SameThreadExecutionContextSpec extends AkkaSpec with Matchers {
+class SameThreadExecutionContextSpec extends PekkoSpec with Matchers {
 
   "The SameThreadExecutionContext" should {
 

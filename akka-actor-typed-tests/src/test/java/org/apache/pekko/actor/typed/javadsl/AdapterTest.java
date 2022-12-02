@@ -14,8 +14,8 @@ import org.scalatestplus.junit.JUnitSuite;
 import java.time.Duration;
 
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Signal;
@@ -246,8 +246,8 @@ public class AdapterTest extends JUnitSuite {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("ActorSelectionTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("ActorSelectionTest", PekkoSpec.testConf());
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

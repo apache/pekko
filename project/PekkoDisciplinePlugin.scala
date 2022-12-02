@@ -8,7 +8,7 @@ import sbt._
 import Keys.{ scalacOptions, _ }
 import sbt.plugins.JvmPlugin
 
-object AkkaDisciplinePlugin extends AutoPlugin {
+object PekkoDisciplinePlugin extends AutoPlugin {
 
   override def trigger: PluginTrigger = allRequirements
   override def requires: Plugins = JvmPlugin

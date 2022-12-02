@@ -11,12 +11,12 @@ import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.Done
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
 import pekko.util.Timeout
 
-class StatusReplySpec extends AkkaSpec with ScalaFutures {
+class StatusReplySpec extends PekkoSpec with ScalaFutures {
 
   "StatusReply" should {
     "pattern match success" in {

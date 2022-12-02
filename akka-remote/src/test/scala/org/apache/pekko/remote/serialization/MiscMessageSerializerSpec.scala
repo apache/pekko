@@ -22,7 +22,7 @@ import pekko.remote.{ RemoteScope, RemoteWatcher }
 import pekko.remote.routing.RemoteRouterConfig
 import pekko.routing._
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.JavaSerializable
 
 object MiscMessageSerializerSpec {
@@ -35,7 +35,7 @@ object MiscMessageSerializerSpec {
     }
     """
 
-  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(AkkaSpec.testConf)
+  val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(PekkoSpec.testConf)
 
   class TestException(msg: String, cause: Throwable) extends RuntimeException(msg, cause) {
     def this(msg: String) = this(msg, null)
@@ -73,7 +73,7 @@ object MiscMessageSerializerSpec {
 
 }
 
-class MiscMessageSerializerSpec extends AkkaSpec(MiscMessageSerializerSpec.testConfig) {
+class MiscMessageSerializerSpec extends PekkoSpec(MiscMessageSerializerSpec.testConfig) {
   import MiscMessageSerializerSpec._
 
   val ref = system.actorOf(Props.empty, "hello")

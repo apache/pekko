@@ -18,7 +18,7 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ActorSystemImpl
 import pekko.event.Logging
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.TestEvent
 
@@ -34,7 +34,7 @@ trait ActorSystemLifecycle {
 
   @BeforeClass
   def createActorSystem(): Unit = {
-    _system = ActorSystem(Logging.simpleName(getClass), additionalConfig.withFallback(AkkaSpec.testConf))
+    _system = ActorSystem(Logging.simpleName(getClass), additionalConfig.withFallback(PekkoSpec.testConf))
     _system.eventStream.publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 

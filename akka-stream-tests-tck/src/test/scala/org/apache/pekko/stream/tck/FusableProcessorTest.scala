@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.stream._
 import pekko.stream.scaladsl.Flow
 
-class FusableProcessorTest extends AkkaIdentityProcessorVerification[Int] {
+class FusableProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 
   override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
     Flow[Int]

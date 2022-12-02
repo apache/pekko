@@ -5,7 +5,7 @@
 package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 import com.typesafe.config.ConfigFactory
@@ -21,7 +21,7 @@ object ClusterShardingHealthCheckSpec {
 }
 
 class ClusterShardingHealthCheckSpec
-    extends AkkaSpec(ClusterShardingHealthCheckSpec.config)
+    extends PekkoSpec(ClusterShardingHealthCheckSpec.config)
     with WithLogCapturing
     with ScalaFutures {
 

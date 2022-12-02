@@ -6,9 +6,9 @@ package org.apache.pekko.dispatch.sysmsg
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class SystemMessageListSpec extends AkkaSpec {
+class SystemMessageListSpec extends PekkoSpec {
   import SystemMessageList.ENil
   import SystemMessageList.LNil
 

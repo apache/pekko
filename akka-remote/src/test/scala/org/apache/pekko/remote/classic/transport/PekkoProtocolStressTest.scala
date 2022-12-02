@@ -12,11 +12,11 @@ import com.typesafe.config.{ Config, ConfigFactory }
 import org.apache.pekko
 import pekko.actor._
 import pekko.remote.{ EndpointException, RARP }
-import pekko.remote.classic.transport.AkkaProtocolStressTest._
+import pekko.remote.classic.transport.PekkoProtocolStressTest._
 import pekko.remote.transport.FailureInjectorTransportAdapter.{ Drop, One }
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender, TimingTest, _ }
+import pekko.testkit._
 
-object AkkaProtocolStressTest {
+object PekkoProtocolStressTest {
   val configA: Config =
     ConfigFactory.parseString("""
     pekko {
@@ -93,7 +93,7 @@ object AkkaProtocolStressTest {
 
 }
 
-class AkkaProtocolStressTest extends AkkaSpec(configA) with ImplicitSender with DefaultTimeout {
+class PekkoProtocolStressTest extends PekkoSpec(configA) with ImplicitSender with DefaultTimeout {
 
   val systemB = ActorSystem("systemB", system.settings.config)
   val remote = systemB.actorOf(Props(new Actor {
@@ -109,7 +109,7 @@ class AkkaProtocolStressTest extends AkkaSpec(configA) with ImplicitSender with 
     expectMsgType[ActorIdentity].ref.get
   }
 
-  "AkkaProtocolTransport" must {
+  "PekkoProtocolTransport" must {
     "guarantee at-most-once delivery and message ordering despite packet loss" taggedAs TimingTest in {
       system.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))
       systemB.eventStream.publish(TestEvent.Mute(DeadLettersFilter[Any]))

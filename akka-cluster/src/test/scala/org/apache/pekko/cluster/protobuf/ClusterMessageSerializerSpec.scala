@@ -15,11 +15,11 @@ import pekko.cluster._
 import pekko.cluster.InternalClusterAction.CompatibleConfig
 import pekko.cluster.routing.{ ClusterRouterPool, ClusterRouterPoolSettings }
 import pekko.routing.RoundRobinPool
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Version
 
 @nowarn
-class ClusterMessageSerializerSpec extends AkkaSpec("pekko.actor.provider = cluster") {
+class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = cluster") {
 
   val serializer = new ClusterMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 

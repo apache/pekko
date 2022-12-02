@@ -12,7 +12,7 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, PoisonPill, Props }
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.cluster.ClusterEvent.CurrentClusterState
-import pekko.testkit.{ AkkaSpec, DeadLettersFilter, TestProbe, WithLogCapturing }
+import pekko.testkit.{ DeadLettersFilter, PekkoSpec, TestProbe, WithLogCapturing }
 import pekko.testkit.TestEvent.Mute
 
 object ShardRegionSpec {
@@ -63,7 +63,7 @@ object ShardRegionSpec {
     }
   }
 }
-class ShardRegionSpec extends AkkaSpec(ShardRegionSpec.config) with WithLogCapturing {
+class ShardRegionSpec extends PekkoSpec(ShardRegionSpec.config) with WithLogCapturing {
 
   import scala.concurrent.duration._
 

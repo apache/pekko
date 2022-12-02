@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 object PromiseRefSpec {
   case class Request(replyTo: ActorRef)
@@ -19,7 +19,7 @@ object PromiseRefSpec {
   case object SecondMessage
 }
 
-class PromiseRefSpec extends AkkaSpec with ImplicitSender {
+class PromiseRefSpec extends PekkoSpec with ImplicitSender {
   import PromiseRefSpec._
 
   import pekko.pattern._

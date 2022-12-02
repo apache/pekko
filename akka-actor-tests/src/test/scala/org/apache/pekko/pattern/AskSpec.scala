@@ -13,12 +13,12 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
 import pekko.util.Timeout
 
 @nowarn
-class AskSpec extends AkkaSpec("""
+class AskSpec extends PekkoSpec("""
      pekko.loglevel = DEBUG
      pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     """) with WithLogCapturing {

@@ -14,7 +14,7 @@ import pekko.cluster.ClusterEvent.CurrentClusterState
 import pekko.cluster.ClusterHeartbeatSender.Heartbeat
 import pekko.cluster.CrossDcHeartbeatSender.ReportStatus
 import pekko.cluster.CrossDcHeartbeatSenderSpec.TestCrossDcHeartbeatSender
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import pekko.util.Version
@@ -30,7 +30,7 @@ object CrossDcHeartbeatSenderSpec {
   }
 }
 
-class CrossDcHeartbeatSenderSpec extends AkkaSpec("""
+class CrossDcHeartbeatSenderSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.actor.provider = cluster
     # should not be used here

@@ -12,7 +12,7 @@ import scala.collection.immutable
 import com.typesafe.config.Config
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.Actor
 import pekko.actor.ActorCell
 import pekko.actor.ActorInitializationException
@@ -71,7 +71,7 @@ object Resizer {
 }
 
 @SerialVersionUID(1L)
-class ResizerInitializationException(message: String, cause: Throwable) extends AkkaException(message, cause)
+class ResizerInitializationException(message: String, cause: Throwable) extends PekkoException(message, cause)
 
 case object DefaultResizer {
 

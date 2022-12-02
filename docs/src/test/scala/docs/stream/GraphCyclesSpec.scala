@@ -6,9 +6,9 @@ package docs.stream
 
 import org.apache.pekko.stream.{ ClosedShape, OverflowStrategy }
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class GraphCyclesSpec extends AkkaSpec {
+class GraphCyclesSpec extends PekkoSpec {
 
   "Cycle demonstration" must {
     val source = Source.fromIterator(() => Iterator.from(0))

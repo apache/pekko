@@ -14,9 +14,9 @@ import pekko.actor.RootActorPath
 import pekko.remote.RARP
 import pekko.routing.ActorRefRoutee
 import pekko.routing.ActorSelectionRoutee
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class WeightedRouteesSpec extends AkkaSpec(ConfigFactory.parseString("""
+class WeightedRouteesSpec extends PekkoSpec(ConfigFactory.parseString("""
       pekko.actor.provider = "cluster"
       pekko.remote.classic.netty.tcp.port = 0
       pekko.remote.artery.canonical.port = 0

@@ -9,7 +9,7 @@ import java.net.InetSocketAddress
 
 import org.apache.pekko.actor.{ AddressFromURIString, PoisonPill, Props }
 import org.apache.pekko.remote.testconductor.Controller.NodeInfo
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.testkit.ImplicitSender
 
 object ControllerSpec {
@@ -21,7 +21,7 @@ object ControllerSpec {
     """
 }
 
-class ControllerSpec extends AkkaSpec(ControllerSpec.config) with ImplicitSender {
+class ControllerSpec extends PekkoSpec(ControllerSpec.config) with ImplicitSender {
 
   val A = RoleName("a")
   val B = RoleName("b")

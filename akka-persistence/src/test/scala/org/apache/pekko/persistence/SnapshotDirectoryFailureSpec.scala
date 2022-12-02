@@ -8,7 +8,7 @@ import java.io.{ File, IOException }
 
 import org.apache.pekko
 import pekko.actor.{ ActorInitializationException, ActorRef, Props }
-import pekko.testkit.{ AkkaSpec, EventFilter, ImplicitSender }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec }
 
 object SnapshotDirectoryFailureSpec {
   val inUseSnapshotPath = "target/inUseSnapshotPath"
@@ -30,7 +30,7 @@ object SnapshotDirectoryFailureSpec {
 }
 
 class SnapshotDirectoryFailureSpec
-    extends AkkaSpec(
+    extends PekkoSpec(
       PersistenceSpec.config(
         "inmem",
         "SnapshotDirectoryFailureSpec",

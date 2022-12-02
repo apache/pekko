@@ -8,9 +8,9 @@ import java.io.File
 
 import org.apache.commons.io.FileUtils
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-trait Cleanup { this: AkkaSpec =>
+trait Cleanup { this: PekkoSpec =>
   val storageLocations =
     List(
       "pekko.persistence.journal.leveldb.dir",

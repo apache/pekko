@@ -16,9 +16,9 @@ import pekko.actor.ActorSystem
 import pekko.actor.ExtendedActorSystem
 import pekko.event.DefaultLoggingFilter
 import pekko.event.Logging.DefaultLogger
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ConfigSpec extends AkkaSpec(ConfigFactory.defaultReference(ActorSystem.findClassLoader())) with Assertions {
+class ConfigSpec extends PekkoSpec(ConfigFactory.defaultReference(ActorSystem.findClassLoader())) with Assertions {
 
   "The default configuration file (i.e. reference.conf)" must {
     "contain all configuration properties for akka-actor that are used in code with their correct defaults" in {

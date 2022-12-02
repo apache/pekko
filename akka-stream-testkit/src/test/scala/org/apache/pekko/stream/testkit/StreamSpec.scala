@@ -14,24 +14,24 @@ import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem }
 import pekko.stream.impl.StreamSupervisor
 import pekko.stream.snapshot.{ MaterializerState, StreamSnapshotImpl }
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.TestKitUtils
 import pekko.stream.impl.PhasedFusingActorMaterializer
 import pekko.stream.testkit.scaladsl.StreamTestKit.{ assertNoChildren, stopAllChildren }
 import pekko.stream.Materializer
 
-abstract class StreamSpec(_system: ActorSystem) extends AkkaSpec(_system) {
+abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
   def this(config: Config) =
     this(
       ActorSystem(
         TestKitUtils.testNameFromCallStack(classOf[StreamSpec], "".r),
-        ConfigFactory.load(config.withFallback(AkkaSpec.testConf))))
+        ConfigFactory.load(config.withFallback(PekkoSpec.testConf))))
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 
-  def this(configMap: Map[String, _]) = this(AkkaSpec.mapToConfig(configMap))
+  def this(configMap: Map[String, _]) = this(PekkoSpec.mapToConfig(configMap))
 
-  def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[StreamSpec], "".r), AkkaSpec.testConf))
+  def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[StreamSpec], "".r), PekkoSpec.testConf))
 
   override def withFixture(test: NoArgTest) = {
     super.withFixture(test) match {

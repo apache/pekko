@@ -4,14 +4,14 @@
 
 package org.apache.pekko.cluster
 
-import scala.concurrent.duration.{ FiniteDuration, _ }
+import scala.concurrent.duration._
 import scala.util.Random
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.testkit.{ AkkaSpec, TestKitBase }
+import pekko.testkit.{ PekkoSpec, TestKitBase }
 
 /**
  * Builds on TestKitBase to provide some extra utilities to run cluster test.
@@ -158,7 +158,7 @@ trait ClusterTestKit extends TestKitBase {
   }
 }
 
-abstract class RollingUpgradeClusterSpec(config: Config) extends AkkaSpec(config) with ClusterTestKit {
+abstract class RollingUpgradeClusterSpec(config: Config) extends PekkoSpec(config) with ClusterTestKit {
 
   /**
    * Starts `size`

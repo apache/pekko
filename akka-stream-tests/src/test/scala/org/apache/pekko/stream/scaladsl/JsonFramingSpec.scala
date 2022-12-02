@@ -14,10 +14,10 @@ import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.scaladsl.JsonFraming.PartialObjectException
 import pekko.stream.testkit.{ TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
-class JsonFramingSpec extends AkkaSpec {
+class JsonFramingSpec extends PekkoSpec {
 
   "collecting multiple json" should {
     "parse json array" in {

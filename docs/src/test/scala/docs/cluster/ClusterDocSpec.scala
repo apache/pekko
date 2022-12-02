@@ -6,7 +6,7 @@ package scala.docs.cluster
 
 import org.apache.pekko.cluster.Cluster
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
 object ClusterDocSpec {
@@ -18,7 +18,7 @@ object ClusterDocSpec {
     """
 }
 
-class ClusterDocSpec extends AkkaSpec(ClusterDocSpec.config) with CompileOnlySpec {
+class ClusterDocSpec extends PekkoSpec(ClusterDocSpec.config) with CompileOnlySpec {
 
   "demonstrate leave" in compileOnlySpec {
     // #leave

@@ -5,10 +5,10 @@
 package org.apache.pekko
 
 /**
- * Akka base Exception.
+ * Pekko base Exception.
  */
 @SerialVersionUID(1L)
-class AkkaException(message: String, cause: Throwable) extends RuntimeException(message, cause) with Serializable {
+class PekkoException(message: String, cause: Throwable) extends RuntimeException(message, cause) with Serializable {
   def this(msg: String) = this(msg, null)
 }
 
@@ -29,6 +29,6 @@ trait OnlyCauseStackTrace { self: Throwable =>
 /**
  * This exception is thrown when Akka detects a problem with the provided configuration
  */
-class ConfigurationException(message: String, cause: Throwable) extends AkkaException(message, cause) {
+class ConfigurationException(message: String, cause: Throwable) extends PekkoException(message, cause) {
   def this(msg: String) = this(msg, null)
 }

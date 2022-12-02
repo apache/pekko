@@ -17,7 +17,7 @@ import pekko.testkit.{ SocketUtil, _ }
 
 @nowarn // classic deprecated
 class RemoteDeathWatchSpec
-    extends AkkaSpec(ConfigFactory.parseString("""
+    extends PekkoSpec(ConfigFactory.parseString("""
 pekko {
     actor {
         provider = remote

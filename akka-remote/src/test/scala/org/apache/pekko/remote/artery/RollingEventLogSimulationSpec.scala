@@ -8,7 +8,7 @@ import scala.annotation.tailrec
 import scala.util.Random
 import scala.util.control.NonFatal
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 /*
  * This test is a simulation of the actual concurrent rolling log implemented in SnapshottableRollingEventLog. It
@@ -19,7 +19,7 @@ import org.apache.pekko.testkit.AkkaSpec
  * results when debugging using the logs. This simulation tries to uncover many race scenarios by simulating the
  * algorithm down to the individual byte write level.
  */
-class RollingEventLogSimulationSpec extends AkkaSpec {
+class RollingEventLogSimulationSpec extends PekkoSpec {
 
   val Committed: Byte = 0.toByte
   val Dirty: Byte = 1.toByte

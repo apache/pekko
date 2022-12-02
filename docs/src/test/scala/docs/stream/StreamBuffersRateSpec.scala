@@ -7,9 +7,9 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class StreamBuffersRateSpec extends AkkaSpec {
+class StreamBuffersRateSpec extends PekkoSpec {
 
   "Demonstrate pipelining" in {
     def println(s: Any) = ()

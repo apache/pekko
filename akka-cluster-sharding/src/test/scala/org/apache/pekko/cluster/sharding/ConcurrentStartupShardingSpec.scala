@@ -11,7 +11,7 @@ import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DeadLettersFilter
 import pekko.testkit.TestEvent.Mute
 import pekko.testkit.WithLogCapturing
@@ -61,7 +61,7 @@ object ConcurrentStartupShardingSpec {
   }
 }
 
-class ConcurrentStartupShardingSpec extends AkkaSpec(ConcurrentStartupShardingSpec.config) with WithLogCapturing {
+class ConcurrentStartupShardingSpec extends PekkoSpec(ConcurrentStartupShardingSpec.config) with WithLogCapturing {
   import ConcurrentStartupShardingSpec._
 
   // mute logging of deadLetters

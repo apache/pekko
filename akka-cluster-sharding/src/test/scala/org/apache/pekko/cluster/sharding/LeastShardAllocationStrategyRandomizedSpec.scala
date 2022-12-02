@@ -15,11 +15,11 @@ import pekko.cluster.Member
 import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.LeastShardAllocationStrategy
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 import scala.collection.immutable.SortedSet
 
-class LeastShardAllocationStrategyRandomizedSpec extends AkkaSpec("pekko.loglevel = INFO") {
+class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglevel = INFO") {
   import LeastShardAllocationStrategySpec.{
     afterRebalance,
     countShards,

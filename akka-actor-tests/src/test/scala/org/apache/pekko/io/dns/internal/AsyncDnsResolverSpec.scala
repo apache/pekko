@@ -20,9 +20,9 @@ import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
 import pekko.io.dns.internal.DnsClient.{ Answer, Question4, Question6, SrvQuestion }
-import pekko.testkit.{ AkkaSpec, TestProbe, WithLogCapturing }
+import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
-class AsyncDnsResolverSpec extends AkkaSpec("""
+class AsyncDnsResolverSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
   """) with WithLogCapturing {

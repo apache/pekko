@@ -8,7 +8,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 object ReplicatorSettingsSpec {
 
@@ -20,7 +20,7 @@ object ReplicatorSettingsSpec {
 }
 
 class ReplicatorSettingsSpec
-    extends AkkaSpec(ReplicatorSettingsSpec.config)
+    extends PekkoSpec(ReplicatorSettingsSpec.config)
     with AnyWordSpecLike
     with BeforeAndAfterAll {
 

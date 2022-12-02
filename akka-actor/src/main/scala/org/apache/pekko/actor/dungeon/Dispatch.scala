@@ -11,7 +11,7 @@ import scala.util.control.Exception.Catcher
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.dispatch.{ Envelope, Mailbox }
@@ -26,7 +26,7 @@ import pekko.util.Unsafe
 
 @SerialVersionUID(1L)
 final case class SerializationCheckFailedException private[dungeon] (msg: Object, cause: Throwable)
-    extends AkkaException(
+    extends PekkoException(
       s"Failed to serialize and deserialize message of type ${msg.getClass.getName} for testing. " +
       "To avoid this error, either disable 'pekko.actor.serialize-messages', mark the message with 'org.apache.pekko.actor.NoSerializationVerificationNeeded', or configure serialization to support this message",
       cause)

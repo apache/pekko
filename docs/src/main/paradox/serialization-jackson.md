@@ -8,12 +8,12 @@ project.description: Serialization with Jackson for Akka.
 To use Jackson Serialization, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-serialization-jackson_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 ## Introduction
@@ -461,8 +461,8 @@ the binding name (for example `jackson-cbor`).
 
 ## Using Akka Serialization for embedded types
 
-For types that already have an Akka Serializer defined that are embedded in types serialized with Jackson the @apidoc[AkkaSerializationSerializer] and
-@apidoc[AkkaSerializationDeserializer] can be used to Akka Serialization for individual fields. 
+For types that already have an Akka Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
+@apidoc[PekkoSerializationDeserializer] can be used to Akka Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
 to the fields containing the types to be serialized with Akka Serialization.

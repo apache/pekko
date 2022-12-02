@@ -107,7 +107,7 @@ object RemoteDeploymentAllowListSpec {
 
 @nowarn("msg=deprecated")
 class RemoteDeploymentAllowListSpec
-    extends AkkaSpec(RemoteDeploymentAllowListSpec.cfg)
+    extends PekkoSpec(RemoteDeploymentAllowListSpec.cfg)
     with ImplicitSender
     with DefaultTimeout {
 

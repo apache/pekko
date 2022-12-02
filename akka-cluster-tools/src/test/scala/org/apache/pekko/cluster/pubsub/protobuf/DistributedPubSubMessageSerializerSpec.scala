@@ -11,9 +11,9 @@ import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.actor.Props
 import pekko.cluster.pubsub.DistributedPubSubMediator._
 import pekko.cluster.pubsub.DistributedPubSubMediator.Internal._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class DistributedPubSubMessageSerializerSpec extends AkkaSpec {
+class DistributedPubSubMessageSerializerSpec extends PekkoSpec {
 
   val serializer = new DistributedPubSubMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 

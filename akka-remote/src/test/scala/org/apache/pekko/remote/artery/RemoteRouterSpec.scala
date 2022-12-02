@@ -26,7 +26,7 @@ object RemoteRouterSpec {
 }
 
 class RemoteRouterSpec
-    extends AkkaSpec(ConfigFactory.parseString("""
+    extends PekkoSpec(ConfigFactory.parseString("""
     pekko.remote.use-unsafe-remote-features-outside-cluster = on
     pekko.actor.deployment {
       /remote-override {

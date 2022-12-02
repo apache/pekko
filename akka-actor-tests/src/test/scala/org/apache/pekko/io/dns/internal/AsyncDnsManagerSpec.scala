@@ -15,12 +15,12 @@ import pekko.io.Dns
 import pekko.io.dns.AAAARecord
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol.{ Resolve, Resolved }
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.testkit.WithLogCapturing
 
 // tests deprecated DNS API
 @nowarn("msg=deprecated")
-class AsyncDnsManagerSpec extends AkkaSpec("""
+class AsyncDnsManagerSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     pekko.io.dns.resolver = async-dns

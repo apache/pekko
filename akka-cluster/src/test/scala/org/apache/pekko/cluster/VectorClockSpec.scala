@@ -6,9 +6,9 @@ package org.apache.pekko.cluster
 
 import scala.collection.immutable.TreeMap
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class VectorClockSpec extends AkkaSpec {
+class VectorClockSpec extends PekkoSpec {
   import VectorClock._
 
   "A VectorClock" must {

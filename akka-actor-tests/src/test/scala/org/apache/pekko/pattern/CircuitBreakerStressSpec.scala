@@ -15,7 +15,7 @@ import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.Props
 import pekko.actor.Status.Failure
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 object CircuitBreakerStressSpec {
@@ -61,7 +61,7 @@ object CircuitBreakerStressSpec {
 }
 
 // reproducer for issue #17415
-class CircuitBreakerStressSpec extends AkkaSpec with ImplicitSender {
+class CircuitBreakerStressSpec extends PekkoSpec with ImplicitSender {
   import CircuitBreakerStressSpec._
 
   muteDeadLetters(classOf[AnyRef])(system)

@@ -9,10 +9,10 @@ import scala.annotation.nowarn
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.cluster.client.ClusterReceptionist.Internal._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
-class ClusterClientMessageSerializerSpec extends AkkaSpec {
+class ClusterClientMessageSerializerSpec extends PekkoSpec {
 
   val serializer = new ClusterClientMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 

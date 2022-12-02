@@ -20,10 +20,10 @@ import pekko.stream.stage._
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
-class AsyncCallbackSpec extends AkkaSpec("""
+class AsyncCallbackSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = off
   """) {
 

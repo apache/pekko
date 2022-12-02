@@ -5,7 +5,7 @@
 package docs.persistence.query
 
 import org.apache.pekko.NotUsed
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.persistence.query.{ EventEnvelope, PersistenceQuery, Sequence }
 import org.apache.pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import org.apache.pekko.stream.scaladsl.Source
@@ -34,7 +34,7 @@ object LeveldbPersistenceQueryDocSpec {
 }
 
 class LeveldbPersistenceQueryDocSpec
-    extends AkkaSpec("pekko.persistence.journal.plugin = pekko.persistence.journal.leveldb") {
+    extends PekkoSpec("pekko.persistence.journal.plugin = pekko.persistence.journal.leveldb") {
 
   "LeveldbPersistentQuery" must {
     "demonstrate how get ReadJournal" in {

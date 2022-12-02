@@ -8,7 +8,7 @@ import com.typesafe.config.{ Config, ConfigFactory }
 
 import org.apache.pekko
 import pekko.actor.{ Address, ExtendedActorSystem }
-import pekko.testkit.{ AkkaSpec, EventFilter, ImplicitSender }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec }
 
 object ClusterLogSpec {
   val config = """
@@ -28,7 +28,7 @@ object ClusterLogSpec {
 
 }
 
-abstract class ClusterLogSpec(config: Config) extends AkkaSpec(config) with ImplicitSender {
+abstract class ClusterLogSpec(config: Config) extends PekkoSpec(config) with ImplicitSender {
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 

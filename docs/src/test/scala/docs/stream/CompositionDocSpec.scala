@@ -8,13 +8,13 @@ import org.apache.pekko.NotUsed
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl.Tcp.OutgoingConnection
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.util.ByteString
 
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.ExecutionContext
 
-class CompositionDocSpec extends AkkaSpec {
+class CompositionDocSpec extends PekkoSpec {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

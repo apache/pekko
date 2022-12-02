@@ -6,7 +6,7 @@ package org.apache.pekko.cluster.sharding
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
-import pekko.testkit.{ AkkaSpec, TestKit }
+import pekko.testkit.{ PekkoSpec, TestKit }
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -16,7 +16,7 @@ import scala.concurrent.duration._
 class ClusterShardingSettingsSpec extends AnyWordSpec with Matchers {
 
   def settings(conf: String): ClusterShardingSettings = {
-    val config = ConfigFactory.parseString(conf).withFallback(AkkaSpec.testConf)
+    val config = ConfigFactory.parseString(conf).withFallback(PekkoSpec.testConf)
     val system = ActorSystem("ClusterShardingSettingsSpec", config)
     val clusterShardingSettings = ClusterShardingSettings(system)
     TestKit.shutdownActorSystem(system)

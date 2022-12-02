@@ -13,9 +13,9 @@ import org.apache.pekko
 import pekko.stream.{ FlowShape, Materializer }
 import pekko.stream.scaladsl.{ Flow, GraphDSL, Keep, Merge, Partition, Sink, Source, Tcp }
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class MaterializerStateSpec extends AkkaSpec() {
+class MaterializerStateSpec extends PekkoSpec() {
 
   "The MaterializerSnapshotting" must {
 

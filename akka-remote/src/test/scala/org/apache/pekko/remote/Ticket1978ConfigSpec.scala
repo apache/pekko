@@ -8,7 +8,7 @@ import org.apache.pekko
 import pekko.remote.transport.netty.SSLSettings
 import pekko.testkit._
 
-class Ticket1978ConfigSpec extends AkkaSpec("""
+class Ticket1978ConfigSpec extends PekkoSpec("""
     pekko.remote.classic.netty.ssl.security {
       random-number-generator = "SecureRandom"
     }

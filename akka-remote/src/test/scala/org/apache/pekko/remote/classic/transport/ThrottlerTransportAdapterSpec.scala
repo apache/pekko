@@ -16,7 +16,7 @@ import pekko.remote.{ EndpointException, RemoteActorRefProvider }
 import pekko.remote.classic.transport.ThrottlerTransportAdapterSpec._
 import pekko.remote.transport.{ TestTransport, ThrottlerTransportAdapter }
 import pekko.remote.transport.ThrottlerTransportAdapter._
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, EventFilter, ImplicitSender, TestEvent, TimingTest }
+import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec, TestEvent, TimingTest }
 
 object ThrottlerTransportAdapterSpec {
   val configA: Config =
@@ -76,7 +76,7 @@ object ThrottlerTransportAdapterSpec {
 }
 
 @nowarn("msg=deprecated")
-class ThrottlerTransportAdapterSpec extends AkkaSpec(configA) with ImplicitSender with DefaultTimeout {
+class ThrottlerTransportAdapterSpec extends PekkoSpec(configA) with ImplicitSender with DefaultTimeout {
 
   val systemB = ActorSystem("systemB", system.settings.config)
   val remote = systemB.actorOf(Props[Echo](), "echo")

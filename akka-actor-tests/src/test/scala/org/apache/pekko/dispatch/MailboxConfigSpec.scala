@@ -15,10 +15,10 @@ import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ AkkaSpec, EventFilter }
+import pekko.testkit.{ EventFilter, PekkoSpec }
 import pekko.util.unused
 
-abstract class MailboxSpec extends AkkaSpec with BeforeAndAfterAll with BeforeAndAfterEach {
+abstract class MailboxSpec extends PekkoSpec with BeforeAndAfterAll with BeforeAndAfterEach {
   def name: String
 
   def factory: MailboxType => MessageQueue
@@ -244,7 +244,7 @@ object CustomMailboxSpec {
   }
 }
 
-class CustomMailboxSpec extends AkkaSpec(CustomMailboxSpec.config) {
+class CustomMailboxSpec extends PekkoSpec(CustomMailboxSpec.config) {
   "Dispatcher configuration" must {
     "support custom mailboxType" in {
       val actor = system.actorOf(Props.empty.withDispatcher("my-dispatcher"))
@@ -283,7 +283,7 @@ object SingleConsumerOnlyMailboxVerificationSpec {
 }
 
 class SingleConsumerOnlyMailboxVerificationSpec
-    extends AkkaSpec(SingleConsumerOnlyMailboxVerificationSpec.mailboxConf) {
+    extends PekkoSpec(SingleConsumerOnlyMailboxVerificationSpec.mailboxConf) {
   import SingleConsumerOnlyMailboxVerificationSpec.Ping
 
   def pathologicalPingPong(dispatcherId: String): Unit = {

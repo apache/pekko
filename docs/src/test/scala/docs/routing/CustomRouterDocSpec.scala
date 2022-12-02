@@ -4,7 +4,7 @@
 
 package docs.routing
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.testkit.ImplicitSender
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.Props
@@ -94,7 +94,7 @@ final case class RedundancyGroup(routeePaths: immutable.Iterable[String], nbrCop
 }
 //#group
 
-class CustomRouterDocSpec extends AkkaSpec(CustomRouterDocSpec.config) with ImplicitSender {
+class CustomRouterDocSpec extends PekkoSpec(CustomRouterDocSpec.config) with ImplicitSender {
 
   import CustomRouterDocSpec._
   import org.apache.pekko.routing.SeveralRoutees

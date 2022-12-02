@@ -4,9 +4,9 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class ManifestInfoSpec extends AkkaSpec {
+class ManifestInfoSpec extends PekkoSpec {
   "ManifestInfo" should {
     "produce a clear message" in {
       val versions = Map(

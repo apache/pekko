@@ -18,7 +18,7 @@ import pekko.cluster.ClusterSettings.DefaultDataCenter
 import pekko.cluster.InternalClusterAction._
 import pekko.cluster.MemberStatus._
 import pekko.remote.RARP
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 
@@ -31,7 +31,7 @@ object ClusterDomainEventPublisherSpec {
 }
 
 class ClusterDomainEventPublisherSpec
-    extends AkkaSpec(ClusterDomainEventPublisherSpec.config)
+    extends PekkoSpec(ClusterDomainEventPublisherSpec.config)
     with BeforeAndAfterEach
     with ImplicitSender {
 

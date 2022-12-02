@@ -12,7 +12,7 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ AkkaSpec, EventFilter, ImplicitSender, TestProbe, TimingTest }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe, TimingTest }
 
 object BarrierSpec {
   final case class Failed(ref: ActorRef, thr: Throwable)
@@ -24,7 +24,7 @@ object BarrierSpec {
                """
 }
 
-class BarrierSpec extends AkkaSpec(BarrierSpec.config) with ImplicitSender {
+class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
 
   import BarrierCoordinator._
   import BarrierSpec._

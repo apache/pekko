@@ -16,7 +16,7 @@ object DisabledJavaSerializerWarningSpec {
   final case class Msg(s: String)
 }
 
-class DisabledJavaSerializerWarningSpec extends AkkaSpec("""
+class DisabledJavaSerializerWarningSpec extends PekkoSpec("""
   pekko.actor {
     allow-java-serialization = off
     serialize-messages = on

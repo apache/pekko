@@ -14,7 +14,7 @@ import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 
-class TransformProcessorTest extends AkkaIdentityProcessorVerification[Int] {
+class TransformProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 
   override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
     val stage =

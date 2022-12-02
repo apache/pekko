@@ -10,7 +10,7 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.dispatch.ThreadPoolConfig
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object ConsistencySpec {
   val minThreads = 1
@@ -54,12 +54,12 @@ object ConsistencySpec {
   }
 }
 
-class ConsistencySpec extends AkkaSpec(ConsistencySpec.config) {
+class ConsistencySpec extends PekkoSpec(ConsistencySpec.config) {
   import ConsistencySpec._
 
   override def expectedTestDuration: FiniteDuration = 5.minutes
 
-  "The Akka actor model implementation" must {
+  "The Pekko actor model implementation" must {
     "provide memory consistency" in {
       val noOfActors = threads + 1
       val props = Props[ConsistencyCheckingActor]().withDispatcher("consistency-dispatcher")

@@ -5,8 +5,8 @@
 package org.apache.pekko.stream.javadsl;
 
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -21,8 +21,8 @@ import static org.junit.Assert.assertEquals;
 public class LazyAndFutureFlowTest extends StreamTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("LazyAndFutureFlowTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("LazyAndFutureFlowTest", PekkoSpec.testConf());
 
   public LazyAndFutureFlowTest() {
     super(actorSystemResource);

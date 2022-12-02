@@ -8,9 +8,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.remote.FailureDetector.Clock
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class FailureDetectorRegistrySpec extends AkkaSpec("pekko.loglevel = INFO") {
+class FailureDetectorRegistrySpec extends PekkoSpec("pekko.loglevel = INFO") {
 
   def fakeTimeGenerator(timeIntervals: Seq[Long]): Clock = new Clock {
     @volatile var times =

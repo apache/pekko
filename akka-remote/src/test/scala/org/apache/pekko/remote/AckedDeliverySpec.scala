@@ -10,7 +10,7 @@ import scala.annotation.tailrec
 
 import scala.annotation.nowarn
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 @nowarn("msg=deprecated")
 object AckedDeliverySpec {
@@ -22,7 +22,7 @@ object AckedDeliverySpec {
 }
 
 @nowarn("msg=deprecated")
-class AckedDeliverySpec extends AkkaSpec {
+class AckedDeliverySpec extends PekkoSpec {
   import AckedDeliverySpec._
 
   def msg(seq: Long) = Sequenced(SeqNo(seq), "msg" + seq)

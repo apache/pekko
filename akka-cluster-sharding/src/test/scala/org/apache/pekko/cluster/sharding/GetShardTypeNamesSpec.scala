@@ -7,7 +7,7 @@ package org.apache.pekko.cluster.sharding
 import org.apache.pekko
 import pekko.actor.Props
 import pekko.cluster.Cluster
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors.EchoActor
 import pekko.testkit.WithLogCapturing
 
@@ -33,7 +33,7 @@ object GetShardTypeNamesSpec {
   }
 }
 
-class GetShardTypeNamesSpec extends AkkaSpec(GetShardTypeNamesSpec.config) with WithLogCapturing {
+class GetShardTypeNamesSpec extends PekkoSpec(GetShardTypeNamesSpec.config) with WithLogCapturing {
   import GetShardTypeNamesSpec._
 
   "GetShardTypeNames" must {

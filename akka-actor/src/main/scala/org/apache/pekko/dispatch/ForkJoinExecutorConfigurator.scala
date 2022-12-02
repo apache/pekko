@@ -13,7 +13,7 @@ object ForkJoinExecutorConfigurator {
   /**
    * INTERNAL AKKA USAGE ONLY
    */
-  final class AkkaForkJoinPool(
+  final class PekkoForkJoinPool(
       parallelism: Int,
       threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
       unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
@@ -29,7 +29,7 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new AkkaForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 
@@ -40,7 +40,7 @@ object ForkJoinExecutorConfigurator {
    * INTERNAL AKKA USAGE ONLY
    */
   @SerialVersionUID(1L)
-  final class AkkaForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
+  final class PekkoForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
     override def getRawResult(): Unit = ()
     override def setRawResult(unit: Unit): Unit = ()
     override def exec(): Boolean =
@@ -80,7 +80,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)
     def createExecutorService: ExecutorService =
-      new AkkaForkJoinPool(parallelism, threadFactory, MonitorableThreadFactory.doNothing, asyncMode)
+      new PekkoForkJoinPool(parallelism, threadFactory, MonitorableThreadFactory.doNothing, asyncMode)
   }
 
   final def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {

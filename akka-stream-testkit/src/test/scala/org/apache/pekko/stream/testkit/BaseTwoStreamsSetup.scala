@@ -12,9 +12,9 @@ import org.reactivestreams.Publisher
 import org.apache.pekko
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-abstract class BaseTwoStreamsSetup extends AkkaSpec("""
+abstract class BaseTwoStreamsSetup extends PekkoSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
     pekko.stream.materializer.max-input-buffer-size = 2
   """) {

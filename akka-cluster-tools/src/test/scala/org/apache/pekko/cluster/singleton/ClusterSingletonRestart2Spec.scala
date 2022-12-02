@@ -16,7 +16,7 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
 object ClusterSingletonRestart2Spec {
@@ -30,7 +30,7 @@ object ClusterSingletonRestart2Spec {
 }
 
 class ClusterSingletonRestart2Spec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
   pekko.loglevel = INFO
   pekko.cluster.roles = [singleton]
   pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider

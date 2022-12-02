@@ -6,7 +6,7 @@ package docs.actor
 
 import language.postfixOps
 
-import org.apache.pekko.testkit.{ AkkaSpec => MyFavoriteTestFrameWorkPlusAkkaTestKit }
+import org.apache.pekko.testkit.{ PekkoSpec => MyFavoriteTestFrameWorkPlusPekkoTestKit }
 import org.apache.pekko.util.ByteString
 
 //#test-code
@@ -40,7 +40,7 @@ object FSMDocSpec {
   // #test-code
 }
 
-class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
+class FSMDocSpec extends MyFavoriteTestFrameWorkPlusPekkoTestKit {
   import FSMDocSpec._
 
   // #fsm-code-elided

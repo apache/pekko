@@ -16,9 +16,9 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore
 import pekko.cluster.sharding.internal.EventSourcedRememberEntitiesShardStore.EntitiesStarted
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ClusterShardingMessageSerializerSpec extends AkkaSpec {
+class ClusterShardingMessageSerializerSpec extends PekkoSpec {
   import ShardCoordinator.Internal._
 
   val serializer = new ClusterShardingMessageSerializer(system.asInstanceOf[ExtendedActorSystem])

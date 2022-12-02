@@ -4,7 +4,7 @@
 
 package docs.routing
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.testkit.ImplicitSender
 import org.apache.pekko.routing.FromConfig
 import org.apache.pekko.actor.ActorRef
@@ -37,7 +37,7 @@ object ConsistentHashingRouterDocSpec {
 
 }
 
-class ConsistentHashingRouterDocSpec extends AkkaSpec with ImplicitSender {
+class ConsistentHashingRouterDocSpec extends PekkoSpec with ImplicitSender {
 
   import ConsistentHashingRouterDocSpec._
 

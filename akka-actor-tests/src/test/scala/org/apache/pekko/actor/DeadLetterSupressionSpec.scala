@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.event.Logging
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
@@ -21,7 +21,7 @@ object DeadLetterSupressionSpec {
 
 }
 
-class DeadLetterSupressionSpec extends AkkaSpec with ImplicitSender {
+class DeadLetterSupressionSpec extends PekkoSpec with ImplicitSender {
   import DeadLetterSupressionSpec._
 
   val deadActor = system.actorOf(TestActors.echoActorProps)

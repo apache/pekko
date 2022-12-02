@@ -17,10 +17,10 @@ import pekko.actor._
 import pekko.io.SelectionHandler._
 import pekko.io.TcpListener.{ FailedRegisterIncoming, RegisterIncoming }
 import pekko.io.TcpListenerSpec.RegisterChannel
-import pekko.testkit.{ AkkaSpec, EventFilter, TestActorRef, TestProbe }
+import pekko.testkit.{ EventFilter, PekkoSpec, TestActorRef, TestProbe }
 import pekko.testkit.SocketUtil
 
-class TcpListenerSpec extends AkkaSpec("""
+class TcpListenerSpec extends PekkoSpec("""
     pekko.io.tcp.batch-accept-limit = 2
     """) {
 

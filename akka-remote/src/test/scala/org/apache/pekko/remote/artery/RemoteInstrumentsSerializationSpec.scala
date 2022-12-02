@@ -10,13 +10,13 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, InternalActorRef }
 import pekko.event._
-import pekko.testkit.{ AkkaSpec, EventFilter, TestProbe }
+import pekko.testkit.{ EventFilter, PekkoSpec, TestProbe }
 import pekko.testkit.TestEvent.Mute
 import pekko.util.{ unused, OptionVal }
 
 import java.nio.ByteOrder
 
-class RemoteInstrumentsSerializationSpec extends AkkaSpec("pekko.loglevel = DEBUG") {
+class RemoteInstrumentsSerializationSpec extends PekkoSpec("pekko.loglevel = DEBUG") {
   import RemoteInstrumentsSerializationSpec._
 
   def remoteInstruments(instruments: RemoteInstrument*): RemoteInstruments = {

@@ -21,7 +21,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.actor.dungeon.SerializationCheckFailedException
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, EventFilter }
+import pekko.testkit.{ EventFilter, PekkoSpec }
 import pekko.util.{ unused, Timeout }
 import pekko.util.ByteString
 
@@ -33,7 +33,7 @@ object SerializationTests {
         serializers {
           test = "org.apache.pekko.serialization.NoopSerializer"
           test2 = "org.apache.pekko.serialization.NoopSerializer2"
-          other = "other.SerializerOutsideAkkaPackage"
+          other = "other.SerializerOutsidePekkoPackage"
         }
 
         serialization-bindings {
@@ -120,7 +120,7 @@ object SerializationTests {
 
   def mostlyReferenceSystem: ActorSystem = {
     val referenceConf = ConfigFactory.defaultReference()
-    val mostlyReferenceConf = AkkaSpec.testConf.withFallback(referenceConf)
+    val mostlyReferenceConf = PekkoSpec.testConf.withFallback(referenceConf)
     ActorSystem("SerializationSystem", mostlyReferenceConf)
   }
 
@@ -132,7 +132,7 @@ object SerializationTests {
       pekko.actor.allow-java-serialization = on
       """)
       .withFallback(ConfigFactory.parseString(serializeConf))
-      .withFallback(AkkaSpec.testConf.withFallback(referenceConf))
+      .withFallback(PekkoSpec.testConf.withFallback(referenceConf))
     ActorSystem("SerializationSystem", conf)
   }
 
@@ -152,7 +152,7 @@ object SerializationTests {
 
 }
 
-class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
+class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
 
   val ser = SerializationExtension(system)
 
@@ -266,7 +266,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
         s"${classOf[ByteArraySerializer].getName} only serializes byte arrays, not [java.lang.String]")
     }
 
-    "log warning if non-Akka serializer is configured for Akka message" in {
+    "log warning if non-Pekko serializer is configured for Pekko message" in {
       EventFilter.warning(pattern = ".*not implemented by Pekko.*", occurrences = 1).intercept {
         ser.serialize(new Other).get
       }
@@ -297,7 +297,7 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
   }
 }
 
-class VerifySerializabilitySpec extends AkkaSpec(SerializationTests.verifySerializabilityConf) {
+class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySerializabilityConf) {
   implicit val timeout: Timeout = Timeout(5 seconds)
 
   "verify config" in {
@@ -353,7 +353,7 @@ class VerifySerializabilitySpec extends AkkaSpec(SerializationTests.verifySerial
   }
 }
 
-class ReferenceSerializationSpec extends AkkaSpec(SerializationTests.mostlyReferenceSystem) {
+class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyReferenceSystem) {
 
   val ser = SerializationExtension(system)
   def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
@@ -391,7 +391,7 @@ class ReferenceSerializationSpec extends AkkaSpec(SerializationTests.mostlyRefer
   }
 }
 
-class AllowJavaSerializationSpec extends AkkaSpec(SerializationTests.allowJavaSerializationSystem) {
+class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaSerializationSystem) {
 
   val ser = SerializationExtension(system)
   def serializerMustBe(toSerialize: Class[_], expectedSerializer: Class[_]) =
@@ -483,7 +483,7 @@ class AllowJavaSerializationSpec extends AkkaSpec(SerializationTests.allowJavaSe
     "serialize DeadLetterActorRef" in {
       val outbuf = new ByteArrayOutputStream()
       val out = new ObjectOutputStream(outbuf)
-      val a = ActorSystem("SerializeDeadLeterActorRef", AkkaSpec.testConf)
+      val a = ActorSystem("SerializeDeadLeterActorRef", PekkoSpec.testConf)
       try {
         out.writeObject(a.deadLetters)
         out.flush()
@@ -503,7 +503,7 @@ class AllowJavaSerializationSpec extends AkkaSpec(SerializationTests.allowJavaSe
 }
 
 class NoVerificationWarningSpec
-    extends AkkaSpec(ConfigFactory.parseString("""
+    extends PekkoSpec(ConfigFactory.parseString("""
         pekko.actor.allow-java-serialization = on
         pekko.actor.warn-about-java-serializer-usage = on
         pekko.actor.warn-on-no-serialization-verification = on
@@ -529,7 +529,7 @@ class NoVerificationWarningSpec
 }
 
 class NoVerificationWarningOffSpec
-    extends AkkaSpec(ConfigFactory.parseString("""
+    extends PekkoSpec(ConfigFactory.parseString("""
         pekko.actor.allow-java-serialization = on
         pekko.actor.warn-about-java-serializer-usage = on
         pekko.actor.warn-on-no-serialization-verification = off
@@ -554,7 +554,7 @@ class NoVerificationWarningOffSpec
   }
 }
 
-class SerializerDeadlockSpec extends AkkaSpec {
+class SerializerDeadlockSpec extends PekkoSpec {
 
   "SerializationExtension" must {
 

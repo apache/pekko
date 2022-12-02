@@ -15,9 +15,9 @@ import pekko.persistence.query.TimestampOffset
 import pekko.persistence.query.typed.EventEnvelope
 import pekko.serialization.SerializationExtension
 import pekko.serialization.SerializerWithStringManifest
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class QuerySerializerSpec extends AkkaSpec {
+class QuerySerializerSpec extends PekkoSpec {
 
   private val serialization = SerializationExtension(system)
 

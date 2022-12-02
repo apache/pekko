@@ -4,7 +4,7 @@
 
 package org.apache.pekko.testkit
 
-class TestActorsSpec extends AkkaSpec with ImplicitSender {
+class TestActorsSpec extends PekkoSpec with ImplicitSender {
 
   import TestActors.{ echoActorProps, forwardActorProps }
 

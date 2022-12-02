@@ -5,8 +5,8 @@
 package org.apache.pekko.pattern;
 
 import org.apache.pekko.actor.*;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.util.JavaDurationConverters;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -25,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 public class CircuitBreakerTest extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("JavaAPI", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

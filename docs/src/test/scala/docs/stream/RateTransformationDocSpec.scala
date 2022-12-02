@@ -11,11 +11,11 @@ import scala.util.Random
 import scala.math._
 import scala.concurrent.duration._
 import scala.collection.immutable
-import org.apache.pekko.testkit.{ AkkaSpec, TestLatch }
+import org.apache.pekko.testkit.{ PekkoSpec, TestLatch }
 
 import scala.concurrent.Await
 
-class RateTransformationDocSpec extends AkkaSpec {
+class RateTransformationDocSpec extends PekkoSpec {
 
   "conflate should summarize" in {
     // #conflate-summarize

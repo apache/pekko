@@ -9,7 +9,7 @@ import org.testng.SkipException
 
 import org.apache.pekko.stream.scaladsl._
 
-class CancelledSinkSubscriberTest extends AkkaSubscriberBlackboxVerification[Int] {
+class CancelledSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 
   override def createSubscriber(): Subscriber[Int] =
     Flow[Int].to(Sink.cancelled).runWith(Source.asSubscriber)

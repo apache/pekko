@@ -106,7 +106,7 @@ object SupervisorSpec {
 }
 
 class SupervisorSpec
-    extends AkkaSpec(SupervisorSpec.config)
+    extends PekkoSpec(SupervisorSpec.config)
     with BeforeAndAfterEach
     with ImplicitSender
     with DefaultTimeout {

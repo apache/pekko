@@ -21,9 +21,9 @@ import pekko.remote.artery.compress.CompressionProtocol.{
 }
 import pekko.remote.artery.compress.CompressionTable
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ArteryMessageSerializerSpec extends AkkaSpec {
+class ArteryMessageSerializerSpec extends PekkoSpec {
   "ArteryMessageSerializer" must {
     val actorA = system.actorOf(Props.empty)
     val actorB = system.actorOf(Props.empty)

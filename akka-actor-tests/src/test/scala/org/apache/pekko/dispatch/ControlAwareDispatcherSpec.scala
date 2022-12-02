@@ -6,7 +6,7 @@ package org.apache.pekko.dispatch
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
-import pekko.testkit.{ AkkaSpec, DefaultTimeout }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
 object ControlAwareDispatcherSpec {
   val config = """
@@ -21,7 +21,7 @@ object ControlAwareDispatcherSpec {
   case object ImportantMessage extends ControlMessage
 }
 
-class ControlAwareDispatcherSpec extends AkkaSpec(ControlAwareDispatcherSpec.config) with DefaultTimeout {
+class ControlAwareDispatcherSpec extends PekkoSpec(ControlAwareDispatcherSpec.config) with DefaultTimeout {
   import ControlAwareDispatcherSpec.ImportantMessage
 
   "A ControlAwareDispatcher" must {

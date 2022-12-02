@@ -5,15 +5,15 @@
 To use Akka Persistence TestKit, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group1=com.typesafe.akka
   artifact1=akka-persistence-typed_$scala.binary.version$
-  version1=AkkaVersion
+  version1=PekkoVersion
   group2=com.typesafe.akka
   artifact2=akka-persistence-testkit_$scala.binary.version$
-  version2=AkkaVersion
+  version2=PekkoVersion
   scope2=test
 }
 
@@ -63,12 +63,12 @@ Persistence testkit allows to check events saved in a storage, emulate storage o
 To use the testkit you need to add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence-testkit_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 There are two testkit classes which have similar api:
@@ -200,12 +200,12 @@ the plugins at the same time. To coordinate initialization you can use the `Pers
 `PersistenceInit` is part of `akka-persistence-testkit` and you need to add the dependency to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-persistence-testkit_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Scala

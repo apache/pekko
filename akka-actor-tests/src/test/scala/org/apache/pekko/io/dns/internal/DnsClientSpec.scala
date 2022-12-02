@@ -14,9 +14,9 @@ import pekko.actor.Props
 import pekko.io.Udp
 import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.io.dns.internal.DnsClient.{ Answer, Question4 }
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
-class DnsClientSpec extends AkkaSpec with ImplicitSender {
+class DnsClientSpec extends PekkoSpec with ImplicitSender {
   "The async DNS client" should {
     val exampleRequest = Question4(42, "pekko.io")
     val exampleRequestMessage =

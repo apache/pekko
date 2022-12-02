@@ -11,7 +11,7 @@ import scala.beans.BeanProperty
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.annotation.InternalApi
 import pekko.event.LoggingAdapter
 import pekko.util.unused
@@ -159,20 +159,20 @@ trait NotInfluenceReceiveTimeout
  * For instance, if you try to create an Actor that doesn't extend Actor.
  */
 @SerialVersionUID(1L)
-final case class IllegalActorStateException private[pekko] (message: String) extends AkkaException(message)
+final case class IllegalActorStateException private[pekko] (message: String) extends PekkoException(message)
 
 /**
  * ActorKilledException is thrown when an Actor receives the [[pekko.actor.Kill]] message
  */
 @SerialVersionUID(1L)
-final case class ActorKilledException private[pekko] (message: String) extends AkkaException(message) with NoStackTrace
+final case class ActorKilledException private[pekko] (message: String) extends PekkoException(message) with NoStackTrace
 
 /**
  * An InvalidActorNameException is thrown when you try to convert something, usually a String, to an Actor name
  * which doesn't validate.
  */
 @SerialVersionUID(1L)
-final case class InvalidActorNameException(message: String) extends AkkaException(message)
+final case class InvalidActorNameException(message: String) extends PekkoException(message)
 
 /**
  * An ActorInitializationException is thrown when the initialization logic for an Actor fails.
@@ -187,7 +187,7 @@ final case class InvalidActorNameException(message: String) extends AkkaExceptio
  */
 @SerialVersionUID(1L)
 class ActorInitializationException protected (actor: ActorRef, message: String, cause: Throwable)
-    extends AkkaException(ActorInitializationException.enrichedMessage(actor, message), cause) {
+    extends PekkoException(ActorInitializationException.enrichedMessage(actor, message), cause) {
   def getActor: ActorRef = actor
 }
 object ActorInitializationException {
@@ -263,7 +263,7 @@ object OriginalRestartException {
  * Currently only `null` is an invalid message.
  */
 @SerialVersionUID(1L)
-final case class InvalidMessageException private[pekko] (message: String) extends AkkaException(message)
+final case class InvalidMessageException private[pekko] (message: String) extends PekkoException(message)
 
 /**
  * A DeathPactException is thrown by an Actor that receives a Terminated(someActor) message
@@ -271,7 +271,7 @@ final case class InvalidMessageException private[pekko] (message: String) extend
  */
 @SerialVersionUID(1L)
 final case class DeathPactException private[pekko] (dead: ActorRef)
-    extends AkkaException("Monitored actor [" + dead + "] terminated")
+    extends PekkoException("Monitored actor [" + dead + "] terminated")
     with NoStackTrace
 
 /**
@@ -279,7 +279,7 @@ final case class DeathPactException private[pekko] (dead: ActorRef)
  * avoid cascading interrupts to other threads than the originally interrupted one.
  */
 @SerialVersionUID(1L)
-class ActorInterruptedException private[pekko] (cause: Throwable) extends AkkaException(cause.getMessage, cause)
+class ActorInterruptedException private[pekko] (cause: Throwable) extends PekkoException(cause.getMessage, cause)
 
 /**
  * This message is published to the EventStream whenever an Actor receives a message it doesn't understand

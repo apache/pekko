@@ -37,7 +37,7 @@ object ActorConfigurationVerificationSpec {
 }
 
 class ActorConfigurationVerificationSpec
-    extends AkkaSpec(ActorConfigurationVerificationSpec.config)
+    extends PekkoSpec(ActorConfigurationVerificationSpec.config)
     with DefaultTimeout
     with BeforeAndAfterEach {
   import ActorConfigurationVerificationSpec._

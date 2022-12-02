@@ -14,7 +14,7 @@ import FailureInjectorTransportAdapter._
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.{ Address, ExtendedActorSystem }
 import pekko.event.{ Logging, LoggingAdapter }
 import pekko.remote.transport.AssociationHandle.{ HandleEvent, HandleEventListener }
@@ -23,7 +23,7 @@ import pekko.util.ByteString
 
 @SerialVersionUID(1L)
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
-final case class FailureInjectorException(msg: String) extends AkkaException(msg) with NoStackTrace
+final case class FailureInjectorException(msg: String) extends PekkoException(msg) with NoStackTrace
 
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
 class FailureInjectorProvider extends TransportAdapterProvider {

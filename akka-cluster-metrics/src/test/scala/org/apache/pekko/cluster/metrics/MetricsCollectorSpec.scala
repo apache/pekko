@@ -16,7 +16,7 @@ import pekko.testkit._
 
 @nowarn
 class MetricsCollectorSpec
-    extends AkkaSpec(MetricsConfig.defaultEnabled)
+    extends PekkoSpec(MetricsConfig.defaultEnabled)
     with ImplicitSender
     with MetricsCollectorFactory {
 

@@ -10,8 +10,8 @@ import org.apache.pekko.stream.javadsl.RunnableGraph;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.scaladsl.TcpAttributes;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import com.typesafe.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -28,11 +28,11 @@ public class StreamAttributeDocTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "StreamAttributeDocTest",
           ConfigFactory.parseString("my-stream-dispatcher = pekko.test.stream-dispatcher")
-              .withFallback(AkkaSpec.testConf()));
+              .withFallback(PekkoSpec.testConf()));
 
   @Test
   public void runnableAttributesExample() throws Exception {

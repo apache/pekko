@@ -7,13 +7,13 @@ package docs.stream
 import org.apache.pekko.actor.ActorRef
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext
 
-class StreamPartialGraphDSLDocSpec extends AkkaSpec {
+class StreamPartialGraphDSLDocSpec extends PekkoSpec {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

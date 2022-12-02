@@ -10,14 +10,14 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 
-class UdpConnectedIntegrationSpec extends AkkaSpec("""
+class UdpConnectedIntegrationSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.actor.debug.lifecycle = on
     pekko.actor.debug.autoreceive = on

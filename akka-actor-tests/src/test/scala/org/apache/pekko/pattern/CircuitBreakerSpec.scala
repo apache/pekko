@@ -83,7 +83,7 @@ object CircuitBreakerSpec {
   }
 }
 
-class CircuitBreakerSpec extends AkkaSpec("""
+class CircuitBreakerSpec extends PekkoSpec("""
     pekko.circuit-breaker {
       identified {
         max-failures = 1

@@ -13,7 +13,7 @@ import com.typesafe.config._
 
 import org.apache.pekko
 import pekko.actor.{ ActorSystem, Deploy, TypedActor, TypedProps }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object TypedActorRemoteDeploySpec {
   val conf = ConfigFactory.parseString("""
@@ -39,7 +39,7 @@ object TypedActorRemoteDeploySpec {
 
 }
 
-class TypedActorRemoteDeploySpec extends AkkaSpec(conf) {
+class TypedActorRemoteDeploySpec extends PekkoSpec(conf) {
   val remoteName = "remote-sys"
   val remoteSystem = ActorSystem(remoteName, conf)
   val remoteAddress = RARP(remoteSystem).provider.getDefaultAddress

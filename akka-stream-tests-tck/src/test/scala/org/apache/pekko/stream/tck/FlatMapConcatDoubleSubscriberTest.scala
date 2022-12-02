@@ -11,7 +11,7 @@ import org.reactivestreams.{ Publisher, Subscriber }
 
 import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 
-class FlatMapConcatDoubleSubscriberTest extends AkkaSubscriberBlackboxVerification[Int] {
+class FlatMapConcatDoubleSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 
   def createSubscriber(): Subscriber[Int] = {
     val subscriber = Promise[Subscriber[Int]]()

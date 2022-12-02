@@ -15,19 +15,19 @@ import pekko.actor.typed.scaladsl.adapter._
 import pekko.cluster.typed.internal.receptionist.ClusterReceptionist
 import pekko.serialization.SerializationExtension
 
-class AkkaClusterTypedSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
+class PekkoClusterTypedSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 
   val ref = spawn(Behaviors.empty[String])
   val classicSystem = system.toClassic
-  val serializer = new AkkaClusterTypedSerializer(classicSystem.asInstanceOf[ExtendedActorSystem])
+  val serializer = new PekkoClusterTypedSerializer(classicSystem.asInstanceOf[ExtendedActorSystem])
 
-  "AkkaClusterTypedSerializer" must {
+  "PekkoClusterTypedSerializer" must {
 
     Seq("ReceptionistEntry" -> ClusterReceptionist.Entry(ref, 666L)(System.currentTimeMillis())).foreach {
       case (scenario, item) =>
         s"resolve serializer for $scenario" in {
           val serializer = SerializationExtension(classicSystem)
-          serializer.serializerFor(item.getClass).getClass should be(classOf[AkkaClusterTypedSerializer])
+          serializer.serializerFor(item.getClass).getClass should be(classOf[PekkoClusterTypedSerializer])
         }
 
         s"serialize and de-serialize $scenario" in {

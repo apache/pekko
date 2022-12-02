@@ -10,11 +10,11 @@ import org.apache.pekko
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocation
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocationResponse
 import pekko.cluster.sharding.external.ExternalShardAllocationStrategy.GetShardLocations
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import pekko.util.Timeout
 
-class ExternalShardAllocationStrategySpec extends AkkaSpec("""
+class ExternalShardAllocationStrategySpec extends PekkoSpec("""
     pekko.actor.provider = cluster 
     pekko.loglevel = INFO 
     pekko.remote.artery.canonical.port = 0

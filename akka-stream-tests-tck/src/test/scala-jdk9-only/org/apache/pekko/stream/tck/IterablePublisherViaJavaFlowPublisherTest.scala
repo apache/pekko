@@ -11,7 +11,7 @@ import pekko.NotUsed
 import pekko.stream.scaladsl.{ Flow, JavaFlowSupport, Sink, Source }
 import org.reactivestreams._
 
-class IterablePublisherViaJavaFlowPublisherTest extends AkkaPublisherVerification[Int] {
+class IterablePublisherViaJavaFlowPublisherTest extends PekkoPublisherVerification[Int] {
 
   override def createPublisher(elements: Long): Publisher[Int] = {
     val sourceViaJavaFlowPublisher: JavaFlow.Publisher[Int] = Source(iterable(elements))

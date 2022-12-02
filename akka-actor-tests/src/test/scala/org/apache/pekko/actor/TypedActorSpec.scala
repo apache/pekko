@@ -22,7 +22,7 @@ import pekko.japi.{ Option => JOption }
 import pekko.pattern.ask
 import pekko.routing.RoundRobinGroup
 import pekko.serialization.{ JavaSerializer, SerializerWithStringManifest }
-import pekko.testkit.{ filterEvents, AkkaSpec, DefaultTimeout, EventFilter, TimingTest }
+import pekko.testkit.{ filterEvents, DefaultTimeout, EventFilter, PekkoSpec, TimingTest }
 import pekko.util.Timeout
 
 object TypedActorSpec {
@@ -251,7 +251,7 @@ object TypedActorSpec {
 
 @nowarn
 class TypedActorSpec
-    extends AkkaSpec(TypedActorSpec.config)
+    extends PekkoSpec(TypedActorSpec.config)
     with BeforeAndAfterEach
     with BeforeAndAfterAll
     with DefaultTimeout {
@@ -577,7 +577,7 @@ class TypedActorSpec
 
 @nowarn
 class TypedActorRouterSpec
-    extends AkkaSpec(TypedActorSpec.config)
+    extends PekkoSpec(TypedActorSpec.config)
     with BeforeAndAfterEach
     with BeforeAndAfterAll
     with DefaultTimeout {

@@ -523,7 +523,7 @@ router-dispatcher {}
   }
 }
 
-class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
+class RouterDocSpec extends PekkoSpec(RouterDocSpec.config) with ImplicitSender {
 
   import RouterDocSpec._
 

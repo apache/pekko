@@ -16,7 +16,7 @@ import scala.io.StdIn.readLine
 
 //#imports
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import scala.concurrent.ExecutionContext
 
 object TwitterStreamQuickstartDocSpec {
@@ -69,7 +69,7 @@ object TwitterStreamQuickstartDocSpec {
   // #fiddle_code
 }
 
-class TwitterStreamQuickstartDocSpec extends AkkaSpec {
+class TwitterStreamQuickstartDocSpec extends PekkoSpec {
   import TwitterStreamQuickstartDocSpec._
 
   implicit val executionContext: ExecutionContext = system.dispatcher

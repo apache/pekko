@@ -11,14 +11,14 @@ import org.apache.pekko
 import pekko.actor.{ ActorSystem, Address, BootstrapSetup, RootActorPath }
 import pekko.actor.setup.ActorSystemSetup
 import pekko.remote.RARP
-import pekko.testkit.{ AkkaSpec, SocketUtil }
+import pekko.testkit.{ PekkoSpec, SocketUtil }
 
 /**
  * Base class for remoting tests what needs to test interaction between a "local" actor system
- * which is always created (the usual AkkaSpec system), and multiple additional actor systems over artery
+ * which is always created (the usual PekkoSpec system), and multiple additional actor systems over artery
  */
 abstract class ArteryMultiNodeSpec(config: Config)
-    extends AkkaSpec(config.withFallback(ArterySpecSupport.defaultConfig)) {
+    extends PekkoSpec(config.withFallback(ArterySpecSupport.defaultConfig)) {
 
   def this() = this(ConfigFactory.empty())
   def this(extraConfig: String) = this(ConfigFactory.parseString(extraConfig))

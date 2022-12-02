@@ -7,7 +7,7 @@ package org.apache.pekko.actor
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.unused
 
 object PropsCreationSpec {
@@ -30,7 +30,7 @@ object PropsCreationSpec {
 
 }
 
-class PropsCreationSpec extends AkkaSpec("""
+class PropsCreationSpec extends PekkoSpec("""
   # test is using Java serialization and relies on serialize-creators=on
   pekko.actor.serialize-creators = on
   pekko.actor.no-serialization-verification-needed-class-prefix = []

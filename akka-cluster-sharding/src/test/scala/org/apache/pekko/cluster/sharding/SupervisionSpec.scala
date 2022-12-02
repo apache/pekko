@@ -13,7 +13,7 @@ import pekko.cluster.sharding.ShardRegion.Passivate
 import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 import pekko.testkit.EventFilter
 import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object SupervisionSpec {
   val config =
@@ -70,7 +70,7 @@ object SupervisionSpec {
 
 }
 
-class DeprecatedSupervisionSpec extends AkkaSpec(SupervisionSpec.config) with ImplicitSender with WithLogCapturing {
+class DeprecatedSupervisionSpec extends PekkoSpec(SupervisionSpec.config) with ImplicitSender with WithLogCapturing {
   import SupervisionSpec._
 
   "Supervision for a sharded actor (deprecated)" must {
@@ -116,7 +116,7 @@ class DeprecatedSupervisionSpec extends AkkaSpec(SupervisionSpec.config) with Im
   }
 }
 
-class SupervisionSpec extends AkkaSpec(SupervisionSpec.config) with ImplicitSender with WithLogCapturing {
+class SupervisionSpec extends PekkoSpec(SupervisionSpec.config) with ImplicitSender with WithLogCapturing {
 
   import SupervisionSpec._
 

@@ -25,12 +25,12 @@ such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
 To use Akka Remoting, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-remote_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 @@project-info{ projectId="akka-remote" }

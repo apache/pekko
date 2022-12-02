@@ -14,7 +14,7 @@ import pekko.stream.impl.EmptyPublisher
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
-class SplitWhenTest extends AkkaPublisherVerification[Int] {
+class SplitWhenTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] =
     if (elements == 0) EmptyPublisher[Int]

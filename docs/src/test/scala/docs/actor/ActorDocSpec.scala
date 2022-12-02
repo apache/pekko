@@ -319,7 +319,7 @@ case class User(name: String)
 case class Register(user: User)
 //#immutable-message-definition
 
-class ActorDocSpec extends AkkaSpec("""
+class ActorDocSpec extends PekkoSpec("""
   pekko.loglevel = INFO
   pekko.loggers = []
   """) {
@@ -346,7 +346,7 @@ class ActorDocSpec extends AkkaSpec("""
 
     // testing the actor
 
-    // TODO: convert docs to AkkaSpec(Map(...))
+    // TODO: convert docs to PekkoSpec(Map(...))
     val filter = EventFilter.custom {
       case e: Logging.Info => true
       case _               => false

@@ -14,7 +14,7 @@ import pekko.actor.CoordinatedShutdown
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors.EchoActor
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
@@ -42,7 +42,7 @@ object CoordinatedShutdownShardingSpec {
 }
 
 @ccompatUsedUntil213
-class CoordinatedShutdownShardingSpec extends AkkaSpec(CoordinatedShutdownShardingSpec.config) with WithLogCapturing {
+class CoordinatedShutdownShardingSpec extends PekkoSpec(CoordinatedShutdownShardingSpec.config) with WithLogCapturing {
   import CoordinatedShutdownShardingSpec._
 
   val sys1 = ActorSystem(system.name, system.settings.config)

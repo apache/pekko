@@ -13,7 +13,7 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.sharding.ShardRegion.CurrentRegions
 import pekko.persistence.PersistentActor
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
@@ -81,7 +81,7 @@ object RememberEntitiesShardIdExtractorChangeSpec {
   val TypeName = "ShardIdExtractorChange"
 }
 class RememberEntitiesShardIdExtractorChangeSpec
-    extends AkkaSpec(PersistentShardingMigrationSpec.config)
+    extends PekkoSpec(PersistentShardingMigrationSpec.config)
     with ImplicitSender {
 
   import RememberEntitiesShardIdExtractorChangeSpec._

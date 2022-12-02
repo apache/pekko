@@ -8,7 +8,7 @@ import org.reactivestreams.Subscriber
 
 import org.apache.pekko.stream.scaladsl._
 
-class FoldSinkSubscriberTest extends AkkaSubscriberBlackboxVerification[Int] {
+class FoldSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 
   override def createSubscriber(): Subscriber[Int] =
     Flow[Int].to(Sink.fold(0)(_ + _)).runWith(Source.asSubscriber)

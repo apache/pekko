@@ -7,7 +7,7 @@ package org.apache.pekko.remote
 import scala.collection.immutable._
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
 object SeqNo {
@@ -79,11 +79,11 @@ final case class Ack(cumulativeAck: SeqNo, nacks: Set[SeqNo] = Set.empty) {
 
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
 class ResendBufferCapacityReachedException(c: Int)
-    extends AkkaException(s"Resend buffer capacity of [$c] has been reached.")
+    extends PekkoException(s"Resend buffer capacity of [$c] has been reached.")
 
 @deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
 class ResendUnfulfillableException
-    extends AkkaException(
+    extends PekkoException(
       "Unable to fulfill resend request since negatively acknowledged payload is no longer in buffer. " +
       "The resend states between two systems are compromised and cannot be recovered.")
 

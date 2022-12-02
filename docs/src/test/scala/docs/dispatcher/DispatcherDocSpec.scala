@@ -6,7 +6,7 @@ package docs.dispatcher
 
 import language.postfixOps
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.event.Logging
 import org.apache.pekko.event.LoggingAdapter
 import org.apache.pekko.actor._
@@ -287,7 +287,7 @@ object DispatcherDocSpec {
   // #require-mailbox-on-actor
 }
 
-class DispatcherDocSpec extends AkkaSpec(DispatcherDocSpec.config) {
+class DispatcherDocSpec extends PekkoSpec(DispatcherDocSpec.config) {
 
   import DispatcherDocSpec._
 

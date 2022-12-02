@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko.testkit._
 
-class CircuitBreakerMTSpec extends AkkaSpec {
+class CircuitBreakerMTSpec extends PekkoSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   "A circuit breaker being called by many threads" must {
     val callTimeout = 2.seconds.dilated

@@ -36,12 +36,12 @@ This page does not list all available modules, but overviews the main functional
 ### Actor library
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-actor-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 The core Akka library is `akka-actor-typed`, but actors are used across Akka libraries, providing a consistent, integrated model that relieves you from individually
@@ -64,12 +64,12 @@ Challenges that actors solve include the following:
 ### Remoting
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-remote_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Remoting enables actors that live on different computers to seamlessly exchange messages.
@@ -90,12 +90,12 @@ Challenges Remoting solves include the following:
 ### Cluster
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 If you have a set of actor systems that cooperate to solve some business problem, then you likely want to manage these set of
@@ -116,12 +116,12 @@ Challenges the Cluster module solves include the following:
 ### Cluster Sharding
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-sharding-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Sharding helps to solve the problem of distributing a set of actors among members of an Akka cluster.
@@ -138,12 +138,12 @@ Challenges that Sharding solves include the following:
 ### Cluster Singleton
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-singleton_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 A common (in fact, a bit too common) use case in distributed systems is to have a single entity responsible
@@ -162,12 +162,12 @@ The Singleton module can be used to solve these challenges:
 ### Persistence
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-persistence-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Just like objects in OOP, actors keep their state in volatile memory. Once the system is shut down, gracefully or
@@ -187,12 +187,12 @@ Persistence tackles the following challenges:
 ### Projections
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-projection-core_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Projections provides a simple API for consuming a stream of events for projection into a variety of downstream options.  The core dependency provides only the API and other provider dependencies are required for different source and sink implementations.
@@ -207,12 +207,12 @@ Challenges Projections solve include the following:
 ### Distributed Data
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 In situations where eventual consistency is acceptable, it is possible to share data between nodes in
@@ -229,12 +229,12 @@ Distributed Data is intended to solve the following challenges:
 ### Streams
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-stream-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 Actors are a fundamental model for concurrency, but there are common patterns where their use requires the user

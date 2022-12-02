@@ -15,7 +15,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.cluster.metrics.StandardMetrics._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 @nowarn
@@ -136,7 +136,7 @@ class NodeMetricsSpec extends AnyWordSpec with Matchers {
 }
 
 class MetricsGossipSpec
-    extends AkkaSpec(MetricsConfig.defaultEnabled)
+    extends PekkoSpec(MetricsConfig.defaultEnabled)
     with ImplicitSender
     with MetricsCollectorFactory {
 
@@ -240,7 +240,7 @@ class MetricsGossipSpec
 }
 
 @nowarn
-class MetricValuesSpec extends AkkaSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {
+class MetricValuesSpec extends PekkoSpec(MetricsConfig.defaultEnabled) with MetricsCollectorFactory {
   import pekko.cluster.metrics.StandardMetrics._
 
   val collector = createMetricsCollector

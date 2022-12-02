@@ -25,7 +25,7 @@ import pekko.actor.SupervisorStrategy.seqThrowable2Decider
 import pekko.dispatch.{ Dispatcher, DispatcherConfigurator, DispatcherPrerequisites, MessageDispatcher }
 import pekko.event.Logging
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, EventFilter, ImplicitSender }
+import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec }
 import pekko.testkit.{ filterEvents, filterException, TestDuration, TestLatch }
 import pekko.testkit.LongRunningTest
 import pekko.testkit.TestEvent.Mute
@@ -748,7 +748,8 @@ object SupervisorHierarchySpec {
 
 }
 
-class SupervisorHierarchySpec extends AkkaSpec(SupervisorHierarchySpec.config) with DefaultTimeout with ImplicitSender {
+class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) with DefaultTimeout
+    with ImplicitSender {
   import SupervisorHierarchySpec._
 
   override def expectedTestDuration = 2.minutes

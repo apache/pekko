@@ -10,7 +10,7 @@ import pekko.Done
 import pekko.actor.CoordinatedShutdown.Phase
 import pekko.actor.CoordinatedShutdown.UnknownReason
 import pekko.dispatch.ExecutionContexts
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.TestKit
 import pekko.testkit.TestProbe
@@ -26,7 +26,7 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 
 class CoordinatedShutdownSpec
-    extends AkkaSpec(ConfigFactory.parseString("""
+    extends PekkoSpec(ConfigFactory.parseString("""
     pekko.loglevel=INFO
     pekko.loggers = ["org.apache.pekko.testkit.TestEventListener"]
   """)) {

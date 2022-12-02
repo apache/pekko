@@ -16,7 +16,7 @@ import pekko.dispatch.sysmsg.{ DeathWatchNotification, Failed }
 import pekko.pattern.ask
 import pekko.testkit._
 
-class LocalDeathWatchSpec extends AkkaSpec with ImplicitSender with DefaultTimeout with DeathWatchSpec
+class LocalDeathWatchSpec extends PekkoSpec with ImplicitSender with DefaultTimeout with DeathWatchSpec
 
 object DeathWatchSpec {
   object Watcher {
@@ -109,7 +109,7 @@ object DeathWatchSpec {
 }
 
 @nowarn
-trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout =>
+trait DeathWatchSpec { this: PekkoSpec with ImplicitSender with DefaultTimeout =>
 
   import DeathWatchSpec._
 

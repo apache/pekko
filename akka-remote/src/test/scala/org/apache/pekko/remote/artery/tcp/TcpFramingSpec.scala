@@ -12,11 +12,11 @@ import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Framing.FramingException
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.util.ByteString
 
-class TcpFramingSpec extends AkkaSpec("""
+class TcpFramingSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
   import TcpFraming.encodeFrameHeader

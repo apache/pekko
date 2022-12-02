@@ -21,7 +21,7 @@ import pekko.actor.ClassicActorSystemProvider
 //#imports
 
 import org.apache.pekko.actor.Actor
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 //#extension
 class SettingsImpl(config: Config) extends Extension {
@@ -80,7 +80,7 @@ object SettingsExtensionDocSpec {
 
 }
 
-class SettingsExtensionDocSpec extends AkkaSpec(SettingsExtensionDocSpec.config) {
+class SettingsExtensionDocSpec extends PekkoSpec(SettingsExtensionDocSpec.config) {
 
   "demonstrate how to create application specific settings extension in Scala" in {
     // #extension-usage

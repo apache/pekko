@@ -16,7 +16,7 @@ import scala.concurrent.duration._
 
 import pekko.testkit._
 
-class SchedulerDocSpec extends AkkaSpec(Map("pekko.loglevel" -> "INFO")) {
+class SchedulerDocSpec extends PekkoSpec(Map("pekko.loglevel" -> "INFO")) {
   "schedule a one-off task" in {
     // #schedule-one-off-message
     // Use the system's dispatcher as ExecutionContext

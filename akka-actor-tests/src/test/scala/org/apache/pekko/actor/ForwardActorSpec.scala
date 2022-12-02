@@ -30,7 +30,7 @@ object ForwardActorSpec {
   }
 }
 
-class ForwardActorSpec extends AkkaSpec {
+class ForwardActorSpec extends PekkoSpec {
   import ForwardActorSpec._
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   "A Forward Actor" must {

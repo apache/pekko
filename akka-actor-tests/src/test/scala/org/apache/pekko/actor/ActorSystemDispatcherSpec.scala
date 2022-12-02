@@ -13,7 +13,7 @@ import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.setup.ActorSystemSetup
 import pekko.dispatch.{ Dispatchers, ExecutionContexts }
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestActors, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestActors, TestProbe }
 
 object ActorSystemDispatchersSpec {
 
@@ -32,7 +32,7 @@ object ActorSystemDispatchersSpec {
 
 }
 
-class ActorSystemDispatchersSpec extends AkkaSpec(ConfigFactory.parseString("""
+class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
     dispatcher-loop-1 = "dispatcher-loop-2"
     dispatcher-loop-2 = "dispatcher-loop-1"
   """)) with ImplicitSender {

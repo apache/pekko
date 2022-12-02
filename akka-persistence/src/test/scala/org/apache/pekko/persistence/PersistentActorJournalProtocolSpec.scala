@@ -101,7 +101,7 @@ class JournalPuppet extends Actor {
 
 import PersistentActorJournalProtocolSpec._
 
-class PersistentActorJournalProtocolSpec extends AkkaSpec(config) with ImplicitSender {
+class PersistentActorJournalProtocolSpec extends PekkoSpec(config) with ImplicitSender {
 
   val journal = JournalPuppet(system).probe
 

@@ -6,8 +6,8 @@ package org.apache.pekko.pattern;
 
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.Futures;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 import org.apache.pekko.util.Timeout;
 import org.junit.ClassRule;
@@ -62,8 +62,8 @@ public class PatternsTest extends JUnitSuite {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("JavaAPI", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

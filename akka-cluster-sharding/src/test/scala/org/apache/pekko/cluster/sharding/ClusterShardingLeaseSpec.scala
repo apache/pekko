@@ -14,7 +14,7 @@ import pekko.cluster.sharding.ShardRegion.StartEntity
 import pekko.cluster.{ Cluster, MemberStatus }
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TestLeaseExt
-import pekko.testkit.{ AkkaSpec, ImplicitSender, WithLogCapturing }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 import pekko.testkit.TestActors.EchoActor
 
 object ClusterShardingLeaseSpec {
@@ -67,7 +67,7 @@ class PersistenceClusterShardingLeaseSpec
 class DDataClusterShardingLeaseSpec extends ClusterShardingLeaseSpec(ClusterShardingLeaseSpec.ddataConfig, true)
 
 class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
-    extends AkkaSpec(config.withFallback(ClusterShardingLeaseSpec.config))
+    extends PekkoSpec(config.withFallback(ClusterShardingLeaseSpec.config))
     with ImplicitSender
     with WithLogCapturing {
   import ClusterShardingLeaseSpec._

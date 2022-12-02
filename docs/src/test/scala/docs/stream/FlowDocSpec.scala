@@ -11,14 +11,14 @@ import org.apache.pekko.stream.CompletionStrategy
 import org.apache.pekko.stream.Materializer
 import org.apache.pekko.stream.{ ClosedShape, FlowShape, OverflowStrategy }
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success }
 import scala.concurrent.ExecutionContext
 
-class FlowDocSpec extends AkkaSpec with CompileOnlySpec {
+class FlowDocSpec extends PekkoSpec with CompileOnlySpec {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

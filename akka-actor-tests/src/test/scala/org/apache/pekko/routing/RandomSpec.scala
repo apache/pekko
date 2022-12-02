@@ -14,9 +14,9 @@ import language.postfixOps
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender, TestLatch }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 
-class RandomSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class RandomSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
 
   "random pool" must {
 

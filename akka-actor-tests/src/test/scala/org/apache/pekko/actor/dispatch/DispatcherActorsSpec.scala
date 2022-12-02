@@ -8,12 +8,12 @@ import java.util.concurrent.CountDownLatch
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 /**
  * Tests the behavior of the executor based event driven dispatcher when multiple actors are being dispatched on it.
  */
-class DispatcherActorsSpec extends AkkaSpec {
+class DispatcherActorsSpec extends PekkoSpec {
   class SlowActor(finishedCounter: CountDownLatch) extends Actor {
 
     def receive = {

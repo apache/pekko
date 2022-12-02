@@ -9,10 +9,10 @@ import pekko.actor.Address
 import pekko.routing.ActorSelectionRoutee
 import pekko.routing.ConsistentHash
 import pekko.routing.ConsistentRoutee
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 class RemoteConsistentHashingRouterSpec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
     pekko.remote.artery.canonical.port = 0                                                         
     pekko.actor.provider = remote """) {
 

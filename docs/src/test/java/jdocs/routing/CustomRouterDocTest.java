@@ -9,7 +9,7 @@ import org.apache.pekko.routing.RoundRobinRoutingLogic;
 import org.apache.pekko.routing.Routee;
 import org.apache.pekko.routing.RoutingLogic;
 import org.apache.pekko.routing.SeveralRoutees;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
@@ -38,8 +38,8 @@ import java.util.List;
 public class CustomRouterDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "CustomRouterDocTest", ConfigFactory.parseString(CustomRouterDocSpec.jconfig()));
 
   private final ActorSystem system = actorSystemResource.getSystem();

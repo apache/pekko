@@ -17,15 +17,15 @@ import org.apache.pekko.actor.Props;
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.AkkaSpec;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.*;
 
 public class SchedulerDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("SchedulerDocTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("SchedulerDocTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
   private ActorRef testActor = system.actorOf(Props.create(MyActor.class));

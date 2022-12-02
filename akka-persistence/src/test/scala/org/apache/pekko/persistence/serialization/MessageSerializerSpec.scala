@@ -7,9 +7,9 @@ package org.apache.pekko.persistence.serialization
 import org.apache.pekko
 import pekko.persistence.PersistentRepr
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class MessageSerializerSpec extends AkkaSpec {
+class MessageSerializerSpec extends PekkoSpec {
 
   "Message serializer" should {
     "serialize metadata for persistent repr" in {

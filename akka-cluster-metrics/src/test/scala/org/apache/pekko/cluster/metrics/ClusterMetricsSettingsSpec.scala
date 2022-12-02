@@ -11,9 +11,9 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.dispatch.Dispatchers
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ClusterMetricsSettingsSpec extends AkkaSpec {
+class ClusterMetricsSettingsSpec extends PekkoSpec {
 
   "ClusterMetricsSettings" must {
 
