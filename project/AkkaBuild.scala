@@ -163,20 +163,20 @@ object AkkaBuild {
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
     licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://akka.io/")),
-    description := "Akka is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
+    description := "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/akka/akka"),
-        "scm:git:https://github.com/akka/akka.git",
-        "scm:git:git@github.com:akka/akka.git")),
+        url("https://github.com/apache/incubator-pekko"),
+        "scm:git:https://github.com/apache/incubator-pekko.git",
+        "scm:git:git@github.com:apache/incubator-pekko.git")),
     apiURL := Some(url(s"https://doc.akka.io/api/akka/${version.value}")),
     initialCommands :=
       """|import language.postfixOps
-         |import akka.actor._
+         |import org.apache.pekko.actor._
          |import scala.concurrent._
          |import com.typesafe.config.ConfigFactory
          |import scala.concurrent.duration._
-         |import akka.util.Timeout
+         |import org.apache.pekko.util.Timeout
          |var config = ConfigFactory.parseString("akka.stdout-loglevel=INFO,akka.loglevel=DEBUG,pinned{type=PinnedDispatcher,executor=thread-pool-executor,throughput=1000}")
          |var remoteConfig = ConfigFactory.parseString("akka.remote.classic.netty{port=0,use-dispatcher-for-io=akka.actor.default-dispatcher,execution-pool-size=0},akka.actor.provider=remote").withFallback(config)
          |var system: ActorSystem = null
@@ -286,10 +286,10 @@ object AkkaBuild {
         UsefulTask("", "sortImports", "Sort the imports"),
         UsefulTask("", "mimaReportBinaryIssues ", "Check binary issues"),
         UsefulTask("", "validatePullRequest ", "Validate pull request"),
-        UsefulTask("", "akka-docs/paradox", "Build documentation"),
-        UsefulTask("", "akka-docs/paradoxBrowse", "Browse the generated documentation"),
+        UsefulTask("", "docs/paradox", "Build documentation"),
+        UsefulTask("", "docs/paradoxBrowse", "Browse the generated documentation"),
         UsefulTask("", "tips:", "prefix commands with `+` to run against cross Scala versions."),
-        UsefulTask("", "Contributing guide:", "https://github.com/akka/akka/blob/main/CONTRIBUTING.md")))
+        UsefulTask("", "Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")))
   }
 
   private def optionalDir(path: String): Option[File] =
