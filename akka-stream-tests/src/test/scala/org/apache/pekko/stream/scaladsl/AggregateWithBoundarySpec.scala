@@ -16,7 +16,7 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.OverflowStrategy
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
-import pekko.testkit.{ AkkaSpec, ExplicitlyTriggeredScheduler }
+import pekko.testkit.{ ExplicitlyTriggeredScheduler, PekkoSpec }
 
 class AggregateWithBoundarySpec extends StreamSpec {
 
@@ -76,7 +76,7 @@ class AggregateWithTimeBoundaryAndSimulatedTimeSpec extends AnyWordSpecLike with
     ActorSystem(
       s"ActorSystemWithExplicitlyTriggeredScheduler-$id",
       ConfigFactory.load(
-        AkkaSpec.testConf.withValue(
+        PekkoSpec.testConf.withValue(
           "pekko.scheduler.implementation",
           ConfigValueFactory.fromAnyRef("org.apache.pekko.testkit.ExplicitlyTriggeredScheduler"))))
 

@@ -25,7 +25,7 @@ import pekko.stream.Materializer
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.scaladsl.StreamRefs
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import pekko.util.Version
@@ -49,7 +49,7 @@ object ClusterSpec {
   final case class GossipTo(address: Address)
 }
 
-class ClusterSpec extends AkkaSpec(ClusterSpec.config) with ImplicitSender {
+class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
 
   val selfAddress = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 

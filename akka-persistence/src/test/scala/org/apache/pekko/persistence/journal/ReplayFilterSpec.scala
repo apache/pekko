@@ -9,7 +9,7 @@ import pekko.persistence.JournalProtocol
 import pekko.persistence.PersistentRepr
 import pekko.testkit._
 
-class ReplayFilterSpec extends AkkaSpec with ImplicitSender {
+class ReplayFilterSpec extends PekkoSpec with ImplicitSender {
   import JournalProtocol._
   import ReplayFilter.{ Fail, RepairByDiscardOld, Warn }
 

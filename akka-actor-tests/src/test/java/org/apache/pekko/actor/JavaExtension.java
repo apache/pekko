@@ -4,9 +4,9 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.*;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import com.typesafe.config.ConfigFactory;
 import org.scalatestplus.junit.JUnitSuite;
 
@@ -62,12 +62,12 @@ public class JavaExtension extends JUnitSuite {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "JavaExtension",
           ConfigFactory.parseString(
                   "pekko.extensions = [ \"org.apache.pekko.actor.JavaExtension$TestExtensionId\" ]")
-              .withFallback(AkkaSpec.testConf()));
+              .withFallback(PekkoSpec.testConf()));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

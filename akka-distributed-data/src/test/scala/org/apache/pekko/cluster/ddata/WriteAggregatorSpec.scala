@@ -129,7 +129,7 @@ object WriteAggregatorSpec {
   }
 }
 
-class WriteAggregatorSpec extends AkkaSpec(s"""
+class WriteAggregatorSpec extends PekkoSpec(s"""
       pekko.actor.provider = "cluster"
       pekko.remote.classic.netty.tcp.port = 0
       pekko.remote.artery.canonical.port = 0

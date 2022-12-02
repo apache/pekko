@@ -15,8 +15,8 @@ import org.junit.Test;
 
 import org.apache.pekko.stream.Attributes;
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 
 public class AttributesTest extends StreamTest {
 
@@ -25,8 +25,8 @@ public class AttributesTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("AttributesTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("AttributesTest", PekkoSpec.testConf());
 
   final Attributes attributes =
       Attributes.name("a").and(Attributes.name("b")).and(Attributes.inputBuffer(1, 2));

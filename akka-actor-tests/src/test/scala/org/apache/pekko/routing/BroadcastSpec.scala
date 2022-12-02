@@ -11,7 +11,7 @@ import scala.concurrent.Await
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, ImplicitSender, TestLatch }
+import pekko.testkit.{ DefaultTimeout, ImplicitSender, PekkoSpec, TestLatch }
 
 object BroadcastSpec {
   class TestActor extends Actor {
@@ -19,7 +19,7 @@ object BroadcastSpec {
   }
 }
 
-class BroadcastSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class BroadcastSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
 
   "broadcast group" must {
 

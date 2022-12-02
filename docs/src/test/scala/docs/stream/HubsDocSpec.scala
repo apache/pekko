@@ -7,13 +7,13 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.{ KillSwitches, UniqueKillSwitch }
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.duration._
 import org.apache.pekko.stream.ThrottleMode
 
-class HubsDocSpec extends AkkaSpec with CompileOnlySpec {
+class HubsDocSpec extends PekkoSpec with CompileOnlySpec {
 
   "Hubs" must {
 

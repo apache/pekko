@@ -13,7 +13,7 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.RememberEntitiesCoordinatorStore
 import pekko.cluster.sharding.internal.RememberEntitiesShardStore
 import pekko.cluster.sharding.internal.RememberEntitiesProvider
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestException
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
@@ -190,7 +190,7 @@ object RememberEntitiesFailureSpec {
 }
 
 class RememberEntitiesFailureSpec
-    extends AkkaSpec(RememberEntitiesFailureSpec.config)
+    extends PekkoSpec(RememberEntitiesFailureSpec.config)
     with AnyWordSpecLike
     with WithLogCapturing {
 

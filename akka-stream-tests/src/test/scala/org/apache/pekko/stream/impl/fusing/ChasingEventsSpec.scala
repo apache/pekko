@@ -15,9 +15,9 @@ import pekko.stream.stage.OutHandler
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ChasingEventsSpec extends AkkaSpec("""
+class ChasingEventsSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = off
   """) {
 

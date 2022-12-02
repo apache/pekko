@@ -11,7 +11,7 @@ import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 import scala.compat.java8.OptionConverters
 import scala.util.Try
 
-import com.typesafe.sslconfig.pekko.AkkaSSLConfig
+import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 import org.apache.pekko
 import pekko.{ japi, NotUsed }
@@ -70,7 +70,7 @@ object TLS {
   @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "2.6.0")
   def create(
       sslContext: SSLContext,
-      sslConfig: Optional[AkkaSSLConfig],
+      sslConfig: Optional[PekkoSSLConfig],
       firstSession: NegotiateNewSession,
       role: TLSRole): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
     new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, OptionConverters.toScala(sslConfig), firstSession, role))
@@ -112,7 +112,7 @@ object TLS {
   @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "2.6.0")
   def create(
       sslContext: SSLContext,
-      sslConfig: Optional[AkkaSSLConfig],
+      sslConfig: Optional[PekkoSSLConfig],
       firstSession: NegotiateNewSession,
       role: TLSRole,
       hostInfo: Optional[japi.Pair[String, java.lang.Integer]],

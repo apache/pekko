@@ -254,7 +254,7 @@ object ActorModelSpec {
     } else throw new AssertionError("await failed")
 }
 
-abstract class ActorModelSpec(config: String) extends AkkaSpec(config) with DefaultTimeout {
+abstract class ActorModelSpec(config: String) extends PekkoSpec(config) with DefaultTimeout {
 
   import ActorModelSpec._
 

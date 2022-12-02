@@ -11,9 +11,9 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.pattern.ask
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, EventFilter, ImplicitSender }
+import pekko.testkit.{ DefaultTimeout, EventFilter, ImplicitSender, PekkoSpec }
 
-class SupervisorTreeSpec extends AkkaSpec with ImplicitSender with DefaultTimeout {
+class SupervisorTreeSpec extends PekkoSpec with ImplicitSender with DefaultTimeout {
 
   "In a 3 levels deep supervisor tree (linked in the constructor) we" must {
 

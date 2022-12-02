@@ -18,7 +18,7 @@ import pekko.event.Logging.InitializeLogger
 import pekko.event.Logging.LogEvent
 import pekko.event.Logging.LoggerInitialized
 import pekko.event.Logging.Warning
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
 object Slf4jLoggingFilterSpec {
@@ -71,7 +71,7 @@ object Slf4jLoggingFilterSpec {
 
 }
 
-class Slf4jLoggingFilterSpec extends AkkaSpec(Slf4jLoggingFilterSpec.config) with BeforeAndAfterEach {
+class Slf4jLoggingFilterSpec extends PekkoSpec(Slf4jLoggingFilterSpec.config) with BeforeAndAfterEach {
   import Slf4jLoggingFilterSpec._
 
   "Slf4jLoggingFilter" must {

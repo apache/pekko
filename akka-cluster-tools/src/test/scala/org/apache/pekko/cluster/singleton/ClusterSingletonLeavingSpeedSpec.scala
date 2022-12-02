@@ -18,7 +18,7 @@ import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.singleton.ClusterSingletonLeavingSpeedSpec.TheSingleton
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
 object ClusterSingletonLeavingSpeedSpec {
@@ -42,7 +42,7 @@ object ClusterSingletonLeavingSpeedSpec {
 }
 
 class ClusterSingletonLeavingSpeedSpec
-    extends AkkaSpec(
+    extends PekkoSpec(
       """
   pekko.loglevel = DEBUG
   pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider

@@ -10,7 +10,7 @@ import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.ActorRef
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 import pekko.testkit.WithLogCapturing
 
@@ -26,7 +26,7 @@ object ProxyShardingSpec {
   """
 }
 
-class ProxyShardingSpec extends AkkaSpec(ProxyShardingSpec.config) with WithLogCapturing {
+class ProxyShardingSpec extends PekkoSpec(ProxyShardingSpec.config) with WithLogCapturing {
 
   val role = "Shard"
   val clusterSharding: ClusterSharding = ClusterSharding(system)

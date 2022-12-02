@@ -16,7 +16,7 @@ import org.testng.annotations.AfterClass
 
 import org.apache.pekko.stream.testkit.TestPublisher
 
-abstract class AkkaIdentityProcessorVerification[T](env: TestEnvironment, publisherShutdownTimeout: Long)
+abstract class PekkoIdentityProcessorVerification[T](env: TestEnvironment, publisherShutdownTimeout: Long)
     extends IdentityProcessorVerification[T](env, publisherShutdownTimeout)
     with TestNGSuiteLike
     with ActorSystemLifecycle {

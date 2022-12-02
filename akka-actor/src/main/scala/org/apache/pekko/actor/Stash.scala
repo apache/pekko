@@ -8,7 +8,7 @@ import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.annotation.InternalStableApi
 import pekko.dispatch.{
   DequeBasedMessageQueueSemantics,
@@ -272,5 +272,5 @@ private[pekko] trait StashSupport {
  * Is thrown when the size of the Stash exceeds the capacity of the Stash
  */
 class StashOverflowException(message: String, cause: Throwable = null)
-    extends AkkaException(message, cause)
+    extends PekkoException(message, cause)
     with NoStackTrace

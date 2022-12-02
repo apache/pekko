@@ -4,7 +4,7 @@
 
 package docs.stream
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.stream._
 import org.apache.pekko.util.ByteString
@@ -147,7 +147,7 @@ object BidiFlowDocSpec {
   })
 }
 
-class BidiFlowDocSpec extends AkkaSpec {
+class BidiFlowDocSpec extends PekkoSpec {
   import BidiFlowDocSpec._
 
   "A BidiFlow" must {

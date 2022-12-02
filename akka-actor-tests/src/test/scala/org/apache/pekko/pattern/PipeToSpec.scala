@@ -8,10 +8,10 @@ import scala.concurrent.Future
 
 import org.apache.pekko
 import pekko.actor.Status
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
-class PipeToSpec extends AkkaSpec {
+class PipeToSpec extends PekkoSpec {
 
   import system.dispatcher
 

@@ -31,7 +31,7 @@ import pekko.remote.ByteStringUtils
 import pekko.serialization.BaseSerializer
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-import pekko.util.{ ByteString => AkkaByteString }
+import pekko.util.{ ByteString => PekkoByteString }
 import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
@@ -283,7 +283,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val fromSystemUid = if (status.hasFromSystemUid) Some(status.getFromSystemUid) else None
     Status(
       status.getEntriesList.asScala.iterator
-        .map(e => e.getKey -> AkkaByteString.fromArrayUnsafe(e.getDigest.toByteArray()))
+        .map(e => e.getKey -> PekkoByteString.fromArrayUnsafe(e.getDigest.toByteArray()))
         .toMap,
       status.getChunk,
       status.getTotChunks,

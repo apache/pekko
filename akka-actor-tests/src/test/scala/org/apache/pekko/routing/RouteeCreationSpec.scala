@@ -11,9 +11,9 @@ import pekko.actor.Actor
 import pekko.actor.ActorIdentity
 import pekko.actor.Identify
 import pekko.actor.Props
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class RouteeCreationSpec extends AkkaSpec {
+class RouteeCreationSpec extends PekkoSpec {
 
   "Creating Routees" must {
 

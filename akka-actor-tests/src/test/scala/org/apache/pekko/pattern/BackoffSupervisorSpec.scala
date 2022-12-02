@@ -45,7 +45,7 @@ object BackoffSupervisorSpec {
   }
 }
 
-class BackoffSupervisorSpec extends AkkaSpec with ImplicitSender with Eventually {
+class BackoffSupervisorSpec extends PekkoSpec with ImplicitSender with Eventually {
   import BackoffSupervisorSpec._
 
   def onStopOptions(props: Props = Child.props(testActor), maxNrOfRetries: Int = -1): BackoffOnStopOptions =

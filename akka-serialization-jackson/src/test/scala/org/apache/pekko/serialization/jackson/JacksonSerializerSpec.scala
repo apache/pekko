@@ -121,18 +121,18 @@ object ScalaTestMessages {
   // #jackson-scala-enumeration
 
   // delegate to AkkaSerialization
-  object HasAkkaSerializer {
-    def apply(description: String): HasAkkaSerializer = new HasAkkaSerializer(description)
+  object HasPekkoSerializer {
+    def apply(description: String): HasPekkoSerializer = new HasPekkoSerializer(description)
   }
   // make sure jackson would fail
-  class HasAkkaSerializer private (@JsonIgnore val description: String) {
+  class HasPekkoSerializer private (@JsonIgnore val description: String) {
 
     override def toString: String = s"InnerSerialization($description)"
 
-    def canEqual(other: Any): Boolean = other.isInstanceOf[HasAkkaSerializer]
+    def canEqual(other: Any): Boolean = other.isInstanceOf[HasPekkoSerializer]
 
     override def equals(other: Any): Boolean = other match {
-      case that: HasAkkaSerializer =>
+      case that: HasPekkoSerializer =>
         (that.canEqual(this)) &&
         description == that.description
       case _ => false
@@ -147,14 +147,14 @@ object ScalaTestMessages {
   class InnerSerializationSerializer extends SerializerWithStringManifest {
     override def identifier: Int = 123451
     override def manifest(o: AnyRef): String = "M"
-    override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[HasAkkaSerializer].description.getBytes()
-    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = HasAkkaSerializer(new String(bytes))
+    override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[HasPekkoSerializer].description.getBytes()
+    override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = HasPekkoSerializer(new String(bytes))
   }
 
-  final case class WithAkkaSerializer(
-      @JsonDeserialize(`using` = classOf[AkkaSerializationDeserializer])
-      @JsonSerialize(`using` = classOf[AkkaSerializationSerializer])
-      akkaSerializer: HasAkkaSerializer)
+  final case class WithPekkoSerializer(
+      @JsonDeserialize(`using` = classOf[PekkoSerializationDeserializer])
+      @JsonSerialize(`using` = classOf[PekkoSerializationSerializer])
+      akkaSerializer: HasPekkoSerializer)
       extends TestMessage
 }
 
@@ -434,7 +434,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
     // This test ensures the default behavior in Akka 2.6 series
     // (that is "FIELD = ANY") stays consistent
-    "be possible to tune the visibility at ObjectMapper level (Akka default)" in {
+    "be possible to tune the visibility at ObjectMapper level (Pekko default)" in {
       withSystem("""
         pekko.actor {
           serialization-bindings {
@@ -711,13 +711,13 @@ object JacksonSerializerSpec {
       }
     }
     pekko.serialization.jackson.allowed-class-prefix = ["org.apache.pekko.serialization.jackson.ScalaTestMessages$$OldCommand"]
-    
+
     pekko.actor {
       serializers {
           inner-serializer = "org.apache.pekko.serialization.jackson.ScalaTestMessages$$InnerSerializationSerializer"
       }
       serialization-bindings {
-        "org.apache.pekko.serialization.jackson.ScalaTestMessages$$HasAkkaSerializer" = "inner-serializer"
+        "org.apache.pekko.serialization.jackson.ScalaTestMessages$$HasPekkoSerializer" = "inner-serializer"
       }
     }
     """
@@ -1270,7 +1270,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     }
 
     "delegate to akka serialization" in {
-      checkSerialization(WithAkkaSerializer(HasAkkaSerializer("cat")))
+      checkSerialization(WithPekkoSerializer(HasPekkoSerializer("cat")))
     }
 
   }

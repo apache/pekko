@@ -10,7 +10,7 @@ import org.apache.pekko.pattern.Patterns;
 import jdocs.AbstractJavaTest;
 import org.junit.Assert;
 import org.apache.pekko.japi.JavaPartialFunction;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.CallingThreadDispatcher;
 import org.apache.pekko.testkit.TestActor;
 import org.apache.pekko.testkit.TestActorRef;
@@ -41,8 +41,8 @@ import java.time.Duration;
 public class TestKitDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "TestKitDocTest",
           ConfigFactory.parseString(
               "pekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));

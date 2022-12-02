@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit
 
 import org.apache.pekko
 import pekko.remote.transport.ThrottlerTransportAdapter.{ TokenBucket, Unthrottled }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ThrottleModeSpec extends AkkaSpec {
+class ThrottleModeSpec extends PekkoSpec {
 
   val halfSecond: Long = TimeUnit.MILLISECONDS.toNanos(500)
 

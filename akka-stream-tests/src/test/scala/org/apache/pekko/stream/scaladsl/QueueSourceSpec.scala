@@ -27,7 +27,7 @@ class QueueSourceSpec extends StreamSpec {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   val pause = 300.millis
 
-  // more frequent checks than defaults from AkkaSpec
+  // more frequent checks than defaults from PekkoSpec
   implicit val testPatience: PatienceConfig = {
     import org.apache.pekko.testkit.TestDuration
     PatienceConfig(testKitSettings.DefaultTimeout.duration.dilated, Span(5, org.scalatest.time.Millis))

@@ -19,12 +19,12 @@ up a large cluster into smaller groups of nodes for better scalability.
 To use Akka Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group=com.typesafe.akka
   artifact=akka-cluster-typed_$scala.binary.version$
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 ## Motivation

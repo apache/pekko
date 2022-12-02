@@ -23,7 +23,7 @@ object ClusterRouterSupervisorSpec {
 
 }
 
-class ClusterRouterSupervisorSpec extends AkkaSpec("""
+class ClusterRouterSupervisorSpec extends PekkoSpec("""
   pekko.actor.provider = "cluster"
   pekko.remote.classic.netty.tcp.port = 0
   pekko.remote.artery.canonical.port = 0

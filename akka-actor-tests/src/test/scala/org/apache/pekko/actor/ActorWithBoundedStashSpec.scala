@@ -92,7 +92,7 @@ object ActorWithBoundedStashSpec {
 }
 
 class ActorWithBoundedStashSpec
-    extends AkkaSpec(ActorWithBoundedStashSpec.testConf)
+    extends PekkoSpec(ActorWithBoundedStashSpec.testConf)
     with BeforeAndAfterEach
     with DefaultTimeout
     with ImplicitSender {

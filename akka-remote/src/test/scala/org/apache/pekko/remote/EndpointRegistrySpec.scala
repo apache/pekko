@@ -9,9 +9,9 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ Address, Props }
 import pekko.remote.EndpointManager._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class EndpointRegistrySpec extends AkkaSpec {
+class EndpointRegistrySpec extends PekkoSpec {
 
   val actorA = system.actorOf(Props.empty, "actorA")
   val actorB = system.actorOf(Props.empty, "actorB")

@@ -9,14 +9,14 @@ import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
 import org.apache.pekko.stream.stage._
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.testkit.{ TestPublisher, TestSubscriber }
-import org.apache.pekko.testkit.{ AkkaSpec, TestLatch }
+import org.apache.pekko.testkit.{ PekkoSpec, TestLatch }
 
 import scala.collection.mutable
 import scala.concurrent.{ Await, Future, Promise }
 import scala.concurrent.duration._
 import scala.collection.immutable.Iterable
 
-class GraphStageDocSpec extends AkkaSpec {
+class GraphStageDocSpec extends PekkoSpec {
 
   "Demonstrate creation of GraphStage boilerplate" in {
     // #boilerplate-example

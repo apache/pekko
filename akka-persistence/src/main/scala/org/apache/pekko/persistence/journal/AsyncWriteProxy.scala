@@ -10,7 +10,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Try
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor._
 import pekko.pattern.ask
 import pekko.persistence._
@@ -128,7 +128,7 @@ private[persistence] object AsyncWriteTarget {
  * Thrown if replay inactivity exceeds a specified timeout.
  */
 @SerialVersionUID(1L)
-class AsyncReplayTimeoutException(msg: String) extends AkkaException(msg)
+class AsyncReplayTimeoutException(msg: String) extends PekkoException(msg)
 
 private class ReplayMediator(
     replayCallback: PersistentRepr => Unit,

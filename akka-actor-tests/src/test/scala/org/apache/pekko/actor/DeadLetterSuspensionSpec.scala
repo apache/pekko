@@ -5,7 +5,7 @@
 package org.apache.pekko.actor
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors
@@ -34,7 +34,7 @@ object DeadLetterSuspensionSpec {
   }
 }
 
-class DeadLetterSuspensionSpec extends AkkaSpec("""
+class DeadLetterSuspensionSpec extends PekkoSpec("""
   pekko.loglevel = INFO
   pekko.log-dead-letters = 4
   pekko.log-dead-letters-suspend-duration = 2s

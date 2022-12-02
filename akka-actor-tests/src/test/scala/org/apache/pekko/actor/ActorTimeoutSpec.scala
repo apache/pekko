@@ -13,7 +13,7 @@ import pekko.testkit._
 import pekko.testkit.TestEvent._
 import pekko.util.Timeout
 
-class ActorTimeoutSpec extends AkkaSpec {
+class ActorTimeoutSpec extends PekkoSpec {
 
   val testTimeout = 200.millis.dilated
   val leeway = 500.millis.dilated

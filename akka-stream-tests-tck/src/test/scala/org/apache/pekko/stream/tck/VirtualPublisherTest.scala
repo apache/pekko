@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.stream.impl.VirtualProcessor
 import pekko.stream.scaladsl.Flow
 
-class VirtualProcessorTest extends AkkaIdentityProcessorVerification[Int] {
+class VirtualProcessorTest extends PekkoIdentityProcessorVerification[Int] {
 
   override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
     val identity = Flow[Int].map(elem => elem).named("identity").toProcessor.run()
@@ -24,7 +24,7 @@ class VirtualProcessorTest extends AkkaIdentityProcessorVerification[Int] {
 
 }
 
-class VirtualProcessorSingleTest extends AkkaIdentityProcessorVerification[Int] {
+class VirtualProcessorSingleTest extends PekkoIdentityProcessorVerification[Int] {
 
   override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] =
     new VirtualProcessor[Int]

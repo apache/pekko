@@ -8,7 +8,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.*;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import org.scalatestplus.junit.JUnitSuite;
 public class InterceptTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJunitResource testKit = new TestKitJunitResource(AkkaSpec.testConf());
+  public static final TestKitJunitResource testKit = new TestKitJunitResource(PekkoSpec.testConf());
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

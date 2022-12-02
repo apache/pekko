@@ -9,9 +9,9 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class JoinConfigCompatCheckClusterSpec extends AkkaSpec {
+class JoinConfigCompatCheckClusterSpec extends PekkoSpec {
 
   private val extSystem = system.asInstanceOf[ExtendedActorSystem]
   private val clusterSettings = new ClusterSettings(system.settings.config, system.name)

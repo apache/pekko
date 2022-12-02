@@ -34,7 +34,7 @@ object LoggerSpec {
         loglevel = "DEBUG" # test verifies debug
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   val slowConfig = ConfigFactory.parseString("""
       pekko {
@@ -42,7 +42,7 @@ object LoggerSpec {
         loglevel = "ERROR"
         loggers = ["org.apache.pekko.event.LoggerSpec$SlowLogger"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   val noLoggingConfig = ConfigFactory.parseString("""
       pekko {
@@ -50,7 +50,7 @@ object LoggerSpec {
         loglevel = "OFF"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   val multipleConfig =
     ConfigFactory.parseString("""
@@ -59,7 +59,7 @@ object LoggerSpec {
         loglevel = "WARNING"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1", "org.apache.pekko.event.LoggerSpec$TestLogger2"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   val ticket3165Config = ConfigFactory.parseString(s"""
       pekko {
@@ -75,7 +75,7 @@ object LoggerSpec {
           }
         }
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   val ticket3671Config = ConfigFactory.parseString("""
       pekko {
@@ -83,7 +83,7 @@ object LoggerSpec {
         loglevel = "WARNING"
         loggers = ["org.apache.pekko.event.LoggerSpec$TestLogger1"]
       }
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
 
   final case class SetTarget(ref: ActorRef, qualifier: Int)
 

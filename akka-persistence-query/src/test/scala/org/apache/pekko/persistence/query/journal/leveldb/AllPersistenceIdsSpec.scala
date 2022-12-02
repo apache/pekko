@@ -10,7 +10,7 @@ import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.PersistenceIdsQuery
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 import scala.annotation.nowarn
@@ -27,7 +27,7 @@ object AllPersistenceIdsSpec {
     """
 }
 
-class AllPersistenceIdsSpec extends AkkaSpec(AllPersistenceIdsSpec.config) with Cleanup with ImplicitSender {
+class AllPersistenceIdsSpec extends PekkoSpec(AllPersistenceIdsSpec.config) with Cleanup with ImplicitSender {
 
   @nowarn("msg=deprecated")
   val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)

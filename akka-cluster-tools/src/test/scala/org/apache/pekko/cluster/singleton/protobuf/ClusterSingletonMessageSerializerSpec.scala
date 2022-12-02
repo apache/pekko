@@ -10,9 +10,9 @@ import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverDone
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverInProgress
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.HandOverToMe
 import pekko.cluster.singleton.ClusterSingletonManager.Internal.TakeOverFromMe
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class ClusterSingletonMessageSerializerSpec extends AkkaSpec {
+class ClusterSingletonMessageSerializerSpec extends PekkoSpec {
 
   val serializer = new ClusterSingletonMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 

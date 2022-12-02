@@ -9,7 +9,7 @@ import language.postfixOps
 import org.apache.pekko.testkit._
 import scala.concurrent.duration._
 
-class FSMTimingSpec extends AkkaSpec with ImplicitSender {
+class FSMTimingSpec extends PekkoSpec with ImplicitSender {
   import FSMTimingSpec._
   import FSM._
 

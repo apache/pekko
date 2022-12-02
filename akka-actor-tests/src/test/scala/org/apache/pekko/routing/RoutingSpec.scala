@@ -49,7 +49,7 @@ object RoutingSpec {
 
 }
 
-class RoutingSpec extends AkkaSpec(RoutingSpec.config) with DefaultTimeout with ImplicitSender {
+class RoutingSpec extends PekkoSpec(RoutingSpec.config) with DefaultTimeout with ImplicitSender {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   import RoutingSpec._
 

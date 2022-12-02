@@ -4,7 +4,7 @@
 
 package jdocs.io.japi;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
@@ -26,7 +26,7 @@ import org.apache.pekko.io.TcpMessage;
 import org.apache.pekko.util.ByteString;
 // #imports
 
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -173,8 +173,8 @@ public class IODocTest extends AbstractJavaTest {
   // #client
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("IODocTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("IODocTest", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

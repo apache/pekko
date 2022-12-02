@@ -14,7 +14,7 @@ import sbtunidoc.BaseUnidocPlugin.autoImport.unidoc
 import sbt.Keys._
 import sbt._
 
-object AkkaValidatePullRequest extends AutoPlugin {
+object PekkoValidatePullRequest extends AutoPlugin {
 
   object CliOptions {
     val mimaEnabled = CliOption("akka.mima.enabled", true)
@@ -67,11 +67,11 @@ object AkkaValidatePullRequest extends AutoPlugin {
  * autoplugin would trigger only on projects which have both of these plugins enabled.
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
   import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && MultiNode
+  override def requires = PekkoValidatePullRequest && MultiNode
   override lazy val projectSettings =
     if (MultiNode.multiNodeTestInTest) Seq(additionalTasks += MultiNode.multiTest)
     else Seq.empty
@@ -82,10 +82,10 @@ object MultiNodeWithPrValidation extends AutoPlugin {
  * when a project has MimaPlugin autoplugin enabled.
  */
 object MimaWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && MimaPlugin
+  override def requires = PekkoValidatePullRequest && MimaPlugin
   override lazy val projectSettings =
     CliOptions.mimaEnabled.ifTrue(additionalTasks += mimaReportBinaryIssues).toList
 }
@@ -95,15 +95,15 @@ object MimaWithPrValidation extends AutoPlugin {
  * when a project has ParadoxPlugin autoplugin enabled.
  */
 object ParadoxWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && ParadoxPlugin
+  override def requires = PekkoValidatePullRequest && ParadoxPlugin
   override lazy val projectSettings = Seq(additionalTasks += Compile / paradox)
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)

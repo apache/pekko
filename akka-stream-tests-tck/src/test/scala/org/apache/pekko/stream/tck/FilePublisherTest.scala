@@ -15,17 +15,17 @@ import pekko.event.Logging
 import pekko.stream.scaladsl.{ FileIO, Sink }
 import pekko.stream.testkit.Utils._
 import pekko.testkit.{ EventFilter, TestEvent }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.ByteString
 
-class FilePublisherTest extends AkkaPublisherVerification[ByteString] {
+class FilePublisherTest extends PekkoPublisherVerification[ByteString] {
 
   val ChunkSize = 256
   val Elements = 1000
 
   @BeforeClass
   override def createActorSystem(): Unit = {
-    _system = ActorSystem(Logging.simpleName(getClass), UnboundedMailboxConfig.withFallback(AkkaSpec.testConf))
+    _system = ActorSystem(Logging.simpleName(getClass), UnboundedMailboxConfig.withFallback(PekkoSpec.testConf))
     _system.eventStream.publish(TestEvent.Mute(EventFilter[RuntimeException]("Test exception")))
   }
 

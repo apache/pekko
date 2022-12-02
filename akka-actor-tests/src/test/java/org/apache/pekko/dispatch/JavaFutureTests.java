@@ -4,7 +4,7 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.actor.ActorSystem;
 
 import org.apache.pekko.japi.*;
@@ -25,13 +25,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static org.apache.pekko.japi.Util.classTag;
 
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 
 public class JavaFutureTests extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-    new AkkaJUnitActorSystemResource("JavaFutureTests", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+    new PekkoJUnitActorSystemResource("JavaFutureTests", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
   private final Duration timeout = Duration.create(5, TimeUnit.SECONDS);

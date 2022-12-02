@@ -164,7 +164,7 @@ object MonitorableThreadFactory {
   val doNothing: Thread.UncaughtExceptionHandler =
     new Thread.UncaughtExceptionHandler() { def uncaughtException(thread: Thread, cause: Throwable) = () }
 
-  private[pekko] class AkkaForkJoinWorkerThread(_pool: ForkJoinPool)
+  private[pekko] class PekkoForkJoinWorkerThread(_pool: ForkJoinPool)
       extends ForkJoinWorkerThread(_pool)
       with BlockContext {
     override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T = {
@@ -191,7 +191,7 @@ final case class MonitorableThreadFactory(
     with ForkJoinPool.ForkJoinWorkerThreadFactory {
 
   def newThread(pool: ForkJoinPool): ForkJoinWorkerThread = {
-    val t = wire(new MonitorableThreadFactory.AkkaForkJoinWorkerThread(pool))
+    val t = wire(new MonitorableThreadFactory.PekkoForkJoinWorkerThread(pool))
     // Name of the threads for the ForkJoinPool are not customizable. Change it here.
     t.setName(name + "-" + counter.incrementAndGet())
     t

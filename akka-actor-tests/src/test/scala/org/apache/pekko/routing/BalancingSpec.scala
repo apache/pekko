@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, PoisonPill, Props }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestLatch
 import org.scalatest.BeforeAndAfterEach
@@ -60,7 +60,7 @@ object BalancingSpec {
   }
 }
 
-class BalancingSpec extends AkkaSpec("""
+class BalancingSpec extends PekkoSpec("""
     pekko.loglevel=debug
     pekko.actor.deployment {
       /balancingPool-2 {
@@ -81,7 +81,7 @@ class BalancingSpec extends AkkaSpec("""
     """) with ImplicitSender with BeforeAndAfterEach {
   import BalancingSpec._
 
-  val poolSize = 5 // must be less than fork-join parallelism-min, which is 8 in AkkaSpec
+  val poolSize = 5 // must be less than fork-join parallelism-min, which is 8 in PekkoSpec
 
   override def beforeEach(): Unit = {
     counter.set(1)

@@ -9,9 +9,9 @@ import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.impl.TraversalTestUtils._
 import pekko.stream.scaladsl.Keep
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class TraversalBuilderSpec extends AkkaSpec {
+class TraversalBuilderSpec extends PekkoSpec {
 
   "CompositeTraversalBuilder" must {
     val source = new CompositeTestSource

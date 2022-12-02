@@ -14,10 +14,10 @@ import pekko.actor.ActorRef
 import pekko.actor.ActorSystem
 import pekko.dispatch.ExecutionContexts
 import pekko.io.Inet.SocketOption
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddress
 
-trait TcpIntegrationSpecSupport { this: AkkaSpec =>
+trait TcpIntegrationSpecSupport { this: PekkoSpec =>
 
   class TestSetup(shouldBindServer: Boolean = true, runClientInExtraSystem: Boolean = true) {
     val clientSystem =

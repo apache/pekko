@@ -16,7 +16,7 @@ import pekko.actor.typed.ActorRefResolver
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.actor.typed.scaladsl.adapter._
 import pekko.serialization.jackson.CborSerializable
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object RemoteMessageSpec {
   def config = ConfigFactory.parseString(s"""
@@ -36,7 +36,7 @@ object RemoteMessageSpec {
   case class Ping(sender: ActorRef[String]) extends CborSerializable
 }
 
-class RemoteMessageSpec extends AkkaSpec(RemoteMessageSpec.config) {
+class RemoteMessageSpec extends PekkoSpec(RemoteMessageSpec.config) {
 
   import RemoteMessageSpec._
 

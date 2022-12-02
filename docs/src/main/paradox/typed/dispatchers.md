@@ -11,12 +11,12 @@ Dispatchers are part of core Akka, which means that they are part of the `akka-a
 page describes how to use dispatchers with `akka-actor-typed`, which has dependency:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor-typed_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 ## Introduction 

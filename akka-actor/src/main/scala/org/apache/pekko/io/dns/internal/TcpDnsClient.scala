@@ -7,7 +7,7 @@ package org.apache.pekko.io.dns.internal
 import java.net.InetSocketAddress
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.{ Actor, ActorLogging, ActorRef, Stash }
 import pekko.annotation.InternalApi
 import pekko.io.Tcp
@@ -95,8 +95,8 @@ private[internal] object TcpDnsClient {
   def throwFailure(message: String, cause: Option[Throwable]): Unit =
     cause match {
       case None =>
-        throw new AkkaException(message)
+        throw new PekkoException(message)
       case Some(throwable) =>
-        throw new AkkaException(message, throwable)
+        throw new PekkoException(message, throwable)
     }
 }

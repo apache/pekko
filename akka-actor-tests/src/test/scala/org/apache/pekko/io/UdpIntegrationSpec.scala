@@ -10,11 +10,11 @@ import org.apache.pekko
 import pekko.actor.ActorRef
 import pekko.io.Inet._
 import pekko.io.Udp._
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.testkit.SocketUtil.temporaryServerAddresses
 import pekko.util.ByteString
 
-class UdpIntegrationSpec extends AkkaSpec("""
+class UdpIntegrationSpec extends PekkoSpec("""
     pekko.loglevel = INFO
     # tests expect to be able to mutate messages
     """) with ImplicitSender {

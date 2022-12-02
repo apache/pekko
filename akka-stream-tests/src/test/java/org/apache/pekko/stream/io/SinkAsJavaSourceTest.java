@@ -5,7 +5,7 @@
 package org.apache.pekko.stream.io;
 
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
@@ -26,8 +26,8 @@ public class SinkAsJavaSourceTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("SinkAsJavaSourceTest", Utils.UnboundedMailboxConfig());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("SinkAsJavaSourceTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustBeAbleToUseAsJavaStream() throws Exception {

@@ -10,7 +10,7 @@ import pekko.actor.ActorRef
 import pekko.actor.Props
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.WithLogCapturing
 import com.typesafe.config.ConfigFactory
@@ -62,7 +62,7 @@ object StartEntitySpec {
 
 }
 
-class StartEntitySpec extends AkkaSpec(StartEntitySpec.config) with ImplicitSender with WithLogCapturing {
+class StartEntitySpec extends PekkoSpec(StartEntitySpec.config) with ImplicitSender with WithLogCapturing {
   import StartEntitySpec._
 
   val extractEntityId: ShardRegion.ExtractEntityId = {

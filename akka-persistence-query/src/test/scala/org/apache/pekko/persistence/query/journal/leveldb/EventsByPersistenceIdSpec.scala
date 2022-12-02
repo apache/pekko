@@ -12,7 +12,7 @@ import pekko.persistence.query.PersistenceQuery
 import pekko.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal
 import pekko.persistence.query.scaladsl.EventsByTagQuery
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 import scala.annotation.nowarn
@@ -30,7 +30,7 @@ object EventsByPersistenceIdSpec {
     """
 }
 
-class EventsByPersistenceIdSpec extends AkkaSpec(EventsByPersistenceIdSpec.config) with Cleanup with ImplicitSender {
+class EventsByPersistenceIdSpec extends PekkoSpec(EventsByPersistenceIdSpec.config) with Cleanup with ImplicitSender {
 
   @nowarn("msg=deprecated")
   val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)

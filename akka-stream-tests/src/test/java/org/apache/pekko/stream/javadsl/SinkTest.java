@@ -21,8 +21,8 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.AkkaSpec;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import static org.junit.Assert.*;
 
@@ -32,8 +32,8 @@ public class SinkTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("SinkTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("SinkTest", PekkoSpec.testConf());
 
   @Test
   public void mustBeAbleToUseFanoutPublisher() throws Exception {

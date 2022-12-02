@@ -18,7 +18,7 @@ import pekko.testkit._
 import pekko.util.ByteString
 
 @nowarn("msg=deprecated")
-class TestTransportSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class TestTransportSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
 
   val addressA: Address = Address("test", "testsytemA", "testhostA", 4321)
   val addressB: Address = Address("test", "testsytemB", "testhostB", 5432)

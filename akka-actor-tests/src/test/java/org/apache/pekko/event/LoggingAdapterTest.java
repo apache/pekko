@@ -7,7 +7,7 @@ package org.apache.pekko.event;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.event.Logging.Error;
 import org.apache.pekko.event.ActorWithMDC.Log;
 import static org.apache.pekko.event.Logging.*;
@@ -33,8 +33,8 @@ public class LoggingAdapterTest extends JUnitSuite {
   private static final Config config = ConfigFactory.parseString("pekko.loglevel = DEBUG\n");
 
   @Rule
-  public AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("LoggingAdapterTest", config);
+  public PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("LoggingAdapterTest", config);
 
   private ActorSystem system = null;
 

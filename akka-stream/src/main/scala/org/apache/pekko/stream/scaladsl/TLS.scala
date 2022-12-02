@@ -10,7 +10,7 @@ import javax.net.ssl.SSLParameters
 
 import scala.util.{ Failure, Success, Try }
 
-import com.typesafe.sslconfig.pekko.AkkaSSLConfig
+import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -76,14 +76,14 @@ object TLS {
   @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "2.6.0")
   def apply(
       sslContext: SSLContext,
-      sslConfig: Option[AkkaSSLConfig],
+      sslConfig: Option[PekkoSSLConfig],
       firstSession: NegotiateNewSession,
       role: TLSRole,
       closing: TLSClosing = IgnoreComplete,
       hostInfo: Option[(String, Int)] = None)
       : scaladsl.BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] = {
-    def theSslConfig(system: ActorSystem): AkkaSSLConfig =
-      sslConfig.getOrElse(AkkaSSLConfig(system))
+    def theSslConfig(system: ActorSystem): PekkoSSLConfig =
+      sslConfig.getOrElse(PekkoSSLConfig(system))
 
     val createSSLEngine = { (system: ActorSystem) =>
       val config = theSslConfig(system)

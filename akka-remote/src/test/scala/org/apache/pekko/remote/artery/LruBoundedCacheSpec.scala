@@ -9,11 +9,11 @@ import scala.util.Random
 import scala.annotation.nowarn
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Unsafe
 
 @nowarn
-class LruBoundedCacheSpec extends AkkaSpec {
+class LruBoundedCacheSpec extends PekkoSpec {
 
   class TestCache(_capacity: Int, threshold: Int, hashSeed: String = "")
       extends LruBoundedCache[String, String](_capacity, threshold) {

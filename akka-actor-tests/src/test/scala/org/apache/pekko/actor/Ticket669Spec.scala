@@ -13,11 +13,11 @@ import org.scalatest.BeforeAndAfterAll
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.testkit.{ filterEvents, EventFilter }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.ImplicitSender
 
-class Ticket669Spec extends AkkaSpec with BeforeAndAfterAll with ImplicitSender with DefaultTimeout {
+class Ticket669Spec extends PekkoSpec with BeforeAndAfterAll with ImplicitSender with DefaultTimeout {
   import Ticket669Spec._
 
   // TODO: does this really make sense?

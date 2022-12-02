@@ -11,7 +11,7 @@ import pekko.actor.Actor
 import pekko.actor.ActorLogging
 import pekko.actor.Address
 import pekko.actor.Props
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 object StartupWithOneThreadSpec {
@@ -42,7 +42,7 @@ object StartupWithOneThreadSpec {
     })
 }
 
-class StartupWithOneThreadSpec(startTime: Long) extends AkkaSpec(StartupWithOneThreadSpec.config) with ImplicitSender {
+class StartupWithOneThreadSpec(startTime: Long) extends PekkoSpec(StartupWithOneThreadSpec.config) with ImplicitSender {
   import StartupWithOneThreadSpec._
 
   def this() = this(System.nanoTime())
@@ -56,7 +56,7 @@ class StartupWithOneThreadSpec(startTime: Long) extends AkkaSpec(StartupWithOneT
       // they also tried to get the Cluster extension and thereby blocking
       // dispatcher threads.
       // Note that the Cluster extension is started via ClusterActorRefProvider
-      // before ActorSystem.apply returns, i.e. in the constructor of AkkaSpec.
+      // before ActorSystem.apply returns, i.e. in the constructor of PekkoSpec.
       (System.nanoTime - startTime).nanos.toMillis should be <
       (system.settings.CreationTimeout.duration - 2.second).toMillis
       system.actorOf(testProps) ! "hello"

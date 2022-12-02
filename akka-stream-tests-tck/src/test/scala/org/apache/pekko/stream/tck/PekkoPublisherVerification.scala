@@ -15,7 +15,7 @@ import org.scalatestplus.testng.TestNGSuiteLike
 
 import org.apache.pekko.stream.testkit.TestPublisher
 
-abstract class AkkaPublisherVerification[T](val env: TestEnvironment, publisherShutdownTimeout: Long)
+abstract class PekkoPublisherVerification[T](val env: TestEnvironment, publisherShutdownTimeout: Long)
     extends PublisherVerification[T](env, publisherShutdownTimeout)
     with TestNGSuiteLike
     with ActorSystemLifecycle {

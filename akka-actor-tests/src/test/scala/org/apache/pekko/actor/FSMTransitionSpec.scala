@@ -63,7 +63,7 @@ object FSMTransitionSpec {
 
 }
 
-class FSMTransitionSpec extends AkkaSpec with ImplicitSender {
+class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
 
   import FSMTransitionSpec._
 

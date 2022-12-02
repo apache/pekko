@@ -101,7 +101,7 @@ object FSMActorSpec {
   final case class CodeState(soFar: String, code: String)
 }
 
-class FSMActorSpec extends AkkaSpec(Map("pekko.actor.debug.fsm" -> true)) with ImplicitSender {
+class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with ImplicitSender {
   import FSMActorSpec._
 
   val timeout = Timeout(2 seconds)

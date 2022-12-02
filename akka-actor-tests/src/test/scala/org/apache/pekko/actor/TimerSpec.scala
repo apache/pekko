@@ -177,7 +177,7 @@ class FsmTimerSpec extends AbstractTimerSpec {
     TimerSpec.fsmTarget(monitor, interval, repeat, initial)
 }
 
-abstract class AbstractTimerSpec extends AkkaSpec {
+abstract class AbstractTimerSpec extends PekkoSpec {
   import TimerSpec._
 
   val interval = 1.second
@@ -312,7 +312,7 @@ object TimersAndStashSpec {
   case object StopStashing
 
 }
-class TimersAndStashSpec extends AkkaSpec {
+class TimersAndStashSpec extends PekkoSpec {
   import TimersAndStashSpec._
 
   class ActorWithTimerAndStash(probe: ActorRef) extends Actor with Timers with Stash {

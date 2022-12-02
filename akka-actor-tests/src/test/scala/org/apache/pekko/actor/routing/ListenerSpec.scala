@@ -13,7 +13,7 @@ import pekko.actor._
 import pekko.routing._
 import pekko.testkit._
 
-class ListenerSpec extends AkkaSpec {
+class ListenerSpec extends PekkoSpec {
 
   "Listener" must {
 

@@ -12,7 +12,7 @@ import pekko.cluster.ddata.{ Replicator, ReplicatorSettings }
 import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.{ Cluster, MemberStatus }
-import pekko.testkit.{ AkkaSpec, ImplicitSender, WithLogCapturing }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, WithLogCapturing }
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
@@ -42,7 +42,7 @@ object RememberEntitiesShardStoreSpec {
 
 // shared base class for both persistence and ddata specs
 abstract class RememberEntitiesShardStoreSpec
-    extends AkkaSpec(RememberEntitiesShardStoreSpec.config)
+    extends PekkoSpec(RememberEntitiesShardStoreSpec.config)
     with AnyWordSpecLike
     with ImplicitSender
     with WithLogCapturing {

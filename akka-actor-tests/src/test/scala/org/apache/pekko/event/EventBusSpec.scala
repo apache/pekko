@@ -21,7 +21,7 @@ object EventBusSpec {
 }
 
 abstract class EventBusSpec(busName: String, conf: Config = ConfigFactory.empty())
-    extends AkkaSpec(conf)
+    extends PekkoSpec(conf)
     with BeforeAndAfterEach {
   type BusType <: EventBus
 
@@ -172,7 +172,7 @@ class ActorEventBusSpec(conf: Config) extends EventBusSpec("ActorEventBus", conf
   import org.apache.pekko.event.ActorEventBusSpec._
 
   def this() =
-    this(ConfigFactory.parseString("pekko.actor.debug.event-stream = on").withFallback(AkkaSpec.testConf))
+    this(ConfigFactory.parseString("pekko.actor.debug.event-stream = on").withFallback(PekkoSpec.testConf))
 
   type BusType = MyActorEventBus
   def createNewEventBus(): BusType = new MyActorEventBus(system)

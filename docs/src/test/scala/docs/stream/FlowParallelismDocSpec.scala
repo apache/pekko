@@ -7,9 +7,9 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.FlowShape
 import org.apache.pekko.stream.scaladsl.{ Balance, Flow, GraphDSL, Merge, Source }
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class FlowParallelismDocSpec extends AkkaSpec {
+class FlowParallelismDocSpec extends PekkoSpec {
 
   import GraphDSL.Implicits._
 

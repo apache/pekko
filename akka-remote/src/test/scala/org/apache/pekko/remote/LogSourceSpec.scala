@@ -12,7 +12,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.actor.Props
 import pekko.event.Logging
 import pekko.event.Logging.Info
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
 object LogSourceSpec {
@@ -24,7 +24,7 @@ object LogSourceSpec {
   }
 }
 
-class LogSourceSpec extends AkkaSpec("""
+class LogSourceSpec extends PekkoSpec("""
     pekko.loglevel = INFO
     pekko.actor.provider = remote
     pekko.remote.classic.netty.tcp.port = 0

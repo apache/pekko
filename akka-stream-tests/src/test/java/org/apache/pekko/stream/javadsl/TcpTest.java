@@ -13,8 +13,8 @@ import org.apache.pekko.stream.StreamTest;
 
 import org.apache.pekko.stream.javadsl.Tcp.IncomingConnection;
 import org.apache.pekko.stream.javadsl.Tcp.ServerBinding;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.SocketUtil;
 import org.apache.pekko.testkit.javadsl.EventFilter;
 import org.apache.pekko.testkit.javadsl.TestKit;
@@ -60,8 +60,8 @@ public class TcpTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("TcpTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("TcpTest", PekkoSpec.testConf());
 
   final Sink<IncomingConnection, CompletionStage<Done>> echoHandler =
       Sink.foreach(

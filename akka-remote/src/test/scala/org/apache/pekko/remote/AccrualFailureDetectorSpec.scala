@@ -11,10 +11,10 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.remote.FailureDetector.Clock
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 @nowarn
-class AccrualFailureDetectorSpec extends AkkaSpec("pekko.loglevel = INFO") {
+class AccrualFailureDetectorSpec extends PekkoSpec("pekko.loglevel = INFO") {
 
   "An AccrualFailureDetector" must {
 

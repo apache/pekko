@@ -8,7 +8,7 @@ import org.apache.pekko
 import pekko.event.Logging._
 import pekko.testkit._
 
-class MarkerLoggingSpec extends AkkaSpec with ImplicitSender {
+class MarkerLoggingSpec extends PekkoSpec with ImplicitSender {
   "A MarkerLoggerAdapter" should {
     val markerLogging = new MarkerLoggingAdapter(
       system.eventStream,

@@ -10,7 +10,7 @@ import scala.concurrent.Future
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.testkit.{ AkkaSpec, EventFilter }
+import pekko.testkit.{ EventFilter, PekkoSpec }
 
 object AsyncSerializeSpec {
 
@@ -93,7 +93,7 @@ object AsyncSerializeSpec {
 
 }
 
-class AsyncSerializeSpec extends AkkaSpec(AsyncSerializeSpec.config) {
+class AsyncSerializeSpec extends PekkoSpec(AsyncSerializeSpec.config) {
   import AsyncSerializeSpec._
 
   val ser = SerializationExtension(system)

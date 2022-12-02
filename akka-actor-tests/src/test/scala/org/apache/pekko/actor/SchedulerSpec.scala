@@ -29,11 +29,11 @@ object SchedulerSpec {
     ConfigFactory.parseString("""
     pekko.scheduler.implementation = org.apache.pekko.actor.LightArrayRevolverScheduler
     pekko.scheduler.ticks-per-wheel = 32
-  """).withFallback(AkkaSpec.testConf)
+  """).withFallback(PekkoSpec.testConf)
 
 }
 
-trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with ImplicitSender { this: AkkaSpec =>
+trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with ImplicitSender { this: PekkoSpec =>
   import system.dispatcher
 
   def collectCancellable(c: Cancellable): Cancellable
@@ -419,7 +419,7 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
   }
 }
 
-class LightArrayRevolverSchedulerSpec extends AkkaSpec(SchedulerSpec.testConfRevolver) with SchedulerSpec {
+class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRevolver) with SchedulerSpec {
 
   def collectCancellable(c: Cancellable): Cancellable = c
 

@@ -5,7 +5,7 @@
 package docs.event
 
 import scala.concurrent.duration._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.actor.{ ActorRef, ActorSystem }
 import org.apache.pekko.testkit.TestProbe
 
@@ -146,7 +146,7 @@ object EventBusDocSpec {
 
 }
 
-class EventBusDocSpec extends AkkaSpec {
+class EventBusDocSpec extends PekkoSpec {
   import EventBusDocSpec._
 
   "demonstrate LookupClassification" in {

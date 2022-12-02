@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.util.Subclassification;
 
 // #lookup-bus
@@ -260,8 +260,8 @@ public class EventBusDocTest extends AbstractJavaTest {
   // #actor-bus
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("EventBusDocTest");
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("EventBusDocTest");
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

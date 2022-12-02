@@ -12,7 +12,7 @@ import org.apache.pekko.actor.ActorSystem
 
 class ImplicitSenderSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with TestKitBase with ImplicitSender {
 
-  implicit lazy val system: ActorSystem = ActorSystem("AkkaCustomSpec")
+  implicit lazy val system: ActorSystem = ActorSystem("PekkoCustomSpec")
 
   override def afterAll() = system.terminate()
 

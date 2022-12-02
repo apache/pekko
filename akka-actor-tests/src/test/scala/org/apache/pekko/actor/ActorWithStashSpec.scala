@@ -99,7 +99,7 @@ object ActorWithStashSpec {
 }
 
 @nowarn
-class ActorWithStashSpec extends AkkaSpec with DefaultTimeout with BeforeAndAfterEach {
+class ActorWithStashSpec extends PekkoSpec with DefaultTimeout with BeforeAndAfterEach {
   import ActorWithStashSpec._
 
   override def atStartup(): Unit = {

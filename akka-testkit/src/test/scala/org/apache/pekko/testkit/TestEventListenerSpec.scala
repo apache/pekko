@@ -9,7 +9,7 @@ import pekko.event.Logging
 import pekko.event.Logging.Error
 import pekko.event.Logging.Warning
 
-class TestEventListenerSpec extends AkkaSpec with ImplicitSender {
+class TestEventListenerSpec extends PekkoSpec with ImplicitSender {
 
   "The classic EventFilter.error" must {
     "filter errors without cause" in {

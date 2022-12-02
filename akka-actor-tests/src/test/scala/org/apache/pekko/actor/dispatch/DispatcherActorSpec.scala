@@ -15,7 +15,7 @@ import language.postfixOps
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 
 object DispatcherActorSpec {
@@ -56,7 +56,7 @@ object DispatcherActorSpec {
   }
 }
 
-class DispatcherActorSpec extends AkkaSpec(DispatcherActorSpec.config) with DefaultTimeout {
+class DispatcherActorSpec extends PekkoSpec(DispatcherActorSpec.config) with DefaultTimeout {
   import DispatcherActorSpec._
 
   "A Dispatcher and an Actor" must {

@@ -23,7 +23,7 @@ addCommandAlias(
 
 addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
 
-import org.apache.pekko.AkkaBuild._
+import org.apache.pekko.PekkoBuild._
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbt.Keys.{ initialCommands, parallelExecution }
@@ -35,7 +35,7 @@ initialize := {
   initialize.value
 }
 
-AkkaBuild.buildSettings
+PekkoBuild.buildSettings
 shellPrompt := { s =>
   Project.extract(s).currentProject.id + " > "
 }
@@ -99,7 +99,7 @@ lazy val root = Project(id = "pekko", base = file("."))
       docs,
       serialversionRemoverPlugin))
   .settings(Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
-  .settings(AkkaBuild.welcomeSettings)
+  .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
 
 lazy val actor = akkaModule("akka-actor")
@@ -231,7 +231,7 @@ lazy val docs = akkaModule("docs")
     streamTestkit % "compile->compile;test->test",
     persistenceTestkit % "compile->compile;test->test")
   .settings(Dependencies.docs)
-  .settings(AkkaDisciplinePlugin.docs)
+  .settings(PekkoDisciplinePlugin.docs)
   .settings(Paradox.settings)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(
@@ -265,7 +265,7 @@ lazy val multiNodeTestkit = akkaModule("akka-multi-node-testkit")
   .settings(Dependencies.multiNodeTestkit)
   .settings(Protobuf.settings)
   .settings(AutomaticModuleName.settings("akka.remote.testkit"))
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
 
 lazy val osgi = akkaModule("akka-osgi")
   .dependsOn(actor)
@@ -331,7 +331,7 @@ lazy val persistenceTypedTests = akkaModule("akka-persistence-typed-tests")
     actorTestkitTyped % "test",
     persistence % "test->test", // for SteppingInMemJournal
     jackson % "test->test")
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
   .settings(Dependencies.persistenceTypedTests)
   .settings(javacOptions += "-parameters") // for Jackson
   .disablePlugins(MimaPlugin)
@@ -552,7 +552,7 @@ lazy val actorTestkitTyped = akkaModule("akka-actor-testkit-typed")
 
 lazy val actorTypedTests = akkaModule("akka-actor-typed-tests")
   .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
@@ -570,10 +570,10 @@ lazy val coordination = akkaModule("akka-coordination")
 
 lazy val billOfMaterials = Project("akka-bill-of-materials", file("akka-bill-of-materials"))
   .enablePlugins(BillOfMaterialsPlugin)
-  .disablePlugins(MimaPlugin, AkkaDisciplinePlugin)
+  .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
-  .settings(AkkaBuild.buildSettings)
-  .settings(AkkaBuild.defaultSettings)
+  .settings(PekkoBuild.buildSettings)
+  .settings(PekkoBuild.defaultSettings)
   .settings(
     name := "akka-bom",
     bomIncludeProjects := userProjects,
@@ -597,8 +597,8 @@ def akkaModule(name: String): Project =
   Project(id = name, base = file(name))
     .enablePlugins(ReproducibleBuildsPlugin)
     .disablePlugins(WelcomePlugin)
-    .settings(AkkaBuild.buildSettings)
-    .settings(AkkaBuild.defaultSettings)
+    .settings(PekkoBuild.buildSettings)
+    .settings(PekkoBuild.defaultSettings)
     .enablePlugins(BootstrapGenjavadoc)
 
 /* Command aliases one can run locally against a module

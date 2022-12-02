@@ -12,9 +12,9 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class DnsSettingsSpec extends AkkaSpec {
+class DnsSettingsSpec extends PekkoSpec {
 
   val eas = system.asInstanceOf[ExtendedActorSystem]
 

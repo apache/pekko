@@ -6,11 +6,11 @@ package org.apache.pekko.stream.javadsl;
 
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.util.ByteString;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 public class FramingTest extends StreamTest {
   public FramingTest() {
@@ -18,8 +18,8 @@ public class FramingTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("FramingTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("FramingTest", PekkoSpec.testConf());
 
   @Test
   public void mustBeAbleToUseFraming() throws Exception {

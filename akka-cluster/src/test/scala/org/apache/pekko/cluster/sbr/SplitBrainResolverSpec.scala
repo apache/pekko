@@ -31,7 +31,7 @@ import pekko.cluster._
 import pekko.coordination.lease.LeaseSettings
 import pekko.coordination.lease.TestLease
 import pekko.coordination.lease.TimeoutSettings
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 
 object SplitBrainResolverSpec {
@@ -94,7 +94,7 @@ object SplitBrainResolverSpec {
 }
 
 class SplitBrainResolverSpec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
   |pekko {
   |  actor.provider = cluster
   |  cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"

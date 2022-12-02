@@ -6,9 +6,9 @@ package docs.stream
 
 import org.apache.pekko.stream.scaladsl.{ Sink, Source }
 import org.apache.pekko.stream.SubstreamCancelStrategy
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class SubstreamDocSpec extends AkkaSpec {
+class SubstreamDocSpec extends PekkoSpec {
 
   "generate substreams by groupBy" in {
     // #groupBy1

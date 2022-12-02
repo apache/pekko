@@ -10,7 +10,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.persistence._
 import pekko.persistence.journal.PersistencePluginProxy
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object PersistencePluginProxySpec {
   lazy val config =
@@ -96,7 +96,7 @@ object PersistencePluginProxySpec {
 }
 
 class PersistencePluginProxySpec
-    extends AkkaSpec(PersistencePluginProxySpec.startTargetConfig.withFallback(PersistencePluginProxySpec.config))
+    extends PekkoSpec(PersistencePluginProxySpec.startTargetConfig.withFallback(PersistencePluginProxySpec.config))
     with Cleanup {
   import PersistencePluginProxySpec._
 

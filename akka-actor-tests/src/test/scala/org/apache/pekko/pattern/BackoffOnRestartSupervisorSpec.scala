@@ -14,7 +14,7 @@ import scala.annotation.nowarn
 import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.TestActor.NormalException
-import pekko.testkit.{ filterException, AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ filterException, ImplicitSender, PekkoSpec, TestProbe }
 import pekko.testkit.WithLogCapturing
 
 object TestActor {
@@ -54,7 +54,7 @@ class TestParentActor(probe: ActorRef, supervisorProps: Props) extends Actor {
   }
 }
 
-class BackoffOnRestartSupervisorSpec extends AkkaSpec("""
+class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     """) with WithLogCapturing with ImplicitSender {

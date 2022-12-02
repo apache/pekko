@@ -70,7 +70,7 @@ object ActorsLeakSpec {
 
 }
 
-class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender {
+class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSender {
   import ActorsLeakSpec._
 
   "Remoting" must {

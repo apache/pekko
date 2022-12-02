@@ -10,7 +10,7 @@ import language.postfixOps
 
 import org.apache.pekko.actor._
 
-class TestFSMRefSpec extends AkkaSpec {
+class TestFSMRefSpec extends PekkoSpec {
 
   "A TestFSMRef" must {
 

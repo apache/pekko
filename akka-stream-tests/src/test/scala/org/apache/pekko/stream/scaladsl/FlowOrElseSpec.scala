@@ -11,9 +11,9 @@ import org.apache.pekko
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils.TE
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class FlowOrElseSpec extends AkkaSpec {
+class FlowOrElseSpec extends PekkoSpec {
 
   "An OrElse flow" should {
 

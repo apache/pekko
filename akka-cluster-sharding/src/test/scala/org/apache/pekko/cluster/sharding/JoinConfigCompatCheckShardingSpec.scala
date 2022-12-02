@@ -13,9 +13,9 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.cluster.{ Cluster, ClusterReadView }
 import pekko.testkit.WithLogCapturing
-import pekko.testkit.{ AkkaSpec, LongRunningTest }
+import pekko.testkit.{ LongRunningTest, PekkoSpec }
 
-class JoinConfigCompatCheckShardingSpec extends AkkaSpec() with WithLogCapturing {
+class JoinConfigCompatCheckShardingSpec extends PekkoSpec() with WithLogCapturing {
 
   def initCluster(system: ActorSystem): ClusterReadView = {
     val cluster = Cluster(system)

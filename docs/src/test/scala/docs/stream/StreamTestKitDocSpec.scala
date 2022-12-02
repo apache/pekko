@@ -12,10 +12,10 @@ import org.apache.pekko.Done
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.stream.testkit.scaladsl._
-import org.apache.pekko.testkit.{ AkkaSpec, TestProbe }
+import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
 import org.apache.pekko.pattern
 
-class StreamTestKitDocSpec extends AkkaSpec {
+class StreamTestKitDocSpec extends PekkoSpec {
 
   "strict collection" in {
     // #strict-collection

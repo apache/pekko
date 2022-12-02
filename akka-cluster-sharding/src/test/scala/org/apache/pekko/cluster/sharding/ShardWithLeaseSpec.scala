@@ -12,7 +12,7 @@ import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
 import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.coordination.lease.{ LeaseUsageSettings, TestLeaseExt }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
@@ -66,7 +66,7 @@ object ShardWithLeaseSpec {
   case class BadLease(msg: String) extends RuntimeException(msg) with NoStackTrace
 }
 
-class ShardWithLeaseSpec extends AkkaSpec(ShardWithLeaseSpec.config) with WithLogCapturing {
+class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithLogCapturing {
 
   import ShardWithLeaseSpec._
 

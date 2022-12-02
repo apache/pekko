@@ -9,13 +9,13 @@ import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.Utils;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import static org.apache.pekko.Done.done;
 import static org.junit.Assert.*;
@@ -26,8 +26,8 @@ public class KillSwitchTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("KillSwitchTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("KillSwitchTest", PekkoSpec.testConf());
 
   @Test
   public void beAbleToUseKillSwitch() throws Exception {

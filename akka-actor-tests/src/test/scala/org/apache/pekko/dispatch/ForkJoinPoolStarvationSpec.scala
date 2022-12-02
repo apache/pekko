@@ -8,7 +8,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object ForkJoinPoolStarvationSpec {
   val config = ConfigFactory.parseString("""
@@ -44,12 +44,12 @@ object ForkJoinPoolStarvationSpec {
 
 }
 
-class ForkJoinPoolStarvationSpec extends AkkaSpec(ForkJoinPoolStarvationSpec.config) with ImplicitSender {
+class ForkJoinPoolStarvationSpec extends PekkoSpec(ForkJoinPoolStarvationSpec.config) with ImplicitSender {
   import ForkJoinPoolStarvationSpec._
 
   val Iterations = 1000
 
-  "AkkaForkJoinPool" must {
+  "PekkoForkJoinPool" must {
 
     "not starve tasks arriving from external dispatchers under high internal traffic" in {
       // TODO issue #31117: starvation with JDK 17 FJP

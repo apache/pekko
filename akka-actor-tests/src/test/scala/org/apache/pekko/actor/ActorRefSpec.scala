@@ -112,7 +112,7 @@ object ActorRefSpec {
   }
 }
 
-class ActorRefSpec extends AkkaSpec("""
+class ActorRefSpec extends PekkoSpec("""
   # testing Java serialization of ActorRef
   pekko.actor.allow-java-serialization = on
   """) with DefaultTimeout {

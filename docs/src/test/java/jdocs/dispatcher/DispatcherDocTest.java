@@ -6,7 +6,7 @@ package jdocs.dispatcher;
 
 import org.apache.pekko.dispatch.ControlMessage;
 import org.apache.pekko.dispatch.RequiresMessageQueue;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import com.typesafe.config.ConfigFactory;
 import docs.dispatcher.DispatcherDocSpec;
@@ -29,7 +29,7 @@ import org.apache.pekko.event.LoggingAdapter;
 // #imports-prio-mailbox
 import org.apache.pekko.dispatch.PriorityGenerator;
 import org.apache.pekko.dispatch.UnboundedStablePriorityMailbox;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import com.typesafe.config.Config;
 
 // #imports-prio-mailbox
@@ -41,12 +41,12 @@ import com.typesafe.config.Config;
 public class DispatcherDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "DispatcherDocTest",
           ConfigFactory.parseString(DispatcherDocSpec.javaConfig())
               .withFallback(ConfigFactory.parseString(DispatcherDocSpec.config()))
-              .withFallback(AkkaSpec.testConf()));
+              .withFallback(PekkoSpec.testConf()));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

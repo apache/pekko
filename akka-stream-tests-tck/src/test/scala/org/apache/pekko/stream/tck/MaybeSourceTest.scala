@@ -8,7 +8,7 @@ import org.reactivestreams.Publisher
 
 import org.apache.pekko.stream.scaladsl.{ Keep, Sink, Source }
 
-class MaybeSourceTest extends AkkaPublisherVerification[Int] {
+class MaybeSourceTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val (p, pub) = Source.maybe[Int].toMat(Sink.asPublisher(false))(Keep.both).run()

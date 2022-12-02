@@ -25,7 +25,7 @@ import pekko.dispatch.sysmsg.{ Unwatch, Watch }
 import pekko.pattern.{ ask, pipe, PromiseActorRef }
 import pekko.remote.RARP
 import pekko.remote.transport.ActorTransportAdapter.AssociateUnderlying
-import pekko.remote.transport.AkkaPduCodec.Associate
+import pekko.remote.transport.PekkoPduCodec.Associate
 import pekko.remote.transport.AssociationHandle.{
   ActorHandleEventListener,
   DisassociateInfo,
@@ -565,7 +565,7 @@ private[transport] class ThrottledAssociation(
   // This method captures ASSOCIATE packets and extracts the origin address
   private def peekOrigin(b: ByteString): Option[Address] = {
     try {
-      AkkaPduProtobufCodec.decodePdu(b) match {
+      PekkoPduProtobufCodec$.decodePdu(b) match {
         case Associate(info) => Some(info.origin)
         case _               => None
       }

@@ -4,7 +4,7 @@
 
 package docs.discovery
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._
@@ -22,7 +22,7 @@ object DnsDiscoveryDocSpec {
     """)
 }
 
-class DnsDiscoveryDocSpec extends AkkaSpec(DnsDiscoveryDocSpec.config) {
+class DnsDiscoveryDocSpec extends PekkoSpec(DnsDiscoveryDocSpec.config) {
 
   "DNS Discovery" should {
     "find pekko.io" in {

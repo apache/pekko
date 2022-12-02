@@ -26,7 +26,7 @@ import pekko.dispatch.Dispatchers
 import pekko.dispatch.RequiresMessageQueue
 import pekko.dispatch.UnboundedMessageQueueSemantics
 import pekko.remote.RARP
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 /**
  * Redirect different logging sources to SLF4J.
@@ -97,7 +97,7 @@ case class MockitoSigarProvider(
  *
  * TODO change factory after https://github.com/akka/akka/issues/16369
  */
-trait MetricsCollectorFactory { this: AkkaSpec =>
+trait MetricsCollectorFactory { this: PekkoSpec =>
   import MetricsConfig._
   import org.hyperic.sigar.Sigar
 

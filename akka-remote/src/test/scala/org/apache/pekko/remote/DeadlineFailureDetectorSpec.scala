@@ -8,9 +8,9 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.remote.FailureDetector.Clock
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
-class DeadlineFailureDetectorSpec extends AkkaSpec {
+class DeadlineFailureDetectorSpec extends PekkoSpec {
 
   "A DeadlineFailureDetector" must {
 

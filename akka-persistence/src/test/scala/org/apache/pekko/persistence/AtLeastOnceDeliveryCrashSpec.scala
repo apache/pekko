@@ -10,7 +10,7 @@ import scala.util.control.NoStackTrace
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.SupervisorStrategy.{ Escalate, Stop }
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 object AtLeastOnceDeliveryCrashSpec {
 
@@ -65,7 +65,7 @@ object AtLeastOnceDeliveryCrashSpec {
 }
 
 class AtLeastOnceDeliveryCrashSpec
-    extends AkkaSpec(PersistenceSpec.config("inmem", "AtLeastOnceDeliveryCrashSpec", serialization = "off"))
+    extends PekkoSpec(PersistenceSpec.config("inmem", "AtLeastOnceDeliveryCrashSpec", serialization = "off"))
     with ImplicitSender {
   import AtLeastOnceDeliveryCrashSpec._
   "At least once delivery" should {

@@ -18,13 +18,13 @@ import org.scalatest.matchers.{ MatchResult, Matcher }
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 abstract class PersistenceSpec(config: Config)
-    extends AkkaSpec(config)
+    extends PekkoSpec(config)
     with BeforeAndAfterEach
     with Cleanup
-    with PersistenceMatchers { this: AkkaSpec =>
+    with PersistenceMatchers { this: PekkoSpec =>
   private var _name: String = _
 
   lazy val extension = Persistence(system)
@@ -78,7 +78,7 @@ object PersistenceSpec {
     """))
 }
 
-trait Cleanup { this: AkkaSpec =>
+trait Cleanup { this: PekkoSpec =>
   val storageLocations =
     List("pekko.persistence.snapshot-store.local.dir").map(s => new File(system.settings.config.getString(s)))
 

@@ -12,7 +12,7 @@ import org.apache.pekko.cluster.Cluster
 import org.apache.pekko.coordination.lease.LeaseSettings
 import org.apache.pekko.coordination.lease.scaladsl.Lease
 import org.apache.pekko.coordination.lease.scaladsl.LeaseProvider
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 //#lease-example
 class SampleLease(settings: LeaseSettings) extends Lease(settings) {
@@ -62,7 +62,7 @@ object LeaseDocSpec {
   }
 }
 
-class LeaseDocSpec extends AkkaSpec(LeaseDocSpec.config) {
+class LeaseDocSpec extends PekkoSpec(LeaseDocSpec.config) {
   import LeaseDocSpec._
 
   "A docs lease" should {

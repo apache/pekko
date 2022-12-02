@@ -11,7 +11,7 @@ import scala.util.control.NonFatal
 import org.jboss.netty.channel._
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.util.unused
 
 /**
@@ -30,7 +30,7 @@ private[netty] trait NettyHelpers {
   protected def onException(@unused ctx: ChannelHandlerContext, @unused e: ExceptionEvent): Unit = ()
 
   final protected def transformException(ctx: ChannelHandlerContext, ev: ExceptionEvent): Unit = {
-    val cause = if (ev.getCause ne null) ev.getCause else new AkkaException("Unknown cause")
+    val cause = if (ev.getCause ne null) ev.getCause else new PekkoException("Unknown cause")
     cause match {
       case _: ClosedChannelException => // Ignore
       case null | NonFatal(_)        => onException(ctx, ev)

@@ -8,7 +8,7 @@ import org.apache.pekko.actor.{ Actor, ActorLogging, ActorRef, ActorSystem, Prop
 import org.apache.pekko.io.Tcp._
 import org.apache.pekko.io.{ IO, Tcp }
 import java.net.InetSocketAddress
-import org.apache.pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import org.apache.pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import org.apache.pekko.util.ByteString
 
 import scala.concurrent.Await
@@ -62,7 +62,7 @@ object PullReadingExample {
 
 }
 
-class PullReadingSpec extends AkkaSpec with ImplicitSender {
+class PullReadingSpec extends PekkoSpec with ImplicitSender {
 
   "demonstrate pull reading" in {
     val probe = TestProbe()

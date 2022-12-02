@@ -170,7 +170,7 @@ object AtLeastOnceDeliveryFailureSpec {
 }
 
 class AtLeastOnceDeliveryFailureSpec
-    extends AkkaSpec(AtLeastOnceDeliveryFailureSpec.config)
+    extends PekkoSpec(AtLeastOnceDeliveryFailureSpec.config)
     with Cleanup
     with ImplicitSender {
   import AtLeastOnceDeliveryFailureSpec._

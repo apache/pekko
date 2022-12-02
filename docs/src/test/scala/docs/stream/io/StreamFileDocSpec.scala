@@ -10,12 +10,12 @@ import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl.{ FileIO, Sink, Source }
 import org.apache.pekko.stream.testkit.Utils._
 import org.apache.pekko.util.ByteString
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext
 
-class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
+class StreamFileDocSpec extends PekkoSpec(UnboundedMailboxConfig) {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

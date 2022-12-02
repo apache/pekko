@@ -16,7 +16,7 @@ import pekko.cluster.Member
 import pekko.cluster.MemberStatus._
 import pekko.cluster.TestMember
 import pekko.remote.RARP
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TimingTest
 
 object AutoDownSpec {
@@ -39,7 +39,7 @@ object AutoDownSpec {
 
 }
 
-class AutoDownSpec extends AkkaSpec("""
+class AutoDownSpec extends PekkoSpec("""
     |pekko.actor.provider=remote
     |pekko.remote.warn-about-direct-use=off
     |""".stripMargin) {

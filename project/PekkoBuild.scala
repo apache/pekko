@@ -17,7 +17,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.util.Properties
 
-object AkkaBuild {
+object PekkoBuild {
 
   object CliOptions {
     // CI is the env var defined by Github Actions and Travis:

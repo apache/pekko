@@ -6,7 +6,7 @@ package docs.event
 
 import org.apache.pekko
 import pekko.actor.{ Actor, DeadLetter, Props }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object LoggingDocSpec {
 
@@ -144,7 +144,7 @@ object LoggingDocSpec {
 
 }
 
-class LoggingDocSpec extends AkkaSpec {
+class LoggingDocSpec extends PekkoSpec {
 
   import LoggingDocSpec.{ MdcActor, MdcActorMixin, MyActor, Req }
 

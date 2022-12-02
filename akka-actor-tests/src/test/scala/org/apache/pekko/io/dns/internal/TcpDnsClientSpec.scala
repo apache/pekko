@@ -14,9 +14,9 @@ import pekko.io.Tcp
 import pekko.io.Tcp.{ Connected, PeerClosed, Register }
 import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.io.dns.internal.DnsClient.Answer
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
-class TcpDnsClientSpec extends AkkaSpec with ImplicitSender {
+class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
   import TcpDnsClient._
 
   "The async TCP DNS client" should {

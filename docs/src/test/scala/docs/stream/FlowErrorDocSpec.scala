@@ -7,11 +7,11 @@ package docs.stream
 import scala.concurrent.Await
 import org.apache.pekko.stream.Supervision
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.stream.ActorAttributes
 import scala.concurrent.duration._
 
-class FlowErrorDocSpec extends AkkaSpec {
+class FlowErrorDocSpec extends PekkoSpec {
 
   "demonstrate fail stream" in {
     // #stop

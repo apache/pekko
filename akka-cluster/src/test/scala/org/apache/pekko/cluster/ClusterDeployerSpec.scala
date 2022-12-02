@@ -48,7 +48,7 @@ object ClusterDeployerSpec {
 
 }
 
-class ClusterDeployerSpec extends AkkaSpec(ClusterDeployerSpec.deployerConf) {
+class ClusterDeployerSpec extends PekkoSpec(ClusterDeployerSpec.deployerConf) {
 
   "A RemoteDeployer" must {
 

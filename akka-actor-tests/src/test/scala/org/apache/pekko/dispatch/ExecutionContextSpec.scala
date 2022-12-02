@@ -14,13 +14,13 @@ import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.Props
-import pekko.testkit.{ AkkaSpec, DefaultTimeout, TestLatch }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec, TestLatch }
 import pekko.testkit.CallingThreadDispatcher
 import pekko.testkit.TestActorRef
 import pekko.testkit.TestProbe
 import pekko.util.SerializedSuspendableExecutionContext
 
-class ExecutionContextSpec extends AkkaSpec with DefaultTimeout {
+class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
 
   "An ExecutionContext" must {
 

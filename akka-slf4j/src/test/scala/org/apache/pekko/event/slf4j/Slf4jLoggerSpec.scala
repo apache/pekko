@@ -16,7 +16,7 @@ import org.slf4j.{ Marker, MarkerFactory }
 import org.apache.pekko
 import pekko.actor.{ Actor, DiagnosticActorLogging, Props }
 import pekko.event.{ LogMarker, Logging }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object Slf4jLoggerSpec {
 
@@ -74,7 +74,7 @@ object Slf4jLoggerSpec {
 
 }
 
-class Slf4jLoggerSpec extends AkkaSpec(Slf4jLoggerSpec.config) with BeforeAndAfterEach {
+class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAfterEach {
   import Slf4jLoggerSpec._
 
   val producer = system.actorOf(Props[LogProducer](), name = "logProducer")

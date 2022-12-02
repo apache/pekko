@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.actor.ClassicActorSystemProvider
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
 //#extension
 import org.apache.pekko.actor.Extension
@@ -82,7 +82,7 @@ object ExtensionDocSpec {
   // #extension-usage-actor-trait
 }
 
-class ExtensionDocSpec extends AkkaSpec(ExtensionDocSpec.config) {
+class ExtensionDocSpec extends PekkoSpec(ExtensionDocSpec.config) {
 
   "demonstrate how to create an extension in Scala" in {
     // #extension-usage

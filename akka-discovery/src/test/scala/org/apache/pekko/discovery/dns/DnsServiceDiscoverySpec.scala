@@ -22,10 +22,10 @@ import pekko.discovery.ServiceDiscovery.{ Resolved, ResolvedTarget }
 import pekko.discovery.ServiceDiscovery.DiscoveryTimeoutException
 import pekko.io.dns.{ AAAARecord, ARecord, DnsProtocol, SRVRecord }
 import pekko.io.dns.CachePolicy.Ttl
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 
-class DnsServiceDiscoverySpec extends AkkaSpec with AnyWordSpecLike with Matchers with ScalaFutures {
+class DnsServiceDiscoverySpec extends PekkoSpec with AnyWordSpecLike with Matchers with ScalaFutures {
 
   "DnsServiceDiscovery" must {
     "fail future with DiscoveryTimeoutException if IP dns resolve does not respond" in {

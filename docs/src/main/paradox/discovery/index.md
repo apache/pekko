@@ -34,12 +34,12 @@ See @ref:[Migration hints](#migrating-from-akka-management-discovery-before-1-0-
 ## Module info
 
 @@dependency[sbt,Gradle,Maven] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-discovery_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 @@project-info{ projectId="akka-discovery" }

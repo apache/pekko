@@ -1012,13 +1012,13 @@ class TcpSpec extends StreamSpec("""
       import java.security.KeyStore
       import javax.net.ssl._
 
-      import com.typesafe.sslconfig.pekko.AkkaSSLConfig
+      import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
       import org.apache.pekko
       import pekko.stream.TLSClientAuth
       import pekko.stream.TLSProtocol
 
-      val sslConfig = AkkaSSLConfig(system)
+      val sslConfig = PekkoSSLConfig(system)
 
       // Don't hardcode your password in actual code
       val password = "abcdef".toCharArray

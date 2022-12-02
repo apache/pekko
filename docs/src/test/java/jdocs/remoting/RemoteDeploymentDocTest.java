@@ -4,8 +4,8 @@
 
 package jdocs.remoting;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -36,15 +36,15 @@ public class RemoteDeploymentDocTest extends AbstractJavaTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "RemoteDeploymentDocTest",
           ConfigFactory.parseString(
                   "   pekko.actor.provider = remote\n"
                       + "    pekko.remote.classic.netty.tcp.port = 0\n"
                       + "    pekko.remote.artery.canonical.port = 0\n"
                       + "    pekko.remote.use-unsafe-remote-features-outside-cluster = on")
-              .withFallback(AkkaSpec.testConf()));
+              .withFallback(PekkoSpec.testConf()));
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

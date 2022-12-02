@@ -17,14 +17,14 @@ import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.util.ConstantFun;
 import org.apache.pekko.stream.javadsl.GraphDSL.Builder;
 import org.apache.pekko.stream.stage.*;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -48,8 +48,8 @@ public class FlowTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("FlowTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("FlowTest", PekkoSpec.testConf());
 
   interface Fruit {}
 

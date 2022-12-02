@@ -12,7 +12,7 @@ import pekko.actor.{ Actor, ActorIdentity, ActorSystem, ExtendedActorSystem, Ide
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit.EventFilter
 import pekko.testkit.TestActors
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestKit }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestKit }
 
 object MessageLoggingSpec {
   def config(artery: Boolean) = ConfigFactory.parseString(s"""
@@ -59,7 +59,7 @@ object MessageLoggingSpec {
 class ArteryMessageLoggingSpec extends MessageLoggingSpec(config(true))
 class ClassicMessageLoggingSpec extends MessageLoggingSpec(config(false))
 
-abstract class MessageLoggingSpec(config: Config) extends AkkaSpec(config) with ImplicitSender {
+abstract class MessageLoggingSpec(config: Config) extends PekkoSpec(config) with ImplicitSender {
 
   val remoteSystem = ActorSystem("remote-sys", ConfigFactory.load(config))
   val remoteAddress = remoteSystem.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress

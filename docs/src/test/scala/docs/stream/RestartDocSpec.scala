@@ -7,13 +7,13 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.{ KillSwitches, RestartSettings }
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.duration._
 import scala.concurrent._
 
-class RestartDocSpec extends AkkaSpec with CompileOnlySpec {
+class RestartDocSpec extends PekkoSpec with CompileOnlySpec {
   import system.dispatcher
 
   // Mock akka-http interfaces

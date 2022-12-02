@@ -6,9 +6,9 @@ package org.apache.pekko.util
 
 import scala.util.Random
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class TokenBucketSpec extends AkkaSpec {
+class TokenBucketSpec extends PekkoSpec {
 
   class TestBucket(_cap: Long, _period: Long) extends TokenBucket(_cap, _period) {
     var currentTime: Long = 0L

@@ -15,14 +15,14 @@ import org.junit.rules.ExternalResource;
  *
  * <p>To use it on a class level add this to your test class: <code>
  * &#64;ClassRule
- * public static AkkaJUnitActorSystemResource actorSystemResource =
- *   new AkkaJUnitActorSystemResource(name, config);
+ * public static PekkoJUnitActorSystemResource actorSystemResource =
+ *   new PekkoJUnitActorSystemResource(name, config);
  *
  * private final ActorSystem system = actorSystemResource.getSystem();
  * </code> To use it on a per test level add this to your test class: <code>
  * &#64;Rule
- * public AkkaJUnitActorSystemResource actorSystemResource =
- *   new AkkaJUnitActorSystemResource(name, config);
+ * public PekkoJUnitActorSystemResource actorSystemResource =
+ *   new PekkoJUnitActorSystemResource(name, config);
  *
  * private ActorSystem system = null;
  *
@@ -34,7 +34,7 @@ import org.junit.rules.ExternalResource;
  * test, because some test runners may create an instance of the class without actually using it
  * later, resulting in memory leaks because of not shutting down the actor system.
  */
-public class AkkaJUnitActorSystemResource extends ExternalResource {
+public class PekkoJUnitActorSystemResource extends ExternalResource {
   private ActorSystem system = null;
   private final String name;
   private final Config config;
@@ -49,13 +49,13 @@ public class AkkaJUnitActorSystemResource extends ExternalResource {
     }
   }
 
-  public AkkaJUnitActorSystemResource(String name, Config config) {
+  public PekkoJUnitActorSystemResource(String name, Config config) {
     this.name = name;
     this.config = config;
   }
 
-  public AkkaJUnitActorSystemResource(String name) {
-    this(name, AkkaSpec.testConf());
+  public PekkoJUnitActorSystemResource(String name) {
+    this(name, PekkoSpec.testConf());
   }
 
   @Override

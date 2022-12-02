@@ -6,13 +6,13 @@ package docs.stream
 
 import org.apache.pekko.stream.scaladsl._
 import org.apache.pekko.stream.{ DelayOverflowStrategy, KillSwitches }
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-class KillSwitchDocSpec extends AkkaSpec with CompileOnlySpec {
+class KillSwitchDocSpec extends PekkoSpec with CompileOnlySpec {
 
   "Unique kill switch" must {
 

@@ -7,10 +7,10 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.actor.{ Actor, Props }
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import docs.CompileOnlySpec
 
-class FlowStreamRefsDocSpec extends AkkaSpec with CompileOnlySpec {
+class FlowStreamRefsDocSpec extends PekkoSpec with CompileOnlySpec {
 
   "offer a source ref" in compileOnlySpec {
     // #offer-source

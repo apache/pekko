@@ -12,7 +12,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.receptionist.ServiceKey;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class RoutersTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJunitResource testKit = new TestKitJunitResource(AkkaSpec.testConf());
+  public static final TestKitJunitResource testKit = new TestKitJunitResource(PekkoSpec.testConf());
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

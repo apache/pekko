@@ -12,14 +12,14 @@ import java.util.Set;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.scalatestplus.junit.JUnitSuite;
 
 public class ClusterClientTest extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource(
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource(
           "DistributedPubSubMediatorTest",
           ConfigFactory.parseString(
               "pekko.actor.provider = \"cluster\"\n"

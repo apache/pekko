@@ -5,10 +5,10 @@
 package org.apache.pekko.util
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.LineNumbers._
 
-class LineNumberSpec extends AkkaSpec {
+class LineNumberSpec extends PekkoSpec {
 
   "LineNumbers" when {
 

@@ -9,10 +9,10 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.remote.artery.compress.{ CompressionTable, CompressionTestUtils, InboundCompressions }
 import pekko.serialization.Serialization
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.{ ByteString, OptionVal }
 
-class EnvelopeBufferSpec extends AkkaSpec {
+class EnvelopeBufferSpec extends PekkoSpec {
   import CompressionTestUtils._
 
   object TestCompressor extends InboundCompressions {

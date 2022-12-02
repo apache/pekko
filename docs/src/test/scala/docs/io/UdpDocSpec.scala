@@ -4,7 +4,7 @@
 
 package docs.io
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.apache.pekko.actor.Actor
 import org.apache.pekko.io.IO
 import org.apache.pekko.io.Udp
@@ -100,7 +100,7 @@ object ScalaUdpDocSpec {
 
 }
 
-abstract class UdpDocSpec extends AkkaSpec {
+abstract class UdpDocSpec extends PekkoSpec {
 
   def listenerProps(next: ActorRef): Props
   def simpleSenderProps(remote: InetSocketAddress): Props

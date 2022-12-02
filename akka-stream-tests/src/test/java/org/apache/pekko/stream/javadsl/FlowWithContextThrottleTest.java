@@ -8,8 +8,8 @@ import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.StreamTest;
 import org.apache.pekko.stream.ThrottleMode;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -26,8 +26,8 @@ public class FlowWithContextThrottleTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("ThrottleTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("ThrottleTest", PekkoSpec.testConf());
 
   @Test
   public void mustWorksForTwoStreams() throws Exception {

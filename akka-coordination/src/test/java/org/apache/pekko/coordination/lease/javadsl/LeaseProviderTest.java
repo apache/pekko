@@ -6,7 +6,7 @@ package org.apache.pekko.coordination.lease.javadsl;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.coordination.lease.scaladsl.LeaseProviderSpec;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -15,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 
 public class LeaseProviderTest {
   @Rule
-  public AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("LoggingAdapterTest", LeaseProviderSpec.config());
+  public PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("LoggingAdapterTest", LeaseProviderSpec.config());
 
   private ActorSystem system = null;
 

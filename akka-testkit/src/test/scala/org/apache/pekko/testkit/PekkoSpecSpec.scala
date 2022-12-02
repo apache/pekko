@@ -21,12 +21,12 @@ import pekko.pattern.ask
 import pekko.util.Timeout
 
 @nowarn
-class AkkaSpecSpec extends AnyWordSpec with Matchers {
+class PekkoSpecSpec extends AnyWordSpec with Matchers {
 
-  "An AkkaSpec" must {
+  "An PekkoSpec" must {
 
     "warn about unhandled messages" in {
-      implicit val system = ActorSystem("AkkaSpec0", AkkaSpec.testConf)
+      implicit val system = ActorSystem("PekkoSpec0", PekkoSpec.testConf)
       try {
         val a = system.actorOf(Props.empty)
         EventFilter.warning(start = "unhandled message", occurrences = 1).intercept {
@@ -45,17 +45,17 @@ class AkkaSpecSpec extends AnyWordSpec with Matchers {
         "pekko.actor.debug.event-stream" -> true,
         "pekko.loglevel" -> "DEBUG",
         "pekko.stdout-loglevel" -> "DEBUG")
-      val localSystem = ActorSystem("AkkaSpec1", ConfigFactory.parseMap(conf.asJava).withFallback(AkkaSpec.testConf))
+      val localSystem = ActorSystem("PekkoSpec1", ConfigFactory.parseMap(conf.asJava).withFallback(PekkoSpec.testConf))
       var refs = Seq.empty[ActorRef]
-      val spec = new AkkaSpec(localSystem) { refs = Seq(testActor, localSystem.actorOf(Props.empty, "name")) }
+      val spec = new PekkoSpec(localSystem) { refs = Seq(testActor, localSystem.actorOf(Props.empty, "name")) }
       refs.foreach(_.isTerminated should not be true)
       TestKit.shutdownActorSystem(localSystem)
       spec.awaitCond(refs.forall(_.isTerminated), 2 seconds)
     }
 
     "stop correctly when sending PoisonPill to rootGuardian" in {
-      val system = ActorSystem("AkkaSpec2", AkkaSpec.testConf)
-      new AkkaSpec(system) {}
+      val system = ActorSystem("PekkoSpec2", PekkoSpec.testConf)
+      new PekkoSpec(system) {}
       val latch = new TestLatch(1)(system)
       system.registerOnTermination(latch.countDown())
 
@@ -65,7 +65,7 @@ class AkkaSpecSpec extends AnyWordSpec with Matchers {
     }
 
     "enqueue unread messages from testActor to deadLetters" in {
-      val system, otherSystem = ActorSystem("AkkaSpec3", AkkaSpec.testConf)
+      val system, otherSystem = ActorSystem("PekkoSpec3", PekkoSpec.testConf)
 
       try {
         var locker = Seq.empty[DeadLetter]

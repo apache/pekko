@@ -73,7 +73,7 @@ object SerializerSpecConfigs {
 
 import pekko.persistence.serialization.SerializerSpecConfigs._
 
-class SnapshotSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
+class SnapshotSerializerPersistenceSpec extends PekkoSpec(customSerializers) {
   val serialization = SerializationExtension(system)
 
   "A snapshot serializer" must {
@@ -167,7 +167,7 @@ class SnapshotSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
   }
 }
 
-class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
+class MessageSerializerPersistenceSpec extends PekkoSpec(customSerializers) {
   val serialization = SerializationExtension(system)
 
   "A message serializer" when {
@@ -326,7 +326,7 @@ object MessageSerializerRemotingSpec {
     system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
 }
 
-class MessageSerializerRemotingSpec extends AkkaSpec(remote.withFallback(customSerializers)) with DefaultTimeout {
+class MessageSerializerRemotingSpec extends PekkoSpec(remote.withFallback(customSerializers)) with DefaultTimeout {
   import MessageSerializerRemotingSpec._
 
   val remoteSystem = ActorSystem("remote", remote.withFallback(customSerializers))

@@ -14,12 +14,12 @@ import pekko.cluster.MemberStatus
 import pekko.cluster.UniqueAddress
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Version
 
 import scala.collection.immutable.SortedSet
 
-class DeprecatedLeastShardAllocationStrategySpec extends AkkaSpec {
+class DeprecatedLeastShardAllocationStrategySpec extends PekkoSpec {
   import LeastShardAllocationStrategySpec._
 
   val memberA = newUpMember("127.0.0.1")

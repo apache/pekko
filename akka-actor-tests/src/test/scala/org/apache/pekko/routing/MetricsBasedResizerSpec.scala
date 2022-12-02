@@ -70,7 +70,7 @@ object MetricsBasedResizerSpec {
 
 }
 
-class MetricsBasedResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
+class MetricsBasedResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
 
   override def atStartup(): Unit = {
     // when shutting down some Resize messages might hang around

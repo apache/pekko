@@ -7,8 +7,8 @@ package jdocs.future;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.pattern.Patterns;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.util.Timeout;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
@@ -27,7 +27,6 @@ import java.util.concurrent.CompletionStage;
 import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
 import static org.apache.pekko.dispatch.Futures.future;
 // #imports
-import org.apache.pekko.pattern.Patterns;
 
 // #imports
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -35,8 +34,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class FutureDocTest extends AbstractJavaTest {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("FutureDocTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("FutureDocTest", PekkoSpec.testConf());
 
   private final ActorSystem<Void> system = toTyped(actorSystemResource.getSystem());
 

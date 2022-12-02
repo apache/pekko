@@ -8,12 +8,12 @@ For the documentation of the new API of this feature and for new projects see @r
 To use Finite State Machine actors, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-actor_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 ## Overview
@@ -142,7 +142,7 @@ whereas `stay()` will *not*.
 @@@
 
 To verify that this buncher actually works, it is quite easy to write a test
-using the @scala[@ref:[Testing Actor Systems which is conveniently bundled with ScalaTest traits into `AkkaSpec`](testing.md)]@java[@ref:[TestKit](testing.md), here using JUnit as an example]:
+using the @scala[@ref:[Testing Actor Systems which is conveniently bundled with ScalaTest traits into `PekkoSpec`](testing.md)]@java[@ref:[TestKit](testing.md), here using JUnit as an example]:
 
 Scala
 :  @@snip [FSMDocSpec.scala](/docs/src/test/scala/docs/actor/FSMDocSpec.scala) { #test-code }

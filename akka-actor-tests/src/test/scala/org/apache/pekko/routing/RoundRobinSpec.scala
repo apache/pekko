@@ -19,7 +19,7 @@ import pekko.actor.Terminated
 import pekko.pattern.ask
 import pekko.testkit._
 
-class RoundRobinSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
 
   def routeeSize(router: ActorRef): Int =
     Await.result(router ? GetRoutees, timeout.duration).asInstanceOf[Routees].routees.size

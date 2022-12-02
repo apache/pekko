@@ -6,18 +6,18 @@ package org.apache.pekko
 
 import org.apache.pekko.annotation.InternalApi
 
-final class UnsupportedAkkaVersion private[pekko] (msg: String) extends RuntimeException(msg)
+final class UnsupportedPekkoVersion private[pekko] (msg: String) extends RuntimeException(msg)
 
-object AkkaVersion {
+object PekkoVersion {
 
   /**
-   * Check that the version of Akka is a specific patch version or higher and throw an [[UnsupportedAkkaVersion]]
+   * Check that the version of Pekko is a specific patch version or higher and throw an [[UnsupportedPekkoVersion]]
    * exception if the version requirement is not fulfilled.
    *
-   * For example: `require("my-library", "2.5.4")` would fail if used with Akka 2.4.19 and 2.5.3, but succeed with 2.5.4
+   * For example: `require("my-library", "2.5.4")` would fail if used with Pekko 2.4.19 and 2.5.3, but succeed with 2.5.4
    * and 2.6.1
    *
-   * @param libraryName The name of the library or component requiring the Akka version, used in the error message.
+   * @param libraryName The name of the library or component requiring the Pekko version, used in the error message.
    * @param requiredVersion Minimal version that this library works with
    */
   def require(libraryName: String, requiredVersion: String): Unit = {
@@ -42,8 +42,8 @@ object AkkaVersion {
               if (requiredMajorStr.toInt != currentMajorStr.toInt ||
                 requiredMinorStr.toInt > currentMinorStr.toInt ||
                 (requiredMinorStr == currentMinorStr && requiredPatchStr.toInt > currentPatch))
-                throw new UnsupportedAkkaVersion(
-                  s"Current version of Akka is [$currentVersion], but $libraryName requires version [$requiredVersion]")
+                throw new UnsupportedPekkoVersion(
+                  s"Current version of Pekko is [$currentVersion], but $libraryName requires version [$requiredVersion]")
             case _ => // SNAPSHOT or unknown - you're on your own
           }
 

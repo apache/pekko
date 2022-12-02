@@ -12,7 +12,7 @@ import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
-class FanoutPublisherTest extends AkkaPublisherVerification[Int] {
+class FanoutPublisherTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val iterable: immutable.Iterable[Int] =

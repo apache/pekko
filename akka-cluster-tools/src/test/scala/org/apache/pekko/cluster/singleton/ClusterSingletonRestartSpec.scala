@@ -13,12 +13,12 @@ import pekko.actor.ActorSystem
 import pekko.actor.PoisonPill
 import pekko.cluster.Cluster
 import pekko.cluster.MemberStatus
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 import pekko.testkit.TestProbe
 
 class ClusterSingletonRestartSpec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
   pekko.loglevel = INFO
   pekko.actor.provider = org.apache.pekko.cluster.ClusterActorRefProvider
   pekko.cluster.downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning

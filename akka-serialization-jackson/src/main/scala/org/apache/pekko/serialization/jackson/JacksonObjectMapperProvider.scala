@@ -271,10 +271,10 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
 
   private def isModuleEnabled(fqcn: String, dynamicAccess: DynamicAccess): Boolean =
     fqcn match {
-      case "org.apache.pekko.serialization.jackson.AkkaTypedJacksonModule" =>
+      case "org.apache.pekko.serialization.jackson.PekkoTypedJacksonModule" =>
         // akka-actor-typed dependency is "provided" and may not be included
         dynamicAccess.classIsOnClasspath("org.apache.pekko.actor.typed.ActorRef")
-      case "org.apache.pekko.serialization.jackson.AkkaStreamJacksonModule" =>
+      case "org.apache.pekko.serialization.jackson.PekkoStreamJacksonModule" =>
         // akka-stream dependency is "provided" and may not be included
         dynamicAccess.classIsOnClasspath("org.apache.pekko.stream.Graph")
       case _ => true

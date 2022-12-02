@@ -9,7 +9,7 @@ import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Timeout
 
 object ExplicitAskSpec {
@@ -17,7 +17,7 @@ object ExplicitAskSpec {
   case class Response(sentFrom: ActorRef)
 }
 
-class ExplicitAskSpec extends AkkaSpec {
+class ExplicitAskSpec extends PekkoSpec {
   import ExplicitAskSpec._
 
   "The “ask” pattern with explicit sender" must {

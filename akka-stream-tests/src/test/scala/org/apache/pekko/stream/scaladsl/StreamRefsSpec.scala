@@ -22,7 +22,7 @@ import pekko.stream.impl.streamref.{ SinkRefImpl, SourceRefImpl }
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl._
-import pekko.testkit.{ AkkaSpec, TestKit, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestKit, TestProbe }
 import pekko.util.ByteString
 
 object StreamRefsSpec {
@@ -197,7 +197,7 @@ object StreamRefsSpec {
   }
 }
 
-class StreamRefsSpec extends AkkaSpec(StreamRefsSpec.config()) {
+class StreamRefsSpec extends PekkoSpec(StreamRefsSpec.config()) {
   import StreamRefsSpec._
 
   val remoteSystem = ActorSystem("RemoteSystem", StreamRefsSpec.config())

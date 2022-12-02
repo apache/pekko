@@ -7,8 +7,8 @@ package org.apache.pekko.stream.javadsl;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.stream.StreamTest;
 import org.apache.pekko.stream.SystemMaterializer;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -20,8 +20,8 @@ public class RunnableGraphTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("RunnableGraphTest", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("RunnableGraphTest", PekkoSpec.testConf());
 
   @Test
   public void beAbleToConvertFromJavaToScala() {

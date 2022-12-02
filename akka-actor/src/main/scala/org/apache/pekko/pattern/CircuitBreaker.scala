@@ -18,7 +18,7 @@ import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
@@ -1127,5 +1127,5 @@ class CircuitBreaker(
 class CircuitBreakerOpenException(
     val remainingDuration: FiniteDuration,
     message: String = "Circuit Breaker is open; calls are failing fast")
-    extends AkkaException(message)
+    extends PekkoException(message)
     with NoStackTrace

@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 import scala.util.control.NonFatal
 import com.typesafe.config.Config
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.Done
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -430,7 +430,7 @@ object ClusterSingletonManager {
  * state. Parent supervisor should typically restart the actor, i.e.
  * default decision.
  */
-class ClusterSingletonManagerIsStuck(message: String) extends AkkaException(message, null)
+class ClusterSingletonManagerIsStuck(message: String) extends PekkoException(message, null)
 
 /**
  * Manages singleton actor instance among all cluster nodes or a group

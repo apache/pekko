@@ -7,9 +7,9 @@ package docs.stream
 import org.apache.pekko.NotUsed
 import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
 import org.apache.pekko.stream.testkit._
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 
-class ReactiveStreamsDocSpec extends AkkaSpec {
+class ReactiveStreamsDocSpec extends PekkoSpec {
   import TwitterStreamQuickstartDocSpec._
 
   // #imports

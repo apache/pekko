@@ -20,11 +20,11 @@ import pekko.actor.ExtendedActorSystem
 import pekko.remote.artery.aeron.AeronSink.GaveUpMessageException
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.SocketUtil
 
-class AeronSinkSpec extends AkkaSpec("""
+class AeronSinkSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 

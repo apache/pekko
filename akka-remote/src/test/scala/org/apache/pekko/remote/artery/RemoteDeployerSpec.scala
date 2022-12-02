@@ -31,7 +31,7 @@ object RemoteDeployerSpec {
 
 }
 
-class RemoteDeployerSpec extends AkkaSpec(RemoteDeployerSpec.deployerConf) {
+class RemoteDeployerSpec extends PekkoSpec(RemoteDeployerSpec.deployerConf) {
 
   "A RemoteDeployer" must {
 

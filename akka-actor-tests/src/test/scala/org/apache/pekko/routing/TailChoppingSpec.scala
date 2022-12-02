@@ -31,7 +31,7 @@ object TailChoppingSpec {
       }), "Actor:" + id)
 }
 
-class TailChoppingSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class TailChoppingSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
   import TailChoppingSpec._
 
   def oneOfShouldEqual(what: Any, default: Any, ref: ActorRef*)(f: ActorRef => Any): Unit = {

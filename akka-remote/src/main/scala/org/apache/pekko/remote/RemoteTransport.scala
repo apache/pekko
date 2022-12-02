@@ -9,7 +9,7 @@ import scala.concurrent.Future
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.Done
 import pekko.actor._
 import pekko.annotation.InternalStableApi
@@ -21,7 +21,7 @@ import pekko.util.{ unused, OptionVal }
  * such as inability to start, wrong configuration etc.
  */
 @SerialVersionUID(1L)
-class RemoteTransportException(message: String, cause: Throwable) extends AkkaException(message, cause) {
+class RemoteTransportException(message: String, cause: Throwable) extends PekkoException(message, cause) {
   def this(msg: String) = this(msg, null)
 }
 

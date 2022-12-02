@@ -4,11 +4,11 @@
 
 package org.apache.pekko.cluster.sbr
 
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.Eventually
 
-class LeaseMajoritySpec extends AkkaSpec() with Eventually {
+class LeaseMajoritySpec extends PekkoSpec() with Eventually {
 
   val default = ConfigFactory
     .parseString(

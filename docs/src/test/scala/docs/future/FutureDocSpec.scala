@@ -128,7 +128,7 @@ object FutureDocSpec {
 
 }
 
-class FutureDocSpec extends AkkaSpec {
+class FutureDocSpec extends PekkoSpec {
   import FutureDocSpec._
   import system.dispatcher
 

@@ -12,7 +12,7 @@ import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
-class FuturePublisherTest extends AkkaPublisherVerification[Int] {
+class FuturePublisherTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val p = Promise[Int]()

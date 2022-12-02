@@ -7,10 +7,10 @@ package org.apache.pekko.remote.artery
 import org.scalatest.matchers.should.Matchers
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.JavaVersion
 
-class RemotingFlightRecorderSpec extends AkkaSpec with Matchers {
+class RemotingFlightRecorderSpec extends PekkoSpec with Matchers {
 
   "The RemotingFlightRecorder" must {
 

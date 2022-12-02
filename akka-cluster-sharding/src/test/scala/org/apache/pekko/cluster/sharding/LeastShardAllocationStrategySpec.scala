@@ -23,7 +23,7 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy
 import pekko.cluster.sharding.internal.AbstractLeastShardAllocationStrategy.RegionEntry
 import pekko.cluster.sharding.internal.LeastShardAllocationStrategy
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Version
 
 import scala.collection.immutable.SortedSet
@@ -80,7 +80,7 @@ object LeastShardAllocationStrategySpec {
     new DummyActorRef(RootActorPath(member.address) / "system" / "fake" / idForDebug)
 }
 
-class LeastShardAllocationStrategySpec extends AkkaSpec {
+class LeastShardAllocationStrategySpec extends PekkoSpec {
   import LeastShardAllocationStrategySpec._
 
   val memberA = newUpMember("127.0.0.1")

@@ -17,7 +17,7 @@ import pekko.ConfigurationException
 import pekko.actor._
 import pekko.dispatch._
 import pekko.routing.FromConfig
-import pekko.testkit.{ AkkaSpec, ImplicitSender }
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 import pekko.util.unused
 
 object DispatchersSpec {
@@ -101,7 +101,7 @@ object DispatchersSpec {
   }
 }
 
-class DispatchersSpec extends AkkaSpec(DispatchersSpec.config) with ImplicitSender {
+class DispatchersSpec extends PekkoSpec(DispatchersSpec.config) with ImplicitSender {
   import DispatchersSpec._
   val df = system.dispatchers
   import df._

@@ -226,7 +226,7 @@ object ActorMailboxSpec {
 
 }
 
-class ActorMailboxSpec(conf: Config) extends AkkaSpec(conf) with DefaultTimeout with ImplicitSender {
+class ActorMailboxSpec(conf: Config) extends PekkoSpec(conf) with DefaultTimeout with ImplicitSender {
 
   import ActorMailboxSpec._
 

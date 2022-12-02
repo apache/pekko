@@ -14,12 +14,12 @@ import org.apache.pekko
 import pekko.actor.Address
 import pekko.dispatch.Dispatchers
 import pekko.remote.PhiAccrualFailureDetector
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.Helpers.ConfigOps
 import pekko.util.Version
 
 @nowarn
-class ClusterConfigSpec extends AkkaSpec {
+class ClusterConfigSpec extends PekkoSpec {
 
   "Clustering" must {
 

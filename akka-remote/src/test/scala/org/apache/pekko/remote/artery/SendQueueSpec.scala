@@ -17,7 +17,7 @@ import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 
 object SendQueueSpec {
@@ -50,7 +50,7 @@ object SendQueueSpec {
   }
 }
 
-class SendQueueSpec extends AkkaSpec("""
+class SendQueueSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
     pekko.stream.secret-test-fuzzing-warning-disable = yep
   """) with ImplicitSender {

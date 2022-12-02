@@ -11,10 +11,10 @@ import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.Props
-import pekko.testkit.{ AkkaSpec, TestActorRef }
+import pekko.testkit.{ PekkoSpec, TestActorRef }
 
 @nowarn
-class InetAddressDnsResolverSpec extends AkkaSpec("""
+class InetAddressDnsResolverSpec extends PekkoSpec("""
     pekko.io.dns.inet-address.positive-ttl = default
     pekko.io.dns.inet-address.negative-ttl = default
     """) { thisSpecs =>
@@ -122,7 +122,7 @@ class InetAddressDnsResolverSpec extends AkkaSpec("""
 }
 
 @nowarn
-class InetAddressDnsResolverConfigSpec extends AkkaSpec("""
+class InetAddressDnsResolverConfigSpec extends PekkoSpec("""
     pekko.io.dns.inet-address.positive-ttl = forever
     pekko.io.dns.inet-address.negative-ttl = never
     """) {

@@ -14,7 +14,7 @@ import pekko.remote.artery.InboundControlJunction.ControlMessageObserver
 import pekko.stream.scaladsl.Keep
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestProbe
 import pekko.util.OptionVal
@@ -28,7 +28,7 @@ object InboundControlJunctionSpec {
 }
 
 class InboundControlJunctionSpec
-    extends AkkaSpec("""
+    extends PekkoSpec("""
                    pekko.actor.serialization-bindings {
                      "org.apache.pekko.remote.artery.InboundControlJunctionSpec$TestControlMessage" = java
                    }

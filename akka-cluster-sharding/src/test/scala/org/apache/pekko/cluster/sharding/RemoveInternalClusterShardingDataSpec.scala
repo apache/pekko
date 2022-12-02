@@ -23,7 +23,7 @@ import pekko.persistence.Recovery
 import pekko.persistence.RecoveryCompleted
 import pekko.persistence.SnapshotOffer
 import pekko.persistence.SnapshotSelectionCriteria
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.TestActors.EchoActor
 import pekko.testkit.WithLogCapturing
@@ -99,7 +99,7 @@ object RemoveInternalClusterShardingDataSpec {
 }
 
 class RemoveInternalClusterShardingDataSpec
-    extends AkkaSpec(RemoveInternalClusterShardingDataSpec.config)
+    extends PekkoSpec(RemoveInternalClusterShardingDataSpec.config)
     with ImplicitSender
     with WithLogCapturing {
   import RemoveInternalClusterShardingDataSpec._

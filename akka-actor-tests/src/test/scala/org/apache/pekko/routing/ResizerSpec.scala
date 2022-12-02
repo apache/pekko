@@ -38,7 +38,7 @@ object ResizerSpec {
 
 }
 
-class ResizerSpec extends AkkaSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
+class ResizerSpec extends PekkoSpec(ResizerSpec.config) with DefaultTimeout with ImplicitSender {
 
   import pekko.routing.ResizerSpec._
 

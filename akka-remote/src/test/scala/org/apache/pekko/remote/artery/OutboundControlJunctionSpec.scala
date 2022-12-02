@@ -10,7 +10,7 @@ import pekko.remote.UniqueAddress
 import pekko.stream.scaladsl.Keep
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.util.OptionVal
 
@@ -20,7 +20,7 @@ object OutboundControlJunctionSpec {
   case object Control3 extends ControlMessage
 }
 
-class OutboundControlJunctionSpec extends AkkaSpec("""
+class OutboundControlJunctionSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
   import OutboundControlJunctionSpec._

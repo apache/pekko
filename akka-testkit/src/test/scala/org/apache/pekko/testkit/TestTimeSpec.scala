@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 
 import org.scalatest.exceptions.TestFailedException
 
-class TestTimeSpec extends AkkaSpec(Map("pekko.test.timefactor" -> 2.0)) {
+class TestTimeSpec extends PekkoSpec(Map("pekko.test.timefactor" -> 2.0)) {
 
   "A TestKit" must {
 

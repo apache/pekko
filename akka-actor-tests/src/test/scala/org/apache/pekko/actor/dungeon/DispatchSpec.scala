@@ -17,7 +17,7 @@ object DispatchSpec {
     }
   }
 }
-class DispatchSpec extends AkkaSpec("""
+class DispatchSpec extends PekkoSpec("""
   pekko.actor.serialize-messages = on
   pekko.actor.no-serialization-verification-needed-class-prefix = []
   """) with DefaultTimeout {

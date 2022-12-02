@@ -29,7 +29,7 @@ object ShutdownAfterJoinSeedNodesSpec {
        """
 }
 
-class ShutdownAfterJoinSeedNodesSpec extends AkkaSpec(ShutdownAfterJoinSeedNodesSpec.config) {
+class ShutdownAfterJoinSeedNodesSpec extends PekkoSpec(ShutdownAfterJoinSeedNodesSpec.config) {
 
   val seed1 = ActorSystem(system.name, system.settings.config)
   val seed2 = ActorSystem(system.name, system.settings.config)

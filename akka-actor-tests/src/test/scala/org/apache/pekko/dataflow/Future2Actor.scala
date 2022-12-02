@@ -16,9 +16,9 @@ import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.actor.ActorRef
 import pekko.pattern.{ ask, pipe }
-import pekko.testkit.{ AkkaSpec, DefaultTimeout }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 
-class Future2ActorSpec extends AkkaSpec with DefaultTimeout {
+class Future2ActorSpec extends PekkoSpec with DefaultTimeout {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   "The Future2Actor bridge" must {
 

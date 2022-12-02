@@ -30,7 +30,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
   import LoggingReceiveSpec._
   val config = ConfigFactory.parseString("""
     pekko.loglevel=DEBUG # test verifies debug
-    """).withFallback(AkkaSpec.testConf)
+    """).withFallback(PekkoSpec.testConf)
   val appLogging =
     ActorSystem("logging", ConfigFactory.parseMap(Map("pekko.actor.debug.receive" -> true).asJava).withFallback(config))
   val appAuto = ActorSystem(

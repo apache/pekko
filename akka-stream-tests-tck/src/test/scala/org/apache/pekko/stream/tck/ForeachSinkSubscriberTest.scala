@@ -8,7 +8,7 @@ import org.reactivestreams.Subscriber
 
 import org.apache.pekko.stream.scaladsl._
 
-class ForeachSinkSubscriberTest extends AkkaSubscriberBlackboxVerification[Int] {
+class ForeachSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[Int] {
 
   override def createSubscriber(): Subscriber[Int] =
     Flow[Int]

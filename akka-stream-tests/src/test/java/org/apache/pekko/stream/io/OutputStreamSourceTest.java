@@ -16,7 +16,7 @@ import org.junit.Test;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
@@ -29,8 +29,8 @@ public class OutputStreamSourceTest extends StreamTest {
   }
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("OutputStreamSourceTest", Utils.UnboundedMailboxConfig());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("OutputStreamSourceTest", Utils.UnboundedMailboxConfig());
 
   @Test
   public void mustSendEventsViaOutputStream() throws Exception {

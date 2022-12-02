@@ -15,7 +15,7 @@ import pekko.testkit._
 import pekko.testkit.TestEvent.Mute
 import pekko.testkit.TestEvent.UnMute
 
-class StreamTestKitSpec extends AkkaSpec {
+class StreamTestKitSpec extends PekkoSpec {
 
   val ex = new Exception("Boom!")
 

@@ -22,7 +22,7 @@ import pekko.actor.Props
 import pekko.actor.RootActorPath
 import pekko.actor.Terminated
 import pekko.event.Logging
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.EventFilter
 import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable
@@ -63,7 +63,7 @@ object UntrustedSpec {
 
 }
 
-class UntrustedSpec extends AkkaSpec("""
+class UntrustedSpec extends PekkoSpec("""
 pekko.loglevel = DEBUG
 pekko.actor.provider = remote
 pekko.remote.artery.enabled = off

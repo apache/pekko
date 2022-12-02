@@ -11,7 +11,7 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorSystem, Props }
-import pekko.testkit.{ AkkaSpec, DefaultTimeout }
+import pekko.testkit.{ DefaultTimeout, PekkoSpec }
 import pekko.util.unused
 
 object StablePriorityDispatcherSpec {
@@ -44,7 +44,7 @@ object StablePriorityDispatcherSpec {
 
 }
 
-class StablePriorityDispatcherSpec extends AkkaSpec(StablePriorityDispatcherSpec.config) with DefaultTimeout {
+class StablePriorityDispatcherSpec extends PekkoSpec(StablePriorityDispatcherSpec.config) with DefaultTimeout {
   import StablePriorityDispatcherSpec._
 
   "A StablePriorityDispatcher" must {

@@ -11,10 +11,10 @@ import pekko.actor.SelectChildPattern
 import pekko.actor.SelectParent
 import pekko.remote.DaemonMsgCreate
 import pekko.serialization.SerializationExtension
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestActors
 
-class MessageContainerSerializerSpec extends AkkaSpec {
+class MessageContainerSerializerSpec extends PekkoSpec {
 
   val ser = SerializationExtension(system)
 

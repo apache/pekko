@@ -100,7 +100,7 @@ object TestKitDocSpec {
   }
 }
 
-class TestKitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
+class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
   import TestKitDocSpec._
 
   "demonstrate usage of TestActorRef" in {

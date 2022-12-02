@@ -7,12 +7,12 @@ package docs.persistence
 import org.apache.pekko.actor.{ ExtendedActorSystem, Props }
 import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
 import org.apache.pekko.persistence.{ PersistentActor, RecoveryCompleted }
-import org.apache.pekko.testkit.{ AkkaSpec, TestProbe }
+import org.apache.pekko.testkit.{ PekkoSpec, TestProbe }
 import com.google.gson.{ Gson, JsonElement }
 
 import scala.collection.immutable
 
-class PersistenceEventAdapterDocSpec(config: String) extends AkkaSpec(config) {
+class PersistenceEventAdapterDocSpec(config: String) extends PekkoSpec(config) {
 
   def this() =
     this("""

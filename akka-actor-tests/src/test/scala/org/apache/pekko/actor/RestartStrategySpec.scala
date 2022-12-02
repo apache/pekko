@@ -14,14 +14,14 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.pattern.ask
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.DefaultTimeout
 import pekko.testkit.EventFilter
 import pekko.testkit.TestEvent._
 import pekko.testkit.TestLatch
 
 @nowarn
-class RestartStrategySpec extends AkkaSpec with DefaultTimeout {
+class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
 
   override def atStartup(): Unit = {
     system.eventStream.publish(Mute(EventFilter[Exception]("Crashing...")))

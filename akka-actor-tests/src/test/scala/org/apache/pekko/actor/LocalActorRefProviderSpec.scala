@@ -35,7 +35,7 @@ object LocalActorRefProviderSpec {
 }
 
 @nowarn
-class LocalActorRefProviderSpec extends AkkaSpec(LocalActorRefProviderSpec.config) {
+class LocalActorRefProviderSpec extends PekkoSpec(LocalActorRefProviderSpec.config) {
   "An LocalActorRefProvider" must {
 
     "find child actor with URL encoded name" in {

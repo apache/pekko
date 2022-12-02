@@ -30,7 +30,7 @@ object ActorLifeCycleSpec {
 
 }
 
-class ActorLifeCycleSpec extends AkkaSpec with BeforeAndAfterEach with ImplicitSender with DefaultTimeout {
+class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with ImplicitSender with DefaultTimeout {
   import ActorLifeCycleSpec._
 
   "An Actor" must {

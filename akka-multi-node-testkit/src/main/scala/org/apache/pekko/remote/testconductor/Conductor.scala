@@ -24,7 +24,7 @@ import org.jboss.netty.channel.{
 }
 
 import org.apache.pekko
-import pekko.AkkaException
+import pekko.PekkoException
 import pekko.ConfigurationException
 import pekko.actor.{
   Actor,
@@ -407,7 +407,7 @@ private[pekko] class ServerFSM(val controller: ActorRef, val channel: Channel)
  */
 private[pekko] object Controller {
   final case class ClientDisconnected(name: RoleName) extends DeadLetterSuppression
-  class ClientDisconnectedException(msg: String) extends AkkaException(msg) with NoStackTrace
+  class ClientDisconnectedException(msg: String) extends PekkoException(msg) with NoStackTrace
   case object GetNodes
   case object GetSockAddr
   final case class CreateServerFSM(channel: Channel) extends NoSerializationVerificationNeeded

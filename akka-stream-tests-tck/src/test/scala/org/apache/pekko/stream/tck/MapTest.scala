@@ -8,7 +8,7 @@ import org.reactivestreams.Processor
 
 import org.apache.pekko.stream.scaladsl.Flow
 
-class MapTest extends AkkaIdentityProcessorVerification[Int] {
+class MapTest extends PekkoIdentityProcessorVerification[Int] {
 
   override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
     Flow[Int].map(elem => elem).named("identity").toProcessor.run()

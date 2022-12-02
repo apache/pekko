@@ -13,7 +13,7 @@ import pekko.cluster.metrics.StandardMetrics._
 import pekko.testkit._
 
 class ClusterMetricsExtensionSpec
-    extends AkkaSpec(MetricsConfig.clusterSigarMock)
+    extends PekkoSpec(MetricsConfig.clusterSigarMock)
     with ImplicitSender
     with RedirectLogging {
 

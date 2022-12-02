@@ -15,10 +15,10 @@ import com.spotify.docker.client.messages.{ ContainerConfig, HostConfig, PortBin
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.util.ccompat.JavaConverters._
 
-abstract class DockerBindDnsService(config: Config) extends AkkaSpec(config) with Eventually {
+abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
   val client = DefaultDockerClient.fromEnv().build()
 
   val hostPort: Int

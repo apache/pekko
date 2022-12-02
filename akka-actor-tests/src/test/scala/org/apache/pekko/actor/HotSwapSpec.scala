@@ -10,7 +10,7 @@ object HotSwapSpec {
   abstract class Becomer extends Actor {}
 }
 
-class HotSwapSpec extends AkkaSpec with ImplicitSender {
+class HotSwapSpec extends PekkoSpec with ImplicitSender {
   import HotSwapSpec.Becomer
 
   "An Actor" must {

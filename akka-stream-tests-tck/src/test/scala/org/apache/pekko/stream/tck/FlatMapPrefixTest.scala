@@ -8,7 +8,7 @@ import org.reactivestreams.Publisher
 
 import org.apache.pekko.stream.scaladsl.{ Flow, Keep, Sink, Source }
 
-class FlatMapPrefixTest extends AkkaPublisherVerification[Int] {
+class FlatMapPrefixTest extends PekkoPublisherVerification[Int] {
   override def createPublisher(elements: Long): Publisher[Int] = {
     val publisher = Source(iterable(elements))
       .map(_.toInt)

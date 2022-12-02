@@ -21,7 +21,7 @@ import pekko.util.JavaDurationConverters
  * This exception is thrown by Scheduler.schedule* when scheduling is not
  * possible, e.g. after shutting down the Scheduler.
  */
-private final case class SchedulerException(msg: String) extends pekko.AkkaException(msg) with NoStackTrace
+private final case class SchedulerException(msg: String) extends pekko.PekkoException(msg) with NoStackTrace
 
 /**
  * An Akka scheduler service.

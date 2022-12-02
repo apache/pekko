@@ -16,7 +16,7 @@ import pekko.routing.ConsistentHashingRouter.ConsistentHashMapping
 import pekko.routing.ConsistentHashingRouter.ConsistentHashable
 import pekko.routing.ConsistentHashingRouter.ConsistentHashableEnvelope
 import pekko.testkit._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object ConsistentHashingRouterSpec {
 
@@ -55,7 +55,7 @@ object ConsistentHashingRouterSpec {
 }
 
 class ConsistentHashingRouterSpec
-    extends AkkaSpec(ConsistentHashingRouterSpec.config)
+    extends PekkoSpec(ConsistentHashingRouterSpec.config)
     with DefaultTimeout
     with ImplicitSender {
   import ConsistentHashingRouterSpec._

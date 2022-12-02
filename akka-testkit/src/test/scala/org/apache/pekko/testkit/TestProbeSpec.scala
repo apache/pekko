@@ -17,7 +17,7 @@ import org.apache.pekko
 import pekko.actor._
 import pekko.pattern.ask
 
-class TestProbeSpec extends AkkaSpec with DefaultTimeout with Eventually {
+class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
 
   "A TestProbe" must {
 

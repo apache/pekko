@@ -12,7 +12,7 @@ import language.postfixOps
 
 import org.apache.pekko
 import pekko.routing._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object DeployerSpec {
   val deployerConf = ConfigFactory.parseString(
@@ -79,7 +79,7 @@ object DeployerSpec {
 
 }
 
-class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
+class DeployerSpec extends PekkoSpec(DeployerSpec.deployerConf) {
   "A Deployer" must {
 
     "be able to parse 'pekko.actor.deployment._' with all default values" in {
@@ -146,7 +146,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
             }
             """,
             ConfigParseOptions.defaults)
-          .withFallback(AkkaSpec.testConf)
+          .withFallback(PekkoSpec.testConf)
 
         shutdown(ActorSystem("invalid-number-of-instances", invalidDeployerConf))
       }
@@ -165,7 +165,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
             }
             """,
             ConfigParseOptions.defaults)
-          .withFallback(AkkaSpec.testConf)
+          .withFallback(PekkoSpec.testConf)
 
         shutdown(ActorSystem("invalid-path", invalidDeployerConf))
       }

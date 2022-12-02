@@ -18,7 +18,7 @@ import pekko.cluster.sharding.Shard.GetShardStats
 import pekko.cluster.sharding.Shard.ShardStats
 import pekko.cluster.sharding.ShardRegion.StartEntity
 import pekko.cluster.sharding.ShardRegion.StartEntityAck
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.WithLogCapturing
 
@@ -58,7 +58,7 @@ object RememberEntitiesAndStartEntitySpec {
 
 // this test covers remember entities + StartEntity
 class RememberEntitiesAndStartEntitySpec
-    extends AkkaSpec(RememberEntitiesAndStartEntitySpec.config)
+    extends PekkoSpec(RememberEntitiesAndStartEntitySpec.config)
     with AnyWordSpecLike
     with ImplicitSender
     with WithLogCapturing {

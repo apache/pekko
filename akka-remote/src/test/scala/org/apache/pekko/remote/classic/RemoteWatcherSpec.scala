@@ -70,7 +70,7 @@ object RemoteWatcherSpec {
 }
 
 @nowarn("msg=deprecated")
-class RemoteWatcherSpec extends AkkaSpec("""
+class RemoteWatcherSpec extends PekkoSpec("""
      pekko {
        loglevel = INFO
        log-dead-letters-during-shutdown = false

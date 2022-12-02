@@ -67,7 +67,7 @@ object ReceiveTimeoutSpec {
   }
 }
 
-class ReceiveTimeoutSpec extends AkkaSpec() {
+class ReceiveTimeoutSpec extends PekkoSpec() {
   import ReceiveTimeoutSpec._
 
   "An actor with receive timeout" must {

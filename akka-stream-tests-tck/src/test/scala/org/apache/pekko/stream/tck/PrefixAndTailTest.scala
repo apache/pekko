@@ -13,7 +13,7 @@ import org.apache.pekko
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 
-class PrefixAndTailTest extends AkkaPublisherVerification[Int] {
+class PrefixAndTailTest extends PekkoPublisherVerification[Int] {
 
   def createPublisher(elements: Long): Publisher[Int] = {
     val futureTailSource = Source(iterable(elements)).prefixAndTail(0).map { case (_, tail) => tail }.runWith(Sink.head)

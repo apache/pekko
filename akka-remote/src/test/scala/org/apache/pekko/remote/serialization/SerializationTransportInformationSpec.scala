@@ -17,7 +17,7 @@ import pekko.actor.RootActorPath
 import pekko.remote.RARP
 import pekko.serialization.Serialization
 import pekko.serialization.SerializerWithStringManifest
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.ImplicitSender
 import pekko.testkit.JavaSerializable
 import pekko.testkit.TestActors
@@ -73,7 +73,7 @@ object SerializationTransportInformationSpec {
 }
 
 abstract class AbstractSerializationTransportInformationSpec(config: Config)
-    extends AkkaSpec(config.withFallback(
+    extends PekkoSpec(config.withFallback(
       ConfigFactory.parseString("""
     pekko {
       loglevel = info

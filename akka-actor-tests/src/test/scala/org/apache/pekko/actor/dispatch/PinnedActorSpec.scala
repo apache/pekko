@@ -14,7 +14,7 @@ import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.pattern.ask
 import pekko.testkit._
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object PinnedActorSpec {
   val config = """
@@ -32,7 +32,7 @@ object PinnedActorSpec {
   }
 }
 
-class PinnedActorSpec extends AkkaSpec(PinnedActorSpec.config) with BeforeAndAfterEach with DefaultTimeout {
+class PinnedActorSpec extends PekkoSpec(PinnedActorSpec.config) with BeforeAndAfterEach with DefaultTimeout {
   import PinnedActorSpec._
 
   "A PinnedActor" must {

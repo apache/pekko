@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor._
-import pekko.testkit.{ AkkaSpec, TestProbe }
+import pekko.testkit.{ PekkoSpec, TestProbe }
 
 object EventStreamSpec {
 
@@ -66,7 +66,7 @@ object EventStreamSpec {
   class CCATBT extends CC with ATT with BTT
 }
 
-class EventStreamSpec extends AkkaSpec(EventStreamSpec.config) {
+class EventStreamSpec extends PekkoSpec(EventStreamSpec.config) {
 
   import EventStreamSpec._
 

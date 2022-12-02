@@ -4,7 +4,7 @@
 
 package org.apache.pekko.actor;
 
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.TestProbe;
 
 import org.junit.ClassRule;
@@ -14,8 +14,8 @@ import org.scalatestplus.junit.JUnitSuite;
 public class StashJavaAPI extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("StashJavaAPI", ActorWithBoundedStashSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("StashJavaAPI", ActorWithBoundedStashSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

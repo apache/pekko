@@ -14,8 +14,8 @@ import org.apache.pekko.japi.tuple.Tuple4;
 import org.apache.pekko.routing.GetRoutees;
 import org.apache.pekko.routing.FromConfig;
 import org.apache.pekko.routing.NoRouter;
-import org.apache.pekko.testkit.AkkaJUnitActorSystemResource;
-import org.apache.pekko.testkit.AkkaSpec;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
 
 import org.junit.ClassRule;
@@ -30,8 +30,8 @@ import static org.junit.Assert.*;
 public class JavaAPI extends JUnitSuite {
 
   @ClassRule
-  public static AkkaJUnitActorSystemResource actorSystemResource =
-      new AkkaJUnitActorSystemResource("JavaAPI", AkkaSpec.testConf());
+  public static PekkoJUnitActorSystemResource actorSystemResource =
+      new PekkoJUnitActorSystemResource("JavaAPI", PekkoSpec.testConf());
 
   private final ActorSystem system = actorSystemResource.getSystem();
 

@@ -9,13 +9,13 @@ import pekko.cluster.sharding.ClusterShardingSettings
 import pekko.cluster.sharding.Shard
 import pekko.cluster.sharding.ShardRegion
 import pekko.cluster.sharding.ShardRegion.ShardId
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 import pekko.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.duration._
 
-class RememberEntitiesStarterSpec extends AkkaSpec {
+class RememberEntitiesStarterSpec extends PekkoSpec {
 
   var shardIdCounter = 1
   def nextShardId(): ShardId = {

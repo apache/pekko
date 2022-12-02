@@ -8,7 +8,7 @@ import java.util.concurrent.{ CountDownLatch, TimeUnit }
 
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorCell, ActorRefWithCell, Props }
-import pekko.testkit.AkkaSpec
+import pekko.testkit.PekkoSpec
 
 object BalancingDispatcherSpec {
   val config = """
@@ -19,7 +19,7 @@ object BalancingDispatcherSpec {
     """
 }
 
-class BalancingDispatcherSpec extends AkkaSpec(BalancingDispatcherSpec.config) {
+class BalancingDispatcherSpec extends PekkoSpec(BalancingDispatcherSpec.config) {
 
   val delayableActorDispatcher = "pooled-dispatcher"
 

@@ -9,7 +9,7 @@ import pekko.actor.{ ActorSelection, Address, Props }
 import pekko.cluster.ClusterEvent.{ CurrentClusterState, MemberUp }
 import pekko.cluster.ClusterHeartbeatSender.Heartbeat
 import pekko.cluster.ClusterHeartbeatSenderSpec.TestClusterHeartBeatSender
-import pekko.testkit.{ AkkaSpec, ImplicitSender, TestProbe }
+import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 import pekko.util.Version
 
 object ClusterHeartbeatSenderSpec {
@@ -24,7 +24,7 @@ object ClusterHeartbeatSenderSpec {
   }
 }
 
-class ClusterHeartbeatSenderSpec extends AkkaSpec("""
+class ClusterHeartbeatSenderSpec extends PekkoSpec("""
     pekko.loglevel = DEBUG
     pekko.actor.provider = cluster 
     pekko.cluster.failure-detector.heartbeat-interval = 0.2s

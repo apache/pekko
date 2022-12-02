@@ -8,10 +8,10 @@ import java.util.concurrent.ThreadLocalRandom
 
 import org.apache.pekko.stream._
 import org.apache.pekko.stream.scaladsl._
-import org.apache.pekko.testkit.{ AkkaSpec, EventFilter }
+import org.apache.pekko.testkit.{ EventFilter, PekkoSpec }
 import scala.concurrent.ExecutionContext
 
-class GraphStageLoggingDocSpec extends AkkaSpec("pekko.loglevel = DEBUG") {
+class GraphStageLoggingDocSpec extends PekkoSpec("pekko.loglevel = DEBUG") {
 
   implicit val ec: ExecutionContext = system.dispatcher
 

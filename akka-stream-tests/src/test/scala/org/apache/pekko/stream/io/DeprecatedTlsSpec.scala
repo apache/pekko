@@ -17,7 +17,7 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.sslconfig.pekko.AkkaSSLConfig
+import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -105,7 +105,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
   import GraphDSL.Implicits._
   import system.dispatcher
 
-  val sslConfig: Option[AkkaSSLConfig] = None // no special settings to be applied here
+  val sslConfig: Option[PekkoSSLConfig] = None // no special settings to be applied here
 
   "SslTls with deprecated SSLContext setup" must {
 

@@ -136,7 +136,7 @@ object RemotingSpec {
 }
 
 @nowarn
-class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with DefaultTimeout {
+class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with DefaultTimeout {
 
   import RemotingSpec._
 
@@ -658,8 +658,8 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
         }
 
         val handshakePacket =
-          AkkaPduProtobufCodec.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = 0))
-        val brokenPacket = AkkaPduProtobufCodec.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
+          PekkoPduProtobufCodec$.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = 0))
+        val brokenPacket = PekkoPduProtobufCodec$.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)
@@ -740,7 +740,7 @@ class RemotingSpec extends AkkaSpec(RemotingSpec.cfg) with ImplicitSender with D
         }
 
         val handshakePacket =
-          AkkaPduProtobufCodec.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = remoteUID))
+          PekkoPduProtobufCodec$.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = remoteUID))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)

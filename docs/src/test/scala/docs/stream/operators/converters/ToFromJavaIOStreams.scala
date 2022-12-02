@@ -14,12 +14,12 @@ import org.apache.pekko.util.ByteString
 
 import scala.util.Random
 // #import
-import org.apache.pekko.testkit.AkkaSpec
+import org.apache.pekko.testkit.PekkoSpec
 import org.scalatest.concurrent.Futures
 
 import scala.concurrent.Future
 
-class ToFromJavaIOStreams extends AkkaSpec with Futures {
+class ToFromJavaIOStreams extends PekkoSpec with Futures {
 
   "demonstrate conversion from java.io.streams" in {
 

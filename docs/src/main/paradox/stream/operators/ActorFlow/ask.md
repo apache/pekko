@@ -9,12 +9,12 @@ Use the "Ask Pattern" to send each stream element as an `ask` to the target acto
 This operator is included in:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=AkkaVersion
-  symbol1=AkkaVersion
+  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  symbol1=PekkoVersion
   value1="$pekko.version$"
   group="com.typesafe.akka"
   artifact="akka-stream-typed_$scala.binary.version$"
-  version=AkkaVersion
+  version=PekkoVersion
 }
 
 ## Signature
