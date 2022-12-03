@@ -5,15 +5,15 @@
 To use Akka Sharded Daemon Process, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-sharding-typed_$scala.binary.version$
+  artifact=pekko-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster-sharding-typed" }
+@@project-info{ projectId="cluster-sharding-typed" }
 
 ## Introduction
 
@@ -34,10 +34,10 @@ To set up a set of actors running with Sharded Daemon process each node in the c
 when starting up:
 
 Scala
-:  @@snip [ShardedDaemonProcessExample.scala](/akka-cluster-sharding-typed/src/test/scala/org/apache/pekko/cluster/sharding/typed/scaladsl/ShardedDaemonProcessSpec.scala) { #tag-processing }
+:  @@snip [ShardedDaemonProcessExample.scala](/cluster-sharding-typed/src/test/scala/org/apache/pekko/cluster/sharding/typed/scaladsl/ShardedDaemonProcessSpec.scala) { #tag-processing }
 
 Java
-:  @@snip [ShardedDaemonProcessExample.java](/akka-cluster-sharding-typed/src/test/java/org/apache/pekko/cluster/sharding/typed/javadsl/ShardedDaemonProcessCompileOnlyTest.java) { #tag-processing }
+:  @@snip [ShardedDaemonProcessExample.java](/cluster-sharding-typed/src/test/java/org/apache/pekko/cluster/sharding/typed/javadsl/ShardedDaemonProcessCompileOnlyTest.java) { #tag-processing }
 
 An additional factory method is provided for further configurability and providing a graceful stop message for the actor.
 

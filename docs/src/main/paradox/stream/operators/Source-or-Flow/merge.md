@@ -16,7 +16,7 @@ Merge multiple sources. Picks elements randomly if all sources has elements read
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #merge }
+:   @@snip [FlowMergeSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #merge }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #merge }

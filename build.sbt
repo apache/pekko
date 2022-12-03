@@ -31,7 +31,7 @@ import spray.boilerplate.BoilerplatePlugin
 
 initialize := {
   // Load system properties from a file to make configuration from Jenkins easier
-  loadSystemProperties("project/akka-build.properties")
+  loadSystemProperties("project/pekko-build.properties")
   initialize.value
 }
 
@@ -88,6 +88,8 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
 lazy val root = Project(id = "pekko", base = file("."))
   .aggregate(aggregatedProjects: _*)
   .enablePlugins(PublishRsyncPlugin)
+  .settings(
+    name := "pekko-root")
   .settings(rootSettings: _*)
   .settings(
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
@@ -102,10 +104,10 @@ lazy val root = Project(id = "pekko", base = file("."))
   .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
 
-lazy val actor = akkaModule("akka-actor")
+lazy val actor = pekkoModule("actor")
   .settings(Dependencies.actor)
   .settings(OSGi.actor)
-  .settings(AutomaticModuleName.settings("akka.actor"))
+  .settings(AutomaticModuleName.settings("pekko.actor"))
   .settings(Compile / unmanagedSourceDirectories += {
     val ver = scalaVersion.value.take(4)
     (Compile / scalaSource).value.getParentFile / s"scala-$ver"
@@ -114,18 +116,18 @@ lazy val actor = akkaModule("akka-actor")
   .settings(serialversionRemoverPluginSettings)
   .enablePlugins(BoilerplatePlugin)
 
-lazy val actorTests = akkaModule("akka-actor-tests")
+lazy val actorTests = pekkoModule("actor-tests")
   .dependsOn(testkit % "compile->compile;test->test", actor)
   .settings(Dependencies.actorTests)
   .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
-lazy val akkaScalaNightly = akkaModule("akka-scala-nightly")
+lazy val akkaScalaNightly = pekkoModule("scala-nightly")
   .aggregate(aggregatedProjects: _*)
   .disablePlugins(MimaPlugin)
   .disablePlugins(ValidatePullRequest, MimaPlugin, CopyrightHeaderInPr)
 
-lazy val benchJmh = akkaModule("akka-bench-jmh")
+lazy val benchJmh = pekkoModule("bench-jmh")
   .enablePlugins(Jdk9)
   .dependsOn(Seq(actor, actorTyped, stream, streamTestkit, persistence, distributedData, jackson, testkit).map(
     _ % "compile->compile;compile->test"): _*)
@@ -134,7 +136,7 @@ lazy val benchJmh = akkaModule("akka-bench-jmh")
   .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish, CopyrightHeader)
   .disablePlugins(MimaPlugin, ValidatePullRequest, CopyrightHeaderInPr)
 
-lazy val cluster = akkaModule("akka-cluster")
+lazy val cluster = pekkoModule("cluster")
   .dependsOn(
     remote,
     coordination % "compile->compile;test->test",
@@ -142,28 +144,28 @@ lazy val cluster = akkaModule("akka-cluster")
     testkit % "test->test",
     jackson % "test->test")
   .settings(Dependencies.cluster)
-  .settings(AutomaticModuleName.settings("akka.cluster"))
+  .settings(AutomaticModuleName.settings("pekko.cluster"))
   .settings(OSGi.cluster)
   .settings(Protobuf.settings)
   .settings(Test / parallelExecution := false)
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val clusterMetrics = akkaModule("akka-cluster-metrics")
+lazy val clusterMetrics = pekkoModule("cluster-metrics")
   .dependsOn(
     cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
     slf4j % "test->compile",
     jackson % "test->test")
   .settings(OSGi.clusterMetrics)
   .settings(Dependencies.clusterMetrics)
-  .settings(AutomaticModuleName.settings("akka.cluster.metrics"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.metrics"))
   .settings(Protobuf.settings)
   .settings(SigarLoader.sigarSettings)
   .settings(Test / parallelExecution := false)
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val clusterSharding = akkaModule("akka-cluster-sharding")
+lazy val clusterSharding = pekkoModule("cluster-sharding")
 // TODO akka-persistence dependency should be provided in pom.xml artifact.
 //      If I only use "provided" here it works, but then we can't run tests.
 //      Scope "test" is alright in the pom.xml, but would have been nicer with
@@ -175,35 +177,35 @@ lazy val clusterSharding = akkaModule("akka-cluster-sharding")
     clusterTools % "compile->compile;test->test",
     jackson % "test->test")
   .settings(Dependencies.clusterSharding)
-  .settings(AutomaticModuleName.settings("akka.cluster.sharding"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
   .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
   .enablePlugins(Jdk9)
 
-lazy val clusterTools = akkaModule("akka-cluster-tools")
+lazy val clusterTools = pekkoModule("cluster-tools")
   .dependsOn(
     cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
     coordination % "compile->compile;test->test",
     jackson % "test->test")
   .settings(Dependencies.clusterTools)
-  .settings(AutomaticModuleName.settings("akka.cluster.tools"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.tools"))
   .settings(OSGi.clusterTools)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
 
-lazy val distributedData = akkaModule("akka-distributed-data")
+lazy val distributedData = pekkoModule("distributed-data")
   .dependsOn(cluster % "compile->compile;test->test;multi-jvm->multi-jvm", jackson % "test->test")
   .settings(Dependencies.distributedData)
-  .settings(AutomaticModuleName.settings("akka.cluster.ddata"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.ddata"))
   .settings(OSGi.distributedData)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val docs = akkaModule("docs")
+lazy val docs = pekkoModule("docs")
   .configs(Jdk9.TestJdk9)
   .dependsOn(
     actor,
@@ -247,7 +249,7 @@ lazy val docs = akkaModule("docs")
   // TODO https://github.com/akka/akka/issues/30243
   .settings(crossScalaVersions -= Dependencies.scala3Version)
 
-lazy val jackson = akkaModule("akka-serialization-jackson")
+lazy val jackson = pekkoModule("serialization-jackson")
   .dependsOn(
     actor,
     actorTyped % "optional->compile",
@@ -255,34 +257,34 @@ lazy val jackson = akkaModule("akka-serialization-jackson")
     actorTests % "test->test",
     testkit % "test->test")
   .settings(Dependencies.jackson)
-  .settings(AutomaticModuleName.settings("akka.serialization.jackson"))
+  .settings(AutomaticModuleName.settings("pekko.serialization.jackson"))
   .settings(OSGi.jackson)
   .settings(javacOptions += "-parameters")
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
-lazy val multiNodeTestkit = akkaModule("akka-multi-node-testkit")
+lazy val multiNodeTestkit = pekkoModule("multi-node-testkit")
   .dependsOn(remote, testkit)
   .settings(Dependencies.multiNodeTestkit)
   .settings(Protobuf.settings)
-  .settings(AutomaticModuleName.settings("akka.remote.testkit"))
+  .settings(AutomaticModuleName.settings("pekko.remote.testkit"))
   .settings(PekkoBuild.mayChangeSettings)
 
-lazy val osgi = akkaModule("akka-osgi")
+lazy val osgi = pekkoModule("osgi")
   .dependsOn(actor)
   .settings(Dependencies.osgi)
-  .settings(AutomaticModuleName.settings("akka.osgi"))
+  .settings(AutomaticModuleName.settings("pekko.osgi"))
   .settings(OSGi.osgi)
   .settings(Test / parallelExecution := false, crossScalaVersions -= Dependencies.scala3Version)
 
-lazy val persistence = akkaModule("akka-persistence")
+lazy val persistence = pekkoModule("persistence")
   .dependsOn(actor, stream, testkit % "test->test")
   .settings(Dependencies.persistence)
-  .settings(AutomaticModuleName.settings("akka.persistence"))
+  .settings(AutomaticModuleName.settings("pekko.persistence"))
   .settings(OSGi.persistence)
   .settings(Protobuf.settings)
   .settings(Test / fork := true)
 
-lazy val persistenceQuery = akkaModule("akka-persistence-query")
+lazy val persistenceQuery = pekkoModule("persistence-query")
   .dependsOn(
     stream,
     persistence % "compile->compile;test->test",
@@ -290,7 +292,7 @@ lazy val persistenceQuery = akkaModule("akka-persistence-query")
     protobufV3,
     streamTestkit % "test")
   .settings(Dependencies.persistenceQuery)
-  .settings(AutomaticModuleName.settings("akka.persistence.query"))
+  .settings(AutomaticModuleName.settings("pekko.persistence.query"))
   .settings(OSGi.persistenceQuery)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
@@ -298,33 +300,33 @@ lazy val persistenceQuery = akkaModule("akka-persistence-query")
   .settings(Test / fork := true)
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
-lazy val persistenceShared = akkaModule("akka-persistence-shared")
+lazy val persistenceShared = pekkoModule("persistence-shared")
   .dependsOn(persistence % "test->test", testkit % "test->test", remote % "test")
   .settings(Dependencies.persistenceShared)
-  .settings(AutomaticModuleName.settings("akka.persistence.shared"))
+  .settings(AutomaticModuleName.settings("pekko.persistence.shared"))
   .settings(Test / fork := true)
   .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
-lazy val persistenceTck = akkaModule("akka-persistence-tck")
+lazy val persistenceTck = pekkoModule("persistence-tck")
   .dependsOn(persistence % "compile->compile;test->test", testkit % "compile->compile;test->test")
   .settings(Dependencies.persistenceTck)
-  .settings(AutomaticModuleName.settings("akka.persistence.tck"))
+  .settings(AutomaticModuleName.settings("pekko.persistence.tck"))
   // .settings(OSGi.persistenceTck) TODO: we do need to export this as OSGi bundle too?
   .settings(Test / fork := true)
   .disablePlugins(MimaPlugin)
 
-lazy val persistenceTestkit = akkaModule("akka-persistence-testkit")
+lazy val persistenceTestkit = pekkoModule("persistence-testkit")
   .dependsOn(
     persistenceTyped % "compile->compile;provided->provided;test->test",
     testkit % "compile->compile;test->test",
     actorTestkitTyped,
     persistenceTck % "test")
   .settings(Dependencies.persistenceTestKit)
-  .settings(AutomaticModuleName.settings("akka.persistence.testkit"))
+  .settings(AutomaticModuleName.settings("pekko.persistence.testkit"))
   .disablePlugins(MimaPlugin)
 
-lazy val persistenceTypedTests = akkaModule("akka-persistence-typed-tests")
+lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .dependsOn(
     persistenceTyped,
     persistenceTestkit % "test",
@@ -337,16 +339,16 @@ lazy val persistenceTypedTests = akkaModule("akka-persistence-typed-tests")
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
-lazy val protobuf = akkaModule("akka-protobuf")
+lazy val protobuf = pekkoModule("protobuf")
   .settings(OSGi.protobuf)
-  .settings(AutomaticModuleName.settings("akka.protobuf"))
+  .settings(AutomaticModuleName.settings("pekko.protobuf"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
   .disablePlugins(MimaPlugin)
   .settings(autoScalaLibrary := false) // Pure java project
 
-lazy val protobufV3 = akkaModule("akka-protobuf-v3")
+lazy val protobufV3 = pekkoModule("protobuf-v3")
   .settings(OSGi.protobufV3)
-  .settings(AutomaticModuleName.settings("akka.protobuf.v3"))
+  .settings(AutomaticModuleName.settings("pekko.protobuf.v3"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
   .disablePlugins(MimaPlugin)
   .settings(
@@ -373,15 +375,15 @@ lazy val protobufV3 = akkaModule("akka-protobuf-v3")
     description := "Akka Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
 
 lazy val pki =
-  akkaModule("akka-pki")
+  pekkoModule("pki")
     .dependsOn(actor) // this dependency only exists for "@ApiMayChange"
     .settings(Dependencies.pki)
-    .settings(AutomaticModuleName.settings("akka.pki"))
+    .settings(AutomaticModuleName.settings("pekko.pki"))
     // The akka-pki artifact was added in Akka 2.6.2, no MiMa checks yet.
     .disablePlugins(MimaPlugin)
 
 lazy val remote =
-  akkaModule("akka-remote")
+  pekkoModule("remote")
     .dependsOn(
       actor,
       stream,
@@ -392,14 +394,14 @@ lazy val remote =
       streamTestkit % "test",
       jackson % "test->test")
     .settings(Dependencies.remote)
-    .settings(AutomaticModuleName.settings("akka.remote"))
+    .settings(AutomaticModuleName.settings("pekko.remote"))
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
     .settings(serialversionRemoverPluginSettings)
     .enablePlugins(Jdk9)
 
-lazy val remoteTests = akkaModule("akka-remote-tests")
+lazy val remoteTests = pekkoModule("remote-tests")
   .dependsOn(
     actorTests % "test->test",
     remote % "compile->CompileJdk9;test->test",
@@ -413,34 +415,34 @@ lazy val remoteTests = akkaModule("akka-remote-tests")
   .enablePlugins(MultiNodeScalaTest, NoPublish)
   .disablePlugins(MimaPlugin)
 
-lazy val slf4j = akkaModule("akka-slf4j")
+lazy val slf4j = pekkoModule("slf4j")
   .dependsOn(actor, testkit % "test->test")
   .settings(Dependencies.slf4j)
-  .settings(AutomaticModuleName.settings("akka.slf4j"))
+  .settings(AutomaticModuleName.settings("pekko.slf4j"))
   .settings(OSGi.slf4j)
 
-lazy val stream = akkaModule("akka-stream")
+lazy val stream = pekkoModule("stream")
   .dependsOn(actor, protobufV3)
   .settings(Dependencies.stream)
-  .settings(AutomaticModuleName.settings("akka.stream"))
+  .settings(AutomaticModuleName.settings("pekko.stream"))
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .enablePlugins(BoilerplatePlugin, Jdk9)
 
-lazy val streamTestkit = akkaModule("akka-stream-testkit")
+lazy val streamTestkit = pekkoModule("stream-testkit")
   .dependsOn(stream, testkit % "compile->compile;test->test")
   .settings(Dependencies.streamTestkit)
-  .settings(AutomaticModuleName.settings("akka.stream.testkit"))
+  .settings(AutomaticModuleName.settings("pekko.stream.testkit"))
   .settings(OSGi.streamTestkit)
 
-lazy val streamTests = akkaModule("akka-stream-tests")
+lazy val streamTests = pekkoModule("stream-tests")
   .configs(Jdk9.TestJdk9)
   .dependsOn(streamTestkit % "test->test", remote % "test->test", stream % "TestJdk9->CompileJdk9")
   .settings(Dependencies.streamTests)
   .enablePlugins(NoPublish, Jdk9)
   .disablePlugins(MimaPlugin)
 
-lazy val streamTestsTck = akkaModule("akka-stream-tests-tck")
+lazy val streamTestsTck = pekkoModule("stream-tests-tck")
   .dependsOn(streamTestkit % "test->test", stream)
   .settings(Dependencies.streamTestsTck)
   .settings(
@@ -452,16 +454,16 @@ lazy val streamTestsTck = akkaModule("akka-stream-tests-tck")
   .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
-lazy val testkit = akkaModule("akka-testkit")
+lazy val testkit = pekkoModule("testkit")
   .dependsOn(actor)
   .settings(Dependencies.testkit)
-  .settings(AutomaticModuleName.settings("akka.actor.testkit"))
+  .settings(AutomaticModuleName.settings("pekko.actor.testkit"))
   .settings(OSGi.testkit)
   .settings(initialCommands += "import org.apache.pekko.testkit._")
 
-lazy val actorTyped = akkaModule("akka-actor-typed")
+lazy val actorTyped = pekkoModule("actor-typed")
   .dependsOn(actor, slf4j)
-  .settings(AutomaticModuleName.settings("akka.actor.typed"))
+  .settings(AutomaticModuleName.settings("pekko.actor.typed"))
   .settings(Dependencies.actorTyped)
   .settings(OSGi.actorTyped)
   .settings(initialCommands :=
@@ -475,7 +477,7 @@ lazy val actorTyped = akkaModule("akka-actor-typed")
     """)
   .enablePlugins(Jdk9)
 
-lazy val persistenceTyped = akkaModule("akka-persistence-typed")
+lazy val persistenceTyped = pekkoModule("persistence-typed")
   .dependsOn(
     actorTyped,
     streamTyped,
@@ -488,13 +490,13 @@ lazy val persistenceTyped = akkaModule("akka-persistence-typed")
     jackson % "test->test")
   .settings(javacOptions += "-parameters") // for Jackson
   .settings(Dependencies.persistenceShared)
-  .settings(AutomaticModuleName.settings("akka.persistence.typed"))
+  .settings(AutomaticModuleName.settings("pekko.persistence.typed"))
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
   .settings(OSGi.persistenceTyped)
 
-lazy val clusterTyped = akkaModule("akka-cluster-typed")
+lazy val clusterTyped = pekkoModule("cluster-typed")
   .dependsOn(
     actorTyped,
     cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
@@ -507,14 +509,14 @@ lazy val clusterTyped = akkaModule("akka-cluster-typed")
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
-  .settings(AutomaticModuleName.settings("akka.cluster.typed"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.typed"))
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val clusterShardingTyped = akkaModule("akka-cluster-sharding-typed")
+lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
   .dependsOn(
     actorTyped % "compile->CompileJdk9",
     clusterTyped % "compile->compile;test->test;multi-jvm->multi-jvm",
@@ -528,54 +530,54 @@ lazy val clusterShardingTyped = akkaModule("akka-cluster-sharding-typed")
     remoteTests % "test->test;multi-jvm->multi-jvm",
     jackson % "test->test")
   .settings(javacOptions += "-parameters") // for Jackson
-  .settings(AutomaticModuleName.settings("akka.cluster.sharding.typed"))
+  .settings(AutomaticModuleName.settings("pekko.cluster.sharding.typed"))
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.settings)
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val streamTyped = akkaModule("akka-stream-typed")
+lazy val streamTyped = pekkoModule("stream-typed")
   .dependsOn(
     actorTyped,
     stream,
     streamTestkit % "test->test",
     actorTestkitTyped % "test->test",
     actorTypedTests % "test->test")
-  .settings(AutomaticModuleName.settings("akka.stream.typed"))
+  .settings(AutomaticModuleName.settings("pekko.stream.typed"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
-lazy val actorTestkitTyped = akkaModule("akka-actor-testkit-typed")
+lazy val actorTestkitTyped = pekkoModule("actor-testkit-typed")
   .dependsOn(actorTyped, slf4j, testkit % "compile->compile;test->test")
-  .settings(AutomaticModuleName.settings("akka.actor.testkit.typed"))
+  .settings(AutomaticModuleName.settings("pekko.actor.testkit.typed"))
   .settings(Dependencies.actorTestkitTyped)
 
-lazy val actorTypedTests = akkaModule("akka-actor-typed-tests")
+lazy val actorTypedTests = pekkoModule("actor-typed-tests")
   .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
   .settings(PekkoBuild.mayChangeSettings)
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
-lazy val discovery = akkaModule("akka-discovery")
+lazy val discovery = pekkoModule("discovery")
   .dependsOn(actor, testkit % "test->test", actorTests % "test->test")
   .settings(Dependencies.discovery)
-  .settings(AutomaticModuleName.settings("akka.discovery"))
+  .settings(AutomaticModuleName.settings("pekko.discovery"))
   .settings(OSGi.discovery)
 
-lazy val coordination = akkaModule("akka-coordination")
+lazy val coordination = pekkoModule("coordination")
   .dependsOn(actor, testkit % "test->test", actorTests % "test->test")
   .settings(Dependencies.coordination)
-  .settings(AutomaticModuleName.settings("akka.coordination"))
+  .settings(AutomaticModuleName.settings("pekko.coordination"))
   .settings(OSGi.coordination)
 
-lazy val billOfMaterials = Project("akka-bill-of-materials", file("akka-bill-of-materials"))
+lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"))
   .enablePlugins(BillOfMaterialsPlugin)
   .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
   .settings(PekkoBuild.buildSettings)
   .settings(PekkoBuild.defaultSettings)
   .settings(
-    name := "akka-bom",
+    name := "pekko-bom",
     bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
 
@@ -593,12 +595,14 @@ lazy val serialversionRemoverPluginSettings = Seq(
     else Nil
   ))
 
-def akkaModule(name: String): Project =
-  Project(id = name, base = file(name))
+def pekkoModule(moduleName: String): Project =
+  Project(id = moduleName, base = file(moduleName))
     .enablePlugins(ReproducibleBuildsPlugin)
     .disablePlugins(WelcomePlugin)
     .settings(PekkoBuild.buildSettings)
     .settings(PekkoBuild.defaultSettings)
+    .settings(
+      name := s"pekko-$moduleName")
     .enablePlugins(BootstrapGenjavadoc)
 
 /* Command aliases one can run locally against a module

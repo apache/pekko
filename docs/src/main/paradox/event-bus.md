@@ -5,7 +5,7 @@ Originally conceived as a way to send messages to groups of actors, the
 implementing a simple interface:
 
 Scala
-:  @@snip [EventBus.scala](/akka-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) { #event-bus-api }
+:  @@snip [EventBus.scala](/actor/src/main/scala/org/apache/pekko/event/EventBus.scala) { #event-bus-api }
 
 Java
 :  @@snip [EventBusDocTest.java](/docs/src/test/java/jdocs/event/EventBusDocTest.java) { #event-bus-api }

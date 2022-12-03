@@ -35,10 +35,10 @@ See also:
 ## Examples
 
 Scala
-:  @@snip [ActorSourceSinkExample.scala](/akka-stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-sink-ref-with-backpressure }
+:  @@snip [ActorSourceSinkExample.scala](/stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-sink-ref-with-backpressure }
 
 Java
-:  @@snip [ActorSinkWithAckExample.java](/akka-stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSinkWithAckExample.java) { #actor-sink-ref-with-backpressure }
+:  @@snip [ActorSinkWithAckExample.java](/stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSinkWithAckExample.java) { #actor-sink-ref-with-backpressure }
 
 ## Reactive Streams semantics
 

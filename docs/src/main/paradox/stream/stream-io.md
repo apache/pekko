@@ -137,10 +137,10 @@ There is a bidi implementing this protocol provided by @apidoc[Framing.simpleFra
 @scala[@scaladoc[JsonFraming](pekko.stream.scaladsl.JsonFraming$#objectScanner(maximumObjectLength:Int):org.apache.pekko.stream.scaladsl.Flow[org.apache.pekko.util.ByteString,org.apache.pekko.util.ByteString,org.apache.pekko.NotUsed])]@java[@javadoc[JsonFraming](pekko.stream.javadsl.JsonFraming#objectScanner(int))] separates valid JSON objects from incoming @apidoc[util.ByteString] objects:
 
 Scala
-:  @@snip [JsonFramingSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/JsonFramingSpec.scala) { #using-json-framing }
+:  @@snip [JsonFramingSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/JsonFramingSpec.scala) { #using-json-framing }
 
 Java
-:  @@snip [JsonFramingTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/JsonFramingTest.java) { #using-json-framing }
+:  @@snip [JsonFramingTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/JsonFramingTest.java) { #using-json-framing }
 
 ### TLS
 
@@ -151,10 +151,10 @@ see the @scala[@scaladoc[`Tcp Scaladoc`](pekko.stream.scaladsl.Tcp)]@java[@javad
 Using TLS requires a keystore and a truststore and then a somewhat involved dance of configuring the SSLEngine and the details for how the session should be negotiated:
 
 Scala
-:  @@snip [TcpSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/io/TcpSpec.scala) { #setting-up-ssl-engine }
+:  @@snip [TcpSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/io/TcpSpec.scala) { #setting-up-ssl-engine }
 
 Java
-:  @@snip [TcpTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/TcpTest.java) { #setting-up-ssl-engine }
+:  @@snip [TcpTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/TcpTest.java) { #setting-up-ssl-engine }
 
 
 The `SSLEngine` instance can then be used with the binding or outgoing connection factory methods.

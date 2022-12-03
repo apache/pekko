@@ -198,10 +198,10 @@ To serialize actor references to/from string representation you would use the @a
 For example here's how a serializer could look for `Ping` and `Pong` messages:
 
 Scala
-:  @@snip [PingSerializer.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/PingSerializer.scala) { #serializer }
+:  @@snip [PingSerializer.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/PingSerializer.scala) { #serializer }
 
 Java
-:  @@snip [PingSerializerExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/PingSerializerExampleTest.java) { #serializer }
+:  @@snip [PingSerializerExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/PingSerializerExampleTest.java) { #serializer }
 
 Serialization of Classic @apidoc[actor.ActorRef] is described in @ref:[Classic Serialization](serialization-classic.md#serializing-actorrefs).
 Classic and Typed actor references have the same serialization format so they can be interchanged.

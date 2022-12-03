@@ -19,17 +19,17 @@ jobs:
     strategy:
       matrix:
         command:
-          - akka-testkit/test akka-actor-tests/test
-          - akka-actor-testkit-typed/test akka-actor-typed-tests/test
-          - akka-bench-jmh/test
-          - akka-cluster/test akka-cluster-tools/test akka-cluster-typed/test akka-distributed-data/test akka-cluster-metrics/test akka-cluster-sharding/test akka-cluster-sharding-typed/test
-          - akka-discovery/test akka-coordination/test
-          - akka-persistence/test akka-persistence-shared/test akka-persistence-query/test akka-persistence-typed/test akka-persistence-testkit/test akka-persistence-tck/test akka-persistence-typed-tests/test
-          - akka-pki/test akka-slf4j/test
-          - akka-serialization-jackson/test
-          - akka-stream/test akka-stream-testkit/test akka-stream-tests/test akka-stream-typed/test
-          - akka-stream-tests-tck/test
-          - akka-remote/test akka-remote-tests/test akka-protobuf/test akka-protobuf-v3/test
+          - testkit/test actor-tests/test
+          - actor-testkit-typed/test actor-typed-tests/test
+          - bench-jmh/test
+          - cluster/test cluster-tools/test cluster-typed/test distributed-data/test cluster-metrics/test cluster-sharding/test cluster-sharding-typed/test
+          - discovery/test coordination/test
+          - persistence/test persistence-shared/test persistence-query/test persistence-typed/test persistence-testkit/test persistence-tck/test persistence-typed-tests/test
+          - pki/test slf4j/test
+          - serialization-jackson/test
+          - stream/test stream-testkit/test stream-tests/test stream-typed/test
+          - stream-tests-tck/test
+          - remote/test remote-tests/test protobuf/test protobuf-v3/test
       fail-fast: true
     steps:
       - name: Checkout

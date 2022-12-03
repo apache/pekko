@@ -14,10 +14,10 @@ Here we are using a bank account as the example domain. It has 3 state classes t
 of the account; `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.
 
 Scala
-:  @@snip [AccountExampleWithEventHandlersInState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #account-entity }
+:  @@snip [AccountExampleWithEventHandlersInState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #account-entity }
 
 Java
-:  @@snip [AccountExampleWithEventHandlersInState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #account-entity }
+:  @@snip [AccountExampleWithEventHandlersInState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #account-entity }
 
 @scala[Notice how the `eventHandler` delegates to the `applyEvent` in the `Account` (state), which is implemented
 in the concrete `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.]
@@ -30,7 +30,7 @@ in the concrete `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.]
 We can take the previous bank account example one step further by handling the commands in the state too.
 
 Scala
-:  @@snip [AccountExampleWithCommandHandlersInState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInState.scala) { #account-entity }
+:  @@snip [AccountExampleWithCommandHandlersInState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInState.scala) { #account-entity }
 
 Notice how the command handler is delegating to `applyCommand` in the `Account` (state), which is implemented
 in the concrete `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.
@@ -50,10 +50,10 @@ illustrates using `null` as the `emptyState`.]
 is then used in command and event handlers at the outer layer before delegating to the state or other methods.]
 
 Scala
-:  @@snip [AccountExampleWithOptionState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithOptionState.scala) { #account-entity }
+:  @@snip [AccountExampleWithOptionState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithOptionState.scala) { #account-entity }
 
 Java
-:  @@snip [AccountExampleWithNullState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullState.java) { #account-entity }
+:  @@snip [AccountExampleWithNullState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullState.java) { #account-entity }
 
 @@@ div { .group-java }
 ## Mutable state
@@ -67,6 +67,6 @@ e.g. as a reply to a command. Messages must be immutable to avoid concurrency pr
 The above examples are using immutable state classes and below is corresponding example with mutable state.
 
 Java
-:  @@snip [AccountExampleWithNullState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithMutableState.java) { #account-entity }
+:  @@snip [AccountExampleWithNullState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithMutableState.java) { #account-entity }
 
 @@@

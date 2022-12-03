@@ -78,18 +78,18 @@ the @ref:[functional style](style-guide.md#functional-versus-object-oriented-sty
 Classic HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/ClassicSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/ClassicSample.java) { #hello-world-actor }
 
 Typed HelloWorld actor:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #hello-world-actor }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #hello-world-actor }
+:  @@snip [IntroSpec.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #hello-world-actor }
 
 Why is it called `Behavior` and not `Actor`?
 
@@ -322,10 +322,10 @@ collection for bookkeeping of children, such as a @scala[`Map[String, ActorRef[C
 @java[`Map<String, ActorRef<Child.Command>>`]. It can look like this:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #children }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/fromclassic/TypedSample.scala) { #children }
 
 Java
-:  @@snip [IntroSpec.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #children }
+:  @@snip [IntroSpec.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/fromclassic/TypedSample.java) { #children }
 
 Remember to remove entries from the `Map` when the children are terminated. For that purpose it's
 convenient to use `watchWith`, as illustrated in the example above, because then you can include the

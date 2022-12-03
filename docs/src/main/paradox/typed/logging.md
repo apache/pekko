@@ -33,10 +33,10 @@ which can slow down the operations of your code if it was performed synchronousl
 The @apidoc[typed.*.ActorContext] provides access to an [org.slf4j.Logger](https://www.slf4j.org/api/org/slf4j/Logger.html) for a specific actor.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #context-log }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #context-log }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #context-log }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #context-log }
 
 The `Logger` via the `ActorContext` will automatically have a name that corresponds to the @apidoc[Behavior] of the
 actor when the log is accessed the first time. The class name when using @apidoc[AbstractBehavior] or the class @scala[or object]
@@ -44,10 +44,10 @@ name where the `Behavior` is defined when using the functional style. You can se
 with the @apidoc[setLoggerName](typed.*.ActorContext) {scala="#setLoggerName(name:String):Unit" java="#setLoggerName(java.lang.String)"} of the `ActorContext`.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logger-name }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logger-name }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logger-name }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logger-name }
 
 The convention is to use logger names like fully qualified class names. The parameter to `setLoggerName`
 can be a `String` or a `Class`, where the latter is convenience for the class name.
@@ -72,10 +72,10 @@ events will not include the `akkaSource` MDC value. This is the recommended way 
 of an actor, including logging from @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] callbacks.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logger-factory }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logger-factory }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logger-factory }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logger-factory }
 
 ### Placeholder arguments
 
@@ -96,7 +96,7 @@ problem you can use the `trace2`, `debug2`, `info2`, `warn2` or `error2` extensi
 by `import org.apache.pekko.actor.typed.scaladsl.LoggerOps` or `import org.apache.pekko.actor.typed.scaladsl._`.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #info2 }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #info2 }
 
 When using the methods for 3 or more argument placeholders, the compiler will not be able to convert
 the method parameters to the vararg array when they contain primitive values such as `Int`,
@@ -105,13 +105,13 @@ To work around this problem you can use the `traceN`, `debugN`, `infoN`, `warnN`
 methods that are added by the same `LoggerOps` import.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #infoN }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #infoN }
 
 If you find it tedious to add the import of `LoggerOps` at many places you can make those additional methods
 available with a single implicit conversion placed in a root package object of your code:
 
 Scala
-:  @@snip [package.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/myapp/package.scala) { #loggerops-package-implicit }
+:  @@snip [package.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/myapp/package.scala) { #loggerops-package-implicit }
 
 @@@
 
@@ -121,10 +121,10 @@ If you want very detailed logging of messages and signals you can decorate a @ap
 with @apidoc[Behaviors.logMessages](Behaviors$) {scala="#logMessages[T](logOptions:org.apache.pekko.actor.typed.LogOptions,behavior:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#logMessages(org.apache.pekko.actor.typed.LogOptions,org.apache.pekko.actor.typed.Behavior)"}.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logMessages }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #logMessages }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logMessages }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #logMessages }
 
 
 ## MDC
@@ -137,10 +137,10 @@ list and be put in the MDC attribute `akkaTags`. This can be used to categorize 
 to allow easier filtering of logs:
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #tags }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #tags }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #tags }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #tags }
 
 In addition to these two built in MDC attributes you can also decorate a @apidoc[Behavior] with @apidoc[Behaviors.withMdc](Behaviors$) {scala="#withMdc[T](staticMdc:Map[String,String],mdcForMessage:T=%3EMap[String,String])(behavior:org.apache.pekko.actor.typed.Behavior[T])(implicitevidence$4:scala.reflect.ClassTag[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#withMdc(java.lang.Class,java.util.Map,org.apache.pekko.japi.function.Function,org.apache.pekko.actor.typed.Behavior)"} or 
 use the [org.slf4j.MDC](https://www.slf4j.org/api/org/slf4j/MDC.html) API directly.
@@ -149,10 +149,10 @@ The `Behaviors.withMdc` decorator has two parts. A static `Map` of MDC attribute
 and a dynamic `Map` that can be constructed for each message.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #withMdc }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #withMdc }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #withMdc }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #withMdc }
 
 If you use the MDC API directly, be aware that MDC is typically implemented with a @javadoc[ThreadLocal](java.lang.ThreadLocal) by the SLF4J backend.
 Akka clears the MDC if logging is performed via the @scala[@scaladoc[log](pekko.actor.typed.scaladsl.ActorContext#log:org.slf4j.Logger)]@java[@javadoc[getLog()](pekko.actor.typed.javadsl.ActorContext#getLog())] of the `ActorContext` and it is cleared
@@ -197,7 +197,7 @@ load is high.
 
 A starting point for configuration of `logback.xml` for production:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-prod.xml)
+@@snip [logback.xml](/actor-typed-tests/src/test/resources/logback-doc-prod.xml)
 
 Note that the [AsyncAppender](https://logback.qos.ch/apidocs/ch/qos/logback/classic/AsyncAppender.html) may drop log events if the queue becomes full, which may happen if the
 logging backend can't keep up with the throughput of produced log events. Dropping log events is necessary
@@ -216,7 +216,7 @@ The ELK-stack is commonly used as logging infrastructure for production:
 For development you might want to log to standard out, but also have all debug level logging to file, like
 in this example:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-dev.xml)
+@@snip [logback.xml](/actor-typed-tests/src/test/resources/logback-doc-dev.xml)
 
 Place the `logback.xml` file in `src/main/resources/logback.xml`. For tests you can define different
 logging configuration in `src/test/resources/logback-test.xml`.

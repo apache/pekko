@@ -29,7 +29,7 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      - name: sbt akka-cluster-metrics/test
+      - name: sbt cluster-metrics/test
         run: |-
           sbt \
             -Djava.security.egd=file:/dev/./urandom \
@@ -44,7 +44,7 @@ jobs:
             -Dmultinode.Xmx256M \
             -Dmultinode.Xlog:gc \
             -Dmultinode.XX:+AlwaysActAsServerClassMachine \
-            clean akka-cluster-metrics/test
+            clean cluster-metrics/test
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
 #      - name: Test Reports
@@ -80,9 +80,9 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - akka-cluster/test akka-distributed-data/test akka-cluster-tools/test akka-cluster-metrics/test
-          - akka-cluster-sharding/test
-          - akka-cluster-typed/test akka-cluster-sharding-typed/test
+          - cluster/test distributed-data/test cluster-tools/test cluster-metrics/test
+          - cluster-sharding/test
+          - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -240,8 +240,8 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - akka-remote/test akka-remote-tests/test
-          - akka-cluster/test akka-cluster-typed/test
+          - remote/test remote-tests/test
+          - cluster/test cluster-typed/test
     steps:
       - name: Checkout
         uses: actions/checkout@v3

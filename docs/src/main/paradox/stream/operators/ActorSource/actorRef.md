@@ -35,7 +35,7 @@ See also:
 ## Examples
 
 Scala
-:  @@snip [ActorSourceSinkExample.scala](/akka-stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-source-ref }
+:  @@snip [ActorSourceSinkExample.scala](/stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-source-ref }
 
 Java
-:  @@snip [ActorSourceExample.java](/akka-stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSourceExample.java) { #actor-source-ref }
+:  @@snip [ActorSourceExample.java](/stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSourceExample.java) { #actor-source-ref }

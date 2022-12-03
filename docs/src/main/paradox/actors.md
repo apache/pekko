@@ -7,19 +7,19 @@
 To use Classic Actors, add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
   group2="org.apache.pekko"
-  artifact2="akka-testkit_$scala.binary.version$"
+  artifact2="pekko-testkit_$scala.binary.version$"
   scope2=test
   version2=PekkoVersion
 }
 
-@@project-info{ projectId="akka-actor" }
+@@project-info{ projectId="actor" }
 
 ## Introduction
 
@@ -351,7 +351,7 @@ The remaining visible methods are user-overridable life-cycle hooks which are
 described in the following:
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #lifecycle-hooks }
+:  @@snip [Actor.scala](/actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #lifecycle-hooks }
 
 Java
 :  @@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/ActorDocTest.java) { #lifecycle-callbacks }
@@ -785,7 +785,7 @@ An Actor has to
 @java[define its initial receive behavior by implementing the @javadoc[createReceive](pekko.actor.AbstractActor#createReceive()) method in the `AbstractActor`:]
 
 Scala
-:  @@snip [Actor.scala](/akka-actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #receive }
+:  @@snip [Actor.scala](/actor/src/main/scala/org/apache/pekko/actor/Actor.scala) { #receive }
 
 Java
 :  @@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/ActorDocTest.java) { #createReceive }

@@ -18,7 +18,7 @@ Most relevant default phases
 | before-actor-system-terminate | Phase for custom application tasks that are to be run after cluster shutdown and before `ActorSystem` termination. |
 
 reference.conf (HOCON)
-:   @@snip [reference.conf](/akka-actor/src/main/resources/reference.conf) { #coordinated-shutdown-phases }
+:   @@snip [reference.conf](/actor/src/main/resources/reference.conf) { #coordinated-shutdown-phases }
 
 More phases can be added in the application's `application.conf` if needed by overriding a phase with an
 additional `depends-on`.

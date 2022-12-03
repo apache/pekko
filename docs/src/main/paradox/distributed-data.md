@@ -280,4 +280,4 @@ paper by Mark Shapiro et. al.
 
 The @apidoc[cluster.ddata.DistributedData] extension can be configured with the following properties:
 
-@@snip [reference.conf](/akka-distributed-data/src/main/resources/reference.conf) { #distributed-data }
+@@snip [reference.conf](/distributed-data/src/main/resources/reference.conf) { #distributed-data }

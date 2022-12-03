@@ -16,15 +16,15 @@ To use Akka Split Brain Resolver is part of `akka-cluster` and you probably alre
 dependency included. Otherwise, add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster_$scala.binary.version$
+  artifact=pekko-cluster_$scala.binary.version$
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster" }
+@@project-info{ projectId="cluster" }
 
 ## Enable the Split Brain Resolver
 
@@ -127,7 +127,7 @@ have been stable for a certain time period. Continuously adding more nodes while
 partition does not influence this timeout, since the status of those nodes will not be changed to Up
 while there are unreachable nodes. Joining nodes are not counted in the logic of the strategies. 
 
-@@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #split-brain-resolver }
+@@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #split-brain-resolver }
 
 Set `pekko.cluster.split-brain-resolver.stable-after` to a shorter duration to have quicker removal of crashed nodes,
 at the price of risking too early action on transient network partitions that otherwise would have healed. Do not
@@ -210,7 +210,7 @@ Configuration:
 pekko.cluster.split-brain-resolver.active-strategy=keep-majority
 ```
 
-@@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #keep-majority }
+@@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #keep-majority }
 
 ### Static Quorum
 
@@ -276,7 +276,7 @@ Configuration:
 pekko.cluster.split-brain-resolver.active-strategy=static-quorum
 ```
 
-@@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #static-quorum }
+@@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #static-quorum }
 
 ### Keep Oldest
 
@@ -315,7 +315,7 @@ Configuration:
 pekko.cluster.split-brain-resolver.active-strategy=keep-oldest
 ```
 
-@@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #keep-oldest }
+@@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #keep-oldest }
 
 ### Down All
 
@@ -374,7 +374,7 @@ pekko {
 }
 ```
 
-@@snip [reference.conf](/akka-cluster/src/main/resources/reference.conf) { #lease-majority }
+@@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #lease-majority }
 
 See also configuration and additional dependency in [Kubernetes Lease](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)
 

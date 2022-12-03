@@ -29,10 +29,10 @@ This API was added in Akka 2.6.0 and @ref:[may be changed](../../../common/may-c
 This example wraps a `flow` handling @scala[`Int`s]@java[`Integer`s], and retries elements unless the result is 0 or negative, or `maxRetries` is hit.
 
 Scala
-:   @@snip [RetryFlowSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/RetryFlowSpec.scala) { #withBackoff-demo }
+:   @@snip [RetryFlowSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/RetryFlowSpec.scala) { #withBackoff-demo }
 
 Java
-:   @@snip [RetryFlowTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/RetryFlowTest.java) { #withBackoff-demo }
+:   @@snip [RetryFlowTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/RetryFlowTest.java) { #withBackoff-demo }
 
 ## Reactive Streams semantics
 

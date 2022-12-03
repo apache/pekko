@@ -23,10 +23,10 @@ See also:
 This example prints the first 4 elements emitted by `Source.repeat`.
 
 Scala
-:  @@snip [snip](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #repeat }
+:  @@snip [snip](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #repeat }
 
 Java
-:  @@snip [snip](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #repeat }
+:  @@snip [snip](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #repeat }
 
 
 

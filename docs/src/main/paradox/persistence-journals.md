@@ -20,10 +20,10 @@ A journal plugin extends `AsyncWriteJournal`.
 `AsyncWriteJournal` is an actor and the methods to be implemented are:
 
 Scala
-:  @@snip [AsyncWriteJournal.scala](/akka-persistence/src/main/scala/org/apache/pekko/persistence/journal/AsyncWriteJournal.scala) { #journal-plugin-api }
+:  @@snip [AsyncWriteJournal.scala](/persistence/src/main/scala/org/apache/pekko/persistence/journal/AsyncWriteJournal.scala) { #journal-plugin-api }
 
 Java
-:  @@snip [AsyncWritePlugin.java](/akka-persistence/src/main/java/org/apache/pekko/persistence/journal/japi/AsyncWritePlugin.java) { #async-write-plugin-api }
+:  @@snip [AsyncWritePlugin.java](/persistence/src/main/java/org/apache/pekko/persistence/journal/japi/AsyncWritePlugin.java) { #async-write-plugin-api }
 
 If the storage backend API only supports synchronous, blocking writes, the methods should be implemented as:
 
@@ -36,10 +36,10 @@ Java
 A journal plugin must also implement the methods defined in `AsyncRecovery` for replays and sequence number recovery:
 
 Scala
-:  @@snip [AsyncRecovery.scala](/akka-persistence/src/main/scala/org/apache/pekko/persistence/journal/AsyncRecovery.scala) { #journal-plugin-api }
+:  @@snip [AsyncRecovery.scala](/persistence/src/main/scala/org/apache/pekko/persistence/journal/AsyncRecovery.scala) { #journal-plugin-api }
 
 Java
-:  @@snip [AsyncRecoveryPlugin.java](/akka-persistence/src/main/java/org/apache/pekko/persistence/journal/japi/AsyncRecoveryPlugin.java) { #async-replay-plugin-api }
+:  @@snip [AsyncRecoveryPlugin.java](/persistence/src/main/java/org/apache/pekko/persistence/journal/japi/AsyncRecoveryPlugin.java) { #async-replay-plugin-api }
 
 A journal plugin can be activated with the following minimal configuration:
 
@@ -68,10 +68,10 @@ Don't run journal tasks/futures on the system default dispatcher, since that mig
 A snapshot store plugin must extend the `SnapshotStore` actor and implement the following methods:
 
 Scala
-:  @@snip [SnapshotStore.scala](/akka-persistence/src/main/scala/org/apache/pekko/persistence/snapshot/SnapshotStore.scala) { #snapshot-store-plugin-api }
+:  @@snip [SnapshotStore.scala](/persistence/src/main/scala/org/apache/pekko/persistence/snapshot/SnapshotStore.scala) { #snapshot-store-plugin-api }
 
 Java
-:  @@snip [SnapshotStorePlugin.java](/akka-persistence/src/main/java/org/apache/pekko/persistence/snapshot/japi/SnapshotStorePlugin.java) { #snapshot-store-plugin-api }
+:  @@snip [SnapshotStorePlugin.java](/persistence/src/main/java/org/apache/pekko/persistence/snapshot/japi/SnapshotStorePlugin.java) { #snapshot-store-plugin-api }
 
 A snapshot store plugin can be activated with the following minimal configuration:
 
@@ -99,14 +99,14 @@ Don't run snapshot store tasks/futures on the system default dispatcher, since t
 
 In order to help developers build correct and high quality storage plugins, we provide a Technology Compatibility Kit ([TCK](https://en.wikipedia.org/wiki/Technology_Compatibility_Kit) for short).
 
-The TCK is usable from Java as well as Scala projects. To test your implementation (independently of language) you need to include the akka-persistence-tck dependency:
+The TCK is usable from Java as well as Scala projects. To test your implementation (independently of language) you need to include the pekko-persistence-tck dependency:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence-tck_$scala.binary.version$"
+  artifact="pekko-persistence-tck_$scala.binary.version$"
   version=PekkoVersion
 }
 

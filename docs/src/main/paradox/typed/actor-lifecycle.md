@@ -55,10 +55,10 @@ If a behavior needs to use the `ActorContext`, for example to spawn child actors
 @scala[`context.self`]@java[`context.getSelf()`], it can be obtained by wrapping construction with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-setup }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-setup }
 
 #### ActorContext Thread Safety
 
@@ -75,10 +75,10 @@ system are directed to the root actor. The root actor is defined by the behavior
 named `HelloWorldMain` in the example below:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world }
 
 For very simple applications the guardian may contain the actual application logic and handle messages. As soon as the application
 handles more than one concern the guardian should instead just bootstrap the application, spawn the various subsystems as
@@ -106,19 +106,19 @@ is started, it spawns a child actor described by the `HelloWorld` behavior. Addi
 `SayHello` message, it creates a child actor defined by the behavior `HelloWorldBot`:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main }
 
 To specify a dispatcher when spawning an actor use @apidoc[DispatcherSelector]. If not specified, the actor will
 use the default dispatcher, see @ref:[Default dispatcher](dispatchers.md#default-dispatcher) for details.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main-with-dispatchers }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #hello-world-main-with-dispatchers }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-with-dispatchers }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/IntroTest.java) { #hello-world-main-with-dispatchers }
 
 Refer to @ref:[Actors](actors.md#first-example) for a walk-through of the above examples.
 
@@ -138,18 +138,18 @@ similar to how `ActorSystem.actorOf` can be used in classic actors with the diff
 The guardian behavior can be defined as:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports1 #main }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports1 #main }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports1 #main }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports1 #main }
 
 and the @apidoc[ActorSystem](typed.ActorSystem) can be created with that `main` behavior and asked to spawn other actors:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports2 #system-spawn }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/SpawnProtocolDocSpec.scala) { #imports2 #system-spawn }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports2 #system-spawn }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/SpawnProtocolDocTest.java) { #imports2 #system-spawn }
 
 The @apidoc[SpawnProtocol$] can also be used at other places in the actor hierarchy. It doesn't have to be the root
 guardian actor.
@@ -170,14 +170,14 @@ When an actor is stopped, it receives the @apidoc[PostStop](typed.PostStop) sign
 Here is an illustrating example:
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) {
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) {
     #imports
     #master-actor
     #worker-actor
   }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  {
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  {
    #imports
    #master-actor
    #worker-actor
@@ -194,10 +194,10 @@ an actor can @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:org.ap
 termination (see @ref:[Stopping Actors](#stopping-actors)) of the watched actor.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watch }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watch }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watch }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watch }
 
 An alternative to @apidoc[watch](typed.*.ActorContext) {scala="#watch[U](other:org.apache.pekko.actor.typed.ActorRef[U]):Unit" java="#watch(org.apache.pekko.actor.typed.ActorRef)"} is @apidoc[watchWith](typed.*.ActorContext) {scala="#watchWith[U](other:org.apache.pekko.actor.typed.ActorRef[U],msg:T):Unit" java="#watchWith(org.apache.pekko.actor.typed.ActorRef,T)"}, which allows specifying a custom message instead of the `Terminated`.
 This is often preferred over using `watch` and the `Terminated` signal because additional information can
@@ -206,10 +206,10 @@ be included in the message that can be used later when receiving it.
 Similar example as above, but using `watchWith` and replies to the original requestor when the job has finished.
 
 Scala
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watchWith }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/GracefulStopDocSpec.scala) { #master-actor-watchWith }
 
 Java
-:  @@snip [IntroSpec.scala](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watchWith }
+:  @@snip [IntroSpec.scala](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/GracefulStopDocTest.java)  { #master-actor-watchWith }
 
 Note how the `replyToWhenDone` is included in the `watchWith` message and then used later when receiving the
 `JobTerminated` message. 

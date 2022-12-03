@@ -14,10 +14,10 @@ the same in that a single procedure drives the test.
 Actor under test:
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #under-test }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #under-test }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #under-test }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #under-test }
 
 Tests create an instance of @apidoc[ActorTestKit]. This provides access to:
 
@@ -30,18 +30,18 @@ simplify the tests by using the @ref:[Test framework integration](#test-framewor
 to read this section to understand how it works.
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-header }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-header }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-header }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-header }
 
 Your test is responsible for shutting down the @apidoc[actor.typed.ActorSystem] e.g. using @scala[`BeforeAndAfterAll` when using ScalaTest]@java[`@AfterClass` when using JUnit].
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-shutdown }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-shutdown }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-shutdown }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-shutdown }
 
 The following demonstrates:
 
@@ -53,18 +53,18 @@ Note that it is possible to use a `TestProbe` directly as a @apidoc[actor.typed.
 `EntityRef`), in cases where a message protocol uses `RecipientRef` instead of specifying `ActorRef` or `EntityRef`.
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-spawn }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-spawn }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-spawn }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-spawn }
 
 Actors can also be spawned anonymously:
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-spawn-anonymous }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-spawn-anonymous }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-spawn-anonymous }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-spawn-anonymous }
 
 Note that you can add `import testKit._` to get access to the `spawn` and `createTestProbe` methods at the top level
 without prefixing them with `testKit`.
@@ -73,10 +73,10 @@ without prefixing them with `testKit`.
 The method will wait until the actor stops or throw an assertion error in case of a timeout.
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-stop-actors }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-stop-actors }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-stop-actors }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-stop-actors }
 
 The `stop` method can only be used for actors that were spawned by the same @apidoc[ActorTestKit]. Other actors
 will not be stopped by that method.
@@ -93,19 +93,19 @@ This allows the same kinds of tests as classic `TestActor`/`Autopilot`.
 As an example, let's assume we'd like to test the following component:
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #under-test-2 }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #under-test-2 }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #under-test-2 }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #under-test-2 }
 
 In our test, we create a mocked `publisher` actor. Additionally we use `Behaviors.monitor` with a `TestProbe` in order
 to be able to verify the interaction of the `producer` with the `publisher`:
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-observe-mocked-behavior }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/AsyncTestingExampleSpec.scala) { #test-observe-mocked-behavior }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-observe-mocked-behavior }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/AsyncTestingExampleTest.java) { #test-observe-mocked-behavior }
 
 ### Test framework integration
 
@@ -132,10 +132,10 @@ a dependency on ScalaTest to use this.
 @@@
 
 Scala
-:  @@snip [AsyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #scalatest-integration }
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #scalatest-integration }
 
 Java
-:  @@snip [AsyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JunitIntegrationExampleTest.java) { #junit-integration }
+:  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JunitIntegrationExampleTest.java) { #junit-integration }
 
 ### Configuration
 
@@ -148,27 +148,27 @@ If you prefer to use `application.conf` you can pass that as the configuration p
 It's loaded with:
 
 Scala
-:  @@snip [TestConfigExample.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #default-application-conf }
+:  @@snip [TestConfigExample.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #default-application-conf }
 
 Java
-:  @@snip [TestConfigExample.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #default-application-conf }
+:  @@snip [TestConfigExample.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #default-application-conf }
 
 It's often convenient to define configuration for a specific test as a `String` in the test itself and
 use that as the configuration parameter to the TestKit. `ConfigFactory.parseString` can be used for that:
 
 Scala
-:  @@snip [TestConfigExample.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #parse-string }
+:  @@snip [TestConfigExample.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #parse-string }
 
 Java
-:  @@snip [TestConfigExample.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #parse-string }
+:  @@snip [TestConfigExample.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #parse-string }
 
 Combining those approaches using `withFallback`:
 
 Scala
-:  @@snip [TestConfigExample.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #fallback-application-conf }
+:  @@snip [TestConfigExample.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/TestConfigExample.scala) { #fallback-application-conf }
 
 Java
-:  @@snip [TestConfigExample.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #fallback-application-conf }
+:  @@snip [TestConfigExample.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/TestConfigExample.java) { #fallback-application-conf }
 
 
 More information can be found in the [documentation of the configuration library](https://github.com/lightbend/config#using-the-library).
@@ -190,10 +190,10 @@ Making such tests more reliable by using generous timeouts make the tests take a
 For such situations, we provide a scheduler where you can manually, explicitly advance the clock.
 
 Scala
-:   @@snip [ManualTimerExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ManualTimerExampleSpec.scala) { #manual-scheduling-simple }
+:   @@snip [ManualTimerExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ManualTimerExampleSpec.scala) { #manual-scheduling-simple }
 
 Java
-:   @@snip [ManualTimerExampleTest.scala](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/ManualTimerExampleTest.java) { #manual-scheduling-simple }
+:   @@snip [ManualTimerExampleTest.scala](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/ManualTimerExampleTest.java) { #manual-scheduling-simple }
 
 
 ### Test of logging
@@ -211,18 +211,18 @@ The @apidoc[typed.*.LoggingTestKit] implementation @ref:[requires Logback depend
 For example, a criteria that verifies that an `INFO` level event with a message containing "Received message" is logged:
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #test-logging }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #test-logging }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #test-logging }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #test-logging }
 
 More advanced criteria can be built by chaining conditions that all must be satisfied for a matching event.
 
 Scala
-:  @@snip [LoggingDocExamples.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #test-logging-criteria }
+:  @@snip [LoggingDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/LoggingDocExamples.scala) { #test-logging-criteria }
 
 Java
-:  @@snip [LoggingDocExamples.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #test-logging-criteria }
+:  @@snip [LoggingDocExamples.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/LoggingDocExamples.java) { #test-logging-criteria }
 
 See @apidoc[typed.*.LoggingTestKit] for more details.
 
@@ -245,12 +245,12 @@ The `LogCapturing` utility @ref:[requires Logback dependency](logging.md#logback
 @scala[Mix `LogCapturing` trait into the ScalaTest]@java[Add a `LogCapturing` `@Rule` in the JUnit test] like this:
 
 Scala
-:  @@snip [ScalaTestIntegrationExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #log-capturing }
+:  @@snip [ScalaTestIntegrationExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #log-capturing }
 
 Java
-:  @@snip [LogCapturingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/LogCapturingExampleTest.java) { #log-capturing }
+:  @@snip [LogCapturingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/LogCapturingExampleTest.java) { #log-capturing }
 
 Then you also need to configure the `CapturingAppender` and `CapturingAppenderDelegate` in
 `src/test/resources/logback-test.xml`:
 
-@@snip [logback-test.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-test.xml)
+@@snip [logback-test.xml](/actor-typed-tests/src/test/resources/logback-doc-test.xml)
