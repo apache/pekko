@@ -17,7 +17,7 @@ import sbt._
 object PekkoValidatePullRequest extends AutoPlugin {
 
   object CliOptions {
-    val mimaEnabled = CliOption("akka.mima.enabled", true)
+    val mimaEnabled = CliOption("pekko.mima.enabled", true)
   }
 
   import ValidatePullRequest.autoImport._

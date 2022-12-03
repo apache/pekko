@@ -14,7 +14,7 @@ import sbt.internal.{ AppenderSupplier, LogManager }
 import sbt.internal.util.ConsoleOut
 
 object AddLogTimestamps extends AutoPlugin {
-  val enableTimestamps: Boolean = CliOption("akka.log.timestamps", false).get
+  val enableTimestamps: Boolean = CliOption("pekko.log.timestamps", false).get
 
   override def requires: Plugins = plugins.JvmPlugin
   override def trigger: PluginTrigger = allRequirements
