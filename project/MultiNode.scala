@@ -30,9 +30,9 @@ object MultiNode extends AutoPlugin {
     val multiNode = CliOption("pekko.test.multi-node", false)
     val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
 
-    val hostsFileName = sys.props.get("akka.test.multi-node.hostsFileName").toSeq
-    val javaName = sys.props.get("akka.test.multi-node.java").toSeq
-    val targetDirName = sys.props.get("akka.test.multi-node.targetDirName").toSeq
+    val hostsFileName = sys.props.get("pekko.test.multi-node.hostsFileName").toSeq
+    val javaName = sys.props.get("pekko.test.multi-node.java").toSeq
+    val targetDirName = sys.props.get("pekko.test.multi-node.targetDirName").toSeq
   }
 
   val multiExecuteTests =
