@@ -27,7 +27,7 @@ object MultiNode extends AutoPlugin {
   val multiNodeTestInTest: Boolean = sys.props.getOrElse("pekko.test.multi-in-test", "true").toBoolean
 
   object CliOptions {
-    val multiNode = CliOption("akka.test.multi-node", false)
+    val multiNode = CliOption("pekko.test.multi-node", false)
     val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
 
     val hostsFileName = sys.props.get("akka.test.multi-node.hostsFileName").toSeq
