@@ -30,7 +30,7 @@ object PekkoBuild {
 
   val parallelExecutionByDefault = false // TODO: enable this once we're sure it does not break things
 
-  lazy val buildSettings = Def.settings(organization := "com.typesafe.akka")
+  lazy val buildSettings = Def.settings(organization := "org.apache.pekko")
 
   lazy val rootSettings = Def.settings(
     commands += switchVersion,
@@ -42,10 +42,9 @@ object PekkoBuild {
     // used for linking to API docs (overwrites `project-info.version`)
     ThisBuild / projectInfoVersion := { if (isSnapshot.value) "snapshot" else version.value })
 
-  lazy val mayChangeSettings = Seq(description := """|This module of Pekko is marked as
+  lazy val mayChangeSettings = Seq(description := """|This module of Apache Pekko is marked as
                       |'may change', which means that it is in early
-                      |access mode, which also means that it is not covered
-                      |by commercial support. An module marked 'may change' doesn't
+                      |access mode. A module marked 'may change' doesn't
                       |have to obey the rule of staying binary compatible
                       |between minor releases. Breaking API changes may be
                       |introduced in minor releases without notice as we

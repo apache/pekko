@@ -35,6 +35,7 @@ object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {
   private val BundleVendor = "Bundle-Vendor"
 
   private val knownVendors = Set(
+    "org.apache.pekko",
     "com.typesafe.akka",
     "com.lightbend.akka",
     "Lightbend Inc.",

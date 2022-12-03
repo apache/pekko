@@ -5,10 +5,10 @@
 Akka offers tiny helpers for use with @scala[@scaladoc[Future](scala.concurrent.Future)s]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)]. These are part of Akka's core module:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group="com.typesafe.akka"
+  group="org.apache.pekko"
   artifact="akka-actor_$scala.binary.version$"
   version=PekkoVersion
 }

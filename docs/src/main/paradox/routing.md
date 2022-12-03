@@ -8,10 +8,10 @@ For the documentation of the new API of this feature and for new projects see @r
 To use Routing, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=com.typesafe.akka bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
-  group="com.typesafe.akka"
+  group="org.apache.pekko"
   artifact="akka-actor_$scala.binary.version$"
   version=PekkoVersion
 }
