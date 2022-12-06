@@ -39,7 +39,19 @@ object PekkoValidatePullRequest extends AutoPlugin {
     }, additionalTasks := Seq.empty)
 
   override lazy val buildSettings = Seq(
-    validatePullRequest / includeFilter := PathGlobFilter("akka-*/**"),
+    validatePullRequest / includeFilter := {
+      val ignoredProjects = List(
+        "pekko", // This is the root project
+        "serialVersionRemoverPlugin")
+
+      loadedBuild.value.allProjectRefs.collect {
+        case (_, project) if !ignoredProjects.contains(project.id) =>
+          val directory = project.base.getPath.split(System.getProperty("file.separator")).last
+          PathGlobFilter(s"$directory/**")
+      }.fold(new FileFilter { // TODO: Replace with FileFilter.nothing when https://github.com/sbt/io/pull/340 gets released
+        override def accept(pathname: File): Boolean = false
+      })(_ || _)
+    },
     validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
     prValidatorGithubRepository := Some("akka/akka"),
     prValidatorTargetBranch := "origin/main")
