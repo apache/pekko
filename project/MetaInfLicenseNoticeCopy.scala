@@ -13,8 +13,7 @@ object MetaInfLicenseNoticeCopy {
   val settings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
       resourceGenerators += copyFileToMetaInf(resourceManaged, "LICENSE"),
-      resourceGenerators += copyFileToMetaInf(resourceManaged, "NOTICE")
-    ))
+      resourceGenerators += copyFileToMetaInf(resourceManaged, "NOTICE")))
 
   def copyFileToMetaInf(dir: SettingKey[File], fileName: String) = Def.task[Seq[File]] {
     val fromFile = (LocalRootProject / baseDirectory).value / fileName
