@@ -9,5 +9,3 @@ Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
 
 Apache Pekko is a derived from Akka 2.6.x, the last version that was distributed under the
 Apache License, Version 2.0 License.
-
-`pekko-protobuf` includes protobuf v2.5.0 code developed by Google Inc.
