@@ -1,0 +1,62 @@
+/*
+ * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package org.apache.pekko.cluster.typed;
+
+import org.apache.pekko.cluster.ClusterEvent;
+import org.apache.pekko.actor.typed.ActorSystem;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
+
+import java.util.concurrent.TimeUnit;
+
+public class ClusterApiTest extends JUnitSuite {
+
+  @Test
+  public void joinLeaveAndObserve() throws Exception {
+    Config config =
+        ConfigFactory.parseString(
+            "pekko.actor.provider = cluster \n"
+                + "pekko.remote.classic.netty.tcp.port = 0 \n"
+                + "pekko.remote.artery.canonical.port = 0 \n"
+                + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n"
+                + "pekko.cluster.jmx.multi-mbeans-in-same-jvm = on \n"
+                + "pekko.coordinated-shutdown.terminate-actor-system = off \n"
+                + "pekko.coordinated-shutdown.run-by-actor-system-terminate = off \n");
+
+    ActorSystem<?> system1 =
+        ActorSystem.wrap(org.apache.pekko.actor.ActorSystem.create("ClusterApiTest", config));
+    ActorSystem<?> system2 =
+        ActorSystem.wrap(org.apache.pekko.actor.ActorSystem.create("ClusterApiTest", config));
+
+    try {
+      Cluster cluster1 = Cluster.get(system1);
+      Cluster cluster2 = Cluster.get(system2);
+
+      TestProbe<ClusterEvent.ClusterDomainEvent> probe1 = TestProbe.create(system1);
+
+      cluster1.subscriptions().tell(new Subscribe<>(probe1.ref().narrow(), SelfUp.class));
+      cluster1.manager().tell(new Join(cluster1.selfMember().address()));
+      probe1.expectMessageClass(SelfUp.class);
+
+      TestProbe<ClusterEvent.ClusterDomainEvent> probe2 = TestProbe.create(system2);
+      cluster2.subscriptions().tell(new Subscribe<>(probe2.ref().narrow(), SelfUp.class));
+      cluster2.manager().tell(new Join(cluster1.selfMember().address()));
+      probe2.expectMessageClass(SelfUp.class);
+
+      cluster2.subscriptions().tell(new Subscribe<>(probe2.ref().narrow(), SelfRemoved.class));
+      cluster2.manager().tell(new Leave(cluster2.selfMember().address()));
+
+      probe2.expectMessageClass(SelfRemoved.class);
+    } finally {
+      system1.terminate();
+      system1.getWhenTerminated().toCompletableFuture().get(5, TimeUnit.SECONDS);
+      system2.terminate();
+      system2.getWhenTerminated().toCompletableFuture().get(5, TimeUnit.SECONDS);
+    }
+  }
+}

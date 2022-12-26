@@ -1,0 +1,27 @@
+/*
+ * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package docs.stream.operators.sourceorflow
+
+import org.apache.pekko.NotUsed
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.stream.scaladsl.Source
+import org.apache.pekko.util.ByteString
+
+import scala.concurrent.Future
+
+object LimitWeighted {
+
+  implicit val system: ActorSystem[_] = ???
+
+  def simple(): Unit = {
+    // #simple
+    val untrustedSource: Source[ByteString, NotUsed] = Source.repeat(ByteString("element"))
+
+    val allBytes: Future[ByteString] =
+      untrustedSource.limitWeighted(max = 10000)(_.length).runReduce(_ ++ _)
+    // #simple
+  }
+
+}

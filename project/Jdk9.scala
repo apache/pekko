@@ -2,7 +2,7 @@
  * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt._
 import sbt.Keys._
@@ -25,8 +25,8 @@ object Jdk9 extends AutoPlugin {
       Seq(
         (Compile / sourceDirectory).value / SCALA_SOURCE_DIRECTORY,
         (Compile / sourceDirectory).value / JAVA_SOURCE_DIRECTORY)),
-    scalacOptions := AkkaBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
-    javacOptions := AkkaBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")))
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")))
 
   val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
@@ -34,8 +34,8 @@ object Jdk9 extends AutoPlugin {
       Seq(
         (Test / sourceDirectory).value / SCALA_TEST_SOURCE_DIRECTORY,
         (Test / sourceDirectory).value / JAVA_TEST_SOURCE_DIRECTORY)),
-    scalacOptions := AkkaBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
-    javacOptions := AkkaBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")),
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")),
     compile := compile.dependsOn(CompileJdk9 / compile).value,
     classpathConfiguration := TestJdk9,
     externalDependencyClasspath := (Test / externalDependencyClasspath).value)

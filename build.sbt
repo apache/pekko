@@ -1,4 +1,4 @@
-import akka.{ AutomaticModuleName, CopyrightHeaderForBuild, Dependencies, Paradox, ScalafixIgnoreFilePlugin }
+import org.apache.pekko._
 
 ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
@@ -23,8 +23,7 @@ addCommandAlias(
 
 addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
 
-import akka.AkkaBuild._
-import akka.{ AkkaBuild, Dependencies, OSGi, Protobuf, SigarLoader, VersionGenerator }
+import org.apache.pekko.PekkoBuild._
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbt.Keys.{ initialCommands, parallelExecution }
@@ -36,7 +35,7 @@ initialize := {
   initialize.value
 }
 
-akka.AkkaBuild.buildSettings
+PekkoBuild.buildSettings
 shellPrompt := { s =>
   Project.extract(s).currentProject.id + " > "
 }
@@ -86,12 +85,12 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   streamTests,
   streamTestsTck)
 
-lazy val root = Project(id = "akka", base = file("."))
+lazy val root = Project(id = "pekko", base = file("."))
   .aggregate(aggregatedProjects: _*)
   .enablePlugins(PublishRsyncPlugin)
   .settings(rootSettings: _*)
   .settings(
-    unidocRootIgnoreProjects := Seq(
+    UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
       benchJmh,
       protobuf,
@@ -100,7 +99,7 @@ lazy val root = Project(id = "akka", base = file("."))
       docs,
       serialversionRemoverPlugin))
   .settings(Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
-  .settings(akka.AkkaBuild.welcomeSettings)
+  .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
 
 lazy val actor = akkaModule("akka-actor")
@@ -204,8 +203,8 @@ lazy val distributedData = akkaModule("akka-distributed-data")
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
-lazy val docs = akkaModule("akka-docs")
-  .configs(akka.Jdk9.TestJdk9)
+lazy val docs = akkaModule("docs")
+  .configs(Jdk9.TestJdk9)
   .dependsOn(
     actor,
     cluster,
@@ -232,7 +231,7 @@ lazy val docs = akkaModule("akka-docs")
     streamTestkit % "compile->compile;test->test",
     persistenceTestkit % "compile->compile;test->test")
   .settings(Dependencies.docs)
-  .settings(AkkaDisciplinePlugin.docs)
+  .settings(PekkoDisciplinePlugin.docs)
   .settings(Paradox.settings)
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(
@@ -246,7 +245,7 @@ lazy val docs = akkaModule("akka-docs")
   .disablePlugins(MimaPlugin)
   .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
   // TODO https://github.com/akka/akka/issues/30243
-  .settings(crossScalaVersions -= akka.Dependencies.scala3Version)
+  .settings(crossScalaVersions -= Dependencies.scala3Version)
 
 lazy val jackson = akkaModule("akka-serialization-jackson")
   .dependsOn(
@@ -266,14 +265,14 @@ lazy val multiNodeTestkit = akkaModule("akka-multi-node-testkit")
   .settings(Dependencies.multiNodeTestkit)
   .settings(Protobuf.settings)
   .settings(AutomaticModuleName.settings("akka.remote.testkit"))
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
 
 lazy val osgi = akkaModule("akka-osgi")
   .dependsOn(actor)
   .settings(Dependencies.osgi)
   .settings(AutomaticModuleName.settings("akka.osgi"))
   .settings(OSGi.osgi)
-  .settings(Test / parallelExecution := false, crossScalaVersions -= akka.Dependencies.scala3Version)
+  .settings(Test / parallelExecution := false, crossScalaVersions -= Dependencies.scala3Version)
 
 lazy val persistence = akkaModule("akka-persistence")
   .dependsOn(actor, stream, testkit % "test->test")
@@ -332,7 +331,7 @@ lazy val persistenceTypedTests = akkaModule("akka-persistence-typed-tests")
     actorTestkitTyped % "test",
     persistence % "test->test", // for SteppingInMemJournal
     jackson % "test->test")
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
   .settings(Dependencies.persistenceTypedTests)
   .settings(javacOptions += "-parameters") // for Jackson
   .disablePlugins(MimaPlugin)
@@ -354,7 +353,7 @@ lazy val protobufV3 = akkaModule("akka-protobuf-v3")
     libraryDependencies += Dependencies.Compile.Provided.protobufRuntime,
     assembly / assemblyShadeRules := Seq(
       ShadeRule
-        .rename("com.google.protobuf.**" -> "akka.protobufv3.internal.@1")
+        .rename("com.google.protobuf.**" -> "org.apache.pekko.protobufv3.internal.@1")
         // https://github.com/sbt/sbt-assembly/issues/400
         .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
         .inProject),
@@ -435,7 +434,7 @@ lazy val streamTestkit = akkaModule("akka-stream-testkit")
   .settings(OSGi.streamTestkit)
 
 lazy val streamTests = akkaModule("akka-stream-tests")
-  .configs(akka.Jdk9.TestJdk9)
+  .configs(Jdk9.TestJdk9)
   .dependsOn(streamTestkit % "test->test", remote % "test->test", stream % "TestJdk9->CompileJdk9")
   .settings(Dependencies.streamTests)
   .enablePlugins(NoPublish, Jdk9)
@@ -458,7 +457,7 @@ lazy val testkit = akkaModule("akka-testkit")
   .settings(Dependencies.testkit)
   .settings(AutomaticModuleName.settings("akka.actor.testkit"))
   .settings(OSGi.testkit)
-  .settings(initialCommands += "import akka.testkit._")
+  .settings(initialCommands += "import org.apache.pekko.testkit._")
 
 lazy val actorTyped = akkaModule("akka-actor-typed")
   .dependsOn(actor, slf4j)
@@ -467,11 +466,11 @@ lazy val actorTyped = akkaModule("akka-actor-typed")
   .settings(OSGi.actorTyped)
   .settings(initialCommands :=
     """
-      import akka.actor.typed._
-      import akka.actor.typed.scaladsl.Behaviors
+      import org.apache.pekko.actor.typed._
+      import org.apache.pekko.actor.typed.scaladsl.Behaviors
       import scala.concurrent._
       import scala.concurrent.duration._
-      import akka.util.Timeout
+      import org.apache.pekko.util.Timeout
       implicit val timeout = Timeout(5.seconds)
     """)
   .enablePlugins(Jdk9)
@@ -553,7 +552,7 @@ lazy val actorTestkitTyped = akkaModule("akka-actor-testkit-typed")
 
 lazy val actorTypedTests = akkaModule("akka-actor-typed-tests")
   .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
-  .settings(AkkaBuild.mayChangeSettings)
+  .settings(PekkoBuild.mayChangeSettings)
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
@@ -571,10 +570,10 @@ lazy val coordination = akkaModule("akka-coordination")
 
 lazy val billOfMaterials = Project("akka-bill-of-materials", file("akka-bill-of-materials"))
   .enablePlugins(BillOfMaterialsPlugin)
-  .disablePlugins(MimaPlugin, AkkaDisciplinePlugin)
+  .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
-  .settings(AkkaBuild.buildSettings)
-  .settings(AkkaBuild.defaultSettings)
+  .settings(PekkoBuild.buildSettings)
+  .settings(PekkoBuild.defaultSettings)
   .settings(
     name := "akka-bom",
     bomIncludeProjects := userProjects,
@@ -582,8 +581,8 @@ lazy val billOfMaterials = Project("akka-bill-of-materials", file("akka-bill-of-
 
 lazy val serialversionRemoverPlugin =
   Project(id = "serialVersionRemoverPlugin", base = file("plugins/serialversion-remover-plugin")).settings(
-    scalaVersion := akka.Dependencies.scala3Version,
-    libraryDependencies += ("org.scala-lang" %% "scala3-compiler" % akka.Dependencies.scala3Version),
+    scalaVersion := Dependencies.scala3Version,
+    libraryDependencies += ("org.scala-lang" %% "scala3-compiler" % Dependencies.scala3Version),
     Compile / doc / sources := Nil,
     Compile / publishArtifact := false)
 
@@ -598,8 +597,8 @@ def akkaModule(name: String): Project =
   Project(id = name, base = file(name))
     .enablePlugins(ReproducibleBuildsPlugin)
     .disablePlugins(WelcomePlugin)
-    .settings(akka.AkkaBuild.buildSettings)
-    .settings(akka.AkkaBuild.defaultSettings)
+    .settings(PekkoBuild.buildSettings)
+    .settings(PekkoBuild.defaultSettings)
     .enablePlugins(BootstrapGenjavadoc)
 
 /* Command aliases one can run locally against a module

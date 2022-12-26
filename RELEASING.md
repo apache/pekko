@@ -71,7 +71,7 @@ It is possible to release a revised documentation to the already existing releas
 1. Switch to a new branch for your documentation change, make the change
 1. Build documentation locally with:
     ```sh
-    sbt akka-docs/paradoxBrowse
+    sbt docs/paradoxBrowse
     ```
 1. If the generated documentation looks good, create a PR to the `docs/v2.6.4` branch you created earlier.
 1. It should automatically be published by GitHub Actions on merge.

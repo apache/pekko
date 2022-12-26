@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import com.hpe.sbt.ValidatePullRequest
 import com.hpe.sbt.ValidatePullRequest.PathGlobFilter
@@ -14,10 +14,10 @@ import sbtunidoc.BaseUnidocPlugin.autoImport.unidoc
 import sbt.Keys._
 import sbt._
 
-object AkkaValidatePullRequest extends AutoPlugin {
+object PekkoValidatePullRequest extends AutoPlugin {
 
   object CliOptions {
-    val mimaEnabled = CliOption("akka.mima.enabled", true)
+    val mimaEnabled = CliOption("pekko.mima.enabled", true)
   }
 
   import ValidatePullRequest.autoImport._
@@ -39,7 +39,19 @@ object AkkaValidatePullRequest extends AutoPlugin {
     }, additionalTasks := Seq.empty)
 
   override lazy val buildSettings = Seq(
-    validatePullRequest / includeFilter := PathGlobFilter("akka-*/**"),
+    validatePullRequest / includeFilter := {
+      val ignoredProjects = List(
+        "pekko", // This is the root project
+        "serialVersionRemoverPlugin")
+
+      loadedBuild.value.allProjectRefs.collect {
+        case (_, project) if !ignoredProjects.contains(project.id) =>
+          val directory = project.base.getPath.split("/").last
+          PathGlobFilter(s"$directory/**")
+      }.fold(new FileFilter { // TODO: Replace with FileFilter.nothing when https://github.com/sbt/io/pull/340 gets released
+        override def accept(pathname: File): Boolean = false
+      })(_ || _)
+    },
     validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
     prValidatorGithubRepository := Some("akka/akka"),
     prValidatorTargetBranch := "origin/main")
@@ -67,11 +79,11 @@ object AkkaValidatePullRequest extends AutoPlugin {
  * autoplugin would trigger only on projects which have both of these plugins enabled.
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
   import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && MultiNode
+  override def requires = PekkoValidatePullRequest && MultiNode
   override lazy val projectSettings =
     if (MultiNode.multiNodeTestInTest) Seq(additionalTasks += MultiNode.multiTest)
     else Seq.empty
@@ -82,10 +94,10 @@ object MultiNodeWithPrValidation extends AutoPlugin {
  * when a project has MimaPlugin autoplugin enabled.
  */
 object MimaWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && MimaPlugin
+  override def requires = PekkoValidatePullRequest && MimaPlugin
   override lazy val projectSettings =
     CliOptions.mimaEnabled.ifTrue(additionalTasks += mimaReportBinaryIssues).toList
 }
@@ -95,15 +107,15 @@ object MimaWithPrValidation extends AutoPlugin {
  * when a project has ParadoxPlugin autoplugin enabled.
  */
 object ParadoxWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = allRequirements
-  override def requires = AkkaValidatePullRequest && ParadoxPlugin
+  override def requires = PekkoValidatePullRequest && ParadoxPlugin
   override lazy val projectSettings = Seq(additionalTasks += Compile / paradox)
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
-  import AkkaValidatePullRequest._
+  import PekkoValidatePullRequest._
 
   override def trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)

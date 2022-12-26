@@ -2,9 +2,9 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
-import akka.TestExtras.Filter.Keys._
+import org.apache.pekko.TestExtras.Filter.Keys._
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
 import com.typesafe.sbt.{ MultiJvmPlugin => SbtMultiJvm }
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._
@@ -23,16 +23,16 @@ object MultiNode extends AutoPlugin {
   import autoImport._
 
   // MultiJvm tests can be excluded from normal test target an validatePullRequest
-  // with -Dakka.test.multi-in-test=false
-  val multiNodeTestInTest: Boolean = sys.props.getOrElse("akka.test.multi-in-test", "true").toBoolean
+  // with -Dpekko.test.multi-in-test=false
+  val multiNodeTestInTest: Boolean = sys.props.getOrElse("pekko.test.multi-in-test", "true").toBoolean
 
   object CliOptions {
-    val multiNode = CliOption("akka.test.multi-node", false)
+    val multiNode = CliOption("pekko.test.multi-node", false)
     val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
 
-    val hostsFileName = sys.props.get("akka.test.multi-node.hostsFileName").toSeq
-    val javaName = sys.props.get("akka.test.multi-node.java").toSeq
-    val targetDirName = sys.props.get("akka.test.multi-node.targetDirName").toSeq
+    val hostsFileName = sys.props.get("pekko.test.multi-node.hostsFileName").toSeq
+    val javaName = sys.props.get("pekko.test.multi-node.java").toSeq
+    val targetDirName = sys.props.get("pekko.test.multi-node.targetDirName").toSeq
   }
 
   val multiExecuteTests =
@@ -59,7 +59,7 @@ object MultiNode extends AutoPlugin {
       case key: String if knownPrefix.exists(pre => key.startsWith(pre)) => "-D" + key + "=" + System.getProperty(key)
     }
 
-    "-Xmx256m" :: akkaProperties ::: CliOptions.sbtLogNoFormat.ifTrue("-Dakka.test.nocolor=true").toList
+    "-Xmx256m" :: akkaProperties ::: CliOptions.sbtLogNoFormat.ifTrue("-Dpekko.test.nocolor=true").toList
   } ++ JdkOptions.versionSpecificJavaOptions
 
   private val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)
@@ -135,7 +135,7 @@ object MultiNodeScalaTest extends AutoPlugin {
     Seq(
       MultiJvm / extraOptions := {
         val src = (MultiJvm / sourceDirectory).value
-        (name: String) => (src ** (name + ".conf")).get.headOption.map("-Dakka.config=" + _.absolutePath).toSeq
+        (name: String) => (src ** (name + ".conf")).get.headOption.map("-Dpekko.config=" + _.absolutePath).toSeq
       },
       MultiJvm / scalatestOptions := {
         Seq("-C", "org.scalatest.extra.QuietReporter") ++

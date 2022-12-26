@@ -7,7 +7,7 @@
 // with akka
 syntax = "proto3";
 
-option java_package = "akka.remote.protobuf.v3";
+option java_package = "org.apache.pekko.remote.protobuf.v3";
 
 message MyMessageV3 {
   string query = 1;

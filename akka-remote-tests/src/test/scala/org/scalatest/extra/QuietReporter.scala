@@ -12,7 +12,7 @@ import org.scalatest.tools.StandardOutReporter
 class QuietReporter(inColor: Boolean, withDurations: Boolean = false)
     extends StandardOutReporter(withDurations, inColor, false, true, false, false, false, false, false, false, false) {
 
-  def this() = this(!getBoolean("akka.test.nocolor"), !getBoolean("akka.test.nodurations"))
+  def this() = this(!getBoolean("pekko.test.nocolor"), !getBoolean("pekko.test.nodurations"))
 
   override def apply(event: Event): Unit = event match {
     case _: RunStarting => ()

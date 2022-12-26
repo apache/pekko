@@ -2,10 +2,10 @@
  * Copyright (C) 2014-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.stream.scaladsl
+package org.apache.pekko.stream.scaladsl
 
-import akka.NotUsed
-import akka.stream.{ Graph, Shape }
+import org.apache.pekko.NotUsed
+import org.apache.pekko.stream.{ Graph, Shape }
 
 trait GraphApply {
   /**

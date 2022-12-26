@@ -30,12 +30,12 @@ jobs:
         run: |-
           sbtx -jvm-opts .jvmopts-ci \
             -Djava.security.egd=file:/dev/./urandom \
-            -Dakka.test.sigar=true \
-            -Dakka.cluster.assert=on \
-            -Dakka.test.timefactor=2 \
-            -Dakka.actor.testkit.typed.timefactor=2 \
-            -Dakka.test.tags.exclude=gh-exclude,timing \
-            -Dakka.log.timestamps=true \
+            -Dpekko.test.sigar=true \
+            -Dpekko.cluster.assert=on \
+            -Dpekko.test.timefactor=2 \
+            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.test.tags.exclude=gh-exclude,timing \
+            -Dpekko.log.timestamps=true \
             -Dmultinode.XX:MetaspaceSize=128M \
             -Dmultinode.Xms256M \
             -Dmultinode.Xmx256M \
@@ -100,12 +100,12 @@ jobs:
         run: |-
           sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
-          -Dakka.remote.artery.enabled=off \
-          -Dakka.test.timefactor=2 \
-          -Dakka.actor.testkit.typed.timefactor=2 \
-          -Dakka.test.tags.exclude=gh-exclude,timing \
-          -Dakka.test.multi-in-test=false \
-          -Dakka.cluster.assert=on \
+          -Dpekko.remote.artery.enabled=off \
+          -Dpekko.test.timefactor=2 \
+          -Dpekko.actor.testkit.typed.timefactor=2 \
+          -Dpekko.test.tags.exclude=gh-exclude,timing \
+          -Dpekko.test.multi-in-test=false \
+          -Dpekko.cluster.assert=on \
           clean ${{ matrix.command }}
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
@@ -161,12 +161,12 @@ jobs:
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbtx -jvm-opts .jvmopts-ci \
-            -Dakka.cluster.assert=on \
-            -Dakka.log.timestamps=true \
-            -Dakka.test.timefactor=2 \
-            -Dakka.actor.testkit.typed.timefactor=2 \
-            -Dakka.test.tags.exclude=gh-exclude,timing \
-            -Dakka.test.multi-in-test=false \
+            -Dpekko.cluster.assert=on \
+            -Dpekko.log.timestamps=true \
+            -Dpekko.test.timefactor=2 \
+            -Dpekko.actor.testkit.typed.timefactor=2 \
+            -Dpekko.test.tags.exclude=gh-exclude,timing \
+            -Dpekko.test.multi-in-test=false \
             ${{ matrix.extraOpts }} \
             clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
@@ -195,7 +195,7 @@ jobs:
         run: |-
           sudo apt-get install graphviz
           sbtx -jvm-opts .jvmopts-ci \
-            -Dakka.genjavadoc.enabled=true \
+            -Dpekko.genjavadoc.enabled=true \
             "+~ ${{ matrix.scalaVersion }} doc"
 
       - name: Publish
@@ -204,7 +204,7 @@ jobs:
         run: |-
           sudo apt-get install graphviz
           sbtx -jvm-opts .jvmopts-ci \
-            -Dakka.build.scalaVersion=${{ matrix.scalaVersion }} \
+            -Dpekko.build.scalaVersion=${{ matrix.scalaVersion }} \
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
@@ -253,12 +253,12 @@ jobs:
         run: |-
           sbtx -jvm-opts .jvmopts-ci \
           -Djava.security.egd=file:/dev/./urandom \
-          -Dakka.remote.artery.transport=aeron-udp \
-          -Dakka.test.timefactor=2 \
-          -Dakka.actor.testkit.typed.timefactor=2 \
-          -Dakka.test.tags.exclude=gh-exclude,gh-exclude-aeron,timing \
-          -Dakka.test.multi-in-test=false \
-          -Dakka.cluster.assert=on \
+          -Dpekko.remote.artery.transport=aeron-udp \
+          -Dpekko.test.timefactor=2 \
+          -Dpekko.actor.testkit.typed.timefactor=2 \
+          -Dpekko.test.tags.exclude=gh-exclude,gh-exclude-aeron,timing \
+          -Dpekko.test.multi-in-test=false \
+          -Dpekko.cluster.assert=on \
           -Daeron.dir=/opt/volumes/media-driver \
           -Daeron.term.buffer.length=33554432 \
           clean ${{ matrix.command }}

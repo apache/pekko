@@ -5,7 +5,7 @@
 package sbt
 import Keys.baseDirectory
 
-import akka.ProjectFileIgnoreSupport
+import org.apache.pekko.ProjectFileIgnoreSupport
 import sbt.Keys.unmanagedSources
 
 trait ScalafixSupport {
@@ -49,5 +49,5 @@ trait ScalafixSupport {
 }
 
 object ScalafixSupport {
-  def fixTestScope: Boolean = System.getProperty("akka.scalafix.fixTestScope", "false").toBoolean
+  def fixTestScope: Boolean = System.getProperty("pekko.scalafix.fixTestScope", "false").toBoolean
 }

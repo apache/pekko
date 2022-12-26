@@ -4,7 +4,7 @@
 
 syntax = "proto2";
 
-option java_package = "akka.cluster.pubsub.protobuf.msg";
+option java_package = "org.apache.pekko.cluster.pubsub.protobuf.msg";
 option optimize_for = SPEED;
 
 message Status {

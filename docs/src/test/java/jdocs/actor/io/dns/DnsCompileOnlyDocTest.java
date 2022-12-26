@@ -1,0 +1,68 @@
+/*
+ * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
+ */
+
+package jdocs.actor.io.dns;
+
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.io.Dns;
+import org.apache.pekko.io.dns.DnsProtocol;
+
+import static org.apache.pekko.pattern.Patterns.ask;
+
+import scala.Option;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+
+public class DnsCompileOnlyDocTest {
+  public static void example() {
+    ActorSystem system = ActorSystem.create();
+
+    ActorRef actorRef = null;
+    final Duration timeout = Duration.ofMillis(1000L);
+
+    // #resolve
+    Option<DnsProtocol.Resolved> initial =
+        Dns.get(system)
+            .cache()
+            .resolve(
+                new DnsProtocol.Resolve("google.com", DnsProtocol.ipRequestType()),
+                system,
+                actorRef);
+    Option<DnsProtocol.Resolved> cached =
+        Dns.get(system)
+            .cache()
+            .cached(new DnsProtocol.Resolve("google.com", DnsProtocol.ipRequestType()));
+    // #resolve
+
+    {
+      // #actor-api-inet-address
+      final ActorRef dnsManager = Dns.get(system).manager();
+      CompletionStage<Object> resolved =
+          ask(
+              dnsManager,
+              new DnsProtocol.Resolve("google.com", DnsProtocol.ipRequestType()),
+              timeout);
+      // #actor-api-inet-address
+
+    }
+
+    {
+      // #actor-api-async
+      final ActorRef dnsManager = Dns.get(system).manager();
+      CompletionStage<Object> resolved =
+          ask(dnsManager, DnsProtocol.resolve("google.com"), timeout);
+      // #actor-api-async
+    }
+
+    {
+      // #srv
+      final ActorRef dnsManager = Dns.get(system).manager();
+      CompletionStage<Object> resolved =
+          ask(dnsManager, DnsProtocol.resolve("google.com", DnsProtocol.srvRequestType()), timeout);
+      // #srv
+    }
+  }
+}

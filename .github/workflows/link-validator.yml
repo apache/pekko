@@ -28,7 +28,7 @@ jobs:
         uses: coursier/cache-action@v6.4.0
 
       - name: create the Akka site
-        run: sbt -Dakka.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; akka-docs/paradox"
+        run: sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
 
       - name: Install Coursier command line tool
         run: curl -fLo cs https://git.io/coursier-cli-linux && chmod +x cs && ./cs

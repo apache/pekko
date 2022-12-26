@@ -70,7 +70,7 @@ The steps are exactly the same for everyone involved in the project, including t
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
    - Use the `verifyCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
-1. If it's a new feature or a change of behavior, document it on the [akka-docs](https://github.com/apache/incubator-pekko/tree/main/akka-docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
+1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/incubator-pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
     - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
 1. If you are a first time contributor, a core member must approve the CI to run for your pull request.
@@ -218,7 +218,7 @@ The Pekko build includes a special task called `validatePullRequest`, which inve
 then running tests only on those projects.
 
 For example, changing something in `akka-actor` would cause tests to be run in all projects which depend on it
-(e.g. `akka-actor-tests`, `akka-stream`, `akka-docs` etc.).
+(e.g. `akka-actor-tests`, `akka-stream`, `docs` etc.).
 
 To use the task, simply type `validatePullRequest`, and the output should include entries like shown below:
 
@@ -226,7 +226,7 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
 [info] Detected uncomitted changes in directories (including in dependency analysis): [akka-protobuf,project]
-[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, akka-docs, akka-persistence]
+[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, docs, akka-persistence]
 ```
 
 By default, changes are diffed with the `main` branch when working locally. If you want to validate against a different
@@ -250,7 +250,7 @@ Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary comp
 PR fails due to binary compatibility issues, you may see an error like this:
 
 ```
-[info] akka-stream: found 1 potential binary incompatibilities while checking against com.typesafe.akka:akka-stream_2.12:2.4.2  (filtered 222)
+[info] akka-stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:akka-stream_2.12:2.4.2  (filtered 222)
 [error]  * method foldAsync(java.lang.Object,scala.Function2)akka.stream.scaladsl.FlowOps in trait akka.stream.scaladsl.FlowOps is present only in current version
 [error]    filter with: ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.stream.scaladsl.FlowOps.foldAsync")
 ```
@@ -263,7 +263,7 @@ in the file that describes briefly why the incompatibility can be ignored.
 
 Situations when it may be acceptable to ignore a MiMa issued warning include:
 
-- if it is touching any class marked as `private[akka]`, `/** INTERNAL API*/` or similar markers
+- if it is touching any class marked as `private[pekko]`, `/** INTERNAL API*/` or similar markers
 - if it is concerning internal classes (often recognisable by package names like `dungeon`, `impl`, `internal` etc.)
 - if it is adding API to classes / traits which are only meant for extension by Akka itself, i.e. should not be extended by end-users
 - other tricky situations
@@ -279,7 +279,7 @@ rolling upgrade to the next version.
 
 All wire protocol changes that may concern rolling upgrades should be documented in the
 [Rolling Update Changelog](https://pekko.apache.org/)
-(found in akka-docs/src/main/paradox/project/rolling-update.md)
+(found in docs/src/main/paradox/project/rolling-update.md)
 
 ### Protobuf
 
@@ -321,12 +321,12 @@ To build the documentation locally:
 
 ```shell
 sbt
-akka-docs/paradox
+docs/paradox
 ```
 
-The generated HTML documentation is in `akka-docs/target/paradox/site/main/index.html`.
+The generated HTML documentation is in `docs/target/paradox/site/main/index.html`.
 
-Alternatively, use `akka-docs/paradoxBrowse` to open the generated docs in your default web browser.
+Alternatively, use `docs/paradoxBrowse` to open the generated docs in your default web browser.
 
 #### Links to API documentation
 
@@ -347,7 +347,7 @@ For further hints on how to disambiguate links in ScalaDoc comments see
 [this StackOverflow answer](https://stackoverflow.com/a/31569861/354132),
 though note that this syntax may not correctly render as Javadoc.
 
-The Scaladoc tool needs the `dot` command from the [Graphviz](https://graphviz.org/#download) software package to be installed to avoid errors. You can disable the diagram generation by adding the flag `-Dakka.scaladoc.diagrams=false`. After installing Graphviz, make sure you add the toolset to the `PATH` (definitely on Windows).
+The Scaladoc tool needs the `dot` command from the [Graphviz](https://graphviz.org/#download) software package to be installed to avoid errors. You can disable the diagram generation by adding the flag `-Dpekko.scaladoc.diagrams=false`. After installing Graphviz, make sure you add the toolset to the `PATH` (definitely on Windows).
 
 #### JavaDoc
 
@@ -357,7 +357,7 @@ Generating JavaDoc is not enabled by default, as it's not needed on day-to-day d
 If you'd like to check if your links and formatting look good in JavaDoc (and not only in ScalaDoc), you can generate it by running:
 
 ```shell
-sbt -Dakka.genjavadoc.enabled=true Javaunidoc/doc
+sbt -Dpekko.genjavadoc.enabled=true Javaunidoc/doc
 ```
 
 Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 11 or later.
@@ -431,13 +431,13 @@ Also, tests tagged as `PerformanceTest`, `TimingTest`, `LongRunningTest`, and al
 You can exclude the same kind of tests in your local build by starting sbt with:
 
 ```shell
-sbt -Dakka.test.tags.exclude=performance,timing,long-running -Dakka.test.multi-in-test=false
+sbt -Dpekko.test.tags.exclude=performance,timing,long-running -Dpekko.test.multi-in-test=false
 ```
 
 It is also possible to exclude groups of test by their names. For example:
 
 ```shell
-sbt -Dakka.test.names.exclude=akka.cluster.Stress
+sbt -Dpekko.test.names.exclude=akka.cluster.Stress
 ```
 
 Will exclude any tests that have names containing `akka.cluster.Stress`.
@@ -476,7 +476,7 @@ In addition to formatting, the Pekko build enforces code discipline through a se
 to any non-empty string value when starting up sbt:
 
 ```shell
-sbt -Dakka.no.discipline=youbet
+sbt -Dpekko.no.discipline=youbet
 ```
 
 PR validation includes the discipline flags and hence may fail if the flags were disabled during development. Make sure you compile your code at least once with discipline enabled before sending a PR.
@@ -542,7 +542,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 1. Provide `getX` style accessors for values in the Java APIs
 
 1. Place classes not part of the public APIs in a shared `internal` package. This package can contain implementations of
-   both Java and Scala APIs. Make such classes `private[akka]` and also, since that becomes `public` from Java's point of
+   both Java and Scala APIs. Make such classes `private[pekko]` and also, since that becomes `public` from Java's point of
    view, annotate with `@InternalApi` and add a scaladoc saying `INTERNAL API`
 
 1. Traits that are part of the Java API should only be used to define pure interfaces, as soon as there are implementations of methods, prefer
@@ -567,7 +567,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 Documentation of Pekko Streams operators is automatically enforced.
 If a method exists on Source / Sink / Flow, or any other class listed in `project/StreamOperatorsIndexGenerator.scala`,
-it must also have a corresponding documentation page under `akka-docs/src/main/paradox/streams/operators/...`.
+it must also have a corresponding documentation page under `docs/src/main/paradox/streams/operators/...`.
 
 Pekko Streams operators' consistency is enforced by `ConsistencySpec`, normally an operator should exist on both Source / SubSource, Flow / SubFlow, Sink / SubSink.
 
@@ -577,7 +577,7 @@ docs pages in there to see the pattern in action. In general the page must consi
 - the title, including where the operator is defined (e.g. `ActorFlow.ask` or `Source.map`)
 - a short explanation of what this operator does, 1 sentence is optimal
 - an image explaining the operator more visually (whenever possible)
-- a link to the operators' "category" (these are listed in `akka-docs/src/main/paradox/categories`)
+- a link to the operators' "category" (these are listed in `docs/src/main/paradox/categories`)
 - the method signature snippet (use the built in directives to generate it)
 - a longer explanation about the operator and its exact semantics (when it pulls, cancels, signals elements)
 - at least one usage example

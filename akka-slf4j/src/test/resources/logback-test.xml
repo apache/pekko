@@ -5,20 +5,20 @@
       <pattern>%date{ISO8601} %-5level %logger %X{akkaSource} %X{sourceThread} - %msg%n</pattern>
     </encoder>
   </appender>
-  <appender name="TEST" class="akka.event.slf4j.Slf4jLoggerSpec$TestAppender">
+  <appender name="TEST" class="org.apache.pekko.event.slf4j.Slf4jLoggerSpec$TestAppender">
     <encoder>
       <pattern>%date{ISO8601} level=[%level] marker=[%marker] logger=[%logger] mdc=[%mdc] - msg=[%msg]%n----%n</pattern>
     </encoder>
   </appender>
-  <logger name="akka.event.slf4j.Slf4jLoggingFilterSpec$DebugLevelProducer"
+  <logger name="org.apache.pekko.event.slf4j.Slf4jLoggingFilterSpec$DebugLevelProducer"
     level="debug" additivity="false">
     <appender-ref ref="STDOUT" />
   </logger>
-  <logger name="akka.event.slf4j.Slf4jLoggingFilterSpec$WarningLevelProducer"
+  <logger name="org.apache.pekko.event.slf4j.Slf4jLoggingFilterSpec$WarningLevelProducer"
     level="warn" additivity="false">
     <appender-ref ref="STDOUT" />
   </logger>
-  <logger name="akka.event.slf4j.Slf4jLoggerSpec" level="info"
+  <logger name="org.apache.pekko.event.slf4j.Slf4jLoggerSpec" level="info"
     additivity="false">
     <appender-ref ref="TEST" />
   </logger>

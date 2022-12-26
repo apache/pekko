@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt._
 import sbt.Keys._
@@ -38,7 +38,7 @@ object Publish extends AutoPlugin {
 
   private def akkaPublishTo = Def.setting {
     val key = new java.io.File(
-      Option(System.getProperty("akka.gustav.key"))
+      Option(System.getProperty("pekko.gustav.key"))
         .getOrElse(System.getProperty("user.home") + "/.ssh/id_rsa_gustav.pem"))
     if (isSnapshot.value)
       Resolver.sftp("Akka snapshots", "gustav.akka.io", "/home/akkarepo/www/snapshots").as("akkarepo", key)
@@ -47,7 +47,7 @@ object Publish extends AutoPlugin {
   }
 
   private def akkaCredentials: Seq[Credentials] =
-    Option(System.getProperty("akka.publish.credentials")).map(f => Credentials(new File(f))).toSeq
+    Option(System.getProperty("pekko.publish.credentials")).map(f => Credentials(new File(f))).toSeq
 }
 
 /**

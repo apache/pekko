@@ -2,7 +2,7 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt.Keys._
 import sbt._
@@ -12,11 +12,11 @@ object TestExtras {
   object Filter {
     object Keys {
       val excludeTestNames = settingKey[Set[String]](
-        "Names of tests to be excluded. Not supported by MultiJVM tests. Example usage: -Dakka.test.names.exclude=TimingSpec")
+        "Names of tests to be excluded. Not supported by MultiJVM tests. Example usage: -Dpekko.test.names.exclude=TimingSpec")
       val excludeTestTags = settingKey[Set[String]](
-        "Tags of tests to be excluded. It will not be used if you specify -Dakka.test.tags.only. Example usage: -Dakka.test.tags.exclude=long-running")
+        "Tags of tests to be excluded. It will not be used if you specify -Dpekko.test.tags.only. Example usage: -Dpekko.test.tags.exclude=long-running")
       val onlyTestTags =
-        settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dakka.test.tags.only=long-running")
+        settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dpekko.test.tags.only=long-running")
 
       val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run");
     }
@@ -56,10 +56,10 @@ object TestExtras {
 
           val baseList =
             List(
-              "The java JavaExtension.java" -> "akka-actor-tests/target/test-reports/TEST-akka.actor.JavaExtension.xml")
+              "The java JavaExtension.java" -> "akka-actor-tests/target/test-reports/TEST-org.apache.pekko.actor.JavaExtension.xml")
           val jdk9Only = List(
-            "The jdk9-only FlowPublisherSinkSpec.scala" -> "akka-stream-tests/target/test-reports/TEST-akka.stream.scaladsl.FlowPublisherSinkSpec.xml",
-            "The jdk9-only JavaFlowSupportCompileTest.java" -> "akka-stream-tests/target/test-reports/TEST-akka.stream.javadsl.JavaFlowSupportCompileTest.xml")
+            "The jdk9-only FlowPublisherSinkSpec.scala" -> "akka-stream-tests/target/test-reports/TEST-org.apache.pekko.stream.scaladsl.FlowPublisherSinkSpec.xml",
+            "The jdk9-only JavaFlowSupportCompileTest.java" -> "akka-stream-tests/target/test-reports/TEST-org.apache.pekko.stream.javadsl.JavaFlowSupportCompileTest.xml")
 
           val testsToCheck =
             if (isJdk8) baseList

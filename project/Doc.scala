@@ -2,7 +2,7 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka
+package org.apache.pekko
 
 import sbt._
 import sbtunidoc.BaseUnidocPlugin.autoImport.{ unidoc, unidocAllSources, unidocProjectFilter }
@@ -19,8 +19,8 @@ import sbt.ScopeFilter.ProjectFilter
 object Scaladoc extends AutoPlugin {
 
   object CliOptions {
-    val scaladocDiagramsEnabled = CliOption("akka.scaladoc.diagrams", true)
-    val scaladocAutoAPI = CliOption("akka.scaladoc.autoapi", true)
+    val scaladocDiagramsEnabled = CliOption("pekko.scaladoc.diagrams", true)
+    val scaladocAutoAPI = CliOption("pekko.scaladoc.autoapi", true)
   }
 
   override def trigger = allRequirements
@@ -125,7 +125,7 @@ object ScaladocNoVerificationOfDiagrams extends AutoPlugin {
 object UnidocRoot extends AutoPlugin {
 
   object CliOptions {
-    val genjavadocEnabled = CliOption("akka.genjavadoc.enabled", false)
+    val genjavadocEnabled = CliOption("pekko.genjavadoc.enabled", false)
   }
 
   object autoImport {

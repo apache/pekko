@@ -2,7 +2,7 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package akka.serialization.jackson;
+package org.apache.pekko.serialization.jackson;
 
 import java.time.Duration;
 import java.time.Instant;
