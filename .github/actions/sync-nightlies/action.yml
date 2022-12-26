@@ -76,7 +76,6 @@ runs:
         # strict errors
         set -eu
         # We have to use a custom RSH to supply the port
-#        RSH="ssh -o UserKnownHostsFile=.ssh/known_hosts -p $PORT"
         RSH="ssh -o StrictHostKeyChecking=no -p $PORT"
         DSN="$USER@$HOST"
         # It is important to append '/' to the source path otherwise
