@@ -35,8 +35,8 @@ on:
 permissions:
   contents: read
 
-env: #fixme
-  GROUP_ID: 'com.typesafe.akka'
+env:
+  GROUP_ID: 'org.apache.pekko'
 
 jobs:
   publish-nightly:
@@ -78,7 +78,7 @@ jobs:
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
-          remote_host_key: ${{ secrets.NIGHTLIES_RSYNC_HOST_KEY }}
+#          remote_host_key: ${{ secrets.NIGHTLIES_RSYNC_HOST_KEY }}
 
       - shell: bash
         name: Show local repo sync from remote
