@@ -111,7 +111,7 @@ jobs:
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
-          switches: -avzh --update --delete --progress
+          switches: -avzh --omit-dir-times --update --delete --progress
           local_path: repo
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/snapshots
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
