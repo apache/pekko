@@ -118,4 +118,4 @@ jobs:
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
-          remote_host_key: ${{ secrets.NIGHTLIES_RSYNC_HOST_KEY }}
+#          remote_host_key: ${{ secrets.NIGHTLIES_RSYNC_HOST_KEY }}
