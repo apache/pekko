@@ -27,9 +27,12 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Check headers
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
           headerCheckAll
@@ -52,9 +55,12 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: sbt validatePullRequest
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
           -Dpekko.mima.enabled=false \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.test.timefactor=2 \
