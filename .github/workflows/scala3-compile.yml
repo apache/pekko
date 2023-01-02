@@ -42,7 +42,10 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Compile on Scala 3
         run: |
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
           "+~ 3 ${{ matrix.command }}"

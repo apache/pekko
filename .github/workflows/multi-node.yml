@@ -48,10 +48,13 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Multi node test
         run: |
           cat multi-node-test.hosts
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Dpekko.test.timefactor=2 \
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
@@ -132,10 +135,13 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Multi node test with Artery Aeron UDP
         run: |
           cat multi-node-test.hosts
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Dpekko.test.timefactor=2 \
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.cluster.assert=on \

@@ -26,9 +26,12 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: sbt test
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Djava.security.egd=file:/dev/./urandom \
             -Dpekko.cluster.assert=on \
             -Dpekko.test.timefactor=2 \
