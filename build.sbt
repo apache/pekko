@@ -466,12 +466,17 @@ lazy val actorTyped = akkaModule("akka-actor-typed")
   .settings(OSGi.actorTyped)
   .settings(initialCommands :=
     """
-      import org.apache.pekko.actor.typed._
-      import org.apache.pekko.actor.typed.scaladsl.Behaviors
+      import org.apache.pekko
+
+      import pekko.actor.typed._
+      import pekko.actor.typed.scaladsl.Behaviors
+      import pekko.util.Timeout
+
       import scala.concurrent._
       import scala.concurrent.duration._
-      import org.apache.pekko.util.Timeout
-      implicit val timeout = Timeout(5.seconds)
+      import scala.language.postfixOps
+
+      implicit val timeout = Timeout(5 seconds)
     """)
   .enablePlugins(Jdk9)
 
