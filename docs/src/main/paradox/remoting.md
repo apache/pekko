@@ -25,15 +25,15 @@ such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
 To use Akka Remoting, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-remote" }
+@@project-info{ projectId="remote" }
 
 Classic remoting depends on Netty. This needs to be explicitly added as a dependency so that users
 not using classic remoting do not have to have Netty on the classpath:
@@ -287,7 +287,7 @@ The list of allowed classes has to be configured on the "remote" system, in othe
 others will be attempting to remote deploy Actors. That system, locally, knows best which Actors it should or
 should not allow others to remote deploy onto it. The full settings section may for example look like this:
 
-@@snip [RemoteDeploymentAllowListSpec.scala](/akka-remote/src/test/scala/org/apache/pekko/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
+@@snip [RemoteDeploymentAllowListSpec.scala](/remote/src/test/scala/org/apache/pekko/remote/classic/RemoteDeploymentAllowListSpec.scala) { #allow-list-config }
 
 Actor classes not included in the allow list will not be allowed to be remote deployed onto this system.
 

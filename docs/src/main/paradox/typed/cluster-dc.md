@@ -111,10 +111,10 @@ if you see this in log messages.
 You can retrieve information about what data center a member belongs to:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #dcAccess }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #dcAccess }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #dcAccess }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #dcAccess }
 
 ## Failure Detection
 
@@ -171,10 +171,10 @@ having a global singleton in one data center and accessing it from other data ce
 This is how to create a singleton proxy for a specific data center:
 
 Scala
-:  @@snip [SingletonCompileOnlySpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #create-singleton-proxy-dc }
+:  @@snip [SingletonCompileOnlySpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/SingletonCompileOnlySpec.scala) { #create-singleton-proxy-dc }
 
 Java
-:  @@snip [SingletonCompileOnlyTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #create-singleton-proxy-dc }
+:  @@snip [SingletonCompileOnlyTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/SingletonCompileOnlyTest.java) { #create-singleton-proxy-dc }
 
 If using the own data center as the `withDataCenter` parameter that would be a proxy for the singleton in the own data center, which
 is also the default if `withDataCenter` is not given.
@@ -208,18 +208,18 @@ accessing them from other data centers.
 This is how to create a sharding proxy for a specific data center:
 
 Scala
-:  @@snip [MultiDcClusterShardingSpec.scala](/akka-cluster-sharding-typed/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/typed/MultiDcClusterShardingSpec.scala) { #proxy-dc }
+:  @@snip [MultiDcClusterShardingSpec.scala](/cluster-sharding-typed/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/typed/MultiDcClusterShardingSpec.scala) { #proxy-dc }
 
 Java
-:  @@snip [ShardingCompileOnlyTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #proxy-dc }
+:  @@snip [ShardingCompileOnlyTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #proxy-dc }
 
 and it can also be used with an `EntityRef`:
 
 Scala
-:  @@snip [MultiDcClusterShardingSpec.scala](/akka-cluster-sharding-typed/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/typed/MultiDcClusterShardingSpec.scala) { #proxy-dc-entityref }
+:  @@snip [MultiDcClusterShardingSpec.scala](/cluster-sharding-typed/src/multi-jvm/scala/org/apache/pekko/cluster/sharding/typed/MultiDcClusterShardingSpec.scala) { #proxy-dc-entityref }
 
 Java
-:  @@snip [ShardingCompileOnlyTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #proxy-dc-entityref }
+:  @@snip [ShardingCompileOnlyTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ShardingCompileOnlyTest.java) { #proxy-dc-entityref }
 
 Another way to manage global entities is to make sure that certain entity ids are located in 
 only one data center by routing the messages to the right region. For example, the routing function

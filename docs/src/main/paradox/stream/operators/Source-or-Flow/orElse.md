@@ -22,7 +22,7 @@ Signal errors downstream, regardless which of the two sources emitted the error.
 
 ## Example
 Scala
-:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowOrElseSpec.scala) { #or-else }
+:   @@snip [FlowOrElseSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowOrElseSpec.scala) { #or-else }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #or-else }

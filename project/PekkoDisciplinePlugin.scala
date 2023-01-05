@@ -20,52 +20,52 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalJavaWarningsFor = Set(
     // for sun.misc.Unsafe and AbstractScheduler
-    "akka-actor",
+    "pekko-actor",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-actor-typed-tests",
+    "pekko-actor-typed-tests",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-cluster-typed",
+    "pekko-cluster-typed",
     // use of deprecated akka.protobuf.GeneratedMessage
-    "akka-protobuf",
-    "akka-protobuf-v3",
+    "pekko-protobuf",
+    "pekko-protobuf-v3",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-remote",
+    "pekko-remote",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-distributed-data",
+    "pekko-distributed-data",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-cluster-sharding-typed",
+    "pekko-cluster-sharding-typed",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-persistence-typed",
+    "pekko-persistence-typed",
     // references to deprecated PARSER fields in generated message formats?
-    "akka-persistence-query",
-    "docs",
+    "pekko-persistence-query",
+    "pekko-docs",
     // use varargs of `Graph` in alsoTo and etc operators
-    "akka-stream-tests")
+    "pekko-stream-tests")
 
   val looseProjects = Set(
-    "akka-actor",
-    "akka-actor-testkit-typed",
-    "akka-actor-tests",
-    "akka-actor-typed",
-    "akka-actor-typed-tests",
-    "akka-bench-jmh",
-    "akka-cluster",
-    "akka-cluster-metrics",
-    "akka-cluster-sharding",
-    "akka-cluster-sharding-typed",
-    "akka-distributed-data",
-    "docs",
-    "akka-persistence",
-    "akka-persistence-tck",
-    "akka-persistence-typed",
-    "akka-persistence-query",
-    "akka-remote",
-    "akka-remote-tests",
-    "akka-stream",
-    "akka-stream-testkit",
-    "akka-stream-tests",
-    "akka-stream-tests-tck",
-    "akka-testkit")
+    "pekko-actor",
+    "pekko-actor-testkit-typed",
+    "pekko-actor-tests",
+    "pekko-actor-typed",
+    "pekko-actor-typed-tests",
+    "pekko-bench-jmh",
+    "pekko-cluster",
+    "pekko-cluster-metrics",
+    "pekko-cluster-sharding",
+    "pekko-cluster-sharding-typed",
+    "pekko-distributed-data",
+    "pekko-docs",
+    "pekko-persistence",
+    "pekko-persistence-tck",
+    "pekko-persistence-typed",
+    "pekko-persistence-query",
+    "pekko-remote",
+    "pekko-remote-tests",
+    "pekko-stream",
+    "pekko-stream-testkit",
+    "pekko-stream-tests",
+    "pekko-stream-tests-tck",
+    "pekko-testkit")
 
   val defaultScalaOptions = "-Wconf:cat=unused-nowarn:s,any:e"
 

@@ -48,10 +48,10 @@ In this example we create the stream in an actor which itself reacts on the dema
 
 
 Scala
-:  @@snip [ActorSourceSinkExample.scala](/akka-stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-source-with-backpressure }
+:  @@snip [ActorSourceSinkExample.scala](/stream-typed/src/test/scala/docs/org/apache/pekko/stream/typed/ActorSourceSinkExample.scala) { #actor-source-with-backpressure }
 
 Java
-:  @@snip [snip](/akka-stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSourceWithBackpressureExample.java) { #sample }
+:  @@snip [snip](/stream-typed/src/test/java/docs/org/apache/pekko/stream/typed/ActorSourceWithBackpressureExample.java) { #sample }
 
 ## Reactive Streams semantics
 

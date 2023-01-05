@@ -8,16 +8,16 @@ For the new API see @ref[testing](typed/testing.md).
 To use Akka Testkit, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-testkit_$scala.binary.version$"
+  artifact="pekko-testkit_$scala.binary.version$"
   version=PekkoVersion
   scope="test"
 }
 
-@@project-info{ projectId="akka-testkit" }
+@@project-info{ projectId="testkit" }
 
 ## Introduction
 
@@ -457,7 +457,7 @@ This code can be used to forward messages, e.g. in a chain `A --> Probe -->
 B`, as long as a certain protocol is obeyed.
 
 Scala
-:   @@snip [TestProbeSpec.scala](/akka-testkit/src/test/scala/org/apache/pekko/testkit/TestProbeSpec.scala) { #autopilot }
+:   @@snip [TestProbeSpec.scala](/testkit/src/test/scala/org/apache/pekko/testkit/TestProbeSpec.scala) { #autopilot }
 
 Java
 :   @@snip [TestKitDocTest.java](/docs/src/test/java/jdocs/testkit/TestKitDocTest.java) { #test-auto-pilot }

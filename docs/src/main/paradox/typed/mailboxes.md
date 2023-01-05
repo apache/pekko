@@ -36,14 +36,14 @@ For advanced use cases it is also possible to defer mailbox selection to config 
 To select a specific mailbox for an actor use @apidoc[MailboxSelector](MailboxSelector$) to create a @apidoc[Props](typed.Props) instance for spawning your actor:
 
 Scala
-:  @@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/MailboxDocSpec.scala) { #select-mailbox }
+:  @@snip [MailboxDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/MailboxDocSpec.scala) { #select-mailbox }
 
 Java
-:  @@snip [MailboxDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #select-mailbox }
+:  @@snip [MailboxDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #select-mailbox }
 
 @apidoc[fromConfig](MailboxSelector$) {scala="#fromConfig(path:String):org.apache.pekko.actor.typed.MailboxSelector" java="#fromConfig(java.lang.String)"} takes an absolute config path to a block defining the dispatcher in the config file:
 
-@@snip [MailboxDocSpec.scala](/akka-actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
+@@snip [MailboxDocSpec.scala](/actor-typed-tests/src/test/resources/mailbox-config-sample.conf) { }
 
 ### Default Mailbox
 

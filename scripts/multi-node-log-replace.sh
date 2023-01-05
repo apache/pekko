@@ -22,4 +22,4 @@
 # check for an sbt command
 type -P sbt &> /dev/null || fail "sbt command not found"
 
-sbt "project akka-remote-tests" "test:run-main akka.remote.testkit.LogRoleReplace $1 $2"
+sbt "project remote-tests" "test:run-main org.apache.pekko.remote.testkit.LogRoleReplace $1 $2"

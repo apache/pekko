@@ -5,19 +5,19 @@
 To use Akka Persistence TestKit, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group1=org.apache.pekko
-  artifact1=akka-persistence-typed_$scala.binary.version$
+  artifact1=pekko-persistence-typed_$scala.binary.version$
   version1=PekkoVersion
   group2=org.apache.pekko
-  artifact2=akka-persistence-testkit_$scala.binary.version$
+  artifact2=pekko-persistence-testkit_$scala.binary.version$
   version2=PekkoVersion
   scope2=test
 }
 
-@@project-info{ projectId="akka-persistence-testkit" }
+@@project-info{ projectId="persistence-testkit" }
 
 ## Unit testing
 
@@ -32,18 +32,18 @@ You need to configure the `ActorSystem` with the `EventSourcedBehaviorTestKit.co
 the in-memory journal and snapshot storage.
 
 Scala
-:  @@snip [AccountExampleDocSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocSpec.scala) { #testkit }
+:  @@snip [AccountExampleDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocSpec.scala) { #testkit }
 
 Java
-:  @@snip [AccountExampleDocTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocTest.java) { #testkit } 
+:  @@snip [AccountExampleDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocTest.java) { #testkit } 
 
 A full test for the `AccountEntity`, which is shown in the @ref:[Persistence Style Guide](persistence-style.md), may look like this:
 
 Scala
-:  @@snip [AccountExampleDocSpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocSpec.scala) { #test }
+:  @@snip [AccountExampleDocSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocSpec.scala) { #test }
 
 Java
-:  @@snip [AccountExampleDocTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocTest.java) { #test }  
+:  @@snip [AccountExampleDocTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleDocTest.java) { #test }  
 
 Serialization of commands, events and state are verified automatically. The serialization checks can be
 customized with the `SerializationSettings` when creating the `EventSourcedBehaviorTestKit`. By default,

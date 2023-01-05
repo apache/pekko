@@ -8,15 +8,15 @@ For the new API see @ref[Distributed Publish Subscribe in Cluster](./typed/distr
 To use Distributed Publish Subscribe you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-cluster-tools_$scala.binary.version$"
+  artifact="pekko-cluster-tools_$scala.binary.version$"
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster-tools" }
+@@project-info{ projectId="cluster-tools" }
 
 ## Introduction
 
@@ -84,35 +84,35 @@ can explicitly remove entries with `DistributedPubSubMediator.Unsubscribe`.
 An example of a subscriber actor:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #subscriber }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #subscriber }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #subscriber }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #subscriber }
 
 Subscriber actors can be started on several nodes in the cluster, and all will receive
 messages published to the "content" topic.
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #start-subscribers }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #start-subscribers }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #start-subscribers }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #start-subscribers }
 
 A simple actor that publishes to this "content" topic:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #publisher }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #publisher }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #publisher }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #publisher }
 
 It can publish messages to the topic from anywhere in the cluster:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #publish-message }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #publish-message }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #publish-message }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #publish-message }
 
 ### Topic Groups
 
@@ -169,35 +169,35 @@ can explicitly remove entries with @apidoc[DistributedPubSubMediator.Remove].
 An example of a destination actor:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #send-destination }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #send-destination }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #send-destination }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #send-destination }
 
 Destination actors can be started on several nodes in the cluster, and all will receive
 messages sent to the path (without address information).
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #start-send-destinations }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #start-send-destinations }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #start-send-destinations }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #start-send-destinations }
 
 A simple actor that sends to the path:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #sender }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #sender }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #sender }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #sender }
 
 It can send messages to the path from anywhere in the cluster:
 
 Scala
-:  @@snip [DistributedPubSubMediatorSpec.scala](/akka-cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #send-message }
+:  @@snip [DistributedPubSubMediatorSpec.scala](/cluster-tools/src/multi-jvm/scala/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorSpec.scala) { #send-message }
 
 Java
-:  @@snip [DistributedPubSubMediatorTest.java](/akka-cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #send-message }
+:  @@snip [DistributedPubSubMediatorTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/pubsub/DistributedPubSubMediatorTest.java) { #send-message }
 
 It is also possible to broadcast messages to the actors that have been registered with
 @apidoc[DistributedPubSubMediator.Put]. Send @apidoc[DistributedPubSubMediator.SendToAll] message to the local mediator and the wrapped message
@@ -221,7 +221,7 @@ want to use different cluster roles for different mediators.
 
 The `DistributedPubSub` extension can be configured with the following properties:
 
-@@snip [reference.conf](/akka-cluster-tools/src/main/resources/reference.conf) { #pub-sub-ext-config }
+@@snip [reference.conf](/cluster-tools/src/main/resources/reference.conf) { #pub-sub-ext-config }
 
 It is recommended to load the extension when the actor system is started by defining it in
 `pekko.extensions` configuration property. Otherwise it will be activated when first used

@@ -18,7 +18,7 @@ prioritized and similarly for the right source. The priorities for each source m
 
 ## Example
 Scala
-:   @@snip [FlowMergeSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritized }
+:   @@snip [FlowMergeSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowMergeSpec.scala) { #mergePrioritized }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #mergePrioritized }

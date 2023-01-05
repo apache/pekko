@@ -27,7 +27,7 @@ Both streams will be materialized together.
 
 ## Example
 Scala
-:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatSpec.scala) { #concat }
+:   @@snip [FlowConcatSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatSpec.scala) { #concat }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #concat }

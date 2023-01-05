@@ -22,7 +22,7 @@ If materialized values needs to be collected `concatLazyMat` is available.
 
 ## Example
 Scala
-:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatSpec.scala) { #concatLazy }
+:   @@snip [FlowConcatSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatSpec.scala) { #concatLazy }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #concatLazy }

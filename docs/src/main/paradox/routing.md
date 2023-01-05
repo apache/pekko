@@ -182,7 +182,7 @@ by specifying the strategy when defining the router.
 Setting the strategy is done like this:
 
 Scala
-:  @@snip [RoutingSpec.scala](/akka-actor-tests/src/test/scala/org/apache/pekko/routing/RoutingSpec.scala) { #supervision }
+:  @@snip [RoutingSpec.scala](/actor-tests/src/test/scala/org/apache/pekko/routing/RoutingSpec.scala) { #supervision }
 
 Java
 :  @@snip [RouterDocTest.java](/docs/src/test/java/jdocs/routing/RouterDocTest.java) { #supervision }

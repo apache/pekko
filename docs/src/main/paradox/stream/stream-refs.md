@@ -211,4 +211,4 @@ Java
 Other settings can be set globally in your `application.conf`, by overriding any of the following values
 in the `pekko.stream.materializer.stream-ref.*` keyspace:
 
-@@snip [reference.conf](/akka-stream/src/main/resources/reference.conf) { #stream-ref }
+@@snip [reference.conf](/stream/src/main/resources/reference.conf) { #stream-ref }

@@ -18,7 +18,7 @@ which will be completed with a result of the Java @javadoc[Collector](java.util.
 Given a stream of numbers we can collect the numbers into a collection with the `seq` operator
 
 Java
-:   @@snip [SinkTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #collect-to-list }
+:   @@snip [SinkTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #collect-to-list }
 
 
 ## Reactive Streams semantics

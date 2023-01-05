@@ -10,14 +10,14 @@ You are viewing the documentation for the new actor APIs, to view the Akka Class
 To use Akka Persistence, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-typed_$scala.binary.version$
+  artifact=pekko-persistence-typed_$scala.binary.version$
   version=PekkoVersion
   group2=org.apache.pekko
-  artifact2=akka-persistence-testkit_$scala.binary.version$
+  artifact2=pekko-persistence-testkit_$scala.binary.version$
   version2=PekkoVersion
   scope2=test
 }
@@ -25,7 +25,7 @@ To use Akka Persistence, add the module to your project:
 You also have to select journal plugin and optionally snapshot store plugin, see 
 @ref:[Persistence Plugins](../persistence-plugins.md).
 
-@@project-info{ projectId="akka-persistence-typed" }
+@@project-info{ projectId="persistence-typed" }
 
 ## Introduction
 
@@ -79,10 +79,10 @@ actors may also process commands that do not change application state such as qu
 Let's start with a simple example. The minimum required for a @apidoc[EventSourcedBehavior] is:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #structure }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #structure }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #structure }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the @apidoc[typed.Behavior] of a persistent actor is typed to the type of the `Command`
 because this is the type of message a persistent actor should receive. In Akka this is now enforced by the type system.
@@ -177,44 +177,44 @@ Let's fill in the details of the example.
 Command and event:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #command }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #command }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #command }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #command }
 
 State is a List containing the 5 latest items:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #state }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #state }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #state }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #state }
 
 The command handler persists the `Add` payload in an `Added` event:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #command-handler }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #command-handler }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #command-handler }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #command-handler }
 
 The event handler appends the item to the state and keeps 5 items. This is called after successfully
 persisting the event in the database:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #event-handler }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #event-handler }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #event-handler }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #event-handler }
 
 @scala[These are used to create an @scaladoc[EventSourcedBehavior](pekko.persistence.typed.scaladsl.EventSourcedBehavior):]
 @java[These are defined in an @javadoc[EventSourcedBehavior](pekko.persistence.typed.javadsl.EventSourcedBehavior):]
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #behavior }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #behavior }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #behavior }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #behavior }
 
 ## Effects and Side Effects
 
@@ -253,19 +253,19 @@ In addition to `thenRun` the following actions can also be performed after succe
 Example of effects:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #effects }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #effects }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #effects }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #effects }
 
 Most of the time this will be done with the @apidoc[thenRun](typed.(scaladsl|javadsl).EffectBuilder) {scala="#thenRun(callback:State=%3EUnit):org.apache.pekko.persistence.typed.scaladsl.EffectBuilder[Event,State]" java="#thenRun(function.Effect)"} method on the `Effect` above. You can factor out
 common side effects into functions and reuse for several commands. For example:
 
 Scala
-:  @@snip [PersistentActorCompileOnlyTest.scala](/akka-persistence-typed/src/test/scala/org/apache/pekko/persistence/typed/scaladsl/PersistentActorCompileOnlyTest.scala) { #commonChainedEffects }
+:  @@snip [PersistentActorCompileOnlyTest.scala](/persistence-typed/src/test/scala/org/apache/pekko/persistence/typed/scaladsl/PersistentActorCompileOnlyTest.scala) { #commonChainedEffects }
 
 Java
-:  @@snip [PersistentActorCompileOnlyTest.java](/akka-persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #commonChainedEffects }
+:  @@snip [PersistentActorCompileOnlyTest.java](/persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #commonChainedEffects }
 
 ### Side effects ordering and guarantees
 
@@ -313,10 +313,10 @@ If the @apidoc[EventSourcedBehavior] needs to use the @apidoc[typed.*.ActorConte
 wrapping construction with @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#setup[T](factory:org.apache.pekko.actor.typed.scaladsl.ActorContext[T]=%3Eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#setup(org.apache.pekko.japi.function.Function)"}:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #actor-context }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #actor-context }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #actor-context }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #actor-context }
 
 ## Changing Behavior
 
@@ -341,18 +341,18 @@ Once it is started then one can look it up with `GetPost`, modify it with `Chang
 The state is captured by:
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #state }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #state }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #state }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #state }
 
 The commands, of which only a subset are valid depending on the state:
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #commands }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #commands }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #commands }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #commands }
 
 @java[The command handler to process each command is decided by the state class (or state predicate) that is
 given to the `forStateType` of the @javadoc[CommandHandlerBuilder](pekko.persistence.typed.javadsl.CommandHandlerBuilder) and the match cases in the builders.]
@@ -361,27 +361,27 @@ It typically becomes two levels of pattern matching, first on the state and then
 Delegating to methods is a good practice because the one-line cases give a nice overview of the message dispatch.
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #command-handler }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #command-handler }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #command-handler }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #command-handler }
 
 
 The event handler:
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #event-handler }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #event-handler }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #event-handler }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #event-handler }
 
 And finally the behavior is created @scala[from the @scaladoc[EventSourcedBehavior.apply](pekko.persistence.typed.scaladsl.EventSourcedBehavior$#apply[Command,Event,State](persistenceId:org.apache.pekko.persistence.typed.PersistenceId,emptyState:State,commandHandler:(State,Command)=%3Eorg.apache.pekko.persistence.typed.scaladsl.Effect[Event,State],eventHandler:(State,Event)=%3EState):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State])]:
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #behavior }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #behavior }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #behavior }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #behavior }
 
 This can be taken one or two steps further by defining the event and command handlers in the state class as
 illustrated in @ref:[event handlers in the state](persistence-style.md#event-handlers-in-the-state) and
@@ -405,17 +405,17 @@ After validation errors or after persisting events, using a @apidoc[thenRun](typ
 be sent to the @apidoc[typed.ActorRef].
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #reply-command }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #reply-command }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #reply-command }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #reply-command }
 
 
 Scala
-:  @@snip [BlogPostEntity.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #reply }
+:  @@snip [BlogPostEntity.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntity.scala) { #reply }
 
 Java
-:  @@snip [BlogPostEntity.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #reply }
+:  @@snip [BlogPostEntity.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntity.java) { #reply }
 
 
 Since this is such a common pattern there is a reply effect for this purpose. It has the nice property that
@@ -426,18 +426,18 @@ created with @scala[`Effect.reply`]@java[`Effect().reply`], @scala[`Effect.noRep
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
 
 Scala
-:  @@snip [AccountExampleWithEventHandlersInState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #withEnforcedReplies }
+:  @@snip [AccountExampleWithEventHandlersInState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #withEnforcedReplies }
 
 Java
-:  @@snip [AccountExampleWithNullState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #withEnforcedReplies }
+:  @@snip [AccountExampleWithNullState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #withEnforcedReplies }
 
 The commands must have a field of @apidoc[typed.ActorRef]@scala[`[ReplyMessageType]`]@java[`<ReplyMessageType>`] that can then be used to send a reply.
 
 Scala
-:  @@snip [AccountExampleWithEventHandlersInState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #reply-command }
+:  @@snip [AccountExampleWithEventHandlersInState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #reply-command }
 
 Java
-:  @@snip [AccountExampleWithNullState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #reply-command }
+:  @@snip [AccountExampleWithNullState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #reply-command }
 
 The @apidoc[typed.(scaladsl|javadsl).ReplyEffect] is created with @scala[`Effect.reply`]@java[`Effect().reply`], @scala[`Effect.noReply`]@java[`Effect().noReply`],
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
@@ -446,10 +446,10 @@ The @apidoc[typed.(scaladsl|javadsl).ReplyEffect] is created with @scala[`Effect
 @javadoc[EventSourcedBehaviorWithEnforcedReplies](pekko.persistence.typed.javadsl.EventSourcedBehaviorWithEnforcedReplies), as opposed to `newCommandHandlerBuilder` when using @javadoc[EventSourcedBehavior](pekko.persistence.typed.javadsl.EventSourcedBehavior).]
 
 Scala
-:  @@snip [AccountExampleWithEventHandlersInState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #reply }
+:  @@snip [AccountExampleWithEventHandlersInState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.scala) { #reply }
 
 Java
-:  @@snip [AccountExampleWithNullState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #reply }
+:  @@snip [AccountExampleWithNullState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithEventHandlersInState.java) { #reply }
 
 These effects will send the reply message even when @scala[@scaladoc[EventSourcedBehavior.withEnforcedReplies](pekko.persistence.typed.scaladsl.EventSourcedBehavior$#withEnforcedReplies[Command,Event,State](persistenceId:org.apache.pekko.persistence.typed.PersistenceId,emptyState:State,commandHandler:(State,Command)=%3Eorg.apache.pekko.persistence.typed.scaladsl.ReplyEffect[Event,State],eventHandler:(State,Event)=%3EState):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State])]@java[@javadoc[EventSourcedBehaviorWithEnforcedReplies](pekko.persistence.typed.javadsl.EventSourcedBehaviorWithEnforcedReplies)]
 is not used, but then there will be no compilation errors if the reply decision is left out.
@@ -488,10 +488,10 @@ It is strongly discouraged to perform side effects in the event handler, so side
 once recovery has completed as a reaction to the @apidoc[typed.RecoveryCompleted] signal @scala[in the @scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[by overriding @javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer))]
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #recovery }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #recovery }
 
 The `RecoveryCompleted` contains the current `State`.
 
@@ -537,10 +537,10 @@ pekko.persistence.journal.leveldb.replay-filter {
 You can also completely disable the recovery of events and snapshots:
 
 Scala
-:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery-disabled }
+:  @@snip [BasicPersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #recovery-disabled }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #recovery-disabled }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #recovery-disabled }
 
 Please refer to @ref[snapshots](persistence-snapshot.md#snapshots) if you need to disable only the snapshot recovery, or you need to select specific snapshots.
 
@@ -551,10 +551,10 @@ In any case, the highest sequence number will always be recovered so you can kee
 Persistence allows you to use event tags without using an @ref[`EventAdapter`](../persistence.md#event-adapters):
 
 Scala
-:  @@snip [BasicPersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging }
+:  @@snip [BasicPersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging }
 
 ## Event adapters
 
@@ -564,18 +564,18 @@ to another type that is then passed to the journal.
 Defining an event adapter is done by extending an EventAdapter:
 
 Scala
-:  @@snip [x](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #event-wrapper }
+:  @@snip [x](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #event-wrapper }
 
 Java
-:  @@snip [x](/akka-persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #event-wrapper }
+:  @@snip [x](/persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #event-wrapper }
 
 Then install it on an `EventSourcedBehavior`:
 
 Scala
-:  @@snip [x](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #install-event-adapter }
+:  @@snip [x](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #install-event-adapter }
 
 Java
-:  @@snip [x](/akka-persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #install-event-adapter }
+:  @@snip [x](/persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #install-event-adapter }
 
 ## Wrapping EventSourcedBehavior
 
@@ -584,10 +584,10 @@ other behaviors such as @apidoc[Behaviors.setup](typed.*.Behaviors$) {scala="#se
 to access the actor logging upon taking snapshots for debug purpose.
 
 Scala
-:  @@snip [BasicPersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
+:  @@snip [BasicPersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #wrapPersistentBehavior }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #wrapPersistentBehavior }
 
 
 ## Journal failures
@@ -597,10 +597,10 @@ any @apidoc[typed.BackoffSupervisorStrategy]. It is not possible to use the norm
 `resume` a behavior on a journal failure as it is not known if the event was persisted.
 
 Scala
-:  @@snip [BasicPersistentBehaviorSpec.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #supervision }
+:  @@snip [BasicPersistentBehaviorSpec.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #supervision }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #supervision }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #supervision }
 
 If there is a problem with recovering the state of the actor from the journal, a @apidoc[typed.RecoveryFailed] signal is
 emitted to the @scala[@scaladoc[receiveSignal](pekko.persistence.typed.scaladsl.EventSourcedBehavior#receiveSignal(signalHandler:PartialFunction[(State,org.apache.pekko.actor.typed.Signal),Unit]):org.apache.pekko.persistence.typed.scaladsl.EventSourcedBehavior[Command,Event,State]) handler] @java[@javadoc[receiveSignal](pekko.persistence.typed.javadsl.SignalHandlerBuilder#onSignal(java.lang.Class,java.util.function.BiConsumer)) method] and the actor will be stopped
@@ -634,10 +634,10 @@ until the final `EndTask` is received. Commands with another `taskId` than the o
 stashing them. When `EndTask` is processed a new task can start and the stashed commands are processed.
 
 Scala
-:  @@snip [StashingExample.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/StashingExample.scala) { #stashing }
+:  @@snip [StashingExample.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/StashingExample.scala) { #stashing }
 
 Java
-:  @@snip [StashingExample.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/StashingExample.java) { #stashing }
+:  @@snip [StashingExample.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/StashingExample.java) { #stashing }
 
 You should be careful to not send more messages to a persistent actor than it can keep up with, otherwise the stash
 buffer will fill up and when reaching its maximum capacity the commands will be dropped. The capacity can be configured with:

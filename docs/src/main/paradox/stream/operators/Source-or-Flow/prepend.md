@@ -36,7 +36,7 @@ use @ref(prependLazy)[prependLazy.md]
 
 ## Example
 Scala
-:   @@snip [FlowOrElseSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowPrependSpec.scala) { #prepend }
+:   @@snip [FlowOrElseSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowPrependSpec.scala) { #prepend }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #prepend }

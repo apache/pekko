@@ -725,10 +725,10 @@ used for individual streams when they are materialized.
 Setting attributes on individual streams can be done like so:
 
 Scala
-:  @@snip [StreamAttributeDocSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/StreamAttributeDocSpec.scala) { #attributes-on-stream }
+:  @@snip [StreamAttributeDocSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/StreamAttributeDocSpec.scala) { #attributes-on-stream }
 
 Java
-:  @@snip [StreamAttributeDocTest.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/StreamAttributeDocTest.java) { #attributes-on-stream }
+:  @@snip [StreamAttributeDocTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/StreamAttributeDocTest.java) { #attributes-on-stream }
 
 ### Stream cancellation available upstream
 

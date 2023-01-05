@@ -22,7 +22,7 @@ See also @ref[prepend](prepend.md) which is detached.
 
 ## Example
 Scala
-:   @@snip [FlowPrependSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowPrependSpec.scala) { #prependLazy }
+:   @@snip [FlowPrependSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowPrependSpec.scala) { #prependLazy }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #prependLazy }

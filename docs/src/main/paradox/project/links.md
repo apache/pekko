@@ -52,7 +52,7 @@ Define the library dependencies with the complete version. For example:
 
 @@@vars
 ```
-libraryDependencies += "org.apache.pekko" % "akka-remote_$scala.binary.version$" % "2.6.14+72-53943d99-SNAPSHOT"
+libraryDependencies += "org.apache.pekko" % "pekko-remote_$scala.binary.version$" % "2.6.14+72-53943d99-SNAPSHOT"
 ```
 @@@
 
@@ -80,7 +80,7 @@ Define the library dependencies with the timestamp as version. For example:
 <dependencies>
   <dependency>
     <groupId>org.apache.pekko</groupId>
-    <artifactId>akka-remote_$scala.binary.version$</artifactId>
+    <artifactId>pekko-remote_$scala.binary.version$</artifactId>
     <version>2.6.14+72-53943d99-SNAPSHOT</version>
   </dependency>
 </dependencies>

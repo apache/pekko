@@ -2,4 +2,4 @@
 
 dependency-change: "/project/Dependencies.scala"
 
-'t:stream': ["/akka-stream", "/akka-stream-testkit", "/akka-stream-tests", "/akka-stream-tests-tck", "/akka-stream-typed"]
+'t:stream': ["/stream", "/stream-testkit", "/stream-tests", "/stream-tests-tck", "/stream-typed"]
