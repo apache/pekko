@@ -280,6 +280,7 @@ object PekkoBuild {
         UsefulTask("", "compile", "Compile the current project"),
         UsefulTask("", "test", "Run all the tests "),
         UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("", "publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
         UsefulTask("", "verifyCodeStyle", "Verify code style"),
         UsefulTask("", "applyCodeStyle", "Apply code style"),
         UsefulTask("", "sortImports", "Sort the imports"),
