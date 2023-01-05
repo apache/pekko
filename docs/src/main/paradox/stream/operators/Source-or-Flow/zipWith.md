@@ -24,7 +24,7 @@ See also:
 ## Examples
 
 Scala
-:   @@snip [FlowZipWithSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowZipWithSpec.scala) { #zip-with }
+:   @@snip [FlowZipWithSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowZipWithSpec.scala) { #zip-with }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #zip-with }

@@ -10,15 +10,15 @@ You are viewing the documentation for the new actor APIs, to view the Akka Class
 To use Akka Cluster Distributed Data, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-typed_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster-typed" }
+@@project-info{ projectId="cluster-typed" }
 
 ## Introduction
 
@@ -53,10 +53,10 @@ and the actual CRDTs are defined in the `pekko.cluster.ddata` package, for examp
 available from:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #selfUniqueAddress }
+:  @@snip [ReplicatorSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #selfUniqueAddress }
 
 Java
-:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #selfUniqueAddress }
+:  @@snip [ReplicatorTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #selfUniqueAddress }
  
 The replicator can contain multiple entries each containing a replicated data type, we therefore need to create a 
 key identifying the entry and helping us know what type it has, and then use that key for every interaction with
@@ -74,10 +74,10 @@ This sample uses the replicated data type `GCounter` to implement a counter that
 cluster: 
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #sample }
+:  @@snip [ReplicatorSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorDocSpec.scala) { #sample }
 
 Java
-:  @@snip [ReplicatorTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #sample }
+:  @@snip [ReplicatorTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/ddata/typed/javadsl/ReplicatorDocSample.java) { #sample }
 
 Although you can interact with the `Replicator` using the @scala[`ActorRef[Replicator.Command]`]@java[`ActorRef<Replicator.Command>`]
 from @scala[`DistributedData(ctx.system).replicator`]@java[`DistributedData(ctx.getSystem()).replicator()`] it's
@@ -103,7 +103,7 @@ it contains five values:
 There is alternative way of constructing the function for the `Update` message:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-update }
+:  @@snip [ReplicatorSpec.scala](/cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-update }
 
 @@@
 
@@ -144,7 +144,7 @@ incoming message can be used when the `GetSuccess` response from the replicator 
 Alternative way of constructing the function for the `Get` and `Delete`:
 
 Scala
-:  @@snip [ReplicatorSpec.scala](/akka-cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-get }
+:  @@snip [ReplicatorSpec.scala](/cluster-typed/src/test/scala/org/apache/pekko/cluster/ddata/typed/scaladsl/ReplicatorCompileOnlyTest.scala) { #curried-get }
 
 @@@
 
@@ -775,7 +775,7 @@ paper by Mark Shapiro et. al.
 
 The `DistributedData` extension can be configured with the following properties:
 
-@@snip [reference.conf](/akka-distributed-data/src/main/resources/reference.conf) { #distributed-data }
+@@snip [reference.conf](/distributed-data/src/main/resources/reference.conf) { #distributed-data }
 
 ## Example project
 

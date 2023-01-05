@@ -27,10 +27,10 @@ See also:
 This prints out every element to standard out.
 
 Scala
-:   @@snip [snip](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #foreach }
+:   @@snip [snip](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #foreach }
 
 Java
-:   @@snip [snip](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #foreach }
+:   @@snip [snip](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SinkTest.java) { #foreach }
 
 ## Reactive Streams semantics
 

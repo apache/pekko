@@ -41,10 +41,10 @@ See also:
 The `ActorFlow.ask` sends a message to the actor. The actor expects `Asking` messages which contain the actor ref for replies of type `Reply`. When the actor for replies receives a reply, the `ActorFlow.ask` stream stage emits the reply and the `map` extracts the message `String`.
 
 Scala
-:  @@snip [ask.scala](/akka-stream-typed/src/test/scala/docs/scaladsl/ActorFlowSpec.scala) { #imports #ask-actor #ask }
+:  @@snip [ask.scala](/stream-typed/src/test/scala/docs/scaladsl/ActorFlowSpec.scala) { #imports #ask-actor #ask }
 
 Java
-:   @@snip [ask.java](/akka-stream-typed/src/test/java/docs/javadsl/ActorFlowCompileTest.java) { #ask-actor #ask }
+:   @@snip [ask.java](/stream-typed/src/test/java/docs/javadsl/ActorFlowCompileTest.java) { #ask-actor #ask }
 
 
 ## Reactive Streams semantics

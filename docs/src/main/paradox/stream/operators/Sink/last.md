@@ -17,7 +17,7 @@ completes. If the stream completes with no elements the @scala[`Future`] @java[`
 ## Example
 
 Scala
-:   @@snip [LastSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/LastSinkSpec.scala) { #last-operator-example }
+:   @@snip [LastSinkSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/LastSinkSpec.scala) { #last-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #last-operator-example }

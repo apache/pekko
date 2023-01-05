@@ -8,16 +8,16 @@ project.description: Multi node testing of distributed systems built with Akka.
 To use Multi Node Testing, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-multi-node-testkit_$scala.binary.version$
+  artifact=pekko-multi-node-testkit_$scala.binary.version$
   version=PekkoVersion
   scope=test
 }
 
-@@project-info{ projectId="akka-multi-node-testkit" }
+@@project-info{ projectId="multi-node-testkit" }
 
 ## Multi Node Testing Concepts
 
@@ -172,17 +172,17 @@ complete the test names.
 First we need some scaffolding to hook up the @apidoc[MultiNodeSpec] with your favorite test framework. Lets define a trait
 `STMultiNodeSpec` that uses ScalaTest to start and stop `MultiNodeSpec`.
 
-@@snip [STMultiNodeSpec.scala](/akka-remote-tests/src/test/scala/org/apache/pekko/remote/testkit/STMultiNodeSpec.scala) { #example }
+@@snip [STMultiNodeSpec.scala](/remote-tests/src/test/scala/org/apache/pekko/remote/testkit/STMultiNodeSpec.scala) { #example }
 
 Then we need to define a configuration. Lets use two nodes `"node1` and `"node2"` and call it
 `MultiNodeSampleConfig`.
 
-@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #config }
+@@snip [MultiNodeSample.scala](/remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #config }
 
 And then finally to the node test code. That starts the two nodes, and demonstrates a barrier, and a remote actor
 message send/receive.
 
-@@snip [MultiNodeSample.scala](/akka-remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #spec }
+@@snip [MultiNodeSample.scala](/remote-tests/src/multi-jvm/scala/org/apache/pekko/remote/sample/MultiNodeSample.scala) { #package #spec }
 
 ## Things to Keep in Mind
 

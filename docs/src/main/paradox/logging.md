@@ -8,15 +8,15 @@ For the new API see @ref[Logging](typed/logging.md).
 To use Logging, you must at least use the Akka actors dependency in your project, and will most likely want to configure logging via the SLF4J module (@ref:[see below](#slf4j)).
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-slf4j" }
+@@project-info{ projectId="slf4j" }
 
 ## Introduction
 
@@ -435,12 +435,12 @@ load is high.
 
 A starting point for configuration of `logback.xml` for production:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-prod.xml)
+@@snip [logback.xml](/actor-typed-tests/src/test/resources/logback-doc-prod.xml)
 
 For development you might want to log to standard out, but also have all `DEBUG` level logging to file, like
 in this example:
 
-@@snip [logback.xml](/akka-actor-typed-tests/src/test/resources/logback-doc-dev.xml)
+@@snip [logback.xml](/actor-typed-tests/src/test/resources/logback-doc-dev.xml)
 
 Place the `logback.xml` file in `src/main/resources/logback.xml`. For tests you can define different
 logging configuration in `src/test/resources/logback-test.xml`.

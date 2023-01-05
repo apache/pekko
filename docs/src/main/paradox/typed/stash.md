@@ -32,10 +32,10 @@ When a new state is saved in the database it also stashes incoming messages to m
 processing sequential, one after the other without multiple pending writes.
 
 Scala
-:  @@snip [StashDocSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/StashDocSpec.scala) { #stashing }
+:  @@snip [StashDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/StashDocSpec.scala) { #stashing }
 
 Java
-:  @@snip [StashDocTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/StashDocSample.java) {
+:  @@snip [StashDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/StashDocSample.java) {
   #import
   #db
   #stashing

@@ -26,9 +26,12 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
-      - name: sbt akka-cluster-metrics/test
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
+      - name: sbt cluster-metrics/test
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Djava.security.egd=file:/dev/./urandom \
             -Dpekko.test.sigar=true \
             -Dpekko.cluster.assert=on \
@@ -41,7 +44,7 @@ jobs:
             -Dmultinode.Xmx256M \
             -Dmultinode.Xlog:gc \
             -Dmultinode.XX:+AlwaysActAsServerClassMachine \
-            clean akka-cluster-metrics/test
+            clean cluster-metrics/test
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
 #      - name: Test Reports
@@ -77,9 +80,9 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - akka-cluster/test akka-distributed-data/test akka-cluster-tools/test akka-cluster-metrics/test
-          - akka-cluster-sharding/test
-          - akka-cluster-typed/test akka-cluster-sharding-typed/test
+          - cluster/test distributed-data/test cluster-tools/test cluster-metrics/test
+          - cluster-sharding/test
+          - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -95,10 +98,13 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
           -Djava.security.egd=file:/dev/./urandom \
           -Dpekko.remote.artery.enabled=off \
           -Dpekko.test.timefactor=2 \
@@ -157,10 +163,13 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Dpekko.cluster.assert=on \
             -Dpekko.log.timestamps=true \
             -Dpekko.test.timefactor=2 \
@@ -194,7 +203,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Dpekko.genjavadoc.enabled=true \
             "+~ ${{ matrix.scalaVersion }} doc"
 
@@ -203,7 +212,7 @@ jobs:
         if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
         run: |-
           sudo apt-get install graphviz
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
             -Dpekko.build.scalaVersion=${{ matrix.scalaVersion }} \
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
@@ -231,8 +240,8 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - akka-remote/test akka-remote-tests/test
-          - akka-cluster/test akka-cluster-typed/test
+          - remote/test remote-tests/test
+          - cluster/test cluster-typed/test
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -248,10 +257,13 @@ jobs:
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbtx -jvm-opts .jvmopts-ci \
+          sbt \
           -Djava.security.egd=file:/dev/./urandom \
           -Dpekko.remote.artery.transport=aeron-udp \
           -Dpekko.test.timefactor=2 \

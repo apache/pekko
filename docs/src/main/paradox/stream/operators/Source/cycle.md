@@ -19,19 +19,19 @@ terminated with an exception.
 ## Examples
 
 Scala
-:  @@snip [cycle.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle }
+:  @@snip [cycle.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle }
 
 Java
-:  @@snip [cycle.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle }
+:  @@snip [cycle.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle }
 
 
 When iterator is empty the stream will be terminated with _IllegalArgumentException_
 
 Scala
-:  @@snip [cycleError.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle-error }
+:  @@snip [cycleError.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #cycle-error }
 
 Java
-:  @@snip [cycle.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle-error }
+:  @@snip [cycle.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #cycle-error }
 
 ## Reactive Streams semantics
 

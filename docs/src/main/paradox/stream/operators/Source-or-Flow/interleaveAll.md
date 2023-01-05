@@ -18,7 +18,7 @@ the flow is complete.
 
 ## Example
 Scala
-:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveAllSpec.scala) { #interleaveAll }
+:   @@snip [FlowInterleaveSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveAllSpec.scala) { #interleaveAll }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #interleaveAll }

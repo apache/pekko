@@ -19,7 +19,7 @@ Materializes into a @scala[`Future`] @java[`CompletionStage`] that will be compl
 ## Example
 
 Scala
-:   @@snip [SinkReduceSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #reduce-operator-example }
+:   @@snip [SinkReduceSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #reduce-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #reduce-operator-example }

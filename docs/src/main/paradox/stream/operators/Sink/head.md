@@ -17,7 +17,7 @@ after this the stream is canceled. If no element is emitted, the @scala[`Future`
 ## Example
 
 Scala
-:   @@snip [HeadSinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/HeadSinkSpec.scala) { #head-operator-example }
+:   @@snip [HeadSinkSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/HeadSinkSpec.scala) { #head-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #head-operator-example }

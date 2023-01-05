@@ -35,15 +35,15 @@ in serialization-bindings configuration. Typically you will create a marker @sca
 for that purpose and let the messages @scala[extend]@java[implement] that.
 
 Scala
-:  @@snip [SerializationDocSpec.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #marker-interface }
+:  @@snip [SerializationDocSpec.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #marker-interface }
 
 Java
-:  @@snip [MySerializable.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/MySerializable.java) { #marker-interface }
+:  @@snip [MySerializable.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/MySerializable.java) { #marker-interface }
 
 Then you configure the class name of the marker @scala[trait]@java[interface] in `serialization-bindings` to
 one of the supported Jackson formats: `jackson-json` or `jackson-cbor`
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #serialization-bindings }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #serialization-bindings }
 
 A good convention would be to name the marker interface `CborSerializable` or `JsonSerializable`.
 In this documentation we have used `MySerializable` to make it clear that the marker interface itself is not
@@ -107,17 +107,17 @@ MismatchedInputException: Cannot construct instance of `...` (although at least 
 That is probably because the class has a constructor with a single parameter, like:
 
 Java
-:  @@snip [SerializationDocTest.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-1 }
+:  @@snip [SerializationDocTest.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-1 }
 
 That can be solved by adding @javadoc[@JsonCreator](com.fasterxml.jackson.annotation.JsonCreator) or @javadoc[@JsonProperty](com.fasterxml.jackson.annotation.JsonProperty) annotations:
 
 Java
-:  @@snip [SerializationDocTest.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-2 }
+:  @@snip [SerializationDocTest.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-2 }
 
 or
 
 Java
-:  @@snip [SerializationDocTest.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-3 }
+:  @@snip [SerializationDocTest.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #one-constructor-param-3 }
 
 
 The `ParameterNamesModule` is configured with `JsonCreator.Mode.PROPERTIES` as described in the
@@ -134,10 +134,10 @@ and @javadoc[@JsonSubTypes](com.fasterxml.jackson.annotation.JsonSubTypes) annot
 Example:
 
 Scala
-:  @@snip [SerializationDocSpec.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #polymorphism }
+:  @@snip [SerializationDocSpec.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #polymorphism }
 
 Java
-:  @@snip [SerializationDocTest.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #polymorphism }
+:  @@snip [SerializationDocTest.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/SerializationDocTest.java) { #polymorphism }
 
 If you haven't defined the annotations you will see an exception like this:
 
@@ -174,7 +174,7 @@ The easiest workaround is to define the case objects as case class without any f
 Alternatively, you can define an intermediate trait for the case object and a custom deserializer for it. The example below builds on the previous `Animal` sample by adding a fictitious, single instance, new animal, an `Unicorn`. 
 
 Scala
-:  @@snip [SerializationDocSpec.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #polymorphism-case-object }
+:  @@snip [SerializationDocSpec.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #polymorphism-case-object }
 
 The case object `Unicorn` can't be used in a @javadoc[@JsonSubTypes](com.fasterxml.jackson.annotation.JsonSubTypes) annotation, but its trait can. When serializing the case object we need to know which type tag to use, hence the @javadoc[@JsonTypeName](com.fasterxml.jackson.annotation.JsonTypeName) annotation on the object. When deserializing, Jackson will only know about the trait variant therefore we need a custom deserializer that returns the case object. 
 
@@ -183,7 +183,7 @@ On the other hand, if the ADT only has case objects, you can solve it by impleme
 @javadoc[StdDeserializer](com.fasterxml.jackson.databind.deser.std.StdDeserializer).
 
 Scala
-:  @@snip [CustomAdtSerializer.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/CustomAdtSerializer.scala) { #adt-trait-object }
+:  @@snip [CustomAdtSerializer.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/CustomAdtSerializer.scala) { #adt-trait-object }
 
 ### Enumerations
 
@@ -194,7 +194,7 @@ statically specify the type information to a field. When using the `@JsonScalaEn
 value is serialized as a JsonString.
 
 Scala
-:  @@snip [JacksonSerializerSpec.scala](/akka-serialization-jackson/src/test/scala/org/apache/pekko/serialization/jackson/JacksonSerializerSpec.scala) { #jackson-scala-enumeration }
+:  @@snip [JacksonSerializerSpec.scala](/serialization-jackson/src/test/scala/org/apache/pekko/serialization/jackson/JacksonSerializerSpec.scala) { #jackson-scala-enumeration }
     
 @@@
 
@@ -222,39 +222,39 @@ Adding an optional field can be done without any migration code. The default val
 Old class:
 
 Scala
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #add-optional }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #add-optional }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #add-optional }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #add-optional }
 
 
 New class with a new optional `discount` property and a new `note` field with default value:
 
 Scala
-:  @@snip [ItemAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/ItemAdded.scala) { #add-optional }
+:  @@snip [ItemAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/ItemAdded.scala) { #add-optional }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/ItemAdded.java) { #add-optional }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/ItemAdded.java) { #add-optional }
 
 ### Add Mandatory Field
 
 Let's say we want to have a mandatory `discount` property without default value instead:
 
 Scala
-:  @@snip [ItemAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.scala) { #add-mandatory }
+:  @@snip [ItemAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.scala) { #add-mandatory }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.java) { #add-mandatory }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAdded.java) { #add-mandatory }
 
 To add a new mandatory field we have to use a @apidoc[JacksonMigration] class and set the default value in the migration code.
 
 This is how a migration class would look like for adding a `discount` field:
 
 Scala
-:  @@snip [ItemAddedMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2b/ItemAddedMigration.scala) { #add-mandatory }
+:  @@snip [ItemAddedMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2b/ItemAddedMigration.scala) { #add-mandatory }
 
 Java
-:  @@snip [ItemAddedMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAddedMigration.java) { #add-mandatory }
+:  @@snip [ItemAddedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2b/ItemAddedMigration.java) { #add-mandatory }
 
 Override the @scala[@scaladoc[currentVersion](pekko.serialization.jackson.JacksonMigration#currentVersion:Int)]@java[@javadoc[currentVersion()](pekko.serialization.jackson.JacksonMigration#currentVersion())] method to define the version number of the current (latest) version. The first version,
 when no migration was used, is always 1. Increase this version number whenever you perform a change that is not
@@ -269,7 +269,7 @@ to get access to mutators.
 
 The migration class must be defined in configuration file:
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #migrations-conf }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #migrations-conf }
 
 The same thing could have been done for the `note` field, adding a default value of `""` in the `ItemAddedMigration`.
 
@@ -278,18 +278,18 @@ The same thing could have been done for the `note` field, adding a default value
 Let's say that we want to rename the `productId` field to `itemId` in the previous example.
 
 Scala
-:  @@snip [ItemAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.scala) { #rename }
+:  @@snip [ItemAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.scala) { #rename }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.java) { #rename }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.java) { #rename }
 
 The migration code would look like:
 
 Scala
-:  @@snip [ItemAddedMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.scala) { #rename }
+:  @@snip [ItemAddedMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.scala) { #rename }
 
 Java
-:  @@snip [ItemAddedMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.java) { #rename }
+:  @@snip [ItemAddedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.java) { #rename }
 
 ### Structural Changes
 
@@ -298,34 +298,34 @@ In a similar way we can do arbitrary structural changes.
 Old class:
 
 Scala
-:  @@snip [Customer.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/Customer.scala) { #structural }
+:  @@snip [Customer.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/Customer.scala) { #structural }
 
 Java
-:  @@snip [Customer.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/Customer.java) { #structural }
+:  @@snip [Customer.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/Customer.java) { #structural }
 
 New class:
 
 Scala
-:  @@snip [Customer.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/Customer.scala) { #structural }
+:  @@snip [Customer.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/Customer.scala) { #structural }
 
 Java
-:  @@snip [Customer.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/Customer.java) { #structural }
+:  @@snip [Customer.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/Customer.java) { #structural }
 
 with the `Address` class:
 
 Scala
-:  @@snip [Address.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/Address.scala) { #structural }
+:  @@snip [Address.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/Address.scala) { #structural }
 
 Java
-:  @@snip [Address.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/Address.java) { #structural }
+:  @@snip [Address.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/Address.java) { #structural }
 
 The migration code would look like:
 
 Scala
-:  @@snip [CustomerMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/CustomerMigration.scala) { #structural }
+:  @@snip [CustomerMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/CustomerMigration.scala) { #structural }
 
 Java
-:  @@snip [CustomerMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/CustomerMigration.java) { #structural }
+:  @@snip [CustomerMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/CustomerMigration.java) { #structural }
 
 ### Rename Class
 
@@ -334,32 +334,32 @@ It is also possible to rename the class. For example, let's rename `OrderAdded` 
 Old class:
 
 Scala
-:  @@snip [OrderAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/OrderAdded.scala) { #rename-class }
+:  @@snip [OrderAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/OrderAdded.scala) { #rename-class }
 
 Java
-:  @@snip [OrderAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/OrderAdded.java) { #rename-class }
+:  @@snip [OrderAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/OrderAdded.java) { #rename-class }
 
 New class:
 
 Scala
-:  @@snip [OrderPlaced.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/OrderPlaced.scala) { #rename-class }
+:  @@snip [OrderPlaced.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/OrderPlaced.scala) { #rename-class }
 
 Java
-:  @@snip [OrderPlaced.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/OrderPlaced.java) { #rename-class }
+:  @@snip [OrderPlaced.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/OrderPlaced.java) { #rename-class }
 
 The migration code would look like:
 
 Scala
-:  @@snip [OrderPlacedMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/OrderPlacedMigration.scala) { #rename-class }
+:  @@snip [OrderPlacedMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2a/OrderPlacedMigration.scala) { #rename-class }
 
 Java
-:  @@snip [OrderPlacedMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/OrderPlacedMigration.java) { #rename-class }
+:  @@snip [OrderPlacedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2a/OrderPlacedMigration.java) { #rename-class }
 
 Note the override of the @apidoc[transformClassName(fromVersion, className)](JacksonMigration) {scala="#transformClassName(fromVersion:Int,className:String):String" java="#transformClassName(int,java.lang.String)"} method to define the new class name.
 
 That type of migration must be configured with the old class name as key. The actual class can be removed.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #migrations-conf-rename }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #migrations-conf-rename }
 
 ### Remove from serialization-bindings
 
@@ -369,7 +369,7 @@ during rolling update with serialization changes, or when reading old stored dat
 when changing from Jackson serializer to another serializer (e.g. Protobuf) and thereby changing the serialization
 binding, but it should still be possible to deserialize old data with Jackson.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #allowed-class-prefix }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #allowed-class-prefix }
 
 It's a list of class names or prefixes of class names.
 
@@ -390,43 +390,43 @@ Let's take, for example, the case above where we [renamed a field](#rename-field
 The starting schema is:
 
 Scala
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #add-optional }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #add-optional }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #add-optional }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #add-optional }
 
 In a first deployment, we still don't make any change to the event class:
 
 Scala
-:  @@snip [ItemAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #forward-one-rename }
+:  @@snip [ItemAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1/ItemAdded.scala) { #forward-one-rename }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #forward-one-rename }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1/ItemAdded.java) { #forward-one-rename }
 
 but we introduce a migration that can read the newer schema which is versioned `2`:
 
 Scala
-:  @@snip [ItemAddedMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1withv2/ItemAddedMigration.scala) { #forward-one-rename }
+:  @@snip [ItemAddedMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v1withv2/ItemAddedMigration.scala) { #forward-one-rename }
 
 Java
-:  @@snip [ItemAddedMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1withv2/ItemAddedMigration.java) { #forward-one-rename }
+:  @@snip [ItemAddedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v1withv2/ItemAddedMigration.java) { #forward-one-rename }
 
 Once all running nodes have the new migration code which can read version `2` of `ItemAdded` we can proceed with the 
 second step. So, we deploy the updated event:
 
 Scala
-:  @@snip [ItemAdded.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.scala) { #rename }
+:  @@snip [ItemAdded.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.scala) { #rename }
 
 Java
-:  @@snip [ItemAdded.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.java) { #rename }
+:  @@snip [ItemAdded.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAdded.java) { #rename }
 
 and the final migration code which no longer needs forward-compatibility code:
 
 Scala
-:  @@snip [ItemAddedMigration.scala](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.scala) { #rename }
+:  @@snip [ItemAddedMigration.scala](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.scala) { #rename }
 
 Java
-:  @@snip [ItemAddedMigration.java](/akka-serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.java) { #rename }
+:  @@snip [ItemAddedMigration.java](/serialization-jackson/src/test/java/jdoc/org/apache/pekko/serialization/jackson/v2c/ItemAddedMigration.java) { #rename }
 
 
 
@@ -434,7 +434,7 @@ Java
 
 The following Jackson modules are enabled by default:
 
-@@snip [reference.conf](/akka-serialization-jackson/src/main/resources/reference.conf) { #jackson-modules }
+@@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #jackson-modules }
 
 You can amend the configuration `pekko.serialization.jackson.jackson-modules` to enable other modules.
 
@@ -446,7 +446,7 @@ Java compiler option is enabled.
 JSON can be rather verbose and for large messages it can be beneficial to compress large payloads. For
 the `jackson-json` binding the default configuration is:
 
-@@snip [reference.conf](/akka-serialization-jackson/src/main/resources/reference.conf) { #compression }
+@@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #compression }
 
 Supported compression algorithms are: gzip, lz4. Use 'off' to disable compression.
 Gzip is generally slower than lz4.
@@ -481,12 +481,12 @@ By default the configuration for the Jackson serializers and their @javadoc[Obje
 the `pekko.serialization.jackson` section. It is possible to override that configuration in a more
 specific `pekko.serialization.jackson.<binding name>` section.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #specific-config }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #specific-config }
 
 It's also possible to define several bindings and use different configuration for them. For example,
 different settings for remote messages and persisted events.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #several-config }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #several-config }
 
 ### Manifest-less serialization
 
@@ -511,7 +511,7 @@ Since this configuration can only be applied to a single root type, you will usu
 apply it to a per binding configuration, not to the regular `jackson-json` or `jackson-cbor`
 configurations.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #manifestless }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #manifestless }
 
 Note that Akka remoting already implements manifest compression, and so this optimization will have
 no significant impact for messages sent over remoting. It's only useful for messages serialized for
@@ -522,7 +522,7 @@ other purposes, such as persistence or distributed data.
 Additional Jackson serialization features can be enabled/disabled in configuration. The default values from
 Jackson are used aside from the the following that are changed in Akka's default configuration.
 
-@@snip [reference.conf](/akka-serialization-jackson/src/main/resources/reference.conf) { #features }
+@@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #features }
 
 ### Date/time format
 
@@ -531,6 +531,6 @@ ISO-8601 (rfc3339) `yyyy-MM-dd'T'HH:mm:ss.SSSZ` format instead of numeric arrays
 interoperability but it is slower. If you don't need the ISO format for interoperability with external systems
 you can change the following configuration for better performance of date/time fields.
 
-@@snip [config](/akka-serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #date-time }
+@@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #date-time }
 
 Jackson is still be able to deserialize the other format independent of this setting.

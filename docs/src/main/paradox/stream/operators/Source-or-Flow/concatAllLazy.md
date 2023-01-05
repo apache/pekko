@@ -20,7 +20,7 @@ To defer the materialization of the given sources (or to completely avoid its ma
 
 ## Example
 Scala
-:   @@snip [FlowConcatSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatAllLazySpec.scala) { #concatAllLazy }
+:   @@snip [FlowConcatSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowConcatAllLazySpec.scala) { #concatAllLazy }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #concatAllLazy }

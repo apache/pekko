@@ -8,19 +8,19 @@ project.description: An intuitive and safe way to do asynchronous, non-blocking 
 To use Akka Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
   group2="org.apache.pekko"
-  artifact2="akka-stream-testkit_$scala.binary.version$"
+  artifact2="pekko-stream-testkit_$scala.binary.version$"
   version2=PekkoVersion
   scope2=test
 }
 
-@@project-info{ projectId="akka-stream" }
+@@project-info{ projectId="stream" }
 
 @@toc { depth=2 }
 

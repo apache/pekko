@@ -34,43 +34,43 @@ See @ref:[Migration hints](#migrating-from-akka-management-discovery-before-1-0-
 ## Module info
 
 @@dependency[sbt,Gradle,Maven] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-discovery_$scala.binary.version$"
+  artifact="pekko-discovery_$scala.binary.version$"
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-discovery" }
+@@project-info{ projectId="discovery" }
 
 ## How it works
 
 Loading the extension:
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #loading }
+:  @@snip [CompileOnlySpec.scala](/discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #loading }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #loading }
+:  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #loading }
 
 A `Lookup` contains a mandatory `serviceName` and an optional `portName` and `protocol`. How these are interpreted is discovery 
 method dependent e.g.DNS does an A/AAAA record query if any of the fields are missing and an SRV query for a full look up:
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #basic }
+:  @@snip [CompileOnlySpec.scala](/discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #basic }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #basic }
+:  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #basic }
 
 
 `portName` and `protocol` are optional and their meaning is interpreted by the method.
 
 Scala
-:  @@snip [CompileOnlySpec.scala](/akka-discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #full }
+:  @@snip [CompileOnlySpec.scala](/discovery/src/test/scala/doc/org/apache/pekko/discovery/CompileOnlySpec.scala) { #full }
 
 Java
-:  @@snip [CompileOnlyTest.java](/akka-discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #full }
+:  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #full }
 
 Port can be used when a service opens multiple ports e.g. a HTTP port and an Akka remoting port.
 

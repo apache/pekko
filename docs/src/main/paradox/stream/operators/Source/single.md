@@ -21,10 +21,10 @@ See also:
 ## Examples
 
 Scala
-:  @@snip [source.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #imports #source-single }
+:  @@snip [source.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SourceSpec.scala) { #imports #source-single }
 
 Java
-:   @@snip [source.java](/akka-stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #imports #source-single }
+:   @@snip [source.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/SourceTest.java) { #imports #source-single }
 
 ## Reactive Streams semantics
 

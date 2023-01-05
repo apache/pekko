@@ -26,15 +26,15 @@ recommendation if you don't have other preferences or constraints.
 To use Akka Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-typed_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster-typed" }
+@@project-info{ projectId="cluster-typed" }
 
 ## Cluster API Extension
 
@@ -51,23 +51,23 @@ It does this through these references on the @apidoc[typed.Cluster$] extension:
 All of the examples below assume the following imports:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-imports }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-imports }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-imports }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-imports }
 
 <a id="basic-cluster-configuration"></a>
 The minimum configuration required is to set a host/port for remoting and the `pekko.actor.provider = "cluster"`.
 
-@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
+@@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
 Accessing the @apidoc[typed.Cluster$] extension on each node:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-create }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-create }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-create }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-create }
 
 @@@ note
   
@@ -80,18 +80,18 @@ Java
 If not using configuration to specify @ref:[seed nodes to join](#joining), joining the cluster can be done programmatically via the @scala[@scaladoc[manager](pekko.cluster.typed.Cluster#manager:org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.cluster.typed.ClusterCommand])]@java[@javadoc[manager()](pekko.cluster.typed.Cluster#manager())].
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-join }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-join }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-join }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-join }
 
 @ref:[Leaving](#leaving) the cluster and @ref:[downing](#downing) a node are similar:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave }
 
 ### Cluster Subscriptions
 
@@ -102,18 +102,18 @@ for the node going through the @ref:[Membership Lifecycle](cluster-membership.md
 This example subscribes to a @scala[`subscriber: ActorRef[MemberEvent]`]@java[`ActorRef<MemberEvent> subscriber`]:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-subscribe }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-subscribe }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-subscribe }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-subscribe }
 
 Then asking a node to leave:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave-example }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #cluster-leave-example }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave-example }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #cluster-leave-example }
 
 
 ### Cluster State
@@ -199,10 +199,10 @@ Joining programmatically is useful when **dynamically discovering** other nodes
 at startup through an external tool or API.
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #join-seed-nodes }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #join-seed-nodes }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #join-seed-nodes }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #join-seed-nodes }
 
 The seed node address list has the same semantics as the configured `seed-nodes`, and the the underlying
 implementation of the process is the same, see @ref:[Joining configured seed nodes](#joining-configured-seed-nodes).
@@ -321,10 +321,10 @@ of the own node are available from the @scala[@scaladoc[selfMember](pekko.cluste
 actors:
 
 Scala
-:  @@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #hasRole }
+:  @@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #hasRole }
 
 Java
-:  @@snip [BasicClusterExampleTest.java](/akka-cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #hasRole }
+:  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #hasRole }
 
 ## Failure Detector
 

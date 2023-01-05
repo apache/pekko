@@ -39,14 +39,14 @@ So in Akka, to run all the multi-JVM tests in the akka-remote project use (at
 the sbt prompt):
 
 ```none
-akka-remote-tests/multi-jvm:test
+remote-tests/multi-jvm:test
 ```
 
 Or one can change to the `akka-remote-tests` project first, and then run the
 tests:
 
 ```none
-project akka-remote-tests
+project remote-tests
 multi-jvm:test
 ```
 
