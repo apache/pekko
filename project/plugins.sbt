@@ -19,6 +19,7 @@ addSbtPlugin("com.lightbend.akka" % "sbt-paradox-akka" % "0.44")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
 addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.4")
 
 addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.10")
 addSbtPlugin("com.lightbend.sbt" % "sbt-publish-rsync" % "0.2")
