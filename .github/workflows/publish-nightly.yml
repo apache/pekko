@@ -65,8 +65,9 @@ jobs:
           mkdir -p $HOME/.ivy2/local/$GROUP_ID/pekko-actor-typed_2.13/0.0.0+${{ github.run_id }}-SNAPSHOT
           touch $HOME/.ivy2/local/$GROUP_ID/pekko-actor-typed_2.13/0.0.0+${{ github.run_id }}-SNAPSHOT/release
 
-      - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+# todo: revert
+#      - name: Cache Coursier cache
+#        uses: coursier/cache-action@v6.4.0
 
       - name: Sync from remote
         uses: ./.github/actions/sync-nightlies
@@ -96,7 +97,7 @@ jobs:
       - name: Prune repository
         shell: bash
         env:
-          KEEP: ${{ github.event.inputs.keep }}
+          KEEP: 60 # ${{ github.event.inputs.keep }}
         run: |
           for i in `ls -t repo/$GROUP_ID`; do
             find repo/$GROUP_ID/$i -mindepth 1 -maxdepth 1 -type d -print0 \
