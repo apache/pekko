@@ -113,6 +113,7 @@ lazy val actor = pekkoModule("actor")
     (Compile / scalaSource).value.getParentFile / s"scala-$ver"
   })
   .settings(VersionGenerator.settings)
+  .settings(MetaInfLicenseNoticeCopy.settings)
   .settings(serialversionRemoverPluginSettings)
   .enablePlugins(BoilerplatePlugin)
 
