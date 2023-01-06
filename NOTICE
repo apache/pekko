@@ -7,5 +7,5 @@ The Apache Software Foundation (https://www.apache.org/).
 This product contains significant parts that were originally based on software from Lightbend (Akka <https://akka.io/>).
 Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
 
-Apache Pekko is a derived from Akka 2.6.x, the last version that was distributed under the
+Apache Pekko is derived from Akka 2.6.x, the last version that was distributed under the
 Apache License, Version 2.0 License.
