@@ -40,7 +40,7 @@ This page does not list all available modules, but overviews the main functional
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -68,7 +68,7 @@ Challenges that actors solve include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -94,7 +94,7 @@ Challenges Remoting solves include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-typed_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -120,7 +120,7 @@ Challenges the Cluster module solves include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-sharding-typed_$scala.binary.version$
+  artifact=pekko-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -142,7 +142,7 @@ Challenges that Sharding solves include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-singleton_$scala.binary.version$
+  artifact=pekko-cluster-singleton_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -166,7 +166,7 @@ The Singleton module can be used to solve these challenges:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-typed_$scala.binary.version$
+  artifact=pekko-persistence-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -191,7 +191,7 @@ Persistence tackles the following challenges:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-projection-core_$scala.binary.version$
+  artifact=pekko-projection-core_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -211,7 +211,7 @@ Challenges Projections solve include the following:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-typed_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -233,7 +233,7 @@ Distributed Data is intended to solve the following challenges:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-stream-typed_$scala.binary.version$
+  artifact=pekko-stream_$scala.binary.version$
   version=PekkoVersion
 }
 

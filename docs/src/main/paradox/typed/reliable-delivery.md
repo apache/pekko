@@ -22,7 +22,7 @@ To use reliable delivery, add the module to your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -259,7 +259,7 @@ To use reliable delivery with Cluster Sharding, add the following module to your
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-sharding-typed_$scala.binary.version$
+  artifact=pekko-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -368,7 +368,7 @@ When using the `EventSourcedProducerQueue` the following dependency is needed:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-typed_$scala.binary.version$
+  artifact=pekko-persistence-typed_$scala.binary.version$
   version=PekkoVersion
 } 
 

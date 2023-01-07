@@ -9,7 +9,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
 

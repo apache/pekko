@@ -30,7 +30,7 @@ For example `akka-cluster-typed`:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-typed_$scala.binary.version$
+  artifact=pekko-cluster-typed_$scala.binary.version$
   version=PekkoVersion
 }
 

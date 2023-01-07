@@ -9,7 +9,7 @@ To use Akka in OSGi, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-osgi_$scala.binary.version$
+  artifact=pekko-osgi_$scala.binary.version$
   version=PekkoVersion
 }
 
