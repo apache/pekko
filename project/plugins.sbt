@@ -15,7 +15,11 @@ addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("io.spray" % "sbt-boilerplate" % "0.6.1")
-addSbtPlugin("com.lightbend.akka" % "sbt-paradox-akka" % "0.44")
+// We have to deliberately use older versions of sbt-paradox because current Pekko sbt build
+// only loads on JDK 1.8 so we need to bring in older versions of parboiled which support JDK 1.8
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox" % "0.9.2")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-apidoc" % "0.10.1")
+addSbtPlugin("com.lightbend.paradox" % "sbt-paradox-project-info" % "2.0.0")
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
 addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
