@@ -88,7 +88,7 @@ The TL;DR; of the above very precise workflow version is:
 2. Hack and test on your feature (on a branch)
 3. Document it
 4. Submit a PR
-5. Sign the CLA if necessary
+5. Sign the [CLA](https://www.apache.org/licenses/contributor-agreements.html) if necessary
 6. Keep polishing it until getting the required number of approvals
 7. Profit!
 
