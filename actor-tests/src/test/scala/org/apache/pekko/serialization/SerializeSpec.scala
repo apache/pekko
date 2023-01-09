@@ -55,7 +55,10 @@ object SerializationTests {
           "org.apache.pekko.serialization.SerializationTests$$D" = test
           "org.apache.pekko.serialization.SerializationTests$$Marker2" = test2
           "org.apache.pekko.serialization.SerializationTests$$AbstractOther" = other
+          "org.apache.pekko.serialization.SerializationTests$$AllowedOther" = other
         }
+
+        warn-non-pekko-serializer-allow-list += "org.apache.pekko.serialization.SerializationTests$$AllowedOther"
       }
     }
   """
@@ -98,6 +101,9 @@ object SerializationTests {
 
   final class Other extends AbstractOther {
     override def toString: String = "Other"
+  }
+  final class AllowedOther {
+    override def toString: String = "AllowedOther"
   }
 
   val verifySerializabilityConf = """
@@ -275,7 +281,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
         s"${classOf[ByteArraySerializer].getName} only serializes byte arrays, not [java.lang.String]")
     }
 
-    "log warning if non-Pekko serializer is configured for Pekko message" in {
+    "log warning if non-Pekko serializer is configured for Pekko message but not in allow list" in {
       EventFilter.warning(pattern = ".*not implemented by Apache Pekko.*", occurrences = 1).intercept {
         ser.serialize(new Other).get
       }
