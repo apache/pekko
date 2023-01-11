@@ -46,7 +46,7 @@ public class DnsDiscoveryDocTest extends JUnitSuite {
   }
 
   @Test
-  public void dnsDiscoveryShouldResolveAkkaIo() throws Exception {
+  public void dnsDiscoveryShouldResolvePekkoIo() throws Exception {
     try {
       // #lookup-dns
 

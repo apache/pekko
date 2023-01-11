@@ -37,7 +37,7 @@ public class RecipeSourceFromFunction extends RecipeTest {
         ActorSystem.create(
             "RecipeSourceFromFunction",
             ConfigFactory.parseString(
-                "pekko.loglevel=DEBUG\nakka.loggers = [org.apache.pekko.testkit.TestEventListener]"));
+                "pekko.loglevel=DEBUG\npekko.loggers = [org.apache.pekko.testkit.TestEventListener]"));
   }
 
   @AfterClass

@@ -460,8 +460,8 @@ public class RouterDocTest extends AbstractJavaTest {
   public void demonstrateRemoteDeploy() {
     // #remoteRoutees
     Address[] addresses = {
-      new Address("akka", "remotesys", "otherhost", 1234),
-      AddressFromURIString.parse("akka://othersys@anotherhost:1234")
+      new Address("pekko", "remotesys", "otherhost", 1234),
+      AddressFromURIString.parse("pekko://othersys@anotherhost:1234")
     };
     ActorRef routerRemote =
         system.actorOf(
@@ -474,8 +474,8 @@ public class RouterDocTest extends AbstractJavaTest {
   public void demonstrateRemoteDeployWithArtery() {
     // #remoteRoutees-artery
     Address[] addresses = {
-      new Address("akka", "remotesys", "otherhost", 1234),
-      AddressFromURIString.parse("akka://othersys@anotherhost:1234")
+      new Address("pekko", "remotesys", "otherhost", 1234),
+      AddressFromURIString.parse("pekko://othersys@anotherhost:1234")
     };
     ActorRef routerRemote =
         system.actorOf(

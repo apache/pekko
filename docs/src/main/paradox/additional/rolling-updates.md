@@ -1,5 +1,5 @@
 ---
-project.description: How to do rolling updates and restarts with Akka Cluster.
+project.description: How to do rolling updates and restarts with Pekko Cluster.
 ---
 # Rolling Updates
 
@@ -11,17 +11,17 @@ versus being able to do a rolling update.
 @@@
 
 A rolling update is the process of replacing one version of the system with another without downtime.
-The changes can be new code, changed dependencies such as new Akka version, or modified configuration.
+The changes can be new code, changed dependencies such as new Pekko version, or modified configuration.
 
-In Akka, rolling updates are typically used for a stateful Akka Cluster where you can't run two separate clusters in
+In Pekko, rolling updates are typically used for a stateful Pekko Cluster where you can't run two separate clusters in
 parallel during the update, for example in blue green deployments.
 
-For rolling updates related to Akka dependency version upgrades and the migration guides, please see
-@ref:[Rolling Updates and Akka versions](../project/rolling-update.md)
+For rolling updates related to Pekko dependency version upgrades and the migration guides, please see
+@ref:[Rolling Updates and Pekko versions](../project/rolling-update.md)
 
 ## Serialization Compatibility
 
-There are two parts of Akka that need careful consideration when performing an rolling update.
+There are two parts of Pekko that need careful consideration when performing an rolling update.
 
 1. Compatibility of remote message protocols. Old nodes may send messages to new nodes and vice versa.
 1. Serialization format of persisted events and snapshots. New nodes must be able to read old data, and
@@ -63,7 +63,7 @@ started on new nodes. Messages to shards that were stopped on the old nodes will
 on the new nodes, without waiting for rebalance actions. 
 
 You should also enable the @ref:[health check for Cluster Sharding](../typed/cluster-sharding.md#health-check) if
-you use Akka Management. The readiness check will delay incoming traffic to the node until Sharding has been
+you use Pekko Management. The readiness check will delay incoming traffic to the node until Sharding has been
 initialized and can accept messages.
 
 The `ShardCoordinator` is itself a cluster singleton.
@@ -101,61 +101,14 @@ if there is an unreachability problem Split Brain Resolver would make a decision
 ## Configuration Compatibility Checks
 
 During rolling updates the configuration from existing nodes should pass the Cluster configuration compatibility checks.
-For example, it is possible to migrate Cluster Sharding from Classic to Typed Actors in a rolling update using a two step approach
-as of Akka version `2.5.23`:
+For example, it is possible to migrate Cluster Sharding from Classic to Typed Actors in a rolling update using a two step approach:
 
 * Deploy with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`
 and ensure all nodes are in this state
 * Deploy again and with the new nodes set to `pekko.cluster.configuration-compatibility-check.enforce-on-join = on`. 
   
 Full documentation about enforcing these checks on joining nodes and optionally adding custom checks can be found in  
-@ref:[Akka Cluster configuration compatibility checks](../typed/cluster.md#configuration-compatibility-check).
-
-## Rolling Updates and Migrating Akka
-
-### From Java serialization to Jackson
- 
-If you are migrating from Akka 2.5 to 2.6, and use Java serialization you can replace it with, for example, the new
-@ref:[Serialization with Jackson](../serialization-jackson.md) and still be able to perform a rolling updates
-without bringing down the entire cluster.
-
-The procedure for changing from Java serialization to Jackson would look like:
-
-1. Rolling update from 2.5.24 (or later) to 2.6.0
-    * Use config `pekko.actor.allow-java-serialization=on`.
-    * Roll out the change.
-    * Java serialization will be used as before.
-    * This step is optional and you could combine it with next step if you like, but could be good to
-      make one change at a time.
-1. Rolling update to support deserialization but not enable serialization
-    * Change message classes by adding the marker interface and possibly needed annotations as
-      described in @ref:[Serialization with Jackson](../serialization-jackson.md).
-    * Test the system with the new serialization in a new test cluster (no rolling update).
-    * Remove the binding for the marker interface in `pekko.actor.serialization-bindings`, so that Jackson is not used for serialization (toBinary) yet.
-    * Configure `pekko.serialization.jackson.allowed-class-prefix=["com.myapp"]`
-        * This is needed for Jackson deserialization when the `serialization-bindings` isn't defined.
-        * Replace `com.myapp` with the name of the root package of your application to trust all classes.
-    * Roll out the change.
-    * Java serialization is still used, but this version is prepared for next roll out.
-1. Rolling update to enable serialization with Jackson.
-    * Add the binding to the marker interface in `pekko.actor.serialization-bindings` to the Jackson serializer.
-    * Remove `pekko.serialization.jackson.allowed-class-prefix`.
-    * Roll out the change.
-    * Old nodes will still send messages with Java serialization, and that can still be deserialized by new nodes.
-    * New nodes will send messages with Jackson serialization, and old node can deserialize those because they were
-      prepared in previous roll out.
-1. Rolling update to disable Java serialization
-    * Remove `allow-java-serialization` config, to use the default `allow-java-serialization=off`.
-    * Remove `warn-about-java-serializer-usage` config if you had changed that, to use the default `warn-about-java-serializer-usage=on`. 
-    * Roll out the change.
-    
-A similar approach can be used when changing between other serializers, for example between Jackson and Protobuf.    
-
-### Akka Typed with Receptionist or Cluster Receptionist
-
-If you are migrating from Akka 2.5 to 2.6, and use the `Receptionist` or `Cluster Receptionist` with Akka Typed, 
-during a rolling update information will not be disseminated between 2.5 and 2.6 nodes.
-However once all old nodes have been phased out during the rolling update it will work properly again.
+@ref:[Pekko Cluster configuration compatibility checks](../typed/cluster.md#configuration-compatibility-check).
 
 ## When Shutdown Startup Is Required
  
@@ -184,8 +137,6 @@ and are using PersistenceFSM with Cluster Sharding, a full shutdown is required 
 
 If you've migrated from classic remoting to Artery
 which has a completely different protocol, a rolling update is not supported.
-For more details on this migration
-see @ref:[the migration guide](../project/migration-guide-2.5.x-2.6.x.md#migrating-from-classic-remoting-to-artery).
 
 ### Changing remoting transport
 

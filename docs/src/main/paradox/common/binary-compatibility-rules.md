@@ -1,9 +1,9 @@
 ---
-project.description: Binary compatibility across Akka versions.
+project.description: Binary compatibility across Pekko versions.
 ---
 # Binary Compatibility Rules
 
-Akka maintains and verifies *backwards binary compatibility* across versions of modules.
+Pekko maintains and verifies *backwards binary compatibility* across versions of modules.
 
 In the rest of this document whenever *binary compatibility* is mentioned "*backwards binary compatibility*" is meant
 (as opposed to forward compatibility).
@@ -11,14 +11,14 @@ In the rest of this document whenever *binary compatibility* is mentioned "*back
 This means that the new JARs are a drop-in replacement for the old one 
 (but not the other way around) as long as your build does not enable the inliner (Scala-only restriction).
 
-Because of this approach applications can upgrade to the latest version of Akka
+Because of this approach applications can upgrade to the latest version of Pekko
 even when @ref[intermediate satellite projects are not yet upgraded](../project/downstream-upgrade-strategy.md)
 
 ## Binary compatibility rules explained
 
 Binary compatibility is maintained between:
 
- * **minor** and **patch** versions - please note that the meaning of "minor" has shifted to be more restrictive with Akka `2.4.0`, read @ref:[Change in versioning scheme](#24versioningchange) for details.
+ * **minor** and **patch** versions - please note that the meaning of "minor" has shifted to be more restrictive with Pekko `2.4.0`, read @ref:[Change in versioning scheme](#24versioningchange) for details.
 
 Binary compatibility is **NOT** maintained between:
 
@@ -46,7 +46,7 @@ OK:  3.1.n --> 3.2.0 ...
 
 ### Cases where binary compatibility is not retained
 
-If a security vulnerability is reported in Akka or a transient dependency of Akka and it cannot be solved without breaking binary compatibility then fixing the security issue is more important. In such cases binary compatibility might not be retained when releasing a minor version. Such exception is always noted in the release announcement.
+If a security vulnerability is reported in Pekko or a transient dependency of Pekko and it cannot be solved without breaking binary compatibility then fixing the security issue is more important. In such cases binary compatibility might not be retained when releasing a minor version. Such exception is always noted in the release announcement.
 
 We do not guarantee binary compatibility with versions that are EOL, though in
 practice this does not make a big difference: only in rare cases would a change
@@ -67,29 +67,29 @@ Once a method has been deprecated then the guideline* is that it will be kept, a
 <a id="24versioningchange"></a>
 ## Change in versioning scheme, stronger compatibility since 2.4
 
-Since the release of Akka `2.4.0` a new versioning scheme is in effect.
+Since the release of Pekko `2.4.0` a new versioning scheme is in effect.
 
-Historically, Akka has been following the Java or Scala style of versioning in which the first number would mean "**epoch**",
+Historically, Pekko has been following the Java or Scala style of versioning in which the first number would mean "**epoch**",
 the second one would mean **major**, and third be the **minor**, thus: `epoch.major.minor` (versioning scheme followed until and during `2.3.x`).
 
-**Currently**, since Akka `2.4.0`, the new versioning applies which is closer to semantic versioning many have come to expect, 
-in which the version number is deciphered as `major.minor.patch`. This also means that Akka `2.5.x` is binary compatible with the `2.4` series releases (with the exception of "may change" APIs).
+**Currently**, since Pekko `2.4.0`, the new versioning applies which is closer to semantic versioning many have come to expect, 
+in which the version number is deciphered as `major.minor.patch`. This also means that Pekko `2.5.x` is binary compatible with the `2.4` series releases (with the exception of "may change" APIs).
 
-In addition to that, Akka `2.4.x` has been made binary compatible with the `2.3.x` series,
-so there is no reason to remain on Akka 2.3.x, since upgrading is completely compatible 
+In addition to that, Pekko `2.4.x` has been made binary compatible with the `2.3.x` series,
+so there is no reason to remain on Pekko 2.3.x, since upgrading is completely compatible 
 (and many issues have been fixed ever since).
 
 ## Mixed versioning is not allowed
 
-Modules that are released together under the Akka project are intended to be upgraded together.
-For example, it is not legal to mix Akka Actor `2.6.2` with Akka Cluster `2.6.5` even though
-"Akka `2.6.2`" and "Akka `2.6.5`" *are* binary compatible. 
+Modules that are released together under the Pekko project are intended to be upgraded together.
+For example, it is not legal to mix Pekko Actor `2.6.2` with Pekko Cluster `2.6.5` even though
+"Pekko `2.6.2`" and "Pekko `2.6.5`" *are* binary compatible. 
 
 This is because modules may assume internals changes across module boundaries, for example some feature
 in Clustering may have required an internals change in Actor, however it is not public API, 
 thus such change is considered safe.
 
-If you accidentally mix Akka versions, for example through transitive
+If you accidentally mix Pekko versions, for example through transitive
 dependencies, you might get a warning at run time such as:
 
 ```
@@ -100,21 +100,21 @@ artifacts: (2.5.3, [pekko-persistence-query]), (2.6.6, [pekko-actor, pekko-clust
 See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed
 ```
 
-The fix is typically to pick the highest Akka version, and add explicit
+The fix is typically to pick the highest Pekko version, and add explicit
 dependencies to your project as needed. For example, in the example above
-you might want to add `akka-persistence-query` dependency for 2.6.6.
+you might want to add `pekko-persistence-query` dependency for 2.6.6.
 
 @@@ note
 
-We recommend keeping an `akkaVersion` variable in your build file, and re-use it for all
+We recommend keeping an `pekkoVersion` variable in your build file, and re-use it for all
 included modules, so when you upgrade you can simply change it in this one place.
 
 @@@
 
-The warning includes a full list of Akka runtime dependencies in the classpath, and the version detected. 
-You can use that information to include an explicit list of Akka artifacts you depend on into your build. If you use
-Maven or Gradle, you can include the @ref:[Akka Maven BOM](../typed/guide/modules.md#actor-library) (bill 
-of materials) to help you keep all the versions of your Akka dependencies in sync. 
+The warning includes a full list of Pekko runtime dependencies in the classpath, and the version detected. 
+You can use that information to include an explicit list of Pekko artifacts you depend on into your build. If you use
+Maven or Gradle, you can include the @ref:[Pekko Maven BOM](../typed/guide/modules.md#actor-library) (bill 
+of materials) to help you keep all the versions of your Pekko dependencies in sync. 
 
 
 ## The meaning of "may change"
@@ -125,7 +125,7 @@ Read more in @ref:[Modules marked "May Change"](may-change.md).
 
 ## API stability annotations and comments
 
-Akka gives a very strong binary compatibility promise to end-users. However some parts of Akka are excluded 
+Pekko gives a very strong binary compatibility promise to end-users. However some parts of Pekko are excluded 
 from these rules, for example internal or known evolving APIs may be marked as such and shipped as part of 
 an overall stable module. As general rule any breakage is avoided and handled via deprecation and method addition,
 however certain APIs which are known to not yet be fully frozen (or are fully internal) are marked as such and subject 
@@ -140,7 +140,7 @@ the `/** INTERNAL API */` comment or the @javadoc[@InternalApi](pekko.annotation
 No compatibility guarantees are given about these classes. They may change or even disappear in minor versions,
 and user code is not supposed to call them.
 
-Side-note on JVM representation details of the Scala `private[pekko]` pattern that Akka is using extensively in 
+Side-note on JVM representation details of the Scala `private[pekko]` pattern that Pekko is using extensively in 
 its internals: Such methods or classes, which act as "accessible only from the given package" in Scala, are compiled
 down to `public` (!) in raw Java bytecode. The access restriction, that Scala understands is carried along
 as metadata stored in the classfile. Thus, such methods are safely guarded from being accessed from Scala,
@@ -149,21 +149,21 @@ into Internal APIs, as they are subject to change without any warning.
 
 ### The `@DoNotInherit` and `@ApiMayChange` markers
 
-In addition to the special internal API marker two annotations exist in Akka and specifically address the following use cases:
+In addition to the special internal API marker two annotations exist in Pekko and specifically address the following use cases:
 
  * @javadoc[@ApiMayChange](pekko.annotation.ApiMayChange) – which marks APIs which are known to be not fully stable yet. Read more in @ref:[Modules marked "May Change"](may-change.md)
  * @javadoc[@DoNotInherit](pekko.annotation.DoNotInherit) – which marks APIs that are designed under a closed-world assumption, and thus must not be
-extended outside Akka itself (or such code will risk facing binary incompatibilities). E.g. an interface may be
+extended outside Pekko itself (or such code will risk facing binary incompatibilities). E.g. an interface may be
 marked using this annotation, and while the type is public, it is not meant for extension by user-code. This allows
 adding new methods to these interfaces without risking to break client code. Examples of such API are the @scaladoc[FlowOps](pekko.stream.scaladsl.FlowOps)
-trait or the Akka HTTP domain model.
+trait or the Pekko HTTP domain model.
 
 Please note that a best-effort approach is always taken when having to change APIs and breakage is avoided as much as 
 possible, however these markers allow to experiment, gather feedback and stabilize the best possible APIs we could build.
 
 ## Binary Compatibility Checking Toolchain
 
-Akka uses the Lightbend maintained [MiMa](https://github.com/lightbend/mima),
+Pekko uses the Lightbend maintained [MiMa](https://github.com/lightbend/mima),
 for enforcing binary compatibility is kept where it was promised.
 
 All Pull Requests must pass MiMa validation (which happens automatically), and if failures are detected,

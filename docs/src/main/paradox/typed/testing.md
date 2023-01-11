@@ -1,6 +1,6 @@
 # Testing
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Testing](../testing.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Testing](../testing.md).
 
 ## Module info
 
@@ -18,7 +18,7 @@ To use Actor TestKit add the module to your project:
 
 @@@div { .group-scala }
 
-We recommend using Akka TestKit with ScalaTest:
+We recommend using Pekko TestKit with ScalaTest:
 
 @@dependency[sbt,Maven,Gradle] {
   group=org.scalatest

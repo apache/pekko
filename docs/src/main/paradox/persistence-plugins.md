@@ -1,15 +1,15 @@
 # Persistence Plugins 
 
-Storage backends for journals and snapshot stores are pluggable in the Akka persistence extension.
+Storage backends for journals and snapshot stores are pluggable in the Pekko persistence extension.
 
-A directory of persistence journal and snapshot store plugins is available at the Akka Community Projects page, see [Community plugins](https://akka.io/community/)
+A directory of persistence journal and snapshot store plugins is available at the Pekko Community Projects page, see [Community plugins](https://akka.io/community/)
 
-Plugins maintained within the Akka organization are:
+Plugins maintained within the Pekko organization are:
 
-* [akka-persistence-cassandra](https://doc.akka.io/docs/akka-persistence-cassandra/current/) (no Durable State support)
-* [akka-persistence-jdbc](https://doc.akka.io/docs/akka-persistence-jdbc/current/)
-* [akka-persistence-r2dbc](https://doc.akka.io/docs/akka-persistence-r2dbc/current/)
-* [akka-persistence-spanner](https://doc.akka.io/docs/akka-persistence-spanner/current/)
+* [pekko-persistence-cassandra](https://doc.akka.io/docs/akka-persistence-cassandra/current/) (no Durable State support)
+* [pekko-persistence-jdbc](https://doc.akka.io/docs/akka-persistence-jdbc/current/)
+* [pekko-persistence-r2dbc](https://doc.akka.io/docs/akka-persistence-r2dbc/current/)
+* [pekko-persistence-spanner](https://doc.akka.io/docs/akka-persistence-spanner/current/)
 
 Plugins can be selected either by "default" for all persistent actors,
 or "individually", when a persistent actor defines its own set of plugins.
@@ -27,7 +27,7 @@ However, these entries are provided as empty "", and require explicit user confi
 
 * For an example of a journal plugin which writes messages to LevelDB see @ref:[Local LevelDB journal](#local-leveldb-journal).
 * For an example of a snapshot store plugin which writes snapshots as individual files to the local filesystem see @ref:[Local snapshot store](#local-snapshot-store).
-* The state store is relatively new, one available implementation is the [akka-persistence-jdbc-plugin](https://doc.akka.io/docs/akka-persistence-jdbc/current/).
+* The state store is relatively new, one available implementation is the [pekko-persistence-jdbc-plugin](https://doc.akka.io/docs/akka-persistence-jdbc/current/).
 
 ## Eager initialization of persistence plugin
 
@@ -62,19 +62,19 @@ pekko {
 
 ## Pre-packaged plugins
 
-The Akka Persistence module comes with few built-in persistence plugins, but none of these are suitable
-for production usage in an Akka Cluster. 
+The Pekko Persistence module comes with few built-in persistence plugins, but none of these are suitable
+for production usage in an Pekko Cluster. 
 
 ### Local LevelDB journal
 
 This plugin writes events to a local LevelDB instance.
 
 @@@ warning
-The LevelDB plugin cannot be used in an Akka Cluster since the storage is in a local file system.
+The LevelDB plugin cannot be used in an Pekko Cluster since the storage is in a local file system.
 @@@
 
 The LevelDB journal is deprecated and it is not advised to build new applications with it.
-As a replacement we recommend using [Akka Persistence JDBC](https://doc.akka.io/docs/akka-persistence-jdbc/current/index.html).
+As a replacement we recommend using [Pekko Persistence JDBC](https://doc.akka.io/docs/akka-persistence-jdbc/current/index.html).
 
 The LevelDB journal plugin config entry is `pekko.persistence.journal.leveldb`. Enable this plugin by
 defining config property:
@@ -105,7 +105,7 @@ this end, LevelDB offers a special journal compaction function that is exposed v
 
 ### Shared LevelDB journal
 
-The LevelDB journal is deprecated and will be removed from a future Akka version, it is not advised to build new 
+The LevelDB journal is deprecated and will be removed from a future Pekko version, it is not advised to build new 
 applications with it. For testing in a multi node environment the "inmem" journal together with the @ref[proxy plugin](#persistence-plugin-proxy) can be used, but the actual journal used in production of applications is also a good choice.
 
 @@@ note
@@ -147,7 +147,7 @@ i.e. only the first injection is used.
 This plugin writes snapshot files to the local filesystem.
 
 @@@ warning
-The local snapshot store plugin cannot be used in an Akka Cluster since the storage is in a local file system.
+The local snapshot store plugin cannot be used in an Pekko Cluster since the storage is in a local file system.
 @@@
 
 The local snapshot store plugin config entry is `pekko.persistence.snapshot-store.local`. 
@@ -186,9 +186,9 @@ and `target-snapshot-store-address` configuration keys, or programmatically by c
 `PersistencePluginProxy.setTargetLocation` method.
 
 @@@ note
-Akka starts extensions lazily when they are required, and this includes the proxy. This means that in order for the
+Pekko starts extensions lazily when they are required, and this includes the proxy. This means that in order for the
 proxy to work, the persistence plugin on the target node must be instantiated. This can be done by instantiating the
-`PersistencePluginProxyExtension` @ref:[extension](extending-akka.md), or by calling the `PersistencePluginProxy.start` method.
+`PersistencePluginProxyExtension` @ref:[extension](extending-pekko.md), or by calling the `PersistencePluginProxy.start` method.
 @@@
 
 @@@ note

@@ -2,7 +2,7 @@
 
 ## Dependency
 
-This documentation page touches upon @ref[Akka Persistence](persistence.md), so to follow those examples you will want to depend on:
+This documentation page touches upon @ref[Pekko Persistence](persistence.md), so to follow those examples you will want to depend on:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -33,7 +33,7 @@ choose the ones that match your domain and challenge at hand.
 @@@ note
 
 This page proposes a number of possible solutions to the schema evolution problem and explains how some of the
-utilities Akka provides can be used to achieve this, it is by no means a complete (closed) set of solutions.
+utilities Pekko provides can be used to achieve this, it is by no means a complete (closed) set of solutions.
 
 Sometimes, based on the capabilities of your serialization formats, you may be able to evolve your schema in
 different ways than outlined in the sections below. If you discover useful patterns or techniques for schema
@@ -113,19 +113,19 @@ by Martin Kleppmann.
 
 ### Provided default serializers
 
-Akka Persistence provides [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) based serializers (using @ref:[Akka Serialization](serialization.md))
+Pekko Persistence provides [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) based serializers (using @ref:[Pekko Serialization](serialization.md))
 for its own message types such as @apidoc[PersistentRepr], @apidoc[AtomicWrite] and snapshots. Journal plugin implementations
 *may* choose to use those provided serializers, or pick a serializer which suits the underlying database better.
 
 @@@ note
 
-Serialization is **NOT** handled automatically by Akka Persistence itself. Instead, it only provides the above described
+Serialization is **NOT** handled automatically by Pekko Persistence itself. Instead, it only provides the above described
 serializers, and in case a @scala[@scaladoc[AsyncWriteJournal](pekko.persistence.journal.AsyncWriteJournal)]@java[@javadoc[AsyncWriteJournal](pekko.persistence.journal.japi.AsyncWriteJournal)] plugin implementation chooses to use them directly, the above serialization
 scheme will be used.
 
 Please refer to your write journal's documentation to learn more about how it handles serialization!
 
-For example, some journals may choose to not use Akka Serialization *at all* and instead store the data in a format
+For example, some journals may choose to not use Pekko Serialization *at all* and instead store the data in a format
 that is more "native" for the underlying datastore, e.g. using JSON or some other kind of format that the target
 datastore understands directly.
 
@@ -136,7 +136,7 @@ user provided message itself, which we will from here on refer to as the `payloa
 
 ![persistent-message-envelope.png](./images/persistent-message-envelope.png)
 
-Akka Persistence provided serializers wrap the user payload in an envelope containing all persistence-relevant information.
+Pekko Persistence provided serializers wrap the user payload in an envelope containing all persistence-relevant information.
 **If the Journal uses provided Protobuf serializers for the wrapper types (e.g. PersistentRepr), then the payload will
 be serialized using the user configured serializer, and if none is provided explicitly, Java serialization will be used for it.**
 
@@ -163,13 +163,13 @@ scenarios).
 
 ### Configuring payload serializers
 
-This section aims to highlight the complete basics on how to define custom serializers using @ref:[Akka Serialization](serialization.md).
-Many journal plugin implementations use Akka Serialization, thus it is tremendously important to understand how to configure
+This section aims to highlight the complete basics on how to define custom serializers using @ref:[Pekko Serialization](serialization.md).
+Many journal plugin implementations use Pekko Serialization, thus it is tremendously important to understand how to configure
 it to work with your event classes.
 
 @@@ note
 
-Read the @ref:[Akka Serialization](serialization.md) docs to learn more about defining custom serializers.
+Read the @ref:[Pekko Serialization](serialization.md) docs to learn more about defining custom serializers.
 
 @@@
 
@@ -199,7 +199,7 @@ And finally we register the serializer and bind it to handle the `docs.persisten
 Deserialization will be performed by the same serializer which serialized the message initially
 because of the `identifier` being stored together with the message.
 
-Please refer to the @ref:[Akka Serialization](serialization.md) documentation for more advanced use of serializers,
+Please refer to the @ref:[Pekko Serialization](serialization.md) documentation for more advanced use of serializers,
 especially the @ref:[Serializer with String Manifest](serialization.md#string-manifest-serializer) section since it is very useful for Persistence based applications
 dealing with schema evolutions, as we will see in some of the examples below.
 
@@ -242,7 +242,7 @@ Java
 :  @@snip [PersistenceSchemaEvolutionDocTest.java](/docs/src/test/java/jdocs/persistence/PersistenceSchemaEvolutionDocTest.java) { #protobuf-read-optional-model }
 
 Next we prepare a protocol definition using the protobuf Interface Description Language, which we'll use to generate
-the serializer code to be used on the Akka Serialization layer (notice that the schema approach allows us to rename
+the serializer code to be used on the Pekko Serialization layer (notice that the schema approach allows us to rename
 fields, as long as the numeric identifiers of the fields do not change):
 
 @@snip [FlightAppModels.proto](/docs/src/test/../main/protobuf/FlightAppModels.proto) { #protobuf-read-optional-proto }
@@ -465,7 +465,7 @@ Java
 
 @@@ note
 
-This technique only applies if the Akka Persistence plugin you are using provides this capability.
+This technique only applies if the Pekko Persistence plugin you are using provides this capability.
 Check the documentation of your favourite plugin to see if it supports this style of persistence.
 
 If it doesn't, you may want to skim the [list of existing journal plugins](https://akka.io/community/#journal-plugins), just in case some other plugin

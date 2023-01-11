@@ -1,5 +1,5 @@
 ---
-project.description: Hierarchical supervision, lifecycle monitoring and error or failure handling in Akka.
+project.description: Hierarchical supervision, lifecycle monitoring and error or failure handling in Pekko.
 ---
 # Supervision and Monitoring
 
@@ -82,7 +82,7 @@ re-processed.
 
 @@@ note
 
-Lifecycle Monitoring in Akka is usually referred to as `DeathWatch`
+Lifecycle Monitoring in Pekko is usually referred to as `DeathWatch`
 
 @@@
 

@@ -93,9 +93,6 @@ Scala
 Java
 :  @@snip [ClusterSingletonManagerTest.java](/cluster-tools/src/test/java/org/apache/pekko/cluster/singleton/ClusterSingletonManagerTest.java) { #create-singleton-proxy }
 
-A more comprehensive sample is available in the tutorial named 
-@scala[[Distributed workers with Akka and Scala!](https://github.com/typesafehub/activator-akka-distributed-workers)]@java[[Distributed workers with Akka and Java!](https://github.com/typesafehub/activator-akka-distributed-workers-java)].
-
 ## Configuration
 
 For the full documentation of this feature and for new projects see @ref:[Cluster Singleton - configuration](typed/cluster-singleton.md#configuration).

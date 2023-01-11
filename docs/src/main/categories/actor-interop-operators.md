@@ -1,1 +1,1 @@
-Operators meant for inter-operating between Akka Streams and Actors:
+Operators meant for inter-operating between Pekko Streams and Actors:

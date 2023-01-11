@@ -29,7 +29,7 @@ class ReactiveStreamsDocSpec extends PekkoSpec {
 
   trait Fixture {
     // #authors
-    val authors = Flow[Tweet].filter(_.hashtags.contains(akkaTag)).map(_.author)
+    val authors = Flow[Tweet].filter(_.hashtags.contains(pekkoTag)).map(_.author)
 
     // #authors
 
@@ -64,7 +64,7 @@ class ReactiveStreamsDocSpec extends PekkoSpec {
     storage.expectNext(Author("drewhk"))
     storage.expectNext(Author("ktosopl"))
     storage.expectNext(Author("mmartynas"))
-    storage.expectNext(Author("akkateam"))
+    storage.expectNext(Author("pekkoteam"))
     storage.expectComplete()
   }
 

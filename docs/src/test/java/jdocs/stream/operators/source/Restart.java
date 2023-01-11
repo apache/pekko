@@ -56,7 +56,7 @@ public class Restart {
     // [INFO] [12/10/2019 13:51:58.302] [default-pekko.test.stream-dispatcher-7]
     // [pekko.actor.ActorSystemImpl(default)] 3
     // [WARN] [12/10/2019 13:51:58.310] [default-pekko.test.stream-dispatcher-7]
-    // [RestartWithBackoffSource(akka://default)] Restarting graph due to failure. stack_trace:
+    // [RestartWithBackoffSource(pekko://default)] Restarting graph due to failure. stack_trace:
     // (RuntimeException: darn)
     // --> 1 second gap
     // [INFO] [12/10/2019 13:51:59.379] [default-pekko.test.stream-dispatcher-8]
@@ -66,7 +66,7 @@ public class Restart {
     // [INFO] [12/10/2019 13:51:59.383] [default-pekko.test.stream-dispatcher-8]
     // [pekko.actor.ActorSystemImpl(default)] 3
     // [WARN] [12/10/2019 13:51:59.386] [default-pekko.test.stream-dispatcher-8]
-    // [RestartWithBackoffSource(akka://default)] Restarting graph due to failure. stack_trace:
+    // [RestartWithBackoffSource(pekko://default)] Restarting graph due to failure. stack_trace:
     // (RuntimeException: darn)
     // --> 2 second gap
     // [INFO] [12/10/2019 13:52:01.594] [default-pekko.test.stream-dispatcher-8]
@@ -76,7 +76,7 @@ public class Restart {
     // [INFO] [12/10/2019 13:52:01.595] [default-pekko.test.stream-dispatcher-8]
     // [pekko.actor.ActorSystemImpl(default)] 3
     // [WARN] [12/10/2019 13:52:01.596] [default-pekko.test.stream-dispatcher-8]
-    // [RestartWithBackoffSource(akka://default)] Restarting graph due to failure. stack_trace:
+    // [RestartWithBackoffSource(pekko://default)] Restarting graph due to failure. stack_trace:
     // (RuntimeException: darn)
     // #restart-failure-inner-failure
 

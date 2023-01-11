@@ -1,15 +1,12 @@
-<a id="when-and-where-to-use-akka-cluster"></a>
-# Choosing Akka Cluster
+<a id="when-and-where-to-use-pekko-cluster"></a>
+# Choosing Pekko Cluster
 
 An architectural choice you have to make is if you are going to use a microservices architecture or
-a traditional distributed application. This choice will influence how you should use Akka Cluster.
-
-The [Stateful or Stateless applications: to Akka Cluster or not](https://akka.io/blog/news/2020/06/01/akka-cluster-motivation)
-video is a good starting point to understand the motivation to use Akka Cluster.
+a traditional distributed application. This choice will influence how you should use Pekko Cluster.
 
 ## Microservices
 
-Microservices has many attractive properties, such as the independent nature of microservices allows for
+Microservices architecture has many attractive properties, such as the independent nature of microservices allows for
 multiple smaller and more focused teams that can deliver new functionality more frequently and can
 respond quicker to business opportunities. Reactive Microservices should be isolated, autonomous, and have
 a single responsibility as identified by Jonas Bonér in the book
@@ -17,7 +14,7 @@ a single responsibility as identified by Jonas Bonér in the book
 
 In a microservices architecture, you should consider communication within a service and between services.
 
-In general we recommend against using Akka Cluster and actor messaging between _different_ services because that
+In general we recommend against using Pekko Cluster and actor messaging between _different_ services because that
 would result in a too tight code coupling between the services and difficulties deploying these independent of
 each other, which is one of the main reasons for using a microservices architecture.
 See the discussion on @extref[Internal and External Communication](platform-guide:concepts/internal-and-external-communication.html)
@@ -26,16 +23,16 @@ for some background on this.
 Nodes of a single service (collectively called a cluster) require less decoupling. They share the same code and
 are deployed together, as a set, by a single team or individual. There might be two versions running concurrently
 during a rolling deployment, but deployment of the entire set has a single point of control. For this reason,
-intra-service communication can take advantage of Akka Cluster, failure management and actor messaging, which
+intra-service communication can take advantage of Pekko Cluster, failure management and actor messaging, which
 is convenient to use and has great performance.
 
-Between different services [Akka HTTP](https://doc.akka.io/docs/akka-http/current/) or
-[Akka gRPC](https://doc.akka.io/docs/akka-grpc/current/) can be used for synchronous (yet non-blocking)
-communication and [Akka Streams Kafka](https://doc.akka.io/docs/alpakka-kafka/current/) or other
-[Alpakka](https://doc.akka.io/docs/alpakka/current/) connectors for integration asynchronous communication.
+Between different services [Pekko HTTP](https://doc.akka.io/docs/akka-http/current/) or
+[Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/) can be used for synchronous (yet non-blocking)
+communication and [Pekko Streams Kafka](https://doc.akka.io/docs/alpakka-kafka/current/) or other
+[Pekko Connectors](https://doc.akka.io/docs/alpakka/current/) for integration asynchronous communication.
 All those communication mechanisms work well with streaming of messages with end-to-end back-pressure, and the
 synchronous communication tools can also be used for single request response interactions. It is also important
-to note that when using these tools both sides of the communication do not have to be implemented with Akka,
+to note that when using these tools both sides of the communication do not have to be implemented with Pekko,
 nor does the programming language matter.
 
 ## Traditional distributed application
@@ -43,7 +40,7 @@ nor does the programming language matter.
 We acknowledge that microservices also introduce many new challenges and it's not the only way to
 build applications. A traditional distributed application may have less complexity and work well in many cases.
 For example for a small startup, with a single team, building an application where time to market is everything.
-Akka Cluster can efficiently be used for building such distributed application.
+Pekko Cluster can efficiently be used for building such distributed application.
 
 In this case, you have a single deployment unit, built from a single code base (or using traditional binary
 dependency management to modularize) but deployed across many nodes using a single cluster.
@@ -53,7 +50,7 @@ have specialized runtime roles which means that the cluster is not totally homog
 is just a runtime behavior and doesn't cause the same kind of problems you might get from tight coupling of
 totally separate artifacts.
 
-A tightly coupled distributed application has served the industry and many Akka users well for years and is
+A tightly coupled distributed application has served the industry and many Pekko users well for years and is
 still a valid choice.
 
 ## Distributed monolith

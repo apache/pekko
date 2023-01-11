@@ -1,13 +1,13 @@
 ---
-project.description: Event Sourcing with Akka Persistence enables actors to persist your events for recovery on failure or when migrated within a cluster.
+project.description: Event Sourcing with Pekko Persistence enables actors to persist your events for recovery on failure or when migrated within a cluster.
 ---
 # Event Sourcing
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Akka Persistence](../persistence.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Pekko Persistence](../persistence.md).
 
 ## Module info
 
-To use Akka Persistence, add the module to your project:
+To use Pekko Persistence, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -29,30 +29,26 @@ You also have to select journal plugin and optionally snapshot store plugin, see
 
 ## Introduction
 
-Akka Persistence enables stateful actors to persist their state so that it can be recovered when an actor
-is either restarted, such as after a JVM crash, by a supervisor or a manual stop-start, or migrated within a cluster. The key concept behind Akka
+Pekko Persistence enables stateful actors to persist their state so that it can be recovered when an actor
+is either restarted, such as after a JVM crash, by a supervisor or a manual stop-start, or migrated within a cluster. The key concept behind Pekko
 Persistence is that only the _events_ that are persisted by the actor are stored, not the actual state of the actor
 (although actor state snapshot support is available). The events are persisted by appending to storage (nothing is ever mutated) which
 allows for very high transaction rates and efficient replication. A stateful actor is recovered by replaying the stored
 events to the actor, allowing it to rebuild its state. This can be either the full history of changes
 or starting from a checkpoint in a snapshot, which can dramatically reduce recovery times. 
 
-Akka Persistence also supports @ref:[Durable State Behaviors](durable-state/persistence.md), which is based on 
+Pekko Persistence also supports @ref:[Durable State Behaviors](durable-state/persistence.md), which is based on 
 persistence of the latest state of the actor. In this implementation, the _latest_ state is persisted, instead of events. 
 Hence this is more similar to CRUD based applications.
 
-The [Event Sourcing with Akka 2.6 video](https://akka.io/blog/news/2020/01/07/akka-event-sourcing-video)
-is a good starting point for learning Event Sourcing, together with the @extref[Microservices with Akka tutorial](platform-guide:microservices-tutorial/) 
-that illustrates how to implement an Event Sourced CQRS application with Akka Persistence and Akka Projections.
+The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) illustrates how to implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections.
 
 @@@ note
 
 The General Data Protection Regulation (GDPR) requires that personal information must be deleted at the request of users.
 Deleting or modifying events that carry personal information would be difficult. Data shredding can be used to forget
 information instead of deleting or modifying it. This is achieved by encrypting the data with a key for a given data
-subject id (person) and deleting the key when that data subject is to be forgotten. Lightbend's
-[GDPR for Akka Persistence](https://doc.akka.io/docs/akka-enhancements/current/gdpr/index.html)
-provides tools to facilitate in building GDPR capable systems.
+subject id (person) and deleting the key when that data subject is to be forgotten.
 
 @@@
 
@@ -63,7 +59,7 @@ See an [introduction to Event Sourcing](https://docs.microsoft.com/en-us/previou
 Another excellent article about "thinking in Events" is [Events As First-Class Citizens](https://hackernoon.com/events-as-first-class-citizens-8633e8479493)
 by Randy Shoup. It is a short and recommended read if you're starting developing Events based applications.
  
-What follows is Akka's implementation via event sourced actors. 
+What follows is Pekko's implementation via event sourced actors. 
 
 An event sourced actor (also known as a persistent actor) receives a (non-persistent) command
 which is first validated if it can be applied to the current state. Here validation can mean anything, from simple
@@ -85,7 +81,7 @@ Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the @apidoc[typed.Behavior] of a persistent actor is typed to the type of the `Command`
-because this is the type of message a persistent actor should receive. In Akka this is now enforced by the type system.
+because this is the type of message a persistent actor should receive. In Pekko this is now enforced by the type system.
 
 The components that make up an @apidoc[typed.*.EventSourcedBehavior] are:
 
@@ -301,7 +297,7 @@ would fit in the memory of one node. Cluster sharding improves the resilience of
 the persistent actors are quickly started on a new node and can resume operations.
 
 The @apidoc[typed.*.EventSourcedBehavior] can then be run as with any plain actor as described in @ref:[actors documentation](actors.md),
-but since Akka Persistence is based on the single-writer principle the persistent actors are typically used together
+but since Pekko Persistence is based on the single-writer principle the persistent actors are typically used together
 with Cluster Sharding. For a particular `persistenceId` only one persistent actor instance should be active at one time.
 If multiple instances were to persist events at the same time, the events would be interleaved and might not be
 interpreted correctly on replay. Cluster Sharding ensures that there is only one active entity for each id. The
@@ -327,7 +323,7 @@ As you can see in the above examples this is not supported by persistent actors.
 returned by `eventHandler`. The reason a new behavior can't be returned is that behavior is part of the actor's
 state and must also carefully be reconstructed during recovery. If it would have been supported it would mean
 that the behavior must be restored when replaying events and also encoded in the state anyway when snapshots are used.
-That would be very prone to mistakes and thus not allowed in Akka Persistence.
+That would be very prone to mistakes and thus not allowed in Pekko Persistence.
 
 For basic actors you can use the same set of command handlers independent of what state the entity is in,
 as shown in above example. For more complex actors it's useful to be able to change the behavior in the sense
@@ -663,7 +659,7 @@ where resilience is important so that if a node crashes the persistent actors ar
 resume operations @ref:[Cluster Sharding](cluster-sharding.md) is an excellent fit to spread persistent actors over a 
 cluster and address them by id.
 
-Akka Persistence is based on the single-writer principle. For a particular @apidoc[typed.PersistenceId] only one @apidoc[typed.*.EventSourcedBehavior]
+Pekko Persistence is based on the single-writer principle. For a particular @apidoc[typed.PersistenceId] only one @apidoc[typed.*.EventSourcedBehavior]
 instance should be active at one time. If multiple instances were to persist events at the same time, the events would
 be interleaved and might not be interpreted correctly on replay. Cluster Sharding ensures that there is only one
 active entity (`EventSourcedBehavior`) for each id within a data center.
@@ -673,23 +669,23 @@ data centers.
 ## Configuration
 
 There are several configuration properties for the persistence module, please refer
-to the @ref:[reference configuration](../general/configuration-reference.md#config-akka-persistence).
+to the @ref:[reference configuration](../general/configuration-reference.md#config-pekko-persistence).
 
 The @ref:[journal and snapshot store plugins](../persistence-plugins.md) have specific configuration, see
 reference documentation of the chosen plugin.
 
 ## Example project
 
-@java[@extref[Persistence example project](samples:akka-samples-persistence-java)]
-@scala[@extref[Persistence example project](samples:akka-samples-persistence-scala)]
+@java[@extref[Persistence example project](samples:pekko-samples-persistence-java)]
+@scala[@extref[Persistence example project](samples:pekko-samples-persistence-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
-This project contains a Shopping Cart sample illustrating how to use Akka Persistence.
+This project contains a Shopping Cart sample illustrating how to use Pekko Persistence.
 
-The Shopping Cart sample is expanded further in the @extref[Microservices with Akka tutorial](platform-guide:microservices-tutorial/).
+The Shopping Cart sample is expanded further in the @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/).
 In that sample the events are tagged to be consumed by even processors to build other representations
 from the events, or publish the events to other services.
 
-@java[@extref[Multi-DC Persistence example project](samples:akka-samples-persistence-dc-java)]
-@scala[@extref[Multi-DC Persistence example project](samples:akka-samples-persistence-dc-scala)]
+@java[@extref[Multi-DC Persistence example project](samples:pekko-samples-persistence-dc-java)]
+@scala[@extref[Multi-DC Persistence example project](samples:pekko-samples-persistence-dc-scala)]
 illustrates how to use @ref:[Replicated Event Sourcing](replicated-eventsourcing.md) that supports
 active-active persistent entities across data centers.

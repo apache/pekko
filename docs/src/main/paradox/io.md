@@ -15,10 +15,8 @@ To use I/O, you must add the following dependency in your project:
 
 ## Introduction
 
-The `pekko.io` package has been developed in collaboration between the Akka
-and [spray.io](http://spray.io) teams. Its design combines experiences from the
-`spray-io` module with improvements that were jointly developed for
-more general consumption as an actor-based service.
+The `pekko.io` package design combines experiences from the `spray-io` module 
+with improvements that were jointly developed for more general consumption as an actor-based service.
 
 The guiding design goal for this I/O implementation was to reach extreme
 scalability, make no compromises in providing an API correctly matching the
@@ -64,12 +62,12 @@ application tries to push more data than a device can handle, the driver has to 
 is able to write them. With buffering it is possible to handle short bursts of intensive writes --- but no buffer is infinite.
 "Flow control" is needed to avoid overwhelming device buffers.
 
-Akka supports two types of flow control:
+Pekko supports two types of flow control:
 
  * *Ack-based*, where the driver notifies the writer when writes have succeeded.
  * *Nack-based*, where the driver notifies the writer when writes have failed.
 
-Each of these models is available in both the TCP and the UDP implementations of Akka I/O.
+Each of these models is available in both the TCP and the UDP implementations of Pekko I/O.
 
 Individual writes can be acknowledged by providing an ack object in the write message (@apidoc[Write](io.Tcp.Write) in the case of TCP and
 @apidoc[Send](io.Udp.Send) for UDP). When the write is complete the worker will send the ack object to the writing actor. This can be
@@ -93,7 +91,7 @@ not error handling. In other words, data may still be lost, even if every write 
 ### ByteString
 
 To maintain isolation, actors should communicate with immutable objects only. @apidoc[ByteString](util.ByteString) is an
-immutable container for bytes. It is used by Akka's I/O system as an efficient, immutable alternative
+immutable container for bytes. It is used by Pekko's I/O system as an efficient, immutable alternative
 the traditional byte containers used for I/O on the JVM, such as @scala[@scaladoc[Array](scala.Array)[@scaladoc[Byte](scala.Byte)]]@java[`byte[]`] and @javadoc[ByteBuffer](java.nio.ByteBuffer).
 
 `ByteString` is a [rope-like](https://en.wikipedia.org/wiki/Rope_\(computer_science\)) data structure that is immutable

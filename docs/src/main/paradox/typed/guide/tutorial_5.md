@@ -60,7 +60,7 @@ First, we need to design the lifecycle of our query actor. This consists of iden
  * A deadline that indicates how long the query should wait for replies. Making this a parameter will simplify testing.
 
 #### Scheduling the query timeout
-Since we need a way to indicate how long we are willing to wait for responses, it is time to introduce a new Akka feature that we have
+Since we need a way to indicate how long we are willing to wait for responses, it is time to introduce a new Pekko feature that we have
 not used yet, the built-in scheduler facility. Using @apidoc[Behaviors.withTimers](typed.*.Behaviors$) {scala="#withTimers[T](factory:org.apache.pekko.actor.typed.scaladsl.TimerScheduler[T]=%3eorg.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.Behavior[T]" java="#withTimers(org.apache.pekko.japi.function.Function)"} and @apidoc[startSingleTimer](typed.*.TimerScheduler) {scala="#startSingleTimer(key:Any,msg:T,delay:scala.concurrent.duration.FiniteDuration):Unit" java="#startSingleTimer(java.lang.Object,T,java.time.Duration)"} to schedule a message that will be sent after a given delay.
 
 
@@ -226,15 +226,12 @@ In the context of the IoT system, this guide introduced the following concepts, 
 
 ## What's Next?
 
-To continue your journey with Akka, we recommend:
+To continue your journey with Pekko, we recommend:
 
-* Start building your own applications with Akka, make sure you [get involved in our amazing community](https://akka.io/get-involved/) for help if you get stuck.
-* If you’d like some additional background, and detail, read the rest of the @ref:[reference documentation](../actors.md) and check out some of the @ref:[books and videos](../../additional/books.md) on Akka.
+* For some additional background, and detail, read the rest of the @ref:[reference documentation](../actors.md) and check out some of the @ref:[books and videos](../../additional/books.md) on Pekko.
 * If you are interested in functional programming, read how actors can be defined in a @ref:[functional style](../actors.md#functional-style). In this guide the object-oriented style was used, but you can mix both as you like.
 
 To get from this guide to a complete application you would likely need to provide either an UI or an API. For this we recommend that you look at the following technologies and see what fits you:
 
- * @extref[Microservices with Akka tutorial](platform-guide:microservices-tutorial/) illustrates how to implement an Event Sourced CQRS application with Akka Persistence and Akka Projections 
- * [Akka HTTP](https://doc.akka.io/docs/akka-http/current/introduction.html) is a HTTP server and client library, making it possible to publish and consume HTTP endpoints
- * [Play Framework](https://www.playframework.com) is a full fledged web framework that is built on top of Akka HTTP, it integrates well with Akka and can be used to create a complete modern web UI
- * [Lagom](https://www.lagomframework.com) is an opinionated microservice framework built on top of Akka, encoding many best practices around Akka and Play
+ * @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) illustrates how to implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections 
+ * [Pekko HTTP](https://doc.akka.io/docs/akka-http/current/introduction.html) is a HTTP server and client library, making it possible to publish and consume HTTP endpoints

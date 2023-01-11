@@ -1,6 +1,6 @@
 # Configuration
 
-You can start using Akka without defining any configuration, since sensible default values
+You can start using Pekko without defining any configuration, since sensible default values
 are provided. Later on you might need to amend the settings to change the default behavior
 or adapt for specific runtime environments. Typical examples of settings that you
 might amend:
@@ -10,14 +10,14 @@ might amend:
  * @ref:[message serializers](../serialization.md)
  * @ref:[tuning of dispatchers](../typed/dispatchers.md)
 
-Akka uses the [Typesafe Config Library](https://github.com/lightbend/config), which might also be a good choice
+Pekko uses the [Typesafe Config Library](https://github.com/lightbend/config), which might also be a good choice
 for the configuration of your own application or library built with or without
-Akka. This library is implemented in Java with no external dependencies;
+Pekko. This library is implemented in Java with no external dependencies;
 This is only a summary of the most important parts for more details see [the config library docs](https://github.com/lightbend/config/blob/master/README.md).
 
 ## Where configuration is read from
 
-All configuration for Akka is held within instances of @apidoc[ActorSystem](typed.ActorSystem), or
+All configuration for Pekko is held within instances of @apidoc[ActorSystem](typed.ActorSystem), or
 put differently, as viewed from the outside, @apidoc[ActorSystem](typed.ActorSystem) is the only
 consumer of configuration information. While constructing an actor system, you
 can either pass in a [Config](https://lightbend.github.io/config/latest/api/index.html?com/typesafe/config/Config.html) object or not, where the second case is
@@ -44,9 +44,9 @@ to `application`—may be overridden using the `config.resource` property
 
 @@@ note
 
-If you are writing an Akka application, keep your configuration in
+If you are writing an Pekko application, keep your configuration in
 `application.conf` at the root of the class path. If you are writing an
-Akka-based library, keep its configuration in `reference.conf` at the root
+Pekko-based library, keep its configuration in `reference.conf` at the root
 of the JAR file. It's not supported to override a config property owned by
 one library in a `reference.conf` of another library.
 
@@ -56,7 +56,7 @@ one library in a `reference.conf` of another library.
 
 @@@ warning
 
-Akka's configuration approach relies heavily on the notion of every
+Pekko's configuration approach relies heavily on the notion of every
 module/jar having its own `reference.conf` file. All of these will be
 discovered by the configuration and loaded. Unfortunately this also means
 that if you put/merge multiple jars into the same jar, you need to merge all the
@@ -77,7 +77,7 @@ A custom `application.conf` might look like this:
 
 pekko {
 
-  # Logger config for Akka internals and classic actors, the new API relies
+  # Logger config for Pekko internals and classic actors, the new API relies
   # directly on SLF4J and your config for the logger backend.
 
   # Loggers to register at boot time (org.apache.pekko.event.Logging$DefaultLogger logs
@@ -134,7 +134,7 @@ pekko {
 More advanced include and substitution mechanisms are explained in the [HOCON](https://github.com/typesafehub/config/blob/master/HOCON.md)
 specification.
 
-<a id="dakka-log-config-on-start"></a>
+<a id="dpekko-log-config-on-start"></a>
 ## Logging of Configuration
 
 If the system or config property `pekko.log-config-on-start` is set to `on`, then the
@@ -185,20 +185,20 @@ Java
 ## A Word About ClassLoaders
 
 In several places of the configuration file it is possible to specify the
-fully-qualified class name of something to be instantiated by Akka. This is
+fully-qualified class name of something to be instantiated by Pekko. This is
 done using Java reflection, which in turn uses a @javadoc[ClassLoader](java.lang.ClassLoader). Getting
 the right one in challenging environments like application containers or OSGi
-bundles is not always trivial, the current approach of Akka is that each
+bundles is not always trivial, the current approach of Pekko is that each
 @apidoc[ActorSystem](typed.ActorSystem) implementation stores the current thread’s context class
 loader (if available, otherwise just its own loader as in
 @javadoc[this.getClass.getClassLoader](java.lang.Class#getClassLoader())) and uses that for all reflective accesses.
-This implies that putting Akka on the boot class path will yield
+This implies that putting Pekko on the boot class path will yield
 @javadoc[NullPointerException](java.lang.NullPointerException) from strange places: this is not supported.
 
 ## Application specific settings
 
 The configuration can also be used for application specific settings.
-A good practice is to place those settings in an @ref:[Extension](../extending-akka.md#extending-akka-settings).
+A good practice is to place those settings in an @ref:[Extension](../extending-pekko.md#extending-pekko-settings).
 
 ## Configuring multiple ActorSystem
 
@@ -241,7 +241,7 @@ my.other.setting = "hello"
 // plus myapp1 and myapp2 subtrees
 ```
 
-while in the second one, only the “akka” subtree is lifted, with the following
+while in the second one, only the “pekko” subtree is lifted, with the following
 result
 
 ```ruby
@@ -277,7 +277,7 @@ Java
 You can replace or supplement `application.conf` either in code
 or using system properties.
 
-If you're using [ConfigFactory.load()](https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigFactory.html#load--) (which Akka does by
+If you're using [ConfigFactory.load()](https://lightbend.github.io/config/latest/api/com/typesafe/config/ConfigFactory.html#load--) (which Pekko does by
 default) you can replace `application.conf` by defining
 `-Dconfig.resource=whatever`, `-Dconfig.file=whatever`, or
 `-Dconfig.url=whatever`.
@@ -347,5 +347,5 @@ override the earlier stuff.
 
 ## Listing of the Reference Configuration
 
-Each Akka module has a reference configuration file with the default values.
+Each Pekko module has a reference configuration file with the default values.
 Those `reference.conf` files are listed in @ref[Default configuration](configuration-reference.md)

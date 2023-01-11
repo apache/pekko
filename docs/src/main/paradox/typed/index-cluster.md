@@ -1,5 +1,5 @@
 ---
-project.description: Akka Cluster concepts, node membership service, CRDT Distributed Data, Cluster Singleton, Cluster Sharding, and Akka Cluster across multiple datacenters.
+project.description: Pekko Cluster concepts, node membership service, CRDT Distributed Data, Cluster Singleton, Cluster Sharding, and Pekko Cluster across multiple datacenters.
 ---
 # Cluster
 

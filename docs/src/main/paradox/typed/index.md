@@ -1,5 +1,5 @@
 ---
-project.description: Using Akka to build reliable multi-core applications distributed across a network that scale up and scale out.
+project.description: Using Pekko to build reliable multi-core applications distributed across a network that scale up and scale out.
 ---
 # Actors
 

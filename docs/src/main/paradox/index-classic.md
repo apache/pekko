@@ -1,4 +1,4 @@
-# Akka Classic
+# Pekko Classic
 
 @@include[includes.md](includes.md) { #actor-api }
 

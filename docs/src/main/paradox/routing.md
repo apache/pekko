@@ -22,7 +22,7 @@ Messages can be sent via a router to efficiently route them to destination actor
 its *routees*. A @apidoc[routing.Router] can be used inside or outside of an actor, and you can manage the
 routees yourselves or use a self contained router actor with configuration capabilities.
 
-Different routing strategies can be used, according to your application's needs. Akka comes with
+Different routing strategies can be used, according to your application's needs. Pekko comes with
 several useful routing strategies right out of the box. But, as you will see in this chapter, it is
 also possible to @ref:[create your own](#custom-router).
 
@@ -40,7 +40,7 @@ Java
 We create a `Router` and specify that it should use @apidoc[routing.RoundRobinRoutingLogic] when routing the
 messages to the routees.
 
-The routing logic shipped with Akka are:
+The routing logic shipped with Pekko are:
 
  * @apidoc[routing.RoundRobinRoutingLogic]
  * @apidoc[routing.RandomRoutingLogic]
@@ -126,7 +126,7 @@ In addition to being able to create local actors as routees, you can instruct th
 deploy its created children on a set of remote hosts. Routees will be deployed in round-robin
 fashion. In order to deploy routees remotely, wrap the router configuration in a
 @apidoc[remote.routing.RemoteRouterConfig], attaching the remote addresses of the nodes to deploy to. Remote
-deployment requires the `akka-remote` module to be included in the classpath.
+deployment requires the `pekko-remote` module to be included in the classpath.
 
 Scala
 :  @@snip [RouterDocSpec.scala](/docs/src/test/scala/docs/routing/RouterDocSpec.scala) { #remoteRoutees }
@@ -239,7 +239,7 @@ Java
 :  @@snip [RouterDocTest.java](/docs/src/test/java/jdocs/routing/RouterDocTest.java) { #create-worker-actors }
 
 The paths may contain protocol and address information for actors running on remote hosts.
-Remoting requires the `akka-remote` module to be included in the classpath.
+Remoting requires the `pekko-remote` module to be included in the classpath.
 
 @@snip [RouterDocSpec.scala](/docs/src/test/scala/docs/routing/RouterDocSpec.scala) { #config-remote-round-robin-group }
 
@@ -889,7 +889,7 @@ Dispatchers](#configuring-dispatchers) for more information.
 @@@
 
 <a id="router-design"></a>
-## How Routing is Designed within Akka
+## How Routing is Designed within Pekko
 
 On the surface routers look like normal actors, but they are actually implemented differently.
 Routers are designed to be extremely efficient at receiving messages and passing them quickly on to
@@ -909,7 +909,7 @@ routers.
 
 ## Custom Router
 
-You can create your own router should you not find any of the ones provided by Akka sufficient for your needs.
+You can create your own router should you not find any of the ones provided by Pekko sufficient for your needs.
 In order to roll your own router you have to fulfill certain criteria which are explained in this section.
 
 Before creating your own router you should consider whether a normal actor with router-like
@@ -958,7 +958,7 @@ Scala
 Java
 :  @@snip [RedundancyGroup.java](/docs/src/test/java/jdocs/routing/RedundancyGroup.java) { #group }
 
-This can be used exactly as the router actors provided by Akka.
+This can be used exactly as the router actors provided by Pekko.
 
 Scala
 :  @@snip [CustomRouterDocSpec.scala](/docs/src/test/scala/docs/routing/CustomRouterDocSpec.scala) { #usage-1 }

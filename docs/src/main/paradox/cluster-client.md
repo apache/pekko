@@ -2,8 +2,8 @@
 
 @@@ warning
 
-Cluster Client is deprecated in favor of using [Akka gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html).
-It is not advised to build new applications with Cluster Client, and existing users @ref[should migrate](#migration-to-akka-grpc).
+Cluster Client is deprecated in favor of using [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html).
+It is not advised to build new applications with Cluster Client, and existing users @ref[should migrate](#migration-to-pekko-grpc).
 
 @@@
 
@@ -36,12 +36,12 @@ contact points retrieved from the previous establishment, or periodically refres
 i.e. not necessarily the initial contact points.
 
 Using the @apidoc[ClusterClient] for communicating with a cluster from the outside requires that the system with the client
-can both connect and be connected with Akka Remoting from all the nodes in the cluster with a receptionist.
-This creates a tight coupling in that the client and cluster systems may need to have the same version of both Akka, libraries, message classes, serializers and potentially even the JVM. In many cases it is a better solution
+can both connect and be connected with Pekko Remoting from all the nodes in the cluster with a receptionist.
+This creates a tight coupling in that the client and cluster systems may need to have the same version of both Pekko, libraries, message classes, serializers and potentially even the JVM. In many cases it is a better solution
 to use a more explicit and decoupling protocol such as [HTTP](https://doc.akka.io/docs/akka-http/current/index.html) or
 [gRPC](https://doc.akka.io/docs/akka-grpc/current/).
 
-Additionally, since Akka Remoting is primarily designed as a protocol for Akka Cluster there is no explicit resource
+Additionally, since Pekko Remoting is primarily designed as a protocol for Pekko Cluster there is no explicit resource
 management, when a @apidoc[ClusterClient] has been used it will cause connections with the cluster until the ActorSystem is
 stopped (unlike other kinds of network clients).
 
@@ -149,10 +149,6 @@ Java
 You will probably define the address information of the initial contact points in configuration or system property.
 See also @ref:[Configuration](#cluster-client-config).
 
-A more comprehensive sample is available in the tutorial named
-@scala[[Distributed workers with Akka and Scala](https://github.com/typesafehub/activator-akka-distributed-workers).]
-@java[[Distributed workers with Akka and Java](https://github.com/typesafehub/activator-akka-distributed-workers-java).]
-
 ## ClusterClientReceptionist Extension
 
 In the example above the receptionist is started and accessed with the `org.apache.pekko.cluster.client.ClusterClientReceptionist` extension.
@@ -229,22 +225,22 @@ are entirely dynamic and the entire cluster might shut down or crash, be restart
 client will be stopped in that case a monitoring actor can watch it and upon `Terminate` a new set of initial
 contacts can be fetched and a new cluster client started.
 
-## Migration to Akka gRPC
+## Migration to Pekko gRPC
 
 Cluster Client is deprecated and it is not advised to build new applications with it.
-As a replacement, we recommend using [Akka gRPC](https://doc.akka.io/docs/akka-grpc/current/)
+As a replacement, we recommend using [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/)
 with an application-specific protocol. The benefits of this approach are:
 
-* Improved security by using TLS for gRPC (HTTP/2) versus exposing Akka Remoting outside the Akka Cluster
+* Improved security by using TLS for gRPC (HTTP/2) versus exposing Pekko Remoting outside the Pekko Cluster
 * Easier to update clients and servers independent of each other
 * Improved protocol definition between client and server
-* Usage of [Akka gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery)
-* Clients do not need to use Akka
-* See also [gRPC versus Akka Remoting](https://doc.akka.io/docs/akka-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
+* Usage of [Pekko gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery)
+* Clients do not need to use Pekko
+* See also [gRPC versus Pekko Remoting](https://doc.akka.io/docs/akka-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
 
 ### Migrating directly
 
-Existing users of Cluster Client may migrate directly to Akka gRPC and use it
+Existing users of Cluster Client may migrate directly to Pekko gRPC and use it
 as documented in [its documentation](https://doc.akka.io/docs/akka-grpc/current/).
 
 ### Migrating gradually
@@ -253,12 +249,12 @@ If your application extensively uses Cluster Client, a more gradual migration
 might be desired that requires less re-write of the application. That migration step is described in this section. We recommend migration directly if feasible,
 though.
 
-An example is provided to illustrate an approach to migrate from the deprecated Cluster Client to Akka gRPC,
+An example is provided to illustrate an approach to migrate from the deprecated Cluster Client to Pekko gRPC,
 with minimal changes to your existing code. The example is intended to be copied and adjusted to your needs.
 It will not be provided as a published artifact.
 
-* [akka-samples/akka-sample-cluster-cluster-client-grpc-scala](https://github.com/akka/akka-samples/tree/2.6/akka-sample-cluster-client-grpc-scala) implemented in Scala
-* [akka-samples/akka-sample-cluster-cluster-client-grpc-java](https://github.com/akka/akka-samples/tree/2.6/akka-sample-cluster-client-grpc-java) implemented in Java
+* [pekko-samples/pekko-bom-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/incubator-pekko-samples/tree/2.6/pekko-bom-sample-cluster-client-grpc-scala) implemented in Scala
+* [pekko-samples/pekko-bom-sample-cluster-cluster-client-grpc-java](https://github.com/apache/incubator-pekko-samples/tree/2.6/pekko-bom-sample-cluster-client-grpc-java) implemented in Java
 
 The example is still using an actor on the client-side to have an API that is very close
 to the original Cluster Client. The messages this actor can handle correspond to the
@@ -269,24 +265,24 @@ The `ClusterClient` actor delegates those messages to the gRPC client, and on th
 server-side those are translated and delegated to the destination actors that
 are registered via the `ClusterClientReceptionist` in the same way as in the original.
 
-Akka gRPC is used as the transport for the messages between client and server, instead of Akka Remoting.
+Pekko gRPC is used as the transport for the messages between client and server, instead of Pekko Remoting.
 
-The application specific messages are wrapped and serialized with Akka Serialization,
+The application specific messages are wrapped and serialized with Pekko Serialization,
 which means that care must be taken to keep wire compatibility when changing any messages used
-between the client and server. The Akka configuration of Akka serializers must be the same (or
+between the client and server. The Pekko configuration of Pekko serializers must be the same (or
 being compatible) on the client and the server.
 
 #### Next steps
 
-After this first migration step from Cluster Client to Akka gRPC, you can start
+After this first migration step from Cluster Client to Pekko gRPC, you can start
 replacing calls to `ClusterClientReceptionistService` with new,
 application-specific gRPC endpoints.
 
 #### Differences
 
 Aside from the underlying implementation using gRPC instead of Actor messages
-and Akka Remoting it's worth pointing out the following differences between
-the Cluster Client and the example emulating Cluster Client with Akka gRPC as
+and Pekko Remoting it's worth pointing out the following differences between
+the Cluster Client and the example emulating Cluster Client with Pekko gRPC as
 transport.
 
 ##### Single request-reply
@@ -299,7 +295,7 @@ based API.
 
 ##### Initial contact points
 
-Instead of configured initial contact points the [Akka gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery) can be used.
+Instead of configured initial contact points the [Pekko gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery) can be used.
 
 ##### Failure detection
 

@@ -53,7 +53,7 @@ There a two different modes of message delivery, explained in the sections
 @@@ div { .group-scala }
 
 A more comprehensive sample is available in the
-tutorial named [Akka Clustered PubSub with Scala!](https://github.com/typesafehub/activator-akka-clustering).
+tutorial named [Pekko Clustered PubSub with Scala!](https://github.com/typesafehub/activator-pekko-clustering).
 
 @@@
 
@@ -233,7 +233,7 @@ pekko.extensions = ["org.apache.pekko.cluster.pubsub.DistributedPubSub"]
 
 ## Delivery Guarantee
 
-As in @ref:[Message Delivery Reliability](general/message-delivery-reliability.md) of Akka, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**.
+As in @ref:[Message Delivery Reliability](general/message-delivery-reliability.md) of Pekko, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**.
 In other words, messages can be lost over the wire.
 
-If you are looking for at-least-once delivery guarantee, we recommend [Alpakka Kafka](https://doc.akka.io/docs/alpakka-kafka/current/).
+If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connectors](https://doc.akka.io/docs/alpakka-kafka/current/).

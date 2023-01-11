@@ -2,7 +2,7 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -16,7 +16,7 @@ To use Akka Streams, add the module to your project:
 ## Introduction
 
 When upstream and downstream rates differ, especially when the throughput has spikes, it can be useful to introduce
-buffers in a stream. In this chapter we cover how buffers are used in Akka Streams.
+buffers in a stream. In this chapter we cover how buffers are used in Pekko Streams.
 
 <a id="async-stream-buffers"></a>
 ## Buffers for asynchronous operators
@@ -52,7 +52,7 @@ execution model of flows where an element completely passes through the processi
 enters the flow. The next element is processed by an asynchronous operator as soon as it has emitted the previous one.
 
 While pipelining in general increases throughput, in practice there is a cost of passing an element through the
-asynchronous (and therefore thread crossing) boundary which is significant. To amortize this cost Akka Streams uses
+asynchronous (and therefore thread crossing) boundary which is significant. To amortize this cost Pekko Streams uses
 a *windowed*, *batching* backpressure strategy internally. It is windowed because as opposed to a [Stop-And-Wait](https://en.wikipedia.org/wiki/Stop-and-wait_ARQ)
 protocol multiple elements might be "in-flight" concurrently with requests for elements. It is also batching because
 a new element is not immediately requested once an element has been drained from the window-buffer but multiple elements
@@ -62,13 +62,13 @@ propagating the backpressure signal through the asynchronous boundary.
 While this internal protocol is mostly invisible to the user (apart from its throughput increasing effects) there are
 situations when these details get exposed. In all of our previous examples we always assumed that the rate of the
 processing chain is strictly coordinated through the backpressure signal causing all operators to process no faster than
-the throughput of the connected chain. There are tools in Akka Streams however that enable the rates of different segments
+the throughput of the connected chain. There are tools in Pekko Streams however that enable the rates of different segments
 of a processing chain to be "detached" or to define the maximum throughput of the stream through external timing sources.
 These situations are exactly those where the internal batching buffering strategy suddenly becomes non-transparent.
 
 ### Internal buffers and their effect
 
-As we have explained, for performance reasons Akka Streams introduces a buffer for every asynchronous operator.
+As we have explained, for performance reasons Pekko Streams introduces a buffer for every asynchronous operator.
 The purpose of these buffers is solely optimization, in fact the size of 1 would be the most natural choice if there
 would be no need for throughput improvements. Therefore it is recommended to keep these buffer sizes small,
 and increase them only to a level suitable for the throughput requirements of the application. Default buffer sizes
@@ -110,7 +110,7 @@ should be to decrease the input buffer of the affected elements to 1.
 
 @@@
 
-## Buffers in Akka Streams
+## Buffers in Pekko Streams
 
 In this section we will discuss *explicit* user defined buffers that are part of the domain logic of the stream processing
 pipeline of an application.

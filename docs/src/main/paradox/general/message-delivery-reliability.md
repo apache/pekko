@@ -1,9 +1,9 @@
 ---
-project.description: Akka message delivery semantics, at-most-once delivery and message ordering.
+project.description: Pekko message delivery semantics, at-most-once delivery and message ordering.
 ---
 # Message Delivery Reliability
 
-Akka helps you build reliable applications which make use of multiple processor
+Pekko helps you build reliable applications which make use of multiple processor
 cores in one machine (“scaling up”) or distributed across a computer network
 (“scaling out”). The key abstraction to make this work is that all interactions
 between your code units—actors—happen via message passing, which is why the
@@ -42,7 +42,7 @@ also underlies the @scaladoc[ask](pekko.pattern.AskSupport#ask(actorRef:org.apac
 * **message ordering per sender–receiver pair**
 
 The first rule is typically found also in other actor implementations while the
-second is specific to Akka.
+second is specific to Pekko.
 
 ### Discussion: What does “at-most-once” mean?
 
@@ -89,15 +89,15 @@ decide upon the “successfully” part of point five.
 Along those same lines goes the reasoning in [Nobody Needs Reliable
 Messaging](https://www.infoq.com/articles/no-reliable-messaging/). The only meaningful way for a sender to know whether an
 interaction was successful is by receiving a business-level acknowledgement
-message, which is not something Akka could make up on its own (neither are we
+message, which is not something Pekko could make up on its own (neither are we
 writing a “do what I mean” framework nor would you want us to).
 
-Akka embraces distributed computing and makes the fallibility of communication
+Pekko embraces distributed computing and makes the fallibility of communication
 explicit through message passing, therefore it does not try to lie and emulate
 a leaky abstraction. This is a model that has been used with great success in
 Erlang and requires the users to design their applications around it. You can
 read more about this approach in the [Erlang documentation](https://erlang.org/faq/academic.html) (section 10.8 and
-10.9), Akka follows it closely.
+10.9), Pekko follows it closely.
 
 Another angle on this issue is that by providing only basic guarantees those
 use cases which do not need stronger reliability do not pay the cost of their
@@ -131,7 +131,7 @@ This means that:
 
 @@@ note
 
-It is important to note that Akka’s guarantee applies to the order in which
+It is important to note that Pekko’s guarantee applies to the order in which
 messages are enqueued into the recipient’s mailbox. If the mailbox
 implementation does not respect FIFO order (e.g. a `PriorityMailbox`),
 then the order of processing by the actor can deviate from the enqueueing
@@ -195,7 +195,7 @@ this you should only rely on @ref:[The General Rules](#the-general-rules).
 
 ### Reliability of Local Message Sends
 
-The Akka test suite relies on not losing messages in the local context (and for
+The Pekko test suite relies on not losing messages in the local context (and for
 non-error condition tests also for remote deployment), meaning that we
 actually do apply the best effort to keep our tests stable. A local @apidoc[tell](actor.ActorRef) {scala="#tell(msg:Any,sender:org.apache.pekko.actor.ActorRef):Unit"  java="#tell(java.lang.Object,org.apache.pekko.actor.ActorRef)"}
 operation can however fail for the same reasons as a normal method call can on
@@ -205,7 +205,7 @@ the JVM:
 * @javadoc[OutOfMemoryError](java.lang.OutOfMemoryError)
 * other @javadoc[VirtualMachineError](java.lang.VirtualMachineError)
 
-In addition, local sends can fail in Akka-specific ways:
+In addition, local sends can fail in Pekko-specific ways:
 
 * if the mailbox does not accept the message (e.g. full @apidoc[dispatch.BoundedMailbox])
 * if the receiving actor fails while processing the message or is already
@@ -244,7 +244,7 @@ escaped our analysis.
 
 The rule that *for a given pair of actors, messages sent directly from the first
 to the second will not be received out-of-order* holds for messages sent over the
-network with the TCP based Akka remote transport protocol.
+network with the TCP based Pekko remote transport protocol.
 
 As explained in the previous section local message sends obey transitive causal
 ordering under certain conditions. This ordering can be violated due to different
@@ -263,7 +263,7 @@ for `M2` to "travel" to node-3 via node-2.
 
 ## Higher-level abstractions
 
-Based on a small and consistent tool set in Akka's core, Akka also provides
+Based on a small and consistent tool set in Pekko's core, Pekko also provides
 powerful, higher-level abstractions on top of it.
 
 ### Messaging Patterns
@@ -299,7 +299,7 @@ state on a different continent or to react to changes). If the component’s
 state is lost—due to a machine failure or by being pushed out of a cache—it can
 be reconstructed by replaying the event stream (usually employing
 snapshots to speed up the process). @ref:[Event Sourcing](../typed/persistence.md#event-sourcing-concepts) is supported by
-Akka Persistence.
+Pekko Persistence.
 
 ### Mailbox with Explicit Acknowledgement
 

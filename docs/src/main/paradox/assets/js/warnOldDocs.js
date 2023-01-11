@@ -1,27 +1,27 @@
 jQuery(document).ready(function ($) {
 
   function initOldVersionWarnings($) {
-    $.get("//akka.io/versions.json", function (akkaVersionsData) {
+    $.get("//pekko.io/versions.json", function (pekkoVersionsData) {
       var site = extractCurrentPageInfo();
       if (site.v === 'snapshot') {
         showSnapshotWarning(site)
       } else {
         var matchingMinor =
-          Object.keys(akkaVersionsData[site.p])
+          Object.keys(pekkoVersionsData[site.p])
             .find(function(s) { return site.v.startsWith(s) })
         if (matchingMinor) {
-          showVersionWarning(site, akkaVersionsData, matchingMinor)
+          showVersionWarning(site, pekkoVersionsData, matchingMinor)
         }
       }
     })
   }
 
-  function getInstead(akkaVersionsData, project, instead) {
+  function getInstead(pekkoVersionsData, project, instead) {
     if (Array.isArray(instead)) {
-      var found = akkaVersionsData[instead[0]][instead[1]]
+      var found = pekkoVersionsData[instead[0]][instead[1]]
       var proj = instead[0]
     } else {
-      var found = akkaVersionsData[project][instead]
+      var found = pekkoVersionsData[project][instead]
       var proj = project
     }
     return {"latest": found.latest, "project": proj}
@@ -72,15 +72,15 @@ jQuery(document).ready(function ($) {
       .show()
   }
 
-  function showVersionWarning(site, akkaVersionsData, series) {
+  function showVersionWarning(site, pekkoVersionsData, series) {
     var version = site.v,
-      seriesInfo = akkaVersionsData[site.p][series]
+      seriesInfo = pekkoVersionsData[site.p][series]
 
 
     if (versionWasAcked(site.p, version)) {
       // hidden for a day
     } else if (seriesInfo.outdated) {
-      var instead = getInstead(akkaVersionsData, site.p, seriesInfo.instead)
+      var instead = getInstead(pekkoVersionsData, site.p, seriesInfo.instead)
       var insteadSeries = targetUrl(false, site, instead)
       var insteadPage = targetUrl(true, site, instead)
 
@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
         site,
         version,
         '<h3 class="callout-title">Old Version</h3>' +
-        '<p><span style="font-weight: bold">This version of Akka (' + site.p + ' / ' + version + ') is outdated and not supported! </span></p>' +
+        '<p><span style="font-weight: bold">This version of Pekko (' + site.p + ' / ' + version + ') is outdated and not supported! </span></p>' +
         '<p>Please upgrade to version <a href="' + insteadSeries + '">' + instead.latest + '</a> as soon as possible.</p>' +
         '<p id="samePageLink"></p>')
 
@@ -106,7 +106,7 @@ jQuery(document).ready(function ($) {
         site,
         version,
         '<h3 class="callout-title">Outdated version</h3>' +
-        '<p>You are browsing the docs for Akka ' + version + ', however the latest release in this series is: ' +
+        '<p>You are browsing the docs for Pekko ' + version + ', however the latest release in this series is: ' +
           '<a href="' + targetUrl(true, site, seriesInfo) + '">' + seriesInfo.latest + '</a>. <br/></p>');
     }
   }
@@ -140,7 +140,7 @@ jQuery(document).ready(function ($) {
       base = '' + window.location
 
     // strip off leading /docs/
-    path = path.substring(path.indexOf("akka"))
+    path = path.substring(path.indexOf("pekko"))
     base = base.substring(0, base.indexOf(path))
     var projectEnd = path.indexOf("/")
     var versionEnd = path.indexOf("/", projectEnd + 1)

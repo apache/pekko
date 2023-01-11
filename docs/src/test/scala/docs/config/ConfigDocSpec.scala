@@ -48,7 +48,8 @@ class ConfigDocSpec extends AnyWordSpec with Matchers {
     // #separate-apps
     val config = ConfigFactory.load()
     val app1 = ActorSystem(rootBehavior, "MyApp1", config.getConfig("myapp1").withFallback(config))
-    val app2 = ActorSystem(rootBehavior, "MyApp2", config.getConfig("myapp2").withOnlyPath("akka").withFallback(config))
+    val app2 =
+      ActorSystem(rootBehavior, "MyApp2", config.getConfig("myapp2").withOnlyPath("pekko").withFallback(config))
     // #separate-apps
   }
 
@@ -77,7 +78,7 @@ class ConfigDocSpec extends AnyWordSpec with Matchers {
   
     # '/user/actorA/actorB' is a remote deployed actor
     /actorA/actorB {
-      remote = "akka://sampleActorSystem@127.0.0.1:2553"
+      remote = "pekko://sampleActorSystem@127.0.0.1:2553"
     }
     
     # all direct children of '/user/actorC' have a dedicated dispatcher 

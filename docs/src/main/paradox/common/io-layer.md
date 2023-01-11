@@ -1,6 +1,6 @@
 # I/O Layer Design
 
-The `org.apache.pekko.io` package has been developed in collaboration between the Akka
+The `org.apache.pekko.io` package has been developed in collaboration between the Pekko
 and [spray.io](http://spray.io) teams. Its design incorporates the experiences with the
 `spray-io` module along with improvements that were jointly developed for
 more general consumption as an actor-based service.
@@ -8,7 +8,7 @@ more general consumption as an actor-based service.
 ## Requirements
 
 In order to form a general and extensible IO layer basis for a wide range of
-applications, with Akka remoting and spray HTTP being the initial ones, the
+applications, with Pekko remoting and spray HTTP being the initial ones, the
 following requirements were established as key drivers for the design:
 
  * scalability to millions of concurrent connections
@@ -25,7 +25,7 @@ instead allow completely protocol-specific user-level APIs.
 
 ## Basic Architecture
 
-Each transport implementation will be made available as a separate Akka
+Each transport implementation will be made available as a separate Pekko
 extension, offering an @apidoc[actor.ActorRef] representing the initial point of
 contact for client code. This "manager" accepts requests for establishing a
 communications channel (e.g. connect or listen on a TCP socket). Each
@@ -71,7 +71,7 @@ Staying within the actor model for the whole implementation allows us to remove
 the need for explicit thread handling logic, and it also means that there are
 no locks involved (besides those which are part of the underlying transport
 library). Writing only actor code results in a cleaner implementation,
-while Akka’s efficient actor messaging does not impose a high tax for this
+while Pekko’s efficient actor messaging does not impose a high tax for this
 benefit. In fact the event-based nature of I/O maps so well to the actor model
 that we expect clear performance and especially scalability benefits over
 traditional solutions with explicit thread management and synchronization.

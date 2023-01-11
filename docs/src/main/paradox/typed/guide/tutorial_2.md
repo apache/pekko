@@ -17,7 +17,7 @@ Scala
 Java
 :   @@snip [IotSupervisor.java](/docs/src/test/java/jdocs/typed/tutorial_2/IotSupervisor.java) { #iot-supervisor }
 
-The code is similar to the actor examples we used in the previous experiments, but notice that instead of `println()` we use Akka's built in logging facility via @scala[@scaladoc[context.log](pekko.actor.typed.scaladsl.ActorContext#log:org.slf4j.Logger)]@java[@javadoc[context.getLog()](pekko.actor.typed.javadsl.ActorContext#getLog())].
+The code is similar to the actor examples we used in the previous experiments, but notice that instead of `println()` we use Pekko's built in logging facility via @scala[@scaladoc[context.log](pekko.actor.typed.scaladsl.ActorContext#log:org.slf4j.Logger)]@java[@javadoc[context.getLog()](pekko.actor.typed.javadsl.ActorContext#getLog())].
 
 To provide the `main` entry point that creates the actor system, add the following code to the new @scala[`IotApp` object] @java[`IotMain` class].
 

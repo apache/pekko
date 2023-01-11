@@ -41,7 +41,7 @@ is only used for debugging/logging.
 Tasks added to the same phase are executed in parallel without any ordering assumptions.
 Next phase will not start until all tasks of previous phase have been completed.
 
-If tasks are not completed within a configured timeout (see @ref:[reference.conf](general/configuration-reference.md#config-akka-actor))
+If tasks are not completed within a configured timeout (see @ref:[reference.conf](general/configuration-reference.md#config-pekko-actor))
 the next phase will be started anyway. It is possible to configure `recover=off` for a phase
 to abort the rest of the shutdown process if a task fails or is not completed within the timeout.
 
@@ -88,10 +88,10 @@ pekko.coordinated-shutdown.exit-jvm = on
 
 The coordinated shutdown process is also started once the actor system's root actor is stopped.
 
-When using @ref:[Akka Cluster](cluster-usage.md) the `CoordinatedShutdown` will automatically run
+When using @ref:[Pekko Cluster](cluster-usage.md) the `CoordinatedShutdown` will automatically run
 when the cluster node sees itself as `Exiting`, i.e. leaving from another node will trigger
 the shutdown process on the leaving node. Tasks for graceful leaving of cluster including graceful
-shutdown of Cluster Singletons and Cluster Sharding are added automatically when Akka Cluster is used,
+shutdown of Cluster Singletons and Cluster Sharding are added automatically when Pekko Cluster is used,
 i.e. running the shutdown process will also trigger the graceful leaving if it's not already in progress.
 
 By default, the `CoordinatedShutdown` will be run when the JVM process exits, e.g.
@@ -102,8 +102,8 @@ pekko.coordinated-shutdown.run-by-jvm-shutdown-hook=off
 ```
 
 If you have application specific JVM shutdown hooks it's recommended that you register them via the
-`CoordinatedShutdown` so that they are running before Akka internal shutdown hooks, e.g.
-those shutting down Akka Remoting (Artery).
+`CoordinatedShutdown` so that they are running before Pekko internal shutdown hooks, e.g.
+those shutting down Pekko Remoting (Artery).
 
 Scala
 :  @@snip [snip](/docs/src/test/scala/docs/actor/typed/CoordinatedActorShutdownSpec.scala) { #coordinated-shutdown-jvm-hook }

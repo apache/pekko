@@ -1,7 +1,6 @@
 # Classic Networking
 
 @@include[includes.md](includes.md) { #actor-api }
-FIXME https://github.com/akka/akka/issues/27263
 
 @@toc { depth=2 }
 

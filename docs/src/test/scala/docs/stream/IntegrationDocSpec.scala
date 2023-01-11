@@ -168,7 +168,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     // #tweet-authors
     val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+      tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
     // #tweet-authors
 
     // #email-addresses-mapAsync
@@ -182,7 +182,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
         .mapAsync(4)(address => {
-          emailServer.send(Email(to = address, title = "Akka", body = "I like your tweet"))
+          emailServer.send(Email(to = address, title = "pekko", body = "I like your tweet"))
         })
         .to(Sink.ignore)
 
@@ -195,7 +195,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     probe.expectMsg("drewhk@somewhere.com")
     probe.expectMsg("ktosopl@somewhere.com")
     probe.expectMsg("mmartynas@somewhere.com")
-    probe.expectMsg("akkateam@somewhere.com")
+    probe.expectMsg("pekkoteam@somewhere.com")
   }
 
   "actorRefWithBackpressure" in {
@@ -264,7 +264,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
   "lookup email with mapAsync and supervision" in {
     val addressSystem = new AddressSystem2
     val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+      tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
 
     // #email-addresses-mapAsync-supervision
     import ActorAttributes.supervisionStrategy
@@ -285,7 +285,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
 
     // #external-service-mapAsyncUnordered
     val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+      tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
 
     val emailAddresses: Source[String, NotUsed] =
       authors.mapAsyncUnordered(4)(author => addressSystem.lookupEmail(author.handle)).collect {
@@ -295,7 +295,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     val sendEmails: RunnableGraph[NotUsed] =
       emailAddresses
         .mapAsyncUnordered(4)(address => {
-          emailServer.send(Email(to = address, title = "Akka", body = "I like your tweet"))
+          emailServer.send(Email(to = address, title = "Pekko", body = "I like your tweet"))
         })
         .to(Sink.ignore)
 
@@ -310,7 +310,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
         "drewhk@somewhere.com",
         "ktosopl@somewhere.com",
         "mmartynas@somewhere.com",
-        "akkateam@somewhere.com"))
+        "pekkoteam@somewhere.com"))
   }
 
   "careful managed blocking with mapAsync" in {
@@ -318,7 +318,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     val addressSystem = new AddressSystem
     val smsServer = new SmsServer(probe.ref)
 
-    val authors = tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+    val authors = tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
 
     val phoneNumbers =
       authors.mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle)).collect {
@@ -348,7 +348,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
         "drewhk".hashCode.toString,
         "ktosopl".hashCode.toString,
         "mmartynas".hashCode.toString,
-        "akkateam".hashCode.toString))
+        "pekkoteam".hashCode.toString))
   }
 
   "careful managed blocking with map" in {
@@ -356,7 +356,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     val addressSystem = new AddressSystem
     val smsServer = new SmsServer(probe.ref)
 
-    val authors = tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+    val authors = tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
 
     val phoneNumbers =
       authors.mapAsync(4)(author => addressSystem.lookupPhoneNumber(author.handle)).collect {
@@ -381,7 +381,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     probe.expectMsg("drewhk".hashCode.toString)
     probe.expectMsg("ktosopl".hashCode.toString)
     probe.expectMsg("mmartynas".hashCode.toString)
-    probe.expectMsg("akkateam".hashCode.toString)
+    probe.expectMsg("pekkoteam".hashCode.toString)
   }
 
   "calling actor service with mapAsync" in {
@@ -391,11 +391,11 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     // #save-tweets
     import org.apache.pekko.pattern.ask
 
-    val akkaTweets: Source[Tweet, NotUsed] = tweets.filter(_.hashtags.contains(akkaTag))
+    val PekkoTweets: Source[Tweet, NotUsed] = tweets.filter(_.hashtags.contains(pekkoTag))
 
     implicit val timeout: Timeout = 3.seconds
     val saveTweets: RunnableGraph[NotUsed] =
-      akkaTweets.mapAsync(4)(tweet => database ? Save(tweet)).to(Sink.ignore)
+      PekkoTweets.mapAsync(4)(tweet => database ? Save(tweet)).to(Sink.ignore)
     // #save-tweets
 
     saveTweets.run()
@@ -406,7 +406,7 @@ class IntegrationDocSpec extends PekkoSpec(IntegrationDocSpec.config) {
     probe.expectMsg("drewhk")
     probe.expectMsg("ktosopl")
     probe.expectMsg("mmartynas")
-    probe.expectMsg("akkateam")
+    probe.expectMsg("pekkoteam")
   }
 
   "illustrate ordering and parallelism of mapAsync" in {

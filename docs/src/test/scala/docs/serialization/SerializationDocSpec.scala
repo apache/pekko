@@ -40,7 +40,7 @@ package docs.serialization {
 
     // Pick a unique identifier for your Serializer,
     // you've got a couple of billions to choose from,
-    // 0 - 40 is reserved by Akka itself
+    // 0 - 40 is reserved by Pekko itself
     def identifier = 1234567
 
     // "toBinary" serializes the given object to an Array of Bytes
@@ -71,7 +71,7 @@ package docs.serialization {
 
     // Pick a unique identifier for your Serializer,
     // you've got a couple of billions to choose from,
-    // 0 - 40 is reserved by Akka itself
+    // 0 - 40 is reserved by Pekko itself
     def identifier = 1234567
 
     // The manifest (type hint) that will be provided in the fromBinary method

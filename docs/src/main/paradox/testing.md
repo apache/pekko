@@ -5,7 +5,7 @@ For the new API see @ref[testing](typed/testing.md).
 
 ## Module info
 
-To use Akka Testkit, you must add the following dependency in your project:
+To use Pekko Testkit, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -26,7 +26,7 @@ development cycle. The actor model presents a different view on how units of
 code are delimited and how they interact, which influences how to
 perform tests.
 
-Akka comes with a dedicated module `akka-testkit` for supporting tests.
+Pekko comes with a dedicated module `pekko-testkit` for supporting tests.
 
 <a id="async-integration-testing"></a>
 ## Asynchronous Testing: `TestKit`
@@ -320,7 +320,7 @@ His full example is also available @ref:[here](testing.md#example).
 The tight timeouts you use during testing on your lightning-fast notebook will
 invariably lead to spurious test failures on the heavily loaded Jenkins server
 (or similar). To account for this situation, all maximum durations are
-internally scaled by a factor taken from the @ref:[Configuration](general/configuration-reference.md#config-akka-testkit),
+internally scaled by a factor taken from the @ref:[Configuration](general/configuration-reference.md#config-pekko-testkit),
 `pekko.test.timefactor`, which defaults to 1.
 
 You can scale other durations with the same factor by using the @scala[implicit conversion
@@ -705,7 +705,7 @@ exception stack traces
 The testing facilities described up to this point were aiming at formulating
 assertions about a system’s behavior. If a test fails, it is usually your job
 to find the cause, fix it and verify the test again. This process is supported
-by debuggers as well as logging, where the Akka toolkit offers the following
+by debuggers as well as logging, where the Pekko toolkit offers the following
 options:
 
 * *Logging of exceptions thrown within Actor instances*
@@ -714,13 +714,13 @@ options:
 
 @@@ div { .group-scala }
 * *Logging of message invocations on certain actors*
-   This is enabled by a setting in the @ref:[Configuration](general/configuration-reference.md#config-akka-actor) — namely
+   This is enabled by a setting in the @ref:[Configuration](general/configuration-reference.md#config-pekko-actor) — namely
 `pekko.actor.debug.receive` — which enables the `loggable`
 statement to be applied to an actor’s `receive` function:
 
 @@snip [TestkitDocSpec.scala](/docs/src/test/scala/docs/testkit/TestkitDocSpec.scala) { #logging-receive }
 
-If the aforementioned setting is not given in the @ref:[Configuration](general/configuration-reference.md#config-akka-actor), this method will
+If the aforementioned setting is not given in the @ref:[Configuration](general/configuration-reference.md#config-pekko-actor), this method will
 pass through the given `Receive` function unmodified, meaning that
 there is no runtime cost unless enabled.
 
@@ -760,7 +760,7 @@ pekko {
 
 ## Different Testing Frameworks
 
-Akka’s test suite is written using [ScalaTest](https://www.scalatest.org),
+Pekko’s test suite is written using [ScalaTest](https://www.scalatest.org),
 which also shines through in documentation examples. However, the TestKit and
 its facilities do not depend on that framework, so you can essentially use
 whichever suits your development style best.
@@ -794,8 +794,8 @@ Some [Specs2](https://etorreborre.github.io/specs2/) users have contributed exam
  beneficial also for the third point—is to apply the TestKit together
  with `org.specs2.specification.Scope`.
   * The Specification traits provide a `Duration` DSL which uses partly the same method names as `scala.concurrent.duration.Duration`, resulting in ambiguous implicits if `scala.concurrent.duration._` is imported. There are two workarounds:
-     * either use the Specification variant of Duration and supply an implicit conversion to the Akka Duration. This conversion is not supplied with the
- Akka distribution because that would mean that our JAR files would depend on
+     * either use the Specification variant of Duration and supply an implicit conversion to the Pekko Duration. This conversion is not supplied with the
+ Pekko distribution because that would mean that our JAR files would depend on
  Specs2, which is not justified by this little feature.
      * or mix `org.specs2.time.NoTimeConversions` into the Specification.
   * Specifications are by default executed concurrently, which requires some care when writing the tests or the `sequential` keyword.
@@ -805,15 +805,15 @@ Some [Specs2](https://etorreborre.github.io/specs2/) users have contributed exam
 ## Configuration
 
 There are several configuration properties for the TestKit module, please refer
-to the @ref:[reference configuration](general/configuration-reference.md#config-akka-testkit).
+to the @ref:[reference configuration](general/configuration-reference.md#config-pekko-testkit).
 
 @@@ div { .group-scala }
 
 ## Example
 
 Ray Roestenburg's example code from his blog, which unfortunately is only available on
-[web archive](https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-akka-actors-with-testkit_12.html),
-adapted to work with Akka 2.x.
+[web archive](https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-pekko-actors-with-testkit_12.html),
+adapted to work with Pekko 2.x.
 
 @@snip [TestKitUsageSpec.scala](/docs/src/test/scala/docs/testkit/TestKitUsageSpec.scala) { #testkit-usage }
 
@@ -848,9 +848,9 @@ instead of using `TestActorRef` whenever possible.
 @@@ warning
 
 Due to the synchronous nature of `TestActorRef`, it will **not** work with some support
-traits that Akka provides as they require asynchronous behaviors to function properly.
+traits that Pekko provides as they require asynchronous behaviors to function properly.
 Examples of traits that do not mix well with test actor refs are @ref:[PersistentActor](persistence.md#example)
-and @ref:[AtLeastOnceDelivery](persistence.md#at-least-once-delivery) provided by @ref:[Akka Persistence](persistence.md).
+and @ref:[AtLeastOnceDelivery](persistence.md#at-least-once-delivery) provided by @ref:[Pekko Persistence](persistence.md).
 
 @@@
 
@@ -960,5 +960,5 @@ before sending the test message
 the test message
 
 Feel free to experiment with the possibilities, and if you find useful
-patterns, don't hesitate to let the Akka forums know about them! Who knows,
+patterns, don't hesitate to let the Pekko forums know about them! Who knows,
 common operations might even be worked into nice DSLs.

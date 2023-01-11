@@ -4,7 +4,7 @@
 
 ## Dependency
 
-Persistent FSMs are part of Akka persistence, you must add the following dependency in your project:
+Persistent FSMs are part of Pekko persistence, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -17,7 +17,7 @@ Persistent FSMs are part of Akka persistence, you must add the following depende
 
 @@@ warning
 
-Persistent FSM is no longer actively developed and will be replaced by @ref[Akka Persistence Typed](typed/persistence.md). It is not advised
+Persistent FSM is no longer actively developed and will be replaced by @ref[Pekko Persistence Typed](typed/persistence.md). It is not advised
 to build new applications with Persistent FSM. Existing users of Persistent FSM @ref[should migrate](#migration-to-eventsourcedbehavior). 
 
 @@@

@@ -1,8 +1,8 @@
 # Terminology, Concepts
 
 In this chapter we attempt to establish a common terminology to define a solid ground for communicating about concurrent,
-distributed systems which Akka targets. Please note that, for many of these terms, there is no single agreed definition.
-We seek to give working definitions that will be used in the scope of the Akka documentation.
+distributed systems which Pekko targets. Please note that, for many of these terms, there is no single agreed definition.
+We seek to give working definitions that will be used in the scope of the Pekko documentation.
 
 ## Concurrency vs. Parallelism
 
@@ -69,7 +69,7 @@ this can cause race conditions.
 
 @@@ note
 
-The only guarantee that Akka provides about messages sent between a given pair of actors is that their order is
+The only guarantee that Pekko provides about messages sent between a given pair of actors is that their order is
 always preserved. see @ref:[Message Delivery Reliability](message-delivery-reliability.md)
 
 @@@

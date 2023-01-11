@@ -1,5 +1,5 @@
 ---
-project.description: Akka version migration guides.
+project.description: Pekko version migration guides.
 ---
 # Migration Guides
 
@@ -7,8 +7,6 @@ project.description: Akka version migration guides.
 
 @@@ index
 
-* [migration-guide-2.5.x-2.6.x](migration-guide-2.5.x-2.6.x.md)
-* [migration-guide-2.4.x-2.5.x](migration-guide-2.4.x-2.5.x.md)
-* [migration-guide-old](migration-guide-old.md)
+TODO ADD AKKA -> PEKKO MIGRATION GUIDE HERE
 
 @@@

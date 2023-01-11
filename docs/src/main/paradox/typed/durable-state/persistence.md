@@ -1,11 +1,11 @@
 ---
-project.description: Durable State with Akka Persistence enables actors to persist its state for recovery on failure or when migrated within a cluster.
+project.description: Durable State with Pekko Persistence enables actors to persist its state for recovery on failure or when migrated within a cluster.
 ---
 # Durable State
 
 ## Module info
 
-To use Akka Persistence, add the module to your project:
+To use Pekko Persistence, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -26,15 +26,15 @@ You also have to select durable state store plugin, see @ref:[Persistence Plugin
 
 ## Introduction
 
-This model of Akka Persistence enables a stateful actor / entity to store the full state after processing each command instead of using event sourcing. This reduces the conceptual complexity and can be a handy tool for simple use cases. Very much like a CRUD based operation, the API is conceptually simple - a function from current state and incoming command to the next state which replaces the current state in the database. 
+This model of Pekko Persistence enables a stateful actor / entity to store the full state after processing each command instead of using event sourcing. This reduces the conceptual complexity and can be a handy tool for simple use cases. Very much like a CRUD based operation, the API is conceptually simple - a function from current state and incoming command to the next state which replaces the current state in the database. 
 
 ```
 (State, Command) => State
 ```
 
-The current state is always stored in the database. Since only the latest state is stored, we don't have access to any of the history of changes, unlike event sourced storage. Akka Persistence would read that state and store it in memory. After processing of the command is finished, the new state will be stored in the database. The processing of the next command will not start until the state has been successfully stored in the database.
+The current state is always stored in the database. Since only the latest state is stored, we don't have access to any of the history of changes, unlike event sourced storage. Pekko Persistence would read that state and store it in memory. After processing of the command is finished, the new state will be stored in the database. The processing of the next command will not start until the state has been successfully stored in the database.
 
-Akka Persistence also supports @ref:[Event Sourcing](../persistence.md) based implementation, where only the _events_ that are persisted by the actor are stored, but not the actual state of the actor. By storing all events, using this model, 
+Pekko Persistence also supports @ref:[Event Sourcing](../persistence.md) based implementation, where only the _events_ that are persisted by the actor are stored, but not the actual state of the actor. By storing all events, using this model, 
 a stateful actor can be recovered by replaying the stored events to the actor, which allows it to rebuild its state.
 
 Since each entity lives on one node, consistency is guaranteed and reads can be served directly from memory. For details on how this guarantee
@@ -42,7 +42,7 @@ is ensured, have a look at the @ref:[Cluster Sharding and DurableStateBehavior](
 
 ## Example and core API
 
-Let's start with a simple example that models a counter using an Akka persistent actor. The minimum required for a @apidoc[DurableStateBehavior] is:
+Let's start with a simple example that models a counter using an Pekko persistent actor. The minimum required for a @apidoc[DurableStateBehavior] is:
 
 Scala
 :  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #structure }
@@ -51,7 +51,7 @@ Java
 :  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the `Behavior` of a persistent actor is typed to the type of the `Command`
-because this is the type of message a persistent actor should receive. In Akka this is now enforced by the type system.
+because this is the type of message a persistent actor should receive. In Pekko this is now enforced by the type system.
 
 The components that make up a `DurableStateBehavior` are:
 
@@ -219,7 +219,7 @@ would fit in the memory of one node. Cluster sharding improves the resilience of
 the persistent actors are quickly started on a new node and can resume operations.
 
 The `DurableStateBehavior` can then be run as any plain actor as described in @ref:[actors documentation](../actors.md),
-but since Akka Persistence is based on the single-writer principle, the persistent actors are typically used together
+but since Pekko Persistence is based on the single-writer principle, the persistent actors are typically used together
 with Cluster Sharding. For a particular `persistenceId` only one persistent actor instance should be active at one time.
 Cluster Sharding ensures that there is only one active entity (or actor instance) for each id. 
 
@@ -244,7 +244,7 @@ persisted as an `Effect` by the `commandHandler`.
 The reason a new behavior can't be returned is that behavior is part of the actor's
 state and must also carefully be reconstructed during recovery from the persisted state. This would imply
 that the state needs to be encoded such that the behavior can also be restored from it. 
-That would be very prone to mistakes which is why it is not allowed in Akka Persistence.
+That would be very prone to mistakes which is why it is not allowed in Pekko Persistence.
 
 For basic actors you can use the same set of command handlers independent of what state the entity is in.
 For more complex actors it's useful to be able to change the behavior in the sense

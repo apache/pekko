@@ -2,7 +2,7 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -15,9 +15,9 @@ To use Akka Streams, add the module to your project:
 
 ## Introduction
 
-Akka Streams provides a way of handling File IO and TCP connections with Streams.
-While the general approach is very similar to the @ref:[Actor based TCP handling](../io-tcp.md) using Akka IO,
-by using Akka Streams you are freed of having to manually react to back-pressure signals,
+Pekko Streams provides a way of handling File IO and TCP connections with Streams.
+While the general approach is very similar to the @ref:[Actor based TCP handling](../io-tcp.md) using Pekko IO,
+by using Pekko Streams you are freed of having to manually react to back-pressure signals,
 as the library does it transparently for you.
 
 ## Streaming TCP
@@ -50,7 +50,7 @@ Java
 
 ![tcp-stream-run.png](../images/tcp-stream-run.png)
 
-Notice that while most building blocks in Akka Streams are reusable and freely shareable, this is *not* the case for the
+Notice that while most building blocks in Pekko Streams are reusable and freely shareable, this is *not* the case for the
 incoming connection Flow, since it directly corresponds to an existing, already accepted connection its handling can
 only ever be materialized *once*.
 
@@ -69,7 +69,7 @@ Hello World!!!
 
 In this example we implement a rather naive Read Evaluate Print Loop client over TCP.
 Let's say we know a server has exposed a simple command line interface over TCP,
-and would like to interact with it using Akka Streams over TCP. To open an outgoing connection socket we use
+and would like to interact with it using Pekko Streams over TCP. To open an outgoing connection socket we use
 the `outgoingConnection` method:
 
 Scala
@@ -161,7 +161,7 @@ The `SSLEngine` instance can then be used with the binding or outgoing connectio
 
 ## Streaming File IO
 
-Akka Streams provide simple Sources and Sinks that can work with @apidoc[util.ByteString] instances to perform IO operations
+Pekko Streams provide simple Sources and Sinks that can work with @apidoc[util.ByteString] instances to perform IO operations
 on files.
 
 Streaming data from a file is as easy as creating a *FileIO.fromPath* given a target path, and an optional

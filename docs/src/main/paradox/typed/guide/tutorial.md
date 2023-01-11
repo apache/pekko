@@ -1,21 +1,21 @@
 # Introduction to the Example
 
 When writing prose, the hardest part is often composing the first few sentences. There is a similar "blank canvas" feeling
-when starting to build an Akka system. You might wonder: Which should be the first actor? Where should it live? What should it do?
-Fortunately &#8212; unlike with prose &#8212; established best practices can guide us through these initial steps. In the remainder of this guide, we examine the core logic of a simple Akka application to introduce you to actors and show you how to formulate solutions with them. The example demonstrates common patterns that will help you kickstart your Akka projects.
+when starting to build an Pekko system. You might wonder: Which should be the first actor? Where should it live? What should it do?
+Fortunately &#8212; unlike with prose &#8212; established best practices can guide us through these initial steps. In the remainder of this guide, we examine the core logic of a simple Pekko application to introduce you to actors and show you how to formulate solutions with them. The example demonstrates common patterns that will help you kickstart your Pekko projects.
 
 ## Prerequisites
-You should have already followed the instructions in the @scala[[Akka Quickstart with Scala guide](https://developer.lightbend.com/guides/akka-quickstart-scala/)] @java[[Akka Quickstart with Java guide](https://developer.lightbend.com/guides/akka-quickstart-java/)] to download and run the Hello World example. You will use this as a seed project and add the functionality described in this tutorial.
+You should have already followed the instructions in the @scala[[Pekko Quickstart with Scala guide](https://developer.lightbend.com/guides/akka-quickstart-scala/)] @java[[Pekko Quickstart with Java guide](https://developer.lightbend.com/guides/akka-quickstart-java/)] to download and run the Hello World example. You will use this as a seed project and add the functionality described in this tutorial.
 
 @@@ note
-Both the Java and Scala DSLs of Akka modules bundled in the same JAR. For a smooth development experience,
+Both the Java and Scala DSLs of Pekko modules bundled in the same JAR. For a smooth development experience,
 when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl`
 imports when working in Scala, or viceversa. See @ref:[IDE Tips](../../additional/ide.md). 
 @@@
 
 ## IoT example use case
 
-In this tutorial, we'll use Akka to build out part of an Internet of Things (IoT) system that reports data from sensor devices installed in customers' homes. The example focuses on temperature readings. The target use case allows customers to log in and view the last reported temperature from different areas of their homes. You can imagine that such sensors could also collect relative humidity or other interesting data and an application would likely support reading and changing device configuration, maybe even alerting home owners when sensor state falls outside of a particular range.
+In this tutorial, we'll use Pekko to build out part of an Internet of Things (IoT) system that reports data from sensor devices installed in customers' homes. The example focuses on temperature readings. The target use case allows customers to log in and view the last reported temperature from different areas of their homes. You can imagine that such sensors could also collect relative humidity or other interesting data and an application would likely support reading and changing device configuration, maybe even alerting home owners when sensor state falls outside of a particular range.
 
 In a real system, the application would be exposed to customers through a mobile app or browser. This guide concentrates only on the core logic for storing temperatures that would be called over a network protocol, such as HTTP. It also includes writing tests to help you get comfortable and proficient with testing actors.
 

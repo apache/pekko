@@ -1,10 +1,10 @@
 # Split Brain Resolver
 
-When operating an Akka cluster you must consider how to handle
+When operating an Pekko cluster you must consider how to handle
 [network partitions](https://en.wikipedia.org/wiki/Network_partition) (a.k.a. split brain scenarios)
 and machine crashes (including JVM and hardware failures). This is crucial for correct behavior if
 you use @ref:[Cluster Singleton](typed/cluster-singleton.md) or @ref:[Cluster Sharding](typed/cluster-sharding.md),
-especially together with Akka Persistence.
+especially together with Pekko Persistence.
 
 The [Split Brain Resolver video](https://akka.io/blog/news/2020/06/08/akka-split-brain-resolver-video)
 is a good starting point for learning why it is important to use a correct downing provider and
@@ -12,7 +12,7 @@ how the Split Brain Resolver works.
 
 ## Module info
 
-To use Akka Split Brain Resolver is part of `akka-cluster` and you probably already have that
+To use Pekko Split Brain Resolver is part of `pekko-cluster` and you probably already have that
 dependency included. Otherwise, add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
@@ -68,7 +68,7 @@ Another type of problem that makes it difficult to see the "right" picture is wh
 connected and cannot communicate directly to each other but information can be disseminated between them via
 other nodes.
 
-The Akka cluster has a failure detector that will notice network partitions and machine crashes (but it
+The Pekko cluster has a failure detector that will notice network partitions and machine crashes (but it
 cannot distinguish the two). It uses periodic heartbeat messages to check if other nodes are available
 and healthy. These observations by the failure detector are referred to as a node being *unreachable*
 and it may become *reachable* again if the failure detector observes that it can communicate with it again.  
@@ -80,16 +80,16 @@ partitions. Both sides of the network partition will see the other side as unrea
 after a while remove it from its cluster membership. Since this happens on both sides the result
 is that two separate disconnected clusters have been created.
 This approach is provided by the opt-in (off by default) auto-down feature in the OSS version of
-Akka Cluster.
+Pekko Cluster.
 
 If you use the timeout based auto-down feature in combination with Cluster Singleton or Cluster Sharding
 that would mean that two singleton instances or two sharded entities with the same identifier would be running.
 One would be running: one in each cluster.
-For example when used together with Akka Persistence that could result in that two instances of a
+For example when used together with Pekko Persistence that could result in that two instances of a
 persistent actor with the same `persistenceId` are running and writing concurrently to the
 same stream of persistent events, which will have fatal consequences when replaying these events.
 
-The default setting in Akka Cluster is to not remove unreachable nodes automatically and
+The default setting in Pekko Cluster is to not remove unreachable nodes automatically and
 the recommendation is that the decision of what to
 do should be taken by a human operator or an external monitoring system. This is a valid solution,
 but not very convenient if you do not have this staff or external system for other reasons.
@@ -167,7 +167,7 @@ pekko.coordinated-shutdown.exit-jvm = on
 @@@ note
 
 Some legacy containers may block calls to System.exit(..) and you may have to find an alternate
-way to shut the app down. For example, when running Akka on top of a Spring / Tomcat setup, you
+way to shut the app down. For example, when running Pekko on top of a Spring / Tomcat setup, you
 could replace the call to `System.exit(..)` with a call to Spring's ApplicationContext .close() method
 (or with a HTTP call to Tomcat Manager's API to un-deploy the app).
 
@@ -428,7 +428,7 @@ That could result in that members are removed from one side but are still runnin
 
 ## Multiple data centers
 
-Akka Cluster has @ref:[support for multiple data centers](cluster-dc.md), where the cluster
+Pekko Cluster has @ref:[support for multiple data centers](cluster-dc.md), where the cluster
 membership is managed by each data center separately and independently of network partitions across different
 data centers. The Split Brain Resolver is embracing that strategy and will not count nodes or down nodes in
 another data center.

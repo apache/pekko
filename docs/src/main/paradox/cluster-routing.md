@@ -83,7 +83,7 @@ Scala
 Java
 :  @@snip [StatsService.java](/docs/src/test/java/jdocs/cluster/StatsService.java) { #router-lookup-in-code }
 
-See @ref:[reference configuration](general/configuration-reference.md#config-akka-cluster) for further descriptions of the settings.
+See @ref:[reference configuration](general/configuration-reference.md#config-pekko-cluster) for further descriptions of the settings.
 
 ### Router Example with Group of Routees
 
@@ -184,7 +184,7 @@ Scala
 Java
 :  @@snip [StatsService.java](/docs/src/test/java/jdocs/cluster/StatsService.java) { #router-deploy-in-code }
 
-See @ref:[reference configuration](general/configuration-reference.md#config-akka-cluster) for further descriptions of the settings.
+See @ref:[reference configuration](general/configuration-reference.md#config-pekko-cluster) for further descriptions of the settings.
 
 When using a pool of remote deployed routees you must ensure that all parameters of the `Props` can
 be @ref:[serialized](serialization.md).
@@ -246,5 +246,5 @@ pekko.actor.deployment {
 }
 ```
 The easiest way to run **Router Example with Pool of Routees** example yourself is to try the
-@scala[@extref[Akka Cluster Sample with Scala](samples:akka-samples-cluster-scala)]@java[@extref[Akka Cluster Sample with Java](samples:akka-samples-cluster-java)].
+@scala[@extref[Pekko Cluster Sample with Scala](samples:pekko-samples-cluster-scala)]@java[@extref[Pekko Cluster Sample with Java](samples:pekko-samples-cluster-java)].
 It contains instructions on how to run the **Router Example with Pool of Routees** sample.

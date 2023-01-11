@@ -43,7 +43,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.apache.pekko.pattern.Patterns.ask;
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.AKKA;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 import static junit.framework.TestCase.assertTrue;
 
@@ -444,7 +444,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
       {
         // #tweet-authors
         final Source<Author, NotUsed> authors =
-            tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+            tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
         // #tweet-authors
 
@@ -461,7 +461,8 @@ public class IntegrationDocTest extends AbstractJavaTest {
         final RunnableGraph<NotUsed> sendEmails =
             emailAddresses
                 .mapAsync(
-                    4, address -> emailServer.send(new Email(address, "Akka", "I like your tweet")))
+                    4,
+                    address -> emailServer.send(new Email(address, "PEKKO", "I like your tweet")))
                 .to(Sink.ignore());
 
         sendEmails.run(system);
@@ -473,7 +474,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         probe.expectMsg("drewhk@somewhere.com");
         probe.expectMsg("ktosopl@somewhere.com");
         probe.expectMsg("mmartynas@somewhere.com");
-        probe.expectMsg("akkateam@somewhere.com");
+        probe.expectMsg("pekkoteam@somewhere.com");
       }
     };
   }
@@ -486,7 +487,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
 
       {
         final Source<Author, NotUsed> authors =
-            tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+            tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
         // #email-addresses-mapAsync-supervision
         final Attributes resumeAttrib =
@@ -512,7 +513,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
       {
         // #external-service-mapAsyncUnordered
         final Source<Author, NotUsed> authors =
-            tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+            tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
         final Source<String, NotUsed> emailAddresses =
             authors
@@ -523,7 +524,8 @@ public class IntegrationDocTest extends AbstractJavaTest {
         final RunnableGraph<NotUsed> sendEmails =
             emailAddresses
                 .mapAsyncUnordered(
-                    4, address -> emailServer.send(new Email(address, "Akka", "I like your tweet")))
+                    4,
+                    address -> emailServer.send(new Email(address, "Pekko", "I like your tweet")))
                 .to(Sink.ignore());
 
         sendEmails.run(system);
@@ -541,7 +543,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
 
       {
         final Source<Author, NotUsed> authors =
-            tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+            tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
         final Source<String, NotUsed> phoneNumbers =
             authors
@@ -574,7 +576,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         assertTrue(set.contains(String.valueOf("drewhk".hashCode())));
         assertTrue(set.contains(String.valueOf("ktosopl".hashCode())));
         assertTrue(set.contains(String.valueOf("mmartynas".hashCode())));
-        assertTrue(set.contains(String.valueOf("akkateam".hashCode())));
+        assertTrue(set.contains(String.valueOf("pekkoteam".hashCode())));
       }
     };
   }
@@ -589,7 +591,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
 
       {
         final Source<Author, NotUsed> authors =
-            tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+            tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
         final Source<String, NotUsed> phoneNumbers =
             authors
@@ -613,7 +615,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         probe.expectMsg(String.valueOf("drewhk".hashCode()));
         probe.expectMsg(String.valueOf("ktosopl".hashCode()));
         probe.expectMsg(String.valueOf("mmartynas".hashCode()));
-        probe.expectMsg(String.valueOf("akkateam".hashCode()));
+        probe.expectMsg(String.valueOf("pekkoteam".hashCode()));
       }
     };
   }
@@ -629,10 +631,10 @@ public class IntegrationDocTest extends AbstractJavaTest {
 
       {
         // #save-tweets
-        final Source<Tweet, NotUsed> akkaTweets = tweets.filter(t -> t.hashtags().contains(AKKA));
+        final Source<Tweet, NotUsed> pekkoTweets = tweets.filter(t -> t.hashtags().contains(PEKKO));
 
         final RunnableGraph<NotUsed> saveTweets =
-            akkaTweets
+            pekkoTweets
                 .mapAsync(4, tweet -> ask(database, new Save(tweet), Duration.ofMillis(300L)))
                 .to(Sink.ignore());
         // #save-tweets
@@ -645,7 +647,7 @@ public class IntegrationDocTest extends AbstractJavaTest {
         probe.expectMsg("drewhk");
         probe.expectMsg("ktosopl");
         probe.expectMsg("mmartynas");
-        probe.expectMsg("akkateam");
+        probe.expectMsg("pekkoteam");
       }
     };
   }

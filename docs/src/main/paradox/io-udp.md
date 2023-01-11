@@ -111,7 +111,7 @@ connect, thus writes do not suffer an additional performance penalty.
 
 ## UDP Multicast
 
-Akka provides a way to control various options of `DatagramChannel` through the
+Pekko provides a way to control various options of `DatagramChannel` through the
 `org.apache.pekko.io.Inet.SocketOption` interface. The example below shows
 how to setup a receiver of multicast messages using IPv6 protocol.
 

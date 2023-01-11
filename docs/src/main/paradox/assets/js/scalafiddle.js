@@ -1,8 +1,8 @@
 window.scalaFiddleTemplates = {
-  "Akka": {
-    pre: "// $FiddleDependency org.akka-js %%% akkajsactor % 2.2.6.1 \n" +
-    "// $FiddleDependency org.akka-js %%% akkajsactorstream % 2.2.6.1 \n" +
-    "// $FiddleDependency org.akka-js %%% akkajsactortyped % 2.2.6.1 \n",
+  "Pekko": {
+    pre: "// $FiddleDependency org.pekko-js %%% pekkojsactor % 2.2.6.1 \n" +
+    "// $FiddleDependency org.pekko-js %%% pekkojsactorstream % 2.2.6.1 \n" +
+    "// $FiddleDependency org.pekko-js %%% pekkojsactortyped % 2.2.6.1 \n",
     post: ""
   }
 }

@@ -1,5 +1,5 @@
 ---
-project.description: Akka Persistence Classic, Event Sourcing with Akka, At-Least-Once delivery, snapshots, recovery and replay with Akka actors.
+project.description: Pekko Persistence Classic, Event Sourcing with Pekko, At-Least-Once delivery, snapshots, recovery and replay with Pekko actors.
 ---
 # Classic Persistence
 
@@ -8,7 +8,7 @@ For the full documentation of this feature and for new projects see @ref:[Event 
 
 ## Module info
 
-To use Akka Persistence, you must add the following dependency in your project:
+To use Pekko Persistence, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -32,7 +32,7 @@ You also have to select journal plugin and optionally snapshot store plugin, see
 
 See introduction in @ref:[Persistence](typed/persistence.md#introduction) 
 
-Akka Persistence also provides point-to-point communication with at-least-once message delivery semantics.
+Pekko Persistence also provides point-to-point communication with at-least-once message delivery semantics.
 
 ### Architecture
 
@@ -49,12 +49,12 @@ Replicated journals are available as [Community plugins](https://akka.io/communi
  * *Snapshot store*: A snapshot store persists snapshots of a persistent actor's state. Snapshots are
 used for optimizing recovery times. The storage backend of a snapshot store is pluggable.
 The persistence extension comes with a "local" snapshot storage plugin, which writes to the local filesystem. Replicated snapshot stores are available as [Community plugins](https://akka.io/community/)
- * *Event Sourcing*. Based on the building blocks described above, Akka persistence provides abstractions for the
+ * *Event Sourcing*. Based on the building blocks described above, Pekko persistence provides abstractions for the
 development of event sourced applications (see section @ref:[Event Sourcing](typed/persistence.md#event-sourcing-concepts)).
 
 ## Example
 
-Akka persistence supports Event Sourcing with the @scala[@scaladoc[PersistentActor](pekko.persistence.PersistentActor) trait]@java[@javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor) abstract class]. An actor that extends this @scala[trait]@java[class] uses the
+Pekko persistence supports Event Sourcing with the @scala[@scaladoc[PersistentActor](pekko.persistence.PersistentActor) trait]@java[@javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor) abstract class]. An actor that extends this @scala[trait]@java[class] uses the
 @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))] method to persist and handle events. The behavior of @scala[a `PersistentActor`]@java[an `AbstractPersistentActor`]
 is defined by implementing @scala[@scaladoc[receiveRecover](pekko.persistence.PersistentActor#receiveRecover:Eventsourced.this.Receive)]@java[@javadoc[createReceiveRecover](pekko.persistence.AbstractPersistentActorLike#createReceiveRecover())] and @scala[@scaladoc[receiveCommand](pekko.persistence.PersistentActor#receiveCommand:Eventsourced.this.Receive)]@java[@javadoc[createReceive](pekko.persistence.AbstractPersistentActorLike#createReceive())]. This is demonstrated in the following example.
 
@@ -241,7 +241,7 @@ pekko.persistence.internal-stash-overflow-strategy=
 The `DiscardToDeadLetterStrategy` strategy also has a pre-packaged companion configurator
 @apidoc[persistence.DiscardConfigurator].
 
-You can also query the default strategy via the Akka persistence extension singleton:    
+You can also query the default strategy via the Pekko persistence extension singleton:    
 
 Scala
 :   @@@vars
@@ -505,7 +505,7 @@ restarts of the persistent actor.
 
 Journal implementations may choose to implement a retry mechanism, e.g. such that only after a write fails N number
 of times a persistence failure is signalled back to the user. In other words, once a journal returns a failure,
-it is considered *fatal* by Akka Persistence, and the persistent actor which caused the failure will be stopped.
+it is considered *fatal* by Pekko Persistence, and the persistent actor which caused the failure will be stopped.
 
 Check the documentation of the journal implementation you are using for details if/how it is using this technique.
 
@@ -517,7 +517,7 @@ Check the documentation of the journal implementation you are using for details 
 Special care should be given when shutting down persistent actors from the outside.
 With normal Actors it is often acceptable to use the special @ref:[PoisonPill](actors.md#poison-pill) message
 to signal to an Actor that it should stop itself once it receives this message – in fact this message is handled
-automatically by Akka, leaving the target actor no way to refuse stopping itself when given a poison pill.
+automatically by Pekko, leaving the target actor no way to refuse stopping itself when given a poison pill.
 
 This can be dangerous when used with `PersistentActor` due to the fact that incoming commands are *stashed* while
 the persistent actor is awaiting confirmation from the Journal that events have been written when @scala[@scaladoc[persist()](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist()](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))] was used.
@@ -608,7 +608,7 @@ In order to use snapshots, a default snapshot-store (`pekko.persistence.snapshot
 or the @scala[`PersistentActor`]@java[persistent actor] can pick a snapshot store explicitly by overriding @scala[`def snapshotPluginId: String`]@java[`String snapshotPluginId()`].
 
 Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
-However, Akka will log a warning message when this situation is detected and then continue to operate until
+However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail (by replying with an @apidoc[persistence.SaveSnapshotFailure] for example).
 
 Note that the "persistence mode" of @ref:[Cluster Sharding](cluster-sharding.md) makes use of snapshots. If you use that mode, you'll need to define a snapshot store plugin.
@@ -737,7 +737,7 @@ if no matching `confirmDelivery` will have been performed.
 Support for snapshots is provided by @apidoc[getDeliverySnapshot](persistence.AtLeastOnceDeliveryLike) {scala="#getDeliverySnapshot:org.apache.pekko.persistence.AtLeastOnceDelivery.AtLeastOnceDeliverySnapshot" java="#getDeliverySnapshot()"} and @apidoc[setDeliverySnapshot](persistence.AtLeastOnceDeliveryLike) {scala="#setDeliverySnapshot(snapshot:org.apache.pekko.persistence.AtLeastOnceDelivery.AtLeastOnceDeliverySnapshot):Unit" java="#setDeliverySnapshot(org.apache.pekko.persistence.AtLeastOnceDelivery.AtLeastOnceDeliverySnapshot)"}.
 The @apidoc[persistence.AtLeastOnceDelivery.AtLeastOnceDeliverySnapshot] contains the full delivery state, including unconfirmed messages.
 If you need a custom snapshot for other parts of the actor state you must also include the
-`AtLeastOnceDeliverySnapshot`. It is serialized using protobuf with the ordinary Akka
+`AtLeastOnceDeliverySnapshot`. It is serialized using protobuf with the ordinary Pekko
 serialization mechanism. It is easiest to include the bytes of the `AtLeastOnceDeliverySnapshot`
 as a blob in your custom snapshot.
 
@@ -812,7 +812,7 @@ For more advanced schema evolution techniques refer to the @ref:[Persistence - S
 
 ## Custom serialization
 
-Serialization of snapshots and payloads of `Persistent` messages is configurable with Akka's
+Serialization of snapshots and payloads of `Persistent` messages is configurable with Pekko's
 @ref:[Serialization](serialization.md) infrastructure. For example, if an application wants to serialize
 
  * payloads of type `MyPayload` with a custom `MyPayloadSerializer` and
@@ -828,7 +828,7 @@ For more advanced schema evolution techniques refer to the @ref:[Persistence - S
 
 ## Testing with LevelDB journal
 
-The LevelDB journal is deprecated and will be removed from a future Akka version, it is not advised to build new applications 
+The LevelDB journal is deprecated and will be removed from a future Pekko version, it is not advised to build new applications 
 with it. For testing the built in "inmem" journal or the actual journal that will be used in production of the application 
 is recommended. See @ref[Persistence Plugins](persistence-plugins.md) for some journal implementation choices.
 
@@ -840,7 +840,7 @@ or
 
 @@snip [PersistencePluginDocSpec.scala](/docs/src/test/scala/docs/persistence/PersistencePluginDocSpec.scala) { #shared-store-native-config }
 
-in your Akka configuration. Also note that for the LevelDB Java port, you will need the following dependencies:
+in your Pekko configuration. Also note that for the LevelDB Java port, you will need the following dependencies:
 
 @@dependency[sbt,Maven,Gradle] {
   group="org.iq80.leveldb"
@@ -862,7 +862,7 @@ When testing Persistence based projects always rely on @ref:[asynchronous messag
 ## Configuration
 
 There are several configuration properties for the persistence module, please refer
-to the @ref:[reference configuration](general/configuration-reference.md#config-akka-persistence).
+to the @ref:[reference configuration](general/configuration-reference.md#config-pekko-persistence).
 
 The @ref:[journal and snapshot store plugins](persistence-plugins.md) have specific configuration, see
 reference documentation of the chosen plugin.

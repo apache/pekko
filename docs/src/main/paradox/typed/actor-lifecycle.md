@@ -1,13 +1,13 @@
 ---
-project.description: The Akka Actor lifecycle.
+project.description: The Pekko Actor lifecycle.
 ---
 # Actor lifecycle
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Actors](../actors.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Actors](../actors.md).
 
 ## Dependency
 
-To use Akka Actor Typed, you must add the following dependency in your project:
+To use Pekko Actor Typed, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion

@@ -51,7 +51,7 @@ public class RecipeParseLines extends RecipeTest {
                 ByteString.fromString("Hello World"),
                 ByteString.fromString("\r"),
                 ByteString.fromString("!\r"),
-                ByteString.fromString("\nHello Akka!\r\nHello Streams!"),
+                ByteString.fromString("\nHello Pekko!\r\nHello Streams!"),
                 ByteString.fromString("\r\n\r\n")));
 
     // #parse-lines

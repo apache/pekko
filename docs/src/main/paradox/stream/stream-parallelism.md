@@ -2,7 +2,7 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -15,7 +15,7 @@ To use Akka Streams, add the module to your project:
 
 ## Introduction
 
-Akka Streams operators (be it simple operators on Flows and Sources or graph junctions) are "fused" together
+Pekko Streams operators (be it simple operators on Flows and Sources or graph junctions) are "fused" together
 and executed sequentially by default. This avoids the overhead of events crossing asynchronous boundaries but
 limits the flow to execute at most one operator at any given time.
 

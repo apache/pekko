@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.AKKA;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
 import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.tweets;
 
 @SuppressWarnings("unused")
@@ -173,21 +173,21 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
 
     // #model
 
-    public static final Hashtag AKKA = new Hashtag("#akka");
+    public static final Hashtag PEKKO = new Hashtag("#pekko");
     // #model
 
     public static final Source<Tweet, NotUsed> tweets =
         Source.from(
             Arrays.asList(
                 new Tweet[] {
-                  new Tweet(new Author("rolandkuhn"), System.currentTimeMillis(), "#akka rocks!"),
-                  new Tweet(new Author("patriknw"), System.currentTimeMillis(), "#akka !"),
-                  new Tweet(new Author("bantonsson"), System.currentTimeMillis(), "#akka !"),
-                  new Tweet(new Author("drewhk"), System.currentTimeMillis(), "#akka !"),
+                  new Tweet(new Author("rolandkuhn"), System.currentTimeMillis(), "#pekko rocks!"),
+                  new Tweet(new Author("patriknw"), System.currentTimeMillis(), "#pekko !"),
+                  new Tweet(new Author("bantonsson"), System.currentTimeMillis(), "#pekko !"),
+                  new Tweet(new Author("drewhk"), System.currentTimeMillis(), "#pekko !"),
                   new Tweet(
-                      new Author("ktosopl"), System.currentTimeMillis(), "#akka on the rocks!"),
-                  new Tweet(new Author("mmartynas"), System.currentTimeMillis(), "wow #akka !"),
-                  new Tweet(new Author("akkateam"), System.currentTimeMillis(), "#akka rocks!"),
+                      new Author("ktosopl"), System.currentTimeMillis(), "#pekko on the rocks!"),
+                  new Tweet(new Author("mmartynas"), System.currentTimeMillis(), "wow #pekko !"),
+                  new Tweet(new Author("pekkoteam"), System.currentTimeMillis(), "#pekko rocks!"),
                   new Tweet(new Author("bananaman"), System.currentTimeMillis(), "#bananas rock!"),
                   new Tweet(new Author("appleman"), System.currentTimeMillis(), "#apples rock!"),
                   new Tweet(
@@ -241,7 +241,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
 
     // #authors-filter-map
     final Source<Author, NotUsed> authors =
-        tweets.filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+        tweets.filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
     // #first-sample
     // #authors-filter-map
 
@@ -250,7 +250,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
       JavaPartialFunction<Tweet, Author> collectFunction =
           new JavaPartialFunction<Tweet, Author>() {
             public Author apply(Tweet t, boolean isCheck) {
-              if (t.hashtags().contains(AKKA)) {
+              if (t.hashtags().contains(PEKKO)) {
                 if (isCheck) return null; // to spare the expensive or side-effecting code
                 return t.author;
               } else {
@@ -368,7 +368,7 @@ public class TwitterStreamQuickstartDocTest extends AbstractJavaTest {
         Sink.<Integer, Integer>fold(0, (acc, elem) -> acc + elem);
     final RunnableGraph<CompletionStage<Integer>> counterRunnableGraph =
         tweetsInMinuteFromNow
-            .filter(t -> t.hashtags().contains(AKKA))
+            .filter(t -> t.hashtags().contains(PEKKO))
             .map(t -> 1)
             .toMat(sumSink, Keep.right());
 

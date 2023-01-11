@@ -24,6 +24,6 @@ To use Utilities, you must add the following dependency in your project:
 * [event-bus](event-bus.md)
 * [logging](logging.md)
 * [scheduler](scheduler.md)
-* [extending-akka](extending-akka.md)
+* [extending-pekko](extending-pekko.md)
 
 @@@

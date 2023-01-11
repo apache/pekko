@@ -50,7 +50,7 @@ object TwitterStreamQuickstartDocSpec {
         .toSet
   }
 
-  val akkaTag = Hashtag("#akka")
+  val pekkoTag = Hashtag("#pekko")
   // #model
 
   // #fiddle_code
@@ -63,13 +63,13 @@ object TwitterStreamQuickstartDocSpec {
 
   // #fiddle_code
   val tweets: Source[Tweet, NotUsed] = Source(
-    Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#akka rocks!") ::
-    Tweet(Author("patriknw"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("bantonsson"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("drewhk"), System.currentTimeMillis, "#akka !") ::
-    Tweet(Author("ktosopl"), System.currentTimeMillis, "#akka on the rocks!") ::
-    Tweet(Author("mmartynas"), System.currentTimeMillis, "wow #akka !") ::
-    Tweet(Author("akkateam"), System.currentTimeMillis, "#akka rocks!") ::
+    Tweet(Author("rolandkuhn"), System.currentTimeMillis, "#pekko rocks!") ::
+    Tweet(Author("patriknw"), System.currentTimeMillis, "#pekko !") ::
+    Tweet(Author("bantonsson"), System.currentTimeMillis, "#pekko !") ::
+    Tweet(Author("drewhk"), System.currentTimeMillis, "#pekko !") ::
+    Tweet(Author("ktosopl"), System.currentTimeMillis, "#pekko on the rocks!") ::
+    Tweet(Author("mmartynas"), System.currentTimeMillis, "wow #pekko !") ::
+    Tweet(Author("pekkoteam"), System.currentTimeMillis, "#pekko rocks!") ::
     Tweet(Author("bananaman"), System.currentTimeMillis, "#bananas rock!") ::
     Tweet(Author("appleman"), System.currentTimeMillis, "#apples rock!") ::
     Tweet(Author("drama"), System.currentTimeMillis, "we compared #apples to #oranges!") ::
@@ -102,14 +102,14 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
 
     // #authors-filter-map
     val authors: Source[Author, NotUsed] =
-      tweets.filter(_.hashtags.contains(akkaTag)).map(_.author)
+      tweets.filter(_.hashtags.contains(pekkoTag)).map(_.author)
     // #first-sample
     // #authors-filter-map
 
     trait Example3 {
       // #authors-collect
       val authors: Source[Author, NotUsed] =
-        tweets.collect { case t if t.hashtags.contains(akkaTag) => t.author }
+        tweets.collect { case t if t.hashtags.contains(pekkoTag) => t.author }
       // #authors-collect
     }
 
@@ -162,7 +162,7 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
 
     // #fiddle_code
     tweets
-      .filterNot(_.hashtags.contains(akkaTag)) // Remove all tweets containing #akka hashtag
+      .filterNot(_.hashtags.contains(pekkoTag)) // Remove all tweets containing #pekko hashtag
       .map(_.hashtags) // Get all sets of hashtags ...
       .reduce(_ ++ _) // ... and reduce them to a single set, removing duplicates across all tweets
       .mapConcat(identity) // Flatten the set of hashtags to a stream of hashtags
@@ -225,7 +225,7 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
     // #tweets-runnable-flow-materialized-twice
     val sumSink = Sink.fold[Int, Int](0)(_ + _)
     val counterRunnableGraph: RunnableGraph[Future[Int]] =
-      tweetsInMinuteFromNow.filter(_.hashtags contains akkaTag).map(t => 1).toMat(sumSink)(Keep.right)
+      tweetsInMinuteFromNow.filter(_.hashtags contains pekkoTag).map(t => 1).toMat(sumSink)(Keep.right)
 
     // materialize the stream once in the morning
     val morningTweetsCount: Future[Int] = counterRunnableGraph.run()

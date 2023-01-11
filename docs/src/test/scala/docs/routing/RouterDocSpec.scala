@@ -219,7 +219,7 @@ pekko.actor.deployment {
   /parent/remotePool {
     router = round-robin-pool
     nr-of-instances = 10
-    target.nodes = ["akka://app@10.0.0.2:2552", "akka://app@10.0.0.3:2552"]
+    target.nodes = ["pekko://app@10.0.0.2:2552", "pekko://app@10.0.0.3:2552"]
   }
 }
 #//#config-remote-round-robin-pool
@@ -229,7 +229,7 @@ pekko.actor.deployment {
   /parent/remotePool {
     router = round-robin-pool
     nr-of-instances = 10
-    target.nodes = ["tcp://app@10.0.0.2:2552", "akka://app@10.0.0.3:2552"]
+    target.nodes = ["tcp://app@10.0.0.2:2552", "pekko://app@10.0.0.3:2552"]
   }
 }
 #//#config-remote-round-robin-pool-artery
@@ -239,9 +239,9 @@ pekko.actor.deployment {
   /parent/remoteGroup {
     router = round-robin-group
     routees.paths = [
-      "akka://app@10.0.0.1:2552/user/workers/w1",
-      "akka://app@10.0.0.2:2552/user/workers/w1",
-      "akka://app@10.0.0.3:2552/user/workers/w1"]
+      "pekko://app@10.0.0.1:2552/user/workers/w1",
+      "pekko://app@10.0.0.2:2552/user/workers/w1",
+      "pekko://app@10.0.0.3:2552/user/workers/w1"]
   }
 }
 #//#config-remote-round-robin-group
@@ -251,9 +251,9 @@ pekko.actor.deployment {
   /parent/remoteGroup2 {
     router = round-robin-group
     routees.paths = [
-      "akka://app@10.0.0.1:2552/user/workers/w1",
-      "akka://app@10.0.0.2:2552/user/workers/w1",
-      "akka://app@10.0.0.3:2552/user/workers/w1"]
+      "pekko://app@10.0.0.1:2552/user/workers/w1",
+      "pekko://app@10.0.0.2:2552/user/workers/w1",
+      "pekko://app@10.0.0.3:2552/user/workers/w1"]
   }
 }
 #//#config-remote-round-robin-group-artery
@@ -609,7 +609,7 @@ class RouterDocSpec extends PekkoSpec(RouterDocSpec.config) with ImplicitSender 
     import pekko.actor.{ Address, AddressFromURIString }
     import pekko.remote.routing.RemoteRouterConfig
     val addresses =
-      Seq(Address("akka", "remotesys", "otherhost", 1234), AddressFromURIString("akka://othersys@anotherhost:1234"))
+      Seq(Address("pekko", "remotesys", "otherhost", 1234), AddressFromURIString("pekko://othersys@anotherhost:1234"))
     val routerRemote = system.actorOf(RemoteRouterConfig(RoundRobinPool(5), addresses).props(Props[Echo]()))
     // #remoteRoutees
   }
@@ -621,7 +621,7 @@ class RouterDocSpec extends PekkoSpec(RouterDocSpec.config) with ImplicitSender 
     import pekko.actor.{ Address, AddressFromURIString }
     import pekko.remote.routing.RemoteRouterConfig
     val addresses =
-      Seq(Address("akka", "remotesys", "otherhost", 1234), AddressFromURIString("akka://othersys@anotherhost:1234"))
+      Seq(Address("pekko", "remotesys", "otherhost", 1234), AddressFromURIString("pekko://othersys@anotherhost:1234"))
     val routerRemote = system.actorOf(RemoteRouterConfig(RoundRobinPool(5), addresses).props(Props[Echo]()))
     // #remoteRoutees-artery
   }

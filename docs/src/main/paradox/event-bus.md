@@ -18,7 +18,7 @@ you have to provide it inside the message.
 
 @@@
 
-This mechanism is used in different places within Akka, e.g. the @ref:[Event Stream](#event-stream).
+This mechanism is used in different places within Pekko, e.g. the @ref:[Event Stream](#event-stream).
 Implementations can make use of the specific building blocks presented below.
 
 An event bus must define the following three @scala[abstract types]@java[type parameters]:
@@ -33,9 +33,9 @@ for any concrete implementation.
 
 ## Classifiers
 
-The classifiers presented here are part of the Akka distribution, but rolling
+The classifiers presented here are part of the Pekko distribution, but rolling
 your own in case you do not find a perfect match is not difficult, check the
-implementation of the existing ones on @extref[github](github:akka-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) 
+implementation of the existing ones on @extref[github](github:pekko-actor/src/main/scala/org/apache/pekko/event/EventBus.scala) 
 
 ### Lookup Classification
 
@@ -195,7 +195,7 @@ Similarly to @ref:[Actor Classification](#actor-classification), @apidoc[event.E
 @@@ note
 
 The event stream is a *local facility*, meaning that it will *not* distribute events to other nodes in a clustered environment (unless you subscribe a Remote Actor to the stream explicitly).
-If you need to broadcast events in an Akka cluster, *without* knowing your recipients explicitly (i.e. obtaining their ActorRefs), you may want to look into: @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md).
+If you need to broadcast events in a Pekko cluster, *without* knowing your recipients explicitly (i.e. obtaining their ActorRefs), you may want to look into: @ref:[Distributed Publish Subscribe in Cluster](distributed-pub-sub.md).
 
 @@@
 

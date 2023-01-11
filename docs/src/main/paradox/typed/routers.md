@@ -1,10 +1,10 @@
 # Routers
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Routing](../routing.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Routing](../routing.md).
 
 ## Dependency
 
-To use Akka Actor Typed, you must add the following dependency in your project:
+To use Pekko Actor Typed, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -23,7 +23,7 @@ processed in parallel - a single actor will only process one message at a time.
 The router itself is a behavior that is spawned into a running actor that will then forward any message sent to it
 to one final recipient out of the set of routees.
 
-There are two kinds of routers included in Akka Typed - the pool router and the group router.
+There are two kinds of routers included in Pekko Typed - the pool router and the group router.
 
 ## Pool Router
 
@@ -146,7 +146,7 @@ Scala
 Java
 :  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #consistent-hashing }
 
-See also @ref[Akka Cluster Sharding](cluster-sharding.md) which provides stable routing and rebalancing of the routee actors.
+See also @ref[Pekko Cluster Sharding](cluster-sharding.md) which provides stable routing and rebalancing of the routee actors.
 
 ## Routers and performance
 
@@ -156,4 +156,4 @@ it will not give better performance to create more routees than there are thread
 
 Since the router itself is an actor and has a mailbox this means that messages are routed sequentially to the routees
 where it can be processed in parallel (depending on the available threads in the dispatcher).
-In a high throughput use cases the sequential routing could become a bottle neck. Akka Typed does not provide an optimized tool for this.
+In a high throughput use cases the sequential routing could become a bottle neck. Pekko Typed does not provide an optimized tool for this.

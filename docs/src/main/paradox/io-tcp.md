@@ -26,7 +26,7 @@ Scala
 Java
 :  @@snip [IODocTest.java](/docs/src/test/java/jdocs/io/japi/IODocTest.java) { #imports }
 
-All of the Akka I/O APIs are accessed through manager objects. When using an I/O API, the first step is to acquire a
+All of the Pekko I/O APIs are accessed through manager objects. When using an I/O API, the first step is to acquire a
 reference to the appropriate manager. The code below shows how to acquire a reference to the `Tcp` manager.
 
 Scala
@@ -54,7 +54,7 @@ to and a list of socket options to apply.
 @@@ note
 
 The SO_NODELAY (TCP_NODELAY on Windows) socket option defaults to true in
-Akka, independently of the OS default settings. This setting disables Nagle's
+Pekko, independently of the OS default settings. This setting disables Nagle's
 algorithm, considerably improving latency for most applications. This setting
 could be overridden by passing `SO.TcpNoDelay(false)` in the list of socket
 options of the @scala[`Connect` message]@java[message by the `TcpMessage.connect` method].

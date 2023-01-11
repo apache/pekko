@@ -1,5 +1,5 @@
 ---
-project.description: Query side to Akka Persistence allowing for building CQRS applications.
+project.description: Query side to Pekko Persistence allowing for building CQRS applications.
 ---
 # Persistence Query
 
@@ -16,16 +16,16 @@ To use Persistence Query, you must add the following dependency in your project:
   version=PekkoVersion
 }
 
-This will also add dependency on the @ref[Akka Persistence](persistence.md) module.
+This will also add dependency on the @ref[Pekko Persistence](persistence.md) module.
 
 ## Introduction
 
-Akka persistence query complements @ref:[Event Sourcing](typed/persistence.md) by providing a universal asynchronous stream based
+Pekko persistence query complements @ref:[Event Sourcing](typed/persistence.md) by providing a universal asynchronous stream based
 query interface that various journal plugins can implement in order to expose their query capabilities.
 
 The most typical use case of persistence query is implementing the so-called query side (also known as "read side")
-in the popular CQRS architecture pattern - in which the writing side of the application (e.g. implemented using Akka
-persistence) is completely separated from the "query side". Akka Persistence Query itself is *not* directly the query
+in the popular CQRS architecture pattern - in which the writing side of the application (e.g. implemented using Pekko
+persistence) is completely separated from the "query side". Pekko Persistence Query itself is *not* directly the query
 side of an application, however it can help to migrate data from the write side to the query side database. In very
 simple scenarios Persistence Query may be powerful enough to fulfill the query needs of your app, however we highly
 recommend (in the spirit of CQRS) of splitting up the write/read sides into separate datastores as the need arises.
@@ -33,12 +33,12 @@ recommend (in the spirit of CQRS) of splitting up the write/read sides into sepa
 For a similar implementation of query interface to @ref:[Durable State Behaviors](typed/durable-state/persistence.md)
 please refer to @ref:[Persistence Query using Durable State](durable-state/persistence-query.md).
 
-The @extref[Microservices with Akka tutorial](platform-guide:microservices-tutorial/) explains how to
-implement an Event Sourced CQRS application with Akka Persistence and Akka Projections.
+The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) explains how to
+implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections.
 
 ## Design overview
 
-Akka persistence query is purposely designed to be a very loosely specified API.
+Pekko persistence query is purposely designed to be a very loosely specified API.
 This is in order to keep the provided APIs general enough for each journal implementation to be able to expose its best
 features, e.g. a SQL journal can use complex SQL queries or if a journal is able to subscribe to a live event stream
 this should also be possible to expose the same API - a typed stream of events.
@@ -46,7 +46,7 @@ this should also be possible to expose the same API - a typed stream of events.
 **Each read journal must explicitly document which types of queries it supports.**
 Refer to your journal's plugins documentation for details on which queries and semantics it supports.
 
-While Akka Persistence Query does not provide actual implementations of ReadJournals, it defines a number of pre-defined
+While Pekko Persistence Query does not provide actual implementations of ReadJournals, it defines a number of pre-defined
 query types for the most common query scenarios, that most journals are likely to implement (however they are not required to).
 
 ## Read Journals
@@ -69,7 +69,7 @@ Read journal implementations are available as [Community plugins](https://akka.i
 
 ### Predefined queries
 
-Akka persistence query comes with a number of query interfaces built in and suggests Journal implementors to implement
+Pekko persistence query comes with a number of query interfaces built in and suggests Journal implementors to implement
 them according to the semantics described below. It is important to notice that while these query types are very common
 a journal is not obliged to implement all of them - for example because in a given journal such query would be
 significantly inefficient.
@@ -224,7 +224,7 @@ projected into the other read-optimised datastore.
 
 @@@ note
 
-When referring to **Materialized Views** in Akka Persistence think of it as "some persistent storage of the result of a Query".
+When referring to **Materialized Views** in Pekko Persistence think of it as "some persistent storage of the result of a Query".
 In other words, it means that the view is created once, in order to be afterwards queried multiple times, as in this format
 it may be more efficient or interesting to query it (instead of the source events directly).
 
@@ -267,14 +267,14 @@ Java
 Sometimes you may need to use "resumable" projections, which will not start from the beginning of time each time
 when run. In such case, the sequence number (or `offset`) of the processed event will be stored and
 used the next time this projection is started. This pattern is implemented in the
-[Akka Projections](https://doc.akka.io/docs/akka-projection/current/) module.
+[Pekko Projections](https://doc.akka.io/docs/akka-projection/current/) module.
 
 
 <a id="read-journal-plugin-api"></a>
 ## Query plugins
 
 Query plugins are various (mostly community driven) @apidoc[query.*.ReadJournal] implementations for all kinds
-of available datastores. The complete list of available plugins is maintained on the Akka Persistence Query [Community Plugins](https://akka.io/community/#plugins-to-akka-persistence-query) page.
+of available datastores. The complete list of available plugins is maintained on the Pekko Persistence Query [Community Plugins](https://akka.io/community/#plugins-to-akka-persistence-query) page.
 
 This section aims to provide tips and guide plugin developers through implementing a custom query plugin.
 Most users will not need to implement journals themselves, except if targeting a not yet supported datastore.
@@ -338,6 +338,6 @@ shard events over a cluster.
 
 ## Example project
 
-The @extref[Microservices with Akka tutorial](platform-guide:microservices-tutorial/) explains how to
+The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) explains how to
 use Event Sourcing and Projections together. The events are tagged to be consumed by even processors to build
 other representations from the events, or publish the events to other services.

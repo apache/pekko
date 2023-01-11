@@ -1,119 +1,119 @@
 # Default configuration
 
-Each Akka module has a `reference.conf` file with the default values.
+Each Pekko module has a `reference.conf` file with the default values.
 
 Make your edits/overrides in your `application.conf`. Don't override default values if
-you are not sure of the implications. [Akka Config Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html)
+you are not sure of the implications. [Pekko Config Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html)
 is a useful tool for finding potential configuration issues.
 
-The purpose of `reference.conf` files is for libraries, like Akka, to define default values that are used if
+The purpose of `reference.conf` files is for libraries, like Pekko, to define default values that are used if
 an application doesn't define a more specific value. It's also a good place to document the existence and
 meaning of the configuration properties. One library must not try to override properties in its own `reference.conf`
 for properties originally defined by another library's `reference.conf`, because the effective value would be
 nondeterministic when loading the configuration.`
 
-<a id="config-akka-actor"></a>
-### akka-actor
+<a id="config-pekko-actor"></a>
+### pekko-actor
 
 @@snip [reference.conf](/actor/src/main/resources/reference.conf)
 
-<a id="config-akka-actor-typed"></a>
-### akka-actor-typed
+<a id="config-pekko-actor-typed"></a>
+### pekko-actor-typed
 
 @@snip [reference.conf](/actor-typed/src/main/resources/reference.conf)
 
-<a id="config-akka-cluster-typed"></a>
-### akka-cluster-typed
+<a id="config-pekko-cluster-typed"></a>
+### pekko-cluster-typed
 
 @@snip [reference.conf](/cluster-typed/src/main/resources/reference.conf)
 
-<a id="config-akka-cluster"></a>
-### akka-cluster
+<a id="config-pekko-cluster"></a>
+### pekko-cluster
 
 @@snip [reference.conf](/cluster/src/main/resources/reference.conf)
 
-<a id="config-akka-discovery"></a>
-### akka-discovery
+<a id="config-pekko-discovery"></a>
+### pekko-discovery
 
 @@snip [reference.conf](/discovery/src/main/resources/reference.conf)
 
-<a id="config-akka-coordination"></a>
-### akka-coordination
+<a id="config-pekko-coordination"></a>
+### pekko-coordination
 
 @@snip [reference.conf](/coordination/src/main/resources/reference.conf)
 
-<a id="config-akka-multi-node-testkit"></a>
-### akka-multi-node-testkit
+<a id="config-pekko-multi-node-testkit"></a>
+### pekko-multi-node-testkit
 
 @@snip [reference.conf](/multi-node-testkit/src/main/resources/reference.conf)
 
-<a id="config-akka-persistence-typed"></a>
-### akka-persistence-typed
+<a id="config-pekko-persistence-typed"></a>
+### pekko-persistence-typed
 
 @@snip [reference.conf](/persistence-typed/src/main/resources/reference.conf)
 
-<a id="config-akka-persistence"></a>
-### akka-persistence
+<a id="config-pekko-persistence"></a>
+### pekko-persistence
 
 @@snip [reference.conf](/persistence/src/main/resources/reference.conf)
 
-<a id="config-akka-persistence-query"></a>
-### akka-persistence-query
+<a id="config-pekko-persistence-query"></a>
+### pekko-persistence-query
 
 @@snip [reference.conf](/persistence-query/src/main/resources/reference.conf)
 
-<a id="config-akka-persistence-testkit"></a>
-### akka-persistence-testkit
+<a id="config-pekko-persistence-testkit"></a>
+### pekko-persistence-testkit
 
 @@snip [reference.conf](/persistence-testkit/src/main/resources/reference.conf)
 
-<a id="config-akka-remote-artery"></a>
-### akka-remote artery
+<a id="config-pekko-remote-artery"></a>
+### pekko-remote artery
 
 @@snip [reference.conf](/remote/src/main/resources/reference.conf) { #shared #artery type=none }
 
-<a id="config-akka-remote"></a>
-### akka-remote classic (deprecated)
+<a id="config-pekko-remote"></a>
+### pekko-remote classic (deprecated)
 
 @@snip [reference.conf](/remote/src/main/resources/reference.conf) { #shared #classic type=none }
 
-<a id="config-akka-testkit"></a>
-### akka-testkit
+<a id="config-pekko-testkit"></a>
+### pekko-testkit
 
 @@snip [reference.conf](/testkit/src/main/resources/reference.conf)
 
 <a id="config-cluster-metrics"></a>
-### akka-cluster-metrics
+### pekko-cluster-metrics
 
 @@snip [reference.conf](/cluster-metrics/src/main/resources/reference.conf)
 
 <a id="config-cluster-tools"></a>
-### akka-cluster-tools
+### pekko-cluster-tools
 
 @@snip [reference.conf](/cluster-tools/src/main/resources/reference.conf)
 
 <a id="config-cluster-sharding-typed"></a>
-### akka-cluster-sharding-typed
+### pekko-cluster-sharding-typed
 
 @@snip [reference.conf](/cluster-sharding-typed/src/main/resources/reference.conf)
 
 <a id="config-cluster-sharding"></a>
-### akka-cluster-sharding
+### pekko-cluster-sharding
 
 @@snip [reference.conf](/cluster-sharding/src/main/resources/reference.conf)
 
 <a id="config-distributed-data"></a>
-### akka-distributed-data
+### pekko-distributed-data
 
 @@snip [reference.conf](/distributed-data/src/main/resources/reference.conf)
 
-<a id="config-akka-stream"></a>
-### akka-stream
+<a id="config-pekko-stream"></a>
+### pekko-stream
 
 @@snip [reference.conf](/stream/src/main/resources/reference.conf)
 
-<a id="config-akka-stream-testkit"></a>
-### akka-stream-testkit
+<a id="config-pekko-stream-testkit"></a>
+### pekko-stream-testkit
 
 @@snip [reference.conf](/stream-testkit/src/main/resources/reference.conf)
 

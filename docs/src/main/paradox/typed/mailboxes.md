@@ -1,11 +1,11 @@
 # Mailboxes
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Mailboxes](../mailboxes.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Mailboxes](../mailboxes.md).
 
 ## Dependency
 
-Mailboxes are part of core Akka, which means that they are part of the `akka-actor` dependency. This
-page describes how to use mailboxes with `akka-actor-typed`, which has dependency:
+Mailboxes are part of core Pekko, which means that they are part of the `pekko-actor` dependency. This
+page describes how to use mailboxes with `pekko-actor-typed`, which has dependency:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -18,7 +18,7 @@ page describes how to use mailboxes with `akka-actor-typed`, which has dependenc
 
 ## Introduction 
 
-Each actor in Akka has a `Mailbox`, this is where the messages are enqueued before being processed by the actor.
+Each actor in Pekko has a `Mailbox`, this is where the messages are enqueued before being processed by the actor.
 
 By default an unbounded mailbox is used, this means any number of messages can be enqueued into the mailbox. 
 
@@ -60,7 +60,7 @@ fall-back to the default mailbox configuration section.
 
 ## Mailbox Implementations
 
-Akka ships with a number of mailbox implementations:
+Pekko ships with a number of mailbox implementations:
 
  * 
    @apidoc[SingleConsumerOnlyUnboundedMailbox](SingleConsumerOnlyUnboundedMailbox) (default)

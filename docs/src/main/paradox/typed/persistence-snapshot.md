@@ -1,9 +1,9 @@
 ---
-project.description: Append only event logs, snapshots and recovery with Akka event sourced actors.
+project.description: Append only event logs, snapshots and recovery with Pekko event sourced actors.
 ---
 # Snapshotting
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Akka Persistence](../persistence.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Pekko Persistence](../persistence.md).
 
 ## Snapshots
 
@@ -57,7 +57,7 @@ or you can pick a snapshot store for for a specific `EventSourcedBehavior` by
 the `EventSourcedBehavior`].
 
 Because some use cases may not benefit from or need snapshots, it is perfectly valid not to not configure a snapshot store.
-However, Akka will log a warning message when this situation is detected and then continue to operate until
+However, Pekko will log a warning message when this situation is detected and then continue to operate until
 an actor tries to store a snapshot, at which point the operation will fail.
 
 ## Snapshot failures

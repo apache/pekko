@@ -1,5 +1,5 @@
 ---
-project.description: Serialization with Jackson for Akka.
+project.description: Serialization with Jackson for Pekko.
 ---
 # Serialization with Jackson
 
@@ -18,7 +18,7 @@ To use Jackson Serialization, you must add the following dependency in your proj
 
 ## Introduction
 
-You find general concepts for for Akka serialization in the @ref:[Serialization](serialization.md) section.
+You find general concepts for for Pekko serialization in the @ref:[Serialization](serialization.md) section.
 This section describes how to use the Jackson serializer for application specific messages and persistent
 events and snapshots.
 
@@ -47,7 +47,7 @@ one of the supported Jackson formats: `jackson-json` or `jackson-cbor`
 
 A good convention would be to name the marker interface `CborSerializable` or `JsonSerializable`.
 In this documentation we have used `MySerializable` to make it clear that the marker interface itself is not
-provided by Akka.
+provided by Pekko.
 
 That is all that is needed for basic classes where Jackson understands the structure. A few cases that requires
 annotations are described below.
@@ -459,13 +459,13 @@ For the `jackson-cbor` and custom bindings other than `jackson-json` compression
 but can be enabled in the same way as the configuration shown above but replacing `jackson-json` with
 the binding name (for example `jackson-cbor`).
 
-## Using Akka Serialization for embedded types
+## Using Pekko Serialization for embedded types
 
-For types that already have an Akka Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
-@apidoc[PekkoSerializationDeserializer] can be used to Akka Serialization for individual fields. 
+For types that already have an Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
+@apidoc[PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
-to the fields containing the types to be serialized with Akka Serialization.
+to the fields containing the types to be serialized with Pekko Serialization.
 
 The type will be embedded as an object with the fields:
 
@@ -501,9 +501,7 @@ this to be useful, generally that single type must be a
 @ref:[Polymorphic type](#polymorphic-types), with all type information necessary to deserialize to
 the various sub types contained in the JSON message.
 
-When switching serializers, for example, if doing a rolling update as described
-@ref:[here](additional/rolling-updates.md#from-java-serialization-to-jackson), there will be
-periods of time when you may have no serialization bindings declared for the type. In such
+When switching serializers, there will be periods of time when you may have no serialization bindings declared for the type. In such
 circumstances, you must use the `deserialization-type` configuration attribute to specify which
 type should be used to deserialize messages.
 
@@ -513,14 +511,14 @@ configurations.
 
 @@snip [config](/serialization-jackson/src/test/scala/doc/org/apache/pekko/serialization/jackson/SerializationDocSpec.scala) { #manifestless }
 
-Note that Akka remoting already implements manifest compression, and so this optimization will have
+Note that Pekko remoting already implements manifest compression, and so this optimization will have
 no significant impact for messages sent over remoting. It's only useful for messages serialized for
 other purposes, such as persistence or distributed data.
 
 ## Additional features
 
 Additional Jackson serialization features can be enabled/disabled in configuration. The default values from
-Jackson are used aside from the the following that are changed in Akka's default configuration.
+Jackson are used aside from the the following that are changed in Pekko's default configuration.
 
 @@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #features }
 

@@ -2,7 +2,7 @@
 
 ## Dependency
 
-To use Akka Stream TestKit, add the module to your project:
+To use Pekko Stream TestKit, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -16,18 +16,18 @@ To use Akka Stream TestKit, add the module to your project:
 
 ## Introduction
 
-Verifying behavior of Akka Stream sources, flows and sinks can be done using
+Verifying behavior of Pekko Stream sources, flows and sinks can be done using
 various code patterns and libraries. Here we will discuss testing these
 elements using:
 
  * simple sources, sinks and flows;
- * sources and sinks in combination with @apidoc[testkit.TestProbe] from the `akka-testkit` module;
- * sources and sinks specifically crafted for writing tests from the `akka-stream-testkit` module.
+ * sources and sinks in combination with @apidoc[testkit.TestProbe] from the `pekko-testkit` module;
+ * sources and sinks specifically crafted for writing tests from the `pekko-stream-testkit` module.
 
 It is important to keep your data processing pipeline as separate sources,
 flows and sinks. This makes them testable by wiring them up to other
-sources or sinks, or some test harnesses that `akka-testkit` or
-`akka-stream-testkit` provide.
+sources or sinks, or some test harnesses that `pekko-testkit` or
+`pekko-stream-testkit` provide.
 
 ## Built-in sources, sinks and operators
 
@@ -65,9 +65,9 @@ Java
 
 ## TestKit
 
-Akka Stream offers integration with Actors out of the box. This support can be
+Pekko Stream offers integration with Actors out of the box. This support can be
 used for writing stream tests that use familiar @apidoc[testkit.TestProbe] from the
-`akka-testkit` API.
+`pekko-testkit` API.
 
 One of the more straightforward tests would be to materialize stream to a
 @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)] and then use @scala[@scaladoc[pipe](pekko.pattern.PipeToSupport#pipe[T](future:scala.concurrent.Future[T])(implicitexecutionContext:scala.concurrent.ExecutionContext):PipeToSupport.this.PipeableFuture[T])]@java[@scaladoc[Patterns.pipe](org.apache.pekko.pattern.Patterns$#pipe[T](future:java.util.concurrent.CompletionStage[T],context:scala.concurrent.ExecutionContext):org.apache.pekko.pattern.PipeableCompletionStage[T])] pattern to pipe the result of that future
@@ -104,7 +104,7 @@ Java
 ## Streams TestKit
 
 You may have noticed various code patterns that emerge when testing stream
-pipelines. Akka Stream has a separate `akka-stream-testkit` module that
+pipelines. Pekko Stream has a separate `pekko-stream-testkit` module that
 provides tools specifically for writing stream tests. This module comes with
 two main components that are @apidoc[stream.testkit.*.TestSource$] and @apidoc[stream.testkit.*.TestSink$] which
 provide sources and sinks that materialize to probes that allow fluent API.

@@ -1,5 +1,5 @@
 ---
-project.description: Serialization APIs built into Akka.
+project.description: Serialization APIs built into Pekko.
 ---
 # Serialization
 
@@ -18,9 +18,9 @@ To use Serialization, you must add the following dependency in your project:
 
 ## Introduction
 
-The messages that Akka actors send to each other are JVM objects @scala[(e.g. instances of Scala case classes)]. Message passing between actors that live on the same JVM is straightforward. It is done via reference passing. However, messages that have to escape the JVM to reach an actor running on a different host have to undergo some form of serialization (i.e. the objects have to be converted to and from byte arrays).
+The messages that Pekko actors send to each other are JVM objects @scala[(e.g. instances of Scala case classes)]. Message passing between actors that live on the same JVM is straightforward. It is done via reference passing. However, messages that have to escape the JVM to reach an actor running on a different host have to undergo some form of serialization (i.e. the objects have to be converted to and from byte arrays).
 
-The serialization mechanism in Akka allows you to write custom serializers and to define which serializer to use for what.
+The serialization mechanism in Pekko allows you to write custom serializers and to define which serializer to use for what.
 
 @ref:[Serialization with Jackson](serialization-jackson.md) is a good choice in many cases and our
 recommendation if you don't have other preference.
@@ -29,13 +29,13 @@ recommendation if you don't have other preference.
 more control over the schema evolution of your messages, but it requires more work to develop and
 maintain the mapping between serialized representation and domain representation.
 
-Akka itself uses Protocol Buffers to serialize internal messages (for example cluster gossip messages).
+Pekko itself uses Protocol Buffers to serialize internal messages (for example cluster gossip messages).
 
 ## Usage
 
 ### Configuration
 
-For Akka to know which `Serializer` to use for what, you need to edit your configuration: 
+For Pekko to know which `Serializer` to use for what, you need to edit your configuration: 
 in the `pekko.actor.serializers`-section, you bind names to implementations of the @apidoc[serialization.Serializer](Serializer)
 you wish to use, like this:
 
@@ -62,14 +62,14 @@ you would need to reference it as `Wrapper$Message` instead of `Wrapper.Message`
 
 @@@
 
-Akka provides serializers for several primitive types and [protobuf](https://github.com/protocolbuffers/protobuf)
+Pekko provides serializers for several primitive types and [protobuf](https://github.com/protocolbuffers/protobuf)
 @javadoc[com.google.protobuf.GeneratedMessage](com.google.protobuf.GeneratedMessage) (protobuf2) and @javadoc[com.google.protobuf.GeneratedMessageV3](com.google.protobuf.GeneratedMessageV3) (protobuf3) by default (the latter only if
-depending on the akka-remote module), so normally you don't need to add
+depending on the pekko-remote module), so normally you don't need to add
 configuration for that if you send raw protobuf messages as actor messages.
 
 ### Programmatic
 
-If you want to programmatically serialize/deserialize using Akka Serialization,
+If you want to programmatically serialize/deserialize using Pekko Serialization,
 here are some examples:
 
 Scala
@@ -208,14 +208,14 @@ Classic and Typed actor references have the same serialization format so they ca
 
 ### Deep serialization of Actors
 
-The recommended approach to do deep serialization of internal actor state is to use Akka @ref:[Persistence](persistence.md).
+The recommended approach to do deep serialization of internal actor state is to use Pekko @ref:[Persistence](persistence.md).
 
-## Serialization of Akka's messages
+## Serialization of Pekko's messages
 
-Akka is using a Protobuf 3 for serialization of messages defined by Akka. This dependency is
-shaded in the `akka-protobuf-v3` artifact so that applications can use another version of Protobuf.
+Pekko is using a Protobuf 3 for serialization of messages defined by Pekko. This dependency is
+shaded in the `pekko-protobuf-v3` artifact so that applications can use another version of Protobuf.
 
-Applications should use standard Protobuf dependency and not `akka-protobuf-v3`.
+Applications should use standard Protobuf dependency and not `pekko-protobuf-v3`.
 
 ## Java serialization
 
@@ -225,7 +225,7 @@ One may think that network bandwidth and latency limit the performance of remote
 
 @@@ note
 
-Akka serialization with Java serialization is disabled by default and Akka itself doesn't use Java serialization
+Pekko serialization with Java serialization is disabled by default and Pekko itself doesn't use Java serialization
 for any of its internal messages. It is highly discouraged to enable Java serialization in production.
 
 The log messages emitted by the disabled Java serializer in production SHOULD be treated as potential
@@ -242,7 +242,7 @@ older systems that rely on Java serialization it can be enabled with the followi
 pekko.actor.allow-java-serialization = on
 ```
 
-Akka will still log warning when Java serialization is used and to silent that you may add:
+Pekko will still log warning when Java serialization is used and to silent that you may add:
 
 ```ruby
 pekko.actor.warn-about-java-serializer-usage = off

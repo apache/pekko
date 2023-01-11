@@ -56,7 +56,7 @@ public class MyUnboundedMailbox
     }
   }
 
-  // This constructor signature must exist, it will be called by Akka
+  // This constructor signature must exist, it will be called by Pekko
   public MyUnboundedMailbox(ActorSystem.Settings settings, Config config) {
     // put your initialization code here
   }

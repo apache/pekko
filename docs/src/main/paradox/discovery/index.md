@@ -1,35 +1,24 @@
 ---
-project.description: Service discovery with Akka using DNS, Kubernetes, AWS, Consul or Marathon.
+project.description: Service discovery with Pekko using DNS, Kubernetes, AWS, Consul or Marathon.
 ---
 # Discovery
 
-The Akka Discovery API enables **service discovery** to be provided by different technologies. 
+The Pekko Discovery API enables **service discovery** to be provided by different technologies. 
 It allows to delegate endpoint lookup so that services can be configured depending on the environment by other means than configuration files. 
 
-Implementations provided by the Akka Discovery module are 
+Implementations provided by the Pekko Discovery module are 
 
 * @ref:[Configuration](#discovery-method-configuration) (HOCON)
 * @ref:[DNS](#discovery-method-dns) (SRV records)
 * @ref:[Aggregate](#discovery-method-aggregate-multiple-discovery-methods) multiple discovery methods
 
-In addition the @extref:[Akka Management](akka-management:) toolbox contains Akka Discovery implementations for
+In addition, the @extref:[Pekko Management](pekko-management:) toolbox contains Pekko Discovery implementations for
 
-* @extref:[Kubernetes API](akka-management:discovery/kubernetes.html)
-* @extref:[AWS API: EC2 Tag-Based Discovery](akka-management:discovery/aws.html#discovery-method-aws-api-ec2-tag-based-discovery)
-* @extref:[AWS API: ECS Discovery](akka-management:discovery/aws.html#discovery-method-aws-api-ecs-discovery)
-* @extref:[Consul](akka-management:discovery/consul.html)
-* @extref:[Marathon API](akka-management:discovery/marathon.html)
-
-
-@@@ note
-
-Discovery used to be part of Akka Management but has become an Akka module as of `2.5.19` of Akka and version `1.0.0`
-of Akka Management. If you're also using Akka Management for other service discovery methods or bootstrap make
-sure you are using at least version `1.0.0` of Akka Management.
-
-See @ref:[Migration hints](#migrating-from-akka-management-discovery-before-1-0-0-)
-
-@@@
+* @extref:[Kubernetes API](pekko-management:discovery/kubernetes.html)
+* @extref:[AWS API: EC2 Tag-Based Discovery](pekko-management:discovery/aws.html#discovery-method-aws-api-ec2-tag-based-discovery)
+* @extref:[AWS API: ECS Discovery](pekko-management:discovery/aws.html#discovery-method-aws-api-ecs-discovery)
+* @extref:[Consul](pekko-management:discovery/consul.html)
+* @extref:[Marathon API](pekko-management:discovery/marathon.html)
 
 ## Module info
 
@@ -72,13 +61,13 @@ Scala
 Java
 :  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #full }
 
-Port can be used when a service opens multiple ports e.g. a HTTP port and an Akka remoting port.
+Port can be used when a service opens multiple ports e.g. a HTTP port and an Pekko remoting port.
 
 ## Discovery Method: DNS
 
 @@@ note { title="Async DNS" }
 
-Akka Discovery with DNS does always use the @ref[Akka-native "async-dns" implementation](../io-dns.md) (it is independent of the `pekko.io.dns.resolver` setting).
+Pekko Discovery with DNS does always use the @ref[Pekko-native "async-dns" implementation](../io-dns.md) (it is independent of the `pekko.io.dns.resolver` setting).
 
 @@@
 
@@ -87,7 +76,7 @@ DNS discovery maps `Lookup` queries as follows:
 * `serviceName`, `portName` and `protocol` set: SRV query in the form: `_port._protocol.name` Where the `_`s are added.
 * Any query  missing any of the fields is mapped to a A/AAAA query for the `serviceName`
 
-The mapping between Akka service discovery terminology and SRV terminology:
+The mapping between Pekko service discovery terminology and SRV terminology:
 
 * SRV service = port
 * SRV name = serviceName
@@ -169,7 +158,7 @@ In this case `a-double.pekko.test` would resolve to `192.168.1.21` and `192.168.
 
 Configuration currently ignores all fields apart from service name.
 
-For simple use cases configuration can be used for service discovery. The advantage of using Akka Discovery with
+For simple use cases configuration can be used for service discovery. The advantage of using Pekko Discovery with
 configuration rather than your own configuration values is that applications can be migrated to a more
 sophisticated discovery method without any code changes.
 
@@ -249,11 +238,11 @@ The above configuration will result in `pekko-dns` first being checked and if it
 targets for the given service name then `config` is queried which i configured with one service called
 `service1` which two hosts `host1` and `host2`.
 
-## Migrating from Akka Management Discovery (before 1.0.0)
+## Migrating from Pekko Management Discovery (before 1.0.0)
 
-Akka Discovery started out as a submodule of Akka Management, before 1.0.0 of Akka Management. Akka Discovery is not compatible with those versions of Akka Management Discovery.
+Pekko Discovery started out as a submodule of Pekko Management, before 1.0.0 of Pekko Management. Pekko Discovery is not compatible with those versions of Pekko Management Discovery.
 
-At least version `1.0.0` of any Akka Management module should be used if also using Akka Discovery.
+At least version `1.0.0` of any Pekko Management module should be used if also using Pekko Discovery.
 
 Migration steps:
 

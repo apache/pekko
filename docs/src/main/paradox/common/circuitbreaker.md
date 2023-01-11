@@ -24,7 +24,7 @@ resource exhaustion.  Circuit breakers can also allow savvy developers to mark p
 the site that use the functionality unavailable, or perhaps show some cached content as 
 appropriate while the breaker is open.
 
-The Akka library provides an implementation of a circuit breaker called 
+The Pekko library provides an implementation of a circuit breaker called 
 @apidoc[CircuitBreaker] which has the behavior described below.
 
 ## What do they do?
@@ -105,7 +105,7 @@ By default, the circuit breaker treats @javadoc[Exception](java.lang.Exception) 
 On failure, the failure count will increment. If the failure count reaches the *maxFailures*, the circuit breaker will be opened.
 However, some applications may require certain exceptions to not increase the failure count.
 In other cases one may want to increase the failure count even if the call succeeded.
-Akka circuit breaker provides a way to achieve such use cases: @scala[@scaladoc[withCircuitBreaker](pekko.pattern.CircuitBreaker#withCircuitBreaker[T](body:=%3Escala.concurrent.Future[T],defineFailureFn:scala.util.Try[T]=%3EBoolean):scala.concurrent.Future[T]) and @scaladoc[withSyncCircuitBreaker](pekko.pattern.CircuitBreaker#withSyncCircuitBreaker[T](body:=%3ET,defineFailureFn:scala.util.Try[T]=%3EBoolean):T)]@java[@javadoc[callWithCircuitBreaker](pekko.pattern.CircuitBreaker#callWithCircuitBreaker(java.util.concurrent.Callable,java.util.function.BiFunction)), @javadoc[callWithSyncCircuitBreaker](pekko.pattern.CircuitBreaker#callWithSyncCircuitBreaker(java.util.concurrent.Callable,java.util.function.BiFunction)) and @javadoc[callWithCircuitBreakerCS](pekko.pattern.CircuitBreaker#callWithCircuitBreakerCS(java.util.concurrent.Callable,java.util.function.BiFunction))].
+Pekko circuit breaker provides a way to achieve such use cases: @scala[@scaladoc[withCircuitBreaker](pekko.pattern.CircuitBreaker#withCircuitBreaker[T](body:=%3Escala.concurrent.Future[T],defineFailureFn:scala.util.Try[T]=%3EBoolean):scala.concurrent.Future[T]) and @scaladoc[withSyncCircuitBreaker](pekko.pattern.CircuitBreaker#withSyncCircuitBreaker[T](body:=%3ET,defineFailureFn:scala.util.Try[T]=%3EBoolean):T)]@java[@javadoc[callWithCircuitBreaker](pekko.pattern.CircuitBreaker#callWithCircuitBreaker(java.util.concurrent.Callable,java.util.function.BiFunction)), @javadoc[callWithSyncCircuitBreaker](pekko.pattern.CircuitBreaker#callWithSyncCircuitBreaker(java.util.concurrent.Callable,java.util.function.BiFunction)) and @javadoc[callWithCircuitBreakerCS](pekko.pattern.CircuitBreaker#callWithCircuitBreakerCS(java.util.concurrent.Callable,java.util.function.BiFunction))].
 
 All methods above accept an argument `defineFailureFn`
 

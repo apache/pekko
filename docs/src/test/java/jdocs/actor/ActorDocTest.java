@@ -343,7 +343,7 @@ public class ActorDocTest extends AbstractJavaTest {
       // #selection-wildcard
 
       // #selection-remote
-      getContext().actorSelection("akka://app@otherhost:1234/user/serviceB");
+      getContext().actorSelection("pekko://app@otherhost:1234/user/serviceB");
       // #selection-remote
     }
   }
@@ -895,7 +895,7 @@ public class ActorDocTest extends AbstractJavaTest {
   public void coordinatedShutdownActorTermination() {
     ActorRef someActor = system.actorOf(Props.create(FirstActor.class));
     someActor.tell(PoisonPill.getInstance(), ActorRef.noSender());
-    // https://github.com/akka/akka/issues/29056
+    // https://github.com/pekko/pekko/issues/29056
     // #coordinated-shutdown-addActorTerminationTask
     CoordinatedShutdown.get(system)
         .addActorTerminationTask(

@@ -2,7 +2,7 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -15,13 +15,13 @@ To use Akka Streams, add the module to your project:
 
 @@@ note
 
-Both the Java and Scala DSLs of Akka Streams are bundled in the same JAR. For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala,
+Both the Java and Scala DSLs of Pekko Streams are bundled in the same JAR. For a smooth development experience, when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl` imports when working in Scala,
 or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
 @@@
 
 ## First steps
 
-A stream usually begins at a source, so this is also how we start an Akka
+A stream usually begins at a source, so this is also how we start an Pekko
 Stream. Before we create one, we import the full complement of streaming tools:
 
 Scala
@@ -38,7 +38,7 @@ Scala
 Java
 :   @@snip [QuickStartDocTest.java](/docs/src/test/java/jdocs/stream/QuickStartDocTest.java) { #other-imports }
 
-And @scala[an object]@java[a class] to start an Akka @apidoc[actor.ActorSystem] and hold your code @scala[. Making the `ActorSystem`
+And @scala[an object]@java[a class] to start an Pekko @apidoc[actor.ActorSystem] and hold your code @scala[. Making the `ActorSystem`
 implicit makes it available to the streams without manually passing it when running them]:
 
 Scala
@@ -76,7 +76,7 @@ Java
 This line will complement the source with a consumer function—in this example
 we print out the numbers to the console—and pass this little stream
 setup to an Actor that runs it. This activation is signaled by having “run” be
-part of the method name; there are other methods that run Akka Streams, and
+part of the method name; there are other methods that run Pekko Streams, and
 they all follow this pattern.
 
 When running this @scala[source in a `scala.App`]@java[program] you might notice it does not
@@ -89,7 +89,7 @@ Scala
 Java
 :   @@snip [QuickStartDocTest.java](/docs/src/test/java/jdocs/stream/QuickStartDocTest.java) { #run-source-and-terminate }
 
-The nice thing about Akka Streams is that the `Source` is a
+The nice thing about Pekko Streams is that the `Source` is a
 description of what you want to run, and like an architect’s blueprint it can
 be reused, incorporated into a larger design. We may choose to transform the
 source of integers and write it to a file instead:
@@ -109,9 +109,9 @@ important to keep in mind that nothing is actually computed yet, this is a
 description of what we want to have computed once we run the stream. Then we
 convert the resulting series of numbers into a stream of @apidoc[util.ByteString]
 objects describing lines in a text file. This stream is then run by attaching a
-file as the receiver of the data. In the terminology of Akka Streams this is
+file as the receiver of the data. In the terminology of Pekko Streams this is
 called a @apidoc[stream.*.Sink]. @apidoc[stream.IOResult] is a type that IO operations return in
-Akka Streams in order to tell you how many bytes or elements were consumed and
+Pekko Streams in order to tell you how many bytes or elements were consumed and
 whether the stream terminated normally or exceptionally.
 
 ### Browser-embedded example
@@ -119,19 +119,19 @@ whether the stream terminated normally or exceptionally.
 <a name="here-is-another-example-that-you-can-edit-and-run-in-the-browser-"></a>
 Here is another example that you can edit and run in the browser:
 
-@@fiddle [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #fiddle_code template=Akka layout=v75 minheight=400px }
+@@fiddle [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
 
 
 ## Reusable Pieces
 
-One of the nice parts of Akka Streams—and something that other stream libraries
+One of the nice parts of Pekko Streams—and something that other stream libraries
 do not offer—is that not only sources can be reused like blueprints, all other
 elements can be as well. We can take the file-writing @apidoc[stream.*.Sink], prepend
 the processing steps necessary to get the @apidoc[util.ByteString] elements from
 incoming strings and package that up as a reusable piece as well. Since the
 language for writing these streams always flows from left to right (just like
 plain English), we need a starting point that is like a source but with an
-“open” input. In Akka Streams this is called a @apidoc[stream.*.Flow]:
+“open” input. In Pekko Streams this is called a @apidoc[stream.*.Flow]:
 
 Scala
 :   @@snip [QuickStartDocSpec.scala](/docs/src/test/scala/docs/stream/QuickStartDocSpec.scala) { #transform-sink }
@@ -162,7 +162,7 @@ Java
 ## Time-Based Processing
 
 Before we start looking at a more involved example we explore the streaming
-nature of what Akka Streams can do. Starting from the `factorials` source
+nature of what Pekko Streams can do. Starting from the `factorials` source
 we transform the stream by zipping it together with another stream,
 represented by a @apidoc[stream.*.Source] that emits the number 0 to 100: the first
 number emitted by the `factorials` source is the factorial of zero, the
@@ -187,26 +187,26 @@ the streams to produce a billion numbers each then you will notice that your
 JVM does not crash with an OutOfMemoryError, even though you will also notice
 that running the streams happens in the background, asynchronously (this is the
 reason for the auxiliary information to be provided as a @scala[@scaladoc[Future](scala.concurrent.Future)]@java[@javadoc[CompletionStage](java.util.concurrent.CompletionStage)], in the future). The
-secret that makes this work is that Akka Streams implicitly implement pervasive
+secret that makes this work is that Pekko Streams implicitly implement pervasive
 flow control, all operators respect back-pressure. This allows the throttle
 operator to signal to all its upstream sources of data that it can only
 accept elements at a certain rate—when the incoming rate is higher than one per
 second the throttle operator will assert *back-pressure* upstream.
 
-This is all there is to Akka Streams in a nutshell—glossing over the
+This is all there is to Pekko Streams in a nutshell—glossing over the
 fact that there are dozens of sources and sinks and many more stream
 transformation operators to choose from, see also @ref:[operator index](operators/index.md).
 
 # Reactive Tweets
 
 A typical use case for stream processing is consuming a live stream of data that we want to extract or aggregate some
-other data from. In this example we'll consider consuming a stream of tweets and extracting information concerning Akka from them.
+other data from. In this example we'll consider consuming a stream of tweets and extracting information concerning Pekko from them.
 
 We will also consider the problem inherent to all non-blocking streaming
 solutions: *"What if the subscriber is too slow to consume the live stream of
 data?"*. Traditionally the solution is often to buffer the elements, but this
 can—and usually will—cause eventual buffer overflows and instability of such
-systems. Instead Akka Streams depend on internal backpressure signals that
+systems. Instead Pekko Streams depend on internal backpressure signals that
 allow to control what should happen in such scenarios.
 
 Here's the data model we'll be working with throughout the quickstart examples:
@@ -228,7 +228,7 @@ sections of the docs, and then come back to this quickstart to see it all pieced
 ## Transforming and consuming simple streams
 
 The example application we will be looking at is a simple Twitter feed stream from which we'll want to extract certain information,
-like for example finding all twitter handles of users who tweet about `#akka`.
+like for example finding all twitter handles of users who tweet about `#pekko`.
 
 In order to prepare our environment by creating an @apidoc[actor.ActorSystem] which will be responsible for running the streams we are about to create:
 
@@ -238,7 +238,7 @@ Scala
 Java
 :   @@snip [TwitterStreamQuickstartDocTest.java](/docs/src/test/java/jdocs/stream/TwitterStreamQuickstartDocTest.java) { #system-setup }
 
-Let's assume we have a stream of tweets readily available. In Akka this is expressed as a @scala[`Source[Out, M]`]@java[`Source<Out, M>`]:
+Let's assume we have a stream of tweets readily available. In Pekko this is expressed as a @scala[`Source[Out, M]`]@java[`Source<Out, M>`]:
 
 Scala
 :   @@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #tweet-source }
@@ -327,11 +327,11 @@ Now let's say we want to persist all hashtags, as well as all author names from 
 For example we'd like to write all author handles into one file, and all hashtags into another file on disk.
 This means we have to split the source stream into two streams which will handle the writing to these different files.
 
-Elements that can be used to form such "fan-out" (or "fan-in") structures are referred to as "junctions" in Akka Streams.
+Elements that can be used to form such "fan-out" (or "fan-in") structures are referred to as "junctions" in Pekko Streams.
 One of these that we'll be using in this example is called @apidoc[stream.*.Broadcast$], and it emits elements from its
 input port to all of its output ports.
 
-Akka Streams intentionally separate the linear stream structures (Flows) from the non-linear, branching ones (Graphs)
+Pekko Streams intentionally separate the linear stream structures (Flows) from the non-linear, branching ones (Graphs)
 in order to offer the most convenient API for both of these cases. Graphs can express arbitrarily complex stream setups
 at the expense of not reading as familiarly as collection transformations.
 
@@ -362,14 +362,14 @@ as Flows, Sinks or Sources, which will be explained in detail in
 
 ## Back-pressure in action
 
-One of the main advantages of Akka Streams is that they *always* propagate back-pressure information from stream Sinks
+One of the main advantages of Pekko Streams is that they *always* propagate back-pressure information from stream Sinks
 (Subscribers) to their Sources (Publishers). It is not an optional feature, and is enabled at all times. To learn more
-about the back-pressure protocol used by Akka Streams and all other Reactive Streams compatible implementations read
+about the back-pressure protocol used by Pekko Streams and all other Reactive Streams compatible implementations read
 @ref:[Back-pressure explained](stream-flows-and-basics.md#back-pressure-explained).
 
-A typical problem applications (not using Akka Streams) like this often face is that they are unable to process the incoming data fast enough,
+A typical problem applications (not using Pekko Streams) like this often face is that they are unable to process the incoming data fast enough,
 either temporarily or by design, and will start buffering incoming data until there's no more space to buffer, resulting
-in either @javadoc[OutOfMemoryError](java.lang.OutOfMemoryError) s or other severe degradations of service responsiveness. With Akka Streams buffering can
+in either @javadoc[OutOfMemoryError](java.lang.OutOfMemoryError) s or other severe degradations of service responsiveness. With Pekko Streams buffering can
 and must be handled explicitly. For example, if we are only interested in the "*most recent tweets, with a buffer of 10
 elements*" this can be expressed using the @apidoc[buffer](stream.*.Source) {scala="#buffer(size:Int,overflowStrategy:org.apache.pekko.stream.OverflowStrategy):FlowOps.this.Repr[Out]" java="#buffer(int,org.apache.pekko.stream.OverflowStrategy)"} element:
 
@@ -432,7 +432,7 @@ Scala
 Java
 :   @@snip [TwitterStreamQuickstartDocTest.java](/docs/src/test/java/jdocs/stream/TwitterStreamQuickstartDocTest.java) { #tweets-runnable-flow-materialized-twice }
 
-Many elements in Akka Streams provide materialized values which can be used for obtaining either results of computation or
+Many elements in Pekko Streams provide materialized values which can be used for obtaining either results of computation or
 steering these elements which will be discussed in detail in @ref:[Stream Materialization](stream-flows-and-basics.md#stream-materialization). Summing up this section, now we know
 what happens behind the scenes when we run this one-liner, which is equivalent to the multi line version above:
 

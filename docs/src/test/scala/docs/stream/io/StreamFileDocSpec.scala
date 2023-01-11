@@ -73,7 +73,7 @@ class StreamFileDocSpec extends PekkoSpec(UnboundedMailboxConfig) {
 
   "write data into a file" in {
     // #file-sink
-    val text = Source.single("Hello Akka Stream!")
+    val text = Source.single("Hello Pekko Stream!")
     val result: Future[IOResult] = text.map(t => ByteString(t)).runWith(FileIO.toPath(file))
     // #file-sink
   }

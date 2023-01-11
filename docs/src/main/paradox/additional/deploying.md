@@ -1,18 +1,16 @@
 ---
-project.description: How to deploy Akka Cluster to Kubernetes and Docker.
+project.description: How to deploy Pekko Cluster to Kubernetes and Docker.
 ---
 # Deploying
 
 ## Deploying to Kubernetes
 
-[Akka Cloud Platform](https://developer.lightbend.com/docs/akka-platform-guide/deployment/index.html) is the easiest way to deploy an Akka Cluster application to Amazon Elastic Kubernetes Service (EKS) or Google Kubernetes Engine (GKE).
-
-Alternatively, you can deploy to Kubernetes according to the guide and example project for [Deploying Akka Cluster to Kubernetes](https://doc.akka.io/docs/akka-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
+Deploy to Kubernetes according to the guide and example project for [Deploying Pekko Cluster to Kubernetes](https://doc.akka.io/docs/akka-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
 
 ### Cluster bootstrap
 
 To take advantage of running inside Kubernetes while forming a cluster, 
-[Akka Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps forming or joining a cluster using Akka Discovery to discover peer nodes. 
+[Pekko Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps forming or joining a cluster using Pekko Discovery to discover peer nodes. 
 with the Kubernetes API or Kubernetes via DNS.  
 
 You can look at the
@@ -25,16 +23,16 @@ To avoid CFS scheduler limits, it is best not to use `resources.limits.cpu` limi
 
 ## Deploying to Docker containers
 
-You can use both Akka remoting and Akka Cluster inside Docker containers. Note
+You can use both Pekko remoting and Pekko Cluster inside Docker containers. Note
 that you will need to take special care with the network configuration when using Docker,
-described here: @ref:[Akka behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
+described here: @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
 
 You can look at the
 @java[@extref[Cluster with docker-compse example project](samples:akka-sample-cluster-docker-compose-java)]
 @scala[@extref[Cluster with docker-compose example project](samples:akka-sample-cluster-docker-compose-scala)]
 to see what this looks like in practice.
 
-For the JVM to run well in a Docker container, there are some general (not Akka specific) parameters that might need tuning:
+For the JVM to run well in a Docker container, there are some general (not Pekko specific) parameters that might need tuning:
 
 ### Resource constraints
 

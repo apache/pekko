@@ -4,7 +4,7 @@
 
 ## Dependency
 
-To use Classic Akka Actors, you must add the following dependency in your project:
+To use Classic Pekko Actors, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
