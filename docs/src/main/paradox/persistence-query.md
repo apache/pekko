@@ -12,7 +12,7 @@ To use Persistence Query, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-query_$scala.binary.version$
+  artifact=pekko-persistence-query_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -134,10 +134,10 @@ with the given `tags`. The journal may support other ways of doing tagging - aga
 how exactly this is implemented depends on the used journal. Here is an example of such a tagging with an @apidoc[typed.*.EventSourcedBehavior]:
 
 Scala
-:  @@snip [BasicPersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging-query }
+:  @@snip [BasicPersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorCompileOnly.scala) { #tagging-query }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging-query }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #tagging-query }
 
 @@@ note
 

@@ -22,7 +22,7 @@ To use reliable delivery, add the module to your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -107,18 +107,18 @@ the `ProducerController` will not send faster than the demand requested by the `
 An example of a fibonacci number generator (producer):
 
 Scala
-:  @@snip [PointToPointDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #imports #producer }
+:  @@snip [PointToPointDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #imports #producer }
 
 Java
-:  @@snip [PointToPointDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #imports #producer }
+:  @@snip [PointToPointDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #imports #producer }
 
 and consumer of the fibonacci numbers:
 
 Scala
-:  @@snip [PointToPointDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #consumer }
+:  @@snip [PointToPointDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #consumer }
 
 Java
-:  @@snip [PointToPointDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #consumer }
+:  @@snip [PointToPointDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #consumer }
 
 The `FibonacciProducer` sends the messages to a `ProducerController`. The `FibonacciConsumer` receives the messages
 from a `ConsumerController`. Note how the `ActorRef` in the `Start` messages are constructed as message adapters to map
@@ -130,10 +130,10 @@ messages, or by using the `Receptionist`. Alternatively, they can be connected i
 `ProducerController.RegisterConsumer` to the `ProducerController`.
 
 Scala
-:  @@snip [PointToPointDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #connect }
+:  @@snip [PointToPointDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/PointToPointDocExample.scala) { #connect }
 
 Java
-:  @@snip [PointToPointDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #connect }
+:  @@snip [PointToPointDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/PointToPointDocExample.java) { #connect }
 
 ### Point-to-point delivery semantics
 
@@ -214,18 +214,18 @@ demand requested by the workers.
 Example of image converter worker (consumer):
 
 Scala
-:  @@snip [WorkPullingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #imports #consumer }
+:  @@snip [WorkPullingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #imports #consumer }
 
 Java
-:  @@snip [WorkPullingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #imports #consumer }
+:  @@snip [WorkPullingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #imports #consumer }
 
 and image converter job manager (producer):
 
 Scala
-:  @@snip [WorkPullingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #producer }
+:  @@snip [WorkPullingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #producer }
 
 Java
-:  @@snip [WorkPullingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #producer }
+:  @@snip [WorkPullingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #producer }
 
 Note how the `ActorRef` in the `Start` messages are constructed as message adapters to map the
 `RequestNext` and `Delivery` to the protocol of the producer and consumer actors respectively.
@@ -259,7 +259,7 @@ To use reliable delivery with Cluster Sharding, add the following module to your
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-cluster-sharding-typed_$scala.binary.version$
+  artifact=pekko-cluster-sharding-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -315,18 +315,18 @@ and first when that completes replies to reliable delivery that the message was 
 Example of `TodoList` entity (consumer):
 
 Scala
-:  @@snip [ShardingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #imports #consumer }
+:  @@snip [ShardingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #imports #consumer }
 
 Java
-:  @@snip [ShardingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #imports #consumer }
+:  @@snip [ShardingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #imports #consumer }
 
 and `TodoService` (producer):
 
 Scala
-:  @@snip [ShardingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #producer }
+:  @@snip [ShardingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/ShardingDocExample.scala) { #producer }
 
 Java
-:  @@snip [ShardingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #producer }
+:  @@snip [ShardingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #producer }
 
 Note how the `ActorRef` in the `Start` messages are constructed as message adapters to map the
 `RequestNext` and `Delivery` to the protocol of the producer and consumer actors respectively.
@@ -334,7 +334,7 @@ Note how the `ActorRef` in the `Start` messages are constructed as message adapt
 Those are initialized with sharding like this (from the guardian):
 
 Java
-:  @@snip [ShardingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #init }
+:  @@snip [ShardingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/ShardingDocExample.java) { #init }
 
 ### Sharding delivery semantics
 
@@ -368,7 +368,7 @@ When using the `EventSourcedProducerQueue` the following dependency is needed:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-typed_$scala.binary.version$
+  artifact=pekko-persistence-typed_$scala.binary.version$
   version=PekkoVersion
 } 
 
@@ -379,10 +379,10 @@ Example of the image converter work manager from the @ref:[Work pulling example]
 `EventSourcedProducerQueue` enabled:
  
 Scala
-:  @@snip [WorkPullingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #durable-queue }
+:  @@snip [WorkPullingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #durable-queue }
 
 Java
-:  @@snip [WorkPullingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #durable-queue }
+:  @@snip [WorkPullingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #durable-queue }
 
 It's important to note that the `EventSourcedProducerQueue` requires a @ref:[PersistenceId](persistence.md#persistenceid),
 which must be unique. The same `PersistenceId` must not be used for different producers at the same time.
@@ -404,10 +404,10 @@ reply is sent after the consumer has processed and confirmed the message.
 Example of using `ask` in the image converter work manager from the @ref:[Work pulling example](#work-pulling-example):
  
 Scala
-:  @@snip [WorkPullingDocExample.scala](/akka-cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #ask }
+:  @@snip [WorkPullingDocExample.scala](/cluster-sharding-typed/src/test/scala/docs/delivery/WorkPullingDocExample.scala) { #ask }
 
 Java
-:  @@snip [WorkPullingDocExample.java](/akka-cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #ask }
+:  @@snip [WorkPullingDocExample.java](/cluster-sharding-typed/src/test/java/jdocs/delivery/WorkPullingDocExample.java) { #ask }
 
 ## Only flow control
 

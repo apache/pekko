@@ -12,7 +12,7 @@ To use Persistence Query, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-query_$scala.binary.version$
+  artifact=pekko-persistence-query_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -159,4 +159,4 @@ for the default `LeveldbReadJournal.Identifier`.
 
 It can be configured with the following properties:
 
-@@snip [reference.conf](/akka-persistence-query/src/main/resources/reference.conf) { #query-leveldb }
+@@snip [reference.conf](/persistence-query/src/main/resources/reference.conf) { #query-leveldb }

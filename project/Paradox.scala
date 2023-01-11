@@ -90,7 +90,7 @@ object Paradox {
     groupsSettings ++
     parsingSettings ++
     Seq(
-      Compile / paradox / name := "Akka",
+      Compile / paradox / name := "Pekko",
       resolvers += Resolver.jcenterRepo,
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
       publishRsyncArtifacts += {

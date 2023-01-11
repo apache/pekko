@@ -27,7 +27,7 @@ To use Artery Remoting, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-remote_$scala.binary.version$
+  artifact=pekko-remote_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -585,7 +585,7 @@ remained the same, we recommend reading the @ref:[Serialization](serialization.m
 Implementing an `org.apache.pekko.serialization.ByteBufferSerializer` works the same way as any other serializer,
 
 Scala
-:  @@snip [Serializer.scala](/akka-actor/src/main/scala/org/apache/pekko/serialization/Serializer.scala) { #ByteBufferSerializer }
+:  @@snip [Serializer.scala](/actor/src/main/scala/org/apache/pekko/serialization/Serializer.scala) { #ByteBufferSerializer }
 
 Java
 :  @@snip [ByteBufferSerializerDocTest.java](/docs/src/test/java/jdocs/actor/ByteBufferSerializerDocTest.java) { #ByteBufferSerializer-interface }

@@ -217,8 +217,8 @@ The Pekko build includes a special task called `validatePullRequest`, which inve
 (uncommitted changes) in your local working directory and figures out which projects are impacted by those changes,
 then running tests only on those projects.
 
-For example, changing something in `akka-actor` would cause tests to be run in all projects which depend on it
-(e.g. `akka-actor-tests`, `akka-stream`, `docs` etc.).
+For example, changing something in `actor` would cause tests to be run in all projects which depend on it
+(e.g. `actor-tests`, `stream`, `docs` etc.).
 
 To use the task, simply type `validatePullRequest`, and the output should include entries like shown below:
 
@@ -258,7 +258,7 @@ PR fails due to binary compatibility issues, you may see an error like this:
 In such situations it's good to consult with a core team member whether the violation can be safely ignored or if it would indeed
 break binary compatibility. If the violation can be ignored add exclude statements from the mima output to
 a new file named `<module>/src/main/mima-filters/<last-version>.backwards.excludes/<pr-or-issue>-<issue-number>-<description>.excludes`,
-e.g. `akka-actor/src/main/mima-filters/2.6.0.backwards.excludes/pr-12345-rename-internal-classes.excludes`. Make sure to add a comment
+e.g. `actor/src/main/mima-filters/2.6.0.backwards.excludes/pr-12345-rename-internal-classes.excludes`. Make sure to add a comment
 in the file that describes briefly why the incompatibility can be ignored.
 
 Situations when it may be acceptable to ignore a MiMa issued warning include:
@@ -424,8 +424,8 @@ For first time contributors, the workflow will be run after an approval from a c
 
 To speed up PR validation times the Akka build contains a special sbt task called `validatePullRequest`,
 which is smart enough to figure out which projects should be built if a PR only has changes in some parts of the project.
-For example, if your PR only touches `akka-persistence`, no `akka-remote` tests need to be run, however the task
-will validate all projects that depend on `akka-persistence` (including samples).
+For example, if your PR only touches `persistence`, no `remote` tests need to be run, however the task
+will validate all projects that depend on `persistence` (including samples).
 Also, tests tagged as `PerformanceTest`, `TimingTest`, `LongRunningTest`, and all multi-node tests are excluded from PR validation.
 
 You can exclude the same kind of tests in your local build by starting sbt with:
@@ -494,7 +494,7 @@ There are a number of ways timeouts can be defined in Pekko tests. The following
 
 Special care should be given to `expectNoMessage` calls, which indeed will wait for the entire timeout before continuing. Therefore a shorter timeout should be used in those, for example `200.millis` or `300.millis`. Prefer the method without timeout parameter, which will use the configured `expect-no-message-default` timeout.
 
-You can read up on `remaining` and friends in [TestKit.scala](https://github.com/apache/incubator-pekko/blob/main/akka-testkit/src/main/scala/akka/testkit/TestKit.scala).
+You can read up on `remaining` and friends in [TestKit.scala](https://github.com/apache/incubator-pekko/blob/main/testkit/src/main/scala/org/apache/pekko/testkit/TestKit.scala).
 
 ### Contributing modules
 

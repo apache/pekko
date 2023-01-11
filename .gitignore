@@ -48,7 +48,7 @@ activemq-data
 docs/_build/
 docs/exts/
 docs/rst_preprocessed/
-akka-osgi/src/main/resources/*.conf
+osgi/src/main/resources/*.conf
 akka.sublime-project
 akka.sublime-workspace
 akka.tmproj
@@ -64,7 +64,7 @@ metals.sbt
 mongoDB/
 multiverse.log
 out
-project/akka-build.properties
+project/pekko-build.properties
 project/boot/*
 project/plugins/project
 redis/

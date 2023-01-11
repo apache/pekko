@@ -12,11 +12,11 @@ Akka Coordination is a set of tools for distributed coordination.
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-coordination_$scala.binary.version$"
+  artifact="pekko-coordination_$scala.binary.version$"
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-coordination" }
+@@project-info{ projectId="coordination" }
 
 ## Lease
 
@@ -107,7 +107,7 @@ The configuration must define the `lease-class` property for the FQCN of the lea
 
 The lease implementation should have support for the following properties where the defaults come from `pekko.coordination.lease`:
 
-@@snip [reference.conf](/akka-coordination/src/main/resources/reference.conf) { #defaults }
+@@snip [reference.conf](/coordination/src/main/resources/reference.conf) { #defaults }
 
 This configuration location is passed into `getLease`.
 

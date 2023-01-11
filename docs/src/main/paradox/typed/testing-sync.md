@@ -29,27 +29,27 @@ The following demonstrates how to test:
 The examples below require the following imports:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #imports }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #imports }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #imports }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #imports }
 
 Each of the tests are testing an actor that based on the message executes a different effect to be tested:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #under-test }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #under-test }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #under-test }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #under-test }
 
 For creating a child actor a noop actor is created:
 
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #child }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #child }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #child }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #child }
 
 All of the tests make use of the @apidoc[BehaviorTestKit] to avoid the need for a real `ActorContext`. Some of the tests
 make use of the @apidoc[TestInbox] which allows the creation of an @apidoc[actor.typed.ActorRef] that can be used for synchronous testing, similar to the
@@ -61,18 +61,18 @@ make use of the @apidoc[TestInbox] which allows the creation of an @apidoc[actor
 With a name:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child }
 
 Anonymously:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-anonymous-child }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-anonymous-child }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-anonymous-child }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-anonymous-child }
 
 ### Sending messages
 
@@ -80,27 +80,27 @@ For testing sending a message a @apidoc[TestInbox] is created that provides an @
 messages that have been sent to it.
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-message }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-message }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-message }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-message }
 
 Another use case is sending a message to a child actor you can do this by looking up the @apidoc[TestInbox] for
 a child actor from the @apidoc[BehaviorTestKit]:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child-message }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child-message }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child-message }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child-message }
 
 For anonymous children the actor names are generated in a deterministic way:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child-message-anonymous }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-child-message-anonymous }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child-message-anonymous }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-child-message-anonymous }
 
 ### Testing other effects
 
@@ -121,10 +121,10 @@ The @apidoc[BehaviorTestKit] also keeps track of everything that is being logged
 if the behavior logged certain messages:
 
 Scala
-:  @@snip [SyncTestingExampleSpec.scala](/akka-actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-check-logging }
+:  @@snip [SyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/SyncTestingExampleSpec.scala) { #test-check-logging }
 
 Java
-:  @@snip [SyncTestingExampleTest.java](/akka-actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-check-logging }
+:  @@snip [SyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/SyncTestingExampleTest.java) { #test-check-logging }
 
 
 See the other public methods and API documentation on @apidoc[BehaviorTestKit] for other types of verification.

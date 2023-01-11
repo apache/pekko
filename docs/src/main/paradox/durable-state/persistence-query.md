@@ -12,7 +12,7 @@ To use Persistence Query, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-query_$scala.binary.version$
+  artifact=pekko-persistence-query_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -40,9 +40,9 @@ At present the query is based on _tags_. So if you have not tagged your objects,
 The example below shows how to get the  `DurableStateStoreQuery` from the `DurableStateStoreRegistry` extension.
 
 Scala
-:  @@snip [DurableStateStoreQueryUsageCompileOnlySpec.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/DurableStateStoreQueryUsageCompileOnlySpec.scala) { #get-durable-state-store-query-example }
+:  @@snip [DurableStateStoreQueryUsageCompileOnlySpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/DurableStateStoreQueryUsageCompileOnlySpec.scala) { #get-durable-state-store-query-example }
 
 Java
-:  @@snip [DurableStateStoreQueryUsageCompileOnlyTest.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/DurableStateStoreQueryUsageCompileOnlyTest.java) { #get-durable-state-store-query-example } 
+:  @@snip [DurableStateStoreQueryUsageCompileOnlyTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/DurableStateStoreQueryUsageCompileOnlyTest.java) { #get-durable-state-store-query-example } 
 
 The @apidoc[DurableStateChange] elements can be `UpdatedDurableState` or `DeletedDurableState`.

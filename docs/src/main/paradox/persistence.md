@@ -11,14 +11,14 @@ For the full documentation of this feature and for new projects see @ref:[Event 
 To use Akka Persistence, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence_$scala.binary.version$"
+  artifact="pekko-persistence_$scala.binary.version$"
   version=PekkoVersion
   group2="org.apache.pekko"
-  artifact2="akka-persistence-testkit_$scala.binary.version$"
+  artifact2="pekko-persistence-testkit_$scala.binary.version$"
   version2=PekkoVersion
   scope2=test
 }
@@ -26,7 +26,7 @@ To use Akka Persistence, you must add the following dependency in your project:
 You also have to select journal plugin and optionally snapshot store plugin, see 
 @ref:[Persistence Plugins](persistence-plugins.md).
 
-@@project-info{ projectId="akka-persistence" }
+@@project-info{ projectId="persistence" }
 
 ## Introduction
 

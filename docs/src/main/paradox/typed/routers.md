@@ -11,7 +11,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-actor-typed_$scala.binary.version$
+  artifact=pekko-actor-typed_$scala.binary.version$
   version=PekkoVersion
 }
 
@@ -38,18 +38,18 @@ As actor children are always local the routees are never spread across a cluster
 Let's first introduce the routee:
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #routee }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #routee }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #routee }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #routee }
 
 After having defined the routee, we can now concentrate on configuring the router itself. Note again the the router is an Actor in itself:
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #pool }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #pool }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #pool }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #pool }
 
 ### Configuring Dispatchers
 
@@ -58,10 +58,10 @@ The routees, however, are spawned by the router.
 Therefore, the `PoolRouter` has a property to configure the `Props` of its routees:
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #pool-dispatcher }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #pool-dispatcher }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #pool-dispatcher }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #pool-dispatcher }
 
 ### Broadcasting a message to all routees
 
@@ -69,10 +69,10 @@ Pool routers can be configured to identify messages intended to be broad-casted 
 Therefore, the `PoolRouter` has a property to configure its `broadcastPredicate`:
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #broadcast }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #broadcast }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #broadcast }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #broadcast }
 
 ## Group Router
 
@@ -91,10 +91,10 @@ When the router has received a listing from the receptionist and the set of regi
 drop them (publish them to the event stream as `org.apache.pekko.actor.Dropped`).
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #group }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #group }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #group }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #group }
 
 ## Routing strategies
 
@@ -102,10 +102,10 @@ There are three different strategies for selecting which routee a message is for
 from the router before spawning it:
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #strategy }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #strategy }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #strategy }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #strategy }
 
 ### Round Robin
 
@@ -141,10 +141,10 @@ When the set of routees changes, consistent hashing tries to make sure, but does
 
 
 Scala
-:  @@snip [RouterSpec.scala](/akka-actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #consistent-hashing }
+:  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #consistent-hashing }
 
 Java
-:  @@snip [RouterTest.java](/akka-actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #consistent-hashing }
+:  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #consistent-hashing }
 
 See also @ref[Akka Cluster Sharding](cluster-sharding.md) which provides stable routing and rebalancing of the routee actors.
 

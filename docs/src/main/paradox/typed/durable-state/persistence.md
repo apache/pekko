@@ -8,21 +8,21 @@ project.description: Durable State with Akka Persistence enables actors to persi
 To use Akka Persistence, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
-  artifact=akka-persistence-typed_$scala.binary.version$
+  artifact=pekko-persistence-typed_$scala.binary.version$
   version=PekkoVersion
   group2=org.apache.pekko
-  artifact2=akka-persistence-testkit_$scala.binary.version$
+  artifact2=pekko-persistence-testkit_$scala.binary.version$
   version2=PekkoVersion
   scope2=test
 }
 
 You also have to select durable state store plugin, see @ref:[Persistence Plugins](../../persistence-plugins.md).
 
-@@project-info{ projectId="akka-persistence-typed" }
+@@project-info{ projectId="persistence-typed" }
 
 ## Introduction
 
@@ -45,10 +45,10 @@ is ensured, have a look at the @ref:[Cluster Sharding and DurableStateBehavior](
 Let's start with a simple example that models a counter using an Akka persistent actor. The minimum required for a @apidoc[DurableStateBehavior] is:
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #structure }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #structure }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #structure }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the `Behavior` of a persistent actor is typed to the type of the `Command`
 because this is the type of message a persistent actor should receive. In Akka this is now enforced by the type system.
@@ -109,18 +109,18 @@ Let's fill in the details of the example.
 Commands:
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #command }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #command }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #command }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #command }
 
 State is a storage for the latest value of the counter.
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #state }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #state }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #state }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #state }
 
 The command handler handles the commands `Increment`, `IncrementBy` and `GetValue`. 
 
@@ -129,19 +129,19 @@ The command handler handles the commands `Increment`, `IncrementBy` and `GetValu
 * `GetValue` retrieves the value of the counter from the State and replies with it to the actor passed in
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #command-handler }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #command-handler }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #command-handler }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #command-handler }
 
 @scala[These are used to create a `DurableStateBehavior`:]
 @java[These are defined in an `DurableStateBehavior`:]
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #behavior }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #behavior }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #behavior }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #behavior }
 
 ## Effects and Side Effects
 
@@ -185,19 +185,19 @@ send an acknowledgement as a reply to the `ActorRef` passed in the command.
 Example of effects and side-effects:
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #effects }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #effects }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #effects }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #effects }
 
 The most common way to have a side-effect is to use the `thenRun` method on `Effect`. In case you have multiple side-effects
 that needs to be run for several commands, you can factor them out into functions and reuse for all the commands. For example:
 
 Scala
-:  @@snip [PersistentActorCompileOnlyTest.scala](/akka-persistence-typed/src/test/scala/org/apache/pekko/persistence/typed/scaladsl/PersistentActorCompileOnlyTest.scala) { #commonChainedEffects }
+:  @@snip [PersistentActorCompileOnlyTest.scala](/persistence-typed/src/test/scala/org/apache/pekko/persistence/typed/scaladsl/PersistentActorCompileOnlyTest.scala) { #commonChainedEffects }
 
 Java
-:  @@snip [PersistentActorCompileOnlyTest.java](/akka-persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #commonChainedEffects }
+:  @@snip [PersistentActorCompileOnlyTest.java](/persistence-typed/src/test/java/org/apache/pekko/persistence/typed/javadsl/PersistentActorCompileOnlyTest.java) { #commonChainedEffects }
 
 ### Side effects ordering and guarantees
 
@@ -228,10 +228,10 @@ Cluster Sharding ensures that there is only one active entity (or actor instance
 If the @apidoc[DurableStateBehavior] needs to use the @apidoc[typed.*.ActorContext], for example to spawn child actors, it can be obtained by wrapping construction with `Behaviors.setup`:
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #actor-context }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #actor-context }
 
 Java
-:  @@snip [BasicPersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
+:  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #actor-context }
 
 ## Changing Behavior
 
@@ -258,18 +258,18 @@ Once it is started then one can look it up with `GetPost`, modify it with `Chang
 The state is captured by:
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #state }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #state }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #state }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #state }
 
 The commands, of which only a subset are valid depending on the state:
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #commands }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #commands }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #commands }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #commands }
 
 @java[The command handler to process each command is decided by the state class (or state predicate) that is
 given to the `forStateType` of the `CommandHandlerBuilder` and the match cases in the builders.]
@@ -278,18 +278,18 @@ It typically becomes two levels of pattern matching, first on the state and then
 Delegating to methods like `addPost`, `changeBody`, `publish` etc. is a good practice because the one-line cases give a nice overview of the message dispatch.
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #command-handler }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #command-handler }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #command-handler }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #command-handler }
 
 And finally the behavior is created @scala[from the `DurableStateBehavior.apply`]:
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #behavior }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #behavior }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #behavior }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #behavior }
 
 This can be refactored one or two steps further by defining the command handlers in the state class as
 illustrated in @ref:[command handlers in the state](persistence-style.md#command-handlers-in-the-state).
@@ -312,17 +312,17 @@ After validation errors or after persisting events, using a `thenRun` side effec
 be sent to the `ActorRef`.
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #reply-command }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #reply-command }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #reply-command }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #reply-command }
 
 
 Scala
-:  @@snip [BlogPostEntityDurableState.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #reply }
+:  @@snip [BlogPostEntityDurableState.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.scala) { #reply }
 
 Java
-:  @@snip [BlogPostEntityDurableState.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #reply }
+:  @@snip [BlogPostEntityDurableState.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BlogPostEntityDurableState.java) { #reply }
 
 
 Since this is such a common pattern there is a reply effect for this purpose. It has the nice property that
@@ -333,18 +333,18 @@ created with @scala[`Effect.reply`]@java[`Effect().reply`], @scala[`Effect.noRep
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
 
 Scala
-:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #withEnforcedReplies }
+:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #withEnforcedReplies }
 
 Java
-:  @@snip [AccountExampleWithNullDurableState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #withEnforcedReplies }
+:  @@snip [AccountExampleWithNullDurableState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #withEnforcedReplies }
 
 The commands must have a field of @scala[`ActorRef[ReplyMessageType]`]@java[`ActorRef<ReplyMessageType>`] that can then be used to send a reply.
 
 Scala
-:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply-command }
+:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply-command }
 
 Java
-:  @@snip [AccountExampleWithNullDurableState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #reply-command }
+:  @@snip [AccountExampleWithNullDurableState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #reply-command }
 
 The `ReplyEffect` is created with @scala[`Effect.reply`]@java[`Effect().reply`], @scala[`Effect.noReply`]@java[`Effect().noReply`],
 @scala[`Effect.thenReply`]@java[`Effect().thenReply`], or @scala[`Effect.thenNoReply`]@java[`Effect().thenNoReply`].
@@ -353,10 +353,10 @@ The `ReplyEffect` is created with @scala[`Effect.reply`]@java[`Effect().reply`],
 `EventSourcedBehaviorWithEnforcedReplies`, as opposed to newCommandHandlerBuilder when using `EventSourcedBehavior`.]
 
 Scala
-:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/akka-cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply }
+:  @@snip [AccountExampleWithCommandHandlersInDurableState.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithCommandHandlersInDurableState.scala) { #reply }
 
 Java
-:  @@snip [AccountExampleWithNullDurableState.java](/akka-cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #reply }
+:  @@snip [AccountExampleWithNullDurableState.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/AccountExampleWithNullDurableState.java) { #reply }
 
 These effects will send the reply message even when @scala[`DurableStateBehavior.withEnforcedReplies`]@java[`DurableStateBehaviorWithEnforcedReplies`]
 is not used, but then there will be no compilation errors if the reply decision is left out.
@@ -378,10 +378,10 @@ Persistence allows you to use tags in persistence query. Tagging allows you to i
 and separately consume them as a stream through the `DurableStateStoreQuery` interface. 
 
 Scala
-:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #tagging }
+:  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #tagging }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #tagging }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #tagging }
 
 ## Wrapping DurableStateBehavior
 
@@ -390,7 +390,7 @@ other behaviors such as `Behaviors.setup` in order to access the `ActorContext` 
 to access the logger from within the `ActorContext` to log for debugging the `commandHandler`.
 
 Scala
-:  @@snip [DurableStatePersistentActorCompileOnly.scala](/akka-persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
+:  @@snip [DurableStatePersistentActorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #wrapPersistentBehavior }
 
 Java
-:  @@snip [DurableStatePersistentBehaviorTest.java](/akka-persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #wrapPersistentBehavior }
+:  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #wrapPersistentBehavior }

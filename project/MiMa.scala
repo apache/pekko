@@ -67,7 +67,7 @@ object MiMa extends AutoPlugin {
         akka25Previous ++ akka26Previous
       }
 
-      val akka25PromotedArtifacts = Set("akka-distributed-data")
+      val akka25PromotedArtifacts = Set("pekko-distributed-data")
 
       // check against all binary compatible artifacts
       versions.map { v =>

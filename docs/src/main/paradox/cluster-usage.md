@@ -24,15 +24,15 @@ recommendation if you don't have other preferences or constraints.
 To use Akka Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-cluster_$scala.binary.version$"
+  artifact="pekko-cluster_$scala.binary.version$"
   version=PekkoVersion
 }
 
-@@project-info{ projectId="akka-cluster" }
+@@project-info{ projectId="cluster" }
 
 ## When and where to use Akka Cluster
  
@@ -53,7 +53,7 @@ Java
 
 And the minimum configuration required is to set a host/port for remoting and the `pekko.actor.provider = "cluster"`.
 
-@@snip [BasicClusterExampleSpec.scala](/akka-cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
+@@snip [BasicClusterExampleSpec.scala](/cluster-typed/src/test/scala/docs/org/apache/pekko/cluster/typed/BasicClusterExampleSpec.scala) { #config-seeds }
 
 The actor registers itself as subscriber of certain cluster events. It receives events corresponding to the current state
 of the cluster when the subscription starts and then it receives events for changes that happen in the cluster.
@@ -321,12 +321,12 @@ add the `sbt-multi-jvm` plugin and the dependency to `akka-multi-node-testkit`.
 First, as described in @ref:[Multi Node Testing](multi-node-testing.md), we need some scaffolding to configure the @scaladoc[MultiNodeSpec](pekko.remote.testkit.MultiNodeSpec).
 Define the participating @ref:[roles](typed/cluster.md#node-roles) and their @ref:[configuration](#configuration) in an object extending @scaladoc[MultiNodeConfig](pekko.remote.testkit.MultiNodeConfig):
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #MultiNodeConfig }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #MultiNodeConfig }
 
 Define one concrete test class for each role/node. These will be instantiated on the different nodes (JVMs). They can be
 implemented differently, but often they are the same and extend an abstract test class, as illustrated here.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #concrete-tests }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #concrete-tests }
 
 Note the naming convention of these classes. The name of the classes must end with `MultiJvmNode1`, `MultiJvmNode2`
 and so on. It is possible to define another suffix to be used by the `sbt-multi-jvm`, but the default should be
@@ -334,18 +334,18 @@ fine in most cases.
 
 Then the abstract `MultiNodeSpec`, which takes the `MultiNodeConfig` as constructor parameter.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #abstract-test }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #abstract-test }
 
 Most of this can be extracted to a separate trait to avoid repeating this in all your tests.
 
 Typically you begin your test by starting up the cluster and let the members join, and create some actors.
 That can be done like this:
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #startup-cluster }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #startup-cluster }
 
 From the test you interact with the cluster using the `Cluster` extension, e.g. @scaladoc[join](pekko.cluster.Cluster#join(address:org.apache.pekko.actor.Address):Unit).
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #join }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #join }
 
 Notice how the *testActor* from @ref:[testkit](testing.md) is added as @ref:[subscriber](#cluster-subscriber)
 to cluster changes and then waiting for certain events, such as in this case all members becoming 'Up'.
@@ -353,7 +353,7 @@ to cluster changes and then waiting for certain events, such as in this case all
 The above code was running for all roles (JVMs). @scaladoc[runOn](pekko.remote.testkit.MultiNodeSpec#runOn(nodes:org.apache.pekko.remote.testconductor.RoleName*)(thunk:=%3EUnit):Unit) is a convenient utility to declare that a certain block
 of code should only run for a specific role.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #test-statsService }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #test-statsService }
 
 Once again we take advantage of the facilities in @ref:[testkit](testing.md) to verify expected behavior.
 Here using `testActor` as sender (via @scaladoc[ImplicitSender](pekko.testkit.ImplicitSender)) and verifying the reply with @scaladoc[expectMsgType](org.apache.pekko.testkit.TestKit#expectMsgType[T](max:scala.concurrent.duration.FiniteDuration)(implicitt:scala.reflect.ClassTag[T]):T).
@@ -361,7 +361,7 @@ Here using `testActor` as sender (via @scaladoc[ImplicitSender](pekko.testkit.Im
 In the above code you can see `node(third)`, which is useful facility to get the root actor reference of
 the actor system for a specific role. This can also be used to grab the @scaladoc[actor.Address](pekko.actor.Address) of that node.
 
-@@snip [StatsSampleSpec.scala](/akka-cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #addresses }
+@@snip [StatsSampleSpec.scala](/cluster-metrics/src/multi-jvm/scala/org/apache/pekko/cluster/metrics/sample/StatsSampleSpec.scala) { #addresses }
 
 @@@
 

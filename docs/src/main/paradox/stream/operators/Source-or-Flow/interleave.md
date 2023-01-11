@@ -17,7 +17,7 @@ source completes the rest of the other stream will be emitted.
 
 ## Example
 Scala
-:   @@snip [FlowInterleaveSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveSpec.scala) { #interleave }
+:   @@snip [FlowInterleaveSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/FlowInterleaveSpec.scala) { #interleave }
 
 Java
 :   @@snip [SourceOrFlow.java](/docs/src/test/java/jdocs/stream/operators/SourceOrFlow.java) { #interleave }

@@ -20,7 +20,7 @@ if more element are emitted the sink will cancel the stream
 Given a stream of numbers we can collect the numbers into a collection with the `seq` operator
 
 Scala
-:   @@snip [SinkSpec.scala](/akka-stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #seq-operator-example }
+:   @@snip [SinkSpec.scala](/stream-tests/src/test/scala/org/apache/pekko/stream/scaladsl/SinkSpec.scala) { #seq-operator-example }
 
 Java
 :   @@snip [SinkDocExamples.java](/docs/src/test/java/jdocs/stream/operators/SinkDocExamples.java) { #seq-operator-example }
