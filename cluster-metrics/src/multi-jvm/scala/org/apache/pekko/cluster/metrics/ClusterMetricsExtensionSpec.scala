@@ -41,13 +41,13 @@ trait ClusterMetricsCommonConfig extends MultiNodeConfig {
     }
   }
 
-  // Enable metrics extension in akka-cluster-metrics.
+  // Enable metrics extension in pekko-cluster-metrics.
   def enableMetricsExtension = parseString("""
     pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
     pekko.cluster.metrics.collector.enabled = on
     """)
 
-  // Disable metrics extension in akka-cluster-metrics.
+  // Disable metrics extension in pekko-cluster-metrics.
   def disableMetricsExtension = parseString("""
     pekko.extensions=["org.apache.pekko.cluster.metrics.ClusterMetricsExtension"]
     pekko.cluster.metrics.collector.enabled = off
