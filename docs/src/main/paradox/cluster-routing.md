@@ -36,7 +36,7 @@ To use Cluster aware routers, you must add the following dependency in your proj
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-cluster_$scala.binary.version$"
+  artifact="pekko-cluster_$scala.binary.version$"
   version=PekkoVersion
 }
 

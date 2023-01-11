@@ -18,7 +18,7 @@ bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersio
 symbol1=PekkoVersion
 value1="$pekko.version$"
 group="org.apache.pekko"
-artifact="akka-stream-typed_$scala.binary.version$"
+artifact="pekko-stream-typed_$scala.binary.version$"
 version=PekkoVersion
 }
 

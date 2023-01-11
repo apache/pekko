@@ -12,7 +12,7 @@ Dispatchers are part of core Pekko, which means that they are part of the pekko-
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 

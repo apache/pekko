@@ -15,7 +15,7 @@ via the SLF4J backend, such as Logback configuration.
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor-typed_$scala.binary.version$"
+  artifact="pekko-actor-typed_$scala.binary.version$"
   version=PekkoVersion
 }
 

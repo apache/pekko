@@ -11,7 +11,7 @@ Emit each integer in a range, with an option to take bigger steps than 1.
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 

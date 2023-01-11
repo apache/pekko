@@ -12,7 +12,7 @@ To use Routing, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 

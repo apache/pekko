@@ -9,10 +9,10 @@ This documentation page touches upon @ref[Pekko Persistence](persistence.md), so
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence_$scala.binary.version$"
+  artifact="pekko-persistence_$scala.binary.version$"
   version=PekkoVersion
   group2="org.apache.pekko"
-  artifact2="akka-persistence-testkit_$scala.binary.version$"
+  artifact2="pekko-persistence-testkit_$scala.binary.version$"
   version2=PekkoVersion
   scope2=test
 }

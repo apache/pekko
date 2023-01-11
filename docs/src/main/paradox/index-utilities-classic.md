@@ -9,10 +9,10 @@ To use Utilities, you must add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
   group2="org.apache.pekko"
-  artifact2="akka-testkit_$scala.binary.version$"
+  artifact2="pekko-testkit_$scala.binary.version$"
   scope2=test
   version2=PekkoVersion
 }

@@ -12,7 +12,7 @@ This operator is included in:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream-typed_$scala.binary.version$"
+  artifact="pekko-stream-typed_$scala.binary.version$"
   version=PekkoVersion
 }
 

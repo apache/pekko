@@ -9,7 +9,7 @@ To use Pekko Streams, add the module to your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 

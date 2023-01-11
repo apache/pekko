@@ -12,7 +12,7 @@ To use Jackson Serialization, you must add the following dependency in your proj
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-serialization-jackson_$scala.binary.version$"
+  artifact="pekko-serialization-jackson_$scala.binary.version$"
   version=PekkoVersion
 }
 

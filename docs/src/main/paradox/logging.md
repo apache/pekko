@@ -352,7 +352,7 @@ It has a single dependency: the slf4j-api jar. In your runtime, you also need a 
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-slf4j_$scala.binary.version$"
+  artifact="pekko-slf4j_$scala.binary.version$"
   version=PekkoVersion
   group2="ch.qos.logback"
   artifact2="logback-classic"

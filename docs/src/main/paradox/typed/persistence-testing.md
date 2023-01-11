@@ -67,7 +67,7 @@ To use the testkit you need to add the following dependency in your project:
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence-testkit_$scala.binary.version$"
+  artifact="pekko-persistence-testkit_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -204,7 +204,7 @@ the plugins at the same time. To coordinate initialization you can use the `Pers
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence-testkit_$scala.binary.version$"
+  artifact="pekko-persistence-testkit_$scala.binary.version$"
   version=PekkoVersion
 }
 
