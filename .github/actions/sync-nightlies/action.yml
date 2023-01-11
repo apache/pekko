@@ -46,10 +46,6 @@ inputs:
   remote_key:
     description: 'The remote key'
     required: true
-#  remote_host_key:
-#    description: 'The host key for StrictHostKeyChecking'
-#
-#    required: true
 
 runs:
   using: "composite"
@@ -64,7 +60,6 @@ runs:
         PORT: "${{ inputs.remote_port }}"
         USER: "${{ inputs.remote_user }}"
         HOST: "${{ inputs.remote_host }}"
-#        HOST_KEY: "${{ inputs.remote_host_key }}"
         REMOTE_PATH: "${{ inputs.remote_path }}"
       run: |
         # Make SSH key available and add remote to known hosts
