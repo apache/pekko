@@ -25,7 +25,7 @@ on:
       keep:
         description: Number of versions to keep.
         required: false
-        default: 60
+        default: 30
   schedule:
     - cron: "0 0 * * *"
   push: # fixme
@@ -82,14 +82,15 @@ jobs:
           done
 
       - shell: bash
-        name: Copy snapshot from local ivy repository
+        name: Copy snapshots from local m2 repository
         run: |
           mkdir -p repo/org/apache/pekko/
           cp -R $HOME/.m2/repository/org/apache/pekko/ repo/org/apache/pekko
+
       - name: Prune repository
         shell: bash
         env:
-          KEEP: 60 # ${{ github.event.inputs.keep }}
+          KEEP: ${{ github.event.inputs.keep || 30 }}
         run: |
           for i in `ls -t repo/org/apache/pekko/`; do
             find repo/org/apache/pekko/$i -mindepth 1 -maxdepth 1 -type d -print0 \
@@ -97,14 +98,16 @@ jobs:
             | tail -n +$((KEEP + 1)) \
             | xargs rm -rf
           done
+
       - name: Show repo contents
         run: tree repo
+
       - name: Sync to Remote
         if: ${{ github.repository == 'apache/incubator-pekko' }}
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
-          switches: -avzh --omit-dir-times --update --delete --progress -vv
+          switches: -avzh --omit-dir-times --update --delete --progress
           local_path: repo
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/snapshots
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
