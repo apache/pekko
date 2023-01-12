@@ -35,9 +35,6 @@ on:
 permissions:
   contents: read
 
-env:
-  GROUP_ID: 'org.apache.pekko'
-
 jobs:
   publish-nightly:
     name: Publish nightly
@@ -59,7 +56,7 @@ jobs:
           sudo apt-get install graphviz
           # disable mima check until first pekko release is done
           # sbt +mimaReportBinaryIssues
-          sbt +publishLocal
+          sbt +publishM2
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -78,8 +75,8 @@ jobs:
       - shell: bash
         name: Show local repo sync from remote
         run: |
-          for i in `ls -t repo/$GROUP_ID/`; do
-            echo "- $i: $(find repo/$GROUP_ID/$i -mindepth 1 -maxdepth 1 -type d \
+          for i in `ls -t repo/org/apache/pekko/`; do
+            echo "- $i: $(find repo/org/apache/pekko/$i -mindepth 1 -maxdepth 1 -type d \
             | wc -l \
             | xargs) versions available"
           done
@@ -87,14 +84,15 @@ jobs:
       - shell: bash
         name: Copy snapshot from local ivy repository
         run: |
-          cp -R $HOME/.ivy2/local/$GROUP_ID/ repo
+          mkdir -p repo/org/apache/pekko/
+          cp -R $HOME/.m2/repository/org/apache/pekko/ repo/org/apache/pekko
       - name: Prune repository
         shell: bash
         env:
           KEEP: 60 # ${{ github.event.inputs.keep }}
         run: |
-          for i in `ls -t repo/$GROUP_ID`; do
-            find repo/$GROUP_ID/$i -mindepth 1 -maxdepth 1 -type d -print0 \
+          for i in `ls -t repo/org/apache/pekko/`; do
+            find repo/org/apache/pekko/$i -mindepth 1 -maxdepth 1 -type d -print0 \
             | xargs -0 ls -t -d \
             | tail -n +$((KEEP + 1)) \
             | xargs rm -rf
