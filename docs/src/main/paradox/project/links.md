@@ -32,11 +32,11 @@ All Akka releases are published via Sonatype to Maven Central, see
 
 ## Snapshots Repository
 
-Snapshot builds are available at [https://oss.sonatype.org/content/repositories/snapshots/com/typesafe/akka/](https://oss.sonatype.org/content/repositories/snapshots/com/typesafe/akka/). All Akka modules that belong to the same build have the same version.
+Snapshot builds are published nightly and are available for 30 days at [https://nightlies.apache.org/pekko/snapshots/org/apache/pekko/](https://nightlies.apache.org/pekko/snapshots/org/apache/pekko/). All Apache Pekko modules that belong to the same build have the same version.
 
 @@@ warning
 
-The use of Akka SNAPSHOTs, nightlies and milestone releases is discouraged unless you know what you are doing.
+The use of Apache Pekko SNAPSHOTs, nightlies and milestone releases is discouraged unless you know what you are doing.
 
 @@@
 
@@ -45,7 +45,7 @@ The use of Akka SNAPSHOTs, nightlies and milestone releases is discouraged unles
 Make sure that you add the repository to the sbt resolvers:
 
 ```
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+resolvers ++= "Apache Pekko Snapshots" at "https://nightlies.apache.org/pekko/snapshots"
 ```
 
 Define the library dependencies with the complete version. For example:
@@ -63,8 +63,8 @@ Make sure that you add the repository to the Maven repositories in pom.xml:
 ```
 <repositories>
   <repository>
-    <id>oss-sonatype</id>
-    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <id>apache-pekko-snapshots</id>
+    <url>https://nightlies.apache.org/pekko/snapshots</url>
     <layout>default</layout>
     <snapshots>
       <enabled>true</enabled>

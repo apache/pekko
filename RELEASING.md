@@ -51,8 +51,6 @@ scaladoc generation build task, which is part of the release.
 ## Snapshot releases
 
 To create snapshot versions manually, use `sbt clean publishLocal`.
-If you have access, you can use `+publishSigned` to publish them to
-sonatype.
 
 ## Releasing only updated docs
 
