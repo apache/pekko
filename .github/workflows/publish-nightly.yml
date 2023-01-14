@@ -85,7 +85,7 @@ jobs:
         name: Copy snapshots from local m2 repository
         run: |
           mkdir -p repo/org/apache/pekko/
-          cp -R $HOME/.m2/repository/org/apache/pekko/ repo/org/apache/pekko
+          cp -R $HOME/.m2/repository/org/apache/pekko/ repo/org/apache
 
       - name: Prune repository
         shell: bash
