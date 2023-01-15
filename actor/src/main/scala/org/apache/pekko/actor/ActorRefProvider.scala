@@ -285,7 +285,7 @@ trait ActorRefFactory {
 }
 
 /**
- * Internal Akka use only, used in implementation of system.stop(child).
+ * Internal Pekko use only, used in implementation of system.stop(child).
  */
 private[pekko] final case class StopChild(child: ActorRef)
 

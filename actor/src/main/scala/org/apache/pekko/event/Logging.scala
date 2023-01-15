@@ -105,7 +105,7 @@ trait LoggingBus extends ActorEventBus {
   }
 
   /**
-   * Internal Akka use only
+   * Internal Pekko use only
    */
   private[pekko] def startStdoutLogger(config: Settings): Unit = {
     setUpStdoutLogger(config)
@@ -113,7 +113,7 @@ trait LoggingBus extends ActorEventBus {
   }
 
   /**
-   * Internal Akka use only
+   * Internal Pekko use only
    */
   private[pekko] def startDefaultLoggers(system: ActorSystemImpl): Unit = {
     val logName = simpleName(this) + "(" + system + ")"
@@ -178,7 +178,7 @@ trait LoggingBus extends ActorEventBus {
   }
 
   /**
-   * Internal Akka use only
+   * Internal Pekko use only
    */
   private[pekko] def stopDefaultLoggers(system: ActorSystem): Unit = {
     @nowarn("msg=never used")
@@ -503,7 +503,7 @@ object Logging {
   final val DebugLevel = LogLevel(4)
 
   /**
-   * INTERNAL API: Internal Akka use only
+   * INTERNAL API: Internal Pekko use only
    *
    * Don't include the OffLevel in the AllLogLevels since we should never subscribe
    * to some kind of OffEvent.
