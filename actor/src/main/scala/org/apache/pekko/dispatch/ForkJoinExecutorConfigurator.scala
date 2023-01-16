@@ -20,7 +20,7 @@ import com.typesafe.config.Config
 object ForkJoinExecutorConfigurator {
 
   /**
-   * INTERNAL AKKA USAGE ONLY
+   * INTERNAL PEKKO USAGE ONLY
    */
   final class PekkoForkJoinPool(
       parallelism: Int,
@@ -46,7 +46,7 @@ object ForkJoinExecutorConfigurator {
   }
 
   /**
-   * INTERNAL AKKA USAGE ONLY
+   * INTERNAL PEKKO USAGE ONLY
    */
   @SerialVersionUID(1L)
   final class PekkoForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
