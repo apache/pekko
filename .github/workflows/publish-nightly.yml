@@ -28,9 +28,6 @@ on:
         default: 30
   schedule:
     - cron: "0 0 * * *"
-  push:
-    branches:
-      - 'main'
 
 permissions:
   contents: read
