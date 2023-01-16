@@ -48,6 +48,12 @@ jobs:
         with:
           java-version: adopt@1.11
 
+      - name: Publish to Apache Maven repo
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PW: ${{ secrets.NEXUS_PW }}
+        run: sbt +publish
+
       - name: Publish local
         run: |-
           sudo apt-get install graphviz
