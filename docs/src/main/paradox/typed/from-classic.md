@@ -1,21 +1,19 @@
-# Learning Akka Typed from Classic
+# Learning Pekko Typed from Classic
 
-Akka Classic is the original Actor APIs, which have been improved by more type safe and guided Actor APIs,
-known as Akka Typed.
+Pekko Classic is the original Actor APIs, which have been improved by more type safe and guided Actor APIs,
+known as Pekko Typed.
 
-If you already know the classic Actor APIs and would like to learn Akka Typed, this reference is a good resource.
+If you already know the classic Actor APIs and would like to learn Pekko Typed, this reference is a good resource.
 Many concepts are the same and this page tries to highlight differences and how to do certain things
 in Typed compared to classic.
 
-You should probably learn some of the basics of Akka Typed to see how it looks like before diving into
+You should probably learn some of the basics of Pekko Typed to see how it looks like before diving into
 the differences and details described here. A good starting point for that is the
 @ref:[IoT example](guide/tutorial_3.md) in the Getting Started Guide or the examples shown in
 @ref:[Introduction to Actors](actors.md).
 
-Another good resource to learning Akka Typed is Manuel Bernhardt's [Tour of Akka Typed](https://manuel.bernhardt.io/articles/#akka-typed).
-
-Note that Akka Classic is still fully supported and existing applications can continue to use
-the classic APIs. It is also possible to use Akka Typed together with classic actors within the same
+Note that Pekko Classic is still fully supported and existing applications can continue to use
+the classic APIs. It is also possible to use Pekko Typed together with classic actors within the same
 ActorSystem, see @ref[coexistence](coexisting.md). For new projects we recommend using the new Actor APIs.
 
 ## Dependencies
@@ -23,10 +21,10 @@ ActorSystem, see @ref[coexistence](coexisting.md). For new projects we recommend
 The dependencies of the Typed modules are named by adding `-typed` suffix of the corresponding classic
 module, with a few exceptions.
 
-For example `akka-cluster-typed`:
+For example `pekko-cluster-typed`:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -36,26 +34,26 @@ For example `akka-cluster-typed`:
 
 Artifact names:
 
-| Classic               | Typed                       |
-|-----------------------|-----------------------------|
-| akka-actor            | akka-actor-typed            |
-| akka-cluster          | akka-cluster-typed          |
-| akka-cluster-sharding | akka-cluster-sharding-typed |
-| akka-cluster-tools    | akka-cluster-typed          |
-| akka-distributed-data | akka-cluster-typed          |
-| akka-persistence      | akka-persistence-typed      |
-| akka-stream           | akka-stream-typed           |
-| akka-testkit          | akka-actor-testkit-typed    |
+| Classic                | Typed                        |
+|------------------------|------------------------------|
+| pekko-actor            | pekko-actor-typed            |
+| pekko-cluster          | pekko-cluster-typed          |
+| pekko-cluster-sharding | pekko-cluster-sharding-typed |
+| pekko-cluster-tools    | pekko-cluster-typed          |
+| pekko-distributed-data | pekko-cluster-typed          |
+| pekko-persistence      | pekko-persistence-typed      |
+| pekko-stream           | pekko-stream-typed           |
+| pekko-testkit          | akka-actor-testkit-typed     |
 
 Cluster Singleton and Distributed Data are included in `akka-cluster-typed`.
 
-Artifacts not listed in above table don't have a specific API for Akka Typed.
+Artifacts not listed in above table don't have a specific API for Pekko Typed.
 
 ## Package names
 
-The convention of the package names in Akka Typed is to add `typed.scaladsl` and `typed.javadsl` to the
-corresponding Akka classic package name. `scaladsl` and `javadsl` is the convention to separate Scala and Java
-APIs, which is familiar from Akka Streams.
+The convention of the package names in Pekko Typed is to add `typed.scaladsl` and `typed.javadsl` to the
+corresponding Pekko classic package name. `scaladsl` and `javadsl` is the convention to separate Scala and Java
+APIs, which is familiar from Pekko Streams.
 
 Examples of a few package names:
 
@@ -154,7 +152,7 @@ when creating an `ActorSystem` in Typed you give it a `Behavior` that will be us
 as the user guardian.
 
 Additional actors for an application are created from the user guardian alongside performing the initialization
-of Akka components such as Cluster Sharding. In contrast, in a classic `ActorSystem`, such initialization is
+of Pekko components such as Cluster Sharding. In contrast, in a classic `ActorSystem`, such initialization is
 typically performed from the "outside".
 
 The `actorOf` method of the classic `ActorSystem` is typically used to create a few (or many) top level actors. The
@@ -364,7 +362,7 @@ Links to reference documentation:
 ## FSM
 
 With classic actors there is explicit support for building Finite State Machines. No support is needed in
-Akka Typed as it is straightforward to represent FSMs with behaviors.
+Pekko Typed as it is straightforward to represent FSMs with behaviors.
 
 Links to reference documentation:
 

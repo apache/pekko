@@ -1,6 +1,6 @@
 # Fault Tolerance
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Fault Tolerance](../fault-tolerance.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Fault Tolerance](../fault-tolerance.md).
 
 When an actor throws an unexpected exception, a failure, while processing a message or during initialization, the actor
 will by default be stopped.
@@ -28,7 +28,7 @@ with a fresh state that we know is valid.
 
 ## Supervision
 
-In Akka this "somewhere else" is called supervision. Supervision allows you to declaratively describe what should happen when certain types of exceptions are thrown inside an actor. 
+In Pekko this "somewhere else" is called supervision. Supervision allows you to declaratively describe what should happen when certain types of exceptions are thrown inside an actor. 
 
 The default @ref:[supervision](../general/supervision.md) strategy is to stop the actor if an exception is thrown. 
 In many cases you will want to further customize this behavior. To use supervision the actual Actor behavior is wrapped using @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"}. 
@@ -149,7 +149,7 @@ to cleanup resources.
 ## Bubble failures up through the hierarchy
 
 In some scenarios it may be useful to push the decision about what to do on a failure upwards in the Actor hierarchy
- and let the parent actor handle what should happen on failures (in classic Akka Actors this is how it works by default).
+ and let the parent actor handle what should happen on failures (in classic Pekko Actors this is how it works by default).
 
 For a parent to be notified when a child is terminated it has to @ref:[watch](actor-lifecycle.md#watching-actors) the
 child. If the child was stopped because of a failure the @apidoc[ChildFailed] signal will be received which will contain the

@@ -1,18 +1,18 @@
-# Extending Akka
+# Extending Pekko
 
-Akka extensions can be used for almost anything, they provide a way to create
+Pekko extensions can be used for almost anything, they provide a way to create
 an instance of a class only once for the whole ActorSystem and be able to access
-it from anywhere. Akka features such as Cluster, Serialization and Sharding are all
-Akka extensions. Below is the use-case of managing an expensive database connection 
+it from anywhere. Pekko features such as Cluster, Serialization and Sharding are all
+Pekko extensions. Below is the use-case of managing an expensive database connection 
 pool and accessing it from various places in your application.
 
 You can choose to have your Extension loaded on-demand or at `ActorSystem` creation 
-time through the Akka configuration.
+time through the Pekko configuration.
 Details on how to make that happens are below, in the @ref:[Loading from Configuration](extending.md#loading) section.
 
 @@@ warning
 
-Since an extension is a way to hook into Akka itself, the implementor of the extension needs to
+Since an extension is a way to hook into Pekko itself, the implementor of the extension needs to
 ensure the thread safety and that it is non-blocking.
 
 @@@
@@ -59,7 +59,7 @@ The `DatabaseConnectionPool` can be looked up in this way any number of times an
 <a id="loading"></a>
 ## Loading from configuration
 
-To be able to load extensions from your Akka configuration you must add FQCNs of implementations of the `ExtensionId`
+To be able to load extensions from your Pekko configuration you must add FQCNs of implementations of the `ExtensionId`
 in the `pekko.actor.typed.extensions` section of the config you provide to your `ActorSystem`.
 
 Scala

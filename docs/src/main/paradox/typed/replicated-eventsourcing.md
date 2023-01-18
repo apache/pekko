@@ -29,9 +29,6 @@ to handle this.
 
 To be able to use Replicated Event Sourcing the journal and snapshot store used is required to have specific support for the metadata that the replication needs (see @ref[Journal Support](#journal-support)).
 
-The [Replicated Event Sourcing video](https://akka.io/blog/news/2020/09/09/replicated-event-sourcing-video)
-is a good starting point describing the use cases and motivation for when to use Replicated Event Sourcing. The second part, [Replicated Event Sourcing data modelling](https://akka.io/blog/news/2020/10/22/replicated-event-sourcing-data-modelling) guides you to find a suitable model for your use-case.
-
 ## Relaxing the single-writer principle for availability
 
 Taking the example of using Replicated Event Sourcing to run a replica per data center.
@@ -81,7 +78,7 @@ The factory takes in:
 * `allReplicasAndQueryPlugins`: All Replicas and the query plugin used to read their events
 * A factory function to create an instance of the @scala[`EventSourcedBehavior`]@java[`ReplicatedEventSourcedBehavior`] 
 
-In this scenario each replica reads from each other's database effectively providing cross region replication for any database that has an Akka Persistence plugin. Alternatively if all the replicas use the same journal, e.g. for testing or if it is a distributed database such as Cassandra, the `withSharedJournal` factory can be used. 
+In this scenario each replica reads from each other's database effectively providing cross region replication for any database that has an Pekko Persistence plugin. Alternatively if all the replicas use the same journal, e.g. for testing or if it is a distributed database such as Cassandra, the `withSharedJournal` factory can be used. 
 
 Scala
 :  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory-shared}
@@ -135,7 +132,7 @@ One well-understood technique to create eventually-consistent systems is to
 model your state as a Conflict Free Replicated Data Type, a CRDT. There are two types of CRDTs;
 operation-based and state-based. For Replicated Event Sourcing the operation-based is a good fit,
 since the events represent the operations. Note that this is distinct from the CRDT's implemented
-in @ref:[Akka Distributed Data](distributed-data.md), which are state-based rather than operation-based.
+in @ref:[Pekko Distributed Data](distributed-data.md), which are state-based rather than operation-based.
 
 The rule for operation-based CRDT's is that the operations must be commutative — in other words, applying the same events
 (which represent the operations) in any order should always produce the same final state. You may assume each event
@@ -147,8 +144,8 @@ The following CRDTs are included that can you can use as the state or part of th
 * @apidoc[Counter]
 * @apidoc[persistence.typed.crdt.ORSet]
 
-Akka serializers are included for all these types and can be used to serialize when 
-@ref[embedded in Jackson](../serialization-jackson.md#using-akka-serialization-for-embedded-types).
+Pekko serializers are included for all these types and can be used to serialize when 
+@ref[embedded in Jackson](../serialization-jackson.md#using-pekko-serialization-for-embedded-types).
 
 An example would be a movies watch list that is represented by the general purpose 
 @apidoc[persistence.typed.crdt.ORSet] CRDT. `ORSet` is short for Observed Remove Set. Elements can be added and
@@ -202,18 +199,18 @@ not eventually converge.
 An example of that would be an entity representing a blog post and the fields `author` and `title` could be updated
 separately with events @scala[`AuthorChanged(newAuthor: String)`]@java[`new AuthorChanged(newAuthor)`] and @scala[`TitleChanged(newTitle: String)`]@java[`new TitleChanged(newTitle)`].
 
-Let's say the blog post is created and the initial state of `title=Akka, author=unknown` is in sync in both replicas `DC-A` and `DC-B.
+Let's say the blog post is created and the initial state of `title=Pekko, author=unknown` is in sync in both replicas `DC-A` and `DC-B.
 
 In `DC-A` author is changed to "Bob" at time `100`. Before that event has been replicated over to `DC-B` the
-title is updated to "Akka News" at time `101` in `DC-B`. When the events have been replicated the result will be:
+title is updated to "Pekko News" at time `101` in `DC-B`. When the events have been replicated the result will be:
 
-`DC-A`: The title update is later so the event is used and new state is `title=Akka News, author=Bob`
+`DC-A`: The title update is later so the event is used and new state is `title=Pekko News, author=Bob`
 
-`DC-B`: The author update is earlier so the event is discarded and state is `title=Akka News, author=unknown`
+`DC-B`: The author update is earlier so the event is discarded and state is `title=Pekko News, author=unknown`
 
 The problem here is that the partial update of the state is not applied on both sides, so the states have diverged and will not become the same.
 
-To solve this with last writer wins the events must carry the full state, such as @scala[`AuthorChanged(newContent: PostContent)`]@java[`new AuthorChanged(newContent)`] and @scala[`TitleChanged(newContent: PostContent)`]@java[`new TitleChanged(newContent)`]. Then the result would eventually be `title=Akka News, author=unknown` on both sides.
+To solve this with last writer wins the events must carry the full state, such as @scala[`AuthorChanged(newContent: PostContent)`]@java[`new AuthorChanged(newContent)`] and @scala[`TitleChanged(newContent: PostContent)`]@java[`new TitleChanged(newContent)`]. Then the result would eventually be `title=Pekko News, author=unknown` on both sides.
 The author update is lost but that is because the changes were performed concurrently. More important is that the state
 is eventually consistent.
 
@@ -302,7 +299,7 @@ There are three ways to integrate replicated event sourced entities with shardin
 
 
 To simplify all three cases the @apidoc[ReplicatedShardingExtension] is available from the
-`akka-cluster-sharding-typed` module.
+`pekko-cluster-sharding-typed` module.
 
 Scala
 :  @@snip [ReplicatedShardingSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap }
@@ -321,7 +318,7 @@ Scala
 Java
 :  @@snip [ReplicatedShardingTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #bootstrap-role }
 
-Lastly if your Akka Cluster is setup across DCs you can run a replica per DC.
+Lastly if your Pekko Cluster is setup across DCs you can run a replica per DC.
 
 Scala
 :  @@snip [ReplicatedShardingSpec.scala](/cluster-sharding-typed/src/test/scala/docs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.scala) { #bootstrap-dc }
@@ -339,7 +336,7 @@ Scala
 Java
 :  @@snip [ReplicatedShardingTest.java](/cluster-sharding-typed/src/test/java/jdocs/org/apache/pekko/cluster/sharding/typed/ReplicatedShardingCompileOnlySpec.java) { #sending-messages }
 
-More advanced routing among the replicas is currently left as an exercise for the reader (or may be covered in a future release [#29281](https://github.com/akka/akka/issues/29281), [#29319](https://github.com/akka/akka/issues/29319)).
+More advanced routing among the replicas is currently left as an exercise for the reader.
 
 ## Tagging events and running projections
 
@@ -349,7 +346,7 @@ be used for replicated event sourced behaviors as well.
 Tagging is useful in practice to build queries that lead to other data representations or aggregations of these event 
 streams that can more directly serve user queries – known as building the “read side” in @ref[CQRS](cqrs.md) based applications.
 
-Creating read side projections is possible through [Akka Projection](https://doc.akka.io/docs/akka-projection/current/)
+Creating read side projections is possible through [Pekko Projection](https://doc.akka.io/docs/akka-projection/current/)
 or through direct usage of the @ref[events by tag queries](../persistence-query.md#eventsbytag-and-currenteventsbytag).  
 
 The tagging is invoked in each replicas, which requires some special care in using tags, or else the same event will be
@@ -381,7 +378,7 @@ with a single stream of tagged events from all replicas without duplicates.
 ## Direct Replication of Events
 
 Each replica will read the events from all the other copies from the database. When used with Cluster Sharding, and to make the sharing
-of events with other replicas more efficient, each replica publishes the events across the Akka cluster directly to other replicas.
+of events with other replicas more efficient, each replica publishes the events across the Pekko cluster directly to other replicas.
 The delivery of events across the cluster is not guaranteed so the query to the journal is still needed but can be configured to 
 poll the database less often since most events will arrive at the replicas through the cluster.
 
@@ -415,6 +412,6 @@ The @apidoc[SnapshotStoreSpec] in the Persistence TCK provides a capability flag
 
 The following plugins support Replicated Event Sourcing:
 
-* [Akka Persistence Cassandra](https://doc.akka.io/docs/akka-persistence-cassandra/current/index.html) versions 1.0.3+
-* [Akka Persistence Spanner](https://doc.akka.io/docs/akka-persistence-spanner/current/overview.html) versions 1.0.0-RC4+
-* [Akka Persistence JDBC](https://doc.akka.io/docs/akka-persistence-jdbc/current) versions 5.0.0+
+* [Pekko Persistence Cassandra](https://doc.akka.io/docs/akka-persistence-cassandra/current/index.html) versions 1.0.3+
+* [Pekko Persistence Spanner](https://doc.akka.io/docs/akka-persistence-spanner/current/overview.html) versions 1.0.0-RC4+
+* [Pekko Persistence JDBC](https://doc.akka.io/docs/akka-persistence-jdbc/current) versions 5.0.0+

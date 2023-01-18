@@ -48,12 +48,12 @@ import scala.annotation.nowarn
  *
  * Use this program as a standalone Java main program:
  * {{{
- * java -classpath <jar files, including akka-cluster-sharding>
+ * java -classpath <jar files, including pekko-cluster-sharding>
  *   org.apache.pekko.cluster.sharding.RemoveInternalClusterShardingData
  *     -2.3 entityType1 entityType2 entityType3
  * }}}
  *
- * The program is included in the `akka-cluster-sharding` jar file. It
+ * The program is included in the `pekko-cluster-sharding` jar file. It
  * is easiest to run it with same classpath and configuration as your ordinary
  * application. It can be run from sbt or maven in similar way.
  *

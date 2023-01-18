@@ -2,20 +2,20 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction
 
-While the processing vocabulary of Akka Streams is quite rich (see the @ref:[Streams Cookbook](stream-cookbook.md) for examples) it
+While the processing vocabulary of Pekko Streams is quite rich (see the @ref:[Streams Cookbook](stream-cookbook.md) for examples) it
 is sometimes necessary to define new transformation operators either because some functionality is missing from the
 stock operations, or for performance reasons. In this part we show how to build custom operators and graph
 junctions of various kinds.
@@ -37,7 +37,7 @@ operators by composing others. Where `GraphStage` differs is that it creates an 
 smaller ones, and allows state to be maintained inside it in a safe way.
 
 As a first motivating example, we will build a new @apidoc[stream.*.Source] that will emit numbers from 1 until it is
-cancelled. To start, we need to define the "interface" of our operator, which is called *shape* in Akka Streams terminology
+cancelled. To start, we need to define the "interface" of our operator, which is called *shape* in Pekko Streams terminology
 (this is explained in more detail in the section @ref:[Modularity, Composition and Hierarchy](stream-composition.md)). This is how it looks:
 
 Scala

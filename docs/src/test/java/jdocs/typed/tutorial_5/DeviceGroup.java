@@ -106,7 +106,7 @@ public class DeviceGroup extends AbstractBehavior<DeviceGroup.Command> {
     // modifying the same mutable data-structure is not safe), and perform a defensive copy of the
     // mutable map:
     //
-    // Feel free to use your favourite immutable data-structures library with Akka in Java
+    // Feel free to use your favourite immutable data-structures library with Pekko in Java
     // applications!
     Map<String, ActorRef<Device.Command>> deviceIdToActorCopy = new HashMap<>(this.deviceIdToActor);
 

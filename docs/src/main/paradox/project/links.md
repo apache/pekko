@@ -1,42 +1,21 @@
 # Project
 
-## Commercial Support
-
-Commercial support is provided by [Lightbend](https://www.lightbend.com).
-Akka is part of the [Akka Platform](https://www.lightbend.com/akka-platform).
-
-## Sponsors
-
-**Lightbend** is the company behind the Akka Project, Scala Programming Language,
-Play Web Framework, Lagom, sbt and many other open source projects. 
-It also provides the Lightbend Reactive Platform, which is powered by an open source core and commercial Enterprise Suite for building scalable Reactive systems on the JVM. Learn more at [lightbend.com](https://www.lightbend.com).
-
-## Akka Discuss Forums
-
-[Akka Discuss Forums](https://discuss.pekko.io)
-
-## Gitter
-
-Chat room about *using* Akka: [![gitter: akka/akka](https://img.shields.io/badge/gitter%3A-akka%2Fakka-blue.svg?style=flat-square)](https://gitter.im/akka/akka)
-
-A chat room is available for all questions related to developing and contributing to Akka: [![gitter: akka/dev](https://img.shields.io/badge/gitter%3A-akka%2Fdev-blue.svg?style=flat-square)](https://gitter.im/akka/dev)
-
 ## Source Code
 
-Akka uses Git and is hosted at [Github akka/akka](https://github.com/akka/akka).
+Pekko uses Git and is hosted at [Github apache/pekko](https://github.com/apache/incubator-pekko).
 
 ## Releases Repository
 
-All Akka releases are published via Sonatype to Maven Central, see
+All Pekko releases are published via Sonatype to Maven Central, see
 [search.maven.org](https://search.maven.org/search?q=g:org.apache.pekko)
 
 ## Snapshots Repository
 
-Snapshot builds are published nightly and are available for 30 days at [https://nightlies.apache.org/pekko/snapshots/org/apache/pekko/](https://nightlies.apache.org/pekko/snapshots/org/apache/pekko/). All Apache Pekko modules that belong to the same build have the same version.
+Snapshot builds are available at [https://oss.sonatype.org/content/repositories/snapshots/org/apache/pekko/](https://oss.sonatype.org/content/repositories/snapshots/org/apache/pekko/). All Pekko modules that belong to the same build have the same version.
 
 @@@ warning
 
-The use of Apache Pekko SNAPSHOTs, nightlies and milestone releases is discouraged unless you know what you are doing.
+The use of Pekko SNAPSHOTs, nightlies and milestone releases is discouraged unless you know what you are doing.
 
 @@@
 

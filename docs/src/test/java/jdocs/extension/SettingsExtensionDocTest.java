@@ -90,7 +90,7 @@ public class SettingsExtensionDocTest extends AbstractJavaTest {
   public static class Connection {}
 
   @Test
-  public void demonstrateHowToCreateAndUseAnAkkaExtensionInJava() {
+  public void demonstrateHowToCreateAndUseAPekkoExtensionInJava() {
     final ActorSystem system = null;
     try {
       // #extension-usage

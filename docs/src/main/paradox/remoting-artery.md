@@ -1,5 +1,5 @@
 ---
-project.description: Details about the underlying remoting module for Akka Cluster.
+project.description: Details about the underlying remoting module for Pekko Cluster.
 ---
 # Artery Remoting
 
@@ -8,9 +8,9 @@ project.description: Details about the underlying remoting module for Akka Clust
 Remoting is the mechanism by which Actors on different nodes talk to each
 other internally.
 
-When building an Akka application, you would usually not use the Remoting concepts
+When building an Pekko application, you would usually not use the Remoting concepts
 directly, but instead use the more high-level
-@ref[Akka Cluster](index-cluster.md) utilities or technology-agnostic protocols
+@ref[Pekko Cluster](index-cluster.md) utilities or technology-agnostic protocols
 such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
 [gRPC](https://doc.akka.io/docs/akka-grpc/current/) etc.
 
@@ -23,7 +23,7 @@ If migrating from classic remoting see @ref:[what's new in Artery](#what-is-new-
 To use Artery Remoting, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -45,7 +45,7 @@ The Aeron dependency needs to be explicitly added if using the `aeron-udp` trans
 
 ## Configuration
 
-To enable remote capabilities in your Akka project you should, at a minimum, add the following changes
+To enable remote capabilities in your Pekko project you should, at a minimum, add the following changes
 to your `application.conf` file:
 
 ```
@@ -66,7 +66,7 @@ pekko {
 
 As you can see in the example above there are four things you need to add to get started:
 
- * Change provider from `local`. We recommend using @ref:[Akka Cluster](cluster-usage.md) over using remoting directly.
+ * Change provider from `local`. We recommend using @ref:[Pekko Cluster](cluster-usage.md) over using remoting directly.
  * Enable Artery to use it as the remoting implementation
  * Add host name - the machine you want to run the actor system on; this host
 name is exactly what is passed to remote systems in order to identify this
@@ -88,7 +88,7 @@ All settings are described in @ref:[Remote Configuration](#remote-configuration-
 
 ## Introduction
 
-We recommend @ref:[Akka Cluster](cluster-usage.md) over using remoting directly. As remoting is the
+We recommend @ref:[Pekko Cluster](cluster-usage.md) over using remoting directly. As remoting is the
 underlying module that allows for Cluster, it is still useful to understand details about it though.
 
 @@@ note
@@ -119,8 +119,8 @@ acts as a "server" to which arbitrary systems on the same network can connect to
 There are three alternatives of which underlying transport to use. It is configured by property
 `pekko.remote.artery.transport` with the possible values:
 
-* `tcp` - Based on @ref:[Akka Streams TCP](stream/stream-io.md#streaming-tcp) (default if other not configured)
-* `tls-tcp` - Same as `tcp` with encryption using @ref:[Akka Streams TLS](stream/stream-io.md#tls)
+* `tcp` - Based on @ref:[Pekko Streams TCP](stream/stream-io.md#streaming-tcp) (default if other not configured)
+* `tls-tcp` - Same as `tcp` with encryption using @ref:[Pekko Streams TLS](stream/stream-io.md#tls)
 * `aeron-udp` - Based on [Aeron (UDP)](https://github.com/real-logic/aeron)
 
 If you are uncertain of what to select a good choice is to use the default, which is `tcp`.
@@ -129,7 +129,7 @@ The Aeron (UDP) transport is a high performance transport and should be used for
 that require high throughput and low latency. It uses more CPU than TCP when the system
 is idle or at low message rates. There is no encryption for Aeron.
 
-The TCP and TLS transport is implemented using Akka Streams TCP/TLS. This is the choice
+The TCP and TLS transport is implemented using Pekko Streams TCP/TLS. This is the choice
 when encryption is needed, but it can also be used with plain TCP without TLS. It's also
 the obvious choice when UDP can't be used.
 It has very good performance (high throughput and low latency) but latency at high throughput
@@ -145,10 +145,6 @@ officially supported. If you're on a Big Endian processor, such as Sparc, it is 
 @ref:[Rolling update](additional/rolling-updates.md) is not supported when changing from one transport to another.
 
 @@@
-
-## Migrating from classic remoting
-
-See @ref:[migrating from classic remoting](project/migration-guide-2.5.x-2.6.x.md#classic-to-artery)
 
 ## Canonical address
 
@@ -166,7 +162,7 @@ real network.
 
 In cases, where Network Address Translation (NAT) is used or other network bridging is involved, it is important
 to configure the system so that it understands that there is a difference between his externally visible, canonical
-address and between the host-port pair that is used to listen for connections. See @ref:[Akka behind NAT or in a Docker container](#remote-configuration-nat-artery)
+address and between the host-port pair that is used to listen for connections. See @ref:[Pekko behind NAT or in a Docker container](#remote-configuration-nat-artery)
 for details.
 
 ## Acquiring references to remote actors
@@ -193,25 +189,25 @@ In the next sections the two alternatives are described in detail.
 Scala
 :   ```
     val selection =
-      context.actorSelection("akka://actorSystemName@10.0.0.1:25520/user/actorName")
+      context.actorSelection("pekko://actorSystemName@10.0.0.1:25520/user/actorName")
     ```
     
 Java
 :   ```
     ActorSelection selection =
-      context.actorSelection("akka://actorSystemName@10.0.0.1:25520/user/actorName");
+      context.actorSelection("pekko://actorSystemName@10.0.0.1:25520/user/actorName");
     ```
     
 
 As you can see from the example above the following pattern is used to find an actor on a remote node:
 
 ```
-akka://<actor system>@<hostname>:<port>/<actor path>
+pekko://<actor system>@<hostname>:<port>/<actor path>
 ```
 
 @@@ note
 
-Unlike with earlier remoting, the protocol field is always *akka* as pluggable transports are no longer supported.
+Unlike with earlier remoting, the protocol field is always *pekko* as pluggable transports are no longer supported.
 
 @@@
 
@@ -257,22 +253,22 @@ be delivered just fine.
 
 ## Remote Security
 
-An @apidoc[actor.ActorSystem] should not be exposed via Akka Remote (Artery) over plain Aeron/UDP or TCP to an untrusted
+An @apidoc[actor.ActorSystem] should not be exposed via Pekko Remote (Artery) over plain Aeron/UDP or TCP to an untrusted
 network (e.g. Internet). It should be protected by network security, such as a firewall. If that is not considered
 as enough protection @ref:[TLS with mutual authentication](#remote-tls) should be enabled.
 
-Best practice is that Akka remoting nodes should only be accessible from the adjacent network. Note that if TLS is
+Best practice is that Pekko remoting nodes should only be accessible from the adjacent network. Note that if TLS is
 enabled with mutual authentication there is still a risk that an attacker can gain access to a valid certificate by
 compromising any node with certificates issued by the same internal PKI tree.
 
-By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Akka.
+By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Pekko.
 That is also security best-practice because of its multiple
 [known attack surfaces](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization).
 
 <a id="remote-tls"></a>
-### Configuring SSL/TLS for Akka Remoting
+### Configuring SSL/TLS for Pekko Remoting
 
-In addition to what is described here, read the blog post about [Securing Akka cluster communication in Kubernetes](https://akka.io/blog/article/2021/10/27/akka-cluster-mtls).
+In addition to what is described here, you can read the blog post addressing this aspect for Pekko [Securing Pekko cluster communication in Kubernetes](https://akka.io/blog/article/2021/10/27/akka-cluster-mtls).
 
 SSL can be used as the remote transport by using the `tls-tcp` transport:
 
@@ -315,11 +311,7 @@ According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recomme
 
 You should always check the latest information about security and algorithm recommendations though before you configure your system.
 
-Creating and working with keystores and certificates is well documented in the
-[Generating X.509 Certificates](https://lightbend.github.io/ssl-config/CertificateGeneration.html#using-keytool)
-section of Lightbend's SSL-Config library.
-
-Since an Akka remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
+Since an Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
 need to be configured on each remoting node participating in the cluster.
 
 The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
@@ -329,7 +321,7 @@ and configuring SSL.
 
 Mutual authentication between TLS peers is enabled by default. Mutual authentication means that the the passive side
 (the TLS server side) of a connection will also request and verify a certificate from the connecting peer.
-Without this mode only the client side is requesting and verifying certificates. While Akka is a peer-to-peer
+Without this mode only the client side is requesting and verifying certificates. While Pekko is a peer-to-peer
 technology, each connection between nodes starts out from one side (the "client") towards the other (the "server").
 
 Note that if TLS is enabled with mutual authentication there is still a risk that an attacker can gain access to a
@@ -353,7 +345,7 @@ You have a few choices how to set up certificates and hostname verification:
     * This means that only the hosts mentioned in the certificate can connect to the cluster.
     * It cannot be checked, though, if the node you talk to is actually the node it is supposed to be (or if it is one
       of the other nodes). This seems like a minor restriction as you'll have to trust all cluster nodes the same in an
-      Akka cluster anyway.
+      Pekko cluster anyway.
     * The certificate can be self-signed in which case the same single certificate is distributed and trusted on all
       nodes (but see the next bullet)
     * Adding a new node means that its host name needs to conform to the trusted host names in the certificate.
@@ -450,7 +442,7 @@ marking them @apidoc[actor.PossiblyHarmful] so that a client cannot forge them.
 
 ## Quarantine
 
-Akka remoting is using TCP or Aeron as underlying message transport. Aeron is using UDP and adds
+Pekko remoting is using TCP or Aeron as underlying message transport. Aeron is using UDP and adds
 among other things reliable delivery and session semantics, very similar to TCP. This means that
 the order of the messages are preserved, which is needed for the @ref:[Actor message ordering guarantees](general/message-delivery-reliability.md#message-ordering).
 Under normal circumstances all messages will be delivered but there are cases when messages
@@ -463,9 +455,9 @@ may not be delivered to the destination:
 
 In short, Actor message delivery is “at-most-once” as described in @ref:[Message Delivery Reliability](general/message-delivery-reliability.md)
 
-Some messages in Akka are called system messages and those cannot be dropped because that would result
+Some messages in Pekko are called system messages and those cannot be dropped because that would result
 in an inconsistent state between the systems. Such messages are used for essentially two features; remote death
-watch and remote deployment. These messages are delivered by Akka remoting with “exactly-once” guarantee by
+watch and remote deployment. These messages are delivered by Pekko remoting with “exactly-once” guarantee by
 confirming each message and resending unconfirmed messages. If a system message anyway cannot be delivered the
 association with the destination system is irrecoverable failed, and Terminated is signaled for all watched
 actors on the remote system. It is placed in a so called quarantined state. Quarantine usually does not
@@ -483,7 +475,7 @@ system has been restarted.
 An association will be quarantined when:
 
  * Cluster node is removed from the cluster membership.
- * Remote failure detector triggers, i.e. remote watch is used. This is different when @ref:[Akka Cluster](cluster-usage.md)
+ * Remote failure detector triggers, i.e. remote watch is used. This is different when @ref:[Pekko Cluster](cluster-usage.md)
 is used. The unreachable observation by the cluster failure detector can go back to reachable if the network
 partition heals. A cluster member is not quarantined when the failure detector triggers.
  * Overflow of the system message delivery buffer, e.g. because of too many `watch` requests at the same time
@@ -595,7 +587,7 @@ as usual (which is explained in @ref:[Serialization](serialization.md)).
 
 Implementations should typically extend @apidoc[SerializerWithStringManifest] and in addition to the `ByteBuffer` based
 @apidoc[toBinary](ByteBufferSerializer) {scala="#toBinary(o:AnyRef,buf:java.nio.ByteBuffer):Unit" java="#toBinary(java.lang.Object,java.nio.ByteBuffer)"} and @apidoc[fromBinary](ByteBufferSerializer) {scala="#fromBinary(buf:java.nio.ByteBuffer,manifest:String):AnyRef" java="#fromBinary(java.nio.ByteBuffer,java.lang.String)"} methods also implement the array based @apidoc[toBinary](SerializerWithStringManifest) {scala="#toBinary(o:AnyRef):Array[Byte]" java="#toBinary(java.lang.Object)"} and @apidoc[fromBinary](SerializerWithStringManifest) {scala="#fromBinary(bytes:Array[Byte],manifest:Option[Class[_]]):AnyRef" java="#fromBinary(byte%5B%5D,scala.Option)"} methods.
-The array based methods will be used when `ByteBuffer` is not used, e.g. in Akka Persistence.
+The array based methods will be used when `ByteBuffer` is not used, e.g. in Pekko Persistence.
 
 Note that the array based methods can be implemented by delegation like this:
 
@@ -633,7 +625,7 @@ Artery is a reimplementation of the old remoting module aimed at improving perfo
 source compatible with the old implementation and it is a drop-in replacement in many cases. Main features
 of Artery compared to the previous implementation:
 
- * Based on Akka Streams TCP/TLS or [Aeron](https://github.com/real-logic/Aeron) (UDP) instead of Netty TCP
+ * Based on Pekko Streams TCP/TLS or [Aeron](https://github.com/real-logic/Aeron) (UDP) instead of Netty TCP
  * Focused on high-throughput, low-latency communication
  * Isolation of internal control messages from user messages improving stability and reducing false failure detection
 in case of heavy traffic by using a dedicated subchannel.
@@ -643,10 +635,10 @@ in case of heavy traffic by using a dedicated subchannel.
  * Support for faster serialization/deserialization using ByteBuffers directly
  * Built-in Java Flight Recorder (JFR) to help debugging implementation issues without polluting users logs with implementation
 specific events
- * Providing protocol stability across major Akka versions to support rolling updates of large-scale systems
+ * Providing protocol stability across major Pekko versions to support rolling updates of large-scale systems
 
 The main incompatible change from the previous implementation that the protocol field of the string representation of an
-@apidoc[actor.ActorRef] is always *akka* instead of the previously used *akka.tcp* or *akka.ssl.tcp*. Configuration properties
+@apidoc[actor.ActorRef] is always *pekko* instead of the previously used *pekko.tcp* or *pekko.ssl.tcp*. Configuration properties
 are also different.
 
 
@@ -662,18 +654,18 @@ Note that lowest latency can be achieved with `inbound-lanes=1` and `outbound-la
 
 Also note that the total amount of parallel tasks are bound by the `remote-dispatcher` and the thread pool size should not exceed the number of CPU cores minus headroom for actually processing the messages in the application, i.e. in practice the the pool size should be less than half of the number of cores.
 
-See `inbound-lanes` and `outbound-lanes` in the @ref:[reference configuration](general/configuration-reference.md#config-akka-remote-artery) for default values.
+See `inbound-lanes` and `outbound-lanes` in the @ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for default values.
 
 ### Dedicated subchannel for large messages
 
-All the communication between user defined remote actors are isolated from the channel of Akka internal messages so
-a large user message cannot block an urgent system message. While this provides good isolation for Akka services, all
+All the communication between user defined remote actors are isolated from the channel of Pekko internal messages so
+a large user message cannot block an urgent system message. While this provides good isolation for Pekko services, all
 user communications by default happen through a shared network connection. When some actors
 send large messages this can cause other messages to suffer higher latency as they need to wait until the full
 message has been transported on the shared channel (and hence, shared bottleneck). In these cases it is usually
 helpful to separate actors that have different QoS requirements: large messages vs. low latency.
 
-Akka remoting provides a dedicated channel for large messages if configured. Since actor message ordering must
+Pekko remoting provides a dedicated channel for large messages if configured. Since actor message ordering must
 not be violated the channel is actually dedicated for *actors* instead of messages, to ensure all of the messages
 arrive in send order. It is possible to assign actors on given paths to use this dedicated channel by using
 path patterns that have to be specified in the actor system's configuration on both the sending and the receiving side:
@@ -714,8 +706,8 @@ pekko.remote.artery {
 Example log messages:
 
 ```
-[INFO] Payload size for [java.lang.String] is [39068] bytes. Sent to Actor[akka://Sys@localhost:53039/user/destination#-1908386800]
-[INFO] New maximum payload size for [java.lang.String] is [44068] bytes. Sent to Actor[akka://Sys@localhost:53039/user/destination#-1908386800].
+[INFO] Payload size for [java.lang.String] is [39068] bytes. Sent to Actor[pekko://Sys@localhost:53039/user/destination#-1908386800]
+[INFO] New maximum payload size for [java.lang.String] is [44068] bytes. Sent to Actor[pekko://Sys@localhost:53039/user/destination#-1908386800].
 ```
 
 The large messages channel can still not be used for extremely large messages, a few MB per message at most.
@@ -726,10 +718,10 @@ them again on the receiving side.
 ### External, shared Aeron media driver
 
 The Aeron transport is running in a so called [media driver](https://github.com/real-logic/Aeron/wiki/Media-Driver-Operation).
-By default, Akka starts the media driver embedded in the same JVM process as application. This is
+By default, Pekko starts the media driver embedded in the same JVM process as application. This is
 convenient and simplifies operational concerns by only having one process to start and monitor.
 
-The media driver may use rather much CPU resources. If you run more than one Akka application JVM on the
+The media driver may use rather much CPU resources. If you run more than one Pekko application JVM on the
 same machine it can therefore be wise to share the media driver by running it as a separate process.
 
 The media driver has also different resource usage characteristics than a normal application and it can
@@ -781,13 +773,13 @@ aeron.threading.mode=SHARED_NETWORK
 #aeron.receiver.idle.strategy=org.agrona.concurrent.BusySpinIdleStrategy
 
 # use same director in pekko.remote.artery.advanced.aeron-dir config
-# of the Akka application
+# of the Pekko application
 aeron.dir=/dev/shm/aeron
 ```
 
 Read more about the media driver in the [Aeron documentation](https://github.com/real-logic/Aeron/wiki/Media-Driver-Operation).
 
-To use the external media driver from the Akka application you need to define the following two
+To use the external media driver from the Pekko application you need to define the following two
 configuration properties:
 
 ```
@@ -799,10 +791,10 @@ pekko.remote.artery.advanced.aeron {
 
 The `aeron-dir` must match the directory you started the media driver with, i.e. the `aeron.dir` property.
 
-Several Akka applications can then be configured to use the same media driver by pointing to the
+Several Pekko applications can then be configured to use the same media driver by pointing to the
 same directory.
 
-Note that if the media driver process is stopped the Akka applications that are using it will also be stopped.
+Note that if the media driver process is stopped the Pekko applications that are using it will also be stopped.
 
 ### Aeron Tuning
 
@@ -820,7 +812,7 @@ usage and latency with the following configuration:
 pekko.remote.artery.advanced.aeron.idle-cpu-level = 1
 ```
 
-By setting this value to a lower number, it tells Akka to do longer "sleeping" periods on its thread dedicated
+By setting this value to a lower number, it tells Pekko to do longer "sleeping" periods on its thread dedicated
 for [spin-waiting](https://en.wikipedia.org/wiki/Busy_waiting) and hence reducing CPU load when there is no
 immediate task to execute at the cost of a longer reaction time to an event when it actually happens. It is worth
 to be noted though that during a continuously high-throughput period this setting makes not much difference
@@ -830,8 +822,8 @@ the system might have less latency than at low message rates.
 <a id="remote-configuration-artery"></a>
 ## Remote Configuration
 
-There are lots of configuration properties that are related to remoting in Akka. We refer to the
-@ref:[reference configuration](general/configuration-reference.md#config-akka-remote-artery) for more information.
+There are lots of configuration properties that are related to remoting in Pekko. We refer to the
+@ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for more information.
 
 @@@ note
 
@@ -843,10 +835,10 @@ best done by using something like the following:
 @@@
 
 <a id="remote-configuration-nat-artery"></a>
-### Akka behind NAT or in a Docker container
+### Pekko behind NAT or in a Docker container
 
 In setups involving Network Address Translation (NAT), Load Balancers or Docker
-containers the hostname and port pair that Akka binds to will be different than the "logical"
+containers the hostname and port pair that Pekko binds to will be different than the "logical"
 host name and port pair that is used to connect to the system from the outside. This requires
 special configuration that sets both the logical and the bind pairs for remoting.
 
@@ -865,8 +857,8 @@ pekko {
 ```
 
 You can look at the
-@java[@extref[Cluster with docker-compse example project](samples:akka-sample-cluster-docker-compose-java)]
-@scala[@extref[Cluster with docker-compose example project](samples:akka-sample-cluster-docker-compose-scala)]
+@java[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-java)]
+@scala[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-scala)]
 to see what this looks like in practice.
 
 ### Running in Docker/Kubernetes
@@ -905,4 +897,4 @@ When running on JDK 11 Artery specific flight recording is available through the
 The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `pekko.java-flight-recorder.enabled = false`.
 
 Low overhead Artery specific events are emitted by default when JFR is enabled, higher overhead events needs a custom settings template and are not enabled automatically with the `profiling` JFR template.
-To enable those create a copy of the `profiling` template and enable all `Akka` sub category events, for example through the JMC GUI. 
+To enable those create a copy of the `profiling` template and enable all `Pekko` sub category events, for example through the JMC GUI. 

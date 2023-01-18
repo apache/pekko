@@ -1,11 +1,11 @@
 # Multi-DC Cluster
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Multi-DC Cluster](../cluster-dc.md)
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Multi-DC Cluster](../cluster-dc.md)
 
-This chapter describes how @ref[Akka Cluster](cluster.md) can be used across
+This chapter describes how @ref[Pekko Cluster](cluster.md) can be used across
 multiple data centers, availability zones or regions.
 
-The reason for making the Akka Cluster aware of data center boundaries is that
+The reason for making the Pekko Cluster aware of data center boundaries is that
 communication across data centers typically has much higher latency and higher failure
 rate than communication between nodes in the same data center.
 
@@ -16,10 +16,10 @@ up a large cluster into smaller groups of nodes for better scalability.
 
 ## Dependency
 
-To use Akka Cluster add the following dependency in your project:
+To use Pekko Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -35,7 +35,7 @@ There can be many reasons for using more than one data center, such as:
 * Serve requests from a location near the user to provide better responsiveness.
 * Balance the load over many servers.
 
-It's possible to run an ordinary Akka Cluster with default settings that spans multiple
+It's possible to run an ordinary Pekko Cluster with default settings that spans multiple
 data centers but that may result in problems like:
 
 * Management of Cluster membership is stalled during network partitions as described in a 
@@ -56,23 +56,23 @@ data centers but that may result in problems like:
   that are close over distant nodes. E.g. a cluster aware router would be more efficient
   if it would prefer routing messages to nodes in the own data center. 
 
-To avoid some of these problems one can run a separate Akka Cluster per data center and use another
+To avoid some of these problems one can run a separate Pekko Cluster per data center and use another
 communication channel between the data centers, such as HTTP, an external message broker.
 However, many of the nice tools that are built on top of the Cluster membership information are lost.
 For example, it wouldn't be possible to use @ref[Distributed Data](distributed-data.md) across the separate clusters.
 
-We often recommend implementing a micro-service as one Akka Cluster. The external API of the
-service would be HTTP, gRPC or a message broker, and not Akka Remoting or Cluster (see additional discussion
-in @ref:[When and where to use Akka Cluster](choosing-cluster.md)). 
+We often recommend implementing a micro-service as one Pekko Cluster. The external API of the
+service would be HTTP, gRPC or a message broker, and not Pekko Remoting or Cluster (see additional discussion
+in @ref:[When and where to use Pekko Cluster](choosing-cluster.md)). 
  
 The internal communication within the service that is running on several nodes would use ordinary actor 
-messaging or the tools based on Akka Cluster. When deploying this service to multiple data
+messaging or the tools based on Pekko Cluster. When deploying this service to multiple data
 centers it would be inconvenient if the internal communication could not use ordinary actor 
-messaging because it was separated into several Akka Clusters. The benefit of using Akka
+messaging because it was separated into several Pekko Clusters. The benefit of using Pekko
 messaging internally is performance as well as ease of development and reasoning about
 your domain in terms of Actors.
 
-Therefore, it's possible to make the Akka Cluster aware of data centers so that one Akka
+Therefore, it's possible to make the Pekko Cluster aware of data centers so that one Pekko
 Cluster can span multiple data centers and still be tolerant to network partitions.
 
 ## Defining the data centers
@@ -190,7 +190,7 @@ one in each data center. This is because the region/coordinator is only aware of
 and will activate the entity there. It's unaware of the existence of corresponding entities in the 
 other data centers.
 
-Especially when used together with Akka Persistence that is based on the single-writer principle
+Especially when used together with Pekko Persistence that is based on the single-writer principle
 it is important to avoid running the same entity at multiple locations at the same time with a
 shared data store. That would result in corrupt data since the events stored by different instances
 may be interleaved and would be interpreted differently in a later replay. For replicated persistent

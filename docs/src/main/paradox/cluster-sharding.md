@@ -113,8 +113,8 @@ There are two cluster sharding states managed:
  
 For these, there are currently two modes which define how these states are stored:
 
-* @ref:[Distributed Data Mode](#distributed-data-mode) - uses Akka @ref:[Distributed Data](distributed-data.md) (CRDTs) (the default)
-* @ref:[Persistence Mode](#persistence-mode) - (deprecated) uses Akka @ref:[Persistence](persistence.md) (Event Sourcing)
+* @ref:[Distributed Data Mode](#distributed-data-mode) - uses Pekko @ref:[Distributed Data](distributed-data.md) (CRDTs) (the default)
+* @ref:[Persistence Mode](#persistence-mode) - (deprecated) uses Pekko @ref:[Persistence](persistence.md) (Event Sourcing)
 
 @@include[cluster.md](includes/cluster.md) { #sharding-persistence-mode-deprecated }
  

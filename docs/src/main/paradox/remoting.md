@@ -2,7 +2,7 @@
 
 @@@ warning
 
-Classic remoting has been deprecated and will be removed in Akka 2.7.0. Please use @ref[Artery](remoting-artery.md) instead.
+Classic remoting has been deprecated. Please use @ref[Artery](remoting-artery.md) instead.
 
 @@@
 
@@ -11,9 +11,9 @@ Classic remoting has been deprecated and will be removed in Akka 2.7.0. Please u
 Remoting is the mechanism by which Actors on different nodes talk to each
 other internally.
 
-When building an Akka application, you would usually not use the Remoting concepts
+When building an Pekko application, you would usually not use the Remoting concepts
 directly, but instead use the more high-level
-@ref[Akka Cluster](index-cluster.md) utilities or technology-agnostic protocols
+@ref[Pekko Cluster](index-cluster.md) utilities or technology-agnostic protocols
 such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
 [gRPC](https://doc.akka.io/docs/akka-grpc/current/) etc.
 
@@ -22,7 +22,7 @@ such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
 
 ## Module info
 
-To use Akka Remoting, you must add the following dependency in your project:
+To use Pekko Remoting, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -46,7 +46,7 @@ not using classic remoting do not have to have Netty on the classpath:
 
 ## Configuration
 
-To enable classic remoting in your Akka project you should, at a minimum, add the following changes
+To enable classic remoting in your Pekko project you should, at a minimum, add the following changes
 to your `application.conf` file:
 
 ```
@@ -68,7 +68,7 @@ pekko {
 
 As you can see in the example above there are four things you need to add to get started:
 
- * Change provider from `local`. We recommend using @ref:[Akka Cluster](cluster-usage.md) over using remoting directly.
+ * Change provider from `local`. We recommend using @ref:[Pekko Cluster](cluster-usage.md) over using remoting directly.
  * Disable artery remoting. Artery is the default remoting implementation since `2.6.0`
  * Add host name - the machine you want to run the actor system on; this host
 name is exactly what is passed to remote systems in order to identify this
@@ -90,19 +90,19 @@ All settings are described in @ref:[Remote Configuration](#remote-configuration)
 
 ## Introduction
 
-We recommend @ref:[Akka Cluster](cluster-usage.md) over using remoting directly. As remoting is the
+We recommend @ref:[Pekko Cluster](cluster-usage.md) over using remoting directly. As remoting is the
 underlying module that allows for Cluster, it is still useful to understand details about it though.
 
-For an introduction of remoting capabilities of Akka please see @ref:[Location Transparency](general/remoting.md).
+For an introduction of remoting capabilities of Pekko please see @ref:[Location Transparency](general/remoting.md).
 
 @@@ note
 
-As explained in that chapter Akka remoting is designed for communication in a
+As explained in that chapter Pekko remoting is designed for communication in a
 peer-to-peer fashion and it is not a good fit for client-server setups. In
-particular Akka Remoting does not work transparently with Network Address Translation,
+particular Pekko Remoting does not work transparently with Network Address Translation,
 Load Balancers, or in Docker containers. For symmetric communication in these situations
-network and/or Akka configuration will have to be changed as described in
-[Akka behind NAT or in a Docker container](#remote-configuration-nat).
+network and/or Pekko configuration will have to be changed as described in
+[Pekko behind NAT or in a Docker container](#remote-configuration-nat).
 
 @@@
 
@@ -112,7 +112,7 @@ recommendation if you don't have other preference.
 
 ## Types of Remote Interaction
 
-Akka has two ways of using remoting:
+Pekko has two ways of using remoting:
 
  * Lookup    : used to look up an actor on a remote node with `actorSelection(path)`
  * Creation  : used to create an actor on a remote node with `actorOf(Props(...), actorName)`
@@ -126,19 +126,19 @@ In the next sections the two alternatives are described in detail.
 Scala
 :   ```
 val selection =
-  context.actorSelection("akka.tcp://actorSystemName@10.0.0.1:2552/user/actorName")
+  context.actorSelection("pekko.tcp://actorSystemName@10.0.0.1:2552/user/actorName")
 ```
 
 Java
 :   ```
 ActorSelection selection =
-  context.actorSelection("akka.tcp://app@10.0.0.1:2552/user/serviceA/worker");
+  context.actorSelection("pekko.tcp://app@10.0.0.1:2552/user/serviceA/worker");
 ```
 
 As you can see from the example above the following pattern is used to find an actor on a remote node:
 
 ```
-akka.<protocol>://<actor system name>@<hostname>:<port>/<actor path>
+pekko.<protocol>://<actor system name>@<hostname>:<port>/<actor path>
 ```
 
 Once you obtained a selection to the actor you can interact with it in the same way you would with a local actor, e.g.:
@@ -182,7 +182,7 @@ be delivered just fine.
 
 ## Creating Actors Remotely
 
-If you want to use the creation functionality in Akka remoting you have to further amend the
+If you want to use the creation functionality in Pekko remoting you have to further amend the
 `application.conf` file in the following way (only showing deployment section):
 
 ```
@@ -190,14 +190,14 @@ pekko {
   actor {
     deployment {
       /sampleActor {
-        remote = "akka.tcp://sampleActorSystem@127.0.0.1:2553"
+        remote = "pekko.tcp://sampleActorSystem@127.0.0.1:2553"
       }
     }
   }
 }
 ```
 
-The configuration above instructs Akka to react when an actor with path `/sampleActor` is created, i.e.
+The configuration above instructs Pekko to react when an actor with path `/sampleActor` is created, i.e.
 using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(new Props(...), "sampleActor")`]. This specific actor will not be directly instantiated,
 but instead the remote daemon of the remote system will be asked to create the actor,
 which in this sample corresponds to `sampleActorSystem@127.0.0.1:2553`.
@@ -368,7 +368,7 @@ That is not done by the router.
 
 ### Remote Events
 
-It is possible to listen to events that occur in Akka Remote, and to subscribe/unsubscribe to these events
+It is possible to listen to events that occur in Pekko Remote, and to subscribe/unsubscribe to these events
 you register as listener to the below described types in on the `ActorSystem.eventStream`.
 
 @@@ note
@@ -385,7 +385,7 @@ the lifecycle of associations, subscribe to
 The use of term "Association" instead of "Connection" reflects that the
 remoting subsystem may use connectionless transports, but an association
 similar to transport layer connections is maintained between endpoints by
-the Akka protocol.
+the Pekko protocol.
 
 @@@
 
@@ -424,20 +424,20 @@ To intercept generic remoting related errors, listen to `RemotingErrorEvent` whi
 
 ## Remote Security
 
-An `ActorSystem` should not be exposed via Akka Remote over plain TCP to an untrusted network (e.g. Internet).
+An `ActorSystem` should not be exposed via Pekko Remote over plain TCP to an untrusted network (e.g. Internet).
 It should be protected by network security, such as a firewall. If that is not considered as enough protection
 [TLS with mutual authentication](#remote-tls)  should be enabled.
 
-Best practice is that Akka remoting nodes should only be accessible from the adjacent network. Note that if TLS is
+Best practice is that Pekko remoting nodes should only be accessible from the adjacent network. Note that if TLS is
 enabled with mutual authentication there is still a risk that an attacker can gain access to a valid certificate by
 compromising any node with certificates issued by the same internal PKI tree.
 
-By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Akka.
+By default, @ref[Java serialization](serialization.md#java-serialization) is disabled in Pekko.
 That is also security best-practice because of its multiple
 [known attack surfaces](https://community.microfocus.com/cyberres/fortify/f/fortify-discussions/317555/the-perils-of-java-deserialization).
 
 <a id="remote-tls"></a>
-### Configuring SSL/TLS for Akka Remoting
+### Configuring SSL/TLS for Pekko Remoting
 
 SSL can be used as the remote transport by adding `pekko.remote.classic.netty.ssl` to the `enabled-transport` configuration section.
 An example of setting up the default Netty based SSL driver as default:
@@ -488,11 +488,7 @@ According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recomme
 
 You should always check the latest information about security and algorithm recommendations though before you configure your system.
 
-Creating and working with keystores and certificates is well documented in the
-[Generating X.509 Certificates](https://lightbend.github.io/ssl-config/CertificateGeneration.html#using-keytool)
-section of Lightbend's SSL-Config library.
-
-Since an Akka remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
+Since an Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
 need to be configured on each remoting node participating in the cluster.
 
 The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)
@@ -500,11 +496,11 @@ as well as the [Oracle documentation on creating KeyStore and TrustStores](https
 are both great resources to research when setting up security on the JVM. Please consult those resources when troubleshooting
 and configuring SSL.
 
-Since Akka 2.5.0 mutual authentication between TLS peers is enabled by default.
+Since Pekko 2.5.0 mutual authentication between TLS peers is enabled by default.
 
 Mutual authentication means that the the passive side (the TLS server side) of a connection will also request and verify
 a certificate from the connecting peer. Without this mode only the client side is requesting and verifying certificates.
-While Akka is a peer-to-peer technology, each connection between nodes starts out from one side (the "client") towards
+While Pekko is a peer-to-peer technology, each connection between nodes starts out from one side (the "client") towards
 the other (the "server").
 
 Note that if TLS is enabled with mutual authentication there is still a risk that an attacker can gain access to a valid certificate
@@ -587,8 +583,8 @@ marking them `PossiblyHarmful` so that a client cannot forge them.
 
 ## Remote Configuration
 
-There are lots of configuration properties that are related to remoting in Akka. We refer to the
-@ref:[reference configuration](general/configuration-reference.md#config-akka-remote) for more information.
+There are lots of configuration properties that are related to remoting in Pekko. We refer to the
+@ref:[reference configuration](general/configuration-reference.md#config-pekko-remote) for more information.
 
 @@@ note
 
@@ -600,10 +596,10 @@ best done by using something like the following:
 @@@
 
 <a id="remote-configuration-nat"></a>
-### Akka behind NAT or in a Docker container
+### Pekko behind NAT or in a Docker container
 
 In setups involving Network Address Translation (NAT), Load Balancers or Docker
-containers the hostname and port pair that Akka binds to will be different than the "logical"
+containers the hostname and port pair that Pekko binds to will be different than the "logical"
 host name and port pair that is used to connect to the system from the outside. This requires
 special configuration that sets both the logical and the bind pairs for remoting.
 

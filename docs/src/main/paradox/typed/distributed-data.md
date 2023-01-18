@@ -1,13 +1,13 @@
 ---
-project.description: Share data between nodes and perform updates without coordination in an Akka Cluster using Conflict Free Replicated Data Types CRDT.
+project.description: Share data between nodes and perform updates without coordination in an Pekko Cluster using Conflict Free Replicated Data Types CRDT.
 ---
 # Distributed Data
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Distributed Data](../distributed-data.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Distributed Data](../distributed-data.md).
 
 ## Module info
 
-To use Akka Cluster Distributed Data, you must add the following dependency in your project:
+To use Pekko Cluster Distributed Data, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -22,8 +22,8 @@ To use Akka Cluster Distributed Data, you must add the following dependency in y
 
 ## Introduction
 
-*Akka Distributed Data* is useful when you need to share data between nodes in an
-Akka Cluster. The data is accessed with an actor providing a key-value store like API.
+*Pekko Distributed Data* is useful when you need to share data between nodes in an
+Pekko Cluster. The data is accessed with an actor providing a key-value store like API.
 The keys are unique identifiers with type information of the data values. The values
 are *Conflict Free Replicated Data Types* (CRDTs).
 
@@ -195,7 +195,7 @@ Subscribers will receive `Replicator.Deleted`.
 
 As deleted keys continue to be included in the stored data on each node as well as in gossip
 messages, a continuous series of updates and deletes of top-level entities will result in
-growing memory usage until an ActorSystem runs out of memory. To use Akka Distributed Data
+growing memory usage until an ActorSystem runs out of memory. To use Pekko Distributed Data
 where frequent adds and removes are required, you should use a fixed number of top-level data
 types that support both updates and removals, for example `ORMap` or `ORSet`.
 
@@ -336,7 +336,7 @@ one via the `DistributedData` extension.
 
 ## Replicated data types
 
-Akka contains a set of useful replicated data types and it is fully possible to implement custom replicated data types. 
+Pekko contains a set of useful replicated data types and it is fully possible to implement custom replicated data types. 
 
 The data types must be convergent (stateful) CRDTs and implement the @scala[`ReplicatedData` trait]@java[`AbstractReplicatedData` interface],
 i.e. they provide a monotonic merge function and the state changes always converge.
@@ -588,7 +588,7 @@ Implement the additional methods of @scala[`DeltaReplicatedData`]@java[`Abstract
  
 #### Serialization
 
-The data types must be serializable with an @ref:[Akka Serializer](../serialization.md).
+The data types must be serializable with an @ref:[Pekko Serializer](../serialization.md).
 It is highly recommended that you implement  efficient serialization with Protobuf or similar
 for your custom data types. The built in data types are marked with `ReplicatedDataSerialization`
 and serialized with `org.apache.pekko.cluster.ddata.protobuf.ReplicatedDataSerializer`.
@@ -637,7 +637,7 @@ serializer for those types. This can be done by declaring those as bytes fields 
 
 and use the methods `otherMessageToProto` and `otherMessageFromBinary` that are provided
 by the `SerializationSupport` trait to serialize and deserialize the `GSet` instances. This
-works with any type that has a registered Akka serializer. This is how such an serializer would
+works with any type that has a registered Pekko serializer. This is how such an serializer would
 look like for the `TwoPhaseSet`:
 
 Scala
@@ -779,8 +779,8 @@ The `DistributedData` extension can be configured with the following properties:
 
 ## Example project
 
-@java[@extref[Distributed Data example project](samples:akka-samples-distributed-data-java)]
-@scala[@extref[Distributed Data example project](samples:akka-samples-distributed-data-scala)]
+@java[@extref[Distributed Data example project](samples:pekko-samples-distributed-data-java)]
+@scala[@extref[Distributed Data example project](samples:pekko-samples-distributed-data-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains several samples illustrating how to use Distributed Data.

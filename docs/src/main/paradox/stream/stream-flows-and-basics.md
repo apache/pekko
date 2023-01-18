@@ -2,14 +2,14 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -17,12 +17,12 @@ To use Akka Streams, add the module to your project:
 
 ## Core concepts
 
-Akka Streams is a library to process and transfer a sequence of elements using bounded buffer space. This
-latter property is what we refer to as *boundedness*, and it is the defining feature of Akka Streams. Translated to
+Pekko Streams is a library to process and transfer a sequence of elements using bounded buffer space. This
+latter property is what we refer to as *boundedness*, and it is the defining feature of Pekko Streams. Translated to
 everyday terms, it is possible to express a chain (or as we see later, graphs) of processing entities. Each of these
 entities executes independently (and possibly concurrently) from the others while only buffering a limited number
 of elements at any given time. This property of bounded buffers is one of the differences from the actor model, where each actor usually has
-an unbounded, or a bounded, but dropping mailbox. Akka Stream processing entities have bounded "mailboxes" that
+an unbounded, or a bounded, but dropping mailbox. Pekko Stream processing entities have bounded "mailboxes" that
 do not drop.
 
 Before we move on, let's define some basic terminology which will be used throughout the entire documentation:
@@ -37,7 +37,7 @@ downstream. Buffer sizes are always expressed as number of elements independentl
 Back-pressure
 : A means of flow-control, a way for consumers of data to notify a producer about their current availability, effectively
 slowing down the upstream producer to match their consumption speeds.
-In the context of Akka Streams back-pressure is always understood as *non-blocking* and *asynchronous*.
+In the context of Pekko Streams back-pressure is always understood as *non-blocking* and *asynchronous*.
 
 Non-Blocking
 : Means that a certain operation does not hinder the progress of the calling thread, even if it takes a long time to
@@ -53,7 +53,7 @@ Examples of operators are `map()`, `filter()`, custom ones extending @ref[`Graph
 junctions like `Merge` or `Broadcast`. For the full list of built-in operators see the @ref:[operator index](operators/index.md)
 
 
-When we talk about *asynchronous, non-blocking backpressure*, we mean that the operators available in Akka
+When we talk about *asynchronous, non-blocking backpressure*, we mean that the operators available in Pekko
 Streams will not use blocking calls but asynchronous message passing to exchange messages between each other.
 This way they can slow down a fast producer without blocking its thread. This is a thread-pool friendly
 design, since entities that need to wait (a fast producer waiting on a slow consumer) will not block the thread but
@@ -61,7 +61,7 @@ can hand it back for further use to an underlying thread-pool.
 
 ## Defining and running streams
 
-Linear processing pipelines can be expressed in Akka Streams using the following core abstractions:
+Linear processing pipelines can be expressed in Pekko Streams using the following core abstractions:
 
 Source
 : An operator with *exactly one output*, emitting data elements whenever downstream operators are
@@ -85,7 +85,7 @@ it will be represented by the @apidoc[stream.*.RunnableGraph] type, indicating t
 
 It is important to remember that even after constructing the `RunnableGraph` by connecting all the source, sink and
 different operators, no data will flow through it until it is materialized. Materialization is the process of
-allocating all resources needed to run the computation described by a Graph (in Akka Streams this will often involve
+allocating all resources needed to run the computation described by a Graph (in Pekko Streams this will often involve
 starting up Actors). Thanks to Flows being a description of the processing pipeline they are *immutable,
 thread-safe, and freely shareable*, which means that it is for example safe to share and send them between actors, to have
 one actor prepare the work, and then have it be materialized at some completely different place in the code.
@@ -144,7 +144,7 @@ Java
 
 @@@ note
 
-By default, Akka Streams elements support **exactly one** downstream operator.
+By default, Pekko Streams elements support **exactly one** downstream operator.
 Making fan-out (supporting multiple downstream operators) an explicit opt-in feature allows default stream elements to
 be less complex and more efficient. Also, it allows for greater flexibility on *how exactly* to handle the multicast scenarios,
 by providing named fan-out elements such as broadcast (signals all down-stream elements) or balance (signals one of available down-stream elements).
@@ -188,23 +188,23 @@ Java
 ### Illegal stream elements
 
 In accordance to the Reactive Streams specification ([Rule 2.13](https://github.com/reactive-streams/reactive-streams-jvm#2.13))
-Akka Streams do not allow `null` to be passed through the stream as an element. In case you want to model the concept
+Pekko Streams do not allow `null` to be passed through the stream as an element. In case you want to model the concept
 of absence of a value we recommend using @scala[@scaladoc[scala.Option](scala.Option) or @scaladoc[scala.util.Either](scala.util.Either)]@java[@javadoc[java.util.Optional](java.util.Optional) which is available since Java 8].
 
 ## Back-pressure explained
 
-Akka Streams implement an asynchronous non-blocking back-pressure protocol standardised by the [Reactive Streams](https://www.reactive-streams.org/)
-specification, which Akka is a founding member of.
+Pekko Streams implement an asynchronous non-blocking back-pressure protocol standardised by the [Reactive Streams](https://www.reactive-streams.org/)
+specification, which Pekko is a founding member of.
 
 The user of the library does not have to write any explicit back-pressure handling code — it is built in
-and dealt with automatically by all of the provided Akka Streams operators. It is possible however to add
+and dealt with automatically by all of the provided Pekko Streams operators. It is possible however to add
 explicit buffer operators with overflow strategies that can influence the behavior of the stream. This is especially important
 in complex processing graphs which may even contain loops (which *must* be treated with very special
 care, as explained in @ref:[Graph cycles, liveness and deadlocks](stream-graphs.md#graph-cycles)).
 
 The back pressure protocol is defined in terms of the number of elements a downstream `Subscriber` is able to receive
 and buffer, referred to as `demand`.
-The source of data, referred to as `Publisher` in Reactive Streams terminology and implemented as @apidoc[stream.*.Source] in Akka
+The source of data, referred to as `Publisher` in Reactive Streams terminology and implemented as @apidoc[stream.*.Source] in Pekko
 Streams, guarantees that it will never emit more elements than the received total demand for any given `Subscriber`.
 
 @@@ note
@@ -213,7 +213,7 @@ The Reactive Streams specification defines its protocol in terms of `Publisher` 
 These types are **not** meant to be user facing API, instead they serve as the low-level building blocks for
 different Reactive Streams implementations.
 
-Akka Streams implements these concepts as @apidoc[stream.*.Source], @apidoc[Flow](stream.*.Flow) (referred to as `Processor` in Reactive Streams)
+Pekko Streams implements these concepts as @apidoc[stream.*.Source], @apidoc[Flow](stream.*.Flow) (referred to as `Processor` in Reactive Streams)
 and @apidoc[stream.*.Sink] without exposing the Reactive Streams interfaces directly.
 If you need to integrate with other Reactive Stream libraries, read @ref:[Integrating with Reactive Streams](reactive-streams-interop.md).
 
@@ -259,9 +259,9 @@ this mode of operation is referred to as pull-based back-pressure.
 
 ## Stream Materialization
 
-When constructing flows and graphs in Akka Streams think of them as preparing a blueprint, an execution plan.
+When constructing flows and graphs in Pekko Streams think of them as preparing a blueprint, an execution plan.
 Stream materialization is the process of taking a stream description (@apidoc[stream.*.RunnableGraph]) and allocating all the necessary resources
-it needs in order to run. In the case of Akka Streams this often means starting up Actors which power the processing,
+it needs in order to run. In the case of Pekko Streams this often means starting up Actors which power the processing,
 but is not restricted to that—it could also mean opening files or socket connections etc.—depending on what the stream needs.
 
 Materialization is triggered at so called "terminal operations". Most notably this includes the various forms of the `run()`
@@ -283,7 +283,7 @@ yet will materialize that operator multiple times.
 
 ### Operator Fusion
 
-By default, Akka Streams will fuse the stream operators. This means that the processing steps of a flow or
+By default, Pekko Streams will fuse the stream operators. This means that the processing steps of a flow or
 stream can be executed within the same Actor and has two consequences:
 
  * passing elements from one operator to the next is a lot faster between fused
@@ -327,7 +327,7 @@ is needed in order to allow the stream to run at all, you will have to insert ex
 <a id="flow-combine-mat"></a>
 ### Combining materialized values
 
-Since every operator in Akka Streams can provide a materialized value after being materialized, it is necessary
+Since every operator in Pekko Streams can provide a materialized value after being materialized, it is necessary
 to somehow express how these values should be composed to a final value when we plug these operators together. For this,
 many operator methods have variants that take an additional argument, a function, that will be used to combine the
 resulting values. Some examples of using these combiners are illustrated in the example below.
@@ -360,7 +360,7 @@ Java
 
 ## Stream ordering
 
-In Akka Streams almost all computation operators *preserve input order* of elements. This means that if inputs `{IA1,IA2,...,IAn}`
+In Pekko Streams almost all computation operators *preserve input order* of elements. This means that if inputs `{IA1,IA2,...,IAn}`
 "cause" outputs `{OA1,OA2,...,OAk}` and inputs `{IB1,IB2,...,IBm}` "cause" outputs `{OB1,OB2,...,OBl}` and all of
 `IAi` happened before all `IBi` then `OAi` happens before `OBi`.
 
@@ -380,7 +380,7 @@ merge is performed.
 ## Actor Materializer Lifecycle
 
 The @apidoc[stream.Materializer] is a component that is responsible for turning the stream blueprint into a running stream
-and emitting the "materialized value". An @apidoc[actor.ActorSystem] wide `Materializer` is provided by the Akka `Extension` 
+and emitting the "materialized value". An @apidoc[actor.ActorSystem] wide `Materializer` is provided by the Pekko `Extension` 
 @apidoc[SystemMaterializer] by @scala[having an implicit `ActorSystem` in scope]@java[passing the `ActorSystem` to the 
 various `run` methods] this way there is no need to worry about the `Materializer` unless there are special requirements.
 
@@ -390,7 +390,7 @@ An important aspect of working with streams and actors is understanding a `Mater
 The materializer is bound to the lifecycle of the @apidoc[actor.ActorRefFactory] it is created from, which in practice will
 be either an @apidoc[actor.ActorSystem] or @apidoc[ActorContext](actor.ActorContext) (when the materializer is created within an @apidoc[actor.Actor]). 
 
-Tying it to the `ActorSystem` should be replaced with using the system materializer from Akka 2.6 and on.
+Tying it to the `ActorSystem` should be replaced with using the system materializer from Pekko 2.6 and on.
 
 When run by the system materializer the streams will run until the `ActorSystem` is shut down. When the materializer is shut down
 *before* the streams have run to completion, they will be terminated abruptly. This is a little different than the
@@ -412,7 +412,7 @@ This is a very useful technique if the stream is closely related to the actor, e
 You may also cause a `Materializer` to shut down by explicitly calling @apidoc[shutdown()](stream.Materializer) {scala="#shutdown():Unit" java="#shutdown()"} on it, resulting in abruptly terminating all of the streams it has been running then. 
 
 Sometimes, however, you may want to explicitly create a stream that will out-last the actor's life.
-For example, you are using an Akka stream to push some large stream of data to an external service.
+For example, you are using an Pekko stream to push some large stream of data to an external service.
 You may want to eagerly stop the Actor since it has performed all of its duties already:
 
 Scala

@@ -104,7 +104,7 @@ public class StreamFileDocTest extends AbstractJavaTest {
     try {
       // #file-sink
       Sink<ByteString, CompletionStage<IOResult>> fileSink = FileIO.toPath(file);
-      Source<String, NotUsed> textSource = Source.single("Hello Akka Stream!");
+      Source<String, NotUsed> textSource = Source.single("Hello Pekko Stream!");
 
       CompletionStage<IOResult> ioResult =
           textSource.map(ByteString::fromString).runWith(fileSink, system);

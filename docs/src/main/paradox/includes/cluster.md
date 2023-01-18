@@ -21,7 +21,7 @@ their physical location in the cluster.
 ### Distributed Data
 
 Distributed Data is useful when you need to share data between nodes in an
-Akka Cluster. The data is accessed with an actor providing a key-value store like API.
+Pekko Cluster. The data is accessed with an actor providing a key-value store like API.
 
 <!--- #cluster-ddata --->
  
@@ -44,7 +44,7 @@ like round-robin and consistent hashing.
 <!--- #cluster-multidc --->
 ### Cluster across multiple data centers
 
-Akka Cluster can be used across multiple data centers, availability zones or regions,
+Pekko Cluster can be used across multiple data centers, availability zones or regions,
 so that one Cluster can span multiple data centers and still be tolerant to network partitions.
 
 <!--- #cluster-multidc --->

@@ -1,5 +1,5 @@
 ---
-project.description: The Akka ActorSystem.
+project.description: The Pekko ActorSystem.
 ---
 # Actor Systems
 
@@ -60,7 +60,7 @@ guidelines which might be helpful:
 The actor system as a collaborating ensemble of actors is the natural unit for
 managing shared facilities like scheduling services, configuration, logging,
 etc. Several actor systems with different configurations may co-exist within the
-same JVM without problems, there is no global shared state within Akka itself,
+same JVM without problems, there is no global shared state within Pekko itself,
 however the most common scenario will only involve a single actor system per JVM.
 
 Couple this with the transparent communication between actor systems — within one
@@ -102,7 +102,7 @@ system, after all the mantra is to view them as abundant and they weigh in at
 an overhead of only roughly 300 bytes per instance. Naturally, the exact order
 in which messages are processed in large systems is not controllable by the
 application author, but this is also not intended. Take a step back and relax
-while Akka does the heavy lifting under the hood.
+while Pekko does the heavy lifting under the hood.
 
 ## Terminating ActorSystem
 

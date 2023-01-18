@@ -37,7 +37,7 @@ import org.reactivestreams.Subscription;
 import java.lang.Exception;
 
 import static jdocs.stream.ReactiveStreamsDocTest.Fixture.Data.authors;
-import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.AKKA;
+import static jdocs.stream.TwitterStreamQuickstartDocTest.Model.PEKKO;
 
 public class ReactiveStreamsDocTest extends AbstractJavaTest {
 
@@ -66,7 +66,7 @@ public class ReactiveStreamsDocTest extends AbstractJavaTest {
 
       static // #authors
       final Flow<Tweet, Author, NotUsed> authors =
-          Flow.of(Tweet.class).filter(t -> t.hashtags().contains(AKKA)).map(t -> t.author);
+          Flow.of(Tweet.class).filter(t -> t.hashtags().contains(PEKKO)).map(t -> t.author);
 
       // #authors
     }
@@ -95,7 +95,7 @@ public class ReactiveStreamsDocTest extends AbstractJavaTest {
         }
 
         /**
-         * This is a minimal version of SubscriberProbe, which lives in akka-stream-testkit (test
+         * This is a minimal version of SubscriberProbe, which lives in pekko-stream-testkit (test
          * scope) and for now wanted to avoid setting up (test -> compile) dependency for Maven).
          *
          * <p>TODO: Once SubscriberProbe is easily used here replace this MPS with it.
@@ -259,7 +259,7 @@ public class ReactiveStreamsDocTest extends AbstractJavaTest {
     storageProbe.expectMsg(new Author("drewhk"));
     storageProbe.expectMsg(new Author("ktosopl"));
     storageProbe.expectMsg(new Author("mmartynas"));
-    storageProbe.expectMsg(new Author("akkateam"));
+    storageProbe.expectMsg(new Author("pekkoteam"));
     storageProbe.expectMsg("complete");
   }
 }

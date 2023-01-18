@@ -2,27 +2,27 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
 <a id="reactive-streams-integration"></a>
 ## Overview
 
-Akka Streams implements the [Reactive Streams](https://www.reactive-streams.org/) standard for asynchronous stream processing with non-blocking
+Pekko Streams implements the [Reactive Streams](https://www.reactive-streams.org/) standard for asynchronous stream processing with non-blocking
 back pressure. 
 
 Since Java 9 the APIs of Reactive Streams has been included in the Java Standard library, under the  `java.util.concurrent.Flow` 
 namespace. For Java 8 there is instead a separate Reactive Streams artifact with the same APIs in the package `org.reactivestreams`.
 
-Akka streams provides interoperability for both these two API versions, the Reactive Streams interfaces directly through factories on the
+Pekko streams provides interoperability for both these two API versions, the Reactive Streams interfaces directly through factories on the
 regular `Source` and `Sink` APIs. For the Java 9 and later built in interfaces there is a separate set of factories in 
 @scala[`org.apache.pekko.stream.scaladsl.JavaFlowSupport`]@java[`org.apache.pekko.stream.javadsl.JavaFlowSupport`].
 
@@ -55,7 +55,7 @@ Scala
 Java
 :   @@snip [ReactiveStreamsDocTest.java](/docs/src/test/java/jdocs/stream/ReactiveStreamsDocTest.java) { #author-storage-subscriber }
 
-Using an Akka Streams `Flow` we can transform the stream and connect those:
+Using an Pekko Streams `Flow` we can transform the stream and connect those:
 
 Scala
 :   @@snip [ReactiveStreamsDocSpec.scala](/docs/src/test/scala/docs/stream/ReactiveStreamsDocSpec.scala) { #authors #connect-all }
@@ -131,7 +131,7 @@ Please note that a factory is necessary to achieve reusability of the resulting 
 
 ## Other implementations
 
-Implementing Reactive Streams makes it possible to plug Akka Streams together with other stream libraries that adhere to the standard.
+Implementing Reactive Streams makes it possible to plug Pekko Streams together with other stream libraries that adhere to the standard.
 An incomplete list of other implementations:
 
  * [Reactor (1.1+)](https://github.com/reactor/reactor)

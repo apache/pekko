@@ -1,9 +1,9 @@
 ---
-project.description: The Akka Cluster node membership service, manages dynamic member states and lifecycle with no external infrastructure needed.
+project.description: The Pekko Cluster node membership service, manages dynamic member states and lifecycle with no external infrastructure needed.
 ---
 # Cluster Membership Service
 
-The core of Akka Cluster is the cluster membership, to keep track of what nodes are part of the cluster and
+The core of Pekko Cluster is the cluster membership, to keep track of what nodes are part of the cluster and
 their health. Cluster membership is communicated using @ref:[gossip](cluster-concepts.md#gossip) and
 @ref:[failure detection](cluster-concepts.md#failure-detector).
 
@@ -13,14 +13,14 @@ on top of the cluster membership service.
 ## Introduction
 
 A cluster is made up of a set of member nodes. The identifier for each node is a
-`hostname:port:uid` tuple. An Akka application can be distributed over a cluster with
+`hostname:port:uid` tuple. An Pekko application can be distributed over a cluster with
 each node hosting some part of the application. Cluster membership and the actors running
 on that node of the application are decoupled. A node could be a member of a
 cluster without hosting any actors. Joining a cluster is initiated
 by issuing a `Join` command to one of the nodes in the cluster to join.
 
 The node identifier internally also contains a UID that uniquely identifies this
-actor system instance at that `hostname:port`. Akka uses the UID to be able to
+actor system instance at that `hostname:port`. Pekko uses the UID to be able to
 reliably trigger remote death watch. This means that the same actor system can never
 join a cluster again once it's been removed from that cluster. To re-join an actor
 system with the same `hostname:port` to a cluster you have to stop the actor system
@@ -136,7 +136,7 @@ In some rare cases it may be desirable to do a full cluster shutdown rather than
 For example, a protocol change where it is simpler to restart the cluster than to make the protocol change
 backward compatible.
 
-As of Akka `2.6.13` it can be signalled that a full cluster shutdown is about to happen and any expensive actions such as:
+As of Pekko `2.6.13` it can be signalled that a full cluster shutdown is about to happen and any expensive actions such as:
 
 * Cluster sharding rebalances
 * Moving of Cluster singletons

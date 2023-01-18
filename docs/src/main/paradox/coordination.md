@@ -1,14 +1,14 @@
 ---
-project.description: A distributed lock with Akka Coordination using a pluggable lease API.
+project.description: A distributed lock with Pekko Coordination using a pluggable lease API.
 ---
 # Coordination
 
-Akka Coordination is a set of tools for distributed coordination.
+Pekko Coordination is a set of tools for distributed coordination.
 
 ## Module info
 
 @@dependency[sbt,Gradle,Maven] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
@@ -74,7 +74,7 @@ The value should be greater than the max expected JVM pause e.g. garbage collect
 by another node and then when the original node becomes responsive again there will be a short time before the original lease owner 
 can take action e.g. shutdown shards or singletons.
 
-## Usages in other Akka modules
+## Usages in other Pekko modules
 
 Leases can be used for @ref[Split Brain Resolver](split-brain-resolver.md#lease), @ref[Cluster Singleton](cluster-singleton.md#lease), and @ref[Cluster Sharding](cluster-sharding.md#lease). 
 

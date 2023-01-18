@@ -1,26 +1,12 @@
 # Frequently Asked Questions
 
-## Akka Project
+## Pekko Project
 
-### Where does the name Akka come from?
+### Where does the name Pekko come from?
 
-It is the name of a beautiful Swedish [mountain](https://en.wikipedia.org/wiki/%C3%81hkk%C3%A1)
-up in the northern part of Sweden called Laponia. The mountain is also sometimes
-called 'The Queen of Laponia'.
-
-Akka is also the name of a goddess in the Sámi (the native Swedish population)
-mythology. She is the goddess that stands for all the beauty and good in the
-world. The mountain can be seen as the symbol of this goddess.
-
-Also, the name AKKA is a palindrome of the letters A and K as in Actor Kernel.
-
-Akka is also:
-
- * the name of the goose that Nils traveled across Sweden on in [The Wonderful Adventures of Nils](https://en.wikipedia.org/wiki/The_Wonderful_Adventures_of_Nils) by the Swedish writer Selma Lagerlöf.
- * the Finnish word for 'nasty elderly woman' and the word for 'elder sister' in the Indian languages Tamil, Telugu, Kannada and Marathi.
- * a [font](https://www.dafont.com/pekko.font)
- * a town in Morocco
- * a near-earth asteroid
+The former name of this project, Akka, is a goddess in the Sámi (the native Swedish population)
+mythology. She is the goddess that stands for all the beauty and good in the world. Pekko builds on this
+foundation and is the Finnish god of farming & protector of the crops.
 
 ## Resources with Explicit Lifecycle
 
@@ -56,7 +42,7 @@ mailboxes and thereby filling up the heap memory.
 ### How reliable is the message delivery?
 
 The general rule is **at-most-once delivery**, i.e. no guaranteed delivery.
-Stronger reliability can be built on top, and Akka provides tools to do so.
+Stronger reliability can be built on top, and Pekko provides tools to do so.
 
 Read more in @ref:[Message Delivery Reliability](../general/message-delivery-reliability.md).
 
@@ -71,10 +57,3 @@ pekko.loglevel = DEBUG
 ```
 
 Read more about it in the docs for @ref:[Logging](../typed/logging.md).
-
-# Other questions?
-
-Do you have a question not covered here? Find out how to
-[get involved in the community](https://akka.io/get-involved) or
-[set up a time](https://lightbend.com/contact) to discuss enterprise-grade
-expert support from [Lightbend](https://www.lightbend.com/).

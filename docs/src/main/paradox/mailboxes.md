@@ -8,17 +8,17 @@ For the full documentation of this feature and for new projects see @ref:[mailbo
 To use Mailboxes, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction
 
-An Akka `Mailbox` holds the messages that are destined for an @apidoc[actor.Actor].
+A Pekko `Mailbox` holds the messages that are destined for an @apidoc[actor.Actor].
 Normally each `Actor` has its own mailbox, but with for example a @apidoc[BalancingPool]
 all routees will share a single mailbox instance.
 
@@ -98,7 +98,7 @@ dispatcher which will execute it. Then the mailbox is determined as follows:
 this refers to a configuration section describing the mailbox type.
  2. If the actor's @apidoc[Props](actor.Props) contains a mailbox selection then that names a configuration section describing the
 mailbox type to be used. This needs to be an absolute config path,
-for example `myapp.special-mailbox`, and is not nested inside the `akka` namespace.
+for example `myapp.special-mailbox`, and is not nested inside the `pekko` namespace.
  3. If the dispatcher's configuration section contains a `mailbox-type` key
 the same section will be used to configure the mailbox type.
  4. If the actor requires a mailbox type as described above then the mapping for

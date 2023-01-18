@@ -5,7 +5,7 @@ For the new API see @ref[Logging](typed/logging.md).
 
 ## Module info
 
-To use Logging, you must at least use the Akka actors dependency in your project, and will most likely want to configure logging via the SLF4J module (@ref:[see below](#slf4j)).
+To use Logging, you must at least use the Pekko actors dependency in your project, and will most likely want to configure logging via the SLF4J module (@ref:[see below](#slf4j)).
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -20,7 +20,7 @@ To use Logging, you must at least use the Akka actors dependency in your project
 
 ## Introduction
 
-Logging in Akka is not tied to a specific logging backend. By default
+Logging in Pekko is not tied to a specific logging backend. By default
 log messages are printed to STDOUT, but you can plug-in a SLF4J logger or
 your own logger. Logging is performed asynchronously to ensure that logging
 has minimal performance impact. Logging generally means IO and locks,
@@ -54,8 +54,8 @@ class MyActor extends Actor with org.apache.pekko.actor.ActorLogging {
 
 The first parameter to @scala[@scaladoc[Logging](pekko.event.Logging$#apply[T](bus:org.apache.pekko.event.LoggingBus,logSource:T)(implicitevidence$5:org.apache.pekko.event.LogSource[T]):org.apache.pekko.event.LoggingAdapter)] @java[@javadoc[Logging.getLogger](pekko.event.Logging#getLogger(org.apache.pekko.event.LoggingBus,java.lang.Object))] could also be any
 @apidoc[LoggingBus], specifically @scala[@scaladoc[system.eventStream](pekko.actor.ActorSystem#eventStream:org.apache.pekko.event.EventStream)] @java[@javadoc[system.getEventStream()](pekko.actor.ActorSystem#getEventStream())]. 
-In the demonstrated case, the actor system's address is included in the `akkaSource`
-representation of the log source (see @ref:[Logging Thread, Akka Source and Actor System in MDC](#logging-thread-akka-source-and-actor-system-in-mdc)),
+In the demonstrated case, the actor system's address is included in the `pekkoSource`
+representation of the log source (see @ref:[Logging Thread, Pekko Source and Actor System in MDC](#logging-thread-pekko-source-and-actor-system-in-mdc)),
 while in the second case this is not automatically done.
 The second parameter to @scala[`Logging`] @java[`Logging.getLogger`] is the source of this logging channel.
 The source object is translated to a String according to the following rules:
@@ -109,7 +109,7 @@ to the @ref:[Event Stream](event-bus.md#event-stream).
 
 ### Auxiliary logging options
 
-Akka has a few configuration options for very low level debugging. These make more sense in development than in production.
+Pekko has a few configuration options for very low level debugging. These make more sense in development than in production.
 
 You almost definitely need to have logging set to `DEBUG` to use any of the options below:
 
@@ -119,7 +119,7 @@ pekko {
 }
 ```
 
-This config option is very good if you want to know what config settings are loaded by Akka:
+This config option is very good if you want to know what config settings are loaded by Pekko:
 
 ```ruby
 pekko {
@@ -221,7 +221,7 @@ If you want to see all messages that are sent through remoting at `DEBUG` log le
 
 ```ruby
 pekko.remote.artery {
-  # If this is "on", Akka will log all outbound messages at DEBUG level,
+  # If this is "on", Pekko will log all outbound messages at DEBUG level,
   # if off then they are not logged
   log-sent-messages = on
 }
@@ -231,7 +231,7 @@ If you want to see all messages that are received through remoting at `DEBUG` lo
 
 ```ruby
 pekko.remote.artery {
-  # If this is "on", Akka will log all inbound messages at DEBUG level,
+  # If this is "on", Pekko will log all inbound messages at DEBUG level,
   # if off then they are not logged
   log-received-messages = on
 }
@@ -317,12 +317,12 @@ pekko {
 
 The default one logs to STDOUT and is registered by default. It is not intended
 to be used for production. There is also an @ref:[SLF4J](#slf4j)
-logger available in the 'akka-slf4j' module.
+logger available in the 'pekko-slf4j' module.
 
 @@@ note
 
-If `akka-actor-typed` is available on your classpath, logging will automatically switch to @ref:[SLF4J](#slf4j) instead of 
-the default logger. See the  @ref:[Akka typed logging](typed/logging.md#event-bus) docs for more details.
+If `pekko-actor-typed` is available on your classpath, logging will automatically switch to @ref:[SLF4J](#slf4j) instead of 
+the default logger. See the  @ref:[Pekko typed logging](typed/logging.md#event-bus) docs for more details.
 
 @@@
 
@@ -344,15 +344,15 @@ stdout logger is `WARNING` and it can be silenced completely by setting
 
 ## SLF4J
 
-Akka provides a logger for [SLF4J](https://www.slf4j.org/). This module is available in the 'akka-slf4j.jar'.
+Pekko provides a logger for [SLF4J](https://www.slf4j.org/). This module is available in the 'pekko-slf4j.jar'.
 It has a single dependency: the slf4j-api jar. In your runtime, you also need a SLF4J backend. We recommend [Logback](https://logback.qos.ch/):
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-slf4j_$scala.binary.version$"
+  artifact="pekko-slf4j_$scala.binary.version$"
   version=PekkoVersion
   group2="ch.qos.logback"
   artifact2="logback-classic"
@@ -445,12 +445,12 @@ in this example:
 Place the `logback.xml` file in `src/main/resources/logback.xml`. For tests you can define different
 logging configuration in `src/test/resources/logback-test.xml`.
 
-MDC properties can be included in the Logback output with for example `%X{akkaSource}` specifier within the
+MDC properties can be included in the Logback output with for example `%X{pekkoSource}` specifier within the
 [pattern layout configuration](https://logback.qos.ch/manual/layouts.html#mdc):
 
 ```
   <encoder>
-    <pattern>%date{ISO8601} %-5level %logger{36} %X{akkaSource} - %msg%n</pattern>
+    <pattern>%date{ISO8601} %-5level %logger{36} %X{pekkoSource} - %msg%n</pattern>
   </encoder>
 ```
 
@@ -462,7 +462,7 @@ All MDC properties as key-value entries can be included with `%mdc`:
   </encoder>
 ```
 
-### Logging Thread, Akka Source and Actor System in MDC
+### Logging Thread, Pekko Source and Actor System in MDC
 
 Since the logging is done asynchronously the thread in which the logging was performed is captured in
 Mapped Diagnostic Context (MDC) with attribute name `sourceThread`.
@@ -470,17 +470,17 @@ Mapped Diagnostic Context (MDC) with attribute name `sourceThread`.
 @@@ note
 
 It will probably be a good idea to use the `sourceThread` MDC value also in
-non-Akka parts of the application in order to have this property consistently
+non-Pekko parts of the application in order to have this property consistently
 available in the logs.
 
 @@@
 
-Another helpful facility is that Akka captures the actor’s address when
+Another helpful facility is that Pekko captures the actor’s address when
 instantiating a logger within it, meaning that the full instance identification
 is available for associating log messages e.g. with members of a router. This
-information is available in the MDC with attribute name `akkaSource`.
+information is available in the MDC with attribute name `pekkoSource`.
 
-The address of the actor system, containing host and port if the system is using cluster, is available through `akkaAddress`.
+The address of the actor system, containing host and port if the system is using cluster, is available through `pekkoAddress`.
 
 Finally, the actor system in which the logging was performed
 is available in the MDC with attribute name `sourceActorSystem`.
@@ -490,14 +490,14 @@ For more details on what this attribute contains—also for non-actors—please 
 
 ### More accurate timestamps for log output in MDC
 
-Akka's logging is asynchronous which means that the timestamp of a log entry is taken from
+Pekko's logging is asynchronous which means that the timestamp of a log entry is taken from
 when the underlying logger implementation is called, which can be surprising at first.
-If you want to more accurately output the timestamp, use the MDC attribute `akkaTimestamp`.
+If you want to more accurately output the timestamp, use the MDC attribute `pekkoTimestamp`.
 
 ### MDC values defined by the application
 
 One useful feature available in Slf4j is [MDC](https://logback.qos.ch/manual/mdc.html),
-Akka has a way to let the application specify custom values, for this you need to use a
+Pekko has a way to let the application specify custom values, for this you need to use a
 specialized @apidoc[LoggingAdapter], the @apidoc[DiagnosticLoggingAdapter]. In order to
 get it you can use the factory, providing an @scala[@scaladoc[Actor](pekko.actor.Actor)] @java[@javadoc[AbstractActor](pekko.actor.AbstractActor)] as logSource:
 
@@ -571,15 +571,15 @@ trigger emails and other notifications immediately.
 Markers are available through the LoggingAdapters, when obtained via @apidoc[Logging.withMarker](event.Logging$) {scala="#withMarker(logSource:org.apache.pekko.actor.Actor):org.apache.pekko.event.DiagnosticMarkerBusLoggingAdapter" java="#withMarker(org.apache.pekko.actor.Actor)"}.
 The first argument passed into all log calls then should be a @apidoc[event.LogMarker].
 
-The slf4j bridge provided by Akka in `akka-slf4j` will automatically pick up this marker value and make it available to SLF4J.
+The slf4j bridge provided by Pekko in `pekko-slf4j` will automatically pick up this marker value and make it available to SLF4J.
 
-Akka is logging some events with markers. Some of these events also include structured MDC properties. 
+Pekko is logging some events with markers. Some of these events also include structured MDC properties. 
 
 * The "SECURITY" marker is used for highlighting security related events or incidents.
-* Akka Actor is using the markers defined in @apidoc[actor.ActorLogMarker$].
-* Akka Cluster is using the markers defined in @apidoc[cluster.ClusterLogMarker$].
-* Akka Remoting is using the markers defined in @apidoc[remote.RemoteLogMarker$].
-* Akka Cluster Sharding is using the markers defined in @apidoc[cluster.sharding.ShardingLogMarker$].
+* Pekko Actor is using the markers defined in @apidoc[actor.ActorLogMarker$].
+* Pekko Cluster is using the markers defined in @apidoc[cluster.ClusterLogMarker$].
+* Pekko Remoting is using the markers defined in @apidoc[remote.RemoteLogMarker$].
+* Pekko Cluster Sharding is using the markers defined in @apidoc[cluster.sharding.ShardingLogMarker$].
 
 Markers and MDC properties are automatically picked up by the [Logstash Logback encoder](https://github.com/logstash/logstash-logback-encoder).
 
@@ -595,7 +595,7 @@ The marker can be included in the Logback output with `%marker` and all MDC prop
 
 It is also possible to use the @javadoc[org.slf4j.Marker](org.slf4j.Marker) with the @apidoc[LoggingAdapter] when using slf4j.
 
-Since the akka-actor library avoids depending on any specific logging library, the support for this is included in `akka-slf4j`,
+Since the pekko-actor library avoids depending on any specific logging library, the support for this is included in `pekko-slf4j`,
 which provides the @apidoc[Slf4jLogMarker] type which can be passed in as first argument instead of the logging framework agnostic LogMarker
-type from `akka-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
+type from `pekko-actor`. The most notable difference between the two is that slf4j's Markers can have child markers, so one can
 rely more information using them rather than just a single string.

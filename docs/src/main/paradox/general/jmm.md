@@ -1,10 +1,10 @@
 ---
-project.description: Akka, Actors, Futures and the Java Memory Model.
+project.description: Pekko, Actors, Futures and the Java Memory Model.
 ---
-# Akka and the Java Memory Model
+# Pekko and the Java Memory Model
 
-A major benefit of using the Lightbend Platform, including Scala and Akka, is that it simplifies the process of writing
-concurrent software.  This article discusses how the Lightbend Platform, and Akka in particular, approaches shared memory
+A major benefit of using Pekko is that it simplifies the process of writing
+concurrent software.  This article discusses how the Pekko Platform approaches shared memory
 in concurrent applications.
 
 ## The Java Memory Model
@@ -29,7 +29,7 @@ write performant and scalable concurrent data structures.
 
 ## Actors and the Java Memory Model
 
-With the Actors implementation in Akka, there are two ways multiple threads can execute actions on shared memory:
+With the Actors implementation in Pekko, there are two ways multiple threads can execute actions on shared memory:
 
  * if a message is sent to an actor (e.g. by another actor). In most cases messages are immutable, but if that message
 is not a properly constructed immutable object, without a "happens before" rule, it would be possible for the receiver
@@ -38,7 +38,7 @@ to see partially initialized data structures and possibly even values out of thi
 another message moments later. It is important to realize that with the actor model you don't get any guarantee that
 the same thread will be executing the same actor for different messages.
 
-To prevent visibility and reordering problems on actors, Akka guarantees the following two "happens before" rules:
+To prevent visibility and reordering problems on actors, Pekko guarantees the following two "happens before" rules:
 
  * **The actor send rule:** the send of the message to an actor happens before the receive of that message by the same actor.
  * **The actor subsequent processing rule:** processing of one message happens before processing of the next message by the same actor.
@@ -66,7 +66,7 @@ Such are the perils of synchronized.
 <a id="jmm-shared-state"></a>
 ## Actors and shared mutable state
 
-Since Akka runs on the JVM there are still some rules to be followed.
+Since Pekko runs on the JVM there are still some rules to be followed.
 
 Most importantly, you must not close over internal Actor state and exposing it to other threads:
 

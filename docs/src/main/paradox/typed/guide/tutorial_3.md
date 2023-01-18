@@ -44,7 +44,7 @@ In addition, while sending inside the same JVM is significantly more reliable, i
 actor fails due to a programmer error while processing the message, the effect is the same as if a remote network request fails due to the remote host crashing while processing the message. Even though in both cases, the service recovers after a while (the actor is restarted by its supervisor, the host is restarted by an operator or by a monitoring system) individual requests are lost during the crash. **Therefore, writing your actors such that every
 message could possibly be lost is the safe, pessimistic bet.**
 
-But to further understand the need for flexibility in the protocol, it will help to consider Akka message ordering and message delivery guarantees. Akka provides the following behavior for message sends:
+But to further understand the need for flexibility in the protocol, it will help to consider Pekko message ordering and message delivery guarantees. Pekko provides the following behavior for message sends:
 
  * At-most-once delivery, that is, no guaranteed delivery.
  * Message ordering is maintained per sender, receiver pair.
@@ -61,7 +61,7 @@ The delivery semantics provided by messaging subsystems typically fall into the 
  * **At-least-once delivery** &#8212; potentially multiple attempts are made to deliver each message, until at least one succeeds; again, in more causal terms this means that messages can be duplicated but are never lost.
  * **Exactly-once delivery** &#8212; each message is delivered exactly once to the recipient; the message can neither be lost nor be duplicated.
 
-The first behavior, the one used by Akka, is the cheapest and results in the highest performance. It has the least implementation overhead because it can be done in a fire-and-forget fashion without keeping the state at the sending end or in the transport mechanism. The second, at-least-once, requires retries to counter transport losses. This adds the overhead of keeping the state at the sending end and having an acknowledgment mechanism at the receiving end. Exactly-once delivery is most expensive, and results in the worst performance: in addition to the overhead added by at-least-once delivery, it requires the state to be kept at the receiving end in order to filter out
+The first behavior, the one used by Pekko, is the cheapest and results in the highest performance. It has the least implementation overhead because it can be done in a fire-and-forget fashion without keeping the state at the sending end or in the transport mechanism. The second, at-least-once, requires retries to counter transport losses. This adds the overhead of keeping the state at the sending end and having an acknowledgment mechanism at the receiving end. Exactly-once delivery is most expensive, and results in the worst performance: in addition to the overhead added by at-least-once delivery, it requires the state to be kept at the receiving end in order to filter out
 duplicate deliveries.
 
 In an actor system, we need to determine exact meaning of a guarantee &#8212; at which point does the system consider the delivery as accomplished:
@@ -85,19 +85,19 @@ immediately after the API has been invoked any of the following can happen:
 
 This illustrates that the **guarantee of delivery** does not translate to the **domain level guarantee**. We only want to report success once the order has been actually fully processed and persisted. **The only entity that can report success is the application itself, since only it has any understanding of the domain guarantees required. No generalized framework can figure out the specifics of a particular domain and what is considered a success in that domain**.
 
-In this particular example, we only want to signal success after a successful database write, where the database acknowledged that the order is now safely stored. **For these reasons Akka lifts the responsibilities of guarantees to the application
-itself, i.e. you have to implement them yourself with the tools that Akka provides. This gives you full control of the guarantees that you want to provide**. Now, let's consider the message ordering that Akka provides to make it easy to reason about application logic.
+In this particular example, we only want to signal success after a successful database write, where the database acknowledged that the order is now safely stored. **For these reasons Pekko lifts the responsibilities of guarantees to the application
+itself, i.e. you have to implement them yourself with the tools that Pekko provides. This gives you full control of the guarantees that you want to provide**. Now, let's consider the message ordering that Pekko provides to make it easy to reason about application logic.
 
 ### Message Ordering
 
-In Akka, for a given pair of actors, messages sent directly from the first to the second will not be received out-of-order. The word directly emphasizes that this guarantee only applies when sending with the tell operator directly to the final destination, but not when employing mediators.
+In Pekko, for a given pair of actors, messages sent directly from the first to the second will not be received out-of-order. The word directly emphasizes that this guarantee only applies when sending with the tell operator directly to the final destination, but not when employing mediators.
 
 If:
 
  * Actor `A1` sends messages `M1`, `M2`, `M3` to `A2`.
  * Actor `A3` sends messages `M4`, `M5`, `M6` to `A2`.
 
-This means that, for Akka messages:
+This means that, for Pekko messages:
 
  * If `M1` is delivered it must be delivered before `M2` and `M3`.
  * If `M2` is delivered it must be delivered before `M3`.
@@ -139,7 +139,7 @@ Note in the code that:
 ## Testing the actor
 
 Based on the actor above, we could write a test. In the `com.example` package in the test tree of your project, add the following code to a @scala[`DeviceSpec.scala`]@java[`DeviceTest.java`] file.
-@scala[(We use ScalaTest but any other test framework can be used with the Akka Testkit)].
+@scala[(We use ScalaTest but any other test framework can be used with the Pekko Testkit)].
 
 You can run this test @scala[by running `test` at the sbt prompt]@java[by running `mvn test`].
 
@@ -161,7 +161,7 @@ Scala
 Java
 :   @@snip [Device.java](/docs/src/test/java/jdocs/typed/tutorial_3/inprogress3/Device.java) { #write-protocol-1 }
 
-However, this approach does not take into account that the sender of the record temperature message can never be sure if the message was processed or not. We have seen that Akka does not guarantee delivery of these messages and leaves it to the application to provide success notifications. In our case, we would like to send an acknowledgment to the sender once we have updated our last temperature recording, e.g. replying with a `TemperatureRecorded` message.
+However, this approach does not take into account that the sender of the record temperature message can never be sure if the message was processed or not. We have seen that Pekko does not guarantee delivery of these messages and leaves it to the application to provide success notifications. In our case, we would like to send an acknowledgment to the sender once we have updated our last temperature recording, e.g. replying with a `TemperatureRecorded` message.
 Just like in the case of temperature queries and responses, it is also a good idea to include an ID field to provide maximum flexibility.
 
 Scala

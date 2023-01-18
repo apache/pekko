@@ -1,6 +1,6 @@
 # Classic Multi-DC Cluster
 
-This chapter describes how @ref[Akka Cluster](cluster-usage.md) can be used across
+This chapter describes how @ref[Pekko Cluster](cluster-usage.md) can be used across
 multiple data centers, availability zones or regions.
 
 For the full documentation of this feature and for new projects see @ref:[Multi-DC Cluster](typed/cluster-dc.md).

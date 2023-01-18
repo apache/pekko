@@ -320,7 +320,7 @@ There is a number of fan-out operators for which currently no 'fluent' is API av
 
 ## Actor interop operators
 
-Operators meant for inter-operating between Akka Streams and Actors:
+Operators meant for inter-operating between Pekko Streams and Actors:
 
 
 | |Operator|Description|

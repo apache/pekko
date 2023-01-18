@@ -2,25 +2,25 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction
 
-This is a collection of patterns to demonstrate various usage of the Akka Streams API by solving small targeted
+This is a collection of patterns to demonstrate various usage of the Pekko Streams API by solving small targeted
 problems in the format of "recipes". The purpose of this page is to give inspiration and ideas how to approach
 various small tasks involving streams. The recipes in this page can be used directly as-is, but they are most powerful as
 starting points: customization of the code snippets is warmly encouraged. The recipes can be extended or can provide a 
 basis for the implementation of other [patterns](https://doc.akka.io/docs/alpakka/current/patterns.html) involving
-[Alpakka](https://doc.akka.io/docs/alpakka/current).
+[Pekko Connectors](https://doc.akka.io/docs/alpakka/current).
 
 This part also serves as supplementary material for the main body of documentation. It is a good idea to have this page
 open while reading the manual and look for examples demonstrating various streaming concepts
@@ -116,7 +116,7 @@ Java
 **Situation:** A stream of bytes is given as a stream of `ByteString` s and we want to calculate the cryptographic digest
 of the stream.
 
-This recipe uses a @ref[`GraphStage`](stream-customize.md) to define a custom Akka Stream operator, to host a mutable `MessageDigest` class (part of the Java Cryptography
+This recipe uses a @ref[`GraphStage`](stream-customize.md) to define a custom Pekko Stream operator, to host a mutable `MessageDigest` class (part of the Java Cryptography
 API) and update it with the bytes arriving from the stream. When the stream starts, the `onPull` handler of the
 operator is called, which bubbles up the `pull` event to its upstream. As a response to this pull, a ByteString
 chunk will arrive (`onPush`) which we use to update the digest, then it will pull for the next chunk.
@@ -217,7 +217,7 @@ a last step we merge back these values from the substreams into one single
 output stream.
 
 One noteworthy detail pertains to the @scala[`MaximumDistinctWords`] @java[`MAXIMUM_DISTINCT_WORDS`] parameter: this
-defines the breadth of the groupBy and merge operations. Akka Streams is
+defines the breadth of the groupBy and merge operations. Pekko Streams is
 focused on bounded resource consumption and the number of concurrently open
 inputs to the merge operator describes the amount of resources needed by the
 merge itself. Therefore only a finite number of substreams can be active at
@@ -493,7 +493,7 @@ for this actor.
 the same sequence, but capping the size of `ByteString` s. In other words we want to slice up `ByteString` s into smaller
 chunks if they exceed a size threshold.
 
-This can be achieved with a single @ref[`GraphStage`](stream-customize.md) to define a custom Akka Stream operator. The main logic of our operator is in `emitChunk()`
+This can be achieved with a single @ref[`GraphStage`](stream-customize.md) to define a custom Pekko Stream operator. The main logic of our operator is in `emitChunk()`
 which implements the following logic:
 
  * if the buffer is empty, and upstream is not closed we pull for more bytes, if it is closed we complete

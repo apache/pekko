@@ -22,33 +22,33 @@ and must be retransmitted in that case. Failure to do so would lead to holes at
 the receiving side.
 
 For these reasons we decided to bundle up a solution to these problems as an
-Akka Streams API. The purpose is to offer an intuitive and safe way to
+Pekko Streams API. The purpose is to offer an intuitive and safe way to
 formulate stream processing setups such that we can then execute them
 efficiently and with bounded resource usage—no more OutOfMemoryErrors. In order
 to achieve this our streams need to be able to limit the buffering that they
 employ, they need to be able to slow down producers if the consumers cannot
 keep up. This feature is called back-pressure and is at the core of the
-[Reactive Streams](https://www.reactive-streams.org/) initiative of which Akka is a
+[Reactive Streams](https://www.reactive-streams.org/) initiative of which Pekko is a
 founding member. For you this means that the hard problem of propagating and
-reacting to back-pressure has been incorporated in the design of Akka Streams
-already, so you have one less thing to worry about; it also means that Akka
+reacting to back-pressure has been incorporated in the design of Pekko Streams
+already, so you have one less thing to worry about; it also means that Pekko
 Streams interoperate seamlessly with all other Reactive Streams implementations
 (where Reactive Streams interfaces define the interoperability SPI while
-implementations like Akka Streams offer a nice user API).
+implementations like Pekko Streams offer a nice user API).
 
 ### Relationship with Reactive Streams
 
-The Akka Streams API is completely decoupled from the Reactive Streams
-interfaces. While Akka Streams focus on the formulation of transformations on
+The Pekko Streams API is completely decoupled from the Reactive Streams
+interfaces. While Pekko Streams focus on the formulation of transformations on
 data streams the scope of Reactive Streams is to define a common mechanism
 of how to move data across an asynchronous boundary without losses, buffering
 or resource exhaustion.
 
-The relationship between these two is that the Akka Streams API is geared
-towards end-users while the Akka Streams implementation uses the Reactive
+The relationship between these two is that the Pekko Streams API is geared
+towards end-users while the Pekko Streams implementation uses the Reactive
 Streams interfaces internally to pass data between the different operators.
 For this reason you will not find any resemblance between the Reactive
-Streams interfaces and the Akka Streams API. This is in line with the
+Streams interfaces and the Pekko Streams API. This is in line with the
 expectations of the Reactive Streams project, whose primary purpose is to
 define interfaces such that different streaming implementation can
 interoperate; it is not the purpose of Reactive Streams to describe an end-user
@@ -63,7 +63,7 @@ and for best results we recommend the following approach:
 
  * Read the @ref:[Quick Start Guide](stream-quickstart.md) to get a feel for how streams
 look like and what they can do.
- * The top-down learners may want to peruse the @ref:[Design Principles behind Akka Streams](../general/stream/stream-design.md) at this
+ * The top-down learners may want to peruse the @ref:[Design Principles behind Pekko Streams](../general/stream/stream-design.md) at this
 point.
  * The bottom-up learners may feel more at home rummaging through the
 @ref:[Streams Cookbook](stream-cookbook.md).

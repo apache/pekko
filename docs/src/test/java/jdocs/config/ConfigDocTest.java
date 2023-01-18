@@ -55,7 +55,7 @@ public class ConfigDocTest {
         ActorSystem.create(
             rootBehavior,
             "MyApp2",
-            config.getConfig("myapp2").withOnlyPath("akka").withFallback(config));
+            config.getConfig("myapp2").withOnlyPath("pekko").withFallback(config));
     // #separate-apps
   }
 

@@ -33,7 +33,7 @@ public class RestartDocTest {
   static ActorSystem system;
   static Materializer materializer;
 
-  // Mocking akka-http
+  // Mocking pekko-http
   public static class Http {
     public static Http get(ActorSystem system) {
       return new Http();

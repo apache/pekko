@@ -1,11 +1,11 @@
-# Akka in OSGi
+# Pekko in OSGi
 
 ## Dependency
 
-To use Akka in OSGi, you must add the following dependency in your project:
+To use Pekko in OSGi, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -28,7 +28,7 @@ Facilities emerged to "wrap" binary JARs so they could be used as bundles, but t
 situations. An application of the "80/20 Rule" here would have that "80% of the complexity is with 20% of the configuration",
 but it was enough to give OSGi a reputation that has stuck with it to this day.
 
-This document aims to the productivity basics folks need to use it with Akka, the 20% that users need to get 80% of what they want.
+This document aims to the productivity basics folks need to use it with Pekko, the 20% that users need to get 80% of what they want.
 For more information than is provided here, [OSGi In Action](https://www.manning.com/books/osgi-in-action) is worth exploring.
 
 ## Core Components and Structure of OSGi Applications
@@ -83,7 +83,7 @@ in an application composed of multiple JARs to reside under a single package nam
 might scan all classes from `com.example.plugins` for specific service implementations with that package existing in
 several contributed JARs.
    While it is possible to support overlapping packages with complex manifest headers, it's much better to use non-overlapping
-package spaces and facilities such as @ref:[Akka Cluster](../typed/cluster-concepts.md)
+package spaces and facilities such as @ref:[Pekko Cluster](../typed/cluster-concepts.md)
 for service discovery. Stylistically, many organizations opt to use the root package path as the name of the bundle
 distribution file.
 
@@ -94,23 +94,23 @@ separate classloaders for every bundle, resource files such as configurations ar
 
 ## Configuring the OSGi Framework
 
-To use Akka in an OSGi environment, the container must be configured such that the `org.osgi.framework.bootdelegation`
+To use Pekko in an OSGi environment, the container must be configured such that the `org.osgi.framework.bootdelegation`
 property delegates the `sun.misc` package to the boot classloader instead of resolving it through the normal OSGi class space.
 
 ## Intended Use
 
-Akka only supports the usage of an ActorSystem strictly confined to a single OSGi bundle, where that bundle contains or imports
+Pekko only supports the usage of an ActorSystem strictly confined to a single OSGi bundle, where that bundle contains or imports
 all of the actor system's requirements. This means that the approach of offering an ActorSystem as a service to which Actors
 can be deployed dynamically via other bundles is not recommended — an ActorSystem and its contained actors are not meant to be
 dynamic in this way. ActorRefs may safely be exposed to other bundles.
 
 ## Activator
 
-To bootstrap Akka inside an OSGi environment, you can use the @apidoc[osgi.ActorSystemActivator](osgi.ActorSystemActivator) class
+To bootstrap Pekko inside an OSGi environment, you can use the @apidoc[osgi.ActorSystemActivator](osgi.ActorSystemActivator) class
 to conveniently set up the @apidoc[ActorSystem](actor.ActorSystem).
 
 @@snip [Activator.scala](/osgi/src/test/scala/docs/osgi/Activator.scala) { #Activator }
 
-The goal here is to map the OSGi lifecycle more directly to the Akka lifecycle. The @apidoc[ActorSystemActivator](osgi.ActorSystemActivator) creates
+The goal here is to map the OSGi lifecycle more directly to the Pekko lifecycle. The @apidoc[ActorSystemActivator](osgi.ActorSystemActivator) creates
 the actor system with a class loader that finds resources (`application.conf` and `reference.conf` files) and classes
 from the application bundle and all transitive dependencies.

@@ -1,10 +1,10 @@
 ---
-project.description: Local and remote Akka Actor references, locating Actors, Actor paths and addresses.
+project.description: Local and remote Pekko Actor references, locating Actors, Actor paths and addresses.
 ---
 # Actor References, Paths and Addresses
 
 This chapter describes how actors are identified and located within a possibly
-distributed Akka application. 
+distributed Pekko application. 
 
 ![actor-paths-overview.png](../images/actor-paths-overview.png)
 
@@ -38,11 +38,11 @@ actor references for all practical purposes:
 for the purpose of being completed by the response from an actor.
 `org.apache.pekko.pattern.ask` creates this actor reference.
     * `DeadLetterActorRef` is the default implementation of the dead
-letters service to which Akka routes all messages whose destinations
+letters service to which Pekko routes all messages whose destinations
 are shut down or non-existent.
-    * `EmptyLocalActorRef` is what Akka returns when looking up a
+    * `EmptyLocalActorRef` is what Pekko returns when looking up a
 non-existent local actor path: it is equivalent to a
-`DeadLetterActorRef`, but it retains its path so that Akka can send
+`DeadLetterActorRef`, but it retains its path so that Pekko can send
 it over the network and compare it to other existing actor references for
 that path, some of which might have been obtained before the actor died.
  * And then there are some one-off internal implementations which you should
@@ -88,8 +88,8 @@ by which the corresponding actor is reachable, followed by the names of the
 actors in the hierarchy from the root up. Examples are:
 
 ```
-"akka://my-sys/user/service-a/worker1"               // purely local
-"akka://my-sys@host.example.com:5678/user/service-b" // remote
+"pekko://my-sys/user/service-a/worker1"               // purely local
+"pekko://my-sys@host.example.com:5678/user/service-b" // remote
 ```
 
 The interpretation of the host and port part (i.e. `host.example.com:5678` in the example)

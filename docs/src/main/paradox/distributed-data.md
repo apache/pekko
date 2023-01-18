@@ -5,14 +5,14 @@ For the full documentation of this feature and for new projects see @ref:[Distri
  
 ## Dependency
 
-To use Akka Distributed Data, you must add the following dependency in your project:
+To use Pekko Distributed Data, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-distributed-data_$scala.binary.version$"
+  artifact="pekko-distributed-data_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -240,7 +240,7 @@ Java
 
 As deleted keys continue to be included in the stored data on each node as well as in gossip
 messages, a continuous series of updates and deletes of top-level entities will result in
-growing memory usage until an ActorSystem runs out of memory. To use Akka Distributed Data
+growing memory usage until an ActorSystem runs out of memory. To use Pekko Distributed Data
 where frequent adds and removes are required, you should use a fixed number of top-level data
 types that support both updates and removals, for example @apidoc[cluster.ddata.ORMap] or @apidoc[cluster.ddata.ORSet].
 
@@ -248,7 +248,7 @@ types that support both updates and removals, for example @apidoc[cluster.ddata.
 
 ## Replicated data types
 
-Akka contains a set of useful replicated data types and it is fully possible to implement custom replicated data types.
+Pekko contains a set of useful replicated data types and it is fully possible to implement custom replicated data types.
 For the full documentation of this feature and for new projects see @ref:[Distributed Data Replicated data types](typed/distributed-data.md#replicated-data-types).
 
 ### Delta-CRDT

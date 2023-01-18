@@ -46,7 +46,7 @@ public class SerializationDocTest {
 
     // Pick a unique identifier for your Serializer,
     // you've got a couple of billions to choose from,
-    // 0 - 40 is reserved by Akka itself
+    // 0 - 40 is reserved by Pekko itself
     @Override
     public int identifier() {
       return 1234567;
@@ -99,7 +99,7 @@ public class SerializationDocTest {
 
     // Pick a unique identifier for your Serializer,
     // you've got a couple of billions to choose from,
-    // 0 - 40 is reserved by Akka itself
+    // 0 - 40 is reserved by Pekko itself
     @Override
     public int identifier() {
       return 1234567;

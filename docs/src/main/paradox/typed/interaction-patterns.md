@@ -1,13 +1,13 @@
 # Interaction Patterns
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Actors](../actors.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Actors](../actors.md).
 
 ## Dependency
 
-To use Akka Actor Typed, you must add the following dependency in your project:
+To use Pekko Actor Typed, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -17,7 +17,7 @@ To use Akka Actor Typed, you must add the following dependency in your project:
 
 ## Introduction
 
-Interacting with an Actor in Akka is done through an @scala[@scaladoc[ActorRef[T]](pekko.actor.typed.ActorRef)]@java[@javadoc[ActorRef<T>](pekko.actor.typed.ActorRef)] where `T` is the type of messages the actor accepts, also known as the "protocol". This ensures that only the right kind of messages can be sent to an actor and also that no one else but the Actor itself can access the Actor instance internals.
+Interacting with an Actor in Pekko is done through an @scala[@scaladoc[ActorRef[T]](pekko.actor.typed.ActorRef)]@java[@javadoc[ActorRef<T>](pekko.actor.typed.ActorRef)] where `T` is the type of messages the actor accepts, also known as the "protocol". This ensures that only the right kind of messages can be sent to an actor and also that no one else but the Actor itself can access the Actor instance internals.
 
 Message exchange with Actors follow a few common patterns, let's go through each one of them. 
 
@@ -64,7 +64,7 @@ Java
 
 Many interactions between actors require one or more response message being sent back from the receiving actor. A response message can be a result of a query, some form of acknowledgment that the message was received and processed or events that the request subscribed to.
 
-In Akka the recipient of responses has to be encoded as a field in the message itself, which the recipient can then use to send (tell) a response back.
+In Pekko the recipient of responses has to be encoded as a field in the message itself, which the recipient can then use to send (tell) a response back.
 
 **Example:**
 
@@ -239,9 +239,9 @@ In many cases the response can either be a successful result or an error (a vali
 Having to define two response classes and a shared supertype for every request type can be repetitive, especially in a cluster context 
 where you also have to make sure the messages can be serialized to be sent over the network.
 
-To help with this a generic status-response type is included in Akka: @apidoc[StatusReply], everywhere where `ask` can be used
+To help with this a generic status-response type is included in Pekko: @apidoc[StatusReply], everywhere where `ask` can be used
 there is also a second method @apidoc[askWithStatus](typed.*.ActorFlow$) {scala="#askWithStatus[I,Q,A](parallelism:Int)(ref:org.apache.pekko.actor.typed.ActorRef[Q])(makeMessage:(I,org.apache.pekko.actor.typed.ActorRef[org.apache.pekko.pattern.StatusReply[A]])=%3EQ)(implicittimeout:org.apache.pekko.util.Timeout):org.apache.pekko.stream.scaladsl.Flow[I,A,org.apache.pekko.NotUsed]" java="#askWithStatus(int,org.apache.pekko.actor.typed.ActorRef,java.time.Duration,java.util.function.BiFunction)"} which, given that the response is a `StatusReply` will unwrap successful responses
-and help with handling validation errors. Akka includes pre-built serializers for the type, so in the normal use case a clustered 
+and help with handling validation errors. Pekko includes pre-built serializers for the type, so in the normal use case a clustered 
 application only needs to provide a serializer for the successful result.
 
 For the case where the successful reply does not contain an actual value but is more of an acknowledgment there is a pre defined
@@ -377,7 +377,7 @@ This is similar to above @ref:[Per session child Actor](#per-session-child-actor
 end up repeating the same way of aggregating replies and want to extract that to a reusable actor.
 
 There are many variations of this pattern and that is the reason this is provided as a documentation
-example rather than a built in @apidoc[actor.typed.Behavior] in Akka. It is intended to be adjusted to your specific needs.
+example rather than a built in @apidoc[actor.typed.Behavior] in Pekko. It is intended to be adjusted to your specific needs.
 
 **Example:**
 
@@ -430,7 +430,7 @@ are under heavy load simultaneously. This technique is explained in depth in Jef
 [Achieving Rapid Response Times in Large Online Services](https://static.googleusercontent.com/media/research.google.com/en//people/jeff/Berkeley-Latency-Mar2012.pdf).
 
 There are many variations of this pattern and that is the reason this is provided as a documentation
-example rather than a built in @apidoc[actor.typed.Behavior] in Akka. It is intended to be adjusted to your specific needs.
+example rather than a built in @apidoc[actor.typed.Behavior] in Pekko. It is intended to be adjusted to your specific needs.
 
 **Example:**
 
@@ -525,7 +525,7 @@ which may in worst case cause undesired load on the system. `scheduleWithFixedDe
 
 ## Responding to a sharded actor
 
-When @ref:[Akka Cluster](cluster.md) is used to @ref:[shard actors](cluster-sharding.md) you need to
+When @ref:[Pekko Cluster](cluster.md) is used to @ref:[shard actors](cluster-sharding.md) you need to
 take into account that an actor may move or get passivated.
 
 The normal pattern for expecting a reply is to include an @apidoc[actor.typed.ActorRef] in the message, typically a message adapter. This can be used

@@ -1,6 +1,6 @@
 # Classic Supervision
 
-This chapter outlines the concept behind the supervision in Akka Classic, for the
+This chapter outlines the concept behind the supervision in Pekko Classic, for the
 corresponding overview of the new APIs see @ref:[supervision](general/supervision.md)
 
 <a id="supervision-directives"></a>
@@ -39,7 +39,7 @@ supervision is about forming a recursive fault handling structure. If you try
 to do too much at one level, it will become hard to reason about, hence the
 recommended way, in this case, is to add a level of supervision.
 
-Akka implements a specific form called “parental supervision”. Actors can only
+Pekko implements a specific form called “parental supervision”. Actors can only
 be created by other actors—where the top-level actor is provided by the
 library—and each created actor is supervised by its parent. This restriction
 makes the formation of actor supervision hierarchies implicit and encourages
@@ -76,7 +76,7 @@ user-created actors, the guardian named `"/user"`. Actors created using
 `system.actorOf()` are children of this actor. This means that when this
 guardian terminates, all normal actors in the system will be shutdown, too. It
 also means that this guardian’s supervisor strategy determines how the
-top-level normal actors are supervised. Since Akka 2.1 it is possible to
+top-level normal actors are supervised. Since Pekko 2.1 it is possible to
 configure this using the setting `pekko.actor.guardian-supervisor-strategy`,
 which takes the fully-qualified class-name of a
 `SupervisorStrategyConfigurator`. When the guardian escalates a failure,
@@ -112,7 +112,7 @@ stopped).
 
 ## One-For-One Strategy vs. All-For-One Strategy
 
-There are two classes of supervision strategies which come with Akka:
+There are two classes of supervision strategies which come with Pekko:
 `OneForOneStrategy` and `AllForOneStrategy`. Both are configured
 with a mapping from exception type to supervision directive (see
 [above](#supervision-directives)) and limits on how often a child is allowed to fail

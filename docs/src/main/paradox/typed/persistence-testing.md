@@ -2,7 +2,7 @@
 
 ## Module info
 
-To use Akka Persistence TestKit, add the module to your project:
+To use Pekko Persistence TestKit, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -63,11 +63,11 @@ Persistence testkit allows to check events saved in a storage, emulate storage o
 To use the testkit you need to add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence-testkit_$scala.binary.version$"
+  artifact="pekko-persistence-testkit_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -105,7 +105,7 @@ Scala
 Java
 :  @@snip [PersistenceTestKitSampleTest.java](/docs/src/test/java/jdocs/persistence/testkit/PersistenceTestKitSampleTest.java) { #test }
 
-You can safely use persistence testkit in combination with main akka testkit.
+You can safely use persistence testkit in combination with main pekko testkit.
 
 The main methods of the api allow to (see @apidoc[PersistenceTestKit] and @apidoc[SnapshotTestKit] for more details):
 
@@ -176,7 +176,7 @@ Java
 ### Configuration of Persistence TestKit
 
 There are several configuration properties for persistence testkit, please refer
-to the @ref:[reference configuration](../general/configuration-reference.md#config-akka-persistence-testkit)
+to the @ref:[reference configuration](../general/configuration-reference.md#config-pekko-persistence-testkit)
 
 ## Integration testing
 
@@ -189,7 +189,7 @@ For tests that involve more than one Cluster node you have to use another journa
 While it's possible to use the @ref:[Persistence Plugin Proxy](../persistence-plugins.md#persistence-plugin-proxy)
 it's often better and more realistic to use a real database.
 
-The @ref:[CQRS example](../project/examples.md#cqrs) includes tests that are using Akka Persistence Cassandra.
+The @ref:[CQRS example](../project/examples.md#cqrs) includes tests that are using Pekko Persistence Cassandra.
 
 ### Plugin initialization
 
@@ -197,14 +197,14 @@ Some Persistence plugins create tables automatically, but has the limitation tha
 from several ActorSystems. That can be a problem if the test creates a Cluster and all nodes tries to initialize
 the plugins at the same time. To coordinate initialization you can use the `PersistenceInit` utility.
 
-`PersistenceInit` is part of `akka-persistence-testkit` and you need to add the dependency to your project:
+`PersistenceInit` is part of `pekko-persistence-testkit` and you need to add the dependency to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-persistence-testkit_$scala.binary.version$"
+  artifact="pekko-persistence-testkit_$scala.binary.version$"
   version=PekkoVersion
 }
 

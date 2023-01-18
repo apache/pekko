@@ -1,5 +1,5 @@
 ---
-project.description: What is an Actor and sending messages between independent units of computation in Akka.
+project.description: What is an Actor and sending messages between independent units of computation in Pekko.
 ---
 # What is an Actor?
 
@@ -49,15 +49,15 @@ Actor objects will typically contain some variables which reflect possible
 states the actor may be in. This can be an explicit state machine,
 or it could be a counter, set of listeners, pending requests, etc.
 These data are what make an actor valuable, and they
-must be protected from corruption by other actors. The good news is that Akka
+must be protected from corruption by other actors. The good news is that Pekko
 actors conceptually each have their own light-weight thread, which is
 completely shielded from the rest of the system. This means that instead of
 having to synchronize access using locks you can write your actor code
 without worrying about concurrency at all.
 
-Behind the scenes Akka will run sets of actors on sets of real threads, where
+Behind the scenes Pekko will run sets of actors on sets of real threads, where
 typically many actors share one thread, and subsequent invocations of one actor
-may end up being processed on different threads. Akka ensures that this
+may end up being processed on different threads. Pekko ensures that this
 implementation detail does not affect the single-threadedness of handling the
 actor’s state.
 
@@ -143,7 +143,7 @@ priority, which might even be at the front. While using such a queue, the order
 of messages processed will naturally be defined by the queue’s algorithm and in
 general not be FIFO.
 
-An important feature in which Akka differs from some other actor model
+An important feature in which Pekko differs from some other actor model
 implementations is that the current behavior must always handle the next
 dequeued message, there is no scanning the mailbox for the next matching one.
 Failure to handle a message will typically be treated as a failure, unless this
@@ -162,7 +162,7 @@ their parent.
 ## Supervisor Strategy
 
 The final piece of an actor is its strategy for handling unexpected exceptions - failures. 
-Fault handling is then done transparently by Akka, applying one of the strategies described 
+Fault handling is then done transparently by Pekko, applying one of the strategies described 
 in @ref:[Fault Tolerance](../typed/fault-tolerance.md) for each failure.
 
 ## When an Actor Terminates

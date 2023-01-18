@@ -39,7 +39,7 @@ be used for further processing, for example creating a @apidoc[Source] that cont
 rows.
 
 Note that since the database is queried for each materialization, the `rowSource` can be safely re-used.
-Because both the database driver and Akka Streams support [Reactive Streams](https://www.reactive-streams.org/),
+Because both the database driver and Pekko Streams support [Reactive Streams](https://www.reactive-streams.org/),
 backpressure is applied throughout the stream, preventing us from running out of memory when the database
 rows are consumed slower than they are produced by the database.
 

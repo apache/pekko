@@ -1,6 +1,6 @@
 # Cluster Singleton
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Cluster Singleton](../cluster-singleton.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Cluster Singleton](../cluster-singleton.md).
 
 ## Module info
 
@@ -168,7 +168,7 @@ A @ref[lease](../coordination.md) can be used as an additional safety measure to
 don't run at the same time. Reasons for how this can happen:
 
 * Network partitions without an appropriate downing provider
-* Mistakes in the deployment process leading to two separate Akka Clusters
+* Mistakes in the deployment process leading to two separate Pekko Clusters
 * Timing issues between removing members from the Cluster on one side of a network partition and shutting them down on the other side
 
 A lease can be a final backup that means that the singleton actor won't be created unless

@@ -31,14 +31,14 @@ Hewitt but have been popularized by the Erlang language and used for example at
 Ericsson with great success to build highly concurrent and reliable telecom
 systems.
 
-The API of Akka’s Actors is similar to Scala Actors which has borrowed some of
+The API of Pekko’s Actors is similar to Scala Actors which has borrowed some of
 its syntax from Erlang.
 
 ## Creating Actors
 
 @@@ note
 
-Since Akka enforces parental supervision every actor is supervised and
+Since Pekko enforces parental supervision every actor is supervised and
 (potentially) the supervisor of its children, it is advisable to
 familiarize yourself with @ref:[Actor Systems](general/actor-systems.md), @ref:[supervision](general/supervision.md)
 and @ref:[handling exceptions](general/supervision.md#actors-and-exceptions)
@@ -76,7 +76,7 @@ Scala
 Java
 :  @@snip [MyActor.java](/docs/src/test/java/jdocs/actor/MyActor.java) { #imports #my-actor }
 
-Please note that the Akka Actor @scala[`receive`] message loop is exhaustive, which is different compared to Erlang and the late Scala Actors. This means that you
+Please note that the Pekko Actor @scala[`receive`] message loop is exhaustive, which is different compared to Erlang and the late Scala Actors. This means that you
 need to provide a pattern match for all messages that it can accept and if you
 want to be able to handle unknown messages then you need to have a default case
 as in the example above. Otherwise an @apidoc[actor.UnhandledMessage] will be published to the @apidoc[actor.ActorSystem]'s
@@ -97,7 +97,7 @@ construction.
 
 #### Here is another example that you can edit and run in the browser:
 
-@@fiddle [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #fiddle_code template="Akka" layout="v75" minheight="400px" }
+@@fiddle [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #fiddle_code template="Pekko" layout="v75" minheight="400px" }
 
 @@@
 
@@ -292,13 +292,6 @@ described here: @ref:[What Restarting Means](general/supervision.md#supervision-
 
 When using a dependency injection framework, actor beans *MUST NOT* have
 singleton scope.
-
-@@@
-
-Techniques for dependency injection and integration with dependency injection frameworks
-are described in more depth in the
-[Using Akka with Dependency Injection](https://letitcrash.com/post/55958814293/akka-dependency-injection)
-guideline and the [Akka Java Spring](https://github.com/typesafehub/activator-akka-java-spring) tutorial.
 
 ## Actor API
 
@@ -606,7 +599,7 @@ An example demonstrating actor look-up is given in @ref:[Remoting Sample](remoti
 
 @@@ warning { title=IMPORTANT }
 
-Messages can be any kind of object but have to be immutable. @scala[Scala] @java[Akka] can’t enforce
+Messages can be any kind of object but have to be immutable. @scala[Scala] @java[Pekko] can’t enforce
 immutability (yet) so this has to be by convention. @scala[Primitives like String, Int,
 Boolean are always immutable. Apart from these the recommended approach is to
 use Scala case classes that are immutable (if you don’t explicitly expose the
@@ -835,7 +828,7 @@ That has benefits such as:
 The @javadoc[Receive](pekko.actor.AbstractActor.Receive) can be implemented in other ways than using the `ReceiveBuilder` since in the
 end, it is just a wrapper around a Scala `PartialFunction`. In Java, you can implement `PartialFunction` by
 extending `AbstractPartialFunction`. For example, one could implement an adapter
-to [Vavr Pattern Matching DSL](https://docs.vavr.io/#_pattern_matching). See the [Akka Vavr sample project](https://github.com/akka/akka-samples/tree/2.5/akka-sample-vavr) for more details.
+to [Vavr Pattern Matching DSL](https://docs.vavr.io/#_pattern_matching). See the [Pekko Vavr sample project](https://github.com/apache/incubator-pekko-samples/tree/2.5/akka-sample-vavr) for more details.
 
 If the validation of the `ReceiveBuilder` match logic turns out to be a bottleneck for some of your
 actors you can consider implementing it at a lower level by extending @javadoc[UntypedAbstractActor](pekko.actor.UntypedAbstractActor) instead
@@ -1044,7 +1037,7 @@ message, i.e. not for top-level actors.
 
 ### Upgrade
 
-Akka supports hotswapping the Actor’s message loop (e.g. its implementation) at
+Pekko supports hotswapping the Actor’s message loop (e.g. its implementation) at
 runtime: invoke the @apidoc[context.become](actor.ActorContext) {scala="#become(behavior:org.apache.pekko.actor.Actor.Receive,discardOld:Boolean):Unit" java="#become(scala.PartialFunction,boolean)"} method from within the Actor.
 `become` takes a @scala[`PartialFunction[Any, Unit]`] @java[`PartialFunction<Object, BoxedUnit>`] that implements the new
 message handler. The hotswapped code is kept in a Stack that can be pushed and

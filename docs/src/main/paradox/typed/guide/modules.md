@@ -1,8 +1,8 @@
-# Overview of Akka libraries and modules
+# Overview of Pekko libraries and modules
 
-Before delving into some best practices for writing actors, it will be helpful to preview the most commonly used Akka libraries. This will help you start thinking about the functionality you want to use in your system. All core Akka functionality is available as Open Source Software (OSS). Lightbend sponsors Akka development but can also help you with [commercial offerings ](https://www.lightbend.com/lightbend-subscription) such as training, consulting, support, and [Enterprise capabilities](https://www.lightbend.com/why-lightbend#enterprise-capabilities) &#8212; a comprehensive set of tools for managing Akka systems.
+Before delving into some best practices for writing actors, it will be helpful to preview the most commonly used Pekko libraries. This will help you start thinking about the functionality you want to use in your system. All core Pekko functionality is available as Open Source Software (OSS).
 
-The following capabilities are included with Akka OSS and are introduced later on this page:
+The following capabilities are included with Pekko OSS and are introduced later on this page:
 
 * @ref:[Actor library](#actor-library)
 * @ref:[Remoting](#remoting)
@@ -13,30 +13,17 @@ The following capabilities are included with Akka OSS and are introduced later o
 * @ref:[Projections](#projections)
 * @ref:[Distributed Data](#distributed-data)
 * @ref:[Streams](#streams)
-* @ref:[Alpakka](#alpakka)
+* @ref:[Pekko Connectors](#pekko-connectors)
 * @ref:[HTTP](#http)
 * @ref:[gRPC](#grpc)
-* [Other Akka modules](https://doc.akka.io/docs/akka/current/common/other-modules.html)
+* [Other Pekko modules](https://doc.akka.io/docs/akka/current/common/other-modules.html)
 
-With a [Lightbend Platform Subscription](https://www.lightbend.com/lightbend-subscription), you can use [Akka Enhancements](https://doc.akka.io/docs/akka-enhancements/current/) that includes:
-
-[Akka Resilience Enhancements](https://doc.akka.io/docs/akka-enhancements/current/akka-resilience-enhancements.html):
-
-* [Configuration Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html) &#8212; Checks for potential configuration issues and logs suggestions.
-* [Diagnostics Recorder](https://doc.akka.io/docs/akka-enhancements/current/diagnostics-recorder.html) &#8212; Captures configuration and system information in a format that makes it easy to troubleshoot issues during development and production.
-* [Thread Starvation Detector](https://doc.akka.io/docs/akka-enhancements/current/starvation-detector.html) &#8212; Monitors an Akka system dispatcher and logs warnings if it becomes unresponsive.
-* [Fast Failover](https://doc.akka.io/docs/akka-enhancements/current/fast-failover.html) &#8212; Fast failover for Cluster Sharding.
-
-[Akka Persistence Enhancements](https://doc.akka.io/docs/akka-enhancements/current/akka-persistence-enhancements.html):
-
-* [GDPR for Akka Persistence](https://doc.akka.io/docs/akka-enhancements/current/gdpr/index.html) &#8212; Data shredding can be used to forget information in events.
-
-This page does not list all available modules, but overviews the main functionality and gives you an idea of the level of sophistication you can reach when you start building systems on top of Akka.
+This page does not list all available modules, but overviews the main functionality and gives you an idea of the level of sophistication you can reach when you start building systems on top of Pekko.
 
 ### Actor library
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -44,7 +31,7 @@ This page does not list all available modules, but overviews the main functional
   version=PekkoVersion
 }
 
-The core Akka library is `akka-actor-typed`, but actors are used across Akka libraries, providing a consistent, integrated model that relieves you from individually
+The core Pekko library is `pekko-actor-typed`, but actors are used across Pekko libraries, providing a consistent, integrated model that relieves you from individually
 solving the challenges that arise in concurrent or distributed system design. From a birds-eye view,
 actors are a programming paradigm that takes encapsulation, one of the pillars of OOP, to its extreme.
 Unlike objects, actors encapsulate not only their
@@ -64,7 +51,7 @@ Challenges that actors solve include the following:
 ### Remoting
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -90,7 +77,7 @@ Challenges Remoting solves include the following:
 ### Cluster
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -116,7 +103,7 @@ Challenges the Cluster module solves include the following:
 ### Cluster Sharding
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -124,7 +111,7 @@ Challenges the Cluster module solves include the following:
   version=PekkoVersion
 }
 
-Sharding helps to solve the problem of distributing a set of actors among members of an Akka cluster.
+Sharding helps to solve the problem of distributing a set of actors among members of an Pekko cluster.
 Sharding is a pattern that mostly used together with Persistence to balance a large set of persistent entities
 (backed by actors) to members of a cluster and also migrate them to other nodes when members crash or leave.
 
@@ -138,7 +125,7 @@ Challenges that Sharding solves include the following:
 ### Cluster Singleton
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -162,7 +149,7 @@ The Singleton module can be used to solve these challenges:
 ### Persistence
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -187,7 +174,7 @@ Persistence tackles the following challenges:
 ### Projections
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -207,7 +194,7 @@ Challenges Projections solve include the following:
 ### Distributed Data
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -216,7 +203,7 @@ Challenges Projections solve include the following:
 }
 
 In situations where eventual consistency is acceptable, it is possible to share data between nodes in
-an Akka Cluster and accept both reads and writes even in the face of cluster partitions. This can be
+an Pekko Cluster and accept both reads and writes even in the face of cluster partitions. This can be
 achieved using [Conflict Free Replicated Data Types](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) (CRDTs), where writes on different nodes can
 happen concurrently and are merged in a predictable way afterward. The Distributed Data module
 provides infrastructure to share data and a number of useful data types.
@@ -229,7 +216,7 @@ Distributed Data is intended to solve the following challenges:
 ### Streams
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -253,25 +240,25 @@ Streams solve the following challenges:
 * How to connect asynchronous services in a flexible way to each other with high performance.
 * How to provide or consume Reactive Streams compliant interfaces to interface with a third party library.
 
-### Alpakka
+### Pekko Connectors
 
-[Alpakka](https://doc.akka.io/docs/alpakka/current/) is a separate module from Akka.
+[Pekko Connectors](https://doc.akka.io/docs/alpakka/current/) is a separate module from Pekko.
 
-Alpakka is collection of modules built upon the Streams API to provide Reactive Stream connector
+Pekko Connectors is collection of modules built upon the Streams API to provide Reactive Stream connector
 implementations for a variety of technologies common in the cloud and infrastructure landscape.  
-See the [Alpakka overview page](https://doc.akka.io/docs/alpakka/current/overview.html) for more details on the API and the implementation modules available.
+See the [Pekko Connectors overview page](https://doc.akka.io/docs/alpakka/current/overview.html) for more details on the API and the implementation modules available.
 
-Alpakka helps solve the following challenges:
+Pekko Connectors help solve the following challenges:
 
 * Connecting various infrastructure or persistence components to Stream based flows.
 * Connecting to legacy systems in a manner that adheres to a Reactive Streams API.
 
 ### HTTP
 
-[Akka HTTP](https://doc.akka.io/docs/akka-http/current/) is a separate module from Akka.
+[Pekko HTTP](https://doc.akka.io/docs/akka-http/current/) is a separate module from Pekko.
 
-The de facto standard for providing APIs remotely, internal or external, is [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol). Akka provides a library to construct or consume such HTTP services by giving a set of tools to create HTTP services (and serve them) and a client that can be
-used to consume other services. These tools are particularly suited to streaming in and out a large set of data or real-time events by leveraging the underlying model of Akka Streams.
+The de facto standard for providing APIs remotely, internal or external, is [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol). Pekko provides a library to construct or consume such HTTP services by giving a set of tools to create HTTP services (and serve them) and a client that can be
+used to consume other services. These tools are particularly suited to streaming in and out a large set of data or real-time events by leveraging the underlying model of Pekko Streams.
 
 Some of the challenges that HTTP tackles:
 
@@ -281,11 +268,11 @@ Some of the challenges that HTTP tackles:
 
 ### gRPC
 
-[Akka gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html) is a separate module from Akka.
+[Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html) is a separate module from Pekko.
 
-This library provides an implementation of gRPC that integrates nicely with the @ref:[HTTP](#http) and @ref:[Streams](#streams) modules.  It is capable of generating both client and server-side artifacts from protobuf service definitions, which can then be exposed using Akka HTTP, and handled using Streams.
+This library provides an implementation of gRPC that integrates nicely with the @ref:[HTTP](#http) and @ref:[Streams](#streams) modules.  It is capable of generating both client and server-side artifacts from protobuf service definitions, which can then be exposed using Pekko HTTP, and handled using Streams.
 
-Some of the challenges that Akka gRPC tackles:
+Some of the challenges that Pekko gRPC tackles:
 
 * Exposing services with all the benefits of gRPC & protobuf:  
   * Schema-first contract
@@ -297,7 +284,7 @@ Some of the challenges that Akka gRPC tackles:
 
 ### Example of module use
 
-Akka modules integrate together seamlessly. For example, think of a large set of stateful business objects, such as documents or shopping carts, that website users access. If you model these as sharded entities, using Sharding and Persistence, they will be balanced across a cluster that you can scale out on-demand. They will be available during spikes that come from advertising campaigns or before holidays will be handled, even if some systems crash. You can also take the real-time stream of domain events with Persistence Query and use Streams to pipe them into a streaming Fast Data engine. Then, take the output of that engine as a Stream, manipulate it using Akka Streams
+Pekko modules integrate together seamlessly. For example, think of a large set of stateful business objects, such as documents or shopping carts, that website users access. If you model these as sharded entities, using Sharding and Persistence, they will be balanced across a cluster that you can scale out on-demand. They will be available during spikes that come from advertising campaigns or before holidays will be handled, even if some systems crash. You can also take the real-time stream of domain events with Persistence Query and use Streams to pipe them into a streaming Fast Data engine. Then, take the output of that engine as a Stream, manipulate it using Pekko Streams
 operators and expose it as web socket connections served by a load balanced set of HTTP servers hosted by your cluster
 to power your real-time business analytics tool.
 

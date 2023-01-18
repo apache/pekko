@@ -6,7 +6,7 @@ Merge multiple sources with priorities.
 
 ## Signature
 
-@@signature [Source.scala](/akka-stream/src/main/scala/org/apache/pekko/stream/scaladsl/Source.scala) { #mergePrioritized }
+@@signature [Source.scala](/pekko-stream/src/main/scala/org/apache/pekko/stream/scaladsl/Source.scala) { #mergePrioritized }
 
 ## Description
 

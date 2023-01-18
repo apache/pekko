@@ -8,11 +8,11 @@ project.description: Low level API for using UDP with classic actors.
 To use UDP, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -111,7 +111,7 @@ connect, thus writes do not suffer an additional performance penalty.
 
 ## UDP Multicast
 
-Akka provides a way to control various options of `DatagramChannel` through the
+Pekko provides a way to control various options of `DatagramChannel` through the
 `org.apache.pekko.io.Inet.SocketOption` interface. The example below shows
 how to setup a receiver of multicast messages using IPv6 protocol.
 

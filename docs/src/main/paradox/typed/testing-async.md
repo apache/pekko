@@ -1,6 +1,6 @@
 ## Asynchronous testing
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Testing](../testing.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Testing](../testing.md).
 
 Asynchronous testing uses a real @apidoc[actor.typed.ActorSystem] that allows you to test your Actors in a more realistic environment.
 
@@ -140,7 +140,7 @@ Java
 ### Configuration
 
 By default the `ActorTestKit` loads configuration from `application-test.conf` if that exists, otherwise
-it is using default configuration from the reference.conf resources that ship with the Akka libraries. The
+it is using default configuration from the reference.conf resources that ship with the Pekko libraries. The
 application.conf of your project is not used in this case.
 A specific configuration can be given as parameter when creating the TestKit.
 
@@ -232,7 +232,7 @@ When running tests, it's typically preferred to have the output to standard out,
 testing framework (@scala[ScalaTest]@java[JUnit]). On one hand you want the output to be clean without logging noise,
 but on the other hand you want as much information as possible if there is a test failure (for example in CI builds).
 
-The Akka TestKit provides a `LogCapturing` utility to support this with ScalaTest or JUnit. It will buffer log events instead
+The Pekko TestKit provides a `LogCapturing` utility to support this with ScalaTest or JUnit. It will buffer log events instead
 of emitting them to the `ConsoleAppender` immediately (or whatever Logback appender that is configured). When
 there is a test failure the buffered events are flushed to the target appenders, typically a `ConsoleAppender`.
 

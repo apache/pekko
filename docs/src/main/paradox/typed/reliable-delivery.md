@@ -3,7 +3,7 @@ project.description: Reliable delivery and flow control of messages between acto
 ---
 # Reliable delivery
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic At-Least-Once Delivery](../persistence.md#at-least-once-delivery).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic At-Least-Once Delivery](../persistence.md#at-least-once-delivery).
 
 @@@ warning
 
@@ -18,7 +18,7 @@ warning or deprecation period. It is also not recommended to use this module in 
 To use reliable delivery, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -255,7 +255,7 @@ In that case some of these may already have been processed by the previous worke
 To use reliable delivery with Cluster Sharding, add the following module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -357,14 +357,14 @@ resend them. If the JVM of the producer side crashes those unconfirmed messages 
 To make sure the messages can be delivered also in that scenario a @apidoc[DurableProducerQueue$] can be used.
 Then the unconfirmed messages are stored in a durable way so that they can be redelivered when the producer
 is started again. An implementation of the `DurableProducerQueue` is provided by @apidoc[EventSourcedProducerQueue$]
-in `akka-persistence-typed`.
+in `pekko-persistence-typed`.
 
 Be aware of that a `DurableProducerQueue` will add a substantial performance overhead. 
 
 When using the `EventSourcedProducerQueue` the following dependency is needed:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group=org.apache.pekko
@@ -441,6 +441,6 @@ This feature is not implemented for @ref:[Work pulling](#work-pulling) and @ref:
 There are several configuration properties, please refer to `pekko.reliable-delivery` config section in the
 reference configuration:
 
-* @ref:[akka-actor-typed reference configuration](../general/configuration-reference.md#config-akka-actor-typed)
-* @ref:[akka-persistence-typed reference configuration](../general/configuration-reference.md#config-akka-persistence-typed)
-* @ref:[akka-cluster-sharding-typed reference configuration](../general/configuration-reference.md#config-cluster-sharding-typed)
+* @ref:[pekko-actor-typed reference configuration](../general/configuration-reference.md#config-pekko-actor-typed)
+* @ref:[pekko-persistence-typed reference configuration](../general/configuration-reference.md#config-pekko-persistence-typed)
+* @ref:[pekko-cluster-sharding-typed reference configuration](../general/configuration-reference.md#config-cluster-sharding-typed)

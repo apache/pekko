@@ -1,4 +1,4 @@
-# Akka Documentation
+# Pekko Documentation
 
 @@toc { depth=2 }
 

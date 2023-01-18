@@ -1,21 +1,20 @@
 ---
-project.description: Build distributed applications that scale across the network with Akka Cluster, a fault-tolerant decentralized peer-to-peer based cluster node membership service with no single point of failure.
+project.description: Build distributed applications that scale across the network with Pekko Cluster, a fault-tolerant decentralized peer-to-peer based cluster node membership service with no single point of failure.
 ---
 # Cluster Usage
   
-This document describes how to use Akka Cluster and the Cluster APIs. 
-The [Stateful or Stateless Applications: To Akka Cluster or not](https://akka.io/blog/news/2020/06/01/akka-cluster-motivation) video is a good starting point to understand the motivation to use Akka Cluster.
+This document describes how to use Pekko Cluster and the Cluster APIs. 
 
 For specific documentation topics see: 
 
-* @ref:[When and where to use Akka Cluster](choosing-cluster.md)
+* @ref:[When and where to use Pekko Cluster](choosing-cluster.md)
 * @ref:[Cluster Specification](cluster-concepts.md)
 * @ref:[Cluster Membership Service](cluster-membership.md)
 * @ref:[Higher level Cluster tools](#higher-level-cluster-tools)
 * @ref:[Rolling Updates](../additional/rolling-updates.md)
 * @ref:[Operating, Managing, Observability](../additional/operations.md)
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Cluster](../cluster-usage.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Cluster](../cluster-usage.md).
 
 You have to enable @ref:[serialization](../serialization.md)  to send messages between ActorSystems (nodes) in the Cluster.
 @ref:[Serialization with Jackson](../serialization-jackson.md) is a good choice in many cases, and our
@@ -23,7 +22,7 @@ recommendation if you don't have other preferences or constraints.
 
 ## Module info
 
-To use Akka Cluster add the following dependency in your project:
+To use Pekko Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -142,7 +141,7 @@ way as other nodes.
 #### Joining automatically to seed nodes with Cluster Bootstrap
 
 Automatic discovery of nodes for the joining process is available
-using the open source Akka Management project's module, 
+using the open source Pekko Management project's module, 
 @ref:[Cluster Bootstrap](../additional/operations.md#cluster-bootstrap).
 Please refer to its documentation for more details.
 
@@ -156,15 +155,15 @@ You can define the seed nodes in the @ref:[configuration](#configuration) file (
 
 ```
 pekko.cluster.seed-nodes = [
-  "akka://ClusterSystem@host1:2552",
-  "akka://ClusterSystem@host2:2552"]
+  "pekko://ClusterSystem@host1:2552",
+  "pekko://ClusterSystem@host2:2552"]
 ```
 
 This can also be defined as Java system properties when starting the JVM using the following syntax:
 
 ```
--Dpekko.cluster.seed-nodes.0=akka://ClusterSystem@host1:2552
--Dpekko.cluster.seed-nodes.1=akka://ClusterSystem@host2:2552
+-Dpekko.cluster.seed-nodes.0=pekko://ClusterSystem@host1:2552
+-Dpekko.cluster.seed-nodes.1=pekko://ClusterSystem@host2:2552
 ```
 
 
@@ -260,7 +259,7 @@ Graceful leaving offers faster hand off to peer nodes during node shutdown than 
 The @ref:[Coordinated Shutdown](../coordinated-shutdown.md) will also run when the cluster node sees itself as
 `Exiting`, i.e. leaving from another node will trigger the shutdown process on the leaving node.
 Tasks for graceful leaving of cluster, including graceful shutdown of Cluster Singletons and
-Cluster Sharding, are added automatically when Akka Cluster is used. For example, running the shutdown
+Cluster Sharding, are added automatically when Pekko Cluster is used. For example, running the shutdown
 process will also trigger the graceful leaving if not already in progress.
 
 Normally this is handled automatically, but in case of network failures during this process it may still
@@ -281,7 +280,7 @@ status of the unreachable member must be changed to `Down`. Changing status to `
 can be performed automatically or manually.
 
 We recommend that you enable the @ref:[Split Brain Resolver](../split-brain-resolver.md) that is part of the
-Akka Cluster module. You enable it with configuration:
+Pekko Cluster module. You enable it with configuration:
 
 ```
 pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
@@ -352,7 +351,7 @@ depending on you environment:
 
 ## How to test
 
-Akka comes with and uses several types of testing strategies:
+Pekko comes with and uses several types of testing strategies:
 
 * @ref:[Testing](testing.md)
 * @ref:[Multi Node Testing](../multi-node-testing.md)
@@ -361,7 +360,7 @@ Akka comes with and uses several types of testing strategies:
 ## Configuration
 
 There are several configuration properties for the cluster. Refer to the 
-@ref:[reference configuration](../general/configuration-reference.md#config-akka-cluster) for full
+@ref:[reference configuration](../general/configuration-reference.md#config-pekko-cluster) for full
 configuration descriptions, default values and options.
 
 ### How To Startup when a Cluster size is reached
@@ -427,8 +426,7 @@ pekko.cluster.configuration-compatibility-check.checkers {
 Configuration Compatibility Check is enabled by default, but can be disabled by setting `pekko.cluster.configuration-compatibility-check.enforce-on-join = off`. This is specially useful when performing rolling updates. Obviously this should only be done if a complete cluster shutdown isn't an option. A cluster with nodes with different configuration settings may lead to data loss or data corruption. 
 
 This setting should only be disabled on the joining nodes. The checks are always performed on both sides, and warnings are logged. In case of incompatibilities, it is the responsibility of the joining node to decide if the process should be interrupted or not.  
-
-If you are performing a rolling update on cluster using Akka 2.5.9 or prior (thus, not supporting this feature), the checks will not be performed because the running cluster has no means to verify the configuration sent by the joining node, nor to send back its own configuration.  
+ 
 
 @@@ 
 
@@ -457,8 +455,8 @@ See @ref:[Reliable Delivery](reliable-delivery.md)
 
 ## Example project
 
-@java[@extref[Cluster example project](samples:akka-samples-cluster-java)]
-@scala[@extref[Cluster example project](samples:akka-samples-cluster-scala)]
+@java[@extref[Cluster example project](samples:pekko-samples-cluster-java)]
+@scala[@extref[Cluster example project](samples:pekko-samples-cluster-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains samples illustrating different Cluster features, such as

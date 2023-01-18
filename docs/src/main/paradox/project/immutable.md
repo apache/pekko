@@ -3,7 +3,7 @@ project.description: Data immutability using Project Lombok
 ---
 # Immutability using Lombok
 
-A preferred best practice in Akka is to have immutable messages. Scala provides case class which makes it extremely easy
+A preferred best practice in Pekko is to have immutable messages. Scala provides case class which makes it extremely easy
 to have short and clean classes for creating immutable objects, but no such facility is easily available in Java. We can make use
 of several third party libraries which help is achieving this. One good example is Lombok.
 

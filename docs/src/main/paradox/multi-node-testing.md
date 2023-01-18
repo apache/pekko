@@ -1,5 +1,5 @@
 ---
-project.description: Multi node testing of distributed systems built with Akka.
+project.description: Multi node testing of distributed systems built with Pekko.
 ---
 # Multi Node Testing
 
@@ -21,7 +21,7 @@ To use Multi Node Testing, you must add the following dependency in your project
 
 ## Multi Node Testing Concepts
 
-When we talk about multi node testing in Akka we mean the process of running coordinated tests on multiple actor
+When we talk about multi node testing in Pekko we mean the process of running coordinated tests on multiple actor
 systems in different JVMs. The multi node testing kit consist of three main parts.
 
  * @ref:[The Test Conductor](#the-test-conductor). that coordinates and controls the nodes under test.
@@ -31,7 +31,7 @@ nodes connect to it.
 
 ## The Test Conductor
 
-The basis for the multi node testing is the @apidoc[TestConductor$]. It is an Akka Extension that plugs in to the
+The basis for the multi node testing is the @apidoc[TestConductor$]. It is an Pekko Extension that plugs in to the
 network stack and it is used to coordinate the nodes participating in the test and provides several features
 including:
 
@@ -42,7 +42,7 @@ test nodes)
 
 This is a schematic overview of the test conductor.
 
-![akka-remote-testconductor.png](./images/akka-remote-testconductor.png)
+![pekko-remote-testconductor.png](./images/pekko-remote-testconductor.png)
 
 The test conductor server is responsible for coordinating barriers and sending commands to the test conductor
 clients that act upon them, e.g. throttling network traffic to/from another client. More information on the
@@ -201,4 +201,4 @@ thread. This also means that you shouldn't use them from inside an actor, a futu
 ## Configuration
 
 There are several configuration properties for the Multi-Node Testing module, please refer
-to the @ref:[reference configuration](general/configuration-reference.md#config-akka-multi-node-testkit).
+to the @ref:[reference configuration](general/configuration-reference.md#config-pekko-multi-node-testkit).

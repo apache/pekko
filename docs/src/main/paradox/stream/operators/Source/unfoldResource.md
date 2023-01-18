@@ -17,13 +17,13 @@ Wrap any resource that can be opened, queried for next element (in a blocking wa
 1. `read`: Fetch the next element or signal that we reached the end of the stream by returning a @java[`Optional.empty`]@scala[`None`]
 1. `close`: Close the resource, invoked on end of stream or if the stream fails
 
-The functions are by default called on Akka's dispatcher for blocking IO to avoid interfering with other stream operations. 
+The functions are by default called on Pekko's dispatcher for blocking IO to avoid interfering with other stream operations. 
 See @ref:[Blocking Needs Careful Management](../../../typed/dispatchers.md#blocking-needs-careful-management) for an explanation on why this is important.
 
 Note that there are pre-built `unfoldResource`-like operators to wrap `java.io.InputStream`s in 
 @ref:[Additional Sink and Source converters](../index.md#additional-sink-and-source-converters), 
 `Iterator` in @ref:[fromIterator](fromIterator.md) and File IO in @ref:[File IO Sinks and Sources](../index.md#file-io-sinks-and-sources).
-Additional prebuilt technology specific connectors can also be found in the [Alpakka project](https://doc.akka.io/docs/alpakka/current/).
+Additional prebuilt technology specific connectors can also be found in [Pekko Connectors](https://doc.akka.io/docs/alpakka/current/).
 
 ## Examples
 

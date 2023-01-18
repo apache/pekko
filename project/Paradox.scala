@@ -29,15 +29,15 @@ object Paradox {
       "canonical.base_url" -> "https://doc.akka.io/docs/akka/current",
       "github.base_url" -> GitHub
         .url(version.value), // for links like this: @github[#1](#1) or @github[83986f9](83986f9)
-      "extref.akka.http.base_url" -> "https://doc.akka.io/docs/akka-http/current/%s",
-      "extref.akka-management.base_url" -> "https://doc.akka.io/docs/akka-management/current/%s",
+      "extref.pekko.http.base_url" -> "https://doc.akka.io/docs/akka-http/current/%s",
+      "extref.pekko-management.base_url" -> "https://doc.akka.io/docs/akka-management/current/%s",
       "extref.platform-guide.base_url" -> "https://developer.lightbend.com/docs/akka-platform-guide/%s",
       "extref.wikipedia.base_url" -> "https://en.wikipedia.org/wiki/%s",
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> "https://developer.lightbend.com/start/?group=akka&amp;project=%s",
       "extref.ecs.base_url" -> "https://example.lightbend.com/v1/download/%s",
       "scaladoc.pekko.base_url" -> "https://doc.akka.io/api/akka/2.6/org/apache",
-      "scaladoc.akka.http.base_url" -> "https://doc.akka.io/api/akka-http/current/org/apache",
+      "scaladoc.pekko.http.base_url" -> "https://doc.akka.io/api/akka-http/current/org/apache",
       "javadoc.java.base_url" -> "https://docs.oracle.com/en/java/javase/11/docs/api/java.base/",
       "javadoc.java.link_style" -> "direct",
       "javadoc.pekko.base_url" -> "https://doc.akka.io/japi/akka/2.6/org/apache",
@@ -73,8 +73,6 @@ object Paradox {
   val rootsSettings = Seq(
     paradoxRoots := List(
       "index.html",
-      // Page that recommends Alpakka:
-      "camel.html",
       // TODO page not linked to
       "fault-tolerance-sample.html"))
 

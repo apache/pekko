@@ -2,7 +2,7 @@
 
 ## Module info
 
-To use Akka Sharded Daemon Process, you must add the following dependency in your project:
+To use Pekko Sharded Daemon Process, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion

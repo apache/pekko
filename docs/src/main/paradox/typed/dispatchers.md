@@ -1,27 +1,27 @@
 ---
-project.description: Akka dispatchers and how to choose the right ones.
+project.description: Pekko dispatchers and how to choose the right ones.
 ---
 # Dispatchers
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Dispatchers](../dispatchers.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Dispatchers](../dispatchers.md).
 
 ## Dependency
 
-Dispatchers are part of core Akka, which means that they are part of the `akka-actor` dependency. This
-page describes how to use dispatchers with `akka-actor-typed`, which has dependency:
+Dispatchers are part of core Pekko, which means that they are part of the `pekko-actor` dependency. This
+page describes how to use dispatchers with `pekko-actor-typed`, which has dependency:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor-typed_$scala.binary.version$"
+  artifact="pekko-actor-typed_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction 
 
-An Akka `MessageDispatcher` is what makes Akka Actors "tick", it is the engine of the machine so to speak.
+An Pekko `MessageDispatcher` is what makes Pekko Actors "tick", it is the engine of the machine so to speak.
 All `MessageDispatcher` implementations are also an @scala[`ExecutionContext`]@java[`Executor`], which means that they can be used
 to execute arbitrary code, for instance @scala[`Future`s]@java[`CompletableFuture`s].
 
@@ -34,7 +34,7 @@ gives excellent performance in most cases.
 
 ## Internal dispatcher
 
-To protect the internal Actors that are spawned by the various Akka modules, a separate internal dispatcher is used by default.
+To protect the internal Actors that are spawned by the various Pekko modules, a separate internal dispatcher is used by default.
 The internal dispatcher can be tuned in a fine-grained way with the setting `pekko.actor.internal-dispatcher`, it can also
 be replaced by another dispatcher by making `pekko.actor.internal-dispatcher` an @ref[alias](#dispatcher-aliases).
 
@@ -148,7 +148,7 @@ is typically that (network) I/O occurs under the covers.
 
 The [Managing Blocking in Akka video](https://akka.io/blog/news/2020/01/22/managing-blocking-video)
 explains why it is bad to block inside an actor, and how you can use custom dispatchers to manage
-blocking when you cannot avoid it.
+blocking when you cannot avoid it. The same principle applies with Pekko actors.
 
 ### Problem: Blocking on default dispatcher
 
@@ -174,7 +174,7 @@ Often when integrating with existing libraries or systems it is not possible to
 avoid blocking APIs. The following solution explains how to handle blocking
 operations properly.
 
-Note that the same hints apply to managing blocking operations anywhere in Akka,
+Note that the same hints apply to managing blocking operations anywhere in Pekko,
 including Streams, HTTP and other reactive libraries built on top of it.
 
 @@@
@@ -220,20 +220,11 @@ The orange portion of the thread shows that it is idle. Idle threads are fine -
 they're ready to accept new work. However, a large number of turquoise (blocked, or sleeping as in our example) threads
 leads to thread starvation.
 
-@@@ note
-
-If you own a Lightbend subscription you can use the commercial [Thread Starvation Detector](https://doc.akka.io/docs/akka-enhancements/current/starvation-detector.html)
-which will issue warning log statements if it detects any of your dispatchers suffering from starvation and other.
-It is a helpful first step to identify the problem is occurring in a production system,
-and then you can apply the proposed solutions as explained below.
-
-@@@
-
 ![dispatcher-behaviour-on-bad-code.png](../images/dispatcher-behaviour-on-bad-code.png)
 
 In the above example we put the code under load by sending hundreds of messages to blocking actors
 which causes threads of the default dispatcher to be blocked.
-The fork join pool based dispatcher in Akka then attempts to compensate for this blocking by adding more threads to the pool
+The fork join pool based dispatcher in Pekko then attempts to compensate for this blocking by adding more threads to the pool
 (`default-pekko.actor.default-dispatcher 18,19,20,...`).
 This however is not able to help if those too will immediately get blocked,
 and eventually the blocking operations will dominate the entire dispatcher.
@@ -318,7 +309,7 @@ they were still served on the default dispatcher.
 This is the recommended way of dealing with any kind of blocking in reactive
 applications.
 
-For a similar discussion specifically about Akka HTTP, refer to @extref[Handling blocking operations in Akka HTTP](akka.http:handling-blocking-operations-in-akka-http-routes.html).
+For a similar discussion specifically about Pekko HTTP, refer to @extref[Handling blocking operations in Pekko HTTP](pekko.http:handling-blocking-operations-in-akka-http-routes.html).
 
 ### Available solutions to blocking operations
 
@@ -349,7 +340,7 @@ on which DBMS is deployed on what hardware.
 
 @@@ note
 
-Configuring thread pools is a task best delegated to Akka, configure
+Configuring thread pools is a task best delegated to Pekko, configure
 it in `application.conf` and instantiate through an
 @ref:[`ActorSystem`](#dispatcher-lookup)
 

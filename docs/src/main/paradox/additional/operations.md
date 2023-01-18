@@ -1,5 +1,5 @@
 ---
-project.description: Operating, managing and monitoring Akka and Akka Cluster applications.
+project.description: Operating, managing and monitoring Pekko and Pekko Cluster applications.
 ---
 # Operating a Cluster
 
@@ -14,13 +14,13 @@ When starting clusters on cloud systems such as Kubernetes, AWS, Google Cloud, A
 you may want to automate the discovery of nodes for the cluster joining process, using your cloud providers,
 cluster orchestrator, or other form of service discovery (such as managed DNS).
 
-The open source Akka Management library includes the @extref:[Cluster Bootstrap](akka-management:bootstrap/index.html)
+The open source Pekko Management library includes the @extref:[Cluster Bootstrap](pekko-management:bootstrap/index.html)
 module which handles just that. Please refer to its documentation for more details.
 
 @@@ note
  
-If you are running Akka in a Docker container or the nodes for some other reason have separate internal and
-external ip addresses you must configure remoting according to @ref:[Akka behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
+If you are running Pekko in a Docker container or the nodes for some other reason have separate internal and
+external ip addresses you must configure remoting according to @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
 
 @@@
  
@@ -31,14 +31,14 @@ See @ref:[Rolling Updates, Cluster Shutdown and Coordinated Shutdown](../additio
 ## Cluster Management
 
 There are several management tools for the cluster. 
-Complete information on running and managing Akka applications can be found in 
-the @exref:[Akka Management](akka-management:) project documentation.
+Complete information on running and managing Pekko applications can be found in 
+the @exref:[Pekko Management](pekko-management:) project documentation.
 
 <a id="cluster-http"></a>
 ### HTTP
 
 Information and management of the cluster is available with a HTTP API.
-See documentation of @extref:[Akka Management](akka-management:).
+See documentation of @extref:[Pekko Management](pekko-management:).
 
 <a id="cluster-jmx"></a>
 ### JMX
@@ -55,11 +55,4 @@ From JMX you can:
  * mark any node in the cluster as down
  * tell any node in the cluster to leave
 
-Member nodes are identified by their address, in format *`akka://actor-system-name@hostname:port`*.
-
-## Monitoring and Observability
-
-Aside from log monitoring and the monitoring provided by your APM or platform provider, [Lightbend Telemetry](https://developer.lightbend.com/docs/telemetry/current/instrumentations/akka/pekko.html),
-available through a [Lightbend Subscription](https://www.lightbend.com/lightbend-subscription),
-can provide additional insights in the run-time characteristics of your application, including metrics, events,
-and distributed tracing for Akka Actors, Cluster, HTTP, and more.
+Member nodes are identified by their address, in format *`pekko://actor-system-name@hostname:port`*.

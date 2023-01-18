@@ -25,7 +25,7 @@ import scala.concurrent._
 class RestartDocSpec extends PekkoSpec with CompileOnlySpec {
   import system.dispatcher
 
-  // Mock akka-http interfaces
+  // Mock pekko-http interfaces
   object Http {
     def apply() = this
     def singleRequest(req: HttpRequest) = Future.successful(())
@@ -52,7 +52,7 @@ class RestartDocSpec extends PekkoSpec with CompileOnlySpec {
       val restartSource = RestartSource.withBackoff(settings) { () =>
         // Create a source from a future of a source
         Source.futureSource {
-          // Make a single request with akka-http
+          // Make a single request with pekko-http
           Http()
             .singleRequest(HttpRequest(uri = "http://example.com/eventstream"))
             // Unmarshall it as a source of server sent events

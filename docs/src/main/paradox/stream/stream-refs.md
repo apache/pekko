@@ -2,14 +2,14 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -22,29 +22,29 @@ To use Akka Streams, add the module to your project:
   this module in production just yet.
 @@@
 
-Stream references, or "stream refs" for short, allow running Akka Streams across multiple nodes within 
-an Akka Cluster. 
+Stream references, or "stream refs" for short, allow running Pekko Streams across multiple nodes within 
+an Pekko Cluster. 
 
-Unlike heavier "streaming data processing" frameworks, Akka Streams are neither "deployed" nor automatically distributed.
-Akka stream refs are, as the name implies, references to existing parts of a stream, and can be used to create a 
+Unlike heavier "streaming data processing" frameworks, Pekko Streams are neither "deployed" nor automatically distributed.
+Pekko stream refs are, as the name implies, references to existing parts of a stream, and can be used to create a 
 distributed processing framework or to introduce such capabilities in specific parts of your application.
   
-Stream refs are trivial to use in existing clustered Akka applications and require no additional configuration
-or setup. They automatically maintain flow-control / back-pressure over the network and employ Akka's failure detection
+Stream refs are trivial to use in existing clustered Pekko applications and require no additional configuration
+or setup. They automatically maintain flow-control / back-pressure over the network and employ Pekko's failure detection
 mechanisms to fail-fast ("let it crash!") in the case of failures of remote nodes. They can be seen as an implementation 
 of the [Work Pulling Pattern](https://www.michaelpollmeier.com/akka-work-pulling-pattern), which one would otherwise 
 implement manually.
 
 @@@ note
   A useful way to think about stream refs is: 
-  "like an `ActorRef`, but for Akka Streams's `Source` and `Sink`".
+  "like an `ActorRef`, but for Pekko Streams's `Source` and `Sink`".
   
   Stream refs refer to an already existing, possibly remote, `Sink` or `Source`.
   This is not to be mistaken with deploying streams remotely, which this feature is not intended for.
 @@@
 
 @@@ warning { title=IMPORTANT }
-  Use stream refs with Akka Cluster. The @ref:[failure detector can cause quarantining](../typed/cluster-concepts.md#quarantined) if plain Akka remoting is used.
+  Use stream refs with Pekko Cluster. The @ref:[failure detector can cause quarantining](../typed/cluster-concepts.md#quarantined) if plain Pekko remoting is used.
 @@@
 
 ## Stream References
@@ -60,8 +60,8 @@ It is recommended to mix and introduce stream refs in actor-messaging-based syst
 orchestrate and prepare such message flows, and later the stream refs are used to do the flow-controlled message transfer.  
 
 Stream refs are not persistent. However, it is simple to build a resumable stream by introducing such a protocol
-in the actor messaging layer. Stream refs are absolutely expected to be sent over Akka remoting to other nodes
-within a cluster using Akka Cluster, and therefore complement, instead of compete, with plain Actor messaging.
+in the actor messaging layer. Stream refs are absolutely expected to be sent over Pekko remoting to other nodes
+within a cluster using Pekko Cluster, and therefore complement, instead of compete, with plain Actor messaging.
 Actors would usually be used to establish the stream via some initial message saying, "I want to offer you many log
 elements (the stream ref)," or conversely, "if you need to send me much data, here is the stream ref you can use to do so".
 
@@ -117,7 +117,7 @@ The dual of @scala[@scaladoc[`SourceRef`](pekko.stream.SinkRef)]@java[@javadoc[`
 They can be used to offer the other side the capability to 
 send to the *origin* side data in a streaming, flow-controlled fashion. The origin here allocates a `Sink`,
 which could be as simple as a `Sink.foreach` or as advanced as a complex `Sink` which streams the incoming data
-into various other systems (e.g., any of the Alpakka-provided `Sink`s).
+into various other systems (e.g., any of the Pekko connectors-provided `Sink`s).
 
 @@@ note
   To form a good mental model of `SinkRef`s, you can think of them as being similar to "passive mode" in FTP.
@@ -179,7 +179,7 @@ StreamRefs require serialization, since the whole point is to send them between 
 is provided when `SourceRef` and `SinkRef` are sent directly as messages however the recommended use is to wrap them
 into your own actor message classes. 
 
-When @ref[Akka Jackson](../serialization-jackson.md) is used, serialization of wrapped `SourceRef` and `SinkRef` 
+When @ref[Pekko Jackson](../serialization-jackson.md) is used, serialization of wrapped `SourceRef` and `SinkRef` 
 will work out of the box.
  
 If you are using some other form of serialization you will need to use the @apidoc[stream.StreamRefResolver] extension 

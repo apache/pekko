@@ -7,7 +7,7 @@ of programming languages, platforms and technologies.
 
 ## Distributed by Default
 
-Everything in Akka is designed to work in a distributed setting: all
+Everything in Pekko is designed to work in a distributed setting: all
 interactions of actors use purely message passing and everything is
 asynchronous. This effort has been undertaken to ensure that all functions are
 available equally when running within a single JVM or on a cluster of hundreds
@@ -18,7 +18,7 @@ for a detailed discussion on why the second approach is bound to fail.
 
 ## Ways in which Transparency is Broken
 
-What is true of Akka need not be true of the application which uses it, since
+What is true of Pekko need not be true of the application which uses it, since
 designing for distributed execution poses some restrictions on what is
 possible. The most obvious one is that all messages sent over the wire must be
 serializable.
@@ -33,8 +33,8 @@ guarantee!).
 <a id="symmetric-communication"></a>
 ## Peer-to-Peer vs. Client-Server
 
-Akka Remoting is a communication module for connecting actor systems in a peer-to-peer fashion,
-and it is the foundation for Akka Clustering. The design of remoting is driven by two (related)
+Pekko Remoting is a communication module for connecting actor systems in a peer-to-peer fashion,
+and it is the foundation for Pekko Clustering. The design of remoting is driven by two (related)
 design decisions:
 
  1. Communication between involved systems is symmetric: if a system A can connect to a system B
@@ -44,14 +44,14 @@ is no system that only accepts connections, and there is no system that only ini
 
 The consequence of these decisions is that it is not possible to safely create
 pure client-server setups with predefined roles (violates assumption 2).
-For client-server setups it is better to use HTTP or Akka I/O.
+For client-server setups it is better to use HTTP or Pekko I/O.
 
 **Important**: Using setups involving Network Address Translation, Load Balancers or Docker
 containers violates assumption 1, unless additional steps are taken in the
 network configuration to allow symmetric communication between involved systems.
-In such situations Akka can be configured to bind to a different network
-address than the one used for establishing connections between Akka nodes.
-See @ref:[Akka behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery).
+In such situations Pekko can be configured to bind to a different network
+address than the one used for establishing connections between Pekko nodes.
+See @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery).
 
 ## Marking Points for Scaling Up with Routers
 

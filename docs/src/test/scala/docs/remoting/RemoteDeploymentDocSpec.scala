@@ -40,7 +40,7 @@ class RemoteDeploymentDocSpec extends PekkoSpec("""
 
   val other = ActorSystem("remote", system.settings.config)
   val address =
-    other.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address("akka", "s", "host", 1)).get
+    other.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address("pekko", "s", "host", 1)).get
 
   override def afterTermination(): Unit = { shutdown(other) }
 
@@ -55,15 +55,15 @@ class RemoteDeploymentDocSpec extends PekkoSpec("""
 
   def makeAddress(): Unit = {
     // #make-address-artery
-    val one = AddressFromURIString("akka://sys@host:1234")
-    val two = Address("akka", "sys", "host", 1234) // this gives the same
+    val one = AddressFromURIString("pekko://sys@host:1234")
+    val two = Address("pekko", "sys", "host", 1234) // this gives the same
     // #make-address-artery
   }
 
   "demonstrate address extractor" in {
     // #make-address
-    val one = AddressFromURIString("akka://sys@host:1234")
-    val two = Address("akka", "sys", "host", 1234) // this gives the same
+    val one = AddressFromURIString("pekko://sys@host:1234")
+    val two = Address("pekko", "sys", "host", 1234) // this gives the same
     // #make-address
     one should be(two)
   }

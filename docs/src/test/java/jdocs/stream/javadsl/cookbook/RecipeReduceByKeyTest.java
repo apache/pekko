@@ -54,7 +54,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
     new TestKit(system) {
       {
         final Source<String, NotUsed> words =
-            Source.from(Arrays.asList("hello", "world", "and", "hello", "akka"));
+            Source.from(Arrays.asList("hello", "world", "and", "hello", "pekko"));
 
         // #word-count
         final int MAXIMUM_DISTINCT_WORDS = 1000;
@@ -79,7 +79,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
         expected.add(new Pair<>("hello", 2));
         expected.add(new Pair<>("world", 1));
         expected.add(new Pair<>("and", 1));
-        expected.add(new Pair<>("akka", 1));
+        expected.add(new Pair<>("pekko", 1));
         Assert.assertEquals(expected, result);
       }
     };
@@ -106,7 +106,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
     new TestKit(system) {
       {
         final Source<String, NotUsed> words =
-            Source.from(Arrays.asList("hello", "world", "and", "hello", "akka"));
+            Source.from(Arrays.asList("hello", "world", "and", "hello", "pekko"));
 
         // #reduce-by-key-general2
         final int MAXIMUM_DISTINCT_WORDS = 1000;
@@ -128,7 +128,7 @@ public class RecipeReduceByKeyTest extends RecipeTest {
         expected.add(new Pair<>("hello", 2));
         expected.add(new Pair<>("world", 1));
         expected.add(new Pair<>("and", 1));
-        expected.add(new Pair<>("akka", 1));
+        expected.add(new Pair<>("pekko", 1));
         Assert.assertEquals(expected, result);
       }
     };

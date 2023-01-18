@@ -1,18 +1,18 @@
 # Cluster Specification
 
-This document describes the design concepts of Akka Cluster. For the guide on using Akka Cluster please see either
+This document describes the design concepts of Pekko Cluster. For the guide on using Pekko Cluster please see either
 
 * @ref:[Cluster Usage](../typed/cluster.md)
-* @ref:[Cluster Usage with classic Akka APIs](../cluster-usage.md)
+* @ref:[Cluster Usage with classic Pekko APIs](../cluster-usage.md)
 * @ref:[Cluster Membership Service](cluster-membership.md)
  
 ## Introduction
 
-Akka Cluster provides a fault-tolerant decentralized peer-to-peer based
+Pekko Cluster provides a fault-tolerant decentralized peer-to-peer based
 @ref:[Cluster Membership Service](cluster-membership.md#cluster-membership-service) with no single point of failure or 
 single point of bottleneck. It does this using @ref:[gossip](#gossip) protocols and an automatic [failure detector](#failure-detector).
 
-Akka Cluster allows for building distributed applications, where one application or service spans multiple nodes
+Pekko Cluster allows for building distributed applications, where one application or service spans multiple nodes
 (in practice multiple @apidoc[typed.ActorSystem]s). 
 
 ## Terms
@@ -30,7 +30,7 @@ and membership state transitions.
 
 ### Gossip
 
-The cluster membership used in Akka is based on Amazon's [Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) system and
+The cluster membership used in Pekko is based on Amazon's [Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) system and
 particularly the approach taken in Basho's' [Riak](https://en.wikipedia.org/wiki/Riak) distributed database.
 Cluster membership is communicated using a [Gossip Protocol](https://en.wikipedia.org/wiki/Gossip_protocol), where the current
 state of the cluster is gossiped randomly through the cluster, with preference to
@@ -65,7 +65,7 @@ nodes have been downed.
 
 #### Failure Detector
 
-The failure detector in Akka Cluster is responsible for trying to detect if a node is
+The failure detector in Pekko Cluster is responsible for trying to detect if a node is
 `unreachable` from the rest of the cluster. For this we are using the
 @ref:[Phi Accrual Failure Detector](failure-detector.md) implementation.
 To be able to survive sudden abnormalities, such as garbage collection pauses and
@@ -130,8 +130,8 @@ A variation of *push-pull gossip* is used to reduce the amount of gossip
 information sent around the cluster. In push-pull gossip a digest is sent
 representing current versions but not actual values; the recipient of the gossip
 can then send back any values for which it has newer versions and also request
-values for which it has outdated versions. Akka uses a single shared state with
-a vector clock for versioning, so the variant of push-pull gossip used in Akka
+values for which it has outdated versions. Pekko uses a single shared state with
+a vector clock for versioning, so the variant of push-pull gossip used in Pekko
 makes use of this version to only push the actual state as needed.
 
 Periodically, the default is every 1 second, each node chooses another random

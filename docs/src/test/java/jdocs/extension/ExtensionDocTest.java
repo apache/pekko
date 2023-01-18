@@ -56,7 +56,7 @@ public class ExtensionDocTest extends AbstractJavaTest {
       return CountExtension.CountExtensionProvider; // The public static final
     }
 
-    // This method will be called by Akka
+    // This method will be called by Pekko
     // to instantiate our Extension
     public CountExtensionImpl createExtension(ExtendedActorSystem system) {
       return new CountExtensionImpl();
@@ -84,7 +84,7 @@ public class ExtensionDocTest extends AbstractJavaTest {
   // #extension-usage-actor
 
   @Test
-  public void demonstrateHowToCreateAndUseAnAkkaExtensionInJava() {
+  public void demonstrateHowToCreateAndUseAPekkoExtensionInJava() {
     final ActorSystem system = null;
     try {
       // #extension-usage

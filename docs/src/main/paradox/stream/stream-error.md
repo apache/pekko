@@ -2,14 +2,14 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -106,7 +106,7 @@ Java
 
 ## Delayed restarts with a backoff operator
 
-Akka streams provides a @apidoc[stream.*.RestartSource$], @apidoc[stream.*.RestartSink$] and @apidoc[stream.*.RestartFlow$] for implementing the so-called *exponential backoff 
+Pekko streams provides a @apidoc[stream.*.RestartSource$], @apidoc[stream.*.RestartSink$] and @apidoc[stream.*.RestartFlow$] for implementing the so-called *exponential backoff 
 supervision strategy*, starting an operator again when it fails or completes, each time with a growing time delay between restarts.
 
 This pattern is useful when the operator fails or completes because some external resource is not available
@@ -126,7 +126,7 @@ Configurable parameters are:
 
 The following snippet shows how to create a backoff supervisor using @apidoc[stream.*.RestartSource$] 
 which will supervise the given @apidoc[stream.*.Source]. The `Source` in this case is a 
-stream of Server Sent Events, produced by akka-http. If the stream fails or completes at any point, the request will
+stream of Server Sent Events, produced by pekko-http. If the stream fails or completes at any point, the request will
 be made again, in increasing intervals of 3, 6, 12, 24 and finally 30 seconds (at which point it will remain capped due
 to the `maxBackoff` parameter):
 

@@ -1,5 +1,5 @@
 ---
-project.description: How to schedule processes in Akka with the Scheduler.
+project.description: How to schedule processes in Pekko with the Scheduler.
 ---
 # Classic Scheduler
 
@@ -11,11 +11,11 @@ For the new API see @ref:[typed scheduling](typed/interaction-patterns.md#typed-
 To use Scheduler, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-actor_$scala.binary.version$"
+  artifact="pekko-actor_$scala.binary.version$"
   version=PekkoVersion
 }
 
@@ -35,23 +35,23 @@ When scheduling periodic or single messages in an actor to itself it is recommen
 use the @ref:[Actor Timers](actors.md#actors-timers) instead of using the @apidoc[actor.Scheduler]
 directly.
 
-The scheduler in Akka is designed for high-throughput of thousands up to millions 
+The scheduler in Pekko is designed for high-throughput of thousands up to millions 
 of triggers. The prime use-case being triggering Actor receive timeouts, Future timeouts,
 circuit breakers and other time dependent events which happen all-the-time and in many 
 instances at the same time. The implementation is based on a Hashed Wheel Timer, which is
 a known datastructure and algorithm for handling such use cases, refer to the [Hashed and Hierarchical Timing Wheels](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf) 
 whitepaper by Varghese and Lauck if you'd like to understand its inner workings. 
 
-The Akka scheduler is **not** designed for long-term scheduling (see [akka-quartz-scheduler](https://github.com/enragedginger/akka-quartz-scheduler) 
+The Pekko scheduler is **not** designed for long-term scheduling (see [akka-quartz-scheduler](https://github.com/enragedginger/akka-quartz-scheduler) 
 instead for this use case) nor is it to be used for highly precise firing of the events.
 The maximum amount of time into the future you can schedule an event to trigger is around 8 months,
 which in practice is too much to be useful since this would assume the system never went down during that period.
 If you need long-term scheduling we highly recommend looking into alternative schedulers, as this
-is not the use-case the Akka scheduler is implemented for.
+is not the use-case the Pekko scheduler is implemented for.
 
 @@@ warning
 
-The default implementation of @apidoc[actor.Scheduler] used by Akka is based on job
+The default implementation of @apidoc[actor.Scheduler] used by Pekko is based on job
 buckets which are emptied according to a fixed schedule.  It does not
 execute tasks at the exact time, but on every tick, it will run everything
 that is (over)due.  The accuracy of the default Scheduler can be modified

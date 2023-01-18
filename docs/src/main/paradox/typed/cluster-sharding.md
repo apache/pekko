@@ -1,13 +1,13 @@
 ---
-project.description: Shard a clustered compute process across the network with locationally transparent message routing using Akka Cluster Sharding.
+project.description: Shard a clustered compute process across the network with locationally transparent message routing using Pekko Cluster Sharding.
 ---
 # Cluster Sharding
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Cluster Sharding](../cluster-sharding.md)
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Cluster Sharding](../cluster-sharding.md)
 
 ## Module info
 
-To use Akka Cluster Sharding, you must add the following dependency in your project:
+To use Pekko Cluster Sharding, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -29,9 +29,6 @@ their physical location in the cluster, which might also change over time.
 It could for example be actors representing Aggregate Roots in Domain-Driven Design terminology.
 Here we call these actors "entities". These actors typically have persistent (durable) state,
 but this feature is not limited to actors with persistent state.
-
-The [Introduction to Akka Cluster Sharding video](https://akka.io/blog/news/2019/12/16/akka-cluster-sharding-intro-video)
-is a good starting point for learning Cluster Sharding.
 
 Cluster sharding is typically used when you have many stateful actors that together consume
 more resources (e.g. memory) than fit on one machine. If you only have a few stateful actors
@@ -123,7 +120,7 @@ representation but looked up on the deserializing side.
 When using sharding, entities can be moved to different nodes in the cluster. Persistence can be used to recover the state of
 an actor after it has moved.
 
-Akka Persistence is based on the single-writer principle, for a particular @apidoc[typed.PersistenceId] only one persistent actor
+Pekko Persistence is based on the single-writer principle, for a particular @apidoc[typed.PersistenceId] only one persistent actor
 instance should be active. If multiple instances were to persist events at the same time, the events would be
 interleaved and might not be interpreted correctly on replay. Cluster Sharding is typically used together with
 persistence to ensure that there is only one active entity for each `PersistenceId` (`entityId`).
@@ -189,9 +186,9 @@ round can be limited to make it progress slower since rebalancing too many shard
 result in additional load on the system. For example, causing many Event Sourced entites to be started
 at the same time.
 
-A new rebalance algorithm was included in Akka 2.6.10. It can reach optimal balance in a few rebalance rounds
+A new rebalance algorithm is included in Pekko. It can reach optimal balance in a few rebalance rounds
 (typically 1 or 2 rounds). For backwards compatibility the new algorithm is not enabled by default.
-The new algorithm is recommended and will become the default in future versions of Akka.
+The new algorithm is recommended and will become the default in future versions of Pekko.
 You enable the new algorithm by setting `rebalance-absolute-limit` > 0, for example:
 
 ```
@@ -209,7 +206,7 @@ in one rebalance round. The lower result of `rebalance-relative-limit` and `reba
 An alternative allocation strategy is the @apidoc[ExternalShardAllocationStrategy] which allows
 explicit control over where shards are allocated via the @apidoc[ExternalShardAllocation] extension.
 
-This can be used, for example, to match up Kafka Partition consumption with shard locations. The video [How to co-locate Kafka Partitions with Akka Cluster Shards](https://akka.io/blog/news/2020/03/18/akka-sharding-kafka-video) explains a setup for it. Alpakka Kafka provides [an extension for Akka Cluster Sharding](https://doc.akka.io/docs/alpakka-kafka/current/cluster-sharding.html).
+This can be used, for example, to match up Kafka Partition consumption with shard locations. Pekko Connector Kafka provides [an extension for Pekko Cluster Sharding](https://doc.akka.io/docs/alpakka-kafka/current/cluster-sharding.html).
 
 To use it set it as the allocation strategy on your @apidoc[typed.*.Entity]:
 
@@ -235,7 +232,7 @@ support a greater number of shards.
 
 #### Example project for external allocation strategy
 
-@extref[Kafka to Cluster Sharding](samples:akka-samples-kafka-to-sharding)
+@extref[Kafka to Cluster Sharding](samples:pekko-samples-kafka-to-sharding)
 is an example project that can be downloaded, and with instructions of how to run, that demonstrates how to use
 external sharding to co-locate Kafka partition consumption with shards.
 
@@ -332,7 +329,7 @@ Automatic passivation strategies can limit the number of active entities. Limit-
 replacement policy to determine which active entities should be passivated when the active entity limit is exceeded.
 The configurable limit is for a whole shard region and is divided evenly among the active shards in each region.
 
-A recommended passivation strategy, which will become the new default passivation strategy in future versions of Akka
+A recommended passivation strategy, which will become the new default passivation strategy in future versions of Pekko
 Cluster Sharding, can be enabled with configuration:
 
 @@snip [passivation new default strategy](/cluster-sharding/src/test/scala/org/apache/pekko/cluster/sharding/ClusterShardingSettingsSpec.scala) { #passivation-new-default-strategy type=conf }
@@ -534,8 +531,8 @@ it moves between nodes.
 
 There are two options for the state store:
 
-* @ref:[Distributed Data Mode](#distributed-data-mode) - uses Akka @ref:[Distributed Data](distributed-data.md) (CRDTs) (the default)
-* @ref:[Persistence Mode](#persistence-mode) - (deprecated) uses Akka @ref:[Persistence](persistence.md) (Event Sourcing)
+* @ref:[Distributed Data Mode](#distributed-data-mode) - uses Pekko @ref:[Distributed Data](distributed-data.md) (CRDTs) (the default)
+* @ref:[Persistence Mode](#persistence-mode) - (deprecated) uses Pekko @ref:[Persistence](persistence.md) (Event Sourcing)
 
 @@include[cluster.md](../includes/cluster.md) { #sharding-persistence-mode-deprecated }
 
@@ -704,7 +701,7 @@ for more information about `min-nr-of-members`.
 
 ## Health check
 
-An [Akka Management compatible health check](https://doc.akka.io/docs/akka-management/current/healthchecks.html) is included that returns healthy once the local shard region
+An [Pekko Management compatible health check](https://doc.akka.io/docs/akka-management/current/healthchecks.html) is included that returns healthy once the local shard region
 has registered with the coordinator. This health check should be used in cases where you don't want to receive production traffic until the local shard region is ready to retrieve locations
 for shards. For shard regions that aren't critical and therefore should not block this node becoming ready do not include them.
 
@@ -764,7 +761,7 @@ does not run on two nodes.
 Reasons for how this can happen:
 
 * Network partitions without an appropriate downing provider
-* Mistakes in the deployment process leading to two separate Akka Clusters
+* Mistakes in the deployment process leading to two separate Pekko Clusters
 * Timing issues between removing members from the Cluster on one side of a network partition and shutting them down on the other side
 
 A lease can be a final backup that means that each shard won't create child entity actors unless it has the lease. 
@@ -780,7 +777,7 @@ be buffered in the `ShardRegion`. If the lease is lost after initialization the 
 
 Removal of internal Cluster Sharding data is only relevant for "Persistent Mode".
 The Cluster Sharding `ShardCoordinator` stores locations of the shards.
-This data is safely be removed when restarting the whole Akka Cluster.
+This data is safely be removed when restarting the whole Pekko Cluster.
 Note that this does not include application data.
 
 There is a utility program @apidoc[cluster.sharding.RemoveInternalClusterShardingData$]
@@ -788,7 +785,7 @@ that removes this data.
 
 @@@ warning
 
-Never use this program while there are running Akka Cluster nodes that are
+Never use this program while there are running Pekko Cluster nodes that are
 using Cluster Sharding. Stop all Cluster nodes before using this program.
 
 @@@
@@ -806,16 +803,13 @@ java -classpath <jar files, including pekko-cluster-sharding>
     -2.3 entityType1 entityType2 entityType3
 ```
 
-The program is included in the `akka-cluster-sharding` jar file. It
+The program is included in the `pekko-cluster-sharding` jar file. It
 is easiest to run it with same classpath and configuration as your ordinary
 application. It can be run from sbt or Maven in similar way.
 
 Specify the entity type names (same as you use in the `init` method
 of `ClusterSharding`) as program arguments.
 
-If you specify `-2.3` as the first program argument it will also try
-to remove data that was stored by Cluster Sharding in Akka 2.3.x using
-different persistenceId.
 
 ## Configuration
 
@@ -835,8 +829,8 @@ as described in @ref:[Shard allocation](#shard-allocation).
 
 ## Example project
 
-@java[@extref[Sharding example project](samples:akka-samples-cluster-sharding-java)]
-@scala[@extref[Sharding example project](samples:akka-samples-cluster-sharding-scala)]
+@java[@extref[Sharding example project](samples:pekko-samples-cluster-sharding-java)]
+@scala[@extref[Sharding example project](samples:pekko-samples-cluster-sharding-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains a KillrWeather sample illustrating how to use Cluster Sharding.

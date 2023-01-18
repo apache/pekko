@@ -2,26 +2,26 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction
 
-Akka Streams provide a uniform model of stream processing graphs, which allows flexible composition of reusable
+Pekko Streams provide a uniform model of stream processing graphs, which allows flexible composition of reusable
 components. In this chapter we show how these look like from the conceptual and API perspective, demonstrating
 the modularity aspects of the library.
 
 ## Basics of composition and modularity
 
-Every operator used in Akka Streams can be imagined as a "box" with input and output ports where elements to
+Every operator used in Pekko Streams can be imagined as a "box" with input and output ports where elements to
 be processed arrive and leave the operator. In this view, a `Source` is nothing else than a "box" with a single
 output port, or, a `BidiFlow` is a "box" with exactly two input and two output ports. In the figure below
 we illustrate the most commonly used operators viewed as "boxes".
@@ -33,7 +33,7 @@ and `Flow`, as these can be used to compose strict chains of operators.
 Fan-in and Fan-out operators have usually multiple input or multiple output ports, therefore they allow to build
 more complex graph layouts, not only chains. `BidiFlow` operators are usually useful in IO related tasks, where
 there are input and output channels to be handled. Due to the specific shape of `BidiFlow` it is easy to
-stack them on top of each other to build a layered protocol for example. The `TLS` support in Akka is for example
+stack them on top of each other to build a layered protocol for example. The `TLS` support in Pekko is for example
 implemented as a `BidiFlow`.
 
 These reusable components already allow the creation of complex processing networks. What we
@@ -119,7 +119,7 @@ Java
 ## Composing complex systems
 
 In the previous section we explored the possibility of composition, and hierarchy, but we stayed away from non-linear,
-generalized operators. There is nothing in Akka Streams though that enforces that stream processing layouts
+generalized operators. There is nothing in Pekko Streams though that enforces that stream processing layouts
 can only be linear. The DSL for `Source` and friends is optimized for creating such linear chains, as they are
 the most common in practice. There is a more advanced DSL for building complex graphs, that can be used if more
 flexibility is needed. We will see that the difference between the two DSLs is only on the surface: the concepts they

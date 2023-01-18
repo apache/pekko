@@ -1,13 +1,13 @@
 ---
-project.description: How to package an Akka application for deployment.
+project.description: How to package an Pekko application for deployment.
 ---
 # Packaging
 
-The simplest way to use Akka is as a regular library, adding the Akka jars you
+The simplest way to use Pekko is as a regular library, adding the Pekko jars you
 need to your classpath (in case of a web app, in `WEB-INF/lib`).
 
 In many cases, such as deploying to an analytics cluster, building your application into a single 'fat jar' is needed.
-When building fat jars, some additional configuration is needed to merge Akka config files, because each Akka jar
+When building fat jars, some additional configuration is needed to merge Pekko config files, because each Pekko jar
 contains a `reference.conf` resource with default values.
 
 The method for ensuring `reference.conf` and other `*.conf` resources are merged depends on the tooling you use to create the fat jar:
@@ -19,7 +19,7 @@ The method for ensuring `reference.conf` and other `*.conf` resources are merged
 ## sbt: Native Packager
 
 [sbt-native-packager](https://github.com/sbt/sbt-native-packager) is a tool for creating
-distributions of any type of application, including Akka applications.
+distributions of any type of application, including Pekko applications.
 
 Define sbt version in `project/build.properties` file:
 

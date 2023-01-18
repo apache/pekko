@@ -1,18 +1,18 @@
 ---
-project.description: How to extend Akka with Akka Extensions.
+project.description: How to extend Pekko with Pekko Extensions.
 ---
-# Classic Akka Extensions
+# Classic Pekko Extensions
 
-If you want to add features to Akka, there is a very elegant, but powerful mechanism for doing so.
-It's called Akka Extensions and comprises 2 basic components: an @apidoc[Extension](actor.Extension) and an @apidoc[ExtensionId](actor.ExtensionId).
+If you want to add features to Pekko, there is a very elegant, but powerful mechanism for doing so.
+It's called Pekko Extensions and comprises 2 basic components: an @apidoc[Extension](actor.Extension) and an @apidoc[ExtensionId](actor.ExtensionId).
 
-Extensions will only be loaded once per @apidoc[ActorSystem](actor.ActorSystem), which will be managed by Akka.
-You can choose to have your Extension loaded on-demand or at @apidoc[ActorSystem](actor.ActorSystem) creation time through the Akka configuration.
-Details on how to make that happens are below, in the @ref:[Loading from Configuration](extending-akka.md#loading) section.
+Extensions will only be loaded once per @apidoc[ActorSystem](actor.ActorSystem), which will be managed by Pekko.
+You can choose to have your Extension loaded on-demand or at @apidoc[ActorSystem](actor.ActorSystem) creation time through the Pekko configuration.
+Details on how to make that happens are below, in the @ref:[Loading from Configuration](extending-pekko.md#loading) section.
 
 @@@ warning
 
-Since an extension is a way to hook into Akka itself, the implementor of the extension needs to
+Since an extension is a way to hook into Pekko itself, the implementor of the extension needs to
 ensure the thread safety of his/her extension.
 
 @@@
@@ -45,7 +45,7 @@ Scala
 Java
 :  @@snip [ExtensionDocTest.java](/docs/src/test/java/jdocs/extension/ExtensionDocTest.java) { #extension-usage }
 
-Or from inside of an Akka Actor:
+Or from inside of a Pekko Actor:
 
 Scala
 :  @@snip [ExtensionDocSpec.scala](/docs/src/test/scala/docs/extension/ExtensionDocSpec.scala) { #extension-usage-actor }
@@ -66,7 +66,7 @@ That's all there is to it!
 <a id="loading"></a>
 ## Loading from Configuration
 
-To be able to load extensions from your Akka configuration you must add FQCNs of implementations of either @apidoc[ExtensionId](actor.ExtensionId) or @apidoc[ExtensionIdProvider](ExtensionIdProvider)
+To be able to load extensions from your Pekko configuration you must add FQCNs of implementations of either @apidoc[ExtensionId](actor.ExtensionId) or @apidoc[ExtensionIdProvider](ExtensionIdProvider)
 in the `pekko.extensions` section of the config you provide to your @apidoc[ActorSystem](actor.ActorSystem).
 
 Scala
@@ -84,9 +84,9 @@ Java
 ## Applicability
 
 The sky is the limit!
-By the way, did you know that Akka @ref:[Cluster](cluster-usage.md), @ref:[Serialization](serialization.md) and other features are implemented as Akka Extensions?
+By the way, did you know that Pekko @ref:[Cluster](cluster-usage.md), @ref:[Serialization](serialization.md) and other features are implemented as Pekko Extensions?
 
-<a id="extending-akka-settings"></a>
+<a id="extending-pekko-settings"></a>
 ### Application specific settings
 
 The @ref:[configuration](general/configuration.md) can be used for application specific settings. A good practice is to place those settings in an Extension.

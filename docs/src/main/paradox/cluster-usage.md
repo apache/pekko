@@ -6,7 +6,7 @@ For specific documentation topics see:
 
 * @ref:[Cluster Specification](typed/cluster-concepts.md)
 * @ref:[Cluster Membership Service](typed/cluster-membership.md)
-* @ref:[When and where to use Akka Cluster](typed/choosing-cluster.md)
+* @ref:[When and where to use Pekko Cluster](typed/choosing-cluster.md)
 * @ref:[Higher level Cluster tools](#higher-level-cluster-tools)
 * @ref:[Rolling Updates](additional/rolling-updates.md)
 * @ref:[Operating, Managing, Observability](additional/operations.md)
@@ -21,7 +21,7 @@ recommendation if you don't have other preferences or constraints.
 
 ## Module info
 
-To use Akka Cluster add the following dependency in your project:
+To use Pekko Cluster add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -34,9 +34,9 @@ To use Akka Cluster add the following dependency in your project:
 
 @@project-info{ projectId="cluster" }
 
-## When and where to use Akka Cluster
+## When and where to use Pekko Cluster
  
-See @ref:[Choosing Akka Cluster](typed/choosing-cluster.md#when-and-where-to-use-akka-cluster) in the documentation of the new APIs.
+See @ref:[Choosing Pekko Cluster](typed/choosing-cluster.md#when-and-where-to-use-pekko-cluster) in the documentation of the new APIs.
 
 ## Cluster API Extension
 
@@ -316,7 +316,7 @@ unreachable from the rest of the cluster. Please see:
 @ref:[Multi Node Testing](multi-node-testing.md) is useful for testing cluster applications.
 
 Set up your project according to the instructions in @ref:[Multi Node Testing](multi-node-testing.md) and @ref:[Multi JVM Testing](multi-jvm-testing.md), i.e.
-add the `sbt-multi-jvm` plugin and the dependency to `akka-multi-node-testkit`.
+add the `sbt-multi-jvm` plugin and the dependency to `pekko-multi-node-testkit`.
 
 First, as described in @ref:[Multi Node Testing](multi-node-testing.md), we need some scaffolding to configure the @scaladoc[MultiNodeSpec](pekko.remote.testkit.MultiNodeSpec).
 Define the participating @ref:[roles](typed/cluster.md#node-roles) and their @ref:[configuration](#configuration) in an object extending @scaladoc[MultiNodeConfig](pekko.remote.testkit.MultiNodeConfig):
@@ -388,12 +388,12 @@ or similar instead.
 
 @@@
 
-The cluster can be managed with the script `akka-cluster` provided in the Akka GitHub repository @extref[here](github:akka-cluster/jmx-client). Place the script and the `jmxsh-R5.jar` library in the same directory.
+The cluster can be managed with the script `pekko-cluster` provided in the Pekko GitHub repository @extref[here](github:cluster/jmx-client). Place the script and the `jmxsh-R5.jar` library in the same directory.
 
 Run it without parameters to see instructions about how to use the script:
 
 ```
-Usage: ./akka-cluster <node-hostname> <jmx-port> <command> ...
+Usage: ./pekko-cluster <node-hostname> <jmx-port> <command> ...
 
 Supported commands are:
            join <node-url> - Sends request a JOIN node with the specified URL
@@ -409,11 +409,11 @@ Supported commands are:
                              node cluster)
               is-available - Checks if the member node is available
 Where the <node-url> should be on the format of
-  'akka.<protocol>://<actor-system-name>@<hostname>:<port>'
+  'pekko.<protocol>://<actor-system-name>@<hostname>:<port>'
 
-Examples: ./akka-cluster localhost 9999 is-available
-          ./akka-cluster localhost 9999 join akka://MySystem@darkstar:2552
-          ./akka-cluster localhost 9999 cluster-status
+Examples: ./pekko-cluster localhost 9999 is-available
+          ./pekko-cluster localhost 9999 join pekko://MySystem@darkstar:2552
+          ./pekko-cluster localhost 9999 cluster-status
 ```
 
 To be able to use the script you must enable remote monitoring and management when starting the JVMs of the cluster nodes,
@@ -425,4 +425,4 @@ Make sure you understand the security implications of enabling remote monitoring
 ## Configuration
 
 There are several @ref:[configuration](typed/cluster.md#configuration) properties for the cluster,
-and the full @ref:[reference configuration](general/configuration-reference.md#config-akka-cluster) for complete information. 
+and the full @ref:[reference configuration](general/configuration-reference.md#config-pekko-cluster) for complete information. 

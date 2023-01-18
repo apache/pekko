@@ -2,20 +2,20 @@
 
 ## Dependency
 
-To use Akka Streams, add the module to your project:
+To use Pekko Streams, add the module to your project:
 
 @@dependency[sbt,Maven,Gradle] {
-  bomGroup=org.apache.pekko bomArtifact=akka-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
+  bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
   symbol1=PekkoVersion
   value1="$pekko.version$"
   group="org.apache.pekko"
-  artifact="akka-stream_$scala.binary.version$"
+  artifact="pekko-stream_$scala.binary.version$"
   version=PekkoVersion
 }
 
 ## Introduction
 
-In Akka Streams computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
+In Pekko Streams computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
 written in a more graph-resembling DSL which aims to make translating graph drawings (e.g. from notes taken
 from design discussions, or illustrations in protocol specifications) to and from code simpler. In this section we'll
 dive into the multiple ways of constructing and re-using graphs, as well as explain common pitfalls and how to avoid them.
@@ -33,7 +33,7 @@ Graphs are built from simple Flows which serve as the linear connections within 
 which serve as fan-in and fan-out points for Flows. Thanks to the junctions having meaningful types based on their behavior
 and making them explicit elements these elements should be rather straightforward to use.
 
-Akka Streams currently provide these junctions (for a detailed list see the @ref[operator index](operators/index.md)):
+Pekko Streams currently provide these junctions (for a detailed list see the @ref[operator index](operators/index.md)):
 
  * **Fan-out**
 
@@ -55,7 +55,7 @@ Akka Streams currently provide these junctions (for a detailed list see the @ref
 
 One of the goals of the GraphDSL DSL is to look similar to how one would draw a graph on a whiteboard, so that it is
 simple to translate a design from whiteboard to code and be able to relate those two. Let's illustrate this by translating
-the below hand drawn graph into Akka Streams:
+the below hand drawn graph into Pekko Streams:
 
 ![simple-graph-example.png](../images/simple-graph-example.png)
 
@@ -418,7 +418,7 @@ all processing stops after some time. After some investigation we observe that:
  * through merging from `source` we increase the number of elements flowing in the cycle
  * by broadcasting back to the cycle we do not decrease the number of elements in the cycle
 
-Since Akka Streams (and Reactive Streams in general) guarantee bounded processing (see the "Buffering" section for more
+Since Pekko Streams (and Reactive Streams in general) guarantee bounded processing (see the "Buffering" section for more
 details) it means that only a bounded number of elements are buffered over any time span. Since our cycle gains more and
 more elements, eventually all of its internal buffers become full, backpressuring `source` forever. To be able
 to process more elements from `source` elements would need to leave the cycle somehow.

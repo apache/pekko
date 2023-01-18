@@ -634,7 +634,7 @@ class ActorDocSpec extends PekkoSpec("""
     context.actorSelection("../*")
     // #selection-wildcard
     // #selection-remote
-    context.actorSelection("akka://app@otherhost:1234/user/serviceB")
+    context.actorSelection("pekko://app@otherhost:1234/user/serviceB")
     // #selection-remote
   }
 

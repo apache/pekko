@@ -30,7 +30,7 @@ class RecipeParseLines extends RecipeSpec {
           ByteString("Hello World"),
           ByteString("\r"),
           ByteString("!\r"),
-          ByteString("\nHello Akka!\r\nHello Streams!"),
+          ByteString("\nHello Pekko!\r\nHello Streams!"),
           ByteString("\r\n\r\n")))
 
       // #parse-lines
@@ -41,7 +41,7 @@ class RecipeParseLines extends RecipeSpec {
       // #parse-lines
 
       Await.result(linesStream.limit(10).runWith(Sink.seq), 3.seconds) should be(
-        List("Hello World\r!", "Hello Akka!", "Hello Streams!", ""))
+        List("Hello World\r!", "Hello Pekko!", "Hello Streams!", ""))
     }
 
   }

@@ -46,7 +46,7 @@ object CountExtension extends ExtensionId[CountExtensionImpl] with ExtensionIdPr
   // the ActorSystem starts up
   override def lookup = CountExtension
 
-  // This method will be called by Akka
+  // This method will be called by Pekko
   // to instantiate our Extension
   override def createExtension(system: ExtendedActorSystem) = new CountExtensionImpl
 

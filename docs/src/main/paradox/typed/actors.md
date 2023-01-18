@@ -1,13 +1,13 @@
 ---
-project.description: The Actor model, managing internal state and changing behavior in Akka Actors.
+project.description: The Actor model, managing internal state and changing behavior in Pekko Actors.
 ---
 # Introduction to Actors
 
-You are viewing the documentation for the new actor APIs, to view the Akka Classic documentation, see @ref:[Classic Actors](../actors.md).
+You are viewing the documentation for the new actor APIs, to view the Pekko Classic documentation, see @ref:[Classic Actors](../actors.md).
 
 ## Module info
 
-To use Akka Actors, add the following dependency in your project:
+To use Pekko Actors, add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
@@ -22,13 +22,13 @@ To use Akka Actors, add the following dependency in your project:
   scope2=test
 }
 
-Both the Java and Scala DSLs of Akka modules are bundled in the same JAR. For a smooth development experience,
+Both the Java and Scala DSLs of Pekko modules are bundled in the same JAR. For a smooth development experience,
 when using an IDE such as Eclipse or IntelliJ, you can disable the auto-importer from suggesting `javadsl`
 imports when working in Scala, or viceversa. See @ref:[IDE Tips](../additional/ide.md). 
 
 @@project-info{ projectId="actor-typed" }
 
-## Akka Actors
+## Pekko Actors
 
 The [Actor Model](https://en.wikipedia.org/wiki/Actor_model) provides a higher level of abstraction for writing concurrent
 and distributed systems. It alleviates the developer from having to deal with
@@ -36,13 +36,12 @@ explicit locking and thread management, making it easier to write correct
 concurrent and parallel systems. Actors were defined in the 1973 paper by Carl
 Hewitt but have been popularized by the Erlang language, and used for example at
 Ericsson with great success to build highly concurrent and reliable telecom
-systems. The API of Akka’s Actors has borrowed some of its syntax from Erlang.
+systems. The API of Pekko’s Actors has borrowed some of its syntax from Erlang.
  
 ## First example
 
-If you are new to Akka you might want to start with reading the @ref:[Getting Started Guide](guide/introduction.md)
-and then come back here to learn more. We also recommend watching the short 
-[introduction video to Akka actors](https://akka.io/blog/news/2019/12/03/akka-typed-actor-intro-video).  
+If you are new to Pekko you might want to start with reading the @ref:[Getting Started Guide](guide/introduction.md)
+and then come back here to learn more. 
 
 It is helpful to become familiar with the foundational, external and internal
 ecosystem of your Actors, to see what you can leverage and customize as needed, see
@@ -148,18 +147,18 @@ An application normally consists of a single @apidoc[typed.ActorSystem], running
 The console output may look like this:
 
 ```
-[INFO] [03/13/2018 15:50:05.814] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-2] [akka://hello/user/World] Greeting 1 for World
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 1 for Akka
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 2 for World
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello World!
-[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/Akka] Greeting 2 for Akka
-[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-5] [akka://hello/user/greeter] Hello Akka!
-[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-4] [akka://hello/user/World] Greeting 3 for World
-[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-6] [akka://hello/user/Akka] Greeting 3 for Akka
+[INFO] [03/13/2018 15:50:05.814] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/greeter] Hello Pekko!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-2] [pekko://hello/user/World] Greeting 1 for World
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/Pekko] Greeting 1 for Pekko
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [pekko://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [pekko://hello/user/greeter] Hello Pekko!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/World] Greeting 2 for World
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-5] [pekko://hello/user/greeter] Hello World!
+[INFO] [03/13/2018 15:50:05.815] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/Pekko] Greeting 2 for Pekko
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-5] [pekko://hello/user/greeter] Hello Pekko!
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-4] [pekko://hello/user/World] Greeting 3 for World
+[INFO] [03/13/2018 15:50:05.816] [hello-pekko.actor.default-dispatcher-6] [pekko://hello/user/Pekko] Greeting 3 for Pekko
 ```
 
 You will also need to add a @ref:[logging dependency](logging.md) to see that output when running.
@@ -168,7 +167,7 @@ You will also need to add a @ref:[logging dependency](logging.md) to see that ou
 
 #### Here is another example that you can edit and run in the browser:
 
-@@fiddle [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #fiddle_code template=Akka layout=v75 minheight=400px }
+@@fiddle [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
 
 @@@
 
