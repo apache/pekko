@@ -2,19 +2,20 @@
 
 ## Receiving Security Advisories
 
-The best way to receive any and all security announcements is to subscribe to the [Pekko security list](https://groups.google.com/forum/#!forum/akka-security).
+The best way to receive any and all security announcements is to subscribe to the [Apache Announce Mailing List](https://lists.apache.org/list.html?announce@apache.org).
 
-The mailing list is very low traffic, and receives notifications only after security reports have been managed by the core team and fixes are publicly available.
+This mailing list has a reasonable level of traffic, and receives notifications only after security reports have been managed by the core Apache teams and fixes are publicly available.
+
+This mailing list also has announcements of releases for Apache projects.
 
 ## Reporting Vulnerabilities
 
 We strongly encourage people to report such problems to our private security mailing list first, before disclosing them in a public forum.
 
-Following best practice, we strongly encourage anyone to report potential security 
-vulnerabilities to [security@pekko.io](mailto:security@pekko.io) before disclosing them in a public forum like the mailing list or as a GitHub issue.
+Please follow the [guidelines](https://www.apache.org/security/) laid down by the Apache Security team.
 
-Reports to this email address will be handled by our security team, who will work together with you
-to ensure that a fix can be provided without delay.
+Ideally, any issues affecting Apache Pekko and Akka should be reported to Apache team first. We will share the
+report with the Lightbend Akka team.
 
 ## Security Related Documentation
 
