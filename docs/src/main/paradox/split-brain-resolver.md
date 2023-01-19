@@ -1,6 +1,6 @@
 # Split Brain Resolver
 
-When operating an Pekko cluster you must consider how to handle
+When operating a Pekko cluster you must consider how to handle
 [network partitions](https://en.wikipedia.org/wiki/Network_partition) (a.k.a. split brain scenarios)
 and machine crashes (including JVM and hardware failures). This is crucial for correct behavior if
 you use @ref:[Cluster Singleton](typed/cluster-singleton.md) or @ref:[Cluster Sharding](typed/cluster-sharding.md),

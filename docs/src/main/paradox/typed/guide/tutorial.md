@@ -1,7 +1,7 @@
 # Introduction to the Example
 
 When writing prose, the hardest part is often composing the first few sentences. There is a similar "blank canvas" feeling
-when starting to build an Pekko system. You might wonder: Which should be the first actor? Where should it live? What should it do?
+when starting to build a Pekko system. You might wonder: Which should be the first actor? Where should it live? What should it do?
 Fortunately &#8212; unlike with prose &#8212; established best practices can guide us through these initial steps. In the remainder of this guide, we examine the core logic of a simple Pekko application to introduce you to actors and show you how to formulate solutions with them. The example demonstrates common patterns that will help you kickstart your Pekko projects.
 
 ## Prerequisites

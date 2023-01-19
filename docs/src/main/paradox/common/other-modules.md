@@ -26,12 +26,12 @@ Pekko Projections let you process a stream of events or records from a source to
 
 ## [Cassandra Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-cassandra/current/)
 
-An Pekko Persistence journal and snapshot store backed by Apache Cassandra.
+A Pekko Persistence journal and snapshot store backed by Apache Cassandra.
 
 
 ## [JDBC Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-jdbc/current/)
 
-An Pekko Persistence journal and snapshot store for use with JDBC-compatible databases. This implementation relies on [Slick](https://scala-slick.org/).
+A Pekko Persistence journal and snapshot store for use with JDBC-compatible databases. This implementation relies on [Slick](https://scala-slick.org/).
 
 ## [R2DBC Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-r2dbc/current/)
 
@@ -45,7 +45,7 @@ Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persisten
 ## Pekko Management
 
 * [Pekko Management](https://doc.akka.io/docs/akka-management/current/) provides a central HTTP endpoint for Pekko management extensions.
-* [Pekko Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps bootstrapping an Pekko cluster using Pekko Discovery.
+* [Pekko Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.
 * [Pekko Management Cluster HTTP](https://doc.akka.io/docs/akka-management/current/cluster-http-management.html) provides HTTP endpoints for introspecting and managing Pekko clusters.
 * [Pekko Discovery for Kubernetes, Consul, Marathon, and AWS](https://doc.akka.io/docs/akka-management/current/discovery/)
 * [Kubernetes Lease](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)

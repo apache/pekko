@@ -55,7 +55,7 @@ Scala
 Java
 :   @@snip [ReactiveStreamsDocTest.java](/docs/src/test/java/jdocs/stream/ReactiveStreamsDocTest.java) { #author-storage-subscriber }
 
-Using an Pekko Streams `Flow` we can transform the stream and connect those:
+Using a Pekko Streams `Flow` we can transform the stream and connect those:
 
 Scala
 :   @@snip [ReactiveStreamsDocSpec.scala](/docs/src/test/scala/docs/stream/ReactiveStreamsDocSpec.scala) { #authors #connect-all }

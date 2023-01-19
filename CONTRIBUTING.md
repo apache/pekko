@@ -596,7 +596,7 @@ existence of those docs.
 
 ### Reporting security issues
 
-If you have found an issue in an Pekko project that might have security implications, you can report it by following the process mentioned in the [Apache document](https://apache.org/security/#reporting-a-vulnerability). We will make sure those will get handled with priority. Thank you for your responsible disclosure!
+If you have found an issue in a Pekko project that might have security implications, you can report it by following the process mentioned in the [Apache document](https://apache.org/security/#reporting-a-vulnerability). We will make sure those will get handled with priority. Thank you for your responsible disclosure!
 
 ### Continuous integration
 

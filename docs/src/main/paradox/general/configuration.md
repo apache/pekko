@@ -44,7 +44,7 @@ to `application`—may be overridden using the `config.resource` property
 
 @@@ note
 
-If you are writing an Pekko application, keep your configuration in
+If you are writing a Pekko application, keep your configuration in
 `application.conf` at the root of the class path. If you are writing an
 Pekko-based library, keep its configuration in `reference.conf` at the root
 of the JAR file. It's not supported to override a config property owned by

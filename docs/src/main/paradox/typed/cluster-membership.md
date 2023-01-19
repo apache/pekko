@@ -13,7 +13,7 @@ on top of the cluster membership service.
 ## Introduction
 
 A cluster is made up of a set of member nodes. The identifier for each node is a
-`hostname:port:uid` tuple. An Pekko application can be distributed over a cluster with
+`hostname:port:uid` tuple. A Pekko application can be distributed over a cluster with
 each node hosting some part of the application. Cluster membership and the actors running
 on that node of the application are decoupled. A node could be a member of a
 cluster without hosting any actors. Joining a cluster is initiated

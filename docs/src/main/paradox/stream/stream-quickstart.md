@@ -21,7 +21,7 @@ or viceversa. See @ref:[IDE Tips](../additional/ide.md).
 
 ## First steps
 
-A stream usually begins at a source, so this is also how we start an Pekko
+A stream usually begins at a source, so this is also how we start a Pekko
 Stream. Before we create one, we import the full complement of streaming tools:
 
 Scala
@@ -38,7 +38,7 @@ Scala
 Java
 :   @@snip [QuickStartDocTest.java](/docs/src/test/java/jdocs/stream/QuickStartDocTest.java) { #other-imports }
 
-And @scala[an object]@java[a class] to start an Pekko @apidoc[actor.ActorSystem] and hold your code @scala[. Making the `ActorSystem`
+And @scala[an object]@java[a class] to start a Pekko @apidoc[actor.ActorSystem] and hold your code @scala[. Making the `ActorSystem`
 implicit makes it available to the streams without manually passing it when running them]:
 
 Scala

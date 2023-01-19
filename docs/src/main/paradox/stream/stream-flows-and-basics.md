@@ -412,7 +412,7 @@ This is a very useful technique if the stream is closely related to the actor, e
 You may also cause a `Materializer` to shut down by explicitly calling @apidoc[shutdown()](stream.Materializer) {scala="#shutdown():Unit" java="#shutdown()"} on it, resulting in abruptly terminating all of the streams it has been running then. 
 
 Sometimes, however, you may want to explicitly create a stream that will out-last the actor's life.
-For example, you are using an Pekko stream to push some large stream of data to an external service.
+For example, you are using a Pekko stream to push some large stream of data to an external service.
 You may want to eagerly stop the Actor since it has performed all of its duties already:
 
 Scala

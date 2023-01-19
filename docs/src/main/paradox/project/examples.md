@@ -76,7 +76,7 @@ Illustrates how to use Pekko Cluster with Docker compose.
 
 @extref[Cluster with Kubernetes example project](samples:pekko-sample-cluster-kubernetes-java)
 
-This sample illustrates how to form an Pekko Cluster with Pekko Bootstrap when running in Kubernetes.
+This sample illustrates how to form a Pekko Cluster with Pekko Bootstrap when running in Kubernetes.
 
 ## Distributed workers
 

@@ -42,7 +42,7 @@ is ensured, have a look at the @ref:[Cluster Sharding and DurableStateBehavior](
 
 ## Example and core API
 
-Let's start with a simple example that models a counter using an Pekko persistent actor. The minimum required for a @apidoc[DurableStateBehavior] is:
+Let's start with a simple example that models a counter using a Pekko persistent actor. The minimum required for a @apidoc[DurableStateBehavior] is:
 
 Scala
 :  @@snip [DurableStatePersistentBehaviorCompileOnly.scala](/persistence-typed/src/test/scala/docs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorCompileOnly.scala) { #structure }
