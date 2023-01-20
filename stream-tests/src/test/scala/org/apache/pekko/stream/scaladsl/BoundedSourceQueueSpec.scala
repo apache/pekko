@@ -184,7 +184,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       result.futureValue should be(counter.get())
     }
 
-    // copied from akka-remote SendQueueSpec
+    // copied from pekko-remote SendQueueSpec
     "deliver bursts of messages" in {
       // this test verifies that the wakeup signal is triggered correctly
       val burstSize = 100

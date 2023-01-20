@@ -170,7 +170,7 @@ lazy val clusterMetrics = pekkoModule("cluster-metrics")
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val clusterSharding = pekkoModule("cluster-sharding")
-// TODO akka-persistence dependency should be provided in pom.xml artifact.
+// TODO pekko-persistence dependency should be provided in pom.xml artifact.
 //      If I only use "provided" here it works, but then we can't run tests.
 //      Scope "test" is alright in the pom.xml, but would have been nicer with
 //      provided.
@@ -308,7 +308,7 @@ lazy val persistenceQuery = pekkoModule("persistence-query")
   .settings(OSGi.persistenceQuery)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
-  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
+  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .settings(Test / fork := true)
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
@@ -389,7 +389,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365
     assembly / fullClasspath := (Runtime / managedClasspath).value, // otherwise, there's a cyclic dependency between packageBin and assembly
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
-    description := "Akka Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
+    description := "Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
 
 lazy val pki =
   pekkoModule("pki")
@@ -397,7 +397,6 @@ lazy val pki =
     .settings(Dependencies.pki)
     .settings(AutomaticModuleName.settings("pekko.pki"))
     .settings(MetaInfLicenseNoticeCopy.settings)
-    // The akka-pki artifact was added in Akka 2.6.2, no MiMa checks yet.
     .disablePlugins(MimaPlugin)
 
 lazy val remote =
@@ -523,7 +522,7 @@ lazy val persistenceTyped = pekkoModule("persistence-typed")
   .settings(MetaInfLicenseNoticeCopy.settings)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
-  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
+  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .settings(OSGi.persistenceTyped)
 
 lazy val clusterTyped = pekkoModule("cluster-typed")
@@ -538,12 +537,12 @@ lazy val clusterTyped = pekkoModule("cluster-typed")
     jackson % "test->test")
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
-  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
+  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .settings(AutomaticModuleName.settings("pekko.cluster.typed"))
   .settings(MetaInfLicenseNoticeCopy.settings)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
-  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
+  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
@@ -565,7 +564,7 @@ lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
   .settings(MetaInfLicenseNoticeCopy.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.settings)
-  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "akka-remote" / "src" / "main" / "protobuf"))
+  .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
