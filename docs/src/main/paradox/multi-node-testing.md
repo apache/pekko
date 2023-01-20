@@ -31,7 +31,7 @@ nodes connect to it.
 
 ## The Test Conductor
 
-The basis for the multi node testing is the @apidoc[TestConductor$]. It is an Pekko Extension that plugs in to the
+The basis for the multi node testing is the @apidoc[TestConductor$]. It is a Pekko Extension that plugs in to the
 network stack and it is used to coordinate the nodes participating in the test and provides several features
 including:
 

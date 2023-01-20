@@ -23,7 +23,7 @@ To use Pekko Streams, add the module to your project:
 @@@
 
 Stream references, or "stream refs" for short, allow running Pekko Streams across multiple nodes within 
-an Pekko Cluster. 
+a Pekko Cluster. 
 
 Unlike heavier "streaming data processing" frameworks, Pekko Streams are neither "deployed" nor automatically distributed.
 Pekko stream refs are, as the name implies, references to existing parts of a stream, and can be used to create a 

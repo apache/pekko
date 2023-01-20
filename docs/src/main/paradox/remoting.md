@@ -11,7 +11,7 @@ Classic remoting has been deprecated. Please use @ref[Artery](remoting-artery.md
 Remoting is the mechanism by which Actors on different nodes talk to each
 other internally.
 
-When building an Pekko application, you would usually not use the Remoting concepts
+When building a Pekko application, you would usually not use the Remoting concepts
 directly, but instead use the more high-level
 @ref[Pekko Cluster](index-cluster.md) utilities or technology-agnostic protocols
 such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
@@ -488,7 +488,7 @@ According to [RFC 7525](https://www.rfc-editor.org/rfc/rfc7525.html) the recomme
 
 You should always check the latest information about security and algorithm recommendations though before you configure your system.
 
-Since an Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
+Since a Pekko remoting is inherently @ref:[peer-to-peer](general/remoting.md#symmetric-communication) both the key-store as well as trust-store
 need to be configured on each remoting node participating in the cluster.
 
 The official [Java Secure Socket Extension documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/security/jsse/JSSERefGuide.html)

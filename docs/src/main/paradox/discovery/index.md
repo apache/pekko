@@ -61,7 +61,7 @@ Scala
 Java
 :  @@snip [CompileOnlyTest.java](/discovery/src/test/java/jdoc/org/apache/pekko/discovery/CompileOnlyTest.java) { #full }
 
-Port can be used when a service opens multiple ports e.g. a HTTP port and an Pekko remoting port.
+Port can be used when a service opens multiple ports e.g. a HTTP port and a Pekko remoting port.
 
 ## Discovery Method: DNS
 

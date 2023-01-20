@@ -1,5 +1,5 @@
 ---
-project.description: Share data between nodes and perform updates without coordination in an Pekko Cluster using Conflict Free Replicated Data Types CRDT.
+project.description: Share data between nodes and perform updates without coordination in a Pekko Cluster using Conflict Free Replicated Data Types CRDT.
 ---
 # Distributed Data
 

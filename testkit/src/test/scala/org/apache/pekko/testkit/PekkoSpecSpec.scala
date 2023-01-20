@@ -32,7 +32,7 @@ import pekko.util.Timeout
 @nowarn
 class PekkoSpecSpec extends AnyWordSpec with Matchers {
 
-  "An PekkoSpec" must {
+  "A PekkoSpec" must {
 
     "warn about unhandled messages" in {
       implicit val system = ActorSystem("PekkoSpec0", PekkoSpec.testConf)

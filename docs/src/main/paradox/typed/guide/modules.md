@@ -111,7 +111,7 @@ Challenges the Cluster module solves include the following:
   version=PekkoVersion
 }
 
-Sharding helps to solve the problem of distributing a set of actors among members of an Pekko cluster.
+Sharding helps to solve the problem of distributing a set of actors among members of a Pekko cluster.
 Sharding is a pattern that mostly used together with Persistence to balance a large set of persistent entities
 (backed by actors) to members of a cluster and also migrate them to other nodes when members crash or leave.
 
@@ -203,7 +203,7 @@ Challenges Projections solve include the following:
 }
 
 In situations where eventual consistency is acceptable, it is possible to share data between nodes in
-an Pekko Cluster and accept both reads and writes even in the face of cluster partitions. This can be
+a Pekko Cluster and accept both reads and writes even in the face of cluster partitions. This can be
 achieved using [Conflict Free Replicated Data Types](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) (CRDTs), where writes on different nodes can
 happen concurrently and are merged in a predictable way afterward. The Distributed Data module
 provides infrastructure to share data and a number of useful data types.

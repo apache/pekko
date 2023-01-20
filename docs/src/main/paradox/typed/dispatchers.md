@@ -21,7 +21,7 @@ page describes how to use dispatchers with `pekko-actor-typed`, which has depend
 
 ## Introduction 
 
-An Pekko `MessageDispatcher` is what makes Pekko Actors "tick", it is the engine of the machine so to speak.
+A Pekko `MessageDispatcher` is what makes Pekko Actors "tick", it is the engine of the machine so to speak.
 All `MessageDispatcher` implementations are also an @scala[`ExecutionContext`]@java[`Executor`], which means that they can be used
 to execute arbitrary code, for instance @scala[`Future`s]@java[`CompletableFuture`s].
 

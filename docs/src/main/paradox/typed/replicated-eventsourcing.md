@@ -78,7 +78,7 @@ The factory takes in:
 * `allReplicasAndQueryPlugins`: All Replicas and the query plugin used to read their events
 * A factory function to create an instance of the @scala[`EventSourcedBehavior`]@java[`ReplicatedEventSourcedBehavior`] 
 
-In this scenario each replica reads from each other's database effectively providing cross region replication for any database that has an Pekko Persistence plugin. Alternatively if all the replicas use the same journal, e.g. for testing or if it is a distributed database such as Cassandra, the `withSharedJournal` factory can be used. 
+In this scenario each replica reads from each other's database effectively providing cross region replication for any database that has a Pekko Persistence plugin. Alternatively if all the replicas use the same journal, e.g. for testing or if it is a distributed database such as Cassandra, the `withSharedJournal` factory can be used. 
 
 Scala
 :  @@snip [ReplicatedEventSourcingCompileOnlySpec.scala](/persistence-typed-tests/src/test/scala/docs/org/apache/pekko/persistence/typed/ReplicatedEventSourcingCompileOnlySpec.scala) { #factory-shared}

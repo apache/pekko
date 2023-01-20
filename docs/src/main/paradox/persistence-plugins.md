@@ -63,14 +63,14 @@ pekko {
 ## Pre-packaged plugins
 
 The Pekko Persistence module comes with few built-in persistence plugins, but none of these are suitable
-for production usage in an Pekko Cluster. 
+for production usage in a Pekko Cluster. 
 
 ### Local LevelDB journal
 
 This plugin writes events to a local LevelDB instance.
 
 @@@ warning
-The LevelDB plugin cannot be used in an Pekko Cluster since the storage is in a local file system.
+The LevelDB plugin cannot be used in a Pekko Cluster since the storage is in a local file system.
 @@@
 
 The LevelDB journal is deprecated and it is not advised to build new applications with it.
@@ -147,7 +147,7 @@ i.e. only the first injection is used.
 This plugin writes snapshot files to the local filesystem.
 
 @@@ warning
-The local snapshot store plugin cannot be used in an Pekko Cluster since the storage is in a local file system.
+The local snapshot store plugin cannot be used in a Pekko Cluster since the storage is in a local file system.
 @@@
 
 The local snapshot store plugin config entry is `pekko.persistence.snapshot-store.local`. 

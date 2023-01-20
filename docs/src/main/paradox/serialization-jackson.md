@@ -461,7 +461,7 @@ the binding name (for example `jackson-cbor`).
 
 ## Using Pekko Serialization for embedded types
 
-For types that already have an Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
+For types that already have a Pekko Serializer defined that are embedded in types serialized with Jackson the @apidoc[PekkoSerializationSerializer] and
 @apidoc[PekkoSerializationDeserializer] can be used to Pekko Serialization for individual fields. 
 
 The serializer/deserializer are not enabled automatically. The @javadoc[@JsonSerialize](com.fasterxml.jackson.databind.annotation.JsonSerialize) and @javadoc[@JsonDeserialize](com.fasterxml.jackson.databind.annotation.JsonDeserialize) annotation needs to be added
