@@ -223,7 +223,7 @@ private[pekko] object ActorMaterializerHelper {
 abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
 
   @deprecated(
-    "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use attributes to access settings from stages, see https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def settings: ActorMaterializerSettings
 
@@ -292,10 +292,10 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from individual settings (Scala).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
+   * See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def apply(
       initialInputBufferSize: Int,
@@ -331,10 +331,10 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Scala).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
+   * See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def apply(system: ActorSystem): ActorMaterializerSettings =
     apply(system.settings.config.getConfig("pekko.stream.materializer"))
@@ -343,10 +343,10 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from a Config subsection (Scala).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
+   * See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def apply(config: Config): ActorMaterializerSettings =
     new ActorMaterializerSettings(
@@ -369,10 +369,10 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from individual settings (Java).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
+   * See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def create(
       initialInputBufferSize: Int,
@@ -408,7 +408,7 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from the settings of an [[pekko.actor.ActorSystem]] (Java).
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def create(system: ActorSystem): ActorMaterializerSettings =
     apply(system)
@@ -417,10 +417,10 @@ object ActorMaterializerSettings {
    * Create [[ActorMaterializerSettings]] from a Config subsection (Java).
    *
    * Prefer using either config for defaults or attributes for per-stream config.
-   * See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
+   * See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html"
    */
   @deprecated(
-    "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
+    "Use config or attributes to configure the materializer. See migration guide for details https://pekko.apache.org/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     "2.6.0")
   def create(config: Config): ActorMaterializerSettings =
     apply(config)

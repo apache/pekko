@@ -103,7 +103,7 @@ import pekko.stream.scaladsl.Sink
     system.log.warn(
       "Persistence TestKit serialization enabled when using EventSourcedBehaviorTestKit, this is not intended. " +
       "make sure you create the system used in the test with the config from EventSourcedBehaviorTestKit.config " +
-      "as described in the docs https://doc.akka.io/docs/akka/current/typed/persistence-testing.html#unit-testing")
+      "as described in the docs https://pekko.apache.org/docs/akka/current/typed/persistence-testing.html#unit-testing")
   }
 
   override val persistenceTestKit: PersistenceTestKit = PersistenceTestKit(system)

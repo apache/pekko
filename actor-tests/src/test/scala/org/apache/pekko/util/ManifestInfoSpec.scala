@@ -28,7 +28,7 @@ class ManifestInfoSpec extends PekkoSpec {
         "You are using version 2.6.4 of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
         "You can solve this by adding an explicit dependency on version 2.6.4 of the [pekko-persistence, pekko-cluster] artifacts to your project. " +
         "Here's a complete collection of detected artifacts: (2.5.3, [pekko-cluster, pekko-persistence]), (2.6.4, [pekko-actor]). " +
-        "See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
+        "See also: https://pekko.apache.org/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
     }
 
     "support dynver" in {
@@ -40,7 +40,7 @@ class ManifestInfoSpec extends PekkoSpec {
         "You are using version 2.6.4+10-abababef of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
         "You can solve this by adding an explicit dependency on version 2.6.4+10-abababef of the [pekko-actor] artifacts to your project. " +
         "Here's a complete collection of detected artifacts: (2.6.4, [pekko-actor]), (2.6.4+10-abababef, [pekko-persistence]). " +
-        "See also: https://doc.akka.io/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
+        "See also: https://pekko.apache.org/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
     }
   }
 }

@@ -34,7 +34,7 @@ import pekko.annotation.DoNotInherit
  *
  * Each topic results in a [[pekko.actor.typed.receptionist.ServiceKey]] in the [[pekko.actor.typed.receptionist.Receptionist]]
  * so the same scaling recommendation holds for topics, see docs:
- * https://doc.akka.io/docs/akka/current/typed/actor-discovery.html#receptionist-scalability
+ * https://pekko.apache.org/docs/akka/current/typed/actor-discovery.html#receptionist-scalability
  */
 object Topic {
 
