@@ -19,7 +19,7 @@ import pekko.actor._
 /**
  * Entry point to Akka’s IO layer.
  *
- * @see <a href="https://akka.io/docs/">the Akka online documentation</a>
+ * @see <a href="https://pekko.apache.org/docs/pekko/current/">the Akka online documentation</a>
  */
 object IO {
 

@@ -74,7 +74,7 @@ object Scaladoc extends AutoPlugin {
       "-doc-version",
       ver,
       "-doc-canonical-base-url",
-      "https://pekko.apache.org/api/akka/current/")
+      "https://pekko.apache.org/api/pekko/current/")
     CliOptions.scaladocDiagramsEnabled.ifTrue("-diagrams").toList ::: opts
   }
 
