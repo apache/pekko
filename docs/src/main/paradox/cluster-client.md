@@ -3,7 +3,7 @@
 @@@ warning
 
 Cluster Client is deprecated in favor of using [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/index.html).
-It is not advised to build new applications with Cluster Client, and existing users @ref[should migrate](#migration-to-pekko-grpc).
+It is not advised to build new applications with Cluster Client.
 
 @@@
 
@@ -224,80 +224,3 @@ This can be useful when initial contacts are provided from some kind of service 
 are entirely dynamic and the entire cluster might shut down or crash, be restarted on new addresses. Since the
 client will be stopped in that case a monitoring actor can watch it and upon `Terminate` a new set of initial
 contacts can be fetched and a new cluster client started.
-
-## Migration to Pekko gRPC
-
-Cluster Client is deprecated and it is not advised to build new applications with it.
-As a replacement, we recommend using [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/)
-with an application-specific protocol. The benefits of this approach are:
-
-* Improved security by using TLS for gRPC (HTTP/2) versus exposing Pekko Remoting outside the Pekko Cluster
-* Easier to update clients and servers independent of each other
-* Improved protocol definition between client and server
-* Usage of [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery)
-* Clients do not need to use Pekko
-* See also [gRPC versus Pekko Remoting]($pekko.doc.dns$/docs/pekko-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
-
-### Migrating directly
-
-Existing users of Cluster Client may migrate directly to Pekko gRPC and use it
-as documented in [its documentation]($pekko.doc.dns$/docs/pekko-grpc/current/).
-
-### Migrating gradually
-
-If your application extensively uses Cluster Client, a more gradual migration
-might be desired that requires less re-write of the application. That migration step is described in this section. We recommend migration directly if feasible,
-though.
-
-An example is provided to illustrate an approach to migrate from the deprecated Cluster Client to Pekko gRPC,
-with minimal changes to your existing code. The example is intended to be copied and adjusted to your needs.
-It will not be provided as a published artifact.
-
-* [pekko-samples/pekko-bom-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/incubator-pekko-samples/tree/2.6/pekko-bom-sample-cluster-client-grpc-scala) implemented in Scala
-* [pekko-samples/pekko-bom-sample-cluster-cluster-client-grpc-java](https://github.com/apache/incubator-pekko-samples/tree/2.6/pekko-bom-sample-cluster-client-grpc-java) implemented in Java
-
-The example is still using an actor on the client-side to have an API that is very close
-to the original Cluster Client. The messages this actor can handle correspond to the
-@ref:[Distributed Pub Sub](distributed-pub-sub.md) messages on the server-side, such as
-`ClusterClient.Send` and `ClusterClient.Publish`.
-
-The `ClusterClient` actor delegates those messages to the gRPC client, and on the
-server-side those are translated and delegated to the destination actors that
-are registered via the `ClusterClientReceptionist` in the same way as in the original.
-
-Pekko gRPC is used as the transport for the messages between client and server, instead of Pekko Remoting.
-
-The application specific messages are wrapped and serialized with Pekko Serialization,
-which means that care must be taken to keep wire compatibility when changing any messages used
-between the client and server. The Pekko configuration of Pekko serializers must be the same (or
-being compatible) on the client and the server.
-
-#### Next steps
-
-After this first migration step from Cluster Client to Pekko gRPC, you can start
-replacing calls to `ClusterClientReceptionistService` with new,
-application-specific gRPC endpoints.
-
-#### Differences
-
-Aside from the underlying implementation using gRPC instead of Actor messages
-and Pekko Remoting it's worth pointing out the following differences between
-the Cluster Client and the example emulating Cluster Client with Pekko gRPC as
-transport.
-
-##### Single request-reply
-
-For request-reply interactions when there is only one reply message for each request
-it is more efficient to use the `ClusterClient.AskSend` message instead of
-`ClusterClient.Send` as illustrated in the example. Then it doesn't have to
-setup a full bidirectional gRPC stream for each request but can use the @scala[`Future`]@java[`CompletionStage`]
-based API.
-
-##### Initial contact points
-
-Instead of configured initial contact points the [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery) can be used.
-
-##### Failure detection
-
-Heartbeat messages and failure detection of the connections have been removed
-since that should be handled by the gRPC connections.
