@@ -56,7 +56,7 @@ import pekko.util.ccompat._
 
 @ccompatUsedUntil213
 @deprecated(
-  "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/2.6/cluster-client.html",
+  "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",
   since = "2.6.0")
 object ClusterClientSettings {
 
