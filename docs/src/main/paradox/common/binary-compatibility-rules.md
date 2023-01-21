@@ -97,7 +97,7 @@ You are using version 2.6.6 of Pekko, but it appears you (perhaps indirectly) al
 of related artifacts. You can solve this by adding an explicit dependency on version 2.6.6 of the 
 [pekko-persistence-query] artifacts to your project. Here's a complete collection of detected 
 artifacts: (2.5.3, [pekko-persistence-query]), (2.6.6, [pekko-actor, pekko-cluster]).
-See also: https://pekko.apache.org/docs/akka/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed
+See also: https://pekko.apache.org/docs/pekko/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed
 ```
 
 The fix is typically to pick the highest Pekko version, and add explicit

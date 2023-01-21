@@ -24,7 +24,7 @@ import pekko.cluster.DowningProvider
 import pekko.coordination.lease.scaladsl.LeaseProvider
 
 /**
- * See reference documentation: https://pekko.apache.org/docs/akka/current/split-brain-resolver.html
+ * See reference documentation: https://pekko.apache.org/docs/pekko/current/split-brain-resolver.html
  *
  * Enabled with configuration:
  * {{{

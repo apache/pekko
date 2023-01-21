@@ -51,7 +51,7 @@ abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
       "generate random" in {
         val bytes = Array.ofDim[Byte](16)
         // Reproducer of the specific issue described at
-        // https://pekko.apache.org/docs/akka/current/security/2018-08-29-aes-rng.html
+        // https://pekko.apache.org/docs/pekko/current/security/2018-08-29-aes-rng.html
         // awaitAssert just in case we are very unlucky to get same sequence more than once
         awaitAssert {
           val randomBytes = List
@@ -75,7 +75,7 @@ abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
 
         val compressed = baos.toByteArray
         // random data should not be compressible
-        // Another reproducer of https://pekko.apache.org/docs/akka/current/security/2018-08-29-aes-rng.html
+        // Another reproducer of https://pekko.apache.org/docs/pekko/current/security/2018-08-29-aes-rng.html
         // with the broken implementation the compressed size was <5k
         compressed.size should be > randomData.length
       }
