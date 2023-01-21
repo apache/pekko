@@ -4,9 +4,9 @@ project.description: Upgrade strategy for downstream libraries
 # Downstream upgrade strategy
 
 When a new Pekko version is released, downstream projects (such as
-[Pekko Management](https://doc.akka.io/docs/akka-management/current/),
-[Pekko HTTP](https://doc.akka.io/docs/akka-http/current/) and
-[Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/))
+[Pekko Management]($pekko.doc.dns$/docs/akka-management/current/),
+[Pekko HTTP]($pekko.doc.dns$/docs/akka-http/current/) and
+[Pekko gRPC]($pekko.doc.dns$/docs/akka-grpc/current/))
 do not need to update immediately: because of our
 @ref[binary compatibility](../common/binary-compatibility-rules.md) approach,
 applications can take advantage of the latest version of Pekko without having to

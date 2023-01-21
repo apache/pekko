@@ -14,8 +14,8 @@ other internally.
 When building a Pekko application, you would usually not use the Remoting concepts
 directly, but instead use the more high-level
 @ref[Pekko Cluster](index-cluster.md) utilities or technology-agnostic protocols
-such as [HTTP](https://doc.akka.io/docs/akka-http/current/),
-[gRPC](https://doc.akka.io/docs/akka-grpc/current/) etc.
+such as [HTTP]($pekko.doc.dns$/docs/akka-http/current/),
+[gRPC]($pekko.doc.dns$/docs/akka-grpc/current/) etc.
 
 
 @@@

@@ -80,7 +80,7 @@ Leases can be used for @ref[Split Brain Resolver](split-brain-resolver.md#lease)
 
 ## Lease implementations
 
-* [Kubernetes API](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)
+* [Kubernetes API]($pekko.doc.dns$/docs/akka-management/current/kubernetes-lease.html)
 
 ## Implementing a lease
 

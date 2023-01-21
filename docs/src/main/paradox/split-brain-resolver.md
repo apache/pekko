@@ -345,7 +345,7 @@ before trying to acquire the lease on the minority side.
 
 There is currently one supported implementation of the lease which is backed by a
 [Custom Resource Definition (CRD)](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)
-in Kubernetes. It is described in the [Kubernetes Lease](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)
+in Kubernetes. It is described in the [Kubernetes Lease]($pekko.doc.dns$/docs/akka-management/current/kubernetes-lease.html)
 documentation.
 
 This strategy is very safe since coordination is added by an external arbiter. The trade-off compared to other
@@ -376,7 +376,7 @@ pekko {
 
 @@snip [reference.conf](/cluster/src/main/resources/reference.conf) { #lease-majority }
 
-See also configuration and additional dependency in [Kubernetes Lease](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)
+See also configuration and additional dependency in [Kubernetes Lease]($pekko.doc.dns$/docs/akka-management/current/kubernetes-lease.html)
 
 ## Indirectly connected nodes
 

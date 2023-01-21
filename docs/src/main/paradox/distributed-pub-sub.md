@@ -236,4 +236,4 @@ pekko.extensions = ["org.apache.pekko.cluster.pubsub.DistributedPubSub"]
 As in @ref:[Message Delivery Reliability](general/message-delivery-reliability.md) of Pekko, message delivery guarantee in distributed pub sub modes is **at-most-once delivery**.
 In other words, messages can be lost over the wire.
 
-If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connectors](https://doc.akka.io/docs/alpakka-kafka/current/).
+If you are looking for at-least-once delivery guarantee, we recommend [Pekko Connectors]($pekko.doc.dns$/docs/alpakka-kafka/current/).

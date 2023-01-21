@@ -5,12 +5,12 @@ project.description: How to deploy Pekko Cluster to Kubernetes and Docker.
 
 ## Deploying to Kubernetes
 
-Deploy to Kubernetes according to the guide and example project for [Deploying Pekko Cluster to Kubernetes](https://doc.akka.io/docs/akka-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
+Deploy to Kubernetes according to the guide and example project for [Deploying Pekko Cluster to Kubernetes]($pekko.doc.dns$/docs/akka-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
 
 ### Cluster bootstrap
 
 To take advantage of running inside Kubernetes while forming a cluster, 
-[Pekko Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps forming or joining a cluster using Pekko Discovery to discover peer nodes. 
+[Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/akka-management/current/bootstrap/) helps forming or joining a cluster using Pekko Discovery to discover peer nodes. 
 with the Kubernetes API or Kubernetes via DNS.  
 
 You can look at the
