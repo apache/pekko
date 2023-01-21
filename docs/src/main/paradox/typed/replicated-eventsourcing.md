@@ -346,7 +346,7 @@ be used for replicated event sourced behaviors as well.
 Tagging is useful in practice to build queries that lead to other data representations or aggregations of these event 
 streams that can more directly serve user queries – known as building the “read side” in @ref[CQRS](cqrs.md) based applications.
 
-Creating read side projections is possible through [Pekko Projection]($pekko.doc.dns$/docs/akka-projection/current/)
+Creating read side projections is possible through [Pekko Projection]($pekko.doc.dns$/docs/pekko-projection/current/)
 or through direct usage of the @ref[events by tag queries](../persistence-query.md#eventsbytag-and-currenteventsbytag).  
 
 The tagging is invoked in each replicas, which requires some special care in using tags, or else the same event will be
@@ -412,6 +412,6 @@ The @apidoc[SnapshotStoreSpec] in the Persistence TCK provides a capability flag
 
 The following plugins support Replicated Event Sourcing:
 
-* [Pekko Persistence Cassandra]($pekko.doc.dns$/docs/akka-persistence-cassandra/current/index.html) versions 1.0.3+
-* [Pekko Persistence Spanner]($pekko.doc.dns$/docs/akka-persistence-spanner/current/overview.html) versions 1.0.0-RC4+
-* [Pekko Persistence JDBC]($pekko.doc.dns$/docs/akka-persistence-jdbc/current) versions 5.0.0+
+* [Pekko Persistence Cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/index.html) versions 1.0.3+
+* [Pekko Persistence Spanner]($pekko.doc.dns$/docs/pekko-persistence-spanner/current/overview.html) versions 1.0.0-RC4+
+* [Pekko Persistence JDBC]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current) versions 5.0.0+

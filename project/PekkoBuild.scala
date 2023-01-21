@@ -177,7 +177,7 @@ object PekkoBuild {
         url("https://github.com/apache/incubator-pekko"),
         "scm:git:https://github.com/apache/incubator-pekko.git",
         "scm:git:git@github.com:apache/incubator-pekko.git")),
-    apiURL := Some(url(s"https://doc.akka.io/api/akka/${version.value}")),
+    apiURL := Some(url(s"https://pekko.apache.org/api/pekko/${version.value}")),
     initialCommands :=
       """|import language.postfixOps
          |import org.apache.pekko.actor._

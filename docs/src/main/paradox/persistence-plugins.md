@@ -6,10 +6,10 @@ A directory of persistence journal and snapshot store plugins is available at th
 
 Plugins maintained within the Pekko organization are:
 
-* [pekko-persistence-cassandra]($pekko.doc.dns$/docs/akka-persistence-cassandra/current/) (no Durable State support)
-* [pekko-persistence-jdbc]($pekko.doc.dns$/docs/akka-persistence-jdbc/current/)
-* [pekko-persistence-r2dbc]($pekko.doc.dns$/docs/akka-persistence-r2dbc/current/)
-* [pekko-persistence-spanner]($pekko.doc.dns$/docs/akka-persistence-spanner/current/)
+* [pekko-persistence-cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/) (no Durable State support)
+* [pekko-persistence-jdbc]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/)
+* [pekko-persistence-r2dbc]($pekko.doc.dns$/docs/pekko-persistence-r2dbc/current/)
+* [pekko-persistence-spanner]($pekko.doc.dns$/docs/pekko-persistence-spanner/current/)
 
 Plugins can be selected either by "default" for all persistent actors,
 or "individually", when a persistent actor defines its own set of plugins.
@@ -27,7 +27,7 @@ However, these entries are provided as empty "", and require explicit user confi
 
 * For an example of a journal plugin which writes messages to LevelDB see @ref:[Local LevelDB journal](#local-leveldb-journal).
 * For an example of a snapshot store plugin which writes snapshots as individual files to the local filesystem see @ref:[Local snapshot store](#local-snapshot-store).
-* The state store is relatively new, one available implementation is the [pekko-persistence-jdbc-plugin]($pekko.doc.dns$/docs/akka-persistence-jdbc/current/).
+* The state store is relatively new, one available implementation is the [pekko-persistence-jdbc-plugin]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/).
 
 ## Eager initialization of persistence plugin
 
@@ -74,7 +74,7 @@ The LevelDB plugin cannot be used in a Pekko Cluster since the storage is in a l
 @@@
 
 The LevelDB journal is deprecated and it is not advised to build new applications with it.
-As a replacement we recommend using [Pekko Persistence JDBC]($pekko.doc.dns$/docs/akka-persistence-jdbc/current/index.html).
+As a replacement we recommend using [Pekko Persistence JDBC]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/index.html).
 
 The LevelDB journal plugin config entry is `pekko.persistence.journal.leveldb`. Enable this plugin by
 defining config property:

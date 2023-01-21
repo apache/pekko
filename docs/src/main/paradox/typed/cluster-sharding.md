@@ -701,7 +701,7 @@ for more information about `min-nr-of-members`.
 
 ## Health check
 
-An [Pekko Management compatible health check]($pekko.doc.dns$/docs/akka-management/current/healthchecks.html) is included that returns healthy once the local shard region
+An [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
 has registered with the coordinator. This health check should be used in cases where you don't want to receive production traffic until the local shard region is ready to retrieve locations
 for shards. For shard regions that aren't critical and therefore should not block this node becoming ready do not include them.
 

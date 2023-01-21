@@ -234,4 +234,4 @@ To continue your journey with Pekko, we recommend:
 To get from this guide to a complete application you would likely need to provide either an UI or an API. For this we recommend that you look at the following technologies and see what fits you:
 
  * @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) illustrates how to implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections 
- * [Pekko HTTP]($pekko.doc.dns$/docs/akka-http/current/introduction.html) is a HTTP server and client library, making it possible to publish and consume HTTP endpoints
+ * [Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/introduction.html) is a HTTP server and client library, making it possible to publish and consume HTTP endpoints
