@@ -234,7 +234,7 @@ with an application-specific protocol. The benefits of this approach are:
 * Improved security by using TLS for gRPC (HTTP/2) versus exposing Pekko Remoting outside the Pekko Cluster
 * Easier to update clients and servers independent of each other
 * Improved protocol definition between client and server
-* Usage of [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery)
+* Usage of [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-pekko-discovery-for-endpoint-discovery)
 * Clients do not need to use Pekko
 * See also [gRPC versus Pekko Remoting]($pekko.doc.dns$/docs/pekko-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
 
@@ -295,7 +295,7 @@ based API.
 
 ##### Initial contact points
 
-Instead of configured initial contact points the [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery) can be used.
+Instead of configured initial contact points the [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-pekko-discovery-for-endpoint-discovery) can be used.
 
 ##### Failure detection
 
