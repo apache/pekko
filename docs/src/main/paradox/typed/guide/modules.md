@@ -242,11 +242,11 @@ Streams solve the following challenges:
 
 ### Pekko Connectors
 
-[Pekko Connectors]($pekko.doc.dns$/docs/alpakka/current/) is a separate module from Pekko.
+[Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/) is a separate module from Pekko.
 
 Pekko Connectors is collection of modules built upon the Streams API to provide Reactive Stream connector
 implementations for a variety of technologies common in the cloud and infrastructure landscape.  
-See the [Pekko Connectors overview page]($pekko.doc.dns$/docs/alpakka/current/overview.html) for more details on the API and the implementation modules available.
+See the [Pekko Connectors overview page]($pekko.doc.dns$/docs/pekko-connectors/current/overview.html) for more details on the API and the implementation modules available.
 
 Pekko Connectors help solve the following challenges:
 

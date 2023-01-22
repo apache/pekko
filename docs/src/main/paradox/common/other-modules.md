@@ -10,11 +10,11 @@ A full server- and client-side HTTP stack on top of pekko-actor and pekko-stream
 
 Pekko gRPC provides support for building streaming gRPC servers and clients on top of Pekko Streams.
 
-## [Pekko Connectors]($pekko.doc.dns$/docs/alpakka/current/)
+## [Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/)
 
 Pekko Connectors is a Reactive Enterprise Integration library for Java and Scala, based on Reactive Streams and Pekko.
 
-## [Pekko Kafka Connector]($pekko.doc.dns$/docs/alpakka-kafka/current/)
+## [Pekko Kafka Connector]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/)
 
 The Pekko Kafka Connector connects Apache Kafka with Pekko Streams.
 

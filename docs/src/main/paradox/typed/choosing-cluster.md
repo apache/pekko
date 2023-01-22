@@ -28,8 +28,8 @@ is convenient to use and has great performance.
 
 Between different services [Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/) or
 [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/) can be used for synchronous (yet non-blocking)
-communication and [Pekko Streams Kafka]($pekko.doc.dns$/docs/alpakka-kafka/current/) or other
-[Pekko Connectors]($pekko.doc.dns$/docs/alpakka/current/) for integration asynchronous communication.
+communication and [Pekko Streams Kafka]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/) or other
+[Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/) for integration asynchronous communication.
 All those communication mechanisms work well with streaming of messages with end-to-end back-pressure, and the
 synchronous communication tools can also be used for single request response interactions. It is also important
 to note that when using these tools both sides of the communication do not have to be implemented with Pekko,

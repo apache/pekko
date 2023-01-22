@@ -206,7 +206,7 @@ in one rebalance round. The lower result of `rebalance-relative-limit` and `reba
 An alternative allocation strategy is the @apidoc[ExternalShardAllocationStrategy] which allows
 explicit control over where shards are allocated via the @apidoc[ExternalShardAllocation] extension.
 
-This can be used, for example, to match up Kafka Partition consumption with shard locations. Pekko Connector Kafka provides [an extension for Pekko Cluster Sharding]($pekko.doc.dns$/docs/alpakka-kafka/current/cluster-sharding.html).
+This can be used, for example, to match up Kafka Partition consumption with shard locations. Pekko Connector Kafka provides [an extension for Pekko Cluster Sharding]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/cluster-sharding.html).
 
 To use it set it as the allocation strategy on your @apidoc[typed.*.Entity]:
 
