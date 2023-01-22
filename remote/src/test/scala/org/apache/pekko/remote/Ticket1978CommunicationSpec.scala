@@ -193,7 +193,7 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
         val compressed = baos.toByteArray
         // random data should not be compressible
-        // Another reproducer of https://pekko.apache.org/docs/pekko/current/security/2018-08-29-aes-rng.html
+        // Another reproducer of https://doc.akka.io/docs/akka/current/security/2018-08-29-aes-rng.html
         // with the broken implementation the compressed size was <5k
         compressed.size should be > randomData.length
       }
