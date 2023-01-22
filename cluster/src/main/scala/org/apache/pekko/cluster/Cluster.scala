@@ -150,7 +150,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         "auto-down-unreachable-after") != "off"))
       logWarning(
         "auto-down has been removed in Akka 2.6.0. See " +
-        "https://pekko.apache.org/docs/pekko/2.6/typed/cluster.html#downing for alternatives.")
+        "https://pekko.apache.org/docs/pekko/current/typed/cluster.html#downing for alternatives.")
   }
 
   // ========================================================
