@@ -49,7 +49,6 @@ object Publish extends AutoPlugin {
     val key = new java.io.File(
       Option(System.getProperty("pekko.gustav.key"))
         .getOrElse(System.getProperty("user.home") + "/.ssh/id_rsa_gustav.pem"))
-    // TODO: gustav.pekko.io?
     if (isSnapshot.value)
       Resolver.sftp("Akka snapshots", "gustav.akka.io", "/home/akkarepo/www/snapshots").as("akkarepo", key)
     else
