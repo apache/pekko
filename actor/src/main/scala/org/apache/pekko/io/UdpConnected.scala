@@ -35,7 +35,7 @@ import pekko.util.ccompat._
  * from whom data can be received. For “unconnected” UDP mode see [[Udp]].
  *
  * For a full description of the design and philosophy behind this IO
- * implementation please refer to <a href="https://pekko.apache.org/docs/pekko/current/">the Akka online documentation</a>.
+ * implementation please refer to <a href="https://pekko.apache.org/docs/pekko/current/">the Pekko online documentation</a>.
  *
  * The Java API for generating UDP commands is available at [[UdpConnectedMessage]].
  */
