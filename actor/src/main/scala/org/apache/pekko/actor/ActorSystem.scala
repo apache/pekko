@@ -1049,7 +1049,7 @@ private[pekko] class ActorSystemImpl(
       if (settings.LogDeadLetters > 0)
         logDeadLetterListener = Some(systemActorOf(Props[DeadLetterListener](), "deadLetterListener"))
       eventStream.startUnsubscriber()
-      ManifestInfo(this).checkSameVersion("Akka", allModules, logWarning = true)
+      ManifestInfo(this).checkSameVersion("Apache Pekko", allModules, logWarning = true)
       if (!terminating)
         loadExtensions()
       if (LogConfigOnStart) logConfiguration()

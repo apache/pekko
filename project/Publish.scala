@@ -29,16 +29,16 @@ object Publish extends AutoPlugin {
     publishTo := Some(akkaPublishTo.value),
     publishRsyncHost := "akkarepo@gustav.akka.io",
     credentials ++= akkaCredentials,
-    organizationName := "Lightbend Inc.",
-    organizationHomepage := Some(url("https://www.lightbend.com")),
-    sonatypeProfileName := "com.typesafe",
-    startYear := Some(2009),
+    organizationName := "Apache Software Foundation",
+    organizationHomepage := Some(url("https://www.apache.org")),
+    sonatypeProfileName := "org.apache.pekko",
+    startYear := Some(2022),
     developers := List(
       Developer(
-        "akka-contributors",
-        "Akka Contributors",
-        "akka.official@gmail.com",
-        url("https://github.com/akka/akka/graphs/contributors"))),
+        "pekko-contributors",
+        "Apache Pekko Contributors",
+        "dev@pekko.apache.org",
+        url("https://github.com/apache/incubator-pekko/graphs/contributors"))),
     publishMavenStyle := true,
     pomIncludeRepository := { x =>
       false

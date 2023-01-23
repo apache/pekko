@@ -992,7 +992,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
     "serialize correctly" when {
       // note that this is serialization with Java serialization
-      // real serialization is in akka-remote
+      // real serialization is in pekko-remote
       if (util.Properties.versionNumberString.startsWith("2.12")) {
         "parsing regular ByteString1C as compat" in {
           val oldSerd =
