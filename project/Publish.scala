@@ -35,10 +35,10 @@ object Publish extends AutoPlugin {
     startYear := Some(2009),
     developers := List(
       Developer(
-        "akka-contributors",
-        "Akka Contributors",
+        "pekko-contributors",
+        "Pekko Contributors",
         "akka.official@gmail.com",
-        url("https://github.com/akka/akka/graphs/contributors"))),
+        url("https://github.com/apache/incubator-pekko/graphs/contributors"))),
     publishMavenStyle := true,
     pomIncludeRepository := { x =>
       false

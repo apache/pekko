@@ -70,7 +70,7 @@ object Scaladoc extends AutoPlugin {
       "-sourcepath",
       base.getAbsolutePath,
       "-doc-title",
-      "Akka",
+      "Apache Pekko",
       "-doc-version",
       ver,
       "-doc-canonical-base-url",
