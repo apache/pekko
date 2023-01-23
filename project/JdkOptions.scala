@@ -60,7 +60,7 @@ object JdkOptions extends AutoPlugin {
       Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:8" else "-target:jvm-1.8"),
       // '-release 8' is not enough, for some reason we need the 8 rt.jar
       // explicitly. To test whether this has the desired effect, compile
-      // akka-remote and check the invocation of 'ByteBuffer.clear()' in
+      // pekko-remote and check the invocation of 'ByteBuffer.clear()' in
       // EnvelopeBuffer.class with 'javap -c': it should refer to
       // ""java/nio/ByteBuffer.clear:()Ljava/nio/Buffer" and not
       // "java/nio/ByteBuffer.clear:()Ljava/nio/ByteBuffer". Issue #27079

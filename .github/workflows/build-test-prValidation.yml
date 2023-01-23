@@ -35,7 +35,7 @@ jobs:
           sbt \
           -Dsbt.override.build.repos=false \
           -Dsbt.log.noformat=false \
-          headerCheckAll
+          +headerCheckAll
 
   pull-request-validation:
     name: Check / Tests

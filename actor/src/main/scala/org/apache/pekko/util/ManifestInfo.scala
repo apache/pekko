@@ -43,14 +43,7 @@ object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {
   private val BundleVersion = "Bundle-Version"
   private val BundleVendor = "Bundle-Vendor"
 
-  private val knownVendors = Set(
-    "org.apache.pekko",
-    "com.typesafe.akka",
-    "com.lightbend.akka",
-    "Lightbend Inc.",
-    "Lightbend",
-    "com.lightbend.lagom",
-    "com.typesafe.play")
+  private val knownVendors = Set("org.apache.pekko")
 
   override def get(system: ActorSystem): ManifestInfo = super.get(system)
   override def get(system: ClassicActorSystemProvider): ManifestInfo = super.get(system)
