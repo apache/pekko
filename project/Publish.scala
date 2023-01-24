@@ -36,6 +36,8 @@ object Publish extends AutoPlugin {
     developers := List(
       Developer(
         "pekko-contributors",
+        "Apache Pekko Contributors",
+        "dev@pekko.apache.org",
         url("https://github.com/apache/incubator-pekko/graphs/contributors"))),
     publishMavenStyle := true,
     pomIncludeRepository := { x =>
