@@ -31,7 +31,7 @@ object Paradox {
         .url(version.value), // for links like this: @github[#1](#1) or @github[83986f9](83986f9)
       "extref.pekko.http.base_url" -> s"$pekkoBaseURL/docs/pekko-http/current/%s",
       "extref.pekko-management.base_url" -> s"$pekkoBaseURL/docs/pekko-management/current/%s",
-      "extref.platform-guide.base_url" -> s"$pekkoBaseURL/",
+      "extref.platform-guide.base_url" -> "https://developer.lightbend.com/docs/akka-platform-guide/%s",
       "extref.wikipedia.base_url" -> "https://en.wikipedia.org/wiki/%s",
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> "https://developer.lightbend.com/start/?group=akka&amp;project=%s",
