@@ -52,11 +52,11 @@ Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persisten
 
 ## Pekko Resilience Enhancements
 
-* [Pekko Thread Starvation Detector](https://doc.akka.io/docs/akka-enhancements/current/starvation-detector.html)
-* [Pekko Configuration Checker](https://doc.akka.io/docs/akka-enhancements/current/config-checker.html)
-* [Pekko Diagnostics Recorder](https://doc.akka.io/docs/akka-enhancements/current/diagnostics-recorder.html)
+* Pekko Thread Starvation Detector
+* Pekko Configuration Checker
+* Pekko Diagnostics Recorder
 
 ## Pekko Persistence Enhancements
 
-* [Pekko GDPR for Persistence](https://doc.akka.io/docs/akka-enhancements/current/gdpr/index.html)
+* Pekko GDPR for Persistence
 
