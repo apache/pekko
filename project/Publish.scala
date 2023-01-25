@@ -15,20 +15,17 @@ package org.apache.pekko
 
 import sbt._
 import sbt.Keys._
-import java.io.File
 import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport.publishRsyncHost
 import xerial.sbt.Sonatype.autoImport.sonatypeProfileName
 
 object Publish extends AutoPlugin {
 
-  val defaultPublishTo = settingKey[File]("Default publish directory")
-
   override def trigger = allRequirements
 
   override lazy val projectSettings = Seq(
-    publishTo := Some(akkaPublishTo.value),
+    publishTo := Some(pekkoPublishTo.value),
     publishRsyncHost := "akkarepo@gustav.akka.io",
-    credentials ++= akkaCredentials,
+    credentials ++= apacheNexusCredentials,
     organizationName := "Apache Software Foundation",
     organizationHomepage := Some(url("https://www.apache.org")),
     sonatypeProfileName := "org.apache.pekko",
@@ -40,23 +37,22 @@ object Publish extends AutoPlugin {
         "dev@pekko.apache.org",
         url("https://github.com/apache/incubator-pekko/graphs/contributors"))),
     publishMavenStyle := true,
-    pomIncludeRepository := { x =>
-      false
-    },
-    defaultPublishTo := target.value / "repository")
+    pomIncludeRepository := (_ => false))
 
-  private def akkaPublishTo = Def.setting {
-    val key = new java.io.File(
-      Option(System.getProperty("pekko.gustav.key"))
-        .getOrElse(System.getProperty("user.home") + "/.ssh/id_rsa_gustav.pem"))
+  private def pekkoPublishTo = Def.setting {
     if (isSnapshot.value)
-      Resolver.sftp("Akka snapshots", "gustav.akka.io", "/home/akkarepo/www/snapshots").as("akkarepo", key)
+      "apache-snapshots".at("https://repository.apache.org/content/repositories/snapshots")
     else
       Opts.resolver.sonatypeStaging
   }
 
-  private def akkaCredentials: Seq[Credentials] =
-    Option(System.getProperty("pekko.publish.credentials")).map(f => Credentials(new File(f))).toSeq
+  private def apacheNexusCredentials: Seq[Credentials] =
+    (sys.env.get("NEXUS_USER"), sys.env.get("NEXUS_PW")) match {
+      case (Some(user), Some(password)) =>
+        Seq(Credentials("Apache Nexus Repository Manager", "repository.apache.org", user, password))
+      case _ =>
+        Seq.empty
+    }
 }
 
 /**

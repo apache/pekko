@@ -3,8 +3,7 @@
 Each Pekko module has a `reference.conf` file with the default values.
 
 Make your edits/overrides in your `application.conf`. Don't override default values if
-you are not sure of the implications. [Pekko Config Checker]($pekko.doc.dns$/docs/pekko-enhancements/current/config-checker.html)
-is a useful tool for finding potential configuration issues.
+you are not sure of the implications.
 
 The purpose of `reference.conf` files is for libraries, like Pekko, to define default values that are used if
 an application doesn't define a more specific value. It's also a good place to document the existence and

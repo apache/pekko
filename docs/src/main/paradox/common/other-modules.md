@@ -50,13 +50,3 @@ Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persisten
 * [Pekko Discovery for Kubernetes, Consul, Marathon, and AWS]($pekko.doc.dns$/docs/pekko-management/current/discovery/)
 * [Kubernetes Lease]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-lease.html)
 
-## Pekko Resilience Enhancements
-
-* [Pekko Thread Starvation Detector]($pekko.doc.dns$/docs/pekko-enhancements/current/starvation-detector.html)
-* [Pekko Configuration Checker]($pekko.doc.dns$/docs/pekko-enhancements/current/config-checker.html)
-* [Pekko Diagnostics Recorder]($pekko.doc.dns$/docs/pekko-enhancements/current/diagnostics-recorder.html)
-
-## Pekko Persistence Enhancements
-
-* [Pekko GDPR for Persistence]($pekko.doc.dns$/docs/pekko-enhancements/current/gdpr/index.html)
-
