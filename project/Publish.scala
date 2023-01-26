@@ -44,7 +44,7 @@ object Publish extends AutoPlugin {
   private def apacheNexusCredentials: Seq[Credentials] =
     (sys.env.get("NEXUS_USER"), sys.env.get("NEXUS_PW")) match {
       case (Some(user), Some(password)) =>
-        Seq(Credentials("Apache Nexus Repository Manager", apacheBaseRepo, user, password))
+        Seq(Credentials("Sonatype Nexus Repository Manager", apacheBaseRepo, user, password))
       case _ =>
         Seq.empty
     }
