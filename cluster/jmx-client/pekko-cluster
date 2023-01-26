@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# ============== Akka Cluster Administration Tool ==============
+# ============== Apache Pekko Cluster Administration Tool ==============
 #
-# This script is meant to be used from within the Akka distribution.
+# This script is meant to be used from within the Pekko distribution.
 #
 # Add these options to the sbt or startup script:
 #   java \
@@ -28,9 +28,9 @@ JMX_CLIENT="java -jar $JMXSHJAR -h $HOST -p $PORT /dev/fd/0"
 
 function mbeanObjectName() {
   if [[ -z "$CLUSTER_PORT" ]]; then
-    echo "akka:type=Cluster"
+    echo "pekko:type=Cluster"
   else
-    echo "akka:type=Cluster,port=$CLUSTER_PORT"
+    echo "pekko:type=Cluster,port=$CLUSTER_PORT"
   fi
 }
 
@@ -46,15 +46,15 @@ function ensureNodeIsRunningAndAvailable {
     REPLY=$(get Available 2>&1) # redirects STDERR to STDOUT before capturing it
     if [[ "$REPLY" != *true ]]; then
         if [[ "$REPLY" == *"Cannot convert result to a string." ]]; then
-          echo "Akka cluster MBean is not available on $HOST:$PORT with MBean name '$(mbeanObjectName)'"
+          echo "Pekko cluster MBean is not available on $HOST:$PORT with MBean name '$(mbeanObjectName)'"
         else
-          echo "Akka cluster node is not available on $HOST:$PORT with MBean name '$(mbeanObjectName)', due to $REPLY"
+          echo "Pekko cluster node is not available on $HOST:$PORT with MBean name '$(mbeanObjectName)', due to $REPLY"
         fi
         exit 1
     fi
 }
 
-echo "This jmx-client/akka-cluster tool is deprecated use curl and https://github.com/akka/akka-cluster-management instead, since 2.5.0." >&2
+echo "This jmx-client/pekko-cluster tool is deprecated use curl and https://github.com/apache/incubator-pekko-management instead." >&2
 
 # switch on command
 while [ $# -gt 0 ];
