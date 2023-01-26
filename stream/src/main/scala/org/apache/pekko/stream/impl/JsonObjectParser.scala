@@ -117,7 +117,7 @@ import pekko.util.ByteString
     val bufSize = buffer.length
 
     skipToNextObject(bufSize)
-    val maxObjectLengthIndex = if (maximumObjectLength == Int.MaxValue) Int.MaxValue else pos + maximumObjectLength
+    val maxObjectLengthIndex = if (pos + maximumObjectLength < 0) Int.MaxValue else pos + maximumObjectLength
 
     while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
       val input = buffer(pos)

@@ -494,6 +494,11 @@ class JsonFramingSpec extends PekkoSpec {
           a[FramingException] shouldBe thrownBy { buffer.poll() }
         }
       }
+      "maximumObjectLength is near Int.MaxValue" in {
+        val buffer = new JsonObjectParser(Int.MaxValue - 1)
+        buffer.offer(ByteString("""  {}"""))
+        buffer.poll().get.utf8String shouldBe """{}"""
+      }
     }
 
     "fail on too large initial object" in {
