@@ -48,6 +48,15 @@ jobs:
         with:
           java-version: adopt@1.11
 
+      - name: Install Graphviz
+        run: |-
+          sudo apt-get install graphviz
+
+#      disable mima check until first pekko release is done
+#      - name: Report MIMA incompatibility issues
+#        run: |-
+#          sbt +mimaReportBinaryIssues
+
       - name: Publish to Apache Maven repo
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
@@ -56,9 +65,6 @@ jobs:
 
       - name: Publish local
         run: |-
-          sudo apt-get install graphviz
-          # disable mima check until first pekko release is done
-          # sbt +mimaReportBinaryIssues
           sbt +publishM2
 
       - name: Cache Coursier cache
