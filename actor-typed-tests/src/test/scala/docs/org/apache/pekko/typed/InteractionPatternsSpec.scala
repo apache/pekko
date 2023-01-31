@@ -166,14 +166,14 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
           replyTo ! Backend.JobProgress(taskId, 0.25)
           replyTo ! Backend.JobProgress(taskId, 0.50)
           replyTo ! Backend.JobProgress(taskId, 0.75)
-          replyTo ! Backend.JobCompleted(taskId, new URI("https://akka.io/docs/sv/"))
+          replyTo ! Backend.JobCompleted(taskId, new URI("https://pekko.apache.org/docs/sv/"))
           Behaviors.same
       })
 
       val frontend = spawn(Frontend(backend))
       val probe = createTestProbe[URI]()
-      frontend ! Frontend.Translate(new URI("https://akka.io/docs/"), probe.ref)
-      probe.expectMessage(new URI("https://akka.io/docs/sv/"))
+      frontend ! Frontend.Translate(new URI("https://pekko.apache.org/docs/"), probe.ref)
+      probe.expectMessage(new URI("https://pekko.apache.org/docs/sv/"))
     }
 
   }

@@ -23,26 +23,27 @@ import sbt._
 import scala.concurrent.duration._
 
 object Paradox {
-
+  val pekkoBaseURL = "https://pekko.apache.org"
   val propertiesSettings = Seq(
     Compile / paradoxProperties ++= Map(
-      "canonical.base_url" -> "https://doc.akka.io/docs/akka/current",
+      "canonical.base_url" -> s"$pekkoBaseURL/docs/pekko/current",
       "github.base_url" -> GitHub
         .url(version.value), // for links like this: @github[#1](#1) or @github[83986f9](83986f9)
-      "extref.pekko.http.base_url" -> "https://doc.akka.io/docs/akka-http/current/%s",
-      "extref.pekko-management.base_url" -> "https://doc.akka.io/docs/akka-management/current/%s",
+      "extref.pekko.http.base_url" -> s"$pekkoBaseURL/docs/pekko-http/current/%s",
+      "extref.pekko-management.base_url" -> s"$pekkoBaseURL/docs/pekko-management/current/%s",
       "extref.platform-guide.base_url" -> "https://developer.lightbend.com/docs/akka-platform-guide/%s",
       "extref.wikipedia.base_url" -> "https://en.wikipedia.org/wiki/%s",
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> "https://developer.lightbend.com/start/?group=akka&amp;project=%s",
       "extref.ecs.base_url" -> "https://example.lightbend.com/v1/download/%s",
-      "scaladoc.pekko.base_url" -> "https://doc.akka.io/api/akka/2.6/org/apache",
-      "scaladoc.pekko.http.base_url" -> "https://doc.akka.io/api/akka-http/current/org/apache",
+      "pekko.doc.dns" -> s"$pekkoBaseURL",
+      "scaladoc.pekko.base_url" -> s"$pekkoBaseURL/api/pekko/current/org/apache",
+      "scaladoc.pekko.http.base_url" -> s"$pekkoBaseURL/api/pekko-http/current/org/apache",
       "javadoc.java.base_url" -> "https://docs.oracle.com/en/java/javase/11/docs/api/java.base/",
       "javadoc.java.link_style" -> "direct",
-      "javadoc.pekko.base_url" -> "https://doc.akka.io/japi/akka/2.6/org/apache",
+      "javadoc.pekko.base_url" -> s"$pekkoBaseURL/japi/pekko/current/org/apache",
       "javadoc.pekko.link_style" -> "direct",
-      "javadoc.akka.http.base_url" -> "https://doc.akka.io/japi/akka-http/current/org/apache",
+      "javadoc.akka.http.base_url" -> s"$pekkoBaseURL/japi/pekko-http/current/org/apache",
       "javadoc.akka.http.link_style" -> "frames",
       "javadoc.com.fasterxml.jackson.annotation.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
       "javadoc.com.fasterxml.jackson.annotation.link_style" -> "direct",
@@ -102,6 +103,6 @@ object Paradox {
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
       publishRsyncArtifacts += {
         val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
-        (Compile / paradox).value -> s"www/docs/akka/$releaseVersion"
+        (Compile / paradox).value -> s"www/docs/pekko/$releaseVersion"
       })
 }

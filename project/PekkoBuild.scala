@@ -170,14 +170,14 @@ object PekkoBuild {
     },
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
     licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
-    homepage := Some(url("https://akka.io/")),
+    homepage := Some(url("https://pekko.apache.org/")),
     description := "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
       ScmInfo(
         url("https://github.com/apache/incubator-pekko"),
         "scm:git:https://github.com/apache/incubator-pekko.git",
         "scm:git:git@github.com:apache/incubator-pekko.git")),
-    apiURL := Some(url(s"https://doc.akka.io/api/akka/${version.value}")),
+    apiURL := Some(url(s"https://pekko.apache.org/api/pekko/${version.value}")),
     initialCommands :=
       """|import language.postfixOps
          |import org.apache.pekko.actor._

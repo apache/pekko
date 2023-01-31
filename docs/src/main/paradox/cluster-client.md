@@ -2,8 +2,8 @@
 
 @@@ warning
 
-Cluster Client is deprecated in favor of using [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html).
-It is not advised to build new applications with Cluster Client, and existing users @ref[should migrate](#migration-to-pekko-grpc).
+Cluster Client is deprecated in favor of using [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/index.html).
+It is not advised to build new applications with Cluster Client.
 
 @@@
 
@@ -38,8 +38,8 @@ i.e. not necessarily the initial contact points.
 Using the @apidoc[ClusterClient] for communicating with a cluster from the outside requires that the system with the client
 can both connect and be connected with Pekko Remoting from all the nodes in the cluster with a receptionist.
 This creates a tight coupling in that the client and cluster systems may need to have the same version of both Pekko, libraries, message classes, serializers and potentially even the JVM. In many cases it is a better solution
-to use a more explicit and decoupling protocol such as [HTTP](https://doc.akka.io/docs/akka-http/current/index.html) or
-[gRPC](https://doc.akka.io/docs/akka-grpc/current/).
+to use a more explicit and decoupling protocol such as [HTTP]($pekko.doc.dns$/docs/pekko-http/current/index.html) or
+[gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/).
 
 Additionally, since Pekko Remoting is primarily designed as a protocol for Pekko Cluster there is no explicit resource
 management, when a @apidoc[ClusterClient] has been used it will cause connections with the cluster until the ActorSystem is
@@ -228,20 +228,20 @@ contacts can be fetched and a new cluster client started.
 ## Migration to Pekko gRPC
 
 Cluster Client is deprecated and it is not advised to build new applications with it.
-As a replacement, we recommend using [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/)
+As a replacement, we recommend using [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/)
 with an application-specific protocol. The benefits of this approach are:
 
 * Improved security by using TLS for gRPC (HTTP/2) versus exposing Pekko Remoting outside the Pekko Cluster
 * Easier to update clients and servers independent of each other
 * Improved protocol definition between client and server
-* Usage of [Pekko gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery)
+* Usage of [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-pekko-discovery-for-endpoint-discovery)
 * Clients do not need to use Pekko
-* See also [gRPC versus Pekko Remoting](https://doc.akka.io/docs/akka-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
+* See also [gRPC versus Pekko Remoting]($pekko.doc.dns$/docs/pekko-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
 
 ### Migrating directly
 
 Existing users of Cluster Client may migrate directly to Pekko gRPC and use it
-as documented in [its documentation](https://doc.akka.io/docs/akka-grpc/current/).
+as documented in [its documentation]($pekko.doc.dns$/docs/pekko-grpc/current/).
 
 ### Migrating gradually
 
@@ -295,7 +295,7 @@ based API.
 
 ##### Initial contact points
 
-Instead of configured initial contact points the [Pekko gRPC Service Discovery](https://doc.akka.io/docs/akka-grpc/current/client/configuration.html#using-akka-discovery-for-endpoint-discovery) can be used.
+Instead of configured initial contact points the [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-pekko-discovery-for-endpoint-discovery) can be used.
 
 ##### Failure detection
 

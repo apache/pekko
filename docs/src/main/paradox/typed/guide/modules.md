@@ -16,7 +16,7 @@ The following capabilities are included with Pekko OSS and are introduced later 
 * @ref:[Pekko Connectors](#pekko-connectors)
 * @ref:[HTTP](#http)
 * @ref:[gRPC](#grpc)
-* [Other Pekko modules](https://doc.akka.io/docs/akka/current/common/other-modules.html)
+* [Other Pekko modules]($pekko.doc.dns$/docs/pekko/current/common/other-modules.html)
 
 This page does not list all available modules, but overviews the main functionality and gives you an idea of the level of sophistication you can reach when you start building systems on top of Pekko.
 
@@ -242,11 +242,11 @@ Streams solve the following challenges:
 
 ### Pekko Connectors
 
-[Pekko Connectors](https://doc.akka.io/docs/alpakka/current/) is a separate module from Pekko.
+[Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/) is a separate module from Pekko.
 
 Pekko Connectors is collection of modules built upon the Streams API to provide Reactive Stream connector
 implementations for a variety of technologies common in the cloud and infrastructure landscape.  
-See the [Pekko Connectors overview page](https://doc.akka.io/docs/alpakka/current/overview.html) for more details on the API and the implementation modules available.
+See the [Pekko Connectors overview page]($pekko.doc.dns$/docs/pekko-connectors/current/overview.html) for more details on the API and the implementation modules available.
 
 Pekko Connectors help solve the following challenges:
 
@@ -255,7 +255,7 @@ Pekko Connectors help solve the following challenges:
 
 ### HTTP
 
-[Pekko HTTP](https://doc.akka.io/docs/akka-http/current/) is a separate module from Pekko.
+[Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/) is a separate module from Pekko.
 
 The de facto standard for providing APIs remotely, internal or external, is [HTTP](https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol). Pekko provides a library to construct or consume such HTTP services by giving a set of tools to create HTTP services (and serve them) and a client that can be
 used to consume other services. These tools are particularly suited to streaming in and out a large set of data or real-time events by leveraging the underlying model of Pekko Streams.
@@ -268,7 +268,7 @@ Some of the challenges that HTTP tackles:
 
 ### gRPC
 
-[Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/index.html) is a separate module from Pekko.
+[Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/index.html) is a separate module from Pekko.
 
 This library provides an implementation of gRPC that integrates nicely with the @ref:[HTTP](#http) and @ref:[Streams](#streams) modules.  It is capable of generating both client and server-side artifacts from protobuf service definitions, which can then be exposed using Pekko HTTP, and handled using Streams.
 

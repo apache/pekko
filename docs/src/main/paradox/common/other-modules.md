@@ -1,52 +1,52 @@
 # Other Pekko modules
 
-This page describes modules that compliment libraries from the Pekko core.  See [this overview](https://doc.akka.io/docs/akka/current/typed/guide/modules.html) instead for a guide on the core modules.
+This page describes modules that compliment libraries from the Pekko core.  See [this overview]($pekko.doc.dns$/docs/pekko/current/typed/guide/modules.html) instead for a guide on the core modules.
 
-## [Pekko HTTP](https://doc.akka.io/docs/akka-http/current/)
+## [Pekko HTTP]($pekko.doc.dns$/docs/pekko-http/current/)
 
 A full server- and client-side HTTP stack on top of pekko-actor and pekko-stream.
 
-## [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/)
+## [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/)
 
 Pekko gRPC provides support for building streaming gRPC servers and clients on top of Pekko Streams.
 
-## [Pekko Connectors](https://doc.akka.io/docs/alpakka/current/)
+## [Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/)
 
 Pekko Connectors is a Reactive Enterprise Integration library for Java and Scala, based on Reactive Streams and Pekko.
 
-## [Pekko Kafka Connector](https://doc.akka.io/docs/alpakka-kafka/current/)
+## [Pekko Kafka Connector]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/)
 
 The Pekko Kafka Connector connects Apache Kafka with Pekko Streams.
 
 
-## [Pekko Projections](https://doc.akka.io/docs/akka-projection/current/)
+## [Pekko Projections]($pekko.doc.dns$/docs/pekko-projection/current/)
 
 Pekko Projections let you process a stream of events or records from a source to a projected model or external system.
 
 
-## [Cassandra Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-cassandra/current/)
+## [Cassandra Plugin for Pekko Persistence]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/)
 
 A Pekko Persistence journal and snapshot store backed by Apache Cassandra.
 
 
-## [JDBC Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-jdbc/current/)
+## [JDBC Plugin for Pekko Persistence]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/)
 
 A Pekko Persistence journal and snapshot store for use with JDBC-compatible databases. This implementation relies on [Slick](https://scala-slick.org/).
 
-## [R2DBC Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-r2dbc/current/)
+## [R2DBC Plugin for Pekko Persistence]($pekko.doc.dns$/docs/pekko-persistence-r2dbc/current/)
 
 A Pekko Persistence journal and snapshot store for use with R2DBC-compatible databases. This implementation relies on [R2DBC](https://r2dbc.io/).
 
-## [Google Cloud Spanner Plugin for Pekko Persistence](https://doc.akka.io/docs/akka-persistence-spanner/current/)
+## [Google Cloud Spanner Plugin for Pekko Persistence]($pekko.doc.dns$/docs/pekko-persistence-spanner/current/)
 
-Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persistence journal and snapshot store. This integration relies on [Pekko gRPC](https://doc.akka.io/docs/akka-grpc/current/).
+Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persistence journal and snapshot store. This integration relies on [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/).
 
 
 ## Pekko Management
 
-* [Pekko Management](https://doc.akka.io/docs/akka-management/current/) provides a central HTTP endpoint for Pekko management extensions.
-* [Pekko Cluster Bootstrap](https://doc.akka.io/docs/akka-management/current/bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.
-* [Pekko Management Cluster HTTP](https://doc.akka.io/docs/akka-management/current/cluster-http-management.html) provides HTTP endpoints for introspecting and managing Pekko clusters.
-* [Pekko Discovery for Kubernetes, Consul, Marathon, and AWS](https://doc.akka.io/docs/akka-management/current/discovery/)
-* [Kubernetes Lease](https://doc.akka.io/docs/akka-management/current/kubernetes-lease.html)
+* [Pekko Management]($pekko.doc.dns$/docs/pekko-management/current/) provides a central HTTP endpoint for Pekko management extensions.
+* [Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/pekko-management/current/bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.
+* [Pekko Management Cluster HTTP]($pekko.doc.dns$/docs/pekko-management/current/cluster-http-management.html) provides HTTP endpoints for introspecting and managing Pekko clusters.
+* [Pekko Discovery for Kubernetes, Consul, Marathon, and AWS]($pekko.doc.dns$/docs/pekko-management/current/discovery/)
+* [Kubernetes Lease]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-lease.html)
 

@@ -18,7 +18,7 @@ Release Akka $VERSION$
 
 ### Check availability
 
-- [ ] Check [reference](https://doc.akka.io/docs/akka/$VERSION$/) documentation
+- [ ] Check [reference](https://pekko.apache.org/docs/pekko/$VERSION$/) documentation
 - [ ] Check the release on [Maven central](https://repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.13/$VERSION$/)
 
 ### When everything is on maven central

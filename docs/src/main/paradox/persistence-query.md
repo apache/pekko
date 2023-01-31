@@ -267,7 +267,7 @@ Java
 Sometimes you may need to use "resumable" projections, which will not start from the beginning of time each time
 when run. In such case, the sequence number (or `offset`) of the processed event will be stored and
 used the next time this projection is started. This pattern is implemented in the
-[Pekko Projections](https://doc.akka.io/docs/akka-projection/current/) module.
+[Pekko Projections]($pekko.doc.dns$/docs/pekko-projection/current/) module.
 
 
 <a id="read-journal-plugin-api"></a>

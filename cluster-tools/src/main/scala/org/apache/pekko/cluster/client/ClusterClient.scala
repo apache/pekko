@@ -56,7 +56,7 @@ import pekko.util.ccompat._
 
 @ccompatUsedUntil213
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Pekko gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-pekko-grpc",
   since = "2.6.0")
 object ClusterClientSettings {
 
@@ -127,7 +127,7 @@ object ClusterClientSettings {
  *   external service registry
  */
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 final class ClusterClientSettings(
     val initialContacts: Set[ActorPath],
@@ -292,7 +292,7 @@ final case class ContactPoints(contactPoints: Set[ActorPath]) {
 }
 
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 object ClusterClient {
 
@@ -300,14 +300,14 @@ object ClusterClient {
    * Scala API: Factory method for `ClusterClient` [[pekko.actor.Props]].
    */
   @deprecated(
-    "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+    "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
     since = "2.6.0")
   def props(settings: ClusterClientSettings): Props =
     Props(new ClusterClient(settings)).withDeploy(Deploy.local)
 
   @SerialVersionUID(1L)
   @deprecated(
-    "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+    "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
     since = "2.6.0")
   final case class Send(path: String, msg: Any, localAffinity: Boolean) {
 
@@ -318,13 +318,13 @@ object ClusterClient {
   }
   @SerialVersionUID(1L)
   @deprecated(
-    "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+    "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
     since = "2.6.0")
   final case class SendToAll(path: String, msg: Any)
 
   @SerialVersionUID(1L)
   @deprecated(
-    "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+    "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
     since = "2.6.0")
   final case class Publish(topic: String, msg: Any)
 
@@ -381,7 +381,7 @@ object ClusterClient {
  * nature of the actors involved.
  */
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 final class ClusterClient(settings: ClusterClientSettings) extends Actor with ActorLogging {
 
@@ -565,7 +565,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
 }
 
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 object ClusterClientReceptionist extends ExtensionId[ClusterClientReceptionist] with ExtensionIdProvider {
   override def get(system: ActorSystem): ClusterClientReceptionist = super.get(system)
@@ -583,7 +583,7 @@ object ClusterClientReceptionist extends ExtensionId[ClusterClientReceptionist] 
  * The [[pekko.cluster.pubsub.DistributedPubSubMediator]] is started by the [[pekko.cluster.pubsub.DistributedPubSub]] extension.
  */
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 final class ClusterClientReceptionist(system: ExtendedActorSystem) extends Extension {
 
@@ -661,7 +661,7 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem) extends Exten
 }
 
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 object ClusterReceptionistSettings {
 
@@ -713,7 +713,7 @@ object ClusterReceptionistSettings {
  *   client will be stopped after this time of inactivity.
  */
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 final class ClusterReceptionistSettings(
     val role: Option[String],
@@ -875,7 +875,7 @@ final case class ClusterClients(clusterClients: Set[ActorRef]) {
 }
 
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 object ClusterReceptionist {
 
@@ -952,7 +952,7 @@ object ClusterReceptionist {
  * the client is supposed to communicate directly to the actor in the cluster.
  */
 @deprecated(
-  "Use Akka gRPC instead, see https://doc.akka.io/docs/akka/2.6/cluster-client.html#migration-to-akka-grpc",
+  "Use Akka gRPC instead, see https://pekko.apache.org/docs/pekko/current/cluster-client.html#migration-to-akka-grpc",
   since = "2.6.0")
 final class ClusterReceptionist(pubSubMediator: ActorRef, settings: ClusterReceptionistSettings)
     extends Actor

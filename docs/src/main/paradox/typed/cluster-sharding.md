@@ -206,7 +206,7 @@ in one rebalance round. The lower result of `rebalance-relative-limit` and `reba
 An alternative allocation strategy is the @apidoc[ExternalShardAllocationStrategy] which allows
 explicit control over where shards are allocated via the @apidoc[ExternalShardAllocation] extension.
 
-This can be used, for example, to match up Kafka Partition consumption with shard locations. Pekko Connector Kafka provides [an extension for Pekko Cluster Sharding](https://doc.akka.io/docs/alpakka-kafka/current/cluster-sharding.html).
+This can be used, for example, to match up Kafka Partition consumption with shard locations. Pekko Connector Kafka provides [an extension for Pekko Cluster Sharding]($pekko.doc.dns$/docs/pekko-connectors-kafka/current/cluster-sharding.html).
 
 To use it set it as the allocation strategy on your @apidoc[typed.*.Entity]:
 
@@ -701,7 +701,7 @@ for more information about `min-nr-of-members`.
 
 ## Health check
 
-An [Pekko Management compatible health check](https://doc.akka.io/docs/akka-management/current/healthchecks.html) is included that returns healthy once the local shard region
+An [Pekko Management compatible health check]($pekko.doc.dns$/docs/pekko-management/current/healthchecks.html) is included that returns healthy once the local shard region
 has registered with the coordinator. This health check should be used in cases where you don't want to receive production traffic until the local shard region is ready to retrieve locations
 for shards. For shard regions that aren't critical and therefore should not block this node becoming ready do not include them.
 

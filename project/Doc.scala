@@ -70,11 +70,11 @@ object Scaladoc extends AutoPlugin {
       "-sourcepath",
       base.getAbsolutePath,
       "-doc-title",
-      "Akka",
+      "Apache Pekko",
       "-doc-version",
       ver,
       "-doc-canonical-base-url",
-      "https://doc.akka.io/api/akka/current/")
+      "https://pekko.apache.org/api/pekko/current/")
     CliOptions.scaladocDiagramsEnabled.ifTrue("-diagrams").toList ::: opts
   }
 
@@ -158,7 +158,7 @@ object UnidocRoot extends AutoPlugin {
         val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
         (Compile / unidoc).value match {
           case Seq(japi, api) =>
-            Seq(japi -> s"www/japi/akka/$releaseVersion", api -> s"www/api/akka/$releaseVersion")
+            Seq(japi -> s"www/japi/pekko/$releaseVersion", api -> s"www/api/pekko/$releaseVersion")
         }
       }))
     .getOrElse(Nil)
