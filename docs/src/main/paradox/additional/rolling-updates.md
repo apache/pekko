@@ -1,5 +1,5 @@
 ---
-project.description: How to do rolling updates and restarts with Pekko Cluster.
+project.description: How to do rolling updates and restarts with Apache Pekko Cluster.
 ---
 # Rolling Updates
 
@@ -13,7 +13,7 @@ versus being able to do a rolling update.
 A rolling update is the process of replacing one version of the system with another without downtime.
 The changes can be new code, changed dependencies such as new Pekko version, or modified configuration.
 
-In Pekko, rolling updates are typically used for a stateful Pekko Cluster where you can't run two separate clusters in
+In Apache Pekko, rolling updates are typically used for a stateful Pekko Cluster where you can't run two separate clusters in
 parallel during the update, for example in blue green deployments.
 
 For rolling updates related to Pekko dependency version upgrades and the migration guides, please see

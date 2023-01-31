@@ -1,8 +1,8 @@
-# Pekko in OSGi
+# Apache Pekko in OSGi
 
 ## Dependency
 
-To use Pekko in OSGi, you must add the following dependency in your project:
+To use Apache Pekko in OSGi, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion

@@ -1,6 +1,6 @@
-# Extending Pekko
+# Extending Apache Pekko
 
-Pekko extensions can be used for almost anything, they provide a way to create
+Apache Pekko extensions can be used for almost anything, they provide a way to create
 an instance of a class only once for the whole ActorSystem and be able to access
 it from anywhere. Pekko features such as Cluster, Serialization and Sharding are all
 Pekko extensions. Below is the use-case of managing an expensive database connection 

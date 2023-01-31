@@ -1,4 +1,4 @@
-# Overview of Pekko libraries and modules
+# Overview of Apache Pekko libraries and modules
 
 Before delving into some best practices for writing actors, it will be helpful to preview the most commonly used Pekko libraries. This will help you start thinking about the functionality you want to use in your system. All core Pekko functionality is available as Open Source Software (OSS).
 
@@ -13,10 +13,10 @@ The following capabilities are included with Pekko OSS and are introduced later 
 * @ref:[Projections](#projections)
 * @ref:[Distributed Data](#distributed-data)
 * @ref:[Streams](#streams)
-* @ref:[Pekko Connectors](#pekko-connectors)
+* @ref:[Apache Pekko Connectors](#pekko-connectors)
 * @ref:[HTTP](#http)
 * @ref:[gRPC](#grpc)
-* [Other Pekko modules]($pekko.doc.dns$/docs/pekko/current/common/other-modules.html)
+* [Other Apache Pekko modules]($pekko.doc.dns$/docs/pekko/current/common/other-modules.html)
 
 This page does not list all available modules, but overviews the main functionality and gives you an idea of the level of sophistication you can reach when you start building systems on top of Pekko.
 

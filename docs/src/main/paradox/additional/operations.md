@@ -1,5 +1,5 @@
 ---
-project.description: Operating, managing and monitoring Pekko and Pekko Cluster applications.
+project.description: Operating, managing and monitoring Apache Pekko and Apache Pekko Cluster applications.
 ---
 # Operating a Cluster
 

@@ -8,7 +8,7 @@ Concretely **may change** means that an API or module is in early access mode an
 
  * is not guaranteed to be binary compatible in minor releases
  * may have its API change in breaking ways in minor releases
- * may be entirely dropped from Pekko in a minor release
+ * may be entirely dropped from Apache Pekko in a minor release
 
 Complete modules can be marked as **may change**, which will be stated in the module's description and in the docs.
 

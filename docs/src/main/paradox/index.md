@@ -1,4 +1,4 @@
-# Pekko Documentation
+# Apache Pekko Documentation
 
 @@toc { depth=2 }
 

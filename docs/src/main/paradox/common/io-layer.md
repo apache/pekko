@@ -1,14 +1,14 @@
 # I/O Layer Design
 
-The `org.apache.pekko.io` package has been developed in collaboration between the Pekko
-and [spray.io](http://spray.io) teams. Its design incorporates the experiences with the
+The `org.apache.pekko.io` package design incorporates the experiences with the
 `spray-io` module along with improvements that were jointly developed for
-more general consumption as an actor-based service.
+more general consumption as an actor-based service. [Spray](http://spray.io/) has been
+deprecated in favour of Akka HTTP and Apache Pekko HTTP.
 
 ## Requirements
 
 In order to form a general and extensible IO layer basis for a wide range of
-applications, with Pekko remoting and spray HTTP being the initial ones, the
+applications, with Apache Pekko remoting and Spray HTTP being the initial ones, the
 following requirements were established as key drivers for the design:
 
  * scalability to millions of concurrent connections

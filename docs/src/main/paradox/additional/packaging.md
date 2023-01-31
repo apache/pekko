@@ -1,9 +1,9 @@
 ---
-project.description: How to package a Pekko application for deployment.
+project.description: How to package an Apache Pekko application for deployment.
 ---
 # Packaging
 
-The simplest way to use Pekko is as a regular library, adding the Pekko jars you
+The simplest way to use Apache Pekko is as a regular library, adding the Pekko jars you
 need to your classpath (in case of a web app, in `WEB-INF/lib`).
 
 In many cases, such as deploying to an analytics cluster, building your application into a single 'fat jar' is needed.
