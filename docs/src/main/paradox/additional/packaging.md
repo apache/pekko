@@ -1,5 +1,5 @@
 ---
-project.description: How to package a Apache Pekko application for deployment.
+project.description: How to package an Apache Pekko application for deployment.
 ---
 # Packaging
 
