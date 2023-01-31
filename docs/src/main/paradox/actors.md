@@ -1171,7 +1171,7 @@ then you should use the @scala[@scaladoc[UnboundedStash](pekko.actor.UnboundedSt
 
 ## Extending Actors using PartialFunction chaining
 
-Sometimes it can be useful to share common behavior among a few actors, or compose one actor's behavior from multiple smaller functions.
+Sometimes, it can be useful to share common behavior among a few actors, or compose one actor's behavior from multiple smaller functions.
 This is possible because an actor's @scala[@scaladoc[receive](pekko.actor.Actor#receive:org.apache.pekko.actor.Actor.Receive)]@java[@javadoc[createReceive](pekko.actor.AbstractActor#createReceive())] method returns an `Actor.Receive`, which is a type alias for `PartialFunction[Any,Unit]`,
 and partial functions can be chained together using the `PartialFunction#orElse` method. You can chain as many functions as you need,
 however you should keep in mind that "first match" wins - which may be important when combining functions that both can handle the same type of message.

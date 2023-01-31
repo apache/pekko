@@ -28,7 +28,7 @@ with a fresh state that we know is valid.
 
 ## Supervision
 
-In Pekko this "somewhere else" is called supervision. Supervision allows you to declaratively describe what should happen when certain types of exceptions are thrown inside an actor. 
+In Pekko, this "somewhere else" is called supervision. Supervision allows you to declaratively describe what should happen when certain types of exceptions are thrown inside an actor. 
 
 The default @ref:[supervision](../general/supervision.md) strategy is to stop the actor if an exception is thrown. 
 In many cases you will want to further customize this behavior. To use supervision the actual Actor behavior is wrapped using @apidoc[Behaviors.supervise](typed.*.Behaviors$) {scala="#supervise[T](wrapped:org.apache.pekko.actor.typed.Behavior[T]):org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise[T]" java="#supervise(org.apache.pekko.actor.typed.Behavior)"}. 

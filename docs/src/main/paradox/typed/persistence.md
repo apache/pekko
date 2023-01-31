@@ -1,5 +1,5 @@
 ---
-project.description: Event Sourcing with Pekko Persistence enables actors to persist your events for recovery on failure or when migrated within a cluster.
+project.description: Event Sourcing with Apache Pekko Persistence enables actors to persist your events for recovery on failure or when migrated within a cluster.
 ---
 # Event Sourcing
 
@@ -81,7 +81,7 @@ Java
 :  @@snip [BasicPersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/BasicPersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the @apidoc[typed.Behavior] of a persistent actor is typed to the type of the `Command`
-because this is the type of message a persistent actor should receive. In Pekko this is now enforced by the type system.
+because this is the type of message a persistent actor should receive. In Pekko, this is now enforced by the type system.
 
 The components that make up an @apidoc[typed.*.EventSourcedBehavior] are:
 

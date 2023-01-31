@@ -1,5 +1,5 @@
 ---
-project.description: Multi JVM testing of distributed systems built with Pekko.
+project.description: Multi JVM testing of distributed systems built with Apache Pekko.
 ---
 
 # Multi JVM Testing

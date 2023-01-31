@@ -1,5 +1,5 @@
 ---
-project.description: Share data between nodes and perform updates without coordination in a Pekko Cluster using Conflict Free Replicated Data Types CRDT.
+project.description: Share data between nodes and perform updates without coordination in a Apache Pekko Cluster using Conflict Free Replicated Data Types CRDT.
 ---
 # Distributed Data
 
@@ -737,7 +737,7 @@ duration its data should first be manually removed (from the lmdb directory).
 There are some limitations that you should be aware of.
 
 CRDTs cannot be used for all types of problems, and eventual consistency does not fit
-all domains. Sometimes you need strong consistency.
+all domains. Sometimes, you need strong consistency.
 
 It is not intended for *Big Data*. The number of top level entries should not exceed 100000.
 When a new node is added to the cluster all these entries are transferred (gossiped) to the

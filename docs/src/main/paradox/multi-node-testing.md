@@ -1,5 +1,5 @@
 ---
-project.description: Multi node testing of distributed systems built with Pekko.
+project.description: Multi node testing of distributed systems built with Apache Pekko.
 ---
 # Multi Node Testing
 

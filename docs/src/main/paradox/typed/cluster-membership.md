@@ -1,9 +1,9 @@
 ---
-project.description: The Pekko Cluster node membership service, manages dynamic member states and lifecycle with no external infrastructure needed.
+project.description: The Apache Pekko Cluster node membership service, manages dynamic member states and lifecycle with no external infrastructure needed.
 ---
 # Cluster Membership Service
 
-The core of Pekko Cluster is the cluster membership, to keep track of what nodes are part of the cluster and
+The core of Apache Pekko Cluster is the cluster membership, to keep track of what nodes are part of the cluster and
 their health. Cluster membership is communicated using @ref:[gossip](cluster-concepts.md#gossip) and
 @ref:[failure detection](cluster-concepts.md#failure-detector).
 

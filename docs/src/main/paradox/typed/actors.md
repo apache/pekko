@@ -1,5 +1,5 @@
 ---
-project.description: The Actor model, managing internal state and changing behavior in Pekko Actors.
+project.description: The Actor model, managing internal state and changing behavior in Apache Pekko Actors.
 ---
 # Introduction to Actors
 

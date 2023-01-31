@@ -360,7 +360,7 @@ Java
 
 ## Stream ordering
 
-In Pekko Streams almost all computation operators *preserve input order* of elements. This means that if inputs `{IA1,IA2,...,IAn}`
+In Pekko Streams, almost all computation operators *preserve input order* of elements. This means that if inputs `{IA1,IA2,...,IAn}`
 "cause" outputs `{OA1,OA2,...,OAk}` and inputs `{IB1,IB2,...,IBm}` "cause" outputs `{OB1,OB2,...,OBl}` and all of
 `IAi` happened before all `IBi` then `OAi` happens before `OBi`.
 

@@ -1,5 +1,5 @@
 ---
-project.description: What is an Actor and sending messages between independent units of computation in Pekko.
+project.description: What is an Actor and sending messages between independent units of computation in Apache Pekko.
 ---
 # What is an Actor?
 
@@ -7,7 +7,7 @@ The previous section about @ref:[Actor Systems](actor-systems.md) explained how 
 hierarchies and are the smallest unit when building an application. This
 section looks at one such actor in isolation, explaining the concepts you
 encounter while implementing it. For a more in depth reference with all the
-details please refer to @ref:[Introduction to Actors](../typed/actors.md).
+details, please refer to @ref:[Introduction to Actors](../typed/actors.md).
 
 The [Actor Model](https://en.wikipedia.org/wiki/Actor_model) as defined by
 Hewitt, Bishop and Steiger in 1973 is a computational model that expresses

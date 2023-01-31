@@ -131,7 +131,7 @@ the processing steps necessary to get the @apidoc[util.ByteString] elements from
 incoming strings and package that up as a reusable piece as well. Since the
 language for writing these streams always flows from left to right (just like
 plain English), we need a starting point that is like a source but with an
-“open” input. In Pekko Streams this is called a @apidoc[stream.*.Flow]:
+“open” input. In Pekko Streams, this is called a @apidoc[stream.*.Flow]:
 
 Scala
 :   @@snip [QuickStartDocSpec.scala](/docs/src/test/scala/docs/stream/QuickStartDocSpec.scala) { #transform-sink }
@@ -238,7 +238,7 @@ Scala
 Java
 :   @@snip [TwitterStreamQuickstartDocTest.java](/docs/src/test/java/jdocs/stream/TwitterStreamQuickstartDocTest.java) { #system-setup }
 
-Let's assume we have a stream of tweets readily available. In Pekko this is expressed as a @scala[`Source[Out, M]`]@java[`Source<Out, M>`]:
+Let's assume we have a stream of tweets readily available. In Pekko, this is expressed as a @scala[`Source[Out, M]`]@java[`Source<Out, M>`]:
 
 Scala
 :   @@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #tweet-source }

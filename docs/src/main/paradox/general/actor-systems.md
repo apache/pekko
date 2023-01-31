@@ -1,5 +1,5 @@
 ---
-project.description: The Pekko ActorSystem.
+project.description: The Apache Pekko ActorSystem.
 ---
 # Actor Systems
 

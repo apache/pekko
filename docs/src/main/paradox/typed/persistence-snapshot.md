@@ -1,5 +1,5 @@
 ---
-project.description: Append only event logs, snapshots and recovery with Pekko event sourced actors.
+project.description: Append only event logs, snapshots and recovery with Apache Pekko event sourced actors.
 ---
 # Snapshotting
 

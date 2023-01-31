@@ -1,11 +1,11 @@
 ---
-project.description: Query side to Pekko Persistence allowing for building CQRS applications using durable state.
+project.description: Query side to Apache Pekko Persistence allowing for building CQRS applications using durable state.
 ---
 # Persistence Query
 
 ## Dependency
 
-To use Persistence Query, you must add the following dependency in your project:
+To use Apache Persistence Query, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion

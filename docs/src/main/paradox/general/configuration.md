@@ -116,7 +116,7 @@ pekko {
 
 ## Including files
 
-Sometimes it can be useful to include another configuration file, for example if you have one `application.conf` with all
+Sometimes, it can be useful to include another configuration file, for example if you have one `application.conf` with all
 environment independent settings and then override some settings for specific environments.
 
 Specifying system property with `-Dconfig.resource=/dev.conf` will load the `dev.conf` file, which includes the `application.conf`

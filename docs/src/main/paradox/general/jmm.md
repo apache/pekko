@@ -1,7 +1,7 @@
 ---
-project.description: Pekko, Actors, Futures and the Java Memory Model.
+project.description: Apache Pekko, Actors, Futures and the Java Memory Model.
 ---
-# Pekko and the Java Memory Model
+# Apache Pekko and the Java Memory Model
 
 A major benefit of using Pekko is that it simplifies the process of writing
 concurrent software.  This article discusses how the Pekko Platform approaches shared memory

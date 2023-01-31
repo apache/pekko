@@ -1,5 +1,5 @@
 ---
-project.description: Durable State with Pekko Persistence enables actors to persist its state for recovery on failure or when migrated within a cluster.
+project.description: Durable State with Apache Pekko Persistence enables actors to persist its state for recovery on failure or when migrated within a cluster.
 ---
 # Durable State
 
@@ -51,7 +51,7 @@ Java
 :  @@snip [DurableStatePersistentBehaviorTest.java](/persistence-typed/src/test/java/jdocs/org/apache/pekko/persistence/typed/DurableStatePersistentBehaviorTest.java) { #structure }
 
 The first important thing to notice is the `Behavior` of a persistent actor is typed to the type of the `Command`
-because this is the type of message a persistent actor should receive. In Pekko this is now enforced by the type system.
+because this is the type of message a persistent actor should receive. In Pekko, this is now enforced by the type system.
 
 The components that make up a `DurableStateBehavior` are:
 

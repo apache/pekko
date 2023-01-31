@@ -1,5 +1,5 @@
 ---
-project.description: Pekko message delivery semantics, at-most-once delivery and message ordering.
+project.description: Apache Pekko message delivery semantics, at-most-once delivery and message ordering.
 ---
 # Message Delivery Reliability
 

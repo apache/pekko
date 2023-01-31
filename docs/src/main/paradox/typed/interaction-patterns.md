@@ -64,7 +64,7 @@ Java
 
 Many interactions between actors require one or more response message being sent back from the receiving actor. A response message can be a result of a query, some form of acknowledgment that the message was received and processed or events that the request subscribed to.
 
-In Pekko the recipient of responses has to be encoded as a field in the message itself, which the recipient can then use to send (tell) a response back.
+In Pekko, the recipient of responses has to be encoded as a field in the message itself, which the recipient can then use to send (tell) a response back.
 
 **Example:**
 
@@ -195,7 +195,7 @@ The response adapting function is running in the receiving actor and can safely 
 <a id="outside-ask"></a>
 ## Request-Response with ask from outside an Actor
 
-Sometimes you need to interact with actors from the outside of the actor system, this can be done with fire-and-forget as described above or through another version of `ask` that returns a @scala[@scaladoc[Future[Response]](scala.concurrent.Future)]@java[@javadoc[CompletionStage<Response>](java.util.concurrent.CompletionStage)] that is either completed with a successful response or failed with a @javadoc[TimeoutException](java.util.concurrent.TimeoutException) if there was no response within the specified timeout.
+Sometimes, you need to interact with actors from the outside of the actor system, this can be done with fire-and-forget as described above or through another version of `ask` that returns a @scala[@scaladoc[Future[Response]](scala.concurrent.Future)]@java[@javadoc[CompletionStage<Response>](java.util.concurrent.CompletionStage)] that is either completed with a successful response or failed with a @javadoc[TimeoutException](java.util.concurrent.TimeoutException) if there was no response within the specified timeout.
  
 @scala[To do this we use `ask` (or the symbolic `?`) implicitly added to @scaladoc[ActorRef](pekko.actor.typed.ActorRef) by `org.apache.pekko.actor.typed.scaladsl.AskPattern._`
 to send a message to an actor and get a `Future[Response]` back. `ask` takes implicit @scaladoc[Timeout](pekko.util.Timeout) and @scaladoc[ActorSystem](org.apache.pekko.actor.typed.ActorSystem) parameters.]
@@ -373,7 +373,7 @@ In an actual session child you would likely want to include some form of timeout
 
 ## General purpose response aggregator
 
-This is similar to above @ref:[Per session child Actor](#per-session-child-actor) pattern. Sometimes you might
+This is similar to above @ref:[Per session child Actor](#per-session-child-actor) pattern. Sometimes, you might
 end up repeating the same way of aggregating replies and want to extract that to a reusable actor.
 
 There are many variations of this pattern and that is the reason this is provided as a documentation

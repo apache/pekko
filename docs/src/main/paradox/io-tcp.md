@@ -170,7 +170,7 @@ an "ack" event if required.
 
 Tcp.CompoundWrite
 : 
-Sometimes you might want to group (or interleave) several `Tcp.Write` and/or `Tcp.WriteFile` commands into
+Sometimes, you might want to group (or interleave) several `Tcp.Write` and/or `Tcp.WriteFile` commands into
 one atomic write command which gets written to the connection in one go. The `Tcp.CompoundWrite` allows you
 to do just that and offers three benefits:
  1. As explained in the following section the TCP connection actor can only handle one single write command at a time.

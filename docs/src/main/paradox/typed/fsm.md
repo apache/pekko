@@ -1,5 +1,5 @@
 ---
-project.description: Finite State Machines (FSM) with Pekko Actors.
+project.description: Finite State Machines (FSM) with Apache Pekko Actors.
 ---
 # Behaviors as finite state machines
 

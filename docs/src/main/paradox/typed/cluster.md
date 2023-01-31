@@ -1,9 +1,9 @@
 ---
-project.description: Build distributed applications that scale across the network with Pekko Cluster, a fault-tolerant decentralized peer-to-peer based cluster node membership service with no single point of failure.
+project.description: Build distributed applications that scale across the network with Apache Pekko Cluster, a fault-tolerant decentralized peer-to-peer based cluster node membership service with no single point of failure.
 ---
 # Cluster Usage
   
-This document describes how to use Pekko Cluster and the Cluster APIs. 
+This document describes how to use Apache Pekko Cluster and the Cluster APIs. 
 
 For specific documentation topics see: 
 
