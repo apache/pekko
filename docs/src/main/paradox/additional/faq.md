@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-## Pekko Project
+## Apache Pekko Project
 
 ### Where does the name Pekko come from?
 

@@ -1,5 +1,5 @@
 ---
-project.description: How to deploy Pekko Cluster to Kubernetes and Docker.
+project.description: How to deploy Apache Pekko Cluster to Kubernetes and Docker.
 ---
 # Deploying
 

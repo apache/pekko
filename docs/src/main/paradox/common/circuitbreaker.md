@@ -24,7 +24,7 @@ resource exhaustion.  Circuit breakers can also allow savvy developers to mark p
 the site that use the functionality unavailable, or perhaps show some cached content as 
 appropriate while the breaker is open.
 
-The Pekko library provides an implementation of a circuit breaker called 
+The Apache Pekko library provides an implementation of a circuit breaker called 
 @apidoc[CircuitBreaker] which has the behavior described below.
 
 ## What do they do?

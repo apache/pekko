@@ -1,4 +1,4 @@
-# Other Pekko modules
+# Other Apache Pekko modules
 
 This page describes modules that compliment libraries from the Pekko core.  See [this overview]($pekko.doc.dns$/docs/pekko/current/typed/guide/modules.html) instead for a guide on the core modules.
 
@@ -42,7 +42,7 @@ A Pekko Persistence journal and snapshot store for use with R2DBC-compatible dat
 Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persistence journal and snapshot store. This integration relies on [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/).
 
 
-## Pekko Management
+## Apache Pekko Management
 
 * [Pekko Management]($pekko.doc.dns$/docs/pekko-management/current/) provides a central HTTP endpoint for Pekko management extensions.
 * [Pekko Cluster Bootstrap]($pekko.doc.dns$/docs/pekko-management/current/bootstrap/) helps bootstrapping a Pekko cluster using Pekko Discovery.

@@ -1,9 +1,9 @@
 ---
-project.description: Binary compatibility across Pekko versions.
+project.description: Binary compatibility across Apache Pekko versions.
 ---
 # Binary Compatibility Rules
 
-Pekko maintains and verifies *backwards binary compatibility* across versions of modules.
+Apache Pekko maintains and verifies *backwards binary compatibility* across versions of modules.
 
 In the rest of this document whenever *binary compatibility* is mentioned "*backwards binary compatibility*" is meant
 (as opposed to forward compatibility).
