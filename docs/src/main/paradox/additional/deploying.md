@@ -1,11 +1,11 @@
 ---
-project.description: How to deploy Apache Pekko Cluster to Kubernetes and Docker.
+project.description: How to deploy an Apache Pekko Cluster to Kubernetes and Docker.
 ---
 # Deploying
 
 ## Deploying to Kubernetes
 
-Deploy to Kubernetes according to the guide and example project for [Deploying Pekko Cluster to Kubernetes]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
+Deploy to Kubernetes according to the guide and example project for [Deploying a Pekko Cluster to Kubernetes]($pekko.doc.dns$/docs/pekko-management/current/kubernetes-deployment/index.html), but that requires more expertise of Kubernetes.
 
 ### Cluster bootstrap
 
