@@ -225,7 +225,7 @@ are entirely dynamic and the entire cluster might shut down or crash, be restart
 client will be stopped in that case a monitoring actor can watch it and upon `Terminate` a new set of initial
 contacts can be fetched and a new cluster client started.
 
-## Migration to Pekko gRPC
+## Migration to Apache Pekko gRPC
 
 Cluster Client is deprecated and it is not advised to build new applications with it.
 As a replacement, we recommend using [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/)

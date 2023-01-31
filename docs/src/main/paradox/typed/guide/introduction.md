@@ -1,6 +1,6 @@
-# Introduction to Pekko
+# Introduction to Apache Pekko
 
-Welcome to Pekko, a set of open-source libraries for designing scalable, resilient systems that span processor cores and networks. Pekko allows you to focus on meeting business needs instead of writing low-level code to provide reliable behavior, fault tolerance, and high performance.
+Welcome to Apache Pekko, a set of open-source libraries for designing scalable, resilient systems that span processor cores and networks. Pekko allows you to focus on meeting business needs instead of writing low-level code to provide reliable behavior, fault tolerance, and high performance.
 
 Many common practices and accepted programming models do not address important challenges
 inherent in designing systems for modern computer architectures. To be
