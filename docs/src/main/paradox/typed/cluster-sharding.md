@@ -1,5 +1,5 @@
 ---
-project.description: Shard a clustered compute process across the network with locationally transparent message routing using Pekko Cluster Sharding.
+project.description: Shard a clustered compute process across the network with locationally transparent message routing using Apache Pekko Cluster Sharding.
 ---
 # Cluster Sharding
 

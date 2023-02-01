@@ -1,5 +1,5 @@
 ---
-project.description: Pekko dispatchers and how to choose the right ones.
+project.description: Apache Pekko dispatchers and how to choose the right ones.
 ---
 # Dispatchers
 

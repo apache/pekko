@@ -251,7 +251,7 @@ pekko.loggers = [org.apache.pekko.testkit.TestEventListener]
 
 ### Overriding behavior
 
-Sometimes you want to 'hook into' your actor to be able to test some internals.
+Sometimes, you want to 'hook into' your actor to be able to test some internals.
 Usually, it is better to test an actors' external interface, but for example if
 you want to test timing-sensitive behavior this can come in handy. Say for
 instance you want to test an actor that schedules a task:

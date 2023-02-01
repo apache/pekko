@@ -391,7 +391,7 @@ Scala
 :  @@snip [StyleGuideDocExamples.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/StyleGuideDocExamples.scala) { #pattern-match-unhandled }
 
 It's recommended to use the `sealed` trait and total functions with exhaustiveness check to detect mistakes
-of forgetting to handle some messages. Sometimes that can be inconvenient and then you can use a `PartialFunction`
+of forgetting to handle some messages. Sometimes, that can be inconvenient and then you can use a `PartialFunction`
 with `Behaviors.receivePartial` or `Behaviors.receiveMessagePartial`
 
 Scala

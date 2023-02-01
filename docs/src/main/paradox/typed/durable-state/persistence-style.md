@@ -15,7 +15,7 @@ in the concrete `EmptyAccount`, `OpenedAccount`, and `ClosedAccount`.
 
 ## Optional initial state
 
-Sometimes it's not desirable to use a separate state class for the empty initial state, but rather act as if 
+Sometimes, it's not desirable to use a separate state class for the empty initial state, but rather act as if 
 there is no state yet.
 @java[You can use `null` as the `emptyState`, but be aware of that the `state` parameter
 will be `null` until the first non-null state has been persisted 

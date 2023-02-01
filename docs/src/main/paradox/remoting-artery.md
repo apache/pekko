@@ -1,5 +1,5 @@
 ---
-project.description: Details about the underlying remoting module for Pekko Cluster.
+project.description: Details about the underlying remoting module for Apache Pekko Cluster.
 ---
 # Artery Remoting
 

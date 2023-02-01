@@ -1,5 +1,5 @@
 ---
-project.description: The Pekko Actor lifecycle.
+project.description: The Apache Pekko Actor lifecycle.
 ---
 # Actor lifecycle
 

@@ -1,10 +1,10 @@
-# Design Principles behind Pekko Streams
+# Design Principles behind Apache Pekko Streams
 
 It took quite a while until we were reasonably happy with the look and feel of the API and the architecture of the implementation, and while being guided by intuition the design phase was very much exploratory research. This section details the findings and codifies them into a set of principles that have emerged during the process.
 
 @@@ note
 
-As detailed in the introduction keep in mind that the Pekko Streams API is completely decoupled from the Reactive Streams interfaces which are an implementation detail for how to pass stream data between individual operators.
+As detailed in the introduction, keep in mind that the Pekko Streams API is completely decoupled from the Reactive Streams interfaces which are an implementation detail for how to pass stream data between individual operators.
 
 @@@
 
@@ -63,7 +63,7 @@ which then is materialized and executed in accordance to Reactive Streams rules.
 
 Another not obvious gain from hiding the Reactive Streams interfaces comes from the fact that `org.reactivestreams.Subscriber` (et al) have now been included in Java 9+, and thus become part of Java itself, so libraries should migrate to using the @javadoc[java.util.concurrent.Flow.Subscriber](java.util.concurrent.Flow.Subscriber) instead of `org.reactivestreams.Subscriber`.
 Libraries which selected to expose and directly extend the Reactive Streams types will now have a tougher time to adapt the JDK9+ types -- all their classes that extend Subscriber and friends will need to be copied or changed to extend the exact same interface,
-but from a different package. In Pekko we simply expose the new type when asked to -- already supporting JDK9 types, from the day JDK9 was released.
+but from a different package. In Pekko, we simply expose the new type when asked to -- already supporting JDK9 types, from the day JDK9 was released.
 
 The other, and perhaps more important reason for hiding the Reactive Streams interfaces comes back to the first points of this explanation: the fact of Reactive Streams being an SPI, and as such is hard to "get right" in ad-hoc implementations. Thus Pekko Streams discourages the use of the hard to implement pieces of the underlying infrastructure, and offers simpler, more type-safe, yet more powerful abstractions for users to work with: @apidoc[GraphStage]s and operators. It is of course still (and easily) possible to accept or obtain Reactive Streams (or JDK+ Flow) representations of the stream operators by using methods like @apidoc[Sink.asPublisher](Sink$) {scala="#asPublisher[T](fanout:Boolean):org.apache.pekko.stream.scaladsl.Sink[T,org.reactivestreams.Publisher[T]]" java="#asPublisher(org.apache.pekko.stream.javadsl.AsPublisher)"} or @apidoc[fromSubscriber](Sink$) {scala="#fromSubscriber[T](subscriber:org.reactivestreams.Subscriber[T]):org.apache.pekko.stream.scaladsl.Sink[T,org.apache.pekko.NotUsed]" java="#fromSubscriber(org.reactivestreams.Subscriber)"}.
 

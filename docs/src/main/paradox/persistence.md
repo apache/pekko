@@ -1,5 +1,5 @@
 ---
-project.description: Pekko Persistence Classic, Event Sourcing with Pekko, At-Least-Once delivery, snapshots, recovery and replay with Pekko actors.
+project.description: Apache Pekko Persistence Classic, Event Sourcing with Apache Pekko, At-Least-Once delivery, snapshots, recovery and replay with Apache Pekko actors.
 ---
 # Classic Persistence
 
@@ -190,7 +190,7 @@ Scala
 Java
 :  @@snip [LambdaPersistenceDocTest.java](/docs/src/test/java/jdocs/persistence/LambdaPersistenceDocTest.java) { #recovery-status }
 
-Sometimes there is a need for performing additional initialization when the
+Sometimes, there is a need for performing additional initialization when the
 recovery has completed before processing any other message sent to the persistent actor.
 The persistent actor will receive a special @apidoc[persistence.RecoveryCompleted$] message right after recovery
 and before any other received messages.
@@ -303,7 +303,7 @@ The callback will not be invoked if the actor is restarted (or stopped) in betwe
 <a id="defer"></a>
 ### Deferring actions until preceding persist handlers have executed
 
-Sometimes when working with @scala[@scaladoc[persistAsync](pekko.persistence.PersistentActor#persistAsync[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persistAsync](pekko.persistence.AbstractPersistentActorLike#persistAsync(A,org.apache.pekko.japi.Procedure))] or @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))] you may find that it would be nice to define some actions in terms of
+Sometimes, when working with @scala[@scaladoc[persistAsync](pekko.persistence.PersistentActor#persistAsync[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persistAsync](pekko.persistence.AbstractPersistentActorLike#persistAsync(A,org.apache.pekko.japi.Procedure))] or @scala[@scaladoc[persist](pekko.persistence.PersistentActor#persist[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[persist](pekko.persistence.AbstractPersistentActorLike#persist(A,org.apache.pekko.japi.Procedure))] you may find that it would be nice to define some actions in terms of
 ''happens-after the previous `persistAsync`/`persist` handlers have been invoked''. @scala[`PersistentActor`]@java[`AbstractPersistentActor`] provides utility methods
 called @scala[@scaladoc[defer](pekko.persistence.PersistentActor#defer[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[defer](pekko.persistence.AbstractPersistentActorLike#defer(A,org.apache.pekko.japi.Procedure))] and @scala[@scaladoc[deferAsync](pekko.persistence.PersistentActor#deferAsync[A](event:A)(handler:A=%3EUnit):Unit)]@java[@javadoc[deferAsync](pekko.persistence.AbstractPersistentActorLike#deferAsync(A,org.apache.pekko.japi.Procedure))], which work similarly to `persist` and `persistAsync` respectively yet do not persist the
 passed in event. It is recommended to use them for *read* operations, and actions which do not have corresponding events in your

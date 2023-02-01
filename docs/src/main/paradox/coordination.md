@@ -1,5 +1,5 @@
 ---
-project.description: A distributed lock with Pekko Coordination using a pluggable lease API.
+project.description: A distributed lock with Apache Pekko Coordination using a pluggable lease API.
 ---
 # Coordination
 

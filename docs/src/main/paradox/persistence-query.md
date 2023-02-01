@@ -1,7 +1,7 @@
 ---
-project.description: Query side to Pekko Persistence allowing for building CQRS applications.
+project.description: Query side to Apache Pekko Persistence allowing for building CQRS applications.
 ---
-# Persistence Query
+# Apache Persistence Query
 
 ## Dependency
 
@@ -264,7 +264,7 @@ Java
 
 ### Resumable projections
 
-Sometimes you may need to use "resumable" projections, which will not start from the beginning of time each time
+Sometimes, you may need to use "resumable" projections, which will not start from the beginning of time each time
 when run. In such case, the sequence number (or `offset`) of the processed event will be stored and
 used the next time this projection is started. This pattern is implemented in the
 [Pekko Projections]($pekko.doc.dns$/docs/pekko-projection/current/) module.

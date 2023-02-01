@@ -1,5 +1,5 @@
 ---
-project.description: Logging options with Pekko.
+project.description: Logging options with Apache Pekko.
 ---
 # Logging
 

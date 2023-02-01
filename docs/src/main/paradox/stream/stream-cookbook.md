@@ -181,7 +181,7 @@ Java
 
 **Situation:** Given a message, we want to split the message and aggregate its sub-messages into a new message
 
-Sometimes it's very useful to split a message and aggregate its sub-messages into a new message. This involves a 
+Sometimes, it's very useful to split a message and aggregate its sub-messages into a new message. This involves a 
 combination of [Splitter](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Sequencer.html) 
 and [Aggregator](https://www.enterpriseintegrationpatterns.com/patterns/messaging/Aggregator.html)
 
@@ -258,7 +258,7 @@ parallelization pattern like MapReduce and similar frameworks.
 ### Sorting elements to multiple groups with groupBy
 
 **Situation:** The `groupBy` operation strictly partitions incoming elements, each element belongs to exactly one group.
-Sometimes we want to map elements into multiple groups simultaneously.
+Sometimes, we want to map elements into multiple groups simultaneously.
 
 To achieve the desired result, we attack the problem in two steps:
 

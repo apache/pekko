@@ -1,5 +1,5 @@
 ---
-project.description: Local and remote Pekko Actor references, locating Actors, Actor paths and addresses.
+project.description: Local and remote Apache Pekko Actor references, locating Actors, Actor paths and addresses.
 ---
 # Actor References, Paths and Addresses
 

@@ -1,5 +1,5 @@
 ---
-project.description: Hierarchical supervision, lifecycle monitoring and error or failure handling in Pekko.
+project.description: Hierarchical supervision, lifecycle monitoring and error or failure handling in Apache Pekko.
 ---
 # Supervision and Monitoring
 

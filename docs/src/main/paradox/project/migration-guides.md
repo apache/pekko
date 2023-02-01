@@ -1,5 +1,5 @@
 ---
-project.description: Pekko version migration guides.
+project.description: Apache Pekko version migration guides.
 ---
 # Migration Guides
 

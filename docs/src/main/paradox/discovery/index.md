@@ -1,5 +1,5 @@
 ---
-project.description: Service discovery with Pekko using DNS, Kubernetes, AWS, Consul or Marathon.
+project.description: Service discovery with Apache Pekko using DNS, Kubernetes, AWS, Consul or Marathon.
 ---
 # Discovery
 

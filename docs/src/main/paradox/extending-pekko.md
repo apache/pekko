@@ -1,10 +1,10 @@
 ---
-project.description: How to extend Pekko with Pekko Extensions.
+project.description: How to extend Apache Pekko with Apache Pekko Extensions.
 ---
-# Classic Pekko Extensions
+# Classic Apache Pekko Extensions
 
-If you want to add features to Pekko, there is a very elegant, but powerful mechanism for doing so.
-It's called Pekko Extensions and comprises 2 basic components: an @apidoc[Extension](actor.Extension) and an @apidoc[ExtensionId](actor.ExtensionId).
+If you want to add features to Apache Pekko, there is a very elegant, but powerful mechanism for doing so.
+It's called Apache Pekko Extensions and comprises 2 basic components: an @apidoc[Extension](actor.Extension) and an @apidoc[ExtensionId](actor.ExtensionId).
 
 Extensions will only be loaded once per @apidoc[ActorSystem](actor.ActorSystem), which will be managed by Pekko.
 You can choose to have your Extension loaded on-demand or at @apidoc[ActorSystem](actor.ActorSystem) creation time through the Pekko configuration.

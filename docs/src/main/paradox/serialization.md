@@ -1,5 +1,5 @@
 ---
-project.description: Serialization APIs built into Pekko.
+project.description: Serialization APIs built into Apache Pekko.
 ---
 # Serialization
 

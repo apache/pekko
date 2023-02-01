@@ -15,7 +15,7 @@ To use Pekko Streams, add the module to your project:
 
 ## Introduction
 
-In Pekko Streams computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
+In Pekko Streams, computation graphs are not expressed using a fluent DSL like linear computations are, instead they are
 written in a more graph-resembling DSL which aims to make translating graph drawings (e.g. from notes taken
 from design discussions, or illustrations in protocol specifications) to and from code simpler. In this section we'll
 dive into the multiple ways of constructing and re-using graphs, as well as explain common pitfalls and how to avoid them.
@@ -59,7 +59,7 @@ the below hand drawn graph into Pekko Streams:
 
 ![simple-graph-example.png](../images/simple-graph-example.png)
 
-Such graph is simple to translate to the Graph DSL since each linear element corresponds to a `Flow`,
+Such a graph is simple to translate to the Graph DSL since each linear element corresponds to a `Flow`,
 and each circle corresponds to either a `Junction` or a `Source` or `Sink` if it is beginning
 or ending a `Flow`. @scala[Junctions must always be created with defined type parameters, as otherwise the `Nothing` type
 will be inferred.]
@@ -95,7 +95,7 @@ new graph. The difference between these approaches is that importing using `buil
 materialized value of the imported graph while importing via the factory method allows its inclusion;
 for more details see @ref[Stream Materialization](stream-flows-and-basics.md#stream-materialization).
 
-In the example below we prepare a graph that consists of two parallel streams,
+In the example below, we prepare a graph that consists of two parallel streams,
 in which we re-use the same instance of `Flow`, yet it will properly be
 materialized as two connections between the corresponding Sources and Sinks:
 
@@ -105,7 +105,7 @@ Scala
 Java
 :   @@snip [GraphDSLTest.java](/stream-tests/src/test/java/org/apache/pekko/stream/javadsl/GraphDslTest.java) { #graph-dsl-reusing-a-flow }
 
-In some cases we may have a list of graph elements, for example if they are dynamically created. 
+In some cases we may have a list of graph elements, for example, if they are dynamically created. 
 If these graphs have similar signatures, we can construct a graph collecting all their materialized values as a collection:
 
 Scala
@@ -118,7 +118,7 @@ Java
 <a id="partial-graph-dsl"></a>
 ## Constructing and combining Partial Graphs
 
-Sometimes it is not possible (or needed) to construct the entire computation graph in one place, but instead construct
+Sometimes, it is not possible (or needed) to construct the entire computation graph in one place, but instead construct
 all of its different phases in different places and in the end connect them all into a complete graph and run it.
 
 This can be achieved by @scala[returning a different `Shape` than `ClosedShape`, for example `FlowShape(in, out)`, from the

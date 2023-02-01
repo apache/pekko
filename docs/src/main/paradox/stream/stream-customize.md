@@ -439,7 +439,7 @@ See @ref:[Modularity, Composition and Hierarchy](stream-composition.md) for an e
 
 ### Rate decoupled operators
 
-Sometimes it is desirable to *decouple* the rate of the upstream and downstream of an operator, synchronizing only
+Sometimes, it is desirable to *decouple* the rate of the upstream and downstream of an operator, synchronizing only
 when needed.
 
 This is achieved in the model by representing a `GraphStage` as a *boundary* between two regions where the

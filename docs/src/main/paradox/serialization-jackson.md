@@ -1,5 +1,5 @@
 ---
-project.description: Serialization with Jackson for Pekko.
+project.description: Serialization with Jackson for Apache Pekko.
 ---
 # Serialization with Jackson
 

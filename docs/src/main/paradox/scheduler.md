@@ -1,5 +1,5 @@
 ---
-project.description: How to schedule processes in Pekko with the Scheduler.
+project.description: How to schedule processes in Apache Pekko with the Scheduler.
 ---
 # Classic Scheduler
 
@@ -21,7 +21,7 @@ To use Scheduler, you must add the following dependency in your project:
 
 ## Introduction
 
-Sometimes the need for making things happen in the future arises, and where do
+Sometimes, the need for making things happen in the future arises, and where do
 you go look then?  Look no further than @apidoc[actor.ActorSystem]! There you find the
 @scala[@scaladoc[scheduler](pekko.actor.ActorSystem#scheduler:org.apache.pekko.actor.Scheduler)]@java[@javadoc[getScheduler()](pekko.actor.ActorSystem#getScheduler())] method that returns an instance of
 @apidoc[actor.Scheduler], this instance is unique per ActorSystem and is
@@ -31,7 +31,7 @@ You can schedule sending of messages to actors and execution of tasks
 (functions or Runnable).  You will get a @apidoc[Cancellable] back that you can call
 @scala[@scaladoc[cancel](pekko.actor.Cancellable#cancel():Boolean)]@java[@javadoc[cancel()](pekko.actor.Cancellable#cancel())] on to cancel the execution of the scheduled operation.
 
-When scheduling periodic or single messages in an actor to itself it is recommended to
+When scheduling periodic or single messages in an actor to itself, it is recommended to
 use the @ref:[Actor Timers](actors.md#actors-timers) instead of using the @apidoc[actor.Scheduler]
 directly.
 
