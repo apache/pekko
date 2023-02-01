@@ -357,7 +357,7 @@ lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
 lazy val protobuf = pekkoModule("protobuf")
   .settings(OSGi.protobuf)
   .settings(AutomaticModuleName.settings("pekko.protobuf"))
-  .settings(MetaInfLicenseNoticeCopy.settings)
+  .settings(MetaInfLicenseNoticeCopy.protobufSettings)
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
   .disablePlugins(MimaPlugin)
   .settings(autoScalaLibrary := false) // Pure java project
