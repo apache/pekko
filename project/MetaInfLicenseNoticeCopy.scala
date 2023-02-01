@@ -15,11 +15,11 @@ import sbt._
  */
 object MetaInfLicenseNoticeCopy {
 
-  private val baseDir = (LocalRootProject / baseDirectory)
-  private val standardLicenseFile = Def.task[File] (baseDir.value / "legal" / "StandardLicense.txt")
-  private val protobufApacheLicenseFile = Def.task[File] (baseDir.value / "LICENSE")
-  private val protobufGoogleLicenseFile = Def.task[File] (baseDir.value / "COPYING.protobuf")
-  private val noticeFile = Def.task[File] (baseDir.value / "NOTICE")
+  private val baseDir = LocalRootProject / baseDirectory
+  private val standardLicenseFile = Def.task[File](baseDir.value / "legal" / "StandardLicense.txt")
+  private val protobufApacheLicenseFile = Def.task[File](baseDir.value / "LICENSE")
+  private val protobufGoogleLicenseFile = Def.task[File](baseDir.value / "COPYING.protobuf")
+  private val noticeFile = Def.task[File](baseDir.value / "NOTICE")
 
   val settings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
@@ -33,7 +33,7 @@ object MetaInfLicenseNoticeCopy {
       resourceGenerators += copyFileToMetaInf(resourceManaged, noticeFile, "NOTICE")))
 
   private def copyFileToMetaInf(dir: SettingKey[File], fromFile: Def.Initialize[Task[File]],
-                                fileName: String) = Def.task[Seq[File]] {
+      fileName: String) = Def.task[Seq[File]] {
     val toFile = resourceManaged.value / "META-INF" / fileName
     IO.copyFile(fromFile.value, toFile)
     Seq(toFile)
