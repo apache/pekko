@@ -20,7 +20,7 @@ github:
     # Enable issue management
     issues: true
     # Enable projects for project management boards
-    projects: false
+    projects: true
 
   enabled_merge_buttons:
     squash:  true
