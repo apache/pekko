@@ -100,9 +100,12 @@ lazy val root = Project(id = "pekko", base = file("."))
       akkaScalaNightly,
       docs,
       serialversionRemoverPlugin))
-  .settings(Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
+  .settings(
+    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get,
+    sourceDistName := "incubator-pekko")
   .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
+  .enablePlugins(SourceDistPlugin)
 
 lazy val actor = pekkoModule("actor")
   .settings(Dependencies.actor)
