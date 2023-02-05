@@ -8,7 +8,7 @@ For the full documentation of this feature and for new projects see @ref:[Event 
 
 ## Module info
 
-To use Pekko Persistence, you must add the following dependency in your project:
+To use Apache Pekko Persistence, you must add the following dependency in your project:
 
 @@dependency[sbt,Maven,Gradle] {
   bomGroup=org.apache.pekko bomArtifact=pekko-bom_$scala.binary.version$ bomVersionSymbols=PekkoVersion
