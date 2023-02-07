@@ -40,10 +40,11 @@ jobs:
           # Start 10 pods. At most 10 MultiJvmNode (akka.cluster.StressSpec is currently disabled).
           ./kubernetes/setup.sh 10 multi-node-test.hosts tcp
 
-      - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v13
+      - name: Setup Java 11
+        uses: actions/setup-java@v3
         with:
-          java-version: adopt@1.11.0-9
+          distribution: temurin
+          java-version: 11
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -127,10 +128,11 @@ jobs:
           # Start 10 pods. At most 10 MultiJvmNode (akka.cluster.StressSpec is currently disabled).
           ./kubernetes/setup.sh 10 multi-node-test.hosts udp
 
-      - name: Set up JDK 11
-        uses: olafurpg/setup-scala@v13
+      - name: Setup Java 11
+        uses: actions/setup-java@v3
         with:
-          java-version: adopt@1.11.0-9
+          distribution: temurin
+          java-version: 11
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
