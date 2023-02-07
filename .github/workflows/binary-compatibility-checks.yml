@@ -9,6 +9,8 @@ on:
     tags:
       - v2.6.*
 
+permissions: {}
+
 jobs:
   check-binary-compatibility:
     name: Check / Binary Compatibility
