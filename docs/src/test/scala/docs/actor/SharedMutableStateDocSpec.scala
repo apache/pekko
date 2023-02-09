@@ -61,7 +61,7 @@ class SharedMutableStateDocSpec {
         // Very bad: shared mutable state will cause your
         // application to break in weird ways
         Future { state = "This will race" }
-        ((echoActor ? Message("With this other one")).mapTo[Message]).foreach { received =>
+        (echoActor ? Message("With this other one")).mapTo[Message].foreach { received =>
           state = received.msg
         }
 

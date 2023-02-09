@@ -202,7 +202,7 @@ abstract class ScanningEventBus[E, S, C] extends EventBus[E, S, C] {
  */
 abstract class ManagedActorEventBus[E](system: ActorSystem) extends EventBus[E, ActorRef, ActorRef] {
   private val bus = new pekko.event.ActorEventBus with pekko.event.ManagedActorClassification
-  with pekko.event.ActorClassifier {
+    with pekko.event.ActorClassifier {
     type Event = E
 
     override val system = ManagedActorEventBus.this.system
