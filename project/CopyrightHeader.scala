@@ -66,9 +66,9 @@ trait CopyrightHeader extends AutoPlugin {
 
     override def apply(text: String, existingText: Option[String]): String = {
       val formatted = existingText match {
-        case Some(existedText) if isValidCopyRightAnnotated(existedText) =>
+        case Some(existedText) if isValidCopyrightAnnotated(existedText) =>
           existedText
-        case Some(existedText) if isOnlyLightbendCopyRightAnnotated(existedText) =>
+        case Some(existedText) if isOnlyLightbendOrEpflCopyrightAnnotated(existedText) =>
           HeaderCommentStyle.cStyleBlockComment.commentCreator(text, existingText) + NewLine * 2 + existedText
         case Some(existedText) =>
           throw new IllegalStateException(s"Unable to detect copyright for header:[${existedText}]")
@@ -78,26 +78,26 @@ trait CopyrightHeader extends AutoPlugin {
       formatted.trim
     }
 
-    private def isApacheCopyRighted(text: String): Boolean =
+    private def isApacheCopyrighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "licensed to the apache software foundation (asf)") ||
       StringUtils.containsIgnoreCase(text, "www.apache.org/licenses/license-2.0")
 
-    private def isLAMPCopyRighted(text: String): Boolean =
+    private def isLAMPCopyrighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "lamp/epfl")
 
-    private def isLightbendCopyRighted(text: String): Boolean =
+    private def isLightbendCopyrighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "lightbend inc.")
 
-    private def isDebianCopyRighted(text: String): Boolean =
+    private def isDebianCopyrighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "debian.org")
 
-    private def isValidCopyRightAnnotated(text: String): Boolean = {
-      isApacheCopyRighted(text) || isLAMPCopyRighted(text) || isDebianCopyRighted(text)
+    private def isValidCopyrightAnnotated(text: String): Boolean = {
+      isApacheCopyrighted(text) || isDebianCopyrighted(text)
     }
 
-    private def isOnlyLightbendCopyRightAnnotated(text: String): Boolean = {
-      isLightbendCopyRighted(text) && !(isApacheCopyRighted(text) || isLAMPCopyRighted(text) || isDebianCopyRighted(
-        text))
+    private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean = {
+      ((isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text)) ||
+        isDebianCopyrighted(text)
     }
 
   })
