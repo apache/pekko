@@ -82,9 +82,6 @@ trait CopyrightHeader extends AutoPlugin {
       StringUtils.containsIgnoreCase(text, "licensed to the apache software foundation (asf)") ||
       StringUtils.containsIgnoreCase(text, "www.apache.org/licenses/license-2.0")
 
-    private def isLAMPCopyRighted(text: String): Boolean =
-      StringUtils.containsIgnoreCase(text, "lamp/epfl")
-
     private def isLightbendCopyRighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "lightbend inc.")
 
@@ -92,12 +89,11 @@ trait CopyrightHeader extends AutoPlugin {
       StringUtils.containsIgnoreCase(text, "debian.org")
 
     private def isValidCopyRightAnnotated(text: String): Boolean = {
-      isApacheCopyRighted(text) || isLAMPCopyRighted(text) || isDebianCopyRighted(text)
+      isApacheCopyRighted(text) || isDebianCopyRighted(text)
     }
 
     private def isOnlyLightbendCopyRightAnnotated(text: String): Boolean = {
-      isLightbendCopyRighted(text) && !(isApacheCopyRighted(text) || isLAMPCopyRighted(text) || isDebianCopyRighted(
-        text))
+      isLightbendCopyRighted(text) && !(isApacheCopyRighted(text) || isDebianCopyRighted(text))
     }
 
   })
