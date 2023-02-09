@@ -79,7 +79,7 @@ object CircuitBreaker {
    * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
    * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def create(
       scheduler: Scheduler,
       maxFailures: Int,
@@ -183,7 +183,7 @@ class CircuitBreaker(
       CircuitBreakerNoopTelemetry)(executor)
   }
 
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def this(
       executor: ExecutionContext,
       scheduler: Scheduler,

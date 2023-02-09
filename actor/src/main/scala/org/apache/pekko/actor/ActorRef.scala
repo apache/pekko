@@ -195,7 +195,7 @@ abstract class ActorRef extends java.lang.Comparable[ActorRef] with Serializable
  * There are implicit conversions in package.scala
  * from ActorRef -&gt; ScalaActorRef and back
  */
-@deprecated("tell method is now provided by ActorRef trait", "2.6.13")
+@deprecated("tell method is now provided by ActorRef trait", "Akka 2.6.13")
 trait ScalaActorRef { ref: ActorRef with InternalActorRef with ActorRefScope =>
 
   /**

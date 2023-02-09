@@ -53,7 +53,7 @@ object RestartFlow {
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[In, Out](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -88,7 +88,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[In, Out](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -124,7 +124,7 @@ object RestartFlow {
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[In, Out](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -162,7 +162,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[In, Out](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -224,7 +224,7 @@ object RestartFlow {
    * @param flowFactory A factory for producing the [[Flow]] to wrap.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def onFailuresWithBackoff[In, Out](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -262,7 +262,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def onFailuresWithBackoff[In, Out](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,

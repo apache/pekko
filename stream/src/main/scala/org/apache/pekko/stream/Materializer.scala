@@ -154,7 +154,7 @@ abstract class Materializer {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def schedulePeriodically(initialDelay: FiniteDuration, interval: FiniteDuration, task: Runnable): Cancellable
 
   /**

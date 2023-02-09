@@ -225,7 +225,7 @@ trait TimerScheduler[T] {
   @deprecated(
     "Use startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def startPeriodicTimer(key: Any, msg: T, interval: Duration): Unit
 
   /**

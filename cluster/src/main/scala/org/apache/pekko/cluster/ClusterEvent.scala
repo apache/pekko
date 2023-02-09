@@ -115,7 +115,7 @@ object ClusterEvent {
       with Serializable {
 
     // for binary compatibility
-    @deprecated("use main constructor", since = "2.6.10")
+    @deprecated("use main constructor", since = "Akka 2.6.10")
     def this(
         members: immutable.SortedSet[Member],
         unreachable: Set[Member],
@@ -126,7 +126,7 @@ object ClusterEvent {
       this(members, unreachable, seenBy, leader, roleLeaderMap, unreachableDataCenters, Set.empty)
 
     // for binary compatibility
-    @deprecated("use main constructor", since = "2.6.10")
+    @deprecated("use main constructor", since = "Akka 2.6.10")
     def this(
         members: immutable.SortedSet[Member] = immutable.SortedSet.empty,
         unreachable: Set[Member] = Set.empty,

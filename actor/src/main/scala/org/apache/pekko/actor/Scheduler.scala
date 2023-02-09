@@ -369,7 +369,7 @@ trait Scheduler {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   @nowarn("msg=deprecated")
   final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, receiver: ActorRef, message: Any)(
       implicit
@@ -392,7 +392,7 @@ trait Scheduler {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final def schedule(
       initialDelay: java.time.Duration,
       interval: java.time.Duration,
@@ -410,7 +410,7 @@ trait Scheduler {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final def schedule(initialDelay: FiniteDuration, interval: FiniteDuration)(f: => Unit)(
       implicit
       executor: ExecutionContext): Cancellable =
@@ -422,7 +422,7 @@ trait Scheduler {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def schedule(initialDelay: FiniteDuration, interval: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable
 
@@ -432,7 +432,7 @@ trait Scheduler {
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def schedule(initialDelay: java.time.Duration, interval: java.time.Duration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     import JavaDurationConverters._

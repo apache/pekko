@@ -42,7 +42,7 @@ import pekko.util.HashCode
 import pekko.util.ccompat.JavaConverters._
 
 object ClusterRouterGroupSettings {
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def apply(
       totalInstances: Int,
       routeesPaths: immutable.Seq[String],
@@ -123,10 +123,10 @@ final class ClusterRouterGroupSettings(
     s"ClusterRouterGroupSettings($totalInstances,$routeesPaths,$allowLocalRoutees,$useRoles)"
 
   // For binary compatibility
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def useRole: Option[String] = useRoles.headOption
 
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def this(
       totalInstances: Int,
       routeesPaths: immutable.Seq[String],
@@ -137,7 +137,7 @@ final class ClusterRouterGroupSettings(
   /**
    * Java API
    */
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def this(totalInstances: Int, routeesPaths: java.lang.Iterable[String], allowLocalRoutees: Boolean, useRole: String) =
     this(totalInstances, immutableSeq(routeesPaths), allowLocalRoutees, Option(useRole).toSet)
 
@@ -152,7 +152,7 @@ final class ClusterRouterGroupSettings(
     this(totalInstances, immutableSeq(routeesPaths), allowLocalRoutees, useRoles.asScala.toSet)
 
   // For binary compatibility
-  @deprecated("Use constructor with useRoles instead", since = "2.5.4")
+  @deprecated("Use constructor with useRoles instead", since = "Akka 2.5.4")
   @nowarn("msg=deprecated")
   def copy(
       totalInstances: Int = totalInstances,
@@ -194,7 +194,7 @@ object ClusterRouterPoolSettings {
       useRoles: Set[String]): ClusterRouterPoolSettings =
     new ClusterRouterPoolSettings(totalInstances, maxInstancesPerNode, allowLocalRoutees, useRoles)
 
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def apply(
       totalInstances: Int,
       maxInstancesPerNode: Int,
@@ -270,17 +270,17 @@ final class ClusterRouterPoolSettings(
     s"ClusterRouterPoolSettings($totalInstances,$maxInstancesPerNode,$allowLocalRoutees,$useRoles)"
 
   // For binary compatibility
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def useRole: Option[String] = useRoles.headOption
 
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def this(totalInstances: Int, maxInstancesPerNode: Int, allowLocalRoutees: Boolean, useRole: Option[String]) =
     this(totalInstances, maxInstancesPerNode, allowLocalRoutees, useRole.toSet)
 
   /**
    * Java API
    */
-  @deprecated("useRole has been replaced with useRoles", since = "2.5.4")
+  @deprecated("useRole has been replaced with useRoles", since = "Akka 2.5.4")
   def this(totalInstances: Int, maxInstancesPerNode: Int, allowLocalRoutees: Boolean, useRole: String) =
     this(totalInstances, maxInstancesPerNode, allowLocalRoutees, Option(useRole).toSet)
 
@@ -291,7 +291,7 @@ final class ClusterRouterPoolSettings(
     this(totalInstances, maxInstancesPerNode, allowLocalRoutees, useRoles.asScala.toSet)
 
   // For binary compatibility
-  @deprecated("Use copy with useRoles instead", since = "2.5.4")
+  @deprecated("Use copy with useRoles instead", since = "Akka 2.5.4")
   @nowarn("msg=deprecated")
   def copy(
       totalInstances: Int = totalInstances,

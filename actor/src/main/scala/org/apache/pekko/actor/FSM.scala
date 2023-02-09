@@ -605,7 +605,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   @deprecated(
     "Use startSingleTimer, startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final def setTimer(name: String, msg: Any, timeout: FiniteDuration, repeat: Boolean = false): Unit = {
     // repeat => FixedRateMode for compatibility
     val mode = if (repeat) FixedRateMode else SingleMode

@@ -51,7 +51,7 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
       sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
@@ -83,7 +83,7 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double, maxRestarts: Int)(
       sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor).withMaxRestarts(maxRestarts, minBackoff)
@@ -131,7 +131,7 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def onFailuresWithBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
       sourceFactory: () => Source[T, _]): Source[T, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
@@ -162,7 +162,7 @@ object RestartSource {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def onFailuresWithBackoff[T](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,

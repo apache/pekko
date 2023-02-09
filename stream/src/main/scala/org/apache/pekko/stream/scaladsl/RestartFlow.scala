@@ -62,7 +62,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[In, Out](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
       flowFactory: () => Flow[In, Out, _]): Flow[In, Out, NotUsed] = {
     val settings = RestartSettings(minBackoff, maxBackoff, randomFactor)
@@ -96,7 +96,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[In, Out](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -155,7 +155,7 @@ object RestartFlow {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def onFailuresWithBackoff[In, Out](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,

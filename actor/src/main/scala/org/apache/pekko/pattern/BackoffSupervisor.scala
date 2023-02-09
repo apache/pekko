@@ -44,7 +44,7 @@ object BackoffSupervisor {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def props(
       childProps: Props,
       childName: String,
@@ -80,7 +80,7 @@ object BackoffSupervisor {
    *                       The supervisor will terminate itself after the maxNoOfRetries is reached.
    *                       In order to restart infinitely pass in `-1`.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def props(
       childProps: Props,
       childName: String,
@@ -112,7 +112,7 @@ object BackoffSupervisor {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def props(
       childProps: Props,
       childName: String,
@@ -142,7 +142,7 @@ object BackoffSupervisor {
    *                       The supervisor will terminate itself after the maxNoOfRetries is reached.
    *                       In order to restart infinitely pass in `-1`.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def props(
       childProps: Props,
       childName: String,
@@ -174,7 +174,7 @@ object BackoffSupervisor {
    *                     in the child. As the BackoffSupervisor creates a separate actor to handle the
    *                     backoff process, only a [[OneForOneStrategy]] makes sense here.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def propsWithSupervisorStrategy(
       childProps: Props,
       childName: String,
@@ -219,7 +219,7 @@ object BackoffSupervisor {
    *                     in the child. As the BackoffSupervisor creates a separate actor to handle the
    *                     backoff process, only a [[OneForOneStrategy]] makes sense here.
    */
-  @deprecated("Use props with BackoffOpts instead", since = "2.5.22")
+  @deprecated("Use props with BackoffOpts instead", since = "Akka 2.5.22")
   def propsWithSupervisorStrategy(
       childProps: Props,
       childName: String,
@@ -235,7 +235,7 @@ object BackoffSupervisor {
    *
    * @param options the [[BackoffOptions]] that specify how to construct a backoff-supervisor.
    */
-  @deprecated("Use new API from BackoffOpts object instead", since = "2.5.22")
+  @deprecated("Use new API from BackoffOpts object instead", since = "Akka 2.5.22")
   def props(options: BackoffOptions): Props = options.props
 
   /**
@@ -333,7 +333,7 @@ object BackoffSupervisor {
   }
 }
 
-final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22") (
+final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22") (
     override val childProps: Props,
     override val childName: String,
     minBackoff: FiniteDuration,
@@ -355,7 +355,7 @@ final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method 
       finalStopMessage) {
 
   // for binary compatibility with 2.5.18
-  @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
+  @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22")
   def this(
       childProps: Props,
       childName: String,
@@ -368,7 +368,7 @@ final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method 
     this(childProps, childName, minBackoff, maxBackoff, reset, randomFactor, strategy, replyWhileStopped, None)
 
   // for binary compatibility with 2.4.1
-  @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
+  @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22")
   def this(
       childProps: Props,
       childName: String,
@@ -388,7 +388,7 @@ final class BackoffSupervisor @deprecated("Use `BackoffSupervisor.props` method 
       None)
 
   // for binary compatibility with 2.4.0
-  @deprecated("Use `BackoffSupervisor.props` method instead", since = "2.5.22")
+  @deprecated("Use `BackoffSupervisor.props` method instead", since = "Akka 2.5.22")
   def this(
       childProps: Props,
       childName: String,

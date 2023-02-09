@@ -1798,7 +1798,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final protected def schedulePeriodicallyWithInitialDelay(
       timerKey: Any,
       initialDelay: FiniteDuration,
@@ -1814,7 +1814,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final protected def schedulePeriodicallyWithInitialDelay(
       timerKey: Any,
       initialDelay: java.time.Duration,
@@ -1831,7 +1831,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final protected def schedulePeriodically(timerKey: Any, interval: FiniteDuration): Unit =
     schedulePeriodicallyWithInitialDelay(timerKey, interval, interval)
 
@@ -1843,7 +1843,7 @@ abstract class TimerGraphStageLogic(_shape: Shape) extends GraphStageLogic(_shap
   @deprecated(
     "Use scheduleWithFixedDelay or scheduleAtFixedRate instead. This has the same semantics as " +
     "scheduleAtFixedRate, but scheduleWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final protected def schedulePeriodically(timerKey: Any, interval: java.time.Duration): Unit = {
     import pekko.util.JavaDurationConverters._
     schedulePeriodically(timerKey, interval.asScala)
@@ -1917,8 +1917,8 @@ trait OutHandler {
    * be called for this port.
    */
   @throws(classOf[Exception])
-  @deprecatedOverriding("Override `def onDownstreamFinish(cause: Throwable)`, instead.", since = "2.6.0") // warns when overriding
-  @deprecated("Call onDownstreamFinish with a cancellation cause.", since = "2.6.0") // warns when calling
+  @deprecatedOverriding("Override `def onDownstreamFinish(cause: Throwable)`, instead.", since = "Akka 2.6.0") // warns when overriding
+  @deprecated("Call onDownstreamFinish with a cancellation cause.", since = "Akka 2.6.0") // warns when calling
   def onDownstreamFinish(): Unit = {
     val thisStage = GraphInterpreter.currentInterpreter.activeStage
     require(

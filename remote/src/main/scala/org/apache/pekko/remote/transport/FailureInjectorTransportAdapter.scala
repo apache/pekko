@@ -197,7 +197,7 @@ private[remote] final case class FailureInjectorHandle(
 
   @deprecated(
     message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "2.5.3")
+    since = "Akka 2.5.3")
   @nowarn("msg=deprecated")
   override def disassociate(): Unit =
     wrappedHandle.disassociate()

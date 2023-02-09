@@ -84,7 +84,7 @@ final class GCounter private[pekko] (
    */
   def :+(n: Long)(implicit node: SelfUniqueAddress): GCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(n: Long)(implicit node: Cluster): GCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -93,7 +93,7 @@ final class GCounter private[pekko] (
    */
   def increment(node: SelfUniqueAddress, n: Long): GCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def increment(node: Cluster, n: Long = 1): GCounter = increment(node.selfUniqueAddress, n)
 
   /**

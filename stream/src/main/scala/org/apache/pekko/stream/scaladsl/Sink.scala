@@ -370,7 +370,7 @@ object Sink {
    */
   @deprecated(
     "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a Future or spawning a new Future.",
-    since = "2.5.17")
+    since = "Akka 2.5.17")
   def foreachParallel[T](parallelism: Int)(f: T => Unit)(implicit ec: ExecutionContext): Sink[T, Future[Done]] =
     Flow[T].mapAsyncUnordered(parallelism)(t => Future(f(t))).toMat(Sink.ignore)(Keep.right)
 

@@ -468,7 +468,7 @@ object Patterns {
    * Returns a [[scala.concurrent.Future]] that will be completed with the success or failure of the provided Callable
    * after the specified duration.
    */
-  @deprecated("Use the overload one which accepts a Callable of Future instead.", since = "2.5.22")
+  @deprecated("Use the overload one which accepts a Callable of Future instead.", since = "Akka 2.5.22")
   def after[T](duration: FiniteDuration, scheduler: Scheduler, context: ExecutionContext, value: Future[T]): Future[T] =
     scalaAfter(duration, scheduler)(value)(context)
 
@@ -476,7 +476,7 @@ object Patterns {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided value
    * after the specified duration.
    */
-  @deprecated("Use the overloaded one which accepts a Callable of CompletionStage instead.", since = "2.5.22")
+  @deprecated("Use the overloaded one which accepts a Callable of CompletionStage instead.", since = "Akka 2.5.22")
   def after[T](
       duration: java.time.Duration,
       scheduler: Scheduler,
@@ -649,7 +649,7 @@ object Patterns {
  *
  * For working with Scala [[scala.concurrent.Future]] from Java you may want to use [[pekko.pattern.Patterns]] instead.
  */
-@deprecated("Use Patterns instead.", since = "2.5.19")
+@deprecated("Use Patterns instead.", since = "Akka 2.5.19")
 object PatternsCS {
   import scala.concurrent.duration._
 
@@ -685,7 +685,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.15")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.15")
   def ask(actor: ActorRef, message: Any, timeout: Timeout): CompletionStage[AnyRef] =
     scalaAsk(actor, message)(timeout).toJava.asInstanceOf[CompletionStage[AnyRef]]
 
@@ -716,7 +716,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use Patterns.ask instead.", since = "2.5.19")
+  @deprecated("Use Patterns.ask instead.", since = "Akka 2.5.19")
   def ask(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
     ask(actor, message, Timeout.create(timeout))
 
@@ -735,7 +735,7 @@ object PatternsCS {
    * @param messageFactory function taking an actor ref and returning the message to be sent
    * @param timeout        the timeout for the response before failing the returned completion operator
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.15")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.15")
   def askWithReplyTo(
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
@@ -757,7 +757,7 @@ object PatternsCS {
    * @param messageFactory function taking an actor ref and returning the message to be sent
    * @param timeout        the timeout for the response before failing the returned completion stage
    */
-  @deprecated("Use Pattens.askWithReplyTo instead.", since = "2.5.19")
+  @deprecated("Use Pattens.askWithReplyTo instead.", since = "Akka 2.5.19")
   def askWithReplyTo(
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
@@ -791,7 +791,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "2.5.19")
+  @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def ask(actor: ActorRef, message: Any, timeoutMillis: Long): CompletionStage[AnyRef] =
     scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
       .asInstanceOf[CompletionStage[AnyRef]]
@@ -811,7 +811,7 @@ object PatternsCS {
    * @param messageFactory function taking an actor ref to reply to and returning the message to be sent
    * @param timeoutMillis  the timeout for the response before failing the returned completion operator
    */
-  @deprecated("Use Pattens.askWithReplyTo which accepts java.time.Duration instead.", since = "2.5.19")
+  @deprecated("Use Pattens.askWithReplyTo which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def askWithReplyTo(
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
@@ -845,7 +845,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.15")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.15")
   def ask(selection: ActorSelection, message: Any, timeout: Timeout): CompletionStage[AnyRef] =
     scalaAsk(selection, message)(timeout).toJava.asInstanceOf[CompletionStage[AnyRef]]
 
@@ -876,7 +876,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use Patterns.ask instead.", since = "2.5.19")
+  @deprecated("Use Patterns.ask instead.", since = "Akka 2.5.19")
   def ask(selection: ActorSelection, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
     ask(selection, message, Timeout.create(timeout))
 
@@ -907,7 +907,7 @@ object PatternsCS {
    *   f.thenRun(result -> nextActor.tell(new EnrichedResult(request, result)));
    * }}}
    */
-  @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "2.5.19")
+  @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def ask(selection: ActorSelection, message: Any, timeoutMillis: Long): CompletionStage[AnyRef] =
     scalaAsk(selection, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
       .asInstanceOf[CompletionStage[AnyRef]]
@@ -923,7 +923,7 @@ object PatternsCS {
    *   timeout);
    * }}}
    */
-  @deprecated("Use Pattens.askWithReplyTo which accepts java.time.Duration instead.", since = "2.5.19")
+  @deprecated("Use Pattens.askWithReplyTo which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def askWithReplyTo(
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
@@ -950,7 +950,7 @@ object PatternsCS {
    *   PatternsCS.pipe(transformed, context).to(nextActor);
    * }}}
    */
-  @deprecated("Use Patterns.pipe instead.", since = "2.5.19")
+  @deprecated("Use Patterns.pipe instead.", since = "Akka 2.5.19")
   def pipe[T](future: CompletionStage[T], context: ExecutionContext): PipeableCompletionStage[T] =
     pipeCompletionStage(future)(context)
 
@@ -964,7 +964,7 @@ object PatternsCS {
    * If the target actor isn't terminated within the timeout the [[java.util.concurrent.CompletionStage]]
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def gracefulStop(target: ActorRef, timeout: FiniteDuration): CompletionStage[java.lang.Boolean] =
     scalaGracefulStop(target, timeout).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
@@ -978,7 +978,7 @@ object PatternsCS {
    * If the target actor isn't terminated within the timeout the [[java.util.concurrent.CompletionStage]]
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
-  @deprecated("Use Patterns.gracefulStop instead.", since = "2.5.19")
+  @deprecated("Use Patterns.gracefulStop instead.", since = "Akka 2.5.19")
   def gracefulStop(target: ActorRef, timeout: java.time.Duration): CompletionStage[java.lang.Boolean] =
     scalaGracefulStop(target, timeout.asScala).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
@@ -995,7 +995,7 @@ object PatternsCS {
    * If the target actor isn't terminated within the timeout the [[java.util.concurrent.CompletionStage]]
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def gracefulStop(target: ActorRef, timeout: FiniteDuration, stopMessage: Any): CompletionStage[java.lang.Boolean] =
     scalaGracefulStop(target, timeout, stopMessage).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
@@ -1012,7 +1012,7 @@ object PatternsCS {
    * If the target actor isn't terminated within the timeout the [[java.util.concurrent.CompletionStage]]
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
-  @deprecated("Use Patterns.gracefulStop instead.", since = "2.5.19")
+  @deprecated("Use Patterns.gracefulStop instead.", since = "Akka 2.5.19")
   def gracefulStop(
       target: ActorRef,
       timeout: java.time.Duration,
@@ -1023,7 +1023,7 @@ object PatternsCS {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided Callable
    * after the specified duration.
    */
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def after[T](
       duration: FiniteDuration,
       scheduler: Scheduler,
@@ -1035,7 +1035,7 @@ object PatternsCS {
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided Callable
    * after the specified duration.
    */
-  @deprecated("Use Patterns.after instead.", since = "2.5.19")
+  @deprecated("Use Patterns.after instead.", since = "Akka 2.5.19")
   def after[T](
       duration: java.time.Duration,
       scheduler: Scheduler,
@@ -1049,7 +1049,7 @@ object PatternsCS {
    */
   @deprecated(
     "Use Patterns.after which accepts java.time.Duration and Callable of CompletionStage instead.",
-    since = "2.5.22")
+    since = "Akka 2.5.22")
   def after[T](
       duration: FiniteDuration,
       scheduler: Scheduler,
@@ -1063,7 +1063,7 @@ object PatternsCS {
    */
   @deprecated(
     "Use Patterns.after which accepts java.time.Duration and Callable of CompletionStage instead.",
-    since = "2.5.22")
+    since = "Akka 2.5.22")
   def after[T](
       duration: java.time.Duration,
       scheduler: Scheduler,
@@ -1079,7 +1079,7 @@ object PatternsCS {
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
    * and therefore must be thread safe (not touch unsafe mutable state).
    */
-  @deprecated("Use Patterns.retry instead.", since = "2.5.19")
+  @deprecated("Use Patterns.retry instead.", since = "Akka 2.5.19")
   def retry[T](
       attempt: Callable[CompletionStage[T]],
       attempts: Int,

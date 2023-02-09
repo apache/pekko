@@ -176,7 +176,7 @@ object Member {
     a.isOlderThan(b)
   }
 
-  @deprecated("Was accidentally made a public API, internal", since = "2.5.4")
+  @deprecated("Was accidentally made a public API, internal", since = "Akka 2.5.4")
   def pickHighestPriority(a: Set[Member], b: Set[Member]): Set[Member] =
     pickHighestPriority(a, b, Map.empty)
 
@@ -316,7 +316,7 @@ object MemberStatus {
 
 object UniqueAddress extends AbstractFunction2[Address, Int, UniqueAddress] {
   // for binary compatibility
-  @deprecated("Use Long UID apply instead", since = "2.4.11")
+  @deprecated("Use Long UID apply instead", since = "Akka 2.4.11")
   def apply(address: Address, uid: Int) = new UniqueAddress(address, uid.toLong)
 
   def apply(remoteUniqueAddress: pekko.remote.UniqueAddress): UniqueAddress =
@@ -363,17 +363,17 @@ final class UniqueAddress(val address: Address, val longUid: Long)
 
   // for binary compatibility
 
-  @deprecated("Use Long UID constructor instead", since = "2.4.11")
+  @deprecated("Use Long UID constructor instead", since = "Akka 2.4.11")
   def this(address: Address, uid: Int) = this(address, uid.toLong)
 
-  @deprecated("Use longUid instead", since = "2.4.11")
+  @deprecated("Use longUid instead", since = "Akka 2.4.11")
   def uid = longUid.toInt
 
   /**
    * For binary compatibility
    * Stops `copy(Address, Long)` copy from being generated, use `apply` instead.
    */
-  @deprecated("Use Long UID constructor instead", since = "2.4.11")
+  @deprecated("Use Long UID constructor instead", since = "Akka 2.4.11")
   @nowarn("msg=deprecated")
   def copy(address: Address = address, uid: Int = uid) = new UniqueAddress(address, uid.toLong)
 

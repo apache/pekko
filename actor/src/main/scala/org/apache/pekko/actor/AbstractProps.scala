@@ -56,7 +56,8 @@ private[pekko] trait AbstractProps {
    *
    * Use the Props.create(actorClass, creator) instead.
    */
-  @deprecated("Use Props.create(actorClass, creator) instead, since this can't be used with Java 8 lambda.", "2.5.18")
+  @deprecated("Use Props.create(actorClass, creator) instead, since this can't be used with Java 8 lambda.",
+    "Akka 2.5.18")
   def create[T <: Actor](creator: Creator[T]): Props = {
     val cc = creator.getClass
     checkCreatorClosingOver(cc)

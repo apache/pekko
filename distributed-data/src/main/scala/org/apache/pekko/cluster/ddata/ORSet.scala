@@ -333,14 +333,14 @@ final class ORSet[A] private[pekko] (
   /** Adds an element to the set. */
   def :+(element: A)(implicit node: SelfUniqueAddress): ORSet[A] = add(node, element)
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(element: A)(implicit node: Cluster): ORSet[A] = add(node.selfUniqueAddress, element)
 
   /** Adds an element to the set. */
   def add(node: SelfUniqueAddress, element: A): ORSet[A] = add(node.uniqueAddress, element)
 
   @Deprecated
-  @deprecated("Use `add` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `add` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def add(node: Cluster, element: A): ORSet[A] = add(node.selfUniqueAddress, element)
 
   /**
@@ -375,13 +375,13 @@ final class ORSet[A] private[pekko] (
   /**
    * Removes an element from the set.
    */
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def -(element: A)(implicit node: Cluster): ORSet[A] = remove(node.selfUniqueAddress, element)
 
   /**
    * Removes an element from the set.
    */
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def remove(node: Cluster, element: A): ORSet[A] = remove(node.selfUniqueAddress, element)
 
   /**
@@ -405,7 +405,7 @@ final class ORSet[A] private[pekko] (
    */
   def clear(@unused node: SelfUniqueAddress): ORSet[A] = clear()
 
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def clear(@unused node: Cluster): ORSet[A] = clear()
 
   /**

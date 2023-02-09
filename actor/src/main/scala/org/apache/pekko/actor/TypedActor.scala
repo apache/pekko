@@ -40,7 +40,7 @@ import pekko.util.Timeout
 /**
  * A TypedActorFactory is something that can created TypedActor instances.
  */
-@deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "2.6.0")
+@deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "Akka 2.6.0")
 trait TypedActorFactory {
 
   /**
@@ -115,7 +115,7 @@ trait TypedActorFactory {
 /**
  * This represents the TypedActor Akka Extension, access to the functionality is done through a given ActorSystem.
  */
-@deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "2.6.0")
+@deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "Akka 2.6.0")
 object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvider {
   override def get(system: ActorSystem): TypedActorExtension = super.get(system)
   override def get(system: ClassicActorSystemProvider): TypedActorExtension = super.get(system)
@@ -128,7 +128,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
    * will be children to the specified context, this allows for creating hierarchies of TypedActors.
    * Do _not_ let this instance escape the TypedActor since that will not be thread-safe.
    */
-  @deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "2.6.0")
+  @deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "Akka 2.6.0")
   def apply(context: ActorContext): TypedActorFactory = ContextualTypedActorFactory(apply(context.system), context)
 
   /**

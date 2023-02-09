@@ -54,7 +54,7 @@ object RestartSink {
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[T](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -90,7 +90,7 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[T](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
@@ -127,7 +127,7 @@ object RestartSink {
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[T](
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
@@ -166,7 +166,7 @@ object RestartSink {
    */
   @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
-    since = "2.6.10")
+    since = "Akka 2.6.10")
   def withBackoff[T](
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,

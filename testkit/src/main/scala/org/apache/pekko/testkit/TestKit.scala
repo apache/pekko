@@ -724,14 +724,14 @@ trait TestKitBase {
    * `pekko.test.expect-no-message-default`.
    * That timeout is scaled using the configuration entry "pekko.test.timefactor".
    */
-  @deprecated(message = "Use expectNoMessage instead", since = "2.5.5")
+  @deprecated(message = "Use expectNoMessage instead", since = "Akka 2.5.5")
   def expectNoMsg(): Unit = expectNoMessage()
 
   /**
    * Assert that no message is received for the specified time.
    * NOTE! Supplied value is always dilated.
    */
-  @deprecated(message = "Use expectNoMessage instead", since = "2.5.5")
+  @deprecated(message = "Use expectNoMessage instead", since = "Akka 2.5.5")
   def expectNoMsg(max: FiniteDuration): Unit = {
     expectNoMsg_internal(max.dilated)
   }

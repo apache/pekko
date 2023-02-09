@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Builder used to create a partial function for {@link org.apache.pekko.actor.FSM#whenUnhandled}.
  *
- * @deprecated use EventSourcedBehavior since 2.6.0
+ * @deprecated use EventSourcedBehavior since Akka 2.6.0
  * @param <S> the state type
  * @param <D> the data type
  * @param <E> the domain event type
