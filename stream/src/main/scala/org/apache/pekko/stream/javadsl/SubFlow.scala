@@ -724,7 +724,7 @@ class SubFlow[In, Out, Mat](
    * IllegalArgumentException is thrown.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWithin(
       maxNumber: Int,
       duration: FiniteDuration): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
@@ -773,7 +773,7 @@ class SubFlow[In, Out, Mat](
    * IllegalArgumentException is thrown.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWeightedWithin(
       maxWeight: Long,
       costFn: function.Function[Out, java.lang.Long],
@@ -857,7 +857,7 @@ class SubFlow[In, Out, Mat](
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def delay(of: FiniteDuration, strategy: DelayOverflowStrategy): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.delay(of, strategy))
 
@@ -953,7 +953,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def dropWithin(duration: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.dropWithin(duration))
 
@@ -1183,7 +1183,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels or timer fires
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def takeWithin(duration: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.takeWithin(duration))
 
@@ -2018,7 +2018,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialTimeout(timeout: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.initialTimeout(timeout))
 
@@ -2051,7 +2051,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def completionTimeout(timeout: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.completionTimeout(timeout))
 
@@ -2085,7 +2085,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def idleTimeout(timeout: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.idleTimeout(timeout))
 
@@ -2120,7 +2120,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def backpressureTimeout(timeout: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.backpressureTimeout(timeout))
 
@@ -2159,7 +2159,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def keepAlive(maxIdle: FiniteDuration, injectedElem: function.Creator[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.keepAlive(maxIdle, () => injectedElem.create()))
 
@@ -2252,7 +2252,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(
       elements: Int,
       per: FiniteDuration,
@@ -2378,7 +2378,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(
       cost: Int,
       per: FiniteDuration,
@@ -2527,7 +2527,7 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "2.5.12")
+  @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialDelay(delay: FiniteDuration): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.initialDelay(delay))
 

@@ -166,7 +166,7 @@ object Sink {
    */
   @deprecated(
     "Use `foreachAsync` instead, it allows you to choose how to run the procedure, by calling some other API returning a CompletionStage or using CompletableFuture.supplyAsync.",
-    since = "2.5.17")
+    since = "Akka 2.5.17")
   def foreachParallel[T](parallel: Int)(f: function.Procedure[T])(
       ec: ExecutionContext): Sink[T, CompletionStage[Done]] =
     new Sink(scaladsl.Sink.foreachParallel(parallel)(f.apply)(ec).toCompletionStage())

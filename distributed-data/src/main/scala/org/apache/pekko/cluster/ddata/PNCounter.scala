@@ -76,7 +76,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def :+(n: Long)(implicit node: SelfUniqueAddress): PNCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(n: Long)(implicit node: Cluster): PNCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -85,7 +85,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def :+(n: BigInt)(implicit node: SelfUniqueAddress): PNCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(n: BigInt)(implicit node: Cluster): PNCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -94,7 +94,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def increment(n: Long)(implicit node: SelfUniqueAddress): PNCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def increment(node: Cluster, n: Long = 1): PNCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -103,7 +103,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def increment(n: BigInt)(implicit node: SelfUniqueAddress): PNCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def increment(node: Cluster, n: BigInt): PNCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -118,7 +118,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def increment(node: SelfUniqueAddress, n: Long): PNCounter = increment(node.uniqueAddress, n)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def increment(node: Cluster, n: java.math.BigInteger): PNCounter = increment(node.selfUniqueAddress, n)
 
   /**
@@ -127,7 +127,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def decrement(n: Long)(implicit node: SelfUniqueAddress): PNCounter = decrement(node.uniqueAddress, n)
 
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def -(n: Long)(implicit node: Cluster): PNCounter = decrement(node.selfUniqueAddress, n)
 
   /**
@@ -136,7 +136,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def decrement(n: BigInt)(implicit node: SelfUniqueAddress): PNCounter = decrement(node.uniqueAddress, n)
 
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def -(n: BigInt)(implicit node: Cluster): PNCounter = decrement(node.selfUniqueAddress, n)
 
   /**
@@ -145,7 +145,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def decrement(node: SelfUniqueAddress, n: Long): PNCounter = decrement(node.uniqueAddress, n)
 
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def decrement(node: Cluster, n: Long = 1): PNCounter = decrement(node.selfUniqueAddress, n)
 
   /**
@@ -154,7 +154,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def decrement(node: SelfUniqueAddress, n: BigInt): PNCounter = decrement(node.uniqueAddress, n)
 
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def decrement(node: Cluster, n: BigInt): PNCounter = decrement(node.selfUniqueAddress, n)
 
   /**
@@ -164,7 +164,7 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
   def decrement(node: SelfUniqueAddress, n: java.math.BigInteger): PNCounter = decrement(node.uniqueAddress, n)
 
   @Deprecated
-  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def decrement(node: Cluster, n: java.math.BigInteger): PNCounter = decrement(node.selfUniqueAddress, n)
 
   /** Internal API */

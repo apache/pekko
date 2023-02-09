@@ -944,7 +944,7 @@ final class Balance[T](val outputPorts: Int, val waitForAllDownstreams: Boolean,
   require(outputPorts >= 1, "A Balance must have one or more output ports")
 
   @Deprecated
-  @deprecated("Use the constructor which also specifies the `eagerCancel` parameter", since = "2.5.12")
+  @deprecated("Use the constructor which also specifies the `eagerCancel` parameter", since = "Akka 2.5.12")
   def this(outputPorts: Int, waitForAllDownstreams: Boolean) = this(outputPorts, waitForAllDownstreams, false)
 
   val in: Inlet[T] = Inlet[T]("Balance.in")

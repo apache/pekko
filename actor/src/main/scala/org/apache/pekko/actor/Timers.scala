@@ -294,7 +294,7 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
   @deprecated(
     "Use startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def startPeriodicTimer(key: Any, msg: Any, interval: FiniteDuration): Unit
 
   /**
@@ -303,7 +303,7 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
   @deprecated(
     "Use startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final def startPeriodicTimer(key: Any, msg: Any, interval: java.time.Duration): Unit =
     startPeriodicTimer(key, msg, interval.asScala)
 

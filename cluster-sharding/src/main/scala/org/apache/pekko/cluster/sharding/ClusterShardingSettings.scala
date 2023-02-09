@@ -942,7 +942,7 @@ object ClusterShardingSettings {
     @deprecated(
       "Use the ClusterShardingSettings factory methods or the constructor including " +
       "leastShardAllocationAbsoluteLimit and leastShardAllocationRelativeLimit instead",
-      since = "2.6.10")
+      since = "Akka 2.6.10")
     def this(
         coordinatorFailureBackoff: FiniteDuration,
         retryInterval: FiniteDuration,
@@ -990,7 +990,7 @@ object ClusterShardingSettings {
     @deprecated(
       "Use the ClusterShardingSettings factory methods or the constructor including " +
       "coordinatorStateWriteMajorityPlus and coordinatorStateReadMajorityPlus instead",
-      since = "2.6.5")
+      since = "Akka 2.6.5")
     def this(
         coordinatorFailureBackoff: FiniteDuration,
         retryInterval: FiniteDuration,
@@ -1031,7 +1031,7 @@ object ClusterShardingSettings {
         coordinatorStateReadMajorityPlus = 5)
 
     // included for binary compatibility
-    @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "2.6.5")
+    @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "Akka 2.6.5")
     def this(
         coordinatorFailureBackoff: FiniteDuration,
         retryInterval: FiniteDuration,
@@ -1070,7 +1070,7 @@ object ClusterShardingSettings {
     }
 
     // included for binary compatibility
-    @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "2.6.5")
+    @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "Akka 2.6.5")
     def this(
         coordinatorFailureBackoff: FiniteDuration,
         retryInterval: FiniteDuration,
@@ -1225,7 +1225,7 @@ final class ClusterShardingSettings(
   // bin compat for 2.5.23
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   def this(
       role: Option[String],
       rememberEntities: Boolean,
@@ -1251,7 +1251,7 @@ final class ClusterShardingSettings(
   // bin compat for 2.5.21
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
-    since = "2.5.21")
+    since = "Akka 2.5.21")
   def this(
       role: Option[String],
       rememberEntities: Boolean,
@@ -1276,7 +1276,7 @@ final class ClusterShardingSettings(
   // included for binary compatibility reasons
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including passivateIdleEntityAfter instead",
-    since = "2.5.18")
+    since = "Akka 2.5.18")
   def this(
       role: Option[String],
       rememberEntities: Boolean,
@@ -1328,15 +1328,15 @@ final class ClusterShardingSettings(
   def withStateStoreMode(stateStoreMode: String): ClusterShardingSettings =
     copy(stateStoreMode = stateStoreMode)
 
-  @deprecated("See passivationStrategySettings.idleEntitySettings instead", since = "2.6.18")
+  @deprecated("See passivationStrategySettings.idleEntitySettings instead", since = "Akka 2.6.18")
   def passivateIdleEntityAfter: FiniteDuration =
     passivationStrategySettings.idleEntitySettings.fold(Duration.Zero)(_.timeout)
 
-  @deprecated("Use withPassivationStrategy instead", since = "2.6.18")
+  @deprecated("Use withPassivationStrategy instead", since = "Akka 2.6.18")
   def withPassivateIdleAfter(duration: FiniteDuration): ClusterShardingSettings =
     copy(passivationStrategySettings = passivationStrategySettings.withOldIdleStrategy(duration))
 
-  @deprecated("Use withPassivationStrategy instead", since = "2.6.18")
+  @deprecated("Use withPassivationStrategy instead", since = "Akka 2.6.18")
   def withPassivateIdleAfter(duration: java.time.Duration): ClusterShardingSettings =
     copy(passivationStrategySettings = passivationStrategySettings.withOldIdleStrategy(duration.asScala))
 

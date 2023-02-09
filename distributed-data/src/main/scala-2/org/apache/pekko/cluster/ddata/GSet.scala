@@ -98,7 +98,7 @@ final case class GSet[A] private (elements: Set[A])(override val delta: Option[G
 
   def copy(e: Set[A]) = new GSet[A](e)(delta)
 
-  @deprecated("Kept for binary compatibility", since = "2.6.16")
+  @deprecated("Kept for binary compatibility", since = "Akka 2.6.16")
   private[ddata] def copy$default$1(): Set[A] = elements
 }
 

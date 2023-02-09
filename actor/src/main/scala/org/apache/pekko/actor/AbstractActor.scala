@@ -279,8 +279,8 @@ abstract class AbstractActor extends Actor {
   @throws(classOf[Exception])
   override def postStop(): Unit = super.postStop()
 
-  // TODO In 2.6.0 we can remove deprecation and make the method final
-  @deprecated("Override preRestart with message parameter with Optional type instead", "2.5.0")
+  // TODO In Pekko 1.1.0, we can remove deprecation and make the method final
+  @deprecated("Override preRestart with message parameter with Optional type instead", "Akka 2.5.0")
   @throws(classOf[Exception])
   @nowarn("msg=deprecated")
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {

@@ -105,7 +105,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
     put(node, key, value)
   }
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(entry: (A, B))(implicit node: Cluster): LWWMap[A, B] = {
     val (key, value) = entry
     put(node, key, value)
@@ -117,7 +117,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
   def put(node: SelfUniqueAddress, key: A, value: B): LWWMap[A, B] =
     put(node.uniqueAddress, key, value, defaultClock[B])
 
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def put(node: Cluster, key: A, value: B): LWWMap[A, B] =
     put(node.selfUniqueAddress, key, value, defaultClock[B])
 
@@ -132,7 +132,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
   def put(node: SelfUniqueAddress, key: A, value: B, clock: Clock[B]): LWWMap[A, B] =
     put(node.uniqueAddress, key, value, clock)
 
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def put(node: Cluster, key: A, value: B, clock: Clock[B]): LWWMap[A, B] =
     put(node.selfUniqueAddress, key, value, clock)
 
@@ -144,7 +144,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
    * increasing version number from a database record that is used for optimistic
    * concurrency control.
    */
-  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `put` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def put(key: A, value: B)(implicit node: Cluster, clock: Clock[B] = defaultClock[B]): LWWMap[A, B] =
     put(node.selfUniqueAddress, key, value, clock)
 
@@ -164,7 +164,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
    * Note that if there is a conflicting update on another node the entry will
    * not be removed after merge.
    */
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def -(key: A)(implicit node: Cluster): LWWMap[A, B] = remove(node, key)
 
   /**
@@ -175,7 +175,7 @@ final class LWWMap[A, B] private[pekko] (private[pekko] val underlying: ORMap[A,
   def remove(node: SelfUniqueAddress, key: A): LWWMap[A, B] =
     remove(node.uniqueAddress, key)
 
-  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `remove` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def remove(node: Cluster, key: A): LWWMap[A, B] =
     remove(node.selfUniqueAddress, key)
 

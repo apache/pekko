@@ -282,7 +282,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   @deprecated(
     "Use startSingleTimer, startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
-    since = "2.6.0")
+    since = "Akka 2.6.0")
   final def setTimer(name: String, msg: Any, timeout: FiniteDuration, repeat: Boolean = false): Unit = {
     // repeat => FixedRateMode for compatibility
     val mode = if (repeat) FixedRateMode else SingleMode
@@ -1167,7 +1167,7 @@ abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D
    * @param msg message to be delivered
    * @param timeout delay of first message delivery and between subsequent messages
    */
-  @deprecated("Use startSingleTimer instead.", since = "2.6.0")
+  @deprecated("Use startSingleTimer instead.", since = "Akka 2.6.0")
   final def setTimer(name: String, msg: Any, timeout: FiniteDuration): Unit =
     setTimer(name, msg, timeout, false)
 

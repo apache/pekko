@@ -120,7 +120,7 @@ sealed abstract class VersionVector extends ReplicatedData with ReplicatedDataSe
    */
   def :+(node: SelfUniqueAddress): VersionVector = increment(node)
 
-  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `:+` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def +(node: Cluster): VersionVector = increment(node.selfUniqueAddress)
 
   /**
@@ -134,7 +134,7 @@ sealed abstract class VersionVector extends ReplicatedData with ReplicatedDataSe
    */
   def increment(node: SelfUniqueAddress): VersionVector = increment(node.uniqueAddress)
 
-  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "2.5.20")
+  @deprecated("Use `increment` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def increment(node: Cluster): VersionVector = increment(node.selfUniqueAddress)
 
   def isEmpty: Boolean

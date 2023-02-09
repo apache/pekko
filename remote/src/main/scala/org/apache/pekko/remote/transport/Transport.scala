@@ -284,7 +284,7 @@ trait AssociationHandle {
    */
   @deprecated(
     message = "Use method that states reasons to make sure disassociation reasons are logged.",
-    since = "2.5.3")
+    since = "Akka 2.5.3")
   def disassociate(): Unit
 
   /**

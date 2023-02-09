@@ -27,7 +27,7 @@ import pekko.util.JavaDurationConverters._
  * @deprecated This API is superseded by the [[BackoffOpts]] object.
  */
 @Deprecated
-@deprecated("Use new API from BackoffOpts object instead", since = "2.5.22")
+@deprecated("Use new API from BackoffOpts object instead", since = "Akka 2.5.22")
 object Backoff {
 
   /**
@@ -532,7 +532,7 @@ object Backoff {
  */
 @DoNotInherit
 @Deprecated
-@deprecated("Use new API from BackoffOpts object instead", since = "2.5.22")
+@deprecated("Use new API from BackoffOpts object instead", since = "Akka 2.5.22")
 trait BackoffOptions {
 
   /**

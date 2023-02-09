@@ -107,7 +107,7 @@ abstract class ActorSelection extends Serializable {
    * no such actor exists or the identification didn't complete within the
    * supplied `timeout`.
    */
-  @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "2.5.20")
+  @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "Akka 2.5.20")
   def resolveOneCS(timeout: FiniteDuration): CompletionStage[ActorRef] =
     FutureConverters.toJava[ActorRef](resolveOne(timeout))
 
@@ -120,7 +120,7 @@ abstract class ActorSelection extends Serializable {
    * no such actor exists or the identification didn't complete within the
    * supplied `timeout`.
    */
-  @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "2.5.20")
+  @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "Akka 2.5.20")
   def resolveOneCS(timeout: java.time.Duration): CompletionStage[ActorRef] = resolveOne(timeout)
 
   /**

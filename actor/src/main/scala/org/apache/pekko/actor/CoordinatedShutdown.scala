@@ -697,7 +697,7 @@ final class CoordinatedShutdown private[pekko] (
    */
   def run(reason: Reason): Future[Done] = run(reason, None)
 
-  @deprecated("Use the method with `reason` parameter instead", since = "2.5.8")
+  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def run(): Future[Done] = run(UnknownReason)
 
   /**
@@ -709,7 +709,7 @@ final class CoordinatedShutdown private[pekko] (
    */
   def runAll(reason: Reason): CompletionStage[Done] = run(reason).toJava
 
-  @deprecated("Use the method with `reason` parameter instead", since = "2.5.8")
+  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def runAll(): CompletionStage[Done] = runAll(UnknownReason)
 
   /**
@@ -784,7 +784,7 @@ final class CoordinatedShutdown private[pekko] (
     runPromise.future
   }
 
-  @deprecated("Use the method with `reason` parameter instead", since = "2.5.8")
+  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def run(fromPhase: Option[String]): Future[Done] =
     run(UnknownReason, fromPhase)
 
@@ -798,7 +798,7 @@ final class CoordinatedShutdown private[pekko] (
   def run(reason: Reason, fromPhase: Optional[String]): CompletionStage[Done] =
     run(reason, fromPhase.asScala).toJava
 
-  @deprecated("Use the method with `reason` parameter instead", since = "2.5.8")
+  @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def run(fromPhase: Optional[String]): CompletionStage[Done] =
     run(UnknownReason, fromPhase)
 
