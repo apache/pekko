@@ -135,7 +135,7 @@ jobs:
       #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
 
   jdk-nightly-build:
-    name: JDK ${{ matrix.jdkVersion }} / Scala ${{ matrix.scalaVersion }}
+    name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }}
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     strategy:
@@ -145,25 +145,18 @@ jobs:
         # binary version is required and Akka build will set the right
         # full version from it.
         scalaVersion: ["2.12", "2.13"]
-        jdkVersion: ["adopt@1.8.0", "adopt@1.11", "openjdk@1.17.0"]
-        include:
-          - jdkVersion: adopt@1.8.0
-            extraOpts: ""
-          - jdkVersion: adopt@1.11
-            extraOpts: ""
-          - jdkVersion: openjdk@1.17.0
-            extraopts: ""
+        javaVersion: [8, 11, 17]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Setup Java ${{ matrix.java-version }}
+      - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ matrix.javaVersion }}
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -181,7 +174,6 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
-            ${{ matrix.extraOpts }} \
             clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
@@ -198,14 +190,12 @@ jobs:
 #        uses: actions/upload-artifact@v2
 #        if: success() || failure()        # run this step even if previous step failed
 #        with:
-#          name: test-results-${{ matrix.jdkVersion }}-${{ matrix.scalaVersion }}
+#          name: test-results-${{ matrix.javaVersion }}-${{ matrix.scalaVersion }}
 #          path: '**/target/test-reports/TEST-*.xml'
 
       - name: Docs
-        # Docs generation requires JDK 11. Checks with `startsWith` helps
-        # the check to be more resilient if the JDK version changes to a
-        # more specific one such as adopt@1.11.0-9.
-        if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
+        # Docs generation requires JDK 11.
+        if: ${{ matrix.javaVersion == 11) }}
         run: |-
           sudo apt-get install graphviz
           sbt \
@@ -214,7 +204,7 @@ jobs:
 
       - name: Publish
         # Publish (osgi bundle) not working with JDK 17, issue #31132
-        if: ${{ startsWith(matrix.jdkVersion, 'adopt@1.11') }}
+        if: ${{ matrix.javaVersion == 11) }}
         run: |-
           sudo apt-get install graphviz
           sbt \
