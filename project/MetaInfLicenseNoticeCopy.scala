@@ -20,17 +20,20 @@ object MetaInfLicenseNoticeCopy {
   private val protobufApacheLicenseFile = Def.task[File](baseDir.value / "LICENSE")
   private val protobufGoogleLicenseFile = Def.task[File](baseDir.value / "COPYING.protobuf")
   private val noticeFile = Def.task[File](baseDir.value / "NOTICE")
+  private val disclaimerFile = Def.task[File](baseDir.value / "DISCLAIMER")
 
   val settings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
       resourceGenerators += copyFileToMetaInf(resourceManaged, standardLicenseFile, "LICENSE"),
-      resourceGenerators += copyFileToMetaInf(resourceManaged, noticeFile, "NOTICE")))
+      resourceGenerators += copyFileToMetaInf(resourceManaged, noticeFile, "NOTICE"),
+      resourceGenerators += copyFileToMetaInf(resourceManaged, disclaimerFile, "DISCLAIMER")))
 
   val protobufSettings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
       resourceGenerators += copyFileToMetaInf(resourceManaged, protobufApacheLicenseFile, "LICENSE"),
       resourceGenerators += copyFileToMetaInf(resourceManaged, protobufGoogleLicenseFile, "COPYING.protobuf"),
-      resourceGenerators += copyFileToMetaInf(resourceManaged, noticeFile, "NOTICE")))
+      resourceGenerators += copyFileToMetaInf(resourceManaged, noticeFile, "NOTICE"),
+      resourceGenerators += copyFileToMetaInf(resourceManaged, disclaimerFile, "DISCLAIMER")))
 
   private def copyFileToMetaInf(dir: SettingKey[File], fromFile: Def.Initialize[Task[File]],
       fileName: String) = Def.task[Seq[File]] {
