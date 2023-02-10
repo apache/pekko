@@ -17,6 +17,7 @@ import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
 import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport._
+import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
@@ -77,6 +78,11 @@ object Paradox {
       // TODO page not linked to
       "fault-tolerance-sample.html"))
 
+  val themeSettings = Seq(
+    // allow access to snapshots for pekko-sbt-paradox
+    resolvers += "Apache Nexus Snapshots".at("https://repository.apache.org/content/repositories/snapshots/"),
+    pekkoParadoxGithub := "https://github.com/apache/incubator-pekko")
+
   // FIXME https://github.com/lightbend/paradox/issues/350
   // Exclusions from direct compilation for includes dirs/files not belonging in a TOC
   val includesSettings = Seq(
@@ -97,6 +103,7 @@ object Paradox {
     includesSettings ++
     groupsSettings ++
     parsingSettings ++
+    themeSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
       resolvers += Resolver.jcenterRepo,

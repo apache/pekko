@@ -248,6 +248,7 @@ lazy val docs = pekkoModule("docs")
   .settings(javacOptions += "-parameters") // for Jackson
   .enablePlugins(
     ParadoxPlugin,
+    PekkoParadoxPlugin,
     PublishRsyncPlugin,
     NoPublish,
     ParadoxBrowse,
