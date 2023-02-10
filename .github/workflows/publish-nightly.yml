@@ -129,12 +129,12 @@ jobs:
         run: |-
           sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
 
-      # as found in https://github.com/apache/flink/blob/5a4e0ea31aef51dfc50b9c401c91c7b869a154c4/.github/workflows/docs.yml
       - name: Upload documentation
-        uses: burnett01/rsync-deployments@5.2
+        uses: ./.github/actions/sync-nightlies
         with:
+          upload: true
           switches: --archive --compress --update --delete --progress
-          path: pekko-docs/target/paradox/site/main/
+          local_path: pekko-docs/target/paradox/site/main/
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs/
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
@@ -142,10 +142,11 @@ jobs:
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
 
       - name: Upload Scala API Docs
-        uses: burnett01/rsync-deployments@5.2
+        uses: ./.github/actions/sync-nightlies
         with:
+          upload: true
           switches: --archive --compress --update --delete --progress
-          path: target/scala-2.13/unidoc
+          local_path: target/scala-2.13/unidoc
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api/
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
@@ -153,10 +154,11 @@ jobs:
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
 
       - name: Upload Java API Docs
-        uses: burnett01/rsync-deployments@5.2
+        uses: ./.github/actions/sync-nightlies
         with:
+          upload: true
           switches: --archive --compress --update --delete --progress
-          path: target/javaunidoc
+          local_path: target/javaunidoc
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi/
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
