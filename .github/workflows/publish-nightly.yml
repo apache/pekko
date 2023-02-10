@@ -124,3 +124,41 @@ jobs:
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Build Documentation
+        run: |-
+          sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
+
+      # as found in https://github.com/apache/flink/blob/5a4e0ea31aef51dfc50b9c401c91c7b869a154c4/.github/workflows/docs.yml
+      - name: Upload documentation
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: --archive --compress --update --delete --progress
+          path: pekko-docs/target/paradox/site/main/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs/
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Upload Scala API Docs
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: --archive --compress --update --delete --progress
+          path: target/scala-2.13/unidoc
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api/
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Upload Java API Docs
+        uses: burnett01/rsync-deployments@5.2
+        with:
+          switches: --archive --compress --update --delete --progress
+          path: target/javaunidoc
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi/
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
