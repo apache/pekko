@@ -154,13 +154,13 @@ public final class ClusterMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_ReceptionistEntry_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_ReceptionistEntry_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.ReceptionistEntry.class, org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.ReceptionistEntry.Builder.class);
     }
@@ -455,13 +455,13 @@ public final class ClusterMessages {
         org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.ReceptionistEntryOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_ReceptionistEntry_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_ReceptionistEntry_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.ReceptionistEntry.class, org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.ReceptionistEntry.Builder.class);
       }
@@ -496,7 +496,7 @@ public final class ClusterMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_ReceptionistEntry_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor;
       }
 
       @java.lang.Override
@@ -935,13 +935,13 @@ public final class ClusterMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_PubSubMessagePublished_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.PubSubMessagePublished.class, org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.PubSubMessagePublished.Builder.class);
     }
@@ -1147,13 +1147,13 @@ public final class ClusterMessages {
         org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.PubSubMessagePublishedOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_PubSubMessagePublished_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.PubSubMessagePublished.class, org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.PubSubMessagePublished.Builder.class);
       }
@@ -1189,7 +1189,7 @@ public final class ClusterMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ClusterMessages.internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor;
       }
 
       @java.lang.Override
@@ -1480,15 +1480,15 @@ public final class ClusterMessages {
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_ReceptionistEntry_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_ReceptionistEntry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_PubSubMessagePublished_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1498,30 +1498,30 @@ public final class ClusterMessages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\025ClusterMessages.proto\022\022org.apache.pekko.cluster.ty" +
-      "ped\032\026ContainerFormats.proto\"R\n\021Reception" +
-      "istEntry\022\020\n\010actorRef\030\001 \002(\t\022\021\n\tsystemUid\030" +
-      "\002 \002(\004\022\030\n\020createdTimestamp\030\003 \001(\003\"3\n\026PubSu" +
-      "bMessagePublished\022\031\n\007message\030\001 \002(\0132\010.Pay" +
-      "loadB(\n$org.apache.pekko.cluster.typed.internal.prot" +
-      "obufH\001"
+      "\n\025ClusterMessages.proto\022\036org.apache.pekk" +
+      "o.cluster.typed\032\026ContainerFormats.proto\"" +
+      "R\n\021ReceptionistEntry\022\020\n\010actorRef\030\001 \002(\t\022\021" +
+      "\n\tsystemUid\030\002 \002(\004\022\030\n\020createdTimestamp\030\003 " +
+      "\001(\003\"3\n\026PubSubMessagePublished\022\031\n\007message" +
+      "\030\001 \002(\0132\010.PayloadB4\n0org.apache.pekko.clu" +
+      "ster.typed.internal.protobufH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
           org.apache.pekko.remote.ContainerFormats.getDescriptor(),
         });
-    internal_static_akka_cluster_typed_ReceptionistEntry_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_akka_cluster_typed_ReceptionistEntry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_ReceptionistEntry_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_ReceptionistEntry_descriptor,
         new java.lang.String[] { "ActorRef", "SystemUid", "CreatedTimestamp", });
-    internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_akka_cluster_typed_PubSubMessagePublished_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_PubSubMessagePublished_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_PubSubMessagePublished_descriptor,
         new java.lang.String[] { "Message", });
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }

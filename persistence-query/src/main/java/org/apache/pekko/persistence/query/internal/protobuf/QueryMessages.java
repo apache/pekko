@@ -337,14 +337,14 @@ public final class QueryMessages {
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
       return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
-          .internal_static_akka_persistence_query_EventEnvelope_descriptor;
+          .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
-          .internal_static_akka_persistence_query_EventEnvelope_fieldAccessorTable
+          .internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
                   .class,
@@ -1019,14 +1019,14 @@ public final class QueryMessages {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
         return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
-            .internal_static_akka_persistence_query_EventEnvelope_descriptor;
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
-            .internal_static_akka_persistence_query_EventEnvelope_fieldAccessorTable
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.persistence.query.internal.protobuf.QueryMessages.EventEnvelope
                     .class,
@@ -1088,7 +1088,7 @@ public final class QueryMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
         return org.apache.pekko.persistence.query.internal.protobuf.QueryMessages
-            .internal_static_akka_persistence_query_EventEnvelope_descriptor;
+            .internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
       }
 
       @java.lang.Override
@@ -2089,9 +2089,9 @@ public final class QueryMessages {
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-      internal_static_akka_persistence_query_EventEnvelope_descriptor;
+      internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor;
   private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_persistence_query_EventEnvelope_fieldAccessorTable;
+      internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
@@ -2101,15 +2101,15 @@ public final class QueryMessages {
 
   static {
     java.lang.String[] descriptorData = {
-      "\n\023QueryMessages.proto\022\026org.apache.pekko.persistence."
-          + "query\032\026ContainerFormats.proto\"\321\001\n\rEventE"
-          + "nvelope\022\026\n\016persistence_id\030\001 \002(\t\022\023\n\013entit"
-          + "y_type\030\002 \002(\t\022\r\n\005slice\030\003 \002(\005\022\023\n\013sequence_"
-          + "nr\030\004 \002(\003\022\021\n\ttimestamp\030\005 \002(\003\022\016\n\006offset\030\006 "
-          + "\002(\t\022\027\n\017offset_manifest\030\007 \002(\t\022\027\n\005event\030\010 "
-          + "\001(\0132\010.Payload\022\032\n\010metadata\030\t \001(\0132\010.Payloa"
-          + "dB,\n(org.apache.pekko.persistence.query.internal.pro"
-          + "tobufH\001"
+      "\n\023QueryMessages.proto\022\"org.apache.pekko."
+          + "persistence.query\032\026ContainerFormats.prot"
+          + "o\"\321\001\n\rEventEnvelope\022\026\n\016persistence_id\030\001 "
+          + "\002(\t\022\023\n\013entity_type\030\002 \002(\t\022\r\n\005slice\030\003 \002(\005\022"
+          + "\023\n\013sequence_nr\030\004 \002(\003\022\021\n\ttimestamp\030\005 \002(\003\022"
+          + "\016\n\006offset\030\006 \002(\t\022\027\n\017offset_manifest\030\007 \002(\t"
+          + "\022\027\n\005event\030\010 \001(\0132\010.Payload\022\032\n\010metadata\030\t "
+          + "\001(\0132\010.PayloadB8\n4org.apache.pekko.persis"
+          + "tence.query.internal.protobufH\001"
     };
     descriptor =
         org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
@@ -2118,11 +2118,11 @@ public final class QueryMessages {
                 new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
                   org.apache.pekko.remote.ContainerFormats.getDescriptor(),
                 });
-    internal_static_akka_persistence_query_EventEnvelope_descriptor =
+    internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor =
         getDescriptor().getMessageTypes().get(0);
-    internal_static_akka_persistence_query_EventEnvelope_fieldAccessorTable =
+    internal_static_org_apache_pekko_persistence_query_EventEnvelope_fieldAccessorTable =
         new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-            internal_static_akka_persistence_query_EventEnvelope_descriptor,
+            internal_static_org_apache_pekko_persistence_query_EventEnvelope_descriptor,
             new java.lang.String[] {
               "PersistenceId",
               "EntityType",
