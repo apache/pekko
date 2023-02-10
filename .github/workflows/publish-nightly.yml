@@ -135,7 +135,7 @@ jobs:
           upload: true
           switches: --archive --compress --update --delete --progress
           local_path: docs/target/paradox/site/main/
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
@@ -147,7 +147,7 @@ jobs:
           upload: true
           switches: --archive --compress --update --delete --progress
           local_path: target/scala-2.13/unidoc
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
@@ -159,7 +159,7 @@ jobs:
           upload: true
           switches: --archive --compress --update --delete --progress
           local_path: target/javaunidoc
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
