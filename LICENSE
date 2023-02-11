@@ -203,7 +203,7 @@
 ---------------
 
 pekko-actor contains MurmurHash.scala which is derived from MurmurHash3,
-written by Austin Appleby, and is placed in the public domain.
+written by Austin Appleby. He has placed his code in the public domain.
 The author has disclaimed copyright to that source code.
 
 ---------------
