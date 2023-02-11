@@ -202,8 +202,9 @@
 
 ---------------
 
-pekko-actor contains MurmurHash.scala which is also distributed under the Apache License, Version 2.0 License.
-Copyright (C) 2003-2011, LAMP/EPFL
+pekko-actor contains MurmurHash.scala which is derived from MurmurHash3,
+written by Austin Appleby, and is placed in the public domain.
+The author has disclaimed copyright to that source code.
 
 ---------------
 
