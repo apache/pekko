@@ -199,9 +199,3 @@
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-
----------------
-
-pekko-protobuf contains the sources of Google protobuf 2.5.0 runtime support,
-moved into the source package `org.apache.pekko.protobuf` so as to avoid version conflicts.
-For license information see COPYING.protobuf

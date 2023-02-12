@@ -20,7 +20,6 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
   private lazy val baseDir = LocalRootProject / baseDirectory
 
   override lazy val projectSettings = Seq(
-    apacheSonatypeLicenseFile := baseDir.value / "legal" / "StandardLicense.txt",
     apacheSonatypeDisclaimerFile := Some(baseDir.value / "DISCLAIMER"))
 
   /**
@@ -28,11 +27,11 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
    * as well as an additional "COPYING.protobuf" file.
    */
   lazy val protobufSettings = Seq(
-    apacheSonatypeLicenseFile := baseDir.value / "LICENSE") ++ inConfig(Compile)(Seq(
+    apacheSonatypeLicenseFile := baseDir.value / "legal" / "LICENSE.protobuf") ++ inConfig(Compile)(Seq(
     resourceGenerators += {
       Def.task {
         List(
-          SonatypeApachePlugin.addFileToMetaInf(resourceManaged.value, baseDir.value / "COPYING.protobuf"))
+          SonatypeApachePlugin.addFileToMetaInf(resourceManaged.value, baseDir.value / "legal" / "COPYING.protobuf"))
       }
     }))
 
