@@ -15578,7 +15578,7 @@ public final class ClusterMessages {
    *
    * Protobuf type {@code VectorClock}
    */
-  public static final class VectorClock extends
+  public  static final class VectorClock extends
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:VectorClock)
       VectorClockOrBuilder {
@@ -15700,7 +15700,7 @@ public final class ClusterMessages {
     /**
      * Protobuf type {@code VectorClock.Version}
      */
-    public static final class Version extends
+    public  static final class Version extends
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
         // @@protoc_insertion_point(message_implements:VectorClock.Version)
         VersionOrBuilder {
@@ -15986,23 +15986,23 @@ public final class ClusterMessages {
       }
 
       @java.lang.Override
-      public Version.Builder newBuilderForType() { return newBuilder(); }
-      public static Version.Builder newBuilder() {
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
       public static Builder newBuilder(org.apache.pekko.cluster.protobuf.msg.ClusterMessages.VectorClock.Version prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
       @java.lang.Override
-      public Version.Builder toBuilder() {
+      public Builder toBuilder() {
         return this == DEFAULT_INSTANCE
-            ? new Version.Builder() : new Version.Builder().mergeFrom(this);
+            ? new Builder() : new Builder().mergeFrom(this);
       }
 
       @java.lang.Override
-      protected Version.Builder newBuilderForType(
+      protected Builder newBuilderForType(
           org.apache.pekko.protobufv3.internal.GeneratedMessageV3.BuilderParent parent) {
-        Version.Builder builder = new Version.Builder(parent);
+        Builder builder = new Builder(parent);
         return builder;
       }
       /**

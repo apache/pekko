@@ -258,13 +258,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_SequencedMessage_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.SequencedMessage.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.SequencedMessage.Builder.class);
     }
@@ -784,13 +784,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.SequencedMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_SequencedMessage_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.SequencedMessage.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.SequencedMessage.Builder.class);
       }
@@ -840,7 +840,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor;
       }
 
       @java.lang.Override
@@ -1650,13 +1650,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RegisterConsumer.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RegisterConsumer.Builder.class);
     }
@@ -1883,13 +1883,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RegisterConsumerOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RegisterConsumer.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RegisterConsumer.Builder.class);
       }
@@ -1920,7 +1920,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor;
       }
 
       @java.lang.Override
@@ -2308,13 +2308,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Request_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Request_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Request_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Request.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Request.Builder.class);
     }
@@ -2629,13 +2629,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.RequestOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Request_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Request_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Request_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Request.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Request.Builder.class);
       }
@@ -2672,7 +2672,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Request_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor;
       }
 
       @java.lang.Override
@@ -3104,13 +3104,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Resend_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Resend_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Resend_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Resend.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Resend.Builder.class);
     }
@@ -3311,13 +3311,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.ResendOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Resend_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Resend_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Resend_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Resend.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Resend.Builder.class);
       }
@@ -3348,7 +3348,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Resend_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor;
       }
 
       @java.lang.Override
@@ -3639,13 +3639,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Ack_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Ack_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Ack_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Ack.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Ack.Builder.class);
     }
@@ -3846,13 +3846,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.AckOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Ack_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Ack_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Ack_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Ack.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Ack.Builder.class);
       }
@@ -3883,7 +3883,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Ack_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor;
       }
 
       @java.lang.Override
@@ -4264,13 +4264,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_State_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_State_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_State_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.State.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.State.Builder.class);
     }
@@ -4617,13 +4617,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.StateOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_State_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_State_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_State_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.State.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.State.Builder.class);
       }
@@ -4670,7 +4670,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_State_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor;
       }
 
       @java.lang.Override
@@ -5608,13 +5608,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Confirmed_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Confirmed_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Confirmed.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Confirmed.Builder.class);
     }
@@ -5917,13 +5917,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.ConfirmedOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Confirmed_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Confirmed_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Confirmed.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Confirmed.Builder.class);
       }
@@ -5958,7 +5958,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Confirmed_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor;
       }
 
       @java.lang.Override
@@ -6508,13 +6508,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_MessageSent_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_MessageSent_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.MessageSent.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.MessageSent.Builder.class);
     }
@@ -6970,13 +6970,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.MessageSentOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_MessageSent_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_MessageSent_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.MessageSent.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.MessageSent.Builder.class);
       }
@@ -7024,7 +7024,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_MessageSent_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor;
       }
 
       @java.lang.Override
@@ -7752,13 +7752,13 @@ public final class ReliableDelivery {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Cleanup_descriptor;
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Cleanup_fieldAccessorTable
+      return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Cleanup.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Cleanup.Builder.class);
     }
@@ -7972,13 +7972,13 @@ public final class ReliableDelivery {
         org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.CleanupOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Cleanup_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Cleanup_fieldAccessorTable
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Cleanup.class, org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.Cleanup.Builder.class);
       }
@@ -8009,7 +8009,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_akka_cluster_typed_delivery_Cleanup_descriptor;
+        return org.apache.pekko.cluster.typed.internal.protobuf.ReliableDelivery.internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor;
       }
 
       @java.lang.Override
@@ -8285,50 +8285,50 @@ public final class ReliableDelivery {
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_SequencedMessage_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_Request_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_Request_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_Request_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_Resend_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_Resend_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_Resend_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_Ack_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_Ack_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_Ack_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_State_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_State_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_State_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_Confirmed_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_Confirmed_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_MessageSent_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_MessageSent_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_typed_delivery_Cleanup_descriptor;
+    internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_typed_delivery_Cleanup_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
@@ -8338,89 +8338,90 @@ public final class ReliableDelivery {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026ReliableDelivery.proto\022\033org.apache.pekko.cluster.t" +
-      "yped.delivery\032\026ContainerFormats.proto\"\262\001" +
-      "\n\020SequencedMessage\022\022\n\nproducerId\030\001 \002(\t\022\r" +
-      "\n\005seqNr\030\002 \002(\003\022\r\n\005first\030\003 \002(\010\022\013\n\003ack\030\004 \002(" +
-      "\010\022\035\n\025producerControllerRef\030\005 \002(\t\022\031\n\007mess" +
-      "age\030\006 \002(\0132\010.Payload\022\022\n\nfirstChunk\030\007 \001(\010\022" +
-      "\021\n\tlastChunk\030\010 \001(\010\"1\n\020RegisterConsumer\022\035" +
-      "\n\025consumerControllerRef\030\001 \002(\t\"f\n\007Request" +
-      "\022\026\n\016confirmedSeqNr\030\001 \002(\003\022\030\n\020requestUpToS" +
-      "eqNr\030\002 \002(\003\022\025\n\rsupportResend\030\003 \002(\010\022\022\n\nvia" +
-      "Timeout\030\004 \002(\010\"\033\n\006Resend\022\021\n\tfromSeqNr\030\001 \002" +
-      "(\003\"\035\n\003Ack\022\026\n\016confirmedSeqNr\030\001 \002(\003\"\266\001\n\005St" +
-      "ate\022\024\n\014currentSeqNr\030\001 \002(\003\022\035\n\025highestConf" +
-      "irmedSeqNr\030\002 \002(\003\0229\n\tconfirmed\030\003 \003(\0132&.ak" +
-      "ka.cluster.typed.delivery.Confirmed\022=\n\013u" +
-      "nconfirmed\030\004 \003(\0132(.org.apache.pekko.cluster.typed.de" +
-      "livery.MessageSent\"@\n\tConfirmed\022\r\n\005seqNr" +
-      "\030\001 \002(\003\022\021\n\tqualifier\030\002 \002(\t\022\021\n\ttimestamp\030\003" +
-      " \002(\003\"\221\001\n\013MessageSent\022\r\n\005seqNr\030\001 \002(\003\022\021\n\tq" +
-      "ualifier\030\002 \002(\t\022\013\n\003ack\030\003 \002(\010\022\021\n\ttimestamp" +
-      "\030\004 \002(\003\022\031\n\007message\030\005 \002(\0132\010.Payload\022\022\n\nfir" +
-      "stChunk\030\006 \001(\010\022\021\n\tlastChunk\030\007 \001(\010\"\035\n\007Clea" +
-      "nup\022\022\n\nqualifiers\030\001 \003(\tB(\n$org.apache.pekko.cluster." +
-      "typed.internal.protobufH\001"
+      "\n\026ReliableDelivery.proto\022\'org.apache.pek" +
+      "ko.cluster.typed.delivery\032\026ContainerForm" +
+      "ats.proto\"\262\001\n\020SequencedMessage\022\022\n\nproduc" +
+      "erId\030\001 \002(\t\022\r\n\005seqNr\030\002 \002(\003\022\r\n\005first\030\003 \002(\010" +
+      "\022\013\n\003ack\030\004 \002(\010\022\035\n\025producerControllerRef\030\005" +
+      " \002(\t\022\031\n\007message\030\006 \002(\0132\010.Payload\022\022\n\nfirst" +
+      "Chunk\030\007 \001(\010\022\021\n\tlastChunk\030\010 \001(\010\"1\n\020Regist" +
+      "erConsumer\022\035\n\025consumerControllerRef\030\001 \002(" +
+      "\t\"f\n\007Request\022\026\n\016confirmedSeqNr\030\001 \002(\003\022\030\n\020" +
+      "requestUpToSeqNr\030\002 \002(\003\022\025\n\rsupportResend\030" +
+      "\003 \002(\010\022\022\n\nviaTimeout\030\004 \002(\010\"\033\n\006Resend\022\021\n\tf" +
+      "romSeqNr\030\001 \002(\003\"\035\n\003Ack\022\026\n\016confirmedSeqNr\030" +
+      "\001 \002(\003\"\316\001\n\005State\022\024\n\014currentSeqNr\030\001 \002(\003\022\035\n" +
+      "\025highestConfirmedSeqNr\030\002 \002(\003\022E\n\tconfirme" +
+      "d\030\003 \003(\01322.org.apache.pekko.cluster.typed" +
+      ".delivery.Confirmed\022I\n\013unconfirmed\030\004 \003(\013" +
+      "24.org.apache.pekko.cluster.typed.delive" +
+      "ry.MessageSent\"@\n\tConfirmed\022\r\n\005seqNr\030\001 \002" +
+      "(\003\022\021\n\tqualifier\030\002 \002(\t\022\021\n\ttimestamp\030\003 \002(\003" +
+      "\"\221\001\n\013MessageSent\022\r\n\005seqNr\030\001 \002(\003\022\021\n\tquali" +
+      "fier\030\002 \002(\t\022\013\n\003ack\030\003 \002(\010\022\021\n\ttimestamp\030\004 \002" +
+      "(\003\022\031\n\007message\030\005 \002(\0132\010.Payload\022\022\n\nfirstCh" +
+      "unk\030\006 \001(\010\022\021\n\tlastChunk\030\007 \001(\010\"\035\n\007Cleanup\022" +
+      "\022\n\nqualifiers\030\001 \003(\tB4\n0org.apache.pekko." +
+      "cluster.typed.internal.protobufH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
           org.apache.pekko.remote.ContainerFormats.getDescriptor(),
         });
-    internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_akka_cluster_typed_delivery_SequencedMessage_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_SequencedMessage_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_SequencedMessage_descriptor,
         new java.lang.String[] { "ProducerId", "SeqNr", "First", "Ack", "ProducerControllerRef", "Message", "FirstChunk", "LastChunk", });
-    internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_akka_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_RegisterConsumer_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_RegisterConsumer_descriptor,
         new java.lang.String[] { "ConsumerControllerRef", });
-    internal_static_akka_cluster_typed_delivery_Request_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_akka_cluster_typed_delivery_Request_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_Request_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_Request_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_Request_descriptor,
         new java.lang.String[] { "ConfirmedSeqNr", "RequestUpToSeqNr", "SupportResend", "ViaTimeout", });
-    internal_static_akka_cluster_typed_delivery_Resend_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_akka_cluster_typed_delivery_Resend_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_Resend_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_Resend_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_Resend_descriptor,
         new java.lang.String[] { "FromSeqNr", });
-    internal_static_akka_cluster_typed_delivery_Ack_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_akka_cluster_typed_delivery_Ack_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_Ack_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_Ack_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_Ack_descriptor,
         new java.lang.String[] { "ConfirmedSeqNr", });
-    internal_static_akka_cluster_typed_delivery_State_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_akka_cluster_typed_delivery_State_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_State_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_State_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_State_descriptor,
         new java.lang.String[] { "CurrentSeqNr", "HighestConfirmedSeqNr", "Confirmed", "Unconfirmed", });
-    internal_static_akka_cluster_typed_delivery_Confirmed_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_akka_cluster_typed_delivery_Confirmed_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_Confirmed_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_Confirmed_descriptor,
         new java.lang.String[] { "SeqNr", "Qualifier", "Timestamp", });
-    internal_static_akka_cluster_typed_delivery_MessageSent_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_akka_cluster_typed_delivery_MessageSent_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_MessageSent_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_MessageSent_descriptor,
         new java.lang.String[] { "SeqNr", "Qualifier", "Ack", "Timestamp", "Message", "FirstChunk", "LastChunk", });
-    internal_static_akka_cluster_typed_delivery_Cleanup_descriptor =
+    internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_akka_cluster_typed_delivery_Cleanup_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_typed_delivery_Cleanup_descriptor,
+        internal_static_org_apache_pekko_cluster_typed_delivery_Cleanup_descriptor,
         new java.lang.String[] { "Qualifiers", });
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }

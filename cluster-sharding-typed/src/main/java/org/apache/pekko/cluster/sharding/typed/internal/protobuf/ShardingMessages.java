@@ -150,13 +150,13 @@ public final class ShardingMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor;
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_akka_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.Builder.class);
     }
@@ -426,13 +426,13 @@ public final class ShardingMessages {
         org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelopeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor;
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_akka_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.Builder.class);
       }
@@ -470,7 +470,7 @@ public final class ShardingMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor;
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
       }
 
       @java.lang.Override
@@ -857,10 +857,10 @@ public final class ShardingMessages {
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor;
+    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
@@ -870,22 +870,23 @@ public final class ShardingMessages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026ShardingMessages.proto\022\033org.apache.pekko.cluster.s" +
-      "harding.typed\032\026ContainerFormats.proto\"?\n" +
-      "\020ShardingEnvelope\022\020\n\010entityId\030\001 \002(\t\022\031\n\007m" +
-      "essage\030\002 \002(\0132\010.PayloadB1\n-org.apache.pekko.cluster.s" +
-      "harding.typed.internal.protobufH\001"
+      "\n\026ShardingMessages.proto\022\'org.apache.pek" +
+      "ko.cluster.sharding.typed\032\026ContainerForm" +
+      "ats.proto\"?\n\020ShardingEnvelope\022\020\n\010entityI" +
+      "d\030\001 \002(\t\022\031\n\007message\030\002 \002(\0132\010.PayloadB=\n9or" +
+      "g.apache.pekko.cluster.sharding.typed.in" +
+      "ternal.protobufH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
           org.apache.pekko.remote.ContainerFormats.getDescriptor(),
         });
-    internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor =
+    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_akka_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_sharding_typed_ShardingEnvelope_descriptor,
+        internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor,
         new java.lang.String[] { "EntityId", "Message", });
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }

@@ -73,7 +73,7 @@ public final class ProtobufProtocol {
   /**
    * Protobuf type {@code MyMessage}
    */
-  public static final class MyMessage extends
+  public  static final class MyMessage extends
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
       // @@protoc_insertion_point(message_implements:MyMessage)
       MyMessageOrBuilder {

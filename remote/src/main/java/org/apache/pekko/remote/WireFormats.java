@@ -30,7 +30,7 @@ public final class WireFormats {
   /**
    * <pre>
    **
-   * Defines the type of the AkkaControlMessage command type
+   * Defines the type of the PekkoControlMessage command type
    * </pre>
    *
    * Protobuf enum {@code CommandType}
@@ -9688,7 +9688,7 @@ public final class WireFormats {
   }
 
   public interface PekkoProtocolMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:AkkaProtocolMessage)
+      // @@protoc_insertion_point(interface_extends:PekkoProtocolMessage)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
@@ -9703,19 +9703,19 @@ public final class WireFormats {
     org.apache.pekko.protobufv3.internal.ByteString getPayload();
 
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      * @return Whether the instruction field is set.
      */
     boolean hasInstruction();
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      * @return The instruction.
      */
-    PekkoControlMessage getInstruction();
+    org.apache.pekko.remote.WireFormats.PekkoControlMessage getInstruction();
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      */
-    PekkoControlMessageOrBuilder getInstructionOrBuilder();
+    org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder getInstructionOrBuilder();
   }
   /**
    * <pre>
@@ -9724,14 +9724,14 @@ public final class WireFormats {
    * Message contains either a payload or an instruction.
    * </pre>
    *
-   * Protobuf type {@code AkkaProtocolMessage}
+   * Protobuf type {@code PekkoProtocolMessage}
    */
   public  static final class PekkoProtocolMessage extends
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:AkkaProtocolMessage)
-          PekkoProtocolMessageOrBuilder {
+      // @@protoc_insertion_point(message_implements:PekkoProtocolMessage)
+      PekkoProtocolMessageOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use AkkaProtocolMessage.newBuilder() to construct.
+    // Use PekkoProtocolMessage.newBuilder() to construct.
     private PekkoProtocolMessage(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
@@ -9776,11 +9776,11 @@ public final class WireFormats {
               break;
             }
             case 18: {
-              PekkoControlMessage.Builder subBuilder = null;
+              org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) != 0)) {
                 subBuilder = instruction_.toBuilder();
               }
-              instruction_ = input.readMessage(PekkoControlMessage.PARSER, extensionRegistry);
+              instruction_ = input.readMessage(org.apache.pekko.remote.WireFormats.PekkoControlMessage.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(instruction_);
                 instruction_ = subBuilder.buildPartial();
@@ -9809,15 +9809,15 @@ public final class WireFormats {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaProtocolMessage_descriptor;
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoProtocolMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaProtocolMessage_fieldAccessorTable
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoProtocolMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              PekkoProtocolMessage.class, PekkoProtocolMessage.Builder.class);
+              org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.class, org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.Builder.class);
     }
 
     private int bitField0_;
@@ -9839,26 +9839,26 @@ public final class WireFormats {
     }
 
     public static final int INSTRUCTION_FIELD_NUMBER = 2;
-    private PekkoControlMessage instruction_;
+    private org.apache.pekko.remote.WireFormats.PekkoControlMessage instruction_;
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      * @return Whether the instruction field is set.
      */
     public boolean hasInstruction() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      * @return The instruction.
      */
-    public PekkoControlMessage getInstruction() {
-      return instruction_ == null ? PekkoControlMessage.getDefaultInstance() : instruction_;
+    public org.apache.pekko.remote.WireFormats.PekkoControlMessage getInstruction() {
+      return instruction_ == null ? org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance() : instruction_;
     }
     /**
-     * <code>optional .AkkaControlMessage instruction = 2;</code>
+     * <code>optional .PekkoControlMessage instruction = 2;</code>
      */
-    public PekkoControlMessageOrBuilder getInstructionOrBuilder() {
-      return instruction_ == null ? PekkoControlMessage.getDefaultInstance() : instruction_;
+    public org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder getInstructionOrBuilder() {
+      return instruction_ == null ? org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance() : instruction_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -9914,10 +9914,10 @@ public final class WireFormats {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof PekkoProtocolMessage)) {
+      if (!(obj instanceof org.apache.pekko.remote.WireFormats.PekkoProtocolMessage)) {
         return super.equals(obj);
       }
-      PekkoProtocolMessage other = (PekkoProtocolMessage) obj;
+      org.apache.pekko.remote.WireFormats.PekkoProtocolMessage other = (org.apache.pekko.remote.WireFormats.PekkoProtocolMessage) obj;
 
       if (hasPayload() != other.hasPayload()) return false;
       if (hasPayload()) {
@@ -9953,69 +9953,69 @@ public final class WireFormats {
       return hash;
     }
 
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         java.nio.ByteBuffer data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoProtocolMessage parseFrom(byte[] data)
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(byte[] data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         byte[] data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoProtocolMessage parseFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoProtocolMessage parseDelimitedFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static PekkoProtocolMessage parseDelimitedFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseDelimitedFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoProtocolMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -10028,7 +10028,7 @@ public final class WireFormats {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(PekkoProtocolMessage prototype) {
+    public static Builder newBuilder(org.apache.pekko.remote.WireFormats.PekkoProtocolMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -10050,26 +10050,26 @@ public final class WireFormats {
      * Message contains either a payload or an instruction.
      * </pre>
      *
-     * Protobuf type {@code AkkaProtocolMessage}
+     * Protobuf type {@code PekkoProtocolMessage}
      */
     public static final class Builder extends
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:AkkaProtocolMessage)
-            PekkoProtocolMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:PekkoProtocolMessage)
+        org.apache.pekko.remote.WireFormats.PekkoProtocolMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaProtocolMessage_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoProtocolMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaProtocolMessage_fieldAccessorTable
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoProtocolMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                PekkoProtocolMessage.class, PekkoProtocolMessage.Builder.class);
+                org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.class, org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.Builder.class);
       }
 
-      // Construct using org.apache.pekko.remote.WireFormats.AkkaProtocolMessage.newBuilder()
+      // Construct using org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -10102,17 +10102,17 @@ public final class WireFormats {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaProtocolMessage_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoProtocolMessage_descriptor;
       }
 
       @java.lang.Override
-      public PekkoProtocolMessage getDefaultInstanceForType() {
-        return PekkoProtocolMessage.getDefaultInstance();
+      public org.apache.pekko.remote.WireFormats.PekkoProtocolMessage getDefaultInstanceForType() {
+        return org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public PekkoProtocolMessage build() {
-        PekkoProtocolMessage result = buildPartial();
+      public org.apache.pekko.remote.WireFormats.PekkoProtocolMessage build() {
+        org.apache.pekko.remote.WireFormats.PekkoProtocolMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -10120,8 +10120,8 @@ public final class WireFormats {
       }
 
       @java.lang.Override
-      public PekkoProtocolMessage buildPartial() {
-        PekkoProtocolMessage result = new PekkoProtocolMessage(this);
+      public org.apache.pekko.remote.WireFormats.PekkoProtocolMessage buildPartial() {
+        org.apache.pekko.remote.WireFormats.PekkoProtocolMessage result = new org.apache.pekko.remote.WireFormats.PekkoProtocolMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -10175,16 +10175,16 @@ public final class WireFormats {
       }
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof PekkoProtocolMessage) {
-          return mergeFrom((PekkoProtocolMessage)other);
+        if (other instanceof org.apache.pekko.remote.WireFormats.PekkoProtocolMessage) {
+          return mergeFrom((org.apache.pekko.remote.WireFormats.PekkoProtocolMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(PekkoProtocolMessage other) {
-        if (other == PekkoProtocolMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.apache.pekko.remote.WireFormats.PekkoProtocolMessage other) {
+        if (other == org.apache.pekko.remote.WireFormats.PekkoProtocolMessage.getDefaultInstance()) return this;
         if (other.hasPayload()) {
           setPayload(other.getPayload());
         }
@@ -10211,11 +10211,11 @@ public final class WireFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        PekkoProtocolMessage parsedMessage = null;
+        org.apache.pekko.remote.WireFormats.PekkoProtocolMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (PekkoProtocolMessage) e.getUnfinishedMessage();
+          parsedMessage = (org.apache.pekko.remote.WireFormats.PekkoProtocolMessage) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -10266,31 +10266,31 @@ public final class WireFormats {
         return this;
       }
 
-      private PekkoControlMessage instruction_;
+      private org.apache.pekko.remote.WireFormats.PekkoControlMessage instruction_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              PekkoControlMessage, PekkoControlMessage.Builder, PekkoControlMessageOrBuilder> instructionBuilder_;
+          org.apache.pekko.remote.WireFormats.PekkoControlMessage, org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder, org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder> instructionBuilder_;
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        * @return Whether the instruction field is set.
        */
       public boolean hasInstruction() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        * @return The instruction.
        */
-      public PekkoControlMessage getInstruction() {
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessage getInstruction() {
         if (instructionBuilder_ == null) {
-          return instruction_ == null ? PekkoControlMessage.getDefaultInstance() : instruction_;
+          return instruction_ == null ? org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance() : instruction_;
         } else {
           return instructionBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
-      public Builder setInstruction(PekkoControlMessage value) {
+      public Builder setInstruction(org.apache.pekko.remote.WireFormats.PekkoControlMessage value) {
         if (instructionBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -10304,10 +10304,10 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
       public Builder setInstruction(
-          PekkoControlMessage.Builder builderForValue) {
+          org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder builderForValue) {
         if (instructionBuilder_ == null) {
           instruction_ = builderForValue.build();
           onChanged();
@@ -10318,15 +10318,15 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
-      public Builder mergeInstruction(PekkoControlMessage value) {
+      public Builder mergeInstruction(org.apache.pekko.remote.WireFormats.PekkoControlMessage value) {
         if (instructionBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0) &&
               instruction_ != null &&
-              instruction_ != PekkoControlMessage.getDefaultInstance()) {
+              instruction_ != org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance()) {
             instruction_ =
-              PekkoControlMessage.newBuilder(instruction_).mergeFrom(value).buildPartial();
+              org.apache.pekko.remote.WireFormats.PekkoControlMessage.newBuilder(instruction_).mergeFrom(value).buildPartial();
           } else {
             instruction_ = value;
           }
@@ -10338,7 +10338,7 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
       public Builder clearInstruction() {
         if (instructionBuilder_ == null) {
@@ -10351,33 +10351,33 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
-      public PekkoControlMessage.Builder getInstructionBuilder() {
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder getInstructionBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getInstructionFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
-      public PekkoControlMessageOrBuilder getInstructionOrBuilder() {
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder getInstructionOrBuilder() {
         if (instructionBuilder_ != null) {
           return instructionBuilder_.getMessageOrBuilder();
         } else {
           return instruction_ == null ?
-              PekkoControlMessage.getDefaultInstance() : instruction_;
+              org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance() : instruction_;
         }
       }
       /**
-       * <code>optional .AkkaControlMessage instruction = 2;</code>
+       * <code>optional .PekkoControlMessage instruction = 2;</code>
        */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              PekkoControlMessage, PekkoControlMessage.Builder, PekkoControlMessageOrBuilder>
+          org.apache.pekko.remote.WireFormats.PekkoControlMessage, org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder, org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder> 
           getInstructionFieldBuilder() {
         if (instructionBuilder_ == null) {
           instructionBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-                  PekkoControlMessage, PekkoControlMessage.Builder, PekkoControlMessageOrBuilder>(
+              org.apache.pekko.remote.WireFormats.PekkoControlMessage, org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder, org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder>(
                   getInstruction(),
                   getParentForChildren(),
                   isClean());
@@ -10398,16 +10398,16 @@ public final class WireFormats {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:AkkaProtocolMessage)
+      // @@protoc_insertion_point(builder_scope:PekkoProtocolMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:AkkaProtocolMessage)
-    private static final PekkoProtocolMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:PekkoProtocolMessage)
+    private static final org.apache.pekko.remote.WireFormats.PekkoProtocolMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new PekkoProtocolMessage();
+      DEFAULT_INSTANCE = new org.apache.pekko.remote.WireFormats.PekkoProtocolMessage();
     }
 
-    public static PekkoProtocolMessage getDefaultInstance() {
+    public static org.apache.pekko.remote.WireFormats.PekkoProtocolMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -10432,14 +10432,14 @@ public final class WireFormats {
     }
 
     @java.lang.Override
-    public PekkoProtocolMessage getDefaultInstanceForType() {
+    public org.apache.pekko.remote.WireFormats.PekkoProtocolMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface PekkoControlMessageOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:AkkaControlMessage)
+      // @@protoc_insertion_point(interface_extends:PekkoControlMessage)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
@@ -10454,19 +10454,19 @@ public final class WireFormats {
     org.apache.pekko.remote.WireFormats.CommandType getCommandType();
 
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      * @return Whether the handshakeInfo field is set.
      */
     boolean hasHandshakeInfo();
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      * @return The handshakeInfo.
      */
-    PekkoHandshakeInfo getHandshakeInfo();
+    org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getHandshakeInfo();
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      */
-    PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder();
+    org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder();
   }
   /**
    * <pre>
@@ -10474,14 +10474,14 @@ public final class WireFormats {
    * Defines some control messages for the remoting
    * </pre>
    *
-   * Protobuf type {@code AkkaControlMessage}
+   * Protobuf type {@code PekkoControlMessage}
    */
   public  static final class PekkoControlMessage extends
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:AkkaControlMessage)
-          PekkoControlMessageOrBuilder {
+      // @@protoc_insertion_point(message_implements:PekkoControlMessage)
+      PekkoControlMessageOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use AkkaControlMessage.newBuilder() to construct.
+    // Use PekkoControlMessage.newBuilder() to construct.
     private PekkoControlMessage(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
@@ -10533,11 +10533,11 @@ public final class WireFormats {
               break;
             }
             case 18: {
-              PekkoHandshakeInfo.Builder subBuilder = null;
+              org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) != 0)) {
                 subBuilder = handshakeInfo_.toBuilder();
               }
-              handshakeInfo_ = input.readMessage(PekkoHandshakeInfo.PARSER, extensionRegistry);
+              handshakeInfo_ = input.readMessage(org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(handshakeInfo_);
                 handshakeInfo_ = subBuilder.buildPartial();
@@ -10566,15 +10566,15 @@ public final class WireFormats {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaControlMessage_descriptor;
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoControlMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaControlMessage_fieldAccessorTable
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoControlMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              PekkoControlMessage.class, PekkoControlMessage.Builder.class);
+              org.apache.pekko.remote.WireFormats.PekkoControlMessage.class, org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder.class);
     }
 
     private int bitField0_;
@@ -10598,26 +10598,26 @@ public final class WireFormats {
     }
 
     public static final int HANDSHAKEINFO_FIELD_NUMBER = 2;
-    private PekkoHandshakeInfo handshakeInfo_;
+    private org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo handshakeInfo_;
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      * @return Whether the handshakeInfo field is set.
      */
     public boolean hasHandshakeInfo() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      * @return The handshakeInfo.
      */
-    public PekkoHandshakeInfo getHandshakeInfo() {
-      return handshakeInfo_ == null ? PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
+    public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getHandshakeInfo() {
+      return handshakeInfo_ == null ? org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
     }
     /**
-     * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+     * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
      */
-    public PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder() {
-      return handshakeInfo_ == null ? PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
+    public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder() {
+      return handshakeInfo_ == null ? org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -10677,10 +10677,10 @@ public final class WireFormats {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof PekkoControlMessage)) {
+      if (!(obj instanceof org.apache.pekko.remote.WireFormats.PekkoControlMessage)) {
         return super.equals(obj);
       }
-      PekkoControlMessage other = (PekkoControlMessage) obj;
+      org.apache.pekko.remote.WireFormats.PekkoControlMessage other = (org.apache.pekko.remote.WireFormats.PekkoControlMessage) obj;
 
       if (hasCommandType() != other.hasCommandType()) return false;
       if (hasCommandType()) {
@@ -10715,69 +10715,69 @@ public final class WireFormats {
       return hash;
     }
 
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         java.nio.ByteBuffer data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoControlMessage parseFrom(byte[] data)
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(byte[] data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         byte[] data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoControlMessage parseFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoControlMessage parseDelimitedFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static PekkoControlMessage parseDelimitedFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseDelimitedFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoControlMessage parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -10790,7 +10790,7 @@ public final class WireFormats {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(PekkoControlMessage prototype) {
+    public static Builder newBuilder(org.apache.pekko.remote.WireFormats.PekkoControlMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -10811,26 +10811,26 @@ public final class WireFormats {
      * Defines some control messages for the remoting
      * </pre>
      *
-     * Protobuf type {@code AkkaControlMessage}
+     * Protobuf type {@code PekkoControlMessage}
      */
     public static final class Builder extends
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:AkkaControlMessage)
-            PekkoControlMessageOrBuilder {
+        // @@protoc_insertion_point(builder_implements:PekkoControlMessage)
+        org.apache.pekko.remote.WireFormats.PekkoControlMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaControlMessage_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoControlMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaControlMessage_fieldAccessorTable
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoControlMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                PekkoControlMessage.class, PekkoControlMessage.Builder.class);
+                org.apache.pekko.remote.WireFormats.PekkoControlMessage.class, org.apache.pekko.remote.WireFormats.PekkoControlMessage.Builder.class);
       }
 
-      // Construct using org.apache.pekko.remote.WireFormats.AkkaControlMessage.newBuilder()
+      // Construct using org.apache.pekko.remote.WireFormats.PekkoControlMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -10863,17 +10863,17 @@ public final class WireFormats {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaControlMessage_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoControlMessage_descriptor;
       }
 
       @java.lang.Override
-      public PekkoControlMessage getDefaultInstanceForType() {
-        return PekkoControlMessage.getDefaultInstance();
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessage getDefaultInstanceForType() {
+        return org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance();
       }
 
       @java.lang.Override
-      public PekkoControlMessage build() {
-        PekkoControlMessage result = buildPartial();
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessage build() {
+        org.apache.pekko.remote.WireFormats.PekkoControlMessage result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -10881,8 +10881,8 @@ public final class WireFormats {
       }
 
       @java.lang.Override
-      public PekkoControlMessage buildPartial() {
-        PekkoControlMessage result = new PekkoControlMessage(this);
+      public org.apache.pekko.remote.WireFormats.PekkoControlMessage buildPartial() {
+        org.apache.pekko.remote.WireFormats.PekkoControlMessage result = new org.apache.pekko.remote.WireFormats.PekkoControlMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -10936,16 +10936,16 @@ public final class WireFormats {
       }
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof PekkoControlMessage) {
-          return mergeFrom((PekkoControlMessage)other);
+        if (other instanceof org.apache.pekko.remote.WireFormats.PekkoControlMessage) {
+          return mergeFrom((org.apache.pekko.remote.WireFormats.PekkoControlMessage)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(PekkoControlMessage other) {
-        if (other == PekkoControlMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.apache.pekko.remote.WireFormats.PekkoControlMessage other) {
+        if (other == org.apache.pekko.remote.WireFormats.PekkoControlMessage.getDefaultInstance()) return this;
         if (other.hasCommandType()) {
           setCommandType(other.getCommandType());
         }
@@ -10975,11 +10975,11 @@ public final class WireFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        PekkoControlMessage parsedMessage = null;
+        org.apache.pekko.remote.WireFormats.PekkoControlMessage parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (PekkoControlMessage) e.getUnfinishedMessage();
+          parsedMessage = (org.apache.pekko.remote.WireFormats.PekkoControlMessage) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -11032,31 +11032,31 @@ public final class WireFormats {
         return this;
       }
 
-      private PekkoHandshakeInfo handshakeInfo_;
+      private org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo handshakeInfo_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              PekkoHandshakeInfo, PekkoHandshakeInfo.Builder, PekkoHandshakeInfoOrBuilder> handshakeInfoBuilder_;
+          org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder> handshakeInfoBuilder_;
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        * @return Whether the handshakeInfo field is set.
        */
       public boolean hasHandshakeInfo() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        * @return The handshakeInfo.
        */
-      public PekkoHandshakeInfo getHandshakeInfo() {
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getHandshakeInfo() {
         if (handshakeInfoBuilder_ == null) {
-          return handshakeInfo_ == null ? PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
+          return handshakeInfo_ == null ? org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
         } else {
           return handshakeInfoBuilder_.getMessage();
         }
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
-      public Builder setHandshakeInfo(PekkoHandshakeInfo value) {
+      public Builder setHandshakeInfo(org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo value) {
         if (handshakeInfoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -11070,10 +11070,10 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
       public Builder setHandshakeInfo(
-          PekkoHandshakeInfo.Builder builderForValue) {
+          org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder builderForValue) {
         if (handshakeInfoBuilder_ == null) {
           handshakeInfo_ = builderForValue.build();
           onChanged();
@@ -11084,15 +11084,15 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
-      public Builder mergeHandshakeInfo(PekkoHandshakeInfo value) {
+      public Builder mergeHandshakeInfo(org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo value) {
         if (handshakeInfoBuilder_ == null) {
           if (((bitField0_ & 0x00000002) != 0) &&
               handshakeInfo_ != null &&
-              handshakeInfo_ != PekkoHandshakeInfo.getDefaultInstance()) {
+              handshakeInfo_ != org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance()) {
             handshakeInfo_ =
-              PekkoHandshakeInfo.newBuilder(handshakeInfo_).mergeFrom(value).buildPartial();
+              org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.newBuilder(handshakeInfo_).mergeFrom(value).buildPartial();
           } else {
             handshakeInfo_ = value;
           }
@@ -11104,7 +11104,7 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
       public Builder clearHandshakeInfo() {
         if (handshakeInfoBuilder_ == null) {
@@ -11117,33 +11117,33 @@ public final class WireFormats {
         return this;
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
-      public PekkoHandshakeInfo.Builder getHandshakeInfoBuilder() {
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder getHandshakeInfoBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getHandshakeInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
-      public PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder() {
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder getHandshakeInfoOrBuilder() {
         if (handshakeInfoBuilder_ != null) {
           return handshakeInfoBuilder_.getMessageOrBuilder();
         } else {
           return handshakeInfo_ == null ?
-              PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
+              org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance() : handshakeInfo_;
         }
       }
       /**
-       * <code>optional .AkkaHandshakeInfo handshakeInfo = 2;</code>
+       * <code>optional .PekkoHandshakeInfo handshakeInfo = 2;</code>
        */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              PekkoHandshakeInfo, PekkoHandshakeInfo.Builder, PekkoHandshakeInfoOrBuilder>
+          org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder> 
           getHandshakeInfoFieldBuilder() {
         if (handshakeInfoBuilder_ == null) {
           handshakeInfoBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-                  PekkoHandshakeInfo, PekkoHandshakeInfo.Builder, PekkoHandshakeInfoOrBuilder>(
+              org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder>(
                   getHandshakeInfo(),
                   getParentForChildren(),
                   isClean());
@@ -11164,16 +11164,16 @@ public final class WireFormats {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:AkkaControlMessage)
+      // @@protoc_insertion_point(builder_scope:PekkoControlMessage)
     }
 
-    // @@protoc_insertion_point(class_scope:AkkaControlMessage)
-    private static final PekkoControlMessage DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:PekkoControlMessage)
+    private static final org.apache.pekko.remote.WireFormats.PekkoControlMessage DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new PekkoControlMessage();
+      DEFAULT_INSTANCE = new org.apache.pekko.remote.WireFormats.PekkoControlMessage();
     }
 
-    public static PekkoControlMessage getDefaultInstance() {
+    public static org.apache.pekko.remote.WireFormats.PekkoControlMessage getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -11198,14 +11198,14 @@ public final class WireFormats {
     }
 
     @java.lang.Override
-    public PekkoControlMessage getDefaultInstanceForType() {
+    public org.apache.pekko.remote.WireFormats.PekkoControlMessage getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
   }
 
   public interface PekkoHandshakeInfoOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:AkkaHandshakeInfo)
+      // @@protoc_insertion_point(interface_extends:PekkoHandshakeInfo)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
@@ -11252,14 +11252,14 @@ public final class WireFormats {
         getCookieBytes();
   }
   /**
-   * Protobuf type {@code AkkaHandshakeInfo}
+   * Protobuf type {@code PekkoHandshakeInfo}
    */
   public  static final class PekkoHandshakeInfo extends
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:AkkaHandshakeInfo)
-          PekkoHandshakeInfoOrBuilder {
+      // @@protoc_insertion_point(message_implements:PekkoHandshakeInfo)
+      PekkoHandshakeInfoOrBuilder {
   private static final long serialVersionUID = 0L;
-    // Use AkkaHandshakeInfo.newBuilder() to construct.
+    // Use PekkoHandshakeInfo.newBuilder() to construct.
     private PekkoHandshakeInfo(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
@@ -11343,15 +11343,15 @@ public final class WireFormats {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaHandshakeInfo_descriptor;
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoHandshakeInfo_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.WireFormats.internal_static_AkkaHandshakeInfo_fieldAccessorTable
+      return org.apache.pekko.remote.WireFormats.internal_static_PekkoHandshakeInfo_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              PekkoHandshakeInfo.class, PekkoHandshakeInfo.Builder.class);
+              org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.class, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder.class);
     }
 
     private int bitField0_;
@@ -11505,10 +11505,10 @@ public final class WireFormats {
       if (obj == this) {
        return true;
       }
-      if (!(obj instanceof PekkoHandshakeInfo)) {
+      if (!(obj instanceof org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo)) {
         return super.equals(obj);
       }
-      PekkoHandshakeInfo other = (PekkoHandshakeInfo) obj;
+      org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo other = (org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo) obj;
 
       if (hasOrigin() != other.hasOrigin()) return false;
       if (hasOrigin()) {
@@ -11554,69 +11554,69 @@ public final class WireFormats {
       return hash;
     }
 
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         java.nio.ByteBuffer data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoHandshakeInfo parseFrom(byte[] data)
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(byte[] data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         byte[] data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static PekkoHandshakeInfo parseFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoHandshakeInfo parseDelimitedFrom(java.io.InputStream input)
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-    public static PekkoHandshakeInfo parseDelimitedFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseDelimitedFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input)
         throws java.io.IOException {
       return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
           .parseWithIOException(PARSER, input);
     }
-    public static PekkoHandshakeInfo parseFrom(
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -11629,7 +11629,7 @@ public final class WireFormats {
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(PekkoHandshakeInfo prototype) {
+    public static Builder newBuilder(org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
     @java.lang.Override
@@ -11645,26 +11645,26 @@ public final class WireFormats {
       return builder;
     }
     /**
-     * Protobuf type {@code AkkaHandshakeInfo}
+     * Protobuf type {@code PekkoHandshakeInfo}
      */
     public static final class Builder extends
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:AkkaHandshakeInfo)
-            PekkoHandshakeInfoOrBuilder {
+        // @@protoc_insertion_point(builder_implements:PekkoHandshakeInfo)
+        org.apache.pekko.remote.WireFormats.PekkoHandshakeInfoOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaHandshakeInfo_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoHandshakeInfo_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaHandshakeInfo_fieldAccessorTable
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoHandshakeInfo_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                PekkoHandshakeInfo.class, PekkoHandshakeInfo.Builder.class);
+                org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.class, org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.Builder.class);
       }
 
-      // Construct using org.apache.pekko.remote.WireFormats.AkkaHandshakeInfo.newBuilder()
+      // Construct using org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -11699,17 +11699,17 @@ public final class WireFormats {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.remote.WireFormats.internal_static_AkkaHandshakeInfo_descriptor;
+        return org.apache.pekko.remote.WireFormats.internal_static_PekkoHandshakeInfo_descriptor;
       }
 
       @java.lang.Override
-      public PekkoHandshakeInfo getDefaultInstanceForType() {
-        return PekkoHandshakeInfo.getDefaultInstance();
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getDefaultInstanceForType() {
+        return org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance();
       }
 
       @java.lang.Override
-      public PekkoHandshakeInfo build() {
-        PekkoHandshakeInfo result = buildPartial();
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo build() {
+        org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -11717,8 +11717,8 @@ public final class WireFormats {
       }
 
       @java.lang.Override
-      public PekkoHandshakeInfo buildPartial() {
-        PekkoHandshakeInfo result = new PekkoHandshakeInfo(this);
+      public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo buildPartial() {
+        org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo result = new org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -11776,16 +11776,16 @@ public final class WireFormats {
       }
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof PekkoHandshakeInfo) {
-          return mergeFrom((PekkoHandshakeInfo)other);
+        if (other instanceof org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo) {
+          return mergeFrom((org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(PekkoHandshakeInfo other) {
-        if (other == PekkoHandshakeInfo.getDefaultInstance()) return this;
+      public Builder mergeFrom(org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo other) {
+        if (other == org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo.getDefaultInstance()) return this;
         if (other.hasOrigin()) {
           mergeOrigin(other.getOrigin());
         }
@@ -11821,11 +11821,11 @@ public final class WireFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        PekkoHandshakeInfo parsedMessage = null;
+        org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (PekkoHandshakeInfo) e.getUnfinishedMessage();
+          parsedMessage = (org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -12089,16 +12089,16 @@ public final class WireFormats {
       }
 
 
-      // @@protoc_insertion_point(builder_scope:AkkaHandshakeInfo)
+      // @@protoc_insertion_point(builder_scope:PekkoHandshakeInfo)
     }
 
-    // @@protoc_insertion_point(class_scope:AkkaHandshakeInfo)
-    private static final PekkoHandshakeInfo DEFAULT_INSTANCE;
+    // @@protoc_insertion_point(class_scope:PekkoHandshakeInfo)
+    private static final org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new PekkoHandshakeInfo();
+      DEFAULT_INSTANCE = new org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo();
     }
 
-    public static PekkoHandshakeInfo getDefaultInstance() {
+    public static org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
@@ -12123,7 +12123,7 @@ public final class WireFormats {
     }
 
     @java.lang.Override
-    public PekkoHandshakeInfo getDefaultInstanceForType() {
+    public org.apache.pekko.remote.WireFormats.PekkoHandshakeInfo getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
 
@@ -20494,20 +20494,20 @@ public final class WireFormats {
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_DeployData_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AkkaProtocolMessage_descriptor;
+    internal_static_PekkoProtocolMessage_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AkkaProtocolMessage_fieldAccessorTable;
+      internal_static_PekkoProtocolMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AkkaControlMessage_descriptor;
+    internal_static_PekkoControlMessage_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AkkaControlMessage_fieldAccessorTable;
+      internal_static_PekkoControlMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AkkaHandshakeInfo_descriptor;
+    internal_static_PekkoHandshakeInfo_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_AkkaHandshakeInfo_fieldAccessorTable;
+      internal_static_PekkoHandshakeInfo_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
     internal_static_FiniteDuration_descriptor;
   private static final 
@@ -20676,23 +20676,23 @@ public final class WireFormats {
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
         internal_static_DeployData_descriptor,
         new java.lang.String[] { "Path", "Config", "RouterConfig", "Scope", "Dispatcher", "ScopeSerializerId", "ScopeManifest", "ConfigSerializerId", "ConfigManifest", "RouterConfigSerializerId", "RouterConfigManifest", "Tags", });
-    internal_static_AkkaProtocolMessage_descriptor =
+    internal_static_PekkoProtocolMessage_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_AkkaProtocolMessage_fieldAccessorTable = new
+    internal_static_PekkoProtocolMessage_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AkkaProtocolMessage_descriptor,
+        internal_static_PekkoProtocolMessage_descriptor,
         new java.lang.String[] { "Payload", "Instruction", });
-    internal_static_AkkaControlMessage_descriptor =
+    internal_static_PekkoControlMessage_descriptor =
       getDescriptor().getMessageTypes().get(9);
-    internal_static_AkkaControlMessage_fieldAccessorTable = new
+    internal_static_PekkoControlMessage_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AkkaControlMessage_descriptor,
+        internal_static_PekkoControlMessage_descriptor,
         new java.lang.String[] { "CommandType", "HandshakeInfo", });
-    internal_static_AkkaHandshakeInfo_descriptor =
+    internal_static_PekkoHandshakeInfo_descriptor =
       getDescriptor().getMessageTypes().get(10);
-    internal_static_AkkaHandshakeInfo_fieldAccessorTable = new
+    internal_static_PekkoHandshakeInfo_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AkkaHandshakeInfo_descriptor,
+        internal_static_PekkoHandshakeInfo_descriptor,
         new java.lang.String[] { "Origin", "Uid", "Cookie", });
     internal_static_FiniteDuration_descriptor =
       getDescriptor().getMessageTypes().get(11);
