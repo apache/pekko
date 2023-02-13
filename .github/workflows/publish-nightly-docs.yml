@@ -55,12 +55,16 @@ jobs:
         run: |-
           sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
 
+      - name: Make dummy directory
+        run: |-
+          mkdir empty-dir
+
       - name: Setup nightly docs directory
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
           switches: --archive --compress --update --delete --progress
-          local_path: LICENSE # dummy to make rsync create the docs directory first
+          local_path: empty-dir/ # dummy to make rsync create the docs directory first
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
