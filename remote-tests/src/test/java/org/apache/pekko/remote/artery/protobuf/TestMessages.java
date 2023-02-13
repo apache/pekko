@@ -2235,8 +2235,8 @@ public final class TestMessages {
       "d\030\001 \002(\004\022\014\n\004name\030\002 \002(\t\022\016\n\006status\030\003 \002(\010\022\023\n" +
       "\013description\030\004 \001(\t\022\017\n\007payload\030\005 \001(\014\022\024\n\005i" +
       "tems\030\006 \003(\0132\005.Item\" \n\004Item\022\n\n\002id\030\001 \002(\004\022\014\n" +
-      "\004name\030\002 \002(\tB\035\n\033org.apache.pekko.remote.artery.protob" +
-      "uf"
+      "\004name\030\002 \002(\tB)\n\'org.apache.pekko.remote.a" +
+      "rtery.protobuf"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

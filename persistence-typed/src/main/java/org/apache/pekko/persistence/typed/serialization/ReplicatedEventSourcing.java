@@ -13046,8 +13046,8 @@ public final class ReplicatedEventSourcing {
           + "\022\031\n\007payload\030\003 \001(\0132\010.Payload\022\021\n\ttimestamp"
           + "\030\004 \001(\003\0223\n\010metadata\030\005 \001(\0132!.ReplicatedPub"
           + "lishedEventMetaData*-\n\014ORSetDeltaOp\022\007\n\003A"
-          + "dd\020\000\022\n\n\006Remove\020\001\022\010\n\004Full\020\002B(\n$org.apache.pekko.persi"
-          + "stence.typed.serializationH\001"
+          + "dd\020\000\022\n\n\006Remove\020\001\022\010\n\004Full\020\002B4\n0org.apache"
+          + ".pekko.persistence.typed.serializationH\001"
     };
     descriptor =
         org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor

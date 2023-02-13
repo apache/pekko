@@ -6521,7 +6521,8 @@ public final class TestConductorProtocol {
       "\n\010Throttle\020\001\022\016\n\nDisconnect\020\002\022\t\n\005Abort\020\003\022" +
       "\010\n\004Exit\020\004\022\014\n\010Shutdown\020\005\022\022\n\016ShutdownAbrup" +
       "t\020\006*,\n\tDirection\022\010\n\004Send\020\001\022\013\n\007Receive\020\002\022" +
-      "\010\n\004Both\020\003B\035\n\031org.apache.pekko.remote.testconductorH\001"
+      "\010\n\004Both\020\003B)\n%org.apache.pekko.remote.tes" +
+      "tconductorH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

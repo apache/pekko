@@ -21339,8 +21339,8 @@ public final class ClusterShardingMessages {
       "ntityIds\030\002 \003(\t\"F\n\027CurrentShardRegionStat" +
       "e\022\033\n\006shards\030\001 \003(\0132\013.ShardState\022\016\n\006failed" +
       "\030\002 \003(\t\"7\n\024RememberedShardState\022\017\n\007shardI" +
-      "d\030\001 \003(\t\022\016\n\006marker\030\002 \001(\010B&\n\"org.apache.pekko.cluster." +
-      "sharding.protobuf.msgH\001"
+      "d\030\001 \003(\t\022\016\n\006marker\030\002 \001(\010B2\n.org.apache.pe" +
+      "kko.cluster.sharding.protobuf.msgH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

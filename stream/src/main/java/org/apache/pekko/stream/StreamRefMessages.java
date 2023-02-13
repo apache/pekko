@@ -5685,7 +5685,7 @@ public final class StreamRefMessages {
       "OnNext\022\r\n\005seqNr\030\001 \002(\003\022\031\n\007payload\030\002 \002(\0132\010" +
       ".Payload\"$\n\023RemoteStreamFailure\022\r\n\005cause" +
       "\030\001 \001(\014\"&\n\025RemoteStreamCompleted\022\r\n\005seqNr" +
-      "\030\001 \002(\003B\017\n\013org.apache.pekko.streamH\001"
+      "\030\001 \002(\003B\033\n\027org.apache.pekko.streamH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,

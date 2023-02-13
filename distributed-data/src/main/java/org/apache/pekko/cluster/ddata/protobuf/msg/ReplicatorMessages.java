@@ -218,13 +218,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Get_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Get_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Get_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Get_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Get.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Get.Builder.class);
     }
@@ -615,13 +615,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Get_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Get_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Get_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Get_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Get.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Get.Builder.class);
       }
@@ -672,7 +672,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Get_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Get_descriptor;
       }
 
       @java.lang.Override
@@ -1435,13 +1435,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetSuccess_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetSuccess_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetSuccess_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetSuccess.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetSuccess.Builder.class);
     }
@@ -1739,13 +1739,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetSuccessOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetSuccess_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetSuccess_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetSuccess_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetSuccess.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetSuccess.Builder.class);
       }
@@ -1795,7 +1795,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetSuccess_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor;
       }
 
       @java.lang.Override
@@ -2485,13 +2485,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_NotFound_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_NotFound_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_NotFound_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.NotFound.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.NotFound.Builder.class);
     }
@@ -2742,13 +2742,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.NotFoundOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_NotFound_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_NotFound_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_NotFound_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.NotFound.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.NotFound.Builder.class);
       }
@@ -2791,7 +2791,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_NotFound_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor;
       }
 
       @java.lang.Override
@@ -3344,13 +3344,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetFailure_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetFailure_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetFailure_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetFailure.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetFailure.Builder.class);
     }
@@ -3601,13 +3601,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetFailureOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetFailure_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetFailure_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetFailure_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetFailure.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GetFailure.Builder.class);
       }
@@ -3650,7 +3650,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_GetFailure_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor;
       }
 
       @java.lang.Override
@@ -4199,13 +4199,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Subscribe_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Subscribe_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Subscribe_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Subscribe.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Subscribe.Builder.class);
     }
@@ -4475,13 +4475,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.SubscribeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Subscribe_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Subscribe_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Subscribe_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Subscribe.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Subscribe.Builder.class);
       }
@@ -4519,7 +4519,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Subscribe_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor;
       }
 
       @java.lang.Override
@@ -5028,13 +5028,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Unsubscribe_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Unsubscribe_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Unsubscribe.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Unsubscribe.Builder.class);
     }
@@ -5304,13 +5304,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UnsubscribeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Unsubscribe_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Unsubscribe_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Unsubscribe.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Unsubscribe.Builder.class);
       }
@@ -5348,7 +5348,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Unsubscribe_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor;
       }
 
       @java.lang.Override
@@ -5861,13 +5861,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Changed_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Changed_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Changed_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Changed.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Changed.Builder.class);
     }
@@ -6120,13 +6120,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ChangedOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Changed_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Changed_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Changed_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Changed.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Changed.Builder.class);
       }
@@ -6169,7 +6169,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Changed_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor;
       }
 
       @java.lang.Override
@@ -6747,13 +6747,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Write_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Write_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Write_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Write_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Write.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Write.Builder.class);
     }
@@ -7068,13 +7068,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.WriteOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Write_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Write_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Write_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Write_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Write.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Write.Builder.class);
       }
@@ -7119,7 +7119,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Write_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Write_descriptor;
       }
 
       @java.lang.Override
@@ -7711,13 +7711,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Empty_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Empty_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Empty_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Empty.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Empty.Builder.class);
     }
@@ -7875,13 +7875,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.EmptyOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Empty_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Empty_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Empty_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Empty.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Empty.Builder.class);
       }
@@ -7910,7 +7910,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Empty_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor;
       }
 
       @java.lang.Override
@@ -8182,13 +8182,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Read_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Read_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Read_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Read_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Read.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Read.Builder.class);
     }
@@ -8456,13 +8456,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Read_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Read_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Read_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Read_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Read.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Read.Builder.class);
       }
@@ -8500,7 +8500,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Read_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Read_descriptor;
       }
 
       @java.lang.Override
@@ -8984,13 +8984,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_ReadResult_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_ReadResult_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_ReadResult_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadResult.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadResult.Builder.class);
     }
@@ -9194,13 +9194,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadResultOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_ReadResult_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_ReadResult_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_ReadResult_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadResult.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.ReadResult.Builder.class);
       }
@@ -9236,7 +9236,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_ReadResult_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor;
       }
 
       @java.lang.Override
@@ -9689,13 +9689,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.Builder.class);
     }
@@ -9896,13 +9896,13 @@ public final class ReplicatorMessages {
       }
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.PruningEntry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.PruningEntry.Builder.class);
       }
@@ -10281,13 +10281,13 @@ public final class ReplicatorMessages {
           org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.PruningEntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.PruningEntry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.PruningEntry.Builder.class);
         }
@@ -10341,7 +10341,7 @@ public final class ReplicatorMessages {
         @java.lang.Override
         public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
         }
 
         @java.lang.Override
@@ -11439,13 +11439,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelopeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DataEnvelope.Builder.class);
       }
@@ -11495,7 +11495,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DataEnvelope_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor;
       }
 
       @java.lang.Override
@@ -12373,13 +12373,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Builder.class);
     }
@@ -12496,13 +12496,13 @@ public final class ReplicatorMessages {
       }
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_Entry_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_Entry_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Entry.Builder.class);
       }
@@ -12762,13 +12762,13 @@ public final class ReplicatorMessages {
           org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_Entry_fieldAccessorTable
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Entry.Builder.class);
         }
@@ -12801,7 +12801,7 @@ public final class ReplicatorMessages {
         @java.lang.Override
         public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor;
         }
 
         @java.lang.Override
@@ -13450,13 +13450,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StatusOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Status.Builder.class);
       }
@@ -13500,7 +13500,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Status_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Status_descriptor;
       }
 
       @java.lang.Override
@@ -14271,13 +14271,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Builder.class);
     }
@@ -14405,13 +14405,13 @@ public final class ReplicatorMessages {
       }
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_Entry_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_Entry_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Entry.Builder.class);
       }
@@ -14681,13 +14681,13 @@ public final class ReplicatorMessages {
           org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_Entry_fieldAccessorTable
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Entry.Builder.class);
         }
@@ -14725,7 +14725,7 @@ public final class ReplicatorMessages {
         @java.lang.Override
         public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor;
         }
 
         @java.lang.Override
@@ -15425,13 +15425,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.GossipOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Gossip.Builder.class);
       }
@@ -15473,7 +15473,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Gossip_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor;
       }
 
       @java.lang.Override
@@ -16201,13 +16201,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Builder.class);
     }
@@ -16375,13 +16375,13 @@ public final class ReplicatorMessages {
       }
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Entry.Builder.class);
       }
@@ -16731,13 +16731,13 @@ public final class ReplicatorMessages {
           org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Entry.Builder.class);
         }
@@ -16779,7 +16779,7 @@ public final class ReplicatorMessages {
         @java.lang.Override
         public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor;
         }
 
         @java.lang.Override
@@ -17569,13 +17569,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagationOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DeltaPropagation.Builder.class);
       }
@@ -17620,7 +17620,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DeltaPropagation_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor;
       }
 
       @java.lang.Override
@@ -18389,13 +18389,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_UniqueAddress_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_UniqueAddress_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder.class);
     }
@@ -18679,13 +18679,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddressOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_UniqueAddress_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_UniqueAddress_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.UniqueAddress.Builder.class);
       }
@@ -18725,7 +18725,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_UniqueAddress_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor;
       }
 
       @java.lang.Override
@@ -19233,13 +19233,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Address_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Address_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Address_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Address_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Address.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Address.Builder.class);
     }
@@ -19499,13 +19499,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.AddressOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Address_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Address_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Address_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Address_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Address.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.Address.Builder.class);
       }
@@ -19538,7 +19538,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_Address_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_Address_descriptor;
       }
 
       @java.lang.Override
@@ -19942,13 +19942,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Builder.class);
     }
@@ -20068,13 +20068,13 @@ public final class ReplicatorMessages {
       }
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_Entry_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Entry.Builder.class);
       }
@@ -20318,13 +20318,13 @@ public final class ReplicatorMessages {
           org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.EntryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_Entry_fieldAccessorTable
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
                   org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Entry.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Entry.Builder.class);
         }
@@ -20362,7 +20362,7 @@ public final class ReplicatorMessages {
         @java.lang.Override
         public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptorForType() {
-          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor;
+          return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor;
         }
 
         @java.lang.Override
@@ -20906,13 +20906,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVectorOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.VersionVector.Builder.class);
       }
@@ -20948,7 +20948,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_VersionVector_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor;
       }
 
       @java.lang.Override
@@ -21500,13 +21500,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_OtherMessage_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_OtherMessage_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_OtherMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessage.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessage.Builder.class);
     }
@@ -21772,13 +21772,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_OtherMessage_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_OtherMessage_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_OtherMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessage.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.OtherMessage.Builder.class);
       }
@@ -21813,7 +21813,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_OtherMessage_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor;
       }
 
       @java.lang.Override
@@ -22219,13 +22219,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_StringGSet_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_StringGSet_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_StringGSet_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StringGSet.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StringGSet.Builder.class);
     }
@@ -22435,13 +22435,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StringGSetOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_StringGSet_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_StringGSet_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_StringGSet_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StringGSet.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.StringGSet.Builder.class);
       }
@@ -22472,7 +22472,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_StringGSet_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor;
       }
 
       @java.lang.Override
@@ -22883,13 +22883,13 @@ public final class ReplicatorMessages {
     }
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor;
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DurableDataEnvelope_fieldAccessorTable
+      return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DurableDataEnvelope.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DurableDataEnvelope.Builder.class);
     }
@@ -23149,13 +23149,13 @@ public final class ReplicatorMessages {
         org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DurableDataEnvelopeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DurableDataEnvelope_fieldAccessorTable
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
                 org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DurableDataEnvelope.class, org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.DurableDataEnvelope.Builder.class);
       }
@@ -23198,7 +23198,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptorForType() {
-        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor;
+        return org.apache.pekko.cluster.ddata.protobuf.msg.ReplicatorMessages.internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor;
       }
 
       @java.lang.Override
@@ -23769,135 +23769,135 @@ public final class ReplicatorMessages {
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Get_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Get_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Get_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Get_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_GetSuccess_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_GetSuccess_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_GetSuccess_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_NotFound_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_NotFound_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_NotFound_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_GetFailure_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_GetFailure_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_GetFailure_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Subscribe_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Subscribe_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Subscribe_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Unsubscribe_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Unsubscribe_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Changed_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Changed_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Changed_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Write_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Write_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Write_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Write_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Empty_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Empty_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Empty_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Read_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Read_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Read_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Read_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_ReadResult_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_ReadResult_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_ReadResult_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_DataEnvelope_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_DataEnvelope_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Status_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Status_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Status_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Status_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Status_Entry_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Status_Entry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Status_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Gossip_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Gossip_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Gossip_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Gossip_Entry_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Gossip_Entry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_DeltaPropagation_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_DeltaPropagation_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_UniqueAddress_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_UniqueAddress_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_Address_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_Address_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_Address_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_Address_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_VersionVector_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_VersionVector_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_VersionVector_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_VersionVector_Entry_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_OtherMessage_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_OtherMessage_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_OtherMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_StringGSet_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_StringGSet_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_StringGSet_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor;
+    internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor;
   private static final 
     org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
-      internal_static_akka_cluster_ddata_DurableDataEnvelope_fieldAccessorTable;
+      internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_fieldAccessorTable;
 
   public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       getDescriptor() {
@@ -23907,236 +23907,247 @@ public final class ReplicatorMessages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\030ReplicatorMessages.proto\022\022org.apache.pekko.cluster" +
-      ".ddata\"\307\001\n\003Get\022-\n\003key\030\001 \002(\0132 .pekko.clust" +
-      "er.ddata.OtherMessage\022\023\n\013consistency\030\002 \002" +
-      "(\021\022\017\n\007timeout\030\003 \002(\r\0221\n\007request\030\004 \001(\0132 .a" +
-      "kka.cluster.ddata.OtherMessage\022\031\n\021consis" +
-      "tencyMinCap\030\005 \001(\005\022\035\n\025consistencyAddition" +
-      "al\030\006 \001(\005\"\236\001\n\nGetSuccess\022-\n\003key\030\001 \002(\0132 .a" +
-      "kka.cluster.ddata.OtherMessage\022.\n\004data\030\002" +
-      " \002(\0132 .org.apache.pekko.cluster.ddata.OtherMessage\0221" +
-      "\n\007request\030\004 \001(\0132 .org.apache.pekko.cluster.ddata.Oth" +
-      "erMessage\"l\n\010NotFound\022-\n\003key\030\001 \002(\0132 .akk" +
-      "a.cluster.ddata.OtherMessage\0221\n\007request\030" +
-      "\002 \001(\0132 .org.apache.pekko.cluster.ddata.OtherMessage\"" +
-      "n\n\nGetFailure\022-\n\003key\030\001 \002(\0132 .pekko.cluste" +
-      "r.ddata.OtherMessage\0221\n\007request\030\002 \001(\0132 ." +
-      "org.apache.pekko.cluster.ddata.OtherMessage\"G\n\tSubsc" +
-      "ribe\022-\n\003key\030\001 \002(\0132 .org.apache.pekko.cluster.ddata.O" +
-      "therMessage\022\013\n\003ref\030\002 \002(\t\"I\n\013Unsubscribe\022" +
-      "-\n\003key\030\001 \002(\0132 .org.apache.pekko.cluster.ddata.OtherM" +
-      "essage\022\013\n\003ref\030\002 \002(\t\"h\n\007Changed\022-\n\003key\030\001 " +
-      "\002(\0132 .org.apache.pekko.cluster.ddata.OtherMessage\022.\n" +
-      "\004data\030\002 \002(\0132 .org.apache.pekko.cluster.ddata.OtherMe" +
-      "ssage\"}\n\005Write\022\013\n\003key\030\001 \002(\t\0222\n\010envelope\030" +
-      "\002 \002(\0132 .org.apache.pekko.cluster.ddata.DataEnvelope\022" +
-      "3\n\010fromNode\030\003 \001(\0132!.org.apache.pekko.cluster.ddata.U" +
-      "niqueAddress\"\007\n\005Empty\"H\n\004Read\022\013\n\003key\030\001 \002" +
-      "(\t\0223\n\010fromNode\030\002 \001(\0132!.org.apache.pekko.cluster.ddat" +
-      "a.UniqueAddress\"@\n\nReadResult\0222\n\010envelop" +
-      "e\030\001 \001(\0132 .org.apache.pekko.cluster.ddata.DataEnvelop" +
-      "e\"\221\003\n\014DataEnvelope\022.\n\004data\030\001 \002(\0132 .akka." +
-      "cluster.ddata.OtherMessage\022>\n\007pruning\030\002 " +
-      "\003(\0132-.org.apache.pekko.cluster.ddata.DataEnvelope.Pr" +
-      "uningEntry\0228\n\rdeltaVersions\030\003 \001(\0132!.akka" +
-      ".cluster.ddata.VersionVector\032\326\001\n\014Pruning" +
-      "Entry\0229\n\016removedAddress\030\001 \002(\0132!.pekko.clu" +
-      "ster.ddata.UniqueAddress\0227\n\014ownerAddress" +
-      "\030\002 \002(\0132!.org.apache.pekko.cluster.ddata.UniqueAddres" +
-      "s\022\021\n\tperformed\030\003 \002(\010\022)\n\004seen\030\004 \003(\0132\033.akk" +
-      "a.cluster.ddata.Address\022\024\n\014obsoleteTime\030" +
-      "\005 \001(\022\"\257\001\n\006Status\022\r\n\005chunk\030\001 \002(\r\022\021\n\ttotCh" +
-      "unks\030\002 \002(\r\0221\n\007entries\030\003 \003(\0132 .pekko.clust" +
-      "er.ddata.Status.Entry\022\023\n\013toSystemUid\030\004 \001" +
-      "(\020\022\025\n\rfromSystemUid\030\005 \001(\020\032$\n\005Entry\022\013\n\003ke" +
-      "y\030\001 \002(\t\022\016\n\006digest\030\002 \002(\014\"\303\001\n\006Gossip\022\020\n\010se" +
-      "ndBack\030\001 \002(\010\0221\n\007entries\030\002 \003(\0132 .pekko.clu" +
-      "ster.ddata.Gossip.Entry\022\023\n\013toSystemUid\030\003" +
-      " \001(\020\022\025\n\rfromSystemUid\030\004 \001(\020\032H\n\005Entry\022\013\n\003" +
-      "key\030\001 \002(\t\0222\n\010envelope\030\002 \002(\0132 .pekko.clust" +
-      "er.ddata.DataEnvelope\"\201\002\n\020DeltaPropagati" +
-      "on\0223\n\010fromNode\030\001 \002(\0132!.org.apache.pekko.cluster.ddat" +
-      "a.UniqueAddress\022;\n\007entries\030\002 \003(\0132*.akka." +
-      "cluster.ddata.DeltaPropagation.Entry\022\r\n\005" +
-      "reply\030\003 \001(\010\032l\n\005Entry\022\013\n\003key\030\001 \002(\t\0222\n\010env" +
-      "elope\030\002 \002(\0132 .org.apache.pekko.cluster.ddata.DataEnv" +
-      "elope\022\021\n\tfromSeqNr\030\003 \002(\003\022\017\n\007toSeqNr\030\004 \001(" +
-      "\003\"X\n\rUniqueAddress\022,\n\007address\030\001 \002(\0132\033.ak" +
-      "ka.cluster.ddata.Address\022\013\n\003uid\030\002 \002(\017\022\014\n" +
-      "\004uid2\030\003 \001(\017\")\n\007Address\022\020\n\010hostname\030\001 \002(\t" +
-      "\022\014\n\004port\030\002 \002(\r\"\224\001\n\rVersionVector\0228\n\007entr" +
-      "ies\030\001 \003(\0132\'.org.apache.pekko.cluster.ddata.VersionVe" +
-      "ctor.Entry\032I\n\005Entry\022/\n\004node\030\001 \002(\0132!.akka" +
+      "\n\030ReplicatorMessages.proto\022\036org.apache.p" +
+      "ekko.cluster.ddata\"\337\001\n\003Get\0229\n\003key\030\001 \002(\0132" +
+      ",.org.apache.pekko.cluster.ddata.OtherMe" +
+      "ssage\022\023\n\013consistency\030\002 \002(\021\022\017\n\007timeout\030\003 " +
+      "\002(\r\022=\n\007request\030\004 \001(\0132,.org.apache.pekko." +
+      "cluster.ddata.OtherMessage\022\031\n\021consistenc" +
+      "yMinCap\030\005 \001(\005\022\035\n\025consistencyAdditional\030\006" +
+      " \001(\005\"\302\001\n\nGetSuccess\0229\n\003key\030\001 \002(\0132,.org.a" +
+      "pache.pekko.cluster.ddata.OtherMessage\022:" +
+      "\n\004data\030\002 \002(\0132,.org.apache.pekko.cluster." +
+      "ddata.OtherMessage\022=\n\007request\030\004 \001(\0132,.or" +
+      "g.apache.pekko.cluster.ddata.OtherMessag" +
+      "e\"\204\001\n\010NotFound\0229\n\003key\030\001 \002(\0132,.org.apache" +
+      ".pekko.cluster.ddata.OtherMessage\022=\n\007req" +
+      "uest\030\002 \001(\0132,.org.apache.pekko.cluster.dd" +
+      "ata.OtherMessage\"\206\001\n\nGetFailure\0229\n\003key\030\001" +
+      " \002(\0132,.org.apache.pekko.cluster.ddata.Ot" +
+      "herMessage\022=\n\007request\030\002 \001(\0132,.org.apache" +
+      ".pekko.cluster.ddata.OtherMessage\"S\n\tSub" +
+      "scribe\0229\n\003key\030\001 \002(\0132,.org.apache.pekko.c" +
+      "luster.ddata.OtherMessage\022\013\n\003ref\030\002 \002(\t\"U" +
+      "\n\013Unsubscribe\0229\n\003key\030\001 \002(\0132,.org.apache." +
+      "pekko.cluster.ddata.OtherMessage\022\013\n\003ref\030" +
+      "\002 \002(\t\"\200\001\n\007Changed\0229\n\003key\030\001 \002(\0132,.org.apa" +
+      "che.pekko.cluster.ddata.OtherMessage\022:\n\004" +
+      "data\030\002 \002(\0132,.org.apache.pekko.cluster.dd" +
+      "ata.OtherMessage\"\225\001\n\005Write\022\013\n\003key\030\001 \002(\t\022" +
+      ">\n\010envelope\030\002 \002(\0132,.org.apache.pekko.clu" +
+      "ster.ddata.DataEnvelope\022?\n\010fromNode\030\003 \001(" +
+      "\0132-.org.apache.pekko.cluster.ddata.Uniqu" +
+      "eAddress\"\007\n\005Empty\"T\n\004Read\022\013\n\003key\030\001 \002(\t\022?" +
+      "\n\010fromNode\030\002 \001(\0132-.org.apache.pekko.clus" +
+      "ter.ddata.UniqueAddress\"L\n\nReadResult\022>\n" +
+      "\010envelope\030\001 \001(\0132,.org.apache.pekko.clust" +
+      "er.ddata.DataEnvelope\"\331\003\n\014DataEnvelope\022:" +
+      "\n\004data\030\001 \002(\0132,.org.apache.pekko.cluster." +
+      "ddata.OtherMessage\022J\n\007pruning\030\002 \003(\01329.or" +
+      "g.apache.pekko.cluster.ddata.DataEnvelop" +
+      "e.PruningEntry\022D\n\rdeltaVersions\030\003 \001(\0132-." +
+      "org.apache.pekko.cluster.ddata.VersionVe" +
+      "ctor\032\372\001\n\014PruningEntry\022E\n\016removedAddress\030" +
+      "\001 \002(\0132-.org.apache.pekko.cluster.ddata.U" +
+      "niqueAddress\022C\n\014ownerAddress\030\002 \002(\0132-.org" +
+      ".apache.pekko.cluster.ddata.UniqueAddres" +
+      "s\022\021\n\tperformed\030\003 \002(\010\0225\n\004seen\030\004 \003(\0132\'.org" +
+      ".apache.pekko.cluster.ddata.Address\022\024\n\014o" +
+      "bsoleteTime\030\005 \001(\022\"\273\001\n\006Status\022\r\n\005chunk\030\001 " +
+      "\002(\r\022\021\n\ttotChunks\030\002 \002(\r\022=\n\007entries\030\003 \003(\0132" +
+      ",.org.apache.pekko.cluster.ddata.Status." +
+      "Entry\022\023\n\013toSystemUid\030\004 \001(\020\022\025\n\rfromSystem" +
+      "Uid\030\005 \001(\020\032$\n\005Entry\022\013\n\003key\030\001 \002(\t\022\016\n\006diges" +
+      "t\030\002 \002(\014\"\333\001\n\006Gossip\022\020\n\010sendBack\030\001 \002(\010\022=\n\007" +
+      "entries\030\002 \003(\0132,.org.apache.pekko.cluster" +
+      ".ddata.Gossip.Entry\022\023\n\013toSystemUid\030\003 \001(\020" +
+      "\022\025\n\rfromSystemUid\030\004 \001(\020\032T\n\005Entry\022\013\n\003key\030" +
+      "\001 \002(\t\022>\n\010envelope\030\002 \002(\0132,.org.apache.pek" +
+      "ko.cluster.ddata.DataEnvelope\"\245\002\n\020DeltaP" +
+      "ropagation\022?\n\010fromNode\030\001 \002(\0132-.org.apach" +
+      "e.pekko.cluster.ddata.UniqueAddress\022G\n\007e" +
+      "ntries\030\002 \003(\01326.org.apache.pekko.cluster." +
+      "ddata.DeltaPropagation.Entry\022\r\n\005reply\030\003 " +
+      "\001(\010\032x\n\005Entry\022\013\n\003key\030\001 \002(\t\022>\n\010envelope\030\002 " +
+      "\002(\0132,.org.apache.pekko.cluster.ddata.Dat" +
+      "aEnvelope\022\021\n\tfromSeqNr\030\003 \002(\003\022\017\n\007toSeqNr\030" +
+      "\004 \001(\003\"d\n\rUniqueAddress\0228\n\007address\030\001 \002(\0132" +
+      "\'.org.apache.pekko.cluster.ddata.Address" +
+      "\022\013\n\003uid\030\002 \002(\017\022\014\n\004uid2\030\003 \001(\017\")\n\007Address\022\020" +
+      "\n\010hostname\030\001 \002(\t\022\014\n\004port\030\002 \002(\r\"\254\001\n\rVersi" +
+      "onVector\022D\n\007entries\030\001 \003(\01323.org.apache.p" +
+      "ekko.cluster.ddata.VersionVector.Entry\032U" +
+      "\n\005Entry\022;\n\004node\030\001 \002(\0132-.org.apache.pekko" +
       ".cluster.ddata.UniqueAddress\022\017\n\007version\030" +
       "\002 \002(\003\"V\n\014OtherMessage\022\027\n\017enclosedMessage" +
       "\030\001 \002(\014\022\024\n\014serializerId\030\002 \002(\005\022\027\n\017messageM" +
       "anifest\030\004 \001(\014\"\036\n\nStringGSet\022\020\n\010elements\030" +
-      "\001 \003(\t\"\205\001\n\023DurableDataEnvelope\022.\n\004data\030\001 " +
-      "\002(\0132 .org.apache.pekko.cluster.ddata.OtherMessage\022>\n" +
-      "\007pruning\030\002 \003(\0132-.org.apache.pekko.cluster.ddata.Data" +
-      "Envelope.PruningEntryB#\n\037org.apache.pekko.cluster.dd" +
-      "ata.protobuf.msgH\001"
+      "\001 \003(\t\"\235\001\n\023DurableDataEnvelope\022:\n\004data\030\001 " +
+      "\002(\0132,.org.apache.pekko.cluster.ddata.Oth" +
+      "erMessage\022J\n\007pruning\030\002 \003(\01329.org.apache." +
+      "pekko.cluster.ddata.DataEnvelope.Pruning" +
+      "EntryB/\n+org.apache.pekko.cluster.ddata." +
+      "protobuf.msgH\001"
     };
     descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
         });
-    internal_static_akka_cluster_ddata_Get_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Get_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_akka_cluster_ddata_Get_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Get_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Get_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Get_descriptor,
         new java.lang.String[] { "Key", "Consistency", "Timeout", "Request", "ConsistencyMinCap", "ConsistencyAdditional", });
-    internal_static_akka_cluster_ddata_GetSuccess_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_akka_cluster_ddata_GetSuccess_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_GetSuccess_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_GetSuccess_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_GetSuccess_descriptor,
         new java.lang.String[] { "Key", "Data", "Request", });
-    internal_static_akka_cluster_ddata_NotFound_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_akka_cluster_ddata_NotFound_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_NotFound_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_NotFound_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_NotFound_descriptor,
         new java.lang.String[] { "Key", "Request", });
-    internal_static_akka_cluster_ddata_GetFailure_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor =
       getDescriptor().getMessageTypes().get(3);
-    internal_static_akka_cluster_ddata_GetFailure_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_GetFailure_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_GetFailure_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_GetFailure_descriptor,
         new java.lang.String[] { "Key", "Request", });
-    internal_static_akka_cluster_ddata_Subscribe_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor =
       getDescriptor().getMessageTypes().get(4);
-    internal_static_akka_cluster_ddata_Subscribe_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Subscribe_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Subscribe_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Subscribe_descriptor,
         new java.lang.String[] { "Key", "Ref", });
-    internal_static_akka_cluster_ddata_Unsubscribe_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor =
       getDescriptor().getMessageTypes().get(5);
-    internal_static_akka_cluster_ddata_Unsubscribe_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Unsubscribe_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Unsubscribe_descriptor,
         new java.lang.String[] { "Key", "Ref", });
-    internal_static_akka_cluster_ddata_Changed_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor =
       getDescriptor().getMessageTypes().get(6);
-    internal_static_akka_cluster_ddata_Changed_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Changed_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Changed_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Changed_descriptor,
         new java.lang.String[] { "Key", "Data", });
-    internal_static_akka_cluster_ddata_Write_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Write_descriptor =
       getDescriptor().getMessageTypes().get(7);
-    internal_static_akka_cluster_ddata_Write_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Write_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Write_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Write_descriptor,
         new java.lang.String[] { "Key", "Envelope", "FromNode", });
-    internal_static_akka_cluster_ddata_Empty_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor =
       getDescriptor().getMessageTypes().get(8);
-    internal_static_akka_cluster_ddata_Empty_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Empty_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Empty_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Empty_descriptor,
         new java.lang.String[] { });
-    internal_static_akka_cluster_ddata_Read_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Read_descriptor =
       getDescriptor().getMessageTypes().get(9);
-    internal_static_akka_cluster_ddata_Read_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Read_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Read_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Read_descriptor,
         new java.lang.String[] { "Key", "FromNode", });
-    internal_static_akka_cluster_ddata_ReadResult_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor =
       getDescriptor().getMessageTypes().get(10);
-    internal_static_akka_cluster_ddata_ReadResult_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_ReadResult_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_ReadResult_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_ReadResult_descriptor,
         new java.lang.String[] { "Envelope", });
-    internal_static_akka_cluster_ddata_DataEnvelope_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor =
       getDescriptor().getMessageTypes().get(11);
-    internal_static_akka_cluster_ddata_DataEnvelope_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_DataEnvelope_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor,
         new java.lang.String[] { "Data", "Pruning", "DeltaVersions", });
-    internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor =
-      internal_static_akka_cluster_ddata_DataEnvelope_descriptor.getNestedTypes().get(0);
-    internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor =
+      internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_descriptor.getNestedTypes().get(0);
+    internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_DataEnvelope_PruningEntry_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_DataEnvelope_PruningEntry_descriptor,
         new java.lang.String[] { "RemovedAddress", "OwnerAddress", "Performed", "Seen", "ObsoleteTime", });
-    internal_static_akka_cluster_ddata_Status_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Status_descriptor =
       getDescriptor().getMessageTypes().get(12);
-    internal_static_akka_cluster_ddata_Status_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Status_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Status_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Status_descriptor,
         new java.lang.String[] { "Chunk", "TotChunks", "Entries", "ToSystemUid", "FromSystemUid", });
-    internal_static_akka_cluster_ddata_Status_Entry_descriptor =
-      internal_static_akka_cluster_ddata_Status_descriptor.getNestedTypes().get(0);
-    internal_static_akka_cluster_ddata_Status_Entry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor =
+      internal_static_org_apache_pekko_cluster_ddata_Status_descriptor.getNestedTypes().get(0);
+    internal_static_org_apache_pekko_cluster_ddata_Status_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Status_Entry_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Status_Entry_descriptor,
         new java.lang.String[] { "Key", "Digest", });
-    internal_static_akka_cluster_ddata_Gossip_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor =
       getDescriptor().getMessageTypes().get(13);
-    internal_static_akka_cluster_ddata_Gossip_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Gossip_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor,
         new java.lang.String[] { "SendBack", "Entries", "ToSystemUid", "FromSystemUid", });
-    internal_static_akka_cluster_ddata_Gossip_Entry_descriptor =
-      internal_static_akka_cluster_ddata_Gossip_descriptor.getNestedTypes().get(0);
-    internal_static_akka_cluster_ddata_Gossip_Entry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor =
+      internal_static_org_apache_pekko_cluster_ddata_Gossip_descriptor.getNestedTypes().get(0);
+    internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Gossip_Entry_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Gossip_Entry_descriptor,
         new java.lang.String[] { "Key", "Envelope", });
-    internal_static_akka_cluster_ddata_DeltaPropagation_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor =
       getDescriptor().getMessageTypes().get(14);
-    internal_static_akka_cluster_ddata_DeltaPropagation_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_DeltaPropagation_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor,
         new java.lang.String[] { "FromNode", "Entries", "Reply", });
-    internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor =
-      internal_static_akka_cluster_ddata_DeltaPropagation_descriptor.getNestedTypes().get(0);
-    internal_static_akka_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor =
+      internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_descriptor.getNestedTypes().get(0);
+    internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_DeltaPropagation_Entry_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_DeltaPropagation_Entry_descriptor,
         new java.lang.String[] { "Key", "Envelope", "FromSeqNr", "ToSeqNr", });
-    internal_static_akka_cluster_ddata_UniqueAddress_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor =
       getDescriptor().getMessageTypes().get(15);
-    internal_static_akka_cluster_ddata_UniqueAddress_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_UniqueAddress_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_UniqueAddress_descriptor,
         new java.lang.String[] { "Address", "Uid", "Uid2", });
-    internal_static_akka_cluster_ddata_Address_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_Address_descriptor =
       getDescriptor().getMessageTypes().get(16);
-    internal_static_akka_cluster_ddata_Address_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_Address_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_Address_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_Address_descriptor,
         new java.lang.String[] { "Hostname", "Port", });
-    internal_static_akka_cluster_ddata_VersionVector_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor =
       getDescriptor().getMessageTypes().get(17);
-    internal_static_akka_cluster_ddata_VersionVector_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_VersionVector_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor,
         new java.lang.String[] { "Entries", });
-    internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor =
-      internal_static_akka_cluster_ddata_VersionVector_descriptor.getNestedTypes().get(0);
-    internal_static_akka_cluster_ddata_VersionVector_Entry_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor =
+      internal_static_org_apache_pekko_cluster_ddata_VersionVector_descriptor.getNestedTypes().get(0);
+    internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_VersionVector_Entry_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_VersionVector_Entry_descriptor,
         new java.lang.String[] { "Node", "Version", });
-    internal_static_akka_cluster_ddata_OtherMessage_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor =
       getDescriptor().getMessageTypes().get(18);
-    internal_static_akka_cluster_ddata_OtherMessage_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_OtherMessage_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_OtherMessage_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_OtherMessage_descriptor,
         new java.lang.String[] { "EnclosedMessage", "SerializerId", "MessageManifest", });
-    internal_static_akka_cluster_ddata_StringGSet_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor =
       getDescriptor().getMessageTypes().get(19);
-    internal_static_akka_cluster_ddata_StringGSet_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_StringGSet_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_StringGSet_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_StringGSet_descriptor,
         new java.lang.String[] { "Elements", });
-    internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor =
+    internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor =
       getDescriptor().getMessageTypes().get(20);
-    internal_static_akka_cluster_ddata_DurableDataEnvelope_fieldAccessorTable = new
+    internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_fieldAccessorTable = new
       org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_akka_cluster_ddata_DurableDataEnvelope_descriptor,
+        internal_static_org_apache_pekko_cluster_ddata_DurableDataEnvelope_descriptor,
         new java.lang.String[] { "Data", "Pruning", });
   }
 
