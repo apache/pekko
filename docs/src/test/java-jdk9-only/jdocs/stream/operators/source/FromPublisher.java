@@ -31,10 +31,10 @@ public interface FromPublisher {
         public static final class Source {
             public
             // #api
-            static <T> pekko.stream.javadsl.Source<T, NotUsed> fromPublisher(Publisher<T> publisher)
+            static <T> org.apache.pekko.stream.javadsl.Source<T, NotUsed> fromPublisher(Publisher<T> publisher)
             // #api
             {
-                return pekko.stream.javadsl.JavaFlowSupport.Source.<T>fromPublisher(publisher);
+                return org.apache.pekko.stream.javadsl.JavaFlowSupport.Source.<T>fromPublisher(publisher);
             }
         }
     }
