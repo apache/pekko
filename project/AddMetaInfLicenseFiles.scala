@@ -47,13 +47,14 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
    * as well as an additional "COPYING.protobuf" file.
    */
   lazy val protobufV3Settings = Seq(
-    apacheSonatypeLicenseFile := baseDir.value / "legal" / "pekko-protobuf-v3-jar-license.txt") ++ inConfig(Compile)(Seq(
-    resourceGenerators += {
-      Def.task {
-        List(
-          SonatypeApachePlugin.addFileToMetaInf(resourceManaged.value, baseDir.value / "COPYING.protobuf"))
-      }
-    }))
+    apacheSonatypeLicenseFile := baseDir.value / "legal" / "pekko-protobuf-v3-jar-license.txt") ++ inConfig(Compile)(
+    Seq(
+      resourceGenerators += {
+        Def.task {
+          List(
+            SonatypeApachePlugin.addFileToMetaInf(resourceManaged.value, baseDir.value / "COPYING.protobuf"))
+        }
+      }))
 
   override def trigger = allRequirements
 
