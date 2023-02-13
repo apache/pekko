@@ -93,7 +93,7 @@ trait CopyrightHeader extends AutoPlugin {
     }
 
     private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean = {
-      ((isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text))
+      (isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text)
     }
 
   })
