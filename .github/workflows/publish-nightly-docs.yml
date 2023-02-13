@@ -17,15 +17,10 @@
 
 # Based on Apache Arrow's java-nightly workflow
 # https://github.com/apache/arrow/blob/master/.github/workflows/java_nightly.yml
-name: Publish nightly artifacts
+name: Publish nightly documentation
 
 on:
   workflow_dispatch:
-    inputs:
-      keep:
-        description: Number of versions to keep.
-        required: false
-        default: 30
   schedule:
     - cron: "0 0 * * *"
 
@@ -34,7 +29,7 @@ permissions:
 
 jobs:
   publish-nightly:
-    name: Publish nightly
+    name: Publish nightly documentation
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:
@@ -53,73 +48,56 @@ jobs:
         run: |-
           sudo apt-get install graphviz
 
-#      disable mima check until first pekko release is done
-#      - name: Report MIMA incompatibility issues
-#        run: |-
-#          sbt +mimaReportBinaryIssues
-
-      - name: Publish to Apache Maven repo
-        env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_PW: ${{ secrets.NEXUS_PW }}
-        run: sbt +publish
-
-      - name: Publish local
-        run: |-
-          sbt +publishM2
-
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
 
-      - name: Sync from remote
+      - name: Build Documentation
+        run: |-
+          sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
+
+      - name: Setup nightly docs directory
         uses: ./.github/actions/sync-nightlies
         with:
-          switches: -avzh --update --delete --progress
-          local_path: repo
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/snapshots
+          upload: true
+          switches: --archive --compress --update --delete --progress
+          local_path: LICENSE # dummy to make rsync create the docs directory first
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
 
-      - shell: bash
-        name: Show local repo sync from remote
-        run: |
-          for i in `ls -t repo/org/apache/pekko/`; do
-            echo "- $i: $(find repo/org/apache/pekko/$i -mindepth 1 -maxdepth 1 -type d \
-            | wc -l \
-            | xargs) versions available"
-          done
-
-      - shell: bash
-        name: Copy snapshots from local m2 repository
-        run: |
-          mkdir -p repo/org/apache/pekko/
-          cp -R $HOME/.m2/repository/org/apache/pekko/ repo/org/apache
-
-      - name: Prune repository
-        shell: bash
-        env:
-          KEEP: ${{ github.event.inputs.keep || 30 }}
-        run: |
-          for i in `ls -t repo/org/apache/pekko/`; do
-            find repo/org/apache/pekko/$i -mindepth 1 -maxdepth 1 -type d -print0 \
-            | xargs -0 ls -t -d \
-            | tail -n +$((KEEP + 1)) \
-            | xargs rm -rf
-          done
-
-      - name: Show repo contents
-        run: tree repo
-
-      - name: Sync to Remote
-        if: ${{ github.repository == 'apache/incubator-pekko' }}
+      - name: Upload documentation
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
-          switches: -avzh --omit-dir-times --update --delete --progress
-          local_path: repo
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/snapshots
+          switches: --archive --compress --update --delete --progress
+          local_path: docs/target/paradox/site/main/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Upload Scala API Docs
+        uses: ./.github/actions/sync-nightlies
+        with:
+          upload: true
+          switches: --archive --compress --update --delete --progress
+          local_path: target/scala-2.13/unidoc
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Upload Java API Docs
+        uses: ./.github/actions/sync-nightlies
+        with:
+          upload: true
+          switches: --archive --compress --update --delete --progress
+          local_path: target/javaunidoc
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
