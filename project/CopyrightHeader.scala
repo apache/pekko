@@ -88,16 +88,12 @@ trait CopyrightHeader extends AutoPlugin {
     private def isLightbendCopyrighted(text: String): Boolean =
       StringUtils.containsIgnoreCase(text, "lightbend inc.")
 
-    private def isDebianCopyrighted(text: String): Boolean =
-      StringUtils.containsIgnoreCase(text, "debian.org")
-
     private def isValidCopyrightAnnotated(text: String): Boolean = {
-      isApacheCopyrighted(text) || isDebianCopyrighted(text)
+      isApacheCopyrighted(text)
     }
 
     private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean = {
-      ((isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text)) ||
-      isDebianCopyrighted(text)
+      ((isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text))
     }
 
   })
