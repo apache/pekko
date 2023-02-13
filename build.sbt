@@ -113,6 +113,7 @@ lazy val actor = pekkoModule("actor")
   .settings(Dependencies.actor)
   .settings(OSGi.actor)
   .settings(AutomaticModuleName.settings("pekko.actor"))
+  .settings(AddMetaInfLicenseFiles.actorSettings)
   .settings(Compile / unmanagedSourceDirectories += {
     val ver = scalaVersion.value.take(4)
     (Compile / scalaSource).value.getParentFile / s"scala-$ver"
@@ -356,7 +357,7 @@ lazy val protobuf = pekkoModule("protobuf")
 lazy val protobufV3 = pekkoModule("protobuf-v3")
   .settings(OSGi.protobufV3)
   .settings(AutomaticModuleName.settings("pekko.protobuf.v3"))
-  .settings(AddMetaInfLicenseFiles.protobufSettings)
+  .settings(AddMetaInfLicenseFiles.protobufV3Settings)
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
   .disablePlugins(MimaPlugin)
   .settings(
