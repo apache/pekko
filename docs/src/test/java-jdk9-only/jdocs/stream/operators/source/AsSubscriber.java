@@ -32,10 +32,10 @@ public interface AsSubscriber {
         public static final class Source {
             public
             // #api
-            static <T> pekko.stream.javadsl.Source<T, Subscriber<T>> asSubscriber()
+            static <T> org.apache.pekko.stream.javadsl.Source<T, Subscriber<T>> asSubscriber()
             // #api
             {
-                return pekko.stream.javadsl.JavaFlowSupport.Source.<T>asSubscriber();
+                return org.apache.pekko.stream.javadsl.JavaFlowSupport.Source.<T>asSubscriber();
             }
         }
     }
