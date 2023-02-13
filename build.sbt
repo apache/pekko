@@ -367,7 +367,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
         // https://github.com/sbt/sbt-assembly/issues/400
         .inLibrary(Dependencies.Compile.Provided.protobufRuntime)
         .inProject),
-    assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(false),
+    assembly / assemblyOption := (assembly / assemblyOption).value.withIncludeScala(false).withIncludeBin(true),
     autoScalaLibrary := false, // do not include scala dependency in pom
     exportJars := true, // in dependent projects, use assembled and shaded jar
     makePomConfiguration := makePomConfiguration.value
@@ -377,8 +377,9 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
       ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
     Compile / packageBin := ReproducibleBuildsPlugin
       .postProcessJar((Compile / assembly).value), // package by running assembly
-    // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365
-    assembly / fullClasspath := (Runtime / managedClasspath).value, // otherwise, there's a cyclic dependency between packageBin and assembly
+    // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
+    // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
+    assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
     assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     description := "Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
 
