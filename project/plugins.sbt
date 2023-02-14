@@ -1,7 +1,4 @@
-libraryDependencies += Defaults.sbtPluginExtra(
-  "com.eed3si9n" % "sbt-assembly" % "1.2.0",
-  (pluginCrossBuild / sbtBinaryVersion).value,
-  (pluginCrossBuild / scalaBinaryVersion).value)
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.1")
 
 addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
 addSbtPlugin("com.lightbend.sbt" % "sbt-bill-of-materials" % "1.0.2")
