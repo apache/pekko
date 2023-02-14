@@ -40,7 +40,7 @@ abstract class PluginSpec(val config: Config)
   private var _writerUuid: String = _
 
   // used to avoid messages be delivered to a restarted actor,
-  // this is akka-persistence internals and journals themselves don't really care
+  // this is pekko-persistence internals and journals themselves don't really care
   protected val actorInstanceId = 1
 
   override protected def beforeEach(): Unit = {

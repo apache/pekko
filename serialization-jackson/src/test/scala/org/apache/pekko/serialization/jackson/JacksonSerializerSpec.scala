@@ -163,7 +163,7 @@ object ScalaTestMessages {
   final case class WithPekkoSerializer(
       @JsonDeserialize(`using` = classOf[PekkoSerializationDeserializer])
       @JsonSerialize(`using` = classOf[PekkoSerializationSerializer])
-      akkaSerializer: HasPekkoSerializer)
+      pekkoSerializer: HasPekkoSerializer)
       extends TestMessage
 }
 

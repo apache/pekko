@@ -57,7 +57,7 @@ abstract class AsyncSerializerWithStringManifest(system: ExtendedActorSystem)
 
   final override def toBinary(o: AnyRef): Array[Byte] = {
     log.warning(
-      "Async serializer called synchronously. This will block. Async serializers should only be used for akka persistence plugins that support them. Class: {}",
+      "Async serializer called synchronously. This will block. Async serializers should only be used for pekko persistence plugins that support them. Class: {}",
       o.getClass)
     Await.result(toBinaryAsync(o), Duration.Inf)
   }

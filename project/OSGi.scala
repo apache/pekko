@@ -47,7 +47,7 @@ object OSGi {
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("org.apache.pekko*"),
     OsgiKeys.privatePackage := Seq("org.apache.pekko.osgi.impl"),
-    // akka-actor packages are not imported, as contained in the CP
+    // pekko-actor packages are not imported, as contained in the CP
     OsgiKeys.importPackage := (osgiOptionalImports.map(optionalResolution)) ++ Seq(
       "!sun.misc",
       scalaJava8CompatImport(),
@@ -129,13 +129,13 @@ object OSGi {
   def defaultImports(scalaVersion: String) =
     Seq(
       "!sun.misc",
-      akkaImport(),
+      pekkoImport(),
       configImport(),
       "!scala.compat.java8.*",
       "!scala.util.parsing.*",
       scalaImport(scalaVersion),
       "*")
-  def akkaImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "2.6", "2.7")
+  def pekkoImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "2.6", "2.7")
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
     val packageName = "scala.*"

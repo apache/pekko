@@ -40,7 +40,7 @@ object JournalSpec {
 }
 
 /**
- * This spec aims to verify custom akka-persistence Journal implementations.
+ * This spec aims to verify custom pekko-persistence Journal implementations.
  * Plugin authors are highly encouraged to include it in their plugin's test suites.
  *
  * In case your journal plugin needs some kind of setup or teardown, override the `beforeAll` or `afterAll`

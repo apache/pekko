@@ -24,7 +24,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   override lazy val projectSettings = disciplineSettings
 
   // allow toggling for pocs/exploration of ideas without discpline
-  val enabled = !sys.props.contains("akka.no.discipline")
+  val enabled = !sys.props.contains("pekko.no.discipline")
 
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalJavaWarningsFor = Set(
@@ -34,7 +34,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-actor-typed-tests",
     // references to deprecated PARSER fields in generated message formats?
     "pekko-cluster-typed",
-    // use of deprecated akka.protobuf.GeneratedMessage
+    // use of deprecated org.apache.pekko.protobuf.GeneratedMessage
     "pekko-protobuf",
     "pekko-protobuf-v3",
     // references to deprecated PARSER fields in generated message formats?
@@ -140,7 +140,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
            else Seq.empty),
         // Discipline is not needed for the docs compilation run (which uses
         // different compiler phases from the regular run), and in particular
-        // '-Ywarn-unused:explicits' breaks 'sbt ++2.13.0-M5 akka-actor/doc'
+        // '-Ywarn-unused:explicits' breaks 'sbt ++2.13.0-M5 actor/doc'
         // https://github.com/akka/akka/issues/26119
         Compile / doc / scalacOptions --= disciplineScalacOptions.toSeq :+ "-Xfatal-warnings",
         // having discipline warnings in console is just an annoyance

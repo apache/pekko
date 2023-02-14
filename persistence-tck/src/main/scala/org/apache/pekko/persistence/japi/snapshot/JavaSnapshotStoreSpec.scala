@@ -24,7 +24,7 @@ import org.scalatest.{ Args, ConfigMap, Filter, Status, Suite, TestData }
 /**
  * JAVA API
  *
- * This spec aims to verify custom akka-persistence [[pekko.persistence.snapshot.SnapshotStore]] implementations.
+ * This spec aims to verify custom pekko-persistence [[pekko.persistence.snapshot.SnapshotStore]] implementations.
  * Plugin authors are highly encouraged to include it in their plugin's test suites.
  *
  * In case your snapshot-store plugin needs some kind of setup or teardown, override the `beforeAll` or `afterAll`

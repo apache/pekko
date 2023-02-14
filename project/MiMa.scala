@@ -32,7 +32,7 @@ object MiMa extends AutoPlugin {
 
   override val projectSettings = Seq(
     mimaReportSignatureProblems := true,
-    mimaPreviousArtifacts := akkaPreviousArtifacts(name.value, organization.value, scalaBinaryVersion.value),
+    mimaPreviousArtifacts := pekkoPreviousArtifacts(name.value, organization.value, scalaBinaryVersion.value),
     checkMimaFilterDirectories := checkFilterDirectories(baseDirectory.value))
 
   def checkFilterDirectories(moduleRoot: File): Unit = {
@@ -44,7 +44,7 @@ object MiMa extends AutoPlugin {
     }
   }
 
-  def akkaPreviousArtifacts(
+  def pekkoPreviousArtifacts(
       projectName: String,
       organization: String,
       scalaBinaryVersion: String): Set[sbt.ModuleID] = {

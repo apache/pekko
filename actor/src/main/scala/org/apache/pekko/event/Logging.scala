@@ -269,7 +269,7 @@ trait LoggingBus extends ActorEventBus {
  *
  * class MyClass extends MyType {
  *   val sys = ActorSystem("sys")
- *   val log = Logging(sys, this) // will use "hallo,akka://sys" as logSource
+ *   val log = Logging(sys, this) // will use "hallo,pekko://sys" as logSource
  *   def name = "hallo"
  * }
  * }}}
@@ -1113,7 +1113,7 @@ object Logging {
    * <code>pekko.stdout-loglevel</code>.
    */
   class StandardOutLogger extends MinimalActorRef with StdOutLogger {
-    val path: ActorPath = RootActorPath(Address("akka", "all-systems"), "/StandardOutLogger")
+    val path: ActorPath = RootActorPath(Address("pekko", "all-systems"), "/StandardOutLogger")
     def provider: ActorRefProvider = throw new UnsupportedOperationException("StandardOutLogger does not provide")
     override val toString = "StandardOutLogger"
     override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit =
@@ -1683,7 +1683,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
   def clearMDC(): Unit = mdc(emptyMDC)
 }
 
-/** DO NOT INHERIT: Class is open only for use by akka-slf4j */
+/** DO NOT INHERIT: Class is open only for use by pekko-slf4j */
 @DoNotInherit
 class LogMarker(val name: String, val properties: Map[String, Any]) {
 
@@ -1731,9 +1731,9 @@ object LogMarker {
    * INTERNAL API
    */
   @InternalApi private[pekko] object Properties {
-    val MessageClass = "akkaMessageClass"
-    val RemoteAddress = "akkaRemoteAddress"
-    val RemoteAddressUid = "akkaRemoteAddressUid"
+    val MessageClass = "pekkoMessageClass"
+    val RemoteAddress = "pekkoRemoteAddress"
+    val RemoteAddressUid = "pekkoRemoteAddressUid"
   }
 
 }

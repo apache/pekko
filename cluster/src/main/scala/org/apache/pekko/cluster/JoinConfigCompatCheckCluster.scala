@@ -28,8 +28,8 @@ import pekko.cluster.sbr.SplitBrainResolverProvider
   private val DowningProviderPath = "pekko.cluster.downing-provider-class"
   private val SbrStrategyPath = "pekko.cluster.split-brain-resolver.active-strategy"
 
-  private val AkkaSbrProviderClass = classOf[SplitBrainResolverProvider].getName
-  private val LightbendSbrProviderClass = "com.lightbend.pekko.sbr.SplitBrainResolverProvider"
+  private val PekkoSbrProviderClass = classOf[SplitBrainResolverProvider].getName
+  private val LightbendSbrProviderClass = "com.lightbend.akka.sbr.SplitBrainResolverProvider"
 }
 
 /**
@@ -46,7 +46,7 @@ final class JoinConfigCompatCheckCluster extends JoinConfigCompatChecker {
     val actualDowningProvider = actualConfig.getString(DowningProviderPath)
     val downingProviderResult =
       if (toCheckDowningProvider == actualDowningProvider || Set(toCheckDowningProvider, actualDowningProvider) == Set(
-          AkkaSbrProviderClass,
+          PekkoSbrProviderClass,
           LightbendSbrProviderClass))
         Valid
       else

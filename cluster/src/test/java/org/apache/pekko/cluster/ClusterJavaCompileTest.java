@@ -27,7 +27,7 @@ public class ClusterJavaCompileTest {
   final Cluster cluster = null;
 
   public void compileJoinSeedNodesInJava() {
-    final List<Address> addresses = Collections.singletonList(new Address("akka", "MySystem"));
+    final List<Address> addresses = Collections.singletonList(new Address("pekko", "MySystem"));
     cluster.joinSeedNodes(addresses);
   }
 }

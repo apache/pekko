@@ -39,9 +39,9 @@ object PekkoSSLConfig extends ExtensionId[PekkoSSLConfig] with ExtensionIdProvid
     new PekkoSSLConfig(system, defaultSSLConfigSettings(system))
 
   def defaultSSLConfigSettings(system: ActorSystem): SSLConfigSettings = {
-    val akkaOverrides = system.settings.config.getConfig("pekko.ssl-config")
+    val pekkoOverrides = system.settings.config.getConfig("pekko.ssl-config")
     val defaults = system.settings.config.getConfig("ssl-config")
-    SSLConfigFactory.parse(akkaOverrides.withFallback(defaults))
+    SSLConfigFactory.parse(pekkoOverrides.withFallback(defaults))
   }
 
 }

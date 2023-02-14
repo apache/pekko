@@ -357,10 +357,10 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
       // mdc on defer is empty
       val ref = LoggingTestKit
         .info("Starting")
-        // not counting for example "akkaSource", but it shouldn't have any other entries
+        // not counting for example "pekkoSource", but it shouldn't have any other entries
         .withCustom(logEvent =>
           logEvent.mdc.keysIterator.forall(entry =>
-            entry.startsWith("akka") || entry == "sourceActorSystem" || entry == "static") &&
+            entry.startsWith("pekko") || entry == "sourceActorSystem" || entry == "static") &&
           logEvent.mdc("static") == "1")
         .expect {
           spawn(behaviors)

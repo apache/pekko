@@ -150,7 +150,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       }
       sender() ! answer
     case Dns.Resolve(name) =>
-      // no where in akka now sends this message, but supported until Dns.Resolve/Resolved have been removed
+      // no where in pekko now sends this message, but supported until Dns.Resolve/Resolved have been removed
       val answer: Dns.Resolved = cache.cached(name) match {
         case Some(a) => a
         case None =>

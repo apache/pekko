@@ -181,7 +181,7 @@ class ActorSystemSpec
 
     "return default address " in {
       withSystem("address", Behaviors.empty[String]) { sys =>
-        sys.address shouldBe Address("akka", "adapter-address")
+        sys.address shouldBe Address("pekko", "adapter-address")
       }
     }
 

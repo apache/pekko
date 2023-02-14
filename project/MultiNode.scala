@@ -58,17 +58,17 @@ object MultiNode extends AutoPlugin {
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
     // -Dmultinode.Djava.net.preferIPv4Stack=true -Dmultinode.Xmx512m -Dmultinode.XX:MaxPermSize=256M
-    // -DMultiJvm.akka.cluster.Stress.nrOfNodes=15
+    // -DMultiJvm.pekko.cluster.Stress.nrOfNodes=15
     val MultinodeJvmArgs = "multinode\\.(D|X)(.*)".r
-    val knownPrefix = Set("akka.", "MultiJvm.", "aeron.")
-    val akkaProperties = System.getProperties.stringPropertyNames.asScala.toList.collect {
+    val knownPrefix = Set("pekko.", "akka.", "MultiJvm.", "aeron.")
+    val pekkoProperties = System.getProperties.stringPropertyNames.asScala.toList.collect {
       case MultinodeJvmArgs(a, b) =>
         val value = System.getProperty("multinode." + a + b)
         "-" + a + b + (if (value == "") "" else "=" + value)
       case key: String if knownPrefix.exists(pre => key.startsWith(pre)) => "-D" + key + "=" + System.getProperty(key)
     }
 
-    "-Xmx256m" :: akkaProperties ::: CliOptions.sbtLogNoFormat.ifTrue("-Dpekko.test.nocolor=true").toList
+    "-Xmx256m" :: pekkoProperties ::: CliOptions.sbtLogNoFormat.ifTrue("-Dpekko.test.nocolor=true").toList
   } ++ JdkOptions.versionSpecificJavaOptions
 
   private val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)

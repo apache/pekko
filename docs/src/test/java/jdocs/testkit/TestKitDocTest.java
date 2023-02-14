@@ -518,7 +518,7 @@ public class TestKitDocTest extends AbstractJavaTest {
 
         final int result =
             new EventFilter(ActorKilledException.class, system)
-                .from("akka://TestKitDocTest/user/victim")
+                .from("pekko://TestKitDocTest/user/victim")
                 .occurrences(1)
                 .intercept(
                     () -> {

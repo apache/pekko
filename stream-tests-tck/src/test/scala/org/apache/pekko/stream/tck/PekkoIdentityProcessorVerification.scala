@@ -50,7 +50,7 @@ abstract class PekkoIdentityProcessorVerification[T](env: TestEnvironment, publi
     }
   }
 
-  /** By default Akka Publishers do not support Fanout! */
+  /** By default Pekko Publishers do not support Fanout! */
   override def maxSupportedSubscribers: Long = 1L
 
   override lazy val publisherExecutorService: ExecutorService =
