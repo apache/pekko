@@ -55,53 +55,21 @@ jobs:
         run: |-
           sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
 
-      - name: Make dummy directory
+      # Create directory structure upfront since rsync does not create intermediate directories otherwise
+      - name: Create nightly directory structure
         run: |-
-          mkdir empty-dir
+          mkdir -p target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/
+          mv docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/docs
+          mv target/scala-2.13/unidoc target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/api
+          mv target/javaunidoc target/nightly-docs/docs/pekko/${{ github.ref_name }}-snapshot/japi
 
-      - name: Setup nightly docs directory
+      - name: Upload nightly docs
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
-          switches: --archive --compress --update --delete --progress
-          local_path: empty-dir/ # dummy to make rsync create the docs directory first
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}
-          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
-          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
-          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
-          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
-
-      - name: Upload documentation
-        uses: ./.github/actions/sync-nightlies
-        with:
-          upload: true
-          switches: --archive --compress --update --delete --progress
-          local_path: docs/target/paradox/site/main/
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/docs
-          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
-          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
-          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
-          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
-
-      - name: Upload Scala API Docs
-        uses: ./.github/actions/sync-nightlies
-        with:
-          upload: true
-          switches: --archive --compress --update --delete --progress
-          local_path: target/scala-2.13/unidoc
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/api
-          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
-          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
-          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
-          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
-
-      - name: Upload Java API Docs
-        uses: ./.github/actions/sync-nightlies
-        with:
-          upload: true
-          switches: --archive --compress --update --delete --progress
-          local_path: target/javaunidoc
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/pekko-docs-${{ github.ref_name }}/japi
+          switches: --archive --compress --update --delete --progress --relative
+          local_path: target/nightly-docs/./docs/pekko/ # The intermediate dot is to show `--relative` which paths to operate on
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
