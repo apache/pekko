@@ -75,7 +75,8 @@ pekko {
     import pekko.cluster.typed.JoinSeedNodes
 
     val seedNodes: List[Address] =
-      List("pekko://ClusterSystem@127.0.0.1:2551", "pekko://ClusterSystem@127.0.0.1:2552").map(AddressFromURIString.parse)
+      List("pekko://ClusterSystem@127.0.0.1:2551", "pekko://ClusterSystem@127.0.0.1:2552").map(
+        AddressFromURIString.parse)
     Cluster(system).manager ! JoinSeedNodes(seedNodes)
     // #join-seed-nodes
   }

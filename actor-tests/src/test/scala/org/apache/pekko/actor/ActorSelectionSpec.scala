@@ -354,7 +354,8 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
         "pekko://ActorSelectionSpec/user/c2/c21")
       ActorSelection(c2, "/").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2")
       ActorSelection(c2, "../*/hello").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2/../*/hello")
-      ActorSelection(c2, "/../*/hello").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2/../*/hello")
+      ActorSelection(c2, "/../*/hello").toSerializationFormat should ===(
+        "pekko://ActorSelectionSpec/user/c2/../*/hello")
     }
 
     "send ActorSelection targeted to missing actor to deadLetters" in {
