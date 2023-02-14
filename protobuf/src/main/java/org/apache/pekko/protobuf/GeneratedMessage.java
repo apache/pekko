@@ -67,10 +67,10 @@ import java.util.TreeMap;
  *
  * @author kenton@google.com Kenton Varda
  *
- * @deprecated akka-protobuf was never intended to be used by end users.
- *   It is deprecated since 2.6.0 in favor of using Protobuf v3.
+ * @deprecated pekko-protobuf was never intended to be used by end users.
+ *   It is deprecated since Akka 2.6.0 in favor of using Protobuf v3.
  *   Applications should use standard Protobuf dependency instead of
- *   akka-protobuf or akka-protobuf-v3.
+ *   pekko-protobuf or pekko-protobuf-v3.
  */
 @Deprecated
 public abstract class GeneratedMessage extends AbstractMessage
