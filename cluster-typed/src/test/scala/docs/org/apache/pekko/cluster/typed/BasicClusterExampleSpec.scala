@@ -52,8 +52,8 @@ pekko {
 
   cluster {
     seed-nodes = [
-      "akka://ClusterSystem@127.0.0.1:2551",
-      "akka://ClusterSystem@127.0.0.1:2552"]
+      "pekko://ClusterSystem@127.0.0.1:2551",
+      "pekko://ClusterSystem@127.0.0.1:2552"]
     
     downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
   }
@@ -75,7 +75,7 @@ pekko {
     import pekko.cluster.typed.JoinSeedNodes
 
     val seedNodes: List[Address] =
-      List("akka://ClusterSystem@127.0.0.1:2551", "akka://ClusterSystem@127.0.0.1:2552").map(AddressFromURIString.parse)
+      List("pekko://ClusterSystem@127.0.0.1:2551", "pekko://ClusterSystem@127.0.0.1:2552").map(AddressFromURIString.parse)
     Cluster(system).manager ! JoinSeedNodes(seedNodes)
     // #join-seed-nodes
   }
@@ -133,7 +133,7 @@ class BasicClusterConfigSpec extends AnyWordSpec with ScalaFutures with Eventual
           pekko.remote.classic.netty.tcp.port = $port
           pekko.remote.artery.canonical.port = $port
           pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-          pekko.cluster.seed-nodes = [ "akka://ClusterSystem@127.0.0.1:$sys1Port", "akka://ClusterSystem@127.0.0.1:$sys2Port" ]
+          pekko.cluster.seed-nodes = [ "pekko://ClusterSystem@127.0.0.1:$sys1Port", "pekko://ClusterSystem@127.0.0.1:$sys2Port" ]
         """)
 
       val system1 =

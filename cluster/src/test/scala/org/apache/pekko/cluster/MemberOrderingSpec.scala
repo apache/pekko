@@ -35,15 +35,15 @@ class MemberOrderingSpec extends AnyWordSpec with Matchers {
 
     "order members by host:port" in {
       val members = SortedSet.empty[Member] +
-        m(AddressFromURIString("akka://sys@darkstar:1112"), Up) +
-        m(AddressFromURIString("akka://sys@darkstar:1113"), Joining) +
-        m(AddressFromURIString("akka://sys@darkstar:1111"), Up)
+        m(AddressFromURIString("pekko://sys@darkstar:1112"), Up) +
+        m(AddressFromURIString("pekko://sys@darkstar:1113"), Joining) +
+        m(AddressFromURIString("pekko://sys@darkstar:1111"), Up)
 
       val seq = members.toSeq
       seq.size should ===(3)
-      seq(0) should ===(m(AddressFromURIString("akka://sys@darkstar:1111"), Up))
-      seq(1) should ===(m(AddressFromURIString("akka://sys@darkstar:1112"), Up))
-      seq(2) should ===(m(AddressFromURIString("akka://sys@darkstar:1113"), Joining))
+      seq(0) should ===(m(AddressFromURIString("pekko://sys@darkstar:1111"), Up))
+      seq(1) should ===(m(AddressFromURIString("pekko://sys@darkstar:1112"), Up))
+      seq(2) should ===(m(AddressFromURIString("pekko://sys@darkstar:1113"), Joining))
     }
 
     "be sorted by address correctly" in {
@@ -119,47 +119,47 @@ class MemberOrderingSpec extends AnyWordSpec with Matchers {
 
     "order addresses by port" in {
       val addresses = SortedSet.empty[Address] +
-        AddressFromURIString("akka://sys@darkstar:1112") +
-        AddressFromURIString("akka://sys@darkstar:1113") +
-        AddressFromURIString("akka://sys@darkstar:1110") +
-        AddressFromURIString("akka://sys@darkstar:1111")
+        AddressFromURIString("pekko://sys@darkstar:1112") +
+        AddressFromURIString("pekko://sys@darkstar:1113") +
+        AddressFromURIString("pekko://sys@darkstar:1110") +
+        AddressFromURIString("pekko://sys@darkstar:1111")
 
       val seq = addresses.toSeq
       seq.size should ===(4)
-      seq(0) should ===(AddressFromURIString("akka://sys@darkstar:1110"))
-      seq(1) should ===(AddressFromURIString("akka://sys@darkstar:1111"))
-      seq(2) should ===(AddressFromURIString("akka://sys@darkstar:1112"))
-      seq(3) should ===(AddressFromURIString("akka://sys@darkstar:1113"))
+      seq(0) should ===(AddressFromURIString("pekko://sys@darkstar:1110"))
+      seq(1) should ===(AddressFromURIString("pekko://sys@darkstar:1111"))
+      seq(2) should ===(AddressFromURIString("pekko://sys@darkstar:1112"))
+      seq(3) should ===(AddressFromURIString("pekko://sys@darkstar:1113"))
     }
 
     "order addresses by hostname" in {
       val addresses = SortedSet.empty[Address] +
-        AddressFromURIString("akka://sys@darkstar2:1110") +
-        AddressFromURIString("akka://sys@darkstar1:1110") +
-        AddressFromURIString("akka://sys@darkstar3:1110") +
-        AddressFromURIString("akka://sys@darkstar0:1110")
+        AddressFromURIString("pekko://sys@darkstar2:1110") +
+        AddressFromURIString("pekko://sys@darkstar1:1110") +
+        AddressFromURIString("pekko://sys@darkstar3:1110") +
+        AddressFromURIString("pekko://sys@darkstar0:1110")
 
       val seq = addresses.toSeq
       seq.size should ===(4)
-      seq(0) should ===(AddressFromURIString("akka://sys@darkstar0:1110"))
-      seq(1) should ===(AddressFromURIString("akka://sys@darkstar1:1110"))
-      seq(2) should ===(AddressFromURIString("akka://sys@darkstar2:1110"))
-      seq(3) should ===(AddressFromURIString("akka://sys@darkstar3:1110"))
+      seq(0) should ===(AddressFromURIString("pekko://sys@darkstar0:1110"))
+      seq(1) should ===(AddressFromURIString("pekko://sys@darkstar1:1110"))
+      seq(2) should ===(AddressFromURIString("pekko://sys@darkstar2:1110"))
+      seq(3) should ===(AddressFromURIString("pekko://sys@darkstar3:1110"))
     }
 
     "order addresses by hostname and port" in {
       val addresses = SortedSet.empty[Address] +
-        AddressFromURIString("akka://sys@darkstar2:1110") +
-        AddressFromURIString("akka://sys@darkstar0:1111") +
-        AddressFromURIString("akka://sys@darkstar2:1111") +
-        AddressFromURIString("akka://sys@darkstar0:1110")
+        AddressFromURIString("pekko://sys@darkstar2:1110") +
+        AddressFromURIString("pekko://sys@darkstar0:1111") +
+        AddressFromURIString("pekko://sys@darkstar2:1111") +
+        AddressFromURIString("pekko://sys@darkstar0:1110")
 
       val seq = addresses.toSeq
       seq.size should ===(4)
-      seq(0) should ===(AddressFromURIString("akka://sys@darkstar0:1110"))
-      seq(1) should ===(AddressFromURIString("akka://sys@darkstar0:1111"))
-      seq(2) should ===(AddressFromURIString("akka://sys@darkstar2:1110"))
-      seq(3) should ===(AddressFromURIString("akka://sys@darkstar2:1111"))
+      seq(0) should ===(AddressFromURIString("pekko://sys@darkstar0:1110"))
+      seq(1) should ===(AddressFromURIString("pekko://sys@darkstar0:1111"))
+      seq(2) should ===(AddressFromURIString("pekko://sys@darkstar2:1110"))
+      seq(3) should ===(AddressFromURIString("pekko://sys@darkstar2:1111"))
     }
   }
 

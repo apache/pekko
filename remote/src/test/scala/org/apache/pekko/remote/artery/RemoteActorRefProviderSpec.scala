@@ -32,19 +32,19 @@ class RemoteActorRefProviderSpec extends ArteryMultiNodeSpec {
   "RemoteActorRefProvider" must {
 
     "resolve local actor selection" in {
-      val sel = system.actorSelection(s"akka://${system.name}@${addressA.host.get}:${addressA.port.get}/user/echo")
+      val sel = system.actorSelection(s"pekko://${system.name}@${addressA.host.get}:${addressA.port.get}/user/echo")
       sel.anchor.asInstanceOf[InternalActorRef].isLocal should be(true)
     }
 
     "resolve remote actor selection" in {
-      val sel = system.actorSelection(s"akka://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo")
+      val sel = system.actorSelection(s"pekko://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo")
       sel.anchor.getClass should ===(classOf[RemoteActorRef])
       sel.anchor.asInstanceOf[InternalActorRef].isLocal should be(false)
     }
 
     "cache resolveActorRef for local ref" in {
       val provider = localSystem.asInstanceOf[ExtendedActorSystem].provider
-      val path = s"akka://${system.name}@${addressA.host.get}:${addressA.port.get}/user/echo"
+      val path = s"pekko://${system.name}@${addressA.host.get}:${addressA.port.get}/user/echo"
       val ref1 = provider.resolveActorRef(path)
       ref1.getClass should !==(classOf[EmptyLocalActorRef])
       ref1.asInstanceOf[ActorRefScope].isLocal should ===(true)
@@ -55,7 +55,7 @@ class RemoteActorRefProviderSpec extends ArteryMultiNodeSpec {
 
     "not cache resolveActorRef for unresolved ref" in {
       val provider = localSystem.asInstanceOf[ExtendedActorSystem].provider
-      val path = s"akka://${system.name}@${addressA.host.get}:${addressA.port.get}/user/doesNotExist"
+      val path = s"pekko://${system.name}@${addressA.host.get}:${addressA.port.get}/user/doesNotExist"
       val ref1 = provider.resolveActorRef(path)
       ref1.getClass should ===(classOf[EmptyLocalActorRef])
 
@@ -65,7 +65,7 @@ class RemoteActorRefProviderSpec extends ArteryMultiNodeSpec {
 
     "cache resolveActorRef for remote ref" in {
       val provider = localSystem.asInstanceOf[ExtendedActorSystem].provider
-      val path = s"akka://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo"
+      val path = s"pekko://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo"
       val ref1 = provider.resolveActorRef(path)
       ref1.getClass should ===(classOf[RemoteActorRef])
 

@@ -91,9 +91,9 @@ class RemoteDeploymentSpec
   val conf =
     s"""
     pekko.actor.deployment {
-      /blub.remote = "akka://${system.name}@localhost:$port"
-      /blub2.remote = "akka://${system.name}@localhost:$port"
-      "/parent*/*".remote = "akka://${system.name}@localhost:$port"
+      /blub.remote = "pekko://${system.name}@localhost:$port"
+      /blub2.remote = "pekko://${system.name}@localhost:$port"
+      "/parent*/*".remote = "pekko://${system.name}@localhost:$port"
     }
     pekko.remote.artery.advanced.inbound-lanes = 10
     pekko.remote.artery.advanced.outbound-lanes = 3
@@ -108,7 +108,7 @@ class RemoteDeploymentSpec
       val senderProbe = TestProbe()(masterSystem)
       val r = masterSystem.actorOf(Props[Echo1](), "blub")
       r.path.toString should ===(
-        s"akka://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub")
+        s"pekko://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub")
 
       r.tell(42, senderProbe.ref)
       senderProbe.expectMsg(42)
@@ -126,7 +126,7 @@ class RemoteDeploymentSpec
       val senderProbe = TestProbe()(masterSystem)
       val r = masterSystem.actorOf(Props[Echo1](), "blub2")
       r.path.toString should ===(
-        s"akka://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub2")
+        s"pekko://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub2")
 
       r.tell(42, senderProbe.ref)
       senderProbe.expectMsg(42)

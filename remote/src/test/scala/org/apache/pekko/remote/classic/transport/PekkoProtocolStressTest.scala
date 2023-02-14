@@ -136,7 +136,7 @@ class PekkoProtocolStressTest extends PekkoSpec(configA) with ImplicitSender wit
   override def beforeTermination(): Unit = {
     system.eventStream.publish(
       TestEvent.Mute(
-        EventFilter.warning(source = s"akka://AkkaProtocolStressTest/user/$$a", start = "received dead letter"),
+        EventFilter.warning(source = s"pekko://AkkaProtocolStressTest/user/$$a", start = "received dead letter"),
         EventFilter.warning(pattern = "received dead letter.*(InboundPayload|Disassociate)")))
     systemB.eventStream.publish(
       TestEvent.Mute(

@@ -29,7 +29,7 @@ object RemoteDeployerSpec {
         /service2 {
           router = round-robin-pool
           nr-of-instances = 3
-          remote = "akka://sys@wallace:2552"
+          remote = "pekko://sys@wallace:2552"
           dispatcher = mydispatcher
         }
       }
@@ -65,7 +65,7 @@ class RemoteDeployerSpec extends PekkoSpec(RemoteDeployerSpec.deployerConf) {
       intercept[ConfigurationException] {
         system.actorOf(Props.empty.withDeploy(Deploy.local), "service2")
       }.getMessage should ===(
-        "configuration requested remote deployment for local-only Props at [akka://RemoteDeployerSpec/user/service2]")
+        "configuration requested remote deployment for local-only Props at [pekko://RemoteDeployerSpec/user/service2]")
     }
 
   }

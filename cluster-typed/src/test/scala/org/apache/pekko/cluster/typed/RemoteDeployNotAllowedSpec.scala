@@ -45,7 +45,7 @@ object RemoteDeployNotAllowedSpec {
   def configWithRemoteDeployment(otherSystemPort: Int) = ConfigFactory.parseString(s"""
       pekko.actor.deployment {
         "/*" {
-          remote = "akka://sampleActorSystem@127.0.0.1:$otherSystemPort"
+          remote = "pekko://sampleActorSystem@127.0.0.1:$otherSystemPort"
         }
       }
     """).withFallback(config)

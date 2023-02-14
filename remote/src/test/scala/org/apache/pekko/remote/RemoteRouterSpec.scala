@@ -89,7 +89,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
           nr-of-instances = 2
         }
         /local-blub {
-          remote = "akka://$masterSystemName"
+          remote = "pekko://$masterSystemName"
           router = round-robin-pool
           nr-of-instances = 2
           target.nodes = ["$protocol://${sysName}@localhost:${port}"]
@@ -193,7 +193,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
           .props(echoActorProps)
           .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://${sysName}@localhost:${port}")))),
         "local-blub")
-      router.path.address.toString should ===(s"akka://$masterSystemName")
+      router.path.address.toString should ===(s"pekko://$masterSystemName")
       val replies = collectRouteePaths(probe, router, 5)
       val children = replies.toSet
       children should have size 2

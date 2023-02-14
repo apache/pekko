@@ -399,11 +399,11 @@ private[pekko] class RemoteActorRefProvider(
        *
        * Example:
        *
-       * akka://sys@home:1234/remote/akka/sys@remote:6667/remote/akka/sys@other:3333/user/a/b/c
+       * pekko://sys@home:1234/remote/akka/sys@remote:6667/remote/akka/sys@other:3333/user/a/b/c
        *
-       * means that the logical parent originates from “akka://sys@other:3333” with
-       * one child (may be “a” or “b”) being deployed on “akka://sys@remote:6667” and
-       * finally either “b” or “c” being created on “akka://sys@home:1234”, where
+       * means that the logical parent originates from “pekko://sys@other:3333” with
+       * one child (may be “a” or “b”) being deployed on “pekko://sys@remote:6667” and
+       * finally either “b” or “c” being created on “pekko://sys@home:1234”, where
        * this whole thing actually resides. Thus, the logical path is
        * “/user/a/b/c” and the physical path contains all remote placement
        * information.

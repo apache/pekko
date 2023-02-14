@@ -124,8 +124,8 @@ class RememberEntitiesShardIdExtractorChangeSpec
       withSystem("ThirdIncarnation", secondExtractShardId) { (system, region) =>
         val probe = TestProbe()(system)
         // Only way to verify that they were "normal"-remember-started here is to look at debug logs, will show
-        // [akka://ThirdIncarnation@127.0.0.1:51533/system/sharding/ShardIdExtractorChange/1/RememberEntitiesStore] Recovery completed for shard [1] with [0] entities
-        // [akka://ThirdIncarnation@127.0.0.1:51533/system/sharding/ShardIdExtractorChange/2/RememberEntitiesStore] Recovery completed for shard [2] with [3] entities
+        // [pekko://ThirdIncarnation@127.0.0.1:51533/system/sharding/ShardIdExtractorChange/1/RememberEntitiesStore] Recovery completed for shard [1] with [0] entities
+        // [pekko://ThirdIncarnation@127.0.0.1:51533/system/sharding/ShardIdExtractorChange/2/RememberEntitiesStore] Recovery completed for shard [2] with [3] entities
         awaitAssert {
           region.tell(ShardRegion.GetShardRegionState, probe.ref)
           val state = probe.expectMsgType[ShardRegion.CurrentShardRegionState]

@@ -95,10 +95,10 @@ class EnvelopeBufferSpec extends PekkoSpec {
       headerOut.inboundClassManifestCompressionTableVersion should ===(35.toByte)
       headerOut.serializer should ===(4)
       headerOut.senderActorRef(originUid).get.path.toSerializationFormat should ===(
-        "akka://EnvelopeBufferSpec/compressable0")
+        "pekko://EnvelopeBufferSpec/compressable0")
       headerOut.senderActorRefPath should ===(OptionVal.None)
       headerOut.recipientActorRef(originUid).get.path.toSerializationFormat should ===(
-        "akka://EnvelopeBufferSpec/compressable1")
+        "pekko://EnvelopeBufferSpec/compressable1")
       headerOut.recipientActorRefPath should ===(OptionVal.None)
       headerOut.manifest(originUid).get should ===("manifest1")
     }
@@ -129,9 +129,9 @@ class EnvelopeBufferSpec extends PekkoSpec {
       headerOut.version should ===(version)
       headerOut.uid should ===(42L)
       headerOut.serializer should ===(4)
-      headerOut.senderActorRefPath should ===(OptionVal.Some("akka://EnvelopeBufferSpec/uncompressable0"))
+      headerOut.senderActorRefPath should ===(OptionVal.Some("pekko://EnvelopeBufferSpec/uncompressable0"))
       headerOut.senderActorRef(originUid) should ===(OptionVal.None)
-      headerOut.recipientActorRefPath should ===(OptionVal.Some("akka://EnvelopeBufferSpec/uncompressable11"))
+      headerOut.recipientActorRefPath should ===(OptionVal.Some("pekko://EnvelopeBufferSpec/uncompressable11"))
       headerOut.recipientActorRef(originUid) should ===(OptionVal.None)
       headerOut.manifest(originUid).get should ===("uncompressable3333")
     }
@@ -158,9 +158,9 @@ class EnvelopeBufferSpec extends PekkoSpec {
       headerOut.uid should ===(42L)
       headerOut.serializer should ===(4)
       headerOut.senderActorRef(originUid).get.path.toSerializationFormat should ===(
-        "akka://EnvelopeBufferSpec/reallylongcompressablestring")
+        "pekko://EnvelopeBufferSpec/reallylongcompressablestring")
       headerOut.senderActorRefPath should ===(OptionVal.None)
-      headerOut.recipientActorRefPath should ===(OptionVal.Some("akka://EnvelopeBufferSpec/uncompressable1"))
+      headerOut.recipientActorRefPath should ===(OptionVal.Some("pekko://EnvelopeBufferSpec/uncompressable1"))
       headerOut.recipientActorRef(originUid) should ===(OptionVal.None)
       headerOut.manifest(originUid).get should ===("manifest1")
 
@@ -185,10 +185,10 @@ class EnvelopeBufferSpec extends PekkoSpec {
       headerOut.version should ===(version)
       headerOut.uid should ===(Long.MinValue)
       headerOut.serializer should ===(-1)
-      headerOut.senderActorRefPath should ===(OptionVal.Some("akka://EnvelopeBufferSpec/uncompressable0"))
+      headerOut.senderActorRefPath should ===(OptionVal.Some("pekko://EnvelopeBufferSpec/uncompressable0"))
       headerOut.senderActorRef(originUid) should ===(OptionVal.None)
       headerOut.recipientActorRef(originUid).get.path.toSerializationFormat should ===(
-        "akka://EnvelopeBufferSpec/reallylongcompressablestring")
+        "pekko://EnvelopeBufferSpec/reallylongcompressablestring")
       headerOut.recipientActorRefPath should ===(OptionVal.None)
       headerOut.manifest(originUid).get should ===("longlonglongliteralmanifest")
     }
@@ -213,9 +213,9 @@ class EnvelopeBufferSpec extends PekkoSpec {
       headerOut.uid should ===(42L)
       headerOut.serializer should ===(4)
       headerOut.senderActorRef(originUid).get.path.toSerializationFormat should ===(
-        "akka://EnvelopeBufferSpec/reallylongcompressablestring")
+        "pekko://EnvelopeBufferSpec/reallylongcompressablestring")
       headerOut.senderActorRefPath should ===(OptionVal.None)
-      headerOut.recipientActorRefPath should ===(OptionVal.Some("akka://EnvelopeBufferSpec/uncompressable1"))
+      headerOut.recipientActorRefPath should ===(OptionVal.Some("pekko://EnvelopeBufferSpec/uncompressable1"))
       headerOut.recipientActorRef(originUid) should ===(OptionVal.None)
       headerOut.manifest(originUid).get should ===("manifest1")
 

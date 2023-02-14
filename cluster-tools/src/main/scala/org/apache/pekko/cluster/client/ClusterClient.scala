@@ -105,7 +105,7 @@ object ClusterClientSettings {
  *   the servers (cluster nodes) that the client will try to contact initially.
  *   It is mandatory to specify at least one initial contact. The path of the
  *   default receptionist is
- *   "akka://system@hostname:port/system/receptionist"
+ *   "pekko://system@hostname:port/system/receptionist"
  * @param establishingGetContactsInterval Interval at which the client retries
  *   to establish contact with one of ClusterReceptionist on the servers (cluster nodes)
  * @param refreshContactsInterval Interval at which the client will ask the

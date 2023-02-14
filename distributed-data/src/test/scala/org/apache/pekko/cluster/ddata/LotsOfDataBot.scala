@@ -57,8 +57,8 @@ object LotsOfDataBot {
 
             pekko.cluster {
               seed-nodes = [
-                "akka://ClusterSystem@127.0.0.1:2551",
-                "akka://ClusterSystem@127.0.0.1:2552"]
+                "pekko://ClusterSystem@127.0.0.1:2551",
+                "pekko://ClusterSystem@127.0.0.1:2552"]
 
               downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
               testkit.auto-down-unreachable-after = 10s

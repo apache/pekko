@@ -33,7 +33,7 @@ object RemoteDeathWatchSpec {
         actor {
             provider = remote
             deployment {
-                /watchers.remote = "akka://other@localhost:$otherPort"
+                /watchers.remote = "pekko://other@localhost:$otherPort"
             }
         }
         test.filter-leeway = 10s
@@ -74,7 +74,7 @@ class RemoteDeathWatchSpec
     // pick an unused port
     val port = SocketUtil.temporaryLocalPort(udp = true)
     // simulate de-serialized ActorRef
-    val ref = rarp.resolveActorRef(s"akka://OtherSystem@localhost:$port/user/foo/bar#1752527294")
+    val ref = rarp.resolveActorRef(s"pekko://OtherSystem@localhost:$port/user/foo/bar#1752527294")
 
     // we don't expect real quarantine when the UID is unknown, i.e. QuarantinedEvent is not published
     EventFilter.warning(pattern = "Quarantine of .* ignored because unknown UID", occurrences = 1).intercept {
