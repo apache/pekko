@@ -24,7 +24,7 @@ import pekko.cluster.UniqueAddress
 import pekko.util.Version
 
 /**
- * Needed since the Member constructor is akka private
+ * Needed since the Member constructor is pekko private
  */
 object TestAddresses {
   private def dcRole(dc: ClusterSettings.DataCenter): String =

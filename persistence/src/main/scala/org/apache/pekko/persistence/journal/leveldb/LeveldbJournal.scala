@@ -172,7 +172,7 @@ object SharedLeveldbJournal {
     Persistence(system).journalFor(null) ! AsyncWriteProxy.SetStore(store)
 
   /**
-   * Configuration to enable `TestJavaSerializer` in `akka-testkit` for
+   * Configuration to enable `TestJavaSerializer` in `pekko-testkit` for
    * for the messages used by `SharedLeveldbJournal`.
    *
    * For testing only.
