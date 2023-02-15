@@ -5,6 +5,7 @@ ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / apacheSonatypeProjectProfile := "pekko"
+sourceDistName := "incubator-pekko"
 
 enablePlugins(
   UnidocRoot,
@@ -103,11 +104,9 @@ lazy val root = Project(id = "pekko", base = file("."))
       docs,
       serialversionRemoverPlugin))
   .settings(
-    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get,
-    sourceDistName := "incubator-pekko")
+    Compile / headerCreate / unmanagedSources := (baseDirectory.value / "project").**("*.scala").get)
   .settings(PekkoBuild.welcomeSettings)
   .enablePlugins(CopyrightHeaderForBuild)
-  .enablePlugins(SourceDistPlugin)
 
 lazy val actor = pekkoModule("actor")
   .settings(Dependencies.actor)
