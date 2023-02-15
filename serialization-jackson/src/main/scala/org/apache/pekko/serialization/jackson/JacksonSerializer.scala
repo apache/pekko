@@ -142,7 +142,7 @@ import pekko.util.OptionVal
 /**
  * INTERNAL API: only public by configuration
  *
- * Akka serializer for Jackson with JSON.
+ * Pekko serializer for Jackson with JSON.
  */
 @InternalApi private[pekko] final class JacksonJsonSerializer(system: ExtendedActorSystem, bindingName: String)
     extends JacksonSerializer(
@@ -153,7 +153,7 @@ import pekko.util.OptionVal
 /**
  * INTERNAL API: only public by configuration
  *
- * Akka serializer for Jackson with CBOR.
+ * Pekko serializer for Jackson with CBOR.
  */
 @InternalApi private[pekko] final class JacksonCborSerializer(system: ExtendedActorSystem, bindingName: String)
     extends JacksonSerializer(
