@@ -83,20 +83,6 @@ class JoinConfigCompatCheckClusterSpec extends PekkoSpec {
       checkInitJoin(oldConfig, newConfig) should ===(Valid)
     }
 
-    "be valid when updating from Lightbend sbr" in {
-      val oldConfig =
-        ConfigFactory
-          .parseString("""
-        pekko.cluster.downing-provider-class = "com.lightbend.pekko.sbr.SplitBrainResolverProvider"
-        """)
-          .withFallback(system.settings.config)
-      val newConfig =
-        ConfigFactory.parseString("""
-        pekko.cluster.downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
-        """).withFallback(system.settings.config)
-      checkInitJoin(oldConfig, newConfig) should ===(Valid)
-    }
-
     "be invalid when different downing-provider" in {
       val oldConfig =
         ConfigFactory.parseString("""

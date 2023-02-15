@@ -19,7 +19,6 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.cluster.sbr.SplitBrainResolverProvider
 
 /**
  * INTERNAL API
@@ -27,9 +26,6 @@ import pekko.cluster.sbr.SplitBrainResolverProvider
 @InternalApi private[pekko] object JoinConfigCompatCheckCluster {
   private val DowningProviderPath = "pekko.cluster.downing-provider-class"
   private val SbrStrategyPath = "pekko.cluster.split-brain-resolver.active-strategy"
-
-  private val PekkoSbrProviderClass = classOf[SplitBrainResolverProvider].getName
-  private val LightbendSbrProviderClass = "com.lightbend.akka.sbr.SplitBrainResolverProvider"
 }
 
 /**
@@ -45,9 +41,7 @@ final class JoinConfigCompatCheckCluster extends JoinConfigCompatChecker {
     val toCheckDowningProvider = toCheck.getString(DowningProviderPath)
     val actualDowningProvider = actualConfig.getString(DowningProviderPath)
     val downingProviderResult =
-      if (toCheckDowningProvider == actualDowningProvider || Set(toCheckDowningProvider, actualDowningProvider) == Set(
-          PekkoSbrProviderClass,
-          LightbendSbrProviderClass))
+      if (toCheckDowningProvider == actualDowningProvider)
         Valid
       else
         JoinConfigCompatChecker.checkEquality(List(DowningProviderPath), toCheck, actualConfig)
