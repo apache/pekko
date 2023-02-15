@@ -11,7 +11,7 @@ please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migra
 This is just stub documentation. It will be improved.
 
 * for Pekko jar dependencies, the groupId is "org.apache.pekko" instead of "com.typesafe.akka"
-* the jar names start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar 
+* the jar names start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of pekko-actor_2.13.jar 
 * Alpakka equivalent is "pekko-connectors" - e.g. pekko-connectors-kafka_2.13.jar instead of alpakka-kafka_2.13.jar
 * Pekko packages start with "org.apache.pekko" instead of "akka" - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
 * Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. PekkoException instead of AkkaException

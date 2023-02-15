@@ -125,7 +125,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * the shard and thereby allocate a new home for the shard and then buffered messages in the
  * `ShardRegion` actors are delivered to the new location. This means that the state of the entities
  * are not transferred or migrated. If the state of the entities are of importance it should be
- * persistent (durable), e.g. with `akka-persistence`, so that it can be recovered at the new
+ * persistent (durable), e.g. with `pekko-persistence`, so that it can be recovered at the new
  * location.
  *
  * The logic that decides which shards to rebalance is defined in a plugable shard
@@ -136,8 +136,8 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * must be to begin the rebalancing. This strategy can be replaced by an application specific
  * implementation.
  *
- * The state of shard locations in the `ShardCoordinator` is stored with `akka-distributed-data` or
- * `akka-persistence` to survive failures. When a crashed or unreachable coordinator
+ * The state of shard locations in the `ShardCoordinator` is stored with `pekko-distributed-data` or
+ * `pekko-persistence` to survive failures. When a crashed or unreachable coordinator
  * node has been removed (via down) from the cluster a new `ShardCoordinator` singleton
  * actor will take over and the state is recovered. During such a failure period shards
  * with known location are still available, while messages for new (unknown) shards
@@ -147,7 +147,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * actor the order of the messages is preserved. As long as the buffer limit is not reached
  * messages are delivered on a best effort basis, with at-most once delivery semantics,
  * in the same way as ordinary message sending. Reliable end-to-end messaging, with
- * at-least-once semantics can be added by using `AtLeastOnceDelivery` in `akka-persistence`.
+ * at-least-once semantics can be added by using `AtLeastOnceDelivery` in `pekko-persistence`.
  *
  * Some additional latency is introduced for messages targeted to new or previously
  * unused shards due to the round-trip to the coordinator. Rebalancing of shards may

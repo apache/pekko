@@ -45,7 +45,7 @@ private[pekko] object TopicImpl {
   final case class Subscribe[T](subscriber: ActorRef[T]) extends Topic.Command[T]
   final case class Unsubscribe[T](subscriber: ActorRef[T]) extends Topic.Command[T]
 
-  // internal messages, note that the protobuf serializer for those sent remotely is defined in akka-cluster-typed
+  // internal messages, note that the protobuf serializer for those sent remotely is defined in pekko-cluster-typed
   final case class GetTopicStats[T](replyTo: ActorRef[TopicStats]) extends Topic.Command[T]
   final case class TopicStats(localSubscriberCount: Int, topicInstanceCount: Int) extends Topic.TopicStats
   final case class TopicInstancesUpdated[T](topics: Set[ActorRef[TopicImpl.Command[T]]]) extends Command[T]

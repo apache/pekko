@@ -146,5 +146,5 @@ import pekko.util.Helpers.Requiring
     releaseAfter: FiniteDuration,
     role: Option[String],
     leaseName: Option[String]) {
-  def safeLeaseName(systemName: String) = leaseName.getOrElse(s"$systemName-akka-sbr")
+  def safeLeaseName(systemName: String) = leaseName.getOrElse(s"$systemName-pekko-sbr")
 }

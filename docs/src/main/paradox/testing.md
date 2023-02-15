@@ -310,7 +310,7 @@ wall time, not CPU time or system time.
 @@@ div { .group-scala }
 
 Ray Roestenburg has written a great article on using the TestKit:
-[https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-akka-actors-with-testkit_12.html](https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-akka-actors-with-testkit_12.html).
+[https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-pekko-actors-with-testkit_12.html](https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-pekko-actors-with-testkit_12.html).
 His full example is also available @ref:[here](testing.md#example).
 
 @@@
