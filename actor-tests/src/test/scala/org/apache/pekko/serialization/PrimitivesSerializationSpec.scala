@@ -79,7 +79,7 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
       }
 
     "have right serializer id" in {
-      // checking because moved to akka-actor
+      // checking because moved to pekko-actor
       serialization.serializerFor(1L.asInstanceOf[AnyRef].getClass).identifier === 18
     }
 
@@ -102,7 +102,7 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
     }
 
     "have right serializer id" in {
-      // checking because moved to akka-actor
+      // checking because moved to pekko-actor
       serialization.serializerFor(1L.asInstanceOf[AnyRef].getClass).identifier === 19
     }
   }
@@ -124,7 +124,7 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
     }
 
     "have right serializer id  ($i)" in {
-      // checking because moved to akka-actor
+      // checking because moved to pekko-actor
       serialization.serializerFor(true.asInstanceOf[AnyRef].getClass).identifier === 35
     }
   }
@@ -148,7 +148,7 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
       }
 
     "have right serializer id" in {
-      // checking because moved to akka-actor
+      // checking because moved to pekko-actor
       serialization.serializerFor(1L.asInstanceOf[AnyRef].getClass).identifier === 20
     }
 
@@ -178,7 +178,7 @@ class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.
     }
 
     "have right serializer id" in {
-      // checking because moved to akka-actor
+      // checking because moved to pekko-actor
       serialization.serializerFor(1L.asInstanceOf[AnyRef].getClass).identifier === 21
     }
 

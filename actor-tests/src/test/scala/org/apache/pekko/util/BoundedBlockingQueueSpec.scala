@@ -576,7 +576,7 @@ class BoundedBlockingQueueSpec
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(2)
       val elems = List("Hello", "World")
       elems.foreach(queue.put)
-      queue.containsAll(("Akka" :: elems).asJava) should equal(false)
+      queue.containsAll(("Pekko" :: elems).asJava) should equal(false)
     }
 
     "returns true if the queue contains exactly all elements" in {
@@ -590,7 +590,7 @@ class BoundedBlockingQueueSpec
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(3)
       val elems = List("Hello", "World")
       elems.foreach(queue.put)
-      queue.put("Akka")
+      queue.put("Pekko")
       queue.containsAll(elems.asJava) should equal(true)
     }
   }
@@ -600,20 +600,20 @@ class BoundedBlockingQueueSpec
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(3)
       val elems = List("Hello", "World")
       elems.foreach(queue.put)
-      queue.put("Akka")
+      queue.put("Pekko")
 
       queue.removeAll(elems.asJava) should equal(true)
       queue.remainingCapacity() should equal(2)
-      queue.poll() should equal("Akka")
+      queue.poll() should equal("Pekko")
     }
 
     "return false if no elements were removed" in {
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(1)
       val elems = List("Hello", "World")
-      queue.put("Akka")
+      queue.put("Pekko")
 
       queue.removeAll(elems.asJava) should equal(false)
-      queue.poll() should equal("Akka")
+      queue.poll() should equal("Pekko")
     }
   }
 
@@ -622,17 +622,17 @@ class BoundedBlockingQueueSpec
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(3)
       val elems = List("Hello", "World")
       elems.foreach(queue.put)
-      queue.put("Akka")
+      queue.put("Pekko")
 
       queue.retainAll(elems.asJava) should equal(true)
       queue.remainingCapacity() should equal(1)
-      queue.toArray() shouldNot contain("Akka")
+      queue.toArray() shouldNot contain("Pekko")
       queue.toArray() should contain theSameElementsAs elems
     }
 
     "return false if no elements were removed" in {
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(2)
-      val elems = List("Hello", "World", "Akka")
+      val elems = List("Hello", "World", "Pekko")
       queue.put("Hello")
       queue.put("World")
 
@@ -650,7 +650,7 @@ class BoundedBlockingQueueSpec
     "disallow remove() before calling next()" in {
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(2)
       queue.put("Hello")
-      queue.put("Akka")
+      queue.put("Pekko")
 
       val iter = queue.iterator()
       intercept[IllegalStateException] {
@@ -661,7 +661,7 @@ class BoundedBlockingQueueSpec
     "disallow two subsequent remove()s" in {
       val TestContext(queue, _, _, _, _, _) = newBoundedBlockingQueue(2)
       queue.put("Hello")
-      queue.put("Akka")
+      queue.put("Pekko")
 
       val iter = queue.iterator()
       iter.next()

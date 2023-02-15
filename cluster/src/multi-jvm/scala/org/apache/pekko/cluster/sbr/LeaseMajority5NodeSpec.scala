@@ -82,7 +82,7 @@ class LeaseMajority5NodeSpecMultiJvmNode5 extends LeaseMajority5NodeSpec
 class LeaseMajority5NodeSpec extends MultiNodeClusterSpec(LeaseMajority5NodeSpec) {
   import LeaseMajority5NodeSpec._
 
-  private val testLeaseName = "LeaseMajority5NodeSpec-akka-sbr"
+  private val testLeaseName = "LeaseMajority5NodeSpec-pekko-sbr"
 
   def sortByAddress(roles: RoleName*): List[RoleName] = {
 

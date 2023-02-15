@@ -163,7 +163,7 @@ object ScalaTestMessages {
   final case class WithPekkoSerializer(
       @JsonDeserialize(`using` = classOf[PekkoSerializationDeserializer])
       @JsonSerialize(`using` = classOf[PekkoSerializationSerializer])
-      akkaSerializer: HasPekkoSerializer)
+      pekkoSerializer: HasPekkoSerializer)
       extends TestMessage
 }
 
@@ -1278,7 +1278,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
       }
     }
 
-    "delegate to akka serialization" in {
+    "delegate to pekko serialization" in {
       checkSerialization(WithPekkoSerializer(HasPekkoSerializer("cat")))
     }
 

@@ -30,7 +30,7 @@ class ByteString_toArray_Benchmark {
   var kb = 0
 
   /*
-    akka-bench-jmh/jmh:run -f 1 -wi 5 -i 5 .*ByteString_toArray_Benchmark.*
+    bench-jmh/jmh:run -f 1 -wi 5 -i 5 .*ByteString_toArray_Benchmark.*
 
 
     Benchmark             (kb)   Mode  Cnt        Score       Error  Units

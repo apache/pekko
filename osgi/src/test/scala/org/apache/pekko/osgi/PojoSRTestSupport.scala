@@ -31,7 +31,7 @@ import org.scalatest.{ BeforeAndAfterAll, Suite }
 import org.apache.pekko.util.ccompat.JavaConverters._
 
 /**
- * Trait that provides support for building akka-osgi tests using PojoSR
+ * Trait that provides support for building pekko-osgi tests using PojoSR
  */
 trait PojoSRTestSupport extends Suite with BeforeAndAfterAll {
 

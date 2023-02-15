@@ -31,7 +31,7 @@ class LeaseMajoritySpec extends PekkoSpec() with Eventually {
     }""").withFallback(default)
   val named = ConfigFactory.parseString("""
      pekko.cluster.split-brain-resolver.lease-majority {
-       lease-name = "shopping-cart-akka-sbr"
+       lease-name = "shopping-cart-pekko-sbr"
      }""").withFallback(default)
 
   "Split Brain Resolver Lease Majority provider" must {
@@ -39,14 +39,14 @@ class LeaseMajoritySpec extends PekkoSpec() with Eventually {
     "read the configured name" in {
       new SplitBrainResolverSettings(default).leaseMajoritySettings.leaseName shouldBe None
       new SplitBrainResolverSettings(blank).leaseMajoritySettings.leaseName shouldBe None
-      new SplitBrainResolverSettings(named).leaseMajoritySettings.leaseName shouldBe Some("shopping-cart-akka-sbr")
+      new SplitBrainResolverSettings(named).leaseMajoritySettings.leaseName shouldBe Some("shopping-cart-pekko-sbr")
     }
 
     "use a safe name" in {
-      new SplitBrainResolverSettings(default).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-akka-sbr"
-      new SplitBrainResolverSettings(blank).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-akka-sbr"
+      new SplitBrainResolverSettings(default).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-pekko-sbr"
+      new SplitBrainResolverSettings(blank).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-pekko-sbr"
       new SplitBrainResolverSettings(named).leaseMajoritySettings
-        .safeLeaseName("sysName") shouldBe "shopping-cart-akka-sbr"
+        .safeLeaseName("sysName") shouldBe "shopping-cart-pekko-sbr"
     }
 
   }

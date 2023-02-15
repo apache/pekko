@@ -87,7 +87,7 @@ class SpawnProtocolDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLik
         system.ask(SpawnProtocol.Spawn(greetedBehavior, name = "", props = Props.empty, _))
 
       for (greeterRef <- greeter; replyToRef <- greetedReplyTo) {
-        greeterRef ! HelloWorld.Greet("Akka", replyToRef)
+        greeterRef ! HelloWorld.Greet("Pekko", replyToRef)
       }
 
       // #system-spawn

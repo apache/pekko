@@ -334,8 +334,8 @@ object ActorSystem {
      * INTERNAL API
      *
      * When using Akka Typed the Slf4jLogger should be used by default.
-     * Looking for config property `pekko.use-slf4j` (defined in akka-actor-typed) and
-     * that `Slf4jLogger` (akka-slf4j) is in  classpath.
+     * Looking for config property `pekko.use-slf4j` (defined in pekko-actor-typed) and
+     * that `Slf4jLogger` (pekko-slf4j) is in  classpath.
      * Then adds `Slf4jLogger` to configured loggers and removes `DefaultLogger`.
      */
     @InternalApi private[pekko] def amendSlf4jConfig(config: Config, dynamicAccess: DynamicAccess): Config = {

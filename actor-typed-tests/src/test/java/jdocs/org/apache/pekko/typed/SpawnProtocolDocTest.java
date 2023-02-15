@@ -85,7 +85,7 @@ public interface SpawnProtocolDocTest {
             greetedReplyTo.whenComplete(
                 (greetedReplyToRef, exc2) -> {
                   if (exc2 == null) {
-                    greeterRef.tell(new HelloWorld.Greet("Akka", greetedReplyToRef));
+                    greeterRef.tell(new HelloWorld.Greet("Pekko", greetedReplyToRef));
                   }
                 });
           }
