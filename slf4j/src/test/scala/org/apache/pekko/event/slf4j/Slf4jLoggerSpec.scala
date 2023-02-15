@@ -103,7 +103,7 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
       val s = outputString
       s should include("pekkoSource=akka://Slf4jLoggerSpec/user/logProducer")
       s should include("pekkoAddress=akka://Slf4jLoggerSpec")
-      s should include("akkaUid=")
+      s should include("pekkoUid=")
       s should include("level=[ERROR]")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$LogProducer]")
       (s should include).regex(sourceThreadRegex)
