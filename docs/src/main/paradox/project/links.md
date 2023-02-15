@@ -24,14 +24,14 @@ The use of Pekko SNAPSHOTs, nightlies and milestone releases is discouraged unle
 Make sure that you add the repository to the sbt resolvers:
 
 ```
-resolvers ++= "Apache Pekko Snapshots" at "https://repository.apache.org/content/groups/snapshots"
+resolvers += "Apache Pekko Snapshots" at "https://repository.apache.org/content/groups/snapshots"
 ```
 
-Define the library dependencies with the complete version. For example:
+Define the library dependencies with the complete version (you can find the available versions [here](https://repository.apache.org/content/groups/snapshots/org/apache/pekko/pekko-actor_3/)). For example:
 
 @@@vars
 ```
-libraryDependencies += "org.apache.pekko" % "pekko-remote_$scala.binary.version$" % "0.0.0+26565-a07a08f6-SNAPSHOT"
+libraryDependencies += "org.apache.pekko" %% "pekko-remote" % "0.0.0+...-SNAPSHOT"
 ```
 @@@
 
@@ -60,7 +60,7 @@ Define the library dependencies with the timestamp as version. For example:
   <dependency>
     <groupId>org.apache.pekko</groupId>
     <artifactId>pekko-remote_$scala.binary.version$</artifactId>
-    <version>0.0.0+26565-a07a08f6-SNAPSHOT</version>
+    <version>0.0.0+...-SNAPSHOT</version>
   </dependency>
 </dependencies>
 ```
