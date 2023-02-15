@@ -67,9 +67,9 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
 
   val mdcThreadAttributeName = "sourceThread"
   val mdcActorSystemAttributeName = "sourceActorSystem"
-  val mdcAkkaSourceAttributeName = "akkaSource"
+  val mdcAkkaSourceAttributeName = "pekkoSource"
   val mdcAkkaTimestamp = "akkaTimestamp"
-  val mdcAkkaAddressAttributeName = "akkaAddress"
+  val mdcAkkaAddressAttributeName = "pekkoAddress"
   val mdcAkkaUidAttributeName = "akkaUid"
 
   private def akkaAddress = context.system.asInstanceOf[ExtendedActorSystem].provider.addressString

@@ -55,7 +55,7 @@ class ClusterActorLoggingSpec
       LoggingTestKit
         .info("Starting")
         .withCustom { event =>
-          event.mdc(ActorMdc.AkkaAddressKey) == addressString
+          event.mdc(ActorMdc.PekkoAddressKey) == addressString
         }
         .expect {
           spawn(behavior)

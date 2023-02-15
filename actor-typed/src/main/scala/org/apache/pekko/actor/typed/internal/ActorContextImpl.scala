@@ -55,7 +55,7 @@ import scala.util.Success
           // on each log entry or message, so do that up front here
           tags.mkString(",")
 
-      val akkaSource = ctx.self.path.toString
+      val pekkoSource = ctx.self.path.toString
 
       val akkaAddress =
         ctx.system match {
@@ -65,14 +65,14 @@ import scala.util.Success
 
       val sourceActorSystem = ctx.system.name
 
-      new LoggingContext(logger, tagsString, akkaSource, sourceActorSystem, akkaAddress, hasCustomName = false)
+      new LoggingContext(logger, tagsString, pekkoSource, sourceActorSystem, akkaAddress, hasCustomName = false)
     }
   }
 
   final case class LoggingContext(
       logger: Logger,
       tagsString: String,
-      akkaSource: String,
+      pekkoSource: String,
       sourceActorSystem: String,
       akkaAddress: String,
       hasCustomName: Boolean) {

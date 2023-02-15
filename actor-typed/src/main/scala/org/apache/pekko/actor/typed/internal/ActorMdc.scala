@@ -22,19 +22,19 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi private[pekko] object ActorMdc {
   val SourceActorSystemKey = "sourceActorSystem"
-  val AkkaSourceKey = "akkaSource"
-  val AkkaTagsKey = "akkaTags"
-  val AkkaAddressKey = "akkaAddress"
+  val PekkoSourceKey = "pekkoSource"
+  val PekkoTagsKey = "pekkoTags"
+  val PekkoAddressKey = "pekkoAddress"
 
   def setMdc(context: ActorContextImpl.LoggingContext): Unit = {
     // avoid access to MDC ThreadLocal if not needed, see details in LoggingContext
     context.mdcUsed = true
-    MDC.put(AkkaSourceKey, context.akkaSource)
+    MDC.put(PekkoSourceKey, context.pekkoSource)
     MDC.put(SourceActorSystemKey, context.sourceActorSystem)
-    MDC.put(AkkaAddressKey, context.akkaAddress)
+    MDC.put(PekkoAddressKey, context.akkaAddress)
     // empty string for no tags, a single tag or a comma separated list of tags
     if (context.tagsString.nonEmpty)
-      MDC.put(AkkaTagsKey, context.tagsString)
+      MDC.put(PekkoTagsKey, context.tagsString)
   }
 
   // MDC is cleared (if used) from aroundReceive in ActorAdapter after processing each message,

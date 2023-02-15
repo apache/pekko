@@ -32,124 +32,124 @@ object ClusterLogMarker {
    * INTERNAL API
    */
   @InternalApi private[pekko] object Properties {
-    val MemberStatus = "akkaMemberStatus"
-    val SbrDecision = "akkaSbrDecision"
+    val MemberStatus = "pekkoMemberStatus"
+    val SbrDecision = "pekkoSbrDecision"
   }
 
   /**
-   * Marker "akkaUnreachable" of log event when a node is marked as unreachable based no failure detector observation.
-   * @param node The address of the node that is marked as unreachable. Included as property "akkaRemoteAddress".
+   * Marker "pekkoUnreachable" of log event when a node is marked as unreachable based no failure detector observation.
+   * @param node The address of the node that is marked as unreachable. Included as property "pekkoRemoteAddress".
    */
   def unreachable(node: Address): LogMarker =
-    LogMarker("akkaUnreachable", Map(LogMarker.Properties.RemoteAddress -> node))
+    LogMarker("pekkoUnreachable", Map(LogMarker.Properties.RemoteAddress -> node))
 
   /**
-   * Marker "akkaReachable" of log event when a node is marked as reachable again based no failure detector observation.
-   * @param node The address of the node that is marked as reachable. Included as property "akkaRemoteAddress".
+   * Marker "pekkoReachable" of log event when a node is marked as reachable again based no failure detector observation.
+   * @param node The address of the node that is marked as reachable. Included as property "pekkoRemoteAddress".
    */
   def reachable(node: Address): LogMarker =
-    LogMarker("akkaReachable", Map(LogMarker.Properties.RemoteAddress -> node))
+    LogMarker("pekkoReachable", Map(LogMarker.Properties.RemoteAddress -> node))
 
   /**
-   * Marker "akkaHeartbeatStarvation" of log event when scheduled heartbeat was delayed.
+   * Marker "pekkoHeartbeatStarvation" of log event when scheduled heartbeat was delayed.
    */
   val heartbeatStarvation: LogMarker =
-    LogMarker("akkaHeartbeatStarvation")
+    LogMarker("pekkoHeartbeatStarvation")
 
   /**
-   * Marker "akkaClusterLeaderIncapacitated" of log event when leader can't perform its duties.
+   * Marker "pekkoClusterLeaderIncapacitated" of log event when leader can't perform its duties.
    * Typically because there are unreachable nodes that have not been downed.
    */
   val leaderIncapacitated: LogMarker =
-    LogMarker("akkaClusterLeaderIncapacitated")
+    LogMarker("pekkoClusterLeaderIncapacitated")
 
   /**
-   * Marker "akkaClusterLeaderRestored" of log event when leader can perform its duties again.
+   * Marker "pekkoClusterLeaderRestored" of log event when leader can perform its duties again.
    */
   val leaderRestored: LogMarker =
-    LogMarker("akkaClusterLeaderRestored")
+    LogMarker("pekkoClusterLeaderRestored")
 
   /**
-   * Marker "akkaJoinFailed" of log event when node couldn't join seed nodes.
+   * Marker "pekkoJoinFailed" of log event when node couldn't join seed nodes.
    */
   val joinFailed: LogMarker =
-    LogMarker("akkaJoinFailed")
+    LogMarker("pekkoJoinFailed")
 
   /**
-   * Marker "akkaMemberChanged" of log event when a member's status is changed by the leader.
-   * @param node The address of the node that is changed. Included as property "akkaRemoteAddress"
-   *             and "akkaRemoteAddressUid".
-   * @param status New member status. Included as property "akkaMemberStatus".
+   * Marker "pekkoMemberChanged" of log event when a member's status is changed by the leader.
+   * @param node The address of the node that is changed. Included as property "pekkoRemoteAddress"
+   *             and "pekkoRemoteAddressUid".
+   * @param status New member status. Included as property "pekkoMemberStatus".
    */
   def memberChanged(node: UniqueAddress, status: MemberStatus): LogMarker =
     LogMarker(
-      "akkaMemberChanged",
+      "pekkoMemberChanged",
       Map(
         LogMarker.Properties.RemoteAddress -> node.address,
         LogMarker.Properties.RemoteAddressUid -> node.longUid,
         Properties.MemberStatus -> status))
 
   /**
-   * Marker "akkaClusterSingletonStarted" of log event when Cluster Singleton
+   * Marker "pekkoClusterSingletonStarted" of log event when Cluster Singleton
    * instance has started.
    */
   val singletonStarted: LogMarker =
-    LogMarker("akkaClusterSingletonStarted")
+    LogMarker("pekkoClusterSingletonStarted")
 
   /**
-   * Marker "akkaClusterSingletonTerminated" of log event when Cluster Singleton
+   * Marker "pekkoClusterSingletonTerminated" of log event when Cluster Singleton
    * instance has terminated.
    */
   val singletonTerminated: LogMarker =
-    LogMarker("akkaClusterSingletonTerminated")
+    LogMarker("pekkoClusterSingletonTerminated")
 
   /**
-   * Marker "akkaSbrDowning" of log event when Split Brain Resolver has made a downing decision. Followed
+   * Marker "pekkoSbrDowning" of log event when Split Brain Resolver has made a downing decision. Followed
    * by [[ClusterLogMarker.sbrDowningNode]] for each node that is downed.
-   * @param decision The downing decision. Included as property "akkaSbrDecision".
+   * @param decision The downing decision. Included as property "pekkoSbrDecision".
    */
   def sbrDowning(decision: DowningStrategy.Decision): LogMarker =
-    LogMarker("akkaSbrDowning", Map(Properties.SbrDecision -> decision))
+    LogMarker("pekkoSbrDowning", Map(Properties.SbrDecision -> decision))
 
   /**
-   * Marker "akkaSbrDowningNode" of log event when a member is downed by Split Brain Resolver.
-   * @param node The address of the node that is downed. Included as property "akkaRemoteAddress"
-   *             and "akkaRemoteAddressUid".
-   * @param decision The downing decision. Included as property "akkaSbrDecision".
+   * Marker "pekkoSbrDowningNode" of log event when a member is downed by Split Brain Resolver.
+   * @param node The address of the node that is downed. Included as property "pekkoRemoteAddress"
+   *             and "pekkoRemoteAddressUid".
+   * @param decision The downing decision. Included as property "pekkoSbrDecision".
    */
   def sbrDowningNode(node: UniqueAddress, decision: DowningStrategy.Decision): LogMarker =
     LogMarker(
-      "akkaSbrDowningNode",
+      "pekkoSbrDowningNode",
       Map(
         LogMarker.Properties.RemoteAddress -> node.address,
         LogMarker.Properties.RemoteAddressUid -> node.longUid,
         Properties.SbrDecision -> decision))
 
   /**
-   * Marker "akkaSbrInstability" of log event when Split Brain Resolver has detected too much instability
+   * Marker "pekkoSbrInstability" of log event when Split Brain Resolver has detected too much instability
    * and will down all nodes.
    */
   val sbrInstability: LogMarker =
-    LogMarker("akkaSbrInstability")
+    LogMarker("pekkoSbrInstability")
 
   /**
-   * Marker "akkaSbrLeaseAcquired" of log event when Split Brain Resolver has acquired the lease.
-   * @param decision The downing decision. Included as property "akkaSbrDecision".
+   * Marker "pekkoSbrLeaseAcquired" of log event when Split Brain Resolver has acquired the lease.
+   * @param decision The downing decision. Included as property "pekkoSbrDecision".
    */
   def sbrLeaseAcquired(decision: DowningStrategy.Decision): LogMarker =
-    LogMarker("akkaSbrLeaseAcquired", Map(Properties.SbrDecision -> decision))
+    LogMarker("pekkoSbrLeaseAcquired", Map(Properties.SbrDecision -> decision))
 
   /**
-   * Marker "akkaSbrLeaseDenied" of log event when Split Brain Resolver has acquired the lease.
-   * @param reverseDecision The (reverse) downing decision. Included as property "akkaSbrDecision".
+   * Marker "pekkoSbrLeaseDenied" of log event when Split Brain Resolver has acquired the lease.
+   * @param reverseDecision The (reverse) downing decision. Included as property "pekkoSbrDecision".
    */
   def sbrLeaseDenied(reverseDecision: DowningStrategy.Decision): LogMarker =
-    LogMarker("akkaSbrLeaseDenied", Map(Properties.SbrDecision -> reverseDecision))
+    LogMarker("pekkoSbrLeaseDenied", Map(Properties.SbrDecision -> reverseDecision))
 
   /**
-   * Marker "akkaSbrLeaseReleased" of log event when Split Brain Resolver has released the lease.
+   * Marker "pekkoSbrLeaseReleased" of log event when Split Brain Resolver has released the lease.
    */
   val sbrLeaseReleased: LogMarker =
-    LogMarker("akkaSbrLeaseReleased")
+    LogMarker("pekkoSbrLeaseReleased")
 
 }
