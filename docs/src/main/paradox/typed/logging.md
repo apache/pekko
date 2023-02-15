@@ -21,7 +21,7 @@ via the SLF4J backend, such as Logback configuration.
 
 ## Introduction
 
-[SLF4J](https://www.slf4j.org/) is used for logging and Apache Pekko provides access to an [org.slf4j.Logger](https://www.slf4j.org/api/org/slf4j/Logger.html) for a specific
+[SLF4J](https://www.slf4j.org/) is used for logging and Pekko provides access to an [org.slf4j.Logger](https://www.slf4j.org/api/org/slf4j/Logger.html) for a specific
 actor via the @apidoc[typed.*.ActorContext]. You may also retrieve a `Logger` with the ordinary [org.slf4j.LoggerFactory](https://www.slf4j.org/api/org/slf4j/LoggerFactory.html).
 
 To ensure that logging has minimal performance impact it's important that you configure an

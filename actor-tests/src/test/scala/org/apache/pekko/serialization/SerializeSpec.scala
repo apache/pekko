@@ -276,7 +276,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
     }
 
     "log warning if non-Pekko serializer is configured for Pekko message" in {
-      EventFilter.warning(pattern = ".*not implemented by Apache Pekko.*", occurrences = 1).intercept {
+      EventFilter.warning(pattern = ".*not implemented by Pekko.*", occurrences = 1).intercept {
         ser.serialize(new Other).get
       }
     }
