@@ -19,7 +19,7 @@ docker run \
   -v `pwd`:/scripts:ro \
   -v ${HOME}/.gnupg/:/home/user/.gnupg/:ro -v /run/user/$(id -u)/:/run/user/$(id -u)/:ro \
   -e BUILD_COMMIT=origin/main \
-  -e GPG_SIGNING_KEY=8DEF770BCFC57CEC83BF0410DC20AD935AC6CEF4 \
+  -e GPG_SIGNING_KEY_ID=8DEF770BCFC57CEC83BF0410DC20AD935AC6CEF4 \
   pekko:build /scripts/build-release.sh
 ```
 
