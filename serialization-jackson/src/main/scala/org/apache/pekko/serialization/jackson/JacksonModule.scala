@@ -37,7 +37,7 @@ import pekko.annotation.InternalApi
 @InternalApi private[pekko] object JacksonModule {
 
   lazy val version: Version = {
-    val groupId = "oeg.apache.pekko"
+    val groupId = "org.apache.pekko"
     val artifactId = "serialization-jackson"
     val version = pekko.Version.current
     VersionUtil.parseVersion(version, groupId, artifactId)
