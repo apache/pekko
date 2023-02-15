@@ -574,7 +574,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
           Source.single(SendBytes(ByteString.empty)).via(flow).runWith(Sink.ignore)
         }
 
-        Await.result(run("pekko-remote"), 3.seconds) // CN=pekko-remote
+        Await.result(run("akka-remote"), 3.seconds) // CN=akka-remote
         val cause = intercept[Exception] {
           Await.result(run("unknown.example.org"), 3.seconds)
         }
