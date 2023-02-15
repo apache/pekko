@@ -24,8 +24,6 @@ import pekko.annotation.InternalApi
 
 final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
 
-  Discovery.checkClassPathForOldDiscovery(system)
-
   private val implementations = new ConcurrentHashMap[String, ServiceDiscovery]
   private val factory = new JFunction[String, ServiceDiscovery] {
     override def apply(method: String): ServiceDiscovery = createServiceDiscovery(method)
@@ -118,23 +116,5 @@ object Discovery extends ExtensionId[Discovery] with ExtensionIdProvider {
   override def get(system: ClassicActorSystemProvider): Discovery = super.get(system)
 
   override def createExtension(system: ExtendedActorSystem): Discovery = new Discovery()(system)
-
-  /**
-   * INTERNAL API
-   */
-  @InternalApi
-  private[pekko] def checkClassPathForOldDiscovery(system: ExtendedActorSystem): Unit = {
-    try {
-      system.dynamicAccess.getClassFor[Any]("org.apache.pekko.discovery.SimpleServiceDiscovery").get
-      throw new RuntimeException(
-        "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.pekko.discovery:akka-discovery` from the classpath..")
-    } catch {
-      case _: ClassCastException =>
-        throw new RuntimeException(
-          "Old version of Akka Discovery from Akka Management found on the classpath. Remove `com.lightbend.pekko.discovery:akka-discovery` from the classpath..")
-      case _: ClassNotFoundException =>
-      // all good
-    }
-  }
 
 }
