@@ -470,8 +470,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.")) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
-        "is not implemented by Pekko. It's not recommended to replace serializers for messages " +
-        "provided by Pekko.",
+        "is not implemented by Apache Pekko. It's not recommended to replace serializers for messages " +
+        "provided by Apache Pekko.",
         ser.getClass.getName,
         clazz.getName)
       true
