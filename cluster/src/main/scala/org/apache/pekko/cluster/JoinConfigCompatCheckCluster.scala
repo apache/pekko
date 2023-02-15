@@ -19,7 +19,6 @@ import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.cluster.sbr.SplitBrainResolverProvider
 
 /**
  * INTERNAL API
