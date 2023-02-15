@@ -94,7 +94,8 @@ final class DeliveryProducerReceived(val producerId: String, val currentSeqNr: L
 @InternalApi
 @Enabled(true)
 @StackTrace(false)
-@Category(Array("Pekko", "Delivery", "ProducerController")) @Label("Delivery ProducerController received demand request")
+@Category(Array("Pekko", "Delivery", "ProducerController")) @Label(
+  "Delivery ProducerController received demand request")
 final class DeliveryProducerReceivedRequest(val producerId: String, val requestedSeqNr: Long, confirmedSeqNr: Long)
     extends Event
 
@@ -102,7 +103,8 @@ final class DeliveryProducerReceivedRequest(val producerId: String, val requeste
 @InternalApi
 @Enabled(true)
 @StackTrace(false)
-@Category(Array("Pekko", "Delivery", "ProducerController")) @Label("Delivery ProducerController received resend request")
+@Category(Array("Pekko", "Delivery", "ProducerController")) @Label(
+  "Delivery ProducerController received resend request")
 final class DeliveryProducerReceivedResend(val producerId: String, val fromSeqNr: Long) extends Event
 
 /** INTERNAL API */
