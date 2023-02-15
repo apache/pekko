@@ -43,7 +43,8 @@ class LeaseMajoritySpec extends PekkoSpec() with Eventually {
     }
 
     "use a safe name" in {
-      new SplitBrainResolverSettings(default).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-pekko-sbr"
+      new SplitBrainResolverSettings(default).leaseMajoritySettings.safeLeaseName(
+        "sysName") shouldBe "sysName-pekko-sbr"
       new SplitBrainResolverSettings(blank).leaseMajoritySettings.safeLeaseName("sysName") shouldBe "sysName-pekko-sbr"
       new SplitBrainResolverSettings(named).leaseMajoritySettings
         .safeLeaseName("sysName") shouldBe "shopping-cart-pekko-sbr"
