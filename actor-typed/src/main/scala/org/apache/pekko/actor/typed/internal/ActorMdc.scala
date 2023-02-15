@@ -31,7 +31,7 @@ import org.apache.pekko.annotation.InternalApi
     context.mdcUsed = true
     MDC.put(PekkoSourceKey, context.pekkoSource)
     MDC.put(SourceActorSystemKey, context.sourceActorSystem)
-    MDC.put(PekkoAddressKey, context.akkaAddress)
+    MDC.put(PekkoAddressKey, context.pekkoAddress)
     // empty string for no tags, a single tag or a comma separated list of tags
     if (context.tagsString.nonEmpty)
       MDC.put(PekkoTagsKey, context.tagsString)
