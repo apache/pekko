@@ -35,9 +35,9 @@ class DistributedPubSubMessageSerializerSpec extends PekkoSpec {
   " DistributedPubSubMessages" must {
 
     "be serializable" in {
-      val address1 = Address("akka", "system", "some.host.org", 4711)
-      val address2 = Address("akka", "system", "other.host.org", 4711)
-      val address3 = Address("akka", "system", "some.host.org", 4712)
+      val address1 = Address("pekko", "system", "some.host.org", 4711)
+      val address2 = Address("pekko", "system", "other.host.org", 4711)
+      val address3 = Address("pekko", "system", "some.host.org", 4712)
       val u1 = system.actorOf(Props.empty, "u1")
       val u2 = system.actorOf(Props.empty, "u2")
       val u3 = system.actorOf(Props.empty, "u3")

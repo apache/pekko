@@ -40,7 +40,7 @@ import scala.collection.immutable.SortedSet
 object LeastShardAllocationStrategySpec {
 
   private object DummyActorRef extends MinimalActorRef {
-    override val path: ActorPath = RootActorPath(Address("akka", "myapp")) / "system" / "fake"
+    override val path: ActorPath = RootActorPath(Address("pekko", "myapp")) / "system" / "fake"
 
     override def provider: ActorRefProvider = ???
   }
@@ -81,7 +81,7 @@ object LeastShardAllocationStrategySpec {
 
   def newUpMember(host: String, port: Int = 252525, version: Version = Version("1.0.0")) =
     Member(
-      UniqueAddress(Address("akka", "myapp", host, port), 1L),
+      UniqueAddress(Address("pekko", "myapp", host, port), 1L),
       Set(ClusterSettings.DcRolePrefix + ClusterSettings.DefaultDataCenter),
       version).copy(MemberStatus.Up)
 
@@ -314,7 +314,7 @@ class LeastShardAllocationStrategySpec extends PekkoSpec {
           val member1 = newUpMember("127.0.0.1")
           val member2 =
             Member(
-              UniqueAddress(Address("akka", "myapp", "127.0.0.2", 252525), 1L),
+              UniqueAddress(Address("pekko", "myapp", "127.0.0.2", 252525), 1L),
               Set(ClusterSettings.DcRolePrefix + ClusterSettings.DefaultDataCenter),
               member1.appVersion)
 

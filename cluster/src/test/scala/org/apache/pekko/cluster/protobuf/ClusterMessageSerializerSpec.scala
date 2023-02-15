@@ -81,20 +81,20 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
   import MemberStatus._
 
   val a1 =
-    TestMember(Address("akka", "sys", "a", 2552), Joining, Set.empty[String], appVersion = Version("1.0.0"))
-  val b1 = TestMember(Address("akka", "sys", "b", 2552), Up, Set("r1"), appVersion = Version("1.1.0"))
+    TestMember(Address("pekko", "sys", "a", 2552), Joining, Set.empty[String], appVersion = Version("1.0.0"))
+  val b1 = TestMember(Address("pekko", "sys", "b", 2552), Up, Set("r1"), appVersion = Version("1.1.0"))
   val c1 =
-    TestMember(Address("akka", "sys", "c", 2552), Leaving, Set.empty[String], "foo", appVersion = Version("1.1.0"))
-  val d1 = TestMember(Address("akka", "sys", "d", 2552), Exiting, Set("r1"), "foo")
-  val e1 = TestMember(Address("akka", "sys", "e", 2552), Down, Set("r3"))
-  val f1 = TestMember(Address("akka", "sys", "f", 2552), Removed, Set("r3"), "foo")
+    TestMember(Address("pekko", "sys", "c", 2552), Leaving, Set.empty[String], "foo", appVersion = Version("1.1.0"))
+  val d1 = TestMember(Address("pekko", "sys", "d", 2552), Exiting, Set("r1"), "foo")
+  val e1 = TestMember(Address("pekko", "sys", "e", 2552), Down, Set("r3"))
+  val f1 = TestMember(Address("pekko", "sys", "f", 2552), Removed, Set("r3"), "foo")
 
   "ClusterMessages" must {
 
     "be serializable" in {
-      val address = Address("akka", "system", "some.host.org", 4711)
+      val address = Address("pekko", "system", "some.host.org", 4711)
       val uniqueAddress = UniqueAddress(address, 17L)
-      val address2 = Address("akka", "system", "other.host.org", 4711)
+      val address2 = Address("pekko", "system", "other.host.org", 4711)
       val uniqueAddress2 = UniqueAddress(address2, 18L)
       checkSerialization(InternalClusterAction.Join(uniqueAddress, Set("foo", "bar", "dc-A"), Version.Zero))
       checkSerialization(InternalClusterAction.Join(uniqueAddress, Set("dc-A"), Version("1.2.3")))
@@ -133,9 +133,9 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
 
     // can be removed in 2.6.3 only checks deserialization with new not yet in effect manifests for 2.6.2
     "be de-serializable with class manifests from 2.6.4 and earlier nodes" in {
-      val address = Address("akka", "system", "some.host.org", 4711)
+      val address = Address("pekko", "system", "some.host.org", 4711)
       val uniqueAddress = UniqueAddress(address, 17L)
-      val address2 = Address("akka", "system", "other.host.org", 4711)
+      val address2 = Address("pekko", "system", "other.host.org", 4711)
       val uniqueAddress2 = UniqueAddress(address2, 18L)
       checkDeserializationWithManifest(
         InternalClusterAction.Join(uniqueAddress, Set("foo", "bar", "dc-A"), Version.Zero),

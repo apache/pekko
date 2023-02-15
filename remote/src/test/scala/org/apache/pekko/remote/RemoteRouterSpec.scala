@@ -65,8 +65,8 @@ class RemoteRouterSpec extends PekkoSpec(s"""
   val sysName = system.name
   val masterSystemName = "Master" + sysName
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
   val conf = ConfigFactory.parseString(s"""
     pekko {
       actor.deployment {

@@ -73,8 +73,8 @@ private[remote] class PekkoProtocolSettings(config: Config) {
 
 @nowarn("msg=deprecated")
 private[remote] object PekkoProtocolTransport { // Couldn't these go into the Remoting Extension/ RemoteSettings instead?
-  val AkkaScheme: String = "akka"
-  val AkkaOverhead: Int = 0 // Don't know yet
+  val PekkoScheme: String = "pekko"
+  val PekkoOverhead: Int = 0 // Don't know yet
   val UniqueId = new java.util.concurrent.atomic.AtomicInteger(0)
 
   final case class AssociateUnderlyingRefuseUid(
@@ -122,7 +122,7 @@ private[remote] class PekkoProtocolTransport(
     private val codec: PekkoPduCodec)
     extends ActorTransportAdapter(wrappedTransport, system) {
 
-  override val addedSchemeIdentifier: String = AkkaScheme
+  override val addedSchemeIdentifier: String = PekkoScheme
 
   override def managementCommand(cmd: Any): Future[Boolean] = wrappedTransport.managementCommand(cmd)
 
@@ -135,7 +135,7 @@ private[remote] class PekkoProtocolTransport(
     statusPromise.future.mapTo[PekkoProtocolHandle]
   }
 
-  override val maximumOverhead: Int = PekkoProtocolTransport.AkkaOverhead
+  override val maximumOverhead: Int = PekkoProtocolTransport.PekkoOverhead
   protected def managerName = s"akkaprotocolmanager.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
@@ -230,7 +230,7 @@ private[remote] class PekkoProtocolHandle(
     val handshakeInfo: HandshakeInfo,
     private val stateActor: ActorRef,
     private val codec: PekkoPduCodec)
-    extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, AkkaScheme) {
+    extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, PekkoScheme) {
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
 

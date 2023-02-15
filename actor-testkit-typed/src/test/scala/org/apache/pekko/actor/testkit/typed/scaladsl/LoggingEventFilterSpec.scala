@@ -64,7 +64,7 @@ class LoggingTestKitSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike 
       timeStamp = System.currentTimeMillis(),
       marker = None,
       throwable = None,
-      mdc = Map("akkaSource" -> source))
+      mdc = Map("pekkoSource" -> source))
 
   "The LoggingEventFilter.error" must {
     "filter errors without cause" in {

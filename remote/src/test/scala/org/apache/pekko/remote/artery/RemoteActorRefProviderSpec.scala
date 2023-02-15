@@ -76,7 +76,7 @@ class RemoteActorRefProviderSpec extends ArteryMultiNodeSpec {
     "detect wrong protocol" in {
       EventFilter[IllegalArgumentException](start = "No root guardian at", occurrences = 1).intercept {
         val sel =
-          system.actorSelection(s"akka.tcp://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo")
+          system.actorSelection(s"pekko.tcp://${systemB.name}@${addressB.host.get}:${addressB.port.get}/user/echo")
         sel.anchor.getClass should ===(classOf[EmptyLocalActorRef])
       }
     }

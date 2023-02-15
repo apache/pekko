@@ -57,7 +57,7 @@ class RemoteDeployerSpec extends PekkoSpec(RemoteDeployerSpec.deployerConf) {
             service,
             deployment.get.config,
             RoundRobinPool(3),
-            RemoteScope(Address("akka", "sys", "wallace", 2552)),
+            RemoteScope(Address("pekko", "sys", "wallace", 2552)),
             "mydispatcher")))
     }
 

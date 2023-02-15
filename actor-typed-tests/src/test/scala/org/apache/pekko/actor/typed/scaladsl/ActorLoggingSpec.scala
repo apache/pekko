@@ -278,11 +278,11 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         }
       }
       val actor =
-        LoggingTestKit.info("Starting up").withMdc(Map(ActorMdc.AkkaTagsKey -> "tag1,tag2")).expect {
+        LoggingTestKit.info("Starting up").withMdc(Map(ActorMdc.PekkoTagsKey -> "tag1,tag2")).expect {
           spawn(behavior, ActorTags("tag1", "tag2"))
         }
 
-      LoggingTestKit.info("Got message").withMdc(Map(ActorMdc.AkkaTagsKey -> "tag1,tag2")).expect {
+      LoggingTestKit.info("Got message").withMdc(Map(ActorMdc.PekkoTagsKey -> "tag1,tag2")).expect {
         actor ! "ping"
       }
     }
@@ -499,8 +499,8 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         try {
           event.mdc should contain allElementsOf (
             Map(
-              ActorMdc.AkkaAddressKey -> system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString,
-              ActorMdc.AkkaSourceKey -> actorPath.get.toString,
+              ActorMdc.PekkoAddressKey -> system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString,
+              ActorMdc.PekkoSourceKey -> actorPath.get.toString,
               ActorMdc.SourceActorSystemKey -> system.name))
           true
         } catch {

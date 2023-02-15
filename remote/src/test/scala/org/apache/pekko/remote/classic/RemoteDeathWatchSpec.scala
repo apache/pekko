@@ -31,7 +31,7 @@ pekko {
     actor {
         provider = remote
         deployment {
-            /watchers.remote = "akka.tcp://other@localhost:2666"
+            /watchers.remote = "pekko.tcp://other@localhost:2666"
         }
 
     }
@@ -55,8 +55,8 @@ pekko.actor.warn-about-java-serializer-usage = off
     with DeathWatchSpec {
 
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   val other = ActorSystem(
     "other",

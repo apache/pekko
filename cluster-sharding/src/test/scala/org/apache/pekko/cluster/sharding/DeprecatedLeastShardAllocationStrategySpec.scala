@@ -259,7 +259,7 @@ class DeprecatedLeastShardAllocationStrategySpec extends PekkoSpec {
           val member1 = newUpMember("127.0.0.1")
           val member2 =
             Member(
-              UniqueAddress(Address("akka", "myapp", "127.0.0.2", 252525), 1L),
+              UniqueAddress(Address("pekko", "myapp", "127.0.0.2", 252525), 1L),
               Set(ClusterSettings.DcRolePrefix + ClusterSettings.DefaultDataCenter),
               member1.appVersion)
 

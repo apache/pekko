@@ -29,8 +29,8 @@ class RemoteConsistentHashingRouterSpec
 
     "use same hash ring independent of self address" in {
       // simulating running router on two different nodes (a1, a2) with target routees on 3 other nodes (s1, s2, s3)
-      val a1 = Address("akka", "Sys", "client1", 2552)
-      val a2 = Address("akka", "Sys", "client2", 2552)
+      val a1 = Address("pekko", "Sys", "client1", 2552)
+      val a2 = Address("pekko", "Sys", "client2", 2552)
       val s1 = ActorSelectionRoutee(system.actorSelection("pekko://Sys@server1:2552/user/a/b"))
       val s2 = ActorSelectionRoutee(system.actorSelection("pekko://Sys@server2:2552/user/a/b"))
       val s3 = ActorSelectionRoutee(system.actorSelection("pekko://Sys@server3:2552/user/a/b"))

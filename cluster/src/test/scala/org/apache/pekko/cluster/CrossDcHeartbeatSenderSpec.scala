@@ -60,7 +60,7 @@ class CrossDcHeartbeatSenderSpec extends PekkoSpec("""
       underTest ! CurrentClusterState(
         members = SortedSet(
           Cluster(system).selfMember,
-          Member(UniqueAddress(Address("akka", system.name), 2L), Set("dc-dc2"), Version.Zero)
+          Member(UniqueAddress(Address("pekko", system.name), 2L), Set("dc-dc2"), Version.Zero)
             .copy(status = MemberStatus.Up)))
 
       awaitAssert {

@@ -150,8 +150,8 @@ class WriteAggregatorSpec extends PekkoSpec(s"""
   import WriteAggregatorSpec._
 
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   val nodeA = UniqueAddress(Address(protocol, "Sys", "a", 2552), 17L)
   val nodeB = UniqueAddress(Address(protocol, "Sys", "b", 2552), 17L)

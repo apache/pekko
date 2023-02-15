@@ -201,7 +201,7 @@ public interface IntroTest {
         ActorSystem.create(HelloWorldMain.create(), "hello");
 
     system.tell(new HelloWorldMain.SayHello("World"));
-    system.tell(new HelloWorldMain.SayHello("Akka"));
+    system.tell(new HelloWorldMain.SayHello("Pekko"));
     // #hello-world
 
     Thread.sleep(3000);

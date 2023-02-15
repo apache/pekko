@@ -39,7 +39,7 @@ object ShardingLogMarker {
    * Marker "akkaShardAllocated" of log event when `ShardCoordinator` allocates a shard to a region.
    * @param shardTypeName The `typeName` of the shard. Included as property "akkaShardTypeName".
    * @param shardId The id of the shard. Included as property "akkaShardId".
-   * @param node The address of the node where the shard is allocated. Included as property "akkaRemoteAddress".
+   * @param node The address of the node where the shard is allocated. Included as property "pekkoRemoteAddress".
    */
   def shardAllocated(shardTypeName: String, shardId: String, node: Address): LogMarker =
     LogMarker(

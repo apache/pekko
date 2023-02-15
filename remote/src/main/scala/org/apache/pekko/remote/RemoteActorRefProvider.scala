@@ -680,7 +680,7 @@ private[pekko] class RemoteActorRef private[pekko] (
 
   remote match {
     case t: ArteryTransport =>
-      // detect mistakes such as using "akka.tcp" with Artery
+      // detect mistakes such as using "pekko.tcp" with Artery
       if (path.address.protocol != t.localAddress.address.protocol)
         throw new IllegalArgumentException(s"Wrong protocol of [$path], expected [${t.localAddress.address.protocol}]")
     case _ =>

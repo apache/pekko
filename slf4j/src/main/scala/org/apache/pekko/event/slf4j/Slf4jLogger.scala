@@ -67,13 +67,13 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
 
   val mdcThreadAttributeName = "sourceThread"
   val mdcActorSystemAttributeName = "sourceActorSystem"
-  val mdcAkkaSourceAttributeName = "akkaSource"
-  val mdcAkkaTimestamp = "akkaTimestamp"
-  val mdcAkkaAddressAttributeName = "akkaAddress"
-  val mdcAkkaUidAttributeName = "akkaUid"
+  val mdcPekkoSourceAttributeName = "pekkoSource"
+  val mdcPekkoTimestamp = "akkaTimestamp"
+  val mdcPekkoAddressAttributeName = "pekkoAddress"
+  val mdcPekkoUidAttributeName = "pekkoUid"
 
-  private def akkaAddress = context.system.asInstanceOf[ExtendedActorSystem].provider.addressString
-  private val akkaUid: String = context.system.asInstanceOf[ExtendedActorSystem].uid.toString
+  private def pekkoAddress = context.system.asInstanceOf[ExtendedActorSystem].provider.addressString
+  private val pekkoUid: String = context.system.asInstanceOf[ExtendedActorSystem].uid.toString
 
   def receive = {
 
@@ -129,12 +129,12 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
       case _ =>
     }
 
-    MDC.put(mdcAkkaSourceAttributeName, logSource)
+    MDC.put(mdcPekkoSourceAttributeName, logSource)
     MDC.put(mdcThreadAttributeName, logEvent.thread.getName)
-    MDC.put(mdcAkkaTimestamp, formatTimestamp(logEvent.timestamp))
+    MDC.put(mdcPekkoTimestamp, formatTimestamp(logEvent.timestamp))
     MDC.put(mdcActorSystemAttributeName, context.system.name)
-    MDC.put(mdcAkkaAddressAttributeName, akkaAddress)
-    MDC.put(mdcAkkaUidAttributeName, akkaUid)
+    MDC.put(mdcPekkoAddressAttributeName, pekkoAddress)
+    MDC.put(mdcPekkoUidAttributeName, pekkoUid)
     logEvent.mdc.foreach { case (k, v) => MDC.put(k, String.valueOf(v)) }
 
     try logStatement

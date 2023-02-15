@@ -51,7 +51,7 @@ import pekko.annotation.InternalApi
     with ActorRefImpl[Nothing]
     with InternalRecipientRef[Nothing] {
 
-  private val rootPath: ActorPath = classic.RootActorPath(classic.Address("akka", name))
+  private val rootPath: ActorPath = classic.RootActorPath(classic.Address("pekko", name))
 
   override val path: classic.ActorPath = rootPath / "user"
 

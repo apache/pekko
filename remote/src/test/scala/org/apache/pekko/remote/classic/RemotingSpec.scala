@@ -442,7 +442,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     "be able to use multiple transports and use the appropriate one (TCP)" in {
       val r = system.actorOf(Props[Echo1](), "gonk")
       r.path.toString should ===(
-        s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/remote/akka.tcp/RemotingSpec@localhost:${port(
+        s"pekko.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/remote/pekko.tcp/RemotingSpec@localhost:${port(
             system, "tcp")}/user/gonk")
       r ! 42
       expectMsg(42)
@@ -528,7 +528,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         val otherGuyRemoteTcp = otherGuy.path.toSerializationFormatWithAddress(getOtherAddress(otherSystem, "tcp"))
         val remoteEchoHereTcp =
           RARP(system).provider
-            .resolveActorRef(s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/user/echo")
+            .resolveActorRef(s"pekko.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/user/echo")
         val proxyTcp = system.actorOf(Props(classOf[Proxy], remoteEchoHereTcp, testActor), "proxy-tcp")
         proxyTcp ! otherGuy
         expectMsg(3.seconds, ("pong", otherGuyRemoteTcp))
@@ -783,7 +783,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
               pekko.remote.classic.netty.tcp.port = ${otherAddress.getPort}
               """).withFallback(config)
       val otherSelection =
-        thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
+        thisSystem.actorSelection(s"pekko.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
       otherSelection.tell("ping", probe.ref)
       probe.expectNoMessage(200.millis)
       try {
@@ -842,7 +842,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
               pekko.remote.classic.netty.tcp.port = ${otherAddress.getPort}
               """).withFallback(config)
         val otherSelection =
-          thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
+          thisSystem.actorSelection(s"pekko.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
         otherSelection.tell("ping", thisSender)
         thisProbe.expectNoMessage(1.seconds)
         val otherSystem = ActorSystem("other-system", otherConfig)
@@ -852,7 +852,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
           val otherProbe = new TestProbe(otherSystem)
           val otherSender = otherProbe.ref
           val thisSelection =
-            otherSystem.actorSelection(s"akka.tcp://this-system@localhost:${port(thisSystem, "tcp")}/user/echo")
+            otherSystem.actorSelection(s"pekko.tcp://this-system@localhost:${port(thisSystem, "tcp")}/user/echo")
           within(5.seconds) {
             awaitAssert {
               thisSelection.tell("ping", otherSender)

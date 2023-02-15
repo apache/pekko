@@ -43,8 +43,8 @@ class InboundHandshakeSpec extends PekkoSpec("""
     pekko.stream.materializer.debug.fuzzing-mode = on
   """) with ImplicitSender {
 
-  val addressA = UniqueAddress(Address("akka", "sysA", "hostA", 1001), 1)
-  val addressB = UniqueAddress(Address("akka", "sysB", "hostB", 1002), 2)
+  val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
+  val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
   private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
     val recipient = OptionVal.None // not used

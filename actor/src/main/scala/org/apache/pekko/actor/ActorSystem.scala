@@ -484,7 +484,7 @@ object ActorSystem {
 
     if (ConfigVersion != Version)
       throw new pekko.ConfigurationException(
-        "Akka JAR version [" + Version + "] does not match the provided config version [" + ConfigVersion + "]")
+        "Pekko JAR version [" + Version + "] does not match the provided config version [" + ConfigVersion + "]")
 
     /**
      * Returns the String representation of the Config that this Settings is backed by

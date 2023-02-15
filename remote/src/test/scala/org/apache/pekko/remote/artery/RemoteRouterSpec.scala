@@ -123,7 +123,7 @@ class RemoteRouterSpec
       val probe = TestProbe()(masterSystem)
       val router =
         masterSystem.actorOf(
-          new RemoteRouterConfig(RoundRobinPool(2), Seq(Address("akka", sysName, "localhost", port)))
+          new RemoteRouterConfig(RoundRobinPool(2), Seq(Address("pekko", sysName, "localhost", port)))
             .props(echoActorProps),
           "blub2")
       val replies = collectRouteePaths(probe, router, 5)
@@ -190,7 +190,7 @@ class RemoteRouterSpec
       children should have size 2
       val parents = children.map(_.parent)
       parents should have size 1
-      parents.head.address should ===(Address("akka", sysName, "localhost", port))
+      parents.head.address should ===(Address("pekko", sysName, "localhost", port))
       children.foreach(_.address.toString should ===(s"pekko://${sysName}@localhost:${port}"))
       masterSystem.stop(router)
     }
@@ -239,7 +239,7 @@ class RemoteRouterSpec
       val router = masterSystem.actorOf(
         new RemoteRouterConfig(
           RoundRobinPool(1, supervisorStrategy = escalator),
-          Seq(Address("akka", sysName, "localhost", port))).props(Props.empty),
+          Seq(Address("pekko", sysName, "localhost", port))).props(Props.empty),
         "blub3")
 
       router.tell(GetRoutees, probe.ref)
