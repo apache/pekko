@@ -1,12 +1,16 @@
 # Release build scripts
 
+## Build environment
+
 The build environment can be setup using this command:
 
 ```sh
 docker build pekko:build
 ```
 
-This command will run the build, and provided gpg credentials by forwarding the GPG agent connection to the docker container.
+## Release script
+
+`build-release.sh` will run the build, and provided gpg credentials by forwarding the GPG agent connection to the docker container.
 Understand the risk of exposing the gpg-agent to a container.
 
 ```sh
