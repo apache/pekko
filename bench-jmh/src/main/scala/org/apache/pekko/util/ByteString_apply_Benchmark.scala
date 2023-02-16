@@ -26,7 +26,7 @@ class ByteString_apply_Benchmark {
   val bss = ByteStrings(Vector.fill(1024)(ByteString1(Array(0.toByte))))
 
   /*
-    akka-bench-jmh/jmh:run -f 1 -wi 3 -i 3 .*ByteString_apply_Benchmark.*
+    bench-jmh/jmh:run -f 1 -wi 3 -i 3 .*ByteString_apply_Benchmark.*
 
     2.12 original
     ByteString_apply_Benchmark.bss_apply_best_case   thrpt    3  204261596.303 ± 94507102.894  ops/s

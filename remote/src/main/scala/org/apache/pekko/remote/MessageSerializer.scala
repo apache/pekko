@@ -34,7 +34,7 @@ private[pekko] object MessageSerializer {
   class SerializationException(msg: String, cause: Throwable) extends RuntimeException(msg, cause)
 
   /**
-   * Uses Akka Serialization for the specified ActorSystem to transform the given MessageProtocol to a message
+   * Uses Pekko Serialization for the specified ActorSystem to transform the given MessageProtocol to a message
    */
   def deserialize(system: ExtendedActorSystem, messageProtocol: SerializedMessage): AnyRef = {
     SerializationExtension(system)
@@ -46,7 +46,7 @@ private[pekko] object MessageSerializer {
   }
 
   /**
-   * Uses Akka Serialization for the specified ActorSystem to transform the given message to a MessageProtocol
+   * Uses Pekko Serialization for the specified ActorSystem to transform the given message to a MessageProtocol
    * Throws `NotSerializableException` if serializer was not configured for the message type.
    * Throws `MessageSerializer.SerializationException` if exception was thrown from `toBinary` of the
    * serializer.

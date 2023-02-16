@@ -103,7 +103,7 @@ object IntroSpec {
         ActorSystem(HelloWorldMain(), "hello")
 
       system ! HelloWorldMain.SayHello("World")
-      system ! HelloWorldMain.SayHello("Akka")
+      system ! HelloWorldMain.SayHello("Pekko")
     }
     //#hello-world-main
   }
@@ -260,7 +260,7 @@ class IntroSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogC
         ActorSystem(HelloWorldMain(), "hello")
 
       system ! HelloWorldMain.SayHello("World")
-      system ! HelloWorldMain.SayHello("Akka")
+      system ! HelloWorldMain.SayHello("Pekko")
 
       // #hello-world
 

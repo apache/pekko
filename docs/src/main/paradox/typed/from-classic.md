@@ -43,9 +43,9 @@ Artifact names:
 | pekko-distributed-data | pekko-cluster-typed          |
 | pekko-persistence      | pekko-persistence-typed      |
 | pekko-stream           | pekko-stream-typed           |
-| pekko-testkit          | akka-actor-testkit-typed     |
+| pekko-testkit          | pekko-actor-testkit-typed     |
 
-Cluster Singleton and Distributed Data are included in `akka-cluster-typed`.
+Cluster Singleton and Distributed Data are included in `pekko-cluster-typed`.
 
 Artifacts not listed in above table don't have a specific API for Pekko Typed.
 

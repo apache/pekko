@@ -369,7 +369,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
                 clazz.getName)
             }
 
-            if (!warnUnexpectedNonAkkaSerializer(clazz, ser))
+            if (!warnUnexpectedNonPekkoSerializer(clazz, ser))
               log.debug("Using serializer [{}] for message [{}]", ser.getClass.getName, clazz.getName)
 
             ser
@@ -447,7 +447,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   private[pekko] val bindings: immutable.Seq[ClassSerializer] = {
     val fromConfig = for {
       (className: String, alias: String) <- settings.SerializationBindings
-      if alias != "none" && checkGoogleProtobuf(className) && checkAkkaProtobuf(className)
+      if alias != "none" && checkGoogleProtobuf(className) && checkPekkoProtobuf(className)
     } yield (system.dynamicAccess.getClassFor[Any](className).get, serializers(alias))
 
     val fromSettings = serializerDetails.flatMap { detail =>
@@ -456,7 +456,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
     val result = sort(fromConfig ++ fromSettings)
     ensureOnlyAllowedSerializers(result.iterator.map { case (_, ser) => ser })
-    result.foreach { case (clazz, ser) => warnUnexpectedNonAkkaSerializer(clazz, ser) }
+    result.foreach { case (clazz, ser) => warnUnexpectedNonPekkoSerializer(clazz, ser) }
     result
   }
 
@@ -466,12 +466,12 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     }
   }
 
-  private def warnUnexpectedNonAkkaSerializer(clazz: Class[_], ser: Serializer): Boolean = {
+  private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
     if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.")) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
-        "is not implemented by Pekko. It's not recommended to replace serializers for messages " +
-        "provided by Pekko.",
+        "is not implemented by Apache Pekko. It's not recommended to replace serializers for messages " +
+        "provided by Apache Pekko.",
         ser.getClass.getName,
         clazz.getName)
       true
@@ -484,9 +484,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean = checkClass("com.google.protobuf", className)
 
-  // akka-protobuf is now not a dependency of remote so only load if user has explicitly added it
-  // remove in 2.7
-  private def checkAkkaProtobuf(className: String): Boolean = checkClass("org.apache.pekko.protobuf", className)
+  // pekko-protobuf is now not a dependency of remote so only load if user has explicitly added it
+  // remove in v1.1
+  private def checkPekkoProtobuf(className: String): Boolean = checkClass("org.apache.pekko.protobuf", className)
 
   private def checkClass(prefix: String, className: String): Boolean =
     !className.startsWith(prefix) || system.dynamicAccess.getClassFor[Any](className).isSuccess

@@ -26,7 +26,7 @@ class PemManagersProviderSpec extends AnyWordSpec with Matchers {
 
   "A PemManagersProvider" must {
 
-    "load stores reading files setup in config (akka-pki samples)" in {
+    "load stores reading files setup in config (pekko-pki samples)" in {
       // These set of certificates are valid PEMs but are invalid for pekko-remote
       // use. Either the key length, certificate usage limitations (via the UsageKeyExtensions),
       // or the fact that the key's certificate is self-signed cause one of the following

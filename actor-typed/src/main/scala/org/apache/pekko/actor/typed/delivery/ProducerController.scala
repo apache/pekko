@@ -68,7 +68,7 @@ import pekko.util.JavaDurationConverters._
  * To make sure the messages can be delivered also in that scenario the `ProducerController` can be
  * used with a [[DurableProducerQueue]]. Then the unconfirmed messages are stored in a durable way so
  * that they can be redelivered when the producer is started again. An implementation of the
- * `DurableProducerQueue` is provided by `EventSourcedProducerQueue` in `akka-persistence-typed`.
+ * `DurableProducerQueue` is provided by `EventSourcedProducerQueue` in `pekko-persistence-typed`.
  *
  * Instead of using `tell` with the `sendNextTo` in the `RequestNext` the producer can use `context.ask`
  * with the `askNextTo` in the `RequestNext`. The difference is that a reply is sent back when the

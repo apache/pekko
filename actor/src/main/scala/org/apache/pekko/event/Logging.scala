@@ -1683,7 +1683,7 @@ trait DiagnosticLoggingAdapter extends LoggingAdapter {
   def clearMDC(): Unit = mdc(emptyMDC)
 }
 
-/** DO NOT INHERIT: Class is open only for use by akka-slf4j */
+/** DO NOT INHERIT: Class is open only for use by pekko-slf4j */
 @DoNotInherit
 class LogMarker(val name: String, val properties: Map[String, Any]) {
 
