@@ -24,7 +24,8 @@ import pekko.annotation.InternalApi
 import pekko.event.Logging
 import scala.annotation.nowarn
 
-@deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.", "2.6.0")
+@deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.",
+  "Akka 2.6.0")
 object PekkoSSLConfig extends ExtensionId[PekkoSSLConfig] with ExtensionIdProvider {
 
   //////////////////// EXTENSION SETUP ///////////////////
@@ -46,7 +47,8 @@ object PekkoSSLConfig extends ExtensionId[PekkoSSLConfig] with ExtensionIdProvid
 
 }
 
-@deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.", "2.6.0")
+@deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.",
+  "Akka 2.6.0")
 final class PekkoSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSettings) extends Extension {
 
   private val mkLogger = new PekkoLoggerFactory(system)
@@ -143,6 +145,8 @@ final class PekkoSSLConfig(system: ExtendedActorSystem, val config: SSLConfigSet
     v
   }
 
+  @deprecated("validateDefaultTrustManager is not doing anything since akka 2.6.19 and should not be used",
+    "Akka 2.6.19")
   def validateDefaultTrustManager(@nowarn("msg=never used") sslConfig: SSLConfigSettings): Unit = {
     log.warning(
       "validateDefaultTrustManager is not doing anything since akka 2.6.19, it was useful only in Java 7 and below");
