@@ -24,7 +24,7 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
     apacheSonatypeDisclaimerFile := Some(baseDir.value / "DISCLAIMER"))
 
   /**
-   * Settings specific for Pekko actor subprojects which require a different license file.
+   * Settings specific for Pekko actor subproject which requires a different license file.
    */
   lazy val actorSettings = Seq(
     apacheSonatypeLicenseFile := baseDir.value / "legal" / "pekko-actor-jar-license.txt")
