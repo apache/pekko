@@ -31,7 +31,7 @@ import pekko.actor.ExtensionIdProvider
 import pekko.event.Logging
 
 /**
- * Akka extension that extracts [[ManifestInfo.Version]] information from META-INF/MANIFEST.MF in jar files
+ * Apache Pekko extension that extracts [[ManifestInfo.Version]] information from META-INF/MANIFEST.MF in jar files
  * on the classpath of the `ClassLoader` of the `ActorSystem`.
  */
 object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {

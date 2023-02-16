@@ -19,7 +19,7 @@ import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 
 /**
- * Supertype for all Akka Persistence Typed specific signals
+ * Supertype for all Pekko Persistence Typed specific signals
  *
  * Not for user extension
  */

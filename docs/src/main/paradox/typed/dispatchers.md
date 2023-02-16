@@ -309,7 +309,7 @@ they were still served on the default dispatcher.
 This is the recommended way of dealing with any kind of blocking in reactive
 applications.
 
-For a similar discussion specifically about Pekko HTTP, refer to @extref[Handling blocking operations in Pekko HTTP](pekko.http:handling-blocking-operations-in-akka-http-routes.html).
+For a similar discussion specifically about Pekko HTTP, refer to @extref[Handling blocking operations in Pekko HTTP](pekko.http:handling-blocking-operations-in-pekko-http-routes.html).
 
 ### Available solutions to blocking operations
 

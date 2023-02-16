@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext;
 import scala.concurrent.duration.FiniteDuration;
 
 /**
- * An Akka scheduler service. This one needs one special behavior: if Closeable, it MUST execute all
+ * An Apache Pekko scheduler service. This one needs one special behavior: if Closeable, it MUST execute all
  * outstanding tasks upon .close() in order to properly shutdown all dispatchers.
  *
  * <p>Furthermore, this timer service MUST throw IllegalStateException if it cannot schedule a task.

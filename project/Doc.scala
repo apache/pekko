@@ -148,7 +148,7 @@ object UnidocRoot extends AutoPlugin {
       .ifTrue(sbtunidoc.ScalaUnidocPlugin && sbtunidoc.JavaUnidocPlugin && sbtunidoc.GenJavadocPlugin)
       .getOrElse(sbtunidoc.ScalaUnidocPlugin)
 
-  val akkaSettings = UnidocRoot.CliOptions.genjavadocEnabled
+  val pekkoSettings = UnidocRoot.CliOptions.genjavadocEnabled
     .ifTrue(Seq(
       JavaUnidoc / unidoc / javacOptions := {
         if (JdkOptions.isJdk8) Seq("-Xdoclint:none")

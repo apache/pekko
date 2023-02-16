@@ -67,7 +67,7 @@ private[pekko] object EventSourcedRememberEntitiesShardStore {
 /**
  * INTERNAL API
  *
- * Persistent actor keeping the state for Akka Persistence backed remember entities (enabled through `state-store-mode=persistence`).
+ * Persistent actor keeping the state for Pekko Persistence backed remember entities (enabled through `state-store-mode=persistence`).
  *
  * @see [[ClusterSharding$ ClusterSharding extension]]
  */

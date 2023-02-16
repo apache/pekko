@@ -36,7 +36,7 @@ trait OnlyCauseStackTrace { self: Throwable =>
 }
 
 /**
- * This exception is thrown when Akka detects a problem with the provided configuration
+ * This exception is thrown when Apache Pekko detects a problem with the provided configuration
  */
 class ConfigurationException(message: String, cause: Throwable) extends PekkoException(message, cause) {
   def this(msg: String) = this(msg, null)

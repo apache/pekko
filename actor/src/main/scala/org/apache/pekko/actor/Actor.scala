@@ -384,7 +384,7 @@ trait DiagnosticActorLogging extends Actor {
 object Actor {
 
   /**
-   * Type alias representing a Receive-expression for Akka Actors.
+   * Type alias representing a Receive-expression for Pekko Actors.
    */
   // #receive
   type Receive = PartialFunction[Any, Unit]

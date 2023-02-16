@@ -98,7 +98,7 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  * Features provided by this transport are:
  *  - Soft-state associations via the use of heartbeats and failure detectors
  *  - Transparent origin address handling
- *  - pluggable codecs to encode and decode Akka PDUs
+ *  - pluggable codecs to encode and decode Pekko PDUs
  *
  * It is not possible to load this transport dynamically using the configuration of remoting, because it does not
  * expose a constructor with [[com.typesafe.config.Config]] and [[pekko.actor.ExtendedActorSystem]] parameters.
@@ -112,7 +112,7 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  * @param settings
  *   the configuration options of the Akka protocol
  * @param codec
- *   the codec that will be used to encode/decode Akka PDUs
+ *   the codec that will be used to encode/decode Pekko PDUs
  */
 @nowarn("msg=deprecated")
 private[remote] class PekkoProtocolTransport(
@@ -741,7 +741,7 @@ private[remote] class ProtocolStateActor(
     try codec.decodePdu(pdu)
     catch {
       case NonFatal(e) =>
-        throw new PekkoProtocolException("Error while decoding incoming Akka PDU of length: " + pdu.length, e)
+        throw new PekkoProtocolException("Error while decoding incoming Pekko PDU of length: " + pdu.length, e)
     }
 
   // Neither heartbeats neither disassociate cares about backing off if write fails:

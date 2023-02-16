@@ -141,7 +141,7 @@ object JavaPartialFunction {
  * }
  * }}}
  *
- * The typical use of partial functions from Akka looks like the following:
+ * The typical use of partial functions from Apache Pekko looks like the following:
  *
  * {{{
  * if (pf.isDefinedAt(x)) {

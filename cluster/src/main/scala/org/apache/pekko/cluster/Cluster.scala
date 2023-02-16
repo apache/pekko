@@ -119,7 +119,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
   // ClusterJmx is initialized as the last thing in the constructor
   private var clusterJmx: Option[ClusterJmx] = None
 
-  logInfo("Starting up, Akka version [{}] ...", system.settings.ConfigVersion)
+  logInfo("Starting up, Pekko version [{}] ...", system.settings.ConfigVersion)
 
   val failureDetector: FailureDetectorRegistry[Address] = {
     val createFailureDetector = () =>

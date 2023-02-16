@@ -33,13 +33,13 @@ private[remote] class PduCodecException(msg: String, cause: Throwable) extends P
  * INTERNAL API
  *
  * Companion object of the [[pekko.remote.transport.PekkoPduCodec]] trait. Contains the representation case classes
- * of decoded Akka Protocol Data Units (PDUs).
+ * of decoded Pekko Protocol Data Units (PDUs).
  */
 @nowarn("msg=deprecated")
 private[remote] object PekkoPduCodec {
 
   /**
-   * Trait that represents decoded Akka PDUs (Protocol Data Units)
+   * Trait that represents decoded Pekko PDUs (Protocol Data Units)
    */
   sealed trait PekkoPdu
   final case class Associate(info: HandshakeInfo) extends PekkoPdu
@@ -64,7 +64,7 @@ private[remote] object PekkoPduCodec {
 /**
  * INTERNAL API
  *
- * A Codec that is able to convert Akka PDUs (Protocol Data Units) from and to [[pekko.util.ByteString]]s.
+ * A Codec that is able to convert Pekko PDUs (Protocol Data Units) from and to [[pekko.util.ByteString]]s.
  */
 @nowarn("msg=deprecated")
 private[remote] trait PekkoPduCodec {
@@ -75,21 +75,21 @@ private[remote] trait PekkoPduCodec {
    * ByteString.
    *
    * @param raw
-   *   Encoded raw byte representation of an Akka PDU
+   *   Encoded raw byte representation of an Pekko PDU
    * @return
    *   Case class representation of the decoded PDU that can be used in a match statement
    */
   def decodePdu(raw: ByteString): PekkoPdu
 
   /**
-   * Takes an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of an Akka PDU and returns its encoded
+   * Takes an [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] representation of an Pekko PDU and returns its encoded
    * form as a [[pekko.util.ByteString]].
    *
    * For the same effect the constructXXX methods might be called directly, taking method parameters instead of the
    * [[pekko.remote.transport.PekkoPduCodec.PekkoPdu]] final case classes.
    *
    * @param pdu
-   *   The Akka Protocol Data Unit to be encoded
+   *   The Pekko Protocol Data Unit to be encoded
    * @return
    *   Encoded form as raw bytes
    */
@@ -203,7 +203,8 @@ private[remote] object PekkoPduProtobufCodec$ extends PekkoPduCodec {
       if (pdu.hasPayload) Payload(ByteString.fromByteBuffer(pdu.getPayload.asReadOnlyByteBuffer()))
       else if (pdu.hasInstruction) decodeControlPdu(pdu.getInstruction)
       else
-        throw new PduCodecException("Error decoding Akka PDU: Neither message nor control message were contained", null)
+        throw new PduCodecException("Error decoding Pekko PDU: Neither message nor control message were contained",
+          null)
     } catch {
       case e: InvalidProtocolBufferException => throw new PduCodecException("Decoding PDU failed.", e)
     }

@@ -32,7 +32,7 @@ object ShardedDaemonProcess {
  * This extension runs a pre set number of actors in a cluster.
  *
  * The typical use case is when you have a task that can be divided in a number of workers, each doing a
- * sharded part of the work, for example consuming the read side events from Akka Persistence through
+ * sharded part of the work, for example consuming the read side events from Pekko Persistence through
  * tagged events where each tag decides which consumer that should consume the event.
  *
  * Each named set needs to be started on all the nodes of the cluster on start up.

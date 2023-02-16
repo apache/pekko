@@ -136,7 +136,7 @@ object ClusterSharding extends ExtensionId[ClusterSharding] {
  * must be to begin the rebalancing. This strategy can be replaced by an application specific
  * implementation.
  *
- * The state of shard locations in the `ShardCoordinator` is stored with `akka-distributed-data` or
+ * The state of shard locations in the `ShardCoordinator` is stored with `pekko-distributed-data` or
  * `pekko-persistence` to survive failures. When a crashed or unreachable coordinator
  * node has been removed (via down) from the cluster a new `ShardCoordinator` singleton
  * actor will take over and the state is recovered. During such a failure period shards

@@ -16,7 +16,7 @@ package org.apache.pekko.annotation;
 import java.lang.annotation.*;
 
 /**
- * Marks APIs that are considered internal to Akka and may change at any point in time without any
+ * Marks APIs that are considered internal to Apache Pekko and may change at any point in time without any
  * warning.
  *
  * <p>For example, this annotation should be used when the Scala {@code private[pekko]} access
