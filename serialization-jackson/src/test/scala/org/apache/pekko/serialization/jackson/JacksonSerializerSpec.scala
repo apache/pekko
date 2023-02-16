@@ -129,7 +129,7 @@ object ScalaTestMessages {
       extends TestMessage
   // #jackson-scala-enumeration
 
-  // delegate to AkkaSerialization
+  // delegate to PekkoSerialization
   object HasPekkoSerializer {
     def apply(description: String): HasPekkoSerializer = new HasPekkoSerializer(description)
   }
@@ -1278,7 +1278,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
       }
     }
 
-    "delegate to akka serialization" in {
+    "delegate to pekko serialization" in {
       checkSerialization(WithPekkoSerializer(HasPekkoSerializer("cat")))
     }
 

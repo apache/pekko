@@ -23,7 +23,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   override def requires: Plugins = JvmPlugin
   override lazy val projectSettings = disciplineSettings
 
-  // allow toggling for pocs/exploration of ideas without discpline
+  // allow toggling for pocs/exploration of ideas without discipline
   val enabled = !sys.props.contains("pekko.no.discipline")
 
   // We allow warnings in docs to get the 'snippets' right

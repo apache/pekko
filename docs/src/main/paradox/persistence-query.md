@@ -274,7 +274,7 @@ used the next time this projection is started. This pattern is implemented in th
 ## Query plugins
 
 Query plugins are various (mostly community driven) @apidoc[query.*.ReadJournal] implementations for all kinds
-of available datastores. The complete list of available plugins is maintained on the Pekko Persistence Query [Community Plugins](https://akka.io/community/#plugins-to-akka-persistence-query) page.
+of available datastores.
 
 This section aims to provide tips and guide plugin developers through implementing a custom query plugin.
 Most users will not need to implement journals themselves, except if targeting a not yet supported datastore.
