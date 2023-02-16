@@ -55,9 +55,9 @@ import scala.util.Success
           // on each log entry or message, so do that up front here
           tags.mkString(",")
 
-      val akkaSource = ctx.self.path.toString
+      val pekkoSource = ctx.self.path.toString
 
-      val akkaAddress =
+      val pekkoAddress =
         ctx.system match {
           case adapter: ActorSystemAdapter[_] => adapter.provider.addressString
           case _                              => Address("akka", ctx.system.name).toString
@@ -65,16 +65,16 @@ import scala.util.Success
 
       val sourceActorSystem = ctx.system.name
 
-      new LoggingContext(logger, tagsString, akkaSource, sourceActorSystem, akkaAddress, hasCustomName = false)
+      new LoggingContext(logger, tagsString, pekkoSource, sourceActorSystem, pekkoAddress, hasCustomName = false)
     }
   }
 
   final case class LoggingContext(
       logger: Logger,
       tagsString: String,
-      akkaSource: String,
+      pekkoSource: String,
       sourceActorSystem: String,
-      akkaAddress: String,
+      pekkoAddress: String,
       hasCustomName: Boolean) {
     // toggled once per message if logging is used to avoid having to
     // touch the mdc thread local for cleanup in the end

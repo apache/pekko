@@ -74,7 +74,7 @@ import pekko.testkit.TestKit
     if (event.message == null) "" else event.message
 
   private def sourceOrEmpty(event: LoggingEvent): String =
-    event.mdc.getOrElse("akkaSource", "")
+    event.mdc.getOrElse("pekkoSource", "")
 
   def apply(event: LoggingEvent): Boolean = {
     if (matches(event)) {

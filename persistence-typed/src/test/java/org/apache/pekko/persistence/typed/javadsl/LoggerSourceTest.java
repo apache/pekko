@@ -132,7 +132,7 @@ public class LoggerSourceTest extends JUnitSuite {
         .withCustom(
             event -> {
               return event.loggerName().equals(LoggingBehavior.class.getName())
-                  && event.getMdc().get("akkaSource").equals(ref.path().toString());
+                  && event.getMdc().get("pekkoSource").equals(ref.path().toString());
             })
         .expect(
             testKit.system(),
@@ -150,7 +150,7 @@ public class LoggerSourceTest extends JUnitSuite {
         .withCustom(
             event -> {
               return event.loggerName().equals(LoggingBehavior.class.getName())
-                  && event.getMdc().get("akkaSource").equals(ref.path().toString());
+                  && event.getMdc().get("pekkoSource").equals(ref.path().toString());
             })
         .expect(
             testKit.system(),

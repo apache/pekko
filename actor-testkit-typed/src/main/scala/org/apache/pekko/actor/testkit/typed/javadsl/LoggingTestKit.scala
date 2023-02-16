@@ -59,8 +59,8 @@ import pekko.annotation.DoNotInherit
   def withLoggerName(newLoggerName: String): LoggingTestKit
 
   /**
-   * Matching events that have "akkaSource" MDC value equal to the given value.
-   * "akkaSource" is typically the actor path.
+   * Matching events that have "pekkoSource" MDC value equal to the given value.
+   * "pekkoSource" is typically the actor path.
    */
   def withSource(newSource: String): LoggingTestKit
 

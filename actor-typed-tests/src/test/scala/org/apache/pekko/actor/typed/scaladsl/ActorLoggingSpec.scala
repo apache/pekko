@@ -278,11 +278,11 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         }
       }
       val actor =
-        LoggingTestKit.info("Starting up").withMdc(Map(ActorMdc.AkkaTagsKey -> "tag1,tag2")).expect {
+        LoggingTestKit.info("Starting up").withMdc(Map(ActorMdc.PekkoTagsKey -> "tag1,tag2")).expect {
           spawn(behavior, ActorTags("tag1", "tag2"))
         }
 
-      LoggingTestKit.info("Got message").withMdc(Map(ActorMdc.AkkaTagsKey -> "tag1,tag2")).expect {
+      LoggingTestKit.info("Got message").withMdc(Map(ActorMdc.PekkoTagsKey -> "tag1,tag2")).expect {
         actor ! "ping"
       }
     }
@@ -357,10 +357,10 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
       // mdc on defer is empty
       val ref = LoggingTestKit
         .info("Starting")
-        // not counting for example "akkaSource", but it shouldn't have any other entries
+        // not counting for example "pekkoSource", but it shouldn't have any other entries
         .withCustom(logEvent =>
           logEvent.mdc.keysIterator.forall(entry =>
-            entry.startsWith("akka") || entry == "sourceActorSystem" || entry == "static") &&
+            entry.startsWith("pekko") || entry == "sourceActorSystem" || entry == "static") &&
           logEvent.mdc("static") == "1")
         .expect {
           spawn(behaviors)
@@ -499,8 +499,8 @@ class ActorLoggingSpec extends ScalaTestWithActorTestKit("""
         try {
           event.mdc should contain allElementsOf (
             Map(
-              ActorMdc.AkkaAddressKey -> system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString,
-              ActorMdc.AkkaSourceKey -> actorPath.get.toString,
+              ActorMdc.PekkoAddressKey -> system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString,
+              ActorMdc.PekkoSourceKey -> actorPath.get.toString,
               ActorMdc.SourceActorSystemKey -> system.name))
           true
         } catch {

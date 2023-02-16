@@ -31,30 +31,30 @@ object ShardingLogMarker {
    * INTERNAL API
    */
   @InternalApi private[pekko] object Properties {
-    val ShardTypeName = "akkaShardTypeName"
-    val ShardId = "akkaShardId"
+    val ShardTypeName = "pekkoShardTypeName"
+    val ShardId = "pekkoShardId"
   }
 
   /**
-   * Marker "akkaShardAllocated" of log event when `ShardCoordinator` allocates a shard to a region.
-   * @param shardTypeName The `typeName` of the shard. Included as property "akkaShardTypeName".
-   * @param shardId The id of the shard. Included as property "akkaShardId".
-   * @param node The address of the node where the shard is allocated. Included as property "akkaRemoteAddress".
+   * Marker "pekkoShardAllocated" of log event when `ShardCoordinator` allocates a shard to a region.
+   * @param shardTypeName The `typeName` of the shard. Included as property "pekkoShardTypeName".
+   * @param shardId The id of the shard. Included as property "pekkoShardId".
+   * @param node The address of the node where the shard is allocated. Included as property "pekkoRemoteAddress".
    */
   def shardAllocated(shardTypeName: String, shardId: String, node: Address): LogMarker =
     LogMarker(
-      "akkaShardAllocated",
+      "pekkoShardAllocated",
       Map(
         Properties.ShardTypeName -> shardTypeName,
         Properties.ShardId -> shardId,
         LogMarker.Properties.RemoteAddress -> node))
 
   /**
-   * Marker "akkaShardStarted" of log event when `ShardRegion` starts a shard.
-   * @param shardTypeName The `typeName` of the shard. Included as property "akkaShardTypeName".
-   * @param shardId The id of the shard. Included as property "akkaShardId".
+   * Marker "pekkoShardStarted" of log event when `ShardRegion` starts a shard.
+   * @param shardTypeName The `typeName` of the shard. Included as property "pekkoShardTypeName".
+   * @param shardId The id of the shard. Included as property "pekkoShardId".
    */
   def shardStarted(shardTypeName: String, shardId: String): LogMarker =
-    LogMarker("akkaShardStarted", Map(Properties.ShardTypeName -> shardTypeName, Properties.ShardId -> shardId))
+    LogMarker("pekkoShardStarted", Map(Properties.ShardTypeName -> shardTypeName, Properties.ShardId -> shardId))
 
 }
