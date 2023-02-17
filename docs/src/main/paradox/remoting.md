@@ -496,9 +496,9 @@ as well as the [Oracle documentation on creating KeyStore and TrustStores](https
 are both great resources to research when setting up security on the JVM. Please consult those resources when troubleshooting
 and configuring SSL.
 
-Since Pekko 2.5.0 mutual authentication between TLS peers is enabled by default.
+Mutual authentication between TLS peers is enabled by default.
 
-Mutual authentication means that the the passive side (the TLS server side) of a connection will also request and verify
+Mutual authentication means that the passive side (the TLS server side) of a connection will also request and verify
 a certificate from the connecting peer. Without this mode only the client side is requesting and verifying certificates.
 While Pekko is a peer-to-peer technology, each connection between nodes starts out from one side (the "client") towards
 the other (the "server").
