@@ -28,7 +28,7 @@ object ActorLogMarker {
   /**
    * Marker "pekkoDeadLetter" of log event for dead letter messages.
    *
-   * @param messageClass The message class of the DeadLetter. Included as property "akkaMessageClass".
+   * @param messageClass The message class of the DeadLetter. Included as property "pekkoMessageClass".
    */
   def deadLetter(messageClass: String): LogMarker =
     LogMarker("pekkoDeadLetter", Map(LogMarker.Properties.MessageClass -> messageClass))

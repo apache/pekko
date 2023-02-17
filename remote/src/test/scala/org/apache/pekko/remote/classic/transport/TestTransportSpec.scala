@@ -103,18 +103,18 @@ class TestTransportSpec extends PekkoSpec with DefaultTimeout with ImplicitSende
       // Initialize handles
       handleA.readHandlerPromise.success(ActorHandleEventListener(self))
 
-      val akkaPDU = ByteString("AkkaPDU")
+      val pekkoPDU = ByteString("AkkaPDU")
 
       awaitCond(registry.existsAssociation(addressA, addressB))
 
-      handleA.write(akkaPDU)
+      handleA.write(pekkoPDU)
       expectMsgPF(timeout.duration, "Expect InboundPayload from A") {
-        case InboundPayload(payload) if payload == akkaPDU =>
+        case InboundPayload(payload) if payload == pekkoPDU =>
       }
 
       registry.logSnapshot.exists {
         case WriteAttempt(sender, recipient, payload) =>
-          sender == addressA && recipient == addressB && payload == akkaPDU
+          sender == addressA && recipient == addressB && payload == pekkoPDU
         case _ => false
       } should ===(true)
     }

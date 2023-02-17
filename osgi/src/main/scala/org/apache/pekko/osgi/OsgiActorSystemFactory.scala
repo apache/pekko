@@ -56,7 +56,7 @@ class OsgiActorSystemFactory(
     config.withFallback(
       ConfigFactory
         .load(classloader)
-        .withFallback(ConfigFactory.defaultReference(OsgiActorSystemFactory.akkaActorClassLoader)))
+        .withFallback(ConfigFactory.defaultReference(OsgiActorSystemFactory.pekkoActorClassLoader)))
   }
 
   /**
@@ -73,11 +73,11 @@ object OsgiActorSystemFactory {
   /**
    * Class loader of pekko-actor bundle.
    */
-  def akkaActorClassLoader = classOf[ActorSystemActivator].getClassLoader
+  def pekkoActorClassLoader = classOf[ActorSystemActivator].getClassLoader
 
   /*
    * Create an [[OsgiActorSystemFactory]] instance to set up Akka in an OSGi environment
    */
   def apply(context: BundleContext, config: Config): OsgiActorSystemFactory =
-    new OsgiActorSystemFactory(context, Some(akkaActorClassLoader), config)
+    new OsgiActorSystemFactory(context, Some(pekkoActorClassLoader), config)
 }

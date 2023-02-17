@@ -157,7 +157,7 @@ private[transport] class PekkoProtocolManager(
   }
 
   private def actorNameFor(remoteAddress: Address): String =
-    "akkaProtocol-" + AddressUrlEncoder(remoteAddress) + "-" + nextId()
+    "pekkoProtocol-" + AddressUrlEncoder(remoteAddress) + "-" + nextId()
 
   override def ready: Receive = {
     case InboundAssociation(handle) =>
