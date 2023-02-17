@@ -4,7 +4,7 @@ We follow the standard GitHub [fork & pull](https://help.github.com/articles/usi
 
 You're always welcome to submit your PR straight away and start the discussion (without reading the rest of this wonderful doc or the README.md). The goal of these notes is to make your experience contributing to Pekko as smooth and pleasant as possible. We're happy to guide you through the process once you've submitted your PR.
 
-## The Pekko Community
+## The Apache Pekko Community
 
 If you have questions about the contribution process or discuss specific issues, please interact with the community using the following resources.
 
@@ -52,7 +52,7 @@ Pull request validation states:
 
 ## Pekko contributing guidelines
 
-These guidelines apply to all Pekko projects, by which we currently mean both the `apache/incubator-pekko` repository, as well as any plugins or additional repositories.
+These guidelines apply to all Apache Pekko projects, by which we currently mean both the `apache/incubator-pekko` repository, as well as any plugins or additional repositories.
 
 These guidelines are meant to be a living document that should be changed and adapted as needed.
 We encourage changes that make it easier to achieve our goals efficiently.
@@ -65,20 +65,20 @@ The steps are exactly the same for everyone involved in the project, including t
 1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
    - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new/choose) to discuss the problem and the approach you want to take to solve it.
 1. [Fork the project](https://github.com/apache/incubator-pekko/fork) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Pekko.
-1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-akka-http`
+1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-pekko-http`
    - Please make sure to follow the general quality guidelines (specified below) when developing your patch.
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
    - Use the `verifyCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our guide [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
 1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/incubator-pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
-    - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
+   - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
 1. If you are a first time contributor, a core member must approve the CI to run for your pull request.
 1. For non-trivial changes, you will be asked to sign the [CLA](https://www.apache.org/licenses/contributor-agreements.html) if you have not done so before.
 1. Now, both committers and interested people will review your code. This process ensures that the code we merge is of the best possible quality and that no silly mistakes slip through. You're expected to follow-up on these comments by adding new commits to the same branch. The commit messages of those commits can be more loose, for example: `Removed debugging using printline`, as they all will be squashed into one commit before merging into the main branch.
-    - The community and core team are really nice people, so don't be afraid to ask follow-up questions if you didn't understand some comment or would like clarification on how to continue with a given feature. We're here to help, so feel free to ask and discuss any questions you might have during the review process!
+   - The community and core team are really nice people, so don't be afraid to ask follow-up questions if you didn't understand some comment or would like clarification on how to continue with a given feature. We're here to help, so feel free to ask and discuss any questions you might have during the review process!
 1. After the review, you should fix the issues as needed (pushing a new commit for a new review, etc.), iterating until the reviewers give their approval signaled by GitHub's pull-request approval feature. Usually, a reviewer will add an `LGTM` comment, which means "Looks Good To Me".
-    - In general, a PR is expected to get 2 approvals from the team before it is merged. If the PR is trivial or under exceptional circumstances (such as most of the core team being on vacation, a PR was very thoroughly reviewed/tested and surely is correct), a single LGTM may be fine as well.
+   - In general, a PR is expected to get 2 approvals from the team before it is merged. If the PR is trivial or under exceptional circumstances (such as most of the core team being on vacation, a PR was very thoroughly reviewed/tested and surely is correct), a single LGTM may be fine as well.
 1. If the code change needs to be applied to other branches as well (for example, a bugfix needing to be backported to a previous version), one of the team members will either ask you to submit a PR with the same commits to the old branch or will do this for you.
    - Follow the [backporting steps](#backporting) below.
 1. Once everything is said and done, your pull request gets merged :tada:! Your feature will be available with the next "earliest" release milestone (i.e. if backported so that it will be in release x.y.z, find the relevant milestone for that release). Of course, you will be given credit for the fix in the release stats during the release's announcement. You've made it!
@@ -158,23 +158,23 @@ To run a single multi-jvm test:
 
 ```shell
 sbt
-project akka-cluster
-MultiJvm/testOnly akka.cluster.SunnyWeather
+project cluster
+MultiJvm/testOnly org.apache.pekko.cluster.SunnyWeather
 ```
 
 To format the Scala source code:
 
 ```shell
 sbt
-akka-cluster/scalafmtAll
-akka-persistence/scalafmtAll
+cluster/scalafmtAll
+persistence/scalafmtAll
 ```
 
 To format the Java source code:
 
 ```shell
 sbt
-project akka-actor
+project actor
 javafmtAll
 ```
 
@@ -182,7 +182,7 @@ To keep the *import*s sorted with:
 
 ```shell
 sbt
-project akka-actor
+project actor
 sortImports
 ```
 
@@ -226,8 +226,8 @@ To use the task, simply type `validatePullRequest`, and the output should includ
 ```shell
 > validatePullRequest
 [info] Diffing [HEAD] to determine changed modules in PR...
-[info] Detected uncomitted changes in directories (including in dependency analysis): [akka-protobuf,project]
-[info] Detected changes in directories: [akka-actor-tests, project, akka-stream, docs, akka-persistence]
+[info] Detected uncomitted changes in directories (including in dependency analysis): [protobuf,project]
+[info] Detected changes in directories: [actor-tests, project, stream, docs, persistence]
 ```
 
 By default, changes are diffed with the `main` branch when working locally. If you want to validate against a different
@@ -247,13 +247,13 @@ e.g. `allCluster`, `allTyped`.
 Binary compatibility rules and guarantees are described in depth in the [Binary Compatibility Rules
 ](https://pekko.apache.org/) section of the documentation.
 
-Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary compatibility of incoming pull requests. If your 
+Pekko uses [MiMa](https://github.com/lightbend/mima) to validate the binary compatibility of incoming pull requests. If your
 PR fails due to binary compatibility issues, you may see an error like this:
 
 ```
-[info] akka-stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:akka-stream_2.12:2.4.2  (filtered 222)
-[error]  * method foldAsync(java.lang.Object,scala.Function2)akka.stream.scaladsl.FlowOps in trait akka.stream.scaladsl.FlowOps is present only in current version
-[error]    filter with: ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.stream.scaladsl.FlowOps.foldAsync")
+[info] stream: found 1 potential binary incompatibilities while checking against org.apache.pekko:pekko-stream_2.12:2.4.2  (filtered 222)
+[error]  * method foldAsync(java.lang.Object,scala.Function2)org.apache.pekko.stream.scaladsl.FlowOps in trait org.apache.pekko.stream.scaladsl.FlowOps is present only in current version
+[error]    filter with: ProblemFilters.exclude[ReversedMissingMethodProblem]("org.apache.pekko.stream.scaladsl.FlowOps.foldAsync")
 ```
 
 In such situations it's good to consult with a core team member whether the violation can be safely ignored or if it would indeed
@@ -266,7 +266,7 @@ Situations when it may be acceptable to ignore a MiMa issued warning include:
 
 - if it is touching any class marked as `private[pekko]`, `/** INTERNAL API*/` or similar markers
 - if it is concerning internal classes (often recognisable by package names like `dungeon`, `impl`, `internal` etc.)
-- if it is adding API to classes / traits which are only meant for extension by Akka itself, i.e. should not be extended by end-users
+- if it is adding API to classes / traits which are only meant for extension by Pekko itself, i.e. should not be extended by end-users
 - other tricky situations
 
 The binary compatibility of the current changes can be checked by running `sbt +mimaReportBinaryIssues`.
@@ -334,8 +334,8 @@ Alternatively, use `docs/paradoxBrowse` to open the generated docs in your defau
 Pekko Paradox supports directives to link to the Scaladoc- and Javadoc-generated API documentation:
 
 * `@apidoc[Flow]` searches for the class name and creates links to Scaladoc and Javadoc (see variants in [sbt-paradox-apidoc](https://github.com/lightbend/sbt-paradox-apidoc#examples))
-* `@scaladoc[Flow](akka.stream.scaladsl.Flow)` (see [Paradox docs](https://developer.lightbend.com/docs/paradox/current/directives/linking.html#scaladoc-directive))
-* `@javadoc[Flow](akka.stream.javadsl.Flow)` (see [Paradox docs](https://developer.lightbend.com/docs/paradox/current/directives/linking.html#javadoc-directive))
+* `@scaladoc[Flow](org.apache.pekko.stream.scaladsl.Flow)` (see [Paradox docs](https://developer.lightbend.com/docs/paradox/current/directives/linking.html#scaladoc-directive))
+* `@javadoc[Flow](org.apache.pekko.stream.javadsl.Flow)` (see [Paradox docs](https://developer.lightbend.com/docs/paradox/current/directives/linking.html#javadoc-directive))
 
 #### Scaladoc
 
@@ -393,7 +393,7 @@ Follow these guidelines when creating public commits and writing commit messages
 3. Following the single line description should be a blank line followed by an enumerated list with the details of the commit.
 
 4. You can request a review by a specific team member  for your commit (depending on the degree of automation we reach, the list may change over time):
-    * "Review by @gituser "- if you want to notify someone on the team. The others can and are encouraged to participate.
+   * "Review by @gituser "- if you want to notify someone on the team. The others can and are encouraged to participate.
 
 Example:
 
@@ -423,7 +423,7 @@ For existing contributors, Github Actions will run without requiring any manual 
 
 For first time contributors, the workflow will be run after an approval from a core team member. After that, whenever new commits are pushed to the pull request, a validation job will be automatically started.
 
-To speed up PR validation times the Akka build contains a special sbt task called `validatePullRequest`,
+To speed up PR validation times the Pekko build contains a special sbt task called `validatePullRequest`,
 which is smart enough to figure out which projects should be built if a PR only has changes in some parts of the project.
 For example, if your PR only touches `persistence`, no `remote` tests need to be run, however the task
 will validate all projects that depend on `persistence` (including samples).
@@ -438,10 +438,10 @@ sbt -Dpekko.test.tags.exclude=performance,timing,long-running -Dpekko.test.multi
 It is also possible to exclude groups of test by their names. For example:
 
 ```shell
-sbt -Dpekko.test.names.exclude=akka.cluster.Stress
+sbt -Dpekko.test.names.exclude=org.apache.pekko.cluster.Stress
 ```
 
-Will exclude any tests that have names containing `akka.cluster.Stress`.
+Will exclude any tests that have names containing `org.apache.pekko.cluster.Stress`.
 
 ### Source style
 
@@ -459,7 +459,7 @@ not needed to use `sbt scalafmtAll` when editing with IntelliJ.
 
 PR validation includes checking that the Scala sources are formatted and will fail if they are not.
 
-Pekko prefers flattened imports rather than grouped, which helps reduce merge conflicts. 
+Pekko prefers flattened imports rather than grouped, which helps reduce merge conflicts.
 If you are using IntelliJ IDEA, you can disable it by unchecking: `Preferences` -> `Code Style` -> `Scala` -> `Imports` -> `Merge imports with the same prefix into one statement`.
 
 
@@ -473,7 +473,7 @@ PR validation includes checking that the Java sources are formatted and will fai
 
 #### Code discipline opt out
 
-In addition to formatting, the Pekko build enforces code discipline through a set of compiler flags. While exploring ideas, the discipline may be more of a hindrance than a help. Therefore, it is possible to disable it by setting the system property `akka.no.discipline`
+In addition to formatting, the Pekko build enforces code discipline through a set of compiler flags. While exploring ideas, the discipline may be more of a hindrance than a help. Therefore, it is possible to disable it by setting the system property `pekko.no.discipline`
 to any non-empty string value when starting up sbt:
 
 ```shell
@@ -513,9 +513,9 @@ Scala has proven the most viable way to do it, as long as you keep the following
    and binary compatibility reasons do not have this subdivision.
 
 1. Have methods in the `javadsl` package delegate to the methods in the Scala API, or the common internal implementation.
-   For example, the Pekko Stream Scala instances have a `.asJava` method to convert to the `akka.stream.javadsl` counterparts.
+   For example, the Pekko Stream Scala instances have a `.asJava` method to convert to the `org.apache.pekko.stream.javadsl` counterparts.
 
-1. When using Scala `object` instances, offer a `getInstance()` method. See `akka.Done` for an example.
+1. When using Scala `object` instances, offer a `getInstance()` method. See `org.apache.pekko.Done` for an example.
 
 1. When the Scala API contains an `apply` method, use `create` or `of` for Java users.
 
@@ -527,7 +527,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 
 1. Complement any methods with Scala collections with a Java collection version
 
-1. Use the `akka.japi.Pair` class to return tuples
+1. Use the `org.apache.pekko.japi.Pair` class to return tuples
 
 1. If the underlying Scala code requires an `ExecutionContext`, make the Java API take an `Executor` and use
    `ExecutionContext.fromExecutor(executor)` for conversion.
@@ -559,7 +559,7 @@ Scala has proven the most viable way to do it, as long as you keep the following
 | `scala.collection.immutable.Seq[T]` | `java.util.List<T>` |
 | `scala.concurrent.Future[T]` | `java.util.concurrent.CompletionStage<T>` |
 | `scala.concurrent.Promise[T]` | `java.util.concurrent.CompletableFuture<T>` |
-| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `akka.util.JavaDurationConverters`) |
+| `scala.concurrent.duration.FiniteDuration` | `java.time.Duration` (use `org.apache.pekko.util.JavaDurationConverters`) |
 | `T => Unit` | `java.util.function.Consumer<T>` |
 | `() => R` (`scala.Function0[R]`) | `java.util.function.Supplier<R>` |
 | `T => R` (`scala.Function1[T, R]`) | `java.util.function.Function<T, R>` |
