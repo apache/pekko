@@ -145,7 +145,7 @@ Event storage has the following operations:
 Snapshot storage has the following operations:
 
  * @apidoc[ReadSnapshot] Read the snapshot from the storage.
- * @apidoc[WriteSnapshot] Writhe the snapshot to the storage.
+ * @apidoc[WriteSnapshot] Write the snapshot to the storage.
  * @apidoc[DeleteSnapshotsByCriteria] Delete snapshots in the storage by criteria.
  * @apidoc[DeleteSnapshotByMeta] Delete particular snapshot from the storage by its metadata.
 

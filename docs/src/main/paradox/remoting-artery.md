@@ -319,7 +319,7 @@ as well as the [Oracle documentation on creating KeyStore and TrustStores](https
 are both great resources to research when setting up security on the JVM. Please consult those resources when troubleshooting
 and configuring SSL.
 
-Mutual authentication between TLS peers is enabled by default. Mutual authentication means that the the passive side
+Mutual authentication between TLS peers is enabled by default. Mutual authentication means that the passive side
 (the TLS server side) of a connection will also request and verify a certificate from the connecting peer.
 Without this mode only the client side is requesting and verifying certificates. While Pekko is a peer-to-peer
 technology, each connection between nodes starts out from one side (the "client") towards the other (the "server").
@@ -652,7 +652,7 @@ The selection of lane is based on consistent hashing of the recipient ActorRef t
 
 Note that lowest latency can be achieved with `inbound-lanes=1` and `outbound-lanes=1` because multiple lanes introduce an asynchronous boundary. 
 
-Also note that the total amount of parallel tasks are bound by the `remote-dispatcher` and the thread pool size should not exceed the number of CPU cores minus headroom for actually processing the messages in the application, i.e. in practice the the pool size should be less than half of the number of cores.
+Also note that the total amount of parallel tasks are bound by the `remote-dispatcher` and the thread pool size should not exceed the number of CPU cores minus headroom for actually processing the messages in the application, i.e. in practice the pool size should be less than half of the number of cores.
 
 See `inbound-lanes` and `outbound-lanes` in the @ref:[reference configuration](general/configuration-reference.md#config-pekko-remote-artery) for default values.
 

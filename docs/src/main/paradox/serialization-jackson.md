@@ -518,7 +518,7 @@ other purposes, such as persistence or distributed data.
 ## Additional features
 
 Additional Jackson serialization features can be enabled/disabled in configuration. The default values from
-Jackson are used aside from the the following that are changed in Pekko's default configuration.
+Jackson are used aside from the following that are changed in Pekko's default configuration.
 
 @@snip [reference.conf](/serialization-jackson/src/main/resources/reference.conf) { #features }
 

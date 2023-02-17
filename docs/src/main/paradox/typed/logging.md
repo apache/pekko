@@ -130,7 +130,7 @@ Java
 ## MDC
 
 [MDC](https://logback.qos.ch/manual/mdc.html) allows for adding additional context dependent attributes to log entries.
-Out of the box, Pekko will place the path of the actor in the the MDC attribute `pekkoSource`.
+Out of the box, Pekko will place the path of the actor in the MDC attribute `pekkoSource`.
 
 One or more tags can also be added to the MDC using the @apidoc[ActorTags$] props. The tags will be rendered as a comma separated
 list and be put in the MDC attribute `pekkoTags`. This can be used to categorize log entries from a set of different actors
