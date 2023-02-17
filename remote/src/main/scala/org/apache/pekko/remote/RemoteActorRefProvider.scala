@@ -399,7 +399,7 @@ private[pekko] class RemoteActorRefProvider(
        *
        * Example:
        *
-       * pekko://sys@home:1234/remote/akka/sys@remote:6667/remote/akka/sys@other:3333/user/a/b/c
+       * pekko://sys@home:1234/remote/pekko/sys@remote:6667/remote/pekko/sys@other:3333/user/a/b/c
        *
        * means that the logical parent originates from “pekko://sys@other:3333” with
        * one child (may be “a” or “b”) being deployed on “pekko://sys@remote:6667” and

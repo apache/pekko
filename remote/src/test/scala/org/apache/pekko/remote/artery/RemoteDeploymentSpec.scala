@@ -108,7 +108,7 @@ class RemoteDeploymentSpec
       val senderProbe = TestProbe()(masterSystem)
       val r = masterSystem.actorOf(Props[Echo1](), "blub")
       r.path.toString should ===(
-        s"pekko://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub")
+        s"pekko://${system.name}@localhost:${port}/remote/pekko/${masterSystem.name}@localhost:${masterPort}/user/blub")
 
       r.tell(42, senderProbe.ref)
       senderProbe.expectMsg(42)
@@ -126,7 +126,7 @@ class RemoteDeploymentSpec
       val senderProbe = TestProbe()(masterSystem)
       val r = masterSystem.actorOf(Props[Echo1](), "blub2")
       r.path.toString should ===(
-        s"pekko://${system.name}@localhost:${port}/remote/akka/${masterSystem.name}@localhost:${masterPort}/user/blub2")
+        s"pekko://${system.name}@localhost:${port}/remote/pekko/${masterSystem.name}@localhost:${masterPort}/user/blub2")
 
       r.tell(42, senderProbe.ref)
       senderProbe.expectMsg(42)

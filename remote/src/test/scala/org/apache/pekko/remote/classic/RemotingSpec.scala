@@ -162,7 +162,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     deploy(system, Deploy(name, scope = RemoteScope(getOtherAddress(remoteSystem, proto))))
 
   def getOtherAddress(sys: ActorSystem, proto: String) =
-    sys.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address(s"akka.$proto", "", "", 0)).get
+    sys.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address(s"pekko.$proto", "", "", 0)).get
   def port(sys: ActorSystem, proto: String) = getOtherAddress(sys, proto).port.get
   def deploy(sys: ActorSystem, d: Deploy): Unit = {
     sys.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].deployer.deploy(d)
@@ -459,8 +459,8 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     "be able to use multiple transports and use the appropriate one (SSL)" in {
       val r = system.actorOf(Props[Echo1](), "roghtaar")
       r.path.toString should ===(
-        s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem,
-            "ssl.tcp")}/remote/akka.ssl.tcp/RemotingSpec@localhost:${port(system, "ssl.tcp")}/user/roghtaar")
+        s"pekko.ssl.tcp://remote-sys@localhost:${port(remoteSystem,
+            "ssl.tcp")}/remote/pekko.ssl.tcp/RemotingSpec@localhost:${port(system, "ssl.tcp")}/user/roghtaar")
       r ! 42
       expectMsg(10.seconds, 42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {
@@ -536,7 +536,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         val otherGuyRemoteTest = otherGuy.path.toSerializationFormatWithAddress(getOtherAddress(otherSystem, "test"))
         val remoteEchoHereSsl =
           RARP(system).provider
-            .resolveActorRef(s"akka.ssl.tcp://remote-sys@localhost:${port(remoteSystem, "ssl.tcp")}/user/echo")
+            .resolveActorRef(s"pekko.ssl.tcp://remote-sys@localhost:${port(remoteSystem, "ssl.tcp")}/user/echo")
         val proxySsl = system.actorOf(Props(classOf[Proxy], remoteEchoHereSsl, testActor), "proxy-ssl")
         EventFilter
           .warning(start = "Error while resolving ActorRef", occurrences = 1)
