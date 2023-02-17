@@ -240,9 +240,8 @@ public class RouterTest extends JUnitSuite {
     // #consistent-hashing
     // Then messages with equal Message.id reach the same actor
     // so the first message in each probe queue is equal to its second
-    // NB: this test can start failing if you change the actor path (eg the URL scheme) - to fix you
-    // will need
-    // to change id2 value until it starts passing again
+    // NB: this test can start failing if you change the actor path (eg the URL scheme)
+    // - to fix you will need to change id2 value until it starts passing again
     probe1.expectMessage(probe1.receiveMessage());
     probe2.expectMessage(probe2.receiveMessage());
   }
