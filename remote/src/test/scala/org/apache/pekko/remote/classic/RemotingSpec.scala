@@ -126,11 +126,11 @@ object RemotingSpec {
       }
 
       actor.deployment {
-        /blub.remote = "akka.test://remote-sys@localhost:12346"
-        /looker1/child.remote = "akka.test://remote-sys@localhost:12346"
-        /looker1/child/grandchild.remote = "akka.test://RemotingSpec@localhost:12345"
-        /looker2/child.remote = "akka.test://remote-sys@localhost:12346"
-        /looker2/child/grandchild.remote = "akka.test://RemotingSpec@localhost:12345"
+        /blub.remote = "pekko.test://remote-sys@localhost:12346"
+        /looker1/child.remote = "pekko.test://remote-sys@localhost:12346"
+        /looker1/child/grandchild.remote = "pekko.test://RemotingSpec@localhost:12345"
+        /looker2/child.remote = "pekko.test://remote-sys@localhost:12346"
+        /looker2/child/grandchild.remote = "pekko.test://RemotingSpec@localhost:12345"
       }
     }
   """)
@@ -170,7 +170,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
 
   val remote = remoteSystem.actorOf(Props[Echo2](), "echo")
 
-  val here = RARP(system).provider.resolveActorRef("akka.test://remote-sys@localhost:12346/user/echo")
+  val here = RARP(system).provider.resolveActorRef("pekko.test://remote-sys@localhost:12346/user/echo")
 
   private def verifySend(msg: Any)(afterSend: => Unit): Unit = {
     val bigBounceId = s"bigBounce-${ThreadLocalRandom.current.nextInt()}"
@@ -181,7 +181,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         }
       }).withDeploy(Deploy.local), bigBounceId)
     val bigBounceHere =
-      RARP(system).provider.resolveActorRef(s"akka.test://remote-sys@localhost:12346/user/$bigBounceId")
+      RARP(system).provider.resolveActorRef(s"pekko.test://remote-sys@localhost:12346/user/$bigBounceId")
 
     val eventForwarder = system.actorOf(Props(new Actor {
       def receive = {
@@ -229,7 +229,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
 
     "send warning message for wrong address" in {
       filterEvents(EventFilter.warning(pattern = "Address is now gated for ", occurrences = 1)) {
-        RARP(system).provider.resolveActorRef("akka.test://nonexistingsystem@localhost:12346/user/echo") ! "ping"
+        RARP(system).provider.resolveActorRef("pekko.test://nonexistingsystem@localhost:12346/user/echo") ! "ping"
       }
     }
 
@@ -244,7 +244,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
       EventFilter
         .warning(pattern = "dead.*buh", occurrences = 1)
         .intercept {
-          RARP(system).provider.resolveActorRef("akka.test://remote-sys@localhost:12346/does/not/exist") ! "buh"
+          RARP(system).provider.resolveActorRef("pekko.test://remote-sys@localhost:12346/does/not/exist") ! "buh"
         }(remoteSystem)
     }
 
@@ -296,7 +296,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     "create and supervise children on remote node" in {
       val r = system.actorOf(Props[Echo1](), "blub")
       r.path.toString should ===(
-        "akka.test://remote-sys@localhost:12346/remote/akka.test/RemotingSpec@localhost:12345/user/blub")
+        "pekko.test://remote-sys@localhost:12346/remote/pekko.test/RemotingSpec@localhost:12345/user/blub")
       r ! 42
       expectMsg(42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {
@@ -329,13 +329,13 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
       remoteSystem.actorSelection("/user/otherEcho1") ! 75
       expectMsg(75)
 
-      system.actorSelection("akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
+      system.actorSelection("pekko.test://remote-sys@localhost:12346/user/otherEcho1") ! 76
       expectMsg(76)
 
       remoteSystem.actorSelection("/user/otherEcho1") ! 77
       expectMsg(77)
 
-      system.actorSelection("akka.test://remote-sys@localhost:12346/user/otherEcho1") ! 78
+      system.actorSelection("pekko.test://remote-sys@localhost:12346/user/otherEcho1") ! 78
       expectMsg(78)
     }
 
@@ -550,9 +550,9 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     }
 
     "should not publish AddressTerminated even on InvalidAssociationExceptions" in {
-      val localAddress = Address("akka.test", "system1", "localhost", 1)
+      val localAddress = Address("pekko.test", "system1", "localhost", 1)
       val rawLocalAddress = localAddress.copy(protocol = "test")
-      val remoteAddress = Address("akka.test", "system2", "localhost", 2)
+      val remoteAddress = Address("pekko.test", "system2", "localhost", 2)
 
       val config = ConfigFactory.parseString(s"""
             pekko.remote.enabled-transports = ["pekko.remote.classic.test"]
@@ -607,9 +607,9 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     }
 
     "should stash inbound connections until UID is known for pending outbound" in {
-      val localAddress = Address("akka.test", "system1", "localhost", 1)
+      val localAddress = Address("pekko.test", "system1", "localhost", 1)
       val rawLocalAddress = localAddress.copy(protocol = "test")
-      val remoteAddress = Address("akka.test", "system2", "localhost", 2)
+      val remoteAddress = Address("pekko.test", "system2", "localhost", 2)
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
 
       val config = ConfigFactory.parseString(s"""
@@ -688,9 +688,9 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
     }
 
     "should properly quarantine stashed inbound connections" in {
-      val localAddress = Address("akka.test", "system1", "localhost", 1)
+      val localAddress = Address("pekko.test", "system1", "localhost", 1)
       val rawLocalAddress = localAddress.copy(protocol = "test")
-      val remoteAddress = Address("akka.test", "system2", "localhost", 2)
+      val remoteAddress = Address("pekko.test", "system2", "localhost", 2)
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
       val remoteUID = 16
 
