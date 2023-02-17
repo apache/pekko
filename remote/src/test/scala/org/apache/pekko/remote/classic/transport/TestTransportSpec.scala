@@ -103,7 +103,7 @@ class TestTransportSpec extends PekkoSpec with DefaultTimeout with ImplicitSende
       // Initialize handles
       handleA.readHandlerPromise.success(ActorHandleEventListener(self))
 
-      val pekkoPDU = ByteString("AkkaPDU")
+      val pekkoPDU = ByteString("PekkoPDU")
 
       awaitCond(registry.existsAssociation(addressA, addressB))
 
