@@ -18,7 +18,7 @@ even when @ref[intermediate satellite projects are not yet upgraded](../project/
 
 Binary compatibility is maintained between:
 
- * **minor** and **patch** versions - please note that the meaning of "minor" has shifted to be more restrictive with Pekko `2.4.0`, read @ref:[Change in versioning scheme](#24versioningchange) for details.
+ * **minor** and **patch** versions
 
 Binary compatibility is **NOT** maintained between:
 
@@ -26,7 +26,7 @@ Binary compatibility is **NOT** maintained between:
  * any versions of **may change** modules – read @ref:[Modules marked "May Change"](may-change.md) for details
  * a few notable exclusions explained below
 
-Specific examples (please read @ref:[Change in versioning scheme](#24versioningchange) to understand the difference in "before 2.4 era" and "after 2.4 era"):
+Specific examples:
 
 ```
 # [epoch.major.minor] era
@@ -63,21 +63,6 @@ Some modules are excluded from the binary compatibility guarantees, such as:
 Once a method has been deprecated then the guideline* is that it will be kept, at minimum, for one **full** minor version release. For example, if it is deprecated in version 2.5.2 then it will remain through the rest of 2.5, as well as the entirety of 2.6. 
 
 *This is a guideline because in **rare** instances, after careful consideration, an exception may be made and the method removed earlier.
-
-<a id="24versioningchange"></a>
-## Change in versioning scheme, stronger compatibility since 2.4
-
-Since the release of Pekko `2.4.0` a new versioning scheme is in effect.
-
-Historically, Pekko has been following the Java or Scala style of versioning in which the first number would mean "**epoch**",
-the second one would mean **major**, and third be the **minor**, thus: `epoch.major.minor` (versioning scheme followed until and during `2.3.x`).
-
-**Currently**, since Pekko `2.4.0`, the new versioning applies which is closer to semantic versioning many have come to expect, 
-in which the version number is deciphered as `major.minor.patch`. This also means that Pekko `2.5.x` is binary compatible with the `2.4` series releases (with the exception of "may change" APIs).
-
-In addition to that, Pekko `2.4.x` has been made binary compatible with the `2.3.x` series,
-so there is no reason to remain on Pekko 2.3.x, since upgrading is completely compatible 
-(and many issues have been fixed ever since).
 
 ## Mixed versioning is not allowed
 
