@@ -367,7 +367,7 @@ private[pekko] trait Cell {
 }
 
 /**
- * Everything in here is completely Akka PRIVATE. You will not find any
+ * Everything in here is completely Pekko PRIVATE. You will not find any
  * supported APIs in this place. This is not the API you were looking
  * for! (waves hand)
  */
@@ -412,7 +412,7 @@ private[pekko] object ActorCell {
 //vars don't need volatile since it's protected with the mailbox status
 //Make sure that they are not read/written outside of a message processing (systemInvoke/invoke)
 /**
- * Everything in here is completely Akka PRIVATE. You will not find any
+ * Everything in here is completely Pekko PRIVATE. You will not find any
  * supported APIs in this place. This is not the API you were looking
  * for! (waves hand)
  */

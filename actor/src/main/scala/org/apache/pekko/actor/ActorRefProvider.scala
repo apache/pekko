@@ -35,7 +35,7 @@ import pekko.util.OptionVal
 
 /**
  * Interface for all ActorRef providers to implement.
- * Not intended for extension outside of Akka.
+ * Not intended for extension outside of Apache Pekko.
  */
 @DoNotInherit trait ActorRefProvider {
 

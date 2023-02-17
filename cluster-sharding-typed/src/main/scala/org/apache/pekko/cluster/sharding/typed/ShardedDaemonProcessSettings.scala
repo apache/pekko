@@ -47,7 +47,7 @@ object ShardedDaemonProcessSettings {
 }
 
 /**
- * Not for user constructions, use factory methods to instanciate.
+ * Not for user constructions, use factory methods to instantiate.
  */
 final class ShardedDaemonProcessSettings @InternalApi private[pekko] (
     val keepAliveInterval: FiniteDuration,

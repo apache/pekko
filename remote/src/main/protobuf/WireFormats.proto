@@ -110,11 +110,11 @@ message DeployData {
 
 
 /******************************************
- * Akka Protocol message formats
+ * Pekko Protocol message formats
  ******************************************/
 
 /**
- * Message format of Akka Protocol.
+ * Message format of Pekko Protocol.
  * Message contains either a payload or an instruction.
  */
 message PekkoProtocolMessage {

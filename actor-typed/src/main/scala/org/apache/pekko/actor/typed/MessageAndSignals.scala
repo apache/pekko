@@ -73,7 +73,7 @@ object Terminated {
  * once. Registration does not need to happen before the Actor terminates, a
  * notification is guaranteed to arrive after both registration and termination
  * have occurred. This message is also sent when the watched actor is on a node
- * that has been removed from the cluster when using Akka Cluster.
+ * that has been removed from the cluster when using Pekko Cluster.
  *
  * @param ref Scala API: the `ActorRef` for the terminated actor
  */

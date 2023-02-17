@@ -20,9 +20,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks APIs that are considered internal to Akka and should not be accessed by user code but that
- * are used across Akka project boundaries and therefore shouldn't be changed without considering
- * possible usage outside of the Akka core modules.
+ * Marks APIs that are considered internal to Apache Pekko and should not be accessed by user code
+ * but that are used across Apache Pekko project boundaries and therefore shouldn't be changed
+ * without considering possible usage outside of the Apache Pekko core modules.
  *
  * <p>If a method/class annotated with this annotation is part of a public API and has the Scala
  * {@code private[pekko]} access restriction, which leads to a public method from Java, there should

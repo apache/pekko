@@ -28,7 +28,7 @@ import pekko.testkit.metrics._
 class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, output: PrintStream = System.out)
     extends ScheduledReporter(
       registry.asInstanceOf[MetricRegistry],
-      "akka-console-reporter",
+      "pekko-console-reporter",
       MetricFilter.ALL,
       TimeUnit.SECONDS,
       TimeUnit.NANOSECONDS) {

@@ -104,7 +104,7 @@ object Serializers {
  * For serialization of data that need to evolve over time the `SerializerWithStringManifest` is recommended instead
  * of [[Serializer]] because the manifest (type hint) is a `String` instead of a `Class`. That means
  * that the class can be moved/removed and the serializer can still deserialize old data by matching
- * on the `String`. This is especially useful for Akka Persistence.
+ * on the `String`. This is especially useful for Pekko Persistence.
  *
  * The manifest string can also encode a version number that can be used in `fromBinary` to
  * deserialize in different ways to migrate old data to new domain objects.
@@ -179,7 +179,7 @@ abstract class SerializerWithStringManifest extends Serializer {
  * Implementations should typically extend [[SerializerWithStringManifest]] and
  * in addition to the `ByteBuffer` based `toBinary` and `fromBinary` methods also
  * implement the array based `toBinary` and `fromBinary` methods. The array based
- * methods will be used when `ByteBuffer` is not used, e.g. in Akka Persistence.
+ * methods will be used when `ByteBuffer` is not used, e.g. in Pekko Persistence.
  *
  * Note that the array based methods can for example be implemented by delegation
  * like this:

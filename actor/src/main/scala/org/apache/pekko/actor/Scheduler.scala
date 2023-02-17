@@ -33,7 +33,7 @@ import pekko.util.JavaDurationConverters
 private final case class SchedulerException(msg: String) extends pekko.PekkoException(msg) with NoStackTrace
 
 /**
- * An Akka scheduler service.
+ * An Apache Pekko scheduler service.
  *
  * For scheduling within actors `with Timers` should be preferred.
  *

@@ -142,7 +142,7 @@ object EventSourcedBehavior {
    * Allows the event sourced behavior to react on signals.
    *
    * The regular lifecycle signals can be handled as well as
-   * Akka Persistence specific signals (snapshot and recovery related). Those are all subtypes of
+   * Pekko Persistence specific signals (snapshot and recovery related). Those are all subtypes of
    * [[pekko.persistence.typed.EventSourcedSignal]]
    */
   def receiveSignal(signalHandler: PartialFunction[(State, Signal), Unit]): EventSourcedBehavior[Command, Event, State]

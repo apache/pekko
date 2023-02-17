@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 
 /**
  * Marks APIs that are designed under an closed-world assumption for and are NOT meant to be
- * extended by user-code. It is fine to extend these classes within Akka itself however.
+ * extended by user-code. It is fine to extend these classes within Apache Pekko itself, however.
  *
  * <p>This is most useful for binary compatibility purposes when a set of classes and interfaces
  * assume a "closed world" between them, and gain the ability to add methods to the interfaces
@@ -26,7 +26,7 @@ import java.lang.annotation.*;
  * / artifact, it is impossible to obtain a "old" class with a "new" interface, as they are part of
  * the same dependency.
  *
- * <p>Notable examples of such API include the FlowOps trait in Akka Streams or Akka HTTP model
+ * <p>Notable examples of such API include the FlowOps trait in Pekko Streams or Pekko HTTP model
  * interfaces, which extensively uses inheritance internally, but are not meant for extension by
  * user code.
  */

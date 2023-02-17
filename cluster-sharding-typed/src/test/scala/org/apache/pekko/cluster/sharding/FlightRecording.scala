@@ -20,7 +20,7 @@ import org.apache.pekko.actor.{ ActorSystem, ExtendedActorSystem }
 /**
  * This will work on JDK11 and JDK8 built with the enable-jfr flag (8u262+).
  *
- * For Akka JRF recordings you may need to run a publish for multi jvm tests
+ * For Pekko JRF recordings you may need to run a publish for multi jvm tests
  * to get the ComileJDK9 things compiled.
  */
 class FlightRecording(system: ActorSystem) {

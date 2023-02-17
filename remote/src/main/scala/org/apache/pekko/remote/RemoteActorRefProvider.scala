@@ -347,9 +347,10 @@ private[pekko] class RemoteActorRefProvider(
     if (!settings.HasCluster) {
       if (remoteSettings.UseUnsafeRemoteFeaturesWithoutCluster)
         log.info(
-          "Akka Cluster not in use - enabling unsafe features anyway because `pekko.remote.use-unsafe-remote-features-outside-cluster` has been enabled.")
+          "Pekko Cluster not in use - enabling unsafe features anyway because `pekko.remote.use-unsafe-remote-features-outside-cluster` has been enabled.")
       else
-        log.warning("Akka Cluster not in use - Using Akka Cluster is recommended if you need remote watch and deploy.")
+        log.warning(
+          "Pekko Cluster not in use - Using Pekko Cluster is recommended if you need remote watch and deploy.")
     }
 
   protected def warnOnUnsafe(message: String): Unit =
@@ -359,7 +360,7 @@ private[pekko] class RemoteActorRefProvider(
   /**
    * Logs if deathwatch message is intentionally dropped. To disable
    * warnings set `pekko.remote.warn-unsafe-watch-outside-cluster` to `off`
-   * or use Akka Cluster.
+   * or use Pekko Cluster.
    */
   private[pekko] def warnIfUnsafeDeathwatchWithoutCluster(watchee: ActorRef, watcher: ActorRef, action: String): Unit =
     warnOnUnsafe(s"Dropped remote $action: disabled for [$watcher -> $watchee]")

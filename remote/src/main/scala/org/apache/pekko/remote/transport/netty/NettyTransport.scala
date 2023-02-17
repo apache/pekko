@@ -387,7 +387,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
    * outbound connections are initiated in the shutdown phase.
    */
   val channelGroup = new DefaultChannelGroup(
-    "akka-netty-transport-driver-channelgroup-" +
+    "pekko-netty-transport-driver-channelgroup-" +
     uniqueIdCounter.getAndIncrement)
 
   private val clientChannelFactory: ChannelFactory = {

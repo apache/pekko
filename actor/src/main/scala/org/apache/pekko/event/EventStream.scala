@@ -23,7 +23,7 @@ import pekko.event.Logging.simpleName
 import pekko.util.Subclassification
 
 /**
- * An Akka EventStream is a pub-sub stream of events both system and user generated,
+ * An Apache Pekko EventStream is a pub-sub stream of events both system and user generated,
  * where subscribers are ActorRefs and the channels are Classes and Events are any java.lang.Object.
  * EventStreams employ SubchannelClassification, which means that if you listen to a Class,
  * you'll receive any message that is of that type or a subtype.
