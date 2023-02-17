@@ -43,7 +43,7 @@ object PekkoBuild {
 
   lazy val rootSettings = Def.settings(
     commands += switchVersion,
-    UnidocRoot.akkaSettings,
+    UnidocRoot.pekkoSettings,
     Protobuf.settings,
     GlobalScope / parallelExecution := System
       .getProperty("pekko.parallelExecution", parallelExecutionByDefault.toString)

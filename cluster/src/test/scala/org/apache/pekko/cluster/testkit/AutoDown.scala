@@ -52,9 +52,9 @@ import pekko.util.Helpers.toRootLowerCase
  * When this happens the guaranteed uniqueness will no longer be true resulting in undesirable behavior
  * in the system.
  *
- * This is even more severe when Akka Persistence is used in conjunction with Cluster Sharding.
+ * This is even more severe when Pekko Persistence is used in conjunction with Cluster Sharding.
  * In this case, the lack of unique actors can cause multiple actors to write to the same journal.
- * Akka Persistence operates on a single writer principle. Having multiple writers will corrupt
+ * Pekko Persistence operates on a single writer principle. Having multiple writers will corrupt
  * the journal and make it unusable.
  *
  * Finally, even if you don't use features such as Persistence, Sharding, or Singletons, auto-downing can lead the

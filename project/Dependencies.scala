@@ -382,7 +382,7 @@ object Dependencies {
 
   val benchJmh = l ++= Seq(logback, Provided.levelDB, Provided.levelDBNative, Compile.jctools)
 
-  // akka stream
+  // pekko stream
 
   lazy val stream = l ++= Seq[sbt.ModuleID](reactiveStreams, sslConfigCore.value, TestDependencies.scalatest.value)
 

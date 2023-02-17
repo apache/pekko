@@ -308,7 +308,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
 }
 
 /**
- * An Akka SupervisorStrategy is the policy to apply for crashing children.
+ * A Pekko SupervisorStrategy is the policy to apply for crashing children.
  *
  * <b>IMPORTANT:</b>
  *

@@ -100,7 +100,7 @@ lazy val root = Project(id = "pekko", base = file("."))
       benchJmh,
       protobuf,
       protobufV3,
-      akkaScalaNightly,
+      pekkoScalaNightly,
       docs,
       serialversionRemoverPlugin))
   .settings(
@@ -126,7 +126,7 @@ lazy val actorTests = pekkoModule("actor-tests")
   .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 
-lazy val akkaScalaNightly = pekkoModule("scala-nightly")
+lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
   .aggregate(aggregatedProjects: _*)
   .disablePlugins(MimaPlugin)
   .disablePlugins(ValidatePullRequest, MimaPlugin, CopyrightHeaderInPr)

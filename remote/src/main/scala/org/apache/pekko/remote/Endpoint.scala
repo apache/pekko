@@ -1245,6 +1245,6 @@ private[remote] class EndpointReader(
     try {
       codec.decodeMessage(pdu, provider, localAddress)
     } catch {
-      case NonFatal(e) => throw new EndpointException("Error while decoding incoming Akka PDU", e)
+      case NonFatal(e) => throw new EndpointException("Error while decoding incoming Pekko PDU", e)
     }
 }

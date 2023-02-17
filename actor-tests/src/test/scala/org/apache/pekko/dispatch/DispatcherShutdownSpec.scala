@@ -27,7 +27,7 @@ import pekko.testkit.TestKit
 
 class DispatcherShutdownSpec extends AnyWordSpec with Matchers {
 
-  "akka dispatcher" should {
+  "pekko dispatcher" should {
 
     "eventually shutdown when used after system terminate" in {
 

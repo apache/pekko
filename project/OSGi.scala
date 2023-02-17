@@ -129,13 +129,13 @@ object OSGi {
   def defaultImports(scalaVersion: String) =
     Seq(
       "!sun.misc",
-      akkaImport(),
+      pekkoImport(),
       configImport(),
       "!scala.compat.java8.*",
       "!scala.util.parsing.*",
       scalaImport(scalaVersion),
       "*")
-  def akkaImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "2.6", "2.7")
+  def pekkoImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "1.0", "1.1")
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
     val packageName = "scala.*"

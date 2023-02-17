@@ -236,7 +236,7 @@ with an application-specific protocol. The benefits of this approach are:
 * Improved protocol definition between client and server
 * Usage of [Pekko gRPC Service Discovery]($pekko.doc.dns$/docs/pekko-grpc/current/client/configuration.html#using-pekko-discovery-for-endpoint-discovery)
 * Clients do not need to use Pekko
-* See also [gRPC versus Pekko Remoting]($pekko.doc.dns$/docs/pekko-grpc/current/whygrpc.html#grpc-vs-akka-remoting)
+* See also [gRPC versus Pekko Remoting]($pekko.doc.dns$/docs/pekko-grpc/current/whygrpc.html#grpc-vs-pekko-remoting)
 
 ### Migrating directly
 

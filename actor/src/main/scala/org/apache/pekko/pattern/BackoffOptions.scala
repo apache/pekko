@@ -53,8 +53,8 @@ object BackoffOpts {
    * be restarted with an exponentially increasing back off until the resource is available again.
    *
    * '''***
-   * This supervisor should not be used with `Akka Persistence` child actors.
-   * `Akka Persistence` actors shutdown unconditionally on `persistFailure()`s rather
+   * This supervisor should not be used with `Pekko Persistence` child actors.
+   * `Pekko Persistence` actors shutdown unconditionally on `persistFailure()`s rather
    * than throw an exception on a failure like normal actors.
    * [[#onStop]] should be used instead for cases where the child actor
    * terminates itself as a failure signal instead of the normal behavior of throwing an exception.
@@ -107,8 +107,8 @@ object BackoffOpts {
    * be restarted with an exponentially increasing back off until the resource is available again.
    *
    * '''***
-   * This supervisor should not be used with `Akka Persistence` child actors.
-   * `Akka Persistence` actors shutdown unconditionally on `persistFailure()`s rather
+   * This supervisor should not be used with `Pekko Persistence` child actors.
+   * `Pekko Persistence` actors shutdown unconditionally on `persistFailure()`s rather
    * than throw an exception on a failure like normal actors.
    * [[#onStop]] should be used instead for cases where the child actor
    * terminates itself as a failure signal instead of the normal behavior of throwing an exception.

@@ -64,12 +64,12 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
 
     def configureConsoleReporter(): Unit = {
       if (settings.Reporters.contains("console")) {
-        val akkaConsoleReporter = new PekkoConsoleReporter(registry, settings.ConsoleReporter.Verbose)
+        val pekkoConsoleReporter = new PekkoConsoleReporter(registry, settings.ConsoleReporter.Verbose)
 
         if (settings.ConsoleReporter.ScheduledReportInterval > Duration.Zero)
-          akkaConsoleReporter.start(settings.ConsoleReporter.ScheduledReportInterval.toMillis, TimeUnit.MILLISECONDS)
+          pekkoConsoleReporter.start(settings.ConsoleReporter.ScheduledReportInterval.toMillis, TimeUnit.MILLISECONDS)
 
-        reporters ::= akkaConsoleReporter
+        reporters ::= pekkoConsoleReporter
       }
     }
 

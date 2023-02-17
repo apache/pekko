@@ -9720,7 +9720,7 @@ public final class WireFormats {
   /**
    * <pre>
    **
-   * Message format of Akka Protocol.
+   * Message format of Pekko Protocol.
    * Message contains either a payload or an instruction.
    * </pre>
    *
@@ -10046,7 +10046,7 @@ public final class WireFormats {
     /**
      * <pre>
      **
-     * Message format of Akka Protocol.
+     * Message format of Pekko Protocol.
      * Message contains either a payload or an instruction.
      * </pre>
      *

@@ -62,7 +62,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
       })(_ || _)
     },
     validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
-    prValidatorGithubRepository := Some("akka/akka"),
+    prValidatorGithubRepository := Some("apache/incubator-pekko"),
     prValidatorTargetBranch := "origin/main")
 
   override lazy val projectSettings = inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(

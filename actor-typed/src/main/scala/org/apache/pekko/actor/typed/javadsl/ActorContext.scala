@@ -180,7 +180,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
   /**
    * Register for [[Terminated]] notification once the Actor identified by the
    * given [[ActorRef]] terminates. This message is also sent when the watched actor
-   * is on a node that has been removed from the cluster when using Akka Cluster.
+   * is on a node that has been removed from the cluster when using Pekko Cluster.
    *
    * `watch` is idempotent if it is not mixed with `watchWith`.
    *
@@ -195,7 +195,7 @@ trait ActorContext[T] extends TypedActorContext[T] with ClassicActorContextProvi
   /**
    * Register for termination notification with a custom message once the Actor identified by the
    * given [[ActorRef]] terminates. This message is also sent when the watched actor
-   * is on a node that has been removed from the cluster when using Akka Cluster.
+   * is on a node that has been removed from the cluster when using Pekko Cluster.
    *
    * `watchWith` is idempotent if it is called with the same `msg` and not mixed with `watch`.
    *

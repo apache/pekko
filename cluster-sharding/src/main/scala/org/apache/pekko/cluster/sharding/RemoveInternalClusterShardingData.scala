@@ -33,12 +33,12 @@ import pekko.persistence.journal.leveldb.SharedLeveldbStore
 import scala.annotation.nowarn
 
 /**
- * Utility program that removes the internal data stored with Akka Persistence
+ * Utility program that removes the internal data stored with Pekko Persistence
  * by the Cluster `ShardCoordinator`. The data contains the locations of the
- * shards using Akka Persistence and it can safely be removed when restarting
- * the whole Akka Cluster. Note that this is not application data.
+ * shards using Pekko Persistence and it can safely be removed when restarting
+ * the whole Pekko Cluster. Note that this is not application data.
  *
- * <b>Never use this program while there are running Akka Cluster that is
+ * <b>Never use this program while there are running Pekko Cluster that is
  * using Cluster Sharding. Stop all Cluster nodes before using this program.</b>
  *
  * It can be needed to remove the data if the Cluster `ShardCoordinator`

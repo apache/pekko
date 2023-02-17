@@ -24,7 +24,7 @@ import pekko.stream.scaladsl.Source
 import pekko.util.ByteString
 import pekko.util.ccompat._
 
-// a few useful helpers copied over from akka-http
+// a few useful helpers copied over from pekko-http
 @ccompatUsedUntil213
 object CompressionTestingTools {
   implicit class AddFutureAwaitResult[T](val future: Future[T]) extends AnyVal {

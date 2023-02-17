@@ -30,7 +30,7 @@ import pekko.persistence.typed.ReplicationId
  * INTERNAL API
  *
  * Used when sharding Replicated Event Sourced entities in multiple instances of sharding, for example one per DC in a Multi DC
- * Akka Cluster.
+ * Pekko Cluster.
  *
  * This actor should be started once on each node where Replicated Event Sourced entities will run (the same nodes that you start
  * sharding on). The entities should be set up with [[pekko.persistence.typed.scaladsl.EventSourcedBehavior.withEventPublishing]]
