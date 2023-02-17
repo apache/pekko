@@ -43,7 +43,7 @@ Scala
 Java
 :  @@snip [RouterTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/RouterTest.java) { #routee }
 
-After having defined the routee, we can now concentrate on configuring the router itself. Note again the the router is an Actor in itself:
+After having defined the routee, we can now concentrate on configuring the router itself. Note again that the router is an Actor in itself:
 
 Scala
 :  @@snip [RouterSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/RouterSpec.scala) { #pool }

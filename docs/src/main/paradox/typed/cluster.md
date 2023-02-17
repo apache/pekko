@@ -203,7 +203,7 @@ Scala
 Java
 :  @@snip [BasicClusterExampleTest.java](/cluster-typed/src/test/java/jdocs/org/apache/pekko/cluster/typed/BasicClusterExampleTest.java) { #join-seed-nodes }
 
-The seed node address list has the same semantics as the configured `seed-nodes`, and the the underlying
+The seed node address list has the same semantics as the configured `seed-nodes`, and the underlying
 implementation of the process is the same, see @ref:[Joining configured seed nodes](#joining-configured-seed-nodes).
 
 When joining to seed nodes you should not include the node itself, except for the node that is supposed to be the
@@ -251,7 +251,7 @@ There are a few ways to remove a member from the cluster.
   This is performed by @ref:[Coordinated Shutdown](../coordinated-shutdown.md) when the @apidoc[typed.ActorSystem]
   is terminated and also when a SIGTERM is sent from the environment to stop the JVM process.
 1. Graceful exit can also be performed using @ref:[HTTP](../additional/operations.md#http) or @ref:[JMX](../additional/operations.md#jmx). 
-1. When a graceful exit is not possible, for example in case of abrupt termination of the the JVM process, the node
+1. When a graceful exit is not possible, for example in case of abrupt termination of the JVM process, the node
   will be detected as unreachable by other nodes and removed after @ref:[Downing](#downing).
 
 Graceful leaving offers faster hand off to peer nodes during node shutdown than abrupt termination and downing.
@@ -269,7 +269,7 @@ be necessary to set the node’s status to `Down` in order to complete the remov
 
 In many cases a member can gracefully exit from the cluster, as described in @ref:[Leaving](#leaving), but
 there are scenarios when an explicit downing decision is needed before it can be removed. For example in case
-of abrupt termination of the the JVM process, system overload that doesn't recover, or network partitions
+of abrupt termination of the JVM process, system overload that doesn't recover, or network partitions
 that don't heal. In such cases, the node(s) will be detected as unreachable by other nodes, but they must also
 be marked as `Down` before they are removed.
 
