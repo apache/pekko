@@ -228,7 +228,7 @@ private[pekko] class Mailboxes(
           case "unbounded"                               => UnboundedMailbox()
           case "bounded"                                 => new BoundedMailbox(settings, config(id))
           case _ if id.startsWith(BoundedCapacityPrefix) =>
-            // hack to allow programmatic set of capacity through props in akka-typed but still share
+            // hack to allow programmatic set of capacity through props in pekko-typed but still share
             // mailbox configurators for the same size
             val capacity = id.split(':')(1).toInt
             new BoundedMailbox(capacity, Duration.Zero)
