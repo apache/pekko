@@ -63,7 +63,7 @@ final class ClusterSingletonSettings(
     val leaseSettings: Option[LeaseUsageSettings]) {
 
   // bin compat for 2.6.14
-  @deprecated("Use constructor with leaseSettings", "2.6.15")
+  @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       role: Option[String],
       dataCenter: Option[DataCenter],
@@ -304,7 +304,7 @@ final class ClusterSingletonManagerSettings(
     val leaseSettings: Option[LeaseUsageSettings]) {
 
   // bin compat for 2.6.14
-  @deprecated("Use constructor with leaseSettings", "2.6.15")
+  @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       singletonName: String,
       role: Option[String],

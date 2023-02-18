@@ -79,7 +79,7 @@ object Backoff {
    *                       The supervisor will terminate itself after the maxNoOfRetries is reached.
    *                       In order to restart infinitely pass in `-1`.
    */
-  @deprecated("Use BackoffOpts.onFailure instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onFailure instead", "Akka 2.5.22")
   def onFailure(
       childProps: Props,
       childName: String,
@@ -136,7 +136,7 @@ object Backoff {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  @deprecated("Use BackoffOpts.onFailure instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onFailure instead", "Akka 2.5.22")
   def onFailure(
       childProps: Props,
       childName: String,
@@ -195,7 +195,7 @@ object Backoff {
    *                       In order to restart infinitely pass in `-1`.
    */
   @Deprecated
-  @deprecated("Use BackoffOpts.onFailure instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onFailure instead", "Akka 2.5.22")
   def onFailure(
       childProps: Props,
       childName: String,
@@ -252,7 +252,7 @@ object Backoff {
    *                     In order to skip this additional delay pass in `0`.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts maxNrOfRetries instead.", "2.5.17")
+  @deprecated("Use the overloaded one which accepts maxNrOfRetries instead.", "Akka 2.5.17")
   def onFailure(
       childProps: Props,
       childName: String,
@@ -317,7 +317,7 @@ object Backoff {
    *                       The supervisor will terminate itself after the maxNoOfRetries is reached.
    *                       In order to restart infinitely pass in `-1`.
    */
-  @deprecated("Use BackoffOpts.onStop instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onStop instead", "Akka 2.5.22")
   def onStop(
       childProps: Props,
       childName: String,
@@ -381,7 +381,7 @@ object Backoff {
    *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
    *                     In order to skip this additional delay pass in `0`.
    */
-  @deprecated("Use BackoffOpts.onStop instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onStop instead", "Akka 2.5.22")
   def onStop(
       childProps: Props,
       childName: String,
@@ -447,7 +447,7 @@ object Backoff {
    *                       In order to restart infinitely pass in `-1`.
    */
   @Deprecated
-  @deprecated("Use BackoffOpts.onStop instead", "2.5.22")
+  @deprecated("Use BackoffOpts.onStop instead", "Akka 2.5.22")
   def onStop(
       childProps: Props,
       childName: String,
@@ -511,7 +511,7 @@ object Backoff {
    *                     In order to skip this additional delay pass in `0`.
    */
   @Deprecated
-  @deprecated("Use the overloaded one which accepts maxNrOfRetries instead.", "2.5.17")
+  @deprecated("Use the overloaded one which accepts maxNrOfRetries instead.", "Akka 2.5.17")
   def onStop(
       childProps: Props,
       childName: String,

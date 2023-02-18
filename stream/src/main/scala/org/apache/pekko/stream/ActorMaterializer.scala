@@ -53,7 +53,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(materializerSettings: Option[ActorMaterializerSettings] = None, namePrefix: Option[String] = None)(
       implicit context: ActorRefFactory): ActorMaterializer = {
     val system = actorSystemOf(context)
@@ -76,7 +76,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(materializerSettings: ActorMaterializerSettings, namePrefix: String)(
       implicit context: ActorRefFactory): ActorMaterializer = {
 
@@ -110,7 +110,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer or Materializer.apply(actorContext) with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(materializerSettings: ActorMaterializerSettings)(implicit context: ActorRefFactory): ActorMaterializer =
     apply(Some(materializerSettings), None)
 
@@ -127,7 +127,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(context: ActorRefFactory): ActorMaterializer =
     apply()(context)
 
@@ -145,7 +145,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(context: ActorRefFactory, namePrefix: String): ActorMaterializer = {
     val system = actorSystemOf(context)
     val settings = ActorMaterializerSettings(system)
@@ -161,7 +161,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(settings: ActorMaterializerSettings, context: ActorRefFactory): ActorMaterializer =
     apply(Option(settings), None)(context)
 
@@ -179,7 +179,7 @@ object ActorMaterializer {
    */
   @deprecated(
     "Use the system wide materializer or Materializer.create(actorContext) with stream attributes or configuration settings to change defaults",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(settings: ActorMaterializerSettings, context: ActorRefFactory, namePrefix: String): ActorMaterializer =
     apply(Option(settings), Option(namePrefix))(context)
 
@@ -205,7 +205,7 @@ private[pekko] object ActorMaterializerHelper {
   /**
    * INTERNAL API
    */
-  @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "2.6.0")
+  @deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
   private[pekko] def downcast(materializer: Materializer): ActorMaterializer =
     materializer match {
       case m: ActorMaterializer => m
@@ -219,12 +219,12 @@ private[pekko] object ActorMaterializerHelper {
 /**
  * An ActorMaterializer takes a stream blueprint and turns it into a running stream.
  */
-@deprecated("The Materializer now has all methods the ActorMaterializer used to have", "2.6.0")
+@deprecated("The Materializer now has all methods the ActorMaterializer used to have", "Akka 2.6.0")
 abstract class ActorMaterializer extends Materializer with MaterializerLoggingProvider {
 
   @deprecated(
     "Use attributes to access settings from stages, see https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def settings: ActorMaterializerSettings
 
   /**
@@ -296,7 +296,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(
       initialInputBufferSize: Int,
       maxInputBufferSize: Int,
@@ -335,7 +335,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(system: ActorSystem): ActorMaterializerSettings =
     apply(system.settings.config.getConfig("pekko.stream.materializer"))
 
@@ -347,7 +347,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(config: Config): ActorMaterializerSettings =
     new ActorMaterializerSettings(
       initialInputBufferSize = config.getInt("initial-input-buffer-size"),
@@ -373,7 +373,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(
       initialInputBufferSize: Int,
       maxInputBufferSize: Int,
@@ -409,7 +409,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(system: ActorSystem): ActorMaterializerSettings =
     apply(system)
 
@@ -421,7 +421,7 @@ object ActorMaterializerSettings {
    */
   @deprecated(
     "Use config or attributes to configure the materializer. See migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(config: Config): ActorMaterializerSettings =
     apply(config)
 
@@ -441,30 +441,30 @@ final class ActorMaterializerSettings @InternalApi private (
      * since these settings allow for overriding using [[Attributes]]. They must always be gotten from the effective
      * attributes.
      */
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
     val initialInputBufferSize: Int,
-    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'Attributes.InputBuffer' to read the concrete setting value", "Akka 2.6.0")
     val maxInputBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.Dispatcher' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.Dispatcher' to read the concrete setting value", "Akka 2.6.0")
     val dispatcher: String,
-    @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to read the concrete setting value", "Akka 2.6.0")
     val supervisionDecider: Supervision.Decider,
     val subscriptionTimeoutSettings: StreamSubscriptionTimeoutSettings,
-    @deprecated("Use attribute 'ActorAttributes.DebugLogging' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.DebugLogging' to read the concrete setting value", "Akka 2.6.0")
     val debugLogging: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to read the concrete setting value", "Akka 2.6.0")
     val outputBurstLimit: Int,
-    @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to read the concrete setting value", "Akka 2.6.0")
     val fuzzingMode: Boolean,
-    @deprecated("No longer has any effect", "2.6.0")
+    @deprecated("No longer has any effect", "Akka 2.6.0")
     val autoFusing: Boolean,
-    @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to read the concrete setting value", "Akka 2.6.0")
     val maxFixedBufferSize: Int,
-    @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to read the concrete setting value", "Akka 2.6.0")
     val syncProcessingLimit: Int,
     val ioSettings: IOSettings,
     val streamRefSettings: StreamRefSettings,
-    @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to read the concrete setting value", "Akka 2.6.0")
     val blockingIoDispatcher: String) {
 
   require(initialInputBufferSize > 0, "initialInputBufferSize must be > 0")
@@ -476,7 +476,7 @@ final class ActorMaterializerSettings @InternalApi private (
     s"initialInputBufferSize($initialInputBufferSize) must be <= maxInputBufferSize($maxInputBufferSize)")
 
   // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "2.5.10")
+  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
   def this(
       initialInputBufferSize: Int,
       maxInputBufferSize: Int,
@@ -508,7 +508,7 @@ final class ActorMaterializerSettings @InternalApi private (
       ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "2.5.10")
+  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
   def this(
       initialInputBufferSize: Int,
       maxInputBufferSize: Int,
@@ -539,7 +539,7 @@ final class ActorMaterializerSettings @InternalApi private (
       ConfigFactory.defaultReference().getString(ActorAttributes.IODispatcher.dispatcher))
 
   // backwards compatibility when added IOSettings, shouldn't be needed since private, but added to satisfy mima
-  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "2.5.10")
+  @deprecated("Use ActorMaterializerSettings.apply or ActorMaterializerSettings.create instead", "Akka 2.5.10")
   def this(
       initialInputBufferSize: Int,
       maxInputBufferSize: Int,
@@ -610,7 +610,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * FIXME: this is used for all kinds of buffers, not only the stream actor, some use initial some use max,
    *        document and or fix if it should not be like that. Search for get[Attributes.InputBuffer] to see how it is used
    */
-  @deprecated("Use attribute 'Attributes.InputBuffer' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'Attributes.InputBuffer' to change setting value", "Akka 2.6.0")
   def withInputBuffer(initialSize: Int, maxSize: Int): ActorMaterializerSettings = {
     if (initialSize == this.initialInputBufferSize && maxSize == this.maxInputBufferSize) this
     else copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)
@@ -621,7 +621,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * with the [[ActorMaterializer]]. This can be overridden for individual parts of the
    * stream topology by using [[pekko.stream.Attributes#dispatcher]].
    */
-  @deprecated("Use attribute 'ActorAttributes.Dispatcher' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.Dispatcher' to change setting value", "Akka 2.6.0")
   def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
     if (this.dispatcher == dispatcher) this
     else copy(dispatcher = dispatcher)
@@ -635,7 +635,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * Note that supervision in streams are implemented on a per operator basis and is not supported
    * by every operator.
    */
-  @deprecated("Use attribute 'ActorAttributes.supervisionStrategy' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.supervisionStrategy' to change setting value", "Akka 2.6.0")
   def withSupervisionStrategy(decider: Supervision.Decider): ActorMaterializerSettings = {
     if (decider eq this.supervisionDecider) this
     else copy(supervisionDecider = decider)
@@ -649,7 +649,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * Note that supervision in streams are implemented on a per operator basis and is not supported
    * by every operator.
    */
-  @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.SupervisionStrategy' to change setting value", "Akka 2.6.0")
   def withSupervisionStrategy(
       decider: function.Function[Throwable, Supervision.Directive]): ActorMaterializerSettings = {
     import Supervision._
@@ -665,7 +665,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * Test utility: fuzzing mode means that GraphStage events are not processed
    * in FIFO order within a fused subgraph, but randomized.
    */
-  @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.FuzzingMode' to change setting value", "Akka 2.6.0")
   def withFuzzing(enable: Boolean): ActorMaterializerSettings =
     if (enable == this.fuzzingMode) this
     else copy(fuzzingMode = enable)
@@ -673,7 +673,7 @@ final class ActorMaterializerSettings @InternalApi private (
   /**
    * Maximum number of elements emitted in batch if downstream signals large demand.
    */
-  @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.OutputBurstLimit' to change setting value", "Akka 2.6.0")
   def withOutputBurstLimit(limit: Int): ActorMaterializerSettings =
     if (limit == this.outputBurstLimit) this
     else copy(outputBurstLimit = limit)
@@ -681,7 +681,7 @@ final class ActorMaterializerSettings @InternalApi private (
   /**
    * Limit for number of messages that can be processed synchronously in stream to substream communication
    */
-  @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.SyncProcessingLimit' to change setting value", "Akka 2.6.0")
   def withSyncProcessingLimit(limit: Int): ActorMaterializerSettings =
     if (limit == this.syncProcessingLimit) this
     else copy(syncProcessingLimit = limit)
@@ -689,7 +689,7 @@ final class ActorMaterializerSettings @InternalApi private (
   /**
    * Enable to log all elements that are dropped due to failures (at DEBUG level).
    */
-  @deprecated("Use attribute 'ActorAttributes.DebugLogging' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.DebugLogging' to change setting value", "Akka 2.6.0")
   def withDebugLogging(enable: Boolean): ActorMaterializerSettings =
     if (enable == this.debugLogging) this
     else copy(debugLogging = enable)
@@ -699,7 +699,7 @@ final class ActorMaterializerSettings @InternalApi private (
    * This defaults to a large value because it is usually better to fail early when
    * system memory is not sufficient to hold the buffer.
    */
-  @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.MaxFixedBufferSize' to change setting value", "Akka 2.6.0")
   def withMaxFixedBufferSize(size: Int): ActorMaterializerSettings =
     if (size == this.maxFixedBufferSize) this
     else copy(maxFixedBufferSize = size)
@@ -721,7 +721,7 @@ final class ActorMaterializerSettings @InternalApi private (
     if (streamRefSettings == this.streamRefSettings) this
     else copy(streamRefSettings = streamRefSettings)
 
-  @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to change setting value", "2.6.0")
+  @deprecated("Use attribute 'ActorAttributes.BlockingIoDispatcher' to change setting value", "Akka 2.6.0")
   def withBlockingIoDispatcher(newBlockingIoDispatcher: String): ActorMaterializerSettings =
     if (newBlockingIoDispatcher == blockingIoDispatcher) this
     else copy(blockingIoDispatcher = newBlockingIoDispatcher)
@@ -780,13 +780,13 @@ final class ActorMaterializerSettings @InternalApi private (
 object IOSettings {
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(system: ActorSystem): IOSettings =
     apply(system.settings.config.getConfig("pekko.stream.materializer.io"))
 
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(config: Config): IOSettings =
     new IOSettings(
       tcpWriteBufferSize = math.min(Int.MaxValue, config.getBytes("tcp.write-buffer-size")).toInt,
@@ -794,38 +794,38 @@ object IOSettings {
 
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def apply(tcpWriteBufferSize: Int): IOSettings =
     new IOSettings(tcpWriteBufferSize)
 
   /** Java API */
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(config: Config) = apply(config)
 
   /** Java API */
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(system: ActorSystem) = apply(system)
 
   /** Java API */
   @deprecated(
     "Use setting 'pekko.stream.materializer.io.tcp.write-buffer-size' or attribute TcpAttributes.writeBufferSize instead",
-    "2.6.0")
+    "Akka 2.6.0")
   def create(tcpWriteBufferSize: Int): IOSettings =
     apply(tcpWriteBufferSize)
 }
 
 @nowarn("msg=deprecated")
 final class IOSettings private (
-    @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "Akka 2.6.0")
     val tcpWriteBufferSize: Int,
     val coalesceWrites: Int) {
 
   // constructor for binary compatibility with version 2.6.15 and earlier
-  @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "2.6.0")
+  @deprecated("Use attribute 'TcpAttributes.TcpWriteBufferSize' to read the concrete setting value", "Akka 2.6.0")
   def this(tcpWriteBufferSize: Int) = this(tcpWriteBufferSize, coalesceWrites = 10)
 
   def withTcpWriteBufferSize(value: Int): IOSettings = copy(tcpWriteBufferSize = value)
@@ -894,9 +894,9 @@ object StreamSubscriptionTimeoutSettings {
 final class StreamSubscriptionTimeoutSettings(
     @deprecated(
       "Use attribute 'ActorAttributes.StreamSubscriptionTimeoutMode' to read the concrete setting value",
-      "2.6.0")
+      "Akka 2.6.0")
     val mode: StreamSubscriptionTimeoutTerminationMode,
-    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value", "2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value", "Akka 2.6.0")
     val timeout: FiniteDuration) {
   override def equals(other: Any): Boolean = other match {
     case s: StreamSubscriptionTimeoutSettings => s.mode == mode && s.timeout == timeout

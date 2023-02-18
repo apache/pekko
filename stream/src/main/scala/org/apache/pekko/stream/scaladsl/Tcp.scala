@@ -267,7 +267,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def outgoingTlsConnection(
       host: String,
       port: Int,
@@ -287,7 +287,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def outgoingTlsConnection(
       remoteAddress: InetSocketAddress,
       sslContext: SSLContext,
@@ -363,7 +363,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use bindWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def bindTls(
       interface: String,
       port: Int,
@@ -496,7 +496,7 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use bindAndHandleWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def bindAndHandleTls(
       handler: Flow[ByteString, ByteString, _],
       interface: String,

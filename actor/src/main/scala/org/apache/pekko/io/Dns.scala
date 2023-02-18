@@ -47,14 +47,14 @@ abstract class Dns {
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
    * the pekko.actor.io.dns.resolver that is configured.
    */
-  @deprecated("Use cached(DnsProtocol.Resolve)", "2.6.0")
+  @deprecated("Use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
   def cached(@unused name: String): Option[Dns.Resolved] = None
 
   /**
    * If an entry is cached return it immediately. If it is not then
    * trigger a resolve and return None.
    */
-  @deprecated("Use resolve(DnsProtocol.Resolve)", "2.6.0")
+  @deprecated("Use resolve(DnsProtocol.Resolve)", "Akka 2.6.0")
   def resolve(name: String)(system: ActorSystem, sender: ActorRef): Option[Dns.Resolved] = {
     // doesn't delegate to new method as sender is expecting old protocol back
     val ret = cached(name)
@@ -76,12 +76,12 @@ abstract class Dns {
 object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
   sealed trait Command
 
-  @deprecated("Use cached(DnsProtocol.Resolve)", "2.6.0")
+  @deprecated("Use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
   case class Resolve(name: String) extends Command with ConsistentHashable {
     override def consistentHashKey = name
   }
 
-  @deprecated("Use cached(DnsProtocol.Resolved)", "2.6.0")
+  @deprecated("Use cached(DnsProtocol.Resolved)", "Akka 2.6.0")
   case class Resolved(name: String, ipv4: immutable.Seq[Inet4Address], ipv6: immutable.Seq[Inet6Address])
       extends Command {
     val addrOption: Option[InetAddress] = IpVersionSelector.getInetAddress(ipv4.headOption, ipv6.headOption)
@@ -93,7 +93,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
     }
   }
 
-  @deprecated("Use cached(DnsProtocol.Resolved)", "2.6.0")
+  @deprecated("Use cached(DnsProtocol.Resolved)", "Akka 2.6.0")
   object Resolved {
     def apply(name: String, addresses: Iterable[InetAddress]): Resolved = {
       val ipv4: immutable.Seq[Inet4Address] =
@@ -103,7 +103,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
       Resolved(name, ipv4, ipv6)
     }
 
-    @deprecated("Use cached(DnsProtocol.Resolve)", "2.6.0")
+    @deprecated("Use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
     def apply(newProtocol: DnsProtocol.Resolved): Resolved = {
       Resolved(newProtocol.name,
         newProtocol.records.collect {
@@ -117,7 +117,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
    * the pekko.actor.io.dns.resolver that is configured.
    */
-  @deprecated("use cached(DnsProtocol.Resolve)", "2.6.0")
+  @deprecated("use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
   def cached(name: String)(system: ActorSystem): Option[Resolved] = {
     Dns(system).cache.cached(name)
   }
@@ -126,7 +126,7 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
    * If an entry is cached return it immediately. If it is not then
    * trigger a resolve and return None.
    */
-  @deprecated("use resolve(DnsProtocol.Resolve)", "2.6.0")
+  @deprecated("use resolve(DnsProtocol.Resolve)", "Akka 2.6.0")
   @nowarn("msg=deprecated")
   def resolve(name: String)(system: ActorSystem, sender: ActorRef): Option[Resolved] = {
     Dns(system).cache.resolve(name)(system, sender)

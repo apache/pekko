@@ -68,17 +68,17 @@ object StreamRefSettings {
 @DoNotInherit
 @nowarn("msg=deprecated")
 trait StreamRefSettings {
-  @deprecated("Use attribute 'StreamRefAttributes.BufferCapacity' to read the concrete setting value", "2.6.0")
+  @deprecated("Use attribute 'StreamRefAttributes.BufferCapacity' to read the concrete setting value", "Akka 2.6.0")
   def bufferCapacity: Int
   @deprecated(
     "Use attribute 'StreamRefAttributes.DemandRedeliveryInterval' to read the concrete setting value",
-    "2.6.0")
+    "Akka 2.6.0")
   def demandRedeliveryInterval: FiniteDuration
-  @deprecated("Use attribute 'StreamRefAttributes.SubscriptionTimeout' to read the concrete setting value", "2.6.0")
+  @deprecated("Use attribute 'StreamRefAttributes.SubscriptionTimeout' to read the concrete setting value", "Akka 2.6.0")
   def subscriptionTimeout: FiniteDuration
   @deprecated(
     "Use attribute 'StreamRefAttributes.FinalTerminationSignalDeadline' to read the concrete setting value",
-    "2.6.0")
+    "Akka 2.6.0")
   def finalTerminationSignalDeadline: FiniteDuration
 
   // --- with... methods ---

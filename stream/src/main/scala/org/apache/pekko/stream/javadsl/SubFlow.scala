@@ -2444,7 +2444,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.SubFlow[In, Out, Mat] =
     new SubFlow(delegate.throttleEven(elements, per, mode))
 
@@ -2459,7 +2459,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.SubFlow[In, Out, Mat] =
     throttleEven(elements, per.asScala, mode)
 
@@ -2474,7 +2474,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: FiniteDuration,
@@ -2493,7 +2493,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: java.time.Duration,

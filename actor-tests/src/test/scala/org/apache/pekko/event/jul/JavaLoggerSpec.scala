@@ -23,7 +23,7 @@ import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, Props }
 import pekko.testkit.PekkoSpec
 
-@deprecated("Use SLF4J instead.", "2.6.0")
+@deprecated("Use SLF4J instead.", "Akka 2.6.0")
 object JavaLoggerSpec {
 
   val config = ConfigFactory.parseString("""
@@ -45,7 +45,7 @@ object JavaLoggerSpec {
   class SimulatedExc extends RuntimeException("Simulated error") with NoStackTrace
 }
 
-@deprecated("Use SLF4J instead.", "2.6.0")
+@deprecated("Use SLF4J instead.", "Akka 2.6.0")
 class JavaLoggerSpec extends PekkoSpec(JavaLoggerSpec.config) {
 
   val logger = logging.Logger.getLogger(classOf[JavaLoggerSpec.LogProducer].getName)

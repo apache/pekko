@@ -19,7 +19,7 @@ import scala.collection.immutable
 @Deprecated
 @deprecated(
   "FanInShape1N was removed because it was not used anywhere. Use a custom shape extending from FanInShape directly.",
-  "2.5.5")
+  "Akka 2.5.5")
 class FanInShape1N[-T0, -T1, +O](val n: Int, _init: FanInShape.Init[O]) extends FanInShape[O](_init) {
 
   // ports get added to `FanInShape.inlets` as a side-effect of calling `newInlet`
@@ -37,7 +37,7 @@ class FanInShape1N[-T0, -T1, +O](val n: Int, _init: FanInShape.Init[O]) extends 
     new FanInShape1N(n, init)
   override def deepCopy(): FanInShape1N[T0, T1, O] = super.deepCopy().asInstanceOf[FanInShape1N[T0, T1, O]]
 
-  @deprecated("Use 'inlets' or 'in(id)' instead.", "2.5.5")
+  @deprecated("Use 'inlets' or 'in(id)' instead.", "Akka 2.5.5")
   def in1Seq: immutable.IndexedSeq[Inlet[T1 @uncheckedVariance]] = _in1Seq
 
   // cannot deprecate a lazy val because of genjavadoc problem https://github.com/typesafehub/genjavadoc/issues/85

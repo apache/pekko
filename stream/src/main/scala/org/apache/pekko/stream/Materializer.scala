@@ -36,7 +36,7 @@ import pekko.event.LoggingAdapter
  * Not for user extension
  */
 @implicitNotFound("A Materializer is required.  You may want to have the ActorSystem in implicit scope")
-@nowarn("msg=deprecated") // Name(symbol) is deprecated but older Scala versions don't have a string signature, since "2.5.8"
+@nowarn("msg=deprecated") // Name(symbol) is deprecated but older Scala versions don't have a string signature, since "Akka 2.5.8"
 @DoNotInherit
 abstract class Materializer {
 
@@ -196,7 +196,7 @@ abstract class Materializer {
   @InternalApi
   private[pekko] def actorOf(context: MaterializationContext, props: Props): ActorRef
 
-  @deprecated("Use attributes to access settings from stages", "2.6.0")
+  @deprecated("Use attributes to access settings from stages", "Akka 2.6.0")
   def settings: ActorMaterializerSettings
 }
 

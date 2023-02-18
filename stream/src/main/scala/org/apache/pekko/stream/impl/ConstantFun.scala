@@ -21,7 +21,7 @@ import pekko.japi.function.{ Function => JFun, Function2 => JFun2 }
 /**
  * INTERNAL API
  */
-@deprecated("Use org.apache.pekko.util.ConstantFun instead", "2.5.0")
+@deprecated("Use org.apache.pekko.util.ConstantFun instead", "Akka 2.5.0")
 @InternalApi private[pekko] object ConstantFun {
   private[this] val JavaIdentityFunction = new JFun[Any, Any] {
     @throws(classOf[Exception]) override def apply(param: Any): Any = param

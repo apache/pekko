@@ -34,7 +34,7 @@ object PrimitivesSerializationSpec {
   val testConfig = ConfigFactory.parseString(serializationTestOverrides).withFallback(PekkoSpec.testConf)
 }
 
-@deprecated("Moved to org.apache.pekko.serialization.* in pekko-actor", "2.6.0")
+@deprecated("Moved to org.apache.pekko.serialization.* in pekko-actor", "Akka 2.6.0")
 class PrimitivesSerializationSpec extends PekkoSpec(PrimitivesSerializationSpec.testConfig) {
 
   val buffer = {

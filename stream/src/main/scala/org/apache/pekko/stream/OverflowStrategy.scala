@@ -127,7 +127,7 @@ object OverflowStrategy {
    *
    * @deprecated Use {@link pekko.stream.javadsl.Source#queue(int,org.apache.pekko.stream.OverflowStrategy)} instead
    */
-  @deprecated("Use Source.queue instead", "2.6.11")
+  @deprecated("Use Source.queue instead", "Akka 2.6.11")
   @Deprecated
   def dropNew: OverflowStrategy = DropNew(Logging.DebugLevel)
 

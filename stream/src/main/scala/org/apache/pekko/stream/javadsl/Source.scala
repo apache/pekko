@@ -193,7 +193,7 @@ object Source {
    * may happen before or after materializing the `Flow`.
    * The stream terminates with a failure if the `Future` is completed with a failure.
    */
-  @deprecated("Use 'Source.future' instead", "2.6.0")
+  @deprecated("Use 'Source.future' instead", "Akka 2.6.0")
   def fromFuture[O](future: Future[O]): javadsl.Source[O, NotUsed] =
     new Source(scaladsl.Source.future(future))
 
@@ -203,7 +203,7 @@ object Source {
    * may happen before or after materializing the `Flow`.
    * The stream terminates with a failure if the `CompletionStage` is completed with a failure.
    */
-  @deprecated("Use 'Source.completionStage' instead", "2.6.0")
+  @deprecated("Use 'Source.completionStage' instead", "Akka 2.6.0")
   def fromCompletionStage[O](future: CompletionStage[O]): javadsl.Source[O, NotUsed] =
     new Source(scaladsl.Source.completionStage(future))
 
@@ -212,7 +212,7 @@ object Source {
    * If the [[Future]] fails the stream is failed with the exception from the future. If downstream cancels before the
    * stream completes the materialized [[Future]] will be failed with a [[StreamDetachedException]].
    */
-  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "2.6.0")
+  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
   def fromFutureSource[T, M](future: Future[_ <: Graph[SourceShape[T], M]]): javadsl.Source[T, Future[M]] =
     new Source(scaladsl.Source.fromFutureSource(future))
 
@@ -222,7 +222,7 @@ object Source {
    * If downstream cancels before the stream completes the materialized [[CompletionStage]] will be failed
    * with a [[StreamDetachedException]]
    */
-  @deprecated("Use 'Source.completionStageSource' (potentially together with `Source.fromGraph`) instead", "2.6.0")
+  @deprecated("Use 'Source.completionStageSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
   def fromSourceCompletionStage[T, M](
       completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): javadsl.Source[T, CompletionStage[M]] =
     completionStageSource(completion.thenApply(fromGraph[T, M]))
@@ -287,7 +287,7 @@ object Source {
    * the materialized future is completed with its value, if downstream cancels or fails without any demand the
    * `create` factory is never called and the materialized `CompletionStage` is failed.
    */
-  @deprecated("Use 'Source.lazySource' instead", "2.6.0")
+  @deprecated("Use 'Source.lazySource' instead", "Akka 2.6.0")
   def lazily[T, M](create: function.Creator[Source[T, M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source.lazily[T, M](() => create.create().asScala).mapMaterializedValue(_.toJava).asJava
 
@@ -298,7 +298,7 @@ object Source {
    *
    * @see [[Source.lazily]]
    */
-  @deprecated("Use 'Source.lazyCompletionStage' instead", "2.6.0")
+  @deprecated("Use 'Source.lazyCompletionStage' instead", "Akka 2.6.0")
   def lazilyAsync[T](create: function.Creator[CompletionStage[T]]): Source[T, Future[NotUsed]] =
     scaladsl.Source.lazilyAsync[T](() => create.create().toScala).asJava
 
@@ -521,7 +521,7 @@ object Source {
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
   @Deprecated
-  @deprecated("Use variant accepting completion and failure matchers", "2.6.0")
+  @deprecated("Use variant accepting completion and failure matchers", "Akka 2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRef({
         case pekko.actor.Status.Success(s: CompletionStrategy) => s
@@ -580,7 +580,7 @@ object Source {
    * @deprecated Use actorRefWithBackpressure instead
    */
   @Deprecated
-  @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[T](
       ackMessage: Any,
       completionMatcher: pekko.japi.function.Function[Any, java.util.Optional[CompletionStrategy]],
@@ -621,7 +621,7 @@ object Source {
    * i.e. you can watch it to get notified when that happens.
    */
   @Deprecated
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers", "Akka 2.6.0")
   def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage,
       {
@@ -655,7 +655,7 @@ object Source {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Source]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[T, M](factory: BiFunction[ActorMaterializer, Attributes, Source[T, M]]): Source[T, CompletionStage[M]] =
     scaladsl.Source.setup((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.toJava).asJava
 
@@ -2276,7 +2276,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @deprecated use `recoverWithRetries` instead
    */
   @Deprecated
-  @deprecated("Use recoverWithRetries instead.", "2.6.6")
+  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   @nowarn("msg=deprecated")
   def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
@@ -2303,7 +2303,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @deprecated use `recoverWithRetries` instead
    */
   @Deprecated
-  @deprecated("Use recoverWithRetries instead.", "2.6.6")
+  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   @nowarn("msg=deprecated")
   def recoverWith(
       clazz: Class[_ <: Throwable],
@@ -4357,7 +4357,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.Source[Out, Mat] =
     new Source(delegate.throttleEven(elements, per, mode))
 
@@ -4372,7 +4372,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.Source[Out, Mat] =
     throttleEven(elements, per.asScala, mode)
 
@@ -4387,7 +4387,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: FiniteDuration,
@@ -4406,7 +4406,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: java.time.Duration,
@@ -4444,7 +4444,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
   @Deprecated
-  @deprecated("Use monitor() or monitorMat(combine) instead", "2.5.17")
+  @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[M]()(combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Source[Out, M] =
     new Source(delegate.monitorMat(combinerToScala(combine)))
 

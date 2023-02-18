@@ -31,10 +31,10 @@ import pekko.remote.transport.Transport._
 import pekko.util.ByteString
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class FailureInjectorException(msg: String) extends PekkoException(msg) with NoStackTrace
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 class FailureInjectorProvider extends TransportAdapterProvider {
 
   override def create(wrappedTransport: Transport, system: ExtendedActorSystem): Transport =
@@ -50,7 +50,7 @@ private[remote] object FailureInjectorTransportAdapter {
 
   trait FailureInjectorCommand
   @SerialVersionUID(1L)
-  @deprecated("Not implemented", "2.5.22")
+  @deprecated("Not implemented", "Akka 2.5.22")
   final case class All(mode: GremlinMode)
   @SerialVersionUID(1L)
   final case class One(remoteAddress: Address, mode: GremlinMode)

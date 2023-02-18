@@ -75,7 +75,7 @@ private[pekko] class SnapshotAfter(config: Config) extends Extension {
  * Incoming messages are deferred until the state is applied.
  * State Data is constructed based on domain events, according to user's implementation of applyEvent function.
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with PersistentFSMBase[S, D, E] with ActorLogging {
   import org.apache.pekko.persistence.fsm.PersistentFSM._
 
@@ -194,7 +194,7 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
   }
 }
 
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 object PersistentFSM {
 
   /**
@@ -447,7 +447,7 @@ object PersistentFSM {
     @Deprecated
     @deprecated(
       "Internal API easily to be confused with regular FSM's using. Use regular events (`applying`). Internally, `copy` can be used instead.",
-      "2.5.5")
+      "Akka 2.5.5")
     private[pekko] def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D, E] = {
       copy0(stateData = nextStateData)
     }
@@ -500,7 +500,7 @@ object PersistentFSM {
  *
  * Persistent Finite State Machine actor abstract base class.
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 abstract class AbstractPersistentFSM[S <: FSMState, D, E]
     extends AbstractPersistentFSMBase[S, D, E]
     with PersistentFSM[S, D, E] {
@@ -544,7 +544,7 @@ abstract class AbstractPersistentFSM[S <: FSMState, D, E]
  * Persistent Finite State Machine actor abstract base class with FSM Logging
  */
 @nowarn("msg=deprecated")
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 abstract class AbstractPersistentLoggingFSM[S <: FSMState, D, E]
     extends AbstractPersistentFSM[S, D, E]
     with LoggingPersistentFSM[S, D, E]
