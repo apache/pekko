@@ -82,7 +82,8 @@ object TLS {
    * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
    * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
    */
-  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def apply(
       sslContext: SSLContext,
       sslConfig: Option[PekkoSSLConfig],
@@ -160,7 +161,8 @@ object TLS {
    * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
    * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
    */
-  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def apply(
       sslContext: SSLContext,
       firstSession: NegotiateNewSession,
@@ -179,7 +181,8 @@ object TLS {
    * that is not a requirement and depends entirely on the application
    * protocol.
    */
-  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use apply that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def apply(
       sslContext: SSLContext,
       firstSession: NegotiateNewSession,

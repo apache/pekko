@@ -74,7 +74,8 @@ trait StreamRefSettings {
     "Use attribute 'StreamRefAttributes.DemandRedeliveryInterval' to read the concrete setting value",
     "Akka 2.6.0")
   def demandRedeliveryInterval: FiniteDuration
-  @deprecated("Use attribute 'StreamRefAttributes.SubscriptionTimeout' to read the concrete setting value", "Akka 2.6.0")
+  @deprecated("Use attribute 'StreamRefAttributes.SubscriptionTimeout' to read the concrete setting value",
+    "Akka 2.6.0")
   def subscriptionTimeout: FiniteDuration
   @deprecated(
     "Use attribute 'StreamRefAttributes.FinalTerminationSignalDeadline' to read the concrete setting value",

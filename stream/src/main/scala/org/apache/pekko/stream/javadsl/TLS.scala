@@ -76,7 +76,8 @@ object TLS {
    *
    * This method uses the default closing behavior or [[IgnoreComplete]].
    */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def create(
       sslContext: SSLContext,
       sslConfig: Optional[PekkoSSLConfig],
@@ -95,7 +96,8 @@ object TLS {
    *
    * This method uses the default closing behavior or [[IgnoreComplete]].
    */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def create(
       sslContext: SSLContext,
       firstSession: NegotiateNewSession,
@@ -118,7 +120,8 @@ object TLS {
    * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
    * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
    */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def create(
       sslContext: SSLContext,
       sslConfig: Optional[PekkoSSLConfig],
@@ -151,7 +154,8 @@ object TLS {
    * The SSLEngine may use this information e.g. when an endpoint identification algorithm was
    * configured using [[javax.net.ssl.SSLParameters.setEndpointIdentificationAlgorithm]].
    */
-  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.", "Akka 2.6.0")
+  @deprecated("Use create that takes a SSLEngine factory instead. Setup the SSLEngine with needed parameters.",
+    "Akka 2.6.0")
   def create(
       sslContext: SSLContext,
       firstSession: NegotiateNewSession,

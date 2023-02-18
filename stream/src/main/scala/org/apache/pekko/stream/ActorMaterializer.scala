@@ -896,7 +896,8 @@ final class StreamSubscriptionTimeoutSettings(
       "Use attribute 'ActorAttributes.StreamSubscriptionTimeoutMode' to read the concrete setting value",
       "Akka 2.6.0")
     val mode: StreamSubscriptionTimeoutTerminationMode,
-    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value", "Akka 2.6.0")
+    @deprecated("Use attribute 'ActorAttributes.StreamSubscriptionTimeout' to read the concrete setting value",
+      "Akka 2.6.0")
     val timeout: FiniteDuration) {
   override def equals(other: Any): Boolean = other match {
     case s: StreamSubscriptionTimeoutSettings => s.mode == mode && s.timeout == timeout
