@@ -208,7 +208,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    *                  independently whether the client is still attempting to write. This setting is recommended
    *                  for servers, and therefore it is the default setting.
    */
-  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "2.6.0")
+  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "Akka 2.6.0")
   def bind(
       interface: String,
       port: Int,
@@ -291,7 +291,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
    *                  If set to false, the connection will immediately closed once the client closes its write side,
    *                  independently whether the server is still attempting to write.
    */
-  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "2.6.0")
+  @deprecated("Use bind that takes a java.time.Duration parameter instead.", "Akka 2.6.0")
   def outgoingConnection(
       remoteAddress: InetSocketAddress,
       localAddress: Optional[InetSocketAddress],
@@ -331,7 +331,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def outgoingTlsConnection(
       host: String,
       port: Int,
@@ -354,7 +354,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use outgoingConnectionWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def outgoingTlsConnection(
       remoteAddress: InetSocketAddress,
       sslContext: SSLContext,
@@ -442,7 +442,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use bindWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def bindTls(
       interface: String,
       port: Int,
@@ -468,7 +468,7 @@ class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
   @deprecated(
     "Use bindWithTls that takes a SSLEngine factory instead. " +
     "Setup the SSLEngine with needed parameters.",
-    "2.6.0")
+    "Akka 2.6.0")
   def bindTls(
       interface: String,
       port: Int,

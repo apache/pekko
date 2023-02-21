@@ -805,7 +805,7 @@ final class Partition[T](val outputPorts: Int, val partitioner: T => Int, val ea
   /**
    * Sets `eagerCancel` to `false`.
    */
-  @deprecated("Use the constructor which also specifies the `eagerCancel` parameter", "2.5.10")
+  @deprecated("Use the constructor which also specifies the `eagerCancel` parameter", "Akka 2.5.10")
   def this(outputPorts: Int, partitioner: T => Int) = this(outputPorts, partitioner, false)
 
   val in: Inlet[T] = Inlet[T]("Partition.in")
@@ -1221,7 +1221,7 @@ class ZipWithN[A, O](zipper: immutable.Seq[A] => O)(n: Int) extends GraphStage[U
   override val shape = new UniformFanInShape[A, O](n)
   def out: Outlet[O] = shape.out
 
-  @deprecated("use `shape.inlets` or `shape.in(id)` instead", "2.5.5")
+  @deprecated("use `shape.inlets` or `shape.in(id)` instead", "Akka 2.5.5")
   def inSeq: immutable.IndexedSeq[Inlet[A]] = shape.inlets.asInstanceOf[immutable.IndexedSeq[Inlet[A]]]
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =

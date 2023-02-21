@@ -28,7 +28,7 @@ import pekko.remote.transport.AssociationHandle.DisassociateInfo
 import pekko.remote.transport.Transport._
 import pekko.util.Timeout
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait TransportAdapterProvider {
 
   /**
@@ -37,7 +37,7 @@ trait TransportAdapterProvider {
   def create(wrappedTransport: Transport, system: ExtendedActorSystem): Transport
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   val settings = RARP(system).provider.remoteSettings
 
@@ -57,7 +57,7 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   }
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object TransportAdaptersExtension extends ExtensionId[TransportAdapters] with ExtensionIdProvider {
   override def get(system: ActorSystem): TransportAdapters = super.get(system)
   override def get(system: ClassicActorSystemProvider): TransportAdapters = super.get(system)
@@ -66,7 +66,7 @@ object TransportAdaptersExtension extends ExtensionId[TransportAdapters] with Ex
     new TransportAdapters(system)
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait SchemeAugmenter {
   protected def addedSchemeIdentifier: String
 
@@ -85,7 +85,7 @@ trait SchemeAugmenter {
 /**
  * An adapter that wraps a transport and provides interception
  */
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 abstract class AbstractTransportAdapter(protected val wrappedTransport: Transport)(implicit val ec: ExecutionContext)
     extends Transport
     with SchemeAugmenter {
@@ -141,7 +141,7 @@ abstract class AbstractTransportAdapter(protected val wrappedTransport: Transpor
 
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 abstract class AbstractTransportAdapterHandle(
     val originalLocalAddress: Address,
     val originalRemoteAddress: Address,
@@ -158,7 +158,7 @@ abstract class AbstractTransportAdapterHandle(
 
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object ActorTransportAdapter {
   sealed trait TransportOperation extends NoSerializationVerificationNeeded
 
@@ -174,7 +174,7 @@ object ActorTransportAdapter {
   implicit val AskTimeout: Timeout = Timeout(5.seconds)
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 abstract class ActorTransportAdapter(wrappedTransport: Transport, system: ActorSystem)
     extends AbstractTransportAdapter(wrappedTransport)(system.dispatchers.internalDispatcher) {
 
@@ -211,7 +211,7 @@ abstract class ActorTransportAdapter(wrappedTransport: Transport, system: ActorS
     } yield stopResult && wrappedStopResult
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 abstract class ActorTransportAdapterManager extends Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
   import ActorTransportAdapter.{ ListenUnderlying, ListenerRegistered }
 

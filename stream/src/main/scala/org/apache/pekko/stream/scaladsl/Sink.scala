@@ -185,7 +185,7 @@ object Sink {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[T, M](factory: (ActorMaterializer, Attributes) => Sink[T, M]): Sink[T, Future[M]] =
     fromMaterializer { (mat, attr) =>
       factory(ActorMaterializerHelper.downcast(mat), attr)
@@ -497,7 +497,7 @@ object Sink {
    * to use a bounded mailbox with zero `mailbox-push-timeout-time` or use a rate
    * limiting operator in front of this `Sink`.
    */
-  @deprecated("Use variant accepting both on complete and on failure message", "2.6.0")
+  @deprecated("Use variant accepting both on complete and on failure message", "Akka 2.6.0")
   def actorRef[T](ref: ActorRef, onCompleteMessage: Any): Sink[T, NotUsed] =
     fromGraph(new ActorRefSinkStage[T](ref, onCompleteMessage, t => Status.Failure(t)))
 
@@ -592,7 +592,7 @@ object Sink {
    * When the stream is completed with failure - result of `onFailureMessage(throwable)`
    * function will be sent to the destination actor.
    */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
   def actorRefWithAck[T](
       ref: ActorRef,
       onInitMessage: Any,
@@ -650,7 +650,7 @@ object Sink {
    * sink fails then the `Future` is completed with the exception.
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
-  @deprecated("Use 'Sink.lazyFutureSink' in combination with 'Flow.prefixAndTail(1)' instead", "2.6.0")
+  @deprecated("Use 'Sink.lazyFutureSink' in combination with 'Flow.prefixAndTail(1)' instead", "Akka 2.6.0")
   def lazyInit[T, M](sinkFactory: T => Future[Sink[T, M]], fallback: () => M): Sink[T, Future[M]] =
     Sink
       .fromGraph(new LazySink[T, M](sinkFactory))
@@ -665,7 +665,7 @@ object Sink {
    * sink fails then the `Future` is completed with the exception.
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
-  @deprecated("Use 'Sink.lazyFutureSink' instead", "2.6.0")
+  @deprecated("Use 'Sink.lazyFutureSink' instead", "Akka 2.6.0")
   def lazyInitAsync[T, M](sinkFactory: () => Future[Sink[T, M]]): Sink[T, Future[Option[M]]] =
     Sink.fromGraph(new LazySink[T, M](_ => sinkFactory())).mapMaterializedValue { m =>
       implicit val ec = ExecutionContexts.parasitic

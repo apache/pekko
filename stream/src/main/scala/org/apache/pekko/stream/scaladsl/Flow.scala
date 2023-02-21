@@ -433,7 +433,7 @@ object Flow {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Flow]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[T, U, M](factory: (ActorMaterializer, Attributes) => Flow[T, U, M]): Flow[T, U, Future[M]] =
     Flow.fromGraph(new SetupFlowStage((materializer, attributes) =>
       factory(ActorMaterializerHelper.downcast(materializer), attributes)))
@@ -616,7 +616,7 @@ object Flow {
    */
   @deprecated(
     "Use 'Flow.futureFlow' in combination with prefixAndTail(1) instead, see `futureFlow` operator docs for details",
-    "2.6.0")
+    "Akka 2.6.0")
   def lazyInit[I, O, M](flowFactory: I => Future[Flow[I, O, M]], fallback: () => M): Flow[I, O, M] =
     Flow[I]
       .flatMapPrefix(1) {
@@ -646,7 +646,7 @@ object Flow {
    *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
-  @deprecated("Use 'Flow.lazyFutureFlow' instead", "2.6.0")
+  @deprecated("Use 'Flow.lazyFutureFlow' instead", "Akka 2.6.0")
   def lazyInitAsync[I, O, M](flowFactory: () => Future[Flow[I, O, M]]): Flow[I, O, Future[Option[M]]] =
     Flow.lazyFutureFlow(flowFactory).mapMaterializedValue {
       implicit val ec = pekko.dispatch.ExecutionContexts.parasitic
@@ -2610,7 +2610,7 @@ trait FlowOps[+Out, +Mat] {
    * @see [[throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): Repr[Out] =
     throttle(elements, per, Throttle.AutomaticMaximumBurst, ConstantFun.oneInt, mode)
 
@@ -2625,7 +2625,7 @@ trait FlowOps[+Out, +Mat] {
    * @see [[throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int, mode: ThrottleMode): Repr[Out] =
     throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, mode)
 
@@ -3953,7 +3953,7 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
   @Deprecated
-  @deprecated("Use monitor() or monitorMat(combine) instead", "2.5.17")
+  @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[Mat2]()(combine: (Mat, FlowMonitor[Out]) => Mat2): ReprMat[Out, Mat2] =
     viaMat(GraphStages.monitor)(combine)
 

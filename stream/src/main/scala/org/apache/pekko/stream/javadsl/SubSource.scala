@@ -2417,7 +2417,7 @@ class SubSource[Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.throttleEven(elements, per, mode))
 
@@ -2432,7 +2432,7 @@ class SubSource[Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.SubSource[Out, Mat] =
     throttleEven(elements, per.asScala, mode)
 
@@ -2447,7 +2447,7 @@ class SubSource[Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: FiniteDuration,
@@ -2466,7 +2466,7 @@ class SubSource[Out, Mat](
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: java.time.Duration,

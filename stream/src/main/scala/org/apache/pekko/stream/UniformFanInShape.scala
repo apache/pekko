@@ -42,7 +42,7 @@ class UniformFanInShape[-T, +O](val n: Int, _init: FanInShape.Init[O]) extends F
   final override def inlets: immutable.Seq[Inlet[T @uncheckedVariance]] =
     super.inlets.asInstanceOf[immutable.Seq[Inlet[T]]]
 
-  @deprecated("Use 'inlets' or 'in(id)' instead.", "2.5.5")
+  @deprecated("Use 'inlets' or 'in(id)' instead.", "Akka 2.5.5")
   def inSeq: immutable.IndexedSeq[Inlet[T @uncheckedVariance]] = _inSeq
 
   // cannot deprecate a lazy val because of genjavadoc problem https://github.com/typesafehub/genjavadoc/issues/85

@@ -179,7 +179,7 @@ final class ReplicatorSettings(
     val logDataSizeExceeding: Option[Int]) {
 
   // for backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       roles: Set[String],
       gossipInterval: FiniteDuration,
@@ -213,7 +213,7 @@ final class ReplicatorSettings(
       logDataSizeExceeding = Some(10 * 1024))
 
   // for backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       roles: Set[String],
       gossipInterval: FiniteDuration,
@@ -245,7 +245,7 @@ final class ReplicatorSettings(
       preferOldest = false)
 
   // for backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       role: Option[String],
       gossipInterval: FiniteDuration,
@@ -276,7 +276,7 @@ final class ReplicatorSettings(
       maxDeltaSize)
 
   // For backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       role: Option[String],
       gossipInterval: FiniteDuration,
@@ -301,7 +301,7 @@ final class ReplicatorSettings(
       200)
 
   // For backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       role: Option[String],
       gossipInterval: FiniteDuration,
@@ -328,7 +328,7 @@ final class ReplicatorSettings(
       200)
 
   // For backwards compatibility
-  @deprecated("use full constructor", "2.6.11")
+  @deprecated("use full constructor", "Akka 2.6.11")
   def this(
       role: Option[String],
       gossipInterval: FiniteDuration,

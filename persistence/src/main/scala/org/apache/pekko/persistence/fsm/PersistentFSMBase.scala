@@ -105,7 +105,7 @@ import pekko.util.unused
  *   isTimerActive("tock")
  * </pre>
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging {
 
   import pekko.persistence.fsm.PersistentFSM._
@@ -637,7 +637,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
  * Stackable trait for [[pekko.actor.FSM]] which adds a rolling event log and
  * debug logging capabilities (analogous to [[pekko.event.LoggingReceive]]).
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 trait LoggingPersistentFSM[S, D, E] extends PersistentFSMBase[S, D, E] { this: Actor =>
 
   import pekko.persistence.fsm.PersistentFSM._
@@ -706,7 +706,7 @@ trait LoggingPersistentFSM[S, D, E] extends PersistentFSMBase[S, D, E] { this: A
 /**
  * Java API: compatible with lambda expressions
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 object AbstractPersistentFSMBase {
 
   /**
@@ -725,7 +725,7 @@ object AbstractPersistentFSMBase {
  *
  * Finite State Machine actor abstract base class.
  */
-@deprecated("Use EventSourcedBehavior", "2.6.0")
+@deprecated("Use EventSourcedBehavior", "Akka 2.6.0")
 abstract class AbstractPersistentFSMBase[S, D, E] extends PersistentFSMBase[S, D, E] {
   import java.util.{ List => JList }
 

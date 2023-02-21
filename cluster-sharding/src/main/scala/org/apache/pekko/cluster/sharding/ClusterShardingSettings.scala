@@ -1139,7 +1139,7 @@ final class ClusterShardingSettings(
     extends NoSerializationVerificationNeeded {
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including coordinatorSingletonOverrideRole instead",
-    "2.6.20")
+    "Akka 2.6.20")
   def this(
       role: Option[String],
       rememberEntities: Boolean,
@@ -1168,7 +1168,7 @@ final class ClusterShardingSettings(
 
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including passivationStrategySettings instead",
-    "2.6.18")
+    "Akka 2.6.18")
   def this(
       role: Option[String],
       rememberEntities: Boolean,
@@ -1197,7 +1197,7 @@ final class ClusterShardingSettings(
 
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including rememberedEntitiesStore instead",
-    "2.6.7")
+    "Akka 2.6.7")
   def this(
       role: Option[String],
       rememberEntities: Boolean,

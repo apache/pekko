@@ -837,7 +837,7 @@ final class ClusterShardingSettings(
     val coordinatorSingletonSettings: ClusterSingletonManagerSettings,
     val leaseSettings: Option[LeaseUsageSettings]) {
 
-  @deprecated("Use constructor with coordinatorSingletonOverrideRole", "2.6.20")
+  @deprecated("Use constructor with coordinatorSingletonOverrideRole", "Akka 2.6.20")
   def this(
       numberOfShards: Int,
       role: Option[String],
@@ -868,7 +868,7 @@ final class ClusterShardingSettings(
       coordinatorSingletonSettings,
       leaseSettings)
 
-  @deprecated("Use constructor with passivationStrategySettings", "2.6.18")
+  @deprecated("Use constructor with passivationStrategySettings", "Akka 2.6.18")
   def this(
       numberOfShards: Int,
       role: Option[String],
@@ -899,7 +899,7 @@ final class ClusterShardingSettings(
       coordinatorSingletonSettings,
       leaseSettings)
 
-  @deprecated("Use constructor with leaseSettings", "2.6.11")
+  @deprecated("Use constructor with leaseSettings", "Akka 2.6.11")
   def this(
       numberOfShards: Int,
       role: Option[String],
@@ -928,7 +928,7 @@ final class ClusterShardingSettings(
       coordinatorSingletonSettings,
       None)
 
-  @deprecated("Use constructor with rememberEntitiesStoreMode", "2.6.6")
+  @deprecated("Use constructor with rememberEntitiesStoreMode", "Akka 2.6.6")
   def this(
       numberOfShards: Int,
       role: Option[String],

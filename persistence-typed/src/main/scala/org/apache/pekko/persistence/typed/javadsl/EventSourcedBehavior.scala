@@ -138,7 +138,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * You may configure the behavior to skip replaying snapshots completely, in which case the recovery will be
    * performed by replaying all events -- which may take a long time.
    */
-  @deprecated("override recovery instead", "2.6.5")
+  @deprecated("override recovery instead", "Akka 2.6.5")
   def snapshotSelectionCriteria: SnapshotSelectionCriteria = SnapshotSelectionCriteria.latest
 
   /**

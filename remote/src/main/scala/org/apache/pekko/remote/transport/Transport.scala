@@ -26,7 +26,7 @@ import pekko.event.LoggingAdapter
 import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.util.{ unused, ByteString }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object Transport {
 
   trait AssociationEvent extends NoSerializationVerificationNeeded
@@ -79,7 +79,7 @@ object Transport {
  * Transport implementations that are loaded dynamically by the remoting must have a constructor that accepts a
  * [[com.typesafe.config.Config]] and an [[pekko.actor.ExtendedActorSystem]] as parameters.
  */
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait Transport {
   import org.apache.pekko.remote.transport.Transport._
 
@@ -163,7 +163,7 @@ trait Transport {
 
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object AssociationHandle {
 
   /**
@@ -230,7 +230,7 @@ object AssociationHandle {
  * returned by [[pekko.remote.transport.AssociationHandle#readHandlerPromise]]. Incoming data is not processed until
  * this registration takes place.
  */
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait AssociationHandle {
 
   /**

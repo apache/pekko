@@ -47,7 +47,7 @@ import pekko.remote.transport.ThrottlerTransportAdapter._
 import pekko.remote.transport.Transport._
 import pekko.util.{ ByteString, Timeout }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 class ThrottlerProvider extends TransportAdapterProvider {
 
   override def create(wrappedTransport: Transport, system: ExtendedActorSystem): Transport =
@@ -218,7 +218,7 @@ object ThrottlerTransportAdapter {
   def unthrottledThrottleMode(): ThrottleMode = Unthrottled
 }
 
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 class ThrottlerTransportAdapter(_wrappedTransport: Transport, _system: ExtendedActorSystem)
     extends ActorTransportAdapter(_wrappedTransport, _system) {
 

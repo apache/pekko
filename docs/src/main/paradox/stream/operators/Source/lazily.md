@@ -11,7 +11,7 @@ Deprecated by @ref:[`Source.lazySource`](lazySource.md).
 
 ## Description
 
-`lazily` has been deprecated in 2.6.0, use @ref:[lazySource](lazySource.md) instead.
+`lazily` was deprecated in Akka 2.6.0, use @ref:[lazySource](lazySource.md) instead.
 
 Defers creation and materialization of a `Source` until there is demand.
 

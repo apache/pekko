@@ -18,7 +18,7 @@ import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.persistence.query.ReadJournalProvider
 
-@deprecated("Use another journal/query implementation", "2.6.15")
+@deprecated("Use another journal/query implementation", "Akka 2.6.15")
 class LeveldbReadJournalProvider(system: ExtendedActorSystem, config: Config) extends ReadJournalProvider {
 
   val readJournal: scaladsl.LeveldbReadJournal = new scaladsl.LeveldbReadJournal(system, config)

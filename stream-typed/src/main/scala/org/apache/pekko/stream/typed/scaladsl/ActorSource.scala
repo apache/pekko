@@ -120,7 +120,7 @@ object ActorSource {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    */
-  @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[T, Ack](
       ackTo: ActorRef[Ack],
       ackMessage: Ack,

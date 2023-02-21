@@ -328,7 +328,7 @@ object Sink {
    * @deprecated Use actorRefWithBackpressure instead
    */
   @Deprecated
-  @deprecated("Use actorRefWithBackpressure instead", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[In](
       ref: ActorRef,
       onInitMessage: Any,
@@ -362,7 +362,7 @@ object Sink {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Sink]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[T, M](factory: BiFunction[ActorMaterializer, Attributes, Sink[T, M]]): Sink[T, CompletionStage[M]] =
     scaladsl.Sink.setup((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.toJava).asJava
 
@@ -428,7 +428,7 @@ object Sink {
    * sink fails then the `Future` is completed with the exception.
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
-  @deprecated("Use 'Sink.lazyCompletionStageSink' in combination with 'Flow.prefixAndTail(1)' instead", "2.6.0")
+  @deprecated("Use 'Sink.lazyCompletionStageSink' in combination with 'Flow.prefixAndTail(1)' instead", "Akka 2.6.0")
   def lazyInit[T, M](
       sinkFactory: function.Function[T, CompletionStage[Sink[T, M]]],
       fallback: function.Creator[M]): Sink[T, CompletionStage[M]] =
@@ -448,7 +448,7 @@ object Sink {
    * sink fails then the `Future` is completed with the exception.
    * Otherwise the `Future` is completed with the materialized value of the internal sink.
    */
-  @deprecated("Use 'Sink.lazyCompletionStageSink' instead", "2.6.0")
+  @deprecated("Use 'Sink.lazyCompletionStageSink' instead", "Akka 2.6.0")
   def lazyInitAsync[T, M](
       sinkFactory: function.Creator[CompletionStage[Sink[T, M]]]): Sink[T, CompletionStage[Optional[M]]] = {
     val sSink = scaladsl.Sink
