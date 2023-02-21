@@ -1,0 +1,30 @@
+name: Headers
+
+on:
+  pull_request:
+
+permissions: {}
+
+jobs:
+  check-headers:
+    name: Check headers
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Java 8
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 8
+
+      - name: Cache Coursier cache
+        uses: coursier/cache-action@v6.4.0
+
+      - name: Check headers
+        run: |-
+          sbt \
+          -Dsbt.override.build.repos=false \
+          -Dsbt.log.noformat=false \
+          +headerCheckAll

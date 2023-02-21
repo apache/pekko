@@ -13,7 +13,6 @@
 
 package org.apache.pekko
 
-import org.apache.pekko.PekkoValidatePullRequest.additionalTasks
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import de.heikoseeberger.sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
 import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._
@@ -38,7 +37,7 @@ trait CopyrightHeader extends AutoPlugin {
             HeaderFileType("template") -> cStyleComment)))
     }
 
-  override def projectSettings: Seq[Def.Setting[_]] = Def.settings(headerMappingSettings, additional)
+  override def projectSettings: Seq[Def.Setting[_]] = headerMappingSettings
 
   def additional: Seq[Def.Setting[_]] =
     Def.settings(Compile / compile := {
@@ -105,8 +104,4 @@ trait CopyrightHeader extends AutoPlugin {
 
 object CopyrightHeader extends CopyrightHeader
 
-object CopyrightHeaderInPr extends CopyrightHeader {
-
-  override val additional =
-    Def.settings(additionalTasks += Compile / headerCheck, additionalTasks += Test / headerCheck)
-}
+object CopyrightHeaderInPr extends CopyrightHeader
