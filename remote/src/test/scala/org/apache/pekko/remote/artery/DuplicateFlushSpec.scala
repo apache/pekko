@@ -35,8 +35,8 @@ class DuplicateFlushSpec extends PekkoSpec("""
   private val pool = new EnvelopeBufferPool(1034 * 1024, 128)
   private val serialization = SerializationExtension(system)
 
-  private val addressA = UniqueAddress(Address("akka", "sysA", "hostA", 1001), 1)
-  private val addressB = UniqueAddress(Address("akka", "sysB", "hostB", 1002), 2)
+  private val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
+  private val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
   private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
     TestSource

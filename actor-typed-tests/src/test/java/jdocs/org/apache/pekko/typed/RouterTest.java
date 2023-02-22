@@ -228,16 +228,22 @@ public class RouterTest extends JUnitSuite {
             Routers.group(proxy.registeringKey)
                 .withConsistentHashingRouting(10, command -> proxy.mapping(command)));
 
-    router.tell(new Proxy.Message("123", "Text1"));
-    router.tell(new Proxy.Message("123", "Text2"));
+    final String id1 = "123";
+    router.tell(new Proxy.Message(id1, "Text1"));
+    router.tell(new Proxy.Message(id1, "Text2"));
 
-    router.tell(new Proxy.Message("zh3", "Text3"));
-    router.tell(new Proxy.Message("zh3", "Text4"));
+    final String id2 = "abcdef";
+    router.tell(new Proxy.Message(id2, "Text3"));
+    router.tell(new Proxy.Message(id2, "Text4"));
     // the hash is calculated over the Proxy.Message first parameter obtained through the
     // Proxy.mapping function
     // #consistent-hashing
     // Then messages with equal Message.id reach the same actor
     // so the first message in each probe queue is equal to its second
+    // NB: this test can start failing if you change the actor path (eg the URL scheme) due to
+    // these values being hashed (and depending on the resulting hash output its possible to
+    // change the distribution of actors in the ring which the test relies on)
+    // - to fix you will need to change id2 value until it starts passing again
     probe1.expectMessage(probe1.receiveMessage());
     probe2.expectMessage(probe2.receiveMessage());
   }

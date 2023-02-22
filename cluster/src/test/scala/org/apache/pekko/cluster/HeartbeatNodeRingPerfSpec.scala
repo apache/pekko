@@ -26,7 +26,7 @@ class HeartbeatNodeRingPerfSpec extends AnyWordSpec with Matchers {
     sys.props.get("org.apache.pekko.cluster.HeartbeatNodeRingPerfSpec.iterations").getOrElse("1000").toInt
 
   def createHeartbeatNodeRingOfSize(size: Int): HeartbeatNodeRing = {
-    val nodes = (1 to size).map(n => UniqueAddress(Address("akka", "sys", "node-" + n, 2552), n.toLong))
+    val nodes = (1 to size).map(n => UniqueAddress(Address("pekko", "sys", "node-" + n, 2552), n.toLong))
     val selfAddress = nodes(size / 2)
     HeartbeatNodeRing(selfAddress, nodes.toSet, Set.empty, 5)
   }

@@ -35,13 +35,13 @@ trait ClusterNodeMBean {
 
   /**
    * Comma separated addresses of member nodes, sorted in the cluster ring order.
-   * The address format is `akka://actor-system-name@hostname:port`
+   * The address format is `pekko://actor-system-name@hostname:port`
    */
   def getMembers: String
 
   /**
    * Comma separated addresses of unreachable member nodes.
-   * The address format is `akka://actor-system-name@hostname:port`
+   * The address format is `pekko://actor-system-name@hostname:port`
    */
   def getUnreachable: String
 
@@ -49,10 +49,10 @@ trait ClusterNodeMBean {
    * JSON format of the status of all nodes in the cluster as follows:
    * {{{
    * {
-   *   "self-address": "akka://system@host1:2552",
+   *   "self-address": "pekko://system@host1:2552",
    *   "members": [
    *     {
-   *       "address": "akka://system@host1:2552",
+   *       "address": "pekko://system@host1:2552",
    *       "status": "Up",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -60,7 +60,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "akka://system@host2:2552",
+   *       "address": "pekko://system@host2:2552",
    *       "status": "Up",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -68,7 +68,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "akka://system@host3:2552",
+   *       "address": "pekko://system@host3:2552",
    *       "status": "Down",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -76,7 +76,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "akka://system@host4:2552",
+   *       "address": "pekko://system@host4:2552",
    *       "status": "Joining",
    *       "app-version": "1.1.0",
    *       "roles": [
@@ -86,17 +86,17 @@ trait ClusterNodeMBean {
    *   ],
    *   "unreachable": [
    *     {
-   *       "node": "akka://system@host2:2552",
+   *       "node": "pekko://system@host2:2552",
    *       "observed-by": [
-   *         "akka://system@host1:2552",
-   *         "akka://system@host3:2552"
+   *         "pekko://system@host1:2552",
+   *         "pekko://system@host3:2552"
    *       ]
    *     },
    *     {
-   *       "node": "akka://system@host3:2552",
+   *       "node": "pekko://system@host3:2552",
    *       "observed-by": [
-   *         "akka://system@host1:2552",
-   *         "akka://system@host2:2552"
+   *         "pekko://system@host1:2552",
+   *         "pekko://system@host2:2552"
    *       ]
    *     }
    *   ]
@@ -107,7 +107,7 @@ trait ClusterNodeMBean {
 
   /**
    * Get the address of the current leader.
-   * The address format is `akka://actor-system-name@hostname:port`
+   * The address format is `pekko://actor-system-name@hostname:port`
    */
   def getLeader: String
 
@@ -124,20 +124,20 @@ trait ClusterNodeMBean {
 
   /**
    * Try to join this cluster node with the node specified by 'address'.
-   * The address format is `akka://actor-system-name@hostname:port`.
+   * The address format is `pekko://actor-system-name@hostname:port`.
    * A 'Join(thisNodeAddress)' command is sent to the node to join.
    */
   def join(address: String): Unit
 
   /**
    * Send command to issue state transition to LEAVING for the node specified by 'address'.
-   * The address format is `akka://actor-system-name@hostname:port`
+   * The address format is `pekko://actor-system-name@hostname:port`
    */
   def leave(address: String): Unit
 
   /**
    * Send command to DOWN the node specified by 'address'.
-   * The address format is `akka://actor-system-name@hostname:port`
+   * The address format is `pekko://actor-system-name@hostname:port`
    */
   def down(address: String): Unit
 }
@@ -150,9 +150,9 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
   private val mBeanServer = ManagementFactory.getPlatformMBeanServer
   private val clusterMBeanName =
     if (cluster.settings.JmxMultiMbeansInSameEnabled)
-      new ObjectName("akka:type=Cluster,port=" + cluster.selfUniqueAddress.address.port.getOrElse(""))
+      new ObjectName("pekko:type=Cluster,port=" + cluster.selfUniqueAddress.address.port.getOrElse(""))
     else
-      new ObjectName("akka:type=Cluster")
+      new ObjectName("pekko:type=Cluster")
 
   private def clusterView = cluster.readView
   import cluster.ClusterLogger._

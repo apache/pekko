@@ -134,12 +134,12 @@ class LoggingTestKitSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike 
       LoggingTestKit.warn("this is another warning").matches(warningWithCause(new AnError)) should ===(false)
     }
     "filter warning with matching source" in {
-      val source = "akka://Sys/user/foo"
+      val source = "pekko://Sys/user/foo"
       LoggingTestKit.empty.withLogLevel(Level.WARN).withSource(source).matches(warningWithSource(source)) should ===(
         true)
       LoggingTestKit.empty
         .withLogLevel(Level.WARN)
-        .withSource("akka://Sys/user/bar")
+        .withSource("pekko://Sys/user/bar")
         .matches(warningWithSource(source)) should ===(false)
     }
 

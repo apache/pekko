@@ -45,7 +45,7 @@ class ClusterHeartbeatSenderSpec extends PekkoSpec("""
       val underTest = system.actorOf(Props(new TestClusterHeartBeatSender(probe)))
       underTest ! CurrentClusterState()
       underTest ! MemberUp(
-        Member(UniqueAddress(Address("akka", system.name), 1L), Set("dc-default"), Version.Zero)
+        Member(UniqueAddress(Address("pekko", system.name), 1L), Set("dc-default"), Version.Zero)
           .copy(status = MemberStatus.Up))
 
       probe.expectMsgType[Heartbeat].sequenceNr shouldEqual 1

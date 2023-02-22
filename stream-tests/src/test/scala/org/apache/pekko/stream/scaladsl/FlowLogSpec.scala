@@ -122,7 +122,7 @@ class FlowLogSpec extends StreamSpec("""
 
         Source.single(42).log("flow-5")(log).runWith(Sink.ignore)
 
-        val src = "com.example.ImportantLogger(akka://FlowLogSpec)"
+        val src = "com.example.ImportantLogger(pekko://FlowLogSpec)"
         val clazz = classOf[DummyClassForStringSources]
         logProbe.expectMsg(Logging.Debug(src, clazz, "[flow-5] Element: 42"))
         logProbe.expectMsg(Logging.Debug(src, clazz, "[flow-5] Upstream finished."))

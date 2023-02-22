@@ -24,7 +24,7 @@ public class AddressTest extends JUnitSuite {
 
   @Test
   public void portAddressAccessible() {
-    Address address = new Address("akka", "MySystem", "localhost", 2525);
+    Address address = new Address("pekko", "MySystem", "localhost", 2525);
     assertEquals(Optional.of(2525), address.getPort());
     assertEquals(Optional.of("localhost"), address.getHost());
   }

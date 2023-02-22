@@ -109,7 +109,7 @@ private[io] final class AsyncDnsManager(
       resolver.forward(r)
 
     case Dns.Resolve(name) =>
-      // adapt legacy protocol to new protocol and back again, no where in akka
+      // adapt legacy protocol to new protocol and back again, no where in pekko
       // sends this message but supported until the old messages are removed
       log.debug("(deprecated) Resolution request for {} from {}", name, sender())
       val adapted = DnsProtocol.Resolve(name)

@@ -954,7 +954,7 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
  */
 private[remote] object ArteryTransport {
 
-  val ProtocolName = "akka"
+  val ProtocolName = "pekko"
 
   // Note that the used version of the header format for outbound messages is defined in
   // `ArterySettings.Version` because that may depend on configuration settings.

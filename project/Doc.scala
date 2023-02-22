@@ -176,7 +176,7 @@ object UnidocRoot extends AutoPlugin {
         .ifTrue(Seq(JavaUnidoc / unidocAllSources ~= { v =>
           v.map(
             _.filterNot(s =>
-              // akka.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
+              // org.apache.pekko.stream.scaladsl.GraphDSL.Implicits.ReversePortsOps
               // contains code that genjavadoc turns into (probably
               // incorrect) Java code that in turn confuses the javadoc
               // tool.

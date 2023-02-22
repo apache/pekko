@@ -105,7 +105,7 @@ class RemoteMessageSerializationSpec extends ArteryMultiNodeSpec with ImplicitSe
       }), bigBounceId)
     @nowarn
     val bigBounceHere =
-      RARP(system).provider.resolveActorRef(s"akka://${remoteSystem.name}@localhost:$remotePort/user/$bigBounceId")
+      RARP(system).provider.resolveActorRef(s"pekko://${remoteSystem.name}@localhost:$remotePort/user/$bigBounceId")
 
     val eventForwarder = localSystem.actorOf(Props(new Actor {
       def receive = {

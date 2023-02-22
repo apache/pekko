@@ -36,8 +36,8 @@ class DuplicateHandshakeSpec extends PekkoSpec("""
   val pool = new EnvelopeBufferPool(1034 * 1024, 128)
   val serialization = SerializationExtension(system)
 
-  val addressA = UniqueAddress(Address("akka", "sysA", "hostA", 1001), 1)
-  val addressB = UniqueAddress(Address("akka", "sysB", "hostB", 1002), 2)
+  val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
+  val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
   private def setupStream(inboundContext: InboundContext): (TestPublisher.Probe[AnyRef], TestSubscriber.Probe[Any]) = {
     TestSource

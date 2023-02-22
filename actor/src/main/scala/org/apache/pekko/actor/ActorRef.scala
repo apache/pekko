@@ -325,7 +325,7 @@ private[pekko] abstract class ActorRefWithCell extends InternalActorRef { this: 
  * This is an internal look-up failure token, not useful for anything else.
  */
 private[pekko] case object Nobody extends MinimalActorRef {
-  override val path: RootActorPath = new RootActorPath(Address("akka", "all-systems"), "/Nobody")
+  override val path: RootActorPath = new RootActorPath(Address("pekko", "all-systems"), "/Nobody")
   override def provider = throw new UnsupportedOperationException("Nobody does not provide")
 
   private val serialized = new SerializedNobody
@@ -543,7 +543,7 @@ private[pekko] trait MinimalActorRef extends InternalActorRef with LocalRef {
   private val fakeSystemName = "local"
 
   val path: ActorPath =
-    RootActorPath(Address("akka", IgnoreActorRef.fakeSystemName)) / "ignore"
+    RootActorPath(Address("pekko", IgnoreActorRef.fakeSystemName)) / "ignore"
 
   private val pathString = path.toString
 

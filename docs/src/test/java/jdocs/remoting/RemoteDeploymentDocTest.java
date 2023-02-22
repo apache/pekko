@@ -60,16 +60,16 @@ public class RemoteDeploymentDocTest extends AbstractJavaTest {
   @SuppressWarnings("unused")
   void makeAddress() {
     // #make-address-artery
-    Address addr = new Address("akka", "sys", "host", 1234);
-    addr = AddressFromURIString.parse("akka://sys@host:1234"); // the same
+    Address addr = new Address("pekko", "sys", "host", 1234);
+    addr = AddressFromURIString.parse("pekko://sys@host:1234"); // the same
     // #make-address-artery
   }
 
   @Test
   public void demonstrateDeployment() {
     // #make-address
-    Address addr = new Address("akka", "sys", "host", 1234);
-    addr = AddressFromURIString.parse("akka://sys@host:1234"); // the same
+    Address addr = new Address("pekko", "sys", "host", 1234);
+    addr = AddressFromURIString.parse("pekko://sys@host:1234"); // the same
     // #make-address
     // #deploy
     Props props = Props.create(SampleActor.class).withDeploy(new Deploy(new RemoteScope(addr)));

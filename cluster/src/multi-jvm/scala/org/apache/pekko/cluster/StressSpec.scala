@@ -66,7 +66,7 @@ import pekko.util.Helpers.Requiring
  *
  * By default it uses 13 nodes.
  * Example of sbt command line parameters to double that:
- * `-DMultiJvm.pekko.cluster.Stress.nrOfNodes=26 -Dmultinode.Dakka.test.cluster-stress-spec.nr-of-nodes-factor=2`
+ * `-DMultiJvm.pekko.cluster.Stress.nrOfNodes=26 -Dmultinode.pekko.test.cluster-stress-spec.nr-of-nodes-factor=2`
  */
 private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 

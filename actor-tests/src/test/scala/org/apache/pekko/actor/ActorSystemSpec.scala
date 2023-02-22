@@ -159,11 +159,11 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         a.tell("run", probe.ref)
         probe.expectTerminated(a)
         EventFilter
-          .info(pattern = """from Actor\[akka://LogDeadLetters/system/testProbe.*not delivered""", occurrences = 1)
+          .info(pattern = """from Actor\[pekko://LogDeadLetters/system/testProbe.*not delivered""", occurrences = 1)
           .intercept {
             EventFilter
               .warning(
-                pattern = """received dead letter from Actor\[akka://LogDeadLetters/system/testProbe""",
+                pattern = """received dead letter from Actor\[pekko://LogDeadLetters/system/testProbe""",
                 occurrences = 1)
               .intercept {
                 a.tell("boom", probe.ref)

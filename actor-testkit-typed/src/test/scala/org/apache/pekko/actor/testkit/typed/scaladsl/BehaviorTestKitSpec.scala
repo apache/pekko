@@ -179,7 +179,7 @@ class BehaviorTestKitSpec extends AnyWordSpec with Matchers with LogCapturing {
 
   private val props = Props.empty.withDispatcherFromConfig("cat")
 
-  private val testKitAddress = Address("akka", "StubbedActorContext")
+  private val testKitAddress = Address("pekko", "StubbedActorContext")
 
   "BehaviorTestKit" must {
 

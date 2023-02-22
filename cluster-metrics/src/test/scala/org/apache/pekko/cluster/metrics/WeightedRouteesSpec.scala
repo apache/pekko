@@ -32,8 +32,8 @@ class WeightedRouteesSpec extends PekkoSpec(ConfigFactory.parseString("""
       """)) {
 
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   val a1 = Address(protocol, "sys", "a1", 2551)
   val b1 = Address(protocol, "sys", "b1", 2551)

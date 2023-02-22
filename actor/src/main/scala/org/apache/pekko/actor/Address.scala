@@ -189,10 +189,10 @@ object AddressFromURIString {
   def unapply(uri: URI): Option[Address] =
     if (uri eq null) None
     else if (uri.getScheme == null || (uri.getUserInfo == null && uri.getHost == null)) None
-    else if (uri.getUserInfo == null) { // case 1: “akka://system”
+    else if (uri.getUserInfo == null) { // case 1: “pekko://system”
       if (uri.getPort != -1) None
       else Some(Address(uri.getScheme, uri.getHost))
-    } else { // case 2: “akka://system@host:port”
+    } else { // case 2: “pekko://system@host:port”
       if (uri.getHost == null || uri.getPort == -1) None
       else
         Some(

@@ -118,13 +118,13 @@ class DaemonMsgCreateSerializerAllowJavaSerializationSpec
           path = "path1",
           config = ConfigFactory.parseString("a=1"),
           routerConfig = RoundRobinPool(nrOfInstances = 5, supervisorStrategy = supervisorStrategy),
-          scope = RemoteScope(Address("akka", "Test", "host1", 1921)),
+          scope = RemoteScope(Address("pekko", "Test", "host1", 1921)),
           dispatcher = "mydispatcher")
         val deploy2 = Deploy(
           path = "path2",
           config = ConfigFactory.parseString("a=2"),
           routerConfig = FromConfig,
-          scope = RemoteScope(Address("akka", "Test", "host2", 1922)),
+          scope = RemoteScope(Address("pekko", "Test", "host2", 1922)),
           dispatcher = Deploy.NoDispatcherGiven)
         DaemonMsgCreate(
           props = Props[MyActor]().withDispatcher("my-disp").withDeploy(deploy1),
@@ -168,13 +168,13 @@ class DaemonMsgCreateSerializerNoJavaSerializationSpec extends PekkoSpec("""
         path = "path1",
         config = ConfigFactory.parseString("a=1"),
         // a whole can of worms: routerConfig = RoundRobinPool(nrOfInstances = 5, supervisorStrategy = supervisorStrategy),
-        scope = RemoteScope(Address("akka", "Test", "host1", 1921)),
+        scope = RemoteScope(Address("pekko", "Test", "host1", 1921)),
         dispatcher = "mydispatcher")
       val deploy2 = Deploy(
         path = "path2",
         config = ConfigFactory.parseString("a=2"),
         routerConfig = FromConfig,
-        scope = RemoteScope(Address("akka", "Test", "host2", 1922)),
+        scope = RemoteScope(Address("pekko", "Test", "host2", 1922)),
         dispatcher = Deploy.NoDispatcherGiven)
       DaemonMsgCreate(
         props = Props[MyActor]().withDispatcher("my-disp").withDeploy(deploy1),

@@ -179,8 +179,8 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
     "return ActorIdentity(None), respectively, for non-existing paths, and deadLetters" in {
       identify("a/b/c") should ===(None)
       identify("a/b/c") should ===(None)
-      identify("akka://all-systems/Nobody") should ===(None)
-      identify("akka://all-systems/user") should ===(None)
+      identify("pekko://all-systems/Nobody") should ===(None)
+      identify("pekko://all-systems/user") should ===(None)
       identify(system / "hallo") should ===(None)
       identify("foo://user") should ===(None)
       identify("/deadLetters") should ===(None)
@@ -265,7 +265,7 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
       def check(looker: ActorRef): Unit = {
         for ((l, r) <- Seq(
             SelectString("a/b/c") -> None,
-            SelectString("akka://all-systems/Nobody") -> None,
+            SelectString("pekko://all-systems/Nobody") -> None,
             SelectPath(system / "hallo") -> None,
             SelectPath(looker.path.child("hallo")) -> None, // test Java API
             SelectPath(looker.path.descendant(Seq("a", "b").asJava)) -> None) // test Java API
@@ -345,16 +345,17 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
 
     "print nicely" in {
       ActorSelection(c21, "../*/hello").toString should ===(
-        s"ActorSelection[Anchor(akka://ActorSelectionSpec/user/c2/c21#${c21.path.uid}), Path(/../*/hello)]")
+        s"ActorSelection[Anchor(pekko://ActorSelectionSpec/user/c2/c21#${c21.path.uid}), Path(/../*/hello)]")
     }
 
     "have a stringly serializable path" in {
-      system.actorSelection(system / "c2").toSerializationFormat should ===("akka://ActorSelectionSpec/user/c2")
+      system.actorSelection(system / "c2").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2")
       system.actorSelection(system / "c2" / "c21").toSerializationFormat should ===(
-        "akka://ActorSelectionSpec/user/c2/c21")
-      ActorSelection(c2, "/").toSerializationFormat should ===("akka://ActorSelectionSpec/user/c2")
-      ActorSelection(c2, "../*/hello").toSerializationFormat should ===("akka://ActorSelectionSpec/user/c2/../*/hello")
-      ActorSelection(c2, "/../*/hello").toSerializationFormat should ===("akka://ActorSelectionSpec/user/c2/../*/hello")
+        "pekko://ActorSelectionSpec/user/c2/c21")
+      ActorSelection(c2, "/").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2")
+      ActorSelection(c2, "../*/hello").toSerializationFormat should ===("pekko://ActorSelectionSpec/user/c2/../*/hello")
+      ActorSelection(c2, "/../*/hello").toSerializationFormat should ===(
+        "pekko://ActorSelectionSpec/user/c2/../*/hello")
     }
 
     "send ActorSelection targeted to missing actor to deadLetters" in {

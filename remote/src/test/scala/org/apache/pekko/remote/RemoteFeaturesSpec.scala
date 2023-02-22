@@ -150,14 +150,14 @@ class RemoteFeaturesDisabledSpec extends RemoteFeaturesSpec(RemoteFeaturesSpec.d
         name = Some("RS2"),
         extraConfig = Some(s"""
       pekko.actor.deployment {
-        /$actorName.remote = "akka://${system.name}@localhost:$port"
-        "/parent*/*".remote = "akka://${system.name}@localhost:$port"
+        /$actorName.remote = "pekko://${system.name}@localhost:$port"
+        "/parent*/*".remote = "pekko://${system.name}@localhost:$port"
       }
     """))
 
       val masterRef = masterSystem.actorOf(Props[RemoteDeploymentSpec.Echo1](), actorName)
       masterRef.path shouldEqual RootActorPath(
-        AddressFromURIString(s"akka://${masterSystem.name}")) / "user" / actorName
+        AddressFromURIString(s"pekko://${masterSystem.name}")) / "user" / actorName
       masterRef.path.address.hasLocalScope shouldBe true
 
       masterSystem.actorSelection(RootActorPath(address(system)) / "user" / actorName) ! Identify(1)

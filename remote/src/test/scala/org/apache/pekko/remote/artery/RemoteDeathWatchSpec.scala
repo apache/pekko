@@ -33,7 +33,7 @@ object RemoteDeathWatchSpec {
         actor {
             provider = remote
             deployment {
-                /watchers.remote = "akka://other@localhost:$otherPort"
+                /watchers.remote = "pekko://other@localhost:$otherPort"
             }
         }
         test.filter-leeway = 10s
@@ -74,7 +74,7 @@ class RemoteDeathWatchSpec
     // pick an unused port
     val port = SocketUtil.temporaryLocalPort(udp = true)
     // simulate de-serialized ActorRef
-    val ref = rarp.resolveActorRef(s"akka://OtherSystem@localhost:$port/user/foo/bar#1752527294")
+    val ref = rarp.resolveActorRef(s"pekko://OtherSystem@localhost:$port/user/foo/bar#1752527294")
 
     // we don't expect real quarantine when the UID is unknown, i.e. QuarantinedEvent is not published
     EventFilter.warning(pattern = "Quarantine of .* ignored because unknown UID", occurrences = 1).intercept {
@@ -94,7 +94,7 @@ class RemoteDeathWatchSpec
   }
 
   "receive Terminated when watched node is unknown host" in {
-    val path = RootActorPath(Address("akka", system.name, "unknownhost", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address("pekko", system.name, "unknownhost", 2552)) / "user" / "subject"
 
     system.actorOf(Props(new Actor {
         @nowarn
@@ -114,7 +114,7 @@ class RemoteDeathWatchSpec
     // immediately in constructor from aeron.addPublication when UnknownHostException. That will trigger
     // this immediately. With TCP it will trigger after handshake timeout. Can we see the UnknownHostException
     // reason somehow and fail the stream immediately for that case?
-    val path = RootActorPath(Address("akka", system.name, "unknownhost2", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address("pekko", system.name, "unknownhost2", 2552)) / "user" / "subject"
     system.actorSelection(path) ! Identify(path.toString)
     expectMsg(60.seconds, ActorIdentity(path.toString, None))
   }

@@ -188,7 +188,7 @@ class TlsTcpWithHostnameVerificationSpec
       EventFilter
         .warning(
           pattern =
-            "outbound connection to \\[akka://systemB@127.0.0.1:.*" +
+            "outbound connection to \\[pekko://systemB@127.0.0.1:.*" +
             "Upstream failed, cause: SSLHandshakeException: .*",
           occurrences = 3)
         .intercept {

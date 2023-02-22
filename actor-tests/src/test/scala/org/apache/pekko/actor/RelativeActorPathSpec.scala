@@ -32,7 +32,7 @@ class RelativeActorPathSpec extends AnyWordSpec with Matchers {
       elements("foo/bar/baz") should ===(List("foo", "bar", "baz"))
     }
     "match url encoded name" in {
-      val name = URLEncoder.encode("akka://ClusterSystem@127.0.0.1:2552", "UTF-8")
+      val name = URLEncoder.encode("pekko://ClusterSystem@127.0.0.1:2552", "UTF-8")
       elements(name) should ===(List(name))
     }
     "match path with uid fragment" in {

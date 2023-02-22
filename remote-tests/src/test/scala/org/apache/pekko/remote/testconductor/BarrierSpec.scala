@@ -47,7 +47,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
 
     "register clients and remove them" taggedAs TimingTest in {
       val b = getBarrier()
-      b ! NodeInfo(A, AddressFromURIString("akka://sys"), system.deadLetters)
+      b ! NodeInfo(A, AddressFromURIString("pekko://sys"), system.deadLetters)
       b ! RemoveClient(B)
       b ! RemoveClient(A)
       EventFilter[BarrierEmpty](occurrences = 1).intercept {
@@ -58,7 +58,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
 
     "register clients and disconnect them" taggedAs TimingTest in {
       val b = getBarrier()
-      b ! NodeInfo(A, AddressFromURIString("akka://sys"), system.deadLetters)
+      b ! NodeInfo(A, AddressFromURIString("pekko://sys"), system.deadLetters)
       b ! ClientDisconnected(B)
       expectNoMessage(1 second)
       b ! ClientDisconnected(A)
@@ -74,8 +74,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       a.send(barrier, EnterBarrier("bar2", None))
       noMsg(a, b)
       within(2 seconds) {
@@ -88,10 +88,10 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier with joining node" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b, c = TestProbe()
-      barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       a.send(barrier, EnterBarrier("bar3", None))
-      barrier ! NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+      barrier ! NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
       b.send(barrier, EnterBarrier("bar3", None))
       noMsg(a, b, c)
       within(2 seconds) {
@@ -105,9 +105,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier with leaving node" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b, c = TestProbe()
-      barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
-      barrier ! NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+      barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
+      barrier ! NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
       a.send(barrier, EnterBarrier("bar4", None))
       b.send(barrier, EnterBarrier("bar4", None))
       barrier ! RemoveClient(A)
@@ -124,8 +124,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "leave barrier when last “arrived” is removed" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       a.send(barrier, EnterBarrier("bar5", None))
       barrier ! RemoveClient(A)
       b.send(barrier, EnterBarrier("foo", None))
@@ -135,9 +135,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail barrier with disconnecing node" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
+      val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
       barrier ! nodeA
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       a.send(barrier, EnterBarrier("bar6", None))
       EventFilter[ClientLost](occurrences = 1).intercept {
         barrier ! ClientDisconnected(B)
@@ -156,10 +156,10 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail barrier with disconnecing node who already arrived" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b, c = TestProbe()
-      val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      val nodeC = NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+      val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      val nodeC = NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
       barrier ! nodeA
-      barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       barrier ! nodeC
       a.send(barrier, EnterBarrier("bar7", None))
       b.send(barrier, EnterBarrier("bar7", None))
@@ -180,9 +180,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail when entering wrong barrier" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
+      val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
       barrier ! nodeA
-      val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       barrier ! nodeB
       a.send(barrier, EnterBarrier("bar8", None))
       EventFilter[WrongBarrier](occurrences = 1).intercept {
@@ -218,7 +218,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
             BarrierEmpty(Data(Set(), "", Nil, null),
               "cannot remove RoleName(a): no client to remove")) + " but got " + x)
       }
-      barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
+      barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
       a.send(barrier, EnterBarrier("bar9", None))
       a.expectMsg(ToClient(BarrierResult("bar9", false)))
     }
@@ -226,8 +226,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail after barrier timeout" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+      val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
       barrier ! nodeA
       barrier ! nodeB
       a.send(barrier, EnterBarrier("bar10", None))
@@ -247,8 +247,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail if a node registers twice" taggedAs TimingTest in {
       val barrier = getBarrier()
       val a, b = TestProbe()
-      val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-      val nodeB = NodeInfo(A, AddressFromURIString("akka://sys"), b.ref)
+      val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+      val nodeB = NodeInfo(A, AddressFromURIString("pekko://sys"), b.ref)
       barrier ! nodeA
       EventFilter[DuplicateNode](occurrences = 1).intercept {
         barrier ! nodeB
@@ -272,7 +272,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
 
     "register clients and remove them" taggedAs TimingTest in {
       withController(1) { b =>
-        b ! NodeInfo(A, AddressFromURIString("akka://sys"), testActor)
+        b ! NodeInfo(A, AddressFromURIString("pekko://sys"), testActor)
         expectMsg(ToClient(Done))
         b ! Remove(B)
         b ! Remove(A)
@@ -285,7 +285,7 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
 
     "register clients and disconnect them" taggedAs TimingTest in {
       withController(1) { b =>
-        b ! NodeInfo(A, AddressFromURIString("akka://sys"), testActor)
+        b ! NodeInfo(A, AddressFromURIString("pekko://sys"), testActor)
         expectMsg(ToClient(Done))
         b ! ClientDisconnected(B)
         expectNoMessage(1 second)
@@ -304,8 +304,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         a.send(barrier, EnterBarrier("bar11", None))
@@ -321,12 +321,12 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier with joining node" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b, c = TestProbe()
-        barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         a.send(barrier, EnterBarrier("bar12", None))
-        barrier ! NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+        barrier ! NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
         c.expectMsg(ToClient(Done))
         b.send(barrier, EnterBarrier("bar12", None))
         noMsg(a, b, c)
@@ -342,9 +342,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "enter barrier with leaving node" taggedAs TimingTest in {
       withController(3) { barrier =>
         val a, b, c = TestProbe()
-        barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
-        barrier ! NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+        barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
+        barrier ! NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         c.expectMsg(ToClient(Done))
@@ -365,8 +365,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "leave barrier when last “arrived” is removed" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        barrier ! NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        barrier ! NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         a.send(barrier, EnterBarrier("bar14", None))
@@ -379,9 +379,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail barrier with disconnecing node" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
         barrier ! nodeA
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
         a.send(barrier, EnterBarrier("bar15", None))
@@ -397,10 +397,10 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail barrier with disconnecing node who already arrived" taggedAs TimingTest in {
       withController(3) { barrier =>
         val a, b, c = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeC = NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeC = NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
         barrier ! nodeA
-        barrier ! NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        barrier ! NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         barrier ! nodeC
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
@@ -417,9 +417,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail when entering wrong barrier" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
         barrier ! nodeA
-        val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         barrier ! nodeB
         a.expectMsg(ToClient(Done))
         b.expectMsg(ToClient(Done))
@@ -435,8 +435,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail after barrier timeout" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         barrier ! nodeA
         barrier ! nodeB
         a.expectMsg(ToClient(Done))
@@ -454,8 +454,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail if a node registers twice" taggedAs TimingTest in {
       withController(2) { controller =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(A, AddressFromURIString("akka://sys"), b.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(A, AddressFromURIString("pekko://sys"), b.ref)
         controller ! nodeA
         EventFilter[DuplicateNode](occurrences = 1).intercept {
           controller ! nodeB
@@ -468,8 +468,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail subsequent barriers if a node registers twice" taggedAs TimingTest in {
       withController(1) { controller =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(A, AddressFromURIString("akka://sys"), b.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(A, AddressFromURIString("pekko://sys"), b.ref)
         controller ! nodeA
         a.expectMsg(ToClient(Done))
         EventFilter[DuplicateNode](occurrences = 1).intercept {
@@ -484,8 +484,8 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "fail subsequent barriers after foreced failure" taggedAs TimingTest in {
       withController(2) { barrier =>
         val a, b = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
         barrier ! nodeA
         barrier ! nodeB
         a.expectMsg(ToClient(Done))
@@ -506,9 +506,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "timeout within the shortest timeout if the new timeout is shorter" taggedAs TimingTest in {
       withController(3) { barrier =>
         val a, b, c = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
-        val nodeC = NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
+        val nodeC = NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
         barrier ! nodeA
         barrier ! nodeB
         barrier ! nodeC
@@ -530,9 +530,9 @@ class BarrierSpec extends PekkoSpec(BarrierSpec.config) with ImplicitSender {
     "timeout within the shortest timeout if the new timeout is longer" taggedAs TimingTest in {
       withController(3) { barrier =>
         val a, b, c = TestProbe()
-        val nodeA = NodeInfo(A, AddressFromURIString("akka://sys"), a.ref)
-        val nodeB = NodeInfo(B, AddressFromURIString("akka://sys"), b.ref)
-        val nodeC = NodeInfo(C, AddressFromURIString("akka://sys"), c.ref)
+        val nodeA = NodeInfo(A, AddressFromURIString("pekko://sys"), a.ref)
+        val nodeB = NodeInfo(B, AddressFromURIString("pekko://sys"), b.ref)
+        val nodeC = NodeInfo(C, AddressFromURIString("pekko://sys"), c.ref)
         barrier ! nodeA
         barrier ! nodeB
         barrier ! nodeC

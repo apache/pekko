@@ -46,7 +46,7 @@ class DaemonicSpec extends PekkoSpec {
       try {
         val unusedPort = 86 // very unlikely to ever be used, "system port" range reserved for Micro Focus Cobol
 
-        val protocol = if (RARP(daemonicSystem).provider.remoteSettings.Artery.Enabled) "akka" else "akka.tcp"
+        val protocol = if (RARP(daemonicSystem).provider.remoteSettings.Artery.Enabled) "pekko" else "pekko.tcp"
         val unusedAddress =
           RARP(daemonicSystem).provider.getExternalAddressFor(Address(protocol, "", "", unusedPort)).get
         val selection = daemonicSystem.actorSelection(s"$unusedAddress/user/SomeActor")

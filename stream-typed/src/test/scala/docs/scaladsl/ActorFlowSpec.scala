@@ -206,7 +206,7 @@ class ActorFlowSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike {
       intercept[RuntimeException] {
         replier ! Asking("TERMINATE", system.deadLetters)
         Await.result(done, 3.seconds)
-      }.getMessage should startWith("Actor watched by [ask()] has terminated! Was: Actor[akka://ActorFlowSpec")
+      }.getMessage should startWith("Actor watched by [ask()] has terminated! Was: Actor[pekko://ActorFlowSpec")
     }
 
   }

@@ -46,8 +46,8 @@ class InboundControlJunctionSpec
     with ImplicitSender {
   import InboundControlJunctionSpec._
 
-  val addressA = UniqueAddress(Address("akka", "sysA", "hostA", 1001), 1)
-  val addressB = UniqueAddress(Address("akka", "sysB", "hostB", 1002), 2)
+  val addressA = UniqueAddress(Address("pekko", "sysA", "hostA", 1001), 1)
+  val addressB = UniqueAddress(Address("pekko", "sysB", "hostB", 1002), 2)
 
   "Control messages" must {
 

@@ -395,7 +395,7 @@ object ActorSystem {
         ConfigFactory
           .defaultReference(classLoader)
           .withoutPath(Dispatchers.InternalDispatcherId), // allow this to be both string and config object
-        "akka")
+        "pekko")
       cfg
     }
 

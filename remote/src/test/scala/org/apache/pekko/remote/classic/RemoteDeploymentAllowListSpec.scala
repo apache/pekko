@@ -96,8 +96,8 @@ object RemoteDeploymentAllowListSpec {
       }
 
       actor.deployment {
-        /blub.remote = "akka.test://remote-sys@localhost:12346"
-        /danger-mouse.remote = "akka.test://remote-sys@localhost:12346"
+        /blub.remote = "pekko.test://remote-sys@localhost:12346"
+        /danger-mouse.remote = "pekko.test://remote-sys@localhost:12346"
       }
     }
     # test is using Java serialization and not priority to rewrite
@@ -161,7 +161,7 @@ class RemoteDeploymentAllowListSpec
     "allow deploying Echo actor (included in allow list)" in {
       val r = system.actorOf(Props[EchoAllowed](), "blub")
       r.path.toString should ===(
-        s"akka.test://remote-sys@localhost:12346/remote/akka.test/${getClass.getSimpleName}@localhost:12345/user/blub")
+        s"pekko.test://remote-sys@localhost:12346/remote/pekko.test/${getClass.getSimpleName}@localhost:12345/user/blub")
       r ! 42
       expectMsg(42)
       EventFilter[Exception]("crash", occurrences = 1).intercept {
@@ -181,7 +181,7 @@ class RemoteDeploymentAllowListSpec
           EventFilter[NotAllowedClassRemoteDeploymentAttemptException](occurrences = 1).intercept {
             val r = system.actorOf(Props[EchoNotAllowed](), "danger-mouse")
             r.path.toString should ===(
-              s"akka.test://remote-sys@localhost:12346/remote/akka.test/${getClass.getSimpleName}@localhost:12345/user/danger-mouse")
+              s"pekko.test://remote-sys@localhost:12346/remote/pekko.test/${getClass.getSimpleName}@localhost:12345/user/danger-mouse")
             r ! 42
             expectNoMessage(1.second)
             system.stop(r)

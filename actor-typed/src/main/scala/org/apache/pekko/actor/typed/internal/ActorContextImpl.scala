@@ -60,7 +60,7 @@ import scala.util.Success
       val pekkoAddress =
         ctx.system match {
           case adapter: ActorSystemAdapter[_] => adapter.provider.addressString
-          case _                              => Address("akka", ctx.system.name).toString
+          case _                              => Address("pekko", ctx.system.name).toString
         }
 
       val sourceActorSystem = ctx.system.name

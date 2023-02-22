@@ -75,7 +75,7 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
     }
 
     "register jmx mbean" in {
-      val name = new ObjectName("akka:type=Cluster")
+      val name = new ObjectName("pekko:type=Cluster")
       val info = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name)
       info.getAttributes.length should be > 0
       info.getOperations.length should be > 0
@@ -88,7 +88,7 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
 
     "fail fast in a join if invalid chars in host names, e.g. docker host given name" in {
       val addresses = scala.collection.immutable
-        .Seq(Address("akka", "sys", Some("in_valid"), Some(0)), Address("akka", "sys", Some("invalid._org"), Some(0)))
+        .Seq(Address("pekko", "sys", Some("in_valid"), Some(0)), Address("pekko", "sys", Some("invalid._org"), Some(0)))
 
       addresses.foreach(a => intercept[IllegalArgumentException](cluster.join(a)))
       intercept[IllegalArgumentException](cluster.joinSeedNodes(addresses))
@@ -96,10 +96,10 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
 
     "not fail fast to attempt a join with valid chars in host names" in {
       val addresses = scala.collection.immutable.Seq(
-        Address("akka", "sys", Some("localhost"), Some(0)),
-        Address("akka", "sys", Some("is_valid.org"), Some(0)),
-        Address("akka", "sys", Some("fu.is_valid.org"), Some(0)),
-        Address("akka", "sys", Some("fu_.is_valid.org"), Some(0)))
+        Address("pekko", "sys", Some("localhost"), Some(0)),
+        Address("pekko", "sys", Some("is_valid.org"), Some(0)),
+        Address("pekko", "sys", Some("fu.is_valid.org"), Some(0)),
+        Address("pekko", "sys", Some("fu_.is_valid.org"), Some(0)))
 
       addresses.foreach(cluster.join)
       cluster.joinSeedNodes(addresses)
@@ -364,12 +364,12 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
         Cluster(sys1)
         Cluster(sys2)
 
-        val name1 = new ObjectName(s"akka:type=Cluster,port=2552")
+        val name1 = new ObjectName(s"pekko:type=Cluster,port=2552")
         val info1 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name1)
         info1.getAttributes.length should be > 0
         info1.getOperations.length should be > 0
 
-        val name2 = new ObjectName(s"akka:type=Cluster,port=2553")
+        val name2 = new ObjectName(s"pekko:type=Cluster,port=2553")
         val info2 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name2)
         info2.getAttributes.length should be > 0
         info2.getOperations.length should be > 0

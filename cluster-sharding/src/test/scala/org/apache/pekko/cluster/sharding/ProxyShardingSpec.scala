@@ -60,7 +60,7 @@ class ProxyShardingSpec extends PekkoSpec(ProxyShardingSpec.config) with WithLog
   "Proxy should be found" in {
     val proxyActor: ActorRef = Await.result(
       system
-        .actorSelection("akka://ProxyShardingSpec/system/sharding/myTypeProxy")
+        .actorSelection("pekko://ProxyShardingSpec/system/sharding/myTypeProxy")
         .resolveOne(FiniteDuration(5, SECONDS)),
       3.seconds)
 
@@ -80,7 +80,7 @@ class ProxyShardingSpec extends PekkoSpec(ProxyShardingSpec.config) with WithLog
     val shardCoordinator: ActorRef =
       Await.result(
         system
-          .actorSelection("akka://ProxyShardingSpec/system/sharding/myTypeCoordinator")
+          .actorSelection("pekko://ProxyShardingSpec/system/sharding/myTypeCoordinator")
           .resolveOne(FiniteDuration(5, SECONDS)),
         3.seconds)
 
