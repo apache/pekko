@@ -97,13 +97,13 @@ class ThrottlerTransportAdapterSpec extends PekkoSpec(configA) with ImplicitSend
   }
 
   def throttle(direction: Direction, mode: ThrottleMode): Boolean = {
-    val rootBAddress = Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val rootBAddress = Address("pekko", "systemB", "localhost", rootB.address.port.get)
     val transport = system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport
     Await.result(transport.managementCommand(SetThrottle(rootBAddress, direction, mode)), 3.seconds)
   }
 
   def disassociate(): Boolean = {
-    val rootBAddress = Address("akka", "systemB", "localhost", rootB.address.port.get)
+    val rootBAddress = Address("pekko", "systemB", "localhost", rootB.address.port.get)
     val transport = system.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].transport
     Await.result(transport.managementCommand(ForceDisassociate(rootBAddress)), 3.seconds)
   }
@@ -159,7 +159,7 @@ class ThrottlerTransportAdapterSpec extends PekkoSpec(configA) with ImplicitSend
   override def beforeTermination(): Unit = {
     system.eventStream.publish(
       TestEvent.Mute(
-        EventFilter.warning(source = s"akka://AkkaProtocolStressTest/user/$$a", start = "received dead letter"),
+        EventFilter.warning(source = s"pekko://AkkaProtocolStressTest/user/$$a", start = "received dead letter"),
         EventFilter.warning(pattern = "received dead letter.*(InboundPayload|Disassociate)")))
     systemB.eventStream.publish(
       TestEvent.Mute(
@@ -175,7 +175,7 @@ class ThrottlerTransportAdapterSpec extends PekkoSpec(configA) with ImplicitSend
 class ThrottlerTransportAdapterGenericSpec extends GenericTransportSpec(withAkkaProtocol = true) {
 
   def transportName = "ThrottlerTransportAdapter"
-  def schemeIdentifier = "akka.trttl"
+  def schemeIdentifier = "pekko.trttl"
   def freshTransport(testTransport: TestTransport) =
     new ThrottlerTransportAdapter(testTransport, system.asInstanceOf[ExtendedActorSystem])
 

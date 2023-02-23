@@ -24,14 +24,14 @@ import pekko.event.Logging.LogLevel
 
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 sealed trait RemotingLifecycleEvent extends Serializable {
   def logLevel: Logging.LogLevel
 }
 
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 sealed trait AssociationEvent extends RemotingLifecycleEvent {
   def localAddress: Address
   def remoteAddress: Address
@@ -44,7 +44,7 @@ sealed trait AssociationEvent extends RemotingLifecycleEvent {
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class AssociatedEvent(localAddress: Address, remoteAddress: Address, inbound: Boolean)
     extends AssociationEvent {
 
@@ -54,7 +54,7 @@ final case class AssociatedEvent(localAddress: Address, remoteAddress: Address, 
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class DisassociatedEvent(localAddress: Address, remoteAddress: Address, inbound: Boolean)
     extends AssociationEvent {
   protected override def eventName: String = "Disassociated"
@@ -62,7 +62,7 @@ final case class DisassociatedEvent(localAddress: Address, remoteAddress: Addres
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class AssociationErrorEvent(
     cause: Throwable,
     localAddress: Address,
@@ -85,14 +85,14 @@ final case class RemotingListenEvent(listenAddresses: Set[Address]) extends Remo
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 case object RemotingShutdownEvent extends RemotingLifecycleEvent {
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
   override val toString: String = "Remoting shut down"
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class RemotingErrorEvent(cause: Throwable) extends RemotingLifecycleEvent {
   def getCause: Throwable = cause
   override def logLevel: Logging.LogLevel = Logging.ErrorLevel
@@ -100,7 +100,7 @@ final case class RemotingErrorEvent(cause: Throwable) extends RemotingLifecycleE
 }
 
 // For binary compatibility
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object QuarantinedEvent extends AbstractFunction2[Address, Int, QuarantinedEvent] {
 
   @deprecated("Use long uid apply", "2.4.x")
@@ -108,7 +108,7 @@ object QuarantinedEvent extends AbstractFunction2[Address, Int, QuarantinedEvent
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class QuarantinedEvent(address: Address, longUid: Long) extends RemotingLifecycleEvent {
 
   override def logLevel: Logging.LogLevel = Logging.WarningLevel
@@ -131,7 +131,7 @@ final case class QuarantinedEvent(address: Address, longUid: Long) extends Remot
  * The `uniqueAddress` was quarantined but it was due to normal shutdown or cluster leaving/exiting.
  */
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class GracefulShutdownQuarantinedEvent(uniqueAddress: UniqueAddress, reason: String)
     extends RemotingLifecycleEvent {
   override def logLevel: Logging.LogLevel = Logging.InfoLevel
@@ -141,7 +141,7 @@ final case class GracefulShutdownQuarantinedEvent(uniqueAddress: UniqueAddress, 
 }
 
 @SerialVersionUID(1L)
-@deprecated("Classic remoting is deprecated, use Artery", "2.6.0")
+@deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 final case class ThisActorSystemQuarantinedEvent(localAddress: Address, remoteAddress: Address)
     extends RemotingLifecycleEvent {
   override def logLevel: LogLevel = Logging.WarningLevel

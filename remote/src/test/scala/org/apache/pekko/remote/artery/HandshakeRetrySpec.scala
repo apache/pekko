@@ -37,7 +37,7 @@ class HandshakeRetrySpec extends ArteryMultiNodeSpec(HandshakeRetrySpec.commonCo
   "Artery handshake" must {
 
     "be retried during handshake-timeout (no message loss)" in {
-      def sel = system.actorSelection(s"akka://systemB@localhost:$portB/user/echo")
+      def sel = system.actorSelection(s"pekko://systemB@localhost:$portB/user/echo")
       sel ! "hello"
       expectNoMessage(1.second)
 

@@ -24,7 +24,7 @@ import pekko.cluster.ddata.Replicator.Changed
 class LWWMapSpec extends AnyWordSpec with Matchers {
   import LWWRegister.defaultClock
 
-  val node1 = UniqueAddress(Address("akka", "Sys", "localhost", 2551), 1L)
+  val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
   val node2 = UniqueAddress(node1.address.copy(port = Some(2552)), 2L)
 
   "A LWWMap" must {

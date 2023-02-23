@@ -20,7 +20,7 @@ import pekko.persistence.typed.PersistenceId
 /**
  * INTERNAL API
  *
- * Used for journal failures. Private to akka as only internal supervision strategies should use it.
+ * Used for journal failures. Private to pekko as only internal supervision strategies should use it.
  */
 @InternalApi
 final private[pekko] class JournalFailureException(msg: String, cause: Throwable) extends RuntimeException(msg, cause) {

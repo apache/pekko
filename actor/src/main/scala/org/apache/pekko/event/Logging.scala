@@ -269,7 +269,7 @@ trait LoggingBus extends ActorEventBus {
  *
  * class MyClass extends MyType {
  *   val sys = ActorSystem("sys")
- *   val log = Logging(sys, this) // will use "hallo,akka://sys" as logSource
+ *   val log = Logging(sys, this) // will use "hallo,pekko://sys" as logSource
  *   def name = "hallo"
  * }
  * }}}
@@ -1113,7 +1113,7 @@ object Logging {
    * <code>pekko.stdout-loglevel</code>.
    */
   class StandardOutLogger extends MinimalActorRef with StdOutLogger {
-    val path: ActorPath = RootActorPath(Address("akka", "all-systems"), "/StandardOutLogger")
+    val path: ActorPath = RootActorPath(Address("pekko", "all-systems"), "/StandardOutLogger")
     def provider: ActorRefProvider = throw new UnsupportedOperationException("StandardOutLogger does not provide")
     override val toString = "StandardOutLogger"
     override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit =

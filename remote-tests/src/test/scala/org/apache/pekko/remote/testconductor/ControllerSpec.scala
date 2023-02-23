@@ -39,9 +39,9 @@ class ControllerSpec extends PekkoSpec(ControllerSpec.config) with ImplicitSende
 
     "publish its nodes" in {
       val c = system.actorOf(Props(classOf[Controller], 1, new InetSocketAddress(InetAddress.getLocalHost, 0)))
-      c ! NodeInfo(A, AddressFromURIString("akka://sys"), testActor)
+      c ! NodeInfo(A, AddressFromURIString("pekko://sys"), testActor)
       expectMsg(ToClient(Done))
-      c ! NodeInfo(B, AddressFromURIString("akka://sys"), testActor)
+      c ! NodeInfo(B, AddressFromURIString("pekko://sys"), testActor)
       expectMsg(ToClient(Done))
       c ! Controller.GetNodes
       expectMsgType[Iterable[RoleName]].toSet should ===(Set(A, B))

@@ -82,7 +82,7 @@ import pekko.annotation.InternalApi
   def isTerminated: Boolean = whenTerminated.isCompleted
 
   final override val path: classic.ActorPath =
-    classic.RootActorPath(classic.Address("akka", system.name)) / "user"
+    classic.RootActorPath(classic.Address("pekko", system.name)) / "user"
 
   override def toString: String = system.toString
 

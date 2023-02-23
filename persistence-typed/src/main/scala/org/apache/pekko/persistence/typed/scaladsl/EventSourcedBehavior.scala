@@ -170,7 +170,7 @@ object EventSourcedBehavior {
    * You may configure the behavior to skip replaying snapshots completely, in which case the recovery will be
    * performed by replaying all events -- which may take a long time.
    */
-  @deprecated("use withRecovery(Recovery.withSnapshotSelectionCriteria(...))", "2.6.5")
+  @deprecated("use withRecovery(Recovery.withSnapshotSelectionCriteria(...))", "Akka 2.6.5")
   def withSnapshotSelectionCriteria(selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State]
 
   /**

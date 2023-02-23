@@ -60,7 +60,7 @@ public class JavaAPI extends JUnitSuite {
     final NoRouter nr = NoRouter.getInstance();
     final FromConfig fc = FromConfig.getInstance();
 
-    final ActorPath p = ActorPaths.fromString("akka://Sys@localhost:1234/user/abc");
+    final ActorPath p = ActorPaths.fromString("pekko://Sys@localhost:1234/user/abc");
   }
 
   @Test

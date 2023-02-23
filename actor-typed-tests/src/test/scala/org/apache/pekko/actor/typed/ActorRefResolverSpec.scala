@@ -33,7 +33,7 @@ class ActorRefResolverSpec extends AnyWordSpec with ScalaFutures with Matchers {
       try {
         val ref1 = system1.systemActorOf(Behaviors.empty, "ref1")
         val serialized = ActorRefResolver(system1).toSerializationFormat(ref1)
-        serialized should startWith("akka://sys1/")
+        serialized should startWith("pekko://sys1/")
 
         intercept[IllegalArgumentException] {
           // wrong system
@@ -49,7 +49,7 @@ class ActorRefResolverSpec extends AnyWordSpec with ScalaFutures with Matchers {
         }
 
         val minRef1Serialized = ActorRefResolver(system2).toSerializationFormat(minRef1)
-        minRef1Serialized should startWith("akka://sys2/")
+        minRef1Serialized should startWith("pekko://sys2/")
 
       } finally {
         system1.terminate()

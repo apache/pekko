@@ -83,10 +83,10 @@ class PekkoProtocolSpec extends PekkoSpec("""pekko.actor.provider = remote """) 
   """).withFallback(system.settings.config)
 
   val localAddress = Address("test", "testsystem", "testhost", 1234)
-  val localAkkaAddress = Address("akka.test", "testsystem", "testhost", 1234)
+  val localAkkaAddress = Address("pekko.test", "testsystem", "testhost", 1234)
 
   val remoteAddress = Address("test", "testsystem2", "testhost2", 1234)
-  val remoteAkkaAddress = Address("akka.test", "testsystem2", "testhost2", 1234)
+  val remoteAkkaAddress = Address("pekko.test", "testsystem2", "testhost2", 1234)
 
   val codec = PekkoPduProtobufCodec$
 

@@ -47,7 +47,7 @@ object JoinConfigCompatCheckerSpec {
            pekko-cluster-test = "org.apache.pekko.cluster.JoinConfigCompatCheckerTest"
           }
           sensitive-config-paths {
-            akka = [ "pekko.cluster.sensitive.properties" ]
+            pekko = [ "pekko.cluster.sensitive.properties" ]
           }
         }
       }
@@ -586,7 +586,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
                 # this will allow the joining node to leak sensitive info and try
                 # get back these same properties from the cluster
                 sensitive-config-paths {
-                  akka = []
+                  pekko = []
                 }
               }
             }

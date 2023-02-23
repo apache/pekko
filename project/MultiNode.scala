@@ -58,9 +58,9 @@ object MultiNode extends AutoPlugin {
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
     // -Dmultinode.Djava.net.preferIPv4Stack=true -Dmultinode.Xmx512m -Dmultinode.XX:MaxPermSize=256M
-    // -DMultiJvm.akka.cluster.Stress.nrOfNodes=15
+    // -DMultiJvm.pekko.cluster.Stress.nrOfNodes=15
     val MultinodeJvmArgs = "multinode\\.(D|X)(.*)".r
-    val knownPrefix = Set("akka.", "MultiJvm.", "aeron.")
+    val knownPrefix = Set("pekko.", "akka.", "MultiJvm.", "aeron.")
     val pekkoProperties = System.getProperties.stringPropertyNames.asScala.toList.collect {
       case MultinodeJvmArgs(a, b) =>
         val value = System.getProperty("multinode." + a + b)

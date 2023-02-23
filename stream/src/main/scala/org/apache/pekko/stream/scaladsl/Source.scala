@@ -238,7 +238,7 @@ final class Source[+Out, +Mat](
   /**
    * Combines several sources with fan-in strategy like `Merge` or `Concat` and returns `Source`.
    */
-  @deprecated("Use `Source.combine` on companion object instead", "2.5.5")
+  @deprecated("Use `Source.combine` on companion object instead", "Akka 2.5.5")
   def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
       strategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.combine(first, second, rest: _*)(strategy)
@@ -341,7 +341,7 @@ object Source {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Source]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[T, M](factory: (ActorMaterializer, Attributes) => Source[T, M]): Source[T, Future[M]] =
     Source.fromGraph(new SetupSourceStage((materializer, attributes) =>
       factory(ActorMaterializerHelper.downcast(materializer), attributes)))
@@ -364,7 +364,7 @@ object Source {
    * may happen before or after materializing the `Flow`.
    * The stream terminates with a failure if the `Future` is completed with a failure.
    */
-  @deprecated("Use 'Source.future' instead", "2.6.0")
+  @deprecated("Use 'Source.future' instead", "Akka 2.6.0")
   def fromFuture[T](future: Future[T]): Source[T, NotUsed] =
     fromGraph(new FutureSource(future))
 
@@ -374,7 +374,7 @@ object Source {
    * may happen before or after materializing the `Flow`.
    * The stream terminates with a failure if the `Future` is completed with a failure.
    */
-  @deprecated("Use 'Source.completionStage' instead", "2.6.0")
+  @deprecated("Use 'Source.completionStage' instead", "Akka 2.6.0")
   def fromCompletionStage[T](future: CompletionStage[T]): Source[T, NotUsed] =
     fromGraph(new FutureSource(future.toScala))
 
@@ -383,7 +383,7 @@ object Source {
    * If the [[Future]] fails the stream is failed with the exception from the future. If downstream cancels before the
    * stream completes the materialized `Future` will be failed with a [[StreamDetachedException]]
    */
-  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "2.6.0")
+  @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
   def fromFutureSource[T, M](future: Future[Graph[SourceShape[T], M]]): Source[T, Future[M]] =
     fromGraph(new FutureFlattenSource(future))
 
@@ -393,7 +393,7 @@ object Source {
    * If downstream cancels before the stream completes the materialized `Future` will be failed
    * with a [[StreamDetachedException]]
    */
-  @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "2.6.0")
+  @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "Akka 2.6.0")
   def fromSourceCompletionStage[T, M](
       completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
     fromFutureSource(completion.toScala).mapMaterializedValue(_.toJava)
@@ -489,7 +489,7 @@ object Source {
    * the materialized future is completed with its value, if downstream cancels or fails without any demand the
    * create factory is never called and the materialized `Future` is failed.
    */
-  @deprecated("Use 'Source.lazySource' instead", "2.6.0")
+  @deprecated("Use 'Source.lazySource' instead", "Akka 2.6.0")
   def lazily[T, M](create: () => Source[T, M]): Source[T, Future[M]] =
     Source.fromGraph(new LazySource[T, M](create))
 
@@ -500,7 +500,7 @@ object Source {
    *
    * @see [[Source.lazily]]
    */
-  @deprecated("Use 'Source.lazyFuture' instead", "2.6.0")
+  @deprecated("Use 'Source.lazyFuture' instead", "Akka 2.6.0")
   def lazilyAsync[T](create: () => Future[T]): Source[T, Future[NotUsed]] =
     lazily(() => fromFuture(create()))
 
@@ -689,7 +689,7 @@ object Source {
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  @deprecated("Use variant accepting completion and failure matchers instead", "2.6.0")
+  @deprecated("Use variant accepting completion and failure matchers instead", "Akka 2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     actorRef({
         case pekko.actor.Status.Success(s: CompletionStrategy) => s
@@ -748,7 +748,7 @@ object Source {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    */
-  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "2.6.0")
+  @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers instead", "Akka 2.6.0")
   def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
     actorRefWithAck(None, ackMessage,
       {

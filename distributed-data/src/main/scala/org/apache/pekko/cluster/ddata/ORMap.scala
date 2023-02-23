@@ -298,7 +298,7 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * passed to the `modify` function.
    */
   @Deprecated
-  @deprecated("use update for the Java API as updated is ambiguous with the Scala API", "2.5.20")
+  @deprecated("use update for the Java API as updated is ambiguous with the Scala API", "Akka 2.5.20")
   def updated(node: Cluster, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
     updated(node.selfUniqueAddress, key, initial)(value => modify.apply(value))
 

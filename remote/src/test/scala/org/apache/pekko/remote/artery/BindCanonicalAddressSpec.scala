@@ -54,7 +54,7 @@ trait BindCanonicalAddressBehaviors {
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
 
-      getExternal() should ===(address.toAkkaAddress("akka"))
+      getExternal() should ===(address.toAkkaAddress("pekko"))
       // May have selected the same random port - bind another in that case while the other still has the canonical port
       val internals =
         if (getInternal().collect { case Address(_, _, _, Some(port)) => port }.toSeq.contains(address.getPort)) {
@@ -65,7 +65,7 @@ trait BindCanonicalAddressBehaviors {
         } else {
           getInternal()
         }
-      internals should not contain address.toAkkaAddress("akka")
+      internals should not contain address.toAkkaAddress("pekko")
       Await.result(sys.terminate(), Duration.Inf)
     }
 
@@ -92,8 +92,8 @@ trait BindCanonicalAddressBehaviors {
 
       implicit val sys = ActorSystem("sys", config.withFallback(commonConfig))
 
-      getExternal() should ===(address.toAkkaAddress("akka"))
-      getInternal() should contain(address.toAkkaAddress("akka"))
+      getExternal() should ===(address.toAkkaAddress("pekko"))
+      getInternal() should contain(address.toAkkaAddress("pekko"))
     }
 
     "bind to all interfaces" in {

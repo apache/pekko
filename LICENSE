@@ -202,6 +202,14 @@
 
 ---------------
 
+pekko-actor contains MurmurHash.scala which is derived from MurmurHash3,
+written by Austin Appleby. He has placed his code in the public domain.
+The author has disclaimed copyright to that source code.
+MurmurHash.scala also contains changes made by the Scala-Lang team under an Apache 2.0 license.
+Copyright (c) 2003-2011, LAMP/EPFL
+
+---------------
+
 pekko-protobuf contains the sources of Google protobuf 2.5.0 runtime support,
 moved into the source package `org.apache.pekko.protobuf` so as to avoid version conflicts.
 For license information see COPYING.protobuf

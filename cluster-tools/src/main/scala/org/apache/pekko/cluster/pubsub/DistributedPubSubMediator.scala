@@ -109,7 +109,7 @@ final class DistributedPubSubSettings(
     val sendToDeadLettersWhenNoSubscribers: Boolean)
     extends NoSerializationVerificationNeeded {
 
-  @deprecated("Use the other constructor instead.", "2.5.5")
+  @deprecated("Use the other constructor instead.", "Akka 2.5.5")
   def this(
       role: Option[String],
       routingLogic: RoutingLogic,

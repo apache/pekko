@@ -313,7 +313,7 @@ class MessageSerializerPersistenceSpec extends PekkoSpec(customSerializers) {
 object MessageSerializerRemotingSpec {
   class LocalActor(port: Int) extends Actor {
     def receive = {
-      case m => context.actorSelection(s"akka://remote@127.0.0.1:${port}/user/remote").tell(m, Actor.noSender)
+      case m => context.actorSelection(s"pekko://remote@127.0.0.1:${port}/user/remote").tell(m, Actor.noSender)
     }
   }
 

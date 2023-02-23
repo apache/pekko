@@ -124,7 +124,7 @@ abstract class ClusterRemoteFeaturesSpec(multiNodeConfig: ClusterRemoteFeaturesC
       def assertIsLocalRef(): Unit = {
         val actor = system.actorOf(Props[AddressPing](), "kattdjur")
         actor.isInstanceOf[RepointableActorRef] shouldBe true
-        val localAddress = AddressFromURIString(s"akka://${system.name}")
+        val localAddress = AddressFromURIString(s"pekko://${system.name}")
         actor.path.address shouldEqual localAddress
         actor.path.address.hasLocalScope shouldBe true
 

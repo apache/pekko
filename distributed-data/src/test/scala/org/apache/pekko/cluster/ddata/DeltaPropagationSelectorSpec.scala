@@ -45,8 +45,8 @@ object DeltaPropagationSelectorSpec {
 
 class DeltaPropagationSelectorSpec extends AnyWordSpec with Matchers with TypeCheckedTripleEquals {
   import DeltaPropagationSelectorSpec._
-  val selfUniqueAddress = UniqueAddress(Address("akka", "Sys", "localhost", 4999), 17L)
-  val nodes = (2500 until 2600).map(n => UniqueAddress(Address("akka", "Sys", "localhost", n), 17L)).toVector
+  val selfUniqueAddress = UniqueAddress(Address("pekko", "Sys", "localhost", 4999), 17L)
+  val nodes = (2500 until 2600).map(n => UniqueAddress(Address("pekko", "Sys", "localhost", n), 17L)).toVector
 
   "DeltaPropagationSelector" must {
     "collect none when no nodes" in {

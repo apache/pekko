@@ -170,7 +170,7 @@ class FlowAskSpec extends StreamSpec {
         .to(Sink.fromSubscriber(c))
         .run()
       c.expectSubscription().request(10)
-      c.expectError().getMessage should startWith("Ask timed out on [Actor[akka://FlowAskSpec/user/dontReply#")
+      c.expectError().getMessage should startWith("Ask timed out on [Actor[pekko://FlowAskSpec/user/dontReply#")
     }
 
     "signal ask failure" in {
@@ -190,7 +190,7 @@ class FlowAskSpec extends StreamSpec {
         r ! PoisonPill
         Await.result(done, remainingOrDefault)
       }.getMessage should startWith(
-        "Actor watched by [ask()] has terminated! Was: Actor[akka://FlowAskSpec/user/wanna-fail#")
+        "Actor watched by [ask()] has terminated! Was: Actor[pekko://FlowAskSpec/user/wanna-fail#")
     }
 
     "a failure mid-stream must skip element with resume strategy" in {

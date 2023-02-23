@@ -84,7 +84,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
         """)
         implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
-        getExternal() should ===(address.toAkkaAddress("akka.tcp"))
+        getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
         getInternal() should not contain address.toAkkaAddress("tcp")
 
         Await.result(sys.terminate(), Duration.Inf)
@@ -112,7 +112,7 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
         """)
       implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
-      getExternal() should ===(address.toAkkaAddress("akka.tcp"))
+      getExternal() should ===(address.toAkkaAddress("pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
       Await.result(sys.terminate(), Duration.Inf)
@@ -157,7 +157,7 @@ trait BindBehavior {
         """)
       implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
-      getExternal() should ===(address.toAkkaAddress(s"akka.tcp"))
+      getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(address.toAkkaAddress("tcp"))
 
       Await.result(sys.terminate(), Duration.Inf)
@@ -189,7 +189,7 @@ trait BindBehavior {
         """)
       implicit val sys = ActorSystem("sys", bindConfig.withFallback(commonConfig))
 
-      getExternal() should ===(address.toAkkaAddress(s"akka.tcp"))
+      getExternal() should ===(address.toAkkaAddress(s"pekko.tcp"))
       getInternal() should contain(bindAddress.toAkkaAddress("tcp"))
 
       Await.result(sys.terminate(), Duration.Inf)

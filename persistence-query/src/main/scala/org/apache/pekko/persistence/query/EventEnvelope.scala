@@ -35,7 +35,7 @@ object EventEnvelope extends AbstractFunction4[Offset, String, Long, Any, EventE
       meta: Option[Any]): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event, timestamp, meta)
 
-  @deprecated("for binary compatibility", "2.6.2")
+  @deprecated("for binary compatibility", "Akka 2.6.2")
   override def apply(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any): EventEnvelope =
     new EventEnvelope(offset, persistenceId, sequenceNr, event)
 
@@ -61,7 +61,7 @@ final class EventEnvelope(
     extends Product4[Offset, String, Long, Any]
     with Serializable {
 
-  @deprecated("for binary compatibility", "2.6.2")
+  @deprecated("for binary compatibility", "Akka 2.6.2")
   def this(offset: Offset, persistenceId: String, sequenceNr: Long, event: Any) =
     this(offset, persistenceId, sequenceNr, event, 0L, None)
 

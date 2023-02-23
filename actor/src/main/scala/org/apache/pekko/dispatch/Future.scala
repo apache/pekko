@@ -105,7 +105,7 @@ object ExecutionContexts {
    * INTERNAL API
    */
   @InternalApi
-  @deprecated("Use ExecutionContexts.parasitic instead", "2.6.4")
+  @deprecated("Use ExecutionContexts.parasitic instead", "Akka 2.6.4")
   private[pekko] object sameThreadExecutionContext extends ExecutionContext with BatchingExecutor {
     override protected def unbatchedExecute(runnable: Runnable): Unit = parasitic.execute(runnable)
     override protected def resubmitOnBlock: Boolean = false // No point since we execute on same thread

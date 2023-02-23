@@ -86,8 +86,8 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
   val port = system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress.port.get
   val sysName = system.name
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   val system2 = ActorSystem(system.name, system.settings.config)
   val system2Address = RARP(system2).provider.getDefaultAddress

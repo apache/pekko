@@ -69,8 +69,8 @@ class RemoteActorSelectionSpec extends ArteryMultiNodeSpec with ImplicitSender {
           pekko {
             remote.artery.port = $port
             actor.deployment {
-              /looker2/child.remote = "akka://$remoteSysName@localhost:$remotePort"
-              /looker2/child/grandchild.remote = "akka://$localSysName@localhost:$localPort"
+              /looker2/child.remote = "pekko://$remoteSysName@localhost:$remotePort"
+              /looker2/child/grandchild.remote = "pekko://$localSysName@localhost:$localPort"
             }
           }
         """

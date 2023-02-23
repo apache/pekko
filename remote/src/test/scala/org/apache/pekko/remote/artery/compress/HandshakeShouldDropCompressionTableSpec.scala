@@ -75,7 +75,7 @@ class HandshakeShouldDropCompressionTableSpec
       system.eventStream.subscribe(aProbe.ref, classOf[Event])
       systemB.eventStream.subscribe(b1Probe.ref, classOf[Event])
 
-      def echoSel = system.actorSelection(s"akka://systemB@localhost:$portB/user/echo")
+      def echoSel = system.actorSelection(s"pekko://systemB@localhost:$portB/user/echo")
       systemB.actorOf(TestActors.echoActorProps, "echo")
 
       // cause testActor-1 to become a heavy hitter
@@ -146,7 +146,7 @@ class HandshakeShouldDropCompressionTableSpec
 
   def identify(_system: String, port: Int, name: String) = {
     val selection =
-      system.actorSelection(s"akka://${_system}@localhost:$port/user/$name")
+      system.actorSelection(s"pekko://${_system}@localhost:$port/user/$name")
     val identity = Await.result((selection ? Identify(1)).mapTo[ActorIdentity], 3.seconds)
     if (identity.correlationId != 1) throw new RuntimeException("Got the wrong identity back")
     identity.ref.get

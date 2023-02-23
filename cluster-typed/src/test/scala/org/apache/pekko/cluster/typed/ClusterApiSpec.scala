@@ -53,7 +53,7 @@ class ClusterApiSpec extends ScalaTestWithActorTestKit(ClusterApiSpec.config) wi
   "A typed Cluster" must {
 
     "fail fast in a join attempt if invalid chars are in host names, e.g. docker host given name" in {
-      val address = Address("akka", "sys", Some("in_valid"), Some(0))
+      val address = Address("pekko", "sys", Some("in_valid"), Some(0))
       intercept[IllegalArgumentException](Join(address))
       intercept[IllegalArgumentException](JoinSeedNodes(scala.collection.immutable.Seq(address)))
     }

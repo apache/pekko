@@ -399,7 +399,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
       dynamicAccess: DynamicAccess) =
     this(_systemName, settings, eventStream, dynamicAccess, new Deployer(settings, dynamicAccess), None)
 
-  override val rootPath: ActorPath = RootActorPath(Address("akka", _systemName))
+  override val rootPath: ActorPath = RootActorPath(Address("pekko", _systemName))
 
   private[pekko] val log: MarkerLoggingAdapter =
     Logging.withMarker(eventStream, classOf[LocalActorRefProvider])

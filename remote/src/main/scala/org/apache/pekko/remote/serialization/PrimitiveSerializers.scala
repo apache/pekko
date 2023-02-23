@@ -20,7 +20,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.serialization.BaseSerializer
 import pekko.serialization.ByteBufferSerializer
 
-@deprecated("Moved to org.apache.pekko.serialization.LongSerializer in pekko-actor", "2.6.0")
+@deprecated("Moved to org.apache.pekko.serialization.LongSerializer in pekko-actor", "Akka 2.6.0")
 class LongSerializer(val system: ExtendedActorSystem) extends BaseSerializer with ByteBufferSerializer {
   // this serializer is not used unless someone is instantiating it manually, it's not in config
   private val delegate = new pekko.serialization.LongSerializer(system)
@@ -33,7 +33,7 @@ class LongSerializer(val system: ExtendedActorSystem) extends BaseSerializer wit
   override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
-@deprecated("Moved to org.apache.pekko.serialization.IntSerializer in pekko-actor", "2.6.0")
+@deprecated("Moved to org.apache.pekko.serialization.IntSerializer in pekko-actor", "Akka 2.6.0")
 class IntSerializer(val system: ExtendedActorSystem) extends BaseSerializer with ByteBufferSerializer {
   // this serializer is not used unless someone is instantiating it manually, it's not in config
   private val delegate = new pekko.serialization.IntSerializer(system)
@@ -46,7 +46,7 @@ class IntSerializer(val system: ExtendedActorSystem) extends BaseSerializer with
   override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
-@deprecated("Moved to org.apache.pekko.serialization.StringSerializer in pekko-actor", "2.6.0")
+@deprecated("Moved to org.apache.pekko.serialization.StringSerializer in pekko-actor", "Akka 2.6.0")
 class StringSerializer(val system: ExtendedActorSystem) extends BaseSerializer with ByteBufferSerializer {
   // this serializer is not used unless someone is instantiating it manually, it's not in config
   private val delegate = new pekko.serialization.StringSerializer(system)
@@ -59,7 +59,7 @@ class StringSerializer(val system: ExtendedActorSystem) extends BaseSerializer w
   override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = delegate.fromBinary(bytes, manifest)
 }
 
-@deprecated("Moved to org.apache.pekko.serialization.ByteStringSerializer in pekko-actor", "2.6.0")
+@deprecated("Moved to org.apache.pekko.serialization.ByteStringSerializer in pekko-actor", "Akka 2.6.0")
 class ByteStringSerializer(val system: ExtendedActorSystem) extends BaseSerializer with ByteBufferSerializer {
   // this serializer is not used unless someone is instantiating it manually, it's not in config
   private val delegate = new org.apache.pekko.serialization.ByteStringSerializer(system)

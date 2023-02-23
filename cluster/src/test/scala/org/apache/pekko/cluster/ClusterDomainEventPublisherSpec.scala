@@ -45,8 +45,8 @@ class ClusterDomainEventPublisherSpec
     with ImplicitSender {
 
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   var publisher: ActorRef = _
 

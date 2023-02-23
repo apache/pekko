@@ -400,11 +400,11 @@ private[pekko] class RemoteActorRefProvider(
        *
        * Example:
        *
-       * akka://sys@home:1234/remote/akka/sys@remote:6667/remote/akka/sys@other:3333/user/a/b/c
+       * pekko://sys@home:1234/remote/pekko/sys@remote:6667/remote/pekko/sys@other:3333/user/a/b/c
        *
-       * means that the logical parent originates from “akka://sys@other:3333” with
-       * one child (may be “a” or “b”) being deployed on “akka://sys@remote:6667” and
-       * finally either “b” or “c” being created on “akka://sys@home:1234”, where
+       * means that the logical parent originates from “pekko://sys@other:3333” with
+       * one child (may be “a” or “b”) being deployed on “pekko://sys@remote:6667” and
+       * finally either “b” or “c” being created on “pekko://sys@home:1234”, where
        * this whole thing actually resides. Thus, the logical path is
        * “/user/a/b/c” and the physical path contains all remote placement
        * information.
@@ -681,7 +681,7 @@ private[pekko] class RemoteActorRef private[pekko] (
 
   remote match {
     case t: ArteryTransport =>
-      // detect mistakes such as using "akka.tcp" with Artery
+      // detect mistakes such as using "pekko.tcp" with Artery
       if (path.address.protocol != t.localAddress.address.protocol)
         throw new IllegalArgumentException(s"Wrong protocol of [$path], expected [${t.localAddress.address.protocol}]")
     case _ =>

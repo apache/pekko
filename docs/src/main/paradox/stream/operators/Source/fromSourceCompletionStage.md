@@ -8,7 +8,7 @@ Deprecated by @ref:[`Source.completionStageSource`](completionStageSource.md).
 
 ## Description
 
-`fromSourceCompletionStage` has been deprecated in 2.6.0, use @ref:[completionStageSource](completionStageSource.md) instead.
+`fromSourceCompletionStage` was deprecated in Akka 2.6.0, use @ref:[completionStageSource](completionStageSource.md) instead.
 
 Streams the elements of an asynchronous source once its given *completion* operator completes.
 If the *completion* fails the stream is failed with that exception.

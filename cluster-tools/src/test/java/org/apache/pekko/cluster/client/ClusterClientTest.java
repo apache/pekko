@@ -41,8 +41,8 @@ public class ClusterClientTest extends JUnitSuite {
   Set<ActorPath> initialContacts() {
     return new HashSet<ActorPath>(
         Arrays.asList(
-            ActorPaths.fromString("akka://OtherSys@host1:2552/system/receptionist"),
-            ActorPaths.fromString("akka://OtherSys@host2:2552/system/receptionist")));
+            ActorPaths.fromString("pekko://OtherSys@host1:2552/system/receptionist"),
+            ActorPaths.fromString("pekko://OtherSys@host2:2552/system/receptionist")));
   }
   // #initialContacts
 

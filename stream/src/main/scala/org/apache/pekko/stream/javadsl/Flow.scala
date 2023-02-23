@@ -95,7 +95,7 @@ object Flow {
    * exposes [[ActorMaterializer]] which is going to be used during materialization and
    * [[Attributes]] of the [[Flow]] returned by this method.
    */
-  @deprecated("Use 'fromMaterializer' instead", "2.6.0")
+  @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[I, O, M](
       factory: BiFunction[ActorMaterializer, Attributes, Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] =
     scaladsl.Flow.setup((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.toJava).asJava
@@ -269,7 +269,7 @@ object Flow {
    */
   @deprecated(
     "Use 'Flow.completionStageFlow' in combination with prefixAndTail(1) instead, see `completionStageFlow` operator docs for details",
-    "2.6.0")
+    "Akka 2.6.0")
   def lazyInit[I, O, M](
       flowFactory: function.Function[I, CompletionStage[Flow[I, O, M]]],
       fallback: function.Creator[M]): Flow[I, O, M] = {
@@ -296,7 +296,7 @@ object Flow {
    *
    * '''Cancels when''' downstream cancels
    */
-  @deprecated("Use 'Flow.lazyCompletionStageFlow' instead", "2.6.0")
+  @deprecated("Use 'Flow.lazyCompletionStageFlow' instead", "Akka 2.6.0")
   def lazyInitAsync[I, O, M](
       flowFactory: function.Creator[CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[Optional[M]]] = {
     import scala.compat.java8.FutureConverters._
@@ -1757,7 +1757,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @deprecated use `recoverWithRetries` instead
    */
   @Deprecated
-  @deprecated("Use recoverWithRetries instead.", "2.6.6")
+  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   def recoverWith(
       clazz: Class[_ <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): javadsl.Flow[In, Out, Mat] =
@@ -3817,7 +3817,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.Flow[In, Out, Mat] =
     throttleEven(elements, per.asScala, mode)
 
@@ -3832,7 +3832,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: FiniteDuration,
@@ -3851,7 +3851,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @see [[#throttle]]
    */
   @Deprecated
-  @deprecated("Use throttle without `maximumBurst` parameter instead.", "2.5.12")
+  @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
       per: java.time.Duration,
@@ -3890,7 +3890,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
   @Deprecated
-  @deprecated("Use monitor() or monitorMat(combine) instead", "2.5.17")
+  @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[M]()(combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
     new Flow(delegate.monitorMat(combinerToScala(combine)))
 

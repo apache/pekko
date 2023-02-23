@@ -56,7 +56,7 @@ class ReplicatorMessageSerializerSpec
 
   val serializer = new ReplicatorMessageSerializer(system.asInstanceOf[ExtendedActorSystem])
 
-  val Protocol = if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka" else "akka.tcp"
+  val Protocol = if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko" else "pekko.tcp"
 
   val address1 = UniqueAddress(Address(Protocol, system.name, "some.host.org", 4711), 1L)
   val address2 = UniqueAddress(Address(Protocol, system.name, "other.host.org", 4711), 2L)

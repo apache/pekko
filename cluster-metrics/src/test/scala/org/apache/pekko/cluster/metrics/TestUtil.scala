@@ -147,7 +147,7 @@ trait MetricsCollectorFactory { this: PekkoSpec =>
  */
 class MockitoSigarMetricsCollector(system: ActorSystem)
     extends SigarMetricsCollector(
-      Address(if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka" else "akka.tcp", system.name),
+      Address(if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko" else "pekko.tcp", system.name),
       MetricsConfig.defaultDecayFactor,
       MockitoSigarProvider().createSigarInstance) {}
 

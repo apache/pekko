@@ -131,8 +131,8 @@ public class BasicClusterExampleTest { // extends JUnitSuite {
 
     // #join-seed-nodes
     List<Address> seedNodes = new ArrayList<>();
-    seedNodes.add(AddressFromURIString.parse("akka://ClusterSystem@127.0.0.1:2551"));
-    seedNodes.add(AddressFromURIString.parse("akka://ClusterSystem@127.0.0.1:2552"));
+    seedNodes.add(AddressFromURIString.parse("pekko://ClusterSystem@127.0.0.1:2551"));
+    seedNodes.add(AddressFromURIString.parse("pekko://ClusterSystem@127.0.0.1:2552"));
 
     Cluster.get(system).manager().tell(new JoinSeedNodes(seedNodes));
     // #join-seed-nodes

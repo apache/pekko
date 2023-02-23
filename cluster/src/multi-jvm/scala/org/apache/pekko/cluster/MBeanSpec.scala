@@ -49,7 +49,7 @@ abstract class MBeanSpec extends MultiNodeClusterSpec(MBeanMultiJvmSpec) {
 
   import MBeanMultiJvmSpec._
 
-  val mbeanName = new ObjectName("akka:type=Cluster")
+  val mbeanName = new ObjectName("pekko:type=Cluster")
   lazy val mbeanServer = ManagementFactory.getPlatformMBeanServer
 
   "Cluster MBean" must {

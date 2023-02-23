@@ -109,9 +109,9 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
 
   val positiveCachePolicy: CachePolicy = getTtl("positive-ttl", positive = true)
   val negativeCachePolicy: CachePolicy = getTtl("negative-ttl", positive = false)
-  @deprecated("Use positiveCacheDuration instead", "2.5.17")
+  @deprecated("Use positiveCacheDuration instead", "Akka 2.5.17")
   val positiveTtl: Long = toLongTtl(positiveCachePolicy)
-  @deprecated("Use negativeCacheDuration instead", "2.5.17")
+  @deprecated("Use negativeCacheDuration instead", "Akka 2.5.17")
   val negativeTtl: Long = toLongTtl(negativeCachePolicy)
 
   private def toLongTtl(cp: CachePolicy): Long = {
@@ -150,7 +150,7 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       }
       sender() ! answer
     case Dns.Resolve(name) =>
-      // no where in akka now sends this message, but supported until Dns.Resolve/Resolved have been removed
+      // no where in pekko now sends this message, but supported until Dns.Resolve/Resolved have been removed
       val answer: Dns.Resolved = cache.cached(name) match {
         case Some(a) => a
         case None =>

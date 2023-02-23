@@ -25,25 +25,25 @@ class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAft
   import MemberStatus._
 
   val aRoles = Set("AA", "AB")
-  val aJoining = TestMember(Address("akka", "sys", "a", 2552), Joining, aRoles)
-  val aUp = TestMember(Address("akka", "sys", "a", 2552), Up, aRoles)
-  val aRemoved = TestMember(Address("akka", "sys", "a", 2552), Removed, aRoles)
+  val aJoining = TestMember(Address("pekko", "sys", "a", 2552), Joining, aRoles)
+  val aUp = TestMember(Address("pekko", "sys", "a", 2552), Up, aRoles)
+  val aRemoved = TestMember(Address("pekko", "sys", "a", 2552), Removed, aRoles)
   val bRoles = Set("AB", "BB")
-  val bUp = TestMember(Address("akka", "sys", "b", 2552), Up, bRoles)
-  val bDown = TestMember(Address("akka", "sys", "b", 2552), Down, bRoles)
-  val bRemoved = TestMember(Address("akka", "sys", "b", 2552), Removed, bRoles)
+  val bUp = TestMember(Address("pekko", "sys", "b", 2552), Up, bRoles)
+  val bDown = TestMember(Address("pekko", "sys", "b", 2552), Down, bRoles)
+  val bRemoved = TestMember(Address("pekko", "sys", "b", 2552), Removed, bRoles)
   val cRoles = Set.empty[String]
-  val cUp = TestMember(Address("akka", "sys", "c", 2552), Up, cRoles)
-  val cLeaving = TestMember(Address("akka", "sys", "c", 2552), Leaving, cRoles)
+  val cUp = TestMember(Address("pekko", "sys", "c", 2552), Up, cRoles)
+  val cLeaving = TestMember(Address("pekko", "sys", "c", 2552), Leaving, cRoles)
   val dRoles = Set("DD", "DE")
-  val dLeaving = TestMember(Address("akka", "sys", "d", 2552), Leaving, dRoles)
-  val dExiting = TestMember(Address("akka", "sys", "d", 2552), Exiting, dRoles)
-  val dRemoved = TestMember(Address("akka", "sys", "d", 2552), Removed, dRoles)
+  val dLeaving = TestMember(Address("pekko", "sys", "d", 2552), Leaving, dRoles)
+  val dExiting = TestMember(Address("pekko", "sys", "d", 2552), Exiting, dRoles)
+  val dRemoved = TestMember(Address("pekko", "sys", "d", 2552), Removed, dRoles)
   val eRoles = Set("EE", "DE")
-  val eJoining = TestMember(Address("akka", "sys", "e", 2552), Joining, eRoles)
-  val eUp = TestMember(Address("akka", "sys", "e", 2552), Up, eRoles)
-  val eDown = TestMember(Address("akka", "sys", "e", 2552), Down, eRoles)
-  val selfDummyAddress = UniqueAddress(Address("akka", "sys", "selfDummy", 2552), 17L)
+  val eJoining = TestMember(Address("pekko", "sys", "e", 2552), Joining, eRoles)
+  val eUp = TestMember(Address("pekko", "sys", "e", 2552), Up, eRoles)
+  val eDown = TestMember(Address("pekko", "sys", "e", 2552), Down, eRoles)
+  val selfDummyAddress = UniqueAddress(Address("pekko", "sys", "selfDummy", 2552), 17L)
 
   private val originalClusterAssert = sys.props.get("pekko.cluster.assert").getOrElse("false")
   override protected def beforeAll(): Unit = {
@@ -109,12 +109,12 @@ class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAft
     }
 
     "be produced for reachability observations between data centers" in {
-      val dc2AMemberUp = TestMember(Address("akka", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
-      val dc2AMemberDown = TestMember(Address("akka", "sys", "dc2A", 2552), Down, Set.empty[String], "dc2")
-      val dc2BMemberUp = TestMember(Address("akka", "sys", "dc2B", 2552), Up, Set.empty[String], "dc2")
+      val dc2AMemberUp = TestMember(Address("pekko", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
+      val dc2AMemberDown = TestMember(Address("pekko", "sys", "dc2A", 2552), Down, Set.empty[String], "dc2")
+      val dc2BMemberUp = TestMember(Address("pekko", "sys", "dc2B", 2552), Up, Set.empty[String], "dc2")
 
-      val dc3AMemberUp = TestMember(Address("akka", "sys", "dc3A", 2552), Up, Set.empty[String], "dc3")
-      val dc3BMemberUp = TestMember(Address("akka", "sys", "dc3B", 2552), Up, Set.empty[String], "dc3")
+      val dc3AMemberUp = TestMember(Address("pekko", "sys", "dc3A", 2552), Up, Set.empty[String], "dc3")
+      val dc3BMemberUp = TestMember(Address("pekko", "sys", "dc3B", 2552), Up, Set.empty[String], "dc3")
 
       val reachability1 = Reachability.empty
       val g1 = Gossip(
@@ -146,8 +146,8 @@ class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAft
     }
 
     "not be produced for same reachability observations between data centers" in {
-      val dc2AMemberUp = TestMember(Address("akka", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
-      val dc2AMemberDown = TestMember(Address("akka", "sys", "dc2A", 2552), Down, Set.empty[String], "dc2")
+      val dc2AMemberUp = TestMember(Address("pekko", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
+      val dc2AMemberDown = TestMember(Address("pekko", "sys", "dc2A", 2552), Down, Set.empty[String], "dc2")
 
       val reachability1 = Reachability.empty
       val g1 = Gossip(members = SortedSet(aUp, dc2AMemberUp), overview = GossipOverview(reachability = reachability1))
@@ -181,9 +181,9 @@ class ClusterDomainEventSpec extends AnyWordSpec with Matchers with BeforeAndAft
       // - empty
       // - B --unreachable--> C
 
-      val dc1MemberA = TestMember(Address("akka", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
-      val dc1MemberB = TestMember(Address("akka", "sys", "dc2B", 2552), Up, Set.empty[String], "dc2")
-      val dc2MemberC = TestMember(Address("akka", "sys", "dc3A", 2552), Up, Set.empty[String], "dc3")
+      val dc1MemberA = TestMember(Address("pekko", "sys", "dc2A", 2552), Up, Set.empty[String], "dc2")
+      val dc1MemberB = TestMember(Address("pekko", "sys", "dc2B", 2552), Up, Set.empty[String], "dc2")
+      val dc2MemberC = TestMember(Address("pekko", "sys", "dc3A", 2552), Up, Set.empty[String], "dc3")
 
       val members = SortedSet(dc1MemberA, dc1MemberB, dc2MemberC)
 

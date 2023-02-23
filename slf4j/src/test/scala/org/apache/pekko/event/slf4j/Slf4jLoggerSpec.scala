@@ -101,8 +101,8 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
 
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=akka://Slf4jLoggerSpec/user/logProducer")
-      s should include("pekkoAddress=akka://Slf4jLoggerSpec")
+      s should include("pekkoSource=pekko://Slf4jLoggerSpec/user/logProducer")
+      s should include("pekkoAddress=pekko://Slf4jLoggerSpec")
       s should include("pekkoUid=")
       s should include("level=[ERROR]")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$LogProducer]")
@@ -117,8 +117,8 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
 
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=akka://Slf4jLoggerSpec/user/logProducer")
-      s should include("pekkoAddress=akka://Slf4jLoggerSpec")
+      s should include("pekkoSource=pekko://Slf4jLoggerSpec/user/logProducer")
+      s should include("pekkoAddress=pekko://Slf4jLoggerSpec")
       s should include("level=[INFO]")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$LogProducer]")
       (s should include).regex(sourceThreadRegex)
@@ -177,7 +177,7 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
 
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=akka://Slf4jLoggerSpec/user/logProducer")
+      s should include("pekkoSource=pekko://Slf4jLoggerSpec/user/logProducer")
       s should include("level=[INFO]")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$LogProducer]")
       (s should include).regex(sourceThreadRegex)
@@ -198,7 +198,7 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
 
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=akka://Slf4jLoggerSpec/user/logProducer")
+      s should include("pekkoSource=pekko://Slf4jLoggerSpec/user/logProducer")
       s should include("level=[INFO]")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$LogProducer]")
       println(s)
@@ -212,8 +212,8 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
       log.info("test")
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=org.apache.pekko.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)")
-      s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)]")
+      s should include("pekkoSource=org.apache.pekko.event.slf4j.Slf4jLoggerSpec.MyLogSource(pekko://Slf4jLoggerSpec)")
+      s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec.MyLogSource(pekko://Slf4jLoggerSpec)]")
     }
 
     "not include system info in pekkoSource when creating Logging with system.eventStream" in {
@@ -230,7 +230,7 @@ class Slf4jLoggerSpec extends PekkoSpec(Slf4jLoggerSpec.config) with BeforeAndAf
       log.info("test")
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("pekkoSource=Slf4jLoggerSpec$MyLogSource(akka://Slf4jLoggerSpec)")
+      s should include("pekkoSource=Slf4jLoggerSpec$MyLogSource(pekko://Slf4jLoggerSpec)")
       s should include("logger=[org.apache.pekko.event.slf4j.Slf4jLoggerSpec$MyLogSource]")
     }
 

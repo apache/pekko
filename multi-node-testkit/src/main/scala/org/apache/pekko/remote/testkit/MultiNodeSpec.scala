@@ -515,7 +515,7 @@ abstract class MultiNodeSpec(
                     // might happen if all test cases are ignored (excluded) and
                     // controller node is finished/exited before r.addr is run
                     // on the other nodes
-                    val unresolved = "akka://unresolved-replacement-" + r.role.name
+                    val unresolved = "pekko://unresolved-replacement-" + r.role.name
                     log.warning(unresolved + " due to: " + e.getMessage)
                     unresolved
                 }

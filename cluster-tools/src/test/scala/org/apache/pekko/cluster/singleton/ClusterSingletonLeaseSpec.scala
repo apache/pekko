@@ -88,7 +88,7 @@ class ClusterSingletonLeaseSpec extends PekkoSpec(ConfigFactory.parseString("""
   def nextSettings() = ClusterSingletonManagerSettings(system).withSingletonName(nextName())
 
   def leaseNameFor(settings: ClusterSingletonManagerSettings): String =
-    s"ClusterSingletonLeaseSpec-singleton-akka://ClusterSingletonLeaseSpec/user/${settings.singletonName}"
+    s"ClusterSingletonLeaseSpec-singleton-pekko://ClusterSingletonLeaseSpec/user/${settings.singletonName}"
 
   "A singleton with lease" should {
 

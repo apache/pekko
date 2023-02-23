@@ -55,8 +55,8 @@ class AutoDownSpec extends PekkoSpec("""
   import AutoDownSpec._
 
   val protocol =
-    if (RARP(system).provider.remoteSettings.Artery.Enabled) "akka"
-    else "akka.tcp"
+    if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
+    else "pekko.tcp"
 
   val memberA = TestMember(Address(protocol, "sys", "a", 2552), Up)
   val memberB = TestMember(Address(protocol, "sys", "b", 2552), Up)

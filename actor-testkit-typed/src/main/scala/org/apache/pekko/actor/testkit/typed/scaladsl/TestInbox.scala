@@ -30,7 +30,7 @@ object TestInbox {
     new TestInboxImpl((address / name).withUid(uid))
   }
 
-  private[pekko] val address = RootActorPath(Address("akka.actor.typed.inbox", "anonymous"))
+  private[pekko] val address = RootActorPath(Address("pekko.actor.typed.inbox", "anonymous"))
 }
 
 /**

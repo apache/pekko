@@ -66,7 +66,7 @@ class FlowWatchSpec extends StreamSpec {
         r ! PoisonPill
         Await.result(done, remainingOrDefault)
       }.getMessage should startWith(
-        "Actor watched by [Watch] has terminated! Was: Actor[akka://FlowWatchSpec/user/wanna-fail#")
+        "Actor watched by [Watch] has terminated! Was: Actor[pekko://FlowWatchSpec/user/wanna-fail#")
     }
 
     "should handle cancel properly" in {
