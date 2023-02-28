@@ -39,8 +39,6 @@ object PekkoBuild {
 
   val parallelExecutionByDefault = false // TODO: enable this once we're sure it does not break things
 
-  lazy val buildSettings = Def.settings(organization := "org.apache.pekko")
-
   lazy val rootSettings = Def.settings(
     commands += switchVersion,
     UnidocRoot.pekkoSettings,
