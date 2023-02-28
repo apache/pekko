@@ -38,7 +38,6 @@ initialize := {
   initialize.value
 }
 
-PekkoBuild.buildSettings
 shellPrompt := { s =>
   Project.extract(s).currentProject.id + " > "
 }
@@ -587,7 +586,6 @@ lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"
   .enablePlugins(BillOfMaterialsPlugin)
   .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
-  .settings(PekkoBuild.buildSettings)
   .settings(PekkoBuild.defaultSettings)
   .settings(
     name := "pekko-bom",
@@ -612,7 +610,6 @@ def pekkoModule(moduleName: String): Project =
   Project(id = moduleName, base = file(moduleName))
     .enablePlugins(ReproducibleBuildsPlugin)
     .disablePlugins(WelcomePlugin)
-    .settings(PekkoBuild.buildSettings)
     .settings(PekkoBuild.defaultSettings)
     .settings(
       name := s"pekko-$moduleName")
