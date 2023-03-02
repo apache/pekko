@@ -81,7 +81,7 @@ object Paradox {
   val themeSettings = Seq(
     // allow access to snapshots for pekko-sbt-paradox
     resolvers += "Apache Nexus Snapshots".at("https://repository.apache.org/content/repositories/snapshots/"),
-    pekkoParadoxGithub := "https://github.com/apache/incubator-pekko")
+    pekkoParadoxGithub := Some("https://github.com/apache/incubator-pekko"))
 
   // FIXME https://github.com/lightbend/paradox/issues/350
   // Exclusions from direct compilation for includes dirs/files not belonging in a TOC
