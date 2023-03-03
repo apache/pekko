@@ -402,6 +402,7 @@ lazy val remote =
       jackson % "test->test")
     .settings(Dependencies.remote)
     .settings(AutomaticModuleName.settings("pekko.remote"))
+    .settings(AddMetaInfLicenseFiles.remoteSettings)
     .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
