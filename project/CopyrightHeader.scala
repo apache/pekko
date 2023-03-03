@@ -107,7 +107,8 @@ trait CopyrightHeader extends AutoPlugin {
 
   private def isApacheCopyrighted(text: String): Boolean =
     StringUtils.containsIgnoreCase(text, "licensed to the apache software foundation (asf)") ||
-    StringUtils.containsIgnoreCase(text, "www.apache.org/licenses/license-2.0")
+    StringUtils.containsIgnoreCase(text, "www.apache.org/licenses/license-2.0") ||
+    StringUtils.contains(text, "Apache-2.0")
 
   private def isLAMPCopyrighted(text: String): Boolean =
     StringUtils.containsIgnoreCase(text, "lamp/epfl")
