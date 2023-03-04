@@ -2275,9 +2275,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @deprecated use `recoverWithRetries` instead
    */
-  @Deprecated
-  @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
-  @nowarn("msg=deprecated")
   def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
 
