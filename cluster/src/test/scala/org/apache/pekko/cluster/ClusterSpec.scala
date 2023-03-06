@@ -358,7 +358,7 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
           """).withFallback(ConfigFactory.parseString(ClusterSpec.config))
 
       val sys1 = ActorSystem("ClusterSpec4", getConfig(7355))
-      val sys2 = ActorSystem("ClusterSpec4", getConfig(2553))
+      val sys2 = ActorSystem("ClusterSpec4", getConfig(7356))
 
       try {
         Cluster(sys1)
@@ -369,7 +369,7 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
         info1.getAttributes.length should be > 0
         info1.getOperations.length should be > 0
 
-        val name2 = new ObjectName(s"pekko:type=Cluster,port=2553")
+        val name2 = new ObjectName(s"pekko:type=Cluster,port=7356")
         val info2 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name2)
         info2.getAttributes.length should be > 0
         info2.getOperations.length should be > 0

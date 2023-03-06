@@ -31,8 +31,8 @@ class VersionVectorSpec
 
   val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
   val node2 = UniqueAddress(node1.address.copy(port = Some(7355)), 2L)
-  val node3 = UniqueAddress(node1.address.copy(port = Some(2553)), 3L)
-  val node4 = UniqueAddress(node1.address.copy(port = Some(2554)), 4L)
+  val node3 = UniqueAddress(node1.address.copy(port = Some(7356)), 3L)
+  val node4 = UniqueAddress(node1.address.copy(port = Some(7357)), 4L)
 
   override def afterAll(): Unit = {
     shutdown()
