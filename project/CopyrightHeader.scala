@@ -34,20 +34,12 @@ trait CopyrightHeader extends AutoPlugin {
           headerMappings := headerMappings.value ++ Map(
             HeaderFileType.scala -> cStyleComment,
             HeaderFileType.java -> cStyleComment,
+            HeaderFileType.conf -> hashLineComment,
             HeaderFileType("template") -> cStyleComment)))
     }
 
-  private def confHeaderMappingSettings: Seq[Def.Setting[_]] =
-    Seq(Compile, Test).flatMap { config =>
-      inConfig(config)(
-        Seq(
-          headerLicense := Some(HeaderLicense.Custom(apacheSpdxHeader)),
-          headerMappings := headerMappings.value ++ Map(
-            HeaderFileType.conf -> hashLineComment)))
-    }
-
   override def projectSettings: Seq[Def.Setting[_]] =
-    Def.settings(headerMappingSettings, confHeaderMappingSettings, additional)
+    Def.settings(headerMappingSettings, additional)
 
   def additional: Seq[Def.Setting[_]] =
     Def.settings(Compile / compile := {
@@ -58,9 +50,6 @@ trait CopyrightHeader extends AutoPlugin {
         (Test / headerCreate).value
         (Test / compile).value
       })
-
-  def headerFor(year: String): String =
-    s"Copyright (C) $year Lightbend Inc. <https://www.lightbend.com>"
 
   def apacheHeader: String =
     """Licensed to the Apache Software Foundation (ASF) under one or more
@@ -92,14 +81,15 @@ trait CopyrightHeader extends AutoPlugin {
 
   val hashLineComment = HeaderCommentStyle.hashLineComment.copy(commentCreator = new CommentCreator() {
 
+    // deliberately hardcode use of apacheSpdxHeader and ignore input text
     override def apply(text: String, existingText: Option[String]): String = {
       val formatted = existingText match {
         case Some(currentText) if isApacheCopyrighted(currentText) =>
           currentText
         case Some(currentText) =>
-          HeaderCommentStyle.hashLineComment.commentCreator(text, existingText) + NewLine * 2 + currentText
+          HeaderCommentStyle.hashLineComment.commentCreator(apacheSpdxHeader, existingText) + NewLine * 2 + currentText
         case None =>
-          HeaderCommentStyle.hashLineComment.commentCreator(text, existingText)
+          HeaderCommentStyle.hashLineComment.commentCreator(apacheSpdxHeader, existingText)
       }
       formatted.trim
     }
