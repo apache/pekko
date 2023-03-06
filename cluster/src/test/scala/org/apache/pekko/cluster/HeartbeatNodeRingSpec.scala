@@ -20,12 +20,12 @@ import org.apache.pekko.actor.Address
 
 class HeartbeatNodeRingSpec extends AnyWordSpec with Matchers {
 
-  val aa = UniqueAddress(Address("pekko", "sys", "aa", 2552), 1L)
-  val bb = UniqueAddress(Address("pekko", "sys", "bb", 2552), 2L)
-  val cc = UniqueAddress(Address("pekko", "sys", "cc", 2552), 3L)
-  val dd = UniqueAddress(Address("pekko", "sys", "dd", 2552), 4L)
-  val ee = UniqueAddress(Address("pekko", "sys", "ee", 2552), 5L)
-  val ff = UniqueAddress(Address("pekko", "sys", "ff", 2552), 6L)
+  val aa = UniqueAddress(Address("pekko", "sys", "aa", 7355), 1L)
+  val bb = UniqueAddress(Address("pekko", "sys", "bb", 7355), 2L)
+  val cc = UniqueAddress(Address("pekko", "sys", "cc", 7355), 3L)
+  val dd = UniqueAddress(Address("pekko", "sys", "dd", 7355), 4L)
+  val ee = UniqueAddress(Address("pekko", "sys", "ee", 7355), 5L)
+  val ff = UniqueAddress(Address("pekko", "sys", "ff", 7355), 6L)
 
   val nodes = Set(aa, bb, cc, dd, ee, ff)
 

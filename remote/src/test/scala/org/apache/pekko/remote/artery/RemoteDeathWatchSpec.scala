@@ -94,7 +94,7 @@ class RemoteDeathWatchSpec
   }
 
   "receive Terminated when watched node is unknown host" in {
-    val path = RootActorPath(Address("pekko", system.name, "unknownhost", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address("pekko", system.name, "unknownhost", 7355)) / "user" / "subject"
 
     system.actorOf(Props(new Actor {
         @nowarn
@@ -114,7 +114,7 @@ class RemoteDeathWatchSpec
     // immediately in constructor from aeron.addPublication when UnknownHostException. That will trigger
     // this immediately. With TCP it will trigger after handshake timeout. Can we see the UnknownHostException
     // reason somehow and fail the stream immediately for that case?
-    val path = RootActorPath(Address("pekko", system.name, "unknownhost2", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address("pekko", system.name, "unknownhost2", 7355)) / "user" / "subject"
     system.actorSelection(path) ! Identify(path.toString)
     expectMsg(60.seconds, ActorIdentity(path.toString, None))
   }

@@ -35,9 +35,9 @@ class ClusterClientMessageSerializerSpec extends PekkoSpec {
 
     "be serializable" in {
       val contactPoints = Vector(
-        "pekko://system@node-1:2552/system/receptionist",
-        "pekko://system@node-2:2552/system/receptionist",
-        "pekko://system@node-3:2552/system/receptionist")
+        "pekko://system@node-1:7355/system/receptionist",
+        "pekko://system@node-2:7355/system/receptionist",
+        "pekko://system@node-3:7355/system/receptionist")
       checkSerialization(Contacts(contactPoints))
       checkSerialization(GetContacts)
       checkSerialization(Heartbeat)

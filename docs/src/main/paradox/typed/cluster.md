@@ -155,15 +155,15 @@ You can define the seed nodes in the @ref:[configuration](#configuration) file (
 
 ```
 pekko.cluster.seed-nodes = [
-  "pekko://ClusterSystem@host1:2552",
-  "pekko://ClusterSystem@host2:2552"]
+  "pekko://ClusterSystem@host1:7355",
+  "pekko://ClusterSystem@host2:7355"]
 ```
 
 This can also be defined as Java system properties when starting the JVM using the following syntax:
 
 ```
--Dpekko.cluster.seed-nodes.0=pekko://ClusterSystem@host1:2552
--Dpekko.cluster.seed-nodes.1=pekko://ClusterSystem@host2:2552
+-Dpekko.cluster.seed-nodes.0=pekko://ClusterSystem@host1:7355
+-Dpekko.cluster.seed-nodes.1=pekko://ClusterSystem@host2:7355
 ```
 
 

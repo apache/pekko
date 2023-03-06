@@ -101,7 +101,7 @@ pekko.actor.warn-about-java-serializer-usage = off
   }
 
   "receive Terminated when watched node is unknown host" in {
-    val path = RootActorPath(Address(protocol, system.name, "unknownhost", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address(protocol, system.name, "unknownhost", 7355)) / "user" / "subject"
 
     system.actorOf(Props(new Actor {
         @nowarn
@@ -117,7 +117,7 @@ pekko.actor.warn-about-java-serializer-usage = off
   }
 
   "receive ActorIdentity(None) when identified node is unknown host" in {
-    val path = RootActorPath(Address(protocol, system.name, "unknownhost2", 2552)) / "user" / "subject"
+    val path = RootActorPath(Address(protocol, system.name, "unknownhost2", 7355)) / "user" / "subject"
     system.actorSelection(path) ! Identify(path)
     expectMsg(60.seconds, ActorIdentity(path, None))
   }

@@ -28,7 +28,7 @@ object RemoteDeployerSpec {
         /service2 {
           router = round-robin-pool
           nr-of-instances = 3
-          remote = "pekko://sys@wallace:2552"
+          remote = "pekko://sys@wallace:7355"
           dispatcher = mydispatcher
         }
       }
@@ -54,7 +54,7 @@ class RemoteDeployerSpec extends PekkoSpec(RemoteDeployerSpec.deployerConf) {
             service,
             deployment.get.config,
             RoundRobinPool(3),
-            RemoteScope(Address("pekko", "sys", "wallace", 2552)),
+            RemoteScope(Address("pekko", "sys", "wallace", 7355)),
             "mydispatcher")))
     }
 

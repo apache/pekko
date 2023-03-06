@@ -49,10 +49,10 @@ trait ClusterNodeMBean {
    * JSON format of the status of all nodes in the cluster as follows:
    * {{{
    * {
-   *   "self-address": "pekko://system@host1:2552",
+   *   "self-address": "pekko://system@host1:7355",
    *   "members": [
    *     {
-   *       "address": "pekko://system@host1:2552",
+   *       "address": "pekko://system@host1:7355",
    *       "status": "Up",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -60,7 +60,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "pekko://system@host2:2552",
+   *       "address": "pekko://system@host2:7355",
    *       "status": "Up",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -68,7 +68,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "pekko://system@host3:2552",
+   *       "address": "pekko://system@host3:7355",
    *       "status": "Down",
    *       "app-version": "1.0.0",
    *       "roles": [
@@ -76,7 +76,7 @@ trait ClusterNodeMBean {
    *       ]
    *     },
    *     {
-   *       "address": "pekko://system@host4:2552",
+   *       "address": "pekko://system@host4:7355",
    *       "status": "Joining",
    *       "app-version": "1.1.0",
    *       "roles": [
@@ -86,17 +86,17 @@ trait ClusterNodeMBean {
    *   ],
    *   "unreachable": [
    *     {
-   *       "node": "pekko://system@host2:2552",
+   *       "node": "pekko://system@host2:7355",
    *       "observed-by": [
-   *         "pekko://system@host1:2552",
-   *         "pekko://system@host3:2552"
+   *         "pekko://system@host1:7355",
+   *         "pekko://system@host3:7355"
    *       ]
    *     },
    *     {
-   *       "node": "pekko://system@host3:2552",
+   *       "node": "pekko://system@host3:7355",
    *       "observed-by": [
-   *         "pekko://system@host1:2552",
-   *         "pekko://system@host2:2552"
+   *         "pekko://system@host1:7355",
+   *         "pekko://system@host2:7355"
    *       ]
    *     }
    *   ]

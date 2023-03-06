@@ -28,7 +28,7 @@ public class StatsSampleOneMasterMain {
 
   public static void main(String[] args) {
     if (args.length == 0) {
-      startup(new String[] {"2551", "2552", "0"});
+      startup(new String[] {"2551", "7355", "0"});
       StatsSampleOneMasterClientMain.main(new String[0]);
     } else {
       startup(args);

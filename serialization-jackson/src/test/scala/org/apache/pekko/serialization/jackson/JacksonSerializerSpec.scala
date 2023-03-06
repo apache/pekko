@@ -856,7 +856,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     }
 
     "serialize with Address" in {
-      val address = Address("pekko", "sys", "localhost", 2552)
+      val address = Address("pekko", "sys", "localhost", 7355)
       checkSerialization(new CommandWithAddress("echo", address))
     }
 
@@ -1082,7 +1082,7 @@ abstract class JacksonSerializerSpec(serializerName: String)
     }
 
     "serialize with Address" in {
-      val address = Address("pekko", "sys", "localhost", 2552)
+      val address = Address("pekko", "sys", "localhost", 7355)
       checkSerialization(CommandWithAddress("echo", address))
     }
 

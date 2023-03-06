@@ -46,7 +46,7 @@ public class ExternalShardAllocationCompileOnlyTest {
     ExternalShardAllocationClient client =
         ExternalShardAllocation.get(system).getClient(typeKey.name());
     CompletionStage<Done> done =
-        client.setShardLocation("shard-id-1", new Address("pekko", "system", "127.0.0.1", 2552));
+        client.setShardLocation("shard-id-1", new Address("pekko", "system", "127.0.0.1", 7355));
     // #client
 
   }

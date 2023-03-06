@@ -53,7 +53,7 @@ pekko {
   cluster {
     seed-nodes = [
       "pekko://ClusterSystem@127.0.0.1:2551",
-      "pekko://ClusterSystem@127.0.0.1:2552"]
+      "pekko://ClusterSystem@127.0.0.1:7355"]
     
     downing-provider-class = "org.apache.pekko.cluster.sbr.SplitBrainResolverProvider"
   }
@@ -75,7 +75,7 @@ pekko {
     import pekko.cluster.typed.JoinSeedNodes
 
     val seedNodes: List[Address] =
-      List("pekko://ClusterSystem@127.0.0.1:2551", "pekko://ClusterSystem@127.0.0.1:2552").map(
+      List("pekko://ClusterSystem@127.0.0.1:2551", "pekko://ClusterSystem@127.0.0.1:7355").map(
         AddressFromURIString.parse)
     Cluster(system).manager ! JoinSeedNodes(seedNodes)
     // #join-seed-nodes

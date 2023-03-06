@@ -25,17 +25,17 @@ import pekko.cluster.MemberStatus.Up
 
 class GossipTargetSelectorSpec extends AnyWordSpec with Matchers {
 
-  val aDc1 = TestMember(Address("pekko", "sys", "a", 2552), Up, Set.empty, dataCenter = "dc1")
-  val bDc1 = TestMember(Address("pekko", "sys", "b", 2552), Up, Set.empty, dataCenter = "dc1")
-  val cDc1 = TestMember(Address("pekko", "sys", "c", 2552), Up, Set.empty, dataCenter = "dc1")
+  val aDc1 = TestMember(Address("pekko", "sys", "a", 7355), Up, Set.empty, dataCenter = "dc1")
+  val bDc1 = TestMember(Address("pekko", "sys", "b", 7355), Up, Set.empty, dataCenter = "dc1")
+  val cDc1 = TestMember(Address("pekko", "sys", "c", 7355), Up, Set.empty, dataCenter = "dc1")
 
-  val eDc2 = TestMember(Address("pekko", "sys", "e", 2552), Up, Set.empty, dataCenter = "dc2")
-  val fDc2 = TestMember(Address("pekko", "sys", "f", 2552), Up, Set.empty, dataCenter = "dc2")
+  val eDc2 = TestMember(Address("pekko", "sys", "e", 7355), Up, Set.empty, dataCenter = "dc2")
+  val fDc2 = TestMember(Address("pekko", "sys", "f", 7355), Up, Set.empty, dataCenter = "dc2")
 
-  val gDc3 = TestMember(Address("pekko", "sys", "g", 2552), Up, Set.empty, dataCenter = "dc3")
-  val hDc3 = TestMember(Address("pekko", "sys", "h", 2552), Up, Set.empty, dataCenter = "dc3")
+  val gDc3 = TestMember(Address("pekko", "sys", "g", 7355), Up, Set.empty, dataCenter = "dc3")
+  val hDc3 = TestMember(Address("pekko", "sys", "h", 7355), Up, Set.empty, dataCenter = "dc3")
 
-  val iDc4 = TestMember(Address("pekko", "sys", "i", 2552), Up, Set.empty, dataCenter = "dc4")
+  val iDc4 = TestMember(Address("pekko", "sys", "i", 7355), Up, Set.empty, dataCenter = "dc4")
 
   val defaultSelector =
     new GossipTargetSelector(reduceGossipDifferentViewProbability = 400, crossDcGossipProbability = 0.2)

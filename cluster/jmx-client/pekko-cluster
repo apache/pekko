@@ -217,10 +217,10 @@ do
         printf "Where the <node-url> should be on the format of 'pekko.tcp://actor-system-name@hostname:port'\n"
         printf "\n"
         printf "Examples: $0 localhost 9999 is-available\n"
-        printf "          $0 localhost 9999 join pekko.tcp://MySystem@darkstar:2552\n"
+        printf "          $0 localhost 9999 join pekko.tcp://MySystem@darkstar:7355\n"
         printf "          $0 localhost 9999 cluster-status\n"
         printf "          $0 localhost 9999 -p 2551 is-available\n"
-        printf "          $0 localhost 9999 -p 2551 join pekko.tcp://MySystem@darkstar:2552\n"
+        printf "          $0 localhost 9999 -p 2551 join pekko.tcp://MySystem@darkstar:7355\n"
         printf "          $0 localhost 9999 -p 2551 cluster-status\n"
         exit 1
         ;;

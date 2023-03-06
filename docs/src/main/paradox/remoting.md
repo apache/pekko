@@ -60,7 +60,7 @@ pekko {
     enabled-transports = ["pekko.remote.classic.netty.tcp"]
     netty.tcp {
       hostname = "127.0.0.1"
-      port = 2552
+      port = 7355
     }
  }
 }
@@ -126,13 +126,13 @@ In the next sections the two alternatives are described in detail.
 Scala
 :   ```
 val selection =
-  context.actorSelection("pekko.tcp://actorSystemName@10.0.0.1:2552/user/actorName")
+  context.actorSelection("pekko.tcp://actorSystemName@10.0.0.1:7355/user/actorName")
 ```
 
 Java
 :   ```
 ActorSelection selection =
-  context.actorSelection("pekko.tcp://app@10.0.0.1:2552/user/serviceA/worker");
+  context.actorSelection("pekko.tcp://app@10.0.0.1:7355/user/serviceA/worker");
 ```
 
 As you can see from the example above the following pattern is used to find an actor on a remote node:
@@ -609,7 +609,7 @@ pekko.remote.classic.netty.tcp {
       port = 8000                   # external (logical) port
 
       bind-hostname = local.address # internal (bind) hostname
-      bind-port = 2552              # internal (bind) port
+      bind-port = 7355              # internal (bind) port
 }
 ```
 

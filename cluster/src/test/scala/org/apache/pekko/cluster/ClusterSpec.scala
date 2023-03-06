@@ -357,14 +357,14 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
              pekko.remote.artery.canonical.port = ${port}
           """).withFallback(ConfigFactory.parseString(ClusterSpec.config))
 
-      val sys1 = ActorSystem("ClusterSpec4", getConfig(2552))
+      val sys1 = ActorSystem("ClusterSpec4", getConfig(7355))
       val sys2 = ActorSystem("ClusterSpec4", getConfig(2553))
 
       try {
         Cluster(sys1)
         Cluster(sys2)
 
-        val name1 = new ObjectName(s"pekko:type=Cluster,port=2552")
+        val name1 = new ObjectName(s"pekko:type=Cluster,port=7355")
         val info1 = ManagementFactory.getPlatformMBeanServer.getMBeanInfo(name1)
         info1.getAttributes.length should be > 0
         info1.getOperations.length should be > 0
