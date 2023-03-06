@@ -23,6 +23,19 @@ Lightbend, Inc. (https://www.lightbend.com/).
 
 ---------------
 
+pekko-actor contains code from scala-collection-compat which has changes made by the Scala-Lang team
+under an Apache 2.0 license.
+
+scala-collection-compat
+Copyright (c) 2002-2023 EPFL
+Copyright (c) 2011-2023 Lightbend, Inc.
+
+Scala includes software developed at
+LAMP/EPFL (https://lamp.epfl.ch/) and
+Lightbend, Inc. (https://www.lightbend.com/).
+
+---------------
+
 pekko-remote contains CountMinSketch.java which was developed under an Apache 2.0 license.
 
 stream-lib
