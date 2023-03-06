@@ -26,10 +26,10 @@ import pekko.cluster.ddata.Replicator.Changed
 class ORSetSpec extends AnyWordSpec with Matchers {
 
   val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
-  val node2 = UniqueAddress(node1.address.copy(port = Some(2552)), 2L)
+  val node2 = UniqueAddress(node1.address.copy(port = Some(7355)), 2L)
   val node3 = UniqueAddress(node1.address.copy(port = Some(2553)), 3L)
 
-  val nodeA = UniqueAddress(Address("pekko", "Sys", "a", 2552), 1L)
+  val nodeA = UniqueAddress(Address("pekko", "Sys", "a", 7355), 1L)
   val nodeB = UniqueAddress(nodeA.address.copy(host = Some("b")), 2L)
   val nodeC = UniqueAddress(nodeA.address.copy(host = Some("c")), 3L)
   val nodeD = UniqueAddress(nodeA.address.copy(host = Some("d")), 4L)

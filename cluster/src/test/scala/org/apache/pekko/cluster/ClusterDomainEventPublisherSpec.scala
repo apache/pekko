@@ -52,18 +52,18 @@ class ClusterDomainEventPublisherSpec
 
   final val OtherDataCenter = "dc2"
 
-  val aUp = TestMember(Address(protocol, "sys", "a", 2552), Up)
+  val aUp = TestMember(Address(protocol, "sys", "a", 7355), Up)
   val aLeaving = aUp.copy(status = Leaving)
   val aExiting = aLeaving.copy(status = Exiting)
   val aRemoved = aExiting.copy(status = Removed)
-  val bExiting = TestMember(Address(protocol, "sys", "b", 2552), Exiting)
+  val bExiting = TestMember(Address(protocol, "sys", "b", 7355), Exiting)
   val bRemoved = bExiting.copy(status = Removed)
-  val cJoining = TestMember(Address(protocol, "sys", "c", 2552), Joining, Set("GRP"))
+  val cJoining = TestMember(Address(protocol, "sys", "c", 7355), Joining, Set("GRP"))
   val cUp = cJoining.copy(status = Up)
   val cRemoved = cUp.copy(status = Removed)
   val a51Up = TestMember(Address(protocol, "sys", "a", 2551), Up)
-  val dUp = TestMember(Address(protocol, "sys", "d", 2552), Up, Set("GRP"))
-  val eUp = TestMember(Address(protocol, "sys", "e", 2552), Up, Set("GRP"), OtherDataCenter)
+  val dUp = TestMember(Address(protocol, "sys", "d", 7355), Up, Set("GRP"))
+  val eUp = TestMember(Address(protocol, "sys", "e", 7355), Up, Set("GRP"), OtherDataCenter)
 
   private def state(gossip: Gossip, self: UniqueAddress) =
     MembershipState(gossip, self, DefaultDataCenter, crossDcConnections = 5)

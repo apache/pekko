@@ -58,9 +58,9 @@ class AutoDownSpec extends PekkoSpec("""
     if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
     else "pekko.tcp"
 
-  val memberA = TestMember(Address(protocol, "sys", "a", 2552), Up)
-  val memberB = TestMember(Address(protocol, "sys", "b", 2552), Up)
-  val memberC = TestMember(Address(protocol, "sys", "c", 2552), Up)
+  val memberA = TestMember(Address(protocol, "sys", "a", 7355), Up)
+  val memberB = TestMember(Address(protocol, "sys", "b", 7355), Up)
+  val memberC = TestMember(Address(protocol, "sys", "c", 7355), Up)
 
   def autoDownActor(autoDownUnreachableAfter: FiniteDuration): ActorRef =
     system.actorOf(Props(classOf[AutoDownTestActor], memberA, autoDownUnreachableAfter, testActor))

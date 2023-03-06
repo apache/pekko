@@ -205,8 +205,8 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
   def docOnly = { // not used, only demo
     // #initialContacts
     val initialContacts = Set(
-      ActorPath.fromString("pekko://OtherSys@host1:2552/system/receptionist"),
-      ActorPath.fromString("pekko://OtherSys@host2:2552/system/receptionist"))
+      ActorPath.fromString("pekko://OtherSys@host1:7355/system/receptionist"),
+      ActorPath.fromString("pekko://OtherSys@host2:7355/system/receptionist"))
     val settings = ClusterClientSettings(system).withInitialContacts(initialContacts)
     // #initialContacts
 

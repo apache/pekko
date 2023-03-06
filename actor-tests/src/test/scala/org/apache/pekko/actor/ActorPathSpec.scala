@@ -68,26 +68,26 @@ class ActorPathSpec extends AnyWordSpec with Matchers {
 
     "create correct toStringWithAddress" in {
       val local = Address("pekko", "mysys")
-      val a = local.copy(host = Some("aaa"), port = Some(2552))
+      val a = local.copy(host = Some("aaa"), port = Some(7355))
       val b = a.copy(host = Some("bb"))
       val c = a.copy(host = Some("cccc"))
       val root = RootActorPath(local)
-      root.toStringWithAddress(a) should ===("pekko://mysys@aaa:2552/")
-      (root / "user").toStringWithAddress(a) should ===("pekko://mysys@aaa:2552/user")
-      (root / "user" / "foo").toStringWithAddress(a) should ===("pekko://mysys@aaa:2552/user/foo")
+      root.toStringWithAddress(a) should ===("pekko://mysys@aaa:7355/")
+      (root / "user").toStringWithAddress(a) should ===("pekko://mysys@aaa:7355/user")
+      (root / "user" / "foo").toStringWithAddress(a) should ===("pekko://mysys@aaa:7355/user/foo")
 
-      //      root.toStringWithAddress(b) should ===("pekko://mysys@bb:2552/")
-      (root / "user").toStringWithAddress(b) should ===("pekko://mysys@bb:2552/user")
-      (root / "user" / "foo").toStringWithAddress(b) should ===("pekko://mysys@bb:2552/user/foo")
+      //      root.toStringWithAddress(b) should ===("pekko://mysys@bb:7355/")
+      (root / "user").toStringWithAddress(b) should ===("pekko://mysys@bb:7355/user")
+      (root / "user" / "foo").toStringWithAddress(b) should ===("pekko://mysys@bb:7355/user/foo")
 
-      root.toStringWithAddress(c) should ===("pekko://mysys@cccc:2552/")
-      (root / "user").toStringWithAddress(c) should ===("pekko://mysys@cccc:2552/user")
-      (root / "user" / "foo").toStringWithAddress(c) should ===("pekko://mysys@cccc:2552/user/foo")
+      root.toStringWithAddress(c) should ===("pekko://mysys@cccc:7355/")
+      (root / "user").toStringWithAddress(c) should ===("pekko://mysys@cccc:7355/user")
+      (root / "user" / "foo").toStringWithAddress(c) should ===("pekko://mysys@cccc:7355/user/foo")
 
       val rootA = RootActorPath(a)
-      rootA.toStringWithAddress(b) should ===("pekko://mysys@aaa:2552/")
-      (rootA / "user").toStringWithAddress(b) should ===("pekko://mysys@aaa:2552/user")
-      (rootA / "user" / "foo").toStringWithAddress(b) should ===("pekko://mysys@aaa:2552/user/foo")
+      rootA.toStringWithAddress(b) should ===("pekko://mysys@aaa:7355/")
+      (rootA / "user").toStringWithAddress(b) should ===("pekko://mysys@aaa:7355/user")
+      (rootA / "user" / "foo").toStringWithAddress(b) should ===("pekko://mysys@aaa:7355/user/foo")
     }
 
     "not allow path separators in RootActorPath's name" in {

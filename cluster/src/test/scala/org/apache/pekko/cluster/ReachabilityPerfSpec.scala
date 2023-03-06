@@ -25,8 +25,8 @@ class ReachabilityPerfSpec extends AnyWordSpec with Matchers {
   // increase for serious measurements
   val iterations = sys.props.get("org.apache.pekko.cluster.ReachabilityPerfSpec.iterations").getOrElse("100").toInt
 
-  val address = Address("pekko", "sys", "a", 2552)
-  val node = Address("pekko", "sys", "a", 2552)
+  val address = Address("pekko", "sys", "a", 7355)
+  val node = Address("pekko", "sys", "a", 7355)
 
   private def createReachabilityOfSize(base: Reachability, size: Int): Reachability =
     (1 to size).foldLeft(base) {

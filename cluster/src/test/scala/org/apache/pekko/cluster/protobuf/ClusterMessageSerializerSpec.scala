@@ -81,13 +81,13 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
   import MemberStatus._
 
   val a1 =
-    TestMember(Address("pekko", "sys", "a", 2552), Joining, Set.empty[String], appVersion = Version("1.0.0"))
-  val b1 = TestMember(Address("pekko", "sys", "b", 2552), Up, Set("r1"), appVersion = Version("1.1.0"))
+    TestMember(Address("pekko", "sys", "a", 7355), Joining, Set.empty[String], appVersion = Version("1.0.0"))
+  val b1 = TestMember(Address("pekko", "sys", "b", 7355), Up, Set("r1"), appVersion = Version("1.1.0"))
   val c1 =
-    TestMember(Address("pekko", "sys", "c", 2552), Leaving, Set.empty[String], "foo", appVersion = Version("1.1.0"))
-  val d1 = TestMember(Address("pekko", "sys", "d", 2552), Exiting, Set("r1"), "foo")
-  val e1 = TestMember(Address("pekko", "sys", "e", 2552), Down, Set("r3"))
-  val f1 = TestMember(Address("pekko", "sys", "f", 2552), Removed, Set("r3"), "foo")
+    TestMember(Address("pekko", "sys", "c", 7355), Leaving, Set.empty[String], "foo", appVersion = Version("1.1.0"))
+  val d1 = TestMember(Address("pekko", "sys", "d", 7355), Exiting, Set("r1"), "foo")
+  val e1 = TestMember(Address("pekko", "sys", "e", 7355), Down, Set("r3"))
+  val f1 = TestMember(Address("pekko", "sys", "f", 7355), Removed, Set("r3"), "foo")
 
   "ClusterMessages" must {
 

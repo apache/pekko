@@ -53,7 +53,7 @@ public class LambdaPersistencePluginDocTest {
         class SharedStorageUsage extends AbstractActor {
           @Override
           public void preStart() throws Exception {
-            String path = "pekko://example@127.0.0.1:2552/user/store";
+            String path = "pekko://example@127.0.0.1:7355/user/store";
             ActorSelection selection = getContext().actorSelection(path);
             selection.tell(new Identify(1), getSelf());
           }

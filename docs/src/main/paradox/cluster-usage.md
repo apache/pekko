@@ -412,7 +412,7 @@ Where the <node-url> should be on the format of
   'pekko.<protocol>://<actor-system-name>@<hostname>:<port>'
 
 Examples: ./pekko-cluster localhost 9999 is-available
-          ./pekko-cluster localhost 9999 join pekko://MySystem@darkstar:2552
+          ./pekko-cluster localhost 9999 join pekko://MySystem@darkstar:7355
           ./pekko-cluster localhost 9999 cluster-status
 ```
 

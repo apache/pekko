@@ -40,12 +40,12 @@ class MessageSerializerSpec extends PekkoSpec("""
 
   import MemberStatus._
 
-  val a1 = TestMember(Address("pekko", "sys", "a", 2552), Joining, Set.empty)
-  val b1 = TestMember(Address("pekko", "sys", "b", 2552), Up, Set("r1"))
-  val c1 = TestMember(Address("pekko", "sys", "c", 2552), Leaving, Set("r2"))
-  val d1 = TestMember(Address("pekko", "sys", "d", 2552), Exiting, Set("r1", "r2"))
-  val e1 = TestMember(Address("pekko", "sys", "e", 2552), Down, Set("r3"))
-  val f1 = TestMember(Address("pekko", "sys", "f", 2552), Removed, Set("r2", "r3"))
+  val a1 = TestMember(Address("pekko", "sys", "a", 7355), Joining, Set.empty)
+  val b1 = TestMember(Address("pekko", "sys", "b", 7355), Up, Set("r1"))
+  val c1 = TestMember(Address("pekko", "sys", "c", 7355), Leaving, Set("r2"))
+  val d1 = TestMember(Address("pekko", "sys", "d", 7355), Exiting, Set("r1", "r2"))
+  val e1 = TestMember(Address("pekko", "sys", "e", 7355), Down, Set("r3"))
+  val f1 = TestMember(Address("pekko", "sys", "f", 7355), Removed, Set("r2", "r3"))
 
   "ClusterMessages" must {
 

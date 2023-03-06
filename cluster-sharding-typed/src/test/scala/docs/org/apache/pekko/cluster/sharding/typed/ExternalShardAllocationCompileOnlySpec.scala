@@ -46,7 +46,7 @@ class ExternalShardAllocationCompileOnlySpec {
 
   // #client
   val client: ExternalShardAllocationClient = ExternalShardAllocation(system).clientFor(TypeKey.name)
-  val done: Future[Done] = client.updateShardLocation("shard-id-1", Address("pekko", "system", "127.0.0.1", 2552))
+  val done: Future[Done] = client.updateShardLocation("shard-id-1", Address("pekko", "system", "127.0.0.1", 7355))
   // #client
 
 }

@@ -175,7 +175,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }(system.dispatchers.internalDispatcher)
 
   private val writeAckBytes = dm.Empty.getDefaultInstance.toByteArray
-  private val dummyAddress = UniqueAddress(Address("a", "b", "c", 2552), 1L)
+  private val dummyAddress = UniqueAddress(Address("a", "b", "c", 7355), 1L)
 
   val GetManifest = "A"
   val GetSuccessManifest = "B"

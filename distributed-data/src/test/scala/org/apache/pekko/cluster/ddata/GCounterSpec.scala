@@ -23,7 +23,7 @@ import pekko.cluster.ddata.Replicator.Changed
 
 class GCounterSpec extends AnyWordSpec with Matchers {
   val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
-  val node2 = UniqueAddress(node1.address.copy(port = Some(2552)), 2L)
+  val node2 = UniqueAddress(node1.address.copy(port = Some(7355)), 2L)
   val node3 = UniqueAddress(node1.address.copy(port = Some(2553)), 3L)
 
   "A GCounter" must {

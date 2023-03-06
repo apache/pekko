@@ -48,7 +48,7 @@ class LocalActorRefProviderSpec extends PekkoSpec(LocalActorRefProviderSpec.conf
   "An LocalActorRefProvider" must {
 
     "find child actor with URL encoded name" in {
-      val childName = "pekko%3A%2F%2FClusterSystem%40127.0.0.1%3A2552"
+      val childName = "pekko%3A%2F%2FClusterSystem%40127.0.0.1%3A7355"
       val a = system.actorOf(Props(new Actor {
         val child = context.actorOf(Props.empty, name = childName)
         def receive = {

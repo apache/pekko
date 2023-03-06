@@ -153,10 +153,10 @@ class WriteAggregatorSpec extends PekkoSpec(s"""
     if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
     else "pekko.tcp"
 
-  val nodeA = UniqueAddress(Address(protocol, "Sys", "a", 2552), 17L)
-  val nodeB = UniqueAddress(Address(protocol, "Sys", "b", 2552), 17L)
-  val nodeC = UniqueAddress(Address(protocol, "Sys", "c", 2552), 17L)
-  val nodeD = UniqueAddress(Address(protocol, "Sys", "d", 2552), 17L)
+  val nodeA = UniqueAddress(Address(protocol, "Sys", "a", 7355), 17L)
+  val nodeB = UniqueAddress(Address(protocol, "Sys", "b", 7355), 17L)
+  val nodeC = UniqueAddress(Address(protocol, "Sys", "c", 7355), 17L)
+  val nodeD = UniqueAddress(Address(protocol, "Sys", "d", 7355), 17L)
   // 4 replicas + the local => 5
   val nodes = Vector(nodeA, nodeB, nodeC, nodeD)
 

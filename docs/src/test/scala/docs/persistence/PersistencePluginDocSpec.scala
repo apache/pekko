@@ -138,7 +138,7 @@ object SharedLeveldbPluginDocSpec {
   // #shared-store-usage
   trait SharedStoreUsage extends Actor {
     override def preStart(): Unit = {
-      context.actorSelection("pekko://example@127.0.0.1:2552/user/store") ! Identify(1)
+      context.actorSelection("pekko://example@127.0.0.1:7355/user/store") ! Identify(1)
     }
 
     def receive = {

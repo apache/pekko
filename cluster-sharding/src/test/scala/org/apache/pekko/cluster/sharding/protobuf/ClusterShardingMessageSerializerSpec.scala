@@ -121,15 +121,15 @@ class ClusterShardingMessageSerializerSpec extends PekkoSpec {
     "be able to serialize GetCurrentRegions" in {
       checkSerialization(ShardRegion.GetCurrentRegions)
       checkSerialization(
-        ShardRegion.CurrentRegions(Set(Address("pekko", "sys", "a", 2552), Address("pekko", "sys", "b", 2552))))
+        ShardRegion.CurrentRegions(Set(Address("pekko", "sys", "a", 7355), Address("pekko", "sys", "b", 7355))))
     }
 
     "be able to serialize GetClusterShardingStats" in {
       checkSerialization(ShardRegion.GetClusterShardingStats(3.seconds))
       checkSerialization(
         ShardRegion.ClusterShardingStats(Map(
-          Address("pekko", "sys", "a", 2552) -> ShardRegion.ShardRegionStats(Map[ShardId, Int]("a" -> 23), Set("b")),
-          Address("pekko", "sys", "b", 2552) -> ShardRegion.ShardRegionStats(Map[ShardId, Int]("a" -> 23), Set("b")))))
+          Address("pekko", "sys", "a", 7355) -> ShardRegion.ShardRegionStats(Map[ShardId, Int]("a" -> 23), Set("b")),
+          Address("pekko", "sys", "b", 7355) -> ShardRegion.ShardRegionStats(Map[ShardId, Int]("a" -> 23), Set("b")))))
     }
   }
 }

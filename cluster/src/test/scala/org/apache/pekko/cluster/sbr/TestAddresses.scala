@@ -32,7 +32,7 @@ object TestAddresses {
   val defaultDataCenter = ClusterSettings.DefaultDataCenter
   private def defaultDcRole = dcRole(defaultDataCenter)
 
-  val addressA = Address("pekko.tcp", "sys", "a", 2552)
+  val addressA = Address("pekko.tcp", "sys", "a", 7355)
   val memberA = new Member(UniqueAddress(addressA, 0L), 5, Up, Set("role3", defaultDcRole), Version.Zero)
   val memberB =
     new Member(

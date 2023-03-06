@@ -43,7 +43,7 @@ class ORSetMergeBenchmark {
   @Param(Array("1", "10", "20", "100"))
   var set1Size = 0
 
-  val nodeA = UniqueAddress(Address("pekko", "Sys", "aaaa", 2552), 1L)
+  val nodeA = UniqueAddress(Address("pekko", "Sys", "aaaa", 7355), 1L)
   val nodeB = UniqueAddress(nodeA.address.copy(host = Some("bbbb")), 2L)
   val nodeC = UniqueAddress(nodeA.address.copy(host = Some("cccc")), 3L)
   val nodeD = UniqueAddress(nodeA.address.copy(host = Some("dddd")), 4L)
