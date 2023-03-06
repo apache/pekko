@@ -124,7 +124,7 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
             "remote",
             ConfigFactory.parseString("""
                 pekko.remote.artery.enabled = false
-                pekko.remote.classic.netty.tcp.port = 2553
+                pekko.remote.classic.netty.tcp.port = 7356
               """.stripMargin).withFallback(config))
 
         try {

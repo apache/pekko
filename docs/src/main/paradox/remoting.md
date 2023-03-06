@@ -190,7 +190,7 @@ pekko {
   actor {
     deployment {
       /sampleActor {
-        remote = "pekko.tcp://sampleActorSystem@127.0.0.1:2553"
+        remote = "pekko.tcp://sampleActorSystem@127.0.0.1:7356"
       }
     }
   }
@@ -200,7 +200,7 @@ pekko {
 The configuration above instructs Pekko to react when an actor with path `/sampleActor` is created, i.e.
 using @scala[`system.actorOf(Props(...), "sampleActor")`]@java[`system.actorOf(new Props(...), "sampleActor")`]. This specific actor will not be directly instantiated,
 but instead the remote daemon of the remote system will be asked to create the actor,
-which in this sample corresponds to `sampleActorSystem@127.0.0.1:2553`.
+which in this sample corresponds to `sampleActorSystem@127.0.0.1:7356`.
 
 Once you have configured the properties above you would do the following in code:
 
