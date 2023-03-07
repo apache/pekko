@@ -58,7 +58,7 @@ pekko {
     artery {
       transport = tcp # See Selecting a transport below
       canonical.hostname = "127.0.0.1"
-      canonical.port = 73550
+      canonical.port = 17355
     }
   }
 }
@@ -189,13 +189,13 @@ In the next sections the two alternatives are described in detail.
 Scala
 :   ```
     val selection =
-      context.actorSelection("pekko://actorSystemName@10.0.0.1:73550/user/actorName")
+      context.actorSelection("pekko://actorSystemName@10.0.0.1:17355/user/actorName")
     ```
     
 Java
 :   ```
     ActorSelection selection =
-      context.actorSelection("pekko://actorSystemName@10.0.0.1:73550/user/actorName");
+      context.actorSelection("pekko://actorSystemName@10.0.0.1:17355/user/actorName");
     ```
     
 
@@ -850,7 +850,7 @@ pekko {
       canonical.port = 8000                   # external (logical) port
 
       bind.hostname = local.address # internal (bind) hostname
-      bind.port = 73550              # internal (bind) port
+      bind.port = 17355              # internal (bind) port
     }
  }
 }
