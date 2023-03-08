@@ -23,7 +23,7 @@ import pekko.cluster.ddata.Replicator.Changed
 
 class ORMultiMapSpec extends AnyWordSpec with Matchers {
 
-  val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
+  val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 7354), 1L)
   val node2 = UniqueAddress(node1.address.copy(port = Some(7355)), 2L)
 
   "A ORMultiMap" must {
