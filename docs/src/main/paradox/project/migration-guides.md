@@ -16,11 +16,15 @@ This is just stub documentation. It will be improved.
 * Pekko packages start with "org.apache.pekko" instead of "akka" - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
 * Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. PekkoException instead of AkkaException
 * Configs in `application.conf` use "pekko" prefix instead of "akka"
+* We have changed the default ports used by the pekko-remote module.
+* With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
+* With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
 
 We are still investigating the effects of how the package name changes affect the @ref:[Persistence](../persistence.md)
 and @ref:[Cluster](../cluster-usage.md) modules.
-Data persisted with "akka-persistence" may not yet be usable with "pekko-persistence" (or vice versa).
-Akka and Pekko nodes may not be able to form a cluster or messages may not be recognised if passed between nodes
-of different types.
+
+It appears that data persisted with "akka-persistence" is usable with "pekko-persistence" (and vice versa).
+
+We currently do not expect that Akka and Pekko nodes will be able to form a cluster.
 
 We may be able to provide [Scalafix](https://scalacenter.github.io/scalafix/) scripts to help with migrations.
