@@ -35,10 +35,10 @@ class WeightedRouteesSpec extends PekkoSpec(ConfigFactory.parseString("""
     if (RARP(system).provider.remoteSettings.Artery.Enabled) "pekko"
     else "pekko.tcp"
 
-  val a1 = Address(protocol, "sys", "a1", 2551)
-  val b1 = Address(protocol, "sys", "b1", 2551)
-  val c1 = Address(protocol, "sys", "c1", 2551)
-  val d1 = Address(protocol, "sys", "d1", 2551)
+  val a1 = Address(protocol, "sys", "a1", 7354)
+  val b1 = Address(protocol, "sys", "b1", 7354)
+  val c1 = Address(protocol, "sys", "c1", 7354)
+  val d1 = Address(protocol, "sys", "d1", 7354)
 
   val routeeA = ActorSelectionRoutee(system.actorSelection(RootActorPath(a1) / "user" / "a"))
   val routeeB = ActorSelectionRoutee(system.actorSelection(RootActorPath(b1) / "user" / "b"))

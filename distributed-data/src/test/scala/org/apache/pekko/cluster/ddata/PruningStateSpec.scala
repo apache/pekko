@@ -23,7 +23,7 @@ import pekko.cluster.UniqueAddress
 class PruningStateSpec extends AnyWordSpec with Matchers {
   import PruningState._
 
-  val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 2551), 1L)
+  val node1 = UniqueAddress(Address("pekko", "Sys", "localhost", 7354), 1L)
   val node2 = UniqueAddress(node1.address.copy(port = Some(7355)), 2L)
   val node3 = UniqueAddress(node1.address.copy(port = Some(7356)), 3L)
   val node4 = UniqueAddress(node1.address.copy(port = Some(7357)), 4L)

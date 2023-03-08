@@ -61,7 +61,7 @@ class ClusterDomainEventPublisherSpec
   val cJoining = TestMember(Address(protocol, "sys", "c", 7355), Joining, Set("GRP"))
   val cUp = cJoining.copy(status = Up)
   val cRemoved = cUp.copy(status = Removed)
-  val a51Up = TestMember(Address(protocol, "sys", "a", 2551), Up)
+  val a51Up = TestMember(Address(protocol, "sys", "a", 7354), Up)
   val dUp = TestMember(Address(protocol, "sys", "d", 7355), Up, Set("GRP"))
   val eUp = TestMember(Address(protocol, "sys", "e", 7355), Up, Set("GRP"), OtherDataCenter)
 

@@ -45,7 +45,7 @@ public class BasicClusterExampleTest { // extends JUnitSuite {
               + "  remote.artery { \n"
               + "    canonical { \n"
               + "      hostname = \"127.0.0.1\" \n"
-              + "      port = 2551 \n"
+              + "      port = 7354 \n"
               + "    } \n"
               + "  } \n"
               + "}  \n");
@@ -131,7 +131,7 @@ public class BasicClusterExampleTest { // extends JUnitSuite {
 
     // #join-seed-nodes
     List<Address> seedNodes = new ArrayList<>();
-    seedNodes.add(AddressFromURIString.parse("pekko://ClusterSystem@127.0.0.1:2551"));
+    seedNodes.add(AddressFromURIString.parse("pekko://ClusterSystem@127.0.0.1:7354"));
     seedNodes.add(AddressFromURIString.parse("pekko://ClusterSystem@127.0.0.1:7355"));
 
     Cluster.get(system).manager().tell(new JoinSeedNodes(seedNodes));

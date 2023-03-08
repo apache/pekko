@@ -33,7 +33,7 @@ object LotsOfDataBot {
 
   def main(args: Array[String]): Unit = {
     if (args.isEmpty)
-      startup(Seq("2551", "7355", "0"))
+      startup(Seq("7354", "7355", "0"))
     else
       startup(args.toIndexedSeq)
   }
@@ -57,7 +57,7 @@ object LotsOfDataBot {
 
             pekko.cluster {
               seed-nodes = [
-                "pekko://ClusterSystem@127.0.0.1:2551",
+                "pekko://ClusterSystem@127.0.0.1:7354",
                 "pekko://ClusterSystem@127.0.0.1:7355"]
 
               downing-provider-class = org.apache.pekko.cluster.testkit.AutoDowning
