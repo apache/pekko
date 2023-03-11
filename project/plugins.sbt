@@ -17,10 +17,10 @@ addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
 addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
 
-addSbtPlugin("com.github.sbt" % "sbt-ci-release" % "1.5.10")
+addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
 addSbtPlugin("com.lightbend.sbt" % "sbt-publish-rsync" % "0.2")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.5")
-addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.5")
+addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.6")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
 
 // allow access to snapshots for pekko-sbt-paradox

@@ -17,6 +17,8 @@ import sbt._
 import sbt.Keys._
 import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport.publishRsyncHost
 import org.mdedetrich.apache.sonatype.SonatypeApachePlugin
+import sbtdynver.DynVerPlugin
+import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots
 
 object Publish extends AutoPlugin {
 
@@ -32,7 +34,10 @@ object Publish extends AutoPlugin {
         "dev@pekko.apache.org",
         url("https://github.com/apache/incubator-pekko/graphs/contributors"))))
 
-  override def requires = SonatypeApachePlugin
+  override lazy val buildSettings = Seq(
+    dynverSonatypeSnapshots := true)
+
+  override def requires = SonatypeApachePlugin && DynVerPlugin
 }
 
 /**
