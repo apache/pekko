@@ -10,32 +10,29 @@ please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migra
 
 This is just stub documentation. It will be improved.
 
-In the `pom.xml` file for your module:
+In your `pom.xml` and `build.sbt` files:
+* Update dependency Akka version to the latest Pekko version.
 * for Pekko jar dependencies, the groupId is `org.apache.pekko` instead of `com.typesafe.akka` or `com.lightbend.akka.<package_name>`
-* the jar names (`artifactId`) start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar
-
-In your `build.sbt`:
+* the jar names (i.e. the `artifactId` field in `pom.xml`) start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar
 * Alpakka equivalent is "pekko-connectors" - e.g. pekko-connectors-kafka_2.13.jar instead of alpakka-kafka_2.13.jar
 
 In source code files:
 * Pekko packages start with `org.apache.pekko` instead of `akka` - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
 * Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. `PekkoException` instead of `AkkaException`
-* Configs use `pekko` prefix instead of `akka`
+* Config changes use `pekko` prefix instead of `akka`
 
-In `resources/<config_type>.conf` config files for your module:
+In config files for your module:
 * Configs use `pekko` prefix instead of `akka`
-
-In `LICENSE`:
-* Update to the [Apache License](http://www.apache.org/licenses/)
 
 In Documentation:
-* Text should refer to `Pekko` instead of `Akka`
+* Where appropriate, text should refer to `Pekko` instead of `Akka`
 * URLs linking to files in https://doc.akka.io/docs/akka/ should instead point at https://pekko.apache.org/docs/pekko/
 
 * We have changed the default ports used by the pekko-remote module.
     * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
     * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
 
+## TBC:
 We are still investigating the effects of how the package name changes affect the @ref:[Persistence](../persistence.md)
 and @ref:[Cluster](../cluster-usage.md) modules.
 
