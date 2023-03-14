@@ -11,20 +11,18 @@ please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migra
 This is just stub documentation. It will be improved.
 
 In the `pom.xml` file for your module:
-* for Pekko jar dependencies, the groupId is "org.apache.pekko" instead of "com.typesafe.akka"
+* for Pekko jar dependencies, the groupId is `org.apache.pekko` instead of `com.typesafe.akka` or `com.lightbend.akka.<package_name>`
+* the jar names (`artifactId`) start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar
 
 In your `build.sbt`:
 * Alpakka equivalent is "pekko-connectors" - e.g. pekko-connectors-kafka_2.13.jar instead of alpakka-kafka_2.13.jar
 
 In source code files:
-* Pekko packages start with "org.apache.pekko" instead of "akka" - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
-* Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. PekkoException instead of AkkaException
+* Pekko packages start with `org.apache.pekko` instead of `akka` - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
+* Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. `PekkoException` instead of `AkkaException`
 
 In `application.conf` for your module:
 * Configs use "pekko" prefix instead of "akka"
-
-In the published artifacts:
-* the jar names start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar
 
 In the solution:
 * We have changed the default ports used by the pekko-remote module.
