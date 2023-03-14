@@ -210,6 +210,13 @@ Copyright (c) 2003-2011, LAMP/EPFL
 
 ---------------
 
+pekko-actor contains code from scala-collection-compat in the `org.apache.pekko.util.ccompat` package
+which has written by the Scala-Lang team under an Apache 2.0 license.
+Copyright (c) 2002-2023 EPFL
+Copyright (c) 2011-2023 Lightbend, Inc.
+
+---------------
+
 pekko-actor contains code from Netty in `org.apache.pekko.io.dns.DnsSettings.scala`
 which was released under an Apache 2.0 license.
 Copyright 2014 The Netty Project
