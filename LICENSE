@@ -211,7 +211,7 @@ Copyright (c) 2003-2011, LAMP/EPFL
 ---------------
 
 pekko-actor contains code from scala-collection-compat in the `org.apache.pekko.util.ccompat` package
-which has written by the Scala-Lang team under an Apache 2.0 license.
+which has released under an Apache 2.0 license.
 Copyright (c) 2002-2023 EPFL
 Copyright (c) 2011-2023 Lightbend, Inc.
 

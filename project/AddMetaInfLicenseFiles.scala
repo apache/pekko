@@ -21,6 +21,7 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     apacheSonatypeLicenseFile := baseDir.value / "legal" / "StandardLicense.txt",
+    apacheSonatypeNoticeFile := baseDir.value / "legal" / "PekkoNotice.txt",
     apacheSonatypeDisclaimerFile := Some(baseDir.value / "DISCLAIMER"))
 
   /**
