@@ -14,7 +14,7 @@
 package org.apache.pekko.util
 
 import scala.{ collection => c }
-import scala.collection.{ immutable => i, mutable => m, GenTraversable }
+import scala.collection.{ immutable => i, mutable => m, GenTraversable, IterableView }
 import scala.collection.generic.{ CanBuildFrom, GenericCompanion, Sorted, SortedSetFactory }
 import scala.language.higherKinds
 import scala.language.implicitConversions
@@ -88,6 +88,10 @@ package object ccompat {
   type IterableOnce[+X] = c.TraversableOnce[X]
   val IterableOnce = c.TraversableOnce
 
+  implicit def toMapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
+      self: IterableView[(K, V), C]): MapViewExtensionMethods[K, V, C] =
+    new MapViewExtensionMethods[K, V, C](self)
+
   implicit class ImmutableSortedSetOps[A](val real: i.SortedSet[A]) extends AnyVal {
     def unsorted: i.Set[A] = real
   }
@@ -100,4 +104,10 @@ package object ccompat {
 
 class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
   def iterator: Iterator[A] = self.toIterator
+}
+
+class MapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
+    private val self: IterableView[(K, V), C]) extends AnyVal {
+  def mapValues[W, That](f: V => W)(implicit bf: CanBuildFrom[IterableView[(K, V), C], (K, W), That]): That =
+    self.map[(K, W), That] { case (k, v) => (k, f(v)) }
 }
