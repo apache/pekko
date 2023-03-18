@@ -6,9 +6,11 @@ Split off elements into a new substream whenever a predicate function return `tr
 
 ## Signature
 
-@apidoc[Source.splitWhen](Source) { scala="#splitWhen(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
-@apidoc[Flow.splitWhen](Flow) { scala="#splitWhen(substreamCancelStrategy:org.apache.pekko.stream.SubstreamCancelStrategy)(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.stream.SubstreamCancelStrategy,org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Source.splitWhen](Source) { scala="#splitWhen(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.japi.function.Predicate)" }
+@apidoc[Flow.splitWhen](Flow) { scala="#splitWhen(p:Out=&gt;Boolean):org.apache.pekko.stream.scaladsl.SubFlow[Out,Mat,FlowOps.this.Repr,FlowOps.this.Closed]" java="#splitWhen(org.apache.pekko.japi.function.Predicate)" }
 
+The `splitWhen` operator adheres to the ActorAttributes.SupervisionStrategy attribute with the caveat that
+`Supervision.restart` behaves the same way as `Supervision.resume` since `Supervision.restart` for `SubFlow`s semantically doesn't make sense.
 
 ## Description
 

@@ -2337,15 +2337,25 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.splitAfter]].
    */
+  @deprecated(
+    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+    since = "1.1.0")
   def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(
       p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
-        via(Split.when(p, substreamCancelStrategy)).map(_.via(flow)).via(new FlattenMerge(breadth))
+        via(Split
+          .when(p)
+          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
+          .map(_.via(flow))
+          .via(new FlattenMerge(breadth))
     }
 
-    val finish: (Sink[Out, NotUsed]) => Closed = s =>
-      via(Split.when(p, substreamCancelStrategy))
+    val finish: Sink[Out, NotUsed] => Closed = s =>
+      via(
+        Split
+          .when(p)
+          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
         .to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
 
     new SubFlowImpl(Flow[Out], merge, finish)
@@ -2358,8 +2368,17 @@ trait FlowOps[+Out, +Mat] {
    *
    * @see [[#splitWhen]]
    */
-  def splitWhen(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] =
-    splitWhen(SubstreamCancelStrategy.drain)(p)
+  def splitWhen(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
+    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
+      override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
+        via(Split.when(p)).map(_.via(flow)).via(new FlattenMerge(breadth))
+    }
+
+    val finish: Sink[Out, NotUsed] => Closed = s =>
+      via(Split.when(p)).to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+
+    new SubFlowImpl(Flow[Out], merge, finish)
+  }
 
   /**
    * This operation applies the given predicate to all incoming elements and
@@ -2406,14 +2425,24 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.splitWhen]].
    */
+  @deprecated(
+    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+    since = "1.1.0")
   def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(
       p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
-        via(Split.after(p, substreamCancelStrategy)).map(_.via(flow)).via(new FlattenMerge(breadth))
+        via(Split
+          .after(p)
+          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
+          .map(_.via(flow))
+          .via(new FlattenMerge(breadth))
     }
-    val finish: (Sink[Out, NotUsed]) => Closed = s =>
-      via(Split.after(p, substreamCancelStrategy))
+    val finish: Sink[Out, NotUsed] => Closed = s =>
+      via(
+        Split
+          .after(p)
+          .withAttributes(ActorAttributes.supervisionStrategy(Split.cancelStrategyToDecider(substreamCancelStrategy))))
         .to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
     new SubFlowImpl(Flow[Out], merge, finish)
   }
@@ -2425,8 +2454,15 @@ trait FlowOps[+Out, +Mat] {
    *
    * @see [[#splitAfter]]
    */
-  def splitAfter(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] =
-    splitAfter(SubstreamCancelStrategy.drain)(p)
+  def splitAfter(p: Out => Boolean): SubFlow[Out, Mat, Repr, Closed] = {
+    val merge = new SubFlowImpl.MergeBack[Out, Repr] {
+      override def apply[T](flow: Flow[Out, T, NotUsed], breadth: Int): Repr[T] =
+        via(Split.after(p)).map(_.via(flow)).via(new FlattenMerge(breadth))
+    }
+    val finish: Sink[Out, NotUsed] => Closed = s =>
+      via(Split.after(p)).to(Sink.foreach(_.runWith(s)(GraphInterpreter.currentInterpreter.materializer)))
+    new SubFlowImpl(Flow[Out], merge, finish)
+  }
 
   /**
    * Transform each input element into a `Source` of output elements that is
