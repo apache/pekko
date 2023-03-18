@@ -6,7 +6,7 @@ project.description: Apache Pekko version migration guides.
 Apache Pekko is based on the latest version of Akka in the v2.6.x series. If migrating from an earlier version of Akka, 
 please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migration-guides.html) before migrating to Pekko.
 
-## Migration to Apache Pekko
+## Migration from Akka to Apache Pekko
 
 These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.0 and assume a basic level of Akka experience. Please feel free to submit an issue or a patch if you feel like the notes can be improved.
 
@@ -44,3 +44,11 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 It appears that data persisted with "akka-persistence" is usable with "pekko-persistence" and vice versa (@ref:[Persistence](../persistence.md)).
 
 We currently do not expect that Akka and Pekko nodes combined will be able to form a @ref:[cluster](../cluster-usage.md).
+
+@@toc { depth=1 }
+
+@@@ index
+
+* [migration-guide-1.0.x-1.1.x](migration-guide-1.0.x-1.1.x.md)
+
+@@@
