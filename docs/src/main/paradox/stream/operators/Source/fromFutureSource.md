@@ -11,7 +11,7 @@ Deprecated by @ref:[`Source.futureSource`](futureSource.md).
 
 ## Description
 
-`fromFutureSource` was deprecated in Akka 2.6.0, use @ref:[futureSource](futureSource.md) instead.
+`fromFutureSource` is deprecated, please use @ref:[futureSource](futureSource.md) instead.
 
 Streams the elements of the given future source once it successfully completes.
 If the future fails the stream is failed.

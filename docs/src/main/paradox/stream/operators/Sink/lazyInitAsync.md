@@ -12,7 +12,7 @@ Deprecated by @ref:[`Sink.lazyFutureSink`](lazyFutureSink.md).
 
 ## Description
 
-`lazyInitAsync` was deprecated in Akka 2.6.0, use @ref:[lazyFutureSink](lazyFutureSink.md) instead.
+`lazyInitAsync` is deprecated, please use @ref:[lazyFutureSink](lazyFutureSink.md) instead.
 
 Creates a real `Sink` upon receiving the first element. Internal `Sink` will not be created if there are no elements,
 because of completion or error.

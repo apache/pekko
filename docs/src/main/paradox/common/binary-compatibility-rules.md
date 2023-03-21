@@ -29,18 +29,12 @@ Binary compatibility is **NOT** maintained between:
 Specific examples:
 
 ```
-# [epoch.major.minor] era
-OK:  2.2.0 --> 2.2.1 --> ... --> 2.2.x
-NO:  2.2.y --x 2.3.y
-OK:  2.3.0 --> 2.3.1 --> ... --> 2.3.x
-OK:  2.3.x --> 2.4.x (special case, migration to new versioning scheme)
-# [major.minor.patch] era
-OK:  2.4.0 --> 2.5.x
-OK:  2.5.0 --> 2.6.x
-NO:  2.x.y --x 3.x.y
-OK:  3.0.0 --> 3.0.1 --> ... --> 3.0.n
-OK:  3.0.n --> 3.1.0 --> ... --> 3.1.n
-OK:  3.1.n --> 3.2.0 ...
+OK:  1.4.0 --> 1.5.x
+OK:  1.5.0 --> 1.6.x
+NO:  1.x.y --x 2.x.y
+OK:  2.0.0 --> 2.0.1 --> ... --> 2.0.n
+OK:  2.0.n --> 2.1.0 --> ... --> 2.1.n
+OK:  2.1.n --> 2.2.0 ...
      ...
 ```
 
@@ -60,15 +54,17 @@ Some modules are excluded from the binary compatibility guarantees, such as:
  
 ### When will a deprecated method be removed entirely
 
-Once a method has been deprecated then the guideline* is that it will be kept, at minimum, for one **full** minor version release. For example, if it is deprecated in version 2.5.2 then it will remain through the rest of 2.5, as well as the entirety of 2.6. 
+Once a method has been deprecated then the guideline* is that it will be kept, at minimum, for one **full** minor version release. For example, if it is deprecated in version 1.0.2 then it will remain through the rest of 1.0, as well as the entirety of 1.1.
+
+Methods that were deprecated in Akka, before the project fork to Pekko, are being considered for removal in Pekko 1.1.0.
 
 *This is a guideline because in **rare** instances, after careful consideration, an exception may be made and the method removed earlier.
 
 ## Mixed versioning is not allowed
 
 Modules that are released together under the Pekko project are intended to be upgraded together.
-For example, it is not legal to mix Pekko Actor `2.6.2` with Pekko Cluster `2.6.5` even though
-"Pekko `2.6.2`" and "Pekko `2.6.5`" *are* binary compatible. 
+For example, it is not legal to mix Pekko Actor `1.0.0` with Pekko Cluster `1.0.5` even though
+"Pekko `1.0.0`" and "Pekko `1.0.5`" *are* binary compatible. 
 
 This is because modules may assume internals changes across module boundaries, for example some feature
 in Clustering may have required an internals change in Actor, however it is not public API, 
@@ -78,16 +74,16 @@ If you accidentally mix Pekko versions, for example through transitive
 dependencies, you might get a warning at run time such as:
 
 ```
-You are using version 2.6.6 of Pekko, but it appears you (perhaps indirectly) also depend on older versions 
-of related artifacts. You can solve this by adding an explicit dependency on version 2.6.6 of the 
+You are using version 1.0.6 of Pekko, but it appears you (perhaps indirectly) also depend on older versions 
+of related artifacts. You can solve this by adding an explicit dependency on version 1.0.6 of the 
 [pekko-persistence-query] artifacts to your project. Here's a complete collection of detected 
-artifacts: (2.5.3, [pekko-persistence-query]), (2.6.6, [pekko-actor, pekko-cluster]).
+artifacts: (1.0.3, [pekko-persistence-query]), (1.0.6, [pekko-actor, pekko-cluster]).
 See also: https://pekko.apache.org/docs/pekko/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed
 ```
 
 The fix is typically to pick the highest Pekko version, and add explicit
 dependencies to your project as needed. For example, in the example above
-you might want to add `pekko-persistence-query` dependency for 2.6.6.
+you might want to add `pekko-persistence-query` dependency for 1.0.6.
 
 @@@ note
 

@@ -390,7 +390,7 @@ An important aspect of working with streams and actors is understanding a `Mater
 The materializer is bound to the lifecycle of the @apidoc[actor.ActorRefFactory] it is created from, which in practice will
 be either an @apidoc[actor.ActorSystem] or @apidoc[ActorContext](actor.ActorContext) (when the materializer is created within an @apidoc[actor.Actor]). 
 
-Tying it to the `ActorSystem` should be replaced with using the system materializer from Pekko 2.6 and on.
+Tying it to the `ActorSystem` should be replaced with using the system materializer.
 
 When run by the system materializer the streams will run until the `ActorSystem` is shut down. When the materializer is shut down
 *before* the streams have run to completion, they will be terminated abruptly. This is a little different than the

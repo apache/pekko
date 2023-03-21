@@ -8,7 +8,7 @@ Deprecated by @ref:[`Source.lazyFutureSource`](lazyFutureSource.md).
 
 ## Description
 
-`lazilyAsync` was deprecated in Akka 2.6.0, use @ref:[lazyFutureSource](lazyFutureSource.md) instead.
+`lazilyAsync` is deprecated, please use @ref:[lazyFutureSource](lazyFutureSource.md) instead.
 
 Defers creation and materialization of a `CompletionStage` until there is demand.
 

@@ -1,10 +1,9 @@
 # Rolling Updates and Versions
 
-## Pekko upgrades
+## Apache Pekko Upgrades
 Pekko supports rolling updates between two consecutive patch versions unless an exception is
-mentioned on this page. For example updating from 2.5.15 to 2.5.16. Many times
+mentioned on this page. For example updating from 1.0.0 to 1.0.1. Many times,
 it is also possible to skip several versions and exceptions to that are also described here.
-For example it's possible to update from 2.5.14 to 2.5.16 without intermediate 2.5.15.
 
 It's not supported to have a cluster with more than two different versions. Roll out the first
 update completely before starting next update.

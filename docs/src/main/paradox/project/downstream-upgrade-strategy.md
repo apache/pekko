@@ -14,14 +14,14 @@ wait for intermediate libraries to update.
 
 ## Patch versions
 
-When releasing a new patch version of Pekko (e.g. 2.5.22), we typically don't
+When releasing a new patch version of Pekko (e.g. 1.1.0), we typically don't
 immediately bump the Pekko version in satellite projects.
 
 The reason for this is this will make it more low-friction for users to update
-those satellite projects: say their project is on Pekko 2.5.22 and
+those satellite projects: say their project is on Pekko 1.1.0 and
 Pekko Management 1.0.0, and we release Pekko Management 1.0.1 (still built with
-Pekko 2.5.22) and Pekko 2.5.23. They can safely update to Pekko Management 1.0.1
-without also updating to Pekko 2.5.23, or update to Pekko 2.5.23 without updating
+Pekko 1.1.0) and Pekko 1.1.1. They can safely update to Pekko Management 1.0.1
+without also updating to Pekko 1.1.1, or update to Pekko 1.1.1 without updating
 to Pekko Management 1.0.1.
 
 When there is reason for a satellite project to upgrade the Pekko patch
@@ -29,7 +29,7 @@ version, they are free to do so at any time.
 
 ## Minor versions
 
-When releasing a new minor version of Pekko (e.g. 2.6.0), satellite projects are
+When releasing a new minor version of Pekko (e.g. 1.1.0), satellite projects are
 also usually not updated immediately, but as needed.
 
 When a satellite project does update to a new minor version of Pekko, it will

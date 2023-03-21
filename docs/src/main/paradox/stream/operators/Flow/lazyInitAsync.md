@@ -10,7 +10,7 @@ Deprecated by @ref:[`Flow.lazyFutureFlow`](lazyFutureFlow.md) in combination wit
 
 ## Description
 
-`fromCompletionStage` was deprecated in Akka 2.6.0 use @ref:[lazyFutureFlow](lazyFutureFlow.md) in combination with @ref:[`prefixAndTail`](../Source-or-Flow/prefixAndTail.md)) instead.
+`fromCompletionStage` is deprecated in Apache pekko, please use @ref:[lazyFutureFlow](lazyFutureFlow.md) in combination with @ref:[`prefixAndTail`](../Source-or-Flow/prefixAndTail.md)) instead.
 
 Defers creation until a first element arrives.
 
