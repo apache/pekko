@@ -57,14 +57,8 @@ object JdkOptions extends AutoPlugin {
       targetSystemJdk,
       jdk8home,
       fullJavaHomes,
-      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:8" else "-target:jvm-1.8"),
-      // '-release 8' is not enough, for some reason we need the 8 rt.jar
-      // explicitly. To test whether this has the desired effect, compile
-      // pekko-remote and check the invocation of 'ByteBuffer.clear()' in
-      // EnvelopeBuffer.class with 'javap -c': it should refer to
-      // ""java/nio/ByteBuffer.clear:()Ljava/nio/Buffer" and not
-      // "java/nio/ByteBuffer.clear:()Ljava/nio/ByteBuffer". Issue #27079
-      (java8home: File) => Seq("-release", "8", "-javabootclasspath", java8home + "/jre/lib/rt.jar"))
+      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:8" else "release:8"),
+      (java8home: File) => Seq("-release", "8"))
   def targetJdkJavacOptions(
       targetSystemJdk: Boolean,
       jdk8home: Option[File],
@@ -75,7 +69,7 @@ object JdkOptions extends AutoPlugin {
       fullJavaHomes,
       Nil,
       // '-release 8' would be a neater option here, but is currently not an
-      // option because it doesn't provide access to `sun.misc.Unsafe` #27079
+      // option because it doesn't provide access to `sun.misc.Unsafe` https://github.com/akka/akka/issues/27079
       (java8home: File) => Seq("-source", "8", "-target", "8", "-bootclasspath", java8home + "/jre/lib/rt.jar"))
 
   private def selectOptions(

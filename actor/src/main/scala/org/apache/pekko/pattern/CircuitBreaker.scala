@@ -294,12 +294,14 @@ class CircuitBreaker(
   /**
    * Holds reference to current state of CircuitBreaker - *access only via helper methods*
    */
+  @nowarn("msg=is never updated")
   @volatile
   private[this] var _currentStateDoNotCallMeDirectly: State = Closed
 
   /**
    * Holds reference to current resetTimeout of CircuitBreaker - *access only via helper methods*
    */
+  @nowarn("msg=is never updated")
   @volatile
   private[this] var _currentResetTimeoutDoNotCallMeDirectly: FiniteDuration = resetTimeout
 

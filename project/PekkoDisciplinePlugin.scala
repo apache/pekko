@@ -164,7 +164,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "-Ywarn-numeric-widen",
     "-Yno-adapted-args",
     "-deprecation",
-    "-Xlint",
+    "-Xlint:-infer-any",
     "-Ywarn-dead-code",
     "-Ywarn-inaccessible",
     "-Ywarn-infer-any",

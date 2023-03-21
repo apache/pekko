@@ -50,8 +50,8 @@ object Dependencies {
     }
   }
 
-  val scala212Version = "2.12.16"
-  val scala213Version = "2.13.8"
+  val scala212Version = "2.12.17"
+  val scala213Version = "2.13.10"
   // To get the fix for https://github.com/lampepfl/dotty/issues/13106
   // and restored static forwarders
   val scala3Version = "3.1.2"

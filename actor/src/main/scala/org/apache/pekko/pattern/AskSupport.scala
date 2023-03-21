@@ -537,11 +537,11 @@ private[pekko] final class PromiseActorRef(
    * Stopped               => stopped, path not yet created
    */
   @volatile
-  @nowarn("msg=never used")
+  @nowarn("msg=is never updated")
   private[this] var _stateDoNotCallMeDirectly: AnyRef = _
 
   @volatile
-  @nowarn("msg=never used")
+  @nowarn("msg=is never updated")
   private[this] var _watchedByDoNotCallMeDirectly: Set[ActorRef] = ActorCell.emptyActorRefSet
 
   @nowarn private def _preventPrivateUnusedErasure = {
