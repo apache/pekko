@@ -40,6 +40,11 @@ object ByteString {
   def apply(bytes: Byte*): ByteString = CompactByteString(bytes: _*)
 
   /**
+   * Creates a new ByteString by iterating over bytes.
+   */
+  def apply(bytes: Iterator[Byte]): ByteString = CompactByteString(bytes)
+
+  /**
    * Creates a new ByteString by converting from integral numbers to bytes.
    */
   def apply[T](bytes: T*)(implicit num: Integral[T]): ByteString =
@@ -943,6 +948,14 @@ object CompactByteString {
       bytes.copyToArray(ar)
       ByteString.ByteString1C(ar)
     }
+  }
+
+  /**
+   * Creates a new CompactByteString by traversing bytes.
+   */
+  def apply(bytes: Iterator[Byte]): CompactByteString = {
+    if (bytes.isEmpty) empty
+    else ByteString.ByteString1C(bytes.toArray)
   }
 
   /**
