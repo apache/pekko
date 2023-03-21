@@ -814,6 +814,13 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         }
       }
 
+      "created from iterator" in {
+        check { (a: ByteString) =>
+          val asIterator = a.iterator
+          ByteString(asIterator) == a
+        }
+      }
+
       "compacting" in {
         check { (a: ByteString) =>
           val wasCompact = a.isCompact
