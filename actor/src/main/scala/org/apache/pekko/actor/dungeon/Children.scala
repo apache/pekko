@@ -33,7 +33,7 @@ private[pekko] trait Children { this: ActorCell =>
 
   import ChildrenContainer._
 
-  @nowarn("msg=never used")
+  @nowarn("msg=never used|is never updated")
   @volatile
   private var _childrenRefsDoNotCallMeDirectly: ChildrenContainer = EmptyChildrenContainer
 
