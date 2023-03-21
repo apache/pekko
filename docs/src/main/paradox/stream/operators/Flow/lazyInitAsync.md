@@ -10,7 +10,7 @@ Deprecated by @ref:[`Flow.lazyFutureFlow`](lazyFutureFlow.md) in combination wit
 
 ## Description
 
-`fromCompletionStage` is deprecated in Apache pekko, please use @ref:[lazyFutureFlow](lazyFutureFlow.md) in combination with @ref:[`prefixAndTail`](../Source-or-Flow/prefixAndTail.md)) instead.
+`fromCompletionStage` is deprecated, please use @ref:[lazyFutureFlow](lazyFutureFlow.md) in combination with @ref:[`prefixAndTail`](../Source-or-Flow/prefixAndTail.md)) instead.
 
 Defers creation until a first element arrives.
 
@@ -27,8 +27,8 @@ Defers creation until a first element arrives.
 **completes** when upstream completes and all futures have been completed and all elements have been emitted
 
 **cancels** when downstream cancels (keep reading)
-    The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-     This behaviour can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+    The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+     This behavior can be controlled by setting the [[org.apache.pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
     this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
 @@@
 
