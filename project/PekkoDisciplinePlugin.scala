@@ -129,7 +129,8 @@ object PekkoDisciplinePlugin extends AutoPlugin {
               "-Ywarn-nullary-override",
               "-Ywarn-nullary-unit",
               "-Ypartial-unification",
-              "-Yno-adapted-args")
+              "-Yno-adapted-args") ++ Set(
+              "-Xlint:-strict-unsealed-patmat")
           case Some((2, 12)) =>
             disciplineScalacOptions
           case _ =>
@@ -164,6 +165,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "-Ywarn-numeric-widen",
     "-Yno-adapted-args",
     "-deprecation",
+    "-Xlint",
     "-Xlint:-infer-any",
     "-Ywarn-dead-code",
     "-Ywarn-inaccessible",
