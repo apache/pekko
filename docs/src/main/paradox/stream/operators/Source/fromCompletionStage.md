@@ -11,7 +11,7 @@ Deprecated by @ref:[`Source.completionStage`](completionStage.md).
 
 ## Description
 
-`fromCompletionStage` was deprecated in Akka 2.6.0, use @ref:[completionStage](completionStage.md) instead.
+`fromCompletionStage` is deprecated, please use @ref:[completionStage](completionStage.md) instead.
 
 Send the single value of the `CompletionStage` when it completes and there is demand.
 If the `CompletionStage` completes with `null` stage is completed without emitting a value.

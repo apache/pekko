@@ -311,7 +311,7 @@ Java
 
 The `org.apache.pekko.pattern.BackoffOnFailureOptions` and `org.apache.pekko.pattern.BackoffOnRestartOptions` can be used to customize the behavior of the back-off supervisor actor.
 Options are:
-* `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behaviour with `minBackoff` as default value
+* `withAutoReset`: The backoff is reset if no failure/stop occurs within the duration. This is the default behavior with `minBackoff` as default value
 * `withManualReset`: The child must send `BackoffSupervisor.Reset` to its backoff supervisor (parent)
 * `withSupervisionStrategy`: Sets a custom `OneForOneStrategy` (as each backoff supervisor only has one child). The default strategy uses the `pekko.actor.SupervisorStrategy.defaultDecider` which stops and starts the child on exceptions.
 * `withMaxNrOfRetries`: Sets the maximum number of retries until the supervisor will give up (`-1` is default which means no limit of retries). Note: This is set on the supervision strategy, so setting a different strategy resets the `maxNrOfRetries`.

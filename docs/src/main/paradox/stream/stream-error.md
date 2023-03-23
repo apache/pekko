@@ -115,7 +115,7 @@ when a WebSocket connection fails due to the HTTP server it's running on going d
 By using an exponential backoff, we avoid going into a tight reconnect loop, which both gives the HTTP server some time
 to recover, and it avoids using needless resources on the client side.
 
-The various restart shapes mentioned all expect an @apidoc[stream.RestartSettings] which configures the restart behaviour.
+The various restart shapes mentioned all expect an @apidoc[stream.RestartSettings] which configures the restart behavior.
 Configurable parameters are:
 
 * `minBackoff` is the initial duration until the underlying stream is restarted

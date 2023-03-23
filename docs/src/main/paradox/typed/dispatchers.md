@@ -207,7 +207,7 @@ you will likely to see the entire application gets stuck somewhere like this:
 `PrintActor` is considered non-blocking, however it is not able to proceed with handling the remaining messages,
 since all the threads are occupied and blocked by the other blocking actors - thus leading to thread starvation.
 
-In the thread state diagrams below the colours have the following meaning:
+In the thread state diagrams below the colors have the following meaning:
 
  * Turquoise - Sleeping state
  * Orange - Waiting state

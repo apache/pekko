@@ -25,7 +25,7 @@ See also:
 
 ## Example
 
-In this sample we zip a stream of characters, a stream of numbers and a stream of colours. Into a single `Source`
+In this sample we zip a stream of characters, a stream of numbers and a stream of colors. Into a single `Source`
 where each element is a @scala[`Vector`]@java[`List`] of `[character, number, color]`:
 
 Scala

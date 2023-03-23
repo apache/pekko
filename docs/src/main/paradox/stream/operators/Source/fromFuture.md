@@ -11,7 +11,7 @@ Deprecated by @ref[`Source.future`](future.md).
 
 ## Description
 
-`fromFuture` was deprecated in Akka 2.6.0, use @ref:[future](future.md) instead.
+`fromFuture` is deprecated, please use @ref:[future](future.md) instead.
 
 Send the single value of the `Future` when it completes and there is demand.
 If the future fails the stream is failed with that exception.
