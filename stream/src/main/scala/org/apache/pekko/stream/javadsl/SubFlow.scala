@@ -1761,7 +1761,7 @@ class SubFlow[In, Out, Mat](
    */
   def flatMapPrefix[Out2, Mat2](
       n: Int,
-      f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
+      f: function.Function[java.util.List[Out], javadsl.Flow[Out, Out2, Mat2]]): SubFlow[In, Out2, Mat] = {
     val newDelegate = delegate.flatMapPrefix(n)(seq => f(seq.asJava).asScala)
     new javadsl.SubFlow(newDelegate)
   }
