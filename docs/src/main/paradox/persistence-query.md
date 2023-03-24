@@ -52,8 +52,7 @@ query types for the most common query scenarios, that most journals are likely t
 ## Read Journals
 
 In order to issue queries one has to first obtain an instance of a @apidoc[query.*.ReadJournal].
-Read journals are implemented as [Community plugins](https://akka.io/community/#plugins-to-akka-persistence-query), each targeting a specific datastore (for example Cassandra or JDBC
-databases). For example, given a library that provides a `pekko.persistence.query.my-read-journal` obtaining the related
+For example, given a library that provides a `pekko.persistence.query.my-read-journal` obtaining the related
 journal is as simple as:
 
 Scala
@@ -64,8 +63,6 @@ Java
 
 Journal implementers are encouraged to put this identifier in a variable known to the user, such that one can access it via
 @scala[@scaladoc[readJournalFor[NoopJournal](NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#readJournalFor[T%3C:org.apache.pekko.persistence.query.scaladsl.ReadJournal](readJournalPluginId:String):T)]@java[@javadoc[getJournalFor(NoopJournal.class, NoopJournal.identifier)](pekko.persistence.query.PersistenceQuery#getReadJournalFor(java.lang.Class,java.lang.String))], however this is not enforced.
-
-Read journal implementations are available as [Community plugins](https://akka.io/community/#plugins-to-akka-persistence-query).
 
 ### Predefined queries
 

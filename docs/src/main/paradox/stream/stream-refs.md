@@ -32,8 +32,8 @@ distributed processing framework or to introduce such capabilities in specific p
 Stream refs are trivial to use in existing clustered Pekko applications and require no additional configuration
 or setup. They automatically maintain flow-control / back-pressure over the network and employ Pekko's failure detection
 mechanisms to fail-fast ("let it crash!") in the case of failures of remote nodes. They can be seen as an implementation 
-of the [Work Pulling Pattern](https://www.michaelpollmeier.com/akka-work-pulling-pattern), which one would otherwise 
-implement manually.
+of the [Akka Work Pulling Pattern](https://www.michaelpollmeier.com/akka-work-pulling-pattern).
+It should be straightforward to adapt this to Pekko.
 
 @@@ note
   A useful way to think about stream refs is: 
@@ -164,11 +164,6 @@ Stream refs utilise normal actor messaging for their transport, and therefore pr
     - a *dropped element signal* will cause the stream to *fail*
   
 ## Bulk Stream References
-
-@@@ warning
-  Bulk stream references are not implemented yet.
-  See ticket [Bulk Transfer Stream Refs #24276](https://github.com/akka/akka/issues/24276) to track progress or signal demand for this feature.  
-@@@
 
 Bulk stream refs can be used to create simple side-channels to transfer humongous amounts
 of data such as huge log files, messages or even media, with as much ease as if it was a trivial local stream.

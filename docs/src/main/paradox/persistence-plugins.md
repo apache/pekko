@@ -2,8 +2,6 @@
 
 Storage backends for journals and snapshot stores are pluggable in the Pekko persistence extension.
 
-A directory of persistence journal and snapshot store plugins is available at the Pekko Community Projects page, see [Community plugins](https://akka.io/community/)
-
 Plugins maintained within the Pekko organization are:
 
 * [pekko-persistence-cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/) (no Durable State support)
