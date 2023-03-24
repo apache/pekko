@@ -36,6 +36,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 // #per-session-child
 // dummy data types just for this sample
 case class Keys()
+
 case class Wallet()
 
 // #per-session-child
