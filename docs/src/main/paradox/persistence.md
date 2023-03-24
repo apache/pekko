@@ -44,11 +44,10 @@ recover its state from these messages.
 case of sender and receiver JVM crashes.
  * @scala[@scaladoc[AsyncWriteJournal](pekko.persistence.journal.AsyncWriteJournal)]@java[@javadoc[AsyncWriteJournal](pekko.persistence.journal.japi.AsyncWriteJournal)]: A journal stores the sequence of messages sent to a persistent actor. An application can control which messages
 are journaled and which are received by the persistent actor without being journaled. Journal maintains `highestSequenceNr` that is increased on each message.
-The storage backend of a journal is pluggable. 
-Replicated journals are available as [Community plugins](https://akka.io/community/).
+The storage backend of a journal is pluggable.
  * *Snapshot store*: A snapshot store persists snapshots of a persistent actor's state. Snapshots are
 used for optimizing recovery times. The storage backend of a snapshot store is pluggable.
-The persistence extension comes with a "local" snapshot storage plugin, which writes to the local filesystem. Replicated snapshot stores are available as [Community plugins](https://akka.io/community/)
+The persistence extension comes with a "local" snapshot storage plugin, which writes to the local filesystem.
  * *Event Sourcing*. Based on the building blocks described above, Pekko persistence provides abstractions for the
 development of event sourced applications (see section @ref:[Event Sourcing](typed/persistence.md#event-sourcing-concepts)).
 

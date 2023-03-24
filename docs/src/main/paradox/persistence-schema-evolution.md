@@ -468,8 +468,9 @@ Java
 This technique only applies if the Pekko Persistence plugin you are using provides this capability.
 Check the documentation of your favourite plugin to see if it supports this style of persistence.
 
-If it doesn't, you may want to skim the [list of existing journal plugins](https://akka.io/community/#journal-plugins), just in case some other plugin
-for your favourite datastore *does* provide this capability.
+Over time, we hope that some Community projects will extend the number of supported platforms.
+Notify us if you would like us to link to any that you know about. You may also find Akka Community
+plugins that could be adapted for Pekko usage.
 
 @@@
 
