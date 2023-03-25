@@ -32,6 +32,12 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
     apacheSonatypeNoticeFile := baseDir.value / "legal" / "pekko-actor-jar-notice.txt")
 
   /**
+   * Settings specific for Pekko actor subproject which requires a different license file.
+   */
+  lazy val clusterSettings = Seq(
+    apacheSonatypeLicenseFile := baseDir.value / "legal" / "pekko-cluster-jar-license.txt")
+
+  /**
    * Settings specific for Pekko remote subproject which requires a different license file.
    */
   lazy val remoteSettings = Seq(
