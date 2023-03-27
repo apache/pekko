@@ -48,6 +48,8 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     // references to deprecated PARSER fields in generated message formats?
     "pekko-persistence-query",
     "pekko-docs",
+    // references to deprecated Jackson methods that would involve a significant refactor to avoid
+    "pekko-serialization-jackson",
     // use varargs of `Graph` in alsoTo and etc operators
     "pekko-stream-tests")
 
