@@ -63,8 +63,8 @@ class AccrualFailureDetectorSpec extends PekkoSpec("pekko.loglevel = INFO") {
       cdf(fd.phi(35L, 0, 10)) should ===(0.99977 +- 0.001)
       cdf(fd.phi(40L, 0, 10)) should ===(0.99997 +- 0.0001)
 
-      for (x :: y :: Nil <- (0 to 40).toList.sliding(2)) {
-        fd.phi(x, 0, 10) should be < (fd.phi(y, 0, 10))
+      for (case x :: y :: Nil <- (0 to 40).toList.sliding(2)) {
+        fd.phi(x, 0, 10) should be < fd.phi(y, 0, 10)
       }
 
       cdf(fd.phi(22, 20.0, 3)) should ===(0.7475 +- 0.001)

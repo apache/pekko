@@ -33,6 +33,14 @@ import pekko.actor.typed.scaladsl.TimerScheduler
 import pekko.pattern.StatusReply
 import org.scalatest.wordspec.AnyWordSpecLike
 
+// #per-session-child
+// dummy data types just for this sample
+case class Keys()
+
+case class Wallet()
+
+// #per-session-child
+
 class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
 
   "The interaction patterns docs" must {
@@ -359,12 +367,6 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
   }
 
   "contain a sample for per session child" in {
-    // #per-session-child
-    // dummy data types just for this sample
-    case class Keys()
-    case class Wallet()
-
-    // #per-session-child
 
     object KeyCabinet {
       case class GetKeys(whoseKeys: String, replyTo: ActorRef[Keys])
