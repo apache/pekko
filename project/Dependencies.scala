@@ -39,9 +39,7 @@ object Dependencies {
 
   val scala212Version = "2.12.17"
   val scala213Version = "2.13.10"
-  // To get the fix for https://github.com/lampepfl/dotty/issues/13106
-  // and restored static forwarders
-  val scala3Version = "3.1.2"
+  val scala3Version = "3.2.2" // Needed for Jackson 2.14.2
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.3"
