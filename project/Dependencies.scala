@@ -34,21 +34,8 @@ object Dependencies {
   val protobufJavaVersion = "3.16.1"
   val logbackVersion = "1.2.11"
 
-  val jacksonCoreVersion = Def.setting {
-    if (scalaVersion.value.startsWith("3.")) {
-      "2.13.2"
-    } else {
-      "2.11.4"
-    }
-  }
-
-  val jacksonDatabindVersion = Def.setting {
-    if (scalaVersion.value.startsWith("3.")) {
-      "2.13.2.2"
-    } else {
-      jacksonCoreVersion.value
-    }
-  }
+  val jacksonCoreVersion = "2.14.2"
+  val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.17"
   val scala213Version = "2.13.10"
@@ -138,28 +125,28 @@ object Dependencies {
     val asnOne = ("com.hierynomus" % "asn-one" % "0.5.0").exclude("org.slf4j", "slf4j-api") // ApacheV2
 
     val jacksonCore = Def.setting {
-      "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
     } // ApacheV2
     val jacksonAnnotations = Def.setting {
-      "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.core" % "jackson-annotations" % jacksonCoreVersion
     } // ApacheV2
     val jacksonDatabind = Def.setting {
-      "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion.value
+      "com.fasterxml.jackson.core" % "jackson-databind" % jacksonDatabindVersion
     } // ApacheV2
     val jacksonJdk8 = Def.setting {
-      "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.datatype" % "jackson-datatype-jdk8" % jacksonCoreVersion
     } // ApacheV2
     val jacksonJsr310 = Def.setting {
-      "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.datatype" % "jackson-datatype-jsr310" % jacksonCoreVersion
     } // ApacheV2
     val jacksonScala = Def.setting {
-      "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.module" %% "jackson-module-scala" % jacksonCoreVersion
     } // ApacheV2
     val jacksonParameterNames = Def.setting {
-      "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.module" % "jackson-module-parameter-names" % jacksonCoreVersion
     } // ApacheV2
     val jacksonCbor = Def.setting {
-      "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion.value
+      "com.fasterxml.jackson.dataformat" % "jackson-dataformat-cbor" % jacksonCoreVersion
     } // ApacheV2
     val lz4Java = "org.lz4" % "lz4-java" % "1.8.0" // ApacheV2
 
