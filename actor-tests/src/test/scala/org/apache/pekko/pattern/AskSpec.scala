@@ -237,7 +237,7 @@ class AskSpec extends PekkoSpec("""
       }))
 
       val f = (act ? "ask").mapTo[String]
-      val (promiseActorRef, "ask") = p.expectMsgType[(ActorRef, String)]
+      val (promiseActorRef, "ask") = p.expectMsgType[(ActorRef, String)]: @unchecked
 
       watch(promiseActorRef)
       promiseActorRef ! "complete"
@@ -258,12 +258,12 @@ class AskSpec extends PekkoSpec("""
         }), "myName")
 
       (act ? "ask").mapTo[String]
-      val (promiseActorRef, "ask") = p.expectMsgType[(ActorRef, String)]
+      val (promiseActorRef, "ask") = p.expectMsgType[(ActorRef, String)]: @unchecked
 
       promiseActorRef.path.name should startWith("myName")
 
       (system.actorSelection("/user/myName") ? "ask").mapTo[String]
-      val (promiseActorRefForSelection, "ask") = p.expectMsgType[(ActorRef, String)]
+      val (promiseActorRefForSelection, "ask") = p.expectMsgType[(ActorRef, String)]: @unchecked
       promiseActorRefForSelection.path.name should startWith("_user_myName")
     }
   }
