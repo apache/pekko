@@ -134,7 +134,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
           case Some((2, 12)) =>
             disciplineScalacOptions
           case _ =>
-            Nil
+            Seq("-Wconf:cat=deprecation:s")
         }).toSeq,
         Compile / scalacOptions --=
           (if (looseProjects.contains(name.value)) undisciplineScalacOptions.toSeq
