@@ -15,10 +15,12 @@ package org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.compat.java8.OptionConverters._
 import scala.util.Failure
 import scala.util.Success
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.PropertyAccessor
@@ -51,8 +53,6 @@ import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.util.unused
-
-import scala.annotation.nowarn
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)
