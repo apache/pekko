@@ -293,7 +293,7 @@ object Source {
    */
   def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]](
       stream: () => java.util.stream.BaseStream[T, S]): Source[T, NotUsed] =
-    StreamConverters.fromJavaStream(stream);
+    StreamConverters.fromJavaStream(stream)
 
   /**
    * Creates [[Source]] that will continually produce given elements in specified order.
@@ -516,8 +516,7 @@ object Source {
    * This stream could be useful in tests.
    */
   def never[T]: Source[T, NotUsed] = _never
-  private[this] val _never: Source[Nothing, NotUsed] =
-    future(Future.never).withAttributes(DefaultAttributes.neverSource)
+  private[this] val _never: Source[Nothing, NotUsed] = fromGraph(GraphStages.NeverSource)
 
   /**
    * Emits a single value when the given `CompletionStage` is successfully completed and then completes the stream.
