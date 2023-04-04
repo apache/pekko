@@ -17,7 +17,6 @@ import java.util.Optional
 import java.util.function.{ Consumer, Supplier }
 import javax.net.ssl.{ SSLContext, SSLEngine, SSLSession }
 
-import scala.compat.java8.OptionConverters
 import scala.util.Try
 
 import com.typesafe.sslconfig.pekko.PekkoSSLConfig
@@ -27,6 +26,7 @@ import pekko.{ japi, NotUsed }
 import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.util.ByteString
+import pekko.util.OptionConverters._
 
 /**
  * Stream cipher support based upon JSSE.
@@ -83,7 +83,7 @@ object TLS {
       sslConfig: Optional[PekkoSSLConfig],
       firstSession: NegotiateNewSession,
       role: TLSRole): BidiFlow[SslTlsOutbound, ByteString, ByteString, SslTlsInbound, NotUsed] =
-    new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, OptionConverters.toScala(sslConfig), firstSession, role))
+    new javadsl.BidiFlow(scaladsl.TLS.apply(sslContext, sslConfig.toScala, firstSession, role))
 
   /**
    * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
@@ -132,11 +132,11 @@ object TLS {
     new javadsl.BidiFlow(
       scaladsl.TLS.apply(
         sslContext,
-        OptionConverters.toScala(sslConfig),
+        sslConfig.toScala,
         firstSession,
         role,
         closing,
-        OptionConverters.toScala(hostInfo).map(e => (e.first, e.second))))
+        hostInfo.toScala.map(e => (e.first, e.second))))
 
   /**
    * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]] in client mode. The
@@ -169,7 +169,7 @@ object TLS {
         firstSession,
         role,
         closing,
-        OptionConverters.toScala(hostInfo).map(e => (e.first, e.second))))
+        hostInfo.toScala.map(e => (e.first, e.second))))
 
   /**
    * Create a StreamTls [[pekko.stream.javadsl.BidiFlow]]. This is a low-level interface.

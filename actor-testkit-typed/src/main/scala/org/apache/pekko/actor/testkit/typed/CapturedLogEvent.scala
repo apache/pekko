@@ -15,13 +15,12 @@ package org.apache.pekko.actor.testkit.typed
 
 import java.util.Optional
 
-import scala.compat.java8.OptionConverters._
-
 import org.slf4j.Marker
 import org.slf4j.event.Level
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.util.OptionConverters._
 import pekko.util.OptionVal
 
 /**
@@ -40,7 +39,7 @@ final case class CapturedLogEvent(level: Level, message: String, cause: Option[T
       errorCause: Optional[Throwable],
       marker: Optional[Marker],
       mdc: java.util.Map[String, Any]) =
-    this(level, message, errorCause.asScala, marker.asScala)
+    this(level, message, errorCause.toScala, marker.toScala)
 
   /**
    * Constructor for Java API
@@ -66,9 +65,9 @@ final case class CapturedLogEvent(level: Level, message: String, cause: Option[T
   def this(level: Level, message: String, errorCause: Throwable, marker: Marker) =
     this(level, message, Some(errorCause), Some(marker))
 
-  def getErrorCause: Optional[Throwable] = cause.asJava
+  def getErrorCause: Optional[Throwable] = cause.toJava
 
-  def getMarker: Optional[Marker] = marker.asJava
+  def getMarker: Optional[Marker] = marker.toJava
 }
 
 object CapturedLogEvent {

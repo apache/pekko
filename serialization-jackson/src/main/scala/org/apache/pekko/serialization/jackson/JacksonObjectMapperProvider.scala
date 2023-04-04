@@ -17,7 +17,6 @@ import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 import scala.annotation.nowarn
 import scala.collection.immutable
-import scala.compat.java8.OptionConverters._
 import scala.util.Failure
 import scala.util.Success
 
@@ -53,6 +52,7 @@ import pekko.annotation.InternalStableApi
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.util.unused
+import pekko.util.OptionConverters._
 
 object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvider] with ExtensionIdProvider {
   override def get(system: ActorSystem): JacksonObjectMapperProvider = super.get(system)
@@ -343,7 +343,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    *                    can be used
    */
   def getOrCreate(bindingName: String, jsonFactory: Optional[JsonFactory]): ObjectMapper =
-    getOrCreate(bindingName, jsonFactory.asScala)
+    getOrCreate(bindingName, jsonFactory.toScala)
 
   /**
    * Scala API: Creates a new instance of a Jackson `ObjectMapper` with sensible defaults and modules configured
@@ -380,7 +380,7 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * @see [[JacksonObjectMapperProvider#getOrCreate]]
    */
   def create(bindingName: String, jsonFactory: Optional[JsonFactory]): ObjectMapper =
-    create(bindingName, jsonFactory.asScala)
+    create(bindingName, jsonFactory.toScala)
 
 }
 

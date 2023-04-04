@@ -22,8 +22,6 @@ import java.util.function.Supplier
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.compat.java8.FutureConverters._
-import scala.compat.java8.OptionConverters.RichOptionalGeneric
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
@@ -43,7 +41,9 @@ import pekko.japi.function
 import pekko.japi.function.Creator
 import pekko.stream.{ javadsl, _ }
 import pekko.util.ConstantFun
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
 
@@ -88,7 +88,7 @@ object Flow {
    */
   def fromMaterializer[I, O, M](
       factory: BiFunction[Materializer, Attributes, Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] =
-    scaladsl.Flow.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.toJava).asJava
+    scaladsl.Flow.fromMaterializer((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
 
   /**
    * Defers the creation of a [[Flow]] until materialization. The `factory` function
@@ -98,7 +98,7 @@ object Flow {
   @deprecated("Use 'fromMaterializer' instead", "Akka 2.6.0")
   def setup[I, O, M](
       factory: BiFunction[ActorMaterializer, Attributes, Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] =
-    scaladsl.Flow.setup((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.toJava).asJava
+    scaladsl.Flow.setup((mat, attr) => factory(mat, attr).asScala).mapMaterializedValue(_.asJava).asJava
 
   /**
    * Creates a `Flow` from a `Sink` and a `Source` where the Flow's input
@@ -273,9 +273,9 @@ object Flow {
   def lazyInit[I, O, M](
       flowFactory: function.Function[I, CompletionStage[Flow[I, O, M]]],
       fallback: function.Creator[M]): Flow[I, O, M] = {
-    import scala.compat.java8.FutureConverters._
+    import pekko.util.FutureConverters._
     val sflow = scaladsl.Flow.lazyInit(
-      (flowFactory.apply(_)).andThen(_.toScala.map(_.asScala)(ExecutionContexts.parasitic)),
+      (flowFactory.apply(_)).andThen(_.asScala.map(_.asScala)(ExecutionContexts.parasitic)),
       fallback.create _)
     new Flow(sflow)
   }
@@ -299,12 +299,12 @@ object Flow {
   @deprecated("Use 'Flow.lazyCompletionStageFlow' instead", "Akka 2.6.0")
   def lazyInitAsync[I, O, M](
       flowFactory: function.Creator[CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[Optional[M]]] = {
-    import scala.compat.java8.FutureConverters._
+    import pekko.util.FutureConverters._
 
     val sflow = scaladsl.Flow
-      .lazyInitAsync(() => flowFactory.create().toScala.map(_.asScala)(ExecutionContexts.parasitic))
+      .lazyInitAsync(() => flowFactory.create().asScala.map(_.asScala)(ExecutionContexts.parasitic))
       .mapMaterializedValue(fut =>
-        fut.map(_.fold[Optional[M]](Optional.empty())(m => Optional.ofNullable(m)))(ExecutionContexts.parasitic).toJava)
+        fut.map(_.fold[Optional[M]](Optional.empty())(m => Optional.ofNullable(m)))(ExecutionContexts.parasitic).asJava)
     new Flow(sflow)
   }
 
@@ -316,9 +316,9 @@ object Flow {
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the completion stage has completed.
    */
   def completionStageFlow[I, O, M](flow: CompletionStage[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
-    import scala.compat.java8.FutureConverters._
+    import pekko.util.FutureConverters._
     val sflow =
-      scaladsl.Flow.futureFlow(flow.toScala.map(_.asScala)(ExecutionContexts.parasitic)).mapMaterializedValue(_.toJava)
+      scaladsl.Flow.futureFlow(flow.asScala.map(_.asScala)(ExecutionContexts.parasitic)).mapMaterializedValue(_.asJava)
     new javadsl.Flow(sflow)
   }
 
@@ -338,12 +338,12 @@ object Flow {
    * '''Cancels when''' downstream cancels
    */
   def lazyFlow[I, O, M](create: Creator[Flow[I, O, M]]): Flow[I, O, CompletionStage[M]] = {
-    import scala.compat.java8.FutureConverters._
+    import pekko.util.FutureConverters._
     val sflow = scaladsl.Flow
       .lazyFlow { () =>
         create.create().asScala
       }
-      .mapMaterializedValue(_.toJava)
+      .mapMaterializedValue(_.asJava)
     new javadsl.Flow(sflow)
   }
 
@@ -371,8 +371,8 @@ object Flow {
   def lazyCompletionStageFlow[I, O, M](
       create: Creator[CompletionStage[Flow[I, O, M]]]): Flow[I, O, CompletionStage[M]] =
     scaladsl.Flow
-      .lazyFutureFlow[I, O, M](() => create.create().toScala.map(_.asScala)(ExecutionContexts.parasitic))
-      .mapMaterializedValue(_.toJava)
+      .lazyFutureFlow[I, O, M](() => create.create().asScala.map(_.asScala)(ExecutionContexts.parasitic))
+      .mapMaterializedValue(_.asJava)
       .asJava
 
   /**
@@ -757,7 +757,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(
       delegate.statefulMap(() => create.create())(
         (s: S, out: Out) => f.apply(s, out).toScala,
-        (s: S) => onComplete.apply(s).asScala))
+        (s: S) => onComplete.apply(s).toScala))
 
   /**
    * Transform each input element into an `Iterable` of output elements that is
@@ -822,7 +822,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @see [[#mapAsyncUnordered]]
    */
   def mapAsync[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapAsync(parallelism)(x => f(x).toScala))
+    new Flow(delegate.mapAsync(parallelism)(x => f(x).asScala))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -856,7 +856,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @see [[#mapAsync]]
    */
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
-    new Flow(delegate.mapAsyncUnordered(parallelism)(x => f(x).toScala))
+    new Flow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
@@ -1169,7 +1169,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def scanAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).toScala
+      f(out, in).asScala
     })
 
   /**
@@ -1219,7 +1219,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def foldAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).toScala
+      f(out, in).asScala
     })
 
   /**
@@ -2193,7 +2193,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       f: function.Function[java.lang.Iterable[Out], javadsl.Flow[Out, Out2, Mat2]],
       matF: function.Function2[Mat, CompletionStage[Mat2], Mat3]): javadsl.Flow[In, Out2, Mat3] = {
     val newDelegate = delegate.flatMapPrefixMat(n)(seq => f(seq.asJava).asScala) { (m1, fm2) =>
-      matF(m1, fm2.toJava)
+      matF(m1, fm2.asJava)
     }
     new javadsl.Flow(newDelegate)
   }
@@ -3879,7 +3879,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * downstream.
    */
   def watchTermination[M]()(matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Flow[In, Out, M] =
-    new Flow(delegate.watchTermination()((left, right) => matF(left, right.toJava)))
+    new Flow(delegate.watchTermination()((left, right) => matF(left, right.asJava)))
 
   /**
    * Materializes to `FlowMonitor[Out]` that allows monitoring of the current flow. All events are propagated

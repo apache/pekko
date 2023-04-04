@@ -15,7 +15,6 @@ package org.apache.pekko.actor.typed.delivery
 
 import java.util.Optional
 
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
@@ -31,6 +30,7 @@ import pekko.actor.typed.receptionist.ServiceKey
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.ApiMayChange
 import pekko.util.JavaDurationConverters._
+import pekko.util.OptionConverters._
 
 /**
  * Work pulling is a pattern where several worker actors pull tasks in their own pace from
@@ -241,7 +241,7 @@ object WorkPullingProducerController {
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.asScala)(ClassTag(messageClass))
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala)(ClassTag(messageClass))
   }
 
   /**
@@ -253,6 +253,6 @@ object WorkPullingProducerController {
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, workerServiceKey, durableQueueBehavior.asScala, settings)(ClassTag(messageClass))
+    apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
   }
 }

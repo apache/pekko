@@ -16,12 +16,11 @@ package org.apache.pekko.persistence.testkit.javadsl
 import java.time.Duration
 import java.util.concurrent.CompletionStage
 
-import scala.compat.java8.FutureConverters._
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.ClassicActorSystemProvider
 import pekko.persistence.testkit.scaladsl
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**
@@ -50,6 +49,6 @@ object PersistenceInit {
       journalPluginId: String,
       snapshotPluginId: String,
       timeout: Duration): CompletionStage[Done] =
-    scaladsl.PersistenceInit.initializePlugins(system, journalPluginId, snapshotPluginId, timeout.asScala).toJava
+    scaladsl.PersistenceInit.initializePlugins(system, journalPluginId, snapshotPluginId, timeout.asScala).asJava
 
 }

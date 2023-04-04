@@ -19,12 +19,11 @@ import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.function.{ Function => JFunction }
 
-import scala.compat.java8.FunctionConverters._
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.state.internal._
 import pekko.util.OptionVal
+import pekko.util.FunctionConverters._
 
 /* Note that this is a copy of CommandHandler.scala to support ReplyEffect
  * s/Effect/ReplyEffect/
@@ -118,7 +117,7 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forNullState(): CommandHandlerWithReplyBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.isNull(s))
+    val predicate: Predicate[State] = ((s: State) => Objects.isNull(s)).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder
@@ -134,7 +133,7 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forNonNullState(): CommandHandlerWithReplyBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.nonNull(s))
+    val predicate: Predicate[State] = ((s: State) => Objects.nonNull(s)).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder
@@ -152,7 +151,7 @@ final class CommandHandlerWithReplyBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forAnyState(): CommandHandlerWithReplyBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(_ => true)
+    val predicate: Predicate[State] = ((_: State) => true).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder

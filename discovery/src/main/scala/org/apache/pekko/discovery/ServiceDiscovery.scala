@@ -19,13 +19,13 @@ import java.util.concurrent.CompletionStage
 import java.util.concurrent.TimeUnit
 
 import scala.collection.immutable
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.{ DeadLetterSuppression, NoSerializationVerificationNeeded }
 import pekko.util.HashCode
+import pekko.util.OptionConverters._
 
 object ServiceDiscovery {
 
@@ -108,13 +108,13 @@ object ServiceDiscovery {
      * Java API
      */
     def getPort: Optional[Int] =
-      port.asJava
+      port.toJava
 
     /**
      * Java API
      */
     def getAddress: Optional[InetAddress] =
-      address.asJava
+      address.toJava
 
     override def toString: String = s"ResolvedTarget($host,$port,$address)"
 
@@ -165,13 +165,13 @@ final class Lookup(val serviceName: String, val portName: Option[String], val pr
    * Java API
    */
   def getPortName: Optional[String] =
-    portName.asJava
+    portName.toJava
 
   /**
    * Java API
    */
   def getProtocol: Optional[String] =
-    protocol.asJava
+    protocol.toJava
 
   private def copy(
       serviceName: String = serviceName,
@@ -321,8 +321,8 @@ abstract class ServiceDiscovery {
    * The returned future should be failed once resolveTimeout has passed with a [[DiscoveryTimeoutException]].
    */
   def lookup(query: Lookup, resolveTimeout: java.time.Duration): CompletionStage[Resolved] = {
-    import scala.compat.java8.FutureConverters._
-    lookup(query, FiniteDuration(resolveTimeout.toMillis, TimeUnit.MILLISECONDS)).toJava
+    import pekko.util.FutureConverters._
+    lookup(query, FiniteDuration(resolveTimeout.toMillis, TimeUnit.MILLISECONDS)).asJava
   }
 
   /**

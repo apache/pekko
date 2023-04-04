@@ -18,7 +18,6 @@ import java.util.regex.Pattern
 
 import scala.annotation.tailrec
 import scala.collection.immutable
-import scala.compat.java8.FutureConverters
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
@@ -33,6 +32,7 @@ import pekko.pattern.ask
 import pekko.routing.MurmurHash
 import pekko.util.{ Helpers, JavaDurationConverters, Timeout }
 import pekko.util.ccompat._
+import pekko.util.FutureConverters
 
 /**
  * An ActorSelection is a logical view of a section of an ActorSystem's tree of Actors,
@@ -109,7 +109,7 @@ abstract class ActorSelection extends Serializable {
    */
   @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "Akka 2.5.20")
   def resolveOneCS(timeout: FiniteDuration): CompletionStage[ActorRef] =
-    FutureConverters.toJava[ActorRef](resolveOne(timeout))
+    FutureConverters.asJava[ActorRef](resolveOne(timeout))
 
   /**
    * Java API for [[#resolveOne]]
@@ -134,7 +134,7 @@ abstract class ActorSelection extends Serializable {
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
     import JavaDurationConverters._
-    FutureConverters.toJava[ActorRef](resolveOne(timeout.asScala))
+    FutureConverters.asJava[ActorRef](resolveOne(timeout.asScala))
   }
 
   override def toString: String = {

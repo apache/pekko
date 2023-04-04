@@ -16,7 +16,6 @@ package org.apache.pekko.stream.javadsl
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.compat.java8.FutureConverters._
 
 import org.apache.pekko
 import pekko.annotation.ApiMayChange
@@ -25,6 +24,7 @@ import pekko.japi.{ function, Pair, Util }
 import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.ccompat.JavaConverters._
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 object FlowWithContext {
@@ -176,7 +176,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
   def mapAsync[Out2](
       parallelism: Int,
       f: function.Function[Out, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
-    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).toScala))
+    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapConcat]].

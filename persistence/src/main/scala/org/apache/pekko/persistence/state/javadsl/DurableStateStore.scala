@@ -16,10 +16,9 @@ package org.apache.pekko.persistence.state.javadsl
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
-import scala.compat.java8.OptionConverters._
-
 import org.apache.pekko
 import pekko.persistence.state.scaladsl.{ GetObjectResult => SGetObjectResult }
+import pekko.util.OptionConverters._
 
 /**
  * API for reading durable state objects with payload `A`.
@@ -35,5 +34,5 @@ trait DurableStateStore[A] {
 }
 
 final case class GetObjectResult[A](value: Optional[A], revision: Long) {
-  def toScala: SGetObjectResult[A] = SGetObjectResult(value.asScala, revision)
+  def toScala: SGetObjectResult[A] = SGetObjectResult(value.toScala, revision)
 }

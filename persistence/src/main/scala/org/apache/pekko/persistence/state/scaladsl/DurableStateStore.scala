@@ -14,10 +14,10 @@
 package org.apache.pekko.persistence.state.scaladsl
 
 import scala.concurrent.Future
-import scala.compat.java8.OptionConverters._
 
 import org.apache.pekko
 import pekko.persistence.state.javadsl.{ GetObjectResult => JGetObjectResult }
+import pekko.util.OptionConverters._
 
 /**
  * API for reading durable state objects with payload `A`.
@@ -33,5 +33,5 @@ trait DurableStateStore[A] {
 }
 
 final case class GetObjectResult[A](value: Option[A], revision: Long) {
-  def toJava: JGetObjectResult[A] = JGetObjectResult(value.asJava, revision)
+  def toJava: JGetObjectResult[A] = JGetObjectResult(value.toJava, revision)
 }

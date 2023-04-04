@@ -16,11 +16,10 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Objects
 import java.util.function.{ BiFunction, Function => JFunction, Predicate, Supplier }
 
-import scala.compat.java8.FunctionConverters._
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.util.OptionVal
+import pekko.util.FunctionConverters._
 
 /**
  * FunctionalInterface for reacting on events having been persisted
@@ -108,7 +107,7 @@ final class EventHandlerBuilder[State, Event]() {
    * @return A new, mutable, EventHandlerBuilderByState
    */
   def forNullState(): EventHandlerBuilderByState[State, State, Event] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.isNull(s))
+    val predicate = ((s: State) => Objects.isNull(s)).asJava
     val builder = EventHandlerBuilderByState.builder[State, Event](predicate)
     builders = builder :: builders
     builder
@@ -124,7 +123,7 @@ final class EventHandlerBuilder[State, Event]() {
    * @return A new, mutable, EventHandlerBuilderByState
    */
   def forNonNullState(): EventHandlerBuilderByState[State, State, Event] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.nonNull(s))
+    val predicate = ((s: State) => Objects.nonNull(s)).asJava
     val builder = EventHandlerBuilderByState.builder[State, Event](predicate)
     builders = builder :: builders
     builder
@@ -142,7 +141,7 @@ final class EventHandlerBuilder[State, Event]() {
    * @return A new, mutable, EventHandlerBuilderByState
    */
   def forAnyState(): EventHandlerBuilderByState[State, State, Event] = {
-    val predicate: Predicate[State] = asJavaPredicate(_ => true)
+    val predicate = ((_: State) => true).asJava
     val builder = EventHandlerBuilderByState.builder[State, Event](predicate)
     builders = builder :: builders
     builder

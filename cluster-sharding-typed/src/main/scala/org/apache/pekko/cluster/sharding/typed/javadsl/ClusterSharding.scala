@@ -32,7 +32,8 @@ import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.internal.EntityTypeKeyImpl
 import pekko.japi.function.{ Function => JFunction }
 import pekko.pattern.StatusReply
-import scala.compat.java8.OptionConverters._
+import pekko.util.OptionConverters._
+
 @FunctionalInterface
 trait EntityFactory[M] {
   def apply(shardRegion: ActorRef[ClusterSharding.ShardCommand], entityId: String): Behavior[M]
@@ -358,13 +359,13 @@ final class Entity[M, E] private (
     new pekko.cluster.sharding.typed.scaladsl.Entity(
       eCtx => createBehavior(eCtx.toJava),
       typeKey.asScala,
-      stopMessage.asScala,
+      stopMessage.toScala,
       entityProps,
-      settings.asScala,
-      messageExtractor.asScala,
-      allocationStrategy.asScala,
-      role.asScala,
-      dataCenter.asScala)
+      settings.toScala,
+      messageExtractor.toScala,
+      allocationStrategy.toScala,
+      role.toScala,
+      dataCenter.toScala)
 
 }
 
