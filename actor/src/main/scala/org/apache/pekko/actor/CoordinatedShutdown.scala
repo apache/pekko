@@ -20,8 +20,6 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Supplier
 
 import scala.annotation.tailrec
-import scala.compat.java8.FutureConverters._
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.concurrent.duration.FiniteDuration
@@ -37,7 +35,9 @@ import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.event.Logging
 import pekko.pattern.after
+import pekko.util.OptionConverters._
 import pekko.util.OptionVal
+import pekko.util.FutureConverters._
 
 object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with ExtensionIdProvider {
 
@@ -588,7 +588,7 @@ final class CoordinatedShutdown private[pekko] (
    * to a later stage with confidence that they will be run.
    */
   def addCancellableTask(phase: String, taskName: String, task: Supplier[CompletionStage[Done]]): Cancellable = {
-    addCancellableTask(phase, taskName)(() => task.get().toScala)
+    addCancellableTask(phase, taskName)(() => task.get().asScala)
   }
 
   /**
@@ -628,7 +628,7 @@ final class CoordinatedShutdown private[pekko] (
    * and it will be performed.
    */
   def addTask(phase: String, taskName: String, task: Supplier[CompletionStage[Done]]): Unit =
-    addTask(phase, taskName)(() => task.get().toScala)
+    addTask(phase, taskName)(() => task.get().asScala)
 
   /**
    * Scala API: Add an actor termination task to a phase. It doesn't remove
@@ -674,7 +674,7 @@ final class CoordinatedShutdown private[pekko] (
    * and it will be performed.
    */
   def addActorTerminationTask(phase: String, taskName: String, actor: ActorRef, stopMsg: Optional[Any]): Unit =
-    addActorTerminationTask(phase, taskName, actor, stopMsg.asScala)
+    addActorTerminationTask(phase, taskName, actor, stopMsg.toScala)
 
   /**
    * The `Reason` for the shutdown as passed to the `run` method. `None` if the shutdown
@@ -686,7 +686,7 @@ final class CoordinatedShutdown private[pekko] (
    * The `Reason` for the shutdown as passed to the `run` method. `Optional.empty` if the shutdown
    * has not been started.
    */
-  def getShutdownReason(): Optional[Reason] = shutdownReason().asJava
+  def getShutdownReason(): Optional[Reason] = shutdownReason().toJava
 
   /**
    * Scala API: Run tasks of all phases. The returned
@@ -707,7 +707,7 @@ final class CoordinatedShutdown private[pekko] (
    *
    * It's safe to call this method multiple times. It will only run the shutdown sequence once.
    */
-  def runAll(reason: Reason): CompletionStage[Done] = run(reason).toJava
+  def runAll(reason: Reason): CompletionStage[Done] = run(reason).asJava
 
   @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def runAll(): CompletionStage[Done] = runAll(UnknownReason)
@@ -796,7 +796,7 @@ final class CoordinatedShutdown private[pekko] (
    * It's safe to call this method multiple times. It will only run the shutdown sequence once.
    */
   def run(reason: Reason, fromPhase: Optional[String]): CompletionStage[Done] =
-    run(reason, fromPhase.asScala).toJava
+    run(reason, fromPhase.toScala).asJava
 
   @deprecated("Use the method with `reason` parameter instead", since = "Akka 2.5.8")
   def run(fromPhase: Optional[String]): CompletionStage[Done] =

@@ -19,12 +19,11 @@ import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.function.{ Function => JFunction }
 
-import scala.compat.java8.FunctionConverters._
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.state.internal._
 import pekko.util.OptionVal
+import pekko.util.FunctionConverters._
 
 /**
  * FunctionalInterface for reacting on commands
@@ -110,7 +109,7 @@ final class CommandHandlerBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerBuilderByState
    */
   def forNullState(): CommandHandlerBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.isNull(s))
+    val predicate: Predicate[State] = ((s: State) => Objects.isNull(s)).asJava
     val builder = CommandHandlerBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder
@@ -126,7 +125,7 @@ final class CommandHandlerBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerBuilderByState
    */
   def forNonNullState(): CommandHandlerBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.nonNull(s))
+    val predicate: Predicate[State] = ((s: State) => Objects.nonNull(s)).asJava
     val builder = CommandHandlerBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder
@@ -144,7 +143,7 @@ final class CommandHandlerBuilder[Command, State]() {
    * @return A new, mutable, CommandHandlerBuilderByState
    */
   def forAnyState(): CommandHandlerBuilderByState[Command, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(_ => true)
+    val predicate: Predicate[State] = ((_: State) => true).asJava
     val builder = CommandHandlerBuilderByState.builder[Command, State](predicate)
     builders = builder :: builders
     builder

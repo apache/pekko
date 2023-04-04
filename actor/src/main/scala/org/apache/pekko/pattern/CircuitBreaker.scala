@@ -19,7 +19,6 @@ import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger, AtomicLong }
 import java.util.function.BiFunction
 import java.util.function.Consumer
 import scala.annotation.nowarn
-import scala.compat.java8.FutureConverters
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
@@ -31,6 +30,7 @@ import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
+import pekko.util.FutureConverters
 import pekko.util.JavaDurationConverters._
 import pekko.util.Unsafe
 
@@ -403,8 +403,8 @@ class CircuitBreaker(
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
   def callWithCircuitBreakerCS[T](body: Callable[CompletionStage[T]]): CompletionStage[T] =
-    FutureConverters.toJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-      override def call(): Future[T] = FutureConverters.toScala(body.call())
+    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
+      override def call(): Future[T] = FutureConverters.asScala(body.call())
     }))
 
   /**
@@ -418,8 +418,8 @@ class CircuitBreaker(
   def callWithCircuitBreakerCS[T](
       body: Callable[CompletionStage[T]],
       defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
-    FutureConverters.toJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-        override def call(): Future[T] = FutureConverters.toScala(body.call())
+    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
+        override def call(): Future[T] = FutureConverters.asScala(body.call())
       }, defineFailureFn))
 
   /**

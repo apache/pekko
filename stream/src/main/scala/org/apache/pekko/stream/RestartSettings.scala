@@ -13,12 +13,12 @@
 
 package org.apache.pekko.stream
 
-import scala.compat.java8.FunctionConverters._
 import scala.concurrent.duration.FiniteDuration
 import org.apache.pekko
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel
 import pekko.util.ConstantFun
+import pekko.util.FunctionConverters._
 import pekko.util.JavaDurationConverters._
 
 final class RestartSettings private (

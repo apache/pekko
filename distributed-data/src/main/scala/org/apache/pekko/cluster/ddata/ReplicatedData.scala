@@ -15,10 +15,9 @@ package org.apache.pekko.cluster.ddata
 
 import java.util.Optional
 
-import scala.compat.java8.OptionConverters._
-
 import org.apache.pekko
 import pekko.cluster.UniqueAddress
+import pekko.util.OptionConverters._
 
 /**
  * Interface for implementing a state based convergent
@@ -182,7 +181,7 @@ abstract class AbstractDeltaReplicatedData[A <: AbstractDeltaReplicatedData[A, B
    * Delegates to [[#deltaData]], which must be implemented by subclass.
    */
   final override def delta: Option[ReplicatedDelta] =
-    deltaData.asScala
+    deltaData.toScala
 
   /**
    * The accumulated delta of mutator operations since previous

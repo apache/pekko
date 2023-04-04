@@ -15,7 +15,6 @@ package org.apache.pekko.cluster.sharding.typed.delivery
 
 import java.util.Optional
 
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
@@ -34,6 +33,7 @@ import pekko.annotation.ApiMayChange
 import pekko.cluster.sharding.typed.ShardingEnvelope
 import pekko.cluster.sharding.typed.delivery.internal.ShardingProducerControllerImpl
 import pekko.util.JavaDurationConverters._
+import pekko.util.OptionConverters._
 
 /**
  * Reliable delivery between a producer actor sending messages to sharded consumer
@@ -297,7 +297,7 @@ object ShardingProducerController {
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
-    apply(producerId, region, durableQueueBehavior.asScala)(ClassTag(messageClass))
+    apply(producerId, region, durableQueueBehavior.toScala)(ClassTag(messageClass))
   }
 
   /**
@@ -309,7 +309,7 @@ object ShardingProducerController {
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings): Behavior[Command[A]] = {
-    apply(producerId, region, durableQueueBehavior.asScala, settings)(ClassTag(messageClass))
+    apply(producerId, region, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
   }
 
   // TODO maybe there is a need for variant taking message extractor instead of ShardingEnvelope

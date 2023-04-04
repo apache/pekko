@@ -15,8 +15,6 @@ package org.apache.pekko.persistence.testkit.state.javadsl
 
 import java.util.Optional
 import java.util.concurrent.{ CompletableFuture, CompletionStage }
-import scala.compat.java8.FutureConverters._
-import scala.compat.java8.OptionConverters._
 import org.apache.pekko
 import pekko.japi.Pair
 import pekko.{ Done, NotUsed }
@@ -28,6 +26,8 @@ import pekko.persistence.state.javadsl.DurableStateUpdateStore
 import pekko.persistence.state.javadsl.GetObjectResult
 import pekko.persistence.testkit.state.scaladsl.{ PersistenceTestKitDurableStateStore => SStore }
 import pekko.stream.javadsl.Source
+import pekko.util.FutureConverters._
+import pekko.util.OptionConverters._
 
 object PersistenceTestKitDurableStateStore {
   val Identifier = pekko.persistence.testkit.state.scaladsl.PersistenceTestKitDurableStateStore.Identifier
@@ -40,15 +40,15 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
     with DurableStateStorePagedPersistenceIdsQuery[A] {
 
   def getObject(persistenceId: String): CompletionStage[GetObjectResult[A]] =
-    stateStore.getObject(persistenceId).map(_.toJava)(stateStore.system.dispatcher).toJava
+    stateStore.getObject(persistenceId).map(_.toJava)(stateStore.system.dispatcher).asJava
 
   def upsertObject(persistenceId: String, seqNr: Long, value: A, tag: String): CompletionStage[Done] =
-    stateStore.upsertObject(persistenceId, seqNr, value, tag).toJava
+    stateStore.upsertObject(persistenceId, seqNr, value, tag).asJava
 
   def deleteObject(persistenceId: String): CompletionStage[Done] = CompletableFuture.completedFuture(Done)
 
   def deleteObject(persistenceId: String, revision: Long): CompletionStage[Done] =
-    stateStore.deleteObject(persistenceId, revision).toJava
+    stateStore.deleteObject(persistenceId, revision).asJava
 
   def changes(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] = {
     stateStore.changes(tag, offset).asJava
@@ -83,6 +83,6 @@ class PersistenceTestKitDurableStateStore[A](stateStore: SStore[A])
   }
 
   override def currentPersistenceIds(afterId: Optional[String], limit: Long): Source[String, NotUsed] =
-    stateStore.currentPersistenceIds(afterId.asScala, limit).asJava
+    stateStore.currentPersistenceIds(afterId.toScala, limit).asJava
 
 }

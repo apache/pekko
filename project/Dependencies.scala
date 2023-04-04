@@ -70,15 +70,7 @@ object Dependencies {
 
   val Versions =
     Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
-      java8CompatVersion := {
-        CrossVersion.partialVersion(scalaVersion.value) match {
-          // java8-compat is only used in a couple of places for 2.13,
-          // it is probably possible to remove the dependency if needed.
-          case Some((3, _))            => "1.0.0"
-          case Some((2, n)) if n >= 13 => "1.0.0"
-          case _                       => "0.8.0"
-        }
-      })
+      java8CompatVersion := "1.0.2")
 
   object Compile {
     // Compile
@@ -237,7 +229,13 @@ object Dependencies {
   // TODO check if `l ++=` everywhere expensive?
   val l = libraryDependencies
 
-  val actor = l ++= Seq(config, java8Compat.value)
+  val actor = l ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+    // java8-compat is only used in a couple of places for 2.13,
+    // it is probably possible to remove the dependency if needed.
+    case Some((2, n)) if n == 12 =>
+      List("org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value) // Scala License
+    case _ => List.empty
+  }) ++ Seq(config)
 
   val actorTyped = l ++= Seq(slf4jApi)
 

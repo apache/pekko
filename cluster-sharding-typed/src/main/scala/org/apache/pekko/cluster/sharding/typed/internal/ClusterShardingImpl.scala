@@ -19,7 +19,6 @@ import java.time.Duration
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
-import scala.compat.java8.FutureConverters._
 import scala.concurrent.Future
 
 import org.apache.pekko
@@ -52,6 +51,7 @@ import pekko.pattern.AskTimeoutException
 import pekko.pattern.PromiseActorRef
 import pekko.pattern.StatusReply
 import pekko.util.{ unused, ByteString, Timeout }
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**
@@ -148,19 +148,19 @@ import pekko.util.JavaDurationConverters._
 
   // javadsl impl
   override def init[M, E](entity: javadsl.Entity[M, E]): ActorRef[E] = {
-    import scala.compat.java8.OptionConverters._
+    import pekko.util.OptionConverters._
     init(
       new scaladsl.Entity(
         createBehavior = (ctx: EntityContext[M]) =>
           entity.createBehavior(new javadsl.EntityContext[M](entity.typeKey, ctx.entityId, ctx.shard)),
         typeKey = entity.typeKey.asScala,
-        stopMessage = entity.stopMessage.asScala,
+        stopMessage = entity.stopMessage.toScala,
         entityProps = entity.entityProps,
-        settings = entity.settings.asScala,
-        messageExtractor = entity.messageExtractor.asScala,
-        allocationStrategy = entity.allocationStrategy.asScala,
-        role = entity.role.asScala,
-        dataCenter = entity.dataCenter.asScala))
+        settings = entity.settings.toScala,
+        messageExtractor = entity.messageExtractor.toScala,
+        allocationStrategy = entity.allocationStrategy.toScala,
+        role = entity.role.toScala,
+        dataCenter = entity.dataCenter.toScala))
   }
 
   private def internalInit[M, E](
@@ -353,13 +353,13 @@ import pekko.util.JavaDurationConverters._
   }
 
   override def ask[U](message: JFunction[ActorRef[U], M], timeout: Duration): CompletionStage[U] =
-    ask[U](replyTo => message.apply(replyTo))(timeout.asScala).toJava
+    ask[U](replyTo => message.apply(replyTo))(timeout.asScala).asJava
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M)(implicit timeout: Timeout): Future[Res] =
     StatusReply.flattenStatusFuture(ask[StatusReply[Res]](f))
 
   override def askWithStatus[Res](f: ActorRef[StatusReply[Res]] => M, timeout: Duration): CompletionStage[Res] =
-    askWithStatus(f.apply)(timeout.asScala).toJava
+    askWithStatus(f.apply)(timeout.asScala).asJava
 
   /** Similar to [[pekko.actor.typed.scaladsl.AskPattern.PromiseRef]] but for an `EntityRef` target. */
   @InternalApi

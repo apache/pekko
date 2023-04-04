@@ -18,7 +18,6 @@ import java.time.Duration
 import java.util.Optional
 
 import scala.annotation.tailrec
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.{ classTag, ClassTag }
 import scala.util.control.NonFatal
@@ -33,6 +32,7 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.util.{ ByteString, OptionVal }
 import pekko.util.JavaDurationConverters._
 import pekko.util.LineNumbers
+import pekko.util.OptionConverters._
 
 /**
  * Holds attributes which can be used to alter [[pekko.stream.scaladsl.Flow]] / [[pekko.stream.javadsl.Flow]]
@@ -84,7 +84,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * This is the expected way for operators to access attributes.
    */
   def getAttribute[T <: Attribute](c: Class[T]): Optional[T] =
-    attributeList.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.asJava
+    attributeList.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
 
   /**
    * Scala API: Get the most specific attribute value for a given Attribute type or subclass thereof or
@@ -275,7 +275,7 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    */
   @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
   def getFirstAttribute[T <: Attribute](c: Class[T]): Optional[T] =
-    attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.asJava
+    attributeList.reverseIterator.collectFirst { case attr if c.isInstance(attr) => c.cast(attr) }.toJava
 
   /**
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.

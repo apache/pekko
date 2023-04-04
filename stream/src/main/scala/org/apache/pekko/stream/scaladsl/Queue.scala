@@ -16,8 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import java.util.Optional
 import java.util.concurrent.CompletionStage
 
-import scala.compat.java8.FutureConverters._
-import scala.compat.java8.OptionConverters._
 import scala.concurrent.Future
 
 import org.apache.pekko
@@ -25,6 +23,8 @@ import pekko.Done
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream.QueueOfferResult
+import pekko.util.FutureConverters._
+import pekko.util.OptionConverters._
 
 /**
  * This trait allows to have a queue as a data source for some stream.
@@ -107,9 +107,9 @@ object SourceQueueWithComplete {
       queue: SourceQueueWithComplete[T]): pekko.stream.javadsl.SourceQueueWithComplete[T] =
     new pekko.stream.javadsl.SourceQueueWithComplete[T] {
       def offer(elem: T): CompletionStage[QueueOfferResult] =
-        queue.offer(elem).toJava
+        queue.offer(elem).asJava
       def watchCompletion(): CompletionStage[Done] =
-        queue.watchCompletion().toJava
+        queue.watchCompletion().asJava
       def complete(): Unit = queue.complete()
       def fail(ex: Throwable): Unit = queue.fail(ex)
     }
@@ -157,7 +157,7 @@ object SinkQueueWithCancel {
       queue: SinkQueueWithCancel[T]): pekko.stream.javadsl.SinkQueueWithCancel[T] =
     new pekko.stream.javadsl.SinkQueueWithCancel[T] {
       override def pull(): CompletionStage[Optional[T]] =
-        queue.pull().map(_.asJava)(ExecutionContexts.parasitic).toJava
+        queue.pull().map(_.toJava)(ExecutionContexts.parasitic).asJava
       override def cancel(): Unit = queue.cancel()
     }
 }

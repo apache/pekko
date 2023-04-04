@@ -15,7 +15,6 @@ package org.apache.pekko.actor.typed.internal.adapter
 
 import java.util.concurrent.CompletionStage
 
-import scala.compat.java8.FutureConverters
 import scala.concurrent.ExecutionContextExecutor
 
 import org.slf4j.{ Logger, LoggerFactory }
@@ -43,6 +42,7 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
+import pekko.util.FutureConverters
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).
@@ -120,7 +120,7 @@ import pekko.annotation.InternalApi
   override lazy val whenTerminated: scala.concurrent.Future[pekko.Done] =
     system.whenTerminated.map(_ => Done)(parasitic)
   override lazy val getWhenTerminated: CompletionStage[pekko.Done] =
-    FutureConverters.toJava(whenTerminated)
+    FutureConverters.asJava(whenTerminated)
 
   override def systemActorOf[U](behavior: Behavior[U], name: String, props: Props): ActorRef[U] = {
     val ref = system.systemActorOf(

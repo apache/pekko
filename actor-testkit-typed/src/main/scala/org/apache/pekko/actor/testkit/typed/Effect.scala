@@ -13,12 +13,12 @@
 
 package org.apache.pekko.actor.testkit.typed
 
-import scala.compat.java8.FunctionConverters._
 import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.actor.typed.{ ActorRef, Behavior, Props }
 import pekko.annotation.{ DoNotInherit, InternalApi }
+import pekko.util.FunctionConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.unused
 

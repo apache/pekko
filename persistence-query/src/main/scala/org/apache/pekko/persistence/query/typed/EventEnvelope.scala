@@ -93,16 +93,16 @@ final class EventEnvelope[Event](
    * Java API
    */
   def getOptionalEvent(): Optional[Event] = {
-    import scala.compat.java8.OptionConverters._
-    eventOption.asJava
+    import pekko.util.OptionConverters._
+    eventOption.toJava
   }
 
   /**
    * Java API
    */
   def getEventMetaData(): Optional[AnyRef] = {
-    import scala.compat.java8.OptionConverters._
-    eventMetadata.map(_.asInstanceOf[AnyRef]).asJava
+    import pekko.util.OptionConverters._
+    eventMetadata.map(_.asInstanceOf[AnyRef]).toJava
   }
 
   override def hashCode(): Int = {

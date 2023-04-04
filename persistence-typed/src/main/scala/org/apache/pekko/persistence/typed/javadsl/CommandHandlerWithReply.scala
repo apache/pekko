@@ -16,11 +16,10 @@ package org.apache.pekko.persistence.typed.javadsl
 import java.util.Objects
 import java.util.function.{ BiFunction, Function => JFunction, Predicate, Supplier }
 
-import scala.compat.java8.FunctionConverters._
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.persistence.typed.internal._
+import pekko.util.FunctionConverters._
 import pekko.util.OptionVal
 
 /* Note that this is a copy of CommandHandler.scala to support ReplyEffect
@@ -117,7 +116,7 @@ final class CommandHandlerWithReplyBuilder[Command, Event, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forNullState(): CommandHandlerWithReplyBuilderByState[Command, Event, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.isNull(s))
+    val predicate = ((s: State) => Objects.isNull(s)).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, Event, State](predicate)
     builders = builder :: builders
     builder
@@ -133,7 +132,7 @@ final class CommandHandlerWithReplyBuilder[Command, Event, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forNonNullState(): CommandHandlerWithReplyBuilderByState[Command, Event, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(s => Objects.nonNull(s))
+    val predicate = ((s: State) => Objects.nonNull(s)).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, Event, State](predicate)
     builders = builder :: builders
     builder
@@ -151,7 +150,7 @@ final class CommandHandlerWithReplyBuilder[Command, Event, State]() {
    * @return A new, mutable, CommandHandlerWithReplyBuilderByState
    */
   def forAnyState(): CommandHandlerWithReplyBuilderByState[Command, Event, State, State] = {
-    val predicate: Predicate[State] = asJavaPredicate(_ => true)
+    val predicate = ((_: State) => true).asJava
     val builder = CommandHandlerWithReplyBuilderByState.builder[Command, Event, State](predicate)
     builders = builder :: builders
     builder

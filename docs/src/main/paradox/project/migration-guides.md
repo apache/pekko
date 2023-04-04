@@ -19,6 +19,12 @@ This is just stub documentation. It will be improved.
 * We have changed the default ports used by the pekko-remote module.
 * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
 * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
+* The Scala 2.13/Scala 3 version of Pekko no longer includes [scala-java8-compat](https://github.com/scala/scala-java8-compat)
+  as a dependency. This means if you were relying on `scala-java8-compat` along with Scala 2.12/Scala 3 as a transitive 
+  dependency it's recommended to migrate to using [`scala.jdk` instead](https://github.com/scala/scala-java8-compat#do-you-need-this).
+  If this is not possible/desired then you can add `scala-java8-compat` as dependency yourself.
+* In addition to the previous point, for Scala 2.12 `scala-java8-compat` has been updated to `1.0.2`. If you are using
+  an older binary incompatible version of `scala-java8-compat` its recommend to update to `1.0.2`.
 
 We are still investigating the effects of how the package name changes affect the @ref:[Persistence](../persistence.md)
 and @ref:[Cluster](../cluster-usage.md) modules.

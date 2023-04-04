@@ -20,8 +20,6 @@ import java.util.function.Supplier
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.compat.java8.FutureConverters._
-import scala.compat.java8.OptionConverters.RichOptionalGeneric
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
@@ -32,7 +30,9 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair, Util }
 import pekko.stream._
 import pekko.util.ConstantFun
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 object SubFlow {
@@ -242,7 +242,7 @@ class SubFlow[In, Out, Mat](
     new SubFlow(
       delegate.statefulMap(() => create.create())(
         (s: S, out: Out) => f.apply(s, out).toScala,
-        (s: S) => onComplete.apply(s).asScala))
+        (s: S) => onComplete.apply(s).toScala))
 
   /**
    * Transform each input element into an `Iterable` of output elements that is
@@ -308,7 +308,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#mapAsyncUnordered]]
    */
   def mapAsync[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsync(parallelism)(x => f(x).toScala))
+    new SubFlow(delegate.mapAsync(parallelism)(x => f(x).asScala))
 
   /**
    * Transform this stream by applying the given function to each of the elements
@@ -342,7 +342,7 @@ class SubFlow[In, Out, Mat](
    * @see [[#mapAsync]]
    */
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
-    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => f(x).toScala))
+    new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
 
   /**
    * Only pass on those elements that satisfy the given predicate.
@@ -575,7 +575,7 @@ class SubFlow[In, Out, Mat](
    */
   def scanAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.scanAsync(zero) { (out, in) =>
-      f(out, in).toScala
+      f(out, in).asScala
     })
 
   /**
@@ -625,7 +625,7 @@ class SubFlow[In, Out, Mat](
    */
   def foldAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldAsync(zero) { (out, in) =>
-      f(out, in).toScala
+      f(out, in).asScala
     })
 
   /**

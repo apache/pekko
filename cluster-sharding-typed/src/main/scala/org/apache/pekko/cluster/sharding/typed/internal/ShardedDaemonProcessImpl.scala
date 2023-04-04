@@ -16,7 +16,6 @@ package org.apache.pekko.cluster.sharding.typed.internal
 import java.util.function.IntFunction
 import java.util.Optional
 
-import scala.compat.java8.OptionConverters._
 import scala.reflect.ClassTag
 import org.apache.pekko
 import pekko.actor.typed.ActorRef
@@ -41,6 +40,7 @@ import pekko.cluster.sharding.typed.scaladsl.StartEntity
 import pekko.cluster.typed.Cluster
 import pekko.cluster.typed.SelfUp
 import pekko.cluster.typed.Subscribe
+import pekko.util.OptionConverters._
 import pekko.util.PrettyDuration
 
 /**
@@ -218,7 +218,7 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
       behaviorFactory: IntFunction[Behavior[T]],
       settings: ShardedDaemonProcessSettings,
       stopMessage: Optional[T]): Unit =
-    init(name, numberOfInstances, n => behaviorFactory(n), settings, stopMessage.asScala, None)(ClassTag(messageClass))
+    init(name, numberOfInstances, n => behaviorFactory(n), settings, stopMessage.toScala, None)(ClassTag(messageClass))
 
   def init[T](
       messageClass: Class[T],
@@ -233,6 +233,6 @@ private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
       numberOfInstances,
       n => behaviorFactory(n),
       settings,
-      stopMessage.asScala,
-      shardAllocationStrategy.asScala)(ClassTag(messageClass))
+      stopMessage.toScala,
+      shardAllocationStrategy.toScala)(ClassTag(messageClass))
 }

@@ -16,7 +16,6 @@ package org.apache.pekko.stream.javadsl
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.compat.java8.FutureConverters._
 
 import org.apache.pekko
 import pekko.actor.ClassicActorSystemProvider
@@ -28,6 +27,7 @@ import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.ccompat.JavaConverters._
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 object SourceWithContext {
@@ -172,7 +172,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def mapAsync[Out2](
       parallelism: Int,
       f: function.Function[Out, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
-    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).toScala))
+    viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapConcat]].

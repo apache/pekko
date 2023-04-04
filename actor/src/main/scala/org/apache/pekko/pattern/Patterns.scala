@@ -16,11 +16,11 @@ package org.apache.pekko.pattern
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
 
-import scala.compat.java8.FutureConverters._
 import scala.concurrent.ExecutionContext
 
 import org.apache.pekko
 import pekko.actor.{ ActorSelection, ClassicActorSystemProvider, Scheduler }
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**
@@ -104,7 +104,7 @@ object Patterns {
    * }}}
    */
   def ask(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(timeout.asScala).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * Use for messages whose response is known to be a [[pekko.pattern.StatusReply]]. When a [[pekko.pattern.StatusReply#success]] response
@@ -112,7 +112,7 @@ object Patterns {
    * failed.
    */
   def askWithStatus(actor: ActorRef, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAskWithStatus(actor, message)(timeout.asScala).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAskWithStatus(actor, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * A variation of ask which allows to implement "replyTo" pattern by including
@@ -147,7 +147,7 @@ object Patterns {
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(Timeout.create(timeout)).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(actor, messageFactory.apply _)(Timeout.create(timeout)).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -262,7 +262,7 @@ object Patterns {
    * }}}
    */
   def ask(selection: ActorSelection, message: Any, timeout: java.time.Duration): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(timeout.asScala).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, message)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -330,7 +330,7 @@ object Patterns {
       selection: ActorSelection,
       messageFactory: japi.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(selection, messageFactory.apply _)(timeout.asScala).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(selection, messageFactory.apply _)(timeout.asScala).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * Register an onComplete callback on this [[scala.concurrent.Future]] to send
@@ -395,7 +395,7 @@ object Patterns {
    * is completed with failure [[pekko.pattern.AskTimeoutException]].
    */
   def gracefulStop(target: ActorRef, timeout: java.time.Duration): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.asScala).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[scala.concurrent.Future]] that will be completed with success (value `true`) when
@@ -430,7 +430,7 @@ object Patterns {
       target: ActorRef,
       timeout: java.time.Duration,
       stopMessage: Any): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala, stopMessage).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.asScala, stopMessage).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[scala.concurrent.Future]] that will be completed with the success or failure of the provided Callable
@@ -495,7 +495,7 @@ object Patterns {
    */
   def retry[T](attempt: Callable[CompletionStage[T]], attempts: Int, ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
-    scalaRetry(() => attempt.call().toScala, attempts)(ec).toJava
+    scalaRetry(() => attempt.call().asScala, attempts)(ec).asJava
   }
 
   /**
@@ -557,9 +557,9 @@ object Patterns {
     require(attempt != null, "Parameter attempt should not be null.")
     require(minBackoff != null, "Parameter minBackoff should not be null.")
     require(maxBackoff != null, "Parameter minBackoff should not be null.")
-    scalaRetry(() => attempt.call().toScala, attempts, minBackoff.asScala, maxBackoff.asScala, randomFactor)(
+    scalaRetry(() => attempt.call().asScala, attempts, minBackoff.asScala, maxBackoff.asScala, randomFactor)(
       ec,
-      scheduler).toJava
+      scheduler).asJava
   }
 
   /**
@@ -613,7 +613,7 @@ object Patterns {
       scheduler: Scheduler,
       ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
-    scalaRetry(() => attempt.call().toScala, attempts, delay.asScala)(ec, scheduler).toJava
+    scalaRetry(() => attempt.call().asScala, attempts, delay.asScala)(ec, scheduler).asJava
   }
 
   /**
@@ -635,12 +635,12 @@ object Patterns {
       delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
       scheduler: Scheduler,
       context: ExecutionContext): CompletionStage[T] = {
-    import scala.compat.java8.OptionConverters._
+    import pekko.util.OptionConverters._
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
-      () => attempt.call().toScala,
+      () => attempt.call().asScala,
       attempts,
-      attempted => delayFunction.apply(attempted).asScala.map(_.asScala))(context, scheduler).toJava
+      attempted => delayFunction.apply(attempted).toScala.map(_.asScala))(context, scheduler).asJava
   }
 }
 
@@ -687,7 +687,7 @@ object PatternsCS {
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.15")
   def ask(actor: ActorRef, message: Any, timeout: Timeout): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(timeout).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(actor, message)(timeout).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -740,7 +740,7 @@ object PatternsCS {
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: Timeout): CompletionStage[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(timeout).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(actor, messageFactory.apply _)(timeout).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * A variation of ask which allows to implement "replyTo" pattern by including
@@ -762,7 +762,7 @@ object PatternsCS {
       actor: ActorRef,
       messageFactory: japi.function.Function[ActorRef, Any],
       timeout: java.time.Duration): CompletionStage[AnyRef] =
-    extended.ask(actor, messageFactory.apply _)(Timeout.create(timeout)).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    extended.ask(actor, messageFactory.apply _)(Timeout.create(timeout)).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -793,7 +793,7 @@ object PatternsCS {
    */
   @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def ask(actor: ActorRef, message: Any, timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
+    scalaAsk(actor, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).asJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**
@@ -847,7 +847,7 @@ object PatternsCS {
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.15")
   def ask(selection: ActorSelection, message: Any, timeout: Timeout): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(timeout).toJava.asInstanceOf[CompletionStage[AnyRef]]
+    scalaAsk(selection, message)(timeout).asJava.asInstanceOf[CompletionStage[AnyRef]]
 
   /**
    * <i>Java API for `org.apache.pekko.pattern.ask`:</i>
@@ -909,7 +909,7 @@ object PatternsCS {
    */
   @deprecated("Use Pattens.ask which accepts java.time.Duration instead.", since = "Akka 2.5.19")
   def ask(selection: ActorSelection, message: Any, timeoutMillis: Long): CompletionStage[AnyRef] =
-    scalaAsk(selection, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).toJava
+    scalaAsk(selection, message)(new Timeout(timeoutMillis, TimeUnit.MILLISECONDS)).asJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**
@@ -930,7 +930,7 @@ object PatternsCS {
       timeoutMillis: Long): CompletionStage[AnyRef] =
     extended
       .ask(selection, messageFactory.apply _)(Timeout(timeoutMillis.millis))
-      .toJava
+      .asJava
       .asInstanceOf[CompletionStage[AnyRef]]
 
   /**
@@ -966,7 +966,7 @@ object PatternsCS {
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def gracefulStop(target: ActorRef, timeout: FiniteDuration): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with success (value `true`) when
@@ -980,7 +980,7 @@ object PatternsCS {
    */
   @deprecated("Use Patterns.gracefulStop instead.", since = "Akka 2.5.19")
   def gracefulStop(target: ActorRef, timeout: java.time.Duration): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.asScala).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with success (value `true`) when
@@ -997,7 +997,7 @@ object PatternsCS {
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def gracefulStop(target: ActorRef, timeout: FiniteDuration, stopMessage: Any): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout, stopMessage).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout, stopMessage).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with success (value `true`) when
@@ -1017,7 +1017,7 @@ object PatternsCS {
       target: ActorRef,
       timeout: java.time.Duration,
       stopMessage: Any): CompletionStage[java.lang.Boolean] =
-    scalaGracefulStop(target, timeout.asScala, stopMessage).toJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
+    scalaGracefulStop(target, timeout.asScala, stopMessage).asJava.asInstanceOf[CompletionStage[java.lang.Boolean]]
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided Callable
@@ -1086,5 +1086,5 @@ object PatternsCS {
       delay: java.time.Duration,
       scheduler: Scheduler,
       ec: ExecutionContext): CompletionStage[T] =
-    scalaRetry(() => attempt.call().toScala, attempts, delay.asScala)(ec, scheduler).toJava
+    scalaRetry(() => attempt.call().asScala, attempts, delay.asScala)(ec, scheduler).asJava
 }

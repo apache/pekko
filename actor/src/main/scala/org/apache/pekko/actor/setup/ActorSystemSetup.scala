@@ -16,11 +16,11 @@ package org.apache.pekko.actor.setup
 import java.util.Optional
 
 import scala.annotation.varargs
-import scala.compat.java8.OptionConverters._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.util.OptionConverters._
 
 /**
  * Marker supertype for a setup part that can be put inside [[ActorSystemSetup]], if a specific concrete setup
@@ -67,7 +67,7 @@ final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val set
    * Java API: Extract a concrete [[Setup]] of type `T` if it is defined in the settings.
    */
   def get[T <: Setup](clazz: Class[T]): Optional[T] = {
-    setups.get(clazz).map(_.asInstanceOf[T]).asJava
+    setups.get(clazz).map(_.asInstanceOf[T]).toJava
   }
 
   /**
