@@ -152,7 +152,7 @@ class ActorMaterializerSpec extends StreamSpec with ImplicitSender {
 
       p.expectMsg("hello")
       a ! PoisonPill
-      val Failure(_) = p.expectMsgType[Try[Done]]
+      val Failure(_) = p.expectMsgType[Try[Done]]: @unchecked
     }
 
     "report correctly if it has been shut down from the side" in {

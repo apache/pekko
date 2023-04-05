@@ -15,7 +15,7 @@ package org.apache.pekko.serialization.jackson
 
 import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
-
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.compat.java8.OptionConverters._
 import scala.util.Failure
@@ -40,7 +40,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.json.JsonMapper
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule
 import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.actor.ClassicActorSystemProvider
@@ -136,6 +135,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     jsonFactory
   }
 
+  @nowarn("msg=deprecated")
   private def configureObjectMapperFeatures(
       bindingName: String,
       objectMapper: ObjectMapper,

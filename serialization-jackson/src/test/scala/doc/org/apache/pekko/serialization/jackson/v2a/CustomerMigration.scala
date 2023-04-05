@@ -18,10 +18,13 @@ import org.apache.pekko.serialization.jackson.JacksonMigration
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 
+import scala.annotation.nowarn
+
 class CustomerMigration extends JacksonMigration {
 
   override def currentVersion: Int = 2
 
+  @nowarn("msg=deprecated")
   override def transform(fromVersion: Int, json: JsonNode): JsonNode = {
     val root = json.asInstanceOf[ObjectNode]
     if (fromVersion <= 1) {
