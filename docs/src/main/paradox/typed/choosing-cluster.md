@@ -17,8 +17,6 @@ In a microservices architecture, you should consider communication within a serv
 In general we recommend against using Pekko Cluster and actor messaging between _different_ services because that
 would result in a too tight code coupling between the services and difficulties deploying these independent of
 each other, which is one of the main reasons for using a microservices architecture.
-See the discussion on @extref[Internal and External Communication](platform-guide:concepts/internal-and-external-communication.html)
-for some background on this.
 
 Nodes of a single service (collectively called a cluster) require less decoupling. They share the same code and
 are deployed together, as a set, by a single team or individual. There might be two versions running concurrently

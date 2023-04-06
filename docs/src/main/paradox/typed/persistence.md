@@ -39,9 +39,7 @@ or starting from a checkpoint in a snapshot, which can dramatically reduce recov
 
 Pekko Persistence also supports @ref:[Durable State Behaviors](durable-state/persistence.md), which is based on 
 persistence of the latest state of the actor. In this implementation, the _latest_ state is persisted, instead of events. 
-Hence this is more similar to CRUD based applications.
-
-The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) illustrates how to implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections.
+Hence, this is more similar to CRUD based applications.
 
 @@@ note
 
@@ -680,10 +678,6 @@ reference documentation of the chosen plugin.
 @scala[@extref[Persistence example project](samples:pekko-samples-persistence-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 This project contains a Shopping Cart sample illustrating how to use Pekko Persistence.
-
-The Shopping Cart sample is expanded further in the @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/).
-In that sample the events are tagged to be consumed by even processors to build other representations
-from the events, or publish the events to other services.
 
 @java[@extref[Multi-DC Persistence example project](samples:pekko-samples-persistence-dc-java)]
 @scala[@extref[Multi-DC Persistence example project](samples:pekko-samples-persistence-dc-scala)]
