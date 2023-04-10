@@ -11,7 +11,7 @@ please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migra
 This is just stub documentation. It will be improved.
 
 In your dependency management files:
-* Update dependency Akka version to the latest Pekko version.
+* Update dependency Akka version to the latest version of Pekko `1.0.x`.
 * for Pekko jar dependencies, the groupId is `org.apache.pekko` instead of `com.typesafe.akka` or `com.lightbend.akka.<package_name>`
 * the jar names start with "pekko" instead of "akka" - e.g. pekko-actor_2.13.jar instead of akka-actor_2.13.jar
 * Alpakka equivalent is "pekko-connectors" - e.g. pekko-connectors-kafka_2.13.jar instead of alpakka-kafka_2.13.jar
