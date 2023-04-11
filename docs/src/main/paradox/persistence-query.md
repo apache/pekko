@@ -33,9 +33,6 @@ recommend (in the spirit of CQRS) of splitting up the write/read sides into sepa
 For a similar implementation of query interface to @ref:[Durable State Behaviors](typed/durable-state/persistence.md)
 please refer to @ref:[Persistence Query using Durable State](durable-state/persistence-query.md).
 
-The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) explains how to
-implement an Event Sourced CQRS application with Pekko Persistence and Pekko Projections.
-
 ## Design overview
 
 Pekko persistence query is purposely designed to be a very loosely specified API.
@@ -333,8 +330,3 @@ resilience is important so that if a node crashes the persistent queries are qui
 resume operations @ref:[Cluster Sharding](cluster-sharding.md) together with event tagging is an excellent fit to 
 shard events over a cluster.
 
-## Example project
-
-The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) explains how to
-use Event Sourcing and Projections together. The events are tagged to be consumed by even processors to build
-other representations from the events, or publish the events to other services.

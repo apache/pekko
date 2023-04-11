@@ -50,13 +50,6 @@ This project contains a KillrWeather sample illustrating how to use Cluster Shar
 
 This project contains a Shopping Cart sample illustrating how to use Pekko Persistence.
 
-## CQRS
-
-The @extref[Microservices with Pekko tutorial](platform-guide:microservices-tutorial/) contains a
-Shopping Cart sample illustrating how to use Event Sourcing and Projections together. The events are
-tagged to be consumed by even processors to build other representations from the events, or publish the events
-to other services.
-
 ## Replicated Event Sourcing
 
 @java[@extref[Multi-DC Persistence example project](samples:pekko-samples-persistence-dc-java)]
