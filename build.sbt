@@ -5,7 +5,7 @@ ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / apacheSonatypeProjectProfile := "pekko"
-sourceDistName := "incubator-pekko"
+sourceDistName := "incubating-pekko"
 
 enablePlugins(
   UnidocRoot,
