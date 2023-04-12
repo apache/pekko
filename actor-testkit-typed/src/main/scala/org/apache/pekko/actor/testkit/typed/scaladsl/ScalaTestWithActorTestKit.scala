@@ -38,13 +38,9 @@ import pekko.actor.typed.ActorSystem
  * The application.conf of your project is not used in this case.
  * A specific configuration can be passed as constructor parameter.
  */
-abstract class ScalaTestWithActorTestKit(testKit: ActorTestKit)
+abstract class ScalaTestWithActorTestKit(override val testKit: ActorTestKit)
     extends ActorTestKitBase(testKit)
-    with TestSuite
-    with Matchers
-    with BeforeAndAfterAll
-    with ScalaFutures
-    with Eventually {
+    with ScalaTestWithActorTestKitBase {
 
   /**
    * Config loaded from `application-test.conf` if that exists, otherwise
@@ -74,6 +70,21 @@ abstract class ScalaTestWithActorTestKit(testKit: ActorTestKit)
    */
   def this(config: Config, settings: TestKitSettings) =
     this(ActorTestKit(ActorTestKitBase.testNameFromCallStack(), config, settings))
+}
+
+/**
+ * A ScalaTest base trait for the [[ActorTestKit]] which [[ScalaTestWithActorTestKit]] extends. If you find yourself in
+ * the situation where you need to extend the same test suite in different ways then you can implement your tests within
+ * a trait that extends [[ScalaTestWithActorTestKitBase]].
+ */
+trait ScalaTestWithActorTestKitBase
+    extends TestSuite
+    with Matchers
+    with BeforeAndAfterAll
+    with ScalaFutures
+    with Eventually {
+
+  def testKit: ActorTestKit
 
   /**
    * `PatienceConfig` from [[pekko.actor.testkit.typed.TestKitSettings#DefaultTimeout]].
