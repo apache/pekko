@@ -137,6 +137,17 @@ Scala
 Java
 :  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JunitIntegrationExampleTest.java) { #junit-integration }
 
+As you may have noticed @scaladoc[ScalaTestWithActorTestKit](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit) is an abstract class
+which means its problematic if you want treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
+[testcontainers-scala](https://github.com/testcontainers/testcontainers-scala) and hypothetically you want to extend the same test for each different type of database
+you support).
+
+If you find yourself in this situation you can instead define your tests within a trait that extends @scaladoc[ScalaTestWithActorTestKitBase](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKitBase).
+Since this is a trait you can then have different classes which extend this along with @scaladoc[ScalaTestWithActorTestKit](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit).
+
+Scala
+:  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #extend-multiple-times }
+
 ### Configuration
 
 By default the `ActorTestKit` loads configuration from `application-test.conf` if that exists, otherwise

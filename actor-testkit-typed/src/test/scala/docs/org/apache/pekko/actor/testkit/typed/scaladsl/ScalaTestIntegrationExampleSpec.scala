@@ -15,16 +15,19 @@ package docs.org.apache.pekko.actor.testkit.typed.scaladsl
 
 import scala.annotation.nowarn
 import docs.org.apache.pekko.actor.testkit.typed.scaladsl.AsyncTestingExampleSpec.Echo
-
+//#extend-multiple-times
 //#log-capturing
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 //#scalatest-integration
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import org.scalatest.wordspec.AnyWordSpecLike
-
 //#scalatest-integration
 //#log-capturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKitBase
+//#scalatest-integration
+import org.scalatest.wordspec.AnyWordSpecLike
+//#scalatest-integration
+//#extend-multiple-times
 
 @nowarn
 //#scalatest-integration
@@ -54,3 +57,23 @@ class LogCapturingExampleSpec extends ScalaTestWithActorTestKit with AnyWordSpec
   }
 }
 //#log-capturing
+
+//#extend-multiple-times
+
+trait ExtendTestMultipleTimes extends ScalaTestWithActorTestKitBase with AnyWordSpecLike with LogCapturing {
+  "ScalaTestWithActorTestKitBase" must {
+    "behave when extended in different ways" in {
+      val pinger = testKit.spawn(Echo(), "ping")
+      val probe = testKit.createTestProbe[Echo.Pong]()
+      val message = this.getClass.getSimpleName
+      pinger ! Echo.Ping(message, probe.ref)
+      val returnedMessage = probe.expectMessage(Echo.Pong(message))
+      returnedMessage.message.contains("ExtendTestMultipleTimes") shouldBe false
+    }
+  }
+
+}
+
+class TestWithOneImplementation extends ScalaTestWithActorTestKit with ExtendTestMultipleTimes
+class TestWithAnotherImplementation extends ScalaTestWithActorTestKit with ExtendTestMultipleTimes
+//#extend-multiple-times
