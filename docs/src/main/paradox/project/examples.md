@@ -52,8 +52,8 @@ This project contains a Shopping Cart sample illustrating how to use Pekko Persi
 
 ## Replicated Event Sourcing
 
-@java[@extref[Multi-DC Persistence example project](akka-samples:akka-samples-persistence-dc-java)]
-@scala[@extref[Multi-DC Persistence example project](akka-samples:akka-samples-persistence-dc-scala)]
+@java[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-java)]
+@scala[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-scala)]
 
 Illustrates how to use @ref:[Replicated Event Sourcing](../typed/replicated-eventsourcing.md) that supports
 active-active persistent entities across data centers.
