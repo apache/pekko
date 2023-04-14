@@ -246,5 +246,5 @@ pekko.actor.deployment {
 }
 ```
 The easiest way to run **Router Example with Pool of Routees** example yourself is to try the
-@scala[@extref[Pekko Cluster Sample with Scala](samples:pekko-samples-cluster-scala)]@java[@extref[Pekko Cluster Sample with Java](samples:pekko-samples-cluster-java)].
+@scala[@extref[Pekko Cluster Sample with Scala](samples:pekko-sample-cluster-scala)]@java[@extref[Pekko Cluster Sample with Java](samples:pekko-sample-cluster-java)].
 It contains instructions on how to run the **Router Example with Pool of Routees** sample.
