@@ -455,8 +455,8 @@ See @ref:[Reliable Delivery](reliable-delivery.md)
 
 ## Example project
 
-@java[@extref[Cluster example project](samples:pekko-samples-cluster-java)]
-@scala[@extref[Cluster example project](samples:pekko-samples-cluster-scala)]
+@java[@extref[Cluster example project](samples:pekko-sample-cluster-java)]
+@scala[@extref[Cluster example project](samples:pekko-sample-cluster-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains samples illustrating different Cluster features, such as

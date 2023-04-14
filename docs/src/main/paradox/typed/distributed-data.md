@@ -779,8 +779,8 @@ The `DistributedData` extension can be configured with the following properties:
 
 ## Example project
 
-@java[@extref[Distributed Data example project](samples:pekko-samples-distributed-data-java)]
-@scala[@extref[Distributed Data example project](samples:pekko-samples-distributed-data-scala)]
+@java[@extref[Distributed Data example project](samples:pekko-sample-distributed-data-java)]
+@scala[@extref[Distributed Data example project](samples:pekko-sample-distributed-data-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains several samples illustrating how to use Distributed Data.

@@ -14,7 +14,7 @@ To take advantage of running inside Kubernetes while forming a cluster,
 with the Kubernetes API or Kubernetes via DNS.  
 
 You can look at the
-@extref[Cluster with Kubernetes example project](samples:akka-sample-cluster-kubernetes-java)
+@extref[Cluster with Kubernetes example project](akka-samples:akka-sample-cluster-kubernetes-java)
 to see what this looks like in practice.
  
 ### Resource limits
@@ -28,8 +28,8 @@ that you will need to take special care with the network configuration when usin
 described here: @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
 
 You can look at the
-@java[@extref[Cluster with docker-compse example project](samples:akka-sample-cluster-docker-compose-java)]
-@scala[@extref[Cluster with docker-compose example project](samples:akka-sample-cluster-docker-compose-scala)]
+@java[@extref[Cluster with docker-compse example project](akka-samples:akka-sample-cluster-docker-compose-java)]
+@scala[@extref[Cluster with docker-compose example project](akka-samples:akka-sample-cluster-docker-compose-scala)]
 to see what this looks like in practice.
 
 For the JVM to run well in a Docker container, there are some general (not Pekko specific) parameters that might need tuning:
