@@ -1,5 +1,13 @@
 # Security Announcements
 
+@@toc { depth=2 }
+
+@@@ index
+
+* [dependency-check-report](dependency-check-report.md)
+
+@@@
+
 ## Receiving Security Advisories
 
 The best way to receive any and all security announcements is to subscribe to the [Apache Announce Mailing List](https://lists.apache.org/list.html?announce@apache.org).
@@ -16,6 +24,15 @@ Please follow the [guidelines](https://www.apache.org/security/) laid down by th
 
 Ideally, any issues affecting Apache Pekko and Akka should be reported to Apache team first. We will share the
 report with the Lightbend Akka team.
+
+## Dependency check scanner
+
+This project uses [sbt-dependency-check](https://github.com/albuch/sbt-dependency-check) in order to scan the
+projects dependencies against [OWASP](https://owasp.org/) to create a @ref:[dependency-check-report](dependency-check-report.md)
+of any potential security issues.
+
+If you want to suppress the checking of some dependencies then there is a [supression](github:dependency-check/suppression.xml)
+file. The format of this file is documented [here](https://jeremylong.github.io/DependencyCheck/general/suppression.html).
 
 ## Security Related Documentation
 

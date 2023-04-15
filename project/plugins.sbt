@@ -22,6 +22,7 @@ addSbtPlugin("com.lightbend.sbt" % "sbt-publish-rsync" % "0.2")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.5")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.6")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
+addSbtPlugin("net.vonbuchholtz" % "sbt-dependency-check" % "5.1.0")
 
 // allow access to snapshots for pekko-sbt-paradox
 resolvers += Resolver.ApacheMavenSnapshotsRepo

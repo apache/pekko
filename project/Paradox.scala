@@ -17,6 +17,7 @@ import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
 import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport._
+import net.vonbuchholtz.sbt.dependencycheck.DependencyCheckPlugin.autoImport._
 import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
@@ -90,6 +91,24 @@ object Paradox {
 
   val parsingSettings = Seq(Compile / paradoxParsingTimeout := 5.seconds)
 
+  val sourceGeneratorSettings = Seq(
+    Compile / paradoxMarkdownToHtml / sourceGenerators += Def.taskDyn {
+      val targetFile = (Compile / paradox / sourceManaged).value / "security" / "dependency-check-report.md"
+      val sourceFile = (LocalRootProject / dependencyCheckOutputDirectory).value.get / "dependency-check-report.html"
+
+      (LocalRootProject / dependencyCheckAggregate).map { _ =>
+        val data = IO.readLines(sourceFile)
+        IO.delete(targetFile) // Since we are appending lets clear any existing files if they exist
+        IO.writeLines(targetFile,
+          List(
+            "## Dependency Check Report",
+            "```raw"), append = true)
+        IO.writeLines(targetFile, data, append = true)
+        IO.writeLines(targetFile, List("```"), append = true)
+        List(targetFile)
+      }
+    }.taskValue)
+
   val settings =
     propertiesSettings ++
     rootsSettings ++
@@ -97,6 +116,7 @@ object Paradox {
     groupsSettings ++
     parsingSettings ++
     themeSettings ++
+    sourceGeneratorSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
       resolvers += Resolver.jcenterRepo,
