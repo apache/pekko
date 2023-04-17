@@ -37,10 +37,6 @@ A Pekko Persistence journal and snapshot store for use with JDBC-compatible data
 
 A Pekko Persistence journal and snapshot store for use with R2DBC-compatible databases. This implementation relies on [R2DBC](https://r2dbc.io/).
 
-## [Google Cloud Spanner Plugin for Pekko Persistence]($pekko.doc.dns$/docs/pekko-persistence-spanner/current/)
-
-Use [Google Cloud Spanner](https://cloud.google.com/spanner/) as Pekko Persistence journal and snapshot store. This integration relies on [Pekko gRPC]($pekko.doc.dns$/docs/pekko-grpc/current/).
-
 
 ## Apache Pekko Management
 

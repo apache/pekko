@@ -412,6 +412,5 @@ The @apidoc[SnapshotStoreSpec] in the Persistence TCK provides a capability flag
 
 The following plugins support Replicated Event Sourcing:
 
-* [Pekko Persistence Cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/index.html) versions 1.0.3+
-* [Pekko Persistence Spanner]($pekko.doc.dns$/docs/pekko-persistence-spanner/current/overview.html) versions 1.0.0-RC4+
-* [Pekko Persistence JDBC]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current) versions 5.0.0+
+* [Pekko Persistence Cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/index.html)
+* [Pekko Persistence JDBC]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current)
