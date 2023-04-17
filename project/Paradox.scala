@@ -105,7 +105,7 @@ object Paradox {
       resolvers += Resolver.jcenterRepo,
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
       publishRsyncArtifacts += {
-        val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
+        val releaseVersion = if (isSnapshot.value) "current" else version.value
         (Compile / paradox).value -> s"www/docs/pekko/$releaseVersion"
       })
 }
