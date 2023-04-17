@@ -1,4 +1,4 @@
-# https://cwiki.apache.org/confluence/display/INFRA/.asf.yaml+features+for+git+repositories
+# https://cwiki.apache.org/confluence/display/INFRA/Git+-+.asf.yaml+features
 
 github:
   description: "Build highly concurrent, distributed, and resilient message-driven applications using Java/Scala"
@@ -36,6 +36,10 @@ github:
         contexts:
           - Code is formatted
           - Check headers
+      required_pull_request_reviews:
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: false
+        required_approving_review_count: 1
 
 notifications:
   commits:              commits@pekko.apache.org
