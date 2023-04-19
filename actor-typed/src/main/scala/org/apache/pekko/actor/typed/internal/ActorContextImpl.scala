@@ -284,7 +284,7 @@ import scala.util.Success
   def pipeToSelf[Value](
       future: CompletionStage[Value],
       applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit = {
-    future.whenComplete { (value, ex) =>
+    future.handle { (value, ex) =>
       if (ex != null)
         self.unsafeUpcast ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
       else self.unsafeUpcast ! AdaptMessage(value, applyToResult.apply(_: Value, null))
