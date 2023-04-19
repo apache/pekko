@@ -19,7 +19,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 import language.implicitConversions
-
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorRef, Status }
 import pekko.actor.ActorSelection
@@ -47,31 +46,6 @@ trait PipeToSupport {
     }
     def to(recipient: ActorSelection): PipeableFuture[T] = to(recipient, Actor.noSender)
     def to(recipient: ActorSelection, sender: ActorRef): PipeableFuture[T] = {
-      pipeToSelection(recipient)(sender)
-      this
-    }
-  }
-
-  final class PipeableCompletionStage[T](val future: CompletionStage[T]) {
-    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete((t: T, ex: Throwable) => {
-        if (t != null) recipient ! t
-        if (ex != null) recipient ! Status.Failure(ex)
-      })
-    }
-    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete((t: T, ex: Throwable) => {
-        if (t != null) recipient ! t
-        if (ex != null) recipient ! Status.Failure(ex)
-      })
-    }
-    def to(recipient: ActorRef): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
-    def to(recipient: ActorRef, sender: ActorRef): PipeableCompletionStage[T] = {
-      pipeTo(recipient)(sender)
-      this
-    }
-    def to(recipient: ActorSelection): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
-    def to(recipient: ActorSelection, sender: ActorRef): PipeableCompletionStage[T] = {
       pipeToSelection(recipient)(sender)
       this
     }
@@ -119,4 +93,34 @@ trait PipeToSupport {
   implicit def pipeCompletionStage[T](future: CompletionStage[T])(
       implicit @unused executionContext: ExecutionContext): PipeableCompletionStage[T] =
     new PipeableCompletionStage(future)
+}
+
+final class PipeableCompletionStage[T](val future: CompletionStage[T]) extends AnyVal {
+  def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
+    future.whenComplete((t: T, ex: Throwable) => {
+      if (t != null) recipient ! t
+      if (ex != null) recipient ! Status.Failure(ex)
+    })
+  }
+
+  def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
+    future.whenComplete((t: T, ex: Throwable) => {
+      if (t != null) recipient ! t
+      if (ex != null) recipient ! Status.Failure(ex)
+    })
+  }
+
+  def to(recipient: ActorRef): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
+
+  def to(recipient: ActorRef, sender: ActorRef): PipeableCompletionStage[T] = {
+    pipeTo(recipient)(sender)
+    this
+  }
+
+  def to(recipient: ActorSelection): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
+
+  def to(recipient: ActorSelection, sender: ActorRef): PipeableCompletionStage[T] = {
+    pipeToSelection(recipient)(sender)
+    this
+  }
 }
