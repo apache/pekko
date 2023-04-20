@@ -53,36 +53,6 @@ trait PipeToSupport {
     }
   }
 
-  final class PipeableCompletionStage[T](val future: CompletionStage[T])(
-      implicit @unused executionContext: ExecutionContext) {
-    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete(new BiConsumer[T, Throwable] {
-        override def accept(t: T, ex: Throwable): Unit = {
-          if (t != null) recipient ! t
-          if (ex != null) recipient ! Status.Failure(ex)
-        }
-      })
-    }
-    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete(new BiConsumer[T, Throwable] {
-        override def accept(t: T, ex: Throwable): Unit = {
-          if (t != null) recipient ! t
-          if (ex != null) recipient ! Status.Failure(ex)
-        }
-      })
-    }
-    def to(recipient: ActorRef): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
-    def to(recipient: ActorRef, sender: ActorRef): PipeableCompletionStage[T] = {
-      pipeTo(recipient)(sender)
-      this
-    }
-    def to(recipient: ActorSelection): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
-    def to(recipient: ActorSelection, sender: ActorRef): PipeableCompletionStage[T] = {
-      pipeToSelection(recipient)(sender)
-      this
-    }
-  }
-
   /**
    * Import this implicit conversion to gain the `pipeTo` method on [[scala.concurrent.Future]]:
    *
@@ -123,5 +93,40 @@ trait PipeToSupport {
    * the failure is sent in a [[pekko.actor.Status.Failure]] to the recipient.
    */
   implicit def pipeCompletionStage[T](future: CompletionStage[T])(
-      implicit executionContext: ExecutionContext): PipeableCompletionStage[T] = new PipeableCompletionStage(future)
+      implicit @unused executionContext: ExecutionContext): PipeableCompletionStage[T] =
+    new PipeableCompletionStage(future)
+}
+
+final class PipeableCompletionStage[T](val future: CompletionStage[T]) extends AnyVal {
+  def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
+    future.whenComplete(new BiConsumer[T, Throwable] {
+      override def accept(t: T, ex: Throwable): Unit = {
+        if (t != null) recipient ! t
+        if (ex != null) recipient ! Status.Failure(ex)
+      }
+    })
+  }
+
+  def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
+    future.whenComplete(new BiConsumer[T, Throwable] {
+      override def accept(t: T, ex: Throwable): Unit = {
+        if (t != null) recipient ! t
+        if (ex != null) recipient ! Status.Failure(ex)
+      }
+    })
+  }
+
+  def to(recipient: ActorRef): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
+
+  def to(recipient: ActorRef, sender: ActorRef): PipeableCompletionStage[T] = {
+    pipeTo(recipient)(sender)
+    this
+  }
+
+  def to(recipient: ActorSelection): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
+
+  def to(recipient: ActorSelection, sender: ActorRef): PipeableCompletionStage[T] = {
+    pipeToSelection(recipient)(sender)
+    this
+  }
 }
