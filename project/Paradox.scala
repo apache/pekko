@@ -20,6 +20,7 @@ import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport._
 import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
+import sbtlicensereport.SbtLicenseReport.autoImportImpl.dumpLicenseReportAggregate
 
 import scala.concurrent.duration._
 
@@ -89,6 +90,15 @@ object Paradox {
 
   val parsingSettings = Seq(Compile / paradoxParsingTimeout := 5.seconds)
 
+  val sourceGeneratorSettings = Seq(
+    Compile / paradoxMarkdownToHtml / sourceGenerators += Def.taskDyn {
+      val targetFile = (Compile / paradox / sourceManaged).value / "project" / "license-report.md"
+
+      (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
+        IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
+      }
+    }.taskValue)
+
   val settings =
     propertiesSettings ++
     rootsSettings ++
@@ -96,6 +106,7 @@ object Paradox {
     groupsSettings ++
     parsingSettings ++
     themeSettings ++
+    sourceGeneratorSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
       resolvers += Resolver.jcenterRepo,
