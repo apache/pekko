@@ -61,7 +61,6 @@ object Paradox {
       "pekko.version" -> version.value,
       "scalatest.version" -> Dependencies.scalaTestVersion.value,
       "sigar_loader.version" -> "1.6.6-rev002",
-      "signature.pekko.base_dir" -> (ThisBuild / baseDirectory).value.getAbsolutePath,
       "fiddle.code.base_dir" -> (Test / sourceDirectory).value.getAbsolutePath,
       "fiddle.pekko.base_dir" -> (ThisBuild / baseDirectory).value.getAbsolutePath,
       "aeron_version" -> Dependencies.aeronVersion,
