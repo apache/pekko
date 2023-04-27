@@ -109,7 +109,7 @@ object IntroSpec {
   }
   //#hello-world-main
 
-  // This is run by ScalaFiddle
+  // Entry point for the execution
   HelloWorldMain.main(Array.empty)
   //#fiddle_code
   //format: ON

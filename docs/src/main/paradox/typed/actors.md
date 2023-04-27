@@ -165,9 +165,9 @@ You will also need to add a @ref:[logging dependency](logging.md) to see that ou
 
 @@@ div { .group-scala }
 
-#### Here is another example that you can edit and run in the browser:
+#### Here is another example:
 
-@@fiddle [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
+@@snip [IntroSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/IntroSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
 
 @@@
 

@@ -95,9 +95,9 @@ construction.
 
 @@@ div { .group-scala }
 
-#### Here is another example that you can edit and run in the browser:
+#### Here is another example:
 
-@@fiddle [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #fiddle_code template="Pekko" layout="v75" minheight="400px" }
+@@snip [ActorDocSpec.scala](/docs/src/test/scala/docs/actor/ActorDocSpec.scala) { #fiddle_code template="Pekko" layout="v75" minheight="400px" }
 
 @@@
 
