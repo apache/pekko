@@ -6,7 +6,7 @@ Merge multiple sources with priorities.
 
 ## Signature
 
-@@signature [Source.scala](/pekko-stream/src/main/scala/org/apache/pekko/stream/scaladsl/Source.scala) { #mergePrioritized }
+@apidoc[Source.mergePrioritizedN](Source) { scala="#mergePrioritizedN[T](sourcesAndPriorities:immutable.Seq[(Source[T,_],Int)],eagerComplete:Boolean):Source[T,NotUsed]" java="#mergePrioritized[T](sourcesAndPriorities:java.util.List[Pair[Source[T,_%3C:Any],java.lang.Integer]],eagerComplete:Boolean):javadsl.Source[T,NotUsed]" }
 
 ## Description
 

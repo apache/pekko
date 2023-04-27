@@ -116,10 +116,10 @@ whether the stream terminated normally or exceptionally.
 
 ### Browser-embedded example
  
-<a name="here-is-another-example-that-you-can-edit-and-run-in-the-browser-"></a>
-Here is another example that you can edit and run in the browser:
+<a name="here-is-another-example"></a>
+Here is another example:
 
-@@fiddle [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
+@@snip [TwitterStreamQuickstartDocSpec.scala](/docs/src/test/scala/docs/stream/TwitterStreamQuickstartDocSpec.scala) { #fiddle_code template=Pekko layout=v75 minheight=400px }
 
 
 ## Reusable Pieces
