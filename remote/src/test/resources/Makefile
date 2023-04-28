@@ -17,7 +17,7 @@ domain.cnf:
 	echo "subjectAltName=DNS:localhost" >> domain.cnf
 
 domain.csr: domain.cnf
-	openssl req -new -newkey rsa:2048 -keyout domain.key -subj "/C=ZA/ST=web/O=Lightbend/CN=akka-remote" -reqexts SAN -config domain.cnf -out domain.csr -passout pass:changeme
+	openssl req -new -newkey rsa:2048 -keyout domain.key -subj "/C=US/ST=Delaware/O=Apache/CN=pekko-remote" -reqexts SAN -config domain.cnf -out domain.csr -passout pass:changeme
 
 .PHONY: clean
 clean:
