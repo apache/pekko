@@ -150,7 +150,7 @@ private[remote] class Association(
     largeMessageDestinations: WildcardIndex[NotUsed],
     priorityMessageDestinations: WildcardIndex[NotUsed],
     outboundEnvelopePool: ObjectPool[ReusableOutboundEnvelope])
-    extends AbstractAssociation
+    extends AssociationInline
     with OutboundContext {
   import Association._
 
@@ -264,21 +264,10 @@ private[remote] class Association(
   private[artery] var _sharedStateDoNotCallMeDirectly: AssociationState = AssociationState()
 
   /**
-   * Helper method for access to underlying state via Unsafe
-   *
-   * @param oldState Previous state
-   * @param newState Next state on transition
-   * @return Whether the previous state matched correctly
-   */
-  @inline
-  private[artery] def swapState(oldState: AssociationState, newState: AssociationState): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractAssociation.sharedStateOffset, oldState, newState)
-
-  /**
    * @return Reference to current shared state
    */
   def associationState: AssociationState =
-    Unsafe.instance.getObjectVolatile(this, AbstractAssociation.sharedStateOffset).asInstanceOf[AssociationState]
+    Unsafe.instance.getObjectVolatile(this, sharedStateOffset).asInstanceOf[AssociationState]
 
   def setControlIdleKillSwitch(killSwitch: OptionVal[SharedKillSwitch]): Unit = {
     val current = associationState

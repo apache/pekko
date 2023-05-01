@@ -44,16 +44,13 @@ final case class SerializationCheckFailedException private[dungeon] (msg: Object
  * INTERNAL API
  */
 @InternalApi
-private[pekko] trait Dispatch { this: ActorCell =>
+private[pekko] trait Dispatch extends DispatchInline { this: ActorCell =>
 
   @nowarn @volatile private var _mailboxDoNotCallMeDirectly: Mailbox = _ // This must be volatile since it isn't protected by the mailbox status
 
   @nowarn private def _preventPrivateUnusedErasure = {
     _mailboxDoNotCallMeDirectly
   }
-
-  @inline final def mailbox: Mailbox =
-    Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]
 
   @tailrec final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox

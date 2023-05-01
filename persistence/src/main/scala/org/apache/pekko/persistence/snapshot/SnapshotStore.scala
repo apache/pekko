@@ -26,7 +26,7 @@ import pekko.persistence._
 /**
  * Abstract snapshot store.
  */
-trait SnapshotStore extends Actor with ActorLogging {
+trait SnapshotStore extends Actor with ActorLogging with SnapshotStoreInline {
   import SnapshotProtocol._
 
   private val extension = Persistence(context.system)
@@ -126,9 +126,6 @@ trait SnapshotStore extends Actor with ActorLogging {
         finally senderPersistentActor() ! evt
     }
   }
-
-  /** Documents intent that the sender() is expected to be the PersistentActor */
-  @inline private final def senderPersistentActor(): ActorRef = sender()
 
   private def tryReceivePluginInternal(evt: Any): Unit =
     if (receivePluginInternal.isDefinedAt(evt)) receivePluginInternal(evt)

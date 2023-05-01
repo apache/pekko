@@ -1,0 +1,3 @@
+ProblemFilters.exclude[IncompatibleTemplateDefProblem]("org.apache.pekko.util.Unsafe")
+ProblemFilters.exclude[MissingFieldProblem]("org.apache.pekko.util.Unsafe.instance")
+ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.Unsafe.this")

@@ -25,7 +25,7 @@ import org.apache.pekko.annotation.InternalApi
  */
 @InternalApi private[pekko] object PartialFunction {
 
-  def fromFunction[A, B](f: (A) => B): scala.PartialFunction[A, B] = {
+  @inline final def fromFunction[A, B](f: A => B): scala.PartialFunction[A, B] = {
     scala.PartialFunction.fromFunction(f)
   }
 

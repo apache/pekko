@@ -13,7 +13,7 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.util.Unsafe;
+import org.apache.pekko.util.Unsafe$;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -54,7 +54,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      */
     @SuppressWarnings("unchecked")
     protected final Node<T> peekNode() {
-        final Node<T> tail = ((Node<T>)Unsafe.instance.getObjectVolatile(this, tailOffset));
+        final Node<T> tail = ((Node<T>)Unsafe$.MODULE$.instance().getObjectVolatile(this, tailOffset));
         Node<T> next = tail.next();
         if (next == null && get() != tail) {
             // if tail != head this is not going to change until producer makes progress
@@ -110,7 +110,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      * @return true if queue was empty at some point in the past
      */
     public final boolean isEmpty() {
-        return Unsafe.instance.getObjectVolatile(this, tailOffset) == get();
+        return Unsafe$.MODULE$.instance().getObjectVolatile(this, tailOffset) == get();
     }
 
     /**
@@ -126,7 +126,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
     public final int count() {
         int count = 0;
         final Node<T> head = get();
-        for(Node<T> n = ((Node<T>) Unsafe.instance.getObjectVolatile(this, tailOffset)).next();
+        for(Node<T> n = ((Node<T>) Unsafe$.MODULE$.instance().getObjectVolatile(this, tailOffset)).next();
             n != null && count < Integer.MAX_VALUE; 
             n = n.next()) {
           ++count;
@@ -162,7 +162,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
      */
     @SuppressWarnings("unchecked")
     public final Node<T> pollNode() {
-      final Node<T> tail = (Node<T>) Unsafe.instance.getObjectVolatile(this, tailOffset);
+      final Node<T> tail = (Node<T>) Unsafe$.MODULE$.instance().getObjectVolatile(this, tailOffset);
       Node<T> next = tail.next();
       if (next == null && get() != tail) {
           // if tail != head this is not going to change until producer makes progress
@@ -175,7 +175,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
       else {
         tail.value = next.value;
         next.value = null;
-        Unsafe.instance.putOrderedObject(this, tailOffset, next);
+        Unsafe$.MODULE$.instance().putOrderedObject(this, tailOffset, next);
         tail.setNext(null);
         return tail;
       }
@@ -185,7 +185,7 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
 
     static {
         try {
-          tailOffset = Unsafe.instance.objectFieldOffset(AbstractNodeQueue.class.getDeclaredField("_tailDoNotCallMeDirectly"));
+          tailOffset = Unsafe$.MODULE$.instance().objectFieldOffset(AbstractNodeQueue.class.getDeclaredField("_tailDoNotCallMeDirectly"));
         } catch(Throwable t){
             throw new ExceptionInInitializerError(t);
         }
@@ -206,18 +206,18 @@ public abstract class AbstractNodeQueue<T> extends AtomicReference<AbstractNodeQ
 
         @SuppressWarnings("unchecked")
         public final Node<T> next() {
-            return (Node<T>)Unsafe.instance.getObjectVolatile(this, nextOffset);
+            return (Node<T>)Unsafe$.MODULE$.instance().getObjectVolatile(this, nextOffset);
         }
 
         protected final void setNext(final Node<T> newNext) {
-          Unsafe.instance.putOrderedObject(this, nextOffset, newNext);
+          Unsafe$.MODULE$.instance().putOrderedObject(this, nextOffset, newNext);
         }
         
         private final static long nextOffset;
         
         static {
             try {
-                nextOffset = Unsafe.instance.objectFieldOffset(Node.class.getDeclaredField("_nextDoNotCallMeDirectly"));
+                nextOffset = Unsafe$.MODULE$.instance().objectFieldOffset(Node.class.getDeclaredField("_nextDoNotCallMeDirectly"));
             } catch(Throwable t){
                 throw new ExceptionInInitializerError(t);
             } 

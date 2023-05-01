@@ -13,7 +13,7 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.util.Unsafe;
+import org.apache.pekko.util.Unsafe$;
 
 abstract class AbstractMessageDispatcher {
     final static long shutdownScheduleOffset;
@@ -21,8 +21,8 @@ abstract class AbstractMessageDispatcher {
 
     static {
         try {
-          shutdownScheduleOffset = Unsafe.instance.objectFieldOffset(MessageDispatcher.class.getDeclaredField("_shutdownScheduleDoNotCallMeDirectly"));
-          inhabitantsOffset = Unsafe.instance.objectFieldOffset(MessageDispatcher.class.getDeclaredField("_inhabitantsDoNotCallMeDirectly"));
+          shutdownScheduleOffset = Unsafe$.MODULE$.instance().objectFieldOffset(MessageDispatcher.class.getDeclaredField("_shutdownScheduleDoNotCallMeDirectly"));
+          inhabitantsOffset = Unsafe$.MODULE$.instance().objectFieldOffset(MessageDispatcher.class.getDeclaredField("_inhabitantsDoNotCallMeDirectly"));
         } catch(Throwable t){
             throw new ExceptionInInitializerError(t);
         }

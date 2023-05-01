@@ -1097,7 +1097,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     this
   }
 
-  @inline protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
+  protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
     fillArray(len) {
       case (array, start) =>
         val buffer = ByteBuffer.wrap(array, start, len)
@@ -1128,7 +1128,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     _tempCapacity = _temp.length
   }
 
-  @inline private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
+  inline private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
 
   private def ensureTempSize(size: Int): Unit = {
     if (shouldResizeTempFor(size)) {
@@ -1139,7 +1139,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   }
 
   // We'd really like to have this overload to prevent boxing, but it's forbidden because sc.mutable.Growable makes
-  // it final. I guess it assumes to prevent the boxing overhead by using @inline but that doesn't seem to be true.
+  // it final. I guess it assumes to prevent the boxing overhead by using inline but that doesn't seem to be true.
   // def +=(elem: Byte): this.type = addOne(elem)
 
   override def addOne(elem: Byte): this.type = {

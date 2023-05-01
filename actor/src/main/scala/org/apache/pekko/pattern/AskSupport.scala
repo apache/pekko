@@ -28,7 +28,7 @@ import pekko.actor._
 import pekko.annotation.{ InternalApi, InternalStableApi }
 import pekko.dispatch.ExecutionContexts
 import pekko.dispatch.sysmsg._
-import pekko.util.{ Timeout, Unsafe }
+import pekko.util.Timeout
 import pekko.util.ByteString
 import pekko.util.unused
 
@@ -517,8 +517,8 @@ private[pekko] final class PromiseActorRef(
     val result: Promise[Any],
     _mcn: String,
     refPathPrefix: String)
-    extends MinimalActorRef {
-  import AbstractPromiseActorRef.{ stateOffset, watchedByOffset }
+    extends MinimalActorRef
+    with PromiseActorRefInline {
   import PromiseActorRef._
 
   // This is necessary for weaving the PromiseActorRef into the asked message, i.e. the replyTo pattern.
@@ -549,14 +549,6 @@ private[pekko] final class PromiseActorRef(
     _watchedByDoNotCallMeDirectly
   }
 
-  @inline
-  private[this] def watchedBy: Set[ActorRef] =
-    Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]
-
-  @inline
-  private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy)
-
   @tailrec // Returns false if the Promise is already completed
   private[this] final def addWatcher(watcher: ActorRef): Boolean = watchedBy match {
     case null  => false
@@ -574,16 +566,6 @@ private[pekko] final class PromiseActorRef(
     case null  => ActorCell.emptyActorRefSet
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
-
-  @inline
-  private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset)
-
-  @inline
-  private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState)
-
-  @inline
-  private[this] def setState(newState: AnyRef): Unit = Unsafe.instance.putObjectVolatile(this, stateOffset, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer
 

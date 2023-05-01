@@ -68,7 +68,8 @@ private[pekko] object Mailbox {
 private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
     extends ForkJoinTask[Unit]
     with SystemMessageQueue
-    with Runnable {
+    with Runnable
+    with MailboxInline {
 
   import Mailbox._
 
@@ -121,31 +122,15 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
   @volatile
   protected var _systemQueueDoNotCallMeDirectly: SystemMessage = _ // null by default
 
-  @inline
-  final def currentStatus: Mailbox.Status = Unsafe.instance.getIntVolatile(this, AbstractMailbox.mailboxStatusOffset)
-
-  @inline
   final def shouldProcessMessage: Boolean = (currentStatus & shouldNotProcessMask) == 0
 
-  @inline
   final def suspendCount: Int = currentStatus / suspendUnit
 
-  @inline
   final def isSuspended: Boolean = (currentStatus & suspendMask) != 0
 
-  @inline
   final def isClosed: Boolean = currentStatus == Closed
 
-  @inline
   final def isScheduled: Boolean = (currentStatus & Scheduled) != 0
-
-  @inline
-  protected final def updateStatus(oldStatus: Status, newStatus: Status): Boolean =
-    Unsafe.instance.compareAndSwapInt(this, AbstractMailbox.mailboxStatusOffset, oldStatus, newStatus)
-
-  @inline
-  protected final def setStatus(newStatus: Status): Unit =
-    Unsafe.instance.putIntVolatile(this, AbstractMailbox.mailboxStatusOffset, newStatus)
 
   /**
    * Reduce the suspend count by one. Caller does not need to worry about whether

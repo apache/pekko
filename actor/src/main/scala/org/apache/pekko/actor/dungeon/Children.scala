@@ -29,7 +29,7 @@ private[pekko] object Children {
   val GetNobody = () => Nobody
 }
 
-private[pekko] trait Children { this: ActorCell =>
+private[pekko] trait Children extends ChildrenInline { this: ActorCell =>
 
   import ChildrenContainer._
 
@@ -144,12 +144,6 @@ private[pekko] trait Children { this: ActorCell =>
     _functionRefsDoNotCallMeDirectly
     _nextNameDoNotCallMeDirectly
   }
-
-  /*
-   * low level CAS helpers
-   */
-  @inline private final def swapChildrenRefs(oldChildren: ChildrenContainer, newChildren: ChildrenContainer): Boolean =
-    Unsafe.instance.compareAndSwapObject(this, AbstractActorCell.childrenOffset, oldChildren, newChildren)
 
   @tailrec final def reserveChild(name: String): Boolean = {
     val c = childrenRefs
