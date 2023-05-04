@@ -57,9 +57,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
         case (_, project) if !ignoredProjects.contains(project.id) =>
           val directory = project.base.getPath.split(java.io.File.separatorChar).last
           PathGlobFilter(s"$directory/**")
-      }.fold(new FileFilter { // TODO: Replace with FileFilter.nothing when https://github.com/sbt/io/pull/340 gets released
-        override def accept(pathname: File): Boolean = false
-      })(_ || _)
+      }.fold(FileFilter.nothing)(_ || _)
     },
     validatePullRequestBuildAll / excludeFilter := PathGlobFilter("project/MiMa.scala"),
     prValidatorGithubRepository := Some("apache/incubator-pekko"),
