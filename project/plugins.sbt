@@ -24,7 +24,7 @@ addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.6")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
 
 // allow access to snapshots for pekko-sbt-paradox
-resolvers += "Apache Nexus Snapshots".at("https://repository.apache.org/content/repositories/snapshots/")
+resolvers += Resolver.ApacheMavenSnapshotsRepo
 
 // We have to deliberately use older versions of sbt-paradox because current Pekko sbt build
 // only loads on JDK 1.8 so we need to bring in older versions of parboiled which support JDK 1.8

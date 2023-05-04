@@ -73,7 +73,7 @@ object Paradox {
 
   val themeSettings = Seq(
     // allow access to snapshots for pekko-sbt-paradox
-    resolvers += "Apache Nexus Snapshots".at("https://repository.apache.org/content/repositories/snapshots/"),
+    resolvers += Resolver.ApacheMavenSnapshotsRepo,
     pekkoParadoxGithub := Some("https://github.com/apache/incubator-pekko"))
 
   // FIXME https://github.com/lightbend/paradox/issues/350
