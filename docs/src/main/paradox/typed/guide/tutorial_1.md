@@ -23,7 +23,7 @@ An actor in Pekko always belongs to a parent. You create an actor by calling  @a
 _parent_ of the newly created _child_ actor. You might ask then, who is the parent of the _first_ actor you create?
 
 As illustrated below, all actors have a common parent, the user guardian, which is defined and created when you start the @apidoc[actor.typed.ActorSystem].
-As we covered in the @scala[[Quickstart Guide](https://developer.lightbend.com/guides/akka-quickstart-scala/)]@java[[Quickstart Guide](https://developer.lightbend.com/guides/akka-quickstart-java/)], creation of an actor returns a reference that is a valid URL. So, for example, if we create an actor named `someActor` from the user guardian with `context.spawn(someBehavior, "someActor")`, its reference will include the path `/user/someActor`.
+As we covered in the @scala[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-scala.g8)]@java[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-java.g8)], creation of an actor returns a reference that is a valid URL. So, for example, if we create an actor named `someActor` from the user guardian with `context.spawn(someBehavior, "someActor")`, its reference will include the path `/user/someActor`.
 
 ![actor tree diagram](diagrams/actor_top_tree.png)
 
