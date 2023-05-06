@@ -36,7 +36,6 @@ object Paradox {
       "extref.wikipedia.base_url" -> "https://en.wikipedia.org/wiki/%s",
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> s"$pekkoBaseURL/docs/pekko-samples/current/%s",
-      "extref.akka-samples.base_url" -> "https://developer.lightbend.com/start/?group=akka&amp;project=%s",
       "pekko.doc.dns" -> s"$pekkoBaseURL",
       "scaladoc.pekko.base_url" -> s"$pekkoBaseURL/api/pekko/current/org/apache",
       "scaladoc.pekko.http.base_url" -> s"$pekkoBaseURL/api/pekko-http/current/org/apache",

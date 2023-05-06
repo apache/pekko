@@ -60,14 +60,15 @@ active-active persistent entities across data centers.
 
 ## Cluster with Docker
 
-@java[@extref[Cluster with docker-compose example project](akka-samples:akka-sample-cluster-docker-compose-java)]
-@scala[@extref[Cluster with docker-compose example project](akka-samples:akka-sample-cluster-docker-compose-scala)]
+@java[[Cluster with docker-compose example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
+@scala[[Cluster with docker-compose example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
 
 Illustrates how to use Pekko Cluster with Docker compose.
 
 ## Cluster with Kubernetes
 
-@extref[Cluster with Kubernetes example project](akka-samples:akka-sample-cluster-kubernetes-java)
+@java[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
+@scala[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-scala)]
 
 This sample illustrates how to form a Pekko Cluster with Pekko Bootstrap when running in Kubernetes.
 
