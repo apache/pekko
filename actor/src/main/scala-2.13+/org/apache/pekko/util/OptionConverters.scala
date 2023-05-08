@@ -12,6 +12,7 @@ package org.apache.pekko.util
 import org.apache.pekko.annotation.InternalStableApi
 
 import java.util.Optional
+import scala.jdk.OptionShape
 
 /**
  * INTERNAL API
@@ -22,9 +23,15 @@ import java.util.Optional
 private[pekko] object OptionConverters {
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
     @inline def toScala: Option[A] = scala.jdk.OptionConverters.RichOptional(o).toScala
+
+    @inline def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
+      scala.jdk.OptionConverters.RichOptional(o).toJavaPrimitive
   }
 
   implicit final class RichOption[A](private val o: Option[A]) extends AnyVal {
     @inline def toJava: Optional[A] = scala.jdk.OptionConverters.RichOption(o).toJava
+
+    def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
+      scala.jdk.OptionConverters.RichOption(o).toJavaPrimitive
   }
 }
