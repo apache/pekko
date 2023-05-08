@@ -50,4 +50,7 @@ object Scala212CompatTest {
   val javaOptionalLong: java.util.OptionalLong = java.util.OptionalLong.of(1L)
   val optionalLongToScala: Option[Long] = javaOptionalLong.toScala
   val optionalLongToJavaGeneric: Optional[Long] = javaOptionalLong.toJavaGeneric
+
+  // OptionConverters toScala and toJava
+  OptionConverters.toJava(OptionConverters.toScala(java.util.Optional.of("")))
 }

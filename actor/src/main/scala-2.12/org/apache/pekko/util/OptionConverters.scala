@@ -22,6 +22,10 @@ import java.util._
 private[pekko] object OptionConverters {
   import scala.compat.java8.OptionConverters.SpecializerOfOptions
 
+  @inline final def toScala[A](o: Optional[A]): Option[A] = scala.compat.java8.OptionConverters.toScala(o)
+
+  @inline final def toJava[A](o: Option[A]): Optional[A] = scala.compat.java8.OptionConverters.toJava(o)
+
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
     @inline def toScala: Option[A] = scala.compat.java8.OptionConverters.RichOptionalGeneric(o).asScala
 

@@ -21,6 +21,11 @@ import scala.jdk.OptionShape
  */
 @InternalStableApi
 private[pekko] object OptionConverters {
+
+  @inline final def toScala[A](o: Optional[A]): Option[A] = scala.jdk.javaapi.OptionConverters.toScala(o)
+
+  @inline final def toJava[A](o: Option[A]): Optional[A] = scala.jdk.javaapi.OptionConverters.toJava(o)
+
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
     @inline def toScala: Option[A] = scala.jdk.OptionConverters.RichOptional(o).toScala
 
