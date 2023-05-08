@@ -20,11 +20,19 @@ import java.util.Optional
  */
 @InternalStableApi
 private[pekko] object OptionConverters {
+  import scala.compat.java8.OptionConverters.SpecializerOfOptions
+
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
     @inline def toScala: Option[A] = scala.compat.java8.OptionConverters.RichOptionalGeneric(o).asScala
+
+    @inline def toJavaPrimitive[O](implicit specOp: SpecializerOfOptions[A, O]): O =
+      scala.compat.java8.OptionConverters.RichOptionalGeneric(o).asPrimitive
   }
 
   implicit final class RichOption[A](private val o: Option[A]) extends AnyVal {
     @inline def toJava: Optional[A] = scala.compat.java8.OptionConverters.RichOptionForJava8(o).asJava
+
+    @inline def toJavaPrimitive[O](implicit specOp: SpecializerOfOptions[A, O]): O =
+      scala.compat.java8.OptionConverters.RichOptionForJava8(o).asPrimitive
   }
 }
