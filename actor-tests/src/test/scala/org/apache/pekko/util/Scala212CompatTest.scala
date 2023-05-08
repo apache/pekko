@@ -37,4 +37,17 @@ object Scala212CompatTest {
   val scalaLongOption: Option[Long] = Some(1L)
   val longOptionalToJavaPrimitive: OptionalLong = javaLongOptional.toJavaPrimitive
   val longOptionToJavaPrimitive: OptionalLong = scalaLongOption.toJavaPrimitive
+
+  // from java optional primitive
+  val javaOptionalDouble: java.util.OptionalDouble = java.util.OptionalDouble.of(1.0)
+  val optionalDoubleToScala: Option[Double] = javaOptionalDouble.toScala
+  val optionalDoubleToJavaGeneric: Optional[Double] = javaOptionalDouble.toJavaGeneric
+
+  val javaOptionalInt: java.util.OptionalInt = java.util.OptionalInt.of(1)
+  val optionalIntToScala: Option[Int] = javaOptionalInt.toScala
+  val optionalIntToJavaGeneric: Optional[Int] = javaOptionalInt.toJavaGeneric
+
+  val javaOptionalLong: java.util.OptionalLong = java.util.OptionalLong.of(1L)
+  val optionalLongToScala: Option[Long] = javaOptionalLong.toScala
+  val optionalLongToJavaGeneric: Optional[Long] = javaOptionalLong.toJavaGeneric
 }
