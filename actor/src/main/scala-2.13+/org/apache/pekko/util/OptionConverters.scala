@@ -11,7 +11,7 @@ package org.apache.pekko.util
 
 import org.apache.pekko.annotation.InternalStableApi
 
-import java.util.Optional
+import java.util._
 import scala.jdk.OptionShape
 
 /**
@@ -33,5 +33,34 @@ private[pekko] object OptionConverters {
 
     def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
       scala.jdk.OptionConverters.RichOption(o).toJavaPrimitive
+  }
+
+  implicit class RichOptionalDouble(private val o: OptionalDouble) extends AnyVal {
+
+    /** Convert a Java `OptionalDouble` to a Scala `Option` */
+    @inline def toScala: Option[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toScala
+
+    /** Convert a Java `OptionalDouble` to a generic Java `Optional` */
+    @inline def toJavaGeneric: Optional[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toJavaGeneric
+  }
+
+  /** Provides conversions from `OptionalInt` to Scala `Option` and the generic `Optional` */
+  implicit class RichOptionalInt(private val o: OptionalInt) extends AnyVal {
+
+    /** Convert a Java `OptionalInt` to a Scala `Option` */
+    @inline def toScala: Option[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toScala
+
+    /** Convert a Java `OptionalInt` to a generic Java `Optional` */
+    @inline def toJavaGeneric: Optional[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toJavaGeneric
+  }
+
+  /** Provides conversions from `OptionalLong` to Scala `Option` and the generic `Optional` */
+  implicit class RichOptionalLong(private val o: OptionalLong) extends AnyVal {
+
+    /** Convert a Java `OptionalLong` to a Scala `Option` */
+    @inline def toScala: Option[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toScala
+
+    /** Convert a Java `OptionalLong` to a generic Java `Optional` */
+    @inline def toJavaGeneric: Optional[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toJavaGeneric
   }
 }
