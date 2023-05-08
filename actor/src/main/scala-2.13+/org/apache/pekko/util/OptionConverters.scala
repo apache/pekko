@@ -31,7 +31,7 @@ private[pekko] object OptionConverters {
   implicit final class RichOption[A](private val o: Option[A]) extends AnyVal {
     @inline def toJava: Optional[A] = scala.jdk.OptionConverters.RichOption(o).toJava
 
-    def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
+    @inline def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
       scala.jdk.OptionConverters.RichOption(o).toJavaPrimitive
   }
 
