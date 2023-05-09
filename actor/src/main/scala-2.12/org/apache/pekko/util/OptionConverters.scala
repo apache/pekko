@@ -21,8 +21,20 @@ import java.util._
 @InternalStableApi
 private[pekko] object OptionConverters {
   import scala.compat.java8.OptionConverters.SpecializerOfOptions
+  import scala.compat.java8.OptionConverters._
 
   @inline final def toScala[A](o: Optional[A]): Option[A] = scala.compat.java8.OptionConverters.toScala(o)
+
+  // The rest of the .toScala methods that work with OptionalDouble/OptionalInt/OptionalLong have to be manually
+  // redefined because the scala.compat.java8.OptionConverters.toScala variants work with scala.lang primitive types
+  // where as scala.jdk.javaapi.OptionConverters.toScala works with java.lang primitive types. Since the primary
+  // usecase of these functions is for calling within Java code its preferrable to return Java primitives, see
+  // https://github.com/scala/bug/issues/4214
+  def toScala(o: OptionalDouble): Option[java.lang.Double] = if (o.isPresent) Some(o.getAsDouble) else None
+
+  def toScala(o: OptionalInt): Option[java.lang.Integer] = if (o.isPresent) Some(o.getAsInt) else None
+
+  def toScala(o: OptionalLong): Option[java.lang.Long] = if (o.isPresent) Some(o.getAsLong) else None
 
   @inline final def toJava[A](o: Option[A]): Optional[A] = scala.compat.java8.OptionConverters.toJava(o)
 

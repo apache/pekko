@@ -53,4 +53,8 @@ object Scala212CompatTest {
 
   // OptionConverters toScala and toJava
   OptionConverters.toJava(OptionConverters.toScala(java.util.Optional.of("")))
+  OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalDouble.of(1.0)))
+  OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalInt.of(1)))
+  OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalLong.of(1L)))
+
 }
