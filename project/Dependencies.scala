@@ -34,12 +34,12 @@ object Dependencies {
   val protobufJavaVersion = "3.16.1"
   val logbackVersion = "1.2.11"
 
-  val jacksonCoreVersion = "2.14.2"
+  val jacksonCoreVersion = "2.14.3"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.17"
   val scala213Version = "2.13.10"
-  val scala3Version = "3.2.2" // Needed for Jackson 2.14.2
+  val scala3Version = "3.2.2"
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
