@@ -7,10 +7,6 @@
  * This file is part of the Apache Pekko project, derived from Akka.
  */
 
-import com.lightbend.paradox.sbt.ParadoxPlugin
-import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport.paradox
-import org.apache.pekko.Paradox
-import sbt.Keys._
 import sbt._
 import sbtlicensereport.SbtLicenseReport
 import sbtlicensereport.SbtLicenseReport.autoImportImpl._
