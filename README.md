@@ -8,12 +8,14 @@ Apache Pekko is an open-source framework for building applications that are conc
 Pekko uses the Actor Model to provide more intuitive high-level abstractions for concurrency.
 Using these abstractions, Pekko also provides libraries for persistence, streams, HTTP, and more.
 
+Pekko is part of the Apache Incubator program and we are actively working towards a v1.0 release. It's not yet ready for production use, but please get involved with the community and contribute to the effort.
+
 Pekko is a fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka project's adoption of the Business Source License.
 
 Reference Documentation
 -----------------------
 
-**TODO add documentation links**
+The reference documentation is available at [pekko.apache.org](https://pekko.apache.org/).
 
 Community
 ---------
