@@ -53,7 +53,6 @@ The steps are exactly the same for everyone involved in the project, including t
 > 6. Keep polishing it until getting the required number of approvals
 >7. Profit!
 
-
 1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
    - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new/choose) to discuss the problem and the approach you want to take to solve it.
 1. [Fork the project](https://github.com/apache/incubator-pekko/fork) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Pekko.
