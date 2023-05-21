@@ -24,32 +24,12 @@ Depending on which version (or sometimes module) you want to work on, you should
 
 ### Tags
 
-Pekko uses tags to categorise issues into groups or mark their phase in development.
-
-Most notably, many tags start with a `t:` prefix (as in `topic:`), categorizing issues in which module they are related. Examples would be added soon.
-
 In general *all issues are open for anyone working on them*. However, if you're new to the project and looking for an issue
 that will be accepted and likely is a nice one to get started you should check out the following tags:
 
 - [good first issue](https://github.com/apache/incubator-pekko/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - which identifies simple entry-level tickets, such as improvements of documentation or tests. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
 - [help wanted](https://github.com/apache/incubator-pekko/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
 - [nice-to-have (low-priority)](https://github.com/apache/incubator-pekko/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
-
-Another group of issues is those which start from a number. They're used to signal in what phase of development an issue is:
-
-- [0 - new](https://github.com/apache/incubator-pekko/labels/0%20-%20new) - is assigned when an issue is unclear on its purpose or if it is valid or not. Sometimes the additional tag `discuss` is used if they propose large-scale changes and need more discussion before moving into triaged (or being closed as invalid).
-- [1 - triaged](https://github.com/apache/incubator-pekko/labels/1%20-%20triaged) - roughly speaking means "this issue makes sense". Triaged issues are safe to pick up for contributing in terms of the likeliness of a patch for it being accepted. It is not recommended to start working on an issue that is not triaged.
-- [2 - pick next](https://github.com/apache/incubator-pekko/labels/2%20-%20pick%20next) - used to mark issues that are next up in the queue to be worked on. Sometimes it's also used to mark which PRs are expected to be reviewed/merged for the next release. The tag is non-binding and mostly used as an organisational helper.
-- [3 - in progress](https://github.com/apache/incubator-pekko/labels/3%20-%20in%20progress) - means someone is working on this ticket. If you see an issue that has the tag but seems inactive, it could have been an omission with removing the tag. Feel free to ping the ticket then if it's still being worked on.
-
-The last group of special tags indicates specific states a ticket is in:
-
-- [bug](https://github.com/apache/incubator-pekko/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
-- [failed](https://github.com/apache/incubator-pekko/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
-
-Pull request validation states:
-
-- `validating => [tested | needs-attention]` - signify pull request validation status.
 
 ## Pekko contributing guidelines
 
@@ -62,6 +42,16 @@ We encourage changes that make it easier to achieve our goals efficiently.
 
 The steps below describe how to get a patch into the main development branch (`main`).
 The steps are exactly the same for everyone involved in the project, including the core team and first-time contributors.
+
+> The TL;DR; of the below very precise workflow version is:
+>
+> 1. Fork Pekko
+> 2. Hack and test on your feature (on a branch)
+> 3. Document it
+> 4. Submit a PR
+> 5. Sign the [CLA](https://www.apache.org/licenses/contributor-agreements.html) if necessary
+> 6. Keep polishing it until getting the required number of approvals
+>7. Profit!
 
 1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
    - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new/choose) to discuss the problem and the approach you want to take to solve it.
@@ -84,15 +74,6 @@ The steps are exactly the same for everyone involved in the project, including t
    - Follow the [backporting steps](#backporting) below.
 1. Once everything is said and done, your pull request gets merged :tada:! Your feature will be available with the next "earliest" release milestone (i.e. if backported so that it will be in release x.y.z, find the relevant milestone for that release). Of course, you will be given credit for the fix in the release stats during the release's announcement. You've made it!
 
-The TL;DR; of the above very precise workflow version is:
-
-1. Fork Pekko
-2. Hack and test on your feature (on a branch)
-3. Document it
-4. Submit a PR
-5. Sign the [CLA](https://www.apache.org/licenses/contributor-agreements.html) if necessary
-6. Keep polishing it until getting the required number of approvals
-7. Profit!
 
 > **Note:** Github Actions runs all the workflows for the forked project. We have filters to ensure that each action effectively runs only for the `apache/incubator-pekko` repository, but you may also want to [disable Github Actions](https://docs.github.com/en/github/administering-a-repository/managing-repository-settings/disabling-or-limiting-github-actions-for-a-repository) entirely in your fork.
 
