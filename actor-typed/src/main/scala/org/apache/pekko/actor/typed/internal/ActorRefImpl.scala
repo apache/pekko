@@ -49,5 +49,5 @@ private[pekko] trait ActorRefImpl[-T] extends ActorRef[T] { this: InternalRecipi
     case _                  => false
   }
 
-  override def toString: String = s"Actor[${path}#${path.uid}]"
+  override def toString: String = s"Actor[$path#${path.uid}]"
 }

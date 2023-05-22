@@ -171,7 +171,7 @@ abstract class MultiDcSunnyWeatherSpec extends MultiNodeClusterSpec(MultiDcSunny
 
   private def membersAsRoles(ms: immutable.Set[Member]): immutable.Set[RoleName] = {
     val res = ms.flatMap(m => roleName(m.address))
-    require(res.size == ms.size, s"Not all members were converted to roles! Got: ${ms}, found ${res}")
+    require(res.size == ms.size, s"Not all members were converted to roles! Got: $ms, found $res")
     res
   }
 }

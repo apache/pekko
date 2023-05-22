@@ -52,14 +52,14 @@ class ReliableDeliverySpec(config: Config)
       nextId()
       val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
       spawn(
         TestConsumer(defaultConsumerDelay, 42, consumerEndProbe.ref, consumerController),
-        name = s"destination-${idCount}")
+        name = s"destination-$idCount")
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController-${idCount}")
-      val producer = spawn(TestProducer(defaultProducerDelay, producerController), name = s"producer-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController-$idCount")
+      val producer = spawn(TestProducer(defaultProducerDelay, producerController), name = s"producer-$idCount")
 
       consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
@@ -74,19 +74,19 @@ class ReliableDeliverySpec(config: Config)
       nextId()
       val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
       spawn(
         TestConsumer(defaultConsumerDelay, 42, consumerEndProbe.ref, consumerController),
-        name = s"destination-${idCount}")
+        name = s"destination-$idCount")
 
       val replyProbe = createTestProbe[Long]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController-$idCount")
       val producer =
         spawn(
           TestProducerWithAsk(defaultProducerDelay, replyProbe.ref, producerController),
-          name = s"producer-${idCount}")
+          name = s"producer-$idCount")
 
       consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
@@ -105,12 +105,12 @@ class ReliableDeliverySpec(config: Config)
       nextId()
       val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
-      spawn(TestConsumer(consumerDelay, 42, consumerEndProbe.ref, consumerController), name = s"destination-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
+      spawn(TestConsumer(consumerDelay, 42, consumerEndProbe.ref, consumerController), name = s"destination-$idCount")
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController-${idCount}")
-      val producer = spawn(TestProducer(producerDelay, producerController), name = s"producer-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController-$idCount")
+      val producer = spawn(TestProducer(producerDelay, producerController), name = s"producer-$idCount")
 
       consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
@@ -137,12 +137,12 @@ class ReliableDeliverySpec(config: Config)
       nextId()
       val consumerEndProbe = createTestProbe[TestConsumer.Collected]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController1-${idCount}")
-      spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe.ref, consumerController), s"consumer1-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController1-$idCount")
+      spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe.ref, consumerController), s"consumer1-$idCount")
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController-${idCount}")
-      val producer = spawn(TestProducer(defaultProducerDelay, producerController), name = s"producer-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController-$idCount")
+      val producer = spawn(TestProducer(defaultProducerDelay, producerController), name = s"producer-$idCount")
 
       consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
@@ -151,8 +151,8 @@ class ReliableDeliverySpec(config: Config)
 
       val consumerEndProbe2 = createTestProbe[TestConsumer.Collected]()
       val consumerController2 =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController2-${idCount}")
-      spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe2.ref, consumerController2), s"consumer2-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController2-$idCount")
+      spawn(TestConsumer(defaultConsumerDelay, 42, consumerEndProbe2.ref, consumerController2), s"consumer2-$idCount")
       consumerController2 ! ConsumerController.RegisterToProducerController(producerController)
 
       consumerEndProbe2.receiveMessage(5.seconds)
@@ -167,11 +167,11 @@ class ReliableDeliverySpec(config: Config)
 
       val consumerProbe = createTestProbe[ConsumerController.Delivery[TestConsumer.Job]]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
       consumerController ! ConsumerController.Start(consumerProbe.ref)
 
       val producerController1 =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController1-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController1-$idCount")
       val producerProbe1 = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController1 ! ProducerController.Start(producerProbe1.ref)
 
@@ -191,7 +191,7 @@ class ReliableDeliverySpec(config: Config)
       testKit.stop(producerController1)
       producerProbe1.expectTerminated(producerController1)
       val producerController2 =
-        spawn(ProducerController[TestConsumer.Job](s"p-${idCount}", None), s"producerController2-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](s"p-$idCount", None), s"producerController2-$idCount")
       val producerProbe2 = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController2 ! ProducerController.Start(producerProbe2.ref)
       producerController2 ! ProducerController.RegisterConsumer(consumerController)

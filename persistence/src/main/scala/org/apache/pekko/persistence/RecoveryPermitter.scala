@@ -78,7 +78,7 @@ import pekko.util.MessageBuffer
   private def onReturnRecoveryPermit(ref: ActorRef): Unit = {
     usedPermits -= 1
     context.unwatch(ref)
-    if (usedPermits < 0) throw new IllegalStateException(s"permits must not be negative (returned by: ${ref})")
+    if (usedPermits < 0) throw new IllegalStateException(s"permits must not be negative (returned by: $ref)")
     if (!pendingBuffer.isEmpty) {
       val ref = pendingBuffer.head()._2
       pendingBuffer.dropHead()

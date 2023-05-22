@@ -61,7 +61,7 @@ trait TcpIntegrationSpecSupport { this: PekkoSpec =>
 
       bindHandler.expectMsgType[Connected] match {
         case Connected(`localAddress`, `endpoint`) => // ok
-        case other                                 => fail(s"No match: ${other}")
+        case other                                 => fail(s"No match: $other")
       }
       val serverHandler = TestProbe()
       bindHandler.sender() ! Register(serverHandler.ref)

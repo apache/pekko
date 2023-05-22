@@ -289,7 +289,7 @@ private[remote] object InboundCompression {
     def selectTable(version: Int): OptionVal[DecompressionTable[T]] = {
       if (activeTable.version == version) {
         if (ArterySettings.Compression.Debug)
-          println(s"[compress] Found table [version: ${version}], was [ACTIVE]${activeTable}")
+          println(s"[compress] Found table [version: $version], was [ACTIVE]$activeTable")
         OptionVal.Some(activeTable)
       } else {
         @tailrec def find(tables: List[DecompressionTable[T]]): OptionVal[DecompressionTable[T]] = {
@@ -306,10 +306,10 @@ private[remote] object InboundCompression {
           found match {
             case OptionVal.Some(t) =>
               println(
-                s"[compress] Found table [version: ${version}], was [OLD][${t}], old tables: [${oldTables.map(_.version)}]")
+                s"[compress] Found table [version: $version], was [OLD][$t], old tables: [${oldTables.map(_.version)}]")
             case OptionVal.None =>
-              println(s"[compress] Did not find table [version: ${version}], old tables: [${oldTables
-                  .map(_.version)}], activeTable: ${activeTable}, nextTable: ${nextTable}")
+              println(s"[compress] Did not find table [version: $version], old tables: [${oldTables
+                  .map(_.version)}], activeTable: $activeTable, nextTable: $nextTable")
           }
         }
         found

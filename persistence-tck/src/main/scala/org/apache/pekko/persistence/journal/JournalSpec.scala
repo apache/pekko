@@ -91,7 +91,7 @@ abstract class JournalSpec(config: Config)
     extension.journalFor(null)
 
   def replayedMessage(snr: Long, deleted: Boolean = false): ReplayedMessage =
-    ReplayedMessage(PersistentImpl(s"a-${snr}", snr, pid, "", deleted, Actor.noSender, writerUuid, 0L, None))
+    ReplayedMessage(PersistentImpl(s"a-$snr", snr, pid, "", deleted, Actor.noSender, writerUuid, 0L, None))
 
   def writeMessages(fromSnr: Int, toSnr: Int, pid: String, sender: ActorRef, writerUuid: String): Unit = {
 
@@ -125,7 +125,7 @@ abstract class JournalSpec(config: Config)
     (fromSnr to toSnr).foreach { i =>
       probe.expectMsgPF() {
         case WriteMessageSuccess(PersistentImpl(payload, `i`, `pid`, _, _, `sender`, `writerUuid`, _, _), _) =>
-          payload should be(s"a-${i}")
+          payload should be(s"a-$i")
       }
     }
   }

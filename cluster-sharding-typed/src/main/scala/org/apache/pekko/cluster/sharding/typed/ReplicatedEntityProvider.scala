@@ -67,7 +67,7 @@ object ReplicatedEntityProvider {
           throw new IllegalArgumentException(
             s"typeName [$typeName] contains [$Separator] which is a reserved character")
 
-        val typeKey = EntityTypeKey[M](s"$typeName${Separator}${replicaId.id}")
+        val typeKey = EntityTypeKey[M](s"$typeName$Separator${replicaId.id}")
         (settingsPerReplicaFactory(typeKey, replicaId), typeName)
       }.toVector, directReplication = true)
   }

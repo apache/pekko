@@ -118,7 +118,7 @@ object EventSourcedActorFailureSpec {
   class FailingRecovery(name: String) extends ExamplePersistentActor(name) {
 
     override val receiveCommand: Receive = commonBehavior.orElse {
-      case Cmd(data) => persist(Evt(s"${data}"))(updateState)
+      case Cmd(data) => persist(Evt(s"$data"))(updateState)
     }
 
     val failingRecover: Receive = {
@@ -133,7 +133,7 @@ object EventSourcedActorFailureSpec {
   class ThrowingActor1(name: String) extends ExamplePersistentActor(name) {
     override val receiveCommand: Receive = commonBehavior.orElse {
       case Cmd(data) =>
-        persist(Evt(s"${data}"))(updateState)
+        persist(Evt(s"$data"))(updateState)
         if (data == "err")
           throw new SimulatedException("Simulated exception 1")
     }
@@ -142,7 +142,7 @@ object EventSourcedActorFailureSpec {
   class ThrowingActor2(name: String) extends ExamplePersistentActor(name) {
     override val receiveCommand: Receive = commonBehavior.orElse {
       case Cmd(data) =>
-        persist(Evt(s"${data}")) { evt =>
+        persist(Evt(s"$data")) { evt =>
           if (data == "err")
             throw new SimulatedException("Simulated exception 1")
           updateState(evt)

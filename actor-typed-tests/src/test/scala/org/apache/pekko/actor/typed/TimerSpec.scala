@@ -283,7 +283,7 @@ class TimerSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogC
     "keep timers when behavior changes" in {
       val probe = TestProbe[String]()
       def newBehavior(n: Int): Behavior[String] = Behaviors.withTimers[String] { timers =>
-        timers.startTimerWithFixedDelay(s"message${n}", 50.milli)
+        timers.startTimerWithFixedDelay(s"message$n", 50.milli)
         Behaviors.receiveMessage { message =>
           if (message == "stop") Behaviors.stopped
           else {

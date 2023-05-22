@@ -299,7 +299,7 @@ private[stream] object ConnectionSourceStage {
         case ob @ Outbound(manager, cmd, _, _) =>
           getStageActor(connecting(ob)).watch(manager)
           manager ! cmd
-        case other => throw new IllegalArgumentException(s"Unsupported TCP role: ${other}")
+        case other => throw new IllegalArgumentException(s"Unsupported TCP role: $other")
       }
     }
 

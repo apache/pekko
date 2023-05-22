@@ -70,14 +70,14 @@ object SnapshotFailureRobustnessSpec {
   class LoadSnapshotTestPersistentActor(name: String, probe: ActorRef) extends NamedPersistentActor(name) {
     override def receiveRecover: Receive = {
       case SnapshotOffer(md, s) => probe ! ((md, s))
-      case payload: String      => probe ! s"${payload}-${lastSequenceNr}"
+      case payload: String      => probe ! s"$payload-$lastSequenceNr"
       case other                => probe ! other
     }
 
     override def receiveCommand = {
       case Cmd(payload) =>
         persist(payload) { _ =>
-          probe ! s"${payload}-${lastSequenceNr}"
+          probe ! s"$payload-$lastSequenceNr"
         }
       case SnapshotOffer(md, s) => probe ! ((md, s))
       case other                => probe ! other

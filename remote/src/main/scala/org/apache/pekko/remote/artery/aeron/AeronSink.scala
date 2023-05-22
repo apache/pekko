@@ -230,7 +230,7 @@ private[remote] class AeronSink(
 
       private def onPublicationClosed(): Unit = {
         offerTaskInProgress = false
-        val cause = new PublicationClosedException(s"Aeron Publication to [${channel}] was closed.")
+        val cause = new PublicationClosedException(s"Aeron Publication to [$channel] was closed.")
         // this is not exepected, since we didn't close the publication ourselves
         flightRecorder.aeronSinkPublicationClosedUnexpectedly(channel, streamId)
         completedValue = Failure(cause)

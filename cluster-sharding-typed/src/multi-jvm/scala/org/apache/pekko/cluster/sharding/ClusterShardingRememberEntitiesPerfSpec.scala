@@ -170,7 +170,7 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
           val took = NANOSECONDS.toMillis(System.nanoTime - startTime)
           val throughput = numberOfMessages * 1000.0 / took
           println(
-            s"### Test [${name}] stop with $numberOfMessages took $took ms, " +
+            s"### Test [$name] stop with $numberOfMessages took $took ms, " +
             f"throughput $throughput%,.0f msg/s")
           //          println("Iteration Latencies: ")
           //          histogram.outputPercentileDistribution(System.out, 1.0)
@@ -184,7 +184,7 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
             .mkString(" ")}")
         recording.endAndDump(Paths.get("target", s"${name.replace(" ", "-")}.jfr"))
       }
-      enterBarrier(s"after-start-stop-${testRun}")
+      enterBarrier(s"after-start-stop-$testRun")
     }
 
     "test when starting new entity" in {

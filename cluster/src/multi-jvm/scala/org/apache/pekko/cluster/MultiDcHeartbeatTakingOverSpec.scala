@@ -154,7 +154,7 @@ abstract class MultiDcHeartbeatTakingOverSpec extends MultiNodeClusterSpec(Multi
       val preLeaveOldestAlphaAddress =
         expectedAlphaHeartbeaterNodes.find(_.address.port.get == preLeaveOldestAlphaRole.port.get).get.address
       runOn(preLeaveOldestAlphaRole) {
-        info(s"Leaving: ${preLeaveOldestAlphaAddress}")
+        info(s"Leaving: $preLeaveOldestAlphaAddress")
         cluster.leave(cluster.selfAddress)
       }
 
@@ -213,7 +213,7 @@ abstract class MultiDcHeartbeatTakingOverSpec extends MultiNodeClusterSpec(Multi
 
   private def membersAsRoles(ms: SortedSet[Member]): List[RoleName] = {
     val res = ms.toList.flatMap(m => roleName(m.address))
-    require(res.size == ms.size, s"Not all members were converted to roles! Got: ${ms}, found ${res}")
+    require(res.size == ms.size, s"Not all members were converted to roles! Got: $ms, found $res")
     res
   }
 }

@@ -93,7 +93,7 @@ class Member private[cluster] (
     val oldStatus = this.status
     if (status == oldStatus) this
     else {
-      require(allowedTransitions(oldStatus)(status), s"Invalid member status transition [ ${this} -> ${status}]")
+      require(allowedTransitions(oldStatus)(status), s"Invalid member status transition [ $this -> $status]")
       new Member(uniqueAddress, upNumber, status, roles, appVersion)
     }
   }

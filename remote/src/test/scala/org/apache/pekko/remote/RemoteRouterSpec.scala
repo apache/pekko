@@ -73,7 +73,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
         /blub {
           router = round-robin-pool
           nr-of-instances = 2
-          target.nodes = ["$protocol://${sysName}@localhost:${port}"]
+          target.nodes = ["$protocol://$sysName@localhost:$port"]
         }
         /elastic-blub {
           router = round-robin-pool
@@ -81,10 +81,10 @@ class RemoteRouterSpec extends PekkoSpec(s"""
             lower-bound = 2
             upper-bound = 3
           }
-          target.nodes = ["$protocol://${sysName}@localhost:${port}"]
+          target.nodes = ["$protocol://$sysName@localhost:$port"]
         }
         /remote-blub {
-          remote = "$protocol://${sysName}@localhost:${port}"
+          remote = "$protocol://$sysName@localhost:$port"
           router = round-robin-pool
           nr-of-instances = 2
         }
@@ -92,12 +92,12 @@ class RemoteRouterSpec extends PekkoSpec(s"""
           remote = "pekko://$masterSystemName"
           router = round-robin-pool
           nr-of-instances = 2
-          target.nodes = ["$protocol://${sysName}@localhost:${port}"]
+          target.nodes = ["$protocol://$sysName@localhost:$port"]
         }
         /local-blub2 {
           router = round-robin-pool
           nr-of-instances = 4
-          target.nodes = ["$protocol://${sysName}@localhost:${port}"]
+          target.nodes = ["$protocol://$sysName@localhost:$port"]
         }
       }
     }""").withFallback(system.settings.config)
@@ -125,7 +125,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val children = replies.toSet
       children should have size 2
       children.map(_.parent) should have size 1
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -139,7 +139,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val children = replies.toSet
       children should have size 2
       children.map(_.parent) should have size 1
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -150,21 +150,21 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val children = replies.toSet
       children.size should be >= 2
       children.map(_.parent) should have size 1
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
     "deploy remote routers based on configuration" in {
       val probe = TestProbe()(masterSystem)
       val router = masterSystem.actorOf(FromConfig.props(echoActorProps), "remote-blub")
-      router.path.address.toString should ===(s"$protocol://${sysName}@localhost:${port}")
+      router.path.address.toString should ===(s"$protocol://$sysName@localhost:$port")
       val replies = collectRouteePaths(probe, router, 5)
       val children = replies.toSet
       children should have size 2
       val parents = children.map(_.parent)
       parents should have size 1
       parents.head should ===(router.path)
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -173,16 +173,16 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val router = masterSystem.actorOf(
         RoundRobinPool(2)
           .props(echoActorProps)
-          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://${sysName}@localhost:${port}")))),
+          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://$sysName@localhost:$port")))),
         "remote-blub2")
-      router.path.address.toString should ===(s"$protocol://${sysName}@localhost:${port}")
+      router.path.address.toString should ===(s"$protocol://$sysName@localhost:$port")
       val replies = collectRouteePaths(probe, router, 5)
       val children = replies.toSet
       children should have size 2
       val parents = children.map(_.parent)
       parents should have size 1
       parents.head should ===(router.path)
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -191,7 +191,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val router = masterSystem.actorOf(
         RoundRobinPool(2)
           .props(echoActorProps)
-          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://${sysName}@localhost:${port}")))),
+          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://$sysName@localhost:$port")))),
         "local-blub")
       router.path.address.toString should ===(s"pekko://$masterSystemName")
       val replies = collectRouteePaths(probe, router, 5)
@@ -200,7 +200,7 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val parents = children.map(_.parent)
       parents should have size 1
       parents.head.address should ===(Address(protocol, sysName, "localhost", port))
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -209,16 +209,16 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val router = masterSystem.actorOf(
         RoundRobinPool(2)
           .props(echoActorProps)
-          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://${sysName}@localhost:${port}")))),
+          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://$sysName@localhost:$port")))),
         "local-blub2")
-      router.path.address.toString should ===(s"$protocol://${sysName}@localhost:${port}")
+      router.path.address.toString should ===(s"$protocol://$sysName@localhost:$port")
       val replies = collectRouteePaths(probe, router, 5)
       val children = replies.toSet
       children should have size 4
       val parents = children.map(_.parent)
       parents should have size 1
       parents.head should ===(router.path)
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 
@@ -227,16 +227,16 @@ class RemoteRouterSpec extends PekkoSpec(s"""
       val router = masterSystem.actorOf(
         RoundRobinPool(2)
           .props(echoActorProps)
-          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://${sysName}@localhost:${port}")))),
+          .withDeploy(Deploy(scope = RemoteScope(AddressFromURIString(s"$protocol://$sysName@localhost:$port")))),
         "remote-override")
-      router.path.address.toString should ===(s"$protocol://${sysName}@localhost:${port}")
+      router.path.address.toString should ===(s"$protocol://$sysName@localhost:$port")
       val replies = collectRouteePaths(probe, router, 5)
       val children = replies.toSet
       children should have size 4
       val parents = children.map(_.parent)
       parents should have size 1
       parents.head should ===(router.path)
-      children.foreach(_.address.toString should ===(s"$protocol://${sysName}@localhost:${port}"))
+      children.foreach(_.address.toString should ===(s"$protocol://$sysName@localhost:$port"))
       masterSystem.stop(router)
     }
 

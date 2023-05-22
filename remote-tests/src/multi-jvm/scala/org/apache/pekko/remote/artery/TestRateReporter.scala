@@ -26,13 +26,13 @@ class TestRateReporter(name: String)
           if (totalBytes > 0) {
             println(
               name +
-              f": ${messagesPerSec}%,.0f msgs/sec, ${bytesPerSec}%,.0f bytes/sec, " +
-              f"totals ${totalMessages}%,d messages ${totalBytes / (1024 * 1024)}%,d MB")
+              f": $messagesPerSec%,.0f msgs/sec, $bytesPerSec%,.0f bytes/sec, " +
+              f"totals $totalMessages%,d messages ${totalBytes / (1024 * 1024)}%,d MB")
           } else {
             println(
               name +
-              f": ${messagesPerSec}%,.0f msgs/sec " +
-              f"total ${totalMessages}%,d messages")
+              f": $messagesPerSec%,.0f msgs/sec " +
+              f"total $totalMessages%,d messages")
           }
         }
       }) {}

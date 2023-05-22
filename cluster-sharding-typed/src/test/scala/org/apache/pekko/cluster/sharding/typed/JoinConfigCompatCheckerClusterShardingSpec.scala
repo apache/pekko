@@ -81,7 +81,7 @@ class JoinConfigCompatCheckerClusterShardingSpec
 
   "A Joining Node" must {
 
-    s"not be allowed to join a cluster with different '${Key}'" taggedAs LongRunningTest in {
+    s"not be allowed to join a cluster with different '$Key'" taggedAs LongRunningTest in {
       join(system)
       val joining = ActorTestKit(system.name, joinConfig(Shards + 1)) // different
       configured(joining.system) should ===(configured(system) + 1)

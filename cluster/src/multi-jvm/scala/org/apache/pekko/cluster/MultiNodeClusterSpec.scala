@@ -362,7 +362,7 @@ abstract class MultiNodeClusterSpec(multiNodeconfig: MultiNodeConfig)
       try Await.result(exitingLatch, timeout)
       catch {
         case cause: Exception =>
-          throw new AssertionError(s"Member ${toBeRemovedAddress} was not removed within ${timeout}!", cause)
+          throw new AssertionError(s"Member $toBeRemovedAddress was not removed within $timeout!", cause)
       }
       awaiter ! PoisonPill // you've done your job, now die
 

@@ -155,9 +155,9 @@ private[pekko] object Running {
                       case Some(replicatedMeta: ReplicatedEventMetadata) => replicatedMeta.originReplica == replicaId
                       case _ =>
                         throw new IllegalArgumentException(
-                          s"Replication stream from replica ${replicaId} for ${setup.persistenceId} contains event " +
+                          s"Replication stream from replica $replicaId for ${setup.persistenceId} contains event " +
                           s"(sequence nr ${event.sequenceNr}) without replication metadata. " +
-                          s"Is the persistence id used by a regular event sourced actor there or the journal for that replica (${queryPluginId}) " +
+                          s"Is the persistence id used by a regular event sourced actor there or the journal for that replica ($queryPluginId) " +
                           "used that does not support Replicated Event Sourcing?")
                     })
                   .viaMat(new FastForwardingFilter)(Keep.right)

@@ -101,7 +101,7 @@ import pekko.stream.SubscriptionWithCancelException
       case other =>
         try subscriber.onError(other)
         catch {
-          case NonFatal(t) => throw new SignalThrewException(s"${subscriber}.onError", t)
+          case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onError", t)
         }
     }
 
@@ -109,21 +109,21 @@ import pekko.stream.SubscriptionWithCancelException
     requireNonNullElement(element)
     try subscriber.onNext(element)
     catch {
-      case NonFatal(t) => throw new SignalThrewException(s"${subscriber}.onNext", t)
+      case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onNext", t)
     }
   }
 
   final def tryOnSubscribe[T](subscriber: Subscriber[T], subscription: Subscription): Unit = {
     try subscriber.onSubscribe(subscription)
     catch {
-      case NonFatal(t) => throw new SignalThrewException(s"${subscriber}.onSubscribe", t)
+      case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onSubscribe", t)
     }
   }
 
   final def tryOnComplete[T](subscriber: Subscriber[T]): Unit = {
     try subscriber.onComplete()
     catch {
-      case NonFatal(t) => throw new SignalThrewException(s"${subscriber}.onComplete", t)
+      case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onComplete", t)
     }
   }
 

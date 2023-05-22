@@ -49,7 +49,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
 
@@ -76,7 +76,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
@@ -113,7 +113,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
@@ -150,7 +150,7 @@ class ProducerControllerSpec
       nextId()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
@@ -189,7 +189,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
@@ -231,7 +231,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe1 = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe1.ref)
@@ -270,7 +270,7 @@ class ProducerControllerSpec
             producerId,
             None,
             ProducerController.Settings(system).withChunkLargeMessagesBytes(1)),
-          s"producerController-${idCount}").unsafeUpcast[ProducerControllerImpl.InternalCommand]
+          s"producerController-$idCount").unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
 
@@ -312,7 +312,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)
@@ -350,7 +350,7 @@ class ProducerControllerSpec
       val consumerControllerProbe = createTestProbe[ConsumerController.Command[TestConsumer.Job]]()
 
       val producerController =
-        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-${idCount}")
+        spawn(ProducerController[TestConsumer.Job](producerId, None), s"producerController-$idCount")
           .unsafeUpcast[ProducerControllerImpl.InternalCommand]
       val producerProbe = createTestProbe[ProducerController.RequestNext[TestConsumer.Job]]()
       producerController ! ProducerController.Start(producerProbe.ref)

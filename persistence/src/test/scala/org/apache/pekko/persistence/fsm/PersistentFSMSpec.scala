@@ -645,7 +645,7 @@ object PersistentFSMSpec {
       case Event("4x", _) =>
         goto(Persist4xAtOnce)
       case Event(SaveSnapshotSuccess(metadata), _) =>
-        probe ! s"SeqNo=${metadata.sequenceNr}, StateData=${stateData}"
+        probe ! s"SeqNo=${metadata.sequenceNr}, StateData=$stateData"
         stay()
     }
 
@@ -653,7 +653,7 @@ object PersistentFSMSpec {
       case Event(i: Int, _) =>
         stay().applying(IntAdded(i), IntAdded(i), IntAdded(i), IntAdded(i))
       case Event(SaveSnapshotSuccess(metadata), _) =>
-        probe ! s"SeqNo=${metadata.sequenceNr}, StateData=${stateData}"
+        probe ! s"SeqNo=${metadata.sequenceNr}, StateData=$stateData"
         stay()
     }
   }

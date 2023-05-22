@@ -73,7 +73,7 @@ class TestLeaseActor extends Actor with ActorLogging {
           snd ! result
           requests = requests.filterNot(_._2 == request)
         case None =>
-          throw new RuntimeException(s"unknown request to action: ${request}. Requests: ${requests}")
+          throw new RuntimeException(s"unknown request to action: $request. Requests: $requests")
       }
 
   }

@@ -302,7 +302,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
         val count = failCounter.getAndIncrement()
         if (count < failCount) {
           probe.ref ! StartFailed
-          throw TestException(s"construction ${count} failed")
+          throw TestException(s"construction $count failed")
         } else {
           probe.ref ! Started
           Behaviors.empty

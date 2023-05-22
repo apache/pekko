@@ -141,7 +141,7 @@ abstract class AeronStreamMaxThroughputSpec
     val throughput = 1000.0 * total / d
     println(
       f"=== AeronStreamMaxThroughput $testName: " +
-      f"${throughput}%,.0f msg/s, ${throughput * payloadSize}%,.0f bytes/s, " +
+      f"$throughput%,.0f msg/s, ${throughput * payloadSize}%,.0f bytes/s, " +
       s"payload size $payloadSize, " +
       s"$d ms to deliver $total messages")
     plot = plot.add(testName, throughput * payloadSize / 1024 / 1024)

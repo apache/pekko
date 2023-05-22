@@ -24,7 +24,7 @@ object SnapshotRecoveryLocalStoreSpec {
   case object TakeSnapshot
 
   class SaveSnapshotTestPersistentActor(name: String, probe: ActorRef) extends NamedPersistentActor(name) {
-    var state = s"State for actor ${name}"
+    var state = s"State for actor $name"
     def receiveCommand = {
       case TakeSnapshot            => saveSnapshot(state)
       case SaveSnapshotSuccess(md) => probe ! md.sequenceNr

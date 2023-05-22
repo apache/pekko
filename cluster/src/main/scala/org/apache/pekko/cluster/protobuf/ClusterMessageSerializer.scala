@@ -153,7 +153,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case OldDownManifest              => deserializeDown(bytes)
     case OldExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
     case OldClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    case _                            => throw new IllegalArgumentException(s"Unknown manifest [${manifest}]")
+    case _                            => throw new IllegalArgumentException(s"Unknown manifest [$manifest]")
   }
 
   def compress(msg: MessageLite): Array[Byte] = {
