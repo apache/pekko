@@ -13,7 +13,16 @@ Pekko is a fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka
 Reference Documentation
 -----------------------
 
-**TODO add documentation links**
+See https://pekko.apache.org for the documentation including the API docs.
+
+Building from Source
+--------------------
+
+* You will need to install [sbt](https://www.scala-sbt.org/) if you don't already have it installed
+* Use git to clone the [repo](https://github.com/apache/incubator-pekko) or download a source release from https://pekko.apache.org
+* Open a command window and change directory to the directory where you installed the source
+* `sbt test` will build the jars and run the unit tests
+* `sbt docs/paradox` will build the docs
 
 Community
 ---------
