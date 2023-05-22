@@ -89,7 +89,7 @@ object PekkoProtocolStressTest {
             context.become(done)
           }
         } else {
-          controller ! s"Received out of order message. Previous: ${maxSeq} Received: ${seq}"
+          controller ! s"Received out of order message. Previous: $maxSeq Received: $seq"
         }
     }
 
@@ -128,7 +128,7 @@ class PekkoProtocolStressTest extends PekkoSpec(configA) with ImplicitSender wit
 
       expectMsgPF(60.seconds) {
         case (received: Int, lost: Int) =>
-          log.debug(s" ######## Received ${received - lost} messages from ${received} ########")
+          log.debug(s" ######## Received ${received - lost} messages from $received ########")
       }
     }
   }

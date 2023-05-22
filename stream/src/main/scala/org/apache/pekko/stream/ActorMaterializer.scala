@@ -92,7 +92,7 @@ object ActorMaterializer {
         PhasedFusingActorMaterializer(context, namePrefix, materializerSettings, materializerSettings.toAttributes)
 
       case other =>
-        throw new IllegalArgumentException(s"Unexpected type of context: ${other}")
+        throw new IllegalArgumentException(s"Unexpected type of context: $other")
     }
   }
 

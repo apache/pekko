@@ -1407,7 +1407,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   }
 
   private def streamDetachedException =
-    new StreamDetachedException(s"Stage with GraphStageLogic ${this} stopped before async invocation was processed")
+    new StreamDetachedException(s"Stage with GraphStageLogic $this stopped before async invocation was processed")
 
   /**
    * Invoked before any external events are processed, at the startup of the operator.

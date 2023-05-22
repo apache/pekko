@@ -89,7 +89,7 @@ object AtLeastOnceDeliveryFailureSpec {
     def receiveCommand: Receive = {
       case i: Int =>
         if (contains(i)) {
-          log.debug(debugMessage(s"ignored duplicate ${i}"))
+          log.debug(debugMessage(s"ignored duplicate $i"))
           sender() ! Ack(i)
         } else {
           persist(MsgSent(i)) { evt =>
@@ -125,7 +125,7 @@ object AtLeastOnceDeliveryFailureSpec {
     }
 
     private def debugMessage(msg: String): String =
-      s"[sender] ${msg} (mode = ${if (recoveryRunning) "replay" else "live"} snr = ${lastSequenceNr} state = ${state.sorted})"
+      s"[sender] $msg (mode = ${if (recoveryRunning) "replay" else "live"} snr = $lastSequenceNr state = ${state.sorted})"
 
     override protected def onRecoveryFailure(cause: Throwable, event: Option[Any]): Unit = {
       // mute logging
@@ -155,7 +155,7 @@ object AtLeastOnceDeliveryFailureSpec {
     }
 
     private def debugMessage(msg: String, m: Msg): String =
-      s"[destination] ${msg} (message = $m)"
+      s"[destination] $msg (message = $m)"
   }
 
   class ChaosApp(probe: ActorRef) extends Actor with ActorLogging {

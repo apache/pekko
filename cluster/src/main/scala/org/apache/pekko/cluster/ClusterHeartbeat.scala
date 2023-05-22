@@ -343,7 +343,7 @@ private[cluster] final case class HeartbeatNodeRing(
     unreachable: Set[UniqueAddress],
     monitoredByNrOfMembers: Int) {
 
-  require(nodes contains selfAddress, s"nodes [${nodes.mkString(", ")}] must contain selfAddress [${selfAddress}]")
+  require(nodes contains selfAddress, s"nodes [${nodes.mkString(", ")}] must contain selfAddress [$selfAddress]")
 
   private val nodeRing: immutable.SortedSet[UniqueAddress] = {
     implicit val ringOrdering: Ordering[UniqueAddress] = Ordering.fromLessThan[UniqueAddress] { (a, b) =>

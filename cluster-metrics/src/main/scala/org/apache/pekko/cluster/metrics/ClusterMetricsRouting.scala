@@ -314,7 +314,7 @@ case object CpuMetricsSelector extends CapacityMetricsSelector {
   // TODO read factor from reference.conf
   /** How much extra weight to give to the stolen time. */
   val factor = 0.3
-  require(0.0 <= factor, s"factor must be non negative: ${factor}")
+  require(0.0 <= factor, s"factor must be non negative: $factor")
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
     nodeMetrics.collect {

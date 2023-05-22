@@ -46,7 +46,7 @@ class ExamplePersistentActor extends PersistentActor {
   val snapShotInterval = 1000
   val receiveCommand: Receive = {
     case Cmd(data) =>
-      persist(Evt(s"${data}-${numEvents}")) { event =>
+      persist(Evt(s"$data-$numEvents")) { event =>
         updateState(event)
         context.system.eventStream.publish(event)
         if (lastSequenceNr % snapShotInterval == 0 && lastSequenceNr != 0)

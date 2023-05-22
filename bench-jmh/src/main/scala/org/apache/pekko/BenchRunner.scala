@@ -37,7 +37,7 @@ object BenchRunner {
         result.getParams.getParamsKeys.asScala.map(key => s"$key=${result.getParams.getParam(key)}").mkString("_")
       val score = result.getAggregatedResult.getPrimaryResult.getScore.round
       val unit = result.getAggregatedResult.getPrimaryResult.getScoreUnit
-      s"\t${bench}_${params}\t$score\t$unit"
+      s"\t${bench}_$params\t$score\t$unit"
     }
 
     report.toList.sorted.foreach(println)

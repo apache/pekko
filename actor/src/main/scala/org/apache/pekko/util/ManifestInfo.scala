@@ -96,7 +96,7 @@ object ManifestInfo extends ExtensionId[ManifestInfo] with ExtensionIdProvider {
         s"you (perhaps indirectly) also depend on older versions of related artifacts. " +
         s"You can solve this by adding an explicit dependency on version $highestVersion " +
         s"of the [$toBeUpdated] artifacts to your project. " +
-        s"Here's a complete collection of detected artifacts: ${groupedByVersion}. " +
+        s"Here's a complete collection of detected artifacts: $groupedByVersion. " +
         "See also: https://pekko.apache.org/docs/pekko/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
     } else None
   }

@@ -55,7 +55,7 @@ private[pekko] final class DDataRememberEntitiesCoordinatorStore(
   private val readMajority = ReadMajority(settings.tuningParameters.waitingForStateTimeout, majorityMinCap)
   private val writeMajority = WriteMajority(settings.tuningParameters.updatingStateTimeout, majorityMinCap)
 
-  private val AllShardsKey = GSetKey[String](s"shard-${typeName}-all")
+  private val AllShardsKey = GSetKey[String](s"shard-$typeName-all")
   private var allShards: Option[Set[ShardId]] = None
   private var coordinatorWaitingForShards: Option[ActorRef] = None
 

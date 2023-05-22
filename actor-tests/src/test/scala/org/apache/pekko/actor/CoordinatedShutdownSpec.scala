@@ -197,7 +197,7 @@ class CoordinatedShutdownSpec
         messages.distinct.size shouldEqual 2
         messages.foreach {
           case "copy1" | "copy3" => // OK
-          case other             => fail(s"Unexpected probe message ${other}!")
+          case other             => fail(s"Unexpected probe message $other!")
         }
       }
     }

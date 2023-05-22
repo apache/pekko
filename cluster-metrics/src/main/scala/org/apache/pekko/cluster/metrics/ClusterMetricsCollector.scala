@@ -69,7 +69,7 @@ private[metrics] class ClusterMetricsSupervisor extends Actor with ActorLogging 
 
   var collectorInstance = 0
 
-  def collectorName = s"collector-${collectorInstance}"
+  def collectorName = s"collector-$collectorInstance"
 
   override def preStart() = {
     if (CollectorEnabled) {

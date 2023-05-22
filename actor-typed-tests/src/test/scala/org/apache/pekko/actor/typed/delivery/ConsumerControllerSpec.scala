@@ -53,7 +53,7 @@ class ConsumerControllerSpec
     "resend RegisterConsumer" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
       consumerController ! ConsumerController.RegisterToProducerController(producerControllerProbe.ref)
@@ -68,7 +68,7 @@ class ConsumerControllerSpec
       nextId()
       val consumerProbe = createTestProbe[ConsumerController.Delivery[TestConsumer.Job]]()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
       val producerControllerProbe1 = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
       consumerController ! ConsumerController.Start(consumerProbe.ref)
@@ -90,7 +90,7 @@ class ConsumerControllerSpec
     "resend initial Request" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -112,7 +112,7 @@ class ConsumerControllerSpec
       nextId()
       val windowSize = 20
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -147,7 +147,7 @@ class ConsumerControllerSpec
     "detect lost message" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -185,7 +185,7 @@ class ConsumerControllerSpec
     "resend Request" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -219,7 +219,7 @@ class ConsumerControllerSpec
     "stash while waiting for consumer confirmation" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -272,7 +272,7 @@ class ConsumerControllerSpec
     "optionally ack messages" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -310,7 +310,7 @@ class ConsumerControllerSpec
     "allow restart of consumer" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -348,7 +348,7 @@ class ConsumerControllerSpec
     "stop ConsumerController when consumer is stopped" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
 
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
@@ -367,7 +367,7 @@ class ConsumerControllerSpec
     "stop ConsumerController when consumer is stopped before first message" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
 
       val consumerProbe1 = createTestProbe[ConsumerController.Delivery[TestConsumer.Job]]()
@@ -380,7 +380,7 @@ class ConsumerControllerSpec
     "deduplicate resend of first message" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -410,7 +410,7 @@ class ConsumerControllerSpec
     "request window after first" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -438,7 +438,7 @@ class ConsumerControllerSpec
     "handle first message when waiting for lost (resending)" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -485,7 +485,7 @@ class ConsumerControllerSpec
     "send Ack when stopped" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
 
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
@@ -515,7 +515,7 @@ class ConsumerControllerSpec
     "support graceful stopping" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
 
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
@@ -563,7 +563,7 @@ class ConsumerControllerSpec
     "collect and assemble chunks" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -616,7 +616,7 @@ class ConsumerControllerSpec
     "send Request after half window size when many chunks" in {
       nextId()
       val consumerController =
-        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-${idCount}")
+        spawn(ConsumerController[TestConsumer.Job](), s"consumerController-$idCount")
           .unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
@@ -673,7 +673,7 @@ class ConsumerControllerSpec
       val consumerController =
         spawn(
           ConsumerController[TestConsumer.Job](ConsumerController.Settings(system).withOnlyFlowControl(true)),
-          s"consumerController-${idCount}").unsafeUpcast[ConsumerControllerImpl.InternalCommand]
+          s"consumerController-$idCount").unsafeUpcast[ConsumerControllerImpl.InternalCommand]
       val producerControllerProbe = createTestProbe[ProducerControllerImpl.InternalCommand]()
 
       val consumerProbe = createTestProbe[ConsumerController.Delivery[TestConsumer.Job]]()

@@ -110,7 +110,7 @@ class ClusterShardingLeaseSpec(config: Config, rememberEntities: Boolean)
   }
 
   def leaseNameFor(shardId: Int, typeName: String = typeName): String =
-    s"${system.name}-shard-${typeName}-${shardId}"
+    s"${system.name}-shard-$typeName-$shardId"
 
   "Cluster sharding with lease" should {
     "not start until lease is acquired" in {

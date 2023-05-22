@@ -405,7 +405,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
                 s"[$stageActorName] CancellationDeadlineTimerKey can't happen in state $other")
           }
 
-        case other => throw new IllegalArgumentException(s"Unknown timer key: ${other}")
+        case other => throw new IllegalArgumentException(s"Unknown timer key: $other")
       }
 
       override def onDownstreamFinish(cause: Throwable): Unit = {

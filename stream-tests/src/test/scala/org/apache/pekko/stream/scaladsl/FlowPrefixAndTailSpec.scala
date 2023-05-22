@@ -140,7 +140,7 @@ class FlowPrefixAndTailSpec extends StreamSpec("""
 
       tail.to(Sink.fromSubscriber(subscriber)).run()(tightTimeoutMaterializer)
       subscriber.expectSubscriptionAndError().getMessage should ===(
-        s"Substream Source(TailSource) has not been materialized in ${ms} milliseconds")
+        s"Substream Source(TailSource) has not been materialized in $ms milliseconds")
     }
     "not fail the stream if substream has not been subscribed in time and configured subscription timeout is noop" in {
       @nowarn("msg=deprecated")

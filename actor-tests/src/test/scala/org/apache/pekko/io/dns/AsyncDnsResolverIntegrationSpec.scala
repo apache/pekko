@@ -45,7 +45,7 @@ object AsyncDnsResolverIntegrationSpec {
     pekko.loglevel = DEBUG
     pekko.loggers = ["org.apache.pekko.testkit.SilenceAllTestEventListener"]
     pekko.io.dns.resolver = async-dns
-    pekko.io.dns.async-dns.nameservers = ["localhost:${dockerDnsServerPort}"]
+    pekko.io.dns.async-dns.nameservers = ["localhost:$dockerDnsServerPort"]
     pekko.io.dns.async-dns.search-domains = ["foo.test", "test"]
     pekko.io.dns.async-dns.ndots = 2
     pekko.io.dns.async-dns.resolve-timeout = ${defaultTimeout.duration.toSeconds}s

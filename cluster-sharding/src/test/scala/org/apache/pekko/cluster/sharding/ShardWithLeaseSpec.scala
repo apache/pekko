@@ -54,7 +54,7 @@ object ShardWithLeaseSpec {
     override def receive: Receive = {
       case msg =>
         log.info("Msg {}", msg)
-        sender() ! s"ack ${msg}"
+        sender() ! s"ack $msg"
     }
   }
 
@@ -165,7 +165,7 @@ class ShardWithLeaseSpec extends PekkoSpec(ShardWithLeaseSpec.config) with WithL
       ClusterSharding(system).start(typeName, Props(new EntityActor()), settings, extractEntityId, extractShardId)
 
     def leaseFor(shardId: ShardId) = awaitAssert {
-      val leaseName = s"${system.name}-shard-${typeName}-${shardId}"
+      val leaseName = s"${system.name}-shard-$typeName-$shardId"
       testLeaseExt.getTestLease(leaseName)
     }
   }

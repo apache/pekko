@@ -353,8 +353,8 @@ class ClusterSpec extends PekkoSpec(ClusterSpec.config) with ImplicitSender {
     "register multiple cluster JMX MBeans with pekko.cluster.jmx.multi-mbeans-in-same-jvm = on" in {
       def getConfig = (port: Int) => ConfigFactory.parseString(s"""
              pekko.cluster.jmx.multi-mbeans-in-same-jvm = on
-             pekko.remote.classic.netty.tcp.port = ${port}
-             pekko.remote.artery.canonical.port = ${port}
+             pekko.remote.classic.netty.tcp.port = $port
+             pekko.remote.artery.canonical.port = $port
           """).withFallback(ConfigFactory.parseString(ClusterSpec.config))
 
       val sys1 = ActorSystem("ClusterSpec4", getConfig(7355))

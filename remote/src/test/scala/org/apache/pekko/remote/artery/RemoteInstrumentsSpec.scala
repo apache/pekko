@@ -21,7 +21,7 @@ import org.scalatestplus.scalacheck.Checkers
 class RemoteInstrumentsSpec extends AnyWordSpec with Matchers with Checkers {
 
   case class KeyLen(k: Key, l: Len) {
-    override def toString = s" key = ${k}, len = ${l}"
+    override def toString = s" key = $k, len = $l"
   }
   type Key = Byte
   type Len = Int

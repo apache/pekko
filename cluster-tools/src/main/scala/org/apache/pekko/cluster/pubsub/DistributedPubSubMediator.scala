@@ -583,7 +583,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
 
   require(
     role.forall(cluster.selfRoles.contains),
-    s"This cluster member [${selfAddress}] doesn't have the role [$role]")
+    s"This cluster member [$selfAddress] doesn't have the role [$role]")
 
   val removedTimeToLiveMillis = removedTimeToLive.toMillis
 

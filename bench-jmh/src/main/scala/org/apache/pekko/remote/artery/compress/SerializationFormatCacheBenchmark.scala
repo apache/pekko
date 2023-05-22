@@ -79,7 +79,7 @@ class SerializationFormatCacheBenchmark {
         Promise(),
         "Any",
         // request path is encoded in this string
-        s"_user_region_shard${n % 100}_entitypretendid${n}"))
+        s"_user_region_shard${n % 100}_entitypretendid$n"))
 
     topLevelActorRefs = Array.tabulate(uniqueTopLevelRefs)(n => system.actorOf(Props.empty, s"actor_$n"))
   }

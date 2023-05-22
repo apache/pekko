@@ -83,7 +83,7 @@ class ScalaUdpMulticastSpec
         }
 
         if (failures.size == ipv6ifaces.size)
-          fail(s"Multicast failed on all available interfaces: ${failures}")
+          fail(s"Multicast failed on all available interfaces: $failures")
       }
 
     }

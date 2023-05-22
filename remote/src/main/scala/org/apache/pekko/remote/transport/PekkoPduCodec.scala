@@ -256,7 +256,7 @@ private[remote] object PekkoPduProtobufCodec$ extends PekkoPduCodec {
       case CommandType.DISASSOCIATE_QUARANTINED   => Disassociate(AssociationHandle.Quarantined)
       case CommandType.HEARTBEAT                  => Heartbeat
       case x =>
-        throw new PduCodecException(s"Decoding of control PDU failed, invalid format, unexpected: [${x}]", null)
+        throw new PduCodecException(s"Decoding of control PDU failed, invalid format, unexpected: [$x]", null)
     }
   }
 
@@ -290,7 +290,7 @@ private[remote] object PekkoPduProtobufCodec$ extends PekkoPduCodec {
   private def serializeAddress(address: Address): AddressData = address match {
     case Address(protocol, system, Some(host), Some(port)) =>
       AddressData.newBuilder.setHostname(host).setPort(port).setSystem(system).setProtocol(protocol).build()
-    case _ => throw new IllegalArgumentException(s"Address [${address}] could not be serialized: host or port missing.")
+    case _ => throw new IllegalArgumentException(s"Address [$address] could not be serialized: host or port missing.")
   }
 
 }

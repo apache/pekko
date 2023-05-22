@@ -558,7 +558,7 @@ import pekko.util.OptionVal
         tryAbort(
           new TimeoutException(
             "Streaming actor has been already stopped processing (normally), but not all of its " +
-            s"inputs or outputs have been subscribed in [${subscriptionTimeout}}]. Aborting actor now."))
+            s"inputs or outputs have been subscribed in [$subscriptionTimeout}]. Aborting actor now."))
       }
       0
     }

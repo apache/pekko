@@ -114,10 +114,10 @@ class ReliableDeliveryRandomSpec(config: Config)
       spawn(
         Behaviors.intercept(() => RandomFlakyNetwork[ConsumerController.Command[TestConsumer.Job]](rnd, consumerDrop))(
           ConsumerController[TestConsumer.Job](serviceKey = None, consumerControllerSettings)),
-        s"consumerController-${idCount}")
+        s"consumerController-$idCount")
     spawn(
       TestConsumer(consumerDelay, numberOfMessages, consumerEndProbe.ref, consumerController),
-      name = s"destination-${idCount}")
+      name = s"destination-$idCount")
 
     // RandomFlakyNetwork to simulate lost messages from consumerController to producerController
     val producerDrop: Any => Double = {
@@ -138,8 +138,8 @@ class ReliableDeliveryRandomSpec(config: Config)
     val producerController = spawn(
       Behaviors.intercept(() => RandomFlakyNetwork[ProducerController.Command[TestConsumer.Job]](rnd, producerDrop))(
         ProducerController[TestConsumer.Job](producerId, durableQueue)),
-      s"producerController-${idCount}")
-    val producer = spawn(TestProducer(producerDelay, producerController), name = s"producer-${idCount}")
+      s"producerController-$idCount")
+    val producer = spawn(TestProducer(producerDelay, producerController), name = s"producer-$idCount")
 
     consumerController ! ConsumerController.RegisterToProducerController(producerController)
 
