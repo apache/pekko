@@ -116,7 +116,7 @@ private[pekko] class DistributedPubSubMessageSerializer(val system: ExtendedActo
   private def addressToProto(address: Address): dm.Address.Builder = address match {
     case Address(protocol, system, Some(host), Some(port)) =>
       dm.Address.newBuilder().setSystem(system).setHostname(host).setPort(port).setProtocol(protocol)
-    case _ => throw new IllegalArgumentException(s"Address [${address}] could not be serialized: host or port missing.")
+    case _ => throw new IllegalArgumentException(s"Address [$address] could not be serialized: host or port missing.")
   }
 
   private def addressFromProto(address: dm.Address): Address =

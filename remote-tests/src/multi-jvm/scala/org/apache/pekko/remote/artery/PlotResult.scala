@@ -26,7 +26,7 @@ final case class PlotResult(values: Vector[(String, Number)] = Vector.empty) {
   def csvValues: String = values.map(_._2).mkString("\"", "\",\"", "\"")
 
   // this can be split to two lines with bash: cut -d':' -f2,3 | tr ':' $'\n'
-  def csv(name: String): String = s"PLOT_${name}:${csvLabels}:${csvValues}"
+  def csv(name: String): String = s"PLOT_$name:$csvLabels:$csvValues"
 
 }
 

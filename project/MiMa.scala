@@ -39,8 +39,8 @@ object MiMa extends AutoPlugin {
     val nextVersionFilterDir =
       moduleRoot / "src" / "main" / "mima-filters" / s"2.6.${latestPatchOf26 + 1}.backwards.excludes"
     if (nextVersionFilterDir.exists()) {
-      throw new IllegalArgumentException(s"Incorrect mima filter directory exists: '${nextVersionFilterDir}' " +
-        s"should be with number from current release '${moduleRoot / "src" / "main" / "mima-filters" / s"2.6.${latestPatchOf26}.backwards.excludes"}")
+      throw new IllegalArgumentException(s"Incorrect mima filter directory exists: '$nextVersionFilterDir' " +
+        s"should be with number from current release '${moduleRoot / "src" / "main" / "mima-filters" / s"2.6.$latestPatchOf26.backwards.excludes"}")
     }
   }
 

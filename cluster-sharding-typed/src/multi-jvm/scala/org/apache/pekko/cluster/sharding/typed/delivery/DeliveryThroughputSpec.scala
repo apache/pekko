@@ -180,7 +180,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
 
       resultReporter.reportResults(
         s"=== ${resultReporter.testName} ${testSettings.testName}: " +
-        f"throughput ${throughput}%,.0f msg/s, " +
+        f"throughput $throughput%,.0f msg/s, " +
         s"$took ms to deliver $numberOfMessages.")
 
       plotRef ! PlotResult().add(testSettings.testName, throughput)

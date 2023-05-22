@@ -91,7 +91,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       UniqueAddress(c.transport.defaultAddress, AddressUidExtension(system).longAddressUid)
     case other =>
       throw new ConfigurationException(
-        s"ActorSystem [${system}] needs to have 'pekko.actor.provider' set to 'cluster' in the configuration, currently uses [${other.getClass.getName}]")
+        s"ActorSystem [$system] needs to have 'pekko.actor.provider' set to 'cluster' in the configuration, currently uses [${other.getClass.getName}]")
   }
 
   /**

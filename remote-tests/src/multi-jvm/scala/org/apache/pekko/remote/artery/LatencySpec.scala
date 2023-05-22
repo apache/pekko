@@ -164,7 +164,7 @@ object LatencySpec extends MultiNodeConfig {
         f"50%%ile: ${percentile(50.0)}%.0f µs, " +
         f"90%%ile: ${percentile(90.0)}%.0f µs, " +
         f"99%%ile: ${percentile(99.0)}%.0f µs, " +
-        f"rate: ${throughput}%,.0f msg/s")
+        f"rate: $throughput%,.0f msg/s")
       println("Histogram of RTT latencies in microseconds.")
       histogram.outputPercentileDistribution(System.out, 1000.0)
 

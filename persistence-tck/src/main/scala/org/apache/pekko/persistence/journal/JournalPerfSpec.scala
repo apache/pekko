@@ -64,7 +64,7 @@ object JournalPerfSpec {
 
       case Cmd("n", payload) =>
         counter += 1
-        require(payload == counter, s"Expected to receive [$counter] yet got: [${payload}]")
+        require(payload == counter, s"Expected to receive [$counter] yet got: [$payload]")
         if (counter == replyAfter) replyTo ! payload
 
       case ResetCounter =>
@@ -74,7 +74,7 @@ object JournalPerfSpec {
     override def receiveRecover: Receive = {
       case Cmd(_, payload) =>
         counter += 1
-        require(payload == counter, s"Expected to receive [$counter] yet got: [${payload}]")
+        require(payload == counter, s"Expected to receive [$counter] yet got: [$payload]")
         if (counter == replyAfter) replyTo ! payload
     }
 

@@ -148,7 +148,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     val numberOfNodesJoiningToSeedNodes = (totalNumberOfNodes - numberOfSeedNodes -
       numberOfNodesJoiningToSeedNodesInitially - numberOfNodesJoiningOneByOneSmall -
       numberOfNodesJoiningOneByOneLarge - numberOfNodesJoiningToOneNode)
-      .requiring(_ >= 0, s"too many configured nr-of-nodes-joining-*, total should be <= ${totalNumberOfNodes}")
+      .requiring(_ >= 0, s"too many configured nr-of-nodes-joining-*, total should be <= $totalNumberOfNodes")
     val numberOfNodesLeavingOneByOneSmall = getInt("nr-of-nodes-leaving-one-by-one-small") * nFactor
     val numberOfNodesLeavingOneByOneLarge = getInt("nr-of-nodes-leaving-one-by-one-large") * nFactor
     val numberOfNodesLeaving = getInt("nr-of-nodes-leaving") * nFactor
@@ -167,20 +167,20 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     require(
       numberOfSeedNodes + numberOfNodesJoiningToSeedNodesInitially + numberOfNodesJoiningOneByOneSmall +
       numberOfNodesJoiningOneByOneLarge + numberOfNodesJoiningToOneNode + numberOfNodesJoiningToSeedNodes <= totalNumberOfNodes,
-      s"specified number of joining nodes <= ${totalNumberOfNodes}")
+      s"specified number of joining nodes <= $totalNumberOfNodes")
 
     // don't shutdown the 3 nodes hosting the master actors
     require(
       numberOfNodesLeavingOneByOneSmall + numberOfNodesLeavingOneByOneLarge + numberOfNodesLeaving +
       numberOfNodesShutdownOneByOneSmall + numberOfNodesShutdownOneByOneLarge + numberOfNodesShutdown <= totalNumberOfNodes - 3,
-      s"specified number of leaving/shutdown nodes <= ${totalNumberOfNodes - 3}")
+      s"""specified number of leaving/shutdown nodes <= ${totalNumberOfNodes - 3}""")
 
     require(
       numberOfNodesJoinRemove <= totalNumberOfNodes,
-      s"nr-of-nodes-join-remove should be <= ${totalNumberOfNodes}")
+      s"nr-of-nodes-join-remove should be <= $totalNumberOfNodes")
 
     override def toString: String = {
-      testConfig.withFallback(ConfigFactory.parseString(s"nrOfNodes=${totalNumberOfNodes}")).root.render
+      testConfig.withFallback(ConfigFactory.parseString(s"nrOfNodes=$totalNumberOfNodes")).root.render
     }
   }
 
@@ -218,14 +218,14 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       case StatsResult(from, stats)   => clusterStatsObservedByNode += from -> stats
       case ReportTick =>
         if (infolog)
-          log.info(s"[${title}] in progress\n\n${formatPhi}\n\n${formatStats}")
+          log.info(s"[$title] in progress\n\n$formatPhi\n\n$formatStats")
       case r: ClusterResult =>
         results :+= r
         if (results.size == expectedResults) {
           val aggregated = AggregatedClusterResult(title, maxDuration, totalGossipStats)
           if (infolog)
             log.info(
-              s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n\n${formatPhi}\n\n${formatStats}")
+              s"[$title] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n\n$formatPhi\n\n$formatStats")
           reportTo.foreach { _ ! aggregated }
           context.stop(self)
         }
@@ -258,7 +258,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def formatPhiHeader: String = "[Monitor]\t[Subject]\t[count]\t[count phi > 1.0]\t[max phi]"
 
     def formatPhiLine(monitor: Address, subject: Address, phi: PhiValue): String =
-      s"${monitor}\t${subject}\t${phi.count}\t${phi.countAboveOne}\t${phi.max.form}"
+      s"$monitor\t$subject\t${phi.count}\t${phi.countAboveOne}\t${phi.max.form}"
 
     def formatStats: String = {
       def f(stats: CurrentInternalStats) = {
@@ -267,7 +267,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         s"ClusterStats($receivedGossipCount, $mergeCount, $sameCount, $newerCount, $olderCount, $versionSize, $seenLatest)"
       }
       clusterStatsObservedByNode
-        .map { case (monitor, stats) => s"${monitor}\t${f(stats)}" }
+        .map { case (monitor, stats) => s"$monitor\t${f(stats)}" }
         .mkString("ClusterStats(gossip, merge, same, newer, older, vclockSize, seenLatest)\n", "\n", "")
     }
 
@@ -600,7 +600,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
 
   def joinOne(): Unit = within(5.seconds + convergenceWithin(2.seconds, nbrUsedRoles + 1)) {
     val currentRoles = roles.take(nbrUsedRoles + 1)
-    val title = s"join one to ${nbrUsedRoles} nodes cluster"
+    val title = s"join one to $nbrUsedRoles nodes cluster"
     createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
     runOn(currentRoles: _*) {
       reportResult {
@@ -620,7 +620,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       val currentRoles = roles.take(nbrUsedRoles + numberOfNodes)
       val joiningRoles = currentRoles.takeRight(numberOfNodes)
       val title =
-        s"join ${numberOfNodes} to ${if (toSeedNodes) "seed nodes" else "one node"}, in ${nbrUsedRoles} nodes cluster"
+        s"join $numberOfNodes to ${if (toSeedNodes) "seed nodes" else "one node"}, in $nbrUsedRoles nodes cluster"
       createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
       runOn(currentRoles: _*) {
         reportResult {
@@ -646,7 +646,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
 
   def removeOne(shutdown: Boolean): Unit = within(25.seconds + convergenceWithin(3.seconds, nbrUsedRoles - 1)) {
     val currentRoles = roles.take(nbrUsedRoles - 1)
-    val title = s"${if (shutdown) "shutdown" else "remove"} one from ${nbrUsedRoles} nodes cluster"
+    val title = s"${if (shutdown) "shutdown" else "remove"} one from $nbrUsedRoles nodes cluster"
     createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
     val removeRole = roles(nbrUsedRoles - 1)
     val removeAddress = address(removeRole)
@@ -692,7 +692,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     within(25.seconds + convergenceWithin(5.seconds, nbrUsedRoles - numberOfNodes)) {
       val currentRoles = roles.take(nbrUsedRoles - numberOfNodes)
       val removeRoles = roles.slice(currentRoles.size, nbrUsedRoles)
-      val title = s"${if (shutdown) "shutdown" else "leave"} ${numberOfNodes} in ${nbrUsedRoles} nodes cluster"
+      val title = s"${if (shutdown) "shutdown" else "leave"} $numberOfNodes in $nbrUsedRoles nodes cluster"
       createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
       runOn(removeRoles: _*) {
         if (!shutdown) cluster.leave(myself)
@@ -718,7 +718,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     within(25.seconds + convergenceWithin(5.seconds, nbrUsedRoles - numberOfNodes)) {
       val currentRoles = roles.take(nbrUsedRoles - numberOfNodes)
       val removeRoles = roles.slice(currentRoles.size, nbrUsedRoles)
-      val title = s"partition ${numberOfNodes} in ${nbrUsedRoles} nodes cluster"
+      val title = s"partition $numberOfNodes in $nbrUsedRoles nodes cluster"
       createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
 
       runOn(roles.head) {

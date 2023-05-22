@@ -105,7 +105,7 @@ object AccountExampleWithCommandHandlersInDurableState {
           Effect.persist(copy(balance = balance - cmd.amount)).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
         else
           Effect.reply(cmd.replyTo)(
-            StatusReply.Error(s"Insufficient balance ${balance} to be able to withdraw ${cmd.amount}"))
+            StatusReply.Error(s"Insufficient balance $balance to be able to withdraw ${cmd.amount}"))
       }
       // #reply
 

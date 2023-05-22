@@ -56,7 +56,7 @@ trait RedirectLogging {
  * Provide sigar library from `project/target` location.
  */
 case class SimpleSigarProvider(location: String = "native") extends SigarProvider {
-  def extractFolder = s"${System.getProperty("user.dir")}/target/${location}"
+  def extractFolder = s"${System.getProperty("user.dir")}/target/$location"
 }
 
 /**

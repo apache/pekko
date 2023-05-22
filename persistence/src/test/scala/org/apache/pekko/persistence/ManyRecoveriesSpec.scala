@@ -41,7 +41,7 @@ object ManyRecoveriesSpec {
     override def receiveCommand: Receive = {
       case Cmd(s) =>
         persist(Evt(s)) { _ =>
-          sender() ! s"$persistenceId-$s-${lastSequenceNr}"
+          sender() ! s"$persistenceId-$s-$lastSequenceNr"
         }
       case "stop" =>
         context.stop(self)

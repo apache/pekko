@@ -138,7 +138,7 @@ class PerformanceSpec
     val m = new Measure(loadCycles)
     m.startMeasure()
     (1 to loadCycles).foreach { i =>
-      persistentActor ! s"msg${i}"
+      persistentActor ! s"msg$i"
     }
     persistentActor ! StopMeasure
     expectMsg(100.seconds, StopMeasure)

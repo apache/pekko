@@ -90,7 +90,7 @@ class DurableWorkPullingSpec
       val workPullingController =
         spawn(
           WorkPullingProducerController[TestConsumer.Job](producerId, workerServiceKey, Some(durable)),
-          s"workPullingController-${idCount}")
+          s"workPullingController-$idCount")
       val producerProbe = createTestProbe[WorkPullingProducerController.RequestNext[TestConsumer.Job]]()
       workPullingController ! WorkPullingProducerController.Start(producerProbe.ref)
 
@@ -123,7 +123,7 @@ class DurableWorkPullingSpec
       val workPullingController =
         spawn(
           WorkPullingProducerController[TestConsumer.Job](producerId, workerServiceKey, Some(durable)),
-          s"workPullingController-${idCount}")
+          s"workPullingController-$idCount")
       val producerProbe = createTestProbe[WorkPullingProducerController.RequestNext[TestConsumer.Job]]()
       workPullingController ! WorkPullingProducerController.Start(producerProbe.ref)
 
@@ -172,7 +172,7 @@ class DurableWorkPullingSpec
       val workPullingController =
         spawn(
           WorkPullingProducerController[TestConsumer.Job](producerId, workerServiceKey, Some(durable)),
-          s"workPullingController-${idCount}")
+          s"workPullingController-$idCount")
       val producerProbe = createTestProbe[WorkPullingProducerController.RequestNext[TestConsumer.Job]]()
       workPullingController ! WorkPullingProducerController.Start(producerProbe.ref)
 
@@ -294,7 +294,7 @@ class DurableWorkPullingSpec
       val workPullingController =
         spawn(
           WorkPullingProducerController[TestConsumer.Job](producerId, workerServiceKey, Some(durable)),
-          s"workPullingController-${idCount}")
+          s"workPullingController-$idCount")
       val producerProbe = createTestProbe[WorkPullingProducerController.RequestNext[TestConsumer.Job]]()
       workPullingController ! WorkPullingProducerController.Start(producerProbe.ref)
 

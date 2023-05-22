@@ -32,14 +32,14 @@ object SnapshotRecoveryWithEmptyJournalSpec {
     var state = List.empty[String]
 
     override def receiveRecover: Receive = {
-      case payload: String                     => state = s"${payload}-${lastSequenceNr}" :: state
+      case payload: String                     => state = s"$payload-$lastSequenceNr" :: state
       case SnapshotOffer(_, snapshot: List[_]) => state = snapshot.asInstanceOf[List[String]]
     }
 
     override def receiveCommand: PartialFunction[Any, Unit] = {
       case payload: String =>
         persist(payload) { _ =>
-          state = s"${payload}-${lastSequenceNr}" :: state
+          state = s"$payload-$lastSequenceNr" :: state
         }
       case TakeSnapshot             => saveSnapshot(state)
       case SaveSnapshotSuccess(md)  => probe ! md.sequenceNr
@@ -53,7 +53,7 @@ object SnapshotRecoveryWithEmptyJournalSpec {
     override def recovery: Recovery = _recovery
 
     override def receiveRecover: Receive = {
-      case payload: String      => probe ! s"${payload}-${lastSequenceNr}"
+      case payload: String      => probe ! s"$payload-$lastSequenceNr"
       case offer: SnapshotOffer => probe ! offer
       case other                => probe ! other
     }
@@ -62,7 +62,7 @@ object SnapshotRecoveryWithEmptyJournalSpec {
       case "done" => probe ! "done"
       case payload: String =>
         persist(payload) { _ =>
-          probe ! s"${payload}-${lastSequenceNr}"
+          probe ! s"$payload-$lastSequenceNr"
         }
       case offer: SnapshotOffer => probe ! offer
       case other                => probe ! other

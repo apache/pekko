@@ -186,7 +186,7 @@ class ActorsLeakSpec extends PekkoSpec(ActorsLeakSpec.config) with ImplicitSende
         }
 
         EventFilter
-          .warning(start = s"Association with remote system [${remoteAddress}] has failed", occurrences = 1)
+          .warning(start = s"Association with remote system [$remoteAddress] has failed", occurrences = 1)
           .intercept {
             Await.result(remoteSystem.whenTerminated, 10.seconds)
           }

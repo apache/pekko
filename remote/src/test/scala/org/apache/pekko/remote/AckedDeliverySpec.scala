@@ -331,7 +331,7 @@ class AckedDeliverySpec extends PekkoSpec {
         receiverStep(DeliveryProbability)
         steps -= s
       }
-      info(s"Successfully delivered ${received.size} messages from ${MsgCount}")
+      info(s"Successfully delivered ${received.size} messages from $MsgCount")
       info("Entering reliable phase")
 
       // Finalizing phase

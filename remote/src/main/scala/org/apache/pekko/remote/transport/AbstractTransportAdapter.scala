@@ -45,7 +45,7 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
     name -> system.dynamicAccess
       .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
       .recover {
-        case e => throw new IllegalArgumentException(s"Cannot instantiate transport adapter [${fqn}]", e)
+        case e => throw new IllegalArgumentException(s"Cannot instantiate transport adapter [$fqn]", e)
       }
       .get
   }
@@ -53,7 +53,7 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
   def getAdapterProvider(name: String): TransportAdapterProvider = adaptersTable.get(name) match {
     case Some(provider) => provider
     case None =>
-      throw new IllegalArgumentException(s"There is no registered transport adapter provider with name: [${name}]")
+      throw new IllegalArgumentException(s"There is no registered transport adapter provider with name: [$name]")
   }
 }
 

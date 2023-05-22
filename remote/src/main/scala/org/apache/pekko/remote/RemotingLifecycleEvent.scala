@@ -145,7 +145,7 @@ final case class GracefulShutdownQuarantinedEvent(uniqueAddress: UniqueAddress, 
 final case class ThisActorSystemQuarantinedEvent(localAddress: Address, remoteAddress: Address)
     extends RemotingLifecycleEvent {
   override def logLevel: LogLevel = Logging.WarningLevel
-  override val toString: String = s"The remote system ${remoteAddress} has quarantined this system ${localAddress}."
+  override val toString: String = s"The remote system $remoteAddress has quarantined this system $localAddress."
 }
 
 /**

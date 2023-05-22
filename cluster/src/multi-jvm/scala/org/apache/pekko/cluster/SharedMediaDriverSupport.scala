@@ -94,7 +94,7 @@ object SharedMediaDriverSupport {
         }
       } catch {
         case NonFatal(e) =>
-          println(s"Failed to start media driver in [${aeronDir}]: ${e.getMessage}")
+          println(s"Failed to start media driver in [$aeronDir]: ${e.getMessage}")
       }
     }
   }

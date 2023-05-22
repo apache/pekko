@@ -91,7 +91,7 @@ trait ScriptedTest extends Matchers {
 
     def consumeOutput(out: Out): Script[In, Out] = {
       if (noOutsPending)
-        throw new ScriptException(s"Tried to produce element ${out} but no elements should be produced right now.")
+        throw new ScriptException(s"Tried to produce element $out but no elements should be produced right now.")
       out should be(expectedOutputs(outputCursor))
       new Script(
         providedInputs,
@@ -211,7 +211,7 @@ trait ScriptedTest extends Matchers {
           val tieBreak = ThreadLocalRandom.current().nextBoolean()
           if (mayProvideInput && (!mayRequestMore || tieBreak)) {
             val (input, nextScript) = currentScript.provideInput
-            debugLog(s"test environment produces [${input}]")
+            debugLog(s"test environment produces [$input]")
             pendingRequests -= 1
             currentScript = nextScript
             upstreamSubscription.sendNext(input)

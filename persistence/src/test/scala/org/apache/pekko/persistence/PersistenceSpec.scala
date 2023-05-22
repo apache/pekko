@@ -62,7 +62,7 @@ abstract class PersistenceSpec(config: Config)
     system.actorOf(Props(implicitly[ClassTag[T]].runtimeClass, name, providedConfig))
 
   override protected def beforeEach(): Unit = {
-    _name = s"${namePrefix}-${counter.incrementAndGet()}"
+    _name = s"$namePrefix-${counter.incrementAndGet()}"
   }
 }
 
@@ -79,10 +79,10 @@ object PersistenceSpec {
       pekko.actor.allow-java-serialization = on
       pekko.actor.warn-about-java-serializer-usage = off
       pekko.persistence.publish-plugin-commands = on
-      pekko.persistence.journal.plugin = "pekko.persistence.journal.${plugin}"
-      pekko.persistence.journal.leveldb.dir = "target/journal-${test}"
+      pekko.persistence.journal.plugin = "pekko.persistence.journal.$plugin"
+      pekko.persistence.journal.leveldb.dir = "target/journal-$test"
       pekko.persistence.snapshot-store.plugin = "pekko.persistence.snapshot-store.local"
-      pekko.persistence.snapshot-store.local.dir = "target/snapshots-${test}/"
+      pekko.persistence.snapshot-store.local.dir = "target/snapshots-$test/"
       pekko.test.single-expect-default = 10s
     """))
 }
