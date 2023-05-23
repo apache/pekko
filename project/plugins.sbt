@@ -20,7 +20,7 @@ addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
 addSbtPlugin("com.lightbend.sbt" % "sbt-publish-rsync" % "0.2")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.5")
-addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.7")
+addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.8")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.5.0")
 
