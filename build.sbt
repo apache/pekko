@@ -89,7 +89,6 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
 
 lazy val root = Project(id = "pekko", base = file("."))
   .aggregate(aggregatedProjects: _*)
-  .enablePlugins(PublishRsyncPlugin)
   .settings(
     name := "pekko-root")
   .settings(rootSettings: _*)
@@ -244,7 +243,6 @@ lazy val docs = pekkoModule("docs")
   .enablePlugins(
     ParadoxPlugin,
     PekkoParadoxPlugin,
-    PublishRsyncPlugin,
     NoPublish,
     ParadoxBrowse,
     ScaladocNoVerificationOfDiagrams,

@@ -15,7 +15,6 @@ package org.apache.pekko
 
 import sbt._
 import sbt.Keys._
-import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport.publishRsyncHost
 import org.mdedetrich.apache.sonatype.ApacheSonatypePlugin
 import sbtdynver.DynVerPlugin
 import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots
@@ -25,7 +24,6 @@ object Publish extends AutoPlugin {
   override def trigger = allRequirements
 
   override lazy val projectSettings = Seq(
-    publishRsyncHost := "akkarepo@gustav.akka.io",
     startYear := Some(2022),
     developers := List(
       Developer(

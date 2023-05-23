@@ -16,7 +16,6 @@ package org.apache.pekko
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
-import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport._
 import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
@@ -110,9 +109,5 @@ object Paradox {
     Seq(
       Compile / paradox / name := "Pekko",
       resolvers += Resolver.jcenterRepo,
-      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
-      publishRsyncArtifacts += {
-        val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
-        (Compile / paradox).value -> s"www/docs/pekko/$releaseVersion"
-      })
+      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko")
 }
