@@ -21,7 +21,6 @@ import sbtunidoc.GenJavadocPlugin.autoImport._
 import sbt.Keys._
 import sbt.File
 import scala.annotation.tailrec
-import com.lightbend.sbt.publishrsync.PublishRsyncPlugin.autoImport.publishRsyncArtifacts
 
 import sbt.ScopeFilter.ProjectFilter
 
@@ -153,13 +152,6 @@ object UnidocRoot extends AutoPlugin {
       JavaUnidoc / unidoc / javacOptions := {
         if (JdkOptions.isJdk8) Seq("-Xdoclint:none")
         else Seq("-Xdoclint:none", "--ignore-source-errors", "--no-module-directories")
-      },
-      publishRsyncArtifacts ++= {
-        val releaseVersion = if (isSnapshot.value) "snapshot" else version.value
-        (Compile / unidoc).value match {
-          case Seq(japi, api) =>
-            Seq(japi -> s"www/japi/pekko/$releaseVersion", api -> s"www/api/pekko/$releaseVersion")
-        }
       }))
     .getOrElse(Nil)
 
