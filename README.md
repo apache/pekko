@@ -18,8 +18,9 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 Building from Source
 --------------------
 
-- You will need to install [sbt](https://www.scala-sbt.org/) if you don't already have it installed
-- You should have a Java Runtime installed. Java 8 minimum.
+- Make sure you have installed a Java Development Kit (JDK) version 11 or later.
+- Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
+- Make sure you also have Java 8 installed (JDK or JRE).
 - Use git to clone the [repo](https://github.com/apache/incubator-pekko) or download a source release from https://pekko.apache.org
 - Open a command window and change directory to the directory where you installed the source
 - `sbt compile` compiles the main source for project default version of Scala (2.13)
