@@ -1,5 +1,4 @@
-Apache Pekko
-============
+# Apache Pekko
 
 [![Nightly Builds](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds.yml/badge.svg)](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds.yml)
 [![Nightly Aeron Tests](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds-aeron.yml/badge.svg?branch=main)](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds-aeron.yml)
@@ -10,19 +9,22 @@ Using these abstractions, Pekko also provides libraries for persistence, streams
 
 Pekko is a fork of [Akka](https://github.com/akka/akka) 2.6.x, prior to the Akka project's adoption of the Business Source License.
 
-Reference Documentation
------------------------
+## Reference Documentation
 
 See https://pekko.apache.org for the documentation including the API docs. The docs for all the Apache Pekko modules can be found there.
 
-Building from Source
---------------------
+## Building from Source
 
+### Prerequisites
 - Make sure you have installed a Java Development Kit (JDK) version 11 or later.
 - Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
 - Make sure you also have Java 8 installed (JDK or JRE).
-- Use git to clone the [repo](https://github.com/apache/incubator-pekko) or download a source release from https://pekko.apache.org
-- Open a command window and change directory to the directory where you installed the source
+- [Graphviz](https://graphviz.gitlab.io/download/) is needed for the scaladoc generation build task, which is part of the release.
+
+### Running the Build
+- Open a command window and change directory to your preferred base directory
+- Use git to clone the [repo](https://github.com/apache/incubator-pekko) or download a source release from https://pekko.apache.org (and unzip or untar it, as appropriate)
+- Change directory to the directory where you installed the source
 - `sbt compile` compiles the main source for project default version of Scala (2.13)
     - `sbt +compile` will compile for all supported versions of Scala
 - `sbt test` will compile the code and run the unit tests
@@ -35,11 +37,10 @@ Building from Source
      - Requires Java 11 minimum
      - `sbt docs/paradoxBrowse` does the same but will open the docs in your browser when complete
      - the `index.html` file will appear in `target/paradox/site/main/`
-- `sbt unidoc` will build the Javadocs for all the modules and load them to one place
+- `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)
      - the `index.html` file will appear in `target/scala-2.13/unidoc/`
 
-Community
----------
+## Community
 
 There are several ways to interact with the Pekko community:
 
@@ -48,19 +49,16 @@ There are several ways to interact with the Pekko community:
 - [Pekko users mailing list](https://lists.apache.org/list.html?users@pekko.apache.org): for Pekko user discussions.
 - [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
 
-Contributing
-------------
+## Contributing
 
 Contributions are very welcome. If you have an idea on how to improve Pekko, don't hesitate to create an issue or submit a pull request.
 
 See [CONTRIBUTING.md](https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md) for details on the development workflow and how to create your pull request.
 
-Code of Conduct
----------------
+## Code of Conduct
 
 Apache Pekko is governed by the [Apache code of conduct](https://www.apache.org/foundation/policies/conduct.html). By participating in this project you agree to abide by its terms.
 
-License
--------
+## License
 
 Apache Pekko is available under the Apache License, version 2.0. See [LICENSE](https://github.com/apache/incubator-pekko/blob/main/LICENSE) file for details.
