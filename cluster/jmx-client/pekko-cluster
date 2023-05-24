@@ -74,7 +74,7 @@ do
             exit 1
         fi
 
-        #downloadJmxshR5IfNecessary()
+        downloadJmxshR5IfNecessary
         ACTOR_SYSTEM_URL=$2
         echo "$HOST is JOINING cluster node $ACTOR_SYSTEM_URL"
         invoke join $ACTOR_SYSTEM_URL
