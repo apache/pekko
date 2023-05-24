@@ -84,6 +84,9 @@ worker*.log
 *-shim.sbt
 test-output
 
+# omit jar downloaded by shell script
+cluster/jmx-client/jmxsh-R5.jar
+
 # test output of QuickStart guide
 factorials.txt
 factorial2.txt
@@ -99,3 +102,4 @@ native/
 /core
 
 .tmp
+

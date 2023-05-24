@@ -19,7 +19,8 @@
 SELF=`basename $0` # script name
 HOST=$1            # cluster node to talk to through JMX
 PORT=$2
-JMXSHJAR=`dirname $0`/jmxsh-R5.jar
+JMXSHJAR_NAME=jmxsh-R5.jar
+JMXSHJAR=`dirname $0`/$JMXSHJAR_NAME
 
 shift 2
 
@@ -54,7 +55,14 @@ function ensureNodeIsRunningAndAvailable {
     fi
 }
 
-echo "This jmx-client/pekko-cluster tool is deprecated use curl and https://github.com/apache/incubator-pekko-management instead." >&2
+function downloadJmxshR5IfNecessary() {
+    if [ ! -f "$JMXSHJAR_NAME" ]; then
+        echo "downloading $JMXSHJAR"
+        curl https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jmxsh/$JMXSHJAR_NAME -o $JMXSHJAR
+    fi
+}
+
+echo "This jmx-client/pekko-cluster tool is deprecated; use curl and https://github.com/apache/incubator-pekko-management instead." >&2
 
 # switch on command
 while [ $# -gt 0 ];
@@ -66,6 +74,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ACTOR_SYSTEM_URL=$2
         echo "$HOST is JOINING cluster node $ACTOR_SYSTEM_URL"
         invoke join $ACTOR_SYSTEM_URL
@@ -78,6 +87,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
         ACTOR_SYSTEM_URL=$2
         echo "Scheduling $ACTOR_SYSTEM_URL to LEAVE cluster"
@@ -91,6 +101,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         ACTOR_SYSTEM_URL=$2
@@ -105,6 +116,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Querying member status for $HOST"
@@ -118,6 +130,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         get ClusterStatus
@@ -130,6 +143,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Querying members"
@@ -143,6 +157,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Querying unreachable members"
@@ -156,6 +171,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Checking leader status"
@@ -169,6 +185,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Checking for singleton cluster"
@@ -182,6 +199,7 @@ do
             exit 1
         fi
 
+        downloadJmxshR5IfNecessary
         ensureNodeIsRunningAndAvailable
 
         echo "Checking if member node on $HOST is AVAILABLE"
