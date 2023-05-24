@@ -37,7 +37,7 @@ See https://pekko.apache.org for the documentation including the API docs. The d
      - Requires Java 11 minimum
      - `sbt docs/paradoxBrowse` does the same but will open the docs in your browser when complete
      - the `index.html` file will appear in `target/paradox/site/main/`
-- `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphvis, see Prerequisites above)
+- `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)
      - the `index.html` file will appear in `target/scala-2.13/unidoc/`
 
 ## Community
