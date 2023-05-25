@@ -19,7 +19,7 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 - Make sure you have installed a Java Development Kit (JDK) version 11 or later.
 - Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
 - Make sure you also have Java 8 installed (JDK or JRE).
-- One popular tool for installing managing multiple versions of Java as well as sbt is [SDKMan](https://sdkman.io/).
+- One popular tool for installing and managing multiple versions of Java as well as sbt is [SDKMan](https://sdkman.io/).
 - [Graphviz](https://graphviz.gitlab.io/download/) is needed for the scaladoc generation build task, which is part of the release.
 
 ### Running the Build
