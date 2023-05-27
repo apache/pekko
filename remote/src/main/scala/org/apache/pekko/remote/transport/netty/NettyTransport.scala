@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 
+import scala.annotation.nowarn
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.concurrent.Promise
@@ -30,8 +31,8 @@ import scala.util.Try
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config.Config
+import org.apache.pekko
 import org.jboss.netty.bootstrap.Bootstrap
 import org.jboss.netty.bootstrap.ClientBootstrap
 import org.jboss.netty.bootstrap.ConnectionlessBootstrap
@@ -50,8 +51,6 @@ import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder
 import org.jboss.netty.handler.codec.frame.LengthFieldPrepender
 import org.jboss.netty.handler.ssl.SslHandler
 import org.jboss.netty.util.HashedWheelTimer
-
-import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.OnlyCauseStackTrace
 import pekko.actor.ActorSystem
@@ -124,7 +123,6 @@ class NettyTransportExceptionNoStack(msg: String, cause: Throwable)
 class NettyTransportSettings(config: Config) {
 
   import config._
-
   import pekko.util.Helpers.ConfigOps
 
   val EnableSsl: Boolean = getBoolean("enable-ssl")
@@ -318,6 +316,7 @@ private[transport] object NettyTransport {
   // 4 bytes will be used to represent the frame length. Used by netty LengthFieldPrepender downstream handler.
   val FrameLengthFieldLength = 4
   def gracefulClose(channel: Channel)(implicit ec: ExecutionContext): Unit = {
+    @nowarn("msg=deprecated")
     def always(c: ChannelFuture) = NettyFutureBridge(c).recover { case _ => c.getChannel }
     for {
       _ <- always { channel.write(ChannelBuffers.buffer(0)) } // Force flush by waiting on a final dummy write
