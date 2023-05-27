@@ -27,7 +27,7 @@ object TestExtras {
       val onlyTestTags =
         settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dpekko.test.tags.only=long-running")
 
-      val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run");
+      val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run")
     }
 
     import Keys._
