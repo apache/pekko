@@ -278,7 +278,7 @@ lazy val osgi = pekkoModule("osgi")
   .settings(Dependencies.osgi)
   .settings(AutomaticModuleName.settings("pekko.osgi"))
   .settings(OSGi.osgi)
-  .settings(Test / parallelExecution := false, crossScalaVersions -= Dependencies.scala3Version)
+  .settings(Test / parallelExecution := false)
 
 lazy val persistence = pekkoModule("persistence")
   .dependsOn(actor, stream, testkit % "test->test")
