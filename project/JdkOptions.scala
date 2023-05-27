@@ -23,7 +23,7 @@ import sbt.librarymanagement.VersionNumber
 
 object JdkOptions extends AutoPlugin {
   object autoImport {
-    val jdk8home = settingKey[String]("JDK 8 home. Only needs to be set when it cannot be auto-detected by sbt");
+    val jdk8home = settingKey[String]("JDK 8 home. Only needs to be set when it cannot be auto-detected by sbt")
     val targetSystemJdk = settingKey[Boolean](
       "Target the system JDK instead of building against JDK 8. When this is enabled resulting artifacts may not work on JDK 8!")
   }
