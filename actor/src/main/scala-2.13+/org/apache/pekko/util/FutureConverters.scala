@@ -23,13 +23,13 @@ import scala.concurrent.Future
 private[pekko] object FutureConverters {
   import scala.jdk.javaapi
 
-  def asJava[T](f: Future[T]): CompletionStage[T] = javaapi.FutureConverters.asJava(f)
+  @inline final def asJava[T](f: Future[T]): CompletionStage[T] = javaapi.FutureConverters.asJava(f)
 
   implicit final class FutureOps[T](private val f: Future[T]) extends AnyVal {
     @inline def asJava: CompletionStage[T] = FutureConverters.asJava(f)
   }
 
-  def asScala[T](cs: CompletionStage[T]): Future[T] = javaapi.FutureConverters.asScala(cs)
+  @inline final def asScala[T](cs: CompletionStage[T]): Future[T] = javaapi.FutureConverters.asScala(cs)
 
   implicit final class CompletionStageOps[T](private val cs: CompletionStage[T]) extends AnyVal {
     @inline def asScala: Future[T] = FutureConverters.asScala(cs)
