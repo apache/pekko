@@ -40,8 +40,11 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 - `sbt unidoc` will build the Javadocs for all the modules and load them to one place (may require Graphviz, see Prerequisites above)
      - the `index.html` file will appear in `target/scala-2.13/unidoc/`
 - `sbt sourceDistGenerate` will generate source release to `target/dist/`
-- The version number that appears in filenames and docs is derived (by default). If you want to control the version number, add a file called `version.sbt` to the same directory that has the `build.sbt`. An example:
-    - `ThisBuild / version := "1.0.0"` 
+- The version number that appears in filenames and docs is derived (by default).
+    - You can set the version number when running sbt commands
+        - eg `sbt "set ThisBuild / version := \"1.0.0\"; sourceDistGenerate"`  
+    - Or you can add a file called `version.sbt` to the same directory that has the `build.sbt` containing something like
+        - `ThisBuild / version := "1.0.0"` 
 
 ## Community
 
