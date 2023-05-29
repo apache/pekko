@@ -533,8 +533,12 @@ Scala has proven the most viable way to do it, as long as you keep the following
 1. If the underlying Scala code requires an `ExecutionContext`, make the Java API take an `Executor` and use
    `ExecutionContext.fromExecutor(executor)` for conversion.
 
-1. Use `org.apache.pekko.util.FutureConverters` to translate Futures to `CompletionStage`s.
+1. Use `org.apache.pekko.util.FutureConverters` to translate `Future`s to `CompletionStage`s.
 
+1. Use `org.apache.pekko.util.OptionConverters` to translate `Option`s to Java `Optional`s.
+
+1. Use `org.apache.pekko.util.FunctionConverters` to translate Scala Functions to Java Functions.
+ 
 1. Make sure there are Java tests or sample code touching all parts of the API
 
 1. Do not use lower type bounds: `trait[T] { def method[U >: Something]: U }` as they do not work with Java
