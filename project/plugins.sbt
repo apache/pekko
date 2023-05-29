@@ -1,3 +1,12 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, derived from Akka.
+ */
+
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.1")
 
 addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
@@ -13,7 +22,7 @@ addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("io.spray" % "sbt-boilerplate" % "0.6.1")
 
-addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.7.0")
+addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.9.0")
 addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
 

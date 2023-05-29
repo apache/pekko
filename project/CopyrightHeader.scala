@@ -35,7 +35,8 @@ trait CopyrightHeader extends AutoPlugin {
             HeaderFileType.scala -> cStyleComment,
             HeaderFileType.java -> cStyleComment,
             HeaderFileType.conf -> hashLineComment,
-            HeaderFileType("template") -> cStyleComment)))
+            HeaderFileType("template") -> cStyleComment,
+            HeaderFileType("sbt") -> cStyleComment)))
     }
 
   override def projectSettings: Seq[Def.Setting[_]] =
