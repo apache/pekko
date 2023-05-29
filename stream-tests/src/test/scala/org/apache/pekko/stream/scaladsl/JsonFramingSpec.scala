@@ -41,7 +41,7 @@ class JsonFramingSpec extends PekkoSpec {
           |""".stripMargin // also should complete once notices end of array
 
       val result =
-        Source.single(ByteString(input)).via(JsonFraming.objectScanner(Int.MaxValue)).runFold(Seq.empty[String]) {
+        Source.single(ByteString(input)).via(JsonFraming.objectScanner(64)).runFold(Seq.empty[String]) {
           case (acc, entry) => acc ++ Seq(entry.utf8String)
         }
       // #using-json-framing
@@ -493,6 +493,11 @@ class JsonFramingSpec extends PekkoSpec {
           buffer.poll() // first emitting the valid element
           a[FramingException] shouldBe thrownBy { buffer.poll() }
         }
+      }
+      "maximumObjectLength is near Int.MaxValue" in {
+        val buffer = new JsonObjectParser(Int.MaxValue - 1)
+        buffer.offer(ByteString("""  {}"""))
+        buffer.poll().get.utf8String shouldBe """{}"""
       }
     }
 
