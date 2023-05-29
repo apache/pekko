@@ -545,6 +545,22 @@ class JsonFramingSpec extends PekkoSpec {
       probe.request(1).expectError() shouldBe a[PartialObjectException]
     }
 
+    "complete when completing inside an empty chars" in {
+      val input = ByteString("   ")
+      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+
+      probe.ensureSubscription()
+      probe.request(1).expectComplete()
+    }
+
+    "complete when completing with an empty byte string" in {
+      val input = ByteString()
+      val probe = Source.single(input).via(JsonFraming.objectScanner(48)).runWith(TestSink.probe)
+
+      probe.ensureSubscription()
+      probe.request(1).expectComplete()
+    }
+
     "fail when pushing and inside an object" in {
       val input = """  { "name": "john" }, {  """
       Source

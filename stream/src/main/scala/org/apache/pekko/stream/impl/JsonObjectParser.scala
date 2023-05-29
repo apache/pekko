@@ -115,20 +115,21 @@ import pekko.util.ByteString
   private def seekObject(): Boolean = {
     completedObject = false
     val bufSize = buffer.length
+    if (bufSize > 0) {
+      skipToNextObject(bufSize)
+      val maxObjectLengthIndex = if (pos + maximumObjectLength < 0) Int.MaxValue else pos + maximumObjectLength
 
-    skipToNextObject(bufSize)
-    val maxObjectLengthIndex = if (pos + maximumObjectLength < 0) Int.MaxValue else pos + maximumObjectLength
+      while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
+        val input = buffer(pos)
+        proceed(input)
+        pos += 1
+      }
 
-    while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
-      val input = buffer(pos)
-      proceed(input)
-      pos += 1
-    }
+      if (pos >= maxObjectLengthIndex)
+        throw new FramingException(s"""JSON element exceeded maximumObjectLength ($maximumObjectLength bytes)!""")
 
-    if (pos >= maxObjectLengthIndex)
-      throw new FramingException(s"""JSON element exceeded maximumObjectLength ($maximumObjectLength bytes)!""")
-
-    completedObject
+      completedObject
+    } else false
   }
 
   private def skipToNextObject(bufSize: Int): Unit =
