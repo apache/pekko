@@ -13,7 +13,10 @@ github:
     - distributed-actors
     - distributed-systems
     - high-performance
-  
+
+  protected_tags:
+    - "v*.*.*"
+
   features:
     # Enable wiki for documentation
     wiki: false
