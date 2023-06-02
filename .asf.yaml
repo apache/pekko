@@ -17,6 +17,9 @@ github:
   protected_tags:
     - "v*.*.*"
 
+  dependabot_alerts:  true
+  dependabot_updates: true
+
   features:
     # Enable wiki for documentation
     wiki: false
