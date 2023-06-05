@@ -71,8 +71,9 @@ object Paradox {
       "fault-tolerance-sample.html"))
 
   val themeSettings = Seq(
-    // allow access to snapshots for pekko-sbt-paradox
+    // TODO: allow access to snapshots for pekko-sbt-paradox, remove when pekko is released
     resolvers += Resolver.ApacheMavenSnapshotsRepo,
+    updateOptions := updateOptions.value.withLatestSnapshots(false),
     pekkoParadoxGithub := Some("https://github.com/apache/incubator-pekko"))
 
   // FIXME https://github.com/lightbend/paradox/issues/350
