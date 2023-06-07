@@ -168,7 +168,7 @@ final class Deploy(
  * pattern matching the “scope” (i.e. local/remote/cluster) as well as for
  * extending the information carried by the final Deploy class. Scopes can be
  * used in conjunction with a custom [[pekko.actor.ActorRefProvider]], making
- * Akka actors fully extensible.
+ * Pekko actors fully extensible.
  */
 trait Scope {
 

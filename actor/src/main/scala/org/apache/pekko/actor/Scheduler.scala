@@ -570,7 +570,7 @@ object Scheduler {
   /**
    * If a `TaskRunOnClose` is used in `scheduleOnce` it will be run when the `Scheduler` is
    * closed (`ActorSystem` shutdown). This is needed for the internal shutdown of dispatchers
-   * in Akka and is not intended to be used by end user applications, but it's public because
+   * in Pekko and is not intended to be used by end user applications, but it's public because
    * a custom implementation of `Scheduler` must also implement this.
    */
   trait TaskRunOnClose extends Runnable

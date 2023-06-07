@@ -93,7 +93,7 @@ object HandshakeInfo {
 final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String])
 
 /**
- * Implementation of the Akka protocol as a Transport that wraps an underlying Transport instance.
+ * Implementation of the Pekko protocol as a Transport that wraps an underlying Transport instance.
  *
  * Features provided by this transport are:
  *  - Soft-state associations via the use of heartbeats and failure detectors
@@ -110,7 +110,7 @@ final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String]
  * @param system
  *   the actor system
  * @param settings
- *   the configuration options of the Akka protocol
+ *   the configuration options of the Pekko protocol
  * @param codec
  *   the codec that will be used to encode/decode Pekko PDUs
  */
@@ -282,13 +282,13 @@ private[remote] object ProtocolStateActor {
       transport: Transport)
       extends InitialProtocolStateData
 
-  // The underlying transport is associated, but the handshake of the akka protocol is not yet finished
+  // The underlying transport is associated, but the handshake of the Pekko protocol is not yet finished
   final case class OutboundUnderlyingAssociated(
       statusPromise: Promise[AssociationHandle],
       wrappedHandle: AssociationHandle)
       extends ProtocolStateData
 
-  // The underlying transport is associated, but the handshake of the akka protocol is not yet finished
+  // The underlying transport is associated, but the handshake of the Pekko protocol is not yet finished
   final case class InboundUnassociated(associationListener: AssociationEventListener, wrappedHandle: AssociationHandle)
       extends InitialProtocolStateData
 

@@ -655,7 +655,7 @@ trait MailboxType {
 trait ProducesMessageQueue[T <: MessageQueue]
 
 /**
- * UnboundedMailbox is the default unbounded MailboxType used by Akka Actors.
+ * UnboundedMailbox is the default unbounded MailboxType used by Pekko Actors.
  */
 final case class UnboundedMailbox() extends MailboxType with ProducesMessageQueue[UnboundedMailbox.MessageQueue] {
 
@@ -707,7 +707,7 @@ case class NonBlockingBoundedMailbox(capacity: Int)
 }
 
 /**
- * BoundedMailbox is the default bounded MailboxType used by Akka Actors.
+ * BoundedMailbox is the default bounded MailboxType used by Pekko Actors.
  */
 final case class BoundedMailbox(capacity: Int, override val pushTimeOut: FiniteDuration)
     extends MailboxType

@@ -76,7 +76,7 @@ object OsgiActorSystemFactory {
   def pekkoActorClassLoader = classOf[ActorSystemActivator].getClassLoader
 
   /*
-   * Create an [[OsgiActorSystemFactory]] instance to set up Akka in an OSGi environment
+   * Create an [[OsgiActorSystemFactory]] instance to set up Pekko in an OSGi environment
    */
   def apply(context: BundleContext, config: Config): OsgiActorSystemFactory =
     new OsgiActorSystemFactory(context, Some(pekkoActorClassLoader), config)

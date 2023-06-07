@@ -135,10 +135,6 @@ final case class AtomicWrite(payload: immutable.Seq[PersistentRepr]) extends Per
 
   /**
    * Not used, can always be `false`.
-   *
-   * Not used in new records stored with Akka v2.4, but
-   * old records from v2.3 may have this as `true` if
-   * it was a non-permanent delete.
    */
   def deleted: Boolean // FIXME deprecate, issue #27278
 

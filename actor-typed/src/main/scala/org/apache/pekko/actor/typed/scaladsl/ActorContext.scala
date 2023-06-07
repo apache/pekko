@@ -35,7 +35,7 @@ import pekko.util.Timeout
  *  - create a finite number of Actors
  *  - designate the behavior for the next message
  *
- * In Akka the first capability is accessed by using the `!` or `tell` method
+ * In Pekko, the first capability is accessed by using the `!` or `tell` method
  * on an [[ActorRef]], the second is provided by [[ActorContext#spawn]]
  * and the third is implicit in the signature of [[Behavior]] in that the next
  * behavior is always returned from the message processing logic.

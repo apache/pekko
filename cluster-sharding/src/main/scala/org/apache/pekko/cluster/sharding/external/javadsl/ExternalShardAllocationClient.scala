@@ -37,7 +37,7 @@ trait ExternalShardAllocationClient {
    * sharding rebalance.
    *
    * @param shard    The shard identifier
-   * @param location Location (akka node) to allocate the shard to
+   * @param location Location (Pekko node) to allocate the shard to
    * @return Conformation that the update has been written to the local node
    */
   def setShardLocation(shard: ShardId, location: Address): CompletionStage[Done]

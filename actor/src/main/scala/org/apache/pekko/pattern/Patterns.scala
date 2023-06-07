@@ -24,7 +24,7 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 
 /**
- * Java API: for Akka patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
+ * Java API: for Pekko patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
  */
 object Patterns {
   import scala.concurrent.Future
@@ -645,7 +645,7 @@ object Patterns {
 }
 
 /**
- * Java 8+ API for Akka patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
+ * Java 8+ API for Pekko patterns such as `ask`, `pipe` and others which work with [[java.util.concurrent.CompletionStage]].
  *
  * For working with Scala [[scala.concurrent.Future]] from Java you may want to use [[pekko.pattern.Patterns]] instead.
  */

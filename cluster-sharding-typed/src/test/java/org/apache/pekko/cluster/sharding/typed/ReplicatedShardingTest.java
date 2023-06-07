@@ -175,7 +175,7 @@ public class ReplicatedShardingTest extends JUnitSuite {
                                   // factory for the entity for a given entity in that replica
                                   MyReplicatedStringSet.create(
                                       ReplicationId.fromString(entityContext.getEntityId())))
-                          // potentially use replica id as role or dc in Akka multi dc for the
+                          // potentially use replica id as role or dc in Pekko multi dc for the
                           // sharding instance
                           // to control where replicas will live
                           // .withDataCenter(replicaId.id()))

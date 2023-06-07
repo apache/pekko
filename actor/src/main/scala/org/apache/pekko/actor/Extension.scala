@@ -26,7 +26,7 @@ package org.apache.pekko.actor
  * The extension itself can be created in any way desired and has full access
  * to the ActorSystem implementation.
  *
- * This trait is only a marker interface to signify an Akka Extension. This is
+ * This trait is only a marker interface to signify a Pekko Extension. This is
  * how an extension is normally constructed.
  *
  * Scala API:
@@ -115,7 +115,7 @@ trait ExtensionId[T <: Extension] {
   def get(system: ClassicActorSystemProvider): T = apply(system)
 
   /**
-   * Is used by Akka to instantiate the Extension identified by this ExtensionId,
+   * Is used by Pekko to instantiate the Extension identified by this ExtensionId,
    * internal use only.
    */
   def createExtension(system: ExtendedActorSystem): T

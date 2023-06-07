@@ -37,7 +37,7 @@ import pekko.util.JavaDurationConverters._
 
 /**
  * `ConsumerController` and [[ProducerController]] or [[WorkPullingProducerController]] are used
- * together. See the descriptions in those classes or the Akka reference documentation for
+ * together. See the descriptions in those classes or the Pekko reference documentation for
  * how they are intended to be used.
  *
  * The destination consumer actor will start the flow by sending an initial [[ConsumerController.Start]]

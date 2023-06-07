@@ -72,7 +72,7 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
     else
       log.info(
         LogMarker.Security,
-        "TLS/SSL hostname verification is disabled. See Akka reference documentation for more information.")
+        "TLS/SSL hostname verification is disabled. See Pekko reference documentation for more information.")
 
     constructContext()
   }

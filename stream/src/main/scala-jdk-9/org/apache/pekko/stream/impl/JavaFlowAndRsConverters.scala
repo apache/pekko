@@ -25,7 +25,7 @@ import pekko.annotation.InternalApi
  * INTERNAL API: Provides converters between Reactive Streams (reactive-streams.org) and their Java 9+ counter-parts,
  * defined in `java.util.concurrent.Flow.*`. This API is internal because Reactive Streams will ship with such
  * adapters itself at some point, and we'd not want to duplicate that effort for users to be confused about which ones
- * to use. These adapters are used internally by Akka Streams to convert between the standards but you should not touch
+ * to use. These adapters are used internally by Pekko Streams to convert between the standards but you should not touch
  * them directly - use thr `JavaFlowSupport` classes instead.
  *
  * Please note that either of these types are designed for *inter-op* and usually should not be used directly

@@ -139,7 +139,7 @@ object ServiceDiscovery {
  * A service lookup. It is up to each method to decide
  * what to do with the optional portName and protocol fields.
  * For example `portName` could be used to distinguish between
- * Akka remoting ports and HTTP ports.
+ * Apache Pekko remoting ports and HTTP ports.
  *
  * @param serviceName must not be 'null' or an empty String
  */
@@ -150,7 +150,7 @@ final class Lookup(val serviceName: String, val portName: Option[String], val pr
   require(serviceName.trim.nonEmpty, "'serviceName' cannot be empty")
 
   /**
-   * Which port for a service e.g. Akka remoting or HTTP.
+   * Which port for a service e.g. Apache Pekko remoting or HTTP.
    * Maps to "service" for an SRV records.
    */
   def withPortName(value: String): Lookup = copy(portName = Some(value))

@@ -38,7 +38,7 @@ import pekko.util.OptionConverters._
  *
  * Configuring JSSE is a rather complex topic, please refer to the JDK platform
  * documentation or the excellent user guide that is part of the Play Framework
- * documentation. The philosophy of this integration into Akka Streams is to
+ * documentation. The philosophy of this integration into Pekko Streams is to
  * expose all knobs and dials to client code and therefore not limit the
  * configuration possibilities. In particular the client code will have to
  * provide the SSLEngine, which is typically created from a SSLContext. Handshake

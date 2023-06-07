@@ -30,7 +30,7 @@ import pekko.dispatch.ExecutionContexts
  *
  * Create using the factory methods [[StatusReply#success]] and [[StatusReply#error]].
  *
- * Akka contains predefined serializers for the wrapper type and the textual error messages.
+ * Pekko contains predefined serializers for the wrapper type and the textual error messages.
  *
  * @tparam T the type of value a successful reply would have
  */
@@ -100,7 +100,7 @@ object StatusReply {
    * For cases where types are needed to identify errors and behave differently enumerating them with a specific
    * set of response messages may be a better alternative to encoding them as generic exceptions.
    *
-   * Also note that Akka does not contain pre-build serializers for arbitrary exceptions.
+   * Also note that Pekko does not contain pre-build serializers for arbitrary exceptions.
    */
   def error[T](exception: Throwable): StatusReply[T] = Error(exception)
 
@@ -158,7 +158,7 @@ object StatusReply {
      * For cases where types are needed to identify errors and behave differently enumerating them with a specific
      * set of response messages may be a better alternative to encoding them as generic exceptions.
      *
-     * Also note that Akka does not contain pre-build serializers for arbitrary exceptions.
+     * Also note that Pekko does not contain pre-build serializers for arbitrary exceptions.
      */
     def apply[T](exception: Throwable): StatusReply[T] = new StatusReply(ScalaFailure(exception))
     def unapply(status: StatusReply[_]): Option[Throwable] =

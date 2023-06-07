@@ -21,7 +21,7 @@ import pekko.actor.{ ActorContext, ActorSystem, ExtendedActorSystem }
 import pekko.event.EventStream
 
 /**
- * Interface for a registry of Akka failure detectors. New resources are implicitly registered when heartbeat is first
+ * Interface for a registry of Pekko failure detectors. New resources are implicitly registered when heartbeat is first
  * called with the resource given as parameter.
  *
  * type parameter A:

@@ -200,7 +200,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
         case None     => allKeys
       }
 
-      // Enforce limit in Akka Streams so that we can pass long values to take as is.
+      // Enforce limit in Pekko Streams so that we can pass long values to take as is.
       Source(keys).take(limit)
     }
 

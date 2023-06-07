@@ -803,13 +803,13 @@ sealed trait ClusterClientInteraction {
 }
 
 /**
- * Emitted to the Akka event stream when a cluster client has interacted with
+ * Emitted to the Pekko event stream when a cluster client has interacted with
  * a receptionist.
  */
 final case class ClusterClientUp(override val clusterClient: ActorRef) extends ClusterClientInteraction
 
 /**
- * Emitted to the Akka event stream when a cluster client was previously connected
+ * Emitted to the Pekko event stream when a cluster client was previously connected
  * but then not seen for some time.
  */
 final case class ClusterClientUnreachable(override val clusterClient: ActorRef) extends ClusterClientInteraction

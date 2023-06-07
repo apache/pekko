@@ -824,7 +824,7 @@ final class CoordinatedShutdown private[pekko] (
   /**
    * Scala API: Add a JVM shutdown hook that will be run when the JVM process
    * begins its shutdown sequence. Added hooks may run in any order
-   * concurrently, but they are running before Akka internal shutdown
+   * concurrently, but they are running before Pekko internal shutdown
    * hooks, e.g. those shutting down Artery.
    */
   def addJvmShutdownHook[T](hook: => T): Unit = addCancellableJvmShutdownHook(hook)
@@ -832,7 +832,7 @@ final class CoordinatedShutdown private[pekko] (
   /**
    * Scala API: Add a JVM shutdown hook that will be run when the JVM process
    * begins its shutdown sequence. Added hooks may run in any order
-   * concurrently, but they are running before Akka internal shutdown
+   * concurrently, but they are running before Pekko internal shutdown
    * hooks, e.g. those shutting down Artery.
    *
    * The returned ``Cancellable`` makes it possible to de-register the hook. For example
@@ -891,7 +891,7 @@ final class CoordinatedShutdown private[pekko] (
   /**
    * Java API: Add a JVM shutdown hook that will be run when the JVM process
    * begins its shutdown sequence. Added hooks may run in any order
-   * concurrently, but they are running before Akka internal shutdown
+   * concurrently, but they are running before Pekko internal shutdown
    * hooks, e.g. those shutting down Artery.
    */
   def addJvmShutdownHook(hook: Runnable): Unit =
@@ -900,7 +900,7 @@ final class CoordinatedShutdown private[pekko] (
   /**
    * Java API: Add a JVM shutdown hook that will be run when the JVM process
    * begins its shutdown sequence. Added hooks may run in an order
-   * concurrently, but they are running before Akka internal shutdown
+   * concurrently, but they are running before Pekko internal shutdown
    * hooks, e.g. those shutting down Artery.
    *
    * The returned ``Cancellable`` makes it possible to de-register the hook. For example

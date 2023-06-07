@@ -14,7 +14,7 @@
 package org.apache.pekko.stream
 
 /**
- * The architecture of Akka Streams internally consists of several distinct layers:
+ * The architecture of Apache Pekko Streams internally consists of several distinct layers:
  *
  *  * The DSLs like [[org.apache.pekko.stream.scaladsl.Flow]], [[org.apache.pekko.stream.scaladsl.Source]] etc. are the user facing API
  *    for composing streams. These DSLs are a thin wrappers around the internal [[org.apache.pekko.stream.impl.TraversalBuilder]]
@@ -41,7 +41,7 @@ package org.apache.pekko.stream
  * == Design goals ==
  *
  * The central piece for both the DSLs and materialization is the [[org.apache.pekko.stream.impl.Traversal]]. This is the
- * representation of an Akka Stream, basically a [[org.apache.pekko.stream.scaladsl.RunnableGraph]]. The design goals
+ * representation of a Pekko Stream, basically a [[org.apache.pekko.stream.scaladsl.RunnableGraph]]. The design goals
  * for [[org.apache.pekko.stream.impl.Traversal]] are:
  *
  *   * Be able to materialize a graph in one pass over the traversal
@@ -175,7 +175,7 @@ package org.apache.pekko.stream
  *       |               |                     |    |
  *    |---------Graph1---------|--- .... ---|----Graph2----|
  *
- *  It is important to note that due to reusability, an Akka Stream graph may contain the same atomic or composite
+ *  It is important to note that due to reusability, a Pekko Stream graph may contain the same atomic or composite
  *  multiple times in the same graph. Since these must be distinguished from each other somehow, they need port mapping
  *  (i.e. a new set of ports) to ensure that the ports of one graph are distinguishable from another. Because how
  *  the traversal relative addressing works, these are _temporary_ though, once all internal wirings are ready, these

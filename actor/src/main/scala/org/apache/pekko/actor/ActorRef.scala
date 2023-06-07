@@ -448,7 +448,7 @@ private[pekko] class LocalActorRef private[pekko] (
     else rec(this, names)
   }
 
-  // ========= AKKA PROTECTED FUNCTIONS =========
+  // ========= PEKKO PROTECTED FUNCTIONS =========
 
   def underlying: ActorCell = actorCell
 
@@ -984,7 +984,7 @@ private[pekko] class VirtualPathContainer(
   }
 
   override def stop(): Unit = {
-    // The messageHandler function may close over a large object graph (such as an Akka Stream)
+    // The messageHandler function may close over a large object graph (such as a Pekko Stream)
     // so we replace the messageHandler function to make that available for garbage collection.
     // Doesn't matter if the change isn't visible immediately, volatile not needed.
     messageHandler = FunctionRef.deadLetterMessageHandler(system)
