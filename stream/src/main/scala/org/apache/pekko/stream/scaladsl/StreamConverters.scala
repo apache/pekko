@@ -178,7 +178,7 @@ object StreamConverters {
    * The Java 8 ``Stream`` will be ended when the stream flowing into this ``Sink`` completes, and closing the Java
    * ``Stream`` will cancel the inflow of this ``Sink``.
    *
-   * If the Java 8 ``Stream`` throws exception the Akka stream is cancelled.
+   * If the Java 8 ``Stream`` throws exception the Pekko stream is cancelled.
    *
    * Be aware that Java ``Stream`` blocks current thread while waiting on next element from downstream.
    * As it is interacting wit blocking API the implementation runs on a separate dispatcher

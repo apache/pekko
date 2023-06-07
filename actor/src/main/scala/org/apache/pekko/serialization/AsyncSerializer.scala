@@ -25,7 +25,7 @@ import pekko.event.Logging
 /**
  * Serializer that supports async serialization.
  *
- * Only used for Akka persistence journals that explicitly support async serializers.
+ * Only used for Pekko persistence journals that explicitly support async serializers.
  *
  * Implementations should typically extend [[AsyncSerializerWithStringManifest]] or
  * [[AsyncSerializerWithStringManifestCS]] that delegates synchronous calls to their async equivalents.
@@ -64,7 +64,7 @@ abstract class AsyncSerializerWithStringManifest(system: ExtendedActorSystem)
 
   final override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
     log.warning(
-      "Async serializer called synchronously. This will block. Async serializers should only be used for akka persistence plugins that support them. Manifest: [{}]",
+      "Async serializer called synchronously. This will block. Async serializers should only be used for Pekko persistence plugins that support them. Manifest: [{}]",
       manifest)
     Await.result(fromBinaryAsync(bytes, manifest), Duration.Inf)
   }

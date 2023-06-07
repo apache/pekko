@@ -326,7 +326,7 @@ final class ActorTestKit private[pekko] (
    */
   val serializationTestKit: SerializationTestKit = new SerializationTestKit(internalSystem)
 
-  // FIXME needed for Akka internal tests but, users shouldn't spawn system actors?
+  // FIXME needed for Pekko internal tests but, users shouldn't spawn system actors?
   @InternalApi
   private[pekko] def systemActor[T](behavior: Behavior[T], name: String): ActorRef[T] =
     system.systemActorOf(behavior, name)

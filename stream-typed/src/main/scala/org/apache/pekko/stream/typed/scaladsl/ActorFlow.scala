@@ -42,13 +42,13 @@ object ActorFlow {
       .mapAsync(parallelism) { el =>
         val res = pekko.pattern.extended.ask(classicRef, (replyTo: pekko.actor.ActorRef) => makeMessage(el, replyTo))
         // we need to cast manually (yet safely, by construction!) since otherwise we need a ClassTag,
-        // which in Scala is fine, but then we would force JavaDSL to create one, which is a hassle in the Akka Typed DSL,
+        // which in Scala is fine, but then we would force JavaDSL to create one, which is a hassle in the Apache Pekko Typed DSL,
         // since one may say "but I already specified the type!", and that we have to go via the classic ask is an implementation detail
         makeOut(el, res.asInstanceOf[Future[A]])
       }
       .mapError {
         case ex: AskTimeoutException =>
-          // in Akka Typed we use the `TimeoutException` everywhere
+          // in Apache Pekko Typed we use the `TimeoutException` everywhere
           new java.util.concurrent.TimeoutException(ex.getMessage)
 
         // the purpose of this recovery is to change the name of the stage in that exception

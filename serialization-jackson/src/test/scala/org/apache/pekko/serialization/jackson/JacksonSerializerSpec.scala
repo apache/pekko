@@ -330,7 +330,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
         "fallback to defaults when object mapper is not configured" in {
           val notConfigured = JacksonObjectMapperProvider(sys).getOrCreate("jackson-not-configured", None)
-          // Use Jacksons and Akka defaults
+          // Use Jacksons and Pekko defaults
           notConfigured.isEnabled(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS) should ===(false)
           notConfigured.isEnabled(DeserializationFeature.EAGER_DESERIALIZER_FETCH) should ===(true)
           notConfigured.isEnabled(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY) should ===(false)

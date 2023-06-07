@@ -266,7 +266,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
 
   /**
    * When the dispatcher no longer has any actors registered, how long will it wait until it shuts itself down,
-   * defaulting to your akka configs "pekko.actor.default-dispatcher.shutdown-timeout" or default specified in
+   * defaulting to your pekko configs "pekko.actor.default-dispatcher.shutdown-timeout" or default specified in
    * reference.conf
    *
    * INTERNAL API

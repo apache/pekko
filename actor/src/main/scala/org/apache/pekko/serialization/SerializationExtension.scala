@@ -18,7 +18,7 @@ import pekko.actor.{ ActorSystem, ExtendedActorSystem, ExtensionId, ExtensionIdP
 import pekko.actor.ClassicActorSystemProvider
 
 /**
- * SerializationExtension is an Akka Extension to interact with the Serialization
+ * SerializationExtension is a Pekko Extension to interact with the Serialization
  * that is built into Akka
  */
 object SerializationExtension extends ExtensionId[Serialization] with ExtensionIdProvider {

@@ -44,7 +44,7 @@ abstract class FanOutShape[-I] private (
   final def in: Inlet[I @uncheckedVariance] = _in
 
   /**
-   * Not meant for overriding outside of Akka.
+   * Not meant for overriding outside of Apache Pekko.
    */
   override def outlets: immutable.Seq[Outlet[_]] = _outlets
   final override def inlets: immutable.Seq[Inlet[I @uncheckedVariance]] = in :: Nil

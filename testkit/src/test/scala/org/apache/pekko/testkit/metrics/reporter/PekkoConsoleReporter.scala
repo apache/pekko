@@ -50,7 +50,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
     printMetrics(meters.asScala, printMeter)
     printMetrics(timers.asScala, printTimer)
 
-    // custom Akka types
+    // custom Pekko types
     printMetrics(registry.getKnownOpsInTimespanCounters, printKnownOpsInTimespanCounter)
     printMetrics(registry.getHdrHistograms, printHdrHistogram)
     printMetrics(registry.getAveragingGauges, printAveragingGauge)

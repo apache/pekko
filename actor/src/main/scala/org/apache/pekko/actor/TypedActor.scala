@@ -113,7 +113,7 @@ trait TypedActorFactory {
 }
 
 /**
- * This represents the TypedActor Akka Extension, access to the functionality is done through a given ActorSystem.
+ * This represents the TypedActor Pekko Extension, access to the functionality is done through a given ActorSystem.
  */
 @deprecated("Use 'org.apache.pekko.actor.typed' API.", since = "Akka 2.6.0")
 object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvider {

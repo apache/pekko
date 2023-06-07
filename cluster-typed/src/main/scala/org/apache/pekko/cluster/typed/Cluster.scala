@@ -181,7 +181,7 @@ case object PrepareForFullClusterShutdown extends PrepareForFullClusterShutdown 
 }
 
 /**
- * Akka Typed Cluster API entry point
+ * Pekko Typed Cluster API entry point
  */
 object Cluster extends ExtensionId[Cluster] {
 

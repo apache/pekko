@@ -75,7 +75,7 @@ private[remote] object ByteFlag {
  *
  * The strategy if the header format must be changed in an incompatible way is:
  * - In the end we only want to support one header format, the latest, but during
- *   a rolling upgrade period we must support two versions in at least one Akka patch
+ *   a rolling upgrade period we must support two versions in at least one Pekko patch
  *   release.
  * - When supporting two version the outbound messages must still be encoded with old
  *   version. The Decoder on the receiving side must understand both versions.

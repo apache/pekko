@@ -53,7 +53,7 @@ abstract class RemoteInstrument {
    *
    * MUST be >=1 and <32.
    *
-   * Values between 1 and 7 are reserved for Akka internal use.
+   * Values between 1 and 7 are reserved for Pekko internal use.
    */
   def identifier: Byte
 
@@ -72,7 +72,7 @@ abstract class RemoteInstrument {
    * Called right before putting the message onto the wire.
    * Parameters MAY be `null` (except `message` and `buffer`)!
    *
-   * The `size` is the total serialized size in bytes of the complete message including akka specific headers and any
+   * The `size` is the total serialized size in bytes of the complete message including Pekko specific headers and any
    * `RemoteInstrument` metadata.
    * If `serializationTimingEnabled` returns true, then `time` will be the total time it took to serialize all data
    * in the message in nanoseconds, otherwise it is 0.
@@ -87,7 +87,7 @@ abstract class RemoteInstrument {
   /**
    * Called when the message has been deserialized.
    *
-   * The `size` is the total serialized size in bytes of the complete message including akka specific headers and any
+   * The `size` is the total serialized size in bytes of the complete message including Pekko specific headers and any
    * `RemoteInstrument` metadata.
    * If `serializationTimingEnabled` returns true, then `time` will be the total time it took to deserialize all data
    * in the message in nanoseconds, otherwise it is 0.

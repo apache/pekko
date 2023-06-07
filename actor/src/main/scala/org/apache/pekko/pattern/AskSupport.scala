@@ -507,7 +507,7 @@ final class ExplicitlyAskableActorSelection(val actorSel: ActorSelection) extend
 }
 
 /**
- * Akka private optimized representation of the temporary actor spawned to
+ * Pekko private optimized representation of the temporary actor spawned to
  * receive the reply to an "ask" operation.
  *
  * INTERNAL API

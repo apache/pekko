@@ -810,7 +810,7 @@ final case class RunnableGraph[+Mat](override val traversalBuilder: TraversalBui
  * Scala API: Operations offered by Sources and Flows with a free output side: the DSL flows left-to-right only.
  *
  * INTERNAL API: this trait will be changed in binary-incompatible ways for classes that are derived from it!
- * Do not implement this interface outside the Akka code base!
+ * Do not implement this interface outside the Pekko code base!
  *
  * Binary compatibility is only maintained for callers of this trait’s interface.
  */
@@ -3509,7 +3509,7 @@ trait FlowOps[+Out, +Mat] {
 
 /**
  * INTERNAL API: this trait will be changed in binary-incompatible ways for classes that are derived from it!
- * Do not implement this interface outside the Akka code base!
+ * Do not implement this interface outside the Pekko code base!
  *
  * Binary compatibility is only maintained for callers of this trait’s interface.
  */

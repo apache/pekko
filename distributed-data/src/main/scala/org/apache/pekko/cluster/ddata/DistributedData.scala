@@ -35,7 +35,7 @@ object DistributedData extends ExtensionId[DistributedData] with ExtensionIdProv
 }
 
 /**
- * Akka extension for convenient configuration and use of the
+ * Pekko extension for convenient configuration and use of the
  * [[Replicator]]. Configuration settings are defined in the
  * `pekko.cluster.ddata` section, see `reference.conf`.
  */

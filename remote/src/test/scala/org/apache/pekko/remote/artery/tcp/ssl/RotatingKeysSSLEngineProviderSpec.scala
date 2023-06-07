@@ -137,7 +137,7 @@ class RotatingProviderWithChangingKeysSpec
       val (_, pathEchoC) = buildRemoteWithEchoActor("C-reread")
       try {
         contact(remoteSysB.actorSystem, pathEchoC)
-        fail("The credentials under `ssl/rsa-client` are not valid for Akka remote so contact() must fail.")
+        fail("The credentials under `ssl/rsa-client` are not valid for Pekko remote so contact() must fail.")
       } catch {
         case _: java.lang.AssertionError =>
         // This assertion error is expected because we expect a failure in contact() since
@@ -227,7 +227,7 @@ object RotatingKeysSSLEngineProviderSpec {
 }
 
 // Superclass to integration tests to test key rotation. Basic happy-path
-// integration tests of `RotatingKeysSSLEngineProvider` as an SSLEngineProvider for Akka Remote
+// integration tests of `RotatingKeysSSLEngineProvider` as an SSLEngineProvider for Pekko Remote
 // are in `TlsTcpWithRotatingKeysSSLEngineSpec`
 abstract class RotatingKeysSSLEngineProviderSpec(extraConfig: String)
     extends ArteryMultiNodeSpec(ConfigFactory.parseString(extraConfig).withFallback(TlsTcpSpec.config))

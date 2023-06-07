@@ -37,7 +37,7 @@ import pekko.util.unused
 /**
  * Not for user extension.
  *
- * This used to be a supported extension point but will be removed in future versions of Akka.
+ * This used to be a supported extension point but will be removed in future versions of Apache Pekko.
  */
 @ccompatUsedUntil213
 @DoNotInherit

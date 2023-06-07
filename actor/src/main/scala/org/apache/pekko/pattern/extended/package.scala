@@ -17,7 +17,7 @@ package pattern
 /**
  * == Extended Versions Of Pekko Patterns ==
  *
- * This subpackage contains extended versions of Akka patterns.
+ * This subpackage contains extended versions of Apache Pekko patterns.
  *
  * Currently supported are:
  *

@@ -327,7 +327,7 @@ class VerifySerializabilitySpec extends PekkoSpec(SerializationTests.verifySeria
 
   }
 
-  "not verify akka creators" in {
+  "not verify pekko creators" in {
     EventFilter.warning(start = "ok", occurrences = 1).intercept {
       // ActorSystem is not possible to serialize, but ok since it starts with "org.apache.pekko."
       val a = system.actorOf(Props(classOf[NonSerializableActor], system))

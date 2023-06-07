@@ -1,6 +1,6 @@
 # Apache Pekko Microbenchmarks
 
-This subproject contains some microbenchmarks excercising key parts of Akka. (Excluding typed which has its 
+This subproject contains some microbenchmarks excercising key parts of Apache Pekko. (Excluding typed which has its 
 own jmh module)
 
 

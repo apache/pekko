@@ -53,7 +53,7 @@ trait Serializer {
 
   /**
    * Completely unique value to identify this implementation of Serializer, used to optimize network traffic.
-   * Values from 0 to 40 are reserved for Akka internal usage.
+   * Values from 0 to 40 are reserved for Pekko internal usage.
    */
   def identifier: Int
 
@@ -129,7 +129,7 @@ abstract class SerializerWithStringManifest extends Serializer {
 
   /**
    * Completely unique value to identify this implementation of Serializer, used to optimize network traffic.
-   * Values from 0 to 40 are reserved for Akka internal usage.
+   * Values from 0 to 40 are reserved for Pekko internal usage.
    */
   def identifier: Int
 

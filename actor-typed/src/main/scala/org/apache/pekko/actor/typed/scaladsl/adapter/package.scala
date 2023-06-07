@@ -22,7 +22,7 @@ import pekko.annotation.InternalApi
 /**
  * Adapters between typed and classic actors and actor systems.
  * The underlying `ActorSystem` is the classic [[pekko.actor.ActorSystem]]
- * which runs Akka Typed [[pekko.actor.typed.Behavior]] on an emulation layer. In this
+ * which runs Pekko Typed [[pekko.actor.typed.Behavior]] on an emulation layer. In this
  * system typed and classic actors can coexist.
  *
  * Use these adapters with `import org.apache.pekko.actor.typed.scaladsl.adapter._`.

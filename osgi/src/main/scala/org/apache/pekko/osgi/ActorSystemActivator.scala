@@ -134,7 +134,7 @@ abstract class ActorSystemActivator extends BundleActivator {
    * Override this method to define a configuration for your [[pekko.actor.ActorSystem]] instance.
    * This configuration will be merged with fallback on
    *    the application.conf of your bundle
-   *    the reference.conf of the akka bundles
+   *    the reference.conf of the Pekko bundles
    *    the System properties.
    *
    * @param context the bundle context

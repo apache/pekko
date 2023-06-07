@@ -46,7 +46,7 @@ object CircuitBreaker {
    * in Future when using withCircuitBreaker. To use another ExecutionContext for the callbacks you can specify the
    * executor in the constructor.
    *
-   * @param scheduler Reference to Akka scheduler
+   * @param scheduler Reference to Pekko scheduler
    * @param maxFailures Maximum number of failures before opening the circuit
    * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
    * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit
@@ -74,7 +74,7 @@ object CircuitBreaker {
    * in Future when using withCircuitBreaker. To use another ExecutionContext for the callbacks you can specify the
    * executor in the constructor.
    *
-   * @param scheduler Reference to Akka scheduler
+   * @param scheduler Reference to Pekko scheduler
    * @param maxFailures Maximum number of failures before opening the circuit
    * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
    * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit
@@ -94,7 +94,7 @@ object CircuitBreaker {
    * in Future when using withCircuitBreaker. To use another ExecutionContext for the callbacks you can specify the
    * executor in the constructor.
    *
-   * @param scheduler Reference to Akka scheduler
+   * @param scheduler Reference to Pekko scheduler
    * @param maxFailures Maximum number of failures before opening the circuit
    * @param callTimeout [[java.time.Duration]] of time after which to consider a call a failure
    * @param resetTimeout [[java.time.Duration]] of time after which to attempt to close the circuit
@@ -138,7 +138,7 @@ object CircuitBreaker {
  * closed state.  If it fails, the circuit breaker will re-open to open state.  All calls beyond the first that
  * execute while the first is running will fail-fast with an exception.
  *
- * @param scheduler Reference to Akka scheduler
+ * @param scheduler Reference to Pekko scheduler
  * @param maxFailures Maximum number of failures before opening the circuit
  * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
  * @param resetTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to attempt to close the circuit

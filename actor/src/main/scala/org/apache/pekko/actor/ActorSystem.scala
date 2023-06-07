@@ -333,7 +333,7 @@ object ActorSystem {
     /**
      * INTERNAL API
      *
-     * When using Akka Typed the Slf4jLogger should be used by default.
+     * When using Pekko Typed the Slf4jLogger should be used by default.
      * Looking for config property `pekko.use-slf4j` (defined in pekko-actor-typed) and
      * that `Slf4jLogger` (pekko-slf4j) is in  classpath.
      * Then adds `Slf4jLogger` to configured loggers and removes `DefaultLogger`.
@@ -377,7 +377,7 @@ object ActorSystem {
   /**
    * Settings are the overall ActorSystem Settings which also provides a convenient access to the Config object.
    *
-   * For more detailed information about the different possible configuration options, look in the Akka Documentation under "Configuration"
+   * For more detailed information about the different possible configuration options, look in the Apache Pekko Documentation under "Configuration"
    *
    * @see <a href="https://lightbend.github.io/config/latest/api/index.html" target="_blank">The Typesafe Config Library API Documentation</a>
    */
@@ -753,7 +753,7 @@ abstract class ExtendedActorSystem extends ActorSystem {
    * Create an actor in the "/system" namespace. This actor will be shut down
    * during system.terminate only after all user actors have terminated.
    *
-   * This is only intended to be used by libraries (and Akka itself).
+   * This is only intended to be used by libraries (and Pekko itself).
    * Applications should use ordinary `actorOf`.
    */
   def systemActorOf(props: Props, name: String): ActorRef

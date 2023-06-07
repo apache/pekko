@@ -26,7 +26,7 @@ import pekko.annotation.DoNotInherit
  * [[pekko.actor.ReflectiveDynamicAccess]] is the default implementation).
  *
  * This is an internal facility and users are not expected to encounter it
- * unless they are extending Akka in ways which go beyond simple Extensions.
+ * unless they are extending Pekko in ways which go beyond simple Extensions.
  *
  * Not for user extension
  */

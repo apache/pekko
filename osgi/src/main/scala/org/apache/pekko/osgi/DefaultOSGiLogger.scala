@@ -22,7 +22,7 @@ import pekko.event.Logging.Error.NoCause
 
 /**
  * Logger for OSGi environment.
- * Stands for an interface between akka and the OSGi LogService
+ * Stands for an interface between Pekko and the OSGi LogService
  * It uses the OSGi LogService to log the received LogEvents
  */
 class DefaultOSGiLogger extends DefaultLogger {

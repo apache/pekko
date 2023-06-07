@@ -33,7 +33,7 @@ import pekko.util.ccompat.JavaConverters._
 object CircuitBreakersRegistry extends ExtensionId[CircuitBreakersRegistry] with ExtensionIdProvider {
 
   /**
-   * Is used by Akka to instantiate the Extension identified by this ExtensionId,
+   * Is used by Pekko to instantiate the Extension identified by this ExtensionId,
    * internal use only.
    */
   override def createExtension(system: ExtendedActorSystem): CircuitBreakersRegistry =

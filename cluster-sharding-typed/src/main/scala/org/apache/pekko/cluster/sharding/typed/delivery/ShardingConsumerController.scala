@@ -28,7 +28,7 @@ import pekko.cluster.sharding.typed.delivery.internal.ShardingConsumerController
 
 /**
  * `ShardingConsumerController` is used together with [[ShardingProducerController]]. See the description
- * in that class or the Akka reference documentation for how they are intended to be used.
+ * in that class or the Pekko reference documentation for how they are intended to be used.
  *
  * `ShardingConsumerController` is the entity that is initialized in `ClusterSharding`. It will manage
  * the lifecycle and message delivery to the destination consumer actor.

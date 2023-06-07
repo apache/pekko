@@ -146,7 +146,7 @@ final class PersistenceTestKitReadJournal(system: ExtendedActorSystem, @unused c
   /**
    * Get the current persistence ids.
    *
-   * Not all plugins may support in database paging, and may simply use drop/take Akka streams operators
+   * Not all plugins may support in database paging, and may simply use drop/take Pekko streams operators
    * to manipulate the result set according to the paging parameters.
    *
    * @param afterId The ID to start returning results from, or [[None]] to return all ids. This should be an id

@@ -44,7 +44,7 @@ import pekko.testkit.TestProbe
 import pekko.util.Timeout
 
 /*
- * Depends on akka private classes so needs to be in this package
+ * Depends on Pekko private classes so needs to be in this package
  */
 object SplitBrainResolverIntegrationSpec extends MultiNodeConfig {
   val node1 = role("node1")

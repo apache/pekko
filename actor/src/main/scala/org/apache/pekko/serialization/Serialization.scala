@@ -106,7 +106,7 @@ object Serialization {
    * in Jackson need access to the current `ActorSystem`. The current [[Information]] can be accessed within
    * `f` via [[Serialization#getCurrentTransportInformation]].
    *
-   * Akka Remoting sets this value when serializing and deserializing messages, and when using
+   * Pekko Remoting sets this value when serializing and deserializing messages, and when using
    * the ordinary `serialize` and `deserialize` methods in [[Serialization]] the value is also
    * set automatically.
    *

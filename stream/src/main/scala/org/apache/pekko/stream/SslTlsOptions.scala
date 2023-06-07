@@ -55,7 +55,7 @@ sealed abstract class Server extends TLSRole
 case object Server extends Server
 
 /**
- * All streams in Akka are unidirectional: while in a complex flow graph data
+ * All streams in Pekko are unidirectional: while in a complex flow graph data
  * may flow in multiple directions these individual flows are independent from
  * each other. The difference between two half-duplex connections in opposite
  * directions and a full-duplex connection is that the underlying transport

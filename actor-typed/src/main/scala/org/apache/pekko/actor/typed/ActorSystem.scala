@@ -169,7 +169,7 @@ abstract class ActorSystem[-T] extends ActorRef[T] with Extensions with ClassicA
    * Create an actor in the "/system" namespace. This actor will be shut down
    * during system.terminate only after all user actors have terminated.
    *
-   * This is only intended to be used by libraries (and Akka itself).
+   * This is only intended to be used by libraries (and Pekko itself).
    * Applications should use ordinary `spawn`.
    */
   def systemActorOf[U](behavior: Behavior[U], name: String, props: Props = Props.empty): ActorRef[U]
@@ -272,7 +272,7 @@ object ActorSystem {
 
   /**
    * Create an ActorSystem based on the classic [[pekko.actor.ActorSystem]]
-   * which runs Akka Typed [[Behavior]] on an emulation layer. In this
+   * which runs Pekko Typed [[Behavior]] on an emulation layer. In this
    * system typed and classic actors can coexist.
    */
   private def createInternal[T](
@@ -305,7 +305,7 @@ object ActorSystem {
 
   /**
    * Wrap a classic [[pekko.actor.ActorSystem]] such that it can be used from
-   * Akka Typed [[Behavior]].
+   * Pekko Typed [[Behavior]].
    */
   def wrap(system: classic.ActorSystem): ActorSystem[Nothing] =
     ActorSystemAdapter.AdapterExtension(system.asInstanceOf[classic.ActorSystemImpl]).adapter

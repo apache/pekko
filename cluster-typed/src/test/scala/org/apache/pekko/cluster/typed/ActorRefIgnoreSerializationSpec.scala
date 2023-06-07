@@ -94,7 +94,7 @@ class ActorRefIgnoreSerializationSpec extends AnyWordSpec with ScalaFutures with
 
   "IgnoreActorRef (in classic)" should {
 
-    "return a serializable ActorRef that can be sent between two ActorSystems using remote (akka classic)" in {
+    "return a serializable ActorRef that can be sent between two ActorSystems using remote (pekko classic)" in {
 
       val ignoreRef = system1.ignoreRef[String].toClassic
       val remoteRefStr = ignoreRef.path.toSerializationFormatWithAddress(system1.address)

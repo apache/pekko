@@ -23,7 +23,7 @@ import pekko.actor.Actor
  *
  *  TODO make private and remove deprecated in v1.1.0
  */
-@deprecated("Overriding the DNS implementation will be removed in future versions of Akka", "Akka 2.6.0")
+@deprecated("Overriding the DNS implementation will be removed in future versions of Apache Pekko", "Akka 2.6.0")
 trait DnsProvider {
 
   /**
