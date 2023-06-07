@@ -12,6 +12,7 @@ package org.apache.pekko.io.dns
 import org.apache.pekko.annotation.InternalApi
 
 import java.security.SecureRandom
+import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
 
 /**
@@ -39,18 +40,13 @@ private[pekko] object IdGenerator {
   object Policy {
     case object ThreadLocalRandom extends Policy
     case object SecureRandom extends Policy
-    val Default: Policy = ThreadLocalRandom
-
-    def apply(name: String): Option[Policy] = name.toLowerCase match {
-      case "thread-local-random" => Some(ThreadLocalRandom)
-      case "secure-random"       => Some(SecureRandom)
-      case _                     => Some(ThreadLocalRandom)
-    }
+    case object EnhancedDoubleHashRandom extends Policy
   }
 
   def apply(policy: Policy): IdGenerator = policy match {
-    case Policy.ThreadLocalRandom => random(ThreadLocalRandom.current())
-    case Policy.SecureRandom      => random(new SecureRandom())
+    case Policy.ThreadLocalRandom        => random(ThreadLocalRandom.current())
+    case Policy.SecureRandom             => random(new SecureRandom())
+    case Policy.EnhancedDoubleHashRandom => new EnhancedDoubleHashGenerator(new SecureRandom())
   }
 
   def apply(): IdGenerator = random(ThreadLocalRandom.current())
@@ -60,4 +56,31 @@ private[pekko] object IdGenerator {
    */
   def random(rand: java.util.Random): IdGenerator =
     () => (rand.nextInt(UnsignedShortBound) + Short.MinValue).toShort
+
+  private[pekko] class EnhancedDoubleHashGenerator(seed: Random) extends IdGenerator {
+
+    /**
+     * An efficient thread safe generator of pseudo random shorts based on
+     * https://en.wikipedia.org/wiki/Double_hashing#Enhanced_double_hashing.
+     *
+     * Note that due to the usage of synchronized this method is optimized
+     * for the happy case (i.e. least contention) on multiple threads.
+     */
+    private var index = seed.nextLong
+    private var increment = seed.nextLong
+    private var count = 1L
+
+    override final def nextId(): Short = synchronized {
+      val result = (0xFFFFFFFF & index).asInstanceOf[Short]
+      index -= increment
+
+      // Incorporate the counter into the increment to create a
+      // tetrahedral number additional term.
+      increment -= {
+        count += 1
+        count - 1
+      }
+      result
+    }
+  }
 }
