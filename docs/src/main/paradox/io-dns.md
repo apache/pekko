@@ -36,7 +36,7 @@ block that specifies the implementation via `provider-object`.
 
 @@@
 
-To select which `DnsProvider` to use set `pekko.io.dns.resolver ` to the location of the configuration.
+To select which `DnsProvider` to use set `pekko.io.dns.resolver` to the location of the configuration.
 
 There are currently two implementations:
 
