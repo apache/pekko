@@ -28,6 +28,7 @@ import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
 import pekko.event.Logging
 import pekko.io.dns.CachePolicy.{ CachePolicy, Forever, Never, Ttl }
+import pekko.io.dns.IdGenerator.Policy
 import pekko.io.dns.internal.{ ResolvConf, ResolvConfParser }
 import pekko.util.Helpers
 import pekko.util.Helpers.Requiring
@@ -67,10 +68,17 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   val PositiveCachePolicy: CachePolicy = getTtl("positive-ttl")
   val NegativeCachePolicy: CachePolicy = getTtl("negative-ttl")
 
-  lazy val IdGeneratorPolicy: IdGenerator.Policy = IdGenerator
-    .Policy(c.getString("id-generator-policy"))
-    .getOrElse(throw new IllegalArgumentException("id-generator-policy must be 'thread-local-random' or " +
-      s"'secure-random' value was '${c.getString("id-generator-policy")}'"))
+  lazy val IdGeneratorPolicy: IdGenerator.Policy = {
+    c.getString("id-generator-policy") match {
+      case "thread-local-random"                               => Policy.ThreadLocalRandom
+      case "secure-random"                                     => Policy.SecureRandom
+      case s if s.isEmpty | s == "enhanced-double-hash-random" => Policy.EnhancedDoubleHashRandom
+      case _ =>
+        throw new IllegalArgumentException(
+          "Invalid value for id-generator-policy, id-generator-policy must be 'thread-local-random', 'secure-random' or" +
+          s"`enhanced-double-hash-random`")
+    }
+  }
 
   private def getTtl(path: String): CachePolicy =
     c.getString(path) match {

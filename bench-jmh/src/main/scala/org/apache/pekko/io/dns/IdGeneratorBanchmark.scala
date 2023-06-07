@@ -29,16 +29,34 @@ import java.security.SecureRandom
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Warmup(iterations = 3, time = 5, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 3, time = 5)
-@Threads(8)
 @Fork(1)
 @State(Scope.Benchmark)
 class IdGeneratorBanchmark {
   val threadLocalRandom = IdGenerator.random(ThreadLocalRandom.current())
   val secureRandom = IdGenerator.random(new SecureRandom())
+  val enhancedDoubleHash = new IdGenerator.EnhancedDoubleHashGenerator(new SecureRandom())
 
+  @Threads(1)
   @Benchmark
   def measureThreadLocalRandom(): Short = threadLocalRandom.nextId()
 
+  @Threads(1)
   @Benchmark
   def measureSecureRandom(): Short = secureRandom.nextId()
+
+  @Threads(1)
+  @Benchmark
+  def measureEnhancedDoubleHash(): Short = enhancedDoubleHash.nextId()
+
+  @Threads(2)
+  @Benchmark
+  def multipleThreadsMeasureThreadLocalRandom(): Short = threadLocalRandom.nextId()
+
+  @Threads(2)
+  @Benchmark
+  def multipleThreadsMeasureSecureRandom(): Short = secureRandom.nextId()
+
+  @Threads(2)
+  @Benchmark
+  def multipleThreadsMeasureEnhancedDoubleHash(): Short = enhancedDoubleHash.nextId()
 }
