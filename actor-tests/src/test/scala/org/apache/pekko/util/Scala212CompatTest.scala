@@ -9,9 +9,12 @@
 
 package org.apache.pekko.util
 
-import org.apache.pekko.util.OptionConverters._
+import org.apache.pekko
+import pekko.util.ccompat._
+import pekko.util.OptionConverters._
 
 import java.util._
+import scala.annotation.nowarn
 
 /**
  * These tests are here to ensure that methods from [[org.apache.pekko.util.FutureConverters]], [[org.apache.pekko.util.OptionConverters]]
@@ -20,6 +23,9 @@ import java.util._
  *
  * Remove this once Scala 2.12 support is dropped since all methods are in Scala 2.13+ stdlib
  */
+
+@ccompatUsedUntil213
+@nowarn("msg=deprecated")
 object Scala212CompatTest {
 
   // .toJavaPrimitive tests
@@ -56,5 +62,9 @@ object Scala212CompatTest {
   OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalDouble.of(1.0)))
   OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalInt.of(1)))
   OptionConverters.toJava(OptionConverters.toScala(java.util.OptionalLong.of(1L)))
+
+  // Iterable.single
+  val queue = scala.collection.immutable.Queue.empty[ByteString]
+  queue.enqueue(Iterable.single(ByteString.empty))
 
 }

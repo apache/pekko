@@ -77,6 +77,30 @@ package object ccompat {
       build(i.TreeMap.newBuilder[K, V], source)
   }
 
+  private[pekko] implicit class IterableExtensions(private val fact: Iterable.type) extends AnyVal {
+    def single[A](a: A): Iterable[A] = new Iterable[A] {
+      override def iterator = Iterator.single(a)
+      override def sizeHintIfCheap: Int = 1
+      override def hasDefiniteSize: Boolean = true
+      override def head = a
+      override def headOption = Some(a)
+      override def last = a
+      override def lastOption = Some(a)
+      override def view = new IterableView[A, Iterable[A]] {
+        override def iterator: Iterator[A] = Iterator.single(a)
+        override def sizeHintIfCheap: Int = 1
+        override def hasDefiniteSize: Boolean = true
+        override protected def underlying: Iterable[A] = this
+      }
+      override def take(n: Int) = if (n > 0) this else Iterable.empty
+      override def takeRight(n: Int) = if (n > 0) this else Iterable.empty
+      override def drop(n: Int) = if (n > 0) Iterable.empty else this
+      override def dropRight(n: Int) = if (n > 0) Iterable.empty else this
+      override def tail = Iterable.empty
+      override def init = Iterable.empty
+    }
+  }
+
   private[pekko] implicit class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
     def rangeFrom(from: K): T = fact.from(from)
     def rangeTo(to: K): T = fact.to(to)
