@@ -37,7 +37,7 @@ package object ccompat {
    */
   private[pekko] type Factory[-A, +C] = CanBuildFrom[Nothing, A, C]
 
-  private[pekko] implicit class FactoryOps[-A, +C](private val factory: Factory[A, C]) {
+  private[pekko] implicit final class FactoryOps[-A, +C](private val factory: Factory[A, C]) {
 
     /**
      * @return A collection of type `C` containing the same elements
@@ -67,17 +67,17 @@ package object ccompat {
     builder.result()
   }
 
-  private[pekko] implicit class ImmutableSortedMapExtensions(private val fact: i.SortedMap.type) extends AnyVal {
+  private[pekko] implicit final class ImmutableSortedMapExtensions(private val fact: i.SortedMap.type) extends AnyVal {
     def from[K: Ordering, V](source: TraversableOnce[(K, V)]): i.SortedMap[K, V] =
       build(i.SortedMap.newBuilder[K, V], source)
   }
 
-  private[pekko] implicit class ImmutableTreeMapExtensions(private val fact: i.TreeMap.type) extends AnyVal {
+  private[pekko] implicit final class ImmutableTreeMapExtensions(private val fact: i.TreeMap.type) extends AnyVal {
     def from[K: Ordering, V](source: TraversableOnce[(K, V)]): i.TreeMap[K, V] =
       build(i.TreeMap.newBuilder[K, V], source)
   }
 
-  private[pekko] implicit class IterableExtensions(private val fact: Iterable.type) extends AnyVal {
+  private[pekko] implicit final class IterableExtensions(private val fact: Iterable.type) extends AnyVal {
     def single[A](a: A): Iterable[A] = new Iterable[A] {
       override def iterator = Iterator.single(a)
       override def sizeHintIfCheap: Int = 1
@@ -101,7 +101,7 @@ package object ccompat {
     }
   }
 
-  private[pekko] implicit class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
+  private[pekko] implicit final class SortedExtensionMethods[K, T <: Sorted[K, T]](private val fact: Sorted[K, T]) {
     def rangeFrom(from: K): T = fact.from(from)
     def rangeTo(to: K): T = fact.to(to)
     def rangeUntil(until: K): T = fact.until(until)
@@ -116,7 +116,7 @@ package object ccompat {
       self: IterableView[(K, V), C]): MapViewExtensionMethods[K, V, C] =
     new MapViewExtensionMethods[K, V, C](self)
 
-  implicit class ImmutableSortedSetOps[A](val real: i.SortedSet[A]) extends AnyVal {
+  implicit final class ImmutableSortedSetOps[A](val real: i.SortedSet[A]) extends AnyVal {
     def unsorted: i.Set[A] = real
   }
 
@@ -126,11 +126,11 @@ package object ccompat {
     new TraversableOnceExtensionMethods[A](self)
 }
 
-class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
+final class TraversableOnceExtensionMethods[A](private val self: c.TraversableOnce[A]) extends AnyVal {
   def iterator: Iterator[A] = self.toIterator
 }
 
-class MapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
+final class MapViewExtensionMethods[K, V, C <: scala.collection.Map[K, V]](
     private val self: IterableView[(K, V), C]) extends AnyVal {
   def mapValues[W, That](f: V => W)(implicit bf: CanBuildFrom[IterableView[(K, V), C], (K, W), That]): That =
     self.map[(K, W), That] { case (k, v) => (k, f(v)) }
