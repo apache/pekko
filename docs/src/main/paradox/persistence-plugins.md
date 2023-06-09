@@ -5,7 +5,7 @@ Storage backends for journals and snapshot stores are pluggable in the Pekko per
 Plugins maintained within the Pekko organization are:
 
 * [pekko-persistence-cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/) (no Durable State support)
-* [pekko-persistence-jdbc]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/)
+* [pekko-persistence-jdbc]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/) (Durable State only supported with Postgres and H2)
 * [pekko-persistence-r2dbc]($pekko.doc.dns$/docs/pekko-persistence-r2dbc/current/)
 * [pekko-persistence-dynamodb]($pekko.doc.dns$/docs/pekko-persistence-dynamodb/current/)
 
