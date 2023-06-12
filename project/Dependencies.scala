@@ -184,6 +184,16 @@ object Dependencies {
       // docker utils
       val dockerClient = "com.spotify" % "docker-client" % "8.16.0" % Test
 
+      val jackson = Def.setting {
+        Seq(
+          (jacksonCore.value % Test).force(),
+          (jacksonAnnotations.value % Test).force(),
+          (jacksonDatabind.value % Test).force(),
+          ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonCoreVersion % Test).force(),
+          ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonCoreVersion % Test).force(),
+          ("com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test).force())
+      }
+
       // metrics, measurements, perf testing
       val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.10" % Test
       val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.10" % Test
@@ -257,7 +267,7 @@ object Dependencies {
     TestDependencies.jimfs,
     TestDependencies.dockerClient,
     Provided.activation // dockerClient needs javax.activation.DataSource in JDK 11+
-  )
+  ) ++ TestDependencies.jackson.value // TestDependencies.dockerClient bring in older versions of Jackson which has CVEs
 
   val actorTestkitTyped = l ++= Seq(
     Provided.logback,
