@@ -19,6 +19,8 @@ import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.Future
 import scala.util.Try
+import scala.util.Success
+import scala.util.Failure
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -41,9 +43,16 @@ import pekko.util.PrettyDuration._
 private[io] final class AsyncDnsResolver(
     settings: DnsSettings,
     cache: SimpleDnsCache,
-    clientFactory: (ActorRefFactory, List[InetSocketAddress]) => List[ActorRef])
+    clientFactory: (ActorRefFactory, List[InetSocketAddress]) => List[ActorRef],
+    idGenerator: IdGenerator)
     extends Actor
     with ActorLogging {
+
+  def this(
+      settings: DnsSettings,
+      cache: SimpleDnsCache,
+      clientFactory: (ActorRefFactory, List[InetSocketAddress]) => List[ActorRef]) =
+    this(settings, cache, clientFactory, IdGenerator(settings.IdGeneratorPolicy))
 
   import AsyncDnsResolver._
 
@@ -84,13 +93,6 @@ private[io] final class AsyncDnsResolver(
     nameServers,
     settings.SearchDomains,
     settings.NDots)
-
-  private var requestId: Short = 0
-
-  private def nextId(): Short = {
-    requestId = (requestId + 1).toShort
-    requestId
-  }
 
   private val resolvers: List[ActorRef] = clientFactory(context, nameServers)
 
@@ -151,11 +153,19 @@ private[io] final class AsyncDnsResolver(
     }
 
   private def sendQuestion(resolver: ActorRef, message: DnsQuestion): Future[Answer] = {
-    val result = (resolver ? message).mapTo[Answer]
-    result.failed.foreach { _ =>
-      resolver ! DropRequest(message.id)
+    (resolver ? message).transformWith {
+      case Success(result: Answer) =>
+        Future.successful(result)
+      case Success(DuplicateId(_)) =>
+        sendQuestion(resolver, message.withId(idGenerator.nextId()))
+      case Failure(t) =>
+        resolver ! DropRequest(message.id)
+        Future.failed(t)
+      case Success(a) =>
+        resolver ! DropRequest(message.id)
+        Future.failed(
+          new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString))
     }
-    result
   }
 
   private def resolveWithSearch(
@@ -208,13 +218,13 @@ private[io] final class AsyncDnsResolver(
       case Ip(ipv4, ipv6) =>
         val ipv4Recs: Future[Answer] =
           if (ipv4)
-            sendQuestion(resolver, Question4(nextId(), caseFoldedName))
+            sendQuestion(resolver, Question4(idGenerator.nextId(), caseFoldedName))
           else
             Empty
 
         val ipv6Recs =
           if (ipv6)
-            sendQuestion(resolver, Question6(nextId(), caseFoldedName))
+            sendQuestion(resolver, Question6(idGenerator.nextId(), caseFoldedName))
           else
             Empty
 
@@ -224,7 +234,7 @@ private[io] final class AsyncDnsResolver(
         } yield DnsProtocol.Resolved(name, ipv4.rrs ++ ipv6.rrs, ipv4.additionalRecs ++ ipv6.additionalRecs)
 
       case Srv =>
-        sendQuestion(resolver, SrvQuestion(nextId(), caseFoldedName)).map(answer => {
+        sendQuestion(resolver, SrvQuestion(idGenerator.nextId(), caseFoldedName)).map(answer => {
           DnsProtocol.Resolved(name, answer.rrs, answer.additionalRecs)
         })
     }

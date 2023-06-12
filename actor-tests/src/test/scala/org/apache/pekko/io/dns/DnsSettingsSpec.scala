@@ -34,6 +34,7 @@ class DnsSettingsSpec extends PekkoSpec {
           ndots = 1
           positive-ttl = forever
           negative-ttl = never
+          id-generator-policy = thread-local-random
         """)
 
   "DNS settings" must {
@@ -137,6 +138,10 @@ class DnsSettingsSpec extends PekkoSpec {
       dnsSettingsDuration.PositiveCachePolicy shouldEqual CachePolicy.Ttl.fromPositive(10.seconds)
       dnsSettingsDuration.NegativeCachePolicy shouldEqual CachePolicy.Ttl.fromPositive(10.days)
     }
-  }
 
+    "parse id-generator-policy" in {
+      val dnsSettings = new DnsSettings(eas, defaultConfig)
+      dnsSettings.IdGeneratorPolicy shouldEqual (IdGenerator.Policy.ThreadLocalRandom)
+    }
+  }
 }

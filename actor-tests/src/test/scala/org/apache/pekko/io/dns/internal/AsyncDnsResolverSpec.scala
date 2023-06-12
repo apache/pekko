@@ -19,16 +19,15 @@ import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueFactory }
-
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ExtendedActorSystem, Props }
 import pekko.actor.Status.Failure
 import pekko.io.SimpleDnsCache
-import pekko.io.dns.{ AAAARecord, ARecord, DnsSettings, SRVRecord }
+import pekko.io.dns.{ AAAARecord, ARecord, DnsSettings, IdGenerator, SRVRecord }
 import pekko.io.dns.CachePolicy.Ttl
 import pekko.io.dns.DnsProtocol._
 import pekko.io.dns.internal.AsyncDnsResolver.ResolveFailedException
-import pekko.io.dns.internal.DnsClient.{ Answer, Question4, Question6, SrvQuestion }
+import pekko.io.dns.internal.DnsClient.{ Answer, DuplicateId, Question4, Question6, SrvQuestion }
 import pekko.testkit.{ PekkoSpec, TestProbe, WithLogCapturing }
 
 class AsyncDnsResolverSpec extends PekkoSpec("""
@@ -78,6 +77,16 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
       dnsClient1.expectMsg(Question4(1, "cats.com"))
       dnsClient2.expectMsg(Question4(2, "cats.com"))
       dnsClient2.reply(Answer(2, im.Seq.empty))
+      senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
+    }
+
+    "handle duplicate Ids in dnsClient" in new Setup {
+      r ! Resolve("cats.com", Ip(ipv4 = true, ipv6 = false))
+      dnsClient1.expectMsg(Question4(1, "cats.com"))
+      dnsClient1.reply(DuplicateId(1))
+      dnsClient1.expectMsg(Question4(2, "cats.com"))
+      dnsClient1.reply(Answer(2, im.Seq.empty))
+      dnsClient2.expectNoMessage()
       senderProbe.expectMsg(Resolved("cats.com", im.Seq.empty))
     }
 
@@ -240,6 +249,6 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
     system.actorOf(Props(new AsyncDnsResolver(settings, new SimpleDnsCache(),
       (_, _) => {
         clients
-      })))
+      }, IdGenerator.sequence())))
   }
 }

@@ -35,12 +35,21 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 @InternalApi private[pekko] object DnsClient {
   sealed trait DnsQuestion {
     def id: Short
+    def withId(newId: Short): DnsQuestion = {
+      this match {
+        case SrvQuestion(_, name) => SrvQuestion(newId, name)
+        case Question4(_, name)   => Question4(newId, name)
+        case Question6(_, name)   => Question6(newId, name)
+      }
+    }
   }
   final case class SrvQuestion(id: Short, name: String) extends DnsQuestion
   final case class Question4(id: Short, name: String) extends DnsQuestion
   final case class Question6(id: Short, name: String) extends DnsQuestion
   final case class Answer(id: Short, rrs: im.Seq[ResourceRecord], additionalRecs: im.Seq[ResourceRecord] = Nil)
       extends NoSerializationVerificationNeeded
+
+  final case class DuplicateId(id: Short) extends NoSerializationVerificationNeeded
   final case class DropRequest(id: Short)
 }
 
@@ -92,23 +101,26 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
     case Question4(id, name) =>
       log.debug("Resolving [{}] (A)", name)
       val msg = message(name, id, RecordType.A)
-      inflightRequests += (id -> (sender() -> msg))
-      log.debug("Message [{}] to [{}]: [{}]", id, ns, msg)
-      socket ! Udp.Send(msg.write(), ns)
+      newInflightRequests(msg, sender()) {
+        log.debug("Message [{}] to [{}]: [{}]", id, ns, msg)
+        socket ! Udp.Send(msg.write(), ns)
+      }
 
     case Question6(id, name) =>
       log.debug("Resolving [{}] (AAAA)", name)
       val msg = message(name, id, RecordType.AAAA)
-      inflightRequests += (id -> (sender() -> msg))
-      log.debug("Message to [{}]: [{}]", ns, msg)
-      socket ! Udp.Send(msg.write(), ns)
+      newInflightRequests(msg, sender()) {
+        log.debug("Message to [{}]: [{}]", ns, msg)
+        socket ! Udp.Send(msg.write(), ns)
+      }
 
     case SrvQuestion(id, name) =>
       log.debug("Resolving [{}] (SRV)", name)
       val msg = message(name, id, RecordType.SRV)
-      inflightRequests += (id -> (sender() -> msg))
-      log.debug("Message to [{}]: [{}]", ns, msg)
-      socket ! Udp.Send(msg.write(), ns)
+      newInflightRequests(msg, sender()) {
+        log.debug("Message to [{}]: [{}]", ns, msg)
+        socket ! Udp.Send(msg.write(), ns)
+      }
 
     case Udp.CommandFailed(cmd) =>
       log.debug("Command failed [{}]", cmd)
@@ -140,9 +152,20 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
             log.debug("Client for id {} not found. Discarding unsuccessful response.", msg.id)
         }
       } else {
-        val (recs, additionalRecs) =
-          if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
-        self ! Answer(msg.id, recs, additionalRecs)
+        inflightRequests.get(msg.id) match {
+          case Some((_, orig)) if isSameQuestion(msg.questions, orig.questions) =>
+            log.warning(
+              "Unexpected DNS response id {} question [{}] does not match question asked [{}]",
+              msg.id,
+              msg.questions.mkString(","),
+              orig.questions.mkString(","))
+          case Some((_, _)) =>
+            val (recs, additionalRecs) =
+              if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
+            self ! Answer(msg.id, recs, additionalRecs)
+          case None =>
+            log.warning("Unexpected DNS response invalid id {}", msg.id)
+        }
       }
     case response: Answer =>
       inflightRequests.get(response.id) match {
@@ -154,6 +177,28 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       }
     case Udp.Unbind  => socket ! Udp.Unbind
     case Udp.Unbound => context.stop(self)
+  }
+
+  private def newInflightRequests(msg: Message, theSender: ActorRef)(func: => Unit): Unit = {
+    if (!inflightRequests.contains(msg.id)) {
+      inflightRequests += (msg.id -> (theSender -> msg))
+      func
+    } else {
+      log.warning("Received duplicate message [{}] with id [{}]", msg, msg.id)
+      theSender ! DuplicateId(msg.id)
+    }
+  }
+
+  private def isSameQuestion(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
+    def impl(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
+      (q1s, q2s) match {
+        case (Nil, Nil)           => true
+        case (h1 :: t1, h2 :: t2) => h1.isSame(h2) && impl(t1, t2)
+        case _                    => false
+      }
+    }
+
+    impl(q1s.sortBy(_.name), q2s.sortBy(_.name))
   }
 
   def createTcpClient() = {
