@@ -260,8 +260,6 @@ lazy val docs = pekkoModule("docs")
     Jdk9)
   .disablePlugins(MimaPlugin)
   .disablePlugins((if (ScalafixSupport.fixTestScope) Nil else Seq(ScalafixPlugin)): _*)
-  // TODO https://github.com/akka/akka/issues/30243
-  .settings(crossScalaVersions -= Dependencies.scala3Version)
 
 lazy val jackson = pekkoModule("serialization-jackson")
   .dependsOn(
