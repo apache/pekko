@@ -202,6 +202,6 @@
 
 ---------------
 
-pekko-protobuf-v3 contains the sources of Google protobuf 3.16.1 runtime support,
+pekko-protobuf-v3 contains the sources of Google protobuf 3.16.3 runtime support,
 moved into the source package `org.apache.pekko.protobufv3.internal` so as to avoid version conflicts.
 For license information see COPYING.protobuf
