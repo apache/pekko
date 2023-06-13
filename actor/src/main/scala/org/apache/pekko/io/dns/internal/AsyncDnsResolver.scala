@@ -159,10 +159,10 @@ private[io] final class AsyncDnsResolver(
       case Success(DuplicateId(_)) =>
         sendQuestion(resolver, message.withId(idGenerator.nextId()))
       case Failure(t) =>
-        resolver ! DropRequest(message.id)
+        resolver ! DropRequest(message)
         Future.failed(t)
       case Success(a) =>
-        resolver ! DropRequest(message.id)
+        resolver ! DropRequest(message)
         Future.failed(
           new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString))
     }

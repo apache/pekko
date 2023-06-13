@@ -14,13 +14,10 @@
 package org.apache.pekko.io.dns.internal
 
 import java.net.{ InetAddress, InetSocketAddress }
-
 import scala.collection.{ immutable => im }
 import scala.concurrent.duration._
 import scala.util.Try
-
-import scala.annotation.nowarn
-
+import scala.annotation.{ nowarn, tailrec }
 import org.apache.pekko
 import pekko.actor.{ Actor, ActorLogging, ActorRef, NoSerializationVerificationNeeded, Props, Stash }
 import pekko.actor.Status.Failure
@@ -35,6 +32,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 @InternalApi private[pekko] object DnsClient {
   sealed trait DnsQuestion {
     def id: Short
+    def name: String
     def withId(newId: Short): DnsQuestion = {
       this match {
         case SrvQuestion(_, name) => SrvQuestion(newId, name)
@@ -50,7 +48,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       extends NoSerializationVerificationNeeded
 
   final case class DuplicateId(id: Short) extends NoSerializationVerificationNeeded
-  final case class DropRequest(id: Short)
+  final case class DropRequest(question: DnsQuestion)
 }
 
 /**
@@ -94,9 +92,14 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
    */
   @nowarn()
   def ready(socket: ActorRef): Receive = {
-    case DropRequest(id) =>
-      log.debug("Dropping request [{}]", id)
-      inflightRequests -= id
+    case DropRequest(msg) =>
+      inflightRequests.get(msg.id).foreach {
+        case (_, orig) if Seq(msg.name) == orig.questions =>
+          log.debug("Dropping request [{}]", msg.id)
+          inflightRequests -= msg.id
+        case (_, orig) =>
+          log.warning("Cannot drop inflight DNS request the question {} do not match {}", msg.name, orig.questions)
+      }
 
     case Question4(id, name) =>
       log.debug("Resolving [{}] (A)", name)
@@ -130,9 +133,11 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
           Try {
             val msg = Message.parse(send.payload)
             inflightRequests.get(msg.id).foreach {
-              case (s, _) =>
+              case (s, orig) if isSameQuestion(msg.questions, orig.questions) =>
                 s ! Failure(new RuntimeException("Send failed to nameserver"))
                 inflightRequests -= msg.id
+              case (_, orig) =>
+                log.warning("Cannot command failed question [{}] does not match [{}]", msg.questions, orig.questions)
             }
           }
         case _ =>
@@ -153,13 +158,18 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
         }
       } else {
         inflightRequests.get(msg.id) match {
-          case Some((_, orig)) if isSameQuestion(msg.questions, orig.questions) =>
+          case Some((_, orig)) if !isSameQuestion(msg.questions, orig.questions) =>
             log.warning(
               "Unexpected DNS response id {} question [{}] does not match question asked [{}]",
               msg.id,
               msg.questions.mkString(","),
               orig.questions.mkString(","))
-          case Some((_, _)) =>
+          case Some((_, orig)) =>
+            log.warning("DNS response id {} question [{}] question asked [{}] match {}",
+              msg.id,
+              msg.questions.mkString(","),
+              orig.questions.mkString(","),
+              isSameQuestion(msg.questions, orig.questions))
             val (recs, additionalRecs) =
               if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
             self ! Answer(msg.id, recs, additionalRecs)
@@ -190,7 +200,8 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   }
 
   private def isSameQuestion(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
-    def impl(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
+    @tailrec
+    def impl(q1s: List[Question], q2s: List[Question]): Boolean = {
       (q1s, q2s) match {
         case (Nil, Nil)           => true
         case (h1 :: t1, h2 :: t2) => h1.isSame(h2) && impl(t1, t2)
@@ -198,7 +209,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       }
     }
 
-    impl(q1s.sortBy(_.name), q2s.sortBy(_.name))
+    impl(q1s.sortBy(_.name).toList, q2s.sortBy(_.name).toList)
   }
 
   def createTcpClient() = {

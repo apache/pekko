@@ -30,7 +30,7 @@ class DnsClientSpec extends PekkoSpec with ImplicitSender {
     val exampleRequest = Question4(42, "pekko.io")
     val exampleQuestion = Question("pekko.io", RecordType.A, RecordClass.IN)
     val exampleRequestMessage = Message(42, MessageFlags(), questions = im.Seq(exampleQuestion))
-    val exampleResponseMessage = Message(42, MessageFlags(answer = true))
+    val exampleResponseMessage = Message(42, MessageFlags(answer = true), questions = im.Seq(exampleQuestion))
     val exampleResponse = Answer(42, Nil)
     val dnsServerAddress = InetSocketAddress.createUnresolved("foo", 53)
 
