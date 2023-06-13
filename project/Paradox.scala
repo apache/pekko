@@ -58,7 +58,7 @@ object Paradox {
       "scala.version" -> scalaVersion.value,
       "scala.binary.version" -> scalaBinaryVersion.value,
       "pekko.version" -> version.value,
-      "scalatest.version" -> Dependencies.scalaTestVersion.value,
+      "scalatest.version" -> Dependencies.scalaTestVersion,
       "sigar_loader.version" -> "1.6.6-rev002",
       "aeron_version" -> Dependencies.aeronVersion,
       "netty_version" -> Dependencies.nettyVersion,
