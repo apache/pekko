@@ -35,13 +35,11 @@ private[pekko] object IdGenerator {
   sealed trait Policy
 
   object Policy {
-    case object Sequence extends Policy
     case object ThreadLocalRandom extends Policy
     case object SecureRandom extends Policy
     val Default: Policy = ThreadLocalRandom
 
     def apply(name: String): Option[Policy] = name.toLowerCase match {
-      case "sequence"            => Some(Sequence)
       case "thread-local-random" => Some(ThreadLocalRandom)
       case "secure-random"       => Some(SecureRandom)
       case _                     => Some(ThreadLocalRandom)
@@ -49,10 +47,11 @@ private[pekko] object IdGenerator {
   }
 
   def apply(policy: Policy): IdGenerator = policy match {
-    case Policy.Sequence          => sequence()
     case Policy.ThreadLocalRandom => random(ThreadLocalRandom.current())
     case Policy.SecureRandom      => random(new SecureRandom())
   }
+
+  def apply(): IdGenerator = random(ThreadLocalRandom.current())
 
   /**
    * @return a random sequence of ids for production

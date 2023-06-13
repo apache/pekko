@@ -19,11 +19,6 @@ class IdGeneratorSpec extends PekkoSpec {
       gen.nextId() should be < Short.MaxValue
     }
 
-    "provide a sequence" in {
-      val gen = IdGenerator(IdGenerator.Policy.Sequence)
-      gen.nextId() should be < Short.MaxValue
-    }
-
     "provide a secure-random" in {
       val gen = IdGenerator(IdGenerator.Policy.SecureRandom)
       gen.nextId() should be < Short.MaxValue

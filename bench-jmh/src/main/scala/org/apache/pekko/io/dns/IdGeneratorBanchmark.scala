@@ -33,12 +33,8 @@ import java.security.SecureRandom
 @Fork(1)
 @State(Scope.Benchmark)
 class IdGeneratorBanchmark {
-  val sequence = IdGenerator.sequence()
   val threadLocalRandom = IdGenerator.random(ThreadLocalRandom.current())
   val secureRandom = IdGenerator.random(new SecureRandom())
-
-  @Benchmark
-  def measureSequence(): Short = sequence.nextId()
 
   @Benchmark
   def measureThreadLocalRandom(): Short = threadLocalRandom.nextId()
