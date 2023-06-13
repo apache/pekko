@@ -232,7 +232,7 @@ support a greater number of shards.
 
 #### Example project for external allocation strategy
 
-@extref[Kafka to Cluster Sharding](samples:pekko-sample-kafka-to-sharding)
+@extref[Kafka to Cluster Sharding](samples:pekko-sample-kafka-to-sharding-scala)
 is an example project that can be downloaded, and with instructions of how to run, that demonstrates how to use
 external sharding to co-locate Kafka partition consumption with shards.
 
@@ -255,7 +255,7 @@ the entity actors for example by defining receive timeout (@apidoc[context.setRe
 If a message is already enqueued to the entity when it stops itself the enqueued message
 in the mailbox will be dropped. To support graceful passivation without losing such
 messages the entity actor can send @apidoc[typed.*.ClusterSharding.Passivate] to the
-@apidoc[typed.ActorRef]@scala[[@scaladoc[ShardCommand](cluster.sharding.typed.scaladsl.ClusterSharding.ShardCommand)]]@java[<@javadoc[ShardCommand](pekko.cluster.sharding.typed.javadsl.ClusterSharding.ShardCommand)>] that was passed in to
+@apidoc[typed.ActorRef]@scala[[@scaladoc[ShardCommand](org.apache.pekko.cluster.sharding.typed.scaladsl.ClusterSharding.ShardCommand)]]@java[<@javadoc[ShardCommand](pekko.cluster.sharding.typed.javadsl.ClusterSharding.ShardCommand)>] that was passed in to
 the factory method when creating the entity. The optional `stopMessage` message
 will be sent back to the entity, which is then supposed to stop itself, otherwise it will
 be stopped automatically. Incoming messages will be buffered by the `Shard` between reception
@@ -829,8 +829,8 @@ as described in @ref:[Shard allocation](#shard-allocation).
 
 ## Example project
 
-@java[@extref[Sharding example project](samples:pekko-sample-cluster-sharding-java)]
-@scala[@extref[Sharding example project](samples:pekko-sample-cluster-sharding-scala)]
+@java[@extref[Sharding example project](samples:pekko-sample-sharding-java)]
+@scala[@extref[Sharding example project](samples:pekko-sample-sharding-scala)]
 is an example project that can be downloaded, and with instructions of how to run.
 
 This project contains a KillrWeather sample illustrating how to use Cluster Sharding.

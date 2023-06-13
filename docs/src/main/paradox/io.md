@@ -104,7 +104,7 @@ you require a `ByteString` that only blocks as much memory as necessary for its 
 get a @apidoc[CompactByteString](util.CompactByteString) instance. If the `ByteString` represented only a slice of the original array, this will
 result in copying all bytes in that slice.
 
-`ByteString` inherits all methods from @scaladoc[IndexedSeq](scala.collection.immutable.IndexedSeq), and it also has some new ones. For more information, look up the @apidoc[util.ByteString](util.ByteString) class and @scaladoc[its companion object](util.ByteString$) in the ScalaDoc.
+`ByteString` inherits all methods from @scaladoc[IndexedSeq](scala.collection.immutable.IndexedSeq), and it also has some new ones. For more information, look up the @apidoc[util.ByteString](util.ByteString) class and @scaladoc[its companion object](org.apache.pekko.util.ByteString$) in the ScalaDoc.
 
 `ByteString` also comes with its own optimized builder and iterator classes @apidoc[ByteStringBuilder](util.ByteStringBuilder) and
 @apidoc[ByteIterator](util.ByteIterator) which provide extra features in addition to those of normal builders and iterators.

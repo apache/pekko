@@ -38,8 +38,8 @@ This project contains several samples illustrating how to use Distributed Data.
 
 ## Cluster Sharding
 
-@java[@extref[Sharding example project](samples:pekko-sample-cluster-sharding-java)]
-@scala[@extref[Sharding example project](samples:pekko-sample-cluster-sharding-scala)]
+@java[@extref[Sharding example project](samples:pekko-sample-sharding-java)]
+@scala[@extref[Sharding example project](samples:pekko-sample-sharding-scala)]
 
 This project contains a KillrWeather sample illustrating how to use Cluster Sharding.
 
@@ -80,9 +80,7 @@ This project demonstrates the work pulling pattern using Pekko Cluster.
 
 ## Kafka to Cluster Sharding 
 
-@extref[Kafka to Cluster Sharding example project](samples:pekko-sample-kafka-to-sharding)
+@extref[Kafka to Cluster Sharding example project](samples:pekko-sample-kafka-to-sharding-scala)
 
 This project demonstrates how to use the External Shard Allocation strategy to co-locate the consumption of Kafka
 partitions with the shard that processes the messages.
-
-

@@ -16,6 +16,7 @@ package org.apache.pekko
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
+import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys.projectInfoVersion
 import org.apache.pekko.PekkoParadoxPlugin.autoImport._
 import sbt.Keys._
 import sbt._
@@ -37,14 +38,20 @@ object Paradox {
       "extref.github.base_url" -> (GitHub.url(version.value) + "/%s"), // for links to our sources
       "extref.samples.base_url" -> s"$pekkoBaseURL/docs/pekko-samples/current/%s",
       "pekko.doc.dns" -> s"$pekkoBaseURL",
-      "scaladoc.pekko.base_url" -> s"$pekkoBaseURL/api/pekko/current/org/apache",
+      "scaladoc.pekko.base_url" -> s"$pekkoBaseURL/api/pekko/${projectInfoVersion.value}/org/apache",
       "scaladoc.pekko.http.base_url" -> s"$pekkoBaseURL/api/pekko-http/current/org/apache",
+      "scaladoc.org.apache.pekko.base_url" -> s"$pekkoBaseURL/api/pekko/${projectInfoVersion.value}",
+      "scaladoc.org.apache.pekko.http.base_url" -> s"$pekkoBaseURL/api/pekko-http/current",
       "javadoc.java.base_url" -> "https://docs.oracle.com/en/java/javase/11/docs/api/java.base/",
       "javadoc.java.link_style" -> "direct",
-      "javadoc.pekko.base_url" -> s"$pekkoBaseURL/japi/pekko/current/org/apache",
+      "javadoc.pekko.base_url" -> s"$pekkoBaseURL/japi/pekko/${projectInfoVersion.value}/org/apache",
       "javadoc.pekko.link_style" -> "direct",
       "javadoc.pekko.http.base_url" -> s"$pekkoBaseURL/japi/pekko-http/current/org/apache",
       "javadoc.pekko.http.link_style" -> "frames",
+      "javadoc.org.apache.pekko.base_url" -> s"$pekkoBaseURL/japi/pekko/${projectInfoVersion.value}",
+      "javadoc.org.apache.pekko.link_style" -> "direct",
+      "javadoc.org.apache.pekko.http.base_url" -> s"$pekkoBaseURL/japi/pekko-http/current",
+      "javadoc.org.apache.pekko.http.link_style" -> "frames",
       "javadoc.com.fasterxml.jackson.annotation.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-annotations/latest/",
       "javadoc.com.fasterxml.jackson.annotation.link_style" -> "direct",
       "javadoc.com.fasterxml.jackson.databind.base_url" -> "https://javadoc.io/doc/com.fasterxml.jackson.core/jackson-databind/latest/",

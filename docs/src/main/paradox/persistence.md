@@ -659,7 +659,7 @@ See @ref:[Scaling out](typed/persistence.md#scaling-out) in the documentation of
 
 ## At-Least-Once Delivery
 
-To send messages with at-least-once delivery semantics to destinations you can @scala[mix-in @scaladoc[AtLeastOnceDelivery](pekko.persistence.AtLeastOnceDelivery) trait to your @scaladoc[PersistentActor](pekko.persistence.PersistentActor)]@java[extend the @javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class instead of @javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor)]
+To send messages with at-least-once delivery semantics to destinations you can @scala[mix-in @scaladoc[AtLeastOnceDelivery](org.apache.pekko.persistence.AtLeastOnceDelivery) trait to your @scaladoc[PersistentActor](pekko.persistence.PersistentActor)]@java[extend the @javadoc[AbstractPersistentActorWithAtLeastOnceDelivery](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery) class instead of @javadoc[AbstractPersistentActor](pekko.persistence.AbstractPersistentActor)]
 on the sending side.  It takes care of re-sending messages when they
 have not been confirmed within a configurable timeout.
 
@@ -688,7 +688,7 @@ an actor selection.
 
 @@@
 
-Use the @scala[@scaladoc[deliver](persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.Function))] method to send a message to a destination. Call the @scala[@scaladoc[confirmDelivery](persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] method
+Use the @scala[@scaladoc[deliver](org.apache.pekko.persistence.AtLeastOnceDelivery#deliver(destination:org.apache.pekko.actor.ActorPath)(deliveryIdToMessage:Long=%3EAny):Unit)]@java[@javadoc[deliver](pekko.persistence.AbstractPersistentActorWithAtLeastOnceDelivery#deliver(org.apache.pekko.actor.ActorPath,org.apache.pekko.japi.Function))] method to send a message to a destination. Call the @scala[@scaladoc[confirmDelivery](org.apache.pekko.persistence.AtLeastOnceDelivery#confirmDelivery(deliveryId:Long):Boolean)]@java[@javadoc[confirmDelivery](pekko.persistence.AtLeastOnceDeliveryLike#confirmDelivery(long))] method
 when the destination has replied with a confirmation message.
 
 ### Relationship between deliver and confirmDelivery

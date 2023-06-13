@@ -1,11 +1,12 @@
 name: Link Validator
 
-on:
-  schedule:
-    - cron:  '0 6 * * 1'
-  workflow_dispatch:
-
 permissions: {}
+
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
 
 jobs:
   validate-links:
@@ -33,7 +34,7 @@ jobs:
       - name: Setup Coursier
         uses: coursier/setup-action@v1.3.3
 
-      - name: create the Pekko site
+      - name: Create the Pekko site
         run: sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
 
       - name: Run Link Validator
