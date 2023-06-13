@@ -25,6 +25,8 @@ This is just stub documentation. It will be improved.
   If this is not possible/desired then you can add `scala-java8-compat` as dependency yourself.
 * In addition to the previous point, for Scala 2.12 `scala-java8-compat` has been updated to `1.0.2`. If you are using
   an older binary incompatible version of `scala-java8-compat` its recommend to update to `1.0.2`.
+* For Scala 2.12 and 2.13 [ssl-config](https://github.com/lightbend/ssl-config) has been updated to 0.6.1 in order
+  to bring in bug/security fixes. Note that ssl-config 0.6.1 is binary and source compatible with 0.4.1.
 
 We are still investigating the effects of how the package name changes affect the @ref:[Persistence](../persistence.md)
 and @ref:[Cluster](../cluster-usage.md) modules.

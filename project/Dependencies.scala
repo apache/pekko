@@ -46,13 +46,7 @@ object Dependencies {
 
   val reactiveStreamsVersion = "1.0.4"
 
-  val sslConfigVersion = Def.setting {
-    if (scalaVersion.value.startsWith("3.")) {
-      "0.6.1"
-    } else {
-      "0.4.3"
-    }
-  }
+  val sslConfigVersion = "0.6.1"
 
   val scalaTestVersion = Def.setting {
     if (scalaVersion.value.startsWith("3.")) {
@@ -97,7 +91,7 @@ object Dependencies {
 
     // ssl-config
     val sslConfigCore = Def.setting {
-      "com.typesafe" %% "ssl-config-core" % sslConfigVersion.value
+      "com.typesafe" %% "ssl-config-core" % sslConfigVersion
     }
 
     val lmdb = "org.lmdbjava" % "lmdbjava" % "0.7.0"
