@@ -20,7 +20,7 @@ problems in the format of "recipes". The purpose of this page is to give inspira
 various small tasks involving streams. The recipes in this page can be used directly as-is, but they are most powerful as
 starting points: customization of the code snippets is warmly encouraged. The recipes can be extended or can provide a 
 basis for the implementation of other [patterns]($pekko.doc.dns$/docs/pekko-connectors/current/patterns.html) involving
-[Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current).
+[Pekko Connectors]($pekko.doc.dns$/docs/pekko-connectors/current/).
 
 This part also serves as supplementary material for the main body of documentation. It is a good idea to have this page
 open while reading the manual and look for examples demonstrating various streaming concepts
