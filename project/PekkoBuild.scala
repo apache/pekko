@@ -133,6 +133,7 @@ object PekkoBuild {
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked", "-XDignore.symbol.file")
 
   lazy val defaultSettings: Seq[Setting[_]] = Def.settings(
+    projectInfoVersion := (if (isSnapshot.value) "snapshot" else version.value),
     Dependencies.Versions,
     resolverSettings,
     TestExtras.Filter.settings,

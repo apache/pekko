@@ -143,7 +143,7 @@ Java
 
 
 If you find it inconvenient to handle the `CurrentClusterState` you can use
-@scala[@scaladoc[ClusterEvent.InitialStateAsEvents](cluster.ClusterEvent$$InitialStateAsEvents$)] @java[@javadoc[ClusterEvent.initialStateAsEvents()](pekko.cluster.ClusterEvent#initialStateAsEvents())] as parameter to @apidoc[subscribe](pekko.cluster.Cluster) {scala="#subscribe(subscriber:org.apache.pekko.actor.ActorRef,to:Class[_]*):Unit" java="#subscribe(org.apache.pekko.actor.ActorRef,org.apache.pekko.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...)"}.
+@scala[@scaladoc[ClusterEvent.InitialStateAsEvents](org.apache.pekko.cluster.ClusterEvent$$InitialStateAsEvents$)] @java[@javadoc[ClusterEvent.initialStateAsEvents()](pekko.cluster.ClusterEvent#initialStateAsEvents())] as parameter to @apidoc[subscribe](pekko.cluster.Cluster) {scala="#subscribe(subscriber:org.apache.pekko.actor.ActorRef,to:Class[_]*):Unit" java="#subscribe(org.apache.pekko.actor.ActorRef,org.apache.pekko.cluster.ClusterEvent.SubscriptionInitialStateMode,java.lang.Class...)"}.
 That means that instead of receiving `CurrentClusterState` as the first message you will receive
 the events corresponding to the current state to mimic what you would have seen if you were
 listening to the events when they occurred in the past. Note that those initial events only correspond

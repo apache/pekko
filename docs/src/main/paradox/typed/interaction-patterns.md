@@ -79,7 +79,7 @@ Java
 :  @@snip [InteractionPatternsTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/InteractionPatternsTest.java) { #request-response-protocol }
 
 
-The sender would use its own @scala[`ActorRef[Response]`]@java[`ActorRef<Response>`], which it can access through @scala[@scaladoc[ActorContext.self](actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[ActorContext.getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())], for the `replyTo`. 
+The sender would use its own @scala[`ActorRef[Response]`]@java[`ActorRef<Response>`], which it can access through @scala[@scaladoc[ActorContext.self](org.apache.pekko.actor.typed.scaladsl.ActorContext#self:org.apache.pekko.actor.typed.ActorRef[T])]@java[@javadoc[ActorContext.getSelf()](pekko.actor.typed.javadsl.ActorContext#getSelf())], for the `replyTo`. 
 
 Scala
 :  @@snip [InteractionPatternsSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/InteractionPatternsSpec.scala) { #request-response-send }

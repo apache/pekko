@@ -507,7 +507,7 @@ message from network failures and JVM crashes, in addition to graceful terminati
 actor.
 
 The heartbeat arrival times is interpreted by an implementation of
-[The Phi Accrual Failure Detector](http://www.jaist.ac.jp/~defago/files/pdf/IS_RR_2004_010.pdf).
+[The Phi Accrual Failure Detector](https://dspace.jaist.ac.jp/dspace/bitstream/10119/4784/1/IS-RR-2004-010.pdf).
 
 The suspicion level of failure is given by a value called *phi*.
 The basic idea of the phi failure detector is to express the value of *phi* on a scale that
@@ -856,8 +856,8 @@ pekko {
 ```
 
 You can look at the
-@java[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-java)]
-@scala[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-scala)]
+@java[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-java/)]
+@scala[@extref[Cluster with docker-compose example project](samples:pekko-sample-cluster-docker-compose-scala/)]
 to see what this looks like in practice.
 
 ### Running in Docker/Kubernetes
