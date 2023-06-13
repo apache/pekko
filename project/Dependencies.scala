@@ -48,20 +48,9 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = Def.setting {
-    if (scalaVersion.value.startsWith("3.")) {
-      "3.2.9"
-    } else {
-      "3.1.4"
-    }
-  }
-  val scalaTestScalaCheckVersion = Def.setting {
-    if (scalaVersion.value.startsWith("3.")) {
-      "1-15"
-    } else {
-      "1-14"
-    }
-  }
+  val scalaTestVersion = "3.2.14"
+  val scalaTestBaseVersion = "3.2.10"
+  val scalaTestScalaCheckVersion = "1-16"
   val scalaCheckVersion = "1.15.1"
 
   val Versions =
@@ -154,22 +143,22 @@ object Dependencies {
 
       val logback = Compile.logback % Test
 
-      val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion.value % Test } // ApacheV2
+      val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion % Test } // ApacheV2
 
       // The 'scalaTestPlus' projects are independently versioned,
       // but the version of each module starts with the scalatest
       // version it was intended to work with
       val scalatestJUnit = Def.setting {
-        "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion.value + ".0") % Test
+        "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
       }
       val scalatestTestNG = Def.setting {
-        "org.scalatestplus" %% "testng-6-7" % (scalaTestVersion.value + ".0") % Test
+        "org.scalatestplus" %% "testng-6-7" % (scalaTestBaseVersion + ".0") % Test
       }
       val scalatestScalaCheck = Def.setting {
-        "org.scalatestplus" %% s"scalacheck-${scalaTestScalaCheckVersion.value}" % (scalaTestVersion.value + ".0") % Test
+        "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
       }
       val scalatestMockito = Def.setting {
-        "org.scalatestplus" %% "mockito-3-4" % (scalaTestVersion.value + ".0") % Test
+        "org.scalatestplus" %% "mockito-3-4" % (scalaTestBaseVersion + ".0") % Test
       }
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
@@ -225,7 +214,7 @@ object Dependencies {
 
       val junit = Compile.junit % "optional;provided;test"
 
-      val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion.value % "optional;provided;test" }
+      val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion % "optional;provided;test" }
 
       val logback = Compile.logback % "optional;provided;test"
 
