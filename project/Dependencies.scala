@@ -155,11 +155,16 @@ object Dependencies {
     }
 
     object TestDependencies {
+      val bcpkix = "org.bouncycastle" % "bcpkix-jdk15on" % "1.68" % Test
       val commonsMath = "org.apache.commons" % "commons-math" % "2.2" % Test
       val commonsIo = "commons-io" % "commons-io" % "2.11.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.15" % Test
       val junit = "junit" % "junit" % junitVersion % "test"
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
+
+      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.23.0" % Test
+      val junit = "junit" % "junit" % junitVersion % Test
+      val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
       val logback = Compile.logback % Test
 
@@ -270,12 +275,19 @@ object Dependencies {
     TestDependencies.scalatest.value,
     TestDependencies.scalatestJUnit.value,
     TestDependencies.scalatestScalaCheck.value,
+    TestDependencies.bcpkix, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.commonsCodec,
+    TestDependencies.commonsCompress, // to force TestDependencies.dockerClient to use safe version of this lib
+    TestDependencies.commonsIo, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.commonsMath,
+    TestDependencies.httpClient, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.jimfs,
     TestDependencies.dockerClient,
     Provided.activation // dockerClient needs javax.activation.DataSource in JDK 11+
-  ) ++ TestDependencies.jackson.value // TestDependencies.dockerClient bring in older versions of Jackson which has CVEs
+  ) ++ {
+    // TestDependencies.dockerClient bring in older versions of libs that have CVEs
+    TestDependencies.jackson.value
+  }
 
   val actorTestkitTyped = l ++= Seq(
     Provided.logback,
