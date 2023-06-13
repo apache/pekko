@@ -102,7 +102,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
           q4.id
       }
       dnsClient1.reply(DuplicateId(firstId))
-      val secondId  = dnsClient1.expectMsgPF() {
+      val secondId = dnsClient1.expectMsgPF() {
         case q4: Question4 if q4.name == "cats.com" && q4.id != firstId =>
           q4.id
       }
