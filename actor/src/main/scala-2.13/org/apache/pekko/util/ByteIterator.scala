@@ -220,7 +220,7 @@ object ByteIterator {
 
     @inline private def current: ByteArrayIterator = iterators.head
     @inline private def dropCurrent(): Unit = { iterators = iterators.tail }
-    @inline def clear(): Unit = { iterators = MultiByteArrayIterator.empty.iterators }
+    @inline final def clear(): Unit = { iterators = MultiByteArrayIterator.empty.iterators }
 
     @inline final def hasNext: Boolean = current.hasNext
 
