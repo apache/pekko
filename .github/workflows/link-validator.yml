@@ -31,7 +31,7 @@ jobs:
         uses: coursier/cache-action@v6.4.0
 
       - name: Setup Coursier
-        uses: coursier/setup-coursier@v1.3.3
+        uses: coursier/setup-action@v1.3.3
 
       - name: create the Pekko site
         run: sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
