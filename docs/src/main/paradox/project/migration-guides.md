@@ -40,4 +40,4 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 
 It appears that data persisted with "akka-persistence" is usable with "pekko-persistence" and vice versa (@ref:[Persistence](../persistence.md)).
 
-We currently do not expect that Akka and Pekko nodes will be able to form a @ref:[cluster](../cluster-usage.md).
+We currently do not expect that Akka and Pekko nodes combined will be able to form a @ref:[cluster](../cluster-usage.md).
