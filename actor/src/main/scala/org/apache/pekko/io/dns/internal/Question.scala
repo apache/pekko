@@ -28,6 +28,16 @@ private[pekko] final case class Question(name: String, qType: RecordType, qClass
     RecordTypeSerializer.write(out, qType)
     RecordClassSerializer.write(out, qClass)
   }
+
+  /**
+   * DomainName.parse adds a '.' to the end of domain names we have to allow for this checking the domain names
+   * @return true if this the questions are the same (allowing for an trailing dot).
+   */
+  def isSame(that: Question): Boolean = {
+    def addDot(name: String): String = if (name.nonEmpty && !name.endsWith(".")) name.concat(".") else name
+
+    addDot(this.name) == addDot(that.name) && this.qType == that.qType && this.qClass == that.qClass
+  }
 }
 
 /**

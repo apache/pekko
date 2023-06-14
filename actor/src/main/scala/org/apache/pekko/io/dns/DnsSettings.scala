@@ -67,6 +67,11 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
   val PositiveCachePolicy: CachePolicy = getTtl("positive-ttl")
   val NegativeCachePolicy: CachePolicy = getTtl("negative-ttl")
 
+  lazy val IdGeneratorPolicy: IdGenerator.Policy = IdGenerator
+    .Policy(c.getString("id-generator-policy"))
+    .getOrElse(throw new IllegalArgumentException("id-generator-policy must be 'thread-local-random' or " +
+      s"'secure-random' value was '${c.getString("id-generator-policy")}'"))
+
   private def getTtl(path: String): CachePolicy =
     c.getString(path) match {
       case "forever" => Forever
