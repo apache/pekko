@@ -94,11 +94,13 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   def ready(socket: ActorRef): Receive = {
     case DropRequest(msg) =>
       inflightRequests.get(msg.id).foreach {
-        case (_, orig) if Seq(msg.name) == orig.questions =>
+        case (_, orig) if Seq(msg.name) == orig.questions.map(_.name) =>
           log.debug("Dropping request [{}]", msg.id)
           inflightRequests -= msg.id
         case (_, orig) =>
-          log.warning("Cannot drop inflight DNS request the question {} do not match {}", msg.name, orig.questions)
+          log.warning("Cannot drop inflight DNS request the question [{}] does not match [{}]",
+            msg.name,
+            orig.questions.map(_.name).mkString(","))
       }
 
     case Question4(id, name) =>
@@ -113,7 +115,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       log.debug("Resolving [{}] (AAAA)", name)
       val msg = message(name, id, RecordType.AAAA)
       newInflightRequests(msg, sender()) {
-        log.debug("Message to [{}]: [{}]", ns, msg)
+        log.debug("Message [{}] to [{}]: [{}]", id, ns, msg)
         socket ! Udp.Send(msg.write(), ns)
       }
 
@@ -121,7 +123,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       log.debug("Resolving [{}] (SRV)", name)
       val msg = message(name, id, RecordType.SRV)
       newInflightRequests(msg, sender()) {
-        log.debug("Message to [{}]: [{}]", ns, msg)
+        log.debug("Message [{}] to [{}]: [{}]", id, ns, msg)
         socket ! Udp.Send(msg.write(), ns)
       }
 
@@ -137,7 +139,9 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
                 s ! Failure(new RuntimeException("Send failed to nameserver"))
                 inflightRequests -= msg.id
               case (_, orig) =>
-                log.warning("Cannot command failed question [{}] does not match [{}]", msg.questions, orig.questions)
+                log.warning("Cannot command failed question [{}] does not match [{}]",
+                  msg.questions.mkString(","),
+                  orig.questions.mkString(","))
             }
           }
         case _ =>
@@ -165,11 +169,10 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
               msg.questions.mkString(","),
               orig.questions.mkString(","))
           case Some((_, orig)) =>
-            log.warning("DNS response id {} question [{}] question asked [{}] match {}",
+            log.warning("DNS response id {} question [{}] question asked [{}]",
               msg.id,
               msg.questions.mkString(","),
-              orig.questions.mkString(","),
-              isSameQuestion(msg.questions, orig.questions))
+              orig.questions.mkString(","))
             val (recs, additionalRecs) =
               if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
             self ! Answer(msg.id, recs, additionalRecs)

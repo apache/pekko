@@ -15,14 +15,13 @@ package org.apache.pekko.io.dns.internal
 
 import java.net.{ InetAddress, InetSocketAddress }
 import java.util.concurrent.atomic.AtomicBoolean
-
 import scala.collection.{ immutable => im }
-
 import org.apache.pekko
+import org.apache.pekko.actor.Status.Failure
 import pekko.actor.Props
 import pekko.io.Udp
 import pekko.io.dns.{ ARecord, CachePolicy, RecordClass, RecordType }
-import pekko.io.dns.internal.DnsClient.{ Answer, DuplicateId, Question4 }
+import pekko.io.dns.internal.DnsClient.{ Answer, DropRequest, DuplicateId, Question4 }
 import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
 
 class DnsClientSpec extends PekkoSpec with ImplicitSender {
@@ -157,6 +156,92 @@ class DnsClientSpec extends PekkoSpec with ImplicitSender {
       goodSenderProbe.expectMsg(answer)
 
       udpSocketProbe.expectNoMessage()
+    }
+
+    "Verify original question when processing DropRequest" in {
+      val udpExtensionProbe = TestProbe()
+      val udpSocketProbe = TestProbe()
+      val tcpClientProbe = TestProbe()
+      val goodSenderProbe = TestProbe()
+
+      val socket = InetSocketAddress.createUnresolved("localhost", 41325)
+      val client = system.actorOf(Props(new DnsClient(dnsServerAddress) {
+        override val udp = udpExtensionProbe.ref
+
+        override def createTcpClient() = tcpClientProbe.ref
+      }))
+
+      udpExtensionProbe.expectMsgType[Udp.Bind]
+      udpSocketProbe.send(udpExtensionProbe.lastSender, Udp.Bound(socket))
+
+      goodSenderProbe.send(client, exampleRequest)
+
+      val udpSend = udpSocketProbe.expectMsgType[Udp.Send]
+      udpSend.payload shouldBe exampleRequestMessage.write()
+
+      goodSenderProbe.send(client, DropRequest(exampleRequest.copy(id = 999)))
+
+      // duplicate shows inflight message not deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
+      goodSenderProbe.send(client, DropRequest(exampleRequest.copy(name = "not.com")))
+
+      // duplicate shows inflight message not deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
+      goodSenderProbe.send(client, DropRequest(exampleRequest))
+
+      // no duplicate shows inflight message was deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectNoMessage()
+    }
+
+    "Verify original question when processing UDP Failures" in {
+      val udpExtensionProbe = TestProbe()
+      val udpSocketProbe = TestProbe()
+      val tcpClientProbe = TestProbe()
+      val goodSenderProbe = TestProbe()
+
+      val socket = InetSocketAddress.createUnresolved("localhost", 41325)
+      val client = system.actorOf(Props(new DnsClient(dnsServerAddress) {
+        override val udp = udpExtensionProbe.ref
+
+        override def createTcpClient() = tcpClientProbe.ref
+      }))
+
+      udpExtensionProbe.expectMsgType[Udp.Bind]
+      udpSocketProbe.send(udpExtensionProbe.lastSender, Udp.Bound(socket))
+
+      goodSenderProbe.send(client, exampleRequest)
+
+      val udpSend = udpSocketProbe.expectMsgType[Udp.Send]
+      udpSend.payload shouldBe exampleRequestMessage.write()
+
+      val badId = exampleRequestMessage.copy(id = 999)
+      val badQuestion = exampleRequestMessage.copy(
+        questions = im.Seq(exampleQuestion.copy(name = "not.com")))
+      val goodQuestion = exampleRequestMessage
+
+      udpSocketProbe.reply(Udp.CommandFailed(Udp.Send(internal.ByteResponse(badId), socket)))
+
+      // duplicate shows inflight message not deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
+      udpSocketProbe.reply(Udp.CommandFailed(Udp.Send(internal.ByteResponse(badQuestion), socket)))
+
+      // duplicate shows inflight message not deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectMsg(DuplicateId(exampleRequest.id))
+
+      udpSocketProbe.reply(Udp.CommandFailed(Udp.Send(internal.ByteResponse(goodQuestion), socket)))
+      goodSenderProbe.expectMsgType[Failure]
+
+      // no duplicate shows inflight message was deleted
+      goodSenderProbe.send(client, exampleRequest)
+      goodSenderProbe.expectNoMessage()
     }
   }
 }
