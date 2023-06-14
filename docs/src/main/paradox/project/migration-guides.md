@@ -21,9 +21,9 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
 
 ### Dependency Changes
-* The Scala 2.13/Scala 3 version of Pekko no longer includes [scala-java8-compat](https://github.com/scala/scala-java8-compat)
+* The Scala 2.13/Scala 3 versions of Pekko no longer include [scala-java8-compat](https://github.com/scala/scala-java8-compat)
   as a dependency. This means if you were relying on `scala-java8-compat` along with Scala 2.12/Scala 3 as a transitive 
-  dependency it's recommended to migrate to using [`scala.jdk` instead](https://github.com/scala/scala-java8-compat#do-you-need-this).
+  dependency that it's recommended to migrate to using [`scala.jdk` instead](https://github.com/scala/scala-java8-compat#do-you-need-this).
   If this is not possible/desired then you can add `scala-java8-compat` as dependency yourself.
 * In addition to the previous point, for Scala 2.12 `scala-java8-compat` has been updated to `1.0.2`. If you are using
   an older binary incompatible version of `scala-java8-compat` then it is recommended to update to `1.0.2`.
