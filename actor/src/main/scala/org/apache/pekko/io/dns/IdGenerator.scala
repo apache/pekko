@@ -30,6 +30,8 @@ private[pekko] trait IdGenerator {
  */
 @InternalApi
 private[pekko] object IdGenerator {
+  private val MaxUnsignedShort = 65535
+
   sealed trait Policy
 
   object Policy {
@@ -54,7 +56,6 @@ private[pekko] object IdGenerator {
   /**
    * @return a random sequence of ids for production
    */
-  def random(rand: java.util.Random): IdGenerator = new IdGenerator {
-    override def nextId(): Short = rand.nextInt(Short.MaxValue).toShort
-  }
+  def random(rand: java.util.Random): IdGenerator =
+    () => (rand.nextInt(MaxUnsignedShort) - Short.MinValue).toShort
 }

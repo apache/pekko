@@ -16,12 +16,14 @@ class IdGeneratorSpec extends PekkoSpec {
   "IdGenerator" must {
     "provide a thread-local-random" in {
       val gen = IdGenerator(IdGenerator.Policy.ThreadLocalRandom)
-      gen.nextId() should be < Short.MaxValue
+      gen.nextId() should be <= Short.MaxValue
+      gen.nextId() should be >= Short.MinValue
     }
 
     "provide a secure-random" in {
       val gen = IdGenerator(IdGenerator.Policy.SecureRandom)
-      gen.nextId() should be < Short.MaxValue
+      gen.nextId() should be <= Short.MaxValue
+      gen.nextId() should be >= Short.MinValue
     }
   }
 }
