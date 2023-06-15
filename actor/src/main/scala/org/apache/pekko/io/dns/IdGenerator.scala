@@ -57,5 +57,5 @@ private[pekko] object IdGenerator {
    * @return a random sequence of ids for production
    */
   def random(rand: java.util.Random): IdGenerator =
-    () => (rand.nextInt(MaxUnsignedShort) - Short.MinValue).toShort
+    () => (rand.nextInt(MaxUnsignedShort) + Short.MinValue).toShort
 }
