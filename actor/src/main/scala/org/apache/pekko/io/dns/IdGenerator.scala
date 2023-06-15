@@ -13,8 +13,6 @@ import org.apache.pekko.annotation.InternalApi
 
 import java.security.SecureRandom
 import java.util.concurrent.ThreadLocalRandom
-import java.util.concurrent.atomic.AtomicInteger
-import scala.annotation.tailrec
 
 /**
  * INTERNAL API
@@ -58,24 +56,5 @@ private[pekko] object IdGenerator {
    */
   def random(rand: java.util.Random): IdGenerator = new IdGenerator {
     override def nextId(): Short = rand.nextInt(Short.MaxValue).toShort
-  }
-
-  /**
-   * @return a predictable sequence of ids for tests
-   */
-  def sequence(): IdGenerator = new IdGenerator {
-    val requestId: AtomicInteger = new AtomicInteger(0)
-
-    @tailrec
-    override final def nextId(): Short = {
-      val oldId = requestId.get()
-      val newId = (oldId + 1) % Short.MaxValue
-
-      if (requestId.compareAndSet(oldId, newId.intValue())) {
-        newId.toShort
-      } else {
-        nextId()
-      }
-    }
   }
 }
