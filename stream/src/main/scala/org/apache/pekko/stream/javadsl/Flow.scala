@@ -1322,7 +1322,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * `maxNumber` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWithin(maxNumber: Int, duration: FiniteDuration): javadsl.Flow[In, java.util.List[Out], Mat] =
     new Flow(delegate.groupedWithin(maxNumber, duration).map(_.asJava)) // TODO optimize to one step
@@ -1367,7 +1366,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * `maxWeight` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWeightedWithin(
       maxWeight: Long,
@@ -1451,7 +1449,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @param of time to shift all messages
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def delay(of: FiniteDuration, strategy: DelayOverflowStrategy): Flow[In, Out, Mat] =
     new Flow(delegate.delay(of, strategy))
@@ -1547,7 +1544,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def dropWithin(duration: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.dropWithin(duration))
@@ -1755,7 +1751,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @deprecated use `recoverWithRetries` instead
    */
-  @Deprecated
   @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   def recoverWith(
       clazz: Class[_ <: Throwable],
@@ -1870,7 +1865,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[Flow.limit]], [[Flow.limitWeighted]]
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def takeWithin(duration: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.takeWithin(duration))
@@ -3378,7 +3372,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialTimeout(timeout: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.initialTimeout(timeout))
@@ -3411,7 +3404,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def completionTimeout(timeout: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.completionTimeout(timeout))
@@ -3445,7 +3437,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def idleTimeout(timeout: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.idleTimeout(timeout))
@@ -3480,7 +3471,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def backpressureTimeout(timeout: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.backpressureTimeout(timeout))
@@ -3519,7 +3509,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def keepAlive(maxIdle: FiniteDuration, injectedElem: function.Creator[Out]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.keepAlive(maxIdle, () => injectedElem.create()))
@@ -3612,7 +3601,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(elements: Int, per: FiniteDuration, maximumBurst: Int, mode: ThrottleMode): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.throttle(elements, per, maximumBurst, mode))
@@ -3697,7 +3685,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(
       cost: Int,
@@ -3800,7 +3787,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.throttleEven(elements, per, mode))
@@ -3815,7 +3801,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.Flow[In, Out, Mat] =
     throttleEven(elements, per.asScala, mode)
@@ -3830,7 +3815,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -3849,7 +3833,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -3888,7 +3871,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
-  @Deprecated
   @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[M]()(combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
     new Flow(delegate.monitorMat(combinerToScala(combine)))
@@ -3927,7 +3909,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialDelay(delay: FiniteDuration): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.initialDelay(delay))

@@ -163,7 +163,6 @@ final class PNCounter private[pekko] (private[pekko] val increments: GCounter, p
    */
   def decrement(node: SelfUniqueAddress, n: java.math.BigInteger): PNCounter = decrement(node.uniqueAddress, n)
 
-  @Deprecated
   @deprecated("Use `decrement` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def decrement(node: Cluster, n: java.math.BigInteger): PNCounter = decrement(node.selfUniqueAddress, n)
 
