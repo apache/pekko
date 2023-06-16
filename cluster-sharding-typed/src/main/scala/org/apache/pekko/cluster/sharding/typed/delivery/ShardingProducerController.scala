@@ -213,7 +213,6 @@ object ShardingProducerController {
       val resendFirstUnconfirmedIdleTimeout: FiniteDuration,
       val producerControllerSettings: ProducerController.Settings) {
 
-    @Deprecated
     @deprecated("use resendFirstUnconfirmedIdleTimeout", "Akka 2.6.19")
     def resendFirsUnconfirmedIdleTimeout: FiniteDuration = resendFirstUnconfirmedIdleTimeout
 
@@ -245,7 +244,7 @@ object ShardingProducerController {
     def withResendFirsUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: FiniteDuration): Settings =
       copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout)
 
-    @Deprecated
+    @deprecated("use resendFirstUnconfirmedIdleTimeout", "Akka 2.6.19")
     def withResendFirsUnconfirmedIdleTimeout(newResendFirstUnconfirmedIdleTimeout: java.time.Duration): Settings =
       copy(resendFirstUnconfirmedIdleTimeout = newResendFirstUnconfirmedIdleTimeout.asScala)
 
