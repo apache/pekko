@@ -32,7 +32,7 @@ private[pekko] trait IdGenerator {
 private[pekko] object IdGenerator {
   // Random.nextInt(bound) generates a random int in the range 0 (inclusive) to bound (exclusive),
   // so add 1 to Max Unsigned Short (65535)
-  private val SignedShortBound = 65536
+  private val UnsignedShortBound = 65536
 
   sealed trait Policy
 
@@ -59,5 +59,5 @@ private[pekko] object IdGenerator {
    * @return a random sequence of ids for production
    */
   def random(rand: java.util.Random): IdGenerator =
-    () => (rand.nextInt(SignedShortBound) + Short.MinValue).toShort
+    () => (rand.nextInt(UnsignedShortBound) + Short.MinValue).toShort
 }
