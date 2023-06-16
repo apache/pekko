@@ -135,7 +135,6 @@ object ActorSource {
    *
    * @deprecated Use actorRefWithBackpressure instead
    */
-
   @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[T, Ack](
       ackTo: ActorRef[Ack],
