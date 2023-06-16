@@ -234,7 +234,6 @@ object Source {
    * element is produced it will not receive that tick element later. It will
    * receive new tick elements as soon as it has requested more elements.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def tick[O](initialDelay: FiniteDuration, interval: FiniteDuration, tick: O): javadsl.Source[O, Cancellable] =
     new Source(scaladsl.Source.tick(initialDelay, interval, tick))
@@ -520,7 +519,6 @@ object Source {
    * @param bufferSize The size of the buffer in element count
    * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  @Deprecated
   @deprecated("Use variant accepting completion and failure matchers", "Akka 2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRef({
@@ -579,7 +577,6 @@ object Source {
    *
    * @deprecated Use actorRefWithBackpressure instead
    */
-  @Deprecated
   @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[T](
       ackMessage: Any,
@@ -620,7 +617,6 @@ object Source {
    * The actor will be stopped when the stream is completed, failed or canceled from downstream,
    * i.e. you can watch it to get notified when that happens.
    */
-  @Deprecated
   @deprecated("Use actorRefWithBackpressure accepting completion and failure matchers", "Akka 2.6.0")
   def actorRefWithAck[T](ackMessage: Any): Source[T, ActorRef] =
     new Source(scaladsl.Source.actorRefWithBackpressure(ackMessage,
@@ -2299,7 +2295,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @deprecated use `recoverWithRetries` instead
    */
-  @Deprecated
   @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   @nowarn("msg=deprecated")
   def recoverWith(
@@ -2988,7 +2983,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * `maxNumber` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWithin(
       maxNumber: Int,
@@ -3037,7 +3031,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * `maxWeight` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWeightedWithin(
       maxWeight: Long,
@@ -3121,7 +3114,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @param of time to shift all messages
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def delay(of: FiniteDuration, strategy: DelayOverflowStrategy): Source[Out, Mat] =
     new Source(delegate.delay(of, strategy))
@@ -3217,7 +3209,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def dropWithin(duration: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.dropWithin(duration))
@@ -3337,7 +3328,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels or timer fires
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def takeWithin(duration: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.takeWithin(duration))
@@ -3931,7 +3921,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialTimeout(timeout: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.initialTimeout(timeout))
@@ -3964,7 +3953,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def completionTimeout(timeout: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.completionTimeout(timeout))
@@ -3998,7 +3986,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def idleTimeout(timeout: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.idleTimeout(timeout))
@@ -4033,7 +4020,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def backpressureTimeout(timeout: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.backpressureTimeout(timeout))
@@ -4072,7 +4058,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def keepAlive(maxIdle: FiniteDuration, injectedElem: function.Creator[Out]): javadsl.Source[Out, Mat] =
     new Source(delegate.keepAlive(maxIdle, () => injectedElem.create()))
@@ -4165,7 +4150,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(elements: Int, per: FiniteDuration, maximumBurst: Int, mode: ThrottleMode): javadsl.Source[Out, Mat] =
     new Source(delegate.throttle(elements, per, maximumBurst, mode))
@@ -4287,7 +4271,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(
       cost: Int,
@@ -4353,7 +4336,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.Source[Out, Mat] =
     new Source(delegate.throttleEven(elements, per, mode))
@@ -4368,7 +4350,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.Source[Out, Mat] =
     throttleEven(elements, per.asScala, mode)
@@ -4383,7 +4364,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -4402,7 +4382,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -4440,7 +4419,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * event, and may therefor affect performance.
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
-  @Deprecated
   @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[M]()(combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Source[Out, M] =
     new Source(delegate.monitorMat(combinerToScala(combine)))
@@ -4478,7 +4456,6 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialDelay(delay: FiniteDuration): javadsl.Source[Out, Mat] =
     new Source(delegate.initialDelay(delay))

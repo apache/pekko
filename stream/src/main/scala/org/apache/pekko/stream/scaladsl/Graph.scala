@@ -943,7 +943,6 @@ final class Balance[T](val outputPorts: Int, val waitForAllDownstreams: Boolean,
   // one output might seem counter intuitive but saves us from special handling in other places
   require(outputPorts >= 1, "A Balance must have one or more output ports")
 
-  @Deprecated
   @deprecated("Use the constructor which also specifies the `eagerCancel` parameter", since = "Akka 2.5.12")
   def this(outputPorts: Int, waitForAllDownstreams: Boolean) = this(outputPorts, waitForAllDownstreams, false)
 

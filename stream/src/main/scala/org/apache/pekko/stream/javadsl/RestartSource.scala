@@ -49,7 +49,6 @@ object RestartSource {
    *   In order to skip this additional delay pass in `0`.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[T](
       minBackoff: FiniteDuration,
@@ -80,7 +79,6 @@ object RestartSource {
    *   In order to skip this additional delay pass in `0`.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](
@@ -115,7 +113,6 @@ object RestartSource {
    *   Passing `0` will cause no restarts and a negative number will not cap the amount of restarts.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def withBackoff[T](
       minBackoff: FiniteDuration,
@@ -150,7 +147,6 @@ object RestartSource {
    *   Passing `0` will cause no restarts and a negative number will not cap the amount of restarts.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](
@@ -205,7 +201,6 @@ object RestartSource {
    *   In order to skip this additional delay pass in `0`.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def onFailuresWithBackoff[T](
       minBackoff: FiniteDuration,
@@ -235,7 +230,6 @@ object RestartSource {
    *   In order to skip this additional delay pass in `0`.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def onFailuresWithBackoff[T](
@@ -268,7 +262,6 @@ object RestartSource {
    *   Passing `0` will cause no restarts and a negative number will not cap the amount of restarts.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def onFailuresWithBackoff[T](
       minBackoff: FiniteDuration,
@@ -301,7 +294,6 @@ object RestartSource {
    *   Passing `0` will cause no restarts and a negative number will not cap the amount of restarts.
    * @param sourceFactory A factory for producing the [[Source]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def onFailuresWithBackoff[T](

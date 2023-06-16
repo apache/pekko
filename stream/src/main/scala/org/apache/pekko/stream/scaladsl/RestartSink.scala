@@ -53,7 +53,6 @@ object RestartSink {
    *   In order to skip this additional delay pass in `0`.
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double)(
@@ -88,7 +87,6 @@ object RestartSink {
    *   Passing `0` will cause no restarts and a negative number will not cap the amount of restarts.
    * @param sinkFactory A factory for producing the [[Sink]] to wrap.
    */
-  @Deprecated
   @deprecated("Use the overloaded method which accepts org.apache.pekko.stream.RestartSettings instead.",
     since = "Akka 2.6.10")
   def withBackoff[T](minBackoff: FiniteDuration, maxBackoff: FiniteDuration, randomFactor: Double, maxRestarts: Int)(
