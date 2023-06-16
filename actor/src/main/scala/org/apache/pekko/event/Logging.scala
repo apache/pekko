@@ -1717,7 +1717,6 @@ object LogMarker {
     apply(name, properties.asScala.toMap)
   }
 
-  @Deprecated
   @deprecated("use org.apache.pekko.event.LogEventWithMarker#marker instead", since = "Akka 2.5.12")
   def extractFromMDC(mdc: MDC): Option[String] =
     mdc.get(MDCKey) match {

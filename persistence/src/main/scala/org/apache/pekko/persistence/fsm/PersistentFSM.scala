@@ -444,7 +444,6 @@ object PersistentFSM {
     }
 
     @InternalApi
-    @Deprecated
     @deprecated(
       "Internal API easily to be confused with regular FSM's using. Use regular events (`applying`). Internally, `copy` can be used instead.",
       "Akka 2.5.5")

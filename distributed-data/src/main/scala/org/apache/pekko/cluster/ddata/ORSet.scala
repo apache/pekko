@@ -339,7 +339,6 @@ final class ORSet[A] private[pekko] (
   /** Adds an element to the set. */
   def add(node: SelfUniqueAddress, element: A): ORSet[A] = add(node.uniqueAddress, element)
 
-  @Deprecated
   @deprecated("Use `add` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def add(node: Cluster, element: A): ORSet[A] = add(node.selfUniqueAddress, element)
 

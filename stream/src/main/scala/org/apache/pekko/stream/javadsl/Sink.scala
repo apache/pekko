@@ -327,7 +327,6 @@ object Sink {
    *
    * @deprecated Use actorRefWithBackpressure instead
    */
-  @Deprecated
   @deprecated("Use actorRefWithBackpressure instead", "Akka 2.6.0")
   def actorRefWithAck[In](
       ref: ActorRef,

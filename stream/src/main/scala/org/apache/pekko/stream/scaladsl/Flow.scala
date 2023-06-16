@@ -2608,7 +2608,6 @@ trait FlowOps[+Out, +Mat] {
    * [[throttle]] with maximumBurst attribute.
    * @see [[throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): Repr[Out] =
     throttle(elements, per, Throttle.AutomaticMaximumBurst, ConstantFun.oneInt, mode)
@@ -2623,7 +2622,6 @@ trait FlowOps[+Out, +Mat] {
    * [[throttle]] with maximumBurst attribute.
    * @see [[throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(cost: Int, per: FiniteDuration, costCalculation: (Out) => Int, mode: ThrottleMode): Repr[Out] =
     throttle(cost, per, Throttle.AutomaticMaximumBurst, costCalculation, mode)
@@ -3951,7 +3949,6 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    *
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
-  @Deprecated
   @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
   def monitor[Mat2]()(combine: (Mat, FlowMonitor[Out]) => Mat2): ReprMat[Out, Mat2] =
     viaMat(GraphStages.monitor)(combine)

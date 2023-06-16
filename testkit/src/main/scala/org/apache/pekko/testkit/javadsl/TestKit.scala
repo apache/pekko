@@ -79,7 +79,6 @@ class TestKit(system: ActorSystem) {
   /**
    * Scale timeouts (durations) during tests with the configured
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def dilated(d: FiniteDuration): FiniteDuration = d.dilated(getSystem)
 
@@ -153,7 +152,6 @@ class TestKit(system: ActorSystem) {
    * block or throw an [[AssertionError]] if no `within` block surrounds this
    * call.
    */
-  @Deprecated
   @deprecated("Use getRemaining which returns java.time.Duration instead.", since = "Akka 2.5.12")
   def remaining: FiniteDuration = tp.remaining
 
@@ -168,7 +166,6 @@ class TestKit(system: ActorSystem) {
    * Obtain time remaining for execution of the innermost enclosing `within`
    * block or missing that it returns the given duration.
    */
-  @Deprecated
   @deprecated("Use getRemainingOr which returns java.time.Duration instead.", since = "Akka 2.5.12")
   def remainingOr(fd: FiniteDuration): FiniteDuration = tp.remainingOr(fd)
 
@@ -183,7 +180,6 @@ class TestKit(system: ActorSystem) {
    * block or missing that it returns the properly dilated default for this
    * case from settings (key "pekko.test.single-expect-default").
    */
-  @Deprecated
   @deprecated("Use getRemainingOrDefault which returns java.time.Duration instead.", since = "Akka 2.5.12")
   def remainingOrDefault: FiniteDuration = tp.remainingOrDefault
 
@@ -212,7 +208,6 @@ class TestKit(system: ActorSystem) {
    *
    * }}}
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def within[T](min: FiniteDuration, max: FiniteDuration, f: Supplier[T]): T = tp.within(min, max)(f.get)
 
@@ -255,7 +250,6 @@ class TestKit(system: ActorSystem) {
    *
    * }}}
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def within[T](max: FiniteDuration, f: Supplier[T]): T = tp.within(max)(f.get)
 
@@ -301,7 +295,6 @@ class TestKit(system: ActorSystem) {
    * Note that the timeout is scaled using Duration.dilated,
    * which uses the configuration entry "pekko.test.timefactor".
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def awaitCond(max: Duration, p: Supplier[Boolean]): Unit = tp.awaitCond(p.get, max)
 
@@ -327,7 +320,6 @@ class TestKit(system: ActorSystem) {
    * Note that the timeout is scaled using Duration.dilated,
    * which uses the configuration entry "pekko.test.timefactor".
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def awaitCond(max: Duration, interval: Duration, p: Supplier[Boolean]): Unit =
     tp.awaitCond(p.get, max, interval)
@@ -355,7 +347,6 @@ class TestKit(system: ActorSystem) {
    * Note that the timeout is scaled using Duration.dilated,
    * which uses the configuration entry "pekko.test.timefactor".
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def awaitCond(max: Duration, interval: Duration, message: String, p: Supplier[Boolean]): Unit =
     tp.awaitCond(p.get, max, interval, message)
@@ -399,7 +390,6 @@ class TestKit(system: ActorSystem) {
    * Note that the timeout is scaled using Duration.dilated,
    * which uses the configuration entry "pekko.test.timefactor".
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
   def awaitAssert[A](max: Duration, a: Supplier[A]): A = tp.awaitAssert(a.get, max)
 
@@ -426,7 +416,6 @@ class TestKit(system: ActorSystem) {
    *
    * @return an arbitrary value that would be returned from awaitAssert if successful, if not interested in such value you can return null.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
   def awaitAssert[A](max: Duration, interval: Duration, a: Supplier[A]): A = tp.awaitAssert(a.get, max, interval)
 
@@ -454,7 +443,6 @@ class TestKit(system: ActorSystem) {
    *
    * @return the received object
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsgEquals[T](max: FiniteDuration, obj: T): T = tp.expectMsg(max, obj)
 
@@ -477,7 +465,6 @@ class TestKit(system: ActorSystem) {
    * given object. Wait time is bounded by the given duration, with an
    * AssertionFailure being thrown in case of timeout.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsg[T](max: FiniteDuration, obj: T): T = tp.expectMsg(max, obj)
 
@@ -493,7 +480,6 @@ class TestKit(system: ActorSystem) {
    * given object. Wait time is bounded by the given duration, with an
    * AssertionFailure being thrown in case of timeout.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsg[T](max: FiniteDuration, obj: T, hint: String): T = tp.expectMsg(max, hint, obj)
 
@@ -556,7 +542,6 @@ class TestKit(system: ActorSystem) {
    * the given class. Wait time is bounded by the given duration, with an
    * AssertionFailure being thrown in case of timeout.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsgClass[T](max: FiniteDuration, c: Class[T]): T = tp.expectMsgClass(max, c)
 
@@ -579,7 +564,6 @@ class TestKit(system: ActorSystem) {
    * AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsgAnyOf[T](max: FiniteDuration, objs: T*): T = tp.expectMsgAnyOf(max, objs: _*)
 
@@ -605,7 +589,6 @@ class TestKit(system: ActorSystem) {
    * given duration, with an AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsgAllOf[T](max: FiniteDuration, objs: T*): JList[T] = tp.expectMsgAllOf(max, objs: _*).asJava
 
@@ -632,7 +615,6 @@ class TestKit(system: ActorSystem) {
    * with an AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectMsgAnyClassOf[T](max: FiniteDuration, objs: Class[_]*): T =
     tp.expectMsgAnyClassOf(max, objs: _*).asInstanceOf[T]
@@ -671,7 +653,6 @@ class TestKit(system: ActorSystem) {
    * Assert that no message is received for the specified time.
    * Supplied value is not dilated.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def expectNoMessage(max: FiniteDuration): Unit = tp.expectNoMessage(max)
 
@@ -769,7 +750,6 @@ class TestKit(system: ActorSystem) {
   /**
    * Receive N messages in a row before the given deadline.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def receiveN(n: Int, max: FiniteDuration): JList[AnyRef] =
     tp.receiveN(n, max).asJava
@@ -785,7 +765,6 @@ class TestKit(system: ActorSystem) {
    *
    * This method does NOT automatically scale its Duration parameter!
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
   def receiveOne(max: Duration): AnyRef = tp.receiveOne(max)
 
@@ -808,7 +787,6 @@ class TestKit(system: ActorSystem) {
    * One possible use of this method is for testing whether messages of
    * certain characteristics are generated at a certain rate:
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
   def receiveWhile[T](max: Duration, idle: Duration, messages: Int, f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max, idle, messages)(new CachingPartialFunction[AnyRef, T] {
@@ -841,7 +819,6 @@ class TestKit(system: ActorSystem) {
       .asJava
   }
 
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
   def receiveWhile[T](max: Duration, f: JFunction[AnyRef, T]): JList[T] = {
     tp.receiveWhile(max = max)(new CachingPartialFunction[AnyRef, T] {

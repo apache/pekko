@@ -16,7 +16,6 @@ package org.apache.pekko.stream
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 
-@Deprecated
 @deprecated(
   "FanInShape1N was removed because it was not used anywhere. Use a custom shape extending from FanInShape directly.",
   "Akka 2.5.5")

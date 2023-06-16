@@ -712,7 +712,6 @@ class SubSource[Out, Mat](
    * `maxNumber` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWithin(maxNumber: Int, duration: FiniteDuration): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
     new SubSource(delegate.groupedWithin(maxNumber, duration).map(_.asJava)) // TODO optimize to one step
@@ -759,7 +758,6 @@ class SubSource[Out, Mat](
    * `maxWeight` must be positive, and `duration` must be greater than 0 seconds, otherwise
    * IllegalArgumentException is thrown.
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def groupedWeightedWithin(
       maxWeight: Long,
@@ -844,7 +842,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def dropWithin(duration: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.dropWithin(duration))
@@ -947,7 +944,6 @@ class SubSource[Out, Mat](
    * @param of time to shift all messages
    * @param strategy Strategy that is used when incoming elements cannot fit inside the buffer
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def delay(of: FiniteDuration, strategy: DelayOverflowStrategy): SubSource[Out, Mat] =
     new SubSource(delegate.delay(of, strategy))
@@ -1159,7 +1155,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels or timer fires
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def takeWithin(duration: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.takeWithin(duration))
@@ -1993,7 +1988,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialTimeout(timeout: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.initialTimeout(timeout))
@@ -2026,7 +2020,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def completionTimeout(timeout: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.completionTimeout(timeout))
@@ -2060,7 +2053,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def idleTimeout(timeout: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.idleTimeout(timeout))
@@ -2095,7 +2087,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def backpressureTimeout(timeout: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.backpressureTimeout(timeout))
@@ -2134,7 +2125,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def keepAlive(maxIdle: FiniteDuration, injectedElem: function.Creator[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.keepAlive(maxIdle, () => injectedElem.create()))
@@ -2227,7 +2217,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(elements: Int, per: FiniteDuration, maximumBurst: Int, mode: ThrottleMode): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.throttle(elements, per, maximumBurst, mode))
@@ -2349,7 +2338,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def throttle(
       cost: Int,
@@ -2415,7 +2403,6 @@ class SubSource[Out, Mat](
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: FiniteDuration, mode: ThrottleMode): javadsl.SubSource[Out, Mat] =
     new SubSource(delegate.throttleEven(elements, per, mode))
@@ -2430,7 +2417,6 @@ class SubSource[Out, Mat](
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(elements: Int, per: java.time.Duration, mode: ThrottleMode): javadsl.SubSource[Out, Mat] =
     throttleEven(elements, per.asScala, mode)
@@ -2445,7 +2431,6 @@ class SubSource[Out, Mat](
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -2464,7 +2449,6 @@ class SubSource[Out, Mat](
    * [[throttle]] with maximumBurst attribute.
    * @see [[#throttle]]
    */
-  @Deprecated
   @deprecated("Use throttle without `maximumBurst` parameter instead.", "Akka 2.5.12")
   def throttleEven(
       cost: Int,
@@ -2498,7 +2482,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @Deprecated
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
   def initialDelay(delay: FiniteDuration): SubSource[Out, Mat] =
     new SubSource(delegate.initialDelay(delay))

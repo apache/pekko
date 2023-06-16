@@ -297,7 +297,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * If there is no current value for the `key` the `initial` value will be
    * passed to the `modify` function.
    */
-  @Deprecated
   @deprecated("use update for the Java API as updated is ambiguous with the Scala API", "Akka 2.5.20")
   def updated(node: Cluster, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
     updated(node.selfUniqueAddress, key, initial)(value => modify.apply(value))
@@ -311,7 +310,6 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
   def update(node: SelfUniqueAddress, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
     updated(node.uniqueAddress, key, initial)(value => modify.apply(value))
 
-  @Deprecated
   @deprecated("Use `update` that takes a `SelfUniqueAddress` parameter instead.", since = "Akka 2.5.20")
   def update(node: Cluster, key: A, initial: B, modify: java.util.function.Function[B, B]): ORMap[A, B] =
     updated(node, key, initial)(value => modify.apply(value))
