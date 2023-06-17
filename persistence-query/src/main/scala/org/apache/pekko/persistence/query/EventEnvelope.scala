@@ -15,10 +15,9 @@ package org.apache.pekko.persistence.query
 
 import java.util.Optional
 
-import org.apache.pekko.annotation.InternalApi
-
 import scala.runtime.AbstractFunction4
 import org.apache.pekko
+import pekko.annotation.InternalApi
 import pekko.util.HashCode
 
 // for binary compatibility (used to be a case class)
