@@ -106,7 +106,7 @@ final case class TimestampOffset(timestamp: Instant, readTimestamp: Instant, see
 
   /** Java API */
   def getSeen(): java.util.Map[String, java.lang.Long] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import pekko.util.ccompat.JavaConverters._
     seen.map { case (pid, seqNr) => pid -> java.lang.Long.valueOf(seqNr) }.asJava
   }
 

@@ -49,7 +49,7 @@ private[remote] class PekkoProtocolSettings(config: Config) {
 
   import config._
 
-  import org.apache.pekko.util.Helpers.ConfigOps
+  import pekko.util.Helpers.ConfigOps
 
   val TransportFailureDetectorConfig: Config = getConfig("pekko.remote.classic.transport-failure-detector")
   val TransportFailureDetectorImplementationClass: String =

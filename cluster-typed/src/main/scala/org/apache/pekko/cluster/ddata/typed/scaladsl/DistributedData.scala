@@ -77,7 +77,7 @@ object DistributedData extends ExtensionId[DistributedData] {
  * and classic actors can share the same data.
  */
 class DistributedData(system: ActorSystem[_]) extends Extension {
-  import org.apache.pekko.actor.typed.scaladsl.adapter._
+  import pekko.actor.typed.scaladsl.adapter._
 
   private val settings: ReplicatorSettings = ReplicatorSettings(system)
 
