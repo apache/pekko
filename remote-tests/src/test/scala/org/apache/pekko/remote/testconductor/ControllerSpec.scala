@@ -16,10 +16,11 @@ package org.apache.pekko.remote.testconductor
 import java.net.InetAddress
 import java.net.InetSocketAddress
 
-import org.apache.pekko.actor.{ AddressFromURIString, PoisonPill, Props }
-import org.apache.pekko.remote.testconductor.Controller.NodeInfo
-import org.apache.pekko.testkit.PekkoSpec
-import org.apache.pekko.testkit.ImplicitSender
+import org.apache.pekko
+import pekko.actor.{ AddressFromURIString, PoisonPill, Props }
+import pekko.remote.testconductor.Controller.NodeInfo
+import pekko.testkit.PekkoSpec
+import pekko.testkit.ImplicitSender
 
 object ControllerSpec {
   val config = """

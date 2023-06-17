@@ -58,7 +58,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   private val toByteArrayMethodBindingRef = new AtomicReference[Map[Class[_], Method]](Map.empty)
 
   private val allowedClassNames: Set[String] = {
-    import org.apache.pekko.util.ccompat.JavaConverters._
+    import pekko.util.ccompat.JavaConverters._
     system.settings.config.getStringList("pekko.serialization.protobuf.allowed-classes").asScala.toSet
   }
 

@@ -81,7 +81,7 @@ object Transport {
  */
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 trait Transport {
-  import org.apache.pekko.remote.transport.Transport._
+  import pekko.remote.transport.Transport._
 
   /**
    * Returns a string that will be used as the scheme part of the URLs corresponding to this transport

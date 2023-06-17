@@ -13,7 +13,6 @@
 
 package docs.org.apache.pekko.typed
 
-import org.apache.pekko.actor.typed.DispatcherSelector
 // #pool
 import org.apache.pekko
 import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
@@ -22,6 +21,7 @@ import pekko.actor.typed.receptionist.{ Receptionist, ServiceKey }
 import pekko.actor.typed.scaladsl.{ Behaviors, Routers }
 
 // #pool
+import pekko.actor.typed.DispatcherSelector
 import org.scalatest.wordspec.AnyWordSpecLike
 object RouterSpec {
 

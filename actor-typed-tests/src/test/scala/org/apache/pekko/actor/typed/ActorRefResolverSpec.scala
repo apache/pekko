@@ -41,7 +41,7 @@ class ActorRefResolverSpec extends AnyWordSpec with ScalaFutures with Matchers {
         }
 
         // we can't detect that for MinimalActorRef
-        import org.apache.pekko.actor.typed.scaladsl.adapter._
+        import pekko.actor.typed.scaladsl.adapter._
 
         val minRef1: pekko.actor.ActorRef = new MinimalActorRef {
           override def provider: ActorRefProvider = system1.toClassic.asInstanceOf[ActorSystemImpl].provider

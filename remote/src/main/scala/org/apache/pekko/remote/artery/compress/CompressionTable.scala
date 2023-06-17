@@ -20,7 +20,7 @@ import org.agrona.collections.Hashing
 import org.agrona.collections.Object2IntHashMap
 
 import org.apache.pekko
-import org.apache.pekko.util.HashCode
+import pekko.util.HashCode
 
 /**
  * INTERNAL API: Versioned compression table to be advertised between systems
