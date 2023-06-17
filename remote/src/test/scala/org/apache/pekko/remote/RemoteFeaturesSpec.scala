@@ -76,7 +76,7 @@ abstract class RemoteFeaturesSpec(c: Config) extends ArteryMultiNodeSpec(c) with
   }
   mute()
 
-  import org.apache.pekko.remote.artery.RemoteWatcherSpec.TestRemoteWatcher
+  import pekko.remote.artery.RemoteWatcherSpec.TestRemoteWatcher
   protected val monitor = system.actorOf(Props(new TestRemoteWatcher), "monitor1")
 
   protected val watcher = system.actorOf(Props(new EmptyActor), "a1").asInstanceOf[InternalActorRef]
