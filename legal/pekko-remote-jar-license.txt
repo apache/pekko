@@ -207,3 +207,14 @@ written by Austin Appleby. He has placed his code in the public domain.
 The author has disclaimed copyright to that source code.
 CountMinSketch.java also contains additional code developed under an Apache 2.0 license.
 Copyright 2016 AddThis
+
+---------------
+
+pekko-remote contains code from Aeron <https://github.com/real-logic/aeron>.
+
+./remote/src/test/java/org/apache/pekko/remote/artery/aeron/AeronStat.java
+./remote/src/test/java/org/apache/pekko/remote/artery/RateReporter.java
+./remote/src/main/java/org/apache/pekko/remote/artery/aeron/AeronErrorLog.java
+
+This code was released under an Apache 2.0 license.
+Copyright 2014 - 2016 Real Logic Ltd.
