@@ -230,6 +230,11 @@ Copyright 2014 The Netty Project
 
 ---------------
 
+pekko-actor contains code from java-uuid-generator <https://github.com/cowtowncoder/java-uuid-generator>
+in `org.apache.pekko.util.UUIDComparator.scala` which was released under an Apache 2.0 license.
+
+---------------
+
 pekko-cluster contains VectorClock.scala which is derived from code written
 by Coda Hale <https://github.com/codahale/vlock>.
 He has agreed to allow us to use this code under an Apache 2.0 license
