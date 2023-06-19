@@ -66,6 +66,18 @@ with the License. You may obtain a copy of the License at:
 
 ---------------
 
+pekko-actor contains code from java-uuid-generator <https://github.com/cowtowncoder/java-uuid-generator>
+in `org.apache.pekko.util.UUIDComparator.scala` which was released under an Apache 2.0 license.
+
+Java UUID generator library has been written by Tatu Saloranta (tatu.saloranta@iki.fi)
+
+Other developers who have contributed code are:
+
+* Eric Bie contributed extensive unit test suite which has helped ensure high implementation
+  quality
+
+---------------
+
 pekko-remote contains CountMinSketch.java which was developed under an Apache 2.0 license.
 
 stream-lib
