@@ -8,10 +8,6 @@
  */
 
 /*
- * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
- */
-
-/*
  * Scala (https://www.scala-lang.org)
  *
  * Copyright EPFL and Lightbend, Inc.
