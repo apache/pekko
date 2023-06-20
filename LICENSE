@@ -235,6 +235,13 @@ in `org.apache.pekko.util.UUIDComparator.scala` which was released under an Apac
 
 ---------------
 
+pekko-actor contains code in `org.apache.pekko.dispatch.AbstractBoundedNodeQueue.java` which was based on
+code from actors <https://github.com/plokhotnyuk/actors> which was released under the Apache 2.0 license, and
+code from https://www.1024cores.net/home/lock-free-algorithms/queues/non-intrusive-mpsc-node-based-queue which
+was released under the Simplified BSD license.
+
+---------------
+
 pekko-cluster contains VectorClock.scala which is derived from code written
 by Coda Hale <https://github.com/codahale/vlock>.
 He has agreed to allow us to use this code under an Apache 2.0 license
