@@ -260,7 +260,6 @@ pekko-actor contains code from Dmitriy Vyukov's non-intrusive MPSC queue in
 AbstractBoundedNodeQueue.java and AbstractNodeQueue.java.
 - https://www.1024cores.net/home/lock-free-algorithms/queues/non-intrusive-mpsc-node-based-queue
 - Source code is covered by the Simplified BSD License and by Apache License, Version 2.0.
-- Apache Pekko chooses to use it under the Apache License, Version 2.0.
 
 Code License
 Copyright (c) 2010-2011 Dmitry Vyukov. All rights reserved.

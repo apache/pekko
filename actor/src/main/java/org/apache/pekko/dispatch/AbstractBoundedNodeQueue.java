@@ -48,7 +48,6 @@ import org.apache.pekko.util.Unsafe;
  * Dmitriy Vyukov's non-intrusive MPSC queue:
  *   - https://www.1024cores.net/home/lock-free-algorithms/queues/non-intrusive-mpsc-node-based-queue
  *   - Source code is covered by the Simplified BSD License and by Apache License, Version 2.0.
- *   - Apache Pekko chooses to use it under the Apache License, Version 2.0.
  */
 @SuppressWarnings("serial")
 public abstract class AbstractBoundedNodeQueue<T> {
