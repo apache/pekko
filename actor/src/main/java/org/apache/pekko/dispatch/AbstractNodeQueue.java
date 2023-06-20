@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * Lock-free MPSC linked queue implementation based on Dmitriy Vyukov's non-intrusive MPSC queue:
  *   - https://www.1024cores.net/home/lock-free-algorithms/queues/non-intrusive-mpsc-node-based-queue
  *   - Source code is covered by the Simplified BSD License and by Apache License, Version 2.0.
- *   - Apache Pekko chooses to use it under the Apache License, Version 2.0.
  *
  * This queue could be wait-free (i.e. without the spinning loops in peekNode and pollNode) if
  * it were permitted to return null while the queue is not quite empty anymore but the enqueued
