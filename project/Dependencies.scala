@@ -146,9 +146,6 @@ object Dependencies {
       val junit = "junit" % "junit" % junitVersion % "test"
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
 
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.23.0" % Test
-      val junit = "junit" % "junit" % junitVersion % Test
-      val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
       val logback = Compile.logback % Test
 
@@ -179,6 +176,16 @@ object Dependencies {
 
       // docker utils
       val dockerClient = "com.spotify" % "docker-client" % "8.16.0" % Test
+
+      val jackson = Def.setting {
+        Seq(
+          (jacksonCore.value % Test).force(),
+          (jacksonAnnotations.value % Test).force(),
+          (jacksonDatabind.value % Test).force(),
+          ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonCoreVersion % Test).force(),
+          ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonCoreVersion % Test).force(),
+          ("com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test).force())
+      }
 
       // metrics, measurements, perf testing
       val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.10" % Test
