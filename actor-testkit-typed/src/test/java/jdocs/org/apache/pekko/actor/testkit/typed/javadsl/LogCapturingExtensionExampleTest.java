@@ -13,7 +13,6 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
-
 // #log-capturing-junit5
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
 import org.apache.pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder;
@@ -22,7 +21,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-
 import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExampleTest.Echo;
 
 @DisplayName("Junit5 log capturing")
@@ -30,10 +28,7 @@ import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExa
 @ExtendWith(LogCapturingExtension.class)
 class LogCapturingExtensionExampleTest {
 
-  @Junit5TestKit
-  public ActorTestKit testKit = new Junit5TestKitBuilder()
-          .build();
-
+  @Junit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
 
   @Test
   void testSomething() {
@@ -43,8 +38,8 @@ class LogCapturingExtensionExampleTest {
     probe.expectMessage(new Echo.Pong("hello"));
   }
 
- @Test
- void testSomething2() {
+  @Test
+  void testSomething2() {
     ActorRef<Echo.Ping> pinger = testKit.spawn(Echo.create(), "ping");
     TestProbe<Echo.Pong> probe = testKit.createTestProbe();
     pinger.tell(new Echo.Ping("hello", probe.ref()));
