@@ -11,6 +11,18 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+/*
+ * Scala (https://www.scala-lang.org)
+ *
+ * Copyright EPFL and Lightbend, Inc.
+ *
+ * Licensed under Apache License 2.0
+ * (http://www.apache.org/licenses/LICENSE-2.0).
+ *
+ * See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+ */
+
 package org.apache.pekko.util
 
 import scala.{ collection => c }
@@ -78,6 +90,8 @@ package object ccompat {
   }
 
   private[pekko] implicit final class IterableExtensions(private val fact: Iterable.type) extends AnyVal {
+    // derived from https://github.com/scala/scala/blob/0842f23f6017f93160b115b8bf29ec5347cdbe94/src/library/scala/Predef.scala#L356-L361
+    // Apache License 2.0 (see Scala license header at top of this file)
     def single[A](a: A): Iterable[A] = new Iterable[A] {
       override def iterator = Iterator.single(a)
       override def sizeHintIfCheap: Int = 1

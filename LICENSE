@@ -212,6 +212,7 @@ Copyright (c) 2003-2011, LAMP/EPFL
 
 pekko-actor contains code from scala-collection-compat in the `org.apache.pekko.util.ccompat` package
 which has released under an Apache 2.0 license.
+- actor/src/main/scala-2.12/org/apache/pekko/util/ccompat/package.scala
 
 Scala (https://www.scala-lang.org)
 
@@ -220,9 +221,13 @@ Copyright EPFL and Lightbend, Inc.
 ---------------
 
 pekko-actor contains code from scala-library in the `org.apache.pekko.util.ccompat` package
-which has released under an Apache 2.0 license.
-Copyright (c) 2002-2023 EPFL
-Copyright (c) 2011-2023 Lightbend, Inc.
+and in `org.apache.pekko.util.Helpers.scala` which was released under an Apache 2.0 license.
+- actor/src/main/scala-2.12/org/apache/pekko/util/ccompat/package.scala
+- actor/src/main/scala/org/apache/pekko/util/Helpers.scala
+
+Scala (https://www.scala-lang.org)
+
+Copyright EPFL and Lightbend, Inc.
 
 ---------------
 
