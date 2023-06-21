@@ -45,7 +45,7 @@ object FlowSpec {
 }
 
 @nowarn // tests type assignments compile
-class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.receive=off\nakka.loglevel=INFO")) {
+class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.receive=off\npekko.loglevel=INFO")) {
   import FlowSpec._
 
   val settings = ActorMaterializerSettings(system).withInputBuffer(initialSize = 2, maxSize = 2)
