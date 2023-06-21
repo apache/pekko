@@ -417,7 +417,7 @@ final class ORSet[A] private[pekko] (
   /**
    * Removes all elements from the set, but keeps the history.
    * This has the same result as using
-   * [[ORSet#remove(node:akka\.cluster\.ddata\.SelfUniqueAddress*]]
+   * [[ORSet#remove(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]]
    * for each element, but it is more efficient.
    */
   def clear(@unused node: SelfUniqueAddress): ORSet[A] = clear()

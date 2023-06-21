@@ -230,7 +230,7 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
 
   /**
    * Adds an entry to the map
-   * @see [[ORMap#put(node:akka\.cluster\.ddata\.SelfUniqueAddress*]]
+   * @see [[ORMap#put(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]]
    */
   def :+(entry: (A, B))(implicit node: SelfUniqueAddress): ORMap[A, B] = {
     val (key, value) = entry
@@ -249,13 +249,13 @@ final class ORMap[A, B <: ReplicatedData] private[pekko] (
    * on other nodes and the outcome depends on what `ReplicatedData`
    * type that is used.
    *
-   * Consider using [[ORMap#updated(node:akka\.cluster\.ddata\.SelfUniqueAddress*]]
+   * Consider using [[ORMap#updated(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]]
    * instead of `put` if you want modify existing entry.
    *
    * `IllegalArgumentException` is thrown if you try to replace an existing `ORSet`
    * value, because important history can be lost when replacing the `ORSet` and
    * undesired effects of merging will occur. Use [[ORMultiMap]] or
-   * [[ORMap#updated(node:akka\.cluster\.ddata\.SelfUniqueAddress*]] instead.
+   * [[ORMap#updated(node:org\.apache\.pekko\.cluster\.ddata\.SelfUniqueAddress*]] instead.
    */
   def put(node: SelfUniqueAddress, key: A, value: B): ORMap[A, B] = put(node.uniqueAddress, key, value)
 
