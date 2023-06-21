@@ -4,12 +4,14 @@
  *
  *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, which was derived from Akka.
+ * This file is part of the Apache Pekko project, derived from Akka.
  */
 
 /*
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
+
+package org.apache.pekko
 
 import sbt._
 import Keys._
@@ -22,6 +24,8 @@ object Dependencies {
     .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
   val junitVersion = "4.13.2"
+  val junit5Version = "5.10.0"
+
   val slf4jVersion = "1.7.36"
   // check agrona version when updating this
   val aeronVersion = "1.42.1"
@@ -85,6 +89,7 @@ object Dependencies {
     val lmdb = "org.lmdbjava" % "lmdbjava" % "0.8.3"
 
     val junit = "junit" % "junit" % junitVersion
+    val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
 
     // For Java 8 Conversions
     val java8Compat = Def.setting {
@@ -139,6 +144,9 @@ object Dependencies {
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.24.0" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
+      val junit = "junit" % "junit" % junitVersion % "test"
+      val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
+
 
       val logback = Compile.logback % Test
 
@@ -212,6 +220,7 @@ object Dependencies {
       val levelDBNative = "org.fusesource.leveldbjni" % "leveldbjni-all" % "1.8" % "optional;provided"
 
       val junit = Compile.junit % "optional;provided;test"
+      val junit5 = Compile.junit5 % "optional;provided;test"
 
       val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion % "optional;provided;test" }
 
@@ -265,6 +274,7 @@ object Dependencies {
   val actorTestkitTyped = l ++= Seq(
     Provided.logback,
     Provided.junit,
+    Provided.junit5,
     Provided.scalatest.value,
     TestDependencies.scalatestJUnit.value)
 
