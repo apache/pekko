@@ -111,7 +111,7 @@ Java
 
 @@@ div { .group-java }
 
-If you are using JUnit you can use @javadoc[TestKitJunitResource](pekko.actor.testkit.typed.javadsl.TestKitJunitResource) to have the async test kit automatically
+If you are using JUnit you can use @javadoc[TestKitJunitResource](pekko.actor.testkit.typed.javadsl.TestKitJunitResource) for junit4 or @javadoc[TestKitJunit5Extension](pekko.actor.testkit.typed.javadsl.TestKitJunit5Extension) for Junit5 to have the async test kit automatically
 shutdown when the test is complete.
 
 Note that the dependency on JUnit is marked as optional from the test kit module, so your project must explicitly include
@@ -134,8 +134,12 @@ a dependency on ScalaTest to use this.
 Scala
 :  @@snip [AsyncTestingExampleSpec.scala](/actor-testkit-typed/src/test/scala/docs/org/apache/pekko/actor/testkit/typed/scaladsl/ScalaTestIntegrationExampleSpec.scala) { #scalatest-integration }
 
-Java
+Java 
 :  @@snip [AsyncTestingExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/JunitIntegrationExampleTest.java) { #junit-integration }
+
+Java Junit5
+:  @@snip [Junit5IntegrationExampleTest.java](/actor-testkit-typed/src/test/java/jdocs/org/apache/pekko/actor/testkit/typed/javadsl/Junit5IntegrationExampleTest.java) { #junit5-integration }
+
 
 As you may have noticed @scaladoc[ScalaTestWithActorTestKit](pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit) is an abstract class
 which means its problematic if you want treat a given test suite as a value and extend it in multiple ways (i.e. as an example you happen to be using 
