@@ -27,7 +27,6 @@ final class LogCapturingExtension extends InvocationInterceptor {
   override def interceptTestMethod(invocation: Invocation[Void], invocationContext: ReflectiveInvocationContext[Method],
       extensionContext: ExtensionContext): Unit = {
 
-
     val testClassName = invocationContext.getTargetClass.getSimpleName
     val testMethodName = invocationContext.getExecutable.getName
 

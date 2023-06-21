@@ -14,13 +14,13 @@ import org.apache.pekko.actor.testkit.typed.internal.TestKitUtils
 import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit.ApplicationTestConfig
 import org.apache.pekko.actor.typed.ActorSystem
 
- case class Junit5TestKitBuilder()  {
+case class Junit5TestKitBuilder() {
 
-   var system: Option[ActorSystem[_]] = None
+  var system: Option[ActorSystem[_]] = None
 
-   var customConfig: Config = ApplicationTestConfig
+  var customConfig: Config = ApplicationTestConfig
 
-   var name: String = TestKitUtils.testNameFromCallStack(classOf[Junit5TestKitBuilder])
+  var name: String = TestKitUtils.testNameFromCallStack(classOf[Junit5TestKitBuilder])
 
   def withSystem(system: ActorSystem[_]): Junit5TestKitBuilder = {
     this.system = Some(system)
@@ -45,4 +45,3 @@ import org.apache.pekko.actor.typed.ActorSystem
   }
 
 }
-
