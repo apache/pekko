@@ -512,6 +512,7 @@ lazy val persistenceTyped = pekkoModule("persistence-typed")
   .settings(javacOptions += "-parameters") // for Jackson
   .settings(Dependencies.persistenceShared)
   .settings(AutomaticModuleName.settings("pekko.persistence.typed"))
+  .settings(AddMetaInfLicenseFiles.persistenceTypedSettings)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
