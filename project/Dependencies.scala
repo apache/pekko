@@ -146,7 +146,6 @@ object Dependencies {
       val junit = "junit" % "junit" % junitVersion % "test"
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
 
-
       val logback = Compile.logback % Test
 
       val scalatest = Def.setting { "org.scalatest" %% "scalatest" % scalaTestVersion % Test } // ApacheV2
