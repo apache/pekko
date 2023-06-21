@@ -308,6 +308,7 @@ private[pekko] final class FastFrequencySketch[A](width: Int, resetSize: Int) {
 
   // A low-bias hash function found by Hash Function Prospector
   // https://github.com/skeeto/hash-prospector
+  // hash-prospector has been placed in public domain - https://github.com/skeeto/hash-prospector/blob/master/UNLICENSE
   private def rehash(hash: Int): Int = {
     var x = hash
     x = ((x >>> 15) ^ x) * 0xD168AAAD
