@@ -71,6 +71,7 @@ import pekko.util.ByteString
 
   import TLSActor._
 
+  private var unwrapPutBackCounter: Int = 0
   protected val outputBunch = new OutputBunch(outputCount = 2, self, this)
   outputBunch.markAllOutputs()
 
@@ -364,6 +365,7 @@ import pekko.util.ByteString
 
   def flushToUser(): Unit = {
     if (tracing) log.debug("flushToUser")
+    if (unwrapPutBackCounter > 0) unwrapPutBackCounter = 0
     userOutBuffer.flip()
     if (userOutBuffer.hasRemaining) {
       val bs = ByteString(userOutBuffer)
@@ -419,6 +421,17 @@ import pekko.util.ByteString
         result.getHandshakeStatus match {
           case NEED_WRAP =>
             flushToUser()
+            // https://github.com/apache/incubator-pekko/issues/442
+            // A second workaround for an infinite loop we have not been able to reproduce/isolate,
+            // if you see this, and can reproduce consistently, please report back to the Pekko team
+            // with a reproducer or details about the client causing it
+            unwrapPutBackCounter += 1
+            if (unwrapPutBackCounter > 1000) {
+              throw new IllegalStateException(
+                s"Stuck in unwrap loop, bailing out, last handshake status [$lastHandshakeStatus], " +
+                  s"remaining=${transportInBuffer.remaining}, out=${userOutBuffer.position()}, " +
+                  "(https://github.com/apache/incubator-pekko/issues/442)")
+            }
             transportInChoppingBlock.putBack(transportInBuffer)
           case FINISHED =>
             flushToUser()
