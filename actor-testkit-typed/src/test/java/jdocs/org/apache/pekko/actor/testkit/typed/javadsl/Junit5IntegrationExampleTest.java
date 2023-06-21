@@ -7,6 +7,8 @@
  * This file is part of the Apache Pekko project, derived from Akka.
  */
 
+// test code copied from JunitIntegrationTest.java
+
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 import org.apache.pekko.actor.Address;
