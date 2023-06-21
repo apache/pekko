@@ -7,9 +7,6 @@
  * This file is part of the Apache Pekko project, derived from Akka.
  */
 
-/*
- * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
- */
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
