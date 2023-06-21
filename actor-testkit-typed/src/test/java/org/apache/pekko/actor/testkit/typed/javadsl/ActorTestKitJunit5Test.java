@@ -26,28 +26,26 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.pekko.Done.done;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ActorTestKitTestJunit5")
 @ExtendWith(TestKitJunit5Extension.class)
 @ExtendWith(LogCapturingExtension.class)
 class ActorTestKitJunit5Test extends JUnitSuite {
 
-
-  @Junit5TestKit
-  public ActorTestKit testKit = new Junit5TestKitBuilder()
-          .build();
+  @Junit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
-    assertEquals("ActorTestKitTestJunit5", testKit.system().name());
+    assertEquals("ActorTestKitJunit5Test", testKit.system().name());
   }
 
   @Test
   void systemNameShouldComeFromTestClass() {
     final ActorTestKit testKit2 = ActorTestKit.create();
     try {
-      assertEquals("ActorTestKitTestJunit5", testKit2.system().name());
+      assertEquals("ActorTestKitJunit5Test", testKit2.system().name());
     } finally {
       testKit2.shutdownTestKit();
     }
@@ -73,8 +71,6 @@ class ActorTestKitJunit5Test extends JUnitSuite {
               started.complete(done());
               return Behaviors.same();
             }));
-     assertNotNull(started.get(3, TimeUnit.SECONDS));
-
-
-   }
+    assertNotNull(started.get(3, TimeUnit.SECONDS));
+  }
 }

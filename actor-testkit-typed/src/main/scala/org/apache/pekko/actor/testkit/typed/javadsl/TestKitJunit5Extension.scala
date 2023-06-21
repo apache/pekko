@@ -1,3 +1,12 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, derived from Akka.
+ */
+
 package org.apache.pekko.actor.testkit.typed.javadsl
 
 import org.apache.pekko
@@ -8,7 +17,7 @@ import scala.jdk.CollectionConverters._
 
 final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
 
-  var testKit: ActorTestKit = null
+  var testKit: Option[ActorTestKit] = None
 
 
   /**
@@ -19,7 +28,7 @@ final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExe
 
     context.getTestInstance.ifPresent(instance => {
       val fielValue = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[Junit5TestKit]).asScala.toList.head
-      testKit = fielValue.asInstanceOf[ActorTestKit]
+      testKit = Some(fielValue.asInstanceOf[ActorTestKit])
     })
   }
 
@@ -28,7 +37,7 @@ final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExe
    * Shutdown testKit
    */
   override def afterAll(context: ExtensionContext): Unit = {
-     testKit.shutdownTestKit()
+     testKit.get.shutdownTestKit()
   }
 
 }

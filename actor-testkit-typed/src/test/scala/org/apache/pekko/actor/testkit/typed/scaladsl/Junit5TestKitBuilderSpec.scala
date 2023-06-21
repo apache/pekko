@@ -1,3 +1,12 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * license agreements; and to You under the Apache License, version 2.0:
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * This file is part of the Apache Pekko project, derived from Akka.
+ */
+
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
 import com.typesafe.config.ConfigFactory
@@ -9,9 +18,6 @@ import org.scalatest.wordspec.AnyWordSpec
 
 
 class Junit5TestKitBuilderSpec extends AnyWordSpec{
-
-
-
 
 
   "the Junit5TestKitBuilder" should {
@@ -37,7 +43,7 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec{
   "the Junit5TestKitBuilder" should {
     "create a Testkit with a custom config" in {
 
-      val conf = ConfigFactory.load("application-junit5.conf")
+      val conf = ConfigFactory.load("application.conf")
       val actualTestKit = Junit5TestKitBuilder()
         .withCustomConfig(conf)
         .build()
