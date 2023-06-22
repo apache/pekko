@@ -4,7 +4,7 @@
  *
  *   https://www.apache.org/licenses/LICENSE-2.0
  *
- * This file is part of the Apache Pekko project, derived from Akka.
+ * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
 /*
@@ -58,7 +58,7 @@ trait CopyrightHeader extends AutoPlugin {
       |
       |  https://www.apache.org/licenses/LICENSE-2.0
       |
-      |This file is part of the Apache Pekko project, derived from Akka.
+      |This file is part of the Apache Pekko project, which was derived from Akka.
       |""".stripMargin
 
   val apacheSpdxHeader: String = "SPDX-License-Identifier: Apache-2.0"
