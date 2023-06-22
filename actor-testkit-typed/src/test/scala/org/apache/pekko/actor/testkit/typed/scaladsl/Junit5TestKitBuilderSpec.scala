@@ -15,10 +15,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder
 import org.apache.pekko.actor.typed.ActorSystem
 import org.scalatest.wordspec.AnyWordSpec
 
-
-
-class Junit5TestKitBuilderSpec extends AnyWordSpec{
-
+class Junit5TestKitBuilderSpec extends AnyWordSpec {
 
   "the Junit5TestKitBuilder" should {
     "create a Testkit with name hello" in {
@@ -38,7 +35,6 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec{
       assertResult("Junit5TestKitBuilderSpec")(actualTestKit.system.name)
     }
   }
-
 
   "the Junit5TestKitBuilder" should {
     "create a Testkit with a custom config" in {
@@ -78,6 +74,5 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec{
       assertResult("AkkaQuickStart")(actualTestKit.system.name)
     }
   }
-
 
 }
