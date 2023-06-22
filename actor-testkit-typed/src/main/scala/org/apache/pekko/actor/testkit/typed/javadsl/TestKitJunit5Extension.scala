@@ -9,8 +9,7 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko
-import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
+import org.junit.jupiter.api.extension.{AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext}
 import org.junit.platform.commons.support.AnnotationSupport
 
 import scala.jdk.CollectionConverters._
