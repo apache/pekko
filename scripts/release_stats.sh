@@ -39,7 +39,7 @@ declare milestone_id=$(echo "$open_milestones$closed_milestones" | sed 's/"descr
 declare tickets=$(curl -s -H "$script_user_agent" "https://api.github.com/repos/apache/incubator-pekko/issues?milestone=$milestone_id&state=all&per_page=100" | sed 's/"comments"/\n/g' | perl -ne 'm/number":([0-9]+),"title":"(.+?)",/ && print " - *$1* $2\n"' | sort -n)
 declare ticket_count=$(echo "$tickets" | wc -l | grep -o '[1-9].*')
 
-echo "$tag1 compared to Akka $tag2":
+echo "$tag1 compared to Pekko $tag2":
 
 echo "* $ticket_count tickets closed"
 
