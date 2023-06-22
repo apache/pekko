@@ -9,9 +9,8 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko.actor.typed.{ActorRef, Behavior}
+import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
 import org.apache.pekko.actor.typed.scaladsl.Behaviors
-
 
 object Greeter {
   final case class Greet(whom: String, replyTo: ActorRef[Greeted])
@@ -19,9 +18,9 @@ object Greeter {
 
   def apply(): Behavior[Greet] = Behaviors.receive { (context, message) =>
     context.log.info("Hello {}!", message.whom)
-    //#greeter-send-messages
+    // #greeter-send-messages
     message.replyTo ! Greeted(message.whom, context.self)
-    //#greeter-send-messages
+    // #greeter-send-messages
     Behaviors.same
   }
 }
