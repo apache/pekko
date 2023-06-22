@@ -311,6 +311,12 @@ For more information, please refer to <http://unlicense.org/>
 
 ---------------
 
+pekko-actor contains code in `org.apache.pekko.util.FrequencySketch.scala` which was based on code from
+Caffeine <https://github.com/ben-manes/caffeine> which was developed under an under the Apache 2.0 license.
+Copyright 2015 Ben Manes. All Rights Reserved.
+
+---------------
+
 pekko-cluster contains VectorClock.scala which is derived from code written
 by Coda Hale <https://github.com/codahale/vlock>.
 He has agreed to allow us to use this code under an Apache 2.0 license
