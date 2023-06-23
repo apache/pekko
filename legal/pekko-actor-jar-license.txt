@@ -308,3 +308,9 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
 For more information, please refer to <http://unlicense.org/>
+
+---------------
+
+pekko-actor contains code in `org.apache.pekko.util.FrequencySketch.scala` which was based on code from
+Caffeine <https://github.com/ben-manes/caffeine> which was developed under the Apache 2.0 license.
+Copyright 2015 Ben Manes. All Rights Reserved.
