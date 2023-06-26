@@ -11,8 +11,8 @@ package org.apache.pekko.actor.testkit.typed.javadsl
 
 import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
 import org.junit.platform.commons.support.AnnotationSupport
-
-import scala.jdk.CollectionConverters.CollectionHasAsScala
+import org.apache.pekko
+import pekko.util.ccompat.JavaConverters.CollectionHasAsScala
 
 final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
 
@@ -23,7 +23,7 @@ final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExe
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
 
-    context.getTestInstance.ifPresent(instance => {
+    context.getTestInstance.ifPresent((instance: AnyRef)  => {
       val fielValue = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[Junit5TestKit]).asScala.toList.head
       testKit = Some(fielValue.asInstanceOf[ActorTestKit])
     })
