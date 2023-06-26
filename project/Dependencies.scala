@@ -90,7 +90,6 @@ object Dependencies {
     val junit = "junit" % "junit" % junitVersion
     val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version
 
-
     // For Java 8 Conversions
     val java8Compat = Def.setting {
       "org.scala-lang.modules" %% "scala-java8-compat" % java8CompatVersion.value
@@ -145,7 +144,6 @@ object Dependencies {
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
       val junit = "junit" % "junit" % junitVersion % "test"
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
-
 
       val logback = Compile.logback % Test
 
