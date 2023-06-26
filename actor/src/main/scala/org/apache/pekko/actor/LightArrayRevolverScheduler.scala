@@ -17,14 +17,13 @@ import java.io.Closeable
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-
 import org.apache.pekko
 import pekko.dispatch.AbstractNodeQueue
 import pekko.event.LoggingAdapter
@@ -347,6 +346,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 }
 
 object LightArrayRevolverScheduler {
+  @nowarn("msg=deprecated")
   private[this] val taskOffset = unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]
