@@ -7,7 +7,6 @@
  * This file is part of the Apache Pekko project, derived from Akka.
  */
 
-
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
 import org.apache.pekko.Done;

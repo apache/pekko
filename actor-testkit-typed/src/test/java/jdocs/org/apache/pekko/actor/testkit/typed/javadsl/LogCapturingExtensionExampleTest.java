@@ -7,7 +7,6 @@
  * This file is part of the Apache Pekko project, derived from Akka.
  */
 
-
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
 // #log-capturing-junit5
