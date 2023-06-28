@@ -9,9 +9,10 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
+import org.junit.jupiter.api.extension.{AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext}
 import org.junit.platform.commons.support.AnnotationSupport
 import org.apache.pekko
+import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit
 import pekko.util.ccompat.JavaConverters.CollectionHasAsScala
 
 final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
@@ -19,7 +20,7 @@ final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExe
   var testKit: Option[ActorTestKit] = None
 
   /**
-   * Get a reference to the field annotated with @Junit5Testkit  [[pekko.actor.testkit.typed.javadsl.Junit5TestKit]]
+   * Get a reference to the field annotated with @Junit5Testkit  [[Junit5TestKit]]
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
 

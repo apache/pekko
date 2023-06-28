@@ -7,15 +7,11 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
-package org.apache.pekko.actor.testkit.typed.javadsl;
-
+package org.apache.pekko.actor.testkit.typed.annotations;
 
 import java.lang.annotation.*;
 
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public  @interface Junit5TestKit {
-}
-
-
+public @interface Junit5TestKit {}
