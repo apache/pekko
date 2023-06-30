@@ -21,11 +21,6 @@ name: Publish nightly snapshots and documentation
 
 on:
   workflow_dispatch:
-    inputs:
-      keep:
-        description: Number of versions to keep.
-        required: false
-        default: 30
   schedule:
     - cron: "0 0 * * *"
 
