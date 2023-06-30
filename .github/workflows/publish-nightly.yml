@@ -80,7 +80,7 @@ jobs:
           upload: true
           switches: --archive --compress --update --delete --progress --relative
           local_path: target/nightly-docs/./docs/pekko/${{ github.ref_name }}-snapshot # The intermediate dot is to show `--relative` which paths to operate on
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/${{ github.ref_name }}-snapshot
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
