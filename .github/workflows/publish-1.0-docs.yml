@@ -69,7 +69,7 @@ jobs:
           upload: true
           switches: --archive --compress --update --delete --progress --relative
           local_path: target/nightly-docs/./docs/pekko/1.0.0 # The intermediate dot is to show `--relative` which paths to operate on
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/1.0.0
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
