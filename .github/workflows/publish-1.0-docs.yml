@@ -58,10 +58,10 @@ jobs:
       # Create directory structure upfront since rsync does not create intermediate directories otherwise
       - name: Create nightly directory structure
         run: |-
-          mkdir -p target/nightly-docs/docs/pekko/1.0/
-          mv docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0/docs
-          mv target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0/api
-          mv target/javaunidoc target/nightly-docs/docs/pekko/1.0/japi
+          mkdir -p target/nightly-docs/docs/pekko/1.0.0/
+          mv docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0.0/docs
+          mv target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0.0/api
+          mv target/javaunidoc target/nightly-docs/docs/pekko/1.0.0/japi
 
       - name: Upload nightly docs
         uses: ./.github/actions/sync-nightlies
