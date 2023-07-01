@@ -21,7 +21,7 @@ jobs:
       matrix:
         # The versions of scala specified here are only used as `+~...`
         # which ignores the PATCH portion of the version id. These Scala versions don't need
-        # to be fully defined here then since Akka build handles which patch version will be used.
+        # to be fully defined here then since Pekko build handles which patch version will be used.
         scalaVersion: [ "2.12", "2.13" ]
     steps:
       - name: Checkout
