@@ -26,7 +26,7 @@ permissions:
   contents: read
 
 jobs:
-  publish-nightly:
+  publish:
     name: Publish 1.0 docs
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
@@ -60,17 +60,17 @@ jobs:
         run: |-
           mkdir -p target/nightly-docs/docs/pekko/1.0.0/
           mkdir -p target/nightly-docs/docs/pekko/1.0/
-          cp docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0.0/docs
-          cp docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0/docs
+          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0.0/docs
+          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0/docs
           rm -r docs/target/paradox/site/main/
-          cp target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0.0/api
-          cp target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0/api
+          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0.0/api
+          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0/api
           rm -r target/scala-2.13/unidoc
-          cp target/javaunidoc target/nightly-docs/docs/pekko/1.0.0/japi
-          cp target/javaunidoc target/nightly-docs/docs/pekko/1.0/japi
+          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.0.0/japi
+          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.0/japi
           rm -r target/javaunidoc
 
-      - name: Upload nightly docs patch version
+      - name: Upload docs patch version
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
@@ -82,7 +82,7 @@ jobs:
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
           remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
 
-      - name: Upload nightly docs api version
+      - name: Upload docs api version
         uses: ./.github/actions/sync-nightlies
         with:
           upload: true
