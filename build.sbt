@@ -15,7 +15,8 @@ scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / apacheSonatypeProjectProfile := "pekko"
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
-sourceDistName := "incubating-pekko"
+sourceDistName := "apache-pekko"
+sourceDistIncubating := true
 
 enablePlugins(
   UnidocRoot,
