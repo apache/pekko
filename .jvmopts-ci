@@ -11,5 +11,6 @@
 -XX:+UseCompressedOops
 -XX:MetaspaceSize=512M
 -XX:-ClassUnloadingWithConcurrentMark
+-XX:+IgnoreUnrecognizedVMOptions
 -Djava.security.egd=file:/dev/./urandom
 -Dpekko.ci-server=true
