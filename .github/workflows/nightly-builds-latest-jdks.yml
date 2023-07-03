@@ -109,7 +109,7 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.12", "2.13"]
-        javaVersion: 20
+        javaVersion: [20]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
