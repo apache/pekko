@@ -20,7 +20,7 @@ import pekko.cluster.sharding.typed.javadsl.EntityRef
 import pekko.cluster.sharding.typed.javadsl.EntityTypeKey
 
 /**
- * For testing purposes this `EntityRef` can be used in place of a real [[EntityRef]].
+ * For testing purposes this `EntityRef` can be used in place of a real [[pekko.cluster.sharding.typed.javadsl.EntityRef]].
  * It forwards all messages to the `probe`.
  */
 object TestEntityRef {

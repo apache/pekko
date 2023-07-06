@@ -49,7 +49,7 @@ final case class IOResult(
   def wasSuccessful: Boolean = status.isSuccess
 
   /**
-   * Java API: If the IO operation resulted in an error, returns the corresponding [[Throwable]]
+   * Java API: If the IO operation resulted in an error, returns the corresponding [[java.lang.Throwable]]
    * or throws [[UnsupportedOperationException]] otherwise.
    */
   @deprecated("status is always set to Success(Done)", "Akka 2.6.0")

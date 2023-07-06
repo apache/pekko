@@ -514,14 +514,14 @@ abstract class AbstractPersistentFSM[S <: FSMState, D, E]
     data => action.accept(data)
 
   /**
-   * Adapter from Java [[Class]] to [[scala.reflect.ClassTag]]
+   * Adapter from Java [[java.lang.Class]] to [[scala.reflect.ClassTag]]
    * @return domain event [[scala.reflect.ClassTag]]
    */
   final override def domainEventClassTag: ClassTag[E] =
     ClassTag(domainEventClass)
 
   /**
-   * Domain event's [[Class]]
+   * Domain event's [[java.lang.Class]]
    * Used for identifying domain events during recovery
    */
   def domainEventClass: Class[E]

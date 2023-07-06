@@ -224,7 +224,7 @@ trait ActorRefFactory {
    *
    * @throws pekko.ConfigurationException if deployment, dispatcher
    *   or mailbox configuration is wrong
-   * @throws UnsupportedOperationException if invoked on an ActorSystem that
+   * @throws java.lang.UnsupportedOperationException if invoked on an ActorSystem that
    *   uses a custom user guardian
    */
   def actorOf(props: Props): ActorRef
@@ -240,7 +240,7 @@ trait ActorRefFactory {
    *   invalid or already in use
    * @throws pekko.ConfigurationException if deployment, dispatcher
    *   or mailbox configuration is wrong
-   * @throws UnsupportedOperationException if invoked on an ActorSystem that
+   * @throws java.lang.UnsupportedOperationException if invoked on an ActorSystem that
    *   uses a custom user guardian
    */
   def actorOf(props: Props, name: String): ActorRef

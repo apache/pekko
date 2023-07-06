@@ -44,7 +44,7 @@ trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
    * This will return changes that occurred up to when the `Source` returned by this call is materialized. Changes to
    * objects made since materialization are not guaranteed to be included in the results.
    *
-   * The [[DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
+   * The [[pekko.persistence.query.DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
    * [[pekko.persistence.query.DeletedDurableState]].
    */
   def currentChangesBySlices(
@@ -66,7 +66,7 @@ trait DurableStateStoreBySliceQuery[A] extends DurableStateStore[A] {
    * change for each object since the offset will be emitted. In particular, multiple updates to a given object in quick
    * succession are likely to be skipped, with only the last update resulting in a change from this source.
    *
-   * The [[DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
+   * The [[pekko.persistence.query.DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
    * [[pekko.persistence.query.DeletedDurableState]].
    */
   def changesBySlices(

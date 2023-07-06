@@ -74,7 +74,7 @@ object StreamConverters {
     Source.fromGraph(new OutputStreamSourceStage(writeTimeout))
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]]s to an [[OutputStream]] created by the given function.
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]]s to an [[OutputStream]] created by the given function.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.

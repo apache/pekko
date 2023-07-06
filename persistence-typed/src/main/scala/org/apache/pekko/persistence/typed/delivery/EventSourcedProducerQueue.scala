@@ -35,7 +35,7 @@ import pekko.persistence.typed.scaladsl.RetentionCriteria
 import pekko.util.JavaDurationConverters._
 
 /**
- * [[DurableProducerQueue]] that can be used with [[pekko.actor.typed.delivery.ProducerController]]
+ * [[pekko.actor.typed.delivery.DurableProducerQueue]] that can be used with [[pekko.actor.typed.delivery.ProducerController]]
  * for reliable delivery of messages. It is implemented with Event Sourcing and stores one
  * event before sending the message to the destination and one event for the confirmation
  * that the message has been delivered and processed.

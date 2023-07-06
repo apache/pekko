@@ -266,7 +266,7 @@ class SnapshotTestKit(scalaTestkit: ScalaTestKit) {
   }
 
   /**
-   * Returns default policy if it was changed by [[SnapshotTestKit.withPolicy()]].
+   * Returns default policy if it was changed by [[withPolicy]].
    */
   def resetPolicy(): Unit = scalaTestkit.resetPolicy()
 

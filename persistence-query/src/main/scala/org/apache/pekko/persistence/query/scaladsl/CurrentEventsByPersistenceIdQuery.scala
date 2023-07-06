@@ -24,7 +24,7 @@ import pekko.stream.scaladsl.Source
 trait CurrentEventsByPersistenceIdQuery extends ReadJournal {
 
   /**
-   * Same type of query as [[EventsByPersistenceIdQuery#eventsByPersistenceId]]
+   * Same type of query as [[pekko.persistence.query.scaladsl.EventsByPersistenceIdQuery#eventsByPersistenceId]]
    * but the event stream is completed immediately when it reaches the end of
    * the "result set". Events that are stored after the query is completed are
    * not included in the event stream.

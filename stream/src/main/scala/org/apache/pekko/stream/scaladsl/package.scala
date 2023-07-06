@@ -53,7 +53,7 @@ import scala.concurrent.Future
  * elements a given transformation step might buffer before handing elements
  * downstream, which means that transformation functions may be invoked more
  * often than for corresponding transformations on strict collections like
- * [[List]]. *An important consequence* is that elements that were produced
+ * [[scala.collection.immutable.List]]. *An important consequence* is that elements that were produced
  * into a stream may be discarded by later processors, e.g. when using the
  * [[#take]] operator.
  *

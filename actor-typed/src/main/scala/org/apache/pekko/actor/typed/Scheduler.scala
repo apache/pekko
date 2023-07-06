@@ -34,7 +34,7 @@ trait Scheduler {
    * Scala API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` or `ActorContext.scheduleOnce` should be preferred.
@@ -45,7 +45,7 @@ trait Scheduler {
    * Java API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` or `ActorContext.scheduleOnce` should be preferred.
@@ -67,7 +67,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` should be preferred.
@@ -91,7 +91,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling in actors `Behaviors.withTimers` should be preferred.
@@ -128,7 +128,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `Behaviors.withTimers` should be preferred.
@@ -162,7 +162,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling in actors `Behaviors.withTimers` should be preferred.

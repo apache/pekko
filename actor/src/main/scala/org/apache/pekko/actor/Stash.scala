@@ -176,8 +176,8 @@ private[pekko] trait StashSupport {
    *  Adds the current message (the message that the actor received last) to the
    *  actor's stash.
    *
-   *  @throws StashOverflowException in case of a stash capacity violation
-   *  @throws IllegalStateException  if the same message is stashed more than once
+   *  @throws pekko.actor.StashOverflowException in case of a stash capacity violation
+   *  @throws java.lang.IllegalStateException  if the same message is stashed more than once
    */
   def stash(): Unit = {
     val currMsg = actorCell.currentMessage

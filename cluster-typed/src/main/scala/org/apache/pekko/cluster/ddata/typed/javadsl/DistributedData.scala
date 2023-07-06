@@ -114,7 +114,7 @@ object DistributedDataSetup {
 }
 
 /**
- * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[ActorSystem]]
+ * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[pekko.actor.typed.ActorSystem]]
  * to replace the default implementation of the [[DistributedData]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */

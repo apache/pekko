@@ -36,7 +36,7 @@ import pekko.stream.scaladsl.SourceToCompletionStage
 object StreamConverters {
 
   /**
-   * Sink which writes incoming [[ByteString]]s to an [[OutputStream]] created by the given function.
+   * Sink which writes incoming [[pekko.util.ByteString]]s to an [[OutputStream]] created by the given function.
    *
    * Materializes a [[CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
@@ -55,7 +55,7 @@ object StreamConverters {
     fromOutputStream(f, autoFlush = false)
 
   /**
-   * Sink which writes incoming [[ByteString]]s to an [[OutputStream]] created by the given function.
+   * Sink which writes incoming [[pekko.util.ByteString]]s to an [[OutputStream]] created by the given function.
    *
    * Materializes a [[CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.

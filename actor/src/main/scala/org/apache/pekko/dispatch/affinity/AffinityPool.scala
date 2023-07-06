@@ -384,7 +384,7 @@ trait QueueSelector {
   /**
    * Must be deterministic—return the same value for the same input.
    * @return given a `Runnable` a number between 0 .. `queues` (exclusive)
-   * @throws NullPointerException when `command` is `null`
+   * @throws java.lang.NullPointerException when `command` is `null`
    */
   def getQueue(command: Runnable, queues: Int): Int
 }

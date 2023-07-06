@@ -23,7 +23,7 @@ object Compression {
   /**
    * Creates a Flow that decompresses gzip-compressed stream of data.
    *
-   * @param maxBytesPerChunk Maximum length of the output [[ByteString]] chunk.
+   * @param maxBytesPerChunk Maximum length of the output [[pekko.util.ByteString]] chunk.
    */
   def gunzip(maxBytesPerChunk: Int): Flow[ByteString, ByteString, NotUsed] =
     scaladsl.Compression.gunzip(maxBytesPerChunk).asJava
@@ -31,7 +31,7 @@ object Compression {
   /**
    * Creates a Flow that decompresses deflate-compressed stream of data.
    *
-   * @param maxBytesPerChunk Maximum length of the output [[ByteString]] chunk.
+   * @param maxBytesPerChunk Maximum length of the output [[pekko.util.ByteString]] chunk.
    */
   def inflate(maxBytesPerChunk: Int): Flow[ByteString, ByteString, NotUsed] =
     inflate(maxBytesPerChunk, false)
@@ -39,7 +39,7 @@ object Compression {
   /**
    * Same as [[inflate]] with configurable maximum output length and nowrap
    *
-   * @param maxBytesPerChunk Maximum length of the output [[ByteString]] chunk.
+   * @param maxBytesPerChunk Maximum length of the output [[pekko.util.ByteString]] chunk.
    * @param nowrap if true then use GZIP compatible decompression
    */
   def inflate(maxBytesPerChunk: Int, nowrap: Boolean): Flow[ByteString, ByteString, NotUsed] =
@@ -47,7 +47,7 @@ object Compression {
 
   /**
    * Creates a flow that gzip-compresses a stream of ByteStrings. Note that the compressor
-   * will SYNC_FLUSH after every [[ByteString]] so that it is guaranteed that every [[ByteString]]
+   * will SYNC_FLUSH after every [[pekko.util.ByteString]] so that it is guaranteed that every [[pekko.util.ByteString]]
    * coming out of the flow can be fully decompressed without waiting for additional data. This may
    * come at a compression performance cost for very small chunks.
    */
@@ -64,7 +64,7 @@ object Compression {
 
   /**
    * Creates a flow that deflate-compresses a stream of ByteString. Note that the compressor
-   * will SYNC_FLUSH after every [[ByteString]] so that it is guaranteed that every [[ByteString]]
+   * will SYNC_FLUSH after every [[pekko.util.ByteString]] so that it is guaranteed that every [[pekko.util.ByteString]]
    * coming out of the flow can be fully decompressed without waiting for additional data. This may
    * come at a compression performance cost for very small chunks.
    */

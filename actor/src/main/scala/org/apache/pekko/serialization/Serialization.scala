@@ -128,7 +128,7 @@ object Serialization {
    * local actor refs, or if serializer library e.g. custom serializer/deserializer
    * in Jackson need access to the current `ActorSystem`.
    *
-   * @throws IllegalStateException if the information was not set
+   * @throws java.lang.IllegalStateException if the information was not set
    */
   def getCurrentTransportInformation(): Information = {
     Serialization.currentTransportInformation.value match {
@@ -541,7 +541,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * @throws `NoSuchElementException` if no serializer with given `id`
+   * @throws java.util.NoSuchElementException if no serializer with given `id`
    */
   private def getSerializerById(id: Int): Serializer = {
     if (0 <= id && id < quickSerializerByIdentity.length) {

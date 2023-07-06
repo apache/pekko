@@ -432,7 +432,7 @@ object Source {
    * completion.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *
@@ -528,7 +528,7 @@ object Source {
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *
@@ -562,7 +562,7 @@ object Source {
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *

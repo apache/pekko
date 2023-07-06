@@ -31,7 +31,7 @@ import pekko.cluster.sharding.external.ShardLocations
 trait ExternalShardAllocationClient {
 
   /**
-   * Update the given shard's location. The [[Address]] should
+   * Update the given shard's location. The [[pekko.actor.Address]] should
    * match one of the nodes in the cluster. If the node has not joined
    * the cluster yet it will be moved to that node after the first cluster
    * sharding rebalance it does.
@@ -44,7 +44,7 @@ trait ExternalShardAllocationClient {
 
   /**
    * Update all of the provided ShardLocations.
-   * The [[Address]] should match one of the nodes in the cluster. If the node has not joined
+   * The [[pekko.actor.Address]] should match one of the nodes in the cluster. If the node has not joined
    * the cluster yet it will be moved to that node after the first cluster
    * sharding rebalance it does.
    *

@@ -87,7 +87,7 @@ object FileIO {
     Source.fromGraph(new FileSource(f, chunkSize, startPosition)).withAttributes(DefaultAttributes.fileSource)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
@@ -106,7 +106,7 @@ object FileIO {
     toPath(f.toPath, options)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file path. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
@@ -130,7 +130,7 @@ object FileIO {
     toPath(f, options, startPosition = 0)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file path. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
