@@ -49,8 +49,8 @@ trait ActorRef[-T] extends RecipientRef[T] with java.lang.Comparable[ActorRef[_]
   /**
    * Unsafe utility method for widening the type accepted by this ActorRef;
    * provided to avoid having to use `asInstanceOf` on the full reference type,
-   * which would unfortunately also work on non-ActorRefs. Use it with caution,it may cause a [[ClassCastException]] when you send a message
-   * to the widened [[ActorRef[U]]].
+   * which would unfortunately also work on non-ActorRefs. Use it with caution,it may cause a [[java.lang.ClassCastException]] when you send a message
+   * to the widened [[ActorRef ActorRef[U]]].
    */
   def unsafeUpcast[U >: T @uncheckedVariance]: ActorRef[U]
 

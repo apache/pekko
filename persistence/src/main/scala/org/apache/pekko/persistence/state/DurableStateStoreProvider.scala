@@ -25,13 +25,13 @@ trait DurableStateStoreProvider {
 
   /**
    * The `ReadJournal` implementation for the Scala API.
-   * This corresponds to the instance that is returned by [[DurableStateStoreRegistry#durableStateStoreFor]].
+   * This corresponds to the instance that is returned by [[org.apache.pekko.persistence.state.DurableStateStoreRegistry.durableStateStoreFor DurableStateStoreRegistry#durableStateStoreFor]].
    */
   def scaladslDurableStateStore(): scaladsl.DurableStateStore[Any]
 
   /**
    * The `DurableStateStore` implementation for the Java API.
-   * This corresponds to the instance that is returned by [[DurableStateStoreRegistry#getDurableStateStoreFor]].
+   * This corresponds to the instance that is returned by [[org.apache.pekko.persistence.state.DurableStateStoreRegistry.getDurableStateStoreFor DurableStateStoreRegistry#getDurableStateStoreFor]].
    */
   def javadslDurableStateStore(): javadsl.DurableStateStore[AnyRef]
 }

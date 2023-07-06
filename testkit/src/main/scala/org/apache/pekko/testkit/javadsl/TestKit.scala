@@ -149,7 +149,7 @@ class TestKit(system: ActorSystem) {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[AssertionError]] if no `within` block surrounds this
+   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   @deprecated("Use getRemaining which returns java.time.Duration instead.", since = "Akka 2.5.12")
@@ -157,7 +157,7 @@ class TestKit(system: ActorSystem) {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[AssertionError]] if no `within` block surrounds this
+   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def getRemaining: java.time.Duration = tp.remaining.asJava

@@ -203,7 +203,7 @@ object GraphStageLogic {
   /**
    * Minimal actor to work with other actors and watch them in a synchronous ways
    *
-   * Not for user instantiation, use [[#getStageActor]].
+   * Not for user instantiation, use [[GraphStageLogic.getStageActor]].
    */
   final class StageActor @InternalApi() private[pekko] (
       materializer: Materializer,
@@ -1158,9 +1158,9 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Obtain a callback object that can be used asynchronously to re-enter the
-   * current [[GraphStage]] with an asynchronous notification. The [[invoke]] method of the returned
+   * current [[GraphStage]] with an asynchronous notification. The [[AsyncCallback.invoke]] method of the returned
    * [[AsyncCallback]] is safe to be called from other threads. It will in the background thread-safely
-   * delegate to the passed callback function. I.e. [[invoke]] will be called by other thread and
+   * delegate to the passed callback function. I.e. [[AsyncCallback.invoke]] will be called by other thread and
    * the passed handler will be invoked eventually in a thread-safe way by the execution environment.
    *
    * In case stream is not yet materialized [[AsyncCallback]] will buffer events until stream is available.
@@ -1268,9 +1268,9 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Java API: Obtain a callback object that can be used asynchronously to re-enter the
-   * current [[GraphStage]] with an asynchronous notification. The [[invoke]] method of the returned
+   * current [[GraphStage]] with an asynchronous notification. The [[AsyncCallback.invoke]] method of the returned
    * [[AsyncCallback]] is safe to be called from other threads. It will in the background thread-safely
-   * delegate to the passed callback function. I.e. [[invoke]] will be called by other thread and
+   * delegate to the passed callback function. I.e. [[AsyncCallback.invoke]] will be called by other thread and
    * the passed handler will be invoked eventually in a thread-safe way by the execution environment.
    *
    * [[AsyncCallback.invokeWithFeedback]] has an internal promise that will be failed if event cannot be processed due to stream completion.
@@ -1310,18 +1310,18 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     _subInletsAndOutlets -= outlet
 
   /**
-   * Initialize a [[StageActorRef]] which can be used to interact with from the outside world "as-if" an [[Actor]].
+   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" an [[pekko.actor.Actor]].
    * The messages are looped through the [[getAsyncCallback]] mechanism of [[GraphStage]] so they are safe to modify
    * internal state of this operator.
    *
    * This method must (the earliest) be called after the [[GraphStageLogic]] constructor has finished running,
    * for example from the [[preStart]] callback the graph operator logic provides.
    *
-   * Created [[StageActorRef]] to get messages and watch other actors in synchronous way.
+   * Created [[GraphStageLogic.StageActorRef]] to get messages and watch other actors in synchronous way.
    *
-   * The [[StageActorRef]]'s lifecycle is bound to the operator, in other words when the operator is finished,
-   * the Actor will be terminated as well. The entity backing the [[StageActorRef]] is not a real Actor,
-   * but the [[GraphStageLogic]] itself, therefore it does not react to [[PoisonPill]].
+   * The [[GraphStageLogic.StageActorRef]]'s lifecycle is bound to the operator, in other words when the operator is finished,
+   * the Actor will be terminated as well. The entity backing the [[GraphStageLogic.StageActorRef]] is not a real Actor,
+   * but the [[GraphStageLogic]] itself, therefore it does not react to [[pekko.actor.PoisonPill]].
    *
    * To be thread safe this method must only be called from either the constructor of the graph operator during
    * materialization or one of the methods invoked by the graph operator machinery, such as `onPush` and `onPull`.

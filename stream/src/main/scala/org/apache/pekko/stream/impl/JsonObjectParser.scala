@@ -50,7 +50,7 @@ import pekko.util.ByteString
 /**
  * INTERNAL API: Use [[pekko.stream.scaladsl.JsonFraming]] instead.
  *
- * **Mutable** framing implementation that given any number of [[ByteString]] chunks, can emit JSON objects contained within them.
+ * **Mutable** framing implementation that given any number of [[pekko.util.ByteString]] chunks, can emit JSON objects contained within them.
  * Typically JSON objects are separated by new-lines or commas, however a top-level JSON Array can also be understood and chunked up
  * into valid JSON objects by this framing implementation.
  *

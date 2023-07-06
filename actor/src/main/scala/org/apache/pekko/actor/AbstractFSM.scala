@@ -127,8 +127,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
   }
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the [[initialize]] method.
+   * If different state is needed after a restart this method, followed by [[initialize]], can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -138,8 +138,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     startWith(stateName, stateData, null: FiniteDuration)
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the [[initialize]] method.
+   * If different state is needed after a restart this method, followed by [[initialize]], can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -150,8 +150,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     super.startWith(stateName, stateData, Option(timeout))
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the [[initialize]] method.
+   * If different state is needed after a restart this method, followed by [[initialize]], can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator

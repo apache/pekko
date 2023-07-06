@@ -41,7 +41,7 @@ object PersistenceId {
    * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
    * you should use `""` as the separator.
    *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
    */
   def apply(entityTypeHint: String, entityId: String): PersistenceId =
     apply(entityTypeHint, entityId, DefaultSeparator)
@@ -65,7 +65,7 @@ object PersistenceId {
    * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
    * you should use `""` as the separator.
    *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
    */
   def apply(entityTypeHint: String, entityId: String, separator: String): PersistenceId = {
     if (separator.nonEmpty) {
@@ -99,7 +99,7 @@ object PersistenceId {
    * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
    * you should use `""` as the separator.
    *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
    */
   def of(entityTypeHint: String, entityId: String): PersistenceId =
     apply(entityTypeHint, entityId)
@@ -123,7 +123,7 @@ object PersistenceId {
    * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
    * you should use `""` as the separator.
    *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
    */
   def of(entityTypeHint: String, entityId: String, separator: String): PersistenceId =
     apply(entityTypeHint, entityId, separator)

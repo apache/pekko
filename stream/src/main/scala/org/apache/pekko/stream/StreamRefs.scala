@@ -32,12 +32,12 @@ import pekko.stream.scaladsl.{ Sink, Source }
  */
 object SinkRef {
 
-  /** Implicitly converts a [[SinkRef]] to a [[Sink]]. The same can be achieved by calling `.sink` on the reference. */
+  /** Implicitly converts a [[SinkRef]] to a [[scaladsl.Sink]]. The same can be achieved by calling `.sink` on the reference. */
   implicit def convertRefToSink[T](sinkRef: SinkRef[T]): Sink[T, NotUsed] = sinkRef.sink()
 }
 
 /**
- * A [[SinkRef]] allows sharing a "reference" to a [[Sink]] with others, with the main purpose of crossing a network boundary.
+ * A [[SinkRef]] allows sharing a "reference" to a [[scaladsl.Sink]] with others, with the main purpose of crossing a network boundary.
  * Usually obtaining a SinkRef would be done via Actor messaging, in which one system asks a remote one,
  * to accept some data from it, and the remote one decides to accept the request to send data in a back-pressured
  * streaming fashion -- using a sink ref.
@@ -54,7 +54,7 @@ object SinkRef {
 @DoNotInherit
 trait SinkRef[In] {
 
-  /** Scala API: Get [[Sink]] underlying to this source ref. */
+  /** Scala API: Get [[scaladsl.Sink]] underlying to this source ref. */
   def sink(): Sink[In, NotUsed]
 
   /** Java API: Get [[javadsl.Sink]] underlying to this source ref. */

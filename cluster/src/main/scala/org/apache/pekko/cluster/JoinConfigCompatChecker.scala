@@ -102,7 +102,7 @@ object JoinConfigCompatChecker {
    * INTERNAL API
    * Builds a new Config object containing only the required entries defined by `requiredKeys`
    *
-   * This method is used from the joining side to prepare the [[Config]] instance that will be sent over the wire.
+   * This method is used from the joining side to prepare the [[com.typesafe.config.Config]] instance that will be sent over the wire.
    * We don't send the full config to avoid unnecessary data transfer, but also to avoid leaking any sensitive
    * information that users may have added to their configuration.
    */

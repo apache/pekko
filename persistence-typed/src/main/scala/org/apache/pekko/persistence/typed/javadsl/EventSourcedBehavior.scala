@@ -287,7 +287,7 @@ abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State](
    * Use [[EventSourcedBehaviorWithEnforcedReplies#newCommandHandlerWithReplyBuilder]] instead, or
    * extend [[EventSourcedBehavior]] instead of [[EventSourcedBehaviorWithEnforcedReplies]].
    *
-   * @throws UnsupportedOperationException use newCommandHandlerWithReplyBuilder instead
+   * @throws java.lang.UnsupportedOperationException use newCommandHandlerWithReplyBuilder instead
    */
   override protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, Event, State] =
     throw new UnsupportedOperationException("Use newCommandHandlerWithReplyBuilder instead")

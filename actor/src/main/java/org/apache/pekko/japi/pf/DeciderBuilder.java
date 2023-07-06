@@ -16,7 +16,7 @@ package org.apache.pekko.japi.pf;
 import static org.apache.pekko.actor.SupervisorStrategy.Directive;
 
 /**
- * Used for building a partial function for {@link org.apache.pekko.actor.Actor#supervisorStrategy()
+ * Used for building a partial function for {@link org.apache.pekko.actor.Actor#supervisorStrategy
  * Actor.supervisorStrategy()}. * Inside an actor you can use it like this with Java 8 to define
  * your supervisorStrategy.
  *

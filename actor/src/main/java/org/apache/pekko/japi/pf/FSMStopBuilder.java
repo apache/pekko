@@ -28,7 +28,7 @@ public class FSMStopBuilder<S, D> {
   private UnitPFBuilder<FSM.StopEvent<S, D>> builder = new UnitPFBuilder<FSM.StopEvent<S, D>>();
 
   /**
-   * Add a case statement that matches on an {@link FSM.Reason}.
+   * Add a case statement that matches on an {@link org.apache.pekko.actor.FSM.Reason}.
    *
    * @param reason the reason for the termination
    * @param apply an action to apply to the event and state data if there is a match

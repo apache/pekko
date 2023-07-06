@@ -36,7 +36,7 @@ trait DurableStateStoreQuery[A] extends DurableStateStore[A] {
    * This will return changes that occurred up to when the `Source` returned by this call is materialized. Changes to
    * objects made since materialization are not guaranteed to be included in the results.
    *
-   * The [[DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
+   * The [[pekko.persistence.query.DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
    * [[pekko.persistence.query.DeletedDurableState]].
    *
    * @param tag The tag to get changes for.
@@ -58,7 +58,7 @@ trait DurableStateStoreQuery[A] extends DurableStateStore[A] {
    * in quick succession are likely to be skipped, with only the last update resulting in a change from this
    * source.
    *
-   * The [[DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
+   * The [[pekko.persistence.query.DurableStateChange]] elements can be [[pekko.persistence.query.UpdatedDurableState]] or
    * [[pekko.persistence.query.DeletedDurableState]].
    *
    * @param tag The tag to get changes for.

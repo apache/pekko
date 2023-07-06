@@ -103,7 +103,7 @@ object Replicator {
       extends Command
 
   /**
-   * Reply from `Get`. The data value is retrieved with [[dd.Replicator.GetSuccess.get]] using the typed key.
+   * Reply from `Get`. The data value is retrieved with [[pekko.cluster.ddata.Replicator.GetSuccess.get]] using the typed key.
    */
   type GetResponse[A <: ReplicatedData] = dd.Replicator.GetResponse[A]
   object GetSuccess {
@@ -117,7 +117,7 @@ object Replicator {
 
   /**
    * The [[Get]] request could not be fulfill according to the given
-   * [[ReadConsistency consistency level]] and [[ReadConsistency#timeout timeout]].
+   * [[ReadConsistency consistency level]] and [[pekko.cluster.ddata.Replicator.ReadConsistency#timeout timeout]].
    */
   type GetFailure[A <: ReplicatedData] = dd.Replicator.GetFailure[A]
   object GetFailure {
@@ -199,7 +199,7 @@ object Replicator {
   /**
    * The direct replication of the [[Update]] could not be fulfill according to
    * the given [[WriteConsistency consistency level]] and
-   * [[WriteConsistency#timeout timeout]].
+   * [[pekko.cluster.ddata.Replicator.WriteConsistency#timeout timeout]].
    *
    * The `Update` was still performed locally and possibly replicated to some nodes.
    * It will eventually be disseminated to other replicas, unless the local replica
@@ -277,7 +277,7 @@ object Replicator {
   type SubscribeResponse[A <: ReplicatedData] = dd.Replicator.SubscribeResponse[A]
 
   /**
-   * The data value is retrieved with [[dd.Replicator.Changed.get]] using the typed key.
+   * The data value is retrieved with [[pekko.cluster.ddata.Replicator.Changed.get]] using the typed key.
    *
    * @see [[Subscribe]]
    */
@@ -286,7 +286,7 @@ object Replicator {
   }
 
   /**
-   * The data value is retrieved with [[dd.Replicator.Changed.get]] using the typed key.
+   * The data value is retrieved with [[pekko.cluster.ddata.Replicator.Changed.get]] using the typed key.
    *
    * @see [[Subscribe]]
    */

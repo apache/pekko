@@ -47,7 +47,7 @@ import pekko.util.Timeout
  * than the ordinary actor message processing thread, such as [[java.util.concurrent.CompletionStage]]
  * callbacks. It must not be shared between several actor instances.
  *
- * @param context              The [[ActorContext]] of the requesting actor.  The `ReplicatorMessageAdapter` can
+ * @param context              The [[pekko.actor.typed.javadsl.ActorContext]] of the requesting actor.  The `ReplicatorMessageAdapter` can
  *                             only be used in this actor.
  * @param replicator           The replicator to interact with, typically `DistributedData.get(system).replicator`.
  * @param unexpectedAskTimeout The timeout to use for `ask` operations. This should be longer than

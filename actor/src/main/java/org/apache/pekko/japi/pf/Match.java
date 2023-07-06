@@ -126,7 +126,7 @@ public class Match<I, R> extends AbstractMatch<I, R> {
    *
    * @param i the argument to apply the match to
    * @return the result of the application
-   * @throws MatchError if there is no match
+   * @throws scala.MatchError if there is no match
    */
   public R match(I i) throws MatchError {
     return statements.apply(i);

@@ -64,7 +64,7 @@ abstract class Behavior[T](private[pekko] val _tag: Int) { behavior =>
    * provided as an alternative to the universally available `asInstanceOf`, which
    * casts the entire type rather than just the type parameter.
    * Typically used to upcast a type, for instance from `Nothing` to some type `U`.
-   * Use it with caution, it may lead to a [[ClassCastException]] when you send a message
+   * Use it with caution, it may lead to a [[java.lang.ClassCastException]] when you send a message
    * to the resulting [[Behavior[U]]].
    */
   @InternalApi private[pekko] final def unsafeCast[U]: Behavior[U] = this.asInstanceOf[Behavior[U]]

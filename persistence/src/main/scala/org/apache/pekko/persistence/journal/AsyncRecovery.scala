@@ -52,7 +52,7 @@ trait AsyncRecovery {
    * @param recoveryCallback called to replay a single message. Can be called from any
    *                       thread.
    *
-   * @see [[AsyncWriteJournal]]
+   * @see [[pekko.persistence.journal.AsyncWriteJournal]]
    */
   def asyncReplayMessages(persistenceId: String, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
       recoveryCallback: PersistentRepr => Unit): Future[Unit]
