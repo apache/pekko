@@ -28,6 +28,7 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 - `sbt compile` compiles the main source for project default version of Scala (2.13)
     - `sbt +compile` will compile for all supported versions of Scala
 - `sbt test` will compile the code and run the unit tests
+- `sbt testQuick` similar to test but when repeated in shell mode will only run failing tests
 - `sbt package` will build the jars
     - the jars will built into target dirs of the various modules
     - for the the 'actor' module, the jar will be built to `actor/target/scala-2.13/`
