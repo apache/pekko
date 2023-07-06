@@ -41,6 +41,7 @@ object ActorsLeakSpec {
        pekko.remote.classic.quarantine-after-silence = 3 s
        pekko.remote.use-unsafe-remote-features-outside-cluster = on
        pekko.test.filter-leeway = 12 s
+       pekko.test.timefactor = 2
        # test is using Java serialization and not priority to rewrite
        pekko.actor.allow-java-serialization = on
        pekko.actor.warn-about-java-serializer-usage = off
