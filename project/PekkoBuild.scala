@@ -286,8 +286,12 @@ object PekkoBuild {
       logoColor := scala.Console.BLUE,
       usefulTasks := Seq(
         UsefulTask("", "compile", "Compile the current project"),
-        UsefulTask("", "test", "Run all the tests "),
+        UsefulTask("", "test", "Run all the tests"),
+        UsefulTask("", "testQuick",
+          "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("", "testQuick *.AnySpec",
+          "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("", "publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
         UsefulTask("", "verifyCodeStyle", "Verify code style"),
         UsefulTask("", "applyCodeStyle", "Apply code style"),
