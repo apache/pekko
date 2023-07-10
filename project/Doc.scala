@@ -156,7 +156,25 @@ object UnidocRoot extends AutoPlugin {
       Seq(
         ScalaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
         JavaUnidoc / unidocProjectFilter := unidocRootProjectFilter(unidocRootIgnoreProjects.value),
-        ScalaUnidoc / apiMappings := (Compile / doc / apiMappings).value) ++
+        ScalaUnidoc / apiMappings := (Compile / doc / apiMappings).value,
+        ScalaUnidoc / apiMappings ++= {
+          val entries: Seq[Attributed[File]] = (LocalProject("slf4j") / Compile / fullClasspath).value
+
+          def mappingsFor(organization: String, names: List[String], location: String,
+              revision: String => String = identity): Seq[(File, URL)] = {
+            for {
+              entry: Attributed[File] <- entries
+              module: ModuleID <- entry.get(moduleID.key)
+              if module.organization == organization
+              if names.exists(module.name.startsWith)
+            } yield entry.data -> url(location.format(module.revision))
+          }
+
+          val mappings: Seq[(File, URL)] =
+            mappingsFor("org.slf4j", List("slf4j-api"), "https://www.javadoc.io/doc/org.slf4j/slf4j-api/%s/")
+
+          mappings.toMap
+        }) ++
       UnidocRoot.CliOptions.genjavadocEnabled
         .ifTrue(Seq(JavaUnidoc / unidocAllSources ~= { v =>
           v.map(
