@@ -1,0 +1,38 @@
+# Release Notes
+
+## 1.0.0
+Apache Pekko 1.0.0 is based on Akka 2.6.20. Pekko came about as a result of Lightbend's decision to make future
+Akka releases under a [Business Software License](https://www.lightbend.com/blog/why-we-are-changing-the-license-for-akka),
+a license that is not compatible with Open Source usage.
+
+Apache Pekko has changed the package names, among other changes. Config names have changed to use `pekko` instead
+of `akka` in their names. The default ports for pekko-remote have changed to avoid clashing with the akka-remote
+defaults. Users switching from Akka to Pekko should read our @ref:[Migration Guide](../project/migration-guides.md).
+
+Generally, we have tried to make it as easy as possible to switch existing Akka 2.6 based projects over to using
+Pekko 1.0.
+
+We have gone through the code base and have tried to properly acknowledge all third party source code in the
+Apache Pekko code base. If anyone believes that there are any instances of third party source code that is not
+properly acknowledged, please get in touch.
+
+### Bug Fixes
+We haven't had to fix many bugs that were in Akka 2.6.20.
+
+* Optimized JsonFraming breaks existing functionality in v2.6.20 ([PR44](https://github.com/apache/incubator-pekko/pull/44))
+* Use random IDs in Async DNS Resolver. This change was made due to [CVE-2023-31442](https://akka.io/security/akka-async-dns-2023-31442.html) in Akka. ([#384](https://github.com/apache/incubator-pekko/issues/384))
+* Include critical TLS fix from Akka 2.6.21 ([#442](https://github.com/apache/incubator-pekko/issues/442))
+
+### Dependency Upgrades
+We have tried to limit the changes to third party dependencies that are used in Pekko 1.0.0. These are some exceptions:
+
+* Scala 3.3.0 is the minimum Scala 3 version supported. Scala 2.12 and 2.13 are still supported.
+* Jackson 2.14.3 ([#7](https://github.com/apache/incubator-pekko/issues/7))
+* protobuf-java 3.16.3 ([PR390](https://github.com/apache/incubator-pekko/pull/390))
+* reactive-streams 1.0.4
+* scala-java8-compat 1.0.2 - it is now only a dependency if you are using Scala 2.12. It is no longer used by Pekko when Scala 2.13 or 3 are used.
+* ssl-config 0.6.1 ([PR394](https://github.com/apache/incubator-pekko/pull/394))
+* scalatest 3.2.14. Pekko users who have existing tests based on Akka Testkit may need to migrate their tests due to the scalatest upgrade. The [scalatest 3.2 release notes](https://www.scalatest.org/release_notes/3.2.0) have a detailed description of the changes needed.
+
+### Known Issues
+* The Pekko tests run well in our GitHub Actions continuous integration setup but can be hard to get running locally. We are adding improvements and they can be tracked among our GitHub issues using the [make-tests-easier-to-run](https://github.com/apache/incubator-pekko/issues?q=label%3Amake-tests-easier-to-run+) label).
