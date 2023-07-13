@@ -51,10 +51,9 @@ jobs:
         run: |-
           sudo apt-get install graphviz
 
-#      disable mima check until first pekko release is done
-#      - name: Report MIMA incompatibility issues
-#        run: |-
-#          sbt +mimaReportBinaryIssues
+      - name: Report MIMA incompatibility issues
+        run: |-
+          sbt +mimaReportBinaryIssues
 
       - name: Publish to Apache Maven repo
         env:

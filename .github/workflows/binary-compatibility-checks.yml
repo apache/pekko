@@ -42,29 +42,13 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      # compile code instead of doing mima check (until we re-enable mima check)
       - name: Compile code
         run: sbt "+~ ${{ matrix.scalaVersion }} Test/compile"
 
-      # disable mima check until first pekko release is done
-      #- name: Report MiMa Binary Issues
-      #  run: sbt "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+      - name: Report MiMa Binary Issues
+        run: |-
+          sbt "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
 
-      #- name: Check correct MiMa filter directories
-      #  run: sbt checkMimaFilterDirectories
-
-      # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
-      #- name: Email on failure
-      #  if: ${{ failure() }}
-      #  uses: dawidd6/action-send-mail@v3
-      #  with:
-      #    server_address: smtp.gmail.com
-      #    server_port: 465
-      #    username: ${{secrets.MAIL_USERNAME}}
-      #    password: ${{secrets.MAIL_PASSWORD}}
-      #    subject: "Failed: ${{ github.workflow }} / ${{ github.job }}"
-      #    to: akka.official@gmail.com
-      #    from: Akka CI (GHActions)
-      #    body: |
-      #      Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
-      #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      - name: Check correct MiMa filter directories
+        run: |
+          sbt checkMimaFilterDirectories
