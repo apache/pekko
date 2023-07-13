@@ -52,7 +52,7 @@ trait CopyrightHeader extends AutoPlugin {
         (Test / compile).value
       })
 
-  def apacheFromAkkaSourceHeader: String =
+  val apacheFromAkkaSourceHeader: String =
     """Licensed to the Apache Software Foundation (ASF) under one or more
       |license agreements; and to You under the Apache License, version 2.0:
       |
@@ -61,7 +61,7 @@ trait CopyrightHeader extends AutoPlugin {
       |This file is part of the Apache Pekko project, which was derived from Akka.
       |""".stripMargin
 
-  def apacheHeader: String =
+  val apacheHeader: String =
     """Licensed to the Apache Software Foundation (ASF) under one or more
       |contributor license agreements. See the NOTICE file distributed with
       |this work for additional information regarding copyright ownership.
