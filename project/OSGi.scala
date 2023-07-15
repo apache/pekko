@@ -70,8 +70,6 @@ object OSGi {
 
   val osgi = exports(Seq("org.apache.pekko.osgi.*"))
 
-  val protobuf = exports(Seq("org.apache.pekko.protobuf.*"))
-
   val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(
       "!sun.misc",
