@@ -15,14 +15,15 @@ import scala.sys.process.Process
 import sjsonnew.BasicJsonProtocol._
 import sbt._
 import Keys._
+
 import java.io.File
 import java.lang.Boolean.getBoolean
-
-import scala.Console.{ GREEN, RESET }
-
 import sbtassembly.AssemblyPlugin.assemblySettings
 import sbtassembly.{ AssemblyKeys, MergeStrategy }
 import AssemblyKeys._
+
+import java.net.{ InetSocketAddress, Socket }
+import java.util.concurrent.TimeUnit
 
 object MultiJvmPlugin extends AutoPlugin {
 
@@ -373,9 +374,39 @@ object MultiJvmPlugin extends AutoPlugin {
         val connectInput = input && index == 0
         log.debug("Starting %s for %s".format(jvmName, testClass))
         log.debug("  with JVM options: %s".format(allJvmOptions.mkString(" ")))
-        (testClass, Jvm.startJvm(javaBin, allJvmOptions, runOptions, jvmLogger, connectInput))
+        val testClass2Process = (testClass, Jvm.startJvm(javaBin, allJvmOptions, runOptions, jvmLogger, connectInput))
+        if (index == 0) {
+          log.debug("%s for %s 's started as `Controller`, waiting before can be connected for clients.".format(jvmName,
+            testClass))
+          val controllerHost = hosts.head
+          val serverPort: Int = Integer.getInteger("multinode.server-port", 4711)
+          waitingBeforeConnectable(controllerHost, serverPort, TimeUnit.SECONDS.toMillis(20L))
+        }
+        testClass2Process
     }
     processExitCodes(name, processes, log)
+  }
+
+  private def waitingBeforeConnectable(host: String, port: Int, timeoutInMillis: Long): Unit = {
+    val inetSocketAddress = new InetSocketAddress(host, port)
+    def telnet(addr: InetSocketAddress, timeout: Int): Boolean = {
+      val socket: Socket = new Socket()
+      try {
+        socket.connect(inetSocketAddress, timeout)
+        socket.isConnected
+      } catch {
+        case _: Exception => false
+      } finally {
+        socket.close()
+      }
+    }
+
+    val startTime = System.currentTimeMillis()
+    var connectivity = false
+    while (!connectivity && (System.currentTimeMillis() - startTime < timeoutInMillis)) {
+      connectivity = telnet(inetSocketAddress, 1000)
+      TimeUnit.MILLISECONDS.sleep(100)
+    }
   }
 
   def processExitCodes(name: String, processes: Seq[(String, Process)], log: Logger): (String, sbt.TestResult) = {
@@ -559,7 +590,7 @@ object MultiJvmPlugin extends AutoPlugin {
   private def getMultiNodeCommandLineOptions(hosts: Seq[String], index: Int, maxNodes: Int): Seq[String] = {
     Seq(
       "-Dmultinode.max-nodes=" + maxNodes,
-      "-Dmultinode.server-host=" + hosts(0).split("@").last,
+      "-Dmultinode.server-host=" + hosts.head.split("@").last,
       "-Dmultinode.host=" + hosts(index).split("@").last,
       "-Dmultinode.index=" + index)
   }
@@ -574,7 +605,7 @@ object MultiJvmPlugin extends AutoPlugin {
       if (hosts.isEmpty) {
         if (hostsFile.exists && hostsFile.canRead) {
           s.log.info("Using hosts defined in file " + hostsFile.getAbsolutePath)
-          IO.readLines(hostsFile).map(_.trim).filter(_.length > 0).toIndexedSeq
+          IO.readLines(hostsFile).map(_.trim).filter(_.nonEmpty).toIndexedSeq
         } else
           hosts.toIndexedSeq
       } else {
@@ -586,7 +617,7 @@ object MultiJvmPlugin extends AutoPlugin {
 
     theHosts.map { x =>
       val elems = x.split(":").toList.take(2).padTo(2, defaultJava)
-      (elems(0), elems(1))
-    } unzip
+      (elems.head, elems(1))
+    }.unzip
   }
 }
