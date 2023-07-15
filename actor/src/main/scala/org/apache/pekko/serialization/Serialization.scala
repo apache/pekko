@@ -484,8 +484,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean = checkClass("com.google.protobuf", className)
 
-  // pekko-protobuf is now not a dependency of remote so only load if user has explicitly added it
-  // remove in v1.1
+  // pekko-protobuf-v3
   private def checkPekkoProtobuf(className: String): Boolean = checkClass("org.apache.pekko.protobuf", className)
 
   private def checkClass(prefix: String, className: String): Boolean =
