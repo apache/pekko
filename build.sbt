@@ -84,7 +84,6 @@ lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
   persistenceQuery,
   persistenceTyped,
   persistenceTestkit,
-  protobuf,
   protobufV3,
   pki,
   remote,
@@ -116,7 +115,6 @@ lazy val root = Project(id = "pekko", base = file("."))
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
       benchJmh,
-      protobuf,
       protobufV3,
       pekkoScalaNightly,
       docs,
@@ -362,14 +360,6 @@ lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
-lazy val protobuf = pekkoModule("protobuf")
-  .settings(OSGi.protobuf)
-  .settings(AutomaticModuleName.settings("pekko.protobuf"))
-  .settings(AddMetaInfLicenseFiles.protobufSettings)
-  .enablePlugins(ScaladocNoVerificationOfDiagrams)
-  .disablePlugins(MimaPlugin)
-  .settings(autoScalaLibrary := false) // Pure java project
-
 lazy val protobufV3 = pekkoModule("protobuf-v3")
   .settings(OSGi.protobufV3)
   .settings(AutomaticModuleName.settings("pekko.protobuf.v3"))
@@ -413,7 +403,6 @@ lazy val remote =
       actor,
       stream,
       pki,
-      protobuf % "test",
       actorTests % "test->test",
       testkit % "test->test",
       streamTestkit % "test",

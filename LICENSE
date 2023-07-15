@@ -353,12 +353,6 @@ Copyright 2014 - 2016 Real Logic Ltd.
 
 ---------------
 
-pekko-protobuf contains the sources of Google protobuf 2.5.0 runtime support,
-moved into the source package `org.apache.pekko.protobuf` so as to avoid version conflicts.
-For license information see COPYING.protobuf
-
----------------
-
 pekko-persistence-typed contains AuctionEntity.java in its test source.
 This code is derived from a class in Lagom <https://github.com/lagom>,
 licensed under the Apache 2.0 license.
