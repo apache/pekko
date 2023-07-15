@@ -28,7 +28,7 @@ jobs:
           - serialization-jackson/Test/compile
           - stream/Test/compile stream-testkit/Test/compile stream-tests/Test/compile stream-typed/Test/compile
           - stream-tests-tck/Test/compile
-          - remote/Test/compile remote-tests/Test/compile protobuf/Test/compile protobuf-v3/Test/compile
+          - remote/Test/compile remote-tests/Test/compile protobuf-v3/Test/compile
       fail-fast: true
     steps:
       - name: Checkout
