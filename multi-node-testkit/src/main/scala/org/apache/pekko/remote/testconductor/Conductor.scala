@@ -16,6 +16,7 @@ package org.apache.pekko.remote.testconductor
 import java.net.InetSocketAddress
 import java.util.concurrent.ConcurrentHashMap
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -23,18 +24,13 @@ import scala.reflect.classTag
 import scala.util.control.NoStackTrace
 
 import RemoteConnection.getAddrString
+import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.ChannelHandler.Sharable
 import language.postfixOps
-import org.jboss.netty.channel.{
-  Channel,
-  ChannelHandlerContext,
-  ChannelStateEvent,
-  MessageEvent,
-  SimpleChannelUpstreamHandler
-}
 
 import org.apache.pekko
-import pekko.PekkoException
 import pekko.ConfigurationException
+import pekko.PekkoException
 import pekko.actor.{
   Actor,
   ActorRef,
@@ -286,32 +282,33 @@ trait Conductor { this: TestConductorExt =>
  *
  * INTERNAL API.
  */
+@Sharable
 private[pekko] class ConductorHandler(_createTimeout: Timeout, controller: ActorRef, log: LoggingAdapter)
-    extends SimpleChannelUpstreamHandler {
+    extends ChannelInboundHandlerAdapter {
 
   implicit val createTimeout: Timeout = _createTimeout
   val clients = new ConcurrentHashMap[Channel, ActorRef]()
 
-  override def channelConnected(ctx: ChannelHandlerContext, event: ChannelStateEvent) = {
-    val channel = event.getChannel
+  override def channelActive(ctx: ChannelHandlerContext): Unit = {
+    val channel = ctx.channel()
     log.debug("connection from {}", getAddrString(channel))
     val fsm: ActorRef =
       Await.result((controller ? Controller.CreateServerFSM(channel)).mapTo(classTag[ActorRef]), Duration.Inf)
     clients.put(channel, fsm)
   }
 
-  override def channelDisconnected(ctx: ChannelHandlerContext, event: ChannelStateEvent) = {
-    val channel = event.getChannel
+  override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    val channel = ctx.channel()
     log.debug("disconnect from {}", getAddrString(channel))
     val fsm = clients.get(channel)
     fsm ! Controller.ClientDisconnected
     clients.remove(channel)
   }
 
-  override def messageReceived(ctx: ChannelHandlerContext, event: MessageEvent) = {
-    val channel = event.getChannel
-    log.debug("message from {}: {}", getAddrString(channel), event.getMessage)
-    event.getMessage match {
+  override def channelRead(ctx: ChannelHandlerContext, msg: AnyRef): Unit = {
+    val channel = ctx.channel()
+    log.debug("message from {}: {}", getAddrString(channel), msg)
+    msg match {
       case msg: NetworkOp =>
         clients.get(channel) ! msg
       case msg =>
@@ -320,6 +317,11 @@ private[pekko] class ConductorHandler(_createTimeout: Timeout, controller: Actor
     }
   }
 
+  @nowarn("msg=deprecated")
+  override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
+    log.error("channel {} exception {}", ctx.channel(), cause)
+    ctx.close()
+  }
 }
 
 /**
@@ -398,10 +400,10 @@ private[pekko] class ServerFSM(val controller: ActorRef, val channel: Channel)
       log.warning("client {} sent unsupported message {}", getAddrString(channel), msg)
       stop()
     case Event(ToClient(msg: UnconfirmedClientOp), _) =>
-      channel.write(msg)
+      channel.writeAndFlush(msg)
       stay()
     case Event(ToClient(msg), None) =>
-      channel.write(msg)
+      channel.writeAndFlush(msg)
       stay().using(Some(sender()))
     case Event(ToClient(msg), _) =>
       log.warning("cannot send {} while waiting for previous ACK", msg)
@@ -436,7 +438,7 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
   import Controller._
 
   val settings = TestConductor().Settings
-  val connection = RemoteConnection(
+  val connection: RemoteConnection = RemoteConnection(
     Server,
     controllerPort,
     settings.ServerSocketWorkerPoolSize,
@@ -472,7 +474,7 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
 
   override def receive = LoggingReceive {
     case CreateServerFSM(channel) =>
-      val (ip, port) = channel.getRemoteAddress match {
+      val (ip, port) = channel.remoteAddress() match {
         case s: InetSocketAddress => (s.getAddress.getHostAddress, s.getPort)
         case _                    => throw new RuntimeException() // compiler exhaustiveness check pleaser
       }
@@ -526,11 +528,11 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
           barrier ! BarrierCoordinator.RemoveClient(node)
       }
     case GetNodes    => sender() ! nodes.keys
-    case GetSockAddr => sender() ! connection.getLocalAddress
+    case GetSockAddr => sender() ! connection.channel.localAddress()
   }
 
   override def postStop(): Unit = {
-    RemoteConnection.shutdown(connection)
+    connection.shutdown()
   }
 }
 
