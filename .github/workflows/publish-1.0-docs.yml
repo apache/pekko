@@ -31,11 +31,12 @@ jobs:
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:
-      # TODO we will need to change to a 1.0 branch or a release tag
+      # TODO we will need to change to use a release tag in future
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          ref: 1.0.x
 
       - name: Setup Java 11
         uses: actions/setup-java@v3
