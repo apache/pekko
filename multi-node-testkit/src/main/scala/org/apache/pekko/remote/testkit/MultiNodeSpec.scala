@@ -14,14 +14,15 @@
 package org.apache.pekko.remote.testkit
 
 import java.net.{ InetAddress, InetSocketAddress }
+
 import scala.collection.immutable
 import scala.concurrent.{ Await, Awaitable }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
-import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
 
+import com.typesafe.config.{ Config, ConfigFactory, ConfigObject }
+import io.netty.channel.ChannelException
 import language.implicitConversions
-import org.jboss.netty.channel.ChannelException
 import org.apache.pekko
 import pekko.actor._
 import pekko.actor.RootActorPath

@@ -15,7 +15,9 @@ package org.apache.pekko.remote.testconductor
 
 import java.net.{ ConnectException, InetSocketAddress }
 import java.util.concurrent.TimeoutException
+import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
@@ -23,16 +25,8 @@ import scala.reflect.classTag
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
-import org.jboss.netty.channel.{
-  Channel,
-  ChannelHandlerContext,
-  ChannelStateEvent,
-  ExceptionEvent,
-  MessageEvent,
-  SimpleChannelUpstreamHandler,
-  WriteCompletionEvent
-}
-
+import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
+import io.netty.channel.ChannelHandler.Sharable
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -202,7 +196,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
     case Event(_: ClientOp, _) =>
       stay().replying(Status.Failure(new IllegalStateException("not connected yet")))
     case Event(Connected(channel), _) =>
-      channel.write(Hello(name.name, TestConductor().address))
+      channel.writeAndFlush(Hello(name.name, TestConductor().address))
       goto(AwaitDone).using(Data(Some(channel), None))
     case Event(e: ConnectionFailure, _) =>
       log.error(e, "ConnectionFailure")
@@ -229,12 +223,12 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
   when(Connected) {
     case Event(Disconnected, _) =>
       log.info("disconnected from TestConductor")
-      throw new ConnectionFailure("disconnect")
+      throw ConnectionFailure("disconnect")
     case Event(ToServer(_: Done), Data(Some(channel), _)) =>
-      channel.write(Done)
+      channel.writeAndFlush(Done)
       stay()
     case Event(ToServer(msg), d @ Data(Some(channel), None)) =>
-      channel.write(msg)
+      channel.writeAndFlush(msg)
       val token = msg match {
         case EnterBarrier(barrier, _) => Some(barrier -> sender())
         case GetAddress(node)         => Some(node.name -> sender())
@@ -331,6 +325,7 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
  *
  * INTERNAL API.
  */
+@Sharable
 private[pekko] class PlayerHandler(
     server: InetSocketAddress,
     private var reconnects: Int,
@@ -339,57 +334,47 @@ private[pekko] class PlayerHandler(
     fsm: ActorRef,
     log: LoggingAdapter,
     scheduler: Scheduler)(implicit executor: ExecutionContext)
-    extends SimpleChannelUpstreamHandler {
+    extends ChannelInboundHandlerAdapter {
 
   import ClientFSM._
 
-  reconnect()
+  val connectionRef: AtomicReference[RemoteConnection] = new AtomicReference[RemoteConnection](reconnect())
 
   var nextAttempt: Deadline = _
 
-  override def channelOpen(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
-    log.debug("channel {} open", event.getChannel)
-  override def channelClosed(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
-    log.debug("channel {} closed", event.getChannel)
-  override def channelBound(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
-    log.debug("channel {} bound", event.getChannel)
-  override def channelUnbound(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
-    log.debug("channel {} unbound", event.getChannel)
-  override def writeComplete(ctx: ChannelHandlerContext, event: WriteCompletionEvent) =
-    log.debug("channel {} written {}", event.getChannel, event.getWrittenAmount)
-
-  override def exceptionCaught(ctx: ChannelHandlerContext, event: ExceptionEvent) = {
-    log.debug("channel {} exception {}", event.getChannel, event.getCause)
-    event.getCause match {
+  @nowarn("msg=deprecated")
+  override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
+    log.error("channel {} exception {}", ctx.channel(), cause)
+    cause match {
       case _: ConnectException if reconnects > 0 =>
         reconnects -= 1
-        scheduler.scheduleOnce(nextAttempt.timeLeft)(reconnect())
+        scheduler.scheduleOnce(nextAttempt.timeLeft)(connectionRef.set(reconnect()))
       case e => fsm ! ConnectionFailure(e.getMessage)
     }
   }
 
-  private def reconnect(): Unit = {
+  private def reconnect(): RemoteConnection = {
     nextAttempt = Deadline.now + backoff
     RemoteConnection(Client, server, poolSize, this)
   }
 
-  override def channelConnected(ctx: ChannelHandlerContext, event: ChannelStateEvent) = {
-    val ch = event.getChannel
+  override def channelActive(ctx: ChannelHandlerContext): Unit = {
+    val ch = ctx.channel()
     log.debug("connected to {}", getAddrString(ch))
     fsm ! Connected(ch)
   }
 
-  override def channelDisconnected(ctx: ChannelHandlerContext, event: ChannelStateEvent) = {
-    val channel = event.getChannel
+  override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    val channel = ctx.channel()
     log.debug("disconnected from {}", getAddrString(channel))
     fsm ! PoisonPill
-    executor.execute(new Runnable { def run = RemoteConnection.shutdown(channel) }) // Must be shutdown outside of the Netty IO pool
+    executor.execute(() => connectionRef.get().shutdown()) // Must be shutdown outside of the Netty IO pool
   }
 
-  override def messageReceived(ctx: ChannelHandlerContext, event: MessageEvent) = {
-    val channel = event.getChannel
-    log.debug("message from {}: {}", getAddrString(channel), event.getMessage)
-    event.getMessage match {
+  override def channelRead(ctx: ChannelHandlerContext, msg: AnyRef): Unit = {
+    val channel = ctx.channel()
+    log.debug("message from {}: {}", getAddrString(channel), msg)
+    msg match {
       case msg: NetworkOp =>
         fsm ! msg
       case msg =>
