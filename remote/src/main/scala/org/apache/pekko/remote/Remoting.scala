@@ -934,7 +934,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // The chain at this point:
       //   PekkoProtocolTransport <- Adapter <- ... <- Adapter <- Driver
       new PekkoProtocolTransport(wrappedTransport, context.system, new PekkoProtocolSettings(conf),
-        PekkoPduProtobufCodec$)
+        PekkoPduProtobufCodec)
     }
 
     // Collect all transports, listen addresses and listener promises in one future
@@ -989,7 +989,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 refuseUid,
                 transport,
                 endpointSettings,
-                PekkoPduProtobufCodec$,
+                PekkoPduProtobufCodec,
                 receiveBuffers))
             .withDeploy(Deploy.local),
           "reliableEndpointWriter-" + AddressUrlEncoder(remoteAddress) + "-" + endpointId.next()))
@@ -1005,7 +1005,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
                 refuseUid,
                 transport,
                 endpointSettings,
-                PekkoPduProtobufCodec$,
+                PekkoPduProtobufCodec,
                 receiveBuffers,
                 reliableDeliverySupervisor = None))
             .withDeploy(Deploy.local),

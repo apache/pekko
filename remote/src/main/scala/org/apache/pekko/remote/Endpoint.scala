@@ -535,7 +535,7 @@ private[remote] class ReliableDeliverySupervisor(
             refuseUid,
             transport = transport,
             settings = settings,
-            PekkoPduProtobufCodec$,
+            PekkoPduProtobufCodec,
             receiveBuffers = receiveBuffers,
             reliableDeliverySupervisor = Some(self)))
           .withDeploy(Deploy.local),
