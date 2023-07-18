@@ -1,5 +1,14 @@
 # Release Notes
 
+## 1.0.1
+A minor bug fix release. The class renaming described below (`#491`) is not expected to affect anyone
+upgrading from version 1.0.0 but it is strongly recommended that Apache Pekko users switch to the 1.0.1
+release when it becomes available.
+
+### Bug Fixes
+
+* Issue with class name of package private object `PekkoPduProtobufCodec$` ([#491](https://github.com/apache/incubator-pekko/issues/491))
+
 ## 1.0.0
 Apache Pekko 1.0.0 is based on Akka 2.6.20. Pekko came about as a result of Lightbend's decision to make future
 Akka releases under a [Business Software License](https://www.lightbend.com/blog/why-we-are-changing-the-license-for-akka),
