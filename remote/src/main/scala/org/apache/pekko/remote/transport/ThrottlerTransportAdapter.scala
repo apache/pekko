@@ -574,7 +574,7 @@ private[transport] class ThrottledAssociation(
   // This method captures ASSOCIATE packets and extracts the origin address
   private def peekOrigin(b: ByteString): Option[Address] = {
     try {
-      PekkoPduProtobufCodec$.decodePdu(b) match {
+      PekkoPduProtobufCodec.decodePdu(b) match {
         case Associate(info) => Some(info.origin)
         case _               => None
       }

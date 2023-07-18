@@ -1,0 +1,12 @@
+# rename PekkoPduProtobufCodec$ - https://github.com/apache/incubator-pekko/issues/491
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.decodeMessage")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.decodePdu")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructHeartbeat")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructDisassociate")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructAssociate")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructPayload")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructPureAck")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructMessage$default$5")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructMessage$default$6")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructMessage")
+ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.encodePdu")
