@@ -1,0 +1,36 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+name: SpotBugs with FindSecBugs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+    spotbugs:
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v3
+        # this needs to be appropriately configured for your project
+        - name: Setup Java
+          uses: actions/setup-java@v3
+        # do your build steps. This example uses sbt
+        - name: Compile with sbt
+          run: sbt compile
+        # now run SpotBugs and upload the results to Code Scanning
+        - name: Run SpotBugs with FindSecBugs
+          uses: advanced-security/spotbugs-findsecbugs-action@v1
+          with:
+            # set these appropriately for your project
+            spotbugs_target: 'target/scala-*/classes'
+            # upload_sarif: 'true'
+            # no_cache: 'false'
+            # spotbugs_version: '4.7.3'
+            # findsecbugs_version: '1.12.0'
+            # java_distribution: 'microsoft'
+            # java_version: '11'
