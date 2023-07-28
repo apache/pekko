@@ -16,7 +16,9 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 * Pekko packages start with "org.apache.pekko" instead of "akka" - e.g. `import org.apache.pekko.actor` instead of `import akka.actor`
 * Where class names have "Akka" in the name, the Pekko ones have "Pekko" - e.g. PekkoException instead of AkkaException
 * Config names use "pekko" prefix instead of "akka", e.g. `pekko.actor.provider` instead of `akka.actor.provider`
-* The Pekko node URLs use `pekko://` and `pekko.tcp//` instead of `akka://` and `akka.tcp//` respectively.
+* The Pekko node URLs use different URL schemes.
+    * `pekko://` instead of `akka://`
+    * `pekko.tcp://` instead of `akka.tcp://`
 * We have changed the default ports used by the pekko-remote module.
     * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
     * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
