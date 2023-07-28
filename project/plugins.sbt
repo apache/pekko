@@ -24,7 +24,7 @@ addSbtPlugin("io.spray" % "sbt-boilerplate" % "0.6.1")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.9.0")
 addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
-addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.30")
+addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.31")
 
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.7")
