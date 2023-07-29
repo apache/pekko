@@ -6,12 +6,7 @@ You're always welcome to submit your PR straight away and start the discussion (
 
 ## The Apache Pekko Community
 
-If you have questions about the contribution process or discuss specific issues, please interact with the community using the following resources.
-
-- [GitHub discussions](https://github.com/apache/incubator-pekko/discussions): for questions and general discussion.
-- [Pekko user mailing list](https://lists.apache.org/list.html?user@pekko.apache.org): for Pekko usage discussions.
-- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
-- [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
+If you have questions about the contribution process or discuss specific issues, please interact with the community using the community links in the [README](README.md).
 
 ## Navigating around the project & codebase
 
@@ -503,7 +498,7 @@ You can read up on `remaining` and friends in [TestKit.scala](https://github.com
 For external contributions of entire features, the normal way is to establish it as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
 next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation, then when the feature is hardened, well documented and tested it becomes an officially supported Pekko feature.
 
-[List of Pekko features marked as may change](https://pekko.apache.org/)
+[List of Pekko features marked as may change](https://pekko.apache.org/docs/pekko/current/common/may-change.html)
 
 ### Java APIs in Pekko
 
