@@ -498,7 +498,7 @@ You can read up on `remaining` and friends in [TestKit.scala](https://github.com
 For external contributions of entire features, the normal way is to establish it as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
 next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation, then when the feature is hardened, well documented and tested it becomes an officially supported Pekko feature.
 
-[List of Pekko features marked as may change](https://pekko.apache.org/)
+[List of Pekko features marked as may change](https://pekko.apache.org/docs/pekko/current/common/may-change.html)
 
 ### Java APIs in Pekko
 
