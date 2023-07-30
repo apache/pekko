@@ -111,7 +111,7 @@ class RouterSpec extends ScalaTestWithActorTestKit("pekko.loglevel=warning") wit
           // this will be sent to all 4 routees
           routerWithBroadcast ! DoBroadcastLog("msg")
           Behaviors.empty
-        // #broadcast
+          // #broadcast
         }
         // #pool
       )

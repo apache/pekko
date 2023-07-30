@@ -568,7 +568,7 @@ object StyleGuideDocExamples {
             timers.isTimerActive("aa")
             stash.isEmpty
             Behaviors.empty
-          // #nesting
+            // #nesting
           }))
     // #nesting
   }
