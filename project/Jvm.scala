@@ -11,8 +11,6 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package com.typesafe.sbt.multijvm
-
 import java.io.File
 import java.lang.{ ProcessBuilder => JProcessBuilder }
 

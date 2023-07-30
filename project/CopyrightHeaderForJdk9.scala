@@ -11,8 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSources
 import sbt.Keys.sourceDirectory
 import sbt.{ Compile, Def, Test, _ }

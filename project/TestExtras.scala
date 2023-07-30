@@ -11,8 +11,6 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import sbt.Keys._
 import sbt._
 

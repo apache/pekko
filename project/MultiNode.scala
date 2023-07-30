@@ -11,12 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
+import TestExtras.Filter.Keys._
+import MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
+import MultiJvmPlugin.MultiJvmKeys._
 
-import org.apache.pekko.TestExtras.Filter.Keys._
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
-import com.typesafe.sbt.{ MultiJvmPlugin => SbtMultiJvm }
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._
 import sbt.{ Def, _ }
 import sbt.Keys._
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
@@ -74,7 +72,7 @@ object MultiNode extends AutoPlugin {
   private val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)
 
   private val multiJvmSettings =
-    SbtMultiJvm.multiJvmSettings ++
+    MultiJvmPlugin.multiJvmSettings ++
     inConfig(MultiJvm)(scalafmtConfigSettings) ++
     Seq(
       // Hack because 'provided' dependencies by default are not picked up by the multi-jvm plugin:

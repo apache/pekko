@@ -11,14 +11,13 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import de.heikoseeberger.sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._
 import org.apache.commons.lang3.StringUtils
 import sbt.Keys._
 import sbt._
+
+import MultiJvmPlugin.MultiJvmKeys._
 
 trait CopyrightHeader extends AutoPlugin {
 

@@ -11,12 +11,8 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import java.io.File
 
-import scala.annotation.tailrec
-import scala.collection.immutable.ListMap
 import sbt._
 import sbt.librarymanagement.SemanticSelector
 import sbt.librarymanagement.VersionNumber

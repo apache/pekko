@@ -11,10 +11,8 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import sbt.plugins.JvmPlugin
-import sbt.{ AutoPlugin, PluginTrigger, Plugins, ScalafixSupport }
+import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 import scalafix.sbt.ScalafixPlugin
 
 object ScalafixIgnoreFilePlugin extends AutoPlugin with ScalafixSupport {
