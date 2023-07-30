@@ -21,4 +21,4 @@ jobs:
         uses: jrouly/scalafmt-native-action@v2
         with:
           version: '3.7.11'
-          arguments: '--list --mode diff-ref=origin/main'
+          arguments: '--list --mode diff-ref=origin/1.0.x'
