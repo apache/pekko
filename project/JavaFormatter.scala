@@ -11,7 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import org.apache.pekko.ProjectFileIgnoreSupport
 import com.lightbend.sbt.JavaFormatterPlugin
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 

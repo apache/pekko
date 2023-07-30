@@ -11,9 +11,7 @@
  * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
-import sbt.{ AutoPlugin, PluginTrigger, Plugins, ScalafixSupport }
+import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 import scalafix.sbt.ScalafixPlugin
 
 object ScalaFixExtraRulesPlugin extends AutoPlugin with ScalafixSupport {

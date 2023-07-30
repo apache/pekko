@@ -11,8 +11,6 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import com.hpe.sbt.ValidatePullRequest
 import com.hpe.sbt.ValidatePullRequest.PathGlobFilter
 import com.lightbend.paradox.sbt.ParadoxPlugin
@@ -87,7 +85,7 @@ object PekkoValidatePullRequest extends AutoPlugin {
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
-  import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
+  import MultiJvmPlugin.MultiJvmKeys.MultiJvm
 
   override def trigger = allRequirements
   override def requires = PekkoValidatePullRequest && MultiNode

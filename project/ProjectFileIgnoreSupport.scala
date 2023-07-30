@@ -11,8 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import java.io.File
 
 import com.typesafe.config.ConfigFactory

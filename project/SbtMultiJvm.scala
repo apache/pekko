@@ -11,9 +11,6 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package com.typesafe.sbt
-
-import com.typesafe.sbt.multijvm.{ Jvm, JvmLogger }
 import scala.sys.process.Process
 import sjsonnew.BasicJsonProtocol._
 import sbt._

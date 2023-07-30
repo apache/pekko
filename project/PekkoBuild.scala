@@ -11,11 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
+import JdkOptions.autoImport._
+import MultiJvmPlugin.autoImport.MultiJvm
 
-import org.apache.pekko.JdkOptions.autoImport._
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
-import com.typesafe.sbt.MultiJvmPlugin.autoImport.MultiJvm
 import sbt.Def
 import sbt.Keys._
 import sbt._

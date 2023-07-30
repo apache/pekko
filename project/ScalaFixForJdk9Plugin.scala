@@ -11,10 +11,9 @@
  * Copyright (C) 2020-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
-import sbt.{ AutoPlugin, PluginTrigger, Plugins, ScalafixSupport }
+import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 import scalafix.sbt.ScalafixPlugin
+
 object ScalaFixForJdk9Plugin extends AutoPlugin with ScalafixSupport {
   override def trigger: PluginTrigger = allRequirements
   import Jdk9._

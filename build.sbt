@@ -8,7 +8,6 @@
  */
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
-import org.apache.pekko._
 
 ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
@@ -47,8 +46,8 @@ addCommandAlias(
 
 addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
 
-import org.apache.pekko.PekkoBuild._
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
+import PekkoBuild._
+import MultiJvmPlugin.MultiJvmKeys.MultiJvm
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbt.Keys.{ initialCommands, parallelExecution }
 import spray.boilerplate.BoilerplatePlugin

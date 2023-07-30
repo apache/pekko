@@ -11,10 +11,7 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
-import com.typesafe.sbt.MultiJvmPlugin
-import sbt.{ inConfig, AutoPlugin, Def, PluginTrigger, Plugins, ScalafixSupport, Setting }
+import sbt.{ inConfig, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
 import scalafix.sbt.ScalafixPlugin
 import scalafix.sbt.ScalafixPlugin.autoImport.scalafixConfigSettings
 
