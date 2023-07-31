@@ -31,7 +31,7 @@ object ProtobufSerializer {
   private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
 
   /**
-   * Helper to serialize an [[pekko.actor.ActorRef]] to Akka's
+   * Helper to serialize an [[pekko.actor.ActorRef]] to Pekko's
    * protobuf representation.
    */
   def serializeActorRef(ref: ActorRef): ActorRefData = {
@@ -40,7 +40,7 @@ object ProtobufSerializer {
 
   /**
    * Helper to materialize (lookup) an [[pekko.actor.ActorRef]]
-   * from Akka's protobuf representation in the supplied
+   * from Pekko's protobuf representation in the supplied
    * [[pekko.actor.ActorSystem]].
    */
   def deserializeActorRef(system: ExtendedActorSystem, refProtocol: ActorRefData): ActorRef =
