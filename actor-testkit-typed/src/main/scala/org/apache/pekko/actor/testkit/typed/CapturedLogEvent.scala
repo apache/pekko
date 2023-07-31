@@ -85,7 +85,7 @@ object CapturedLogEvent {
   }
 
   /**
-   * Auxiliary constructor that receives Akka's internal [[OptionVal]] as parameters and converts them to Scala's [[Option]].
+   * Auxiliary constructor that receives Pekko's internal [[OptionVal]] as parameters and converts them to Scala's [[Option]].
    * INTERNAL API
    */
   @InternalApi
