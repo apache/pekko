@@ -29,7 +29,7 @@ import pekko.util.ccompat._
 import pekko.util.ccompat.JavaConverters._
 
 /**
- * Serializes Akka's internal DaemonMsgCreate using protobuf
+ * Serializes Pekko's internal DaemonMsgCreate using protobuf
  * for the core structure of DaemonMsgCreate, Props and Deploy.
  * Serialization of contained RouterConfig, Config, and Scope
  * is done with configured serializer for those classes.
