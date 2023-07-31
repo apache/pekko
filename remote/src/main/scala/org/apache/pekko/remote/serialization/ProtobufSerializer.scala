@@ -140,7 +140,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    *
    * If an old class is removed from `serialization-bindings` when it's not used for serialization
    * but still used for deserialization (e.g. rolling update with serialization changes) it can
-   * be allowed by specifying in `pekko.protobuf.allowed-classes`.
+   * be allowed by specifying in `pekko.serialization.protobuf.allowed-classes`.
    *
    * That is also possible when changing a binding from a ProtobufSerializer to another serializer (e.g. Jackson)
    * and still bind with the same class (interface).
