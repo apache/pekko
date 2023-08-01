@@ -23,8 +23,6 @@ object JavaFormatter extends AutoPlugin {
   private val ignoreConfigFileName: String = ".sbt-java-formatter.conf"
   private val descriptor: String = "sbt-java-formatter"
 
-  private val formatOnCompile = !sys.props.contains("pekko.no.discipline")
-
   import JavaFormatterPlugin.autoImport._
   import sbt.Keys._
   import sbt._
@@ -38,6 +36,5 @@ object JavaFormatter extends AutoPlugin {
           new ProjectFileIgnoreSupport((ThisBuild / baseDirectory).value / ignoreConfigFileName, descriptor)
         val simpleFileFilter = new SimpleFileFilter(file => ignoreSupport.isIgnoredByFileOrPackages(file))
         simpleFileFilter || (javafmt / excludeFilter).value
-      },
-      javafmtOnCompile := formatOnCompile)
+      })
 }
