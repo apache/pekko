@@ -37,8 +37,8 @@ enablePlugins(
   JavaFormatterPlugin)
 disablePlugins(MimaPlugin)
 
-addCommandAlias("verifyCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; headerCheckAll")
-addCommandAlias("applyCodeStyle", "headerCreateAll; scalafmtAll; scalafmtSbt")
+addCommandAlias("verifyCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; headerCheckAll")
+addCommandAlias("applyCodeStyle", "headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")
 
 addCommandAlias(
   name = "fixall",
