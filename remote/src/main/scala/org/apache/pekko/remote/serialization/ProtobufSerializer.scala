@@ -48,9 +48,11 @@ object ProtobufSerializer {
 }
 
 /**
- * This Serializer serializes `org.apache.pekko.protobuf.Message` and `org.apache.pekko.google.protobuf.Message`
+ * This Serializer serializes `org.apache.pekko.protobufv3.internal.Message`
  * It is using reflection to find the `parseFrom` and `toByteArray` methods to avoid
  * dependency to `com.google.protobuf`.
+ *
+ * This is related to the config property `pekko.serialization.protobuf.allowed-classes`.
  */
 class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 

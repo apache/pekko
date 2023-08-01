@@ -32,8 +32,6 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-actor-typed-tests",
     // references to deprecated PARSER fields in generated message formats?
     "pekko-cluster-typed",
-    // use of deprecated org.apache.pekko.protobuf.GeneratedMessage
-    "pekko-protobuf",
     "pekko-protobuf-v3",
     // references to deprecated PARSER fields in generated message formats?
     "pekko-remote",

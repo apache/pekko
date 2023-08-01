@@ -30,7 +30,7 @@ jobs:
           - serialization-jackson/test
           - stream/test stream-testkit/test stream-tests/test stream-typed/test
           - stream-tests-tck/test
-          - remote/test remote-tests/test protobuf/test protobuf-v3/test
+          - remote/test remote-tests/test protobuf-v3/test
       fail-fast: true
     steps:
       - name: Checkout

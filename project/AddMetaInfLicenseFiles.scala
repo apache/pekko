@@ -65,19 +65,6 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
     apacheSonatypeNoticeFile := baseDir.value / "legal" / "pekko-remote-jar-notice.txt")
 
   /**
-   * Settings specific for Pekko protobuf subproject which requires a different license file
-   * as well as an additional "COPYING.protobuf" file.
-   */
-  lazy val protobufSettings = Seq(
-    apacheSonatypeLicenseFile := baseDir.value / "legal" / "pekko-protobuf-jar-license.txt") ++ inConfig(Compile)(Seq(
-    resourceGenerators += {
-      Def.task {
-        List(
-          ApacheSonatypePlugin.addFileToMetaInf(resourceManaged.value, baseDir.value / "COPYING.protobuf"))
-      }
-    }))
-
-  /**
    * Settings specific for Pekko protobuf-v3 subproject which requires a different license file
    * as well as an additional "COPYING.protobuf" file.
    */
