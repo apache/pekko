@@ -14,13 +14,13 @@
 package org.apache.pekko.remote.testconductor
 
 import java.net.InetSocketAddress
-
 import scala.annotation.nowarn
-
 import io.netty.bootstrap.{ Bootstrap, ServerBootstrap }
 import io.netty.buffer.{ ByteBuf, ByteBufUtil }
 import io.netty.channel._
 import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.epoll.{ EpollEventLoopGroup, EpollServerSocketChannel, EpollSocketChannel }
+import io.netty.channel.kqueue.{ KQueueEventLoopGroup, KQueueServerSocketChannel, KQueueSocketChannel }
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
@@ -30,7 +30,6 @@ import io.netty.handler.codec.{
   MessageToMessageDecoder,
   MessageToMessageEncoder
 }
-
 import org.apache.pekko
 import pekko.event.Logging
 import pekko.protobufv3.internal.{ Message, MessageLite, MessageLiteOrBuilder }
@@ -117,10 +116,17 @@ private[pekko] object RemoteConnection {
     role match {
       case Client =>
         val bootstrap = new Bootstrap()
-        val eventLoopGroup = new NioEventLoopGroup(poolSize)
+        val (eventLoopGroup, channelClazz) =
+          if (Helpers.isLinux) {
+            (new EpollEventLoopGroup(poolSize), classOf[EpollSocketChannel])
+          } else if (Helpers.isMacOSX || Helpers.isMacOS) {
+            (new KQueueEventLoopGroup(poolSize), classOf[KQueueSocketChannel])
+          } else
+            (new NioEventLoopGroup(poolSize), classOf[NioSocketChannel])
+
         val clientChannel = bootstrap
           .group(eventLoopGroup)
-          .channel(classOf[NioSocketChannel])
+          .channel(channelClazz)
           .handler(new TestConductorPipelineFactory(handler))
           .option[java.lang.Boolean](ChannelOption.TCP_NODELAY, true)
           .option[java.lang.Boolean](ChannelOption.SO_KEEPALIVE, true)
@@ -139,11 +145,15 @@ private[pekko] object RemoteConnection {
 
       case Server =>
         val bootstrap = new ServerBootstrap()
-        val parentEventLoopGroup = new NioEventLoopGroup(poolSize)
-        val childEventLoopGroup = new NioEventLoopGroup(poolSize)
+        val (parentEventLoopGroup, childEventLoopGroup, channelClazz) =
+          if (Helpers.isLinux) {
+            (new EpollEventLoopGroup(poolSize), new EpollEventLoopGroup(poolSize), classOf[EpollServerSocketChannel])
+          } else if (Helpers.isMacOS || Helpers.isMacOSX) {
+            (new KQueueEventLoopGroup(poolSize), new KQueueEventLoopGroup(poolSize), classOf[KQueueServerSocketChannel])
+          } else (new NioEventLoopGroup(poolSize), new NioEventLoopGroup(poolSize), classOf[NioServerSocketChannel])
         val serverChannel = bootstrap
           .group(parentEventLoopGroup, childEventLoopGroup)
-          .channel(classOf[NioServerSocketChannel])
+          .channel(channelClazz)
           .childHandler(new TestConductorPipelineFactory(handler))
           .option[java.lang.Boolean](ChannelOption.SO_REUSEADDR, !Helpers.isWindows)
           .option[java.lang.Integer](ChannelOption.SO_BACKLOG, 2048)

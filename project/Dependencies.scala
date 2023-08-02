@@ -29,7 +29,7 @@ object Dependencies {
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.15.1"
   val nettyVersion = "3.10.6.Final"
-  val netty4Version = "4.1.94.Final"
+  val netty4Version = "4.1.96.Final"
   val protobufJavaVersion = "3.16.3"
   val logbackVersion = "1.2.11"
 
@@ -62,6 +62,8 @@ object Dependencies {
     val config = "com.typesafe" % "config" % "1.4.2"
     val netty = "io.netty" % "netty" % nettyVersion
     val `netty-transport` = "io.netty" % "netty-transport" % netty4Version
+    val `netty-transport-epoll` = "io.netty" % "netty-transport-native-epoll" % netty4Version classifier "linux-x86_64"
+    val `netty-transport-kqueue` = "io.netty" % "netty-transport-native-kqueue" % netty4Version classifier "osx-x86_64"
     val `netty-handler` = "io.netty" % "netty-handler" % netty4Version
 
     val scalaReflect: ScalaVersionDependentModuleID =
@@ -290,7 +292,7 @@ object Dependencies {
 
   val remoteTests = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value) ++ remoteDependencies
 
-  val multiNodeTestkit = l ++= Seq(`netty-transport`, `netty-handler`)
+  val multiNodeTestkit = l ++= Seq(`netty-transport`, `netty-transport-epoll`, `netty-transport-kqueue`, `netty-handler`)
 
   val cluster = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value, TestDependencies.logback)
 

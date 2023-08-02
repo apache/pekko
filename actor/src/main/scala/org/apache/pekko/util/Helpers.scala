@@ -43,7 +43,15 @@ object Helpers {
 
   def toRootLowerCase(s: String): String = s.toLowerCase(Locale.ROOT)
 
-  val isWindows: Boolean = toRootLowerCase(System.getProperty("os.name", "")).indexOf("win") >= 0
+  private val OS_NAME = System.getProperty("os.name", "").toLowerCase
+
+  val isWindows: Boolean = toRootLowerCase(OS_NAME.toLowerCase).indexOf("win") >= 0
+
+  val isLinux:Boolean = toRootLowerCase(OS_NAME).indexOf("linux") >= 0
+
+  val isMacOSX:Boolean = toRootLowerCase(OS_NAME).indexOf("mac") >= 0 && OS_NAME.indexOf("x") > 0
+
+  val isMacOS:Boolean = toRootLowerCase(OS_NAME).indexOf("linux") >= 0 && OS_NAME.indexOf("x") < 0
 
   def makePattern(s: String): Pattern =
     Pattern.compile("^\\Q" + s.replace("?", "\\E.\\Q").replace("*", "\\E.*\\Q") + "\\E$")
