@@ -124,6 +124,7 @@ private[pekko] object RemoteConnection {
           .handler(new TestConductorPipelineFactory(handler))
           .option[java.lang.Boolean](ChannelOption.TCP_NODELAY, true)
           .option[java.lang.Boolean](ChannelOption.SO_KEEPALIVE, true)
+          .option[java.lang.Boolean](ChannelOption.TCP_FASTOPEN_CONNECT, true)
           .connect(sockaddr)
           .channel()
         new RemoteConnection {
@@ -146,6 +147,7 @@ private[pekko] object RemoteConnection {
           .childHandler(new TestConductorPipelineFactory(handler))
           .option[java.lang.Boolean](ChannelOption.SO_REUSEADDR, !Helpers.isWindows)
           .option[java.lang.Integer](ChannelOption.SO_BACKLOG, 2048)
+          .option[java.lang.Integer](ChannelOption.TCP_FASTOPEN, 2048)
           .childOption[java.lang.Boolean](ChannelOption.TCP_NODELAY, true)
           .childOption[java.lang.Boolean](ChannelOption.SO_KEEPALIVE, true)
           .bind(sockaddr)
