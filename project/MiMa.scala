@@ -29,7 +29,7 @@ object MiMa extends AutoPlugin {
 
   override val projectSettings = Seq(
     mimaReportSignatureProblems := true,
-    mimaPreviousArtifacts := pekkoPreviousArtifacts(name.value, organization.value, scalaBinaryVersion.value),
+    mimaPreviousArtifacts := pekkoPreviousArtifacts(name.value, organization.value),
     checkMimaFilterDirectories := checkFilterDirectories(baseDirectory.value))
 
   def checkFilterDirectories(moduleRoot: File): Unit = {
@@ -43,25 +43,19 @@ object MiMa extends AutoPlugin {
 
   def pekkoPreviousArtifacts(
       projectName: String,
-      organization: String,
-      scalaBinaryVersion: String): Set[sbt.ModuleID] = {
-    if (scalaBinaryVersion.startsWith("3")) {
-      // No binary compatibility for 3.0 artifacts for now - experimental
-      Set.empty
-    } else {
-      val versions: Seq[String] = {
-        val firstPatchOf10 = 0
+      organization: String): Set[sbt.ModuleID] = {
+    val versions: Seq[String] = {
+      val firstPatchOf10 = 0
 
-        val pekko10Previous = expandVersions(1, 0, 0 to latestPatchOf10)
+      val pekko10Previous = expandVersions(1, 0, 0 to latestPatchOf10)
 
-        pekko10Previous
-      }
-
-      // check against all binary compatible artifacts
-      versions.map { v =>
-        organization %% projectName % v
-      }.toSet
+      pekko10Previous
     }
+
+    // check against all binary compatible artifacts
+    versions.map { v =>
+      organization %% projectName % v
+    }.toSet
   }
 
   private def expandVersions(major: Int, minor: Int, patches: immutable.Seq[Int]): immutable.Seq[String] =
