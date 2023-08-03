@@ -18,11 +18,6 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     strategy:
       fail-fast: false
-      matrix:
-        # The versions of scala specified here are only used as `+~...`
-        # which ignores the PATCH portion of the version id. These Scala versions don't need
-        # to be fully defined here then since Pekko build handles which patch version will be used.
-        scalaVersion: [ "2.12", "2.13" ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -43,11 +38,11 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: Compile code
-        run: sbt "+~ ${{ matrix.scalaVersion }} Test/compile"
+        run: sbt +compile
 
       - name: Report MiMa Binary Issues
         run: |-
-          sbt "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+          sbt +mimaReportBinaryIssues
 
       - name: Check correct MiMa filter directories
         run: |
