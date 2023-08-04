@@ -813,7 +813,7 @@ to the @ref:[reference configuration](general/configuration-reference.md#config-
 
 Ray Roestenburg's example code from his blog, which unfortunately is only available on
 [web archive](https://web.archive.org/web/20180114133958/http://roestenburg.agilesquad.com/2011/02/unit-testing-akka-actors-with-testkit_12.html),
-adapted to work with Pekko 2.x.
+adapted to work with Akka 2.x.
 
 @@snip [TestKitUsageSpec.scala](/docs/src/test/scala/docs/testkit/TestKitUsageSpec.scala) { #testkit-usage }
 
