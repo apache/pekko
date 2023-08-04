@@ -40,8 +40,6 @@ import pekko.actor._
  * assert (fsm.stateName == 2)
  * assert (fsm.underlyingActor.getLog == IndexedSeq(FSMLogEntry(1, null, "hallo")))
  * </code></pre>
- *
- * @since 1.2
  */
 class TestFSMRef[S, D, T <: Actor](system: ActorSystem, props: Props, supervisor: ActorRef, name: String)(
     implicit ev: T <:< FSM[S, D])

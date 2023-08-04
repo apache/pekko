@@ -159,8 +159,6 @@ object CallingThreadDispatcher {
  * different thread) are scooped up into the current thread-local queue which
  * is then executed. It is possible to suspend an actor from within its call
  * stack.
- *
- * @since 1.1
  */
 class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) extends MessageDispatcher(_configurator) {
   import CallingThreadDispatcher._
