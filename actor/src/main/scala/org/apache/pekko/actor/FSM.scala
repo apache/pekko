@@ -954,8 +954,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 /**
  * Stackable trait for [[pekko.actor.FSM]] which adds a rolling event log and
  * debug logging capabilities (analogous to [[pekko.event.LoggingReceive]]).
- *
- * @since 1.2
  */
 trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor =>
 

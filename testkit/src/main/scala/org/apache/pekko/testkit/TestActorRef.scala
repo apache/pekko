@@ -29,8 +29,6 @@ import pekko.pattern.ask
  * This special ActorRef is exclusively for use during unit testing in a single-threaded environment. Therefore, it
  * overrides the dispatcher to CallingThreadDispatcher and sets the receiveTimeout to None. Otherwise,
  * it acts just like a normal ActorRef. You may retrieve a reference to the underlying actor to test internal logic.
- *
- * @since 1.1
  */
 @nowarn // 'early initializers' are deprecated on 2.13 and will be replaced with trait parameters on 2.14. https://github.com/akka/akka/issues/26753
 class TestActorRef[T <: Actor](_system: ActorSystem, _props: Props, _supervisor: ActorRef, name: String)
