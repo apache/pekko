@@ -13,12 +13,11 @@
 
 package org.apache.pekko.remote
 
+import scala.annotation.nowarn
 import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.control.Exception.Catcher
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -281,7 +280,7 @@ private[pekko] class RemoteActorRefProvider(
   private def checkNettyOnClassPath(system: ActorSystemImpl): Unit = {
     checkClassOrThrow(
       system,
-      "org.jboss.netty.channel.Channel",
+      "io.netty.channel.Channel",
       "Classic",
       "Netty",
       "https://pekko.apache.org/docs/pekko/current/remoting.html")
