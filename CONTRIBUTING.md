@@ -298,13 +298,13 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/poi/blob/trunk/poi/src/main/java/org/apache/poi/POIDocument.java).
+   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala).
 
 #### Additional guidelines
 
 Some additional guidelines regarding source code are:
 
-- Keep the code [DRY](https://www.oreilly.com/library/view/97-things-every/9780596809515/ch30.html).
+- Keep the code [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 - Apply the [Boy Scout Rule](https://www.oreilly.com/library/view/97-things-every/9780596809515/ch08.html) whenever you have the chance to.
 - Never delete or change existing copyright notices, just add additional info.
 - Do not use "@author "tags since it does not encourage [Collective Code Ownership](http://www.extremeprogramming.org/rules/collective.html).
