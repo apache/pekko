@@ -174,7 +174,7 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
               // to resequence replayed messages relative to written and looped messages.
               // not possible to use circuit breaker here
               asyncReplayMessages(persistenceId, fromSequenceNr, toSeqNr, max) { p =>
-                if (!p.deleted) // old records from 2.3 may still have the deleted flag
+                if (!p.deleted) // old records from Akka 2.3 may still have the deleted flag
                   adaptFromJournal(p).foreach { adaptedPersistentRepr =>
                     replyTo.tell(ReplayedMessage(adaptedPersistentRepr), Actor.noSender)
                   }

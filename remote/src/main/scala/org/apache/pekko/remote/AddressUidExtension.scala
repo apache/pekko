@@ -57,6 +57,6 @@ class AddressUidExtension(val system: ExtendedActorSystem) extends Extension {
   }
 
   // used by old remoting and part of public api
-  @deprecated("Use longAddressUid instead", "2.4.x")
+  @deprecated("Use longAddressUid instead", "Akka 2.4.x")
   def addressUid: Int = _addressUid
 }
