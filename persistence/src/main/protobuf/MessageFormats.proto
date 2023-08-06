@@ -20,12 +20,12 @@ message PersistentMessage {
   optional PersistentPayload payload = 1;
   optional int64 sequenceNr = 2;
   optional string persistenceId = 3;
-  optional bool deleted = 4; // not used in new records from 2.4
-  // optional int32 redeliveries = 6; // Removed in 2.4
-  // repeated string confirms = 7; // Removed in 2.4
-  // optional bool confirmable = 8;  // Removed in 2.4
-  // optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-  // optional string confirmTarget = 10; // Removed in 2.4
+  optional bool deleted = 4; // not used in new records from Akka 2.4
+  // optional int32 redeliveries = 6; // Removed in Akka 2.4
+  // repeated string confirms = 7; // Removed in Akka 2.4
+  // optional bool confirmable = 8;  // Removed in Akka 2.4
+  // optional DeliveredMessage confirmMessage = 9; // Removed in Akka 2.4
+  // optional string confirmTarget = 10; // Removed in Akka 2.4
   optional string sender = 11; // not stored in journal, needed for remote serialization 
   optional string manifest = 12;
   optional string writerUuid = 13;
@@ -56,7 +56,7 @@ message AtLeastOnceDeliverySnapshot {
 
 message PersistentStateChangeEvent {
   required string stateIdentifier = 1;
-  optional string timeout = 2; //not used in new records from 2.4.5
+  optional string timeout = 2; //not used in new records from Akka 2.4.5
   optional int64 timeoutNanos = 3;
 }
 
