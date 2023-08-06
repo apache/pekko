@@ -62,7 +62,7 @@ final class ClusterSingletonSettings(
     val bufferSize: Int,
     val leaseSettings: Option[LeaseUsageSettings]) {
 
-  // bin compat for 2.6.14
+  // bin compat for Akka 2.6.14
   @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       role: Option[String],
@@ -303,7 +303,7 @@ final class ClusterSingletonManagerSettings(
     val handOverRetryInterval: FiniteDuration,
     val leaseSettings: Option[LeaseUsageSettings]) {
 
-  // bin compat for 2.6.14
+  // bin compat for Akka 2.6.14
   @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       singletonName: String,

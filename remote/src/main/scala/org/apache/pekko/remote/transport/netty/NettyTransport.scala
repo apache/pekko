@@ -174,10 +174,10 @@ class NettyTransportSettings(config: Config) {
     case value => value
   }
 
-  @deprecated("WARNING: This should only be used by professionals.", "2.0")
+  @deprecated("WARNING: This should only be used by professionals.", "Akka 2.0")
   val PortSelector: Int = getInt("port")
 
-  @deprecated("WARNING: This should only be used by professionals.", "2.4")
+  @deprecated("WARNING: This should only be used by professionals.", "Akka 2.4")
   @nowarn("msg=deprecated")
   val BindPortSelector: Int = getString("bind-port") match {
     case ""    => PortSelector

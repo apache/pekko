@@ -42,7 +42,7 @@ import pekko.util.Helpers
  * @see org.apache.pekko.dispatch.BalancingDispatcher
  * @see org.apache.pekko.dispatch.Dispatchers
  */
-@deprecated("Use BalancingPool instead of BalancingDispatcher", "2.3")
+@deprecated("Use BalancingPool instead of BalancingDispatcher", "Akka 2.3")
 private[pekko] class BalancingDispatcher(
     _configurator: MessageDispatcherConfigurator,
     _id: String,

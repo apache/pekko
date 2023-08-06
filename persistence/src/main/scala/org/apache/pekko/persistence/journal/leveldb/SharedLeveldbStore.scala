@@ -82,7 +82,7 @@ class SharedLeveldbStore(cfg: Config) extends LeveldbStore {
           else {
             val toSeqNr = math.min(toSequenceNr, highSeqNr)
             asyncReplayMessages(persistenceId, fromSequenceNr, toSeqNr, max) { p =>
-              if (!p.deleted) // old records from 2.3 may still have the deleted flag
+              if (!p.deleted) // old records from Akka 2.3 may still have the deleted flag
                 adaptFromJournal(p).foreach(replyTo ! _)
             }.map(_ => highSeqNr)
           }
