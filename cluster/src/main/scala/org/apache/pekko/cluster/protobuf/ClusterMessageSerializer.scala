@@ -41,8 +41,8 @@ import pekko.util.ccompat.JavaConverters._
 @InternalApi
 @ccompatUsedUntil213
 private[pekko] object ClusterMessageSerializer {
-  // Kept for one version iteration from 2.6.4 to allow rolling migration to short manifests
-  // can be removed in 2.6.6 or later.
+  // Kept for one version iteration from Akka 2.6.4 to allow rolling migration to short manifests
+  // can be removed in Akka 2.6.6 or later.
   val OldJoinManifest = s"org.apache.pekko.cluster.InternalClusterAction$$Join"
   val OldWelcomeManifest = s"org.apache.pekko.cluster.InternalClusterAction$$Welcome"
   val OldLeaveManifest = s"org.apache.pekko.cluster.ClusterUserAction$$Leave"
@@ -57,7 +57,7 @@ private[pekko] object ClusterMessageSerializer {
   val OldGossipEnvelopeManifest = "org.apache.pekko.cluster.GossipEnvelope"
   val OldClusterRouterPoolManifest = "org.apache.pekko.cluster.routing.ClusterRouterPool"
 
-  // is handled on the deserializing side in 2.6.2 and then on the serializing side in 2.6.3
+  // is handled on the deserializing side in Akka 2.6.2 and then on the serializing side in Akka 2.6.3
   val JoinManifest = "J"
   val WelcomeManifest = "W"
   val LeaveManifest = "L"
@@ -139,7 +139,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     case DownManifest              => deserializeDown(bytes)
     case ExitingConfirmedManifest  => deserializeExitingConfirmed(bytes)
     case ClusterRouterPoolManifest => deserializeClusterRouterPool(bytes)
-    // needs to stay in 2.6.5 to be able to talk to a 2.5.{3,4} node during rolling upgrade
+    // needs to stay in Akka 2.6.5 to be able to talk to an Akka 2.5.{3,4} node during rolling upgrade
     case HeartBeatManifestPre2523     => deserializeHeartBeatAsAddress(bytes)
     case HeartBeatRspManifest2523     => deserializeHeartBeatRspAsUniqueAddress(bytes)
     case OldGossipStatusManifest      => deserializeGossipStatus(bytes)
@@ -417,7 +417,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private def initJoinAckToByteArray(address: Address, configCheck: ConfigCheck): Array[Byte] = {
     if (configCheck == ConfigCheckUnsupportedByJoiningNode)
-      addressToProtoByteArray(address) // plain Address in 2.5.9 or earlier
+      addressToProtoByteArray(address) // plain Address in Akka 2.5.9 or earlier
     else
       initJoinAckToProto(address, configCheck).toByteArray
   }

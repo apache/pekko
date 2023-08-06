@@ -701,7 +701,7 @@ private[pekko] class RemoteActorRef private[pekko] (
     }
   }
 
-  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
+  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "Akka 2.2")
   override private[pekko] def isTerminated: Boolean = false
 
   private def handleException(message: Any, sender: ActorRef): Catcher[Unit] = {

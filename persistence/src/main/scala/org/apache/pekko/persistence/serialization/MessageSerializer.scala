@@ -181,7 +181,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
     }
 
     builder.setSequenceNr(persistent.sequenceNr)
-    // deleted is not used in new records from 2.4
+    // deleted is not used in new records from Akka 2.4
     if (persistent.writerUuid != Undefined) builder.setWriterUuid(persistent.writerUuid)
     if (persistent.timestamp > 0L) builder.setTimestamp(persistent.timestamp)
     builder

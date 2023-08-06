@@ -1222,7 +1222,7 @@ final class ClusterShardingSettings(
       coordinatorSingletonSettings,
       leaseSettings)
 
-  // bin compat for 2.5.23
+  // bin compat for Akka 2.5.23
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
     since = "Akka 2.6.0")
@@ -1248,7 +1248,7 @@ final class ClusterShardingSettings(
       coordinatorSingletonSettings,
       leaseSettings)
 
-  // bin compat for 2.5.21
+  // bin compat for Akka 2.5.21
   @deprecated(
     "Use the ClusterShardingSettings factory methods or the constructor including shardRegionQueryTimeout instead",
     since = "Akka 2.5.21")

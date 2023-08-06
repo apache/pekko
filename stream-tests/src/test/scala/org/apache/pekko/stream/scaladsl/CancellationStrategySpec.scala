@@ -120,7 +120,7 @@ class CancellationStrategySpec extends StreamSpec("""pekko.loglevel = DEBUG
         // this asserts the previous broken behavior (which can still be seen with CompleteStage strategy)
         fromStream.expectComplete()
       }
-      "be prevented by PropagateFailure strategy (default in 2.6)" in new RaceTestSetup(
+      "be prevented by PropagateFailure strategy (default in Akka 2.6)" in new RaceTestSetup(
         CancellationStrategy.PropagateFailure) {
         val theError = TE("Duck meowed")
         killSwitch.abort(theError)

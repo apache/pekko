@@ -76,7 +76,7 @@ public final class MessageFormats {
 
     /**
      * <pre>
-     * not used in new records from 2.4
+     * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
@@ -85,7 +85,7 @@ public final class MessageFormats {
     boolean hasDeleted();
     /**
      * <pre>
-     * not used in new records from 2.4
+     * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
@@ -94,40 +94,16 @@ public final class MessageFormats {
     boolean getDeleted();
 
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return Whether the sender field is set.
      */
     boolean hasSender();
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return The sender.
      */
     java.lang.String getSender();
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return The bytes for sender.
      */
@@ -431,7 +407,7 @@ public final class MessageFormats {
     private boolean deleted_;
     /**
      * <pre>
-     * not used in new records from 2.4
+     * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
@@ -442,7 +418,7 @@ public final class MessageFormats {
     }
     /**
      * <pre>
-     * not used in new records from 2.4
+     * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
@@ -455,14 +431,6 @@ public final class MessageFormats {
     public static final int SENDER_FIELD_NUMBER = 11;
     private volatile java.lang.Object sender_;
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return Whether the sender field is set.
      */
@@ -470,14 +438,6 @@ public final class MessageFormats {
       return ((bitField0_ & 0x00000010) != 0);
     }
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return The sender.
      */
@@ -496,14 +456,6 @@ public final class MessageFormats {
       }
     }
     /**
-     * <pre>
-     * optional int32 redeliveries = 6; // Removed in 2.4
-     * repeated string confirms = 7; // Removed in 2.4
-     * optional bool confirmable = 8;  // Removed in 2.4
-     * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-     * optional string confirmTarget = 10; // Removed in 2.4
-     * </pre>
-     *
      * <code>optional string sender = 11;</code>
      * @return The bytes for sender.
      */
@@ -1456,7 +1408,7 @@ public final class MessageFormats {
       private boolean deleted_ ;
       /**
        * <pre>
-       * not used in new records from 2.4
+       * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
@@ -1467,7 +1419,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       * not used in new records from 2.4
+       * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
@@ -1478,7 +1430,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       * not used in new records from 2.4
+       * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
@@ -1493,7 +1445,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       * not used in new records from 2.4
+       * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
@@ -1508,14 +1460,6 @@ public final class MessageFormats {
 
       private java.lang.Object sender_ = "";
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @return Whether the sender field is set.
        */
@@ -1523,14 +1467,6 @@ public final class MessageFormats {
         return ((bitField0_ & 0x00000010) != 0);
       }
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @return The sender.
        */
@@ -1549,14 +1485,6 @@ public final class MessageFormats {
         }
       }
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @return The bytes for sender.
        */
@@ -1574,14 +1502,6 @@ public final class MessageFormats {
         }
       }
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @param value The sender to set.
        * @return This builder for chaining.
@@ -1597,14 +1517,6 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @return This builder for chaining.
        */
@@ -1615,14 +1527,6 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <pre>
-       * optional int32 redeliveries = 6; // Removed in 2.4
-       * repeated string confirms = 7; // Removed in 2.4
-       * optional bool confirmable = 8;  // Removed in 2.4
-       * optional DeliveredMessage confirmMessage = 9; // Removed in 2.4
-       * optional string confirmTarget = 10; // Removed in 2.4
-       * </pre>
-       *
        * <code>optional string sender = 11;</code>
        * @param value The bytes for sender to set.
        * @return This builder for chaining.
@@ -5405,7 +5309,7 @@ public final class MessageFormats {
 
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -5414,7 +5318,7 @@ public final class MessageFormats {
     boolean hasTimeout();
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -5423,7 +5327,7 @@ public final class MessageFormats {
     java.lang.String getTimeout();
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -5590,7 +5494,7 @@ public final class MessageFormats {
     private volatile java.lang.Object timeout_;
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -5601,7 +5505,7 @@ public final class MessageFormats {
     }
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -5623,7 +5527,7 @@ public final class MessageFormats {
     }
     /**
      * <pre>
-     *not used in new records from 2.4.5
+     *not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
@@ -6121,7 +6025,7 @@ public final class MessageFormats {
       private java.lang.Object timeout_ = "";
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
@@ -6132,7 +6036,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
@@ -6154,7 +6058,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
@@ -6175,7 +6079,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
@@ -6194,7 +6098,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
@@ -6208,7 +6112,7 @@ public final class MessageFormats {
       }
       /**
        * <pre>
-       *not used in new records from 2.4.5
+       *not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>

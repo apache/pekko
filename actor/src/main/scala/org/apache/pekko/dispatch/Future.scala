@@ -227,7 +227,7 @@ object Futures {
  * Internal use only.
  */
 object japi {
-  @deprecated("Do not use this directly, use subclasses of this", "2.0")
+  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class CallbackBridge[-T] extends AbstractPartialFunction[T, BoxedUnit] {
     override final def isDefinedAt(t: T): Boolean = true
     override final def apply(t: T): BoxedUnit = {
@@ -237,20 +237,20 @@ object japi {
     protected def internal(@unused result: T): Unit = ()
   }
 
-  @deprecated("Do not use this directly, use 'Recover'", "2.0")
+  @deprecated("Do not use this directly, use 'Recover'", "Akka 2.0")
   class RecoverBridge[+T] extends AbstractPartialFunction[Throwable, T] {
     override final def isDefinedAt(t: Throwable): Boolean = true
     override final def apply(t: Throwable): T = internal(t)
     protected def internal(@unused result: Throwable): T = null.asInstanceOf[T]
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "2.0")
+  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class BooleanFunctionBridge[-T] extends scala.Function1[T, Boolean] {
     override final def apply(t: T): Boolean = internal(t)
     protected def internal(@unused result: T): Boolean = false
   }
 
-  @deprecated("Do not use this directly, use subclasses of this", "2.0")
+  @deprecated("Do not use this directly, use subclasses of this", "Akka 2.0")
   class UnitFunctionBridge[-T] extends (T => BoxedUnit) {
     final def apply$mcLJ$sp(l: Long): BoxedUnit = { internal(l.asInstanceOf[T]); BoxedUnit.UNIT }
     final def apply$mcLI$sp(i: Int): BoxedUnit = { internal(i.asInstanceOf[T]); BoxedUnit.UNIT }
