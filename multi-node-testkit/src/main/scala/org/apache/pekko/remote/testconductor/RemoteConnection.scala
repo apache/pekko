@@ -31,6 +31,7 @@ import io.netty.handler.codec.{
   MessageToMessageDecoder,
   MessageToMessageEncoder
 }
+
 import org.apache.pekko
 import pekko.protobufv3.internal.Message
 import pekko.util.Helpers
@@ -130,6 +131,8 @@ private[pekko] object RemoteConnection {
           .option[java.lang.Boolean](ChannelOption.TCP_NODELAY, true)
           .option[java.lang.Boolean](ChannelOption.SO_KEEPALIVE, true)
           .connect(sockaddr)
+          .sync()
+
         new RemoteConnection {
           override def channelFuture: ChannelFuture = cf
 

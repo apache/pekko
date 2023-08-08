@@ -22,9 +22,6 @@ import sbtassembly.AssemblyPlugin.assemblySettings
 import sbtassembly.{ AssemblyKeys, MergeStrategy }
 import AssemblyKeys._
 
-import java.net.{ InetSocketAddress, Socket }
-import java.util.concurrent.TimeUnit
-
 object MultiJvmPlugin extends AutoPlugin {
 
   case class Options(jvm: Seq[String], extra: String => Seq[String], run: String => Seq[String])
@@ -375,38 +372,9 @@ object MultiJvmPlugin extends AutoPlugin {
         log.debug("Starting %s for %s".format(jvmName, testClass))
         log.debug("  with JVM options: %s".format(allJvmOptions.mkString(" ")))
         val testClass2Process = (testClass, Jvm.startJvm(javaBin, allJvmOptions, runOptions, jvmLogger, connectInput))
-        if (index == 0) {
-          log.debug("%s for %s 's started as `Controller`, waiting before can be connected for clients.".format(jvmName,
-            testClass))
-          val controllerHost = hosts.head
-          val serverPort: Int = Integer.getInteger("multinode.server-port", 4711)
-          waitingBeforeConnectable(controllerHost, serverPort, TimeUnit.SECONDS.toMillis(20L))
-        }
         testClass2Process
     }
     processExitCodes(name, processes, log)
-  }
-
-  private def waitingBeforeConnectable(host: String, port: Int, timeoutInMillis: Long): Unit = {
-    val inetSocketAddress = new InetSocketAddress(host, port)
-    def telnet(addr: InetSocketAddress, timeout: Int): Boolean = {
-      val socket: Socket = new Socket()
-      try {
-        socket.connect(inetSocketAddress, timeout)
-        socket.isConnected
-      } catch {
-        case _: Exception => false
-      } finally {
-        socket.close()
-      }
-    }
-
-    val startTime = System.currentTimeMillis()
-    var connectivity = false
-    while (!connectivity && (System.currentTimeMillis() - startTime < timeoutInMillis)) {
-      connectivity = telnet(inetSocketAddress, 1000)
-      TimeUnit.MILLISECONDS.sleep(100)
-    }
   }
 
   def processExitCodes(name: String, processes: Seq[(String, Process)], log: Logger): (String, sbt.TestResult) = {
