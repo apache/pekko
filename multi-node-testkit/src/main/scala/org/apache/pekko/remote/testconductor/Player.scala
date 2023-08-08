@@ -352,6 +352,7 @@ private[pekko] class PlayerHandler(
     cause match {
       case _: ConnectException if reconnects > 0 =>
         reconnects -= 1
+        scheduleReconnect()
       case e => fsm ! ConnectionFailure(e.getMessage)
     }
   }
