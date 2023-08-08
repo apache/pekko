@@ -22,11 +22,13 @@ import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.reflect.classTag
+import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
 import scala.util.control.NonFatal
 
 import io.netty.channel.{ Channel, ChannelHandlerContext, ChannelInboundHandlerAdapter }
 import io.netty.channel.ChannelHandler.Sharable
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.dispatch.{ RequiresMessageQueue, UnboundedMessageQueueSemantics }
@@ -338,9 +340,11 @@ private[pekko] class PlayerHandler(
 
   import ClientFSM._
 
-  val connectionRef: AtomicReference[RemoteConnection] = new AtomicReference[RemoteConnection](reconnect())
+  val connectionRef: AtomicReference[RemoteConnection] = new AtomicReference[RemoteConnection]()
 
   var nextAttempt: Deadline = _
+
+  tryConnectToController()
 
   @nowarn("msg=deprecated")
   override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
@@ -348,9 +352,22 @@ private[pekko] class PlayerHandler(
     cause match {
       case _: ConnectException if reconnects > 0 =>
         reconnects -= 1
-        scheduler.scheduleOnce(nextAttempt.timeLeft)(connectionRef.set(reconnect()))
       case e => fsm ! ConnectionFailure(e.getMessage)
     }
+  }
+
+  private def tryConnectToController(): Unit = {
+    Try(reconnect()) match {
+      case Success(r) => connectionRef.set(r)
+      case Failure(ex) =>
+        log.error("Error when try to connect to remote addr:[{}] will retry, time left:[{}], cause:[{}].",
+          server, nextAttempt.timeLeft, ex.getMessage)
+        scheduleReconnect()
+    }
+  }
+
+  private def scheduleReconnect(): Unit = {
+    scheduler.scheduleOnce(nextAttempt.timeLeft)(tryConnectToController())
   }
 
   private def reconnect(): RemoteConnection = {
