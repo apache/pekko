@@ -464,7 +464,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   @nowarn("msg=deprecated")
   private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
-    import scala.collection.JavaConverters._ // switch to scala.jdk.CollectionConverters once Scala 2.12 support is dropped
+    import pekko.util.ccompat.JavaConverters._
     if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.") &&
       !system.settings.config.getStringList("pekko.actor.warn-non-pekko-serializer-allow-list").asScala.toSet.contains(
         clazz.getName)) {
