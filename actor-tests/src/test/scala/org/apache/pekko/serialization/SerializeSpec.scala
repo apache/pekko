@@ -148,6 +148,7 @@ object SerializationTests {
       """)
       .withFallback(ConfigFactory.parseString(serializeConf))
       .withFallback(PekkoSpec.testConf.withFallback(referenceConf))
+      .resolve()
     ActorSystem("SerializationSystem", conf)
   }
 
