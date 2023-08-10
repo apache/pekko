@@ -121,6 +121,20 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseContraMap() {
+    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Flow<Integer, String, NotUsed> flow = Flow.fromFunction(String::valueOf);
+    source
+        .via(flow.contramap(Integer::valueOf))
+        .runWith(TestSink.create(system), system)
+        .request(3)
+        .expectNext("1")
+        .expectNext("2")
+        .expectNext("3")
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseDropWhile() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));
@@ -881,7 +895,7 @@ public class FlowTest extends StreamTest {
     Source.from(input)
         .via(Flow.of(FlowSpec.Fruit.class).collectType(FlowSpec.Apple.class))
         .runForeach((apple) -> probe.getRef().tell(apple, ActorRef.noSender()), system);
-    probe.expectMsgAnyClassOf(FlowSpec.Apple.class);
+    probe.<Apple>expectMsgAnyClassOf(FlowSpec.Apple.class);
   }
 
   @Test
