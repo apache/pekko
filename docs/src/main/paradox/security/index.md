@@ -19,7 +19,7 @@ report with the Lightbend Akka team.
 
 ## Security Related Documentation
 
- * [Akka security fixes]($pekko.doc.dns$/docs/pekko/current/security/index.html)
+ * [Akka security fixes](https://akka.io/security)
  * @ref:[Java Serialization](../serialization.md#java-serialization)
  * @ref:[Remote deployment allow list](../remoting.md#remote-deployment-allow-list)
  * @ref:[Remote Security](../remoting-artery.md#remote-security)
