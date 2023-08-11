@@ -14,7 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
-
+import scala.concurrent.Future
 import org.apache.pekko
 import pekko.stream._
 
@@ -77,6 +77,14 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
    */
   def mapMaterializedValue[Mat2](f: Mat => Mat2): SourceWithContext[Out, Ctx, Mat2] =
     new SourceWithContext(delegate.mapMaterializedValue(f))
+
+  /**
+   * @since 1.1.0
+   */
+  def mapAsyncPartition[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
+      extractPartition: Out => P)(f: Out => Future[T]): SourceWithContext[T, Ctx, Mat] = {
+    MapAsyncPartition.mapSourceWithContextAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
+  }
 
   /**
    * Connect this [[pekko.stream.scaladsl.SourceWithContext]] to a [[pekko.stream.scaladsl.Sink]],

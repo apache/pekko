@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.Pair
@@ -89,6 +88,18 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
    */
   def mapMaterializedValue[Mat2](f: Mat => Mat2): FlowWithContext[In, CtxIn, Out, CtxOut, Mat2] =
     new FlowWithContext(delegate.mapMaterializedValue(f))
+
+  /**
+   * @since 1.1.0
+   */
+  /*
+  def mapAsyncPartition[T, P](parallelism: Int,
+                              bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
+                               extractPartition: Out => P)(
+                               f: Out => Future[T]): FlowWithContext[In, CtxOut, T, CtxOut, Mat] = {
+    MapAsyncPartition.mapFlowWithContextAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
+  }
+   */
 
   def asFlow: Flow[(In, CtxIn), (Out, CtxOut), Mat] = delegate
 

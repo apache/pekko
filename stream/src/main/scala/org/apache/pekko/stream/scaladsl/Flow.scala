@@ -164,6 +164,16 @@ final class Flow[-In, +Out, +Mat](
     new Flow(traversalBuilder.transformMat(f), shape)
 
   /**
+   * @since 1.1.0
+   */
+  def mapAsyncPartition[T, P](parallelism: Int,
+      bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
+      extractPartition: Out => P)(
+      f: Out => Future[T]): Flow[In, T, Mat] = {
+    MapAsyncPartition.mapFlowAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
+  }
+
+  /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    * The returned flow is partial materialized and do not support multiple times materialization.
    */

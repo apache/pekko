@@ -5,15 +5,16 @@
 package org.apache.pekko.stream
 
 import java.util.concurrent.Executors
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.concurrent.{ExecutionContext, Future, blocking}
+import scala.annotation.nowarn
+import scala.concurrent.duration.{ DurationInt, FiniteDuration }
+import scala.concurrent.{ blocking, ExecutionContext, Future }
 import scala.language.postfixOps
 import scala.util.Random
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.stream.scaladsl.{Keep, Sink, Source}
-import org.scalacheck.{Arbitrary, Gen}
+import pekko.stream.scaladsl.{ Keep, Sink, Source }
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
@@ -32,10 +33,10 @@ private object MapAsyncPartitionSpec {
     case class TestKeyValue(key: Int, delay: FiniteDuration, value: String)
 
     implicit val bufferSizeArb: Arbitrary[BufferSize] = Arbitrary {
-      Gen.choose(1, 100).map(BufferSize)
+      Gen.choose(1, 100).map(BufferSize.apply)
     }
     implicit val parallelismArb: Arbitrary[Parallelism] = Arbitrary {
-      Gen.choose(2, 8).map(Parallelism)
+      Gen.choose(2, 8).map(Parallelism.apply)
     }
     implicit val elementsArb: Arbitrary[Seq[TestKeyValue]] = Arbitrary {
       for {
@@ -164,7 +165,7 @@ class MapAsyncPartitionSpec
 
   it should "stop the stream via a KillSwitch" in {
     val (killSwitch, future) =
-      Source(LazyList.from(1))
+      Source(infiniteStream())
         .mapAsyncPartition(parallelism = 6)(i => i % 6) { i =>
           Future {
             blocking {
@@ -188,9 +189,9 @@ class MapAsyncPartitionSpec
     }
   }
 
-  it should "stop the stream if any operation fail" in {
+  it should "stop the stream if any operation fails" in {
     val future =
-      Source(LazyList.from(1))
+      Source(infiniteStream())
         .mapAsyncPartition(parallelism = 4)(i => i % 8) { i =>
           Future {
             if (i == 23) throw new RuntimeException("Ignore it")
@@ -203,4 +204,6 @@ class MapAsyncPartitionSpec
     future.failed.futureValue shouldBe a[RuntimeException]
   }
 
+  @nowarn("msg=deprecated")
+  private def infiniteStream(): Stream[Int] = Stream.from(1)
 }
