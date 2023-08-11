@@ -104,6 +104,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   persistenceTypedTests,
   remoteTests,
   streamTests,
+  streamTypedTests,
   streamTestsTck)
 
 lazy val root = Project(id = "pekko", base = file("."))
@@ -440,6 +441,7 @@ lazy val stream = pekkoModule("stream")
   .dependsOn(actor, protobufV3)
   .settings(Dependencies.stream)
   .settings(AutomaticModuleName.settings("pekko.stream"))
+  .settings(AddMetaInfLicenseFiles.streamSettings)
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .enablePlugins(BoilerplatePlugin, Jdk9)
@@ -567,6 +569,12 @@ lazy val streamTyped = pekkoModule("stream-typed")
     actorTypedTests % "test->test")
   .settings(AutomaticModuleName.settings("pekko.stream.typed"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
+
+lazy val streamTypedTests = pekkoModule("stream-typed-tests")
+  .dependsOn(streamTestkit % "test->test", streamTyped)
+  .settings(Dependencies.streamTests)
+  .enablePlugins(NoPublish)
+  .disablePlugins(MimaPlugin)
 
 lazy val actorTestkitTyped = pekkoModule("actor-testkit-typed")
   .dependsOn(actorTyped, slf4j, testkit % "compile->compile;test->test")
