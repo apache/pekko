@@ -19,16 +19,10 @@ import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.util.Failure
 import scala.util.Success
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.PropertyAccessor
-import com.fasterxml.jackson.core.JsonFactory
-import com.fasterxml.jackson.core.JsonFactoryBuilder
-import com.fasterxml.jackson.core.JsonGenerator
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.core.StreamReadFeature
-import com.fasterxml.jackson.core.StreamWriteFeature
+import com.fasterxml.jackson.core.{JsonFactory, JsonFactoryBuilder, JsonGenerator, JsonParser, StreamReadConstraints, StreamReadFeature, StreamWriteFeature}
 import com.fasterxml.jackson.core.json.JsonReadFeature
 import com.fasterxml.jackson.core.json.JsonWriteFeature
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -81,15 +75,21 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       config: Config,
       baseJsonFactory: Option[JsonFactory]): JsonFactory = {
 
+    val streamReadConstraints = StreamReadConstraints.builder()
+      .maxNestingDepth(config.getInt("read.max-nesting-depth"))
+      .maxNumberLength(config.getInt("read.max-number-length"))
+      .maxStringLength(config.getInt("read.max-string-length"))
+      .build()
+
     val jsonFactory: JsonFactory = baseJsonFactory match {
       case Some(factory) =>
         // Issue #28918 not possible to use new JsonFactoryBuilder(jsonFactory) here.
         // It doesn't preserve the formatParserFeatures and formatGeneratorFeatures in
         // CBORFactor. Therefore we use JsonFactory and configure the features with mappedFeature
         // instead of using JsonFactoryBuilder (new in Jackson 2.10.0).
-        factory
+        factory.setStreamReadConstraints(streamReadConstraints)
       case None =>
-        new JsonFactoryBuilder().build()
+        new JsonFactoryBuilder().streamReadConstraints(streamReadConstraints).build()
     }
 
     val configuredStreamReadFeatures =
