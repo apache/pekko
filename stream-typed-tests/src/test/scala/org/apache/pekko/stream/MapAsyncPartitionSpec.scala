@@ -119,13 +119,13 @@ class MapAsyncPartitionSpec
   it should "process elements in parallel preserving order in partition" in {
     forAll(minSuccessful(1000)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
-        Source(elements)
+        Source(elements.toIndexedSeq)
           .mapAsyncPartition(parallelism.value, bufferSize.value)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -140,8 +140,8 @@ class MapAsyncPartitionSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -156,8 +156,8 @@ class MapAsyncPartitionSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
