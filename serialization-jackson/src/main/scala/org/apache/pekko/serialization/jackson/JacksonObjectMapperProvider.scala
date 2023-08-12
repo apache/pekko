@@ -303,7 +303,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
 }
 
 /**
- * Registry of shared `ObjectMapper` instances, each with it's unique `bindingName`.
+ * Registry of shared `ObjectMapper` instances, each with its unique `bindingName`.
  */
 final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Extension {
   private val objectMappers = new ConcurrentHashMap[String, ObjectMapper]
