@@ -230,7 +230,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
                   e,
                   s"Could not load configured Jackson module [$fqcn], " +
                   "please verify classpath dependencies or amend the configuration " +
-                  "[pekko.serialization.jackson-modules]. Continuing without this module."))
+                  "[pekko.serialization.jackson.jackson-modules]. Continuing without this module."))
               None
           }
         } else
