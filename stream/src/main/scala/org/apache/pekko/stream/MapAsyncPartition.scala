@@ -64,9 +64,7 @@ private[stream] object MapAsyncPartition {
         extractPartitionWithCtx(extractPartition),
         fWithCtx(f)))
 
-  private object Holder {
-    val NotYetThere: Failure[Nothing] = Failure(new Exception with NoStackTrace)
-  }
+  private val NotYetThere: Failure[Nothing] = Failure(new Exception with NoStackTrace)
 
   private final class Holder[T](var elem: Try[T], val cb: AsyncCallback[Holder[T]]) extends (Try[T] => Unit) {
 
@@ -177,7 +175,7 @@ private[stream] class MapAsyncPartition[In, Out, Partition](
 
       private def processElement(partition: Partition, element: Contextual[In]): Unit = {
         val future = f(element.element)
-        val holder = new MapAsyncPartition.Holder[Out](MapAsyncPartition.Holder.NotYetThere, futureCB)
+        val holder = new MapAsyncPartition.Holder[Out](MapAsyncPartition.NotYetThere, futureCB)
         inProgress.put(partition, Contextual(element.context, holder))
 
         future.value match {
@@ -201,7 +199,7 @@ private[stream] class MapAsyncPartition[In, Out, Partition](
           pullIfNeeded()
         } else if (isAvailable(out)) {
           inProgress.retain { case (_, Contextual(_, holder)) =>
-            if ((holder.elem eq MapAsyncPartition.Holder.NotYetThere) || !isAvailable(out)) {
+            if ((holder.elem eq MapAsyncPartition.NotYetThere) || !isAvailable(out)) {
               true
             } else {
               holder.elem match {
