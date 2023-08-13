@@ -1,3 +1,7 @@
 # mapAsyncPartition
 
 TODO
+
+API HERE
+
+DESCRIPTION HERE

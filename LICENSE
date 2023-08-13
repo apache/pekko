@@ -366,6 +366,7 @@ which is licensed under an MIT License.
 
  - stream/src/main/scala/org/apache/pekko/stream/MapAsyncPartition.scala
  - stream-typed-tests/src/test/scala/org/apache/pekko/stream/MapAsyncPartitionSpec.scala
+ - stream-typed-tests/src/test/scala/org/apache/pekko/stream/OperatorApplicabilitySpec.scala
 
 MIT License
 

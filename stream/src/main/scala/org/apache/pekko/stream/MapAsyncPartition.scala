@@ -1,5 +1,5 @@
 /*
- + No License Header
+ * No License Header (original 3rd party file has no license header, see below)
  */
 
 package org.apache.pekko.stream
@@ -52,12 +52,13 @@ private[stream] object MapAsyncPartition {
       f: Out => Future[T]): Flow[In, T, Mat] =
     flow.via(new MapAsyncPartition[Out, T, Partition](parallelism, bufferSize, extractPartition, f))
 
-  def mapFlowWithContextAsyncPartition[In, Out, Ctx, T, Partition, Mat](flow: FlowWithContext[In, Ctx, Out, Ctx, Mat],
+  def mapFlowWithContextAsyncPartition[In, Out, CtxIn, CtxOut, T, Partition, Mat](
+      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat],
       parallelism: Int, bufferSize: Int = DefaultBufferSize)(
       extractPartition: Out => Partition)(
-      f: Out => Future[T]): FlowWithContext[In, Ctx, T, Ctx, Mat] =
+      f: Out => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] =
     flow.via(
-      new MapAsyncPartition[(Out, Ctx), (T, Ctx), Partition](
+      new MapAsyncPartition[(Out, CtxOut), (T, CtxOut), Partition](
         parallelism,
         bufferSize,
         extractPartitionWithCtx(extractPartition),

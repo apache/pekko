@@ -1,5 +1,5 @@
 /*
- + No License Header
+ * No License Header (original 3rd party file has no license header, see below)
  */
 
 package org.apache.pekko.stream
@@ -124,8 +124,8 @@ class MapAsyncPartitionSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -140,8 +140,8 @@ class MapAsyncPartitionSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -156,8 +156,8 @@ class MapAsyncPartitionSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -206,4 +206,9 @@ class MapAsyncPartitionSpec
 
   @nowarn("msg=deprecated")
   private def infiniteStream(): Stream[Int] = Stream.from(1)
+
+  private implicit class MapWrapper[K, V](map: Map[K, V]) {
+    @nowarn("msg=deprecated")
+    def mapValues2[W](f: V => W) = map.mapValues(f)
+  }
 }
