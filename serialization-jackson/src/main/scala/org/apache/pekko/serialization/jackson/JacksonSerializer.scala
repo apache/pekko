@@ -464,7 +464,7 @@ import pekko.util.OptionVal
   private def isBoundToJacksonSerializer(clazz: Class[_]): Boolean = {
     try {
       // The reason for using isInstanceOf rather than `eq this` is to allow change of
-      // serializizer within the Jackson family, but we don't trust other serializers
+      // serializer within the Jackson family, but we don't trust other serializers
       // because they might be bound to open-ended interfaces like java.io.Serializable.
       val boundSerializer = serialization.serializerFor(clazz)
       boundSerializer.isInstanceOf[JacksonSerializer]
