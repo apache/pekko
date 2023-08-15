@@ -361,7 +361,7 @@ private[pekko] class PlayerHandler(
     Try(reconnect()) match {
       case Success(r) => connectionRef.set(r)
       case Failure(ex) =>
-        log.error("Error when try to connect to remote addr:[{}] will retry, time left:[{}], cause:[{}].",
+        log.error("Error when trying to connect to remote addr:[{}] will retry, time left:[{}], cause:[{}].",
           server, nextAttempt.timeLeft, ex.getMessage)
         scheduleReconnect()
     }
