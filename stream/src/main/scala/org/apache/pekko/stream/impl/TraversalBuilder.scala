@@ -66,7 +66,7 @@ import pekko.util.unused
 @InternalApi private[pekko] object Concat {
 
   /**
-   * An optimizatzion to remove cheaply recognizable patterns of redundancy, for example PushNotUsed immediately
+   * An optimization to remove cheaply recognizable patterns of redundancy, for example PushNotUsed immediately
    * followed by a Pop. It also rotates the tree to make it more left-leaning, which makes the tree more readable
    * and require less stack-space when traversing. This is only a single rotation, otherwise this implementation
    * would be O(N^2).
