@@ -93,10 +93,10 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartition[T, P](parallelism: Int,
+  def mapAsyncPartitioned[T, P](parallelism: Int,
       bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
       extractPartition: Out => P)(
-      f: Out => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
+      f: (Out, P) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
     MapAsyncPartition.mapFlowWithContextAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
   }
 

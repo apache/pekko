@@ -81,8 +81,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartition[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
-      extractPartition: Out => P)(f: Out => Future[T]): SourceWithContext[T, Ctx, Mat] = {
+  def mapAsyncPartitioned[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
+      extractPartition: Out => P)(f: (Out, P) => Future[T]): SourceWithContext[T, Ctx, Mat] = {
     MapAsyncPartition.mapSourceWithContextAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
   }
 

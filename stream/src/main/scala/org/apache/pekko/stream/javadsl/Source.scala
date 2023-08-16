@@ -2494,6 +2494,17 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
     new Source(delegate.mapAsync(parallelism)(x => f(x).asScala))
 
   /**
+   * @since 1.1.0
+   */
+  def mapAsyncPartitioned[T, P](parallelism: Int,
+      bufferSize: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[T]]): javadsl.Source[T, Mat] = {
+    MapAsyncPartition.mapSourceAsyncPartition(delegate, parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala)
+      .asJava
+  }
+
+  /**
    * Transform this stream by applying the given function to each of the elements
    * as they pass through this processing step. The function returns a `CompletionStage` and the
    * value of that future will be emitted downstream. The number of CompletionStages

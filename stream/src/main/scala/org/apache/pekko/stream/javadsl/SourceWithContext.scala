@@ -175,6 +175,18 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
+   * @since 1.1.0
+   */
+  def mapAsyncPartitioned[Out2, P](parallelism: Int,
+      bufferSize: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
+    MapAsyncPartition.mapSourceWithContextAsyncPartition(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
+      _).asScala)
+      .asJava
+  }
+
+  /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapConcat]].
    *
    * The context of the input element will be associated with each of the output elements calculated from

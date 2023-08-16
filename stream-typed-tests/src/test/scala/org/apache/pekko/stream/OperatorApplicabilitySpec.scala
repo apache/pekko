@@ -4,8 +4,8 @@
 
 package org.apache.pekko.stream
 
+import scala.annotation.nowarn
 import scala.concurrent.{ ExecutionContext, Future }
-
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
@@ -28,13 +28,14 @@ class OperatorApplicabilitySpec extends AnyFlatSpec with Matchers with ScalaFutu
     super.afterAll()
   }
 
-  private def f(i: Int): Future[Int] =
+  @nowarn("msg=never used")
+  private def f(i: Int, p: Int): Future[Int] =
     Future(i % 2)
 
   it should "be applicable to a source" in {
     Source
       .single(3)
-      .mapAsyncPartition(parallelism = 1)(identity)(f)
+      .mapAsyncPartitioned(parallelism = 1)(identity)(f)
       .runWith(Sink.seq)
       .futureValue shouldBe Seq(1)
   }
@@ -42,14 +43,14 @@ class OperatorApplicabilitySpec extends AnyFlatSpec with Matchers with ScalaFutu
   it should "be applicable to a source with context" in {
     SourceWithContext
       .fromTuples(Source.single(3 -> "A"))
-      .mapAsyncPartition(parallelism = 1)(identity)(f)
+      .mapAsyncPartitioned(parallelism = 1)(identity)(f)
       .runWith(Sink.seq)
       .futureValue shouldBe Seq(1 -> "A")
   }
 
   it should "be applicable to a flow" in {
     Flow[Int]
-      .mapAsyncPartition(parallelism = 1)(identity)(f)
+      .mapAsyncPartitioned(parallelism = 1)(identity)(f)
       .runWith(Source.single(3), Sink.seq)
       ._2
       .futureValue shouldBe Seq(1)
@@ -58,7 +59,7 @@ class OperatorApplicabilitySpec extends AnyFlatSpec with Matchers with ScalaFutu
   it should "be applicable to a flow with context" in {
     val flow =
       FlowWithContext[Int, String]
-        .mapAsyncPartition(parallelism = 1)(identity)(f)
+        .mapAsyncPartitioned(parallelism = 1)(identity)(f)
 
     SourceWithContext
       .fromTuples(Source.single(3 -> "A"))

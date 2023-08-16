@@ -60,16 +60,16 @@ private object MapAsyncPartitionSpec {
 
     type Operation = TestKeyValue => Future[(Int, String)]
 
-    def asyncOperation(e: TestKeyValue)(implicit ec: ExecutionContext): Future[(Int, String)] =
+    def asyncOperation(e: TestKeyValue, p: Int)(implicit ec: ExecutionContext): Future[(Int, String)] =
       Future {
-        e.key -> e.value
+        p -> e.value
       }
 
-    def blockingOperation(e: TestKeyValue)(implicit ec: ExecutionContext): Future[(Int, String)] =
+    def blockingOperation(e: TestKeyValue, p: Int)(implicit ec: ExecutionContext): Future[(Int, String)] =
       Future {
         blocking {
           Thread.sleep(e.delay.toMillis)
-          e.key -> e.value
+          p -> e.value
         }
       }
 
@@ -108,7 +108,7 @@ class MapAsyncPartitionSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartition(parallelism = 2, bufferSize = 4)(extractPartition)(blockingOperation)
+        .mapAsyncPartitioned(parallelism = 2, bufferSize = 4)(extractPartition)(blockingOperation)
         .runWith(Sink.seq)
         .futureValue
         .map(_._2)
@@ -120,7 +120,7 @@ class MapAsyncPartitionSpec
     forAll(minSuccessful(1000)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
-          .mapAsyncPartition(parallelism.value, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism.value, bufferSize.value)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -136,7 +136,7 @@ class MapAsyncPartitionSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartition(parallelism = 1, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism = 1, bufferSize.value)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -152,7 +152,7 @@ class MapAsyncPartitionSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartition(parallelism.value, bufferSize.value)(extractPartition)(blockingOperation)
+          .mapAsyncPartitioned(parallelism.value, bufferSize.value)(extractPartition)(blockingOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -166,7 +166,7 @@ class MapAsyncPartitionSpec
   it should "stop the stream via a KillSwitch" in {
     val (killSwitch, future) =
       Source(infiniteStream())
-        .mapAsyncPartition(parallelism = 6)(i => i % 6) { i =>
+        .mapAsyncPartitioned(parallelism = 6)(i => i % 6) { (i, _) =>
           Future {
             blocking {
               Thread.sleep(40)
@@ -192,7 +192,7 @@ class MapAsyncPartitionSpec
   it should "stop the stream if any operation fails" in {
     val future =
       Source(infiniteStream())
-        .mapAsyncPartition(parallelism = 4)(i => i % 8) { i =>
+        .mapAsyncPartitioned(parallelism = 4)(i => i % 8) { (i, _) =>
           Future {
             if (i == 23) throw new RuntimeException("Ignore it")
             else i.toString

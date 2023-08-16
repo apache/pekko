@@ -166,10 +166,10 @@ final class Flow[-In, +Out, +Mat](
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartition[T, P](parallelism: Int,
+  def mapAsyncPartitioned[T, P](parallelism: Int,
       bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
       extractPartition: Out => P)(
-      f: Out => Future[T]): Flow[In, T, Mat] = {
+      f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
     MapAsyncPartition.mapFlowAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
   }
 
