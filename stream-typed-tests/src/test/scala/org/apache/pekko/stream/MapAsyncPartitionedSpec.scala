@@ -110,7 +110,8 @@ class MapAsyncPartitionedSpec
     super.afterAll()
   }
 
-  private def infiniteStream(): LazyList[Int] = LazyList.from(1)
+  @nowarn("msg=deprecated") // use Stream to support Scala 2.12
+  private def infiniteStream(): Stream[Int] = Stream.from(1)
 
   @nowarn("msg=never used")
   private def f(i: Int, p: Int): Future[Int] =
@@ -144,8 +145,8 @@ class MapAsyncPartitionedSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -160,8 +161,8 @@ class MapAsyncPartitionedSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -176,8 +177,8 @@ class MapAsyncPartitionedSpec
           .runWith(Sink.seq)
           .futureValue
 
-      val actual = result.groupBy(_._1).view.mapValues(_.map(_._2)).toMap
-      val expected = elements.toSeq.groupBy(_.key).view.mapValues(_.map(_.value)).toMap
+      val actual = result.groupBy(_._1).mapValues2(_.map(_._2)).toMap
+      val expected = elements.toSeq.groupBy(_.key).mapValues2(_.map(_.value)).toMap
 
       actual shouldBe expected
     }
@@ -418,6 +419,11 @@ class MapAsyncPartitionedSpec
       .via(flow)
       .runWith(Sink.seq)
       .futureValue shouldBe Seq(1 -> "A")
+  }
+
+  private implicit class MapWrapper[K, V](map: Map[K, V]) {
+    @nowarn("msg=deprecated")
+    def mapValues2[W](f: V => W) = map.mapValues(f)
   }
 
 }
