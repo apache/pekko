@@ -2500,7 +2500,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
       bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[T]]): javadsl.Source[T, Mat] =
-    MapAsyncPartitioned.mapSourceUnordered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala).asJava
+    MapAsyncPartitioned.mapSourceUnordered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
+      _).asScala).asJava
 
   /**
    * Transform this stream by applying the given function to each of the elements

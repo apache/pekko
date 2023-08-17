@@ -18,15 +18,15 @@
 package org.apache.pekko.stream
 
 import java.util.concurrent.Executors
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
-import scala.concurrent.{ExecutionContext, Future, blocking}
+import scala.concurrent.duration.{ DurationInt, FiniteDuration }
+import scala.concurrent.{ blocking, ExecutionContext, Future }
 import scala.language.postfixOps
 import scala.util.Random
 import org.apache.pekko
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.scaladsl.Behaviors
-import pekko.stream.scaladsl.{Flow, FlowWithContext, Keep, Sink, Source, SourceWithContext}
-import org.scalacheck.{Arbitrary, Gen}
+import pekko.stream.scaladsl.{ Flow, FlowWithContext, Keep, Sink, Source, SourceWithContext }
+import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
@@ -347,7 +347,7 @@ class MapAsyncPartitionedSpec
     future.failed.futureValue shouldBe a[RuntimeException]
   }
 
-  behavior of "operator applicability"
+  behavior.of("operator applicability")
 
   it should "be applicable to a source" in {
     Source
