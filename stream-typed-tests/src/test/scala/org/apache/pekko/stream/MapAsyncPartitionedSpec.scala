@@ -228,8 +228,7 @@ class MapAsyncPartitionedSpec
     val elements = List(
       TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
       TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = null)
-    )
+      TestKeyValue(key = 1, delay = 500 millis, value = null))
 
     @nowarn("msg=never used")
     def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)
@@ -369,8 +368,7 @@ class MapAsyncPartitionedSpec
     val elements = List(
       TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
       TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
-      TestKeyValue(key = 1, delay = 500 millis, value = null)
-    )
+      TestKeyValue(key = 1, delay = 500 millis, value = null))
 
     @nowarn("msg=never used")
     def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)
