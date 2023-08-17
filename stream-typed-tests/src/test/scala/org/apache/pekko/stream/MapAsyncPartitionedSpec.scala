@@ -17,7 +17,9 @@
 
 package org.apache.pekko.stream
 
+import java.time.Instant
 import java.util.concurrent.Executors
+import scala.annotation.nowarn
 import scala.concurrent.duration.{ DurationInt, FiniteDuration }
 import scala.concurrent.{ blocking, ExecutionContext, Future }
 import scala.language.postfixOps
@@ -32,9 +34,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-
-import java.time.Instant
-import scala.annotation.nowarn
 
 private object MapAsyncPartitionedSpec {
 
@@ -225,6 +224,25 @@ class MapAsyncPartitionedSpec
     future.failed.futureValue shouldBe a[RuntimeException]
   }
 
+  it should "handle nulls" in {
+    val elements = List(
+      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500 millis, value = null)
+    )
+
+    @nowarn("msg=never used")
+    def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)
+
+    val result =
+      Source(elements)
+        .mapAsyncPartitionedUnordered(parallelism = 2, bufferSize = 4)(extractPartition)(fun)
+        .runWith(Sink.seq)
+        .futureValue
+
+    result.toSet shouldBe Set("1.a", "2.a")
+  }
+
   behavior.of("MapAsyncPartitionedOrdered")
 
   it should "process elements in parallel by partition" in {
@@ -345,6 +363,25 @@ class MapAsyncPartitionedSpec
         .run()
 
     future.failed.futureValue shouldBe a[RuntimeException]
+  }
+
+  it should "handle nulls" in {
+    val elements = List(
+      TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
+      TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
+      TestKeyValue(key = 1, delay = 500 millis, value = null)
+    )
+
+    @nowarn("msg=never used")
+    def fun(v: TestKeyValue, p: Int): Future[String] = Future.successful(v.value)
+
+    val result =
+      Source(elements)
+        .mapAsyncPartitioned(parallelism = 2, bufferSize = 4)(extractPartition)(fun)
+        .runWith(Sink.seq)
+        .futureValue
+
+    result shouldBe Seq("1.a", "2.a")
   }
 
   behavior.of("operator applicability")
