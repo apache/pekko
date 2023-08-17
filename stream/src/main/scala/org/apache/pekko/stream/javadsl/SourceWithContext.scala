@@ -177,11 +177,11 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[Out2, P](parallelism: Int,
+  def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int,
       bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
-    MapAsyncPartition.mapSourceWithContextAsyncPartition(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
+    MapAsyncPartitioned.mapSourceWithContextUnordered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
       _).asScala)
       .asJava
   }

@@ -102,9 +102,17 @@ final class Source[+Out, +Mat](
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartition.DefaultBufferSize)(
+  def mapAsyncPartitioned[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): Source[T, Mat] = {
-    MapAsyncPartition.mapSourceAsyncPartition(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapSourceOrdered(this, parallelism, bufferSize)(extractPartition)(f)
+  }
+
+  /**
+   * @since 1.1.0
+   */
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+      extractPartition: Out => P)(f: (Out, P) => Future[T]): Source[T, Mat] = {
+    MapAsyncPartitioned.mapSourceUnordered(this, parallelism, bufferSize)(extractPartition)(f)
   }
 
   /**

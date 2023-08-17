@@ -842,13 +842,11 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[T, P](parallelism: Int,
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
       bufferSize: Int,
       extractPartition: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] = {
-    MapAsyncPartition.mapFlowAsyncPartition(delegate, parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala)
-      .asJava
-  }
+      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] =
+    MapAsyncPartitioned.mapFlowUnordered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala).asJava
 
   /**
    * Transform this stream by applying the given function to each of the elements
