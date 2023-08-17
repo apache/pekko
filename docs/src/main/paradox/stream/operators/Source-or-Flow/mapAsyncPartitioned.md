@@ -3,6 +3,8 @@
 Pass incoming elements to a partitioning function that returns a partition result for each element and then to
 a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result.
 
+The resulting Source or Flow will have elements that retain the order of the original Source or Flow.
+
 @ref[Asynchronous operators](../index.md#asynchronous-operators)
 
 ## Signature
