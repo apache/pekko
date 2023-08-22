@@ -28,7 +28,7 @@ package org.apache.pekko.stream
  *    are immutable and safely shareable. Unlike the top-level DSLs, these are classic, i.e. elements are treated as
  *    Any.
  *  * The [[org.apache.pekko.stream.impl.Traversal]] is the immutable, efficient representation of a stream processing graph that
- *    can be materialized. The builders exists solely for the purpose of producing a traversal in the end.
+ *    can be materialized. The builders exist solely for the purpose of producing a traversal in the end.
  *  * The [[org.apache.pekko.stream.impl.PhasedFusingActorMaterializer]] is the class that is responsible for traversing and
  *    interpreting a [[org.apache.pekko.stream.impl.Traversal]]. It delegates the actual task of creating executable entities
  *    and Publishers/Producers to [[org.apache.pekko.stream.impl.PhaseIsland]]s which are plugins that understand atomic operators
