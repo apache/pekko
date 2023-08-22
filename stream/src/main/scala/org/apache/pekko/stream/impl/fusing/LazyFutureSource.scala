@@ -32,7 +32,7 @@ import pekko.stream.stage.GraphStage
 import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.OutHandler
 
-private[pekko] class LazyFutureSource[T](f: () => Future[T]) extends GraphStage[SourceShape[T]] {
+private[pekko] final class LazyFutureSource[T](f: () => Future[T]) extends GraphStage[SourceShape[T]] {
   require(f != null, "f should not be null.")
   private val out = Outlet[T]("LazyFutureSource.out")
   val shape: SourceShape[T] = SourceShape(out)
