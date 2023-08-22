@@ -28,7 +28,7 @@ import pekko.annotation.InternalApi
 import pekko.stream.{ Outlet, SourceShape, _ }
 import pekko.stream.impl.{ PublisherSource, _ }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.{ GraphStages, LazyFutureSource, LazySingleSource }
+import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
@@ -356,7 +356,7 @@ object Source {
    * beginning) regardless of when they subscribed.
    */
   def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    single(iterable).mapConcat(ConstantFun.scalaIdentityFunction).withAttributes(DefaultAttributes.iterableSource)
+    fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
 
   /**
    * Starts a new `Source` from the given `Future`. The stream will consist of
@@ -419,8 +419,7 @@ object Source {
    * Create a `Source` that will continually emit the given element.
    */
   def repeat[T](element: T): Source[T, NotUsed] = {
-    val next = Some((element, element))
-    unfold(element)(_ => next).withAttributes(DefaultAttributes.repeat)
+    fromIterator(() => Iterator.continually(element)).withAttributes(DefaultAttributes.repeat)
   }
 
   /**
