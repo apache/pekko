@@ -2497,20 +2497,18 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * @since 1.1.0
    */
   def mapAsyncPartitioned[T, P](parallelism: Int,
-      bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[T]]): javadsl.Source[T, Mat] =
-    MapAsyncPartitioned.mapSourceOrdered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
+    MapAsyncPartitioned.mapSourceOrdered(delegate, parallelism)(extractPartition(_))(f(_,
       _).asScala).asJava
 
   /**
    * @since 1.1.0
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
-      bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[T]]): javadsl.Source[T, Mat] =
-    MapAsyncPartitioned.mapSourceUnordered(delegate, parallelism, bufferSize)(extractPartition(_))(f(_,
+    MapAsyncPartitioned.mapSourceUnordered(delegate, parallelism)(extractPartition(_))(f(_,
       _).asScala).asJava
 
   /**

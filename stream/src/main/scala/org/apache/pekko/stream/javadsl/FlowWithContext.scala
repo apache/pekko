@@ -182,20 +182,18 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @since 1.1.0
    */
   def mapAsyncPartitioned[Out2, P](parallelism: Int,
-      bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitioned(parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala))
+    viaScala(_.mapAsyncPartitioned(parallelism)(extractPartition(_))(f(_, _).asScala))
   }
 
   /**
    * @since 1.1.0
    */
   def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int,
-      bufferSize: Int,
       extractPartition: function.Function[Out, P],
       f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
-    viaScala(_.mapAsyncPartitionedUnordered(parallelism, bufferSize)(extractPartition(_))(f(_, _).asScala))
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(extractPartition(_))(f(_, _).asScala))
   }
 
   /**

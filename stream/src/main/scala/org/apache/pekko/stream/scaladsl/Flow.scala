@@ -166,21 +166,19 @@ final class Flow[-In, +Out, +Mat](
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[T, P](parallelism: Int,
-      bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
       extractPartition: Out => P)(
       f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
-    MapAsyncPartitioned.mapFlowOrdered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapFlowOrdered(this, parallelism)(extractPartition)(f)
   }
 
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
-      bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       extractPartition: Out => P)(
       f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
-    MapAsyncPartitioned.mapFlowUnordered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapFlowUnordered(this, parallelism)(extractPartition)(f)
   }
 
   /**

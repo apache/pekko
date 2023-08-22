@@ -17,17 +17,9 @@
 
 package org.apache.pekko.stream
 
-import java.time.Instant
-import java.util.concurrent.Executors
-import scala.annotation.nowarn
-import scala.concurrent.duration.{ DurationInt, FiniteDuration }
-import scala.concurrent.{ blocking, ExecutionContext, Future }
-import scala.language.postfixOps
-import scala.util.Random
-import org.apache.pekko
-import pekko.actor.typed.ActorSystem
-import pekko.actor.typed.scaladsl.Behaviors
-import pekko.stream.scaladsl.{ Flow, FlowWithContext, Keep, Sink, Source, SourceWithContext }
+import org.apache.pekko.actor.typed.ActorSystem
+import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko.stream.scaladsl.{ Flow, FlowWithContext, Keep, Sink, Source, SourceWithContext }
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
@@ -35,18 +27,22 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
 
+import java.time.Instant
+import java.util.concurrent.Executors
+import scala.annotation.nowarn
+import scala.concurrent.duration.{ DurationInt, FiniteDuration }
+import scala.concurrent.{ blocking, ExecutionContext, Future }
+import scala.language.postfixOps
+import scala.util.Random
+
 private object MapAsyncPartitionedSpec {
 
   object TestData {
 
-    case class BufferSize(value: Int) extends AnyVal
     case class Parallelism(value: Int) extends AnyVal
 
     case class TestKeyValue(key: Int, delay: FiniteDuration, value: String)
 
-    implicit val bufferSizeArb: Arbitrary[BufferSize] = Arbitrary {
-      Gen.choose(1, 100).map(BufferSize.apply)
-    }
     implicit val parallelismArb: Arbitrary[Parallelism] = Arbitrary {
       Gen.choose(2, 8).map(Parallelism.apply)
     }
@@ -124,12 +120,12 @@ class MapAsyncPartitionedSpec
       TestKeyValue(key = 1, delay = 1000 millis, value = "1.a"),
       TestKeyValue(key = 2, delay = 700 millis, value = "2.a"),
       TestKeyValue(key = 1, delay = 500 millis, value = "1.b"),
-      TestKeyValue(key = 1, delay = 500 millis, value = "1.c"),
-      TestKeyValue(key = 2, delay = 900 millis, value = "2.b"))
+      TestKeyValue(key = 2, delay = 900 millis, value = "2.b"),
+      TestKeyValue(key = 1, delay = 500 millis, value = "1.c"))
 
     val result =
       Source(elements)
-        .mapAsyncPartitionedUnordered(parallelism = 2, bufferSize = 4)(extractPartition)(blockingOperation)
+        .mapAsyncPartitionedUnordered(parallelism = 2)(extractPartition)(blockingOperation)
         .runWith(Sink.seq)
         .futureValue
         .map(_._2)
@@ -138,10 +134,10 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
-          .mapAsyncPartitionedUnordered(parallelism.value, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitionedUnordered(parallelism.value)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -153,11 +149,11 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in sequence preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (bufferSize: BufferSize, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(1000)) { (elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitionedUnordered(parallelism = 1, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitionedUnordered(parallelism = 1)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -169,11 +165,11 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition with blocking operation" in {
-    forAll(minSuccessful(10)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(10)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitionedUnordered(parallelism.value, bufferSize.value)(extractPartition)(blockingOperation)
+          .mapAsyncPartitionedUnordered(parallelism.value)(extractPartition)(blockingOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -236,11 +232,23 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitionedUnordered(parallelism = 2, bufferSize = 4)(extractPartition)(fun)
+        .mapAsyncPartitionedUnordered(parallelism = 2)(extractPartition)(fun)
         .runWith(Sink.seq)
         .futureValue
 
     result.toSet shouldBe Set("1.a", "2.a")
+  }
+
+  it should "fail to create an operator if parallelism is less than 1" in {
+    forAll(Gen.negNum[Int]) { zeroOrNegativeParallelism: Int =>
+      an[IllegalArgumentException] shouldBe thrownBy {
+        Source(infiniteStream())
+          .mapAsyncPartitionedUnordered(
+            parallelism = zeroOrNegativeParallelism)(extractPartition = identity)(f = (_, _) => Future.unit)
+          .runWith(Sink.ignore)
+          .futureValue
+      }
+    }
   }
 
   behavior.of("MapAsyncPartitionedOrdered")
@@ -264,7 +272,7 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitioned(parallelism = 2, bufferSize = 4)(extractPartition)(processElement)
+        .mapAsyncPartitioned(parallelism = 2)(extractPartition)(processElement)
         .runWith(Sink.seq)
         .futureValue
         .map(_._2)
@@ -278,10 +286,10 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
-          .mapAsyncPartitioned(parallelism.value, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism.value)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -293,11 +301,11 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in sequence preserving order in partition" in {
-    forAll(minSuccessful(1000)) { (bufferSize: BufferSize, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(1000)) { (elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitioned(parallelism = 1, bufferSize.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism = 1)(extractPartition)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -309,11 +317,11 @@ class MapAsyncPartitionedSpec
   }
 
   it should "process elements in parallel preserving order in partition with blocking operation" in {
-    forAll(minSuccessful(10)) { (bufferSize: BufferSize, parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
+    forAll(minSuccessful(10)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitioned(parallelism.value, bufferSize.value)(extractPartition)(blockingOperation)
+          .mapAsyncPartitioned(parallelism.value)(extractPartition)(blockingOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -376,11 +384,23 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitioned(parallelism = 2, bufferSize = 4)(extractPartition)(fun)
+        .mapAsyncPartitioned(parallelism = 2)(extractPartition)(fun)
         .runWith(Sink.seq)
         .futureValue
 
     result shouldBe Seq("1.a", "2.a")
+  }
+
+  it should "fail to create an operator if parallelism is less than 1" in {
+    forAll(Gen.negNum[Int]) { zeroOrNegativeParallelism: Int =>
+      an[IllegalArgumentException] shouldBe thrownBy {
+        Source(infiniteStream())
+          .mapAsyncPartitioned(
+            parallelism = zeroOrNegativeParallelism)(extractPartition = identity)(f = (_, _) => Future.unit)
+          .runWith(Sink.ignore)
+          .futureValue
+      }
+    }
   }
 
   behavior.of("operator applicability")

@@ -93,21 +93,19 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[T, P](parallelism: Int,
-      bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
       extractPartition: Out => P)(
       f: (Out, P) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
-    MapAsyncPartitioned.mapFlowWithContextOrdered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapFlowWithContextOrdered(this, parallelism)(extractPartition)(f)
   }
 
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
-      bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       extractPartition: Out => P)(
       f: (Out, P) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
-    MapAsyncPartitioned.mapFlowWithContextUnordered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapFlowWithContextUnordered(this, parallelism)(extractPartition)(f)
   }
 
   def asFlow: Flow[(In, CtxIn), (Out, CtxOut), Mat] = delegate

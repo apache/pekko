@@ -81,17 +81,17 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitioned[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): SourceWithContext[T, Ctx, Mat] = {
-    MapAsyncPartitioned.mapSourceWithContextOrdered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapSourceWithContextOrdered(this, parallelism)(extractPartition)(f)
   }
 
   /**
    * @since 1.1.0
    */
-  def mapAsyncPartitionedUnordered[T, P](parallelism: Int, bufferSize: Int = MapAsyncPartitioned.DefaultBufferSize)(
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): SourceWithContext[T, Ctx, Mat] = {
-    MapAsyncPartitioned.mapSourceWithContextUnordered(this, parallelism, bufferSize)(extractPartition)(f)
+    MapAsyncPartitioned.mapSourceWithContextUnordered(this, parallelism)(extractPartition)(f)
   }
 
   /**

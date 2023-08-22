@@ -18,22 +18,19 @@
 package org.apache.pekko.stream
 
 import org.apache.pekko
-import pekko.dispatch.ExecutionContexts
-import pekko.stream.ActorAttributes.SupervisionStrategy
-import pekko.stream.Attributes.{ Name, SourceLocation }
-import pekko.stream.MapAsyncPartitioned._
-import pekko.stream.scaladsl.{ Flow, FlowWithContext, Source, SourceWithContext }
-import pekko.stream.stage._
+import org.apache.pekko.dispatch.ExecutionContexts
+import org.apache.pekko.stream.ActorAttributes.SupervisionStrategy
+import org.apache.pekko.stream.Attributes.{ Name, SourceLocation }
+import org.apache.pekko.stream.MapAsyncPartitioned._
+import org.apache.pekko.stream.scaladsl.{ Flow, FlowWithContext, Source, SourceWithContext }
+import org.apache.pekko.stream.stage._
 
-import scala.annotation.nowarn
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.{ Failure, Success, Try }
 
 private[stream] object MapAsyncPartitioned {
-
-  val DefaultBufferSize = 10
 
   private def extractPartitionWithCtx[In, Ctx, Partition](extract: In => Partition)(tuple: (In, Ctx)): Partition =
     extract(tuple._1)
@@ -42,73 +39,66 @@ private[stream] object MapAsyncPartitioned {
       partition: Partition): Future[(Out, Ctx)] =
     f(tuple._1, partition).map(_ -> tuple._2)(ExecutionContexts.parasitic)
 
-  def mapSourceOrdered[In, Out, Partition, Mat](source: Source[In, Mat], parallelism: Int,
-      bufferSize: Int = DefaultBufferSize)(
+  def mapSourceOrdered[In, Out, Partition, Mat](source: Source[In, Mat], parallelism: Int)(
       extractPartition: In => Partition)(
       f: (In, Partition) => Future[Out]): Source[Out, Mat] =
-    source.via(new MapAsyncPartitionedOrdered[In, Out, Partition](parallelism, bufferSize, extractPartition, f))
+    source.via(new MapAsyncPartitioned[In, Out, Partition](orderedOutput = true, parallelism, extractPartition, f))
 
-  def mapSourceUnordered[In, Out, Partition, Mat](source: Source[In, Mat], parallelism: Int,
-      bufferSize: Int = DefaultBufferSize)(
+  def mapSourceUnordered[In, Out, Partition, Mat](source: Source[In, Mat], parallelism: Int)(
       extractPartition: In => Partition)(
       f: (In, Partition) => Future[Out]): Source[Out, Mat] =
-    source.via(new MapAsyncPartitionedUnordered[In, Out, Partition](parallelism, bufferSize, extractPartition, f))
+    source.via(new MapAsyncPartitioned[In, Out, Partition](orderedOutput = false, parallelism, extractPartition, f))
 
-  def mapSourceWithContextOrdered[In, Ctx, T, Partition, Mat](flow: SourceWithContext[In, Ctx, Mat],
-      parallelism: Int, bufferSize: Int = DefaultBufferSize)(
+  def mapSourceWithContextOrdered[In, Ctx, T, Partition, Mat](flow: SourceWithContext[In, Ctx, Mat], parallelism: Int)(
       extractPartition: In => Partition)(
       f: (In, Partition) => Future[T]): SourceWithContext[T, Ctx, Mat] =
     flow.via(
-      new MapAsyncPartitionedOrdered[(In, Ctx), (T, Ctx), Partition](
+      new MapAsyncPartitioned[(In, Ctx), (T, Ctx), Partition](
+        orderedOutput = true,
         parallelism,
-        bufferSize,
         extractPartitionWithCtx(extractPartition),
         fWithCtx[In, T, Ctx, Partition](f)))
 
   def mapSourceWithContextUnordered[In, Ctx, T, Partition, Mat](flow: SourceWithContext[In, Ctx, Mat],
-      parallelism: Int, bufferSize: Int = DefaultBufferSize)(
-      extractPartition: In => Partition)(
+      parallelism: Int)(extractPartition: In => Partition)(
       f: (In, Partition) => Future[T]): SourceWithContext[T, Ctx, Mat] =
     flow.via(
-      new MapAsyncPartitionedUnordered[(In, Ctx), (T, Ctx), Partition](
+      new MapAsyncPartitioned[(In, Ctx), (T, Ctx), Partition](
+        orderedOutput = false,
         parallelism,
-        bufferSize,
         extractPartitionWithCtx(extractPartition),
         fWithCtx[In, T, Ctx, Partition](f)))
 
-  def mapFlowOrdered[In, Out, T, Partition, Mat](flow: Flow[In, Out, Mat], parallelism: Int,
-      bufferSize: Int = DefaultBufferSize)(
+  def mapFlowOrdered[In, Out, T, Partition, Mat](flow: Flow[In, Out, Mat], parallelism: Int)(
       extractPartition: Out => Partition)(
       f: (Out, Partition) => Future[T]): Flow[In, T, Mat] =
-    flow.via(new MapAsyncPartitionedOrdered[Out, T, Partition](parallelism, bufferSize, extractPartition, f))
+    flow.via(new MapAsyncPartitioned[Out, T, Partition](orderedOutput = true, parallelism, extractPartition,
+      f))
 
-  def mapFlowUnordered[In, Out, T, Partition, Mat](flow: Flow[In, Out, Mat], parallelism: Int,
-      bufferSize: Int = DefaultBufferSize)(
+  def mapFlowUnordered[In, Out, T, Partition, Mat](flow: Flow[In, Out, Mat], parallelism: Int)(
       extractPartition: Out => Partition)(
       f: (Out, Partition) => Future[T]): Flow[In, T, Mat] =
-    flow.via(new MapAsyncPartitionedUnordered[Out, T, Partition](parallelism, bufferSize, extractPartition, f))
+    flow.via(new MapAsyncPartitioned[Out, T, Partition](orderedOutput = false, parallelism,
+      extractPartition, f))
 
   def mapFlowWithContextOrdered[In, Out, CtxIn, CtxOut, T, Partition, Mat](
-      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat],
-      parallelism: Int, bufferSize: Int = DefaultBufferSize)(
+      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat], parallelism: Int)(
       extractPartition: Out => Partition)(
       f: (Out, Partition) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] =
     flow.via(
-      new MapAsyncPartitionedOrdered[(Out, CtxOut), (T, CtxOut), Partition](
+      new MapAsyncPartitioned[(Out, CtxOut), (T, CtxOut), Partition](
+        orderedOutput = true,
         parallelism,
-        bufferSize,
         extractPartitionWithCtx(extractPartition),
         fWithCtx[Out, T, CtxOut, Partition](f)))
 
   def mapFlowWithContextUnordered[In, Out, CtxIn, CtxOut, T, Partition, Mat](
-      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat],
-      parallelism: Int, bufferSize: Int = DefaultBufferSize)(
-      extractPartition: Out => Partition)(
+      flow: FlowWithContext[In, CtxIn, Out, CtxOut, Mat], parallelism: Int)(extractPartition: Out => Partition)(
       f: (Out, Partition) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] =
     flow.via(
-      new MapAsyncPartitionedUnordered[(Out, CtxOut), (T, CtxOut), Partition](
+      new MapAsyncPartitioned[(Out, CtxOut), (T, CtxOut), Partition](
+        orderedOutput = false,
         parallelism,
-        bufferSize,
         extractPartitionWithCtx(extractPartition),
         fWithCtx[Out, T, CtxOut, Partition](f)))
 
@@ -143,179 +133,13 @@ private[stream] object MapAsyncPartitioned {
   }
 }
 
-private[stream] class MapAsyncPartitionedUnordered[In, Out, Partition](
+private[stream] class MapAsyncPartitioned[In, Out, Partition](
+    orderedOutput: Boolean,
     parallelism: Int,
-    bufferSize: Int,
     extractPartition: In => Partition,
     f: (In, Partition) => Future[Out]) extends GraphStage[FlowShape[In, Out]] {
 
-  private val in = Inlet[In]("MapAsyncPartitionUnordered.in")
-  private val out = Outlet[Out]("MapAsyncPartitionUnordered.out")
-
-  override val shape: FlowShape[In, Out] = FlowShape(in, out)
-
-  override def initialAttributes: Attributes =
-    Attributes(Name("MapAsyncPartitionUnordered")) and SourceLocation.forLambda(f)
-
-  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with InHandler with OutHandler {
-
-      private val contextPropagation = pekko.stream.impl.ContextPropagation()
-
-      private case class Contextual[T](context: AnyRef, element: T) {
-        private var suspended = false
-
-        def suspend(): Unit =
-          if (!suspended) {
-            suspended = true
-            contextPropagation.suspendContext()
-          }
-
-        def resume(): Unit =
-          if (suspended) {
-            suspended = false
-            contextPropagation.resumeContext(context)
-          }
-
-      }
-
-      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
-
-      private var inProgress: mutable.Map[Partition, Contextual[Holder[In, Out]]] = _
-      private var waiting: mutable.Queue[(Partition, Contextual[In])] = _
-
-      private val futureCB = getAsyncCallback[Holder[In, Out]](holder =>
-        holder.out match {
-          case Success(_) => pushNextIfPossible()
-          case Failure(ex) =>
-            holder.supervisionDirectiveFor(decider, ex) match {
-              // fail fast as if supervision says so
-              case Supervision.Stop => failStage(ex)
-              case _                => pushNextIfPossible()
-            }
-        })
-
-      override def preStart(): Unit = {
-        inProgress = mutable.Map()
-        waiting = mutable.Queue()
-      }
-
-      override def onPull(): Unit =
-        pushNextIfPossible()
-
-      override def onPush(): Unit = {
-        try {
-          val element = Contextual(contextPropagation.currentContext(), grab(in))
-          val partition = extractPartition(element.element)
-
-          if (inProgress.contains(partition) || inProgress.size >= parallelism) {
-            element.suspend()
-            waiting.enqueue(partition -> element)
-          } else {
-            processElement(partition, element)
-          }
-        } catch {
-          case NonFatal(ex) => if (decider(ex) == Supervision.Stop) failStage(ex)
-        }
-
-        pullIfNeeded()
-      }
-
-      override def onUpstreamFinish(): Unit =
-        if (idle()) completeStage()
-
-      private def processElement(partition: Partition, element: Contextual[In]): Unit = {
-        val future = f(element.element, partition)
-        val holder = new Holder[In, Out](element.element, MapAsyncPartitioned.NotYetThere, futureCB)
-        inProgress.put(partition, Contextual(element.context, holder))
-
-        future.value match {
-          case None    => future.onComplete(holder)(ExecutionContexts.parasitic)
-          case Some(v) =>
-            // #20217 the future is already here, optimization: avoid scheduling it on the dispatcher and
-            // run the logic directly on this thread
-            holder.setOut(v)
-            v match {
-              // this optimization also requires us to stop the stage to fail fast if the decider says so:
-              case Failure(ex) if holder.supervisionDirectiveFor(decider, ex) == Supervision.Stop => failStage(ex)
-              case _                                                                              => pushNextIfPossible()
-            }
-        }
-      }
-
-      @nowarn("msg=deprecated") // use Map.retain to support Scala 2.12
-      private def pushNextIfPossible(): Unit =
-        if (inProgress.isEmpty) {
-          drainQueue()
-          pullIfNeeded()
-        } else if (isAvailable(out)) {
-          inProgress.retain { case (_, Contextual(_, holder)) =>
-            if ((holder.out eq MapAsyncPartitioned.NotYetThere) || !isAvailable(out)) {
-              true
-            } else {
-              holder.out match {
-                case Success(elem) =>
-                  if (elem != null) {
-                    push(out, elem)
-                    pullIfNeeded()
-                  } else {
-                    // elem is null
-                    pullIfNeeded()
-                  }
-
-                case Failure(NonFatal(ex)) =>
-                  holder.supervisionDirectiveFor(decider, ex) match {
-                    // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
-                    // onComplete callback has run
-                    case Supervision.Stop =>
-                      failStage(ex)
-                    case _ =>
-                    // try next element
-                  }
-                case Failure(ex) =>
-                  // fatal exception in buffer, not sure that it can actually happen, but for good measure
-                  throw ex
-              }
-              false
-            }
-          }
-          drainQueue()
-        }
-
-      private def drainQueue(): Unit = {
-        if (waiting.nonEmpty) {
-          val todo = waiting
-          waiting = mutable.Queue[(Partition, Contextual[In])]()
-
-          todo.foreach { case (partition, element) =>
-            if (inProgress.size >= parallelism || inProgress.contains(partition)) {
-              waiting.enqueue(partition -> element)
-            } else {
-              element.resume()
-              processElement(partition, element)
-            }
-          }
-        }
-      }
-
-      private def pullIfNeeded(): Unit =
-        if (isClosed(in) && idle()) completeStage()
-        else if (waiting.size < bufferSize && !hasBeenPulled(in)) tryPull(in)
-      // else already pulled and waiting for next element
-
-      private def idle(): Boolean =
-        inProgress.isEmpty && waiting.isEmpty
-
-      setHandlers(in, out, this)
-    }
-
-}
-
-private[stream] class MapAsyncPartitionedOrdered[In, Out, Partition](
-    parallelism: Int,
-    bufferSize: Int,
-    extractPartition: In => Partition,
-    f: (In, Partition) => Future[Out]) extends GraphStage[FlowShape[In, Out]] {
+  if (parallelism < 1) throw new IllegalArgumentException("parallelism must be at least 1")
 
   private val in = Inlet[In]("MapAsyncPartitionOrdered.in")
   private val out = Outlet[Out]("MapAsyncPartitionOrdered.out")
@@ -416,7 +240,11 @@ private[stream] class MapAsyncPartitionedOrdered[In, Out, Partition](
         }
       }
 
-      private def pushNextIfPossible(): Unit =
+      private val pushNextIfPossible: () => Unit =
+        if (orderedOutput) pushNextIfPossibleOrdered _
+        else pushNextIfPossibleUnordered _
+
+      private def pushNextIfPossibleOrdered(): Unit =
         if (partitionsInProgress.isEmpty) {
           drainQueue()
           pullIfNeeded()
@@ -453,6 +281,45 @@ private[stream] class MapAsyncPartitionedOrdered[In, Out, Partition](
           drainQueue()
         }
 
+      private def pushNextIfPossibleUnordered(): Unit =
+        if (partitionsInProgress.isEmpty) {
+          drainQueue()
+          pullIfNeeded()
+        } else {
+          buffer = buffer.filter { case (partition, wrappedInput) =>
+            import wrappedInput.{ element => holder }
+
+            if ((holder.out eq MapAsyncPartitioned.NotYetThere) || !isAvailable(out)) {
+              true
+            } else {
+              partitionsInProgress -= partition
+
+              holder.out match {
+                case Success(elem) =>
+                  if (elem != null) {
+                    push(out, elem)
+                  }
+
+                case Failure(NonFatal(ex)) =>
+                  holder.supervisionDirectiveFor(decider, ex) match {
+                    // this could happen if we are looping in pushNextIfPossible and end up on a failed future before the
+                    // onComplete callback has run
+                    case Supervision.Stop =>
+                      failStage(ex)
+                    case _ =>
+                    // try next element
+                  }
+                case Failure(ex) =>
+                  // fatal exception in buffer, not sure that it can actually happen, but for good measure
+                  throw ex
+              }
+              false
+            }
+          }
+          pullIfNeeded()
+          drainQueue()
+        }
+
       private def drainQueue(): Unit = {
         buffer.foreach {
           case (partition, wrappedInput) =>
@@ -465,7 +332,7 @@ private[stream] class MapAsyncPartitionedOrdered[In, Out, Partition](
 
       private def pullIfNeeded(): Unit =
         if (isClosed(in) && idle()) completeStage()
-        else if (buffer.size < bufferSize && !hasBeenPulled(in)) tryPull(in)
+        else if (buffer.size < parallelism && !hasBeenPulled(in)) tryPull(in)
       // else already pulled and waiting for next element
 
       private def idle(): Boolean =
