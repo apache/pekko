@@ -245,8 +245,6 @@ import pekko.util.unused
     // FIXME: Eliminate re-wraps
     def subreceive: SubReceive =
       new SubReceive({
-        case OnSubscribe(id, subscription) =>
-          inputs(id).subreceive(ActorSubscriberMessage.OnSubscribe(subscription))
         case OnNext(id, elem) =>
           if (marked(id) && !pending(id)) markedPending += 1
           pending(id, on = true)
@@ -263,6 +261,8 @@ import pekko.util.unused
           if (!receivedInput && isAllCompleted()) onCompleteWhenNoInput()
         case OnError(id, e) =>
           onError(id, e)
+        case OnSubscribe(id, subscription) =>
+          inputs(id).subreceive(ActorSubscriberMessage.OnSubscribe(subscription))
       })
 
   }
