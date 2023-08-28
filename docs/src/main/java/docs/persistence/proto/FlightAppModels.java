@@ -18,88 +18,102 @@ package docs.persistence.proto;
 
 public final class FlightAppModels {
   private FlightAppModels() {}
+
   public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
-  }
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
 
   public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface SeatReservedOrBuilder extends
+
+  public interface SeatReservedOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:docs.persistence.SeatReserved)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return Whether the letter field is set.
      */
     boolean hasLetter();
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return The letter.
      */
     java.lang.String getLetter();
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return The bytes for letter.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getLetterBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getLetterBytes();
 
     /**
      * <code>required uint32 row = 2;</code>
+     *
      * @return Whether the row field is set.
      */
     boolean hasRow();
     /**
      * <code>required uint32 row = 2;</code>
+     *
      * @return The row.
      */
     int getRow();
 
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return Whether the seatType field is set.
      */
     boolean hasSeatType();
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return The seatType.
      */
     java.lang.String getSeatType();
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return The bytes for seatType.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getSeatTypeBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getSeatTypeBytes();
   }
-  /**
-   * Protobuf type {@code docs.persistence.SeatReserved}
-   */
-  public  static final class SeatReserved extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code docs.persistence.SeatReserved} */
+  public static final class SeatReserved
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:docs.persistence.SeatReserved)
       SeatReservedOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use SeatReserved.newBuilder() to construct.
-    private SeatReserved(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private SeatReserved(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private SeatReserved() {
       letter_ = "";
       seatType_ = "";
@@ -113,10 +127,10 @@ public final class FlightAppModels {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private SeatReserved(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -136,53 +150,60 @@ public final class FlightAppModels {
             case 0:
               done = true;
               break;
-            case 10: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              letter_ = bs;
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              row_ = input.readUInt32();
-              break;
-            }
-            case 26: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              seatType_ = bs;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 10:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                letter_ = bs;
+                break;
               }
-              break;
-            }
+            case 16:
+              {
+                bitField0_ |= 0x00000002;
+                row_ = input.readUInt32();
+                break;
+              }
+            case 26:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000004;
+                seatType_ = bs;
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
+      return docs.persistence.proto.FlightAppModels
+          .internal_static_docs_persistence_SeatReserved_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_fieldAccessorTable
+      return docs.persistence.proto.FlightAppModels
+          .internal_static_docs_persistence_SeatReserved_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              docs.persistence.proto.FlightAppModels.SeatReserved.class, docs.persistence.proto.FlightAppModels.SeatReserved.Builder.class);
+              docs.persistence.proto.FlightAppModels.SeatReserved.class,
+              docs.persistence.proto.FlightAppModels.SeatReserved.Builder.class);
     }
 
     private int bitField0_;
@@ -190,6 +211,7 @@ public final class FlightAppModels {
     private volatile java.lang.Object letter_;
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return Whether the letter field is set.
      */
     public boolean hasLetter() {
@@ -197,6 +219,7 @@ public final class FlightAppModels {
     }
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return The letter.
      */
     public java.lang.String getLetter() {
@@ -204,7 +227,7 @@ public final class FlightAppModels {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -215,15 +238,14 @@ public final class FlightAppModels {
     }
     /**
      * <code>required string letter = 1;</code>
+     *
      * @return The bytes for letter.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getLetterBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getLetterBytes() {
       java.lang.Object ref = letter_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         letter_ = b;
         return b;
       } else {
@@ -235,6 +257,7 @@ public final class FlightAppModels {
     private int row_;
     /**
      * <code>required uint32 row = 2;</code>
+     *
      * @return Whether the row field is set.
      */
     public boolean hasRow() {
@@ -242,6 +265,7 @@ public final class FlightAppModels {
     }
     /**
      * <code>required uint32 row = 2;</code>
+     *
      * @return The row.
      */
     public int getRow() {
@@ -251,22 +275,28 @@ public final class FlightAppModels {
     public static final int SEATTYPE_FIELD_NUMBER = 3;
     private volatile java.lang.Object seatType_;
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return Whether the seatType field is set.
      */
     public boolean hasSeatType() {
       return ((bitField0_ & 0x00000004) != 0);
     }
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return The seatType.
      */
     public java.lang.String getSeatType() {
@@ -274,7 +304,7 @@ public final class FlightAppModels {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -284,20 +314,21 @@ public final class FlightAppModels {
       }
     }
     /**
+     *
+     *
      * <pre>
      * the new field
      * </pre>
      *
      * <code>optional string seatType = 3;</code>
+     *
      * @return The bytes for seatType.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getSeatTypeBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getSeatTypeBytes() {
       java.lang.Object ref = seatType_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         seatType_ = b;
         return b;
       } else {
@@ -306,6 +337,7 @@ public final class FlightAppModels {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -326,7 +358,7 @@ public final class FlightAppModels {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, letter_);
       }
@@ -346,14 +378,15 @@ public final class FlightAppModels {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, letter_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, letter_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeUInt32Size(2, row_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeUInt32Size(2, row_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(3, seatType_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(3, seatType_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -363,27 +396,25 @@ public final class FlightAppModels {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof docs.persistence.proto.FlightAppModels.SeatReserved)) {
         return super.equals(obj);
       }
-      docs.persistence.proto.FlightAppModels.SeatReserved other = (docs.persistence.proto.FlightAppModels.SeatReserved) obj;
+      docs.persistence.proto.FlightAppModels.SeatReserved other =
+          (docs.persistence.proto.FlightAppModels.SeatReserved) obj;
 
       if (hasLetter() != other.hasLetter()) return false;
       if (hasLetter()) {
-        if (!getLetter()
-            .equals(other.getLetter())) return false;
+        if (!getLetter().equals(other.getLetter())) return false;
       }
       if (hasRow() != other.hasRow()) return false;
       if (hasRow()) {
-        if (getRow()
-            != other.getRow()) return false;
+        if (getRow() != other.getRow()) return false;
       }
       if (hasSeatType() != other.hasSeatType()) return false;
       if (hasSeatType()) {
-        if (!getSeatType()
-            .equals(other.getSeatType())) return false;
+        if (!getSeatType().equals(other.getSeatType())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -418,83 +449,97 @@ public final class FlightAppModels {
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(byte[] data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        byte[] data, org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static docs.persistence.proto.FlightAppModels.SeatReserved parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static docs.persistence.proto.FlightAppModels.SeatReserved parseDelimitedFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseDelimitedFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+        org.apache.pekko.protobufv3.internal.CodedInputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static docs.persistence.proto.FlightAppModels.SeatReserved parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(docs.persistence.proto.FlightAppModels.SeatReserved prototype) {
+
+    public static Builder newBuilder(
+        docs.persistence.proto.FlightAppModels.SeatReserved prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -503,24 +548,26 @@ public final class FlightAppModels {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code docs.persistence.SeatReserved}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code docs.persistence.SeatReserved} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:docs.persistence.SeatReserved)
         docs.persistence.proto.FlightAppModels.SeatReservedOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
+        return docs.persistence.proto.FlightAppModels
+            .internal_static_docs_persistence_SeatReserved_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_fieldAccessorTable
+        return docs.persistence.proto.FlightAppModels
+            .internal_static_docs_persistence_SeatReserved_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                docs.persistence.proto.FlightAppModels.SeatReserved.class, docs.persistence.proto.FlightAppModels.SeatReserved.Builder.class);
+                docs.persistence.proto.FlightAppModels.SeatReserved.class,
+                docs.persistence.proto.FlightAppModels.SeatReserved.Builder.class);
       }
 
       // Construct using docs.persistence.proto.FlightAppModels.SeatReserved.newBuilder()
@@ -533,11 +580,11 @@ public final class FlightAppModels {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {}
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -551,9 +598,9 @@ public final class FlightAppModels {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return docs.persistence.proto.FlightAppModels.internal_static_docs_persistence_SeatReserved_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return docs.persistence.proto.FlightAppModels
+            .internal_static_docs_persistence_SeatReserved_descriptor;
       }
 
       @java.lang.Override
@@ -572,7 +619,8 @@ public final class FlightAppModels {
 
       @java.lang.Override
       public docs.persistence.proto.FlightAppModels.SeatReserved buildPartial() {
-        docs.persistence.proto.FlightAppModels.SeatReserved result = new docs.persistence.proto.FlightAppModels.SeatReserved(this);
+        docs.persistence.proto.FlightAppModels.SeatReserved result =
+            new docs.persistence.proto.FlightAppModels.SeatReserved(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -596,38 +644,45 @@ public final class FlightAppModels {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
         if (other instanceof docs.persistence.proto.FlightAppModels.SeatReserved) {
-          return mergeFrom((docs.persistence.proto.FlightAppModels.SeatReserved)other);
+          return mergeFrom((docs.persistence.proto.FlightAppModels.SeatReserved) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -635,7 +690,8 @@ public final class FlightAppModels {
       }
 
       public Builder mergeFrom(docs.persistence.proto.FlightAppModels.SeatReserved other) {
-        if (other == docs.persistence.proto.FlightAppModels.SeatReserved.getDefaultInstance()) return this;
+        if (other == docs.persistence.proto.FlightAppModels.SeatReserved.getDefaultInstance())
+          return this;
         if (other.hasLetter()) {
           bitField0_ |= 0x00000001;
           letter_ = other.letter_;
@@ -674,7 +730,8 @@ public final class FlightAppModels {
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (docs.persistence.proto.FlightAppModels.SeatReserved) e.getUnfinishedMessage();
+          parsedMessage =
+              (docs.persistence.proto.FlightAppModels.SeatReserved) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -683,11 +740,13 @@ public final class FlightAppModels {
         }
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object letter_ = "";
       /**
        * <code>required string letter = 1;</code>
+       *
        * @return Whether the letter field is set.
        */
       public boolean hasLetter() {
@@ -695,6 +754,7 @@ public final class FlightAppModels {
       }
       /**
        * <code>required string letter = 1;</code>
+       *
        * @return The letter.
        */
       public java.lang.String getLetter() {
@@ -713,15 +773,14 @@ public final class FlightAppModels {
       }
       /**
        * <code>required string letter = 1;</code>
+       *
        * @return The bytes for letter.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getLetterBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getLetterBytes() {
         java.lang.Object ref = letter_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           letter_ = b;
           return b;
         } else {
@@ -730,21 +789,22 @@ public final class FlightAppModels {
       }
       /**
        * <code>required string letter = 1;</code>
+       *
        * @param value The letter to set.
        * @return This builder for chaining.
        */
-      public Builder setLetter(
-          java.lang.String value) {
+      public Builder setLetter(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         letter_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string letter = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearLetter() {
@@ -755,23 +815,24 @@ public final class FlightAppModels {
       }
       /**
        * <code>required string letter = 1;</code>
+       *
        * @param value The bytes for letter to set.
        * @return This builder for chaining.
        */
-      public Builder setLetterBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setLetterBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         letter_ = value;
         onChanged();
         return this;
       }
 
-      private int row_ ;
+      private int row_;
       /**
        * <code>required uint32 row = 2;</code>
+       *
        * @return Whether the row field is set.
        */
       public boolean hasRow() {
@@ -779,6 +840,7 @@ public final class FlightAppModels {
       }
       /**
        * <code>required uint32 row = 2;</code>
+       *
        * @return The row.
        */
       public int getRow() {
@@ -786,6 +848,7 @@ public final class FlightAppModels {
       }
       /**
        * <code>required uint32 row = 2;</code>
+       *
        * @param value The row to set.
        * @return This builder for chaining.
        */
@@ -797,6 +860,7 @@ public final class FlightAppModels {
       }
       /**
        * <code>required uint32 row = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearRow() {
@@ -808,22 +872,28 @@ public final class FlightAppModels {
 
       private java.lang.Object seatType_ = "";
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @return Whether the seatType field is set.
        */
       public boolean hasSeatType() {
         return ((bitField0_ & 0x00000004) != 0);
       }
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @return The seatType.
        */
       public java.lang.String getSeatType() {
@@ -841,20 +911,21 @@ public final class FlightAppModels {
         }
       }
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @return The bytes for seatType.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getSeatTypeBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getSeatTypeBytes() {
         java.lang.Object ref = seatType_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           seatType_ = b;
           return b;
         } else {
@@ -862,30 +933,35 @@ public final class FlightAppModels {
         }
       }
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @param value The seatType to set.
        * @return This builder for chaining.
        */
-      public Builder setSeatType(
-          java.lang.String value) {
+      public Builder setSeatType(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
         seatType_ = value;
         onChanged();
         return this;
       }
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSeatType() {
@@ -895,24 +971,27 @@ public final class FlightAppModels {
         return this;
       }
       /**
+       *
+       *
        * <pre>
        * the new field
        * </pre>
        *
        * <code>optional string seatType = 3;</code>
+       *
        * @param value The bytes for seatType to set.
        * @return This builder for chaining.
        */
-      public Builder setSeatTypeBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setSeatTypeBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
         seatType_ = value;
         onChanged();
         return this;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -925,12 +1004,12 @@ public final class FlightAppModels {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:docs.persistence.SeatReserved)
     }
 
     // @@protoc_insertion_point(class_scope:docs.persistence.SeatReserved)
     private static final docs.persistence.proto.FlightAppModels.SeatReserved DEFAULT_INSTANCE;
+
     static {
       DEFAULT_INSTANCE = new docs.persistence.proto.FlightAppModels.SeatReserved();
     }
@@ -939,16 +1018,17 @@ public final class FlightAppModels {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<SeatReserved>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<SeatReserved>() {
-      @java.lang.Override
-      public SeatReserved parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new SeatReserved(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<SeatReserved> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<SeatReserved>() {
+          @java.lang.Override
+          public SeatReserved parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new SeatReserved(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<SeatReserved> parser() {
       return PARSER;
@@ -963,38 +1043,39 @@ public final class FlightAppModels {
     public docs.persistence.proto.FlightAppModels.SeatReserved getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_docs_persistence_SeatReserved_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_docs_persistence_SeatReserved_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_docs_persistence_SeatReserved_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\025FlightAppModels.proto\022\020docs.persistenc" +
-      "e\"=\n\014SeatReserved\022\016\n\006letter\030\001 \002(\t\022\013\n\003row" +
-      "\030\002 \002(\r\022\020\n\010seatType\030\003 \001(\tB\032\n\026docs.persist" +
-      "ence.protoH\001"
+      "\n\025FlightAppModels.proto\022\020docs.persistenc"
+          + "e\"=\n\014SeatReserved\022\016\n\006letter\030\001 \002(\t\022\013\n\003row"
+          + "\030\002 \002(\r\022\020\n\010seatType\030\003 \001(\tB\032\n\026docs.persist"
+          + "ence.protoH\001"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-        });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {});
     internal_static_docs_persistence_SeatReserved_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_docs_persistence_SeatReserved_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_docs_persistence_SeatReserved_descriptor,
-        new java.lang.String[] { "Letter", "Row", "SeatType", });
+        getDescriptor().getMessageTypes().get(0);
+    internal_static_docs_persistence_SeatReserved_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_docs_persistence_SeatReserved_descriptor,
+            new java.lang.String[] {
+              "Letter", "Row", "SeatType",
+            });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

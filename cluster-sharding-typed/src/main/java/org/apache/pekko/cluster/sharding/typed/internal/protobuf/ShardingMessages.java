@@ -18,63 +18,67 @@ package org.apache.pekko.cluster.sharding.typed.internal.protobuf;
 
 public final class ShardingMessages {
   private ShardingMessages() {}
+
   public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
-  }
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
 
   public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface ShardingEnvelopeOrBuilder extends
+
+  public interface ShardingEnvelopeOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:org.apache.pekko.cluster.sharding.typed.ShardingEnvelope)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return Whether the entityId field is set.
      */
     boolean hasEntityId();
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return The entityId.
      */
     java.lang.String getEntityId();
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return The bytes for entityId.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getEntityIdBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getEntityIdBytes();
 
     /**
      * <code>required .Payload message = 2;</code>
+     *
      * @return Whether the message field is set.
      */
     boolean hasMessage();
     /**
      * <code>required .Payload message = 2;</code>
+     *
      * @return The message.
      */
     org.apache.pekko.remote.ContainerFormats.Payload getMessage();
-    /**
-     * <code>required .Payload message = 2;</code>
-     */
+    /** <code>required .Payload message = 2;</code> */
     org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMessageOrBuilder();
   }
-  /**
-   * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ShardingEnvelope}
-   */
-  public  static final class ShardingEnvelope extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ShardingEnvelope} */
+  public static final class ShardingEnvelope
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:org.apache.pekko.cluster.sharding.typed.ShardingEnvelope)
       ShardingEnvelopeOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use ShardingEnvelope.newBuilder() to construct.
-    private ShardingEnvelope(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private ShardingEnvelope(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private ShardingEnvelope() {
       entityId_ = "";
     }
@@ -87,10 +91,10 @@ public final class ShardingMessages {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private ShardingEnvelope(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -110,55 +114,65 @@ public final class ShardingMessages {
             case 0:
               done = true;
               break;
-            case 10: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              entityId_ = bs;
-              break;
-            }
-            case 18: {
-              org.apache.pekko.remote.ContainerFormats.Payload.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) != 0)) {
-                subBuilder = message_.toBuilder();
+            case 10:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                entityId_ = bs;
+                break;
               }
-              message_ = input.readMessage(org.apache.pekko.remote.ContainerFormats.Payload.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(message_);
-                message_ = subBuilder.buildPartial();
+            case 18:
+              {
+                org.apache.pekko.remote.ContainerFormats.Payload.Builder subBuilder = null;
+                if (((bitField0_ & 0x00000002) != 0)) {
+                  subBuilder = message_.toBuilder();
+                }
+                message_ =
+                    input.readMessage(
+                        org.apache.pekko.remote.ContainerFormats.Payload.PARSER, extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(message_);
+                  message_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000002;
+                break;
               }
-              bitField0_ |= 0x00000002;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
               }
-              break;
-            }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+          .internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
+      return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+          .internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.Builder.class);
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                  .ShardingEnvelope.class,
+              org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                  .ShardingEnvelope.Builder.class);
     }
 
     private int bitField0_;
@@ -166,6 +180,7 @@ public final class ShardingMessages {
     private volatile java.lang.Object entityId_;
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return Whether the entityId field is set.
      */
     public boolean hasEntityId() {
@@ -173,6 +188,7 @@ public final class ShardingMessages {
     }
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return The entityId.
      */
     public java.lang.String getEntityId() {
@@ -180,7 +196,7 @@ public final class ShardingMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -191,15 +207,14 @@ public final class ShardingMessages {
     }
     /**
      * <code>required string entityId = 1;</code>
+     *
      * @return The bytes for entityId.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getEntityIdBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getEntityIdBytes() {
       java.lang.Object ref = entityId_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         entityId_ = b;
         return b;
       } else {
@@ -211,6 +226,7 @@ public final class ShardingMessages {
     private org.apache.pekko.remote.ContainerFormats.Payload message_;
     /**
      * <code>required .Payload message = 2;</code>
+     *
      * @return Whether the message field is set.
      */
     public boolean hasMessage() {
@@ -218,19 +234,23 @@ public final class ShardingMessages {
     }
     /**
      * <code>required .Payload message = 2;</code>
+     *
      * @return The message.
      */
     public org.apache.pekko.remote.ContainerFormats.Payload getMessage() {
-      return message_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : message_;
+      return message_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : message_;
     }
-    /**
-     * <code>required .Payload message = 2;</code>
-     */
+    /** <code>required .Payload message = 2;</code> */
     public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMessageOrBuilder() {
-      return message_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : message_;
+      return message_ == null
+          ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+          : message_;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -255,7 +275,7 @@ public final class ShardingMessages {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, entityId_);
       }
@@ -272,11 +292,13 @@ public final class ShardingMessages {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, entityId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, entityId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, getMessage());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                2, getMessage());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -286,22 +308,27 @@ public final class ShardingMessages {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+              .ShardingEnvelope)) {
         return super.equals(obj);
       }
-      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope other = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope) obj;
+      org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope
+          other =
+              (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                      .ShardingEnvelope)
+                  obj;
 
       if (hasEntityId() != other.hasEntityId()) return false;
       if (hasEntityId()) {
-        if (!getEntityId()
-            .equals(other.getEntityId())) return false;
+        if (!getEntityId().equals(other.getEntityId())) return false;
       }
       if (hasMessage() != other.hasMessage()) return false;
       if (hasMessage()) {
-        if (!getMessage()
-            .equals(other.getMessage())) return false;
+        if (!getMessage().equals(other.getMessage())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -327,88 +354,124 @@ public final class ShardingMessages {
       return hash;
     }
 
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -417,27 +480,33 @@ public final class ShardingMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ShardingEnvelope}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code org.apache.pekko.cluster.sharding.typed.ShardingEnvelope} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:org.apache.pekko.cluster.sharding.typed.ShardingEnvelope)
-        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelopeOrBuilder {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelopeOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.class, org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.Builder.class);
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                    .ShardingEnvelope.class,
+                org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                    .ShardingEnvelope.Builder.class);
       }
 
-      // Construct using org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.newBuilder()
+      // Construct using
+      // org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -447,12 +516,13 @@ public final class ShardingMessages {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getMessageFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -468,19 +538,25 @@ public final class ShardingMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope getDefaultInstanceForType() {
-        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.getDefaultInstance();
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+              .ShardingEnvelope
+          getDefaultInstanceForType() {
+        return org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope.getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope build() {
-        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope result = buildPartial();
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+              .ShardingEnvelope
+          build() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -488,8 +564,13 @@ public final class ShardingMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope buildPartial() {
-        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope result = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope(this);
+      public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+              .ShardingEnvelope
+          buildPartial() {
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope
+            result =
+                new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                    .ShardingEnvelope(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -513,46 +594,64 @@ public final class ShardingMessages {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope) {
-          return mergeFrom((org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope)other);
+        if (other
+            instanceof
+            org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                .ShardingEnvelope) {
+          return mergeFrom(
+              (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                      .ShardingEnvelope)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope other) {
-        if (other == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                  .ShardingEnvelope
+              other) {
+        if (other
+            == org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                .ShardingEnvelope.getDefaultInstance()) return this;
         if (other.hasEntityId()) {
           bitField0_ |= 0x00000001;
           entityId_ = other.entityId_;
@@ -585,11 +684,15 @@ public final class ShardingMessages {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope parsedMessage = null;
+        org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope
+            parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+                      .ShardingEnvelope)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -598,11 +701,13 @@ public final class ShardingMessages {
         }
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object entityId_ = "";
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @return Whether the entityId field is set.
        */
       public boolean hasEntityId() {
@@ -610,6 +715,7 @@ public final class ShardingMessages {
       }
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @return The entityId.
        */
       public java.lang.String getEntityId() {
@@ -628,15 +734,14 @@ public final class ShardingMessages {
       }
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @return The bytes for entityId.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getEntityIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getEntityIdBytes() {
         java.lang.Object ref = entityId_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           entityId_ = b;
           return b;
         } else {
@@ -645,21 +750,22 @@ public final class ShardingMessages {
       }
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @param value The entityId to set.
        * @return This builder for chaining.
        */
-      public Builder setEntityId(
-          java.lang.String value) {
+      public Builder setEntityId(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         entityId_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearEntityId() {
@@ -670,15 +776,15 @@ public final class ShardingMessages {
       }
       /**
        * <code>required string entityId = 1;</code>
+       *
        * @param value The bytes for entityId to set.
        * @return This builder for chaining.
        */
-      public Builder setEntityIdBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setEntityIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         entityId_ = value;
         onChanged();
         return this;
@@ -686,9 +792,13 @@ public final class ShardingMessages {
 
       private org.apache.pekko.remote.ContainerFormats.Payload message_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> messageBuilder_;
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
+          messageBuilder_;
       /**
        * <code>required .Payload message = 2;</code>
+       *
        * @return Whether the message field is set.
        */
       public boolean hasMessage() {
@@ -696,18 +806,19 @@ public final class ShardingMessages {
       }
       /**
        * <code>required .Payload message = 2;</code>
+       *
        * @return The message.
        */
       public org.apache.pekko.remote.ContainerFormats.Payload getMessage() {
         if (messageBuilder_ == null) {
-          return message_ == null ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : message_;
+          return message_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : message_;
         } else {
           return messageBuilder_.getMessage();
         }
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public Builder setMessage(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (messageBuilder_ == null) {
           if (value == null) {
@@ -721,9 +832,7 @@ public final class ShardingMessages {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public Builder setMessage(
           org.apache.pekko.remote.ContainerFormats.Payload.Builder builderForValue) {
         if (messageBuilder_ == null) {
@@ -735,16 +844,17 @@ public final class ShardingMessages {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public Builder mergeMessage(org.apache.pekko.remote.ContainerFormats.Payload value) {
         if (messageBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-              message_ != null &&
-              message_ != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000002) != 0)
+              && message_ != null
+              && message_
+                  != org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()) {
             message_ =
-              org.apache.pekko.remote.ContainerFormats.Payload.newBuilder(message_).mergeFrom(value).buildPartial();
+                org.apache.pekko.remote.ContainerFormats.Payload.newBuilder(message_)
+                    .mergeFrom(value)
+                    .buildPartial();
           } else {
             message_ = value;
           }
@@ -755,9 +865,7 @@ public final class ShardingMessages {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public Builder clearMessage() {
         if (messageBuilder_ == null) {
           message_ = null;
@@ -768,41 +876,40 @@ public final class ShardingMessages {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public org.apache.pekko.remote.ContainerFormats.Payload.Builder getMessageBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getMessageFieldBuilder().getBuilder();
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       public org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder getMessageOrBuilder() {
         if (messageBuilder_ != null) {
           return messageBuilder_.getMessageOrBuilder();
         } else {
-          return message_ == null ?
-              org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance() : message_;
+          return message_ == null
+              ? org.apache.pekko.remote.ContainerFormats.Payload.getDefaultInstance()
+              : message_;
         }
       }
-      /**
-       * <code>required .Payload message = 2;</code>
-       */
+      /** <code>required .Payload message = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder> 
+              org.apache.pekko.remote.ContainerFormats.Payload,
+              org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+              org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>
           getMessageFieldBuilder() {
         if (messageBuilder_ == null) {
-          messageBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              org.apache.pekko.remote.ContainerFormats.Payload, org.apache.pekko.remote.ContainerFormats.Payload.Builder, org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
-                  getMessage(),
-                  getParentForChildren(),
-                  isClean());
+          messageBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
+                  org.apache.pekko.remote.ContainerFormats.Payload,
+                  org.apache.pekko.remote.ContainerFormats.Payload.Builder,
+                  org.apache.pekko.remote.ContainerFormats.PayloadOrBuilder>(
+                  getMessage(), getParentForChildren(), isClean());
           message_ = null;
         }
         return messageBuilder_;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -815,30 +922,37 @@ public final class ShardingMessages {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:org.apache.pekko.cluster.sharding.typed.ShardingEnvelope)
     }
 
     // @@protoc_insertion_point(class_scope:org.apache.pekko.cluster.sharding.typed.ShardingEnvelope)
-    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope DEFAULT_INSTANCE;
+    private static final org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+              .ShardingEnvelope();
     }
 
-    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope getDefaultInstance() {
+    public static org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<ShardingEnvelope>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<ShardingEnvelope>() {
-      @java.lang.Override
-      public ShardingEnvelope parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new ShardingEnvelope(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<ShardingEnvelope> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<ShardingEnvelope>() {
+          @java.lang.Override
+          public ShardingEnvelope parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new ShardingEnvelope(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<ShardingEnvelope> parser() {
       return PARSER;
@@ -850,44 +964,48 @@ public final class ShardingMessages {
     }
 
     @java.lang.Override
-    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages.ShardingEnvelope getDefaultInstanceForType() {
+    public org.apache.pekko.cluster.sharding.typed.internal.protobuf.ShardingMessages
+            .ShardingEnvelope
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\026ShardingMessages.proto\022\'org.apache.pek" +
-      "ko.cluster.sharding.typed\032\026ContainerForm" +
-      "ats.proto\"?\n\020ShardingEnvelope\022\020\n\010entityI" +
-      "d\030\001 \002(\t\022\031\n\007message\030\002 \002(\0132\010.PayloadB=\n9or" +
-      "g.apache.pekko.cluster.sharding.typed.in" +
-      "ternal.protobufH\001"
+      "\n\026ShardingMessages.proto\022\'org.apache.pek"
+          + "ko.cluster.sharding.typed\032\026ContainerForm"
+          + "ats.proto\"?\n\020ShardingEnvelope\022\020\n\010entityI"
+          + "d\030\001 \002(\t\022\031\n\007message\030\002 \002(\0132\010.PayloadB=\n9or"
+          + "g.apache.pekko.cluster.sharding.typed.in"
+          + "ternal.protobufH\001"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-          org.apache.pekko.remote.ContainerFormats.getDescriptor(),
-        });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
+                  org.apache.pekko.remote.ContainerFormats.getDescriptor(),
+                });
     internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor,
-        new java.lang.String[] { "EntityId", "Message", });
+        getDescriptor().getMessageTypes().get(0);
+    internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_org_apache_pekko_cluster_sharding_typed_ShardingEnvelope_descriptor,
+            new java.lang.String[] {
+              "EntityId", "Message",
+            });
     org.apache.pekko.remote.ContainerFormats.getDescriptor();
   }
 

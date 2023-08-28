@@ -18,170 +18,192 @@ package org.apache.pekko.persistence.serialization;
 
 public final class MessageFormats {
   private MessageFormats() {}
+
   public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
-  }
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
 
   public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface PersistentMessageOrBuilder extends
+
+  public interface PersistentMessageOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:PersistentMessage)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>optional .PersistentPayload payload = 1;</code>
+     *
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
     /**
      * <code>optional .PersistentPayload payload = 1;</code>
+     *
      * @return The payload.
      */
     org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload();
-    /**
-     * <code>optional .PersistentPayload payload = 1;</code>
-     */
-    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder();
+    /** <code>optional .PersistentPayload payload = 1;</code> */
+    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getPayloadOrBuilder();
 
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     boolean hasSequenceNr();
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return The sequenceNr.
      */
     long getSequenceNr();
 
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     boolean hasPersistenceId();
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return The persistenceId.
      */
     java.lang.String getPersistenceId();
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return The bytes for persistenceId.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes();
 
     /**
+     *
+     *
      * <pre>
      * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
+     *
      * @return Whether the deleted field is set.
      */
     boolean hasDeleted();
     /**
+     *
+     *
      * <pre>
      * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
+     *
      * @return The deleted.
      */
     boolean getDeleted();
 
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return Whether the sender field is set.
      */
     boolean hasSender();
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return The sender.
      */
     java.lang.String getSender();
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return The bytes for sender.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getSenderBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getSenderBytes();
 
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return Whether the manifest field is set.
      */
     boolean hasManifest();
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return The manifest.
      */
     java.lang.String getManifest();
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return The bytes for manifest.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getManifestBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getManifestBytes();
 
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return Whether the writerUuid field is set.
      */
     boolean hasWriterUuid();
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return The writerUuid.
      */
     java.lang.String getWriterUuid();
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return The bytes for writerUuid.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getWriterUuidBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getWriterUuidBytes();
 
     /**
      * <code>optional sint64 timestamp = 14;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     boolean hasTimestamp();
     /**
      * <code>optional sint64 timestamp = 14;</code>
+     *
      * @return The timestamp.
      */
     long getTimestamp();
 
     /**
      * <code>optional .PersistentPayload metadata = 15;</code>
+     *
      * @return Whether the metadata field is set.
      */
     boolean hasMetadata();
     /**
      * <code>optional .PersistentPayload metadata = 15;</code>
+     *
      * @return The metadata.
      */
     org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getMetadata();
-    /**
-     * <code>optional .PersistentPayload metadata = 15;</code>
-     */
-    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getMetadataOrBuilder();
+    /** <code>optional .PersistentPayload metadata = 15;</code> */
+    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getMetadataOrBuilder();
   }
-  /**
-   * Protobuf type {@code PersistentMessage}
-   */
-  public  static final class PersistentMessage extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code PersistentMessage} */
+  public static final class PersistentMessage
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:PersistentMessage)
       PersistentMessageOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use PersistentMessage.newBuilder() to construct.
-    private PersistentMessage(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private PersistentMessage(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private PersistentMessage() {
       persistenceId_ = "";
       sender_ = "";
@@ -197,10 +219,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private PersistentMessage(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -220,101 +242,125 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 10: {
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000001) != 0)) {
-                subBuilder = payload_.toBuilder();
+            case 10:
+              {
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                    subBuilder = null;
+                if (((bitField0_ & 0x00000001) != 0)) {
+                  subBuilder = payload_.toBuilder();
+                }
+                payload_ =
+                    input.readMessage(
+                        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                            .PARSER,
+                        extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(payload_);
+                  payload_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000001;
+                break;
               }
-              payload_ = input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(payload_);
-                payload_ = subBuilder.buildPartial();
+            case 16:
+              {
+                bitField0_ |= 0x00000002;
+                sequenceNr_ = input.readInt64();
+                break;
               }
-              bitField0_ |= 0x00000001;
-              break;
-            }
-            case 16: {
-              bitField0_ |= 0x00000002;
-              sequenceNr_ = input.readInt64();
-              break;
-            }
-            case 26: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000004;
-              persistenceId_ = bs;
-              break;
-            }
-            case 32: {
-              bitField0_ |= 0x00000008;
-              deleted_ = input.readBool();
-              break;
-            }
-            case 90: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000010;
-              sender_ = bs;
-              break;
-            }
-            case 98: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000020;
-              manifest_ = bs;
-              break;
-            }
-            case 106: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000040;
-              writerUuid_ = bs;
-              break;
-            }
-            case 112: {
-              bitField0_ |= 0x00000080;
-              timestamp_ = input.readSInt64();
-              break;
-            }
-            case 122: {
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000100) != 0)) {
-                subBuilder = metadata_.toBuilder();
+            case 26:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000004;
+                persistenceId_ = bs;
+                break;
               }
-              metadata_ = input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(metadata_);
-                metadata_ = subBuilder.buildPartial();
+            case 32:
+              {
+                bitField0_ |= 0x00000008;
+                deleted_ = input.readBool();
+                break;
               }
-              bitField0_ |= 0x00000100;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 90:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000010;
+                sender_ = bs;
+                break;
               }
-              break;
-            }
+            case 98:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000020;
+                manifest_ = bs;
+                break;
+              }
+            case 106:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000040;
+                writerUuid_ = bs;
+                break;
+              }
+            case 112:
+              {
+                bitField0_ |= 0x00000080;
+                timestamp_ = input.readSInt64();
+                break;
+              }
+            case 122:
+              {
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                    subBuilder = null;
+                if (((bitField0_ & 0x00000100) != 0)) {
+                  subBuilder = metadata_.toBuilder();
+                }
+                metadata_ =
+                    input.readMessage(
+                        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                            .PARSER,
+                        extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(metadata_);
+                  metadata_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000100;
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentMessage_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentMessage_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.class,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+                  .class);
     }
 
     private int bitField0_;
@@ -322,6 +368,7 @@ public final class MessageFormats {
     private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload payload_;
     /**
      * <code>optional .PersistentPayload payload = 1;</code>
+     *
      * @return Whether the payload field is set.
      */
     public boolean hasPayload() {
@@ -329,22 +376,30 @@ public final class MessageFormats {
     }
     /**
      * <code>optional .PersistentPayload payload = 1;</code>
+     *
      * @return The payload.
      */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload() {
-      return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        getPayload() {
+      return payload_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : payload_;
     }
-    /**
-     * <code>optional .PersistentPayload payload = 1;</code>
-     */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder() {
-      return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+    /** <code>optional .PersistentPayload payload = 1;</code> */
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getPayloadOrBuilder() {
+      return payload_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : payload_;
     }
 
     public static final int SEQUENCENR_FIELD_NUMBER = 2;
     private long sequenceNr_;
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return Whether the sequenceNr field is set.
      */
     public boolean hasSequenceNr() {
@@ -352,6 +407,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional int64 sequenceNr = 2;</code>
+     *
      * @return The sequenceNr.
      */
     public long getSequenceNr() {
@@ -362,6 +418,7 @@ public final class MessageFormats {
     private volatile java.lang.Object persistenceId_;
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return Whether the persistenceId field is set.
      */
     public boolean hasPersistenceId() {
@@ -369,6 +426,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return The persistenceId.
      */
     public java.lang.String getPersistenceId() {
@@ -376,7 +434,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -387,15 +445,14 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string persistenceId = 3;</code>
+     *
      * @return The bytes for persistenceId.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getPersistenceIdBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
       java.lang.Object ref = persistenceId_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         persistenceId_ = b;
         return b;
       } else {
@@ -406,22 +463,28 @@ public final class MessageFormats {
     public static final int DELETED_FIELD_NUMBER = 4;
     private boolean deleted_;
     /**
+     *
+     *
      * <pre>
      * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
+     *
      * @return Whether the deleted field is set.
      */
     public boolean hasDeleted() {
       return ((bitField0_ & 0x00000008) != 0);
     }
     /**
+     *
+     *
      * <pre>
      * not used in new records from Akka 2.4
      * </pre>
      *
      * <code>optional bool deleted = 4;</code>
+     *
      * @return The deleted.
      */
     public boolean getDeleted() {
@@ -432,6 +495,7 @@ public final class MessageFormats {
     private volatile java.lang.Object sender_;
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return Whether the sender field is set.
      */
     public boolean hasSender() {
@@ -439,6 +503,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return The sender.
      */
     public java.lang.String getSender() {
@@ -446,7 +511,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -457,15 +522,14 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string sender = 11;</code>
+     *
      * @return The bytes for sender.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getSenderBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getSenderBytes() {
       java.lang.Object ref = sender_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         sender_ = b;
         return b;
       } else {
@@ -477,6 +541,7 @@ public final class MessageFormats {
     private volatile java.lang.Object manifest_;
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return Whether the manifest field is set.
      */
     public boolean hasManifest() {
@@ -484,6 +549,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return The manifest.
      */
     public java.lang.String getManifest() {
@@ -491,7 +557,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -502,15 +568,14 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string manifest = 12;</code>
+     *
      * @return The bytes for manifest.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getManifestBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getManifestBytes() {
       java.lang.Object ref = manifest_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         manifest_ = b;
         return b;
       } else {
@@ -522,6 +587,7 @@ public final class MessageFormats {
     private volatile java.lang.Object writerUuid_;
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return Whether the writerUuid field is set.
      */
     public boolean hasWriterUuid() {
@@ -529,6 +595,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return The writerUuid.
      */
     public java.lang.String getWriterUuid() {
@@ -536,7 +603,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -547,15 +614,14 @@ public final class MessageFormats {
     }
     /**
      * <code>optional string writerUuid = 13;</code>
+     *
      * @return The bytes for writerUuid.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getWriterUuidBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getWriterUuidBytes() {
       java.lang.Object ref = writerUuid_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         writerUuid_ = b;
         return b;
       } else {
@@ -567,6 +633,7 @@ public final class MessageFormats {
     private long timestamp_;
     /**
      * <code>optional sint64 timestamp = 14;</code>
+     *
      * @return Whether the timestamp field is set.
      */
     public boolean hasTimestamp() {
@@ -574,6 +641,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional sint64 timestamp = 14;</code>
+     *
      * @return The timestamp.
      */
     public long getTimestamp() {
@@ -584,6 +652,7 @@ public final class MessageFormats {
     private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload metadata_;
     /**
      * <code>optional .PersistentPayload metadata = 15;</code>
+     *
      * @return Whether the metadata field is set.
      */
     public boolean hasMetadata() {
@@ -591,19 +660,27 @@ public final class MessageFormats {
     }
     /**
      * <code>optional .PersistentPayload metadata = 15;</code>
+     *
      * @return The metadata.
      */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getMetadata() {
-      return metadata_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : metadata_;
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        getMetadata() {
+      return metadata_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : metadata_;
     }
-    /**
-     * <code>optional .PersistentPayload metadata = 15;</code>
-     */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getMetadataOrBuilder() {
-      return metadata_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : metadata_;
+    /** <code>optional .PersistentPayload metadata = 15;</code> */
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getMetadataOrBuilder() {
+      return metadata_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : metadata_;
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -628,7 +705,7 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getPayload());
       }
@@ -636,7 +713,8 @@ public final class MessageFormats {
         output.writeInt64(2, sequenceNr_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 3, persistenceId_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+            output, 3, persistenceId_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
         output.writeBool(4, deleted_);
@@ -648,7 +726,8 @@ public final class MessageFormats {
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 12, manifest_);
       }
       if (((bitField0_ & 0x00000040) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 13, writerUuid_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+            output, 13, writerUuid_);
       }
       if (((bitField0_ & 0x00000080) != 0)) {
         output.writeSInt64(14, timestamp_);
@@ -666,36 +745,45 @@ public final class MessageFormats {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(1, getPayload());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                1, getPayload());
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(2, sequenceNr_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(2, sequenceNr_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(3, persistenceId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                3, persistenceId_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBoolSize(4, deleted_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBoolSize(4, deleted_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(11, sender_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(11, sender_);
       }
       if (((bitField0_ & 0x00000020) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(12, manifest_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                12, manifest_);
       }
       if (((bitField0_ & 0x00000040) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(13, writerUuid_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                13, writerUuid_);
       }
       if (((bitField0_ & 0x00000080) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeSInt64Size(14, timestamp_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeSInt64Size(
+                14, timestamp_);
       }
       if (((bitField0_ & 0x00000100) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(15, getMetadata());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                15, getMetadata());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -705,57 +793,50 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage)) {
+      if (!(obj
+          instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage other = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) obj;
 
       if (hasPayload() != other.hasPayload()) return false;
       if (hasPayload()) {
-        if (!getPayload()
-            .equals(other.getPayload())) return false;
+        if (!getPayload().equals(other.getPayload())) return false;
       }
       if (hasSequenceNr() != other.hasSequenceNr()) return false;
       if (hasSequenceNr()) {
-        if (getSequenceNr()
-            != other.getSequenceNr()) return false;
+        if (getSequenceNr() != other.getSequenceNr()) return false;
       }
       if (hasPersistenceId() != other.hasPersistenceId()) return false;
       if (hasPersistenceId()) {
-        if (!getPersistenceId()
-            .equals(other.getPersistenceId())) return false;
+        if (!getPersistenceId().equals(other.getPersistenceId())) return false;
       }
       if (hasDeleted() != other.hasDeleted()) return false;
       if (hasDeleted()) {
-        if (getDeleted()
-            != other.getDeleted()) return false;
+        if (getDeleted() != other.getDeleted()) return false;
       }
       if (hasSender() != other.hasSender()) return false;
       if (hasSender()) {
-        if (!getSender()
-            .equals(other.getSender())) return false;
+        if (!getSender().equals(other.getSender())) return false;
       }
       if (hasManifest() != other.hasManifest()) return false;
       if (hasManifest()) {
-        if (!getManifest()
-            .equals(other.getManifest())) return false;
+        if (!getManifest().equals(other.getManifest())) return false;
       }
       if (hasWriterUuid() != other.hasWriterUuid()) return false;
       if (hasWriterUuid()) {
-        if (!getWriterUuid()
-            .equals(other.getWriterUuid())) return false;
+        if (!getWriterUuid().equals(other.getWriterUuid())) return false;
       }
       if (hasTimestamp() != other.hasTimestamp()) return false;
       if (hasTimestamp()) {
-        if (getTimestamp()
-            != other.getTimestamp()) return false;
+        if (getTimestamp() != other.getTimestamp()) return false;
       }
       if (hasMetadata() != other.hasMetadata()) return false;
       if (hasMetadata()) {
-        if (!getMetadata()
-            .equals(other.getMetadata())) return false;
+        if (!getMetadata().equals(other.getMetadata())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -774,8 +855,8 @@ public final class MessageFormats {
       }
       if (hasSequenceNr()) {
         hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getSequenceNr());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getSequenceNr());
       }
       if (hasPersistenceId()) {
         hash = (37 * hash) + PERSISTENCEID_FIELD_NUMBER;
@@ -783,8 +864,8 @@ public final class MessageFormats {
       }
       if (hasDeleted()) {
         hash = (37 * hash) + DELETED_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(
-            getDeleted());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(getDeleted());
       }
       if (hasSender()) {
         hash = (37 * hash) + SENDER_FIELD_NUMBER;
@@ -800,8 +881,7 @@ public final class MessageFormats {
       }
       if (hasTimestamp()) {
         hash = (37 * hash) + TIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getTimestamp());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getTimestamp());
       }
       if (hasMetadata()) {
         hash = (37 * hash) + METADATA_FIELD_NUMBER;
@@ -812,88 +892,111 @@ public final class MessageFormats {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -902,27 +1005,31 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code PersistentMessage}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code PersistentMessage} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:PersistentMessage)
         org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentMessage_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentMessage_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.class,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+                    .class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -932,13 +1039,14 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getPayloadFieldBuilder();
           getMetadataFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -972,19 +1080,22 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentMessage_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentMessage_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+            .getDefaultInstance();
       }
 
       @java.lang.Override
       public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage result = buildPartial();
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -992,8 +1103,10 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage result = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage(this);
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+          buildPartial() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage result =
+            new org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1049,46 +1162,59 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+                .getDefaultInstance()) return this;
         if (other.hasPayload()) {
           mergePayload(other.getPayload());
         }
@@ -1149,11 +1275,14 @@ public final class MessageFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parsedMessage = null;
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage parsedMessage =
+            null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -1162,13 +1291,18 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
       private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload payload_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> payloadBuilder_;
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
+          payloadBuilder_;
       /**
        * <code>optional .PersistentPayload payload = 1;</code>
+       *
        * @return Whether the payload field is set.
        */
       public boolean hasPayload() {
@@ -1176,19 +1310,23 @@ public final class MessageFormats {
       }
       /**
        * <code>optional .PersistentPayload payload = 1;</code>
+       *
        * @return The payload.
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload() {
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+          getPayload() {
         if (payloadBuilder_ == null) {
-          return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+          return payload_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : payload_;
         } else {
           return payloadBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
-      public Builder setPayload(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>optional .PersistentPayload payload = 1;</code> */
+      public Builder setPayload(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (payloadBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1201,11 +1339,10 @@ public final class MessageFormats {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
+      /** <code>optional .PersistentPayload payload = 1;</code> */
       public Builder setPayload(
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder builderForValue) {
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+              builderForValue) {
         if (payloadBuilder_ == null) {
           payload_ = builderForValue.build();
           onChanged();
@@ -1215,16 +1352,20 @@ public final class MessageFormats {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
-      public Builder mergePayload(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>optional .PersistentPayload payload = 1;</code> */
+      public Builder mergePayload(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (payloadBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0) &&
-              payload_ != null &&
-              payload_ != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000001) != 0)
+              && payload_ != null
+              && payload_
+                  != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .getDefaultInstance()) {
             payload_ =
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder(payload_).mergeFrom(value).buildPartial();
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                    .newBuilder(payload_)
+                    .mergeFrom(value)
+                    .buildPartial();
           } else {
             payload_ = value;
           }
@@ -1235,9 +1376,7 @@ public final class MessageFormats {
         bitField0_ |= 0x00000001;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
+      /** <code>optional .PersistentPayload payload = 1;</code> */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
           payload_ = null;
@@ -1248,45 +1387,48 @@ public final class MessageFormats {
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder getPayloadBuilder() {
+      /** <code>optional .PersistentPayload payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+          getPayloadBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getPayloadFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder() {
+      /** <code>optional .PersistentPayload payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+          getPayloadOrBuilder() {
         if (payloadBuilder_ != null) {
           return payloadBuilder_.getMessageOrBuilder();
         } else {
-          return payload_ == null ?
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+          return payload_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : payload_;
         }
       }
-      /**
-       * <code>optional .PersistentPayload payload = 1;</code>
-       */
+      /** <code>optional .PersistentPayload payload = 1;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> 
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
           getPayloadFieldBuilder() {
         if (payloadBuilder_ == null) {
-          payloadBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>(
-                  getPayload(),
-                  getParentForChildren(),
-                  isClean());
+          payloadBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .Builder,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .PersistentPayloadOrBuilder>(getPayload(), getParentForChildren(), isClean());
           payload_ = null;
         }
         return payloadBuilder_;
       }
 
-      private long sequenceNr_ ;
+      private long sequenceNr_;
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return Whether the sequenceNr field is set.
        */
       public boolean hasSequenceNr() {
@@ -1294,6 +1436,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return The sequenceNr.
        */
       public long getSequenceNr() {
@@ -1301,6 +1444,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @param value The sequenceNr to set.
        * @return This builder for chaining.
        */
@@ -1312,6 +1456,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 sequenceNr = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSequenceNr() {
@@ -1324,6 +1469,7 @@ public final class MessageFormats {
       private java.lang.Object persistenceId_ = "";
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @return Whether the persistenceId field is set.
        */
       public boolean hasPersistenceId() {
@@ -1331,6 +1477,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @return The persistenceId.
        */
       public java.lang.String getPersistenceId() {
@@ -1349,15 +1496,14 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @return The bytes for persistenceId.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getPersistenceIdBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getPersistenceIdBytes() {
         java.lang.Object ref = persistenceId_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           persistenceId_ = b;
           return b;
         } else {
@@ -1366,21 +1512,22 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @param value The persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceId(
-          java.lang.String value) {
+      public Builder setPersistenceId(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
         persistenceId_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPersistenceId() {
@@ -1391,49 +1538,58 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string persistenceId = 3;</code>
+       *
        * @param value The bytes for persistenceId to set.
        * @return This builder for chaining.
        */
-      public Builder setPersistenceIdBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setPersistenceIdBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
         persistenceId_ = value;
         onChanged();
         return this;
       }
 
-      private boolean deleted_ ;
+      private boolean deleted_;
       /**
+       *
+       *
        * <pre>
        * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
+       *
        * @return Whether the deleted field is set.
        */
       public boolean hasDeleted() {
         return ((bitField0_ & 0x00000008) != 0);
       }
       /**
+       *
+       *
        * <pre>
        * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
+       *
        * @return The deleted.
        */
       public boolean getDeleted() {
         return deleted_;
       }
       /**
+       *
+       *
        * <pre>
        * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
+       *
        * @param value The deleted to set.
        * @return This builder for chaining.
        */
@@ -1444,11 +1600,14 @@ public final class MessageFormats {
         return this;
       }
       /**
+       *
+       *
        * <pre>
        * not used in new records from Akka 2.4
        * </pre>
        *
        * <code>optional bool deleted = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearDeleted() {
@@ -1461,6 +1620,7 @@ public final class MessageFormats {
       private java.lang.Object sender_ = "";
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @return Whether the sender field is set.
        */
       public boolean hasSender() {
@@ -1468,6 +1628,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @return The sender.
        */
       public java.lang.String getSender() {
@@ -1486,15 +1647,14 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @return The bytes for sender.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getSenderBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getSenderBytes() {
         java.lang.Object ref = sender_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           sender_ = b;
           return b;
         } else {
@@ -1503,21 +1663,22 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @param value The sender to set.
        * @return This builder for chaining.
        */
-      public Builder setSender(
-          java.lang.String value) {
+      public Builder setSender(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000010;
         sender_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSender() {
@@ -1528,15 +1689,15 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string sender = 11;</code>
+       *
        * @param value The bytes for sender to set.
        * @return This builder for chaining.
        */
-      public Builder setSenderBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setSenderBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000010;
         sender_ = value;
         onChanged();
         return this;
@@ -1545,6 +1706,7 @@ public final class MessageFormats {
       private java.lang.Object manifest_ = "";
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @return Whether the manifest field is set.
        */
       public boolean hasManifest() {
@@ -1552,6 +1714,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @return The manifest.
        */
       public java.lang.String getManifest() {
@@ -1570,15 +1733,14 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @return The bytes for manifest.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getManifestBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getManifestBytes() {
         java.lang.Object ref = manifest_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           manifest_ = b;
           return b;
         } else {
@@ -1587,21 +1749,22 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @param value The manifest to set.
        * @return This builder for chaining.
        */
-      public Builder setManifest(
-          java.lang.String value) {
+      public Builder setManifest(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000020;
         manifest_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearManifest() {
@@ -1612,15 +1775,15 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string manifest = 12;</code>
+       *
        * @param value The bytes for manifest to set.
        * @return This builder for chaining.
        */
-      public Builder setManifestBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setManifestBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000020;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000020;
         manifest_ = value;
         onChanged();
         return this;
@@ -1629,6 +1792,7 @@ public final class MessageFormats {
       private java.lang.Object writerUuid_ = "";
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @return Whether the writerUuid field is set.
        */
       public boolean hasWriterUuid() {
@@ -1636,6 +1800,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @return The writerUuid.
        */
       public java.lang.String getWriterUuid() {
@@ -1654,15 +1819,14 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @return The bytes for writerUuid.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getWriterUuidBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getWriterUuidBytes() {
         java.lang.Object ref = writerUuid_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           writerUuid_ = b;
           return b;
         } else {
@@ -1671,21 +1835,22 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @param value The writerUuid to set.
        * @return This builder for chaining.
        */
-      public Builder setWriterUuid(
-          java.lang.String value) {
+      public Builder setWriterUuid(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000040;
         writerUuid_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearWriterUuid() {
@@ -1696,23 +1861,24 @@ public final class MessageFormats {
       }
       /**
        * <code>optional string writerUuid = 13;</code>
+       *
        * @param value The bytes for writerUuid to set.
        * @return This builder for chaining.
        */
-      public Builder setWriterUuidBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setWriterUuidBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000040;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000040;
         writerUuid_ = value;
         onChanged();
         return this;
       }
 
-      private long timestamp_ ;
+      private long timestamp_;
       /**
        * <code>optional sint64 timestamp = 14;</code>
+       *
        * @return Whether the timestamp field is set.
        */
       public boolean hasTimestamp() {
@@ -1720,6 +1886,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional sint64 timestamp = 14;</code>
+       *
        * @return The timestamp.
        */
       public long getTimestamp() {
@@ -1727,6 +1894,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional sint64 timestamp = 14;</code>
+       *
        * @param value The timestamp to set.
        * @return This builder for chaining.
        */
@@ -1738,6 +1906,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional sint64 timestamp = 14;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimestamp() {
@@ -1749,9 +1918,13 @@ public final class MessageFormats {
 
       private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload metadata_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> metadataBuilder_;
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
+          metadataBuilder_;
       /**
        * <code>optional .PersistentPayload metadata = 15;</code>
+       *
        * @return Whether the metadata field is set.
        */
       public boolean hasMetadata() {
@@ -1759,19 +1932,23 @@ public final class MessageFormats {
       }
       /**
        * <code>optional .PersistentPayload metadata = 15;</code>
+       *
        * @return The metadata.
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getMetadata() {
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+          getMetadata() {
         if (metadataBuilder_ == null) {
-          return metadata_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : metadata_;
         } else {
           return metadataBuilder_.getMessage();
         }
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
-      public Builder setMetadata(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
+      public Builder setMetadata(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (metadataBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -1784,11 +1961,10 @@ public final class MessageFormats {
         bitField0_ |= 0x00000100;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
       public Builder setMetadata(
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder builderForValue) {
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+              builderForValue) {
         if (metadataBuilder_ == null) {
           metadata_ = builderForValue.build();
           onChanged();
@@ -1798,16 +1974,20 @@ public final class MessageFormats {
         bitField0_ |= 0x00000100;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
-      public Builder mergeMetadata(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
+      public Builder mergeMetadata(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (metadataBuilder_ == null) {
-          if (((bitField0_ & 0x00000100) != 0) &&
-              metadata_ != null &&
-              metadata_ != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000100) != 0)
+              && metadata_ != null
+              && metadata_
+                  != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .getDefaultInstance()) {
             metadata_ =
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder(metadata_).mergeFrom(value).buildPartial();
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                    .newBuilder(metadata_)
+                    .mergeFrom(value)
+                    .buildPartial();
           } else {
             metadata_ = value;
           }
@@ -1818,9 +1998,7 @@ public final class MessageFormats {
         bitField0_ |= 0x00000100;
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
       public Builder clearMetadata() {
         if (metadataBuilder_ == null) {
           metadata_ = null;
@@ -1831,41 +2009,45 @@ public final class MessageFormats {
         bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder getMetadataBuilder() {
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+          getMetadataBuilder() {
         bitField0_ |= 0x00000100;
         onChanged();
         return getMetadataFieldBuilder().getBuilder();
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getMetadataOrBuilder() {
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+          getMetadataOrBuilder() {
         if (metadataBuilder_ != null) {
           return metadataBuilder_.getMessageOrBuilder();
         } else {
-          return metadata_ == null ?
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : metadata_;
+          return metadata_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : metadata_;
         }
       }
-      /**
-       * <code>optional .PersistentPayload metadata = 15;</code>
-       */
+      /** <code>optional .PersistentPayload metadata = 15;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> 
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
           getMetadataFieldBuilder() {
         if (metadataBuilder_ == null) {
-          metadataBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>(
-                  getMetadata(),
-                  getParentForChildren(),
-                  isClean());
+          metadataBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .Builder,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .PersistentPayloadOrBuilder>(
+                  getMetadata(), getParentForChildren(), isClean());
           metadata_ = null;
         }
         return metadataBuilder_;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -1878,30 +2060,34 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:PersistentMessage)
     }
 
     // @@protoc_insertion_point(class_scope:PersistentMessage)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<PersistentMessage>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentMessage>() {
-      @java.lang.Override
-      public PersistentMessage parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new PersistentMessage(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<PersistentMessage> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentMessage>() {
+          @java.lang.Override
+          public PersistentMessage parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new PersistentMessage(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<PersistentMessage> parser() {
       return PARSER;
@@ -1913,61 +2099,69 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface PersistentPayloadOrBuilder extends
+  public interface PersistentPayloadOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:PersistentPayload)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required int32 serializerId = 1;</code>
+     *
      * @return Whether the serializerId field is set.
      */
     boolean hasSerializerId();
     /**
      * <code>required int32 serializerId = 1;</code>
+     *
      * @return The serializerId.
      */
     int getSerializerId();
 
     /**
      * <code>required bytes payload = 2;</code>
+     *
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
     /**
      * <code>required bytes payload = 2;</code>
+     *
      * @return The payload.
      */
     org.apache.pekko.protobufv3.internal.ByteString getPayload();
 
     /**
      * <code>optional bytes payloadManifest = 3;</code>
+     *
      * @return Whether the payloadManifest field is set.
      */
     boolean hasPayloadManifest();
     /**
      * <code>optional bytes payloadManifest = 3;</code>
+     *
      * @return The payloadManifest.
      */
     org.apache.pekko.protobufv3.internal.ByteString getPayloadManifest();
   }
-  /**
-   * Protobuf type {@code PersistentPayload}
-   */
-  public  static final class PersistentPayload extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code PersistentPayload} */
+  public static final class PersistentPayload
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:PersistentPayload)
       PersistentPayloadOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use PersistentPayload.newBuilder() to construct.
-    private PersistentPayload(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private PersistentPayload(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private PersistentPayload() {
       payload_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       payloadManifest_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
@@ -1981,10 +2175,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private PersistentPayload(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -2004,51 +2198,59 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 8: {
-              bitField0_ |= 0x00000001;
-              serializerId_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              payload_ = input.readBytes();
-              break;
-            }
-            case 26: {
-              bitField0_ |= 0x00000004;
-              payloadManifest_ = input.readBytes();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 8:
+              {
+                bitField0_ |= 0x00000001;
+                serializerId_ = input.readInt32();
+                break;
               }
-              break;
-            }
+            case 18:
+              {
+                bitField0_ |= 0x00000002;
+                payload_ = input.readBytes();
+                break;
+              }
+            case 26:
+              {
+                bitField0_ |= 0x00000004;
+                payloadManifest_ = input.readBytes();
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentPayload_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentPayload_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentPayload_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentPayload_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.class,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                  .class);
     }
 
     private int bitField0_;
@@ -2056,6 +2258,7 @@ public final class MessageFormats {
     private int serializerId_;
     /**
      * <code>required int32 serializerId = 1;</code>
+     *
      * @return Whether the serializerId field is set.
      */
     public boolean hasSerializerId() {
@@ -2063,6 +2266,7 @@ public final class MessageFormats {
     }
     /**
      * <code>required int32 serializerId = 1;</code>
+     *
      * @return The serializerId.
      */
     public int getSerializerId() {
@@ -2073,6 +2277,7 @@ public final class MessageFormats {
     private org.apache.pekko.protobufv3.internal.ByteString payload_;
     /**
      * <code>required bytes payload = 2;</code>
+     *
      * @return Whether the payload field is set.
      */
     public boolean hasPayload() {
@@ -2080,6 +2285,7 @@ public final class MessageFormats {
     }
     /**
      * <code>required bytes payload = 2;</code>
+     *
      * @return The payload.
      */
     public org.apache.pekko.protobufv3.internal.ByteString getPayload() {
@@ -2090,6 +2296,7 @@ public final class MessageFormats {
     private org.apache.pekko.protobufv3.internal.ByteString payloadManifest_;
     /**
      * <code>optional bytes payloadManifest = 3;</code>
+     *
      * @return Whether the payloadManifest field is set.
      */
     public boolean hasPayloadManifest() {
@@ -2097,6 +2304,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional bytes payloadManifest = 3;</code>
+     *
      * @return The payloadManifest.
      */
     public org.apache.pekko.protobufv3.internal.ByteString getPayloadManifest() {
@@ -2104,6 +2312,7 @@ public final class MessageFormats {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2124,7 +2333,7 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeInt32(1, serializerId_);
       }
@@ -2144,16 +2353,18 @@ public final class MessageFormats {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt32Size(1, serializerId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt32Size(
+                1, serializerId_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBytesSize(2, payload_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBytesSize(2, payload_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBytesSize(3, payloadManifest_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBytesSize(
+                3, payloadManifest_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2163,27 +2374,26 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload)) {
+      if (!(obj
+          instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload other = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) obj;
 
       if (hasSerializerId() != other.hasSerializerId()) return false;
       if (hasSerializerId()) {
-        if (getSerializerId()
-            != other.getSerializerId()) return false;
+        if (getSerializerId() != other.getSerializerId()) return false;
       }
       if (hasPayload() != other.hasPayload()) return false;
       if (hasPayload()) {
-        if (!getPayload()
-            .equals(other.getPayload())) return false;
+        if (!getPayload().equals(other.getPayload())) return false;
       }
       if (hasPayloadManifest() != other.hasPayloadManifest()) return false;
       if (hasPayloadManifest()) {
-        if (!getPayloadManifest()
-            .equals(other.getPayloadManifest())) return false;
+        if (!getPayloadManifest().equals(other.getPayloadManifest())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -2213,88 +2423,111 @@ public final class MessageFormats {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -2303,27 +2536,31 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code PersistentPayload}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code PersistentPayload} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:PersistentPayload)
         org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentPayload_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentPayload_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentPayload_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentPayload_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.class,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                    .class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2333,11 +2570,11 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {}
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -2351,19 +2588,22 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentPayload_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentPayload_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+            .getDefaultInstance();
       }
 
       @java.lang.Override
       public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload result = buildPartial();
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -2371,8 +2611,10 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload result = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload(this);
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+          buildPartial() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload result =
+            new org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -2396,46 +2638,59 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                .getDefaultInstance()) return this;
         if (other.hasSerializerId()) {
           setSerializerId(other.getSerializerId());
         }
@@ -2466,11 +2721,14 @@ public final class MessageFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parsedMessage = null;
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload parsedMessage =
+            null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2479,11 +2737,13 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private int serializerId_ ;
+      private int serializerId_;
       /**
        * <code>required int32 serializerId = 1;</code>
+       *
        * @return Whether the serializerId field is set.
        */
       public boolean hasSerializerId() {
@@ -2491,6 +2751,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int32 serializerId = 1;</code>
+       *
        * @return The serializerId.
        */
       public int getSerializerId() {
@@ -2498,6 +2759,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int32 serializerId = 1;</code>
+       *
        * @param value The serializerId to set.
        * @return This builder for chaining.
        */
@@ -2509,6 +2771,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int32 serializerId = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearSerializerId() {
@@ -2518,9 +2781,11 @@ public final class MessageFormats {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.ByteString payload_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+      private org.apache.pekko.protobufv3.internal.ByteString payload_ =
+          org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       /**
        * <code>required bytes payload = 2;</code>
+       *
        * @return Whether the payload field is set.
        */
       public boolean hasPayload() {
@@ -2528,6 +2793,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required bytes payload = 2;</code>
+       *
        * @return The payload.
        */
       public org.apache.pekko.protobufv3.internal.ByteString getPayload() {
@@ -2535,20 +2801,22 @@ public final class MessageFormats {
       }
       /**
        * <code>required bytes payload = 2;</code>
+       *
        * @param value The payload to set.
        * @return This builder for chaining.
        */
       public Builder setPayload(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         payload_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required bytes payload = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPayload() {
@@ -2558,9 +2826,11 @@ public final class MessageFormats {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.ByteString payloadManifest_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+      private org.apache.pekko.protobufv3.internal.ByteString payloadManifest_ =
+          org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       /**
        * <code>optional bytes payloadManifest = 3;</code>
+       *
        * @return Whether the payloadManifest field is set.
        */
       public boolean hasPayloadManifest() {
@@ -2568,6 +2838,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional bytes payloadManifest = 3;</code>
+       *
        * @return The payloadManifest.
        */
       public org.apache.pekko.protobufv3.internal.ByteString getPayloadManifest() {
@@ -2575,20 +2846,22 @@ public final class MessageFormats {
       }
       /**
        * <code>optional bytes payloadManifest = 3;</code>
+       *
        * @param value The payloadManifest to set.
        * @return This builder for chaining.
        */
       public Builder setPayloadManifest(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000004;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000004;
         payloadManifest_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional bytes payloadManifest = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPayloadManifest() {
@@ -2597,6 +2870,7 @@ public final class MessageFormats {
         onChanged();
         return this;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -2609,30 +2883,34 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:PersistentPayload)
     }
 
     // @@protoc_insertion_point(class_scope:PersistentPayload)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<PersistentPayload>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentPayload>() {
-      @java.lang.Override
-      public PersistentPayload parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new PersistentPayload(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<PersistentPayload> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentPayload>() {
+          @java.lang.Override
+          public PersistentPayload parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new PersistentPayload(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<PersistentPayload> parser() {
       return PARSER;
@@ -2644,52 +2922,48 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface AtomicWriteOrBuilder extends
+  public interface AtomicWriteOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:AtomicWrite)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> 
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
         getPayloadList();
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(int index);
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    int getPayloadCount();
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder> 
-        getPayloadOrBuilderList();
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder getPayloadOrBuilder(
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(
         int index);
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    int getPayloadCount();
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .PersistentMessageOrBuilder>
+        getPayloadOrBuilderList();
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder
+        getPayloadOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code AtomicWrite}
-   */
-  public  static final class AtomicWrite extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code AtomicWrite} */
+  public static final class AtomicWrite
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:AtomicWrite)
       AtomicWriteOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use AtomicWrite.newBuilder() to construct.
-    private AtomicWrite(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private AtomicWrite(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AtomicWrite() {
       payload_ = java.util.Collections.emptyList();
     }
@@ -2702,10 +2976,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private AtomicWrite(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -2725,29 +2999,36 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 10: {
-              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-                payload_ = new java.util.ArrayList<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>();
-                mutable_bitField0_ |= 0x00000001;
+            case 10:
+              {
+                if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                  payload_ =
+                      new java.util.ArrayList<
+                          org.apache.pekko.persistence.serialization.MessageFormats
+                              .PersistentMessage>();
+                  mutable_bitField0_ |= 0x00000001;
+                }
+                payload_.add(
+                    input.readMessage(
+                        org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+                            .PARSER,
+                        extensionRegistry));
+                break;
               }
-              payload_.add(
-                  input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.PARSER, extensionRegistry));
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
               }
-              break;
-            }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) != 0)) {
           payload_ = java.util.Collections.unmodifiableList(payload_);
@@ -2756,55 +3037,58 @@ public final class MessageFormats {
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtomicWrite_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_AtomicWrite_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtomicWrite_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_AtomicWrite_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.class, org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.class,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.Builder.class);
     }
 
     public static final int PAYLOAD_FIELD_NUMBER = 1;
-    private java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> payload_;
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> getPayloadList() {
+    private java.util.List<
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
+        payload_;
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    public java.util.List<
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
+        getPayloadList() {
       return payload_;
     }
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    public java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder> 
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .PersistentMessageOrBuilder>
         getPayloadOrBuilderList() {
       return payload_;
     }
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
     public int getPayloadCount() {
       return payload_.size();
     }
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(int index) {
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(
+        int index) {
       return payload_.get(index);
     }
-    /**
-     * <code>repeated .PersistentMessage payload = 1;</code>
-     */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder getPayloadOrBuilder(
-        int index) {
+    /** <code>repeated .PersistentMessage payload = 1;</code> */
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder
+        getPayloadOrBuilder(int index) {
       return payload_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -2823,7 +3107,7 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       for (int i = 0; i < payload_.size(); i++) {
         output.writeMessage(1, payload_.get(i));
       }
@@ -2837,8 +3121,9 @@ public final class MessageFormats {
 
       size = 0;
       for (int i = 0; i < payload_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(1, payload_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                1, payload_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -2848,15 +3133,15 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite other = (org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) obj;
 
-      if (!getPayloadList()
-          .equals(other.getPayloadList())) return false;
+      if (!getPayloadList().equals(other.getPayloadList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -2882,83 +3167,98 @@ public final class MessageFormats {
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
+        byte[] data) throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        byte[] data, org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+        org.apache.pekko.protobufv3.internal.CodedInputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -2967,27 +3267,31 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code AtomicWrite}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code AtomicWrite} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:AtomicWrite)
         org.apache.pekko.persistence.serialization.MessageFormats.AtomicWriteOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtomicWrite_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtomicWrite_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtomicWrite_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtomicWrite_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.class, org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.class,
+                org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.Builder
+                    .class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2997,12 +3301,13 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getPayloadFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -3016,19 +3321,22 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtomicWrite_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtomicWrite_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+            .getDefaultInstance();
       }
 
       @java.lang.Override
       public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite result = buildPartial();
+        org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -3037,7 +3345,8 @@ public final class MessageFormats {
 
       @java.lang.Override
       public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite result = new org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite(this);
+        org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite result =
+            new org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite(this);
         int from_bitField0_ = bitField0_;
         if (payloadBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0)) {
@@ -3056,46 +3365,58 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite)other);
+        if (other
+            instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+                .getDefaultInstance()) return this;
         if (payloadBuilder_ == null) {
           if (!other.payload_.isEmpty()) {
             if (payload_.isEmpty()) {
@@ -3114,9 +3435,10 @@ public final class MessageFormats {
               payloadBuilder_ = null;
               payload_ = other.payload_;
               bitField0_ = (bitField0_ & ~0x00000001);
-              payloadBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getPayloadFieldBuilder() : null;
+              payloadBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders
+                      ? getPayloadFieldBuilder()
+                      : null;
             } else {
               payloadBuilder_.addAllMessages(other.payload_);
             }
@@ -3146,7 +3468,9 @@ public final class MessageFormats {
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -3155,33 +3479,40 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> payload_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
+          payload_ = java.util.Collections.emptyList();
+
       private void ensurePayloadIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
-          payload_ = new java.util.ArrayList<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>(payload_);
+          payload_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>(
+                  payload_);
           bitField0_ |= 0x00000001;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder> payloadBuilder_;
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder>
+          payloadBuilder_;
 
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> getPayloadList() {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
+          getPayloadList() {
         if (payloadBuilder_ == null) {
           return java.util.Collections.unmodifiableList(payload_);
         } else {
           return payloadBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public int getPayloadCount() {
         if (payloadBuilder_ == null) {
           return payload_.size();
@@ -3189,21 +3520,19 @@ public final class MessageFormats {
           return payloadBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(int index) {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage getPayload(
+          int index) {
         if (payloadBuilder_ == null) {
           return payload_.get(index);
         } else {
           return payloadBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder setPayload(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
         if (payloadBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3216,11 +3545,11 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder setPayload(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+              builderForValue) {
         if (payloadBuilder_ == null) {
           ensurePayloadIsMutable();
           payload_.set(index, builderForValue.build());
@@ -3230,10 +3559,9 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public Builder addPayload(org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public Builder addPayload(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
         if (payloadBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3246,11 +3574,10 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder addPayload(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage value) {
         if (payloadBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3263,11 +3590,10 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder addPayload(
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder builderForValue) {
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+              builderForValue) {
         if (payloadBuilder_ == null) {
           ensurePayloadIsMutable();
           payload_.add(builderForValue.build());
@@ -3277,11 +3603,11 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder addPayload(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+              builderForValue) {
         if (payloadBuilder_ == null) {
           ensurePayloadIsMutable();
           payload_.add(index, builderForValue.build());
@@ -3291,24 +3617,22 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder addAllPayload(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage>
+              values) {
         if (payloadBuilder_ == null) {
           ensurePayloadIsMutable();
-          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
-              values, payload_);
+          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(values, payload_);
           onChanged();
         } else {
           payloadBuilder_.addAllMessages(values);
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
           payload_ = java.util.Collections.emptyList();
@@ -3319,9 +3643,7 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
       public Builder removePayload(int index) {
         if (payloadBuilder_ == null) {
           ensurePayloadIsMutable();
@@ -3332,70 +3654,75 @@ public final class MessageFormats {
         }
         return this;
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder getPayloadBuilder(
-          int index) {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+          getPayloadBuilder(int index) {
         return getPayloadFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder getPayloadOrBuilder(
-          int index) {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder
+          getPayloadOrBuilder(int index) {
         if (payloadBuilder_ == null) {
-          return payload_.get(index);  } else {
+          return payload_.get(index);
+        } else {
           return payloadBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder> 
-           getPayloadOrBuilderList() {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .PersistentMessageOrBuilder>
+          getPayloadOrBuilderList() {
         if (payloadBuilder_ != null) {
           return payloadBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(payload_);
         }
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder addPayloadBuilder() {
-        return getPayloadFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.getDefaultInstance());
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+          addPayloadBuilder() {
+        return getPayloadFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+                    .getDefaultInstance());
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder addPayloadBuilder(
-          int index) {
-        return getPayloadFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.getDefaultInstance());
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder
+          addPayloadBuilder(int index) {
+        return getPayloadFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+                    .getDefaultInstance());
       }
-      /**
-       * <code>repeated .PersistentMessage payload = 1;</code>
-       */
-      public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder> 
-           getPayloadBuilderList() {
+      /** <code>repeated .PersistentMessage payload = 1;</code> */
+      public java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder>
+          getPayloadBuilderList() {
         return getPayloadFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder> 
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder>
           getPayloadFieldBuilder() {
         if (payloadBuilder_ == null) {
-          payloadBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessageOrBuilder>(
-                  payload_,
-                  ((bitField0_ & 0x00000001) != 0),
-                  getParentForChildren(),
-                  isClean());
+          payloadBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage,
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentMessage
+                      .Builder,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .PersistentMessageOrBuilder>(
+                  payload_, ((bitField0_ & 0x00000001) != 0), getParentForChildren(), isClean());
           payload_ = null;
         }
         return payloadBuilder_;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -3408,30 +3735,34 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:AtomicWrite)
     }
 
     // @@protoc_insertion_point(class_scope:AtomicWrite)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<AtomicWrite>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<AtomicWrite>() {
-      @java.lang.Override
-      public AtomicWrite parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new AtomicWrite(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<AtomicWrite> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<AtomicWrite>() {
+          @java.lang.Override
+          public AtomicWrite parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new AtomicWrite(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<AtomicWrite> parser() {
       return PARSER;
@@ -3443,63 +3774,80 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.AtomicWrite
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface AtLeastOnceDeliverySnapshotOrBuilder extends
+  public interface AtLeastOnceDeliverySnapshotOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:AtLeastOnceDeliverySnapshot)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required int64 currentDeliveryId = 1;</code>
+     *
      * @return Whether the currentDeliveryId field is set.
      */
     boolean hasCurrentDeliveryId();
     /**
      * <code>required int64 currentDeliveryId = 1;</code>
+     *
      * @return The currentDeliveryId.
      */
     long getCurrentDeliveryId();
 
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> 
+    java.util.List<
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery>
         getUnconfirmedDeliveriesList();
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getUnconfirmedDeliveries(int index);
+    org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            .UnconfirmedDelivery
+        getUnconfirmedDeliveries(int index);
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
     int getUnconfirmedDeliveriesCount();
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder> 
+    java.util.List<
+            ? extends
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder>
         getUnconfirmedDeliveriesOrBuilderList();
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder getUnconfirmedDeliveriesOrBuilder(
-        int index);
+    org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            .UnconfirmedDeliveryOrBuilder
+        getUnconfirmedDeliveriesOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code AtLeastOnceDeliverySnapshot}
-   */
-  public  static final class AtLeastOnceDeliverySnapshot extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code AtLeastOnceDeliverySnapshot} */
+  public static final class AtLeastOnceDeliverySnapshot
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:AtLeastOnceDeliverySnapshot)
       AtLeastOnceDeliverySnapshotOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use AtLeastOnceDeliverySnapshot.newBuilder() to construct.
-    private AtLeastOnceDeliverySnapshot(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private AtLeastOnceDeliverySnapshot(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private AtLeastOnceDeliverySnapshot() {
       unconfirmedDeliveries_ = java.util.Collections.emptyList();
     }
@@ -3512,10 +3860,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private AtLeastOnceDeliverySnapshot(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -3535,34 +3883,42 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 8: {
-              bitField0_ |= 0x00000001;
-              currentDeliveryId_ = input.readInt64();
-              break;
-            }
-            case 18: {
-              if (!((mutable_bitField0_ & 0x00000002) != 0)) {
-                unconfirmedDeliveries_ = new java.util.ArrayList<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery>();
-                mutable_bitField0_ |= 0x00000002;
+            case 8:
+              {
+                bitField0_ |= 0x00000001;
+                currentDeliveryId_ = input.readInt64();
+                break;
               }
-              unconfirmedDeliveries_.add(
-                  input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.PARSER, extensionRegistry));
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 18:
+              {
+                if (!((mutable_bitField0_ & 0x00000002) != 0)) {
+                  unconfirmedDeliveries_ =
+                      new java.util.ArrayList<
+                          org.apache.pekko.persistence.serialization.MessageFormats
+                              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery>();
+                  mutable_bitField0_ |= 0x00000002;
+                }
+                unconfirmedDeliveries_.add(
+                    input.readMessage(
+                        org.apache.pekko.persistence.serialization.MessageFormats
+                            .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.PARSER,
+                        extensionRegistry));
+                break;
               }
-              break;
-            }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) != 0)) {
           unconfirmedDeliveries_ = java.util.Collections.unmodifiableList(unconfirmedDeliveries_);
@@ -3571,78 +3927,91 @@ public final class MessageFormats {
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_AtLeastOnceDeliverySnapshot_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.class, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .class,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .Builder.class);
     }
 
-    public interface UnconfirmedDeliveryOrBuilder extends
+    public interface UnconfirmedDeliveryOrBuilder
+        extends
         // @@protoc_insertion_point(interface_extends:AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
         org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
       /**
        * <code>required int64 deliveryId = 1;</code>
+       *
        * @return Whether the deliveryId field is set.
        */
       boolean hasDeliveryId();
       /**
        * <code>required int64 deliveryId = 1;</code>
+       *
        * @return The deliveryId.
        */
       long getDeliveryId();
 
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return Whether the destination field is set.
        */
       boolean hasDestination();
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return The destination.
        */
       java.lang.String getDestination();
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return The bytes for destination.
        */
-      org.apache.pekko.protobufv3.internal.ByteString
-          getDestinationBytes();
+      org.apache.pekko.protobufv3.internal.ByteString getDestinationBytes();
 
       /**
        * <code>required .PersistentPayload payload = 3;</code>
+       *
        * @return Whether the payload field is set.
        */
       boolean hasPayload();
       /**
        * <code>required .PersistentPayload payload = 3;</code>
+       *
        * @return The payload.
        */
       org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload();
-      /**
-       * <code>required .PersistentPayload payload = 3;</code>
-       */
-      org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder();
+      /** <code>required .PersistentPayload payload = 3;</code> */
+      org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+          getPayloadOrBuilder();
     }
-    /**
-     * Protobuf type {@code AtLeastOnceDeliverySnapshot.UnconfirmedDelivery}
-     */
-    public  static final class UnconfirmedDelivery extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+    /** Protobuf type {@code AtLeastOnceDeliverySnapshot.UnconfirmedDelivery} */
+    public static final class UnconfirmedDelivery
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+        implements
         // @@protoc_insertion_point(message_implements:AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
         UnconfirmedDeliveryOrBuilder {
-    private static final long serialVersionUID = 0L;
+      private static final long serialVersionUID = 0L;
       // Use UnconfirmedDelivery.newBuilder() to construct.
-      private UnconfirmedDelivery(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+      private UnconfirmedDelivery(
+          org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
         super(builder);
       }
+
       private UnconfirmedDelivery() {
         destination_ = "";
       }
@@ -3655,10 +4024,10 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-      getUnknownFields() {
+      public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
         return this.unknownFields;
       }
+
       private UnconfirmedDelivery(
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -3678,60 +4047,75 @@ public final class MessageFormats {
               case 0:
                 done = true;
                 break;
-              case 8: {
-                bitField0_ |= 0x00000001;
-                deliveryId_ = input.readInt64();
-                break;
-              }
-              case 18: {
-                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-                bitField0_ |= 0x00000002;
-                destination_ = bs;
-                break;
-              }
-              case 26: {
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder subBuilder = null;
-                if (((bitField0_ & 0x00000004) != 0)) {
-                  subBuilder = payload_.toBuilder();
+              case 8:
+                {
+                  bitField0_ |= 0x00000001;
+                  deliveryId_ = input.readInt64();
+                  break;
                 }
-                payload_ = input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.PARSER, extensionRegistry);
-                if (subBuilder != null) {
-                  subBuilder.mergeFrom(payload_);
-                  payload_ = subBuilder.buildPartial();
+              case 18:
+                {
+                  org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                  bitField0_ |= 0x00000002;
+                  destination_ = bs;
+                  break;
                 }
-                bitField0_ |= 0x00000004;
-                break;
-              }
-              default: {
-                if (!parseUnknownField(
-                    input, unknownFields, extensionRegistry, tag)) {
-                  done = true;
+              case 26:
+                {
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                          .Builder
+                      subBuilder = null;
+                  if (((bitField0_ & 0x00000004) != 0)) {
+                    subBuilder = payload_.toBuilder();
+                  }
+                  payload_ =
+                      input.readMessage(
+                          org.apache.pekko.persistence.serialization.MessageFormats
+                              .PersistentPayload.PARSER,
+                          extensionRegistry);
+                  if (subBuilder != null) {
+                    subBuilder.mergeFrom(payload_);
+                    payload_ = subBuilder.buildPartial();
+                  }
+                  bitField0_ |= 0x00000004;
+                  break;
                 }
-                break;
-              }
+              default:
+                {
+                  if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                    done = true;
+                  }
+                  break;
+                }
             }
           }
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
           throw e.setUnfinishedMessage(this);
         } catch (java.io.IOException e) {
-          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-              e).setUnfinishedMessage(this);
+          throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+              .setUnfinishedMessage(this);
         } finally {
           this.unknownFields = unknownFields.build();
           makeExtensionsImmutable();
         }
       }
+
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.class, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.class,
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder.class);
       }
 
       private int bitField0_;
@@ -3739,6 +4123,7 @@ public final class MessageFormats {
       private long deliveryId_;
       /**
        * <code>required int64 deliveryId = 1;</code>
+       *
        * @return Whether the deliveryId field is set.
        */
       public boolean hasDeliveryId() {
@@ -3746,6 +4131,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int64 deliveryId = 1;</code>
+       *
        * @return The deliveryId.
        */
       public long getDeliveryId() {
@@ -3756,6 +4142,7 @@ public final class MessageFormats {
       private volatile java.lang.Object destination_;
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return Whether the destination field is set.
        */
       public boolean hasDestination() {
@@ -3763,6 +4150,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return The destination.
        */
       public java.lang.String getDestination() {
@@ -3770,7 +4158,7 @@ public final class MessageFormats {
         if (ref instanceof java.lang.String) {
           return (java.lang.String) ref;
         } else {
-          org.apache.pekko.protobufv3.internal.ByteString bs = 
+          org.apache.pekko.protobufv3.internal.ByteString bs =
               (org.apache.pekko.protobufv3.internal.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
@@ -3781,15 +4169,14 @@ public final class MessageFormats {
       }
       /**
        * <code>required string destination = 2;</code>
+       *
        * @return The bytes for destination.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getDestinationBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getDestinationBytes() {
         java.lang.Object ref = destination_;
         if (ref instanceof java.lang.String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           destination_ = b;
           return b;
         } else {
@@ -3801,6 +4188,7 @@ public final class MessageFormats {
       private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload payload_;
       /**
        * <code>required .PersistentPayload payload = 3;</code>
+       *
        * @return Whether the payload field is set.
        */
       public boolean hasPayload() {
@@ -3808,19 +4196,27 @@ public final class MessageFormats {
       }
       /**
        * <code>required .PersistentPayload payload = 3;</code>
+       *
        * @return The payload.
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload() {
-        return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+          getPayload() {
+        return payload_ == null
+            ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                .getDefaultInstance()
+            : payload_;
       }
-      /**
-       * <code>required .PersistentPayload payload = 3;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder() {
-        return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+      /** <code>required .PersistentPayload payload = 3;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+          getPayloadOrBuilder() {
+        return payload_ == null
+            ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                .getDefaultInstance()
+            : payload_;
       }
 
       private byte memoizedIsInitialized = -1;
+
       @java.lang.Override
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
@@ -3849,12 +4245,13 @@ public final class MessageFormats {
 
       @java.lang.Override
       public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                          throws java.io.IOException {
+          throws java.io.IOException {
         if (((bitField0_ & 0x00000001) != 0)) {
           output.writeInt64(1, deliveryId_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 2, destination_);
+          org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+              output, 2, destination_);
         }
         if (((bitField0_ & 0x00000004) != 0)) {
           output.writeMessage(3, getPayload());
@@ -3869,15 +4266,19 @@ public final class MessageFormats {
 
         size = 0;
         if (((bitField0_ & 0x00000001) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeInt64Size(1, deliveryId_);
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                  1, deliveryId_);
         }
         if (((bitField0_ & 0x00000002) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(2, destination_);
+          size +=
+              org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                  2, destination_);
         }
         if (((bitField0_ & 0x00000004) != 0)) {
-          size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-            .computeMessageSize(3, getPayload());
+          size +=
+              org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                  3, getPayload());
         }
         size += unknownFields.getSerializedSize();
         memoizedSize = size;
@@ -3887,27 +4288,32 @@ public final class MessageFormats {
       @java.lang.Override
       public boolean equals(final java.lang.Object obj) {
         if (obj == this) {
-         return true;
+          return true;
         }
-        if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)) {
+        if (!(obj
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery)) {
           return super.equals(obj);
         }
-        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery other = (org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery) obj;
+        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery
+            other =
+                (org.apache.pekko.persistence.serialization.MessageFormats
+                        .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
+                    obj;
 
         if (hasDeliveryId() != other.hasDeliveryId()) return false;
         if (hasDeliveryId()) {
-          if (getDeliveryId()
-              != other.getDeliveryId()) return false;
+          if (getDeliveryId() != other.getDeliveryId()) return false;
         }
         if (hasDestination() != other.hasDestination()) return false;
         if (hasDestination()) {
-          if (!getDestination()
-              .equals(other.getDestination())) return false;
+          if (!getDestination().equals(other.getDestination())) return false;
         }
         if (hasPayload() != other.hasPayload()) return false;
         if (hasPayload()) {
-          if (!getPayload()
-              .equals(other.getPayload())) return false;
+          if (!getPayload().equals(other.getPayload())) return false;
         }
         if (!unknownFields.equals(other.unknownFields)) return false;
         return true;
@@ -3922,8 +4328,8 @@ public final class MessageFormats {
         hash = (19 * hash) + getDescriptor().hashCode();
         if (hasDeliveryId()) {
           hash = (37 * hash) + DELIVERYID_FIELD_NUMBER;
-          hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-              getDeliveryId());
+          hash =
+              (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getDeliveryId());
         }
         if (hasDestination()) {
           hash = (37 * hash) + DESTINATION_FIELD_NUMBER;
@@ -3938,88 +4344,125 @@ public final class MessageFormats {
         return hash;
       }
 
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          java.nio.ByteBuffer data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(java.nio.ByteBuffer data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          java.nio.ByteBuffer data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(
+              java.nio.ByteBuffer data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          org.apache.pekko.protobufv3.internal.ByteString data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.ByteString data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(byte[] data)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(byte[] data)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          byte[] data,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(
+              byte[] data,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
         return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(java.io.InputStream input) throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+            PARSER, input);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+            PARSER, input, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
         return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseDelimitedFrom(
-          java.io.InputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseDelimitedFrom(
+              java.io.InputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
         return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
             .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-            .parseWithIOException(PARSER, input);
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+            PARSER, input);
       }
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parseFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-            .parseWithIOException(PARSER, input, extensionRegistry);
+
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          parseFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws java.io.IOException {
+        return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+            PARSER, input, extensionRegistry);
       }
 
       @java.lang.Override
-      public Builder newBuilderForType() { return newBuilder(); }
+      public Builder newBuilderForType() {
+        return newBuilder();
+      }
+
       public static Builder newBuilder() {
         return DEFAULT_INSTANCE.toBuilder();
       }
-      public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery prototype) {
+
+      public static Builder newBuilder(
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              prototype) {
         return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
       }
+
       @java.lang.Override
       public Builder toBuilder() {
-        return this == DEFAULT_INSTANCE
-            ? new Builder() : new Builder().mergeFrom(this);
+        return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
       }
 
       @java.lang.Override
@@ -4028,27 +4471,33 @@ public final class MessageFormats {
         Builder builder = new Builder(parent);
         return builder;
       }
-      /**
-       * Protobuf type {@code AtLeastOnceDeliverySnapshot.UnconfirmedDelivery}
-       */
-      public static final class Builder extends
-          org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+      /** Protobuf type {@code AtLeastOnceDeliverySnapshot.UnconfirmedDelivery} */
+      public static final class Builder
+          extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+          implements
           // @@protoc_insertion_point(builder_implements:AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder {
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDeliveryOrBuilder {
         public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
             getDescriptor() {
-          return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
+          return org.apache.pekko.persistence.serialization.MessageFormats
+              .internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
         }
 
         @java.lang.Override
         protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
             internalGetFieldAccessorTable() {
-          return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable
+          return org.apache.pekko.persistence.serialization.MessageFormats
+              .internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable
               .ensureFieldAccessorsInitialized(
-                  org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.class, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder.class);
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.class,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder.class);
         }
 
-        // Construct using org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder()
+        // Construct using
+        // org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
@@ -4058,12 +4507,13 @@ public final class MessageFormats {
           super(parent);
           maybeForceBuilderInitialization();
         }
+
         private void maybeForceBuilderInitialization() {
-          if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                  .alwaysUseFieldBuilders) {
+          if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
             getPayloadFieldBuilder();
           }
         }
+
         @java.lang.Override
         public Builder clear() {
           super.clear();
@@ -4081,19 +4531,26 @@ public final class MessageFormats {
         }
 
         @java.lang.Override
-        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-            getDescriptorForType() {
-          return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
+        public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+          return org.apache.pekko.persistence.serialization.MessageFormats
+              .internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getDefaultInstanceForType() {
-          return org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance();
+        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery
+            getDefaultInstanceForType() {
+          return org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance();
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery build() {
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery result = buildPartial();
+        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery
+            build() {
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
@@ -4101,8 +4558,14 @@ public final class MessageFormats {
         }
 
         @java.lang.Override
-        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery buildPartial() {
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery result = new org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery(this);
+        public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery
+            buildPartial() {
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              result =
+                  new org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -4130,46 +4593,65 @@ public final class MessageFormats {
         public Builder clone() {
           return super.clone();
         }
+
         @java.lang.Override
         public Builder setField(
             org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return super.setField(field, value);
         }
+
         @java.lang.Override
         public Builder clearField(
             org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
           return super.clearField(field);
         }
+
         @java.lang.Override
         public Builder clearOneof(
             org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
           return super.clearOneof(oneof);
         }
+
         @java.lang.Override
         public Builder setRepeatedField(
             org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-            int index, java.lang.Object value) {
+            int index,
+            java.lang.Object value) {
           return super.setRepeatedField(field, index, value);
         }
+
         @java.lang.Override
         public Builder addRepeatedField(
             org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
             java.lang.Object value) {
           return super.addRepeatedField(field, value);
         }
+
         @java.lang.Override
         public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-          if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery) {
-            return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)other);
+          if (other
+              instanceof
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery) {
+            return mergeFrom(
+                (org.apache.pekko.persistence.serialization.MessageFormats
+                        .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
+                    other);
           } else {
             super.mergeFrom(other);
             return this;
           }
         }
 
-        public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery other) {
-          if (other == org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance()) return this;
+        public Builder mergeFrom(
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                    .UnconfirmedDelivery
+                other) {
+          if (other
+              == org.apache.pekko.persistence.serialization.MessageFormats
+                  .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance())
+            return this;
           if (other.hasDeliveryId()) {
             setDeliveryId(other.getDeliveryId());
           }
@@ -4208,11 +4690,16 @@ public final class MessageFormats {
             org.apache.pekko.protobufv3.internal.CodedInputStream input,
             org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery parsedMessage = null;
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              parsedMessage = null;
           try {
             parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
           } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-            parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery) e.getUnfinishedMessage();
+            parsedMessage =
+                (org.apache.pekko.persistence.serialization.MessageFormats
+                        .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
+                    e.getUnfinishedMessage();
             throw e.unwrapIOException();
           } finally {
             if (parsedMessage != null) {
@@ -4221,11 +4708,13 @@ public final class MessageFormats {
           }
           return this;
         }
+
         private int bitField0_;
 
-        private long deliveryId_ ;
+        private long deliveryId_;
         /**
          * <code>required int64 deliveryId = 1;</code>
+         *
          * @return Whether the deliveryId field is set.
          */
         public boolean hasDeliveryId() {
@@ -4233,6 +4722,7 @@ public final class MessageFormats {
         }
         /**
          * <code>required int64 deliveryId = 1;</code>
+         *
          * @return The deliveryId.
          */
         public long getDeliveryId() {
@@ -4240,6 +4730,7 @@ public final class MessageFormats {
         }
         /**
          * <code>required int64 deliveryId = 1;</code>
+         *
          * @param value The deliveryId to set.
          * @return This builder for chaining.
          */
@@ -4251,6 +4742,7 @@ public final class MessageFormats {
         }
         /**
          * <code>required int64 deliveryId = 1;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearDeliveryId() {
@@ -4263,6 +4755,7 @@ public final class MessageFormats {
         private java.lang.Object destination_ = "";
         /**
          * <code>required string destination = 2;</code>
+         *
          * @return Whether the destination field is set.
          */
         public boolean hasDestination() {
@@ -4270,6 +4763,7 @@ public final class MessageFormats {
         }
         /**
          * <code>required string destination = 2;</code>
+         *
          * @return The destination.
          */
         public java.lang.String getDestination() {
@@ -4288,13 +4782,13 @@ public final class MessageFormats {
         }
         /**
          * <code>required string destination = 2;</code>
+         *
          * @return The bytes for destination.
          */
-        public org.apache.pekko.protobufv3.internal.ByteString
-            getDestinationBytes() {
+        public org.apache.pekko.protobufv3.internal.ByteString getDestinationBytes() {
           java.lang.Object ref = destination_;
           if (ref instanceof String) {
-            org.apache.pekko.protobufv3.internal.ByteString b = 
+            org.apache.pekko.protobufv3.internal.ByteString b =
                 org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
                     (java.lang.String) ref);
             destination_ = b;
@@ -4305,21 +4799,22 @@ public final class MessageFormats {
         }
         /**
          * <code>required string destination = 2;</code>
+         *
          * @param value The destination to set.
          * @return This builder for chaining.
          */
-        public Builder setDestination(
-            java.lang.String value) {
+        public Builder setDestination(java.lang.String value) {
           if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000002;
           destination_ = value;
           onChanged();
           return this;
         }
         /**
          * <code>required string destination = 2;</code>
+         *
          * @return This builder for chaining.
          */
         public Builder clearDestination() {
@@ -4330,25 +4825,31 @@ public final class MessageFormats {
         }
         /**
          * <code>required string destination = 2;</code>
+         *
          * @param value The bytes for destination to set.
          * @return This builder for chaining.
          */
-        public Builder setDestinationBytes(
-            org.apache.pekko.protobufv3.internal.ByteString value) {
+        public Builder setDestinationBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
           if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+            throw new NullPointerException();
+          }
+          bitField0_ |= 0x00000002;
           destination_ = value;
           onChanged();
           return this;
         }
 
-        private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload payload_;
+        private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+            payload_;
         private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> payloadBuilder_;
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .PersistentPayloadOrBuilder>
+            payloadBuilder_;
         /**
          * <code>required .PersistentPayload payload = 3;</code>
+         *
          * @return Whether the payload field is set.
          */
         public boolean hasPayload() {
@@ -4356,19 +4857,23 @@ public final class MessageFormats {
         }
         /**
          * <code>required .PersistentPayload payload = 3;</code>
+         *
          * @return The payload.
          */
-        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getPayload() {
+        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+            getPayload() {
           if (payloadBuilder_ == null) {
-            return payload_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+            return payload_ == null
+                ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                    .getDefaultInstance()
+                : payload_;
           } else {
             return payloadBuilder_.getMessage();
           }
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
-        public Builder setPayload(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+        /** <code>required .PersistentPayload payload = 3;</code> */
+        public Builder setPayload(
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
           if (payloadBuilder_ == null) {
             if (value == null) {
               throw new NullPointerException();
@@ -4381,11 +4886,10 @@ public final class MessageFormats {
           bitField0_ |= 0x00000004;
           return this;
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
+        /** <code>required .PersistentPayload payload = 3;</code> */
         public Builder setPayload(
-            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder builderForValue) {
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                builderForValue) {
           if (payloadBuilder_ == null) {
             payload_ = builderForValue.build();
             onChanged();
@@ -4395,16 +4899,20 @@ public final class MessageFormats {
           bitField0_ |= 0x00000004;
           return this;
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
-        public Builder mergePayload(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+        /** <code>required .PersistentPayload payload = 3;</code> */
+        public Builder mergePayload(
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
           if (payloadBuilder_ == null) {
-            if (((bitField0_ & 0x00000004) != 0) &&
-                payload_ != null &&
-                payload_ != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance()) {
+            if (((bitField0_ & 0x00000004) != 0)
+                && payload_ != null
+                && payload_
+                    != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                        .getDefaultInstance()) {
               payload_ =
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder(payload_).mergeFrom(value).buildPartial();
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .newBuilder(payload_)
+                      .mergeFrom(value)
+                      .buildPartial();
             } else {
               payload_ = value;
             }
@@ -4415,9 +4923,7 @@ public final class MessageFormats {
           bitField0_ |= 0x00000004;
           return this;
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
+        /** <code>required .PersistentPayload payload = 3;</code> */
         public Builder clearPayload() {
           if (payloadBuilder_ == null) {
             payload_ = null;
@@ -4428,41 +4934,46 @@ public final class MessageFormats {
           bitField0_ = (bitField0_ & ~0x00000004);
           return this;
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
-        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder getPayloadBuilder() {
+        /** <code>required .PersistentPayload payload = 3;</code> */
+        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+            getPayloadBuilder() {
           bitField0_ |= 0x00000004;
           onChanged();
           return getPayloadFieldBuilder().getBuilder();
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
-        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getPayloadOrBuilder() {
+        /** <code>required .PersistentPayload payload = 3;</code> */
+        public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+            getPayloadOrBuilder() {
           if (payloadBuilder_ != null) {
             return payloadBuilder_.getMessageOrBuilder();
           } else {
-            return payload_ == null ?
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : payload_;
+            return payload_ == null
+                ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                    .getDefaultInstance()
+                : payload_;
           }
         }
-        /**
-         * <code>required .PersistentPayload payload = 3;</code>
-         */
+        /** <code>required .PersistentPayload payload = 3;</code> */
         private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-            org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> 
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .PersistentPayloadOrBuilder>
             getPayloadFieldBuilder() {
           if (payloadBuilder_ == null) {
-            payloadBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>(
-                    getPayload(),
-                    getParentForChildren(),
-                    isClean());
+            payloadBuilder_ =
+                new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
+                    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                        .Builder,
+                    org.apache.pekko.persistence.serialization.MessageFormats
+                        .PersistentPayloadOrBuilder>(
+                    getPayload(), getParentForChildren(), isClean());
             payload_ = null;
           }
           return payloadBuilder_;
         }
+
         @java.lang.Override
         public final Builder setUnknownFields(
             final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -4475,30 +4986,37 @@ public final class MessageFormats {
           return super.mergeUnknownFields(unknownFields);
         }
 
-
         // @@protoc_insertion_point(builder_scope:AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
       }
 
       // @@protoc_insertion_point(class_scope:AtLeastOnceDeliverySnapshot.UnconfirmedDelivery)
-      private static final org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery DEFAULT_INSTANCE;
+      private static final org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          DEFAULT_INSTANCE;
+
       static {
-        DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery();
+        DEFAULT_INSTANCE =
+            new org.apache.pekko.persistence.serialization.MessageFormats
+                .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery();
       }
 
-      public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getDefaultInstance() {
+      public static org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery
+          getDefaultInstance() {
         return DEFAULT_INSTANCE;
       }
 
-      @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<UnconfirmedDelivery>
-          PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<UnconfirmedDelivery>() {
-        @java.lang.Override
-        public UnconfirmedDelivery parsePartialFrom(
-            org.apache.pekko.protobufv3.internal.CodedInputStream input,
-            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-          return new UnconfirmedDelivery(input, extensionRegistry);
-        }
-      };
+      @java.lang.Deprecated
+      public static final org.apache.pekko.protobufv3.internal.Parser<UnconfirmedDelivery> PARSER =
+          new org.apache.pekko.protobufv3.internal.AbstractParser<UnconfirmedDelivery>() {
+            @java.lang.Override
+            public UnconfirmedDelivery parsePartialFrom(
+                org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+              return new UnconfirmedDelivery(input, extensionRegistry);
+            }
+          };
 
       public static org.apache.pekko.protobufv3.internal.Parser<UnconfirmedDelivery> parser() {
         return PARSER;
@@ -4510,10 +5028,11 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getDefaultInstanceForType() {
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDelivery
+          getDefaultInstanceForType() {
         return DEFAULT_INSTANCE;
       }
-
     }
 
     private int bitField0_;
@@ -4521,6 +5040,7 @@ public final class MessageFormats {
     private long currentDeliveryId_;
     /**
      * <code>required int64 currentDeliveryId = 1;</code>
+     *
      * @return Whether the currentDeliveryId field is set.
      */
     public boolean hasCurrentDeliveryId() {
@@ -4528,6 +5048,7 @@ public final class MessageFormats {
     }
     /**
      * <code>required int64 currentDeliveryId = 1;</code>
+     *
      * @return The currentDeliveryId.
      */
     public long getCurrentDeliveryId() {
@@ -4535,41 +5056,59 @@ public final class MessageFormats {
     }
 
     public static final int UNCONFIRMEDDELIVERIES_FIELD_NUMBER = 2;
-    private java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> unconfirmedDeliveries_;
+    private java.util.List<
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery>
+        unconfirmedDeliveries_;
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> getUnconfirmedDeliveriesList() {
+    public java.util.List<
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .UnconfirmedDelivery>
+        getUnconfirmedDeliveriesList() {
       return unconfirmedDeliveries_;
     }
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    public java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder> 
+    public java.util.List<
+            ? extends
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder>
         getUnconfirmedDeliveriesOrBuilderList() {
       return unconfirmedDeliveries_;
     }
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
     public int getUnconfirmedDeliveriesCount() {
       return unconfirmedDeliveries_.size();
     }
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getUnconfirmedDeliveries(int index) {
+    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            .UnconfirmedDelivery
+        getUnconfirmedDeliveries(int index) {
       return unconfirmedDeliveries_.get(index);
     }
     /**
-     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+     * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+     * </code>
      */
-    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder getUnconfirmedDeliveriesOrBuilder(
-        int index) {
+    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            .UnconfirmedDeliveryOrBuilder
+        getUnconfirmedDeliveriesOrBuilder(int index) {
       return unconfirmedDeliveries_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4592,7 +5131,7 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeInt64(1, currentDeliveryId_);
       }
@@ -4609,12 +5148,14 @@ public final class MessageFormats {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(1, currentDeliveryId_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                1, currentDeliveryId_);
       }
       for (int i = 0; i < unconfirmedDeliveries_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, unconfirmedDeliveries_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                2, unconfirmedDeliveries_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4624,20 +5165,23 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot other = (org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot)
+              obj;
 
       if (hasCurrentDeliveryId() != other.hasCurrentDeliveryId()) return false;
       if (hasCurrentDeliveryId()) {
-        if (getCurrentDeliveryId()
-            != other.getCurrentDeliveryId()) return false;
+        if (getCurrentDeliveryId() != other.getCurrentDeliveryId()) return false;
       }
-      if (!getUnconfirmedDeliveriesList()
-          .equals(other.getUnconfirmedDeliveriesList())) return false;
+      if (!getUnconfirmedDeliveriesList().equals(other.getUnconfirmedDeliveriesList()))
+        return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -4651,8 +5195,9 @@ public final class MessageFormats {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasCurrentDeliveryId()) {
         hash = (37 * hash) + CURRENTDELIVERYID_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getCurrentDeliveryId());
+        hash =
+            (53 * hash)
+                + org.apache.pekko.protobufv3.internal.Internal.hashLong(getCurrentDeliveryId());
       }
       if (getUnconfirmedDeliveriesCount() > 0) {
         hash = (37 * hash) + UNCONFIRMEDDELIVERIES_FIELD_NUMBER;
@@ -4663,88 +5208,124 @@ public final class MessageFormats {
       return hash;
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -4753,27 +5334,33 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code AtLeastOnceDeliverySnapshot}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code AtLeastOnceDeliverySnapshot} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:AtLeastOnceDeliverySnapshot)
-        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshotOrBuilder {
+        org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshotOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtLeastOnceDeliverySnapshot_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.class, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.class,
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -4783,12 +5370,13 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getUnconfirmedDeliveriesFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -4804,19 +5392,23 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_AtLeastOnceDeliverySnapshot_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_AtLeastOnceDeliverySnapshot_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot result = buildPartial();
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+          build() {
+        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -4824,8 +5416,12 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot result = new org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot(this);
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+          buildPartial() {
+        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            result =
+                new org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -4850,46 +5446,62 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                .getDefaultInstance()) return this;
         if (other.hasCurrentDeliveryId()) {
           setCurrentDeliveryId(other.getCurrentDeliveryId());
         }
@@ -4911,9 +5523,10 @@ public final class MessageFormats {
               unconfirmedDeliveriesBuilder_ = null;
               unconfirmedDeliveries_ = other.unconfirmedDeliveries_;
               bitField0_ = (bitField0_ & ~0x00000002);
-              unconfirmedDeliveriesBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getUnconfirmedDeliveriesFieldBuilder() : null;
+              unconfirmedDeliveriesBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders
+                      ? getUnconfirmedDeliveriesFieldBuilder()
+                      : null;
             } else {
               unconfirmedDeliveriesBuilder_.addAllMessages(other.unconfirmedDeliveries_);
             }
@@ -4942,11 +5555,15 @@ public final class MessageFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot parsedMessage = null;
+        org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+            parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -4955,11 +5572,13 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private long currentDeliveryId_ ;
+      private long currentDeliveryId_;
       /**
        * <code>required int64 currentDeliveryId = 1;</code>
+       *
        * @return Whether the currentDeliveryId field is set.
        */
       public boolean hasCurrentDeliveryId() {
@@ -4967,6 +5586,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int64 currentDeliveryId = 1;</code>
+       *
        * @return The currentDeliveryId.
        */
       public long getCurrentDeliveryId() {
@@ -4974,6 +5594,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int64 currentDeliveryId = 1;</code>
+       *
        * @param value The currentDeliveryId to set.
        * @return This builder for chaining.
        */
@@ -4985,6 +5606,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required int64 currentDeliveryId = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearCurrentDeliveryId() {
@@ -4994,22 +5616,38 @@ public final class MessageFormats {
         return this;
       }
 
-      private java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> unconfirmedDeliveries_ =
-        java.util.Collections.emptyList();
+      private java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery>
+          unconfirmedDeliveries_ = java.util.Collections.emptyList();
+
       private void ensureUnconfirmedDeliveriesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
-          unconfirmedDeliveries_ = new java.util.ArrayList<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery>(unconfirmedDeliveries_);
+          unconfirmedDeliveries_ =
+              new java.util.ArrayList<
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery>(unconfirmedDeliveries_);
           bitField0_ |= 0x00000002;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder> unconfirmedDeliveriesBuilder_;
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDeliveryOrBuilder>
+          unconfirmedDeliveriesBuilder_;
 
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> getUnconfirmedDeliveriesList() {
+      public java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery>
+          getUnconfirmedDeliveriesList() {
         if (unconfirmedDeliveriesBuilder_ == null) {
           return java.util.Collections.unmodifiableList(unconfirmedDeliveries_);
         } else {
@@ -5017,7 +5655,8 @@ public final class MessageFormats {
         }
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public int getUnconfirmedDeliveriesCount() {
         if (unconfirmedDeliveriesBuilder_ == null) {
@@ -5027,9 +5666,12 @@ public final class MessageFormats {
         }
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery getUnconfirmedDeliveries(int index) {
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDelivery
+          getUnconfirmedDeliveries(int index) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           return unconfirmedDeliveries_.get(index);
         } else {
@@ -5037,10 +5679,14 @@ public final class MessageFormats {
         }
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder setUnconfirmedDeliveries(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery value) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              value) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5054,10 +5700,14 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder setUnconfirmedDeliveries(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder
+              builderForValue) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           ensureUnconfirmedDeliveriesIsMutable();
           unconfirmedDeliveries_.set(index, builderForValue.build());
@@ -5068,9 +5718,13 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public Builder addUnconfirmedDeliveries(org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery value) {
+      public Builder addUnconfirmedDeliveries(
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              value) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5084,10 +5738,14 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder addUnconfirmedDeliveries(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery value) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery
+              value) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -5101,10 +5759,13 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder addUnconfirmedDeliveries(
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder builderForValue) {
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder
+              builderForValue) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           ensureUnconfirmedDeliveriesIsMutable();
           unconfirmedDeliveries_.add(builderForValue.build());
@@ -5115,10 +5776,14 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder addUnconfirmedDeliveries(
-          int index, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder builderForValue) {
+          int index,
+          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder
+              builderForValue) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           ensureUnconfirmedDeliveriesIsMutable();
           unconfirmedDeliveries_.add(index, builderForValue.build());
@@ -5129,10 +5794,15 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder addAllUnconfirmedDeliveries(
-          java.lang.Iterable<? extends org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery> values) {
+          java.lang.Iterable<
+                  ? extends
+                      org.apache.pekko.persistence.serialization.MessageFormats
+                          .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery>
+              values) {
         if (unconfirmedDeliveriesBuilder_ == null) {
           ensureUnconfirmedDeliveriesIsMutable();
           org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
@@ -5144,7 +5814,8 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder clearUnconfirmedDeliveries() {
         if (unconfirmedDeliveriesBuilder_ == null) {
@@ -5157,7 +5828,8 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
       public Builder removeUnconfirmedDeliveries(int index) {
         if (unconfirmedDeliveriesBuilder_ == null) {
@@ -5170,27 +5842,36 @@ public final class MessageFormats {
         return this;
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder getUnconfirmedDeliveriesBuilder(
-          int index) {
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDelivery.Builder
+          getUnconfirmedDeliveriesBuilder(int index) {
         return getUnconfirmedDeliveriesFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder getUnconfirmedDeliveriesOrBuilder(
-          int index) {
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDeliveryOrBuilder
+          getUnconfirmedDeliveriesOrBuilder(int index) {
         if (unconfirmedDeliveriesBuilder_ == null) {
-          return unconfirmedDeliveries_.get(index);  } else {
+          return unconfirmedDeliveries_.get(index);
+        } else {
           return unconfirmedDeliveriesBuilder_.getMessageOrBuilder(index);
         }
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public java.util.List<? extends org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder> 
-           getUnconfirmedDeliveriesOrBuilderList() {
+      public java.util.List<
+              ? extends
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder>
+          getUnconfirmedDeliveriesOrBuilderList() {
         if (unconfirmedDeliveriesBuilder_ != null) {
           return unconfirmedDeliveriesBuilder_.getMessageOrBuilderList();
         } else {
@@ -5198,33 +5879,58 @@ public final class MessageFormats {
         }
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder addUnconfirmedDeliveriesBuilder() {
-        return getUnconfirmedDeliveriesFieldBuilder().addBuilder(
-            org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance());
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDelivery.Builder
+          addUnconfirmedDeliveriesBuilder() {
+        return getUnconfirmedDeliveriesFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance());
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder addUnconfirmedDeliveriesBuilder(
-          int index) {
-        return getUnconfirmedDeliveriesFieldBuilder().addBuilder(
-            index, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance());
+      public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+              .UnconfirmedDelivery.Builder
+          addUnconfirmedDeliveriesBuilder(int index) {
+        return getUnconfirmedDeliveriesFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.persistence.serialization.MessageFormats
+                    .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.getDefaultInstance());
       }
       /**
-       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;</code>
+       * <code>repeated .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery unconfirmedDeliveries = 2;
+       * </code>
        */
-      public java.util.List<org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder> 
-           getUnconfirmedDeliveriesBuilderList() {
+      public java.util.List<
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder>
+          getUnconfirmedDeliveriesBuilderList() {
         return getUnconfirmedDeliveriesFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder> 
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDelivery.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+                  .UnconfirmedDeliveryOrBuilder>
           getUnconfirmedDeliveriesFieldBuilder() {
         if (unconfirmedDeliveriesBuilder_ == null) {
-          unconfirmedDeliveriesBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-              org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder, org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder>(
+          unconfirmedDeliveriesBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDelivery.Builder,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .AtLeastOnceDeliverySnapshot.UnconfirmedDeliveryOrBuilder>(
                   unconfirmedDeliveries_,
                   ((bitField0_ & 0x00000002) != 0),
                   getParentForChildren(),
@@ -5233,6 +5939,7 @@ public final class MessageFormats {
         }
         return unconfirmedDeliveriesBuilder_;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -5245,120 +5952,144 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:AtLeastOnceDeliverySnapshot)
     }
 
     // @@protoc_insertion_point(class_scope:AtLeastOnceDeliverySnapshot)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats
+              .AtLeastOnceDeliverySnapshot();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .AtLeastOnceDeliverySnapshot
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<AtLeastOnceDeliverySnapshot>() {
-      @java.lang.Override
-      public AtLeastOnceDeliverySnapshot parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new AtLeastOnceDeliverySnapshot(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot>
+        PARSER =
+            new org.apache.pekko.protobufv3.internal.AbstractParser<AtLeastOnceDeliverySnapshot>() {
+              @java.lang.Override
+              public AtLeastOnceDeliverySnapshot parsePartialFrom(
+                  org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                  org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                  throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+                return new AtLeastOnceDeliverySnapshot(input, extensionRegistry);
+              }
+            };
 
-    public static org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot> parser() {
+    public static org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot>
+        parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot> getParserForType() {
+    public org.apache.pekko.protobufv3.internal.Parser<AtLeastOnceDeliverySnapshot>
+        getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.AtLeastOnceDeliverySnapshot
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface PersistentStateChangeEventOrBuilder extends
+  public interface PersistentStateChangeEventOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:PersistentStateChangeEvent)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return Whether the stateIdentifier field is set.
      */
     boolean hasStateIdentifier();
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The stateIdentifier.
      */
     java.lang.String getStateIdentifier();
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The bytes for stateIdentifier.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getStateIdentifierBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes();
 
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return Whether the timeout field is set.
      */
     boolean hasTimeout();
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return The timeout.
      */
     java.lang.String getTimeout();
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return The bytes for timeout.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getTimeoutBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getTimeoutBytes();
 
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return Whether the timeoutNanos field is set.
      */
     boolean hasTimeoutNanos();
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return The timeoutNanos.
      */
     long getTimeoutNanos();
   }
-  /**
-   * Protobuf type {@code PersistentStateChangeEvent}
-   */
-  public  static final class PersistentStateChangeEvent extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code PersistentStateChangeEvent} */
+  public static final class PersistentStateChangeEvent
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:PersistentStateChangeEvent)
       PersistentStateChangeEventOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use PersistentStateChangeEvent.newBuilder() to construct.
-    private PersistentStateChangeEvent(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private PersistentStateChangeEvent(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private PersistentStateChangeEvent() {
       stateIdentifier_ = "";
       timeout_ = "";
@@ -5372,10 +6103,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private PersistentStateChangeEvent(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -5395,53 +6126,62 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 10: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              stateIdentifier_ = bs;
-              break;
-            }
-            case 18: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              timeout_ = bs;
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              timeoutNanos_ = input.readInt64();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 10:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                stateIdentifier_ = bs;
+                break;
               }
-              break;
-            }
+            case 18:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000002;
+                timeout_ = bs;
+                break;
+              }
+            case 24:
+              {
+                bitField0_ |= 0x00000004;
+                timeoutNanos_ = input.readInt64();
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentStateChangeEvent_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentStateChangeEvent_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentStateChangeEvent_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentStateChangeEvent_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+                  .class,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+                  .Builder.class);
     }
 
     private int bitField0_;
@@ -5449,6 +6189,7 @@ public final class MessageFormats {
     private volatile java.lang.Object stateIdentifier_;
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return Whether the stateIdentifier field is set.
      */
     public boolean hasStateIdentifier() {
@@ -5456,6 +6197,7 @@ public final class MessageFormats {
     }
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The stateIdentifier.
      */
     public java.lang.String getStateIdentifier() {
@@ -5463,7 +6205,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -5474,15 +6216,14 @@ public final class MessageFormats {
     }
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The bytes for stateIdentifier.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getStateIdentifierBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes() {
       java.lang.Object ref = stateIdentifier_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         stateIdentifier_ = b;
         return b;
       } else {
@@ -5493,22 +6234,28 @@ public final class MessageFormats {
     public static final int TIMEOUT_FIELD_NUMBER = 2;
     private volatile java.lang.Object timeout_;
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return Whether the timeout field is set.
      */
     public boolean hasTimeout() {
       return ((bitField0_ & 0x00000002) != 0);
     }
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return The timeout.
      */
     public java.lang.String getTimeout() {
@@ -5516,7 +6263,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -5526,20 +6273,21 @@ public final class MessageFormats {
       }
     }
     /**
+     *
+     *
      * <pre>
-     *not used in new records from Akka 2.4.5
+     * not used in new records from Akka 2.4.5
      * </pre>
      *
      * <code>optional string timeout = 2;</code>
+     *
      * @return The bytes for timeout.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getTimeoutBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getTimeoutBytes() {
       java.lang.Object ref = timeout_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         timeout_ = b;
         return b;
       } else {
@@ -5551,6 +6299,7 @@ public final class MessageFormats {
     private long timeoutNanos_;
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return Whether the timeoutNanos field is set.
      */
     public boolean hasTimeoutNanos() {
@@ -5558,6 +6307,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return The timeoutNanos.
      */
     public long getTimeoutNanos() {
@@ -5565,6 +6315,7 @@ public final class MessageFormats {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -5581,9 +6332,10 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, stateIdentifier_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+            output, 1, stateIdentifier_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 2, timeout_);
@@ -5601,14 +6353,18 @@ public final class MessageFormats {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, stateIdentifier_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                1, stateIdentifier_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(2, timeout_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(2, timeout_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(3, timeoutNanos_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                3, timeoutNanos_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -5618,27 +6374,28 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent other = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)
+              obj;
 
       if (hasStateIdentifier() != other.hasStateIdentifier()) return false;
       if (hasStateIdentifier()) {
-        if (!getStateIdentifier()
-            .equals(other.getStateIdentifier())) return false;
+        if (!getStateIdentifier().equals(other.getStateIdentifier())) return false;
       }
       if (hasTimeout() != other.hasTimeout()) return false;
       if (hasTimeout()) {
-        if (!getTimeout()
-            .equals(other.getTimeout())) return false;
+        if (!getTimeout().equals(other.getTimeout())) return false;
       }
       if (hasTimeoutNanos() != other.hasTimeoutNanos()) return false;
       if (hasTimeoutNanos()) {
-        if (getTimeoutNanos()
-            != other.getTimeoutNanos()) return false;
+        if (getTimeoutNanos() != other.getTimeoutNanos()) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -5661,96 +6418,132 @@ public final class MessageFormats {
       }
       if (hasTimeoutNanos()) {
         hash = (37 * hash) + TIMEOUTNANOS_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getTimeoutNanos());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getTimeoutNanos());
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+            prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -5759,27 +6552,33 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code PersistentStateChangeEvent}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code PersistentStateChangeEvent} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:PersistentStateChangeEvent)
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEventOrBuilder {
+        org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEventOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentStateChangeEvent_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentStateChangeEvent_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentStateChangeEvent_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentStateChangeEvent_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+                    .class,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+                    .Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -5789,11 +6588,11 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {}
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -5807,19 +6606,23 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentStateChangeEvent_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentStateChangeEvent_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent result = buildPartial();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+          build() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+            result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -5827,8 +6630,12 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent result = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent(this);
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+          buildPartial() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+            result =
+                new org.apache.pekko.persistence.serialization.MessageFormats
+                    .PersistentStateChangeEvent(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -5852,46 +6659,61 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+              other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+                .getDefaultInstance()) return this;
         if (other.hasStateIdentifier()) {
           bitField0_ |= 0x00000001;
           stateIdentifier_ = other.stateIdentifier_;
@@ -5923,11 +6745,14 @@ public final class MessageFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent parsedMessage = null;
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+            parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5936,11 +6761,13 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object stateIdentifier_ = "";
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return Whether the stateIdentifier field is set.
        */
       public boolean hasStateIdentifier() {
@@ -5948,6 +6775,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return The stateIdentifier.
        */
       public java.lang.String getStateIdentifier() {
@@ -5966,15 +6794,14 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return The bytes for stateIdentifier.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getStateIdentifierBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes() {
         java.lang.Object ref = stateIdentifier_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           stateIdentifier_ = b;
           return b;
         } else {
@@ -5983,21 +6810,22 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @param value The stateIdentifier to set.
        * @return This builder for chaining.
        */
-      public Builder setStateIdentifier(
-          java.lang.String value) {
+      public Builder setStateIdentifier(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         stateIdentifier_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearStateIdentifier() {
@@ -6008,15 +6836,16 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @param value The bytes for stateIdentifier to set.
        * @return This builder for chaining.
        */
       public Builder setStateIdentifierBytes(
           org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         stateIdentifier_ = value;
         onChanged();
         return this;
@@ -6024,22 +6853,28 @@ public final class MessageFormats {
 
       private java.lang.Object timeout_ = "";
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @return Whether the timeout field is set.
        */
       public boolean hasTimeout() {
         return ((bitField0_ & 0x00000002) != 0);
       }
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @return The timeout.
        */
       public java.lang.String getTimeout() {
@@ -6057,20 +6892,21 @@ public final class MessageFormats {
         }
       }
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @return The bytes for timeout.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getTimeoutBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getTimeoutBytes() {
         java.lang.Object ref = timeout_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           timeout_ = b;
           return b;
         } else {
@@ -6078,30 +6914,35 @@ public final class MessageFormats {
         }
       }
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @param value The timeout to set.
        * @return This builder for chaining.
        */
-      public Builder setTimeout(
-          java.lang.String value) {
+      public Builder setTimeout(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         timeout_ = value;
         onChanged();
         return this;
       }
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimeout() {
@@ -6111,28 +6952,31 @@ public final class MessageFormats {
         return this;
       }
       /**
+       *
+       *
        * <pre>
-       *not used in new records from Akka 2.4.5
+       * not used in new records from Akka 2.4.5
        * </pre>
        *
        * <code>optional string timeout = 2;</code>
+       *
        * @param value The bytes for timeout to set.
        * @return This builder for chaining.
        */
-      public Builder setTimeoutBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setTimeoutBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         timeout_ = value;
         onChanged();
         return this;
       }
 
-      private long timeoutNanos_ ;
+      private long timeoutNanos_;
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return Whether the timeoutNanos field is set.
        */
       public boolean hasTimeoutNanos() {
@@ -6140,6 +6984,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return The timeoutNanos.
        */
       public long getTimeoutNanos() {
@@ -6147,6 +6992,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @param value The timeoutNanos to set.
        * @return This builder for chaining.
        */
@@ -6158,6 +7004,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimeoutNanos() {
@@ -6166,6 +7013,7 @@ public final class MessageFormats {
         onChanged();
         return this;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -6178,106 +7026,122 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:PersistentStateChangeEvent)
     }
 
     // @@protoc_insertion_point(class_scope:PersistentStateChangeEvent)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats
+              .PersistentStateChangeEvent();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentStateChangeEvent
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<PersistentStateChangeEvent>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentStateChangeEvent>() {
-      @java.lang.Override
-      public PersistentStateChangeEvent parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new PersistentStateChangeEvent(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<PersistentStateChangeEvent>
+        PARSER =
+            new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentStateChangeEvent>() {
+              @java.lang.Override
+              public PersistentStateChangeEvent parsePartialFrom(
+                  org.apache.pekko.protobufv3.internal.CodedInputStream input,
+                  org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+                  throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+                return new PersistentStateChangeEvent(input, extensionRegistry);
+              }
+            };
 
     public static org.apache.pekko.protobufv3.internal.Parser<PersistentStateChangeEvent> parser() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.protobufv3.internal.Parser<PersistentStateChangeEvent> getParserForType() {
+    public org.apache.pekko.protobufv3.internal.Parser<PersistentStateChangeEvent>
+        getParserForType() {
       return PARSER;
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentStateChangeEvent
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface PersistentFSMSnapshotOrBuilder extends
+  public interface PersistentFSMSnapshotOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:PersistentFSMSnapshot)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return Whether the stateIdentifier field is set.
      */
     boolean hasStateIdentifier();
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The stateIdentifier.
      */
     java.lang.String getStateIdentifier();
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The bytes for stateIdentifier.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getStateIdentifierBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes();
 
     /**
      * <code>required .PersistentPayload data = 2;</code>
+     *
      * @return Whether the data field is set.
      */
     boolean hasData();
     /**
      * <code>required .PersistentPayload data = 2;</code>
+     *
      * @return The data.
      */
     org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getData();
-    /**
-     * <code>required .PersistentPayload data = 2;</code>
-     */
-    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getDataOrBuilder();
+    /** <code>required .PersistentPayload data = 2;</code> */
+    org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getDataOrBuilder();
 
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return Whether the timeoutNanos field is set.
      */
     boolean hasTimeoutNanos();
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return The timeoutNanos.
      */
     long getTimeoutNanos();
   }
-  /**
-   * Protobuf type {@code PersistentFSMSnapshot}
-   */
-  public  static final class PersistentFSMSnapshot extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code PersistentFSMSnapshot} */
+  public static final class PersistentFSMSnapshot
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:PersistentFSMSnapshot)
       PersistentFSMSnapshotOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use PersistentFSMSnapshot.newBuilder() to construct.
-    private PersistentFSMSnapshot(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private PersistentFSMSnapshot(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private PersistentFSMSnapshot() {
       stateIdentifier_ = "";
     }
@@ -6290,10 +7154,10 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private PersistentFSMSnapshot(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -6313,60 +7177,73 @@ public final class MessageFormats {
             case 0:
               done = true;
               break;
-            case 10: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              stateIdentifier_ = bs;
-              break;
-            }
-            case 18: {
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) != 0)) {
-                subBuilder = data_.toBuilder();
+            case 10:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000001;
+                stateIdentifier_ = bs;
+                break;
               }
-              data_ = input.readMessage(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(data_);
-                data_ = subBuilder.buildPartial();
+            case 18:
+              {
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+                    subBuilder = null;
+                if (((bitField0_ & 0x00000002) != 0)) {
+                  subBuilder = data_.toBuilder();
+                }
+                data_ =
+                    input.readMessage(
+                        org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                            .PARSER,
+                        extensionRegistry);
+                if (subBuilder != null) {
+                  subBuilder.mergeFrom(data_);
+                  data_ = subBuilder.buildPartial();
+                }
+                bitField0_ |= 0x00000002;
+                break;
               }
-              bitField0_ |= 0x00000002;
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              timeoutNanos_ = input.readInt64();
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 24:
+              {
+                bitField0_ |= 0x00000004;
+                timeoutNanos_ = input.readInt64();
+                break;
               }
-              break;
-            }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentFSMSnapshot_descriptor;
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentFSMSnapshot_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentFSMSnapshot_fieldAccessorTable
+      return org.apache.pekko.persistence.serialization.MessageFormats
+          .internal_static_PersistentFSMSnapshot_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.Builder.class);
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.class,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+                  .Builder.class);
     }
 
     private int bitField0_;
@@ -6374,6 +7251,7 @@ public final class MessageFormats {
     private volatile java.lang.Object stateIdentifier_;
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return Whether the stateIdentifier field is set.
      */
     public boolean hasStateIdentifier() {
@@ -6381,6 +7259,7 @@ public final class MessageFormats {
     }
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The stateIdentifier.
      */
     public java.lang.String getStateIdentifier() {
@@ -6388,7 +7267,7 @@ public final class MessageFormats {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -6399,15 +7278,14 @@ public final class MessageFormats {
     }
     /**
      * <code>required string stateIdentifier = 1;</code>
+     *
      * @return The bytes for stateIdentifier.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getStateIdentifierBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes() {
       java.lang.Object ref = stateIdentifier_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         stateIdentifier_ = b;
         return b;
       } else {
@@ -6419,6 +7297,7 @@ public final class MessageFormats {
     private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload data_;
     /**
      * <code>required .PersistentPayload data = 2;</code>
+     *
      * @return Whether the data field is set.
      */
     public boolean hasData() {
@@ -6426,22 +7305,29 @@ public final class MessageFormats {
     }
     /**
      * <code>required .PersistentPayload data = 2;</code>
+     *
      * @return The data.
      */
     public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getData() {
-      return data_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : data_;
+      return data_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : data_;
     }
-    /**
-     * <code>required .PersistentPayload data = 2;</code>
-     */
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getDataOrBuilder() {
-      return data_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : data_;
+    /** <code>required .PersistentPayload data = 2;</code> */
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+        getDataOrBuilder() {
+      return data_ == null
+          ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+              .getDefaultInstance()
+          : data_;
     }
 
     public static final int TIMEOUTNANOS_FIELD_NUMBER = 3;
     private long timeoutNanos_;
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return Whether the timeoutNanos field is set.
      */
     public boolean hasTimeoutNanos() {
@@ -6449,6 +7335,7 @@ public final class MessageFormats {
     }
     /**
      * <code>optional int64 timeoutNanos = 3;</code>
+     *
      * @return The timeoutNanos.
      */
     public long getTimeoutNanos() {
@@ -6456,6 +7343,7 @@ public final class MessageFormats {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -6480,9 +7368,10 @@ public final class MessageFormats {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 1, stateIdentifier_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+            output, 1, stateIdentifier_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         output.writeMessage(2, getData());
@@ -6500,15 +7389,18 @@ public final class MessageFormats {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(1, stateIdentifier_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                1, stateIdentifier_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(2, getData());
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(2, getData());
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeInt64Size(3, timeoutNanos_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeInt64Size(
+                3, timeoutNanos_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -6518,27 +7410,27 @@ public final class MessageFormats {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
-      if (!(obj instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot)) {
+      if (!(obj
+          instanceof
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot)) {
         return super.equals(obj);
       }
-      org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot other = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot) obj;
+      org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot other =
+          (org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot) obj;
 
       if (hasStateIdentifier() != other.hasStateIdentifier()) return false;
       if (hasStateIdentifier()) {
-        if (!getStateIdentifier()
-            .equals(other.getStateIdentifier())) return false;
+        if (!getStateIdentifier().equals(other.getStateIdentifier())) return false;
       }
       if (hasData() != other.hasData()) return false;
       if (hasData()) {
-        if (!getData()
-            .equals(other.getData())) return false;
+        if (!getData().equals(other.getData())) return false;
       }
       if (hasTimeoutNanos() != other.hasTimeoutNanos()) return false;
       if (hasTimeoutNanos()) {
-        if (getTimeoutNanos()
-            != other.getTimeoutNanos()) return false;
+        if (getTimeoutNanos() != other.getTimeoutNanos()) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -6561,96 +7453,119 @@ public final class MessageFormats {
       }
       if (hasTimeoutNanos()) {
         hash = (37 * hash) + TIMEOUTNANOS_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getTimeoutNanos());
+        hash =
+            (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getTimeoutNanos());
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        java.nio.ByteBuffer data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(java.nio.ByteBuffer data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        java.nio.ByteBuffer data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(
+            java.nio.ByteBuffer data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(org.apache.pekko.protobufv3.internal.ByteString data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.ByteString data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.ByteString data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(byte[] data)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(
+            byte[] data,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(org.apache.pekko.protobufv3.internal.CodedInputStream input)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        parseFrom(
+            org.apache.pekko.protobufv3.internal.CodedInputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -6659,27 +7574,32 @@ public final class MessageFormats {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code PersistentFSMSnapshot}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code PersistentFSMSnapshot} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:PersistentFSMSnapshot)
         org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshotOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentFSMSnapshot_descriptor;
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentFSMSnapshot_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentFSMSnapshot_fieldAccessorTable
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentFSMSnapshot_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.class, org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.Builder.class);
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+                    .class,
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+                    .Builder.class);
       }
 
-      // Construct using org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.newBuilder()
+      // Construct using
+      // org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -6689,12 +7609,13 @@ public final class MessageFormats {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getDataFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -6712,19 +7633,23 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.internal_static_PersistentFSMSnapshot_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats
+            .internal_static_PersistentFSMSnapshot_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot getDefaultInstanceForType() {
-        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.getDefaultInstance();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+          getDefaultInstanceForType() {
+        return org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+            .getDefaultInstance();
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot build() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot result = buildPartial();
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+          build() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot result =
+            buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
@@ -6732,8 +7657,11 @@ public final class MessageFormats {
       }
 
       @java.lang.Override
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot buildPartial() {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot result = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot(this);
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+          buildPartial() {
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot result =
+            new org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot(
+                this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -6761,46 +7689,60 @@ public final class MessageFormats {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
-        if (other instanceof org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot) {
-          return mergeFrom((org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot)other);
+        if (other
+            instanceof
+            org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot) {
+          return mergeFrom(
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot)
+                  other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot other) {
-        if (other == org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot other) {
+        if (other
+            == org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+                .getDefaultInstance()) return this;
         if (other.hasStateIdentifier()) {
           bitField0_ |= 0x00000001;
           stateIdentifier_ = other.stateIdentifier_;
@@ -6836,11 +7778,14 @@ public final class MessageFormats {
           org.apache.pekko.protobufv3.internal.CodedInputStream input,
           org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot parsedMessage = null;
+        org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+            parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -6849,11 +7794,13 @@ public final class MessageFormats {
         }
         return this;
       }
+
       private int bitField0_;
 
       private java.lang.Object stateIdentifier_ = "";
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return Whether the stateIdentifier field is set.
        */
       public boolean hasStateIdentifier() {
@@ -6861,6 +7808,7 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return The stateIdentifier.
        */
       public java.lang.String getStateIdentifier() {
@@ -6879,15 +7827,14 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return The bytes for stateIdentifier.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getStateIdentifierBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getStateIdentifierBytes() {
         java.lang.Object ref = stateIdentifier_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           stateIdentifier_ = b;
           return b;
         } else {
@@ -6896,21 +7843,22 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @param value The stateIdentifier to set.
        * @return This builder for chaining.
        */
-      public Builder setStateIdentifier(
-          java.lang.String value) {
+      public Builder setStateIdentifier(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         stateIdentifier_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearStateIdentifier() {
@@ -6921,15 +7869,16 @@ public final class MessageFormats {
       }
       /**
        * <code>required string stateIdentifier = 1;</code>
+       *
        * @param value The bytes for stateIdentifier to set.
        * @return This builder for chaining.
        */
       public Builder setStateIdentifierBytes(
           org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000001;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000001;
         stateIdentifier_ = value;
         onChanged();
         return this;
@@ -6937,9 +7886,13 @@ public final class MessageFormats {
 
       private org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload data_;
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> dataBuilder_;
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
+          dataBuilder_;
       /**
        * <code>required .PersistentPayload data = 2;</code>
+       *
        * @return Whether the data field is set.
        */
       public boolean hasData() {
@@ -6947,19 +7900,22 @@ public final class MessageFormats {
       }
       /**
        * <code>required .PersistentPayload data = 2;</code>
+       *
        * @return The data.
        */
       public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload getData() {
         if (dataBuilder_ == null) {
-          return data_ == null ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : data_;
+          return data_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : data_;
         } else {
           return dataBuilder_.getMessage();
         }
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
-      public Builder setData(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>required .PersistentPayload data = 2;</code> */
+      public Builder setData(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (dataBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -6972,11 +7928,10 @@ public final class MessageFormats {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
+      /** <code>required .PersistentPayload data = 2;</code> */
       public Builder setData(
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder builderForValue) {
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+              builderForValue) {
         if (dataBuilder_ == null) {
           data_ = builderForValue.build();
           onChanged();
@@ -6986,16 +7941,20 @@ public final class MessageFormats {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
-      public Builder mergeData(org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
+      /** <code>required .PersistentPayload data = 2;</code> */
+      public Builder mergeData(
+          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload value) {
         if (dataBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-              data_ != null &&
-              data_ != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance()) {
+          if (((bitField0_ & 0x00000002) != 0)
+              && data_ != null
+              && data_
+                  != org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .getDefaultInstance()) {
             data_ =
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.newBuilder(data_).mergeFrom(value).buildPartial();
+                org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                    .newBuilder(data_)
+                    .mergeFrom(value)
+                    .buildPartial();
           } else {
             data_ = value;
           }
@@ -7006,9 +7965,7 @@ public final class MessageFormats {
         bitField0_ |= 0x00000002;
         return this;
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
+      /** <code>required .PersistentPayload data = 2;</code> */
       public Builder clearData() {
         if (dataBuilder_ == null) {
           data_ = null;
@@ -7019,45 +7976,48 @@ public final class MessageFormats {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder getDataBuilder() {
+      /** <code>required .PersistentPayload data = 2;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder
+          getDataBuilder() {
         bitField0_ |= 0x00000002;
         onChanged();
         return getDataFieldBuilder().getBuilder();
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
-      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder getDataOrBuilder() {
+      /** <code>required .PersistentPayload data = 2;</code> */
+      public org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder
+          getDataOrBuilder() {
         if (dataBuilder_ != null) {
           return dataBuilder_.getMessageOrBuilder();
         } else {
-          return data_ == null ?
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.getDefaultInstance() : data_;
+          return data_ == null
+              ? org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                  .getDefaultInstance()
+              : data_;
         }
       }
-      /**
-       * <code>required .PersistentPayload data = 2;</code>
-       */
+      /** <code>required .PersistentPayload data = 2;</code> */
       private org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-          org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder> 
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder,
+              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>
           getDataFieldBuilder() {
         if (dataBuilder_ == null) {
-          dataBuilder_ = new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
-              org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload.Builder, org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayloadOrBuilder>(
-                  getData(),
-                  getParentForChildren(),
-                  isClean());
+          dataBuilder_ =
+              new org.apache.pekko.protobufv3.internal.SingleFieldBuilderV3<
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload,
+                  org.apache.pekko.persistence.serialization.MessageFormats.PersistentPayload
+                      .Builder,
+                  org.apache.pekko.persistence.serialization.MessageFormats
+                      .PersistentPayloadOrBuilder>(getData(), getParentForChildren(), isClean());
           data_ = null;
         }
         return dataBuilder_;
       }
 
-      private long timeoutNanos_ ;
+      private long timeoutNanos_;
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return Whether the timeoutNanos field is set.
        */
       public boolean hasTimeoutNanos() {
@@ -7065,6 +8025,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return The timeoutNanos.
        */
       public long getTimeoutNanos() {
@@ -7072,6 +8033,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @param value The timeoutNanos to set.
        * @return This builder for chaining.
        */
@@ -7083,6 +8045,7 @@ public final class MessageFormats {
       }
       /**
        * <code>optional int64 timeoutNanos = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearTimeoutNanos() {
@@ -7091,6 +8054,7 @@ public final class MessageFormats {
         onChanged();
         return this;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -7103,30 +8067,35 @@ public final class MessageFormats {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:PersistentFSMSnapshot)
     }
 
     // @@protoc_insertion_point(class_scope:PersistentFSMSnapshot)
-    private static final org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot DEFAULT_INSTANCE;
+    private static final org.apache.pekko.persistence.serialization.MessageFormats
+            .PersistentFSMSnapshot
+        DEFAULT_INSTANCE;
+
     static {
-      DEFAULT_INSTANCE = new org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot();
+      DEFAULT_INSTANCE =
+          new org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot();
     }
 
-    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot getDefaultInstance() {
+    public static org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<PersistentFSMSnapshot>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentFSMSnapshot>() {
-      @java.lang.Override
-      public PersistentFSMSnapshot parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new PersistentFSMSnapshot(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<PersistentFSMSnapshot> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<PersistentFSMSnapshot>() {
+          @java.lang.Override
+          public PersistentFSMSnapshot parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new PersistentFSMSnapshot(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<PersistentFSMSnapshot> parser() {
       return PARSER;
@@ -7138,125 +8107,137 @@ public final class MessageFormats {
     }
 
     @java.lang.Override
-    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot getDefaultInstanceForType() {
+    public org.apache.pekko.persistence.serialization.MessageFormats.PersistentFSMSnapshot
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_PersistentMessage_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_PersistentMessage_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_PersistentMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_PersistentPayload_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_PersistentPayload_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_PersistentPayload_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AtomicWrite_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_AtomicWrite_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_AtomicWrite_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AtLeastOnceDeliverySnapshot_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_AtLeastOnceDeliverySnapshot_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_PersistentStateChangeEvent_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_PersistentStateChangeEvent_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_PersistentStateChangeEvent_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_PersistentFSMSnapshot_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_PersistentFSMSnapshot_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_PersistentFSMSnapshot_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\024MessageFormats.proto\"\343\001\n\021PersistentMes" +
-      "sage\022#\n\007payload\030\001 \001(\0132\022.PersistentPayloa" +
-      "d\022\022\n\nsequenceNr\030\002 \001(\003\022\025\n\rpersistenceId\030\003" +
-      " \001(\t\022\017\n\007deleted\030\004 \001(\010\022\016\n\006sender\030\013 \001(\t\022\020\n" +
-      "\010manifest\030\014 \001(\t\022\022\n\nwriterUuid\030\r \001(\t\022\021\n\tt" +
-      "imestamp\030\016 \001(\022\022$\n\010metadata\030\017 \001(\0132\022.Persi" +
-      "stentPayload\"S\n\021PersistentPayload\022\024\n\014ser" +
-      "ializerId\030\001 \002(\005\022\017\n\007payload\030\002 \002(\014\022\027\n\017payl" +
-      "oadManifest\030\003 \001(\014\"2\n\013AtomicWrite\022#\n\007payl" +
-      "oad\030\001 \003(\0132\022.PersistentMessage\"\356\001\n\033AtLeas" +
-      "tOnceDeliverySnapshot\022\031\n\021currentDelivery" +
-      "Id\030\001 \002(\003\022O\n\025unconfirmedDeliveries\030\002 \003(\0132" +
-      "0.AtLeastOnceDeliverySnapshot.Unconfirme" +
-      "dDelivery\032c\n\023UnconfirmedDelivery\022\022\n\ndeli" +
-      "veryId\030\001 \002(\003\022\023\n\013destination\030\002 \002(\t\022#\n\007pay" +
-      "load\030\003 \002(\0132\022.PersistentPayload\"\\\n\032Persis" +
-      "tentStateChangeEvent\022\027\n\017stateIdentifier\030" +
-      "\001 \002(\t\022\017\n\007timeout\030\002 \001(\t\022\024\n\014timeoutNanos\030\003" +
-      " \001(\003\"h\n\025PersistentFSMSnapshot\022\027\n\017stateId" +
-      "entifier\030\001 \002(\t\022 \n\004data\030\002 \002(\0132\022.Persisten" +
-      "tPayload\022\024\n\014timeoutNanos\030\003 \001(\003B.\n*org.ap" +
-      "ache.pekko.persistence.serializationH\001"
+      "\n\024MessageFormats.proto\"\343\001\n\021PersistentMes"
+          + "sage\022#\n\007payload\030\001 \001(\0132\022.PersistentPayloa"
+          + "d\022\022\n\nsequenceNr\030\002 \001(\003\022\025\n\rpersistenceId\030\003"
+          + " \001(\t\022\017\n\007deleted\030\004 \001(\010\022\016\n\006sender\030\013 \001(\t\022\020\n"
+          + "\010manifest\030\014 \001(\t\022\022\n\nwriterUuid\030\r \001(\t\022\021\n\tt"
+          + "imestamp\030\016 \001(\022\022$\n\010metadata\030\017 \001(\0132\022.Persi"
+          + "stentPayload\"S\n\021PersistentPayload\022\024\n\014ser"
+          + "ializerId\030\001 \002(\005\022\017\n\007payload\030\002 \002(\014\022\027\n\017payl"
+          + "oadManifest\030\003 \001(\014\"2\n\013AtomicWrite\022#\n\007payl"
+          + "oad\030\001 \003(\0132\022.PersistentMessage\"\356\001\n\033AtLeas"
+          + "tOnceDeliverySnapshot\022\031\n\021currentDelivery"
+          + "Id\030\001 \002(\003\022O\n\025unconfirmedDeliveries\030\002 \003(\0132"
+          + "0.AtLeastOnceDeliverySnapshot.Unconfirme"
+          + "dDelivery\032c\n\023UnconfirmedDelivery\022\022\n\ndeli"
+          + "veryId\030\001 \002(\003\022\023\n\013destination\030\002 \002(\t\022#\n\007pay"
+          + "load\030\003 \002(\0132\022.PersistentPayload\"\\\n\032Persis"
+          + "tentStateChangeEvent\022\027\n\017stateIdentifier\030"
+          + "\001 \002(\t\022\017\n\007timeout\030\002 \001(\t\022\024\n\014timeoutNanos\030\003"
+          + " \001(\003\"h\n\025PersistentFSMSnapshot\022\027\n\017stateId"
+          + "entifier\030\001 \002(\t\022 \n\004data\030\002 \002(\0132\022.Persisten"
+          + "tPayload\022\024\n\014timeoutNanos\030\003 \001(\003B.\n*org.ap"
+          + "ache.pekko.persistence.serializationH\001"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-        });
-    internal_static_PersistentMessage_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_PersistentMessage_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PersistentMessage_descriptor,
-        new java.lang.String[] { "Payload", "SequenceNr", "PersistenceId", "Deleted", "Sender", "Manifest", "WriterUuid", "Timestamp", "Metadata", });
-    internal_static_PersistentPayload_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_PersistentPayload_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PersistentPayload_descriptor,
-        new java.lang.String[] { "SerializerId", "Payload", "PayloadManifest", });
-    internal_static_AtomicWrite_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_AtomicWrite_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AtomicWrite_descriptor,
-        new java.lang.String[] { "Payload", });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {});
+    internal_static_PersistentMessage_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_PersistentMessage_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_PersistentMessage_descriptor,
+            new java.lang.String[] {
+              "Payload",
+              "SequenceNr",
+              "PersistenceId",
+              "Deleted",
+              "Sender",
+              "Manifest",
+              "WriterUuid",
+              "Timestamp",
+              "Metadata",
+            });
+    internal_static_PersistentPayload_descriptor = getDescriptor().getMessageTypes().get(1);
+    internal_static_PersistentPayload_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_PersistentPayload_descriptor,
+            new java.lang.String[] {
+              "SerializerId", "Payload", "PayloadManifest",
+            });
+    internal_static_AtomicWrite_descriptor = getDescriptor().getMessageTypes().get(2);
+    internal_static_AtomicWrite_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_AtomicWrite_descriptor,
+            new java.lang.String[] {
+              "Payload",
+            });
     internal_static_AtLeastOnceDeliverySnapshot_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AtLeastOnceDeliverySnapshot_descriptor,
-        new java.lang.String[] { "CurrentDeliveryId", "UnconfirmedDeliveries", });
+        getDescriptor().getMessageTypes().get(3);
+    internal_static_AtLeastOnceDeliverySnapshot_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_AtLeastOnceDeliverySnapshot_descriptor,
+            new java.lang.String[] {
+              "CurrentDeliveryId", "UnconfirmedDeliveries",
+            });
     internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor =
-      internal_static_AtLeastOnceDeliverySnapshot_descriptor.getNestedTypes().get(0);
-    internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor,
-        new java.lang.String[] { "DeliveryId", "Destination", "Payload", });
+        internal_static_AtLeastOnceDeliverySnapshot_descriptor.getNestedTypes().get(0);
+    internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_AtLeastOnceDeliverySnapshot_UnconfirmedDelivery_descriptor,
+            new java.lang.String[] {
+              "DeliveryId", "Destination", "Payload",
+            });
     internal_static_PersistentStateChangeEvent_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_PersistentStateChangeEvent_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PersistentStateChangeEvent_descriptor,
-        new java.lang.String[] { "StateIdentifier", "Timeout", "TimeoutNanos", });
-    internal_static_PersistentFSMSnapshot_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_PersistentFSMSnapshot_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PersistentFSMSnapshot_descriptor,
-        new java.lang.String[] { "StateIdentifier", "Data", "TimeoutNanos", });
+        getDescriptor().getMessageTypes().get(4);
+    internal_static_PersistentStateChangeEvent_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_PersistentStateChangeEvent_descriptor,
+            new java.lang.String[] {
+              "StateIdentifier", "Timeout", "TimeoutNanos",
+            });
+    internal_static_PersistentFSMSnapshot_descriptor = getDescriptor().getMessageTypes().get(5);
+    internal_static_PersistentFSMSnapshot_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_PersistentFSMSnapshot_descriptor,
+            new java.lang.String[] {
+              "StateIdentifier", "Data", "TimeoutNanos",
+            });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

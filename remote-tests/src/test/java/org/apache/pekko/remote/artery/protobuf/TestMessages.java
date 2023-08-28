@@ -18,122 +18,122 @@ package org.apache.pekko.remote.artery.protobuf;
 
 public final class TestMessages {
   private TestMessages() {}
+
   public static void registerAllExtensions(
-      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {
-  }
+      org.apache.pekko.protobufv3.internal.ExtensionRegistryLite registry) {}
 
   public static void registerAllExtensions(
       org.apache.pekko.protobufv3.internal.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
+    registerAllExtensions((org.apache.pekko.protobufv3.internal.ExtensionRegistryLite) registry);
   }
-  public interface TestMessageOrBuilder extends
+
+  public interface TestMessageOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:TestMessage)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return Whether the id field is set.
      */
     boolean hasId();
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return The id.
      */
     long getId();
 
     /**
      * <code>required string name = 2;</code>
+     *
      * @return Whether the name field is set.
      */
     boolean hasName();
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The name.
      */
     java.lang.String getName();
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The bytes for name.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getNameBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getNameBytes();
 
     /**
      * <code>required bool status = 3;</code>
+     *
      * @return Whether the status field is set.
      */
     boolean hasStatus();
     /**
      * <code>required bool status = 3;</code>
+     *
      * @return The status.
      */
     boolean getStatus();
 
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return Whether the description field is set.
      */
     boolean hasDescription();
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return The description.
      */
     java.lang.String getDescription();
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return The bytes for description.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getDescriptionBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getDescriptionBytes();
 
     /**
      * <code>optional bytes payload = 5;</code>
+     *
      * @return Whether the payload field is set.
      */
     boolean hasPayload();
     /**
      * <code>optional bytes payload = 5;</code>
+     *
      * @return The payload.
      */
     org.apache.pekko.protobufv3.internal.ByteString getPayload();
 
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
-    java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> 
-        getItemsList();
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
+    /** <code>repeated .Item items = 6;</code> */
+    java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> getItemsList();
+    /** <code>repeated .Item items = 6;</code> */
     org.apache.pekko.remote.artery.protobuf.TestMessages.Item getItems(int index);
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
+    /** <code>repeated .Item items = 6;</code> */
     int getItemsCount();
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
-    java.util.List<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder> 
+    /** <code>repeated .Item items = 6;</code> */
+    java.util.List<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>
         getItemsOrBuilderList();
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
-    org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder getItemsOrBuilder(
-        int index);
+    /** <code>repeated .Item items = 6;</code> */
+    org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder getItemsOrBuilder(int index);
   }
-  /**
-   * Protobuf type {@code TestMessage}
-   */
-  public  static final class TestMessage extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code TestMessage} */
+  public static final class TestMessage
+      extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:TestMessage)
       TestMessageOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use TestMessage.newBuilder() to construct.
-    private TestMessage(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
+    private TestMessage(
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private TestMessage() {
       name_ = "";
       description_ = "";
@@ -149,10 +149,10 @@ public final class TestMessages {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private TestMessage(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -172,56 +172,66 @@ public final class TestMessages {
             case 0:
               done = true;
               break;
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readUInt64();
-              break;
-            }
-            case 18: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              name_ = bs;
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              status_ = input.readBool();
-              break;
-            }
-            case 34: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000008;
-              description_ = bs;
-              break;
-            }
-            case 42: {
-              bitField0_ |= 0x00000010;
-              payload_ = input.readBytes();
-              break;
-            }
-            case 50: {
-              if (!((mutable_bitField0_ & 0x00000020) != 0)) {
-                items_ = new java.util.ArrayList<org.apache.pekko.remote.artery.protobuf.TestMessages.Item>();
-                mutable_bitField0_ |= 0x00000020;
+            case 8:
+              {
+                bitField0_ |= 0x00000001;
+                id_ = input.readUInt64();
+                break;
               }
-              items_.add(
-                  input.readMessage(org.apache.pekko.remote.artery.protobuf.TestMessages.Item.PARSER, extensionRegistry));
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 18:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000002;
+                name_ = bs;
+                break;
               }
-              break;
-            }
+            case 24:
+              {
+                bitField0_ |= 0x00000004;
+                status_ = input.readBool();
+                break;
+              }
+            case 34:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000008;
+                description_ = bs;
+                break;
+              }
+            case 42:
+              {
+                bitField0_ |= 0x00000010;
+                payload_ = input.readBytes();
+                break;
+              }
+            case 50:
+              {
+                if (!((mutable_bitField0_ & 0x00000020) != 0)) {
+                  items_ =
+                      new java.util.ArrayList<
+                          org.apache.pekko.remote.artery.protobuf.TestMessages.Item>();
+                  mutable_bitField0_ |= 0x00000020;
+                }
+                items_.add(
+                    input.readMessage(
+                        org.apache.pekko.remote.artery.protobuf.TestMessages.Item.PARSER,
+                        extensionRegistry));
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000020) != 0)) {
           items_ = java.util.Collections.unmodifiableList(items_);
@@ -230,17 +240,21 @@ public final class TestMessages {
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
-      return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_TestMessage_descriptor;
+      return org.apache.pekko.remote.artery.protobuf.TestMessages
+          .internal_static_TestMessage_descriptor;
     }
 
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_TestMessage_fieldAccessorTable
+      return org.apache.pekko.remote.artery.protobuf.TestMessages
+          .internal_static_TestMessage_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.class, org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.Builder.class);
+              org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.class,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.Builder.class);
     }
 
     private int bitField0_;
@@ -248,6 +262,7 @@ public final class TestMessages {
     private long id_;
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return Whether the id field is set.
      */
     public boolean hasId() {
@@ -255,6 +270,7 @@ public final class TestMessages {
     }
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return The id.
      */
     public long getId() {
@@ -265,6 +281,7 @@ public final class TestMessages {
     private volatile java.lang.Object name_;
     /**
      * <code>required string name = 2;</code>
+     *
      * @return Whether the name field is set.
      */
     public boolean hasName() {
@@ -272,6 +289,7 @@ public final class TestMessages {
     }
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The name.
      */
     public java.lang.String getName() {
@@ -279,7 +297,7 @@ public final class TestMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -290,15 +308,14 @@ public final class TestMessages {
     }
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The bytes for name.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getNameBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -310,6 +327,7 @@ public final class TestMessages {
     private boolean status_;
     /**
      * <code>required bool status = 3;</code>
+     *
      * @return Whether the status field is set.
      */
     public boolean hasStatus() {
@@ -317,6 +335,7 @@ public final class TestMessages {
     }
     /**
      * <code>required bool status = 3;</code>
+     *
      * @return The status.
      */
     public boolean getStatus() {
@@ -327,6 +346,7 @@ public final class TestMessages {
     private volatile java.lang.Object description_;
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return Whether the description field is set.
      */
     public boolean hasDescription() {
@@ -334,6 +354,7 @@ public final class TestMessages {
     }
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return The description.
      */
     public java.lang.String getDescription() {
@@ -341,7 +362,7 @@ public final class TestMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -352,15 +373,14 @@ public final class TestMessages {
     }
     /**
      * <code>optional string description = 4;</code>
+     *
      * @return The bytes for description.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getDescriptionBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getDescriptionBytes() {
       java.lang.Object ref = description_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         description_ = b;
         return b;
       } else {
@@ -372,6 +392,7 @@ public final class TestMessages {
     private org.apache.pekko.protobufv3.internal.ByteString payload_;
     /**
      * <code>optional bytes payload = 5;</code>
+     *
      * @return Whether the payload field is set.
      */
     public boolean hasPayload() {
@@ -379,6 +400,7 @@ public final class TestMessages {
     }
     /**
      * <code>optional bytes payload = 5;</code>
+     *
      * @return The payload.
      */
     public org.apache.pekko.protobufv3.internal.ByteString getPayload() {
@@ -387,40 +409,33 @@ public final class TestMessages {
 
     public static final int ITEMS_FIELD_NUMBER = 6;
     private java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> items_;
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
-    public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> getItemsList() {
+    /** <code>repeated .Item items = 6;</code> */
+    public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item>
+        getItemsList() {
       return items_;
     }
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
-    public java.util.List<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder> 
+    /** <code>repeated .Item items = 6;</code> */
+    public java.util.List<
+            ? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>
         getItemsOrBuilderList() {
       return items_;
     }
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
+    /** <code>repeated .Item items = 6;</code> */
     public int getItemsCount() {
       return items_.size();
     }
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
+    /** <code>repeated .Item items = 6;</code> */
     public org.apache.pekko.remote.artery.protobuf.TestMessages.Item getItems(int index) {
       return items_.get(index);
     }
-    /**
-     * <code>repeated .Item items = 6;</code>
-     */
+    /** <code>repeated .Item items = 6;</code> */
     public org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder getItemsOrBuilder(
         int index) {
       return items_.get(index);
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -451,7 +466,7 @@ public final class TestMessages {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeUInt64(1, id_);
       }
@@ -462,7 +477,8 @@ public final class TestMessages {
         output.writeBool(3, status_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(output, 4, description_);
+        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.writeString(
+            output, 4, description_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
         output.writeBytes(5, payload_);
@@ -480,26 +496,27 @@ public final class TestMessages {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeUInt64Size(1, id_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeUInt64Size(1, id_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(2, name_);
       }
       if (((bitField0_ & 0x00000004) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBoolSize(3, status_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBoolSize(3, status_);
       }
       if (((bitField0_ & 0x00000008) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(4, description_);
+        size +=
+            org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(
+                4, description_);
       }
       if (((bitField0_ & 0x00000010) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeBytesSize(5, payload_);
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeBytesSize(5, payload_);
       }
       for (int i = 0; i < items_.size(); i++) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeMessageSize(6, items_.get(i));
+        size +=
+            org.apache.pekko.protobufv3.internal.CodedOutputStream.computeMessageSize(
+                6, items_.get(i));
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -509,40 +526,35 @@ public final class TestMessages {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage)) {
         return super.equals(obj);
       }
-      org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage other = (org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage) obj;
+      org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage other =
+          (org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage) obj;
 
       if (hasId() != other.hasId()) return false;
       if (hasId()) {
-        if (getId()
-            != other.getId()) return false;
+        if (getId() != other.getId()) return false;
       }
       if (hasName() != other.hasName()) return false;
       if (hasName()) {
-        if (!getName()
-            .equals(other.getName())) return false;
+        if (!getName().equals(other.getName())) return false;
       }
       if (hasStatus() != other.hasStatus()) return false;
       if (hasStatus()) {
-        if (getStatus()
-            != other.getStatus()) return false;
+        if (getStatus() != other.getStatus()) return false;
       }
       if (hasDescription() != other.hasDescription()) return false;
       if (hasDescription()) {
-        if (!getDescription()
-            .equals(other.getDescription())) return false;
+        if (!getDescription().equals(other.getDescription())) return false;
       }
       if (hasPayload() != other.hasPayload()) return false;
       if (hasPayload()) {
-        if (!getPayload()
-            .equals(other.getPayload())) return false;
+        if (!getPayload().equals(other.getPayload())) return false;
       }
-      if (!getItemsList()
-          .equals(other.getItemsList())) return false;
+      if (!getItemsList().equals(other.getItemsList())) return false;
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
     }
@@ -556,8 +568,7 @@ public final class TestMessages {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasId()) {
         hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getId());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getId());
       }
       if (hasName()) {
         hash = (37 * hash) + NAME_FIELD_NUMBER;
@@ -565,8 +576,7 @@ public final class TestMessages {
       }
       if (hasStatus()) {
         hash = (37 * hash) + STATUS_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(
-            getStatus());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashBoolean(getStatus());
       }
       if (hasDescription()) {
         hash = (37 * hash) + DESCRIPTION_FIELD_NUMBER;
@@ -590,83 +600,98 @@ public final class TestMessages {
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(byte[] data)
-        throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
+        byte[] data) throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        byte[] data, org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+        parseDelimitedFrom(java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseDelimitedFrom(
-        java.io.InputStream input,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+        parseDelimitedFrom(
+            java.io.InputStream input,
+            org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+        org.apache.pekko.protobufv3.internal.CodedInputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -675,27 +700,30 @@ public final class TestMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code TestMessage}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code TestMessage} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:TestMessage)
         org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessageOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
           getDescriptor() {
-        return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_TestMessage_descriptor;
+        return org.apache.pekko.remote.artery.protobuf.TestMessages
+            .internal_static_TestMessage_descriptor;
       }
 
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_TestMessage_fieldAccessorTable
+        return org.apache.pekko.remote.artery.protobuf.TestMessages
+            .internal_static_TestMessage_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.class, org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.Builder.class);
+                org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.class,
+                org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.Builder.class);
       }
 
-      // Construct using org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.newBuilder()
+      // Construct using
+      // org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -705,12 +733,13 @@ public final class TestMessages {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {
           getItemsFieldBuilder();
         }
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -734,14 +763,16 @@ public final class TestMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
-        return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_TestMessage_descriptor;
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
+        return org.apache.pekko.remote.artery.protobuf.TestMessages
+            .internal_static_TestMessage_descriptor;
       }
 
       @java.lang.Override
-      public org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage getDefaultInstanceForType() {
-        return org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.getDefaultInstance();
+      public org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+          getDefaultInstanceForType() {
+        return org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+            .getDefaultInstance();
       }
 
       @java.lang.Override
@@ -755,7 +786,8 @@ public final class TestMessages {
 
       @java.lang.Override
       public org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage buildPartial() {
-        org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage result = new org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage(this);
+        org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage result =
+            new org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -796,46 +828,57 @@ public final class TestMessages {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
         if (other instanceof org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage) {
-          return mergeFrom((org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage)other);
+          return mergeFrom(
+              (org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage) other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage other) {
-        if (other == org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage.getDefaultInstance()) return this;
+      public Builder mergeFrom(
+          org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage other) {
+        if (other
+            == org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+                .getDefaultInstance()) return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -873,9 +916,10 @@ public final class TestMessages {
               itemsBuilder_ = null;
               items_ = other.items_;
               bitField0_ = (bitField0_ & ~0x00000020);
-              itemsBuilder_ = 
-                org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders ?
-                   getItemsFieldBuilder() : null;
+              itemsBuilder_ =
+                  org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders
+                      ? getItemsFieldBuilder()
+                      : null;
             } else {
               itemsBuilder_.addAllMessages(other.items_);
             }
@@ -914,7 +958,9 @@ public final class TestMessages {
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage)
+                  e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -923,11 +969,13 @@ public final class TestMessages {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private long id_ ;
+      private long id_;
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return Whether the id field is set.
        */
       public boolean hasId() {
@@ -935,6 +983,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return The id.
        */
       public long getId() {
@@ -942,6 +991,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -953,6 +1003,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -965,6 +1016,7 @@ public final class TestMessages {
       private java.lang.Object name_ = "";
       /**
        * <code>required string name = 2;</code>
+       *
        * @return Whether the name field is set.
        */
       public boolean hasName() {
@@ -972,6 +1024,7 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -990,15 +1043,14 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return The bytes for name.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getNameBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
@@ -1007,21 +1059,22 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @param value The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         name_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -1032,23 +1085,24 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @param value The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setNameBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         name_ = value;
         onChanged();
         return this;
       }
 
-      private boolean status_ ;
+      private boolean status_;
       /**
        * <code>required bool status = 3;</code>
+       *
        * @return Whether the status field is set.
        */
       public boolean hasStatus() {
@@ -1056,6 +1110,7 @@ public final class TestMessages {
       }
       /**
        * <code>required bool status = 3;</code>
+       *
        * @return The status.
        */
       public boolean getStatus() {
@@ -1063,6 +1118,7 @@ public final class TestMessages {
       }
       /**
        * <code>required bool status = 3;</code>
+       *
        * @param value The status to set.
        * @return This builder for chaining.
        */
@@ -1074,6 +1130,7 @@ public final class TestMessages {
       }
       /**
        * <code>required bool status = 3;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearStatus() {
@@ -1086,6 +1143,7 @@ public final class TestMessages {
       private java.lang.Object description_ = "";
       /**
        * <code>optional string description = 4;</code>
+       *
        * @return Whether the description field is set.
        */
       public boolean hasDescription() {
@@ -1093,6 +1151,7 @@ public final class TestMessages {
       }
       /**
        * <code>optional string description = 4;</code>
+       *
        * @return The description.
        */
       public java.lang.String getDescription() {
@@ -1111,15 +1170,14 @@ public final class TestMessages {
       }
       /**
        * <code>optional string description = 4;</code>
+       *
        * @return The bytes for description.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getDescriptionBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getDescriptionBytes() {
         java.lang.Object ref = description_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           description_ = b;
           return b;
         } else {
@@ -1128,21 +1186,22 @@ public final class TestMessages {
       }
       /**
        * <code>optional string description = 4;</code>
+       *
        * @param value The description to set.
        * @return This builder for chaining.
        */
-      public Builder setDescription(
-          java.lang.String value) {
+      public Builder setDescription(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
         description_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional string description = 4;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearDescription() {
@@ -1153,23 +1212,25 @@ public final class TestMessages {
       }
       /**
        * <code>optional string description = 4;</code>
+       *
        * @param value The bytes for description to set.
        * @return This builder for chaining.
        */
-      public Builder setDescriptionBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setDescriptionBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000008;
         description_ = value;
         onChanged();
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.ByteString payload_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
+      private org.apache.pekko.protobufv3.internal.ByteString payload_ =
+          org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
       /**
        * <code>optional bytes payload = 5;</code>
+       *
        * @return Whether the payload field is set.
        */
       public boolean hasPayload() {
@@ -1177,6 +1238,7 @@ public final class TestMessages {
       }
       /**
        * <code>optional bytes payload = 5;</code>
+       *
        * @return The payload.
        */
       public org.apache.pekko.protobufv3.internal.ByteString getPayload() {
@@ -1184,20 +1246,22 @@ public final class TestMessages {
       }
       /**
        * <code>optional bytes payload = 5;</code>
+       *
        * @param value The payload to set.
        * @return This builder for chaining.
        */
       public Builder setPayload(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000010;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000010;
         payload_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>optional bytes payload = 5;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearPayload() {
@@ -1208,30 +1272,33 @@ public final class TestMessages {
       }
 
       private java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> items_ =
-        java.util.Collections.emptyList();
+          java.util.Collections.emptyList();
+
       private void ensureItemsIsMutable() {
         if (!((bitField0_ & 0x00000020) != 0)) {
-          items_ = new java.util.ArrayList<org.apache.pekko.remote.artery.protobuf.TestMessages.Item>(items_);
+          items_ =
+              new java.util.ArrayList<org.apache.pekko.remote.artery.protobuf.TestMessages.Item>(
+                  items_);
           bitField0_ |= 0x00000020;
-         }
+        }
       }
 
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.remote.artery.protobuf.TestMessages.Item, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder, org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder> itemsBuilder_;
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>
+          itemsBuilder_;
 
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
-      public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item> getItemsList() {
+      /** <code>repeated .Item items = 6;</code> */
+      public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item>
+          getItemsList() {
         if (itemsBuilder_ == null) {
           return java.util.Collections.unmodifiableList(items_);
         } else {
           return itemsBuilder_.getMessageList();
         }
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public int getItemsCount() {
         if (itemsBuilder_ == null) {
           return items_.size();
@@ -1239,9 +1306,7 @@ public final class TestMessages {
           return itemsBuilder_.getCount();
         }
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public org.apache.pekko.remote.artery.protobuf.TestMessages.Item getItems(int index) {
         if (itemsBuilder_ == null) {
           return items_.get(index);
@@ -1249,9 +1314,7 @@ public final class TestMessages {
           return itemsBuilder_.getMessage(index);
         }
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder setItems(
           int index, org.apache.pekko.remote.artery.protobuf.TestMessages.Item value) {
         if (itemsBuilder_ == null) {
@@ -1266,11 +1329,10 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder setItems(
-          int index, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder builderForValue) {
+          int index,
+          org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder builderForValue) {
         if (itemsBuilder_ == null) {
           ensureItemsIsMutable();
           items_.set(index, builderForValue.build());
@@ -1280,9 +1342,7 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder addItems(org.apache.pekko.remote.artery.protobuf.TestMessages.Item value) {
         if (itemsBuilder_ == null) {
           if (value == null) {
@@ -1296,9 +1356,7 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder addItems(
           int index, org.apache.pekko.remote.artery.protobuf.TestMessages.Item value) {
         if (itemsBuilder_ == null) {
@@ -1313,9 +1371,7 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder addItems(
           org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder builderForValue) {
         if (itemsBuilder_ == null) {
@@ -1327,11 +1383,10 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder addItems(
-          int index, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder builderForValue) {
+          int index,
+          org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder builderForValue) {
         if (itemsBuilder_ == null) {
           ensureItemsIsMutable();
           items_.add(index, builderForValue.build());
@@ -1341,24 +1396,20 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder addAllItems(
-          java.lang.Iterable<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.Item> values) {
+          java.lang.Iterable<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.Item>
+              values) {
         if (itemsBuilder_ == null) {
           ensureItemsIsMutable();
-          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(
-              values, items_);
+          org.apache.pekko.protobufv3.internal.AbstractMessageLite.Builder.addAll(values, items_);
           onChanged();
         } else {
           itemsBuilder_.addAllMessages(values);
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder clearItems() {
         if (itemsBuilder_ == null) {
           items_ = java.util.Collections.emptyList();
@@ -1369,9 +1420,7 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public Builder removeItems(int index) {
         if (itemsBuilder_ == null) {
           ensureItemsIsMutable();
@@ -1382,70 +1431,67 @@ public final class TestMessages {
         }
         return this;
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder getItemsBuilder(
           int index) {
         return getItemsFieldBuilder().getBuilder(index);
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder getItemsOrBuilder(
           int index) {
         if (itemsBuilder_ == null) {
-          return items_.get(index);  } else {
+          return items_.get(index);
+        } else {
           return itemsBuilder_.getMessageOrBuilder(index);
         }
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
-      public java.util.List<? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder> 
-           getItemsOrBuilderList() {
+      /** <code>repeated .Item items = 6;</code> */
+      public java.util.List<
+              ? extends org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>
+          getItemsOrBuilderList() {
         if (itemsBuilder_ != null) {
           return itemsBuilder_.getMessageOrBuilderList();
         } else {
           return java.util.Collections.unmodifiableList(items_);
         }
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder addItemsBuilder() {
-        return getItemsFieldBuilder().addBuilder(
-            org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance());
+        return getItemsFieldBuilder()
+            .addBuilder(
+                org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance());
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
+      /** <code>repeated .Item items = 6;</code> */
       public org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder addItemsBuilder(
           int index) {
-        return getItemsFieldBuilder().addBuilder(
-            index, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance());
+        return getItemsFieldBuilder()
+            .addBuilder(
+                index,
+                org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance());
       }
-      /**
-       * <code>repeated .Item items = 6;</code>
-       */
-      public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder> 
-           getItemsBuilderList() {
+      /** <code>repeated .Item items = 6;</code> */
+      public java.util.List<org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder>
+          getItemsBuilderList() {
         return getItemsFieldBuilder().getBuilderList();
       }
+
       private org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-          org.apache.pekko.remote.artery.protobuf.TestMessages.Item, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder, org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder> 
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>
           getItemsFieldBuilder() {
         if (itemsBuilder_ == null) {
-          itemsBuilder_ = new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
-              org.apache.pekko.remote.artery.protobuf.TestMessages.Item, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder, org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>(
-                  items_,
-                  ((bitField0_ & 0x00000020) != 0),
-                  getParentForChildren(),
-                  isClean());
+          itemsBuilder_ =
+              new org.apache.pekko.protobufv3.internal.RepeatedFieldBuilderV3<
+                  org.apache.pekko.remote.artery.protobuf.TestMessages.Item,
+                  org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder,
+                  org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder>(
+                  items_, ((bitField0_ & 0x00000020) != 0), getParentForChildren(), isClean());
           items_ = null;
         }
         return itemsBuilder_;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -1458,30 +1504,33 @@ public final class TestMessages {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:TestMessage)
     }
 
     // @@protoc_insertion_point(class_scope:TestMessage)
-    private static final org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage DEFAULT_INSTANCE;
+    private static final org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+        DEFAULT_INSTANCE;
+
     static {
       DEFAULT_INSTANCE = new org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage();
     }
 
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage getDefaultInstance() {
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+        getDefaultInstance() {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<TestMessage>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<TestMessage>() {
-      @java.lang.Override
-      public TestMessage parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new TestMessage(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<TestMessage> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<TestMessage>() {
+          @java.lang.Override
+          public TestMessage parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new TestMessage(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<TestMessage> parser() {
       return PARSER;
@@ -1493,56 +1542,60 @@ public final class TestMessages {
     }
 
     @java.lang.Override
-    public org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage getDefaultInstanceForType() {
+    public org.apache.pekko.remote.artery.protobuf.TestMessages.TestMessage
+        getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
-  public interface ItemOrBuilder extends
+  public interface ItemOrBuilder
+      extends
       // @@protoc_insertion_point(interface_extends:Item)
       org.apache.pekko.protobufv3.internal.MessageOrBuilder {
 
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return Whether the id field is set.
      */
     boolean hasId();
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return The id.
      */
     long getId();
 
     /**
      * <code>required string name = 2;</code>
+     *
      * @return Whether the name field is set.
      */
     boolean hasName();
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The name.
      */
     java.lang.String getName();
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The bytes for name.
      */
-    org.apache.pekko.protobufv3.internal.ByteString
-        getNameBytes();
+    org.apache.pekko.protobufv3.internal.ByteString getNameBytes();
   }
-  /**
-   * Protobuf type {@code Item}
-   */
-  public  static final class Item extends
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3 implements
+  /** Protobuf type {@code Item} */
+  public static final class Item extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3
+      implements
       // @@protoc_insertion_point(message_implements:Item)
       ItemOrBuilder {
-  private static final long serialVersionUID = 0L;
+    private static final long serialVersionUID = 0L;
     // Use Item.newBuilder() to construct.
     private Item(org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<?> builder) {
       super(builder);
     }
+
     private Item() {
       name_ = "";
     }
@@ -1555,10 +1608,10 @@ public final class TestMessages {
     }
 
     @java.lang.Override
-    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet
-    getUnknownFields() {
+    public final org.apache.pekko.protobufv3.internal.UnknownFieldSet getUnknownFields() {
       return this.unknownFields;
     }
+
     private Item(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
@@ -1578,36 +1631,39 @@ public final class TestMessages {
             case 0:
               done = true;
               break;
-            case 8: {
-              bitField0_ |= 0x00000001;
-              id_ = input.readUInt64();
-              break;
-            }
-            case 18: {
-              org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000002;
-              name_ = bs;
-              break;
-            }
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
+            case 8:
+              {
+                bitField0_ |= 0x00000001;
+                id_ = input.readUInt64();
+                break;
               }
-              break;
-            }
+            case 18:
+              {
+                org.apache.pekko.protobufv3.internal.ByteString bs = input.readBytes();
+                bitField0_ |= 0x00000002;
+                name_ = bs;
+                break;
+              }
+            default:
+              {
+                if (!parseUnknownField(input, unknownFields, extensionRegistry, tag)) {
+                  done = true;
+                }
+                break;
+              }
           }
         }
       } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
-        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+        throw new org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
       }
     }
+
     public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
         getDescriptor() {
       return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_Item_descriptor;
@@ -1616,9 +1672,11 @@ public final class TestMessages {
     @java.lang.Override
     protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_Item_fieldAccessorTable
+      return org.apache.pekko.remote.artery.protobuf.TestMessages
+          .internal_static_Item_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              org.apache.pekko.remote.artery.protobuf.TestMessages.Item.class, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder.class);
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item.class,
+              org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder.class);
     }
 
     private int bitField0_;
@@ -1626,6 +1684,7 @@ public final class TestMessages {
     private long id_;
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return Whether the id field is set.
      */
     public boolean hasId() {
@@ -1633,6 +1692,7 @@ public final class TestMessages {
     }
     /**
      * <code>required uint64 id = 1;</code>
+     *
      * @return The id.
      */
     public long getId() {
@@ -1643,6 +1703,7 @@ public final class TestMessages {
     private volatile java.lang.Object name_;
     /**
      * <code>required string name = 2;</code>
+     *
      * @return Whether the name field is set.
      */
     public boolean hasName() {
@@ -1650,6 +1711,7 @@ public final class TestMessages {
     }
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The name.
      */
     public java.lang.String getName() {
@@ -1657,7 +1719,7 @@ public final class TestMessages {
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
-        org.apache.pekko.protobufv3.internal.ByteString bs = 
+        org.apache.pekko.protobufv3.internal.ByteString bs =
             (org.apache.pekko.protobufv3.internal.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
@@ -1668,15 +1730,14 @@ public final class TestMessages {
     }
     /**
      * <code>required string name = 2;</code>
+     *
      * @return The bytes for name.
      */
-    public org.apache.pekko.protobufv3.internal.ByteString
-        getNameBytes() {
+    public org.apache.pekko.protobufv3.internal.ByteString getNameBytes() {
       java.lang.Object ref = name_;
       if (ref instanceof java.lang.String) {
-        org.apache.pekko.protobufv3.internal.ByteString b = 
-            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
+        org.apache.pekko.protobufv3.internal.ByteString b =
+            org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
         name_ = b;
         return b;
       } else {
@@ -1685,6 +1746,7 @@ public final class TestMessages {
     }
 
     private byte memoizedIsInitialized = -1;
+
     @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -1705,7 +1767,7 @@ public final class TestMessages {
 
     @java.lang.Override
     public void writeTo(org.apache.pekko.protobufv3.internal.CodedOutputStream output)
-                        throws java.io.IOException {
+        throws java.io.IOException {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeUInt64(1, id_);
       }
@@ -1722,8 +1784,7 @@ public final class TestMessages {
 
       size = 0;
       if (((bitField0_ & 0x00000001) != 0)) {
-        size += org.apache.pekko.protobufv3.internal.CodedOutputStream
-          .computeUInt64Size(1, id_);
+        size += org.apache.pekko.protobufv3.internal.CodedOutputStream.computeUInt64Size(1, id_);
       }
       if (((bitField0_ & 0x00000002) != 0)) {
         size += org.apache.pekko.protobufv3.internal.GeneratedMessageV3.computeStringSize(2, name_);
@@ -1736,22 +1797,21 @@ public final class TestMessages {
     @java.lang.Override
     public boolean equals(final java.lang.Object obj) {
       if (obj == this) {
-       return true;
+        return true;
       }
       if (!(obj instanceof org.apache.pekko.remote.artery.protobuf.TestMessages.Item)) {
         return super.equals(obj);
       }
-      org.apache.pekko.remote.artery.protobuf.TestMessages.Item other = (org.apache.pekko.remote.artery.protobuf.TestMessages.Item) obj;
+      org.apache.pekko.remote.artery.protobuf.TestMessages.Item other =
+          (org.apache.pekko.remote.artery.protobuf.TestMessages.Item) obj;
 
       if (hasId() != other.hasId()) return false;
       if (hasId()) {
-        if (getId()
-            != other.getId()) return false;
+        if (getId() != other.getId()) return false;
       }
       if (hasName() != other.hasName()) return false;
       if (hasName()) {
-        if (!getName()
-            .equals(other.getName())) return false;
+        if (!getName().equals(other.getName())) return false;
       }
       if (!unknownFields.equals(other.unknownFields)) return false;
       return true;
@@ -1766,8 +1826,7 @@ public final class TestMessages {
       hash = (19 * hash) + getDescriptor().hashCode();
       if (hasId()) {
         hash = (37 * hash) + ID_FIELD_NUMBER;
-        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(
-            getId());
+        hash = (53 * hash) + org.apache.pekko.protobufv3.internal.Internal.hashLong(getId());
       }
       if (hasName()) {
         hash = (37 * hash) + NAME_FIELD_NUMBER;
@@ -1783,83 +1842,97 @@ public final class TestMessages {
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
         java.nio.ByteBuffer data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
         org.apache.pekko.protobufv3.internal.ByteString data,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(byte[] data)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
-        byte[] data,
-        org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+        byte[] data, org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
-    public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+
+    public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseDelimitedFrom(
+        java.io.InputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseDelimitedFrom(
         java.io.InputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseDelimitedWithIOException(
+          PARSER, input, extensionRegistry);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
-        org.apache.pekko.protobufv3.internal.CodedInputStream input)
-        throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+        org.apache.pekko.protobufv3.internal.CodedInputStream input) throws java.io.IOException {
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input);
     }
+
     public static org.apache.pekko.remote.artery.protobuf.TestMessages.Item parseFrom(
         org.apache.pekko.protobufv3.internal.CodedInputStream input,
         org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return org.apache.pekko.protobufv3.internal.GeneratedMessageV3.parseWithIOException(
+          PARSER, input, extensionRegistry);
     }
 
     @java.lang.Override
-    public Builder newBuilderForType() { return newBuilder(); }
+    public Builder newBuilderForType() {
+      return newBuilder();
+    }
+
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
     }
-    public static Builder newBuilder(org.apache.pekko.remote.artery.protobuf.TestMessages.Item prototype) {
+
+    public static Builder newBuilder(
+        org.apache.pekko.remote.artery.protobuf.TestMessages.Item prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+
     @java.lang.Override
     public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
+      return this == DEFAULT_INSTANCE ? new Builder() : new Builder().mergeFrom(this);
     }
 
     @java.lang.Override
@@ -1868,11 +1941,10 @@ public final class TestMessages {
       Builder builder = new Builder(parent);
       return builder;
     }
-    /**
-     * Protobuf type {@code Item}
-     */
-    public static final class Builder extends
-        org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder> implements
+    /** Protobuf type {@code Item} */
+    public static final class Builder
+        extends org.apache.pekko.protobufv3.internal.GeneratedMessageV3.Builder<Builder>
+        implements
         // @@protoc_insertion_point(builder_implements:Item)
         org.apache.pekko.remote.artery.protobuf.TestMessages.ItemOrBuilder {
       public static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
@@ -1883,9 +1955,11 @@ public final class TestMessages {
       @java.lang.Override
       protected org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_Item_fieldAccessorTable
+        return org.apache.pekko.remote.artery.protobuf.TestMessages
+            .internal_static_Item_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                org.apache.pekko.remote.artery.protobuf.TestMessages.Item.class, org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder.class);
+                org.apache.pekko.remote.artery.protobuf.TestMessages.Item.class,
+                org.apache.pekko.remote.artery.protobuf.TestMessages.Item.Builder.class);
       }
 
       // Construct using org.apache.pekko.remote.artery.protobuf.TestMessages.Item.newBuilder()
@@ -1898,11 +1972,11 @@ public final class TestMessages {
         super(parent);
         maybeForceBuilderInitialization();
       }
+
       private void maybeForceBuilderInitialization() {
-        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-        }
+        if (org.apache.pekko.protobufv3.internal.GeneratedMessageV3.alwaysUseFieldBuilders) {}
       }
+
       @java.lang.Override
       public Builder clear() {
         super.clear();
@@ -1914,8 +1988,7 @@ public final class TestMessages {
       }
 
       @java.lang.Override
-      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-          getDescriptorForType() {
+      public org.apache.pekko.protobufv3.internal.Descriptors.Descriptor getDescriptorForType() {
         return org.apache.pekko.remote.artery.protobuf.TestMessages.internal_static_Item_descriptor;
       }
 
@@ -1935,7 +2008,8 @@ public final class TestMessages {
 
       @java.lang.Override
       public org.apache.pekko.remote.artery.protobuf.TestMessages.Item buildPartial() {
-        org.apache.pekko.remote.artery.protobuf.TestMessages.Item result = new org.apache.pekko.remote.artery.protobuf.TestMessages.Item(this);
+        org.apache.pekko.remote.artery.protobuf.TestMessages.Item result =
+            new org.apache.pekko.remote.artery.protobuf.TestMessages.Item(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
@@ -1955,38 +2029,45 @@ public final class TestMessages {
       public Builder clone() {
         return super.clone();
       }
+
       @java.lang.Override
       public Builder setField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.setField(field, value);
       }
+
       @java.lang.Override
       public Builder clearField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field) {
         return super.clearField(field);
       }
+
       @java.lang.Override
       public Builder clearOneof(
           org.apache.pekko.protobufv3.internal.Descriptors.OneofDescriptor oneof) {
         return super.clearOneof(oneof);
       }
+
       @java.lang.Override
       public Builder setRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
-          int index, java.lang.Object value) {
+          int index,
+          java.lang.Object value) {
         return super.setRepeatedField(field, index, value);
       }
+
       @java.lang.Override
       public Builder addRepeatedField(
           org.apache.pekko.protobufv3.internal.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return super.addRepeatedField(field, value);
       }
+
       @java.lang.Override
       public Builder mergeFrom(org.apache.pekko.protobufv3.internal.Message other) {
         if (other instanceof org.apache.pekko.remote.artery.protobuf.TestMessages.Item) {
-          return mergeFrom((org.apache.pekko.remote.artery.protobuf.TestMessages.Item)other);
+          return mergeFrom((org.apache.pekko.remote.artery.protobuf.TestMessages.Item) other);
         } else {
           super.mergeFrom(other);
           return this;
@@ -1994,7 +2075,8 @@ public final class TestMessages {
       }
 
       public Builder mergeFrom(org.apache.pekko.remote.artery.protobuf.TestMessages.Item other) {
-        if (other == org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance()) return this;
+        if (other == org.apache.pekko.remote.artery.protobuf.TestMessages.Item.getDefaultInstance())
+          return this;
         if (other.hasId()) {
           setId(other.getId());
         }
@@ -2028,7 +2110,8 @@ public final class TestMessages {
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException e) {
-          parsedMessage = (org.apache.pekko.remote.artery.protobuf.TestMessages.Item) e.getUnfinishedMessage();
+          parsedMessage =
+              (org.apache.pekko.remote.artery.protobuf.TestMessages.Item) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -2037,11 +2120,13 @@ public final class TestMessages {
         }
         return this;
       }
+
       private int bitField0_;
 
-      private long id_ ;
+      private long id_;
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return Whether the id field is set.
        */
       public boolean hasId() {
@@ -2049,6 +2134,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return The id.
        */
       public long getId() {
@@ -2056,6 +2142,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @param value The id to set.
        * @return This builder for chaining.
        */
@@ -2067,6 +2154,7 @@ public final class TestMessages {
       }
       /**
        * <code>required uint64 id = 1;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearId() {
@@ -2079,6 +2167,7 @@ public final class TestMessages {
       private java.lang.Object name_ = "";
       /**
        * <code>required string name = 2;</code>
+       *
        * @return Whether the name field is set.
        */
       public boolean hasName() {
@@ -2086,6 +2175,7 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return The name.
        */
       public java.lang.String getName() {
@@ -2104,15 +2194,14 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return The bytes for name.
        */
-      public org.apache.pekko.protobufv3.internal.ByteString
-          getNameBytes() {
+      public org.apache.pekko.protobufv3.internal.ByteString getNameBytes() {
         java.lang.Object ref = name_;
         if (ref instanceof String) {
-          org.apache.pekko.protobufv3.internal.ByteString b = 
-              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
+          org.apache.pekko.protobufv3.internal.ByteString b =
+              org.apache.pekko.protobufv3.internal.ByteString.copyFromUtf8((java.lang.String) ref);
           name_ = b;
           return b;
         } else {
@@ -2121,21 +2210,22 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @param value The name to set.
        * @return This builder for chaining.
        */
-      public Builder setName(
-          java.lang.String value) {
+      public Builder setName(java.lang.String value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         name_ = value;
         onChanged();
         return this;
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @return This builder for chaining.
        */
       public Builder clearName() {
@@ -2146,19 +2236,20 @@ public final class TestMessages {
       }
       /**
        * <code>required string name = 2;</code>
+       *
        * @param value The bytes for name to set.
        * @return This builder for chaining.
        */
-      public Builder setNameBytes(
-          org.apache.pekko.protobufv3.internal.ByteString value) {
+      public Builder setNameBytes(org.apache.pekko.protobufv3.internal.ByteString value) {
         if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000002;
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
         name_ = value;
         onChanged();
         return this;
       }
+
       @java.lang.Override
       public final Builder setUnknownFields(
           final org.apache.pekko.protobufv3.internal.UnknownFieldSet unknownFields) {
@@ -2171,12 +2262,12 @@ public final class TestMessages {
         return super.mergeUnknownFields(unknownFields);
       }
 
-
       // @@protoc_insertion_point(builder_scope:Item)
     }
 
     // @@protoc_insertion_point(class_scope:Item)
     private static final org.apache.pekko.remote.artery.protobuf.TestMessages.Item DEFAULT_INSTANCE;
+
     static {
       DEFAULT_INSTANCE = new org.apache.pekko.remote.artery.protobuf.TestMessages.Item();
     }
@@ -2185,16 +2276,17 @@ public final class TestMessages {
       return DEFAULT_INSTANCE;
     }
 
-    @java.lang.Deprecated public static final org.apache.pekko.protobufv3.internal.Parser<Item>
-        PARSER = new org.apache.pekko.protobufv3.internal.AbstractParser<Item>() {
-      @java.lang.Override
-      public Item parsePartialFrom(
-          org.apache.pekko.protobufv3.internal.CodedInputStream input,
-          org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
-          throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
-        return new Item(input, extensionRegistry);
-      }
-    };
+    @java.lang.Deprecated
+    public static final org.apache.pekko.protobufv3.internal.Parser<Item> PARSER =
+        new org.apache.pekko.protobufv3.internal.AbstractParser<Item>() {
+          @java.lang.Override
+          public Item parsePartialFrom(
+              org.apache.pekko.protobufv3.internal.CodedInputStream input,
+              org.apache.pekko.protobufv3.internal.ExtensionRegistryLite extensionRegistry)
+              throws org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException {
+            return new Item(input, extensionRegistry);
+          }
+        };
 
     public static org.apache.pekko.protobufv3.internal.Parser<Item> parser() {
       return PARSER;
@@ -2209,51 +2301,51 @@ public final class TestMessages {
     public org.apache.pekko.remote.artery.protobuf.TestMessages.Item getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
-
   }
 
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_TestMessage_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_TestMessage_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_TestMessage_fieldAccessorTable;
   private static final org.apache.pekko.protobufv3.internal.Descriptors.Descriptor
-    internal_static_Item_descriptor;
-  private static final 
-    org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
+      internal_static_Item_descriptor;
+  private static final org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable
       internal_static_Item_fieldAccessorTable;
 
-  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      getDescriptor() {
+  public static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor getDescriptor() {
     return descriptor;
   }
-  private static  org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      descriptor;
+
+  private static org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor descriptor;
+
   static {
     java.lang.String[] descriptorData = {
-      "\n\022TestMessages.proto\"s\n\013TestMessage\022\n\n\002i" +
-      "d\030\001 \002(\004\022\014\n\004name\030\002 \002(\t\022\016\n\006status\030\003 \002(\010\022\023\n" +
-      "\013description\030\004 \001(\t\022\017\n\007payload\030\005 \001(\014\022\024\n\005i" +
-      "tems\030\006 \003(\0132\005.Item\" \n\004Item\022\n\n\002id\030\001 \002(\004\022\014\n" +
-      "\004name\030\002 \002(\tB)\n\'org.apache.pekko.remote.a" +
-      "rtery.protobuf"
+      "\n\022TestMessages.proto\"s\n\013TestMessage\022\n\n\002i"
+          + "d\030\001 \002(\004\022\014\n\004name\030\002 \002(\t\022\016\n\006status\030\003 \002(\010\022\023\n"
+          + "\013description\030\004 \001(\t\022\017\n\007payload\030\005 \001(\014\022\024\n\005i"
+          + "tems\030\006 \003(\0132\005.Item\" \n\004Item\022\n\n\002id\030\001 \002(\004\022\014\n"
+          + "\004name\030\002 \002(\tB)\n\'org.apache.pekko.remote.a"
+          + "rtery.protobuf"
     };
-    descriptor = org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
-      .internalBuildGeneratedFileFrom(descriptorData,
-        new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {
-        });
-    internal_static_TestMessage_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_TestMessage_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_TestMessage_descriptor,
-        new java.lang.String[] { "Id", "Name", "Status", "Description", "Payload", "Items", });
-    internal_static_Item_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_Item_fieldAccessorTable = new
-      org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_Item_descriptor,
-        new java.lang.String[] { "Id", "Name", });
+    descriptor =
+        org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor
+            .internalBuildGeneratedFileFrom(
+                descriptorData,
+                new org.apache.pekko.protobufv3.internal.Descriptors.FileDescriptor[] {});
+    internal_static_TestMessage_descriptor = getDescriptor().getMessageTypes().get(0);
+    internal_static_TestMessage_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_TestMessage_descriptor,
+            new java.lang.String[] {
+              "Id", "Name", "Status", "Description", "Payload", "Items",
+            });
+    internal_static_Item_descriptor = getDescriptor().getMessageTypes().get(1);
+    internal_static_Item_fieldAccessorTable =
+        new org.apache.pekko.protobufv3.internal.GeneratedMessageV3.FieldAccessorTable(
+            internal_static_Item_descriptor,
+            new java.lang.String[] {
+              "Id", "Name",
+            });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
