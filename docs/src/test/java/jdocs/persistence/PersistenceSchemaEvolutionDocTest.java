@@ -15,17 +15,14 @@ package jdocs.persistence;
 
 import docs.persistence.ExampleJsonMarshaller;
 import docs.persistence.proto.FlightAppModels;
-
 import java.io.NotSerializableException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-
-import spray.json.JsObject;
-
 import org.apache.pekko.persistence.journal.EventAdapter;
 import org.apache.pekko.persistence.journal.EventSeq;
 import org.apache.pekko.protobufv3.internal.InvalidProtocolBufferException;
 import org.apache.pekko.serialization.SerializerWithStringManifest;
+import spray.json.JsObject;
 
 public class PersistenceSchemaEvolutionDocTest {
 

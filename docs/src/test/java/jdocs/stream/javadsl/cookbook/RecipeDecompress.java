@@ -13,19 +13,19 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static org.apache.pekko.util.ByteString.emptyByteString;
+
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Compression;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
-import static org.apache.pekko.util.ByteString.emptyByteString;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 public class RecipeDecompress extends RecipeTest {
 

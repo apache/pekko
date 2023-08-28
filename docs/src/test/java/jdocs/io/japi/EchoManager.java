@@ -14,11 +14,10 @@
 package jdocs.io.japi;
 
 import java.net.InetSocketAddress;
-
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.actor.SupervisorStrategy;
-import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.io.Tcp;

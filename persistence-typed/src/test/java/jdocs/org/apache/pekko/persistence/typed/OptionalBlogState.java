@@ -13,12 +13,11 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.util.Optional;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.persistence.typed.PersistenceId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-
-import java.util.Optional;
 
 public class OptionalBlogState {
 

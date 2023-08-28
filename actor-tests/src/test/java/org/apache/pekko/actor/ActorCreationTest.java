@@ -13,17 +13,14 @@
 
 package org.apache.pekko.actor;
 
-import static org.junit.Assert.*;
 import static java.util.stream.Collectors.toCollection;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.stream.IntStream;
-
+import org.apache.pekko.japi.Creator;
 import org.junit.Assert;
 import org.junit.Test;
-
-import org.apache.pekko.japi.Creator;
-
 import org.scalatestplus.junit.JUnitSuite;
 
 public class ActorCreationTest extends JUnitSuite {

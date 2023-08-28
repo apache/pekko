@@ -13,6 +13,9 @@
 
 package org.apache.pekko.actor;
 
+import static org.junit.Assert.*;
+
+import java.util.Optional;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.Logging.LoggerInitialized;
 import org.apache.pekko.japi.Creator;
@@ -20,21 +23,16 @@ import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.Util;
 import org.apache.pekko.japi.tuple.Tuple22;
 import org.apache.pekko.japi.tuple.Tuple4;
-import org.apache.pekko.routing.GetRoutees;
 import org.apache.pekko.routing.FromConfig;
+import org.apache.pekko.routing.GetRoutees;
 import org.apache.pekko.routing.NoRouter;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.TestProbe;
-
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.Option;
-
-import java.util.Optional;
-
-import static org.junit.Assert.*;
 
 public class JavaAPI extends JUnitSuite {
 

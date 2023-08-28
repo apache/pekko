@@ -13,26 +13,24 @@
 
 package jdocs.typed.tutorial_5;
 
+import static jdocs.typed.tutorial_5.DeviceManager.DeviceNotAvailable;
+import static jdocs.typed.tutorial_5.DeviceManager.DeviceTimedOut;
+import static jdocs.typed.tutorial_5.DeviceManager.RespondAllTemperatures;
+import static jdocs.typed.tutorial_5.DeviceManager.Temperature;
+import static jdocs.typed.tutorial_5.DeviceManager.TemperatureNotAvailable;
+import static jdocs.typed.tutorial_5.DeviceManager.TemperatureReading;
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
-
-import static jdocs.typed.tutorial_5.DeviceManager.RespondAllTemperatures;
-import static jdocs.typed.tutorial_5.DeviceManager.TemperatureReading;
-import static jdocs.typed.tutorial_5.DeviceManager.Temperature;
-import static jdocs.typed.tutorial_5.DeviceManager.TemperatureNotAvailable;
-import static jdocs.typed.tutorial_5.DeviceManager.DeviceTimedOut;
-import static jdocs.typed.tutorial_5.DeviceManager.DeviceNotAvailable;
 
 public class DeviceGroupQueryTest extends JUnitSuite {
 

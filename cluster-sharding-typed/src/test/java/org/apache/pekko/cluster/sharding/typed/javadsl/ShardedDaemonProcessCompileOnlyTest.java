@@ -13,14 +13,13 @@
 
 package org.apache.pekko.cluster.sharding.typed.javadsl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.cluster.sharding.typed.ShardedDaemonProcessSettings;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 public class ShardedDaemonProcessCompileOnlyTest {
 

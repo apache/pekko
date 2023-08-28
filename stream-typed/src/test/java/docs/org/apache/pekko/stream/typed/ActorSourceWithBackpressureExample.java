@@ -14,6 +14,7 @@
 package docs.org.apache.pekko.stream.typed;
 
 // #sample
+import java.util.Optional;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
@@ -25,8 +26,6 @@ import org.apache.pekko.stream.CompletionStrategy;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.typed.javadsl.ActorSource;
-
-import java.util.Optional;
 
 class StreamFeeder extends AbstractBehavior<StreamFeeder.Emitted> {
   /** Signals that the latest element is emitted into the stream */

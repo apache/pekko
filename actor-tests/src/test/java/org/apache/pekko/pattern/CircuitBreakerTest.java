@@ -13,6 +13,13 @@
 
 package org.apache.pekko.pattern;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
@@ -22,14 +29,6 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.Await;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.BiFunction;
-import java.time.Duration;
-
-import static org.junit.Assert.assertEquals;
 
 public class CircuitBreakerTest extends JUnitSuite {
 

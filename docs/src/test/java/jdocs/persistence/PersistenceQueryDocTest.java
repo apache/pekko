@@ -13,27 +13,23 @@
 
 package jdocs.persistence;
 
+import com.typesafe.config.Config;
 import java.sql.Connection;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
+import java.util.concurrent.CompletionStage;
+import jdocs.persistence.query.MyEventsByTagSource;
 import org.apache.pekko.NotUsed;
-import org.apache.pekko.persistence.query.Sequence;
-import org.apache.pekko.persistence.query.Offset;
-import com.typesafe.config.Config;
-
 import org.apache.pekko.actor.*;
 import org.apache.pekko.persistence.query.*;
+import org.apache.pekko.persistence.query.Offset;
+import org.apache.pekko.persistence.query.Sequence;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import jdocs.persistence.query.MyEventsByTagSource;
 import org.reactivestreams.Subscriber;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
 
 public class PersistenceQueryDocTest {
 

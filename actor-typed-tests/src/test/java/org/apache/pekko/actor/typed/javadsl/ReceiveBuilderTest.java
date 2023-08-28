@@ -13,19 +13,18 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
+
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import org.apache.pekko.actor.typed.Behavior;
-
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 
 /** Test creating [[MutableActor]]s using [[ReceiveBuilder]] */
 public class ReceiveBuilderTest extends JUnitSuite {

@@ -14,8 +14,16 @@
 package jdocs.io;
 
 // #imports
-import org.apache.pekko.actor.ActorRef;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
+import java.net.StandardProtocolFamily;
+import java.nio.channels.DatagramChannel;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.io.Inet;
@@ -23,14 +31,6 @@ import org.apache.pekko.io.Udp;
 import org.apache.pekko.io.UdpMessage;
 import org.apache.pekko.util.ByteString;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.NetworkInterface;
-import java.net.StandardProtocolFamily;
-import java.net.DatagramSocket;
-import java.nio.channels.DatagramChannel;
-import java.util.ArrayList;
-import java.util.List;
 // #imports
 
 public class JavaUdpMulticast {

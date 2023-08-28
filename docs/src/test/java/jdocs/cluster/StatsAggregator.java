@@ -13,15 +13,14 @@
 
 package jdocs.cluster;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.time.Duration;
-
 import jdocs.cluster.StatsMessages.JobFailed;
 import jdocs.cluster.StatsMessages.StatsResult;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ReceiveTimeout;
-import org.apache.pekko.actor.AbstractActor;
 
 // #aggregator
 public class StatsAggregator extends AbstractActor {

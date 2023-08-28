@@ -13,6 +13,11 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static junit.framework.TestCase.assertTrue;
+
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.pattern.Patterns;
@@ -24,12 +29,6 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.CompletionStage;
-
-import static junit.framework.TestCase.assertTrue;
 
 public class RecipeGlobalRateLimit extends RecipeTest {
   static ActorSystem system;

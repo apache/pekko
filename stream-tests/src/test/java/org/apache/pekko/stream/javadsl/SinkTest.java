@@ -13,27 +13,25 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import java.util.Arrays;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.stream.*;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-
-import static org.junit.Assert.*;
 
 public class SinkTest extends StreamTest {
   public SinkTest() {

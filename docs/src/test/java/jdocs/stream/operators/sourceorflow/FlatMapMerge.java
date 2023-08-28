@@ -13,11 +13,10 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import java.util.Arrays;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.Arrays;
 
 public class FlatMapMerge {
   private static ActorSystem system = null;

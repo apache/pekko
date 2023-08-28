@@ -13,15 +13,14 @@
 
 package org.apache.pekko.japi.pf;
 
+import static org.junit.Assert.*;
+
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Test;
-import org.junit.Before;
-import org.scalatestplus.junit.JUnitSuite;
-
 import org.apache.pekko.actor.AbstractActor.Receive;
-
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
 
 @SuppressWarnings("serial")
 public class ReceiveBuilderTest extends JUnitSuite {

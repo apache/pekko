@@ -14,15 +14,15 @@
 package jdocs.dispatcher;
 
 // #mailbox-implementation-example
+import com.typesafe.config.Config;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.dispatch.Envelope;
 import org.apache.pekko.dispatch.MailboxType;
 import org.apache.pekko.dispatch.MessageQueue;
 import org.apache.pekko.dispatch.ProducesMessageQueue;
-import com.typesafe.config.Config;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.Queue;
 import scala.Option;
 
 public class MyUnboundedMailbox

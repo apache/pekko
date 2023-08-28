@@ -17,20 +17,18 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.OutputStream;
 import java.time.Duration;
-
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.japi.function.Procedure;
 import org.apache.pekko.stream.StreamTest;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.javadsl.StreamConverters;
 import org.apache.pekko.stream.testkit.Utils;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class OutputStreamSourceTest extends StreamTest {
   public OutputStreamSourceTest() {

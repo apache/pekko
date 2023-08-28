@@ -13,13 +13,12 @@
 
 package jdoc.org.apache.pekko.discovery;
 
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.discovery.Lookup;
-import org.apache.pekko.discovery.Discovery;
-import org.apache.pekko.discovery.ServiceDiscovery;
-
 import java.time.Duration;
 import java.util.concurrent.CompletionStage;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.discovery.Discovery;
+import org.apache.pekko.discovery.Lookup;
+import org.apache.pekko.discovery.ServiceDiscovery;
 
 public class CompileOnlyTest {
   public static void example() {

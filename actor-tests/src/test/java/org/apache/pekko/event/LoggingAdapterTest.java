@@ -13,29 +13,27 @@
 
 package org.apache.pekko.event;
 
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.actor.Props;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.event.Logging.Error;
-import org.apache.pekko.event.ActorWithMDC.Log;
 import static org.apache.pekko.event.Logging.*;
-
-import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.*;
-import java.time.Duration;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import java.time.Duration;
+import java.util.*;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.actor.Props;
+import org.apache.pekko.event.ActorWithMDC.Log;
+import org.apache.pekko.event.Logging.Error;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class LoggingAdapterTest extends JUnitSuite {
 

@@ -13,10 +13,6 @@
 
 package jdocs.org.apache.pekko.persistence.typed.auction;
 
-import org.apache.pekko.Done;
-import org.apache.pekko.persistence.typed.PersistenceId;
-import org.apache.pekko.persistence.typed.javadsl.*;
-
 import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionCommand.*;
 import static jdocs.org.apache.pekko.persistence.typed.auction.AuctionEvent.*;
 
@@ -24,7 +20,10 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.persistence.typed.PersistenceId;
+import org.apache.pekko.persistence.typed.javadsl.*;
 
 /**
  * Based on

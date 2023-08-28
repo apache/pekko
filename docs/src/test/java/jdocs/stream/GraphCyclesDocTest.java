@@ -14,18 +14,16 @@
 package jdocs.stream;
 
 import java.util.Arrays;
-
-import org.apache.pekko.NotUsed;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.scaladsl.MergePreferred.MergePreferredShape;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class GraphCyclesDocTest extends AbstractJavaTest {
 

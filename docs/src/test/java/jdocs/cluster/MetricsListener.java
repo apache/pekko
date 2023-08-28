@@ -18,11 +18,11 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.cluster.Cluster;
 import org.apache.pekko.cluster.ClusterEvent.CurrentClusterState;
 import org.apache.pekko.cluster.metrics.ClusterMetricsChanged;
+import org.apache.pekko.cluster.metrics.ClusterMetricsExtension;
 import org.apache.pekko.cluster.metrics.NodeMetrics;
 import org.apache.pekko.cluster.metrics.StandardMetrics;
-import org.apache.pekko.cluster.metrics.StandardMetrics.HeapMemory;
 import org.apache.pekko.cluster.metrics.StandardMetrics.Cpu;
-import org.apache.pekko.cluster.metrics.ClusterMetricsExtension;
+import org.apache.pekko.cluster.metrics.StandardMetrics.HeapMemory;
 import org.apache.pekko.event.Logging;
 import org.apache.pekko.event.LoggingAdapter;
 

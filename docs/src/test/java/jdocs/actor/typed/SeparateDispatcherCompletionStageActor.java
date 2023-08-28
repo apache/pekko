@@ -15,7 +15,6 @@ package jdocs.actor.typed;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.*;
 

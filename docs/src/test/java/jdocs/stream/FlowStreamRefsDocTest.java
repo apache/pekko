@@ -13,6 +13,8 @@
 
 package jdocs.stream;
 
+import java.util.concurrent.TimeUnit;
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
@@ -21,11 +23,8 @@ import org.apache.pekko.actor.Props;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import jdocs.AbstractJavaTest;
 import org.junit.Test;
 import scala.concurrent.duration.FiniteDuration;
-
-import java.util.concurrent.TimeUnit;
 
 public class FlowStreamRefsDocTest extends AbstractJavaTest {
 

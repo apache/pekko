@@ -13,29 +13,25 @@
 
 package jdocs.ddata;
 
-import java.util.HashSet;
-import java.util.Arrays;
-import java.util.Set;
-import java.math.BigInteger;
-import java.util.Optional;
-
-import org.apache.pekko.actor.*;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import com.typesafe.config.ConfigFactory;
-import docs.ddata.DistributedDataDocSpec;
-import jdocs.AbstractJavaTest;
-import java.time.Duration;
-
+import static org.apache.pekko.cluster.ddata.Replicator.*;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-
+import com.typesafe.config.ConfigFactory;
+import docs.ddata.DistributedDataDocSpec;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.*;
 import org.apache.pekko.cluster.ddata.*;
 import org.apache.pekko.japi.pf.ReceiveBuilder;
-
-import static org.apache.pekko.cluster.ddata.Replicator.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 @SuppressWarnings({"unchecked", "unused"})
 public class DistributedDataDocTest extends AbstractJavaTest {

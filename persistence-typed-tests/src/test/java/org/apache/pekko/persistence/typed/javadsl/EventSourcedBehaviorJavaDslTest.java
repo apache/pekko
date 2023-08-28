@@ -13,6 +13,17 @@
 
 package org.apache.pekko.persistence.typed.javadsl;
 
+import static java.util.Collections.singletonList;
+import static org.apache.pekko.Done.done;
+import static org.junit.Assert.assertEquals;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.google.common.collect.Sets;
+import com.typesafe.config.ConfigFactory;
+import java.time.Duration;
+import java.util.*;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
@@ -33,23 +44,11 @@ import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitRead
 import org.apache.pekko.persistence.typed.*;
 import org.apache.pekko.serialization.jackson.CborSerializable;
 import org.apache.pekko.stream.javadsl.Sink;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.google.common.collect.Sets;
-import com.typesafe.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import org.slf4j.event.Level;
-
-import java.time.Duration;
-import java.util.*;
-
-import static org.apache.pekko.Done.done;
-import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
 
 public class EventSourcedBehaviorJavaDslTest extends JUnitSuite {
 

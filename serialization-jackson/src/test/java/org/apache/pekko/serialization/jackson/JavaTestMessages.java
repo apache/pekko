@@ -13,18 +13,17 @@
 
 package org.apache.pekko.serialization.jackson;
 
-import org.apache.pekko.actor.ActorRef;
-import org.apache.pekko.actor.Address;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.apache.pekko.actor.ActorRef;
+import org.apache.pekko.actor.Address;
 
 public interface JavaTestMessages {
 

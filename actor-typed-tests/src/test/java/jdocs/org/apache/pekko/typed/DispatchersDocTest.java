@@ -14,8 +14,8 @@
 package jdocs.org.apache.pekko.typed;
 
 import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.javadsl.*;
 import org.apache.pekko.actor.typed.DispatcherSelector;
+import org.apache.pekko.actor.typed.javadsl.*;
 
 public class DispatchersDocTest {
 

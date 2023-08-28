@@ -13,13 +13,12 @@
 
 package jdocs.org.apache.pekko.cluster.typed;
 
+import java.nio.charset.StandardCharsets;
 import org.apache.pekko.actor.ExtendedActorSystem;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorRefResolver;
 import org.apache.pekko.actor.typed.javadsl.Adapter;
 import org.apache.pekko.serialization.SerializerWithStringManifest;
-
-import java.nio.charset.StandardCharsets;
 
 public class PingSerializerExampleTest {
 

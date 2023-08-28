@@ -13,6 +13,12 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
@@ -30,13 +36,6 @@ import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.Promise;
 import scala.concurrent.duration.FiniteDuration;
-
-import java.time.Duration;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.Assert.assertEquals;
 
 public class RecipeAdhocSourceTest extends RecipeTest {
   static ActorSystem system;

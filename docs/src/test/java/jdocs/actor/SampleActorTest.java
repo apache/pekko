@@ -13,16 +13,16 @@
 
 package jdocs.actor;
 
+import static org.junit.Assert.*;
+
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
-import jdocs.AbstractJavaTest;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class SampleActorTest extends AbstractJavaTest {
 

@@ -13,23 +13,21 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.stopped;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
+import org.apache.pekko.actor.typed.ActorRef;
+import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.Terminated;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import org.apache.pekko.actor.typed.Behavior;
-import org.apache.pekko.actor.typed.Terminated;
-import org.apache.pekko.actor.typed.ActorRef;
-
-import java.util.ArrayList;
-
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.stopped;
-import static org.junit.Assert.assertEquals;
 
 /** Test creating [[Behavior]]s using [[BehaviorBuilder]] */
 public class BehaviorBuilderTest extends JUnitSuite {
