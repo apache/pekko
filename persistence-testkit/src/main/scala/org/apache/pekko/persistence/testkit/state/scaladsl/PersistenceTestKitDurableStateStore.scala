@@ -108,16 +108,14 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     Source(store.values.toVector.filter(byTagFromOffset).sortBy(_.globalOffset))
       .concat(changesSource)
       .filter(byTagFromOffsetNotDeleted)
-      .statefulMapConcat { () =>
-        var globalOffsetSeen = EarliestOffset
-
-        { (record: Record[A]) =>
+      .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) => {
           if (record.globalOffset > globalOffsetSeen) {
-            globalOffsetSeen = record.globalOffset
-            record :: Nil
-          } else Nil
-        }
-      }
+            (record.globalOffset, Some(record))
+          } else {
+            (globalOffsetSeen, None)
+          }
+        }, _ => None)
+      .collect { case Some(record) => record }
       .map(_.toDurableStateChange)
   }
 
@@ -170,16 +168,14 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
       Source(store.values.toVector.filter(bySliceFromOffset).sortBy(_.globalOffset))
         .concat(changesSource)
         .filter(bySliceFromOffsetNotDeleted)
-        .statefulMapConcat { () =>
-          var globalOffsetSeen = EarliestOffset
-
-          { (record: Record[A]) =>
+        .statefulMap(() => EarliestOffset)((globalOffsetSeen, record) => {
             if (record.globalOffset > globalOffsetSeen) {
-              globalOffsetSeen = record.globalOffset
-              record :: Nil
-            } else Nil
-          }
-        }
+              (record.globalOffset, Some(record))
+            } else {
+              (globalOffsetSeen, None)
+            }
+          }, _ => None)
+        .collect { case Some(record) => record }
         .map(_.toDurableStateChange)
     }
 

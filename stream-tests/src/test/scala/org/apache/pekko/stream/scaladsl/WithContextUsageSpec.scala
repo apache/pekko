@@ -184,19 +184,14 @@ class WithContextUsageSpec extends StreamSpec {
   def commit[Ctx](uninitialized: Ctx): Sink[Ctx, Probe[Ctx]] = {
     val testSink = TestSink.probe[Ctx]
     Flow[Ctx]
-      .statefulMapConcat { () =>
-        {
-          var prevCtx: Ctx = uninitialized
-          ctx => {
-            val res =
-              if (prevCtx != uninitialized && ctx != prevCtx) Vector(prevCtx)
-              else Vector.empty[Ctx]
-
-            prevCtx = ctx
-            res
+      .statefulMap(() => uninitialized)((prevCtx, ctx) => {
+          if (prevCtx != uninitialized && ctx != prevCtx) {
+            (ctx, Some(prevCtx))
+          } else {
+            (ctx, None)
           }
-        }
-      }
+        }, _ => None)
+      .collect { case Some(ctx) => ctx }
       .toMat(testSink)(Keep.right)
   }
 }
