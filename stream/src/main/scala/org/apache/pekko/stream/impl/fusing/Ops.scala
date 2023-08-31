@@ -2281,7 +2281,6 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
       }
 
       private def closeStateAndFail(ex: Throwable): Unit = {
-        println("changed 1")
         needInvokeOnCompleteCallback = false
         onComplete(state) match {
           case Some(elem) => emit(out, elem, () => failStage(ex))
@@ -2293,7 +2292,6 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
 
       override def postStop(): Unit = {
         if (needInvokeOnCompleteCallback) {
-          println("changed 2")
           onComplete(state)
         }
       }
