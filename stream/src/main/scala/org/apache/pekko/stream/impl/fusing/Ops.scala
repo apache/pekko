@@ -2259,8 +2259,8 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
       override def onUpstreamFailure(ex: Throwable): Unit = closeStateAndFail(ex)
 
       override def onDownstreamFinish(cause: Throwable): Unit = {
-        onComplete(state)
         needInvokeOnCompleteCallback = false
+        onComplete(state)
         super.onDownstreamFinish(cause)
       }
 
@@ -2273,25 +2273,27 @@ private[pekko] final class StatefulMap[S, In, Out](create: () => S, f: (S, In) =
       }
 
       private def closeStateAndComplete(): Unit = {
+        needInvokeOnCompleteCallback = false
         onComplete(state) match {
           case Some(elem) => emit(out, elem, () => completeStage())
           case None       => completeStage()
         }
-        needInvokeOnCompleteCallback = false
       }
 
       private def closeStateAndFail(ex: Throwable): Unit = {
+        println("changed 1")
+        needInvokeOnCompleteCallback = false
         onComplete(state) match {
           case Some(elem) => emit(out, elem, () => failStage(ex))
           case None       => failStage(ex)
         }
-        needInvokeOnCompleteCallback = false
       }
 
       override def onPull(): Unit = pull(in)
 
       override def postStop(): Unit = {
         if (needInvokeOnCompleteCallback) {
+          println("changed 2")
           onComplete(state)
         }
       }

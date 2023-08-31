@@ -23,6 +23,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
+import pekko.stream.testkit.scaladsl.StreamTestKit
 
 import scala.annotation.nowarn
 import scala.concurrent.Await
@@ -34,6 +35,8 @@ import scala.util.control.NoStackTrace
 class FlowStatefulMapSpec extends StreamSpec {
 
   val ex = new Exception("TEST") with NoStackTrace
+
+  val dtorException = new Exception("bad dtor") with NoStackTrace
 
   "A StatefulMap" must {
     "work in the happy case" in {
@@ -279,5 +282,65 @@ class FlowStatefulMapSpec extends StreamSpec {
         .expectNext("D")
         .expectComplete()
     }
+  }
+
+  "won't call onComplete twice when downstream cancelled even if onComplete throws" in {
+    var counter = 0
+
+    def badDtor() = {
+      counter += 1
+      throw dtorException
+    }
+
+    Source.never[String]
+      .statefulMap(() => None)((s, e) => s -> e,
+        _ => {
+          badDtor()
+          None
+        })
+      .runWith(Sink.cancelled)
+
+    StreamTestKit.assertAllStagesStopped(None)
+    counter shouldBe 1
+  }
+
+  "won't call onComplete twice when upstream failed even if onComplete throws" in {
+    var counter = 0
+
+    def badDtor() = {
+      counter += 1
+      throw dtorException
+    }
+
+    Source.failed[String](ex)
+      .statefulMap(() => None)((s, e) => s -> e,
+        _ => {
+          badDtor()
+          None
+        })
+      .runWith(Sink.ignore)
+
+    StreamTestKit.assertAllStagesStopped(None)
+    counter shouldBe 1
+  }
+
+  "won't call onComplete twice when upstream finished even if onComplete throws" in {
+    var counter = 0
+
+    def badDtor() = {
+      counter += 1
+      throw dtorException
+    }
+
+    Source.empty[String]
+      .statefulMap(() => None)((s, e) => s -> e,
+        _ => {
+          badDtor()
+          None
+        })
+      .runWith(Sink.ignore)
+
+    StreamTestKit.assertAllStagesStopped(None)
+    counter shouldBe 1
   }
 }
