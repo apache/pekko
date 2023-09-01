@@ -2437,6 +2437,9 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * The returned `Iterable` MUST NOT contain `null` values,
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
+   * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
+   * Use [[FlowOps.statefulMap]] instead.
+   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the mapping function returns an element or there are still remaining elements
@@ -2449,6 +2452,8 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
+  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
+  @Deprecated
   def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Source[T, Mat] =
     new Source(delegate.statefulMapConcat { () =>
       val fun = f.create()
