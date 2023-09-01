@@ -997,6 +997,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
+  @nowarn("msg=deprecated")
   def mapConcat[T](f: Out => IterableOnce[T]): Repr[T] = statefulMapConcat(() => f)
 
   /**
@@ -1042,6 +1043,9 @@ trait FlowOps[+Out, +Mat] {
    * The returned `Iterable` MUST NOT contain `null` values,
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
+   * This operator doesn't handle upstream's completion signal, the state kept in the closure can be lost,
+   * use the [[FlowOps.statefulMap]] instead.
+   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the mapping function returns an element or there are still remaining elements
@@ -1056,6 +1060,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.mapConcat]]
    */
+  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](f: () => Out => IterableOnce[T]): Repr[T] =
     via(new StatefulMapConcat(f))
 
@@ -2870,16 +2875,9 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipWithIndex: Repr[(Out, Long)] = {
-    statefulMapConcat[(Out, Long)] { () =>
-      var index: Long = 0L
-      elem => {
-        val zipped = (elem, index)
-        index += 1
-        immutable.Iterable[(Out, Long)](zipped)
-      }
-    }
-  }
+  def zipWithIndex: Repr[(Out, Long)] = statefulMap(() => 0L)({
+      case (index, out) => (index + 1L, (out, index))
+    }, _ => None).withAttributes(DefaultAttributes.zipWithIndex)
 
   /**
    * Interleave is a deterministic merge of the given [[Source]] with elements of this [[Flow]].
