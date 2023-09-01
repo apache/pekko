@@ -40,6 +40,7 @@ import pekko.stream.scaladsl.Source
 import pekko.util.OptionVal
 import com.typesafe.config.ConfigFactory
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.collection.mutable
 import scala.concurrent.ExecutionContext
@@ -201,6 +202,7 @@ object Simulator {
       .runWith(SimulatorStats())
 
   object ShardAllocation {
+    @nowarn("msg=deprecated")
     def apply(numberOfShards: Int, numberOfRegions: Int): Flow[EntityId, Access, NotUsed] =
       Flow[EntityId].statefulMapConcat(() => {
         val allocation = new ShardAllocation(numberOfShards, numberOfRegions)
@@ -235,6 +237,7 @@ object Simulator {
   }
 
   object ShardingState {
+    @nowarn("msg=deprecated")
     def apply(strategyCreator: StrategyCreator): Flow[Access, Event, NotUsed] =
       Flow[Access].statefulMapConcat(() => {
         val state = new ShardingState(strategyCreator)

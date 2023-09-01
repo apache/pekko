@@ -38,6 +38,8 @@ import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Source
 import pekko.stream.typed.scaladsl.ActorSource
 import pekko.stream.OverflowStrategy
+
+import scala.annotation.nowarn
 import scala.collection.immutable
 
 object PersistenceTestKitDurableStateStore {
@@ -95,6 +97,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
     store.contains(persistenceId)
   }
 
+  @nowarn("msg=deprecated")
   override def changes(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] = this.synchronized {
     val fromOffset = offset match {
       case NoOffset             => EarliestOffset
@@ -147,6 +150,7 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
         }, inclusive = true)
     }
 
+  @nowarn("msg=deprecated")
   override def changesBySlices(
       entityType: String,
       minSlice: Int,

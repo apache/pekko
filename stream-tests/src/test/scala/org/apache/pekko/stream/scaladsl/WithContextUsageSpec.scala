@@ -21,6 +21,8 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber.Probe
 import pekko.stream.testkit.scaladsl.TestSink
 
+import scala.annotation.nowarn
+
 class WithContextUsageSpec extends StreamSpec {
 
   "Context propagation used for committing offsets" must {
@@ -181,6 +183,8 @@ class WithContextUsageSpec extends StreamSpec {
       .map(_.record)
 
   def commitOffsets = commit[Offset](Offset.Uninitialized)
+
+  @nowarn("msg=deprecated")
   def commit[Ctx](uninitialized: Ctx): Sink[Ctx, Probe[Ctx]] = {
     val testSink = TestSink.probe[Ctx]
     Flow[Ctx]
