@@ -17,6 +17,9 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl.Flow
 import org.apache.pekko.stream.scaladsl.Source
 
+import scala.annotation.nowarn
+
+@nowarn("msg=deprecated")
 class StatefulMapConcat {
 
   implicit val system: ActorSystem = ???

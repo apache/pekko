@@ -30,6 +30,8 @@ import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.scaladsl._
 
+import scala.annotation.nowarn
+
 object ZipWithIndexBenchmark {
   final val OperationsPerInvocation = 100000
 }
@@ -37,6 +39,7 @@ object ZipWithIndexBenchmark {
 @State(Scope.Benchmark)
 @OutputTimeUnit(TimeUnit.SECONDS)
 @BenchmarkMode(Array(Mode.Throughput))
+@nowarn("msg=deprecated")
 class ZipWithIndexBenchmark {
   import ZipWithIndexBenchmark._
 
