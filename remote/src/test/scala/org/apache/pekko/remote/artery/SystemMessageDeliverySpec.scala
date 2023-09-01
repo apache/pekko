@@ -43,6 +43,8 @@ import pekko.testkit.TestEvent
 import pekko.testkit.TestProbe
 import pekko.util.OptionVal
 
+import scala.annotation.nowarn
+
 object SystemMessageDeliverySpec {
 
   case class TestSysMsg(s: String) extends SystemMessageDelivery.AckedDeliveryMessage
@@ -98,6 +100,7 @@ abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiN
       .via(new SystemMessageAcker(inboundContext))
   }
 
+  @nowarn("msg=deprecated")
   protected def drop(dropSeqNumbers: Vector[Long]): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] = {
     Flow[OutboundEnvelope].statefulMapConcat(() => {
       var dropping = dropSeqNumbers
