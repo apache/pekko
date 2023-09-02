@@ -334,7 +334,8 @@ object LightArrayRevolverScheduler {
   /**
    * INTERNAL API
    */
-  protected[actor] class TaskHolder(@volatile var task: Runnable, var ticks: Int, executionContext: ExecutionContext)
+  protected[actor] final class TaskHolder(@volatile var task: Runnable, var ticks: Int,
+      executionContext: ExecutionContext)
       extends TimerTask {
 
     @tailrec
