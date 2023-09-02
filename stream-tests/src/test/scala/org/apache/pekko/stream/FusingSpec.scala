@@ -103,7 +103,7 @@ class FusingSpec extends StreamSpec {
     }
 
     // an UnfoldResourceSource equivalent without an async boundary
-    case class UnfoldResourceNoAsyncBoundry[T, S](create: () => S, readData: (S) => Option[T], close: (S) => Unit)
+    case class UnfoldResourceNoAsyncBoundary[R, T](create: () => R, readData: (R) => Option[T], close: (R) => Unit)
         extends GraphStage[SourceShape[T]] {
       val stage_ = new UnfoldResourceSource(create, readData, close)
       override def initialAttributes: Attributes = Attributes.none
@@ -114,7 +114,7 @@ class FusingSpec extends StreamSpec {
 
     "propagate downstream errors through async boundary" in {
       val promise = Promise[Done]()
-      val slowInitSrc = UnfoldResourceNoAsyncBoundry(
+      val slowInitSrc = UnfoldResourceNoAsyncBoundary(
         () => { Await.result(promise.future, 1.minute); () },
         (_: Unit) => Some(1),
         (_: Unit) => ()).asSource.watchTermination()(Keep.right).async // commenting this out, makes the test pass
@@ -145,7 +145,7 @@ class FusingSpec extends StreamSpec {
 
     "propagate 'parallel' errors through async boundary via a common downstream" in {
       val promise = Promise[Done]()
-      val slowInitSrc = UnfoldResourceNoAsyncBoundry(
+      val slowInitSrc = UnfoldResourceNoAsyncBoundary(
         () => { Await.result(promise.future, 1.minute); () },
         (_: Unit) => Some(1),
         (_: Unit) => ()).asSource.watchTermination()(Keep.right).async // commenting this out, makes the test pass

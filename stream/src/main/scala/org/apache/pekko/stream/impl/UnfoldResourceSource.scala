@@ -27,10 +27,10 @@ import pekko.stream.stage._
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class UnfoldResourceSource[T, S](
-    create: () => S,
-    readData: (S) => Option[T],
-    close: (S) => Unit)
+@InternalApi private[pekko] final class UnfoldResourceSource[R, T](
+    create: () => R,
+    readData: (R) => Option[T],
+    close: (R) => Unit)
     extends GraphStage[SourceShape[T]] {
   val out = Outlet[T]("UnfoldResourceSource.out")
   override val shape = SourceShape(out)
@@ -41,7 +41,7 @@ import pekko.stream.stage._
     new GraphStageLogic(shape) with OutHandler {
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       private var open = false
-      private var resource: S = _
+      private var resource: R = _
 
       override def preStart(): Unit = {
         resource = create()
