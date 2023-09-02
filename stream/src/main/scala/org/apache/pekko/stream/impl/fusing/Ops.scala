@@ -287,23 +287,17 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-
       import Collect.NotApplied
 
-      var recovered: Option[T] = None
+      var recovered: OptionVal[T] = OptionVal.none
 
-      override def onPush(): Unit = {
-        push(out, grab(in))
-      }
+      override def onPush(): Unit = push(out, grab(in))
 
-      override def onPull(): Unit = {
-        recovered match {
-          case Some(elem) =>
-            push(out, elem)
-            completeStage()
-          case None =>
-            pull(in)
-        }
+      override def onPull(): Unit = recovered match {
+        case OptionVal.Some(elem) =>
+          push(out, elem)
+          completeStage()
+        case _ => pull(in)
       }
 
       override def onUpstreamFailure(ex: Throwable): Unit =
@@ -314,7 +308,7 @@ private[stream] object Collect {
                 push(out, result)
                 completeStage()
               } else {
-                recovered = Some(result)
+                recovered = OptionVal.Some(result)
               }
             }
             case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
