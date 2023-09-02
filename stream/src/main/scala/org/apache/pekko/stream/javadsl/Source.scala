@@ -964,16 +964,18 @@ object Source {
    * @param read - function that reads data from opened resource. It is called each time backpressure signal
    *             is received. Stream calls close and completes when `CompletionStage` from read function returns an empty Optional.
    * @param close - function that closes resource
+   * @tparam T the element type
+   * @tparam R the resource type
    */
-  def unfoldResourceAsync[T, S](
-      create: function.Creator[CompletionStage[S]],
-      read: function.Function[S, CompletionStage[Optional[T]]],
-      close: function.Function[S, CompletionStage[Done]]): javadsl.Source[T, NotUsed] =
+  def unfoldResourceAsync[T, R](
+      create: function.Creator[CompletionStage[R]],
+      read: function.Function[R, CompletionStage[Optional[T]]],
+      close: function.Function[R, CompletionStage[Done]]): javadsl.Source[T, NotUsed] =
     new Source(
-      scaladsl.Source.unfoldResourceAsync[T, S](
+      scaladsl.Source.unfoldResourceAsync[T, R](
         () => create.create().asScala,
-        (s: S) => read.apply(s).asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic),
-        (s: S) => close.apply(s).asScala))
+        (resource: R) => read.apply(resource).asScala.map(_.toScala)(pekko.dispatch.ExecutionContexts.parasitic),
+        (resource: R) => close.apply(resource).asScala))
 
   /**
    * Upcast a stream of elements to a stream of supertypes of that element. Useful in combination with
