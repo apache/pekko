@@ -55,7 +55,7 @@ object SubFlow {
  * are materialized later, during the runtime of the flow graph processing.
  */
 @ccompatUsedUntil213
-class SubFlow[In, Out, Mat](
+final class SubFlow[In, Out, Mat](
     delegate: scaladsl.SubFlow[Out, Mat, scaladsl.Flow[In, Out, Mat]#Repr, scaladsl.Sink[In, Mat]]) {
 
   /** Converts this Flow to its Scala DSL counterpart */

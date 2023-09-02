@@ -13,15 +13,20 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.annotation.unchecked.uncheckedVariance
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
+import pekko.stream._
 
-import org.apache.pekko.stream._
+import scala.annotation.unchecked.uncheckedVariance
 
 /**
  * A “stream of streams” sub-flow of data elements, e.g. produced by `groupBy`.
  * SubFlows cannot contribute to the super-flow’s materialized value since they
  * are materialized later, during the runtime of the flow graph processing.
+ *
+ * Not for user extension
  */
+@DoNotInherit
 trait SubFlow[+Out, +Mat, +F[+_], C] extends FlowOps[Out, Mat] {
 
   override type Repr[+T] = SubFlow[T, Mat @uncheckedVariance, F @uncheckedVariance, C @uncheckedVariance]
