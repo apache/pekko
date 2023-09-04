@@ -2527,6 +2527,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): javadsl.Source[T, Mat] =
     new Source(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
 
+  def unsafeTransformUnordered[T](
+      parallelism: Int, transform: function.Function2[Out, StreamCollector[T], Unit]): javadsl.Source[T, Mat] =
+    new Source(delegate.unsafeTransformUnordered[T](parallelism)(collector => out => transform(out, collector)))
+
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
    * If any of the asks times out it will fail the stream with a [[pekko.pattern.AskTimeoutException]].

@@ -16,13 +16,11 @@ package org.apache.pekko.stream.javadsl
 import java.util.{ Comparator, Optional }
 import java.util.concurrent.CompletionStage
 import java.util.function.Supplier
-
 import scala.annotation.{ nowarn, varargs }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
@@ -347,6 +345,10 @@ class SubFlow[In, Out, Mat](
    */
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
+
+  def unsafeTransformUnordered[T](
+      parallelism: Int, transform: function.Function2[Out, StreamCollector[T], Unit]): javadsl.SubFlow[In, T, Mat] =
+    new SubFlow(delegate.unsafeTransformUnordered[T](parallelism)(emitter => out => transform(out, emitter)))
 
   /**
    * Only pass on those elements that satisfy the given predicate.
