@@ -33,9 +33,10 @@ jobs:
     steps:
       # TODO we will need to change to use a release tag in future
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
           ref: 1.0.x
 
       - name: Setup Java 11

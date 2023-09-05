@@ -12,9 +12,10 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 20
         uses: actions/setup-java@v3
@@ -68,10 +69,11 @@ jobs:
           - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 20
         uses: actions/setup-java@v3
@@ -112,9 +114,10 @@ jobs:
         javaVersion: [20]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v3
