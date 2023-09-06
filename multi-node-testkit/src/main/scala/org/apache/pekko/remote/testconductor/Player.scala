@@ -212,12 +212,11 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
     case Event(Done, _) =>
       log.debug("received Done: starting test")
       goto(Connected)
+    case Event(msg: ServerOp, _) =>
+      stay().replying(Status.Failure(new IllegalStateException(s"not connected yet but received $msg")))
     case Event(msg: NetworkOp, _) =>
       log.error("received {} instead of Done", msg)
       goto(Failed)
-    // Scala 3.3.1 compiler says this is unreachable
-    // case Event(_: ServerOp, _) =>
-    //  stay().replying(Status.Failure(new IllegalStateException("not connected yet")))
     case Event(StateTimeout, _) =>
       log.error("connect timeout to TestConductor")
       goto(Failed)
