@@ -500,10 +500,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
       address <- addressToSocketAddress(Address("", "", settings.BindHostname, bindPort))
     } yield {
       try {
-        val newServerChannel = inboundBootstrap match {
-          case b: ServerBootstrap => b.bind(address).sync().channel()
-          case _                  => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
-        }
+        val newServerChannel = inboundBootstrap.bind(address).sync().channel()
 
         // Block reads until a handler actor is registered
         newServerChannel.config().setAutoRead(false)
