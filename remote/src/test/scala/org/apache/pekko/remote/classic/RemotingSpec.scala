@@ -14,15 +14,15 @@
 package org.apache.pekko.remote.classic
 
 import java.io.NotSerializableException
+import java.nio.file.Paths
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.AddressTerminatedTopic
@@ -77,8 +77,8 @@ object RemotingSpec {
 
   val cfg: Config = ConfigFactory.parseString(s"""
     common-ssl-settings {
-      key-store = "${getClass.getClassLoader.getResource("keystore").getPath}"
-      trust-store = "${getClass.getClassLoader.getResource("truststore").getPath}"
+      key-store = "${resourcePath("keystore")}"
+      trust-store = "${resourcePath("truststore")}"
       key-store-password = "changeme"
       key-password = "changeme"
       trust-store-password = "changeme"
@@ -142,6 +142,13 @@ object RemotingSpec {
         EventFilter.warning(start = "AssociationError"),
         EventFilter.warning(pattern = "received dead letter.*")))
   }
+
+  private def resourcePath(resourceName: String): String = {
+    val normalizedPath = Paths.get(getClass.getClassLoader.getResource(resourceName).toURI).normalize()
+    // Make it works on Windows
+    normalizedPath.toString.replace('\\', '/')
+  }
+
 }
 
 @nowarn
