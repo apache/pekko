@@ -14,7 +14,7 @@
 package org.apache.pekko.remote.transport.netty
 
 import java.net.{ InetAddress, InetSocketAddress, SocketAddress }
-import java.util.concurrent.{ CancellationException, ConcurrentHashMap, Executors }
+import java.util.concurrent.{ CancellationException, Executors }
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.annotation.nowarn
@@ -357,11 +357,6 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
   @volatile private var serverChannel: Channel = _
 
   private val log = Logging.withMarker(system, classOf[NettyTransport])
-
-  /**
-   * INTERNAL API
-   */
-  private[netty] final val udpConnectionTable = new ConcurrentHashMap[SocketAddress, HandleEventListener]()
 
   private def createExecutorService() =
     UseDispatcherForIo.map(system.dispatchers.lookup).getOrElse(Executors.newCachedThreadPool(system.threadFactory))
