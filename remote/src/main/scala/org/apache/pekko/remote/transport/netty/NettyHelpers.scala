@@ -13,36 +13,37 @@
 
 package org.apache.pekko.remote.transport.netty
 
+import io.netty.buffer.ByteBuf
+import io.netty.channel.{ ChannelHandlerContext, SimpleChannelInboundHandler }
+
 import java.nio.channels.ClosedChannelException
-
 import scala.util.control.NonFatal
-
-import org.jboss.netty.channel._
-
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.util.unused
+
+import scala.annotation.nowarn
 
 /**
  * INTERNAL API
  */
 private[netty] trait NettyHelpers {
 
-  protected def onConnect(@unused ctx: ChannelHandlerContext, @unused e: ChannelStateEvent): Unit = ()
+  protected def onConnect(@unused ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onDisconnect(@unused ctx: ChannelHandlerContext, @unused e: ChannelStateEvent): Unit = ()
+  protected def onDisconnect(@unused ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onOpen(@unused ctx: ChannelHandlerContext, @unused e: ChannelStateEvent): Unit = ()
+  protected def onOpen(@unused ctx: ChannelHandlerContext): Unit = ()
 
-  protected def onMessage(@unused ctx: ChannelHandlerContext, @unused e: MessageEvent): Unit = ()
+  protected def onMessage(@unused ctx: ChannelHandlerContext, @unused msg: ByteBuf): Unit = ()
 
-  protected def onException(@unused ctx: ChannelHandlerContext, @unused e: ExceptionEvent): Unit = ()
+  protected def onException(@unused ctx: ChannelHandlerContext, @unused e: Throwable): Unit = ()
 
-  final protected def transformException(ctx: ChannelHandlerContext, ev: ExceptionEvent): Unit = {
-    val cause = if (ev.getCause ne null) ev.getCause else new PekkoException("Unknown cause")
+  final protected def transformException(ctx: ChannelHandlerContext, ex: Throwable): Unit = {
+    val cause = if (ex ne null) ex else new PekkoException("Unknown cause")
     cause match {
       case _: ClosedChannelException => // Ignore
-      case null | NonFatal(_)        => onException(ctx, ev)
+      case null | NonFatal(_)        => onException(ctx, ex)
       case e: Throwable              => throw e // Rethrow fatals
     }
   }
@@ -51,54 +52,46 @@ private[netty] trait NettyHelpers {
 /**
  * INTERNAL API
  */
-private[netty] trait NettyServerHelpers extends SimpleChannelUpstreamHandler with NettyHelpers {
+private[netty] trait NettyServerHelpers extends SimpleChannelInboundHandler[ByteBuf] with NettyHelpers {
 
-  final override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent): Unit = {
-    super.messageReceived(ctx, e)
-    onMessage(ctx, e)
+  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
+    onMessage(ctx, msg)
   }
 
-  final override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent): Unit = transformException(ctx, e)
+  @nowarn("msg=deprecated")
+  final override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit =
+    transformException(ctx, cause)
 
-  final override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelConnected(ctx, e)
-    onConnect(ctx, e)
+  final override def channelActive(ctx: ChannelHandlerContext): Unit = {
+    onOpen(ctx)
+    onConnect(ctx)
   }
 
-  final override def channelOpen(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelOpen(ctx, e)
-    onOpen(ctx, e)
-  }
-
-  final override def channelDisconnected(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelDisconnected(ctx, e)
-    onDisconnect(ctx, e)
+  final override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    onDisconnect(ctx)
   }
 }
 
 /**
  * INTERNAL API
  */
-private[netty] trait NettyClientHelpers extends SimpleChannelHandler with NettyHelpers {
-  final override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent): Unit = {
-    super.messageReceived(ctx, e)
-    onMessage(ctx, e)
+private[netty] trait NettyClientHelpers extends SimpleChannelInboundHandler[ByteBuf] with NettyHelpers {
+
+  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
+    onMessage(ctx, msg)
   }
 
-  final override def exceptionCaught(ctx: ChannelHandlerContext, e: ExceptionEvent): Unit = transformException(ctx, e)
-
-  final override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelConnected(ctx, e)
-    onConnect(ctx, e)
+  @nowarn("msg=deprecated")
+  final override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
+    transformException(ctx, cause)
   }
 
-  final override def channelOpen(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelOpen(ctx, e)
-    onOpen(ctx, e)
+  final override def channelActive(ctx: ChannelHandlerContext): Unit = {
+    onOpen(ctx)
+    onConnect(ctx)
   }
 
-  final override def channelDisconnected(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    super.channelDisconnected(ctx, e)
-    onDisconnect(ctx, e)
+  final override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+    onDisconnect(ctx)
   }
 }

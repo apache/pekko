@@ -15,8 +15,9 @@ package org.apache.pekko.remote.transport.netty
 
 import scala.annotation.nowarn
 import com.typesafe.config.Config
-import org.jboss.netty.handler.ssl.SslHandler
-
+import io.netty.channel.Channel
+import io.netty.handler.ssl.SslHandler
+import io.netty.util.concurrent.{ Future, GenericFutureListener }
 import org.apache.pekko
 import pekko.japi.Util._
 import pekko.util.ccompat._
@@ -64,6 +65,14 @@ private[pekko] object NettySSLSupport {
     val sslEngine =
       if (isClient) sslEngineProvider.createClientSSLEngine()
       else sslEngineProvider.createServerSSLEngine()
-    new SslHandler(sslEngine)
+    val handler = new SslHandler(sslEngine)
+    handler.handshakeFuture().addListener(new GenericFutureListener[Future[Channel]] {
+      override def operationComplete(future: Future[Channel]): Unit = {
+        if (!future.isSuccess) {
+          handler.closeOutbound().channel().close()
+        }
+      }
+    })
+    handler
   }
 }

@@ -13,14 +13,11 @@
 
 package org.apache.pekko.remote.transport.netty
 
+import io.netty.channel.{ Channel, ChannelHandlerContext }
+
 import java.net.InetSocketAddress
-
 import scala.concurrent.{ Future, Promise }
-
 import scala.annotation.nowarn
-import org.jboss.netty.buffer.{ ChannelBuffer, ChannelBuffers }
-import org.jboss.netty.channel._
-
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.event.LoggingAdapter
@@ -28,13 +25,25 @@ import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.AssociationHandle.{ Disassociated, HandleEvent, HandleEventListener, InboundPayload }
 import pekko.remote.transport.Transport.AssociationEventListener
 import pekko.util.ByteString
+import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
+
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * INTERNAL API
  */
-private[remote] object ChannelLocalActor extends ChannelLocal[Option[HandleEventListener]] {
-  override def initialValue(channel: Channel): Option[HandleEventListener] = None
-  def notifyListener(channel: Channel, msg: HandleEvent): Unit = get(channel).foreach { _.notify(msg) }
+private[remote] object ChannelLocalActor {
+  private val map = new ConcurrentHashMap[Channel, Option[HandleEventListener]]()
+
+  def notifyListener(channel: Channel, msg: HandleEvent): Unit = {
+    map.getOrDefault(channel, None).foreach {
+      _.notify(msg)
+    }
+  }
+
+  def set(channel: Channel, listener: Option[HandleEventListener]): Unit = {
+    map.put(channel, listener)
+  }
 }
 
 /**
@@ -49,27 +58,26 @@ private[remote] trait TcpHandlers extends CommonHandlers {
   override def registerListener(
       channel: Channel,
       listener: HandleEventListener,
-      msg: ChannelBuffer,
       remoteSocketAddress: InetSocketAddress): Unit =
     ChannelLocalActor.set(channel, Some(listener))
 
   override def createHandle(channel: Channel, localAddress: Address, remoteAddress: Address): AssociationHandle =
     new TcpAssociationHandle(localAddress, remoteAddress, transport, channel)
 
-  override def onDisconnect(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit = {
-    notifyListener(e.getChannel, Disassociated(AssociationHandle.Unknown))
-    log.debug("Remote connection to [{}] was disconnected because of {}", e.getChannel.getRemoteAddress, e)
+  override def onDisconnect(ctx: ChannelHandlerContext): Unit = {
+    notifyListener(ctx.channel(), Disassociated(AssociationHandle.Unknown))
+    log.debug("Remote connection to [{}] was disconnected because of {}", ctx.channel().remoteAddress())
   }
 
-  override def onMessage(ctx: ChannelHandlerContext, e: MessageEvent): Unit = {
-    val bytes: Array[Byte] = e.getMessage.asInstanceOf[ChannelBuffer].array()
-    if (bytes.length > 0) notifyListener(e.getChannel, InboundPayload(ByteString(bytes)))
+  override def onMessage(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
+    val bytes: Array[Byte] = ByteBufUtil.getBytes(msg)
+    if (bytes.length > 0) notifyListener(ctx.channel(), InboundPayload(ByteString(bytes)))
   }
 
-  override def onException(ctx: ChannelHandlerContext, e: ExceptionEvent): Unit = {
-    notifyListener(e.getChannel, Disassociated(AssociationHandle.Unknown))
-    log.warning("Remote connection to [{}] failed with {}", e.getChannel.getRemoteAddress, e.getCause)
-    e.getChannel.close() // No graceful close here
+  override def onException(ctx: ChannelHandlerContext, e: Throwable): Unit = {
+    notifyListener(ctx.channel(), Disassociated(AssociationHandle.Unknown))
+    log.warning("Remote connection to [{}] failed with {}", ctx.channel().remoteAddress(), e.getCause)
+    ctx.channel().close() // No graceful close here
   }
 }
 
@@ -84,8 +92,8 @@ private[remote] class TcpServerHandler(
     extends ServerHandler(_transport, _associationListenerFuture)
     with TcpHandlers {
 
-  override def onConnect(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit =
-    initInbound(e.getChannel, e.getChannel.getRemoteAddress, null)
+  override def onConnect(ctx: ChannelHandlerContext): Unit =
+    initInbound(ctx.channel(), ctx.channel().remoteAddress())
 
 }
 
@@ -97,8 +105,8 @@ private[remote] class TcpClientHandler(_transport: NettyTransport, remoteAddress
     extends ClientHandler(_transport, remoteAddress)
     with TcpHandlers {
 
-  override def onConnect(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit =
-    initOutbound(e.getChannel, e.getChannel.getRemoteAddress, null)
+  override def onConnect(ctx: ChannelHandlerContext): Unit =
+    initOutbound(ctx.channel(), ctx.channel().remoteAddress())
 
 }
 
@@ -118,7 +126,7 @@ private[remote] class TcpAssociationHandle(
 
   override def write(payload: ByteString): Boolean =
     if (channel.isWritable && channel.isOpen) {
-      channel.write(ChannelBuffers.wrappedBuffer(payload.asByteBuffer))
+      channel.writeAndFlush(Unpooled.wrappedBuffer(payload.asByteBuffer))
       true
     } else false
 
