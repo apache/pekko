@@ -79,7 +79,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
     new SourceWithContext(delegate.mapMaterializedValue(f))
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
    */
   def mapAsyncPartitioned[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): SourceWithContext[T, Ctx, Mat] = {
@@ -87,7 +93,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   }
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): SourceWithContext[T, Ctx, Mat] = {

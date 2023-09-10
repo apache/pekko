@@ -175,7 +175,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
    */
   def mapAsyncPartitioned[Out2, P](parallelism: Int,
       extractPartition: function.Function[Out, P],
@@ -186,7 +192,13 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   }
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
    */
   def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int,
       extractPartition: function.Function[Out, P],

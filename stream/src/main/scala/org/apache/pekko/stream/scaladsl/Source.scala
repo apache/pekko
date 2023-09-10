@@ -100,7 +100,13 @@ final class Source[+Out, +Mat](
     new Source[Out, Mat2](traversalBuilder.transformMat(f.asInstanceOf[Any => Any]), shape)
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
    */
   def mapAsyncPartitioned[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): Source[T, Mat] = {
@@ -108,7 +114,13 @@ final class Source[+Out, +Mat](
   }
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
       extractPartition: Out => P)(f: (Out, P) => Future[T]): Source[T, Mat] = {

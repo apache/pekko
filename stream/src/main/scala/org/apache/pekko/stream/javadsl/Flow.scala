@@ -840,6 +840,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.mapAsync(parallelism)(x => f(x).asScala))
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
    * @see [[#mapAsync]]
    * @see [[#mapAsyncPartitionedUnordered]]
@@ -850,8 +854,12 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     MapAsyncPartitioned.mapFlowOrdered(delegate, parallelism)(extractPartition(_))(f(_, _).asScala).asJava
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
    * @since 1.1.0
-   * @see [[#mapAsync]]
+   * @see [[#mapAsyncUnordered]]
    * @see [[#mapAsyncPartitioned]]
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int,

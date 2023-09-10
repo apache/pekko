@@ -17,18 +17,18 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko
-import org.apache.pekko.dispatch.ExecutionContexts
-import org.apache.pekko.stream.ActorAttributes.SupervisionStrategy
-import org.apache.pekko.stream.Attributes.{ Name, SourceLocation }
-import org.apache.pekko.stream.MapAsyncPartitioned._
-import org.apache.pekko.stream.scaladsl.{ Flow, FlowWithContext, Source, SourceWithContext }
-import org.apache.pekko.stream.stage._
-
 import scala.collection.mutable
 import scala.concurrent.Future
 import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.{ Failure, Success, Try }
+
+import org.apache.pekko
+import pekko.dispatch.ExecutionContexts
+import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.Attributes.{ Name, SourceLocation }
+import pekko.stream.MapAsyncPartitioned._
+import pekko.stream.scaladsl.{ Flow, FlowWithContext, Source, SourceWithContext }
+import pekko.stream.stage._
 
 private[stream] object MapAsyncPartitioned {
 

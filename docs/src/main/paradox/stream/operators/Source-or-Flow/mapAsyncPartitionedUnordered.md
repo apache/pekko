@@ -1,9 +1,6 @@
 # mapAsyncPartitionedUnordered
 
-Pass incoming elements to a partitioning function that returns a partition result for each element and then to
-a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result.
-
-The resulting Source or Flow will not have ordered elements.
+Pass incoming elements to a partitioning function that returns a partition result for each element and then to a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result. The resulting Source or Flow will not have ordered elements.
 
 @ref[Asynchronous operators](../index.md#asynchronous-operators)
 
@@ -14,7 +11,19 @@ The resulting Source or Flow will not have ordered elements.
 
 ## Description
 
-Like `mapAsync` but an intermediate partitioning stage is used.
+Like `mapAsyncUnordered` but an intermediate partitioning stage is used.
 Up to `parallelism` elements can be processed concurrently for a partition and pushed down the stream regardless of the
 order of the partitions that triggered them. In other words, the order of the output elements will be preserved only within a partition.
-For use cases where order does matter `mapAsyncPartitioned` can be used.
+For use cases where order matters, `mapAsyncPartitioned` can be used.
+
+## Reactive Streams semantics
+
+@@@div { .callout }
+
+**emits** any of the @scala[`Future` s] @java[`CompletionStage` s] returned by the provided function complete
+
+**backpressures** when the number of @scala[`Future` s] @java[`CompletionStage` s] reaches the configured parallelism and the downstream backpressures
+
+**completes** upstream completes and all @scala[`Future` s] @java[`CompletionStage` s] has been completed  and all elements has been emitted
+
+@@@
