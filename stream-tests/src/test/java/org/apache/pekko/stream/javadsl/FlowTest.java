@@ -887,6 +887,30 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMapAsyncPartitioned() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<String> input = Arrays.asList("1a", "1b", "2c");
+    final Flow<String, String, NotUsed> flow =
+        Flow.of(String.class)
+            .mapAsyncPartitioned(
+                4,
+                elem -> elem.substring(0, 1),
+                (elem, p) -> CompletableFuture.completedFuture(elem.toUpperCase()));
+    Source.from(input)
+        .via(flow)
+        .runForeach(
+            new Procedure<String>() {
+              public void apply(String elem) {
+                probe.getRef().tell(elem, ActorRef.noSender());
+              }
+            },
+            system);
+    probe.expectMsgEquals("1A");
+    probe.expectMsgEquals("1B");
+    probe.expectMsgEquals("2C");
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =

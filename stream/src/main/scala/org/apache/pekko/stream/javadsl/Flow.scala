@@ -841,6 +841,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
    */
   def mapAsyncPartitioned[T, P](parallelism: Int,
       extractPartition: function.Function[Out, P],
@@ -849,6 +851,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitioned]]
    */
   def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
       extractPartition: function.Function[Out, P],
