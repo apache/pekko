@@ -26,24 +26,10 @@ import pekko.remote.transport.AssociationHandle.{ Disassociated, HandleEvent, Ha
 import pekko.remote.transport.Transport.AssociationEventListener
 import pekko.util.ByteString
 import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
+import io.netty.util.AttributeKey
 
-import java.util.concurrent.ConcurrentHashMap
-
-/**
- * INTERNAL API
- */
-private[remote] object ChannelLocalActor {
-  private val map = new ConcurrentHashMap[Channel, Option[HandleEventListener]]()
-
-  def notifyListener(channel: Channel, msg: HandleEvent): Unit = {
-    map.getOrDefault(channel, None).foreach {
-      _.notify(msg)
-    }
-  }
-
-  def set(channel: Channel, listener: Option[HandleEventListener]): Unit = {
-    map.put(channel, listener)
-  }
+private[remote] object TcpHandlers {
+  private val LISTENER = AttributeKey.valueOf[HandleEventListener]("listener")
 }
 
 /**
@@ -52,14 +38,12 @@ private[remote] object ChannelLocalActor {
 @nowarn("msg=deprecated")
 private[remote] trait TcpHandlers extends CommonHandlers {
   protected def log: LoggingAdapter
-
-  import ChannelLocalActor._
+  import TcpHandlers._
 
   override def registerListener(
       channel: Channel,
       listener: HandleEventListener,
-      remoteSocketAddress: InetSocketAddress): Unit =
-    ChannelLocalActor.set(channel, Some(listener))
+      remoteSocketAddress: InetSocketAddress): Unit = channel.attr(LISTENER).set(listener)
 
   override def createHandle(channel: Channel, localAddress: Address, remoteAddress: Address): AssociationHandle =
     new TcpAssociationHandle(localAddress, remoteAddress, transport, channel)
@@ -78,6 +62,13 @@ private[remote] trait TcpHandlers extends CommonHandlers {
     notifyListener(ctx.channel(), Disassociated(AssociationHandle.Unknown))
     log.warning("Remote connection to [{}] failed with {}", ctx.channel().remoteAddress(), e.getCause)
     ctx.channel().close() // No graceful close here
+  }
+
+  private def notifyListener(channel: Channel, event: HandleEvent): Unit = {
+    val listener = channel.attr(LISTENER).get()
+    if (listener ne null) {
+      listener.notify(event)
+    }
   }
 }
 
