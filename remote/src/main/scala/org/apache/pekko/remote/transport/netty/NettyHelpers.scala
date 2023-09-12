@@ -13,16 +13,17 @@
 
 package org.apache.pekko.remote.transport.netty
 
-import io.netty.buffer.ByteBuf
-import io.netty.channel.{ ChannelHandlerContext, SimpleChannelInboundHandler }
-
 import java.nio.channels.ClosedChannelException
+
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.PekkoException
 import pekko.util.unused
 
-import scala.annotation.nowarn
+import io.netty.buffer.ByteBuf
+import io.netty.channel.{ ChannelHandlerContext, SimpleChannelInboundHandler }
 
 /**
  * INTERNAL API
@@ -52,31 +53,8 @@ private[netty] trait NettyHelpers {
 /**
  * INTERNAL API
  */
-private[netty] trait NettyServerHelpers extends SimpleChannelInboundHandler[ByteBuf] with NettyHelpers {
-
-  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
-    onMessage(ctx, msg)
-  }
-
-  @nowarn("msg=deprecated")
-  final override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit =
-    transformException(ctx, cause)
-
-  final override def channelActive(ctx: ChannelHandlerContext): Unit = {
-    onOpen(ctx)
-    onConnect(ctx)
-  }
-
-  final override def channelInactive(ctx: ChannelHandlerContext): Unit = {
-    onDisconnect(ctx)
-  }
-}
-
-/**
- * INTERNAL API
- */
-private[netty] trait NettyClientHelpers extends SimpleChannelInboundHandler[ByteBuf] with NettyHelpers {
-
+private[netty] abstract class NettyChannelHandlerAdapter extends SimpleChannelInboundHandler[ByteBuf]
+    with NettyHelpers {
   final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
     onMessage(ctx, msg)
   }
@@ -95,3 +73,13 @@ private[netty] trait NettyClientHelpers extends SimpleChannelInboundHandler[Byte
     onDisconnect(ctx)
   }
 }
+
+/**
+ * INTERNAL API
+ */
+private[netty] trait NettyServerHelpers extends NettyChannelHandlerAdapter
+
+/**
+ * INTERNAL API
+ */
+private[netty] trait NettyClientHelpers extends NettyChannelHandlerAdapter

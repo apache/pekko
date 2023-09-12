@@ -16,11 +16,13 @@ package org.apache.pekko.remote.transport.netty
 import java.net.{ InetAddress, InetSocketAddress, SocketAddress }
 import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicInteger
+
 import scala.annotation.nowarn
 import scala.concurrent.{ blocking, ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
+
 import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -30,11 +32,13 @@ import pekko.dispatch.ThreadPoolConfig
 import pekko.event.Logging
 import pekko.remote.RARP
 import pekko.remote.transport.{ AssociationHandle, Transport }
+import pekko.remote.transport.AssociationHandle.HandleEventListener
+import pekko.remote.transport.Transport._
+import pekko.util.Helpers.Requiring
 import pekko.util.{ Helpers, OptionVal }
-import AssociationHandle.HandleEventListener
-import Transport._
-import Helpers.Requiring
+
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
+import io.netty.buffer.Unpooled
 import io.netty.channel.{
   Channel,
   ChannelFuture,
@@ -44,7 +48,6 @@ import io.netty.channel.{
   ChannelPipeline
 }
 import io.netty.channel.group.{ ChannelGroup, ChannelGroupFuture, ChannelMatchers, DefaultChannelGroup }
-import io.netty.buffer.Unpooled
 import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
