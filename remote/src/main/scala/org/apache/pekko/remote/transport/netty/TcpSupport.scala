@@ -13,11 +13,11 @@
 
 package org.apache.pekko.remote.transport.netty
 
-import io.netty.channel.{ Channel, ChannelHandlerContext }
-
 import java.net.InetSocketAddress
-import scala.concurrent.{ Future, Promise }
+
 import scala.annotation.nowarn
+import scala.concurrent.{ Future, Promise }
+
 import org.apache.pekko
 import pekko.actor.Address
 import pekko.event.LoggingAdapter
@@ -25,7 +25,9 @@ import pekko.remote.transport.AssociationHandle
 import pekko.remote.transport.AssociationHandle.{ Disassociated, HandleEvent, HandleEventListener, InboundPayload }
 import pekko.remote.transport.Transport.AssociationEventListener
 import pekko.util.ByteString
+
 import io.netty.buffer.{ ByteBuf, ByteBufUtil, Unpooled }
+import io.netty.channel.{ Channel, ChannelHandlerContext }
 import io.netty.util.AttributeKey
 
 private[remote] object TcpHandlers {
@@ -50,7 +52,7 @@ private[remote] trait TcpHandlers extends CommonHandlers {
 
   override def onDisconnect(ctx: ChannelHandlerContext): Unit = {
     notifyListener(ctx.channel(), Disassociated(AssociationHandle.Unknown))
-    log.debug("Remote connection to [{}] was disconnected because of {}", ctx.channel().remoteAddress())
+    log.debug("Remote connection to [{}] was disconnected.", ctx.channel().remoteAddress())
   }
 
   override def onMessage(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
