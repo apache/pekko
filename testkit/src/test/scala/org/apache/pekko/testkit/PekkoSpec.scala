@@ -16,7 +16,6 @@ package org.apache.pekko.testkit
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
-
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.scalactic.CanEqual
@@ -34,6 +33,8 @@ import pekko.dispatch.Dispatchers
 import pekko.event.Logging
 import pekko.event.LoggingAdapter
 import pekko.testkit.TestEvent._
+
+import java.nio.file.{ Path, Paths }
 
 object PekkoSpec {
   val testConf: Config = ConfigFactory.parseString("""
@@ -59,6 +60,21 @@ object PekkoSpec {
     ConfigFactory.parseMap(map.asJava)
   }
 
+  /**
+   * Get resource's normalized path, which works on windows too.
+   */
+  def resourcePath(resourceName: String): String = {
+    val normalizedPath = Paths.get(getClass.getClassLoader.getResource(resourceName).toURI).normalize()
+    // Make it works on Windows
+    normalizedPath.toString.replace('\\', '/')
+  }
+
+  /**
+   * Get path's normalized path, which works on Windows too.
+   */
+  def normalizedPath(path: Path): String = {
+    path.toAbsolutePath.normalize().toString.replace('\\', '/')
+  }
 }
 
 abstract class PekkoSpec(_system: ActorSystem)
