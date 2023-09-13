@@ -16,13 +16,11 @@ package org.apache.pekko.remote.transport.netty
 import java.net.{ InetAddress, InetSocketAddress, SocketAddress }
 import java.util.concurrent.CancellationException
 import java.util.concurrent.atomic.AtomicInteger
-
 import scala.annotation.nowarn
 import scala.concurrent.{ blocking, ExecutionContext, Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.util.Try
 import scala.util.control.{ NoStackTrace, NonFatal }
-
 import com.typesafe.config.Config
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -36,7 +34,6 @@ import pekko.remote.transport.AssociationHandle.HandleEventListener
 import pekko.remote.transport.Transport._
 import pekko.util.Helpers.Requiring
 import pekko.util.{ Helpers, OptionVal }
-
 import io.netty.bootstrap.{ Bootstrap => ClientBootstrap, ServerBootstrap }
 import io.netty.buffer.Unpooled
 import io.netty.channel.{
@@ -52,6 +49,7 @@ import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
+import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.GlobalEventExecutor
 
@@ -131,6 +129,9 @@ class NettyTransportSettings(config: Config) {
   val WriteBufferLowWaterMark: Option[Int] = optionSize("write-buffer-low-water-mark")
 
   val SendBufferSize: Option[Int] = optionSize("send-buffer-size")
+
+  val ExplicitFlushAfterFlushes: Int = getInt("explicit-flush-after-flushes")
+    .requiring(_ >= 0, "Setting 'explicit-flush-after-flushes' must >= 0")
 
   val ReceiveBufferSize: Option[Int] = optionSize("receive-buffer-size")
 
@@ -357,6 +358,9 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
   private def newPipeline(channel: Channel): ChannelPipeline = {
     val pipeline = channel.pipeline()
+    if (ExplicitFlushAfterFlushes > 0) {
+      pipeline.addLast("FlushConsolidationHandler", new FlushConsolidationHandler(ExplicitFlushAfterFlushes, true))
+    }
     pipeline.addLast(
       "FrameDecoder",
       new LengthFieldBasedFrameDecoder(
