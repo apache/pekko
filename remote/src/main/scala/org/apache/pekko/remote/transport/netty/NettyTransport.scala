@@ -52,6 +52,7 @@ import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
+import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.GlobalEventExecutor
 
@@ -142,6 +143,9 @@ class NettyTransportSettings(config: Config) {
   val WriteBufferLowWaterMark: Option[Int] = optionSize("write-buffer-low-water-mark")
 
   val SendBufferSize: Option[Int] = optionSize("send-buffer-size")
+
+  val ExplicitFlushAfterFlushes: Int = getInt("explicit-flush-after-flushes")
+    .requiring(_ >= 0, "Setting 'explicit-flush-after-flushes' must >= 0")
 
   val ReceiveBufferSize: Option[Int] = optionSize("receive-buffer-size")
 
@@ -368,6 +372,9 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
   private def newPipeline(channel: Channel): ChannelPipeline = {
     val pipeline = channel.pipeline()
+    if (ExplicitFlushAfterFlushes > 0) {
+      pipeline.addLast("FlushConsolidationHandler", new FlushConsolidationHandler(ExplicitFlushAfterFlushes, true))
+    }
     pipeline.addLast(
       "FrameDecoder",
       new LengthFieldBasedFrameDecoder(
