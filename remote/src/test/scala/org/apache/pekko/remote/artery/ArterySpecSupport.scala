@@ -45,8 +45,9 @@ object ArterySpecSupport {
   //  RotatingKeysSSLEngineProvider and, eventually, run tests twice
   //  (once for each provider).
   lazy val tlsConfig: Config = {
-    val trustStore = getClass.getClassLoader.getResource("truststore").getPath
-    val keyStore = getClass.getClassLoader.getResource("keystore").getPath
+    import org.apache.pekko.testkit.PekkoSpec._
+    val trustStore = resourcePath("truststore")
+    val keyStore = resourcePath("keystore")
 
     ConfigFactory.parseString(s"""
       pekko.remote.artery.ssl.config-ssl-engine {

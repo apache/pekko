@@ -53,11 +53,11 @@ class PemManagersProviderSpec extends AnyWordSpec with Matchers {
 
   private def withFiles(keyFile: String, certFile: String, caCertFile: String)(
       block: (PrivateKey, X509Certificate, Certificate) => Unit) = {
+    import org.apache.pekko.testkit.PekkoSpec._
     block(
-      PemManagersProvider.loadPrivateKey(nameToPath(keyFile)),
-      PemManagersProvider.loadCertificate(nameToPath(certFile)).asInstanceOf[X509Certificate],
-      PemManagersProvider.loadCertificate(nameToPath(caCertFile)))
+      PemManagersProvider.loadPrivateKey(resourcePath(keyFile)),
+      PemManagersProvider.loadCertificate(resourcePath(certFile)).asInstanceOf[X509Certificate],
+      PemManagersProvider.loadCertificate(resourcePath(caCertFile)))
   }
 
-  private def nameToPath(name: String): String = getClass.getClassLoader.getResource(name).getPath
 }
