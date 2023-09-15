@@ -14,13 +14,13 @@
 package org.apache.pekko.remote.classic
 
 import com.typesafe.config.ConfigFactory
-import org.jboss.netty.channel.ChannelException
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.SocketUtil
+
+import java.net.BindException
 
 class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
 
@@ -43,10 +43,10 @@ class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
        """.stripMargin)
       val as = ActorSystem("RemotingFailedToBindSpec", config)
       try {
-        val ex = intercept[ChannelException] {
+        val ex = intercept[BindException] {
           ActorSystem("BindTest2", config)
         }
-        ex.getMessage should startWith("Failed to bind")
+        ex.getMessage should startWith("Address already in use")
       } finally {
         as.terminate()
       }

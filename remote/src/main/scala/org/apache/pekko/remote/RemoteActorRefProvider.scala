@@ -281,7 +281,7 @@ private[pekko] class RemoteActorRefProvider(
   private def checkNettyOnClassPath(system: ActorSystemImpl): Unit = {
     checkClassOrThrow(
       system,
-      "org.jboss.netty.channel.Channel",
+      "io.netty.channel.Channel",
       "Classic",
       "Netty",
       "https://pekko.apache.org/docs/pekko/current/remoting.html")
