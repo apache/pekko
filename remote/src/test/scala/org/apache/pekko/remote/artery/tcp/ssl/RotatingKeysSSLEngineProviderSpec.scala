@@ -179,12 +179,13 @@ object RotatingKeysSSLEngineProviderSpec {
       }
     """
 
+  import org.apache.pekko.testkit.PekkoSpec._
   val resourcesConfig: String = baseConfig +
     s"""
       pekko.remote.artery.ssl.rotating-keys-engine {
-        key-file = ${getClass.getClassLoader.getResource(s"$arteryNode001Id.pem").getPath}
-        cert-file = ${getClass.getClassLoader.getResource(s"$arteryNode001Id.crt").getPath}
-        ca-cert-file = ${getClass.getClassLoader.getResource("ssl/exampleca.crt").getPath}
+        key-file = "${resourcePath(s"$arteryNode001Id.pem")}"
+        cert-file = "${resourcePath(s"$arteryNode001Id.crt")}"
+        ca-cert-file = "${resourcePath("ssl/exampleca.crt")}"
         ssl-context-cache-ttl = ${cacheTtlInSeconds}s
       }
     """
@@ -196,9 +197,9 @@ object RotatingKeysSSLEngineProviderSpec {
   val tempFileConfig: String = baseConfig +
     s"""
       pekko.remote.artery.ssl.rotating-keys-engine {
-        key-file = ${temporaryDirectory.toFile.getAbsolutePath}/tls.key
-        cert-file = ${temporaryDirectory.toFile.getAbsolutePath}/tls.crt
-        ca-cert-file = ${temporaryDirectory.toFile.getAbsolutePath}/ca.crt
+        key-file = "${normalizedPath(temporaryDirectory.toAbsolutePath.resolve("tls.key"))}"
+        cert-file = "${normalizedPath(temporaryDirectory.toAbsolutePath.resolve("tls.crt"))}"
+        ca-cert-file = "${normalizedPath(temporaryDirectory.toAbsolutePath.resolve("ca.crt"))}"
         ssl-context-cache-ttl = ${cacheTtlInSeconds}s
       }
     """
@@ -206,7 +207,7 @@ object RotatingKeysSSLEngineProviderSpec {
   private def deployResource(resourceName: String, to: Path): Unit = blocking {
     // manually ensuring files are deleted and copied to prevent races.
     try {
-      val from = new File(getClass.getClassLoader.getResource(resourceName).getPath).toPath
+      val from = new File(resourcePath(resourceName)).toPath
       to.toFile.getParentFile.mkdirs()
       Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING)
     } catch {

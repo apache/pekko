@@ -76,7 +76,8 @@ class TlsResourcesSpec extends AnyWordSpec with Matchers {
       val nodes = arteryNodeSet + baseNode + baseRsaClient
       nodes.foreach { prefix =>
         try {
-          val pk = PemManagersProvider.loadPrivateKey(toAbsolutePath(s"ssl/$prefix.example.com.pem"))
+          import org.apache.pekko.testkit.PekkoSpec._
+          val pk = PemManagersProvider.loadPrivateKey(resourcePath(s"ssl/$prefix.example.com.pem"))
           pk.getAlgorithm must be("RSA")
         } catch {
           case NonFatal(t) => fail(s"Failed test for $prefix", t)
@@ -89,9 +90,6 @@ class TlsResourcesSpec extends AnyWordSpec with Matchers {
 }
 
 object TlsResourcesSpec {
-
-  def toAbsolutePath(resourceName: String): String =
-    getClass.getClassLoader.getResource(resourceName).getPath
 
   private val certFactory = CertificateFactory.getInstance("X.509")
   def loadCert(resourceName: String): X509Certificate = {

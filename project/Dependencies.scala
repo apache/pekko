@@ -28,8 +28,7 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.19.2"
-  val nettyVersion = "3.10.6.Final"
-  val netty4Version = "4.1.96.Final"
+  val nettyVersion = "4.1.97.Final"
   val protobufJavaVersion = "3.19.6"
   val logbackVersion = "1.2.11"
 
@@ -60,9 +59,8 @@ object Dependencies {
     // Compile
 
     val config = "com.typesafe" % "config" % "1.4.2"
-    val netty = "io.netty" % "netty" % nettyVersion
-    val `netty-transport` = "io.netty" % "netty-transport" % netty4Version
-    val `netty-handler` = "io.netty" % "netty-handler" % netty4Version
+    val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
+    val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
     val scalaReflect: ScalaVersionDependentModuleID =
       ScalaVersionDependentModuleID.versioned("org.scala-lang" % "scala-reflect" % _)
@@ -278,7 +276,7 @@ object Dependencies {
       Compile.slf4jApi,
       TestDependencies.scalatest.value)
 
-  val remoteDependencies = Seq(netty, aeronDriver, aeronClient)
+  val remoteDependencies = Seq(`netty-transport`, `netty-handler`, aeronDriver, aeronClient)
   val remoteOptionalDependencies = remoteDependencies.map(_ % "optional")
 
   val remote = l ++= Seq(
