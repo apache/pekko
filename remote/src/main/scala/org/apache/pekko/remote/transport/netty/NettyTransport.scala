@@ -52,6 +52,7 @@ import io.netty.channel.nio.NioEventLoopGroup
 import io.netty.channel.socket.SocketChannel
 import io.netty.channel.socket.nio.{ NioServerSocketChannel, NioSocketChannel }
 import io.netty.handler.codec.{ LengthFieldBasedFrameDecoder, LengthFieldPrepender }
+import io.netty.handler.flush.FlushConsolidationHandler
 import io.netty.handler.ssl.SslHandler
 import io.netty.util.concurrent.GlobalEventExecutor
 
@@ -368,6 +369,8 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
 
   private def newPipeline(channel: Channel): ChannelPipeline = {
     val pipeline = channel.pipeline()
+    pipeline.addFirst("FlushConsolidationHandler",
+      new FlushConsolidationHandler(FlushConsolidationHandler.DEFAULT_EXPLICIT_FLUSH_AFTER_FLUSHES, true))
     pipeline.addLast(
       "FrameDecoder",
       new LengthFieldBasedFrameDecoder(
