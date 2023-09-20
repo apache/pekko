@@ -30,7 +30,7 @@ class LineNumberSpec extends PekkoSpec {
 
       "work for larger functions" in {
         val result = LineNumbers(twoline)
-        result should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 24, 26))
+        result should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 25, 26))
       }
 
       "work for partial functions" in {
@@ -39,7 +39,7 @@ class LineNumberSpec extends PekkoSpec {
 
       "work for `def`" in {
         val result = LineNumbers(method("foo"))
-        result should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 34, 36))
+        result should ===(SourceFileLines("LineNumberSpecCodeForScala.scala", 35, 36))
       }
 
     }
