@@ -58,7 +58,7 @@ class AskSpec extends ScalaTestWithActorTestKit("""
   }
 
   "Ask pattern" must {
-    "fail the future if the actor is already terminated" in {
+    "fail the future and publish deadletter with recipient if the actor is already terminated" in {
       val ref = spawn(behavior)
       val stopResult: Future[Unit] = ref.ask(Stop.apply)
       stopResult.futureValue
@@ -69,6 +69,16 @@ class AskSpec extends ScalaTestWithActorTestKit("""
       val result = answer.failed.futureValue
       result shouldBe a[TimeoutException]
       result.getMessage should include("had already been terminated.")
+
+      val deadLetter = deadLetterProbe.receiveMessage()
+      deadLetter.message match {
+        case Foo(s, _) => s should ===("bar")
+        case _         => fail(s"unexpected DeadLetter: $deadLetter")
+      }
+
+      val deadLettersRef = system.classicSystem.deadLetters
+      deadLetter.recipient shouldNot equal(deadLettersRef)
+      deadLetter.recipient should equal(ActorRefAdapter.toClassic(actor))
     }
 
     "succeed when the actor is alive" in {
