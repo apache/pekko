@@ -1,4 +1,4 @@
-name: Nightly Builds (JDK 20)
+name: Nightly Builds (JDK 21)
 
 on:
   workflow_dispatch:
@@ -17,11 +17,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Java 20
+      - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 20
+          java-version: 21
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -75,11 +75,11 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Setup Java 20
+      - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 20
+          java-version: 21
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -111,7 +111,7 @@ jobs:
         # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.12", "2.13"]
-        javaVersion: [20]
+        javaVersion: [21]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
