@@ -59,6 +59,8 @@ class AskSpec extends ScalaTestWithActorTestKit("""
 
   "Ask pattern" must {
     "fail the future and publish deadletter with recipient if the actor is already terminated" in {
+      import pekko.actor.typed.internal.adapter.ActorRefAdapter._
+
       val ref = spawn(behavior)
       val stopResult: Future[Unit] = ref.ask(Stop.apply)
       stopResult.futureValue
@@ -70,6 +72,7 @@ class AskSpec extends ScalaTestWithActorTestKit("""
       result shouldBe a[TimeoutException]
       result.getMessage should include("had already been terminated.")
 
+      val deadLetterProbe = createDeadLetterProbe()
       val deadLetter = deadLetterProbe.receiveMessage()
       deadLetter.message match {
         case Foo(s, _) => s should ===("bar")
@@ -78,7 +81,7 @@ class AskSpec extends ScalaTestWithActorTestKit("""
 
       val deadLettersRef = system.classicSystem.deadLetters
       deadLetter.recipient shouldNot equal(deadLettersRef)
-      deadLetter.recipient should equal(ActorRefAdapter.toClassic(actor))
+      deadLetter.recipient should equal(toClassic(ref))
     }
 
     "succeed when the actor is alive" in {
