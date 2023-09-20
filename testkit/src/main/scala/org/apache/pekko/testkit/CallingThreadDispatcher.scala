@@ -177,7 +177,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
   protected[pekko] override def registerForExecution(
       mbox: Mailbox,
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = false
+      hasSystemMessageHint: Boolean,
+      needYield: Boolean): Boolean = false
 
   protected[pekko] override def shutdownTimeout = 1 second
 

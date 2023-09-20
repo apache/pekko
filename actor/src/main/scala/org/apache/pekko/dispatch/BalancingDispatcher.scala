@@ -106,7 +106,7 @@ private[pekko] class BalancingDispatcher(
 
   override protected[pekko] def dispatch(receiver: ActorCell, invocation: Envelope) = {
     messageQueue.enqueue(receiver.self, invocation)
-    if (!registerForExecution(receiver.mailbox, false, false)) teamWork()
+    if (!registerForExecution(receiver.mailbox, false, false, false)) teamWork()
   }
 
   protected def teamWork(): Unit =
@@ -118,7 +118,7 @@ private[pekko] class BalancingDispatcher(
             case lm: LoadMetrics => !lm.atFullThrottle()
             case _               => true
           })
-          && !registerForExecution(i.next.mailbox, false, false))
+          && !registerForExecution(i.next.mailbox, false, false, true))
           scheduleOne(i)
 
       scheduleOne()

@@ -242,7 +242,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
       }
     } finally {
       setAsIdle() // Volatile write, needed here
-      dispatcher.registerForExecution(this, false, false)
+      dispatcher.registerForExecution(this, false, false, true)
     }
   }
 

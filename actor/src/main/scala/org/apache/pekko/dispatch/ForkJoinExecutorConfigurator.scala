@@ -14,8 +14,9 @@
 package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, ForkJoinPool, ForkJoinTask, ThreadFactory }
-
 import com.typesafe.config.Config
+
+import java.lang.invoke.{ MethodHandle, MethodHandles, MethodType }
 
 object ForkJoinExecutorConfigurator {
 
@@ -28,7 +29,7 @@ object ForkJoinExecutorConfigurator {
       unhandledExceptionHandler: Thread.UncaughtExceptionHandler,
       asyncMode: Boolean)
       extends ForkJoinPool(parallelism, threadFactory, unhandledExceptionHandler, asyncMode)
-      with LoadMetrics {
+      with LoadMetrics with LazyExecuteSupport {
     def this(
         parallelism: Int,
         threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory,
@@ -41,6 +42,33 @@ object ForkJoinExecutorConfigurator {
           (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
+
+    private val lazyExecuteHandle: MethodHandle = {
+      import org.apache.pekko.util.JavaVersion._
+      if (11 <= majorVersion && majorVersion <= 18) {
+        val method = classOf[ForkJoinPool].getDeclaredMethod("externalPush", classOf[ForkJoinTask[_]])
+        method.setAccessible(true)
+        MethodHandles.lookup().unreflect(method)
+      } else if (majorVersion >= 20) {
+        val mt = MethodType.methodType(classOf[ForkJoinTask[_]], classOf[ForkJoinTask[_]])
+        MethodHandles.publicLookup()
+          .findVirtual(classOf[ForkJoinPool], "externalSubmit", mt)
+      } else null
+    }
+
+    override def lazyExecute(r: Runnable): Unit = {
+      import org.apache.pekko.util.JavaVersion._
+      if (majorVersion < 11 || majorVersion == 19 || lazyExecuteHandle == null) {
+        super.execute(r)
+      } else {
+        val task: ForkJoinTask[_] = if (r ne null)
+          if (r.isInstanceOf[ForkJoinTask[_]]) r.asInstanceOf[ForkJoinTask[_]] else new PekkoForkJoinTask(r)
+        else
+          throw new NullPointerException("Runnable was null")
+        lazyExecuteHandle.invoke(task)
+      }
+
+    }
 
     def atFullThrottle(): Boolean = this.getActiveThreadCount() >= this.getParallelism()
   }

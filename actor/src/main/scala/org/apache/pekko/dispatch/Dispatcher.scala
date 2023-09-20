@@ -15,12 +15,9 @@ package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ExecutorService, RejectedExecutionException }
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-
 import scala.annotation.nowarn
-
 import org.apache.pekko
 import pekko.actor.ActorCell
 import pekko.dispatch.sysmsg.SystemMessage
@@ -71,7 +68,7 @@ class Dispatcher(
   protected[pekko] def dispatch(receiver: ActorCell, invocation: Envelope): Unit = {
     val mbox = receiver.mailbox
     mbox.enqueue(receiver.self, invocation)
-    registerForExecution(mbox, true, false)
+    registerForExecution(mbox, true, false, false)
   }
 
   /**
@@ -80,7 +77,7 @@ class Dispatcher(
   protected[pekko] def systemDispatch(receiver: ActorCell, invocation: SystemMessage): Unit = {
     val mbox = receiver.mailbox
     mbox.systemEnqueue(receiver.self, invocation)
-    registerForExecution(mbox, false, true)
+    registerForExecution(mbox, false, true, false)
   }
 
   /**
@@ -130,16 +127,17 @@ class Dispatcher(
   protected[pekko] override def registerForExecution(
       mbox: Mailbox,
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = {
+      hasSystemMessageHint: Boolean,
+      needYield: Boolean): Boolean = {
     if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { // This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {
-          executorService.execute(mbox)
+          submit(mbox, needYield)
           true
         } catch {
           case _: RejectedExecutionException =>
             try {
-              executorService.execute(mbox)
+              submit(mbox, needYield)
               true
             } catch { // Retry once
               case e: RejectedExecutionException =>
@@ -150,6 +148,15 @@ class Dispatcher(
         }
       } else false
     } else false
+  }
+
+  @inline
+  private def submit(mbox: Mailbox, needYield: Boolean): Unit = {
+    if (needYield && executorService.executor.isInstanceOf[LazyExecuteSupport]) {
+      executorService.executor.asInstanceOf[LazyExecuteSupport].lazyExecute(mbox)
+    } else {
+      executorService.execute(mbox)
+    }
   }
 
   override val toString: String = Logging.simpleName(this) + "[" + id + "]"
