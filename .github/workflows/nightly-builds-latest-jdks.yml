@@ -20,7 +20,7 @@ jobs:
       - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
 
       - name: Cache Coursier cache
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: 21
 
       - name: Cache Coursier cache
@@ -122,7 +122,7 @@ jobs:
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v3
         with:
-          distribution: temurin
+          distribution: zulu
           java-version: ${{ matrix.javaVersion }}
 
       - name: Cache Coursier cache
