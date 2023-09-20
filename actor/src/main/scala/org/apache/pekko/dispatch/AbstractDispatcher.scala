@@ -72,6 +72,14 @@ private[pekko] trait LoadMetrics { self: Executor =>
 /**
  * INTERNAL API
  */
+private[pekko] trait LazyExecuteSupport {
+  self: Executor =>
+  def lazyExecute(runnable: Runnable): Unit = self.execute(runnable)
+}
+
+/**
+ * INTERNAL API
+ */
 private[pekko] object MessageDispatcher {
   val UNSCHEDULED = 0 // WARNING DO NOT CHANGE THE VALUE OF THIS: It relies on the faster init of 0 in AbstractMessageDispatcher
   val SCHEDULED = 1
@@ -160,7 +168,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
    */
   final def attach(actor: ActorCell): Unit = {
     register(actor)
-    registerForExecution(actor.mailbox, false, true)
+    registerForExecution(actor.mailbox, false, true, false)
   }
 
   /**
@@ -288,7 +296,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   protected[pekko] def resume(actor: ActorCell): Unit = {
     val mbox = actor.mailbox
     if ((mbox.actor eq actor) && (mbox.dispatcher eq this) && mbox.resume())
-      registerForExecution(mbox, false, false)
+      registerForExecution(mbox, false, false, false)
   }
 
   /**
@@ -313,7 +321,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   protected[pekko] def registerForExecution(
       mbox: Mailbox,
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean
+      hasSystemMessageHint: Boolean,
+      needYield: Boolean): Boolean
 
   // TODO check whether this should not actually be a property of the mailbox
   /**
