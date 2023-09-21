@@ -1161,7 +1161,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }
     }
 
-    "not msg lost on restart multiple times" in new FailingRestartBackoffTestSetup(cntValue = 5) {
+    "ensure unhandled message retention during consecutive restarts" in new FailingRestartBackoffTestSetup(cntValue = 5) {
       val exception = new RuntimeException("mockException")
       val msg: Throw = Throw(exception)
       val ref = spawn(behv)
