@@ -17,28 +17,30 @@
 package org.apache.pekko.actor.typed
 
 import org.apache.pekko.actor.IllegalActorStateException
-import org.apache.pekko.actor.testkit.typed.scaladsl.{ LogCapturing, ScalaTestWithActorTestKit }
-import org.apache.pekko.actor.typed.scaladsl.AskPattern.{ schedulerFromActorSystem, Askable }
+import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
+import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import org.apache.pekko.actor.typed.scaladsl.AskPattern.Askable
+import org.apache.pekko.actor.typed.scaladsl.AskPattern.schedulerFromActorSystem
 import org.apache.pekko.actor.typed.scaladsl.Behaviors
 import org.apache.pekko.actor.typed.scaladsl.Behaviors._
 import org.apache.pekko.util.Timeout
 import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.util.concurrent.CountDownLatch
+import scala.concurrent.ExecutionContext
+import scala.concurrent.Future
+import scala.concurrent.TimeoutException
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future, TimeoutException }
-import scala.util.{ Failure, Success }
+import scala.util.Failure
+import scala.util.Success
 
-trait Command
-
+sealed trait Command
 case class Multiply(a: Int, b: Int, forwardRef: ActorRef[WorkerCommand], replyTo: ActorRef[Int]) extends Command
 case class ReplyResult(num: Int, replyTo: ActorRef[Int]) extends Command
 case class Ignore() extends Command
 
-trait WorkerCommand
-
+sealed trait WorkerCommand
 case class WorkerMultiply(a: Int, b: Int, replyTo: ActorRef[WorkerResult]) extends WorkerCommand
-
 case class WorkerResult(num: Int) extends WorkerCommand
 
 class ManualTerminatedTestSetup(workerCnt: Int) {
@@ -93,7 +95,7 @@ class DeadLetterSpec extends ScalaTestWithActorTestKit(
       val forwardRef = spawn(forwardBehavior)
       val workerRef = spawn(workerBehavior)
 
-      // this not completed unit worker reply.
+      // this will not completed unit worker reply.
       val multiplyResult: Future[Int] = forwardRef.ask(replyTo => Multiply(3, 9, workerRef, replyTo))
       // waiting for temporary ask actor terminated with timeout
       val result = multiplyResult.failed.futureValue
@@ -119,7 +121,7 @@ class DeadLetterSpec extends ScalaTestWithActorTestKit(
       val result = multiplyResult.failed.futureValue
       result shouldBe a[TimeoutException]
       result.getMessage should startWith("Ask timed out on")
-      // unlock worker reply
+      // unlock worker replying
       workerLatch.countDown()
 
       val deadLetter = deadLetterProbe.receiveMessage()
