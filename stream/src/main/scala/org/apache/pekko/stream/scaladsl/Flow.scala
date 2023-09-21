@@ -164,6 +164,36 @@ final class Flow[-In, +Out, +Mat](
     new Flow(traversalBuilder.transformMat(f), shape)
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
+      extractPartition: Out => P)(
+      f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
+    MapAsyncPartitioned.mapFlowOrdered(this, parallelism)(extractPartition)(f)
+  }
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
+      extractPartition: Out => P)(
+      f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
+    MapAsyncPartitioned.mapFlowUnordered(this, parallelism)(extractPartition)(f)
+  }
+
+  /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    * The returned flow is partial materialized and do not support multiple times materialization.
    */

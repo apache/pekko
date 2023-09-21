@@ -840,6 +840,34 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Flow(delegate.mapAsync(parallelism)(x => f(x).asScala))
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[T, P](parallelism: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] =
+    MapAsyncPartitioned.mapFlowOrdered(delegate, parallelism)(extractPartition(_))(f(_, _).asScala).asJava
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] =
+    MapAsyncPartitioned.mapFlowUnordered(delegate, parallelism)(extractPartition(_))(f(_, _).asScala).asJava
+
+  /**
    * Transform this stream by applying the given function to each of the elements
    * as they pass through this processing step. The function returns a `CompletionStage` and the
    * value of that future will be emitted downstream. The number of CompletionStages

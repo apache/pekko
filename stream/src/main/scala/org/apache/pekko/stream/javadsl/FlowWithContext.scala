@@ -179,6 +179,36 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
 
   /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[Out2, P](parallelism: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+    viaScala(_.mapAsyncPartitioned(parallelism)(extractPartition(_))(f(_, _).asScala))
+  }
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int,
+      extractPartition: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] = {
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(extractPartition(_))(f(_, _).asScala))
+  }
+
+  /**
    * Context-preserving variant of [[pekko.stream.javadsl.Flow.mapConcat]].
    *
    * The context of the input element will be associated with each of the output elements calculated from

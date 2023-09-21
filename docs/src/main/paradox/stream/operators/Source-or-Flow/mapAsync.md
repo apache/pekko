@@ -1,6 +1,6 @@
 # mapAsync
 
-Pass incoming elements to a function that return a @scala[`Future`] @java[`CompletionStage`] result.
+Pass incoming elements to a function that returns a @scala[`Future`] @java[`CompletionStage`] result.
 
 @ref[Asynchronous operators](../index.md#asynchronous-operators)
 

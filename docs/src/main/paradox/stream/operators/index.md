@@ -198,7 +198,9 @@ operation at the same time (usually handling the completion of a @scala[`Future`
 
 | |Operator|Description|
 |--|--|--|
-|Source/Flow|<a name="mapasync"></a>@ref[mapAsync](Source-or-Flow/mapAsync.md)|Pass incoming elements to a function that return a @scala[`Future`] @java[`CompletionStage`] result.|
+|Source/Flow|<a name="mapasync"></a>@ref[mapAsync](Source-or-Flow/mapAsync.md)|Pass incoming elements to a function that returns a @scala[`Future`] @java[`CompletionStage`] result.|
+|Source/Flow|<a name="mapasyncpartitioned"></a>@ref[mapAsyncPartitioned](Source-or-Flow/mapAsyncPartitioned.md)|Pass incoming elements to a partitioning function that returns a partition result for each element and then to a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result. The resulting Source or Flow will have elements that retain the order of the original Source or Flow.|
+|Source/Flow|<a name="mapasyncpartitionedunordered"></a>@ref[mapAsyncPartitionedUnordered](Source-or-Flow/mapAsyncPartitionedUnordered.md)|Pass incoming elements to a partitioning function that returns a partition result for each element and then to a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result. The resulting Source or Flow will not have ordered elements.|
 |Source/Flow|<a name="mapasyncunordered"></a>@ref[mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)|Like `mapAsync` but @scala[`Future`] @java[`CompletionStage`] results are passed downstream as they arrive regardless of the order of the elements that triggered them.|
 
 ## Timer driven operators
@@ -512,6 +514,8 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [logWithMarker](Source-or-Flow/logWithMarker.md)
 * [map](Source-or-Flow/map.md)
 * [mapAsync](Source-or-Flow/mapAsync.md)
+* [mapAsyncPartitioned](Source-or-Flow/mapAsyncPartitioned.md)
+* [mapAsyncPartitionedUnordered](Source-or-Flow/mapAsyncPartitionedUnordered.md)
 * [mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)
 * [mapConcat](Source-or-Flow/mapConcat.md)
 * [mapError](Source-or-Flow/mapError.md)
