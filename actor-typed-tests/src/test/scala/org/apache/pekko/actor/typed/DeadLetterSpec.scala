@@ -101,7 +101,7 @@ class DeadLetterSpec extends ScalaTestWithActorTestKit(
       val result = multiplyResult.failed.futureValue
       result shouldBe a[TimeoutException]
       result.getMessage should startWith("Ask timed out on")
-      // unlock worker reply
+      // unlock worker replying
       workerLatch.countDown()
 
       val deadLetter = deadLetterProbe.receiveMessage()
