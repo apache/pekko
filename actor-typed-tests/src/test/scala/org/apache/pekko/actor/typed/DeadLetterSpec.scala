@@ -7,10 +7,6 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
-/*
- * Copyright (C) 2017-2022 Lightbend Inc. <https://www.lightbend.com>
- */
-
 package org.apache.pekko.actor.typed
 
 import org.apache.pekko.actor.IllegalActorStateException
