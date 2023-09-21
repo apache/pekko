@@ -319,6 +319,34 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }).onFailure[IllegalArgumentException](strategy)
   }
 
+  class FailingRestartBackoffTestSetup(
+      minBackoff: FiniteDuration = 10.millis,
+      maxBackoff: FiniteDuration = 1000.millis,
+      capacity: Int = 10,
+      randomFactor: Double = Double.NaN,
+      val cntValue: Int) {
+    val probe = TestProbe[AnyRef]("evt")
+    val latch = new CountDownLatch(cntValue)
+    val strategy =
+      SupervisorStrategy.restartWithBackoff(minBackoff, maxBackoff, randomFactor).withStashCapacity(capacity)
+
+    def behv =
+      supervise(setup[Command] { context =>
+        latch.countDown()
+        Behaviors.receiveMessage[Command] { msg =>
+          msg match {
+            case Throw(e) =>
+              context.log.info(s"receive throwable ${e.getMessage}")
+              probe.ref ! msg
+              throw e
+            case _ =>
+              context.log.info("receive other")
+              Behaviors.same
+          }
+        }
+      }).onFailure[RuntimeException](strategy)
+  }
+
   "A supervised actor" must {
     "receive message" in {
       val probe = TestProbe[Event]("evt")
@@ -1130,6 +1158,19 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       LoggingTestKit.error[ActorInitializationException].expect {
         spawn(behv)
         probe.expectMessage(Started) // first one before failure
+      }
+    }
+
+    "not msg lost on restart multiple times" in new FailingRestartBackoffTestSetup(cntValue = 5) {
+      val exception = new RuntimeException("mockException")
+      val msg: Throw = Throw(exception)
+      val ref = spawn(behv)
+      for (_ <- 1 to cntValue) {
+        ref ! msg
+      }
+      latch.await(1000, TimeUnit.MILLISECONDS)
+      for (_ <- 1 to cntValue) {
+        probe.expectMessage(msg)
       }
     }
 
