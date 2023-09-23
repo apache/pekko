@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.unchecked.uncheckedVariance
-import scala.concurrent.Future
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.Pair
@@ -89,36 +88,6 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
    */
   def mapMaterializedValue[Mat2](f: Mat => Mat2): FlowWithContext[In, CtxIn, Out, CtxOut, Mat2] =
     new FlowWithContext(delegate.mapMaterializedValue(f))
-
-  /**
-   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
-   * partition step before the transform step. The transform function receives the an individual
-   * stream entry and the calculated partition value for that entry.
-   *
-   * @since 1.1.0
-   * @see [[#mapAsync]]
-   * @see [[#mapAsyncPartitionedUnordered]]
-   */
-  def mapAsyncPartitioned[T, P](parallelism: Int)(
-      extractPartition: Out => P)(
-      f: (Out, P) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
-    MapAsyncPartitioned.mapFlowWithContextOrdered(this, parallelism)(extractPartition)(f)
-  }
-
-  /**
-   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
-   * partition step before the transform step. The transform function receives the an individual
-   * stream entry and the calculated partition value for that entry.
-   *
-   * @since 1.1.0
-   * @see [[#mapAsyncUnordered]]
-   * @see [[#mapAsyncPartitioned]]
-   */
-  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
-      extractPartition: Out => P)(
-      f: (Out, P) => Future[T]): FlowWithContext[In, CtxIn, T, CtxOut, Mat] = {
-    MapAsyncPartitioned.mapFlowWithContextUnordered(this, parallelism)(extractPartition)(f)
-  }
 
   def asFlow: Flow[(In, CtxIn), (Out, CtxOut), Mat] = delegate
 
