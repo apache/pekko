@@ -44,9 +44,8 @@ sealed trait WorkerCommand
 case class WorkerMultiply(a: Int, b: Int, replyTo: ActorRef[WorkerResult]) extends WorkerCommand
 case class WorkerResult(num: Int) extends WorkerCommand
 
-class ManualTerminatedTestSetup(workerCnt: Int) {
+class ManualTerminatedTestSetup(val workerLatch: CountDownLatch) {
   implicit val timeout: Timeout = 10.millis
-  val workerLatch = new CountDownLatch(workerCnt)
 
   def forwardBehavior: Behavior[Command] =
     setup[Command] { context =>
@@ -91,7 +90,8 @@ class DeadLetterSpec extends ScalaTestWithActorTestKit(
 
   "DeadLetterActor" must {
 
-    "publish dead letter with recipient when context.ask terminated" in new ManualTerminatedTestSetup(workerCnt = 1) {
+    "publish dead letter with recipient when context.ask terminated" in new ManualTerminatedTestSetup(
+      workerLatch = new CountDownLatch(1)) {
       val deadLetterProbe = createDeadLetterProbe()
       val forwardRef = spawn(forwardBehavior)
       val workerRef = spawn(workerBehavior)
@@ -112,7 +112,8 @@ class DeadLetterSpec extends ScalaTestWithActorTestKit(
       deadLetter.recipient shouldNot equal(deadLettersRef)
     }
 
-    "publish dead letter with recipient when AskPattern timeout" in new ManualTerminatedTestSetup(workerCnt = 1) {
+    "publish dead letter with recipient when AskPattern timeout" in new ManualTerminatedTestSetup(
+      workerLatch = new CountDownLatch(1)) {
       val deadLetterProbe = createDeadLetterProbe()
       val workerRef = spawn(workerBehavior)
 
