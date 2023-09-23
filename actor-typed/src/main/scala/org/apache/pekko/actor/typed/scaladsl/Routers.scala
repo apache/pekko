@@ -185,5 +185,5 @@ trait PoolRouter[T] extends Behavior[T] {
   /**
    * Any message that the predicate returns true for will be broadcast to all routees.
    */
-  def withBroadcastPredicate(pred: T => Boolean): PoolRouter[T]
+  def withBroadcastPredicate(predicate: T => Boolean): PoolRouter[T]
 }

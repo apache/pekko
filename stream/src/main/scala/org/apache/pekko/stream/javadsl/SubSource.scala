@@ -250,7 +250,7 @@ class SubSource[Out, Mat](
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
    * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
-   * Use [[FlowOps.statefulMap]] instead.
+   * Use [[pekko.stream.scaladsl.FlowOps.statefulMap]] instead.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *

@@ -76,7 +76,7 @@ object AskPattern {
      * val f: Future[Reply] = target ? (replyTo => Request("hello", replyTo))
      * }}}
      *
-     * Note: it is preferrable to use the non-symbolic ask method as it easier allows for wildcards for
+     * Note: it is preferable to use the non-symbolic ask method as it easier allows for wildcards for
      * the `replyTo: ActorRef`.
      *
      * @tparam Res The response protocol, what the other actor sends back
@@ -115,7 +115,7 @@ object AskPattern {
      */
     @nowarn("msg=never used")
     def ask[Res](replyTo: ActorRef[Res] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] = {
-      // We do not currently use the implicit sched, but want to require it
+      // We do not currently use the implicit scheduler, but want to require it
       // because it might be needed when we move to a 'native' typed runtime, see #24219
       ref match {
         case a: InternalRecipientRef[Req] => askClassic[Req, Res](a, timeout, replyTo)
