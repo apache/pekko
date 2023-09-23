@@ -119,6 +119,7 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
 
   def dropped(ctx: TypedActorContext[_], signalOrMessage: Any): Unit = {
     import pekko.actor.typed.scaladsl.adapter._
+    // TODO change the description of reason, because the additional case of message loss.
     ctx.asScala.system.toClassic.eventStream
       .publish(Dropped(signalOrMessage, s"Stash is full in [${getClass.getSimpleName}]", ctx.asScala.self.toClassic))
   }
@@ -333,6 +334,13 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
       ctx.asScala.cancelAllTimers()
       if (strategy.maxRestarts != -1 && restartCount >= strategy.maxRestarts && deadlineHasTimeLeft) {
+        // publishing the Dropper event before stop, not sure if it is necessary, but it may serve to cover some test case.
+        if (restartingInProgress.isDefined) {
+          val (stashBuffer, _) = restartingInProgress.get
+          stashBuffer.foreach(msg => {
+            dropped(ctx, msg)
+          })
+        }
         strategy match {
           case _: Restart => throw t
           case _: Backoff =>

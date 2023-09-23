@@ -66,14 +66,15 @@ object SupervisionSpec {
   def targetBehavior(
       monitor: ActorRef[Event],
       state: State = State(0, Map.empty),
-      slowStop: Option[CountDownLatch] = None): Behavior[Command] =
+      slowStop: Option[CountDownLatch] = None,
+      slowRestart: Option[CountDownLatch] = None): Behavior[Command] =
     receive[Command] { (context, cmd) =>
       cmd match {
         case Ping(n) =>
           monitor ! Pong(n)
           Behaviors.same
         case IncrementState =>
-          targetBehavior(monitor, state.copy(n = state.n + 1), slowStop)
+          targetBehavior(monitor, state.copy(n = state.n + 1), slowStop, None)
         case GetState =>
           val reply = state.copy(children = context.children.map(c => c.path.name -> c.unsafeUpcast[Command]).toMap)
           monitor ! reply
@@ -94,6 +95,8 @@ object SupervisionSpec {
       case (_, sig) =>
         if (sig == PostStop)
           slowStop.foreach(latch => latch.await(10, TimeUnit.SECONDS))
+        else if (sig == PreRestart)
+          slowRestart.foreach(latch => latch.await(10, TimeUnit.SECONDS))
         monitor ! ReceivedSignal(sig)
         Behaviors.same
     }
@@ -317,34 +320,6 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
         probe.ref ! StartFailed
         throw TestException("construction failed")
       }).onFailure[IllegalArgumentException](strategy)
-  }
-
-  class FailingRestartBackoffTestSetup(
-      minBackoff: FiniteDuration = 10.millis,
-      maxBackoff: FiniteDuration = 1000.millis,
-      capacity: Int = 10,
-      randomFactor: Double = Double.NaN,
-      val cntValue: Int) {
-    val probe = TestProbe[AnyRef]("evt")
-    val latch = new CountDownLatch(cntValue)
-    val strategy =
-      SupervisorStrategy.restartWithBackoff(minBackoff, maxBackoff, randomFactor).withStashCapacity(capacity)
-
-    def behv =
-      supervise(setup[Command] { context =>
-        latch.countDown()
-        Behaviors.receiveMessage[Command] { msg =>
-          msg match {
-            case Throw(e) =>
-              context.log.info(s"receive throwable ${e.getMessage}")
-              probe.ref ! msg
-              throw e
-            case _ =>
-              context.log.info("receive other")
-              Behaviors.same
-          }
-        }
-      }).onFailure[RuntimeException](strategy)
   }
 
   "A supervised actor" must {
@@ -1161,18 +1136,81 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }
     }
 
-    "ensure unhandled message retention during consecutive restarts" in new FailingRestartBackoffTestSetup(
-      cntValue = 5) {
-      val exception = new RuntimeException("mockException")
-      val msg: Throw = Throw(exception)
+    "ensure unhandled message retention during multiple exception when restart" in {
+      testMessageRetentionWhenMultipleException(SupervisorStrategy.restart.withStashCapacity(4))
+    }
+
+    "ensure unhandled message retention during multiple exception when backoff" in {
+      testMessageRetentionWhenMultipleException(SupervisorStrategy.restartWithBackoff(10.millis, 10.millis,
+        0).withStashCapacity(4))
+    }
+
+    def testMessageRetentionWhenMultipleException(strategy: SupervisorStrategy): Unit = {
+      val probe = TestProbe[Event]("evt")
+      val slowRestart = new CountDownLatch(1)
+      val behv =
+        Behaviors.supervise(targetBehavior(probe.ref, slowRestart = Some(slowRestart))).onFailure[Exc1](strategy)
       val ref = spawn(behv)
-      for (_ <- 1 to cntValue) {
-        ref ! msg
-      }
-      latch.await(1000, TimeUnit.MILLISECONDS)
-      for (_ <- 1 to cntValue) {
-        probe.expectMessage(msg)
-      }
+
+      //  restart strategy require a latch in order to afford the opportunity to stash messages
+      val childProbe = TestProbe[Event]("childEvt")
+      val childSlowStop = new CountDownLatch(1)
+      val childName = nextName()
+      ref ! CreateChild(targetBehavior(childProbe.ref, slowStop = Some(childSlowStop)), childName)
+      ref ! GetState
+      probe.expectMessageType[State].children.keySet should ===(Set(childName))
+
+      ref ! Throw(new Exc1)
+      ref ! Throw(new Exc1)
+      ref ! Ping(1)
+      ref ! Ping(2)
+      // waiting for actor to restart, Pings will stashed
+      probe.expectNoMessage()
+      slowRestart.countDown()
+      probe.expectMessage(ReceivedSignal(PreRestart))
+      childSlowStop.countDown()
+      probe.expectMessage(ReceivedSignal(PreRestart))
+      probe.expectMessage(Pong(1))
+      probe.expectMessage(Pong(2))
+    }
+
+    "ensure stash message publish before terminated when restart" in {
+      testStashMessageRetentionWhenTerminated(SupervisorStrategy.restart.withLimit(1, 10.seconds).withStashCapacity(4))
+    }
+
+    "ensure stash message publish before terminated when backoff" in {
+      testStashMessageRetentionWhenTerminated(SupervisorStrategy.restartWithBackoff(10.millis, 10.millis,
+        0).withStashCapacity(4).withMaxRestarts(1))
+    }
+
+    def testStashMessageRetentionWhenTerminated(strategy: SupervisorStrategy): Unit = {
+      import pekko.actor.typed.scaladsl.adapter._
+      val droppedMessagesProbe = createDroppedMessageProbe()
+      val probe = TestProbe[Event]("evt")
+      val slowRestart = new CountDownLatch(1)
+      val behv =
+        Behaviors.supervise(targetBehavior(probe.ref, slowRestart = Some(slowRestart))).onFailure[Exc1](strategy)
+      val ref = spawn(behv)
+
+      //  restart strategy require a latch in order to afford the opportunity to stash messages
+      val childProbe = TestProbe[Event]("childEvt")
+      val childSlowStop = new CountDownLatch(1)
+      val childName = nextName()
+      ref ! CreateChild(targetBehavior(childProbe.ref, slowStop = Some(childSlowStop)), childName)
+      ref ! GetState
+      probe.expectMessageType[State].children.keySet should ===(Set(childName))
+
+      ref ! Throw(new Exc1)
+      ref ! Throw(new Exc1)
+      ref ! Ping(1)
+
+      // waiting for actor to restart, (Throw, Ping) will stashed
+      probe.expectNoMessage()
+      slowRestart.countDown()
+      probe.expectMessage(ReceivedSignal(PreRestart))
+      childSlowStop.countDown()
+      droppedMessagesProbe.expectMessage(Dropped(Ping(1), "Stash is full in [RestartSupervisor]", ref.toClassic))
+      probe.expectMessage(ReceivedSignal(PostStop))
     }
 
     "work with nested supervisions and defers" in {
