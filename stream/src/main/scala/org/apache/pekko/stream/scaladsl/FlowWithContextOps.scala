@@ -114,6 +114,36 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
     })
 
   /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitioned]].
+   *
+   * @since 1.1.0
+   * @see [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitioned[Out2, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
+    via(flow[Out, Ctx].mapAsyncPartitioned(parallelism)(pair => partitioner(pair._1)) {
+      (pair, partition) =>
+        f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
+    })
+  }
+
+  /**
+   * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitionedUnordered]].
+   *
+   * @since 1.1.0
+   * @see [[pekko.stream.scaladsl.FlowOps.mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitionedUnordered[Out2, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[Out2]): Repr[Out2, Ctx] = {
+    via(flow[Out, Ctx].mapAsyncPartitionedUnordered(parallelism)(pair => partitioner(pair._1)) {
+      (pair, partition) =>
+        f(pair._1, partition).map((_, pair._2))(ExecutionContexts.parasitic)
+    })
+  }
+
+  /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.collect]].
    *
    * Note, that the context of elements that are filtered out is skipped as well.

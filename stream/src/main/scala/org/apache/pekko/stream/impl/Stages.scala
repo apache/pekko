@@ -40,6 +40,8 @@ import pekko.stream.Attributes._
     val mapError = name("mapError")
     val mapAsync = name("mapAsync")
     val mapAsyncUnordered = name("mapAsyncUnordered")
+    val mapAsyncPartition = name("mapAsyncPartition")
+    val mapAsyncPartitionUnordered = name("mapAsyncPartitionUnordered")
     val ask = name("ask")
     val grouped = name("grouped")
     val groupedWithin = name("groupedWithin")

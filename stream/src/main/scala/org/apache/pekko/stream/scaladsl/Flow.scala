@@ -164,36 +164,6 @@ final class Flow[-In, +Out, +Mat](
     new Flow(traversalBuilder.transformMat(f), shape)
 
   /**
-   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
-   * partition step before the transform step. The transform function receives the an individual
-   * stream entry and the calculated partition value for that entry.
-   *
-   * @since 1.1.0
-   * @see [[#mapAsync]]
-   * @see [[#mapAsyncPartitionedUnordered]]
-   */
-  def mapAsyncPartitioned[T, P](parallelism: Int)(
-      extractPartition: Out => P)(
-      f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
-    MapAsyncPartitioned.mapFlowOrdered(this, parallelism)(extractPartition)(f)
-  }
-
-  /**
-   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
-   * partition step before the transform step. The transform function receives the an individual
-   * stream entry and the calculated partition value for that entry.
-   *
-   * @since 1.1.0
-   * @see [[#mapAsyncUnordered]]
-   * @see [[#mapAsyncPartitioned]]
-   */
-  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
-      extractPartition: Out => P)(
-      f: (Out, P) => Future[T]): Flow[In, T, Mat] = {
-    MapAsyncPartitioned.mapFlowUnordered(this, parallelism)(extractPartition)(f)
-  }
-
-  /**
    * Materializes this [[Flow]], immediately returning (1) its materialized value, and (2) a newly materialized [[Flow]].
    * The returned flow is partial materialized and do not support multiple times materialization.
    */
@@ -1172,6 +1142,81 @@ trait FlowOps[+Out, +Mat] {
    * @see [[#mapAsync]]
    */
   def mapAsyncUnordered[T](parallelism: Int)(f: Out => Future[T]): Repr[T] = via(MapAsyncUnordered(parallelism, f))
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry. The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes for the next element in sequence
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[T]): Repr[T] = {
+    (if (parallelism == 1) {
+       via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
+     } else {
+       via(new MapAsyncPartitioned(parallelism, orderedOutput = true, partitioner, f))
+     })
+      .withAttributes(DefaultAttributes.mapAsyncPartition and SourceLocation.forLambda(f))
+  }
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes and downstream available.
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[T]): Repr[T] = {
+    (if (parallelism == 1) {
+       via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
+     } else {
+       via(new MapAsyncPartitioned(parallelism, orderedOutput = false, partitioner, f))
+     }).withAttributes(DefaultAttributes.mapAsyncPartitionUnordered and SourceLocation.forLambda(f))
+  }
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.

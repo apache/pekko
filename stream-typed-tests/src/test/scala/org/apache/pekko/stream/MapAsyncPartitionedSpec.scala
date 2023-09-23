@@ -63,8 +63,7 @@ private object MapAsyncPartitionedSpec {
           value = i.toString)
       }
 
-    def extractPartition(e: TestKeyValue): Int =
-      e.key
+    val partitioner: TestKeyValue => Int = kv => kv.key
 
     type Operation = TestKeyValue => Future[(Int, String)]
 
@@ -125,7 +124,7 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitionedUnordered(parallelism = 2)(extractPartition)(blockingOperation)
+        .mapAsyncPartitionedUnordered(parallelism = 2)(partitioner)(blockingOperation)
         .runWith(Sink.seq)
         .futureValue
         .map(_._2)
@@ -137,7 +136,7 @@ class MapAsyncPartitionedSpec
     forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
-          .mapAsyncPartitionedUnordered(parallelism.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitionedUnordered(parallelism.value)(partitioner)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -153,7 +152,7 @@ class MapAsyncPartitionedSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitionedUnordered(parallelism = 1)(extractPartition)(asyncOperation)
+          .mapAsyncPartitionedUnordered(parallelism = 1)(partitioner)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -169,7 +168,7 @@ class MapAsyncPartitionedSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitionedUnordered(parallelism.value)(extractPartition)(blockingOperation)
+          .mapAsyncPartitionedUnordered(parallelism.value)(partitioner)(blockingOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -232,7 +231,7 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitionedUnordered(parallelism = 2)(extractPartition)(fun)
+        .mapAsyncPartitionedUnordered(parallelism = 2)(partitioner)(fun)
         .runWith(Sink.seq)
         .futureValue
 
@@ -244,7 +243,7 @@ class MapAsyncPartitionedSpec
       an[IllegalArgumentException] shouldBe thrownBy {
         Source(infiniteStream())
           .mapAsyncPartitionedUnordered(
-            parallelism = zeroOrNegativeParallelism)(extractPartition = identity)(f = (_, _) => Future.unit)
+            parallelism = zeroOrNegativeParallelism)(partitioner = identity)(f = (_, _) => Future.unit)
           .runWith(Sink.ignore)
           .futureValue
       }
@@ -272,7 +271,7 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitioned(parallelism = 2)(extractPartition)(processElement)
+        .mapAsyncPartitioned(parallelism = 2)(partitioner)(processElement)
         .runWith(Sink.seq)
         .futureValue
         .map(_._2)
@@ -289,7 +288,7 @@ class MapAsyncPartitionedSpec
     forAll(minSuccessful(1000)) { (parallelism: Parallelism, elements: Seq[TestKeyValue]) =>
       val result =
         Source(elements.toIndexedSeq)
-          .mapAsyncPartitioned(parallelism.value)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism.value)(partitioner)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -305,7 +304,7 @@ class MapAsyncPartitionedSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitioned(parallelism = 1)(extractPartition)(asyncOperation)
+          .mapAsyncPartitioned(parallelism = 1)(partitioner)(asyncOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -321,7 +320,7 @@ class MapAsyncPartitionedSpec
       val result =
         Source
           .fromIterator(() => elements.iterator)
-          .mapAsyncPartitioned(parallelism.value)(extractPartition)(blockingOperation)
+          .mapAsyncPartitioned(parallelism.value)(partitioner)(blockingOperation)
           .runWith(Sink.seq)
           .futureValue
 
@@ -384,7 +383,7 @@ class MapAsyncPartitionedSpec
 
     val result =
       Source(elements)
-        .mapAsyncPartitioned(parallelism = 2)(extractPartition)(fun)
+        .mapAsyncPartitioned(parallelism = 2)(partitioner)(fun)
         .runWith(Sink.seq)
         .futureValue
 
@@ -396,7 +395,7 @@ class MapAsyncPartitionedSpec
       an[IllegalArgumentException] shouldBe thrownBy {
         Source(infiniteStream())
           .mapAsyncPartitioned(
-            parallelism = zeroOrNegativeParallelism)(extractPartition = identity)(f = (_, _) => Future.unit)
+            parallelism = zeroOrNegativeParallelism)(partitioner = identity)(f = (_, _) => Future.unit)
           .runWith(Sink.ignore)
           .futureValue
       }
