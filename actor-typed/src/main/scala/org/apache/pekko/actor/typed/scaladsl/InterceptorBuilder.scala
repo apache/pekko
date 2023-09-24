@@ -18,10 +18,12 @@
 package org.apache.pekko.actor.typed.scaladsl
 
 import org.apache.pekko
+import org.apache.pekko.actor.typed.ActorRef
 import org.apache.pekko.actor.typed.Behavior
 import org.apache.pekko.actor.typed.BehaviorInterceptor
 import org.apache.pekko.actor.typed.SupervisorStrategy
 import org.apache.pekko.actor.typed.internal.BehaviorImpl
+import org.apache.pekko.actor.typed.internal.MonitorInterceptor
 import org.apache.pekko.actor.typed.scaladsl.Behaviors.Supervise
 import org.apache.pekko.actor.typed.scaladsl.Behaviors.ThrowableClassTag
 
@@ -41,12 +43,11 @@ class InterceptorBuilder[T](initialBehavior: Behavior[T]) {
 
   private var currentBehavior: Behavior[T] = initialBehavior
 
-
   /**
    * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws. The simple way of as [[Behaviors.supervise]]
    */
   def onFailure[Thr <: Throwable](strategy: SupervisorStrategy)(
-    implicit tag: ClassTag[Thr] = ThrowableClassTag): InterceptorBuilder[T] = {
+      implicit tag: ClassTag[Thr] = ThrowableClassTag): InterceptorBuilder[T] = {
     currentBehavior = new Supervise[T](currentBehavior).onFailure(strategy)(classTag)
     this
   }
@@ -59,11 +60,22 @@ class InterceptorBuilder[T](initialBehavior: Behavior[T]) {
     new InterceptorBuilder(BehaviorImpl.intercept(behaviorInterceptor)(currentBehavior))
 
   /**
+   * Behavior decorator that copies all received message to the designated
+   * monitor [[pekko.actor.typed.ActorRef]] before invoking the wrapped behavior. The
+   * wrapped behavior can evolve (i.e. return different behavior) without needing to be
+   * wrapped in a `monitor` call again.
+   * The simple way of as [[Behaviors.monitor]]
+   */
+  def monitor(monitor: ActorRef[T]): InterceptorBuilder[T] = {
+    currentBehavior = BehaviorImpl.intercept(() => new MonitorInterceptor[T](monitor))(currentBehavior)
+    this
+  }
+
+  /**
    * Build the final Behavior from the current state of the builder
    */
   def build(): Behavior[T] = {
     currentBehavior
   }
-
 
 }
