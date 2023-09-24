@@ -21,6 +21,7 @@ import pekko.actor.typed.receptionist.ServiceKey
 import pekko.annotation.DoNotInherit
 
 import java.util.function.Predicate
+import scala.annotation.nowarn
 
 object Routers {
 
@@ -197,5 +198,6 @@ abstract class PoolRouter[T] extends DeferredBehavior[T] {
   /**
    * Any message that the predicate returns true for will be broadcast to all routees.
    */
-  def withBroadcastPredicate(pred: Predicate[T]): PoolRouter[T]
+  @nowarn("msg=deprecated")
+  def withBroadcastPredicate(@deprecatedName(Symbol("pred")) predicate: Predicate[T]): PoolRouter[T]
 }

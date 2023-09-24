@@ -63,10 +63,11 @@ private[pekko] final case class PoolRouterBuilder[T](
 
   def withRouteeProps(routeeProps: Props): PoolRouterBuilder[T] = copy(routeeProps = routeeProps)
 
-  override def withBroadcastPredicate(pred: Predicate[T]): PoolRouter[T] =
-    copy(broadcastPredicate = value => pred.test(value))
+  override def withBroadcastPredicate(predicate: Predicate[T]): PoolRouter[T] =
+    copy(broadcastPredicate = value => predicate.test(value))
 
-  override def withBroadcastPredicate(pred: T => Boolean): scaladsl.PoolRouter[T] = copy(broadcastPredicate = pred)
+  override def withBroadcastPredicate(predicate: T => Boolean): scaladsl.PoolRouter[T] =
+    copy(broadcastPredicate = predicate)
 }
 
 /**
