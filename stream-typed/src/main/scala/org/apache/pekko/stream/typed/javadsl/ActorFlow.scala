@@ -49,7 +49,7 @@ object ActorFlow {
    * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
    * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
-   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   * Adheres to the [[pekko.stream.ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the futures (in submission order) created by the ask pattern internally are completed
    *
@@ -105,7 +105,7 @@ object ActorFlow {
    * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
    * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
    *
-   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   * Adheres to the [[pekko.stream.ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the futures (in submission order) created by the ask pattern internally are completed
    *
