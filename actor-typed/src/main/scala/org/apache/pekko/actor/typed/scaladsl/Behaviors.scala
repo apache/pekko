@@ -170,6 +170,13 @@ object Behaviors {
     BehaviorImpl.intercept(behaviorInterceptor)(behavior)
 
   /**
+   * Immutable builder used for creating interceptor or supervisor of [[Behavior]] by 'chaining'.
+   * @tparam T the common superclass of all supported messages.
+   */
+  def interceptorBuilder[T](initialBehavior: Behavior[T]): InterceptorBuilder[T] =
+    InterceptorBuilder(initialBehavior)
+
+  /**
    * Behavior decorator that copies all received message to the designated
    * monitor [[pekko.actor.typed.ActorRef]] before invoking the wrapped behavior. The
    * wrapped behavior can evolve (i.e. return different behavior) without needing to be
