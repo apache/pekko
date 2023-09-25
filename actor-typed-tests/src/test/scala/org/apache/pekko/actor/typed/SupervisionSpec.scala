@@ -311,8 +311,13 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       }
 
       override def onMessage(message: Command): Behavior[Command] = {
-        monitor ! Pong(0)
-        Behaviors.same
+        message match {
+          case Ping(i) =>
+            monitor ! Pong(i)
+            Behaviors.same
+          // ignore others.
+          case _ => Behaviors.same
+        }
       }
     }
 
@@ -330,8 +335,8 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
       probe.expectMessage(ReceivedSignal(PostStop))
       probe.expectMessage(Started)
       // expect no message lost
-      probe.expectMessage(Pong(0))
-      probe.expectMessage(Pong(0))
+      probe.expectMessage(Pong(1))
+      probe.expectMessage(Pong(2))
     }
   }
 
