@@ -28,7 +28,7 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.19.2"
-  val nettyVersion = "4.1.97.Final"
+  val nettyVersion = "4.1.98.Final"
   val protobufJavaVersion = "3.19.6"
   val logbackVersion = "1.2.11"
 
