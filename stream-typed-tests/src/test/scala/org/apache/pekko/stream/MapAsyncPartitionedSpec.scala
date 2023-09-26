@@ -240,7 +240,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "fail to create an operator if parallelism is less than 1" in {
-    forAll(Gen.negNum[Int]) { zeroOrNegativeParallelism: Int =>
+    forAll(Gen.negNum[Int]) { (zeroOrNegativeParallelism: Int) =>
       an[IllegalArgumentException] shouldBe thrownBy {
         Source(infiniteStream())
           .mapAsyncPartitionedUnordered(
@@ -392,7 +392,7 @@ class MapAsyncPartitionedSpec
   }
 
   it should "fail to create an operator if parallelism is less than 1" in {
-    forAll(Gen.negNum[Int]) { zeroOrNegativeParallelism: Int =>
+    forAll(Gen.negNum[Int]) { (zeroOrNegativeParallelism: Int) =>
       an[IllegalArgumentException] shouldBe thrownBy {
         Source(infiniteStream())
           .mapAsyncPartitioned(
