@@ -76,7 +76,7 @@ import pekko.util.OptionConverters._
  * Until sent messages have been confirmed the `ShardingProducerController` keeps them in memory to be able to
  * resend them. If the JVM of the `ShardingProducerController` crashes those unconfirmed messages are lost.
  * To make sure the messages can be delivered also in that scenario the `ShardingProducerController` can be
- * used with a [[pekko.actor.typed.delivery.DurableProducerQueue]]. Then the unconfirmed messages are stored in a durable way so
+ * used with a [[DurableProducerQueue]]. Then the unconfirmed messages are stored in a durable way so
  * that they can be redelivered when the producer is started again. An implementation of the
  * `DurableProducerQueue` is provided by `EventSourcedProducerQueue` in `pekko-persistence-typed`.
  *

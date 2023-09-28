@@ -34,7 +34,7 @@ object ReplicatedEntityProvider {
   /**
    * Java API:
    *
-   * Provides full control over the [[ReplicatedEntity]] and the [[javadsl.Entity]]
+   * Provides full control over the [[ReplicatedEntity]] and the [[Entity]]
    * Most use cases can use the [[createPerDataCenter]] and [[createPerRole]]
    *
    * @tparam M The type of messages the replicated entity accepts
@@ -53,10 +53,10 @@ object ReplicatedEntityProvider {
   /**
    * Scala API:
    *
-   * Provides full control over the [[ReplicatedEntity]] and the [[scaladsl.Entity]]
+   * Provides full control over the [[ReplicatedEntity]] and the [[Entity]]
    * Most use cases can use the [[perDataCenter]] and [[perRole]]
    *
-   * @param typeName The type name used in the [[scaladsl.EntityTypeKey]]
+   * @param typeName The type name used in the [[EntityTypeKey]]
    * @tparam M The type of messages the replicated entity accepts
    */
   def apply[M: ClassTag](typeName: String, allReplicaIds: Set[ReplicaId])(
@@ -75,7 +75,7 @@ object ReplicatedEntityProvider {
   /**
    * Scala API
    *
-   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[scaladsl.Entity]] when running in
+   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding. A replica will be run per data center.
    */
   def perDataCenter[M: ClassTag, E](typeName: String, allReplicaIds: Set[ReplicaId])(
@@ -91,7 +91,7 @@ object ReplicatedEntityProvider {
   /**
    * Scala API
    *
-   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[scaladsl.Entity]] when running in
+   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding. The replicas in allReplicaIds should be roles used by nodes. A replica for each
    * entity will run on each role.
    */
@@ -108,7 +108,7 @@ object ReplicatedEntityProvider {
   /**
    * Java API
    *
-   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[scaladsl.Entity]] when running in
+   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding. A replica will be run per data center.
    */
   def createPerDataCenter[M](
@@ -128,7 +128,7 @@ object ReplicatedEntityProvider {
   /**
    * Java API
    *
-   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[scaladsl.Entity]] when running in
+   * Create a [[ReplicatedEntityProvider]] that uses the defaults for [[Entity]] when running in
    * ClusterSharding.
    *
    * Map replicas to roles and then there will be a replica per role e.g. to match to availability zones/racks
