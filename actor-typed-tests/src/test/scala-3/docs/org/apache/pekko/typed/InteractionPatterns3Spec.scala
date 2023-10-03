@@ -138,9 +138,9 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
         sealed trait Command
         final case class Translate(site: URI, replyTo: ActorRef[URI]) extends Command
 
-        private type CommandAndResponse = Command | Backend.Response              // (1)
+        private type CommandAndResponse = Command | Backend.Response // (1)
 
-        def apply(backend: ActorRef[Backend.Request]): Behavior[Command] =        // (2)
+        def apply(backend: ActorRef[Backend.Request]): Behavior[Command] = // (2)
           Behaviors.setup[CommandAndResponse] { context =>
 
             def active(inProgress: Map[Int, ActorRef[URI]], count: Int): Behavior[CommandAndResponse] = {
@@ -151,7 +151,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
                   backend ! Backend.StartTranslationJob(taskId, site, context.self) // (3)
                   active(inProgress.updated(taskId, replyTo), taskId)
 
-                case Backend.JobStarted(taskId) =>                                // (4)
+                case Backend.JobStarted(taskId) => // (4)
                   context.log.info("Started {}", taskId)
                   Behaviors.same
                 case Backend.JobProgress(taskId, progress) =>
@@ -165,7 +165,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
             }
 
             active(inProgress = Map.empty, count = 0)
-          }.narrow                                                                // (5)
+          }.narrow // (5)
       }
       // #adapted-response
 
