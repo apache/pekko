@@ -103,7 +103,8 @@ Java
  
 **Problems:**
 
- * Actors seldom have a response message from another actor as a part of their protocol (see @ref:[adapted response](#adapted-response))
+ * Actors seldom have a response message from another actor as a part of their protocol as it can be considered
+   as polluting that protocol with a message from another actor's message (see @ref:[adapted response](#adapted-response))
  * It is hard to detect that a message request was not delivered or processed (see @ref:[ask](#request-response-with-ask-between-two-actors))
  * Unless the protocol already includes a way to provide context, for example a request id that is also sent in the
    response, it is not possible to tie an interaction to some specific context without introducing a new,
@@ -112,7 +113,12 @@ Java
 
 ## Adapted Response
 
-Most often the sending actor does not, and should not, support receiving the response messages of another actor. In such cases we need to provide an @apidoc[actor.typed.ActorRef] of the right type and adapt the response message to a type that the sending actor can handle.
+Most often the sending actor does not, and should not, support receiving the response messages of another actor.
+
+In such cases we need to provide an @apidoc[actor.typed.ActorRef] of the right type and adapt the response message
+to a type that the sending actor can handle. In the case of Scala, we need to make a distinction between Scala 2
+and Scala 3. In the latter case, we can actually get rid of the need to adapt the response message which vastly
+simplifies the handling of responses. The details can be found in the section @ref:[Handling actor responses in Scala 3](handling-actor-responses-scala3.md).
 
 **Example:**
 
