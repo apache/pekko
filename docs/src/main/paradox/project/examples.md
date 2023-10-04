@@ -78,6 +78,12 @@ This sample illustrates how to form a Pekko Cluster with Pekko Bootstrap when ru
 
 This project demonstrates the work pulling pattern using Pekko Cluster.
 
+## gRPC on Kubernetes
+
+@extref[gRPC on Kubernetes example project](samples:pekko-sample-grpc-kubernetes-scala)
+
+This project demonstrates how to build services using gRPC module running on Kubernetes.
+
 ## Kafka to Cluster Sharding 
 
 @extref[Kafka to Cluster Sharding example project](samples:pekko-sample-kafka-to-sharding-scala)
