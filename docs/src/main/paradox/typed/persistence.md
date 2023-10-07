@@ -119,14 +119,6 @@ to help with constructing such `PersistenceId` from an `entityTypeHint` and `ent
 The default separator when concatenating the `entityTypeHint` and `entityId` is `|`, but a custom separator
 is supported.
 
-@@@ note
-
-The `|` separator is also used in Lagom's `scaladsl.PersistentEntity` but no separator is used
-in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
-you should use `""` as the separator.
-
-@@@
-
 A custom identifier can be created with @apidoc[PersistenceId.ofUniqueId](typed.PersistenceId$) {scala="#ofUniqueId(id:String):org.apache.pekko.persistence.typed.PersistenceId" java="#ofUniqueId(java.lang.String)"}.  
 
 ### Command handler
