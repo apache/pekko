@@ -17,8 +17,6 @@ object PersistenceId {
 
   /**
    * Default separator character used for concatenating a `typeHint` with `entityId` to construct unique persistenceId.
-   * This must be same as in Lagom's `scaladsl.PersistentEntity`, for compatibility. No separator is used
-   * in Lagom's `javadsl.PersistentEntity` so for compatibility with that the `""` separator must be used instead.
    */
   val DefaultSeparator = "|"
 
@@ -37,11 +35,7 @@ object PersistenceId {
    *
    * Another separator can be defined by using the `apply` that takes a `separator` parameter.
    *
-   * The `|` separator is also used in Lagom's `scaladsl.PersistentEntity` but no separator is used
-   * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
-   * you should use `""` as the separator.
-   *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
    */
   def apply(entityTypeHint: String, entityId: String): PersistenceId =
     apply(entityTypeHint, entityId, DefaultSeparator)
@@ -61,11 +55,7 @@ object PersistenceId {
    *
    * The default separator `|` is used by the `apply` that doesn't take a `separator` parameter.
    *
-   * The `|` separator is also used in Lagom's `scaladsl.PersistentEntity` but no separator is used
-   * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
-   * you should use `""` as the separator.
-   *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
    */
   def apply(entityTypeHint: String, entityId: String, separator: String): PersistenceId = {
     if (separator.nonEmpty) {
@@ -95,11 +85,7 @@ object PersistenceId {
    *
    * Another separator can be defined by using the `PersistenceId.of` that takes a `separator` parameter.
    *
-   * The `|` separator is also used in Lagom's `scaladsl.PersistentEntity` but no separator is used
-   * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
-   * you should use `""` as the separator.
-   *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `|`
    */
   def of(entityTypeHint: String, entityId: String): PersistenceId =
     apply(entityTypeHint, entityId)
@@ -119,11 +105,7 @@ object PersistenceId {
    *
    * The default separator `|` is used by the `apply` that doesn't take a `separator` parameter.
    *
-   * The `|` separator is also used in Lagom's `scaladsl.PersistentEntity` but no separator is used
-   * in Lagom's `javadsl.PersistentEntity`. For compatibility with Lagom's `javadsl.PersistentEntity`
-   * you should use `""` as the separator.
-   *
-   * @throws IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
+   * @throws java.lang.IllegalArgumentException if the `entityTypeHint` or `entityId` contains `separator`
    */
   def of(entityTypeHint: String, entityId: String, separator: String): PersistenceId =
     apply(entityTypeHint, entityId, separator)
