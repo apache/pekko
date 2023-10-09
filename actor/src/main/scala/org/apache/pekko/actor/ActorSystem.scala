@@ -841,16 +841,16 @@ private[pekko] class ActorSystemImpl(
         cause match {
           case NonFatal(_) | _: InterruptedException | _: NotImplementedError | _: ControlThrowable =>
             log.error(cause, "Uncaught error from thread [{}]", thread.getName)
-          case _ =>
-            if (cause.isInstanceOf[IncompatibleClassChangeError] && cause.getMessage.startsWith("org.apache.pekko"))
-              System.err.println(
-                s"""Detected ${cause.getClass.getName} error, which MAY be caused by incompatible Pekko versions on the classpath.
+          case classChangeError: IncompatibleClassChangeError
+              if classChangeError.getMessage.startsWith("org.apache.pekko") =>
+            System.err.println(
+              s"""Detected ${classChangeError.getClass.getName} error, which MAY be caused by incompatible Pekko versions on the classpath.
                   | Please note that a given Pekko version MUST be the same across all modules of Pekko that you are using,
                   | e.g. if you use pekko-actor [${pekko.Version.current} (resolved from current classpath)] all other core
                   | Pekko modules MUST be of the same version. External projects like Connectors, Persistence plugins or Pekko
                   | HTTP etc. have their own version numbers - please make sure you're using a compatible set of libraries.
                  """.stripMargin.replaceAll("[\r\n]", ""))
-
+          case _ =>
             if (settings.JvmExitOnFatalError)
               try logFatalError("shutting down JVM since 'pekko.jvm-exit-on-fatal-error' is enabled for", cause, thread)
               finally System.exit(-1)
