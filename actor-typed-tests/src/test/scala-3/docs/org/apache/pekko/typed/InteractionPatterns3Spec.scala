@@ -147,7 +147,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
               Behaviors.receiveMessage[CommandAndResponse] {
                 case Translate(site, replyTo) =>
                   val taskId = count + 1
-                  val x: ActorRef[CommandAndResponse] = context.self
                   backend ! Backend.StartTranslationJob(taskId, site, context.self) // (3)
                   active(inProgress.updated(taskId, replyTo), taskId)
 
