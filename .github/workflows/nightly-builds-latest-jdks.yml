@@ -20,7 +20,7 @@ jobs:
       - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
-          distribution: zulu
+          distribution: temurin
           java-version: 21
 
       - name: Cache Coursier cache
@@ -78,7 +78,7 @@ jobs:
       - name: Setup Java 21
         uses: actions/setup-java@v3
         with:
-          distribution: zulu
+          distribution: temurin
           java-version: 21
 
       - name: Cache Coursier cache
@@ -122,7 +122,7 @@ jobs:
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v3
         with:
-          distribution: zulu
+          distribution: temurin
           java-version: ${{ matrix.javaVersion }}
 
       - name: Cache Coursier cache
@@ -142,20 +142,3 @@ jobs:
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
             clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
-
-# comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
-#      - name: Test Reports
-#        # Makes it easier to spot failures instead of looking at the logs.
-#        if: ${{ failure() }}
-#        uses: marcospereira/action-surefire-report@v1
-#        with:
-#          report_paths: '**/target/test-reports/TEST-*.xml'
-#          fail_if_no_tests: false
-
-#      # Archive test results so we can do some diagnostics later
-#      - name: Upload test results
-#        uses: actions/upload-artifact@v2
-#        if: success() || failure()        # run this step even if previous step failed
-#        with:
-#          name: test-results-${{ matrix.javaVersion }}-${{ matrix.scalaVersion }}
-#          path: '**/target/test-reports/TEST-*.xml'
