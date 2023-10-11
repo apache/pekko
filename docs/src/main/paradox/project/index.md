@@ -15,7 +15,6 @@
 * [rolling-update](rolling-update.md)
 * [issue-tracking](issue-tracking.md)
 * [licenses](licenses.md)
-* [license-report](license-report.md) 
 * [faq](../additional/faq.md)
 * [books](../additional/books.md)
 * [examples](examples.md)
