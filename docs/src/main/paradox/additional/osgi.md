@@ -16,7 +16,7 @@ To use Apache Pekko in OSGi, you must add the following dependency in your proje
 ## Background
 
 [OSGi](https://www.osgi.org/resources/where-to-start/) is a mature packaging and deployment standard for component-based systems. It
-has similar capabilities as [Project Jigsaw](https://openjdk.java.net/projects/jigsaw/) (originally scheduled for JDK 1.8), but has far stronger facilities to
+has similar capabilities as [Project Jigsaw](https://openjdk.org/projects/jigsaw/) (originally scheduled for JDK 1.8), but has far stronger facilities to
 support legacy Java code. This is to say that while Jigsaw-ready modules require significant changes to most source files
 and on occasion to the structure of the overall application, OSGi can be used to modularize almost any Java code as far
 back as JDK 1.2, usually with no changes at all to the binaries.
