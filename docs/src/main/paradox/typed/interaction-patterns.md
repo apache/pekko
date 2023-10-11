@@ -117,8 +117,9 @@ Most often the sending actor does not, and should not, support receiving the res
 
 In such cases we need to provide an @apidoc[actor.typed.ActorRef] of the right type and adapt the response message
 to a type that the sending actor can handle. In the case of Scala, we need to make a distinction between Scala 2
-and Scala 3. In the latter case, we can actually get rid of the need to adapt the response message which vastly
-simplifies the handling of responses. The details can be found in the section @ref:[Handling actor responses in Scala 3](handling-actor-responses-with-scala3.md).
+and Scala 3. In the latter case, we can actually get rid of the need to adapt the response message by leveraging
+Scala 3's Union types, which vastly simplifies the handling of responses. The details can be found in the
+section @ref:[Handling actor responses in Scala 3](handling-actor-responses-with-scala3.md).
 
 **Example:**
 
