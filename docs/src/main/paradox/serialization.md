@@ -25,7 +25,7 @@ The serialization mechanism in Pekko allows you to write custom serializers and 
 @ref:[Serialization with Jackson](serialization-jackson.md) is a good choice in many cases and our
 recommendation if you don't have other preference.
 
-[Google Protocol Buffers](https://developers.google.com/protocol-buffers/) is good if you want
+[Google Protocol Buffers](https://protobuf.dev/) is good if you want
 more control over the schema evolution of your messages, but it requires more work to develop and
 maintain the mapping between serialized representation and domain representation.
 

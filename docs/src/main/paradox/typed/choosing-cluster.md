@@ -10,7 +10,7 @@ Microservices architecture has many attractive properties, such as the independe
 multiple smaller and more focused teams that can deliver new functionality more frequently and can
 respond quicker to business opportunities. Reactive Microservices should be isolated, autonomous, and have
 a single responsibility as identified by Jonas Bonér in the book
-[Reactive Microsystems: The Evolution of Microservices at Scale](https://www.lightbend.com/ebooks/reactive-microsystems-evolution-of-microservices-scalability-oreilly).
+[Reactive Microsystems: The Evolution of Microservices at Scale](https://go.lightbend.com/reactive-microsystems-evolution-of-microservices-scalability-oreilly).
 
 In a microservices architecture, you should consider communication within a service and between services.
 
