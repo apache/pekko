@@ -334,6 +334,11 @@ sbt -Dpekko.genjavadoc.enabled=true Javaunidoc/doc
 
 Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 11 or later.
 
+#### Changing the project information page index
+
+In case you want to change the index of `Project Information` page, you need to change it on the
+`project/ProjectIndexGenerator.scala` so it can be included in the automatic docs generation.
+
 ### External dependencies
 
 All the external runtime dependencies for the project, including transitive dependencies, must have an open source license that is equal to, or compatible with, [Apache 2](https://www.apache.org/licenses/LICENSE-2.0).
