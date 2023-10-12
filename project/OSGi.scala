@@ -40,7 +40,9 @@ object OSGi {
       OsgiKeys.privatePackage := Seq(),
       // Explicitly specify the version of JavaSE required #23795 (rather depend on
       // figuring that out from the JDK it was built with)
-      OsgiKeys.requireCapability := "osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version>=1.8))\"")
+      OsgiKeys.requireCapability := "osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version>=1.8))\"",
+      // Recent versions of BND create corrupted jars so use JDK jar instead, see https://github.com/sbt/sbt-osgi/pull/81
+      OsgiKeys.packageWithJVMJar := true)
 
   val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("org.apache.pekko*"),
