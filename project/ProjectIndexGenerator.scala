@@ -42,18 +42,15 @@ object ProjectIndexGenerator extends AutoPlugin {
       "migration-guides.md",
       "rolling-update.md",
       "issue-tracking.md",
-      "licenses.md"
-    )
+      "licenses.md")
     val markdownFilesAfterLicense = Seq(
       "../additional/faq.md",
       "../additional/books.md",
       "examples.md",
-      "links.md"
-    )
+      "links.md")
 
-     CliOptions.generateLicenseReportEnabled.ifTrue(
-      markdownFilesBeforeLicense ++ "license-report.md"
-    )
+    CliOptions.generateLicenseReportEnabled.ifTrue(
+      markdownFilesBeforeLicense ++ "license-report.md")
 
     val content = s"""
                      |# Project Information
