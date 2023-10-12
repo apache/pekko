@@ -27,7 +27,7 @@ object ProjectIndexGenerator extends AutoPlugin {
   override val projectSettings: Seq[Setting[_]] = inConfig(Compile)(
     Seq(
       resourceGenerators +=
-        generateIndex(sourceDirectory, _ / "paradox" / "project" / "index.md")))
+        generateIndex(sourceDirectory, _ / "paradox" / "project" / "project-index.md")))
 
   def generateIndex(dir: SettingKey[File], locate: File => File) = Def.task[Seq[File]] {
     val file = locate(dir.value)
@@ -39,6 +39,7 @@ object ProjectIndexGenerator extends AutoPlugin {
       "../common/may-change.md",
       "../additional/ide.md",
       "immutable.md",
+      "../additional/osgi.md",
       "migration-guides.md",
       "rolling-update.md",
       "issue-tracking.md",
@@ -49,22 +50,22 @@ object ProjectIndexGenerator extends AutoPlugin {
       "examples.md",
       "links.md")
 
-    CliOptions.generateLicenseReportEnabled.ifTrue(
-      markdownFilesBeforeLicense ++ "license-report.md")
+    val markdownFiles = if (CliOptions.generateLicenseReportEnabled.get) {
+      markdownFilesBeforeLicense ++ Seq("license-report.md") ++ markdownFilesAfterLicense
+    } else {
+      markdownFilesBeforeLicense ++ markdownFilesAfterLicense
+    }
 
-    val content = s"""
-                     |# Project Information
+    val content = s"""# Project Information
                      |
                      |@@toc { depth=2 }
                      |
                      |@@@ index
                      |
-                     |${markdownFilesBeforeLicense.map(f => s"* [${f.replace(".md", "")}]($f)").mkString("\n")}
-                     |${markdownFilesAfterLicense.map(f => s"* [${f.replace(".md", "")}]($f)").mkString("\n")}
+                     |${markdownFiles.map(f => s"* [${f.replace(".md", "")}]($f)").mkString("\n")}
                      |
                      |@@@
-                     |
-      """.stripMargin
+                     |""".stripMargin
 
     if (!file.exists || IO.read(file) != content) IO.write(file, content)
     Seq(file)

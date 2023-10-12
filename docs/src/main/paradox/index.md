@@ -17,7 +17,7 @@
 * [index-utilities](index-utilities.md)
 * [common/other-modules](common/other-modules.md)
 * [additional/deploy](additional/deploy.md)
-* [project/index](project/index.md)
+* [project/index](project/project-index.md)
 * [classic](index-classic.md)
 
 @@@
