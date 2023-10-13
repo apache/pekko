@@ -78,7 +78,6 @@ lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
   distributedData,
   jackson,
   multiNodeTestkit,
-  osgi,
   persistence,
   persistenceQuery,
   persistenceTyped,
@@ -126,7 +125,6 @@ lazy val root = Project(id = "pekko", base = file("."))
 
 lazy val actor = pekkoModule("actor")
   .settings(Dependencies.actor)
-  .settings(OSGi.actor)
   .settings(AutomaticModuleName.settings("pekko.actor"))
   .settings(AddMetaInfLicenseFiles.actorSettings)
   .settings(Compile / unmanagedSourceDirectories += {
@@ -167,7 +165,6 @@ lazy val cluster = pekkoModule("cluster")
   .settings(Dependencies.cluster)
   .settings(AutomaticModuleName.settings("pekko.cluster"))
   .settings(AddMetaInfLicenseFiles.clusterSettings)
-  .settings(OSGi.cluster)
   .settings(Protobuf.settings)
   .settings(Test / parallelExecution := false)
   .configs(MultiJvm)
@@ -178,7 +175,6 @@ lazy val clusterMetrics = pekkoModule("cluster-metrics")
     cluster % "compile->compile;test->test;multi-jvm->multi-jvm",
     slf4j % "test->compile",
     jackson % "test->test")
-  .settings(OSGi.clusterMetrics)
   .settings(Dependencies.clusterMetrics)
   .settings(AutomaticModuleName.settings("pekko.cluster.metrics"))
   .settings(Protobuf.settings)
@@ -200,7 +196,6 @@ lazy val clusterSharding = pekkoModule("cluster-sharding")
     jackson % "test->test")
   .settings(Dependencies.clusterSharding)
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
-  .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
@@ -213,7 +208,6 @@ lazy val clusterTools = pekkoModule("cluster-tools")
     jackson % "test->test")
   .settings(Dependencies.clusterTools)
   .settings(AutomaticModuleName.settings("pekko.cluster.tools"))
-  .settings(OSGi.clusterTools)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
@@ -223,7 +217,6 @@ lazy val distributedData = pekkoModule("distributed-data")
   .settings(Dependencies.distributedData)
   .settings(AutomaticModuleName.settings("pekko.cluster.ddata"))
   .settings(AddMetaInfLicenseFiles.distributedDataSettings)
-  .settings(OSGi.distributedData)
   .settings(Protobuf.settings)
   .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
@@ -235,7 +228,6 @@ lazy val docs = pekkoModule("docs")
     cluster,
     clusterMetrics,
     slf4j,
-    osgi,
     persistenceTck,
     persistenceQuery,
     distributedData,
@@ -279,7 +271,6 @@ lazy val jackson = pekkoModule("serialization-jackson")
     testkit % "test->test")
   .settings(Dependencies.jackson)
   .settings(AutomaticModuleName.settings("pekko.serialization.jackson"))
-  .settings(OSGi.jackson)
   .settings(javacOptions += "-parameters")
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
@@ -290,18 +281,10 @@ lazy val multiNodeTestkit = pekkoModule("multi-node-testkit")
   .settings(AutomaticModuleName.settings("pekko.remote.testkit"))
   .settings(PekkoBuild.mayChangeSettings)
 
-lazy val osgi = pekkoModule("osgi")
-  .dependsOn(actor)
-  .settings(Dependencies.osgi)
-  .settings(AutomaticModuleName.settings("pekko.osgi"))
-  .settings(OSGi.osgi)
-  .settings(Test / parallelExecution := false)
-
 lazy val persistence = pekkoModule("persistence")
   .dependsOn(actor, stream, testkit % "test->test")
   .settings(Dependencies.persistence)
   .settings(AutomaticModuleName.settings("pekko.persistence"))
-  .settings(OSGi.persistence)
   .settings(Protobuf.settings)
   .settings(Test / fork := true)
 
@@ -314,7 +297,6 @@ lazy val persistenceQuery = pekkoModule("persistence-query")
     streamTestkit % "test")
   .settings(Dependencies.persistenceQuery)
   .settings(AutomaticModuleName.settings("pekko.persistence.query"))
-  .settings(OSGi.persistenceQuery)
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
@@ -333,7 +315,6 @@ lazy val persistenceTck = pekkoModule("persistence-tck")
   .dependsOn(persistence % "compile->compile;test->test", testkit % "compile->compile;test->test")
   .settings(Dependencies.persistenceTck)
   .settings(AutomaticModuleName.settings("pekko.persistence.tck"))
-  // .settings(OSGi.persistenceTck) TODO: we do need to export this as OSGi bundle too?
   .settings(Test / fork := true)
   .disablePlugins(MimaPlugin)
 
@@ -361,7 +342,6 @@ lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .enablePlugins(NoPublish)
 
 lazy val protobufV3 = pekkoModule("protobuf-v3")
-  .settings(OSGi.protobufV3)
   .settings(AutomaticModuleName.settings("pekko.protobuf.v3"))
   .settings(AddMetaInfLicenseFiles.protobufV3Settings)
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
@@ -381,7 +361,7 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
       .withConfigurations(Vector(Compile)), // prevent original dependency to be added to pom as runtime dep
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
       (Compile / packageBin / artifact).value,
-      ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
+      ReproducibleBuildsPlugin.postProcessJar((Compile / assembly).value)),
     Compile / packageBin := ReproducibleBuildsPlugin
       .postProcessJar((Compile / assembly).value), // package by running assembly
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
@@ -410,7 +390,6 @@ lazy val remote =
     .settings(Dependencies.remote)
     .settings(AutomaticModuleName.settings("pekko.remote"))
     .settings(AddMetaInfLicenseFiles.remoteSettings)
-    .settings(OSGi.remote)
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
     .settings(serialversionRemoverPluginSettings)
@@ -434,13 +413,11 @@ lazy val slf4j = pekkoModule("slf4j")
   .dependsOn(actor, testkit % "test->test")
   .settings(Dependencies.slf4j)
   .settings(AutomaticModuleName.settings("pekko.slf4j"))
-  .settings(OSGi.slf4j)
 
 lazy val stream = pekkoModule("stream")
   .dependsOn(actor, protobufV3)
   .settings(Dependencies.stream)
   .settings(AutomaticModuleName.settings("pekko.stream"))
-  .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .enablePlugins(BoilerplatePlugin, Jdk9)
 
@@ -448,7 +425,6 @@ lazy val streamTestkit = pekkoModule("stream-testkit")
   .dependsOn(stream, testkit % "compile->compile;test->test")
   .settings(Dependencies.streamTestkit)
   .settings(AutomaticModuleName.settings("pekko.stream.testkit"))
-  .settings(OSGi.streamTestkit)
 
 lazy val streamTests = pekkoModule("stream-tests")
   .configs(Jdk9.TestJdk9)
@@ -473,14 +449,12 @@ lazy val testkit = pekkoModule("testkit")
   .dependsOn(actor)
   .settings(Dependencies.testkit)
   .settings(AutomaticModuleName.settings("pekko.actor.testkit"))
-  .settings(OSGi.testkit)
   .settings(initialCommands += "import org.apache.pekko.testkit._")
 
 lazy val actorTyped = pekkoModule("actor-typed")
   .dependsOn(actor, slf4j)
   .settings(AutomaticModuleName.settings("pekko.actor.typed"))
   .settings(Dependencies.actorTyped)
-  .settings(OSGi.actorTyped)
   .settings(initialCommands :=
     """
       import org.apache.pekko
@@ -515,7 +489,6 @@ lazy val persistenceTyped = pekkoModule("persistence-typed")
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
-  .settings(OSGi.persistenceTyped)
 
 lazy val clusterTyped = pekkoModule("cluster-typed")
   .dependsOn(
@@ -589,13 +562,11 @@ lazy val discovery = pekkoModule("discovery")
   .dependsOn(actor, testkit % "test->test", actorTests % "test->test")
   .settings(Dependencies.discovery)
   .settings(AutomaticModuleName.settings("pekko.discovery"))
-  .settings(OSGi.discovery)
 
 lazy val coordination = pekkoModule("coordination")
   .dependsOn(actor, testkit % "test->test", actorTests % "test->test")
   .settings(Dependencies.coordination)
   .settings(AutomaticModuleName.settings("pekko.coordination"))
-  .settings(OSGi.coordination)
 
 lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"))
   .enablePlugins(BillOfMaterialsPlugin)
