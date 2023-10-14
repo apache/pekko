@@ -255,7 +255,7 @@ trait TestKitBase {
 
   /**
    * Obtain time remaining for execution of the innermost enclosing `within`
-   * block or throw an [[AssertionError]] if no `within` block surrounds this
+   * block or throw an [[java.lang.AssertionError]] if no `within` block surrounds this
    * call.
    */
   def remaining: FiniteDuration = end match {
@@ -977,8 +977,6 @@ trait TestKitBase {
  * It should be noted that for CI servers and the like all maximum Durations
  * are scaled using their Duration.dilated method, which uses the
  * TestKitExtension.Settings.TestTimeFactor settable via pekko.conf entry "pekko.test.timefactor".
- *
- * @since 1.1
  */
 @nowarn // 'early initializers' are deprecated on 2.13 and will be replaced with trait parameters on 2.14. https://github.com/akka/akka/issues/26753
 class TestKit(_system: ActorSystem) extends TestKitBase {

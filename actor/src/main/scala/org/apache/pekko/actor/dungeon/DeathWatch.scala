@@ -23,7 +23,7 @@ import pekko.util.unused
 private[pekko] trait DeathWatch { this: ActorCell =>
 
   /**
-   * This map holds a [[None]] for actors for which we send a [[Terminated]] notification on termination,
+   * This map holds a [[scala.None]] for actors for which we send a [[Terminated]] notification on termination,
    * ``Some(message)`` for actors for which we send a custom termination message.
    */
   private var watching: Map[ActorRef, Option[Any]] = Map.empty

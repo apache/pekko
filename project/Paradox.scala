@@ -11,8 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import com.lightbend.paradox.sbt.ParadoxPlugin
 import com.lightbend.paradox.sbt.ParadoxPlugin.autoImport._
 import com.lightbend.paradox.apidoc.ApidocPlugin
@@ -78,9 +76,6 @@ object Paradox {
       "fault-tolerance-sample.html"))
 
   val themeSettings = Seq(
-    // TODO: allow access to snapshots for pekko-sbt-paradox, remove when pekko is released
-    resolvers += Resolver.ApacheMavenSnapshotsRepo,
-    updateOptions := updateOptions.value.withLatestSnapshots(false),
     pekkoParadoxGithub := Some("https://github.com/apache/incubator-pekko"))
 
   // FIXME https://github.com/lightbend/paradox/issues/350
@@ -116,6 +111,5 @@ object Paradox {
     sourceGeneratorSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
-      resolvers += Resolver.jcenterRepo,
       ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko")
 }

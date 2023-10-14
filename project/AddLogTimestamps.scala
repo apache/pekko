@@ -11,15 +11,13 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import java.io.PrintWriter
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import sbt.{ Def, _ }
 import Keys._
-import sbt.internal.{ AppenderSupplier, LogManager }
+import sbt.internal.LogManager
 import sbt.internal.util.ConsoleOut
 
 object AddLogTimestamps extends AutoPlugin {

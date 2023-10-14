@@ -35,7 +35,7 @@ trait RoutingLogic extends NoSerializationVerificationNeeded {
   /**
    * Pick the destination for a given message. Normally it picks one of the
    * passed `routees`, but in the end it is up to the implementation to
-   * return whatever [[Routee]] to use for sending a specific message.
+   * return whatever [[pekko.routing.Routee]] to use for sending a specific message.
    *
    * When implemented from Java it can be good to know that
    * `routees.apply(index)` can be used to get an element

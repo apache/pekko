@@ -311,19 +311,67 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
 
     "use decider when iterator throws" in {
+
+      // using stopping decider
+      Source
+        .fromIterator(() => (1 to 5).iterator.map(k => if (k != 3) k else throw TE("a")))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .grouped(10)
+        .runWith(Sink.head)
+        .failed
+        .futureValue shouldBe a[TE]
+
+      // using stopping decider with recover
+      Source
+        .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .recoverWithRetries(1, { case _ => Source.empty })
+        .grouped(10)
+        .runWith(Sink.head)
+        .futureValue shouldBe List(1, 2)
+
+      // failing on every elements, using stopping decider
+      Source
+        .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .grouped(10)
+        .runWith(Sink.headOption)
+        .failed
+        .futureValue shouldBe a[TE]
+
+      // failing on every elements, using stopping decider and recover
+      Source
+        .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.stoppingDecider))
+        .recoverWithRetries(1, { case _ => Source.empty })
+        .grouped(10)
+        .runWith(Sink.headOption)
+        .futureValue shouldBe None
+
+      // using resuming decider
+      Source
+        .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
+        .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
+        .grouped(10)
+        .runWith(Sink.head)
+        .futureValue should ===(List(1, 2, 4, 5))
+
+      // using restarting decider
       Source
         .fromIterator(() => (1 to 5).toIterator.map(k => if (k != 3) k else throw TE("a")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .grouped(10)
         .runWith(Sink.head)
-        .futureValue should ===(List(1, 2))
+        .futureValue should ===(List(1, 2, 1, 2, 1, 2, 1, 2, 1, 2))
 
+      //  with failing on every elements, using restarting decider
       Source
         .fromIterator(() => (1 to 5).toIterator.map(_ => throw TE("b")))
         .withAttributes(ActorAttributes.supervisionStrategy(Supervision.restartingDecider))
         .grouped(10)
         .runWith(Sink.headOption)
-        .futureValue should ===(None)
+        .failed
+        .futureValue shouldBe a[TE]
     }
   }
 

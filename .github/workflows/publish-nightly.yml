@@ -21,11 +21,6 @@ name: Publish nightly snapshots and documentation
 
 on:
   workflow_dispatch:
-    inputs:
-      keep:
-        description: Number of versions to keep.
-        required: false
-        default: 30
   schedule:
     - cron: "0 0 * * *"
 
@@ -39,9 +34,10 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 11
         uses: actions/setup-java@v3
@@ -56,10 +52,9 @@ jobs:
         run: |-
           sudo apt-get install graphviz
 
-#      disable mima check until first pekko release is done
-#      - name: Report MIMA incompatibility issues
-#        run: |-
-#          sbt +mimaReportBinaryIssues
+      - name: Report MIMA incompatibility issues
+        run: |-
+          sbt +mimaReportBinaryIssues
 
       - name: Publish to Apache Maven repo
         env:
@@ -84,8 +79,8 @@ jobs:
         with:
           upload: true
           switches: --archive --compress --update --delete --progress --relative
-          local_path: target/nightly-docs/./docs/pekko/ # The intermediate dot is to show `--relative` which paths to operate on
-          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko/
+          local_path: target/nightly-docs/./docs/pekko/${{ github.ref_name }}-snapshot # The intermediate dot is to show `--relative` which paths to operate on
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
           remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}

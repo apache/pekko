@@ -416,13 +416,13 @@ object EntityTypeKey {
 /**
  * A reference to an sharded Entity, which allows `ActorRef`-like usage.
  *
- * An [[EntityRef]] is NOT an [[ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
+ * An [[EntityRef]] is NOT an [[pekko.actor.typed.ActorRef ActorRef]]–by design–in order to be explicit about the fact that the life-cycle
  * of a sharded Entity is very different than a plain Actors. Most notably, this is shown by features of Entities
  * such as re-balancing (an active Entity to a different node) or passivation. Both of which are aimed to be completely
  * transparent to users of such Entity. In other words, if this were to be a plain ActorRef, it would be possible to
  * apply DeathWatch to it, which in turn would then trigger when the sharded Actor stopped, breaking the illusion that
  * Entity refs are "always there". Please note that while not encouraged, it is possible to expose an Actor's `self`
- * [[ActorRef]] and watch it in case such notification is desired.
+ * [[pekko.actor.typed.ActorRef ActorRef]] and watch it in case such notification is desired.
  * Not for user extension.
  */
 @DoNotInherit trait EntityRef[-M] extends RecipientRef[M] { this: InternalRecipientRef[M] =>
@@ -544,7 +544,7 @@ object ClusterShardingSetup {
 }
 
 /**
- * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[ActorSystem]]
+ * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[pekko.actor.typed.ActorSystem]]
  * to replace the default implementation of the [[ClusterSharding]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */

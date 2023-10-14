@@ -16,13 +16,12 @@ package org.apache.pekko.remote.classic
 import java.io.NotSerializableException
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
-import scala.annotation.nowarn
 import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.event.AddressTerminatedTopic
@@ -75,10 +74,11 @@ object RemotingSpec {
     }
   }
 
+  import PekkoSpec._
   val cfg: Config = ConfigFactory.parseString(s"""
     common-ssl-settings {
-      key-store = "${getClass.getClassLoader.getResource("keystore").getPath}"
-      trust-store = "${getClass.getClassLoader.getResource("truststore").getPath}"
+      key-store = "${resourcePath("keystore")}"
+      trust-store = "${resourcePath("truststore")}"
       key-store-password = "changeme"
       key-password = "changeme"
       trust-store-password = "changeme"
@@ -667,8 +667,8 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         }
 
         val handshakePacket =
-          PekkoPduProtobufCodec$.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = 0))
-        val brokenPacket = PekkoPduProtobufCodec$.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
+          PekkoPduProtobufCodec.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = 0))
+        val brokenPacket = PekkoPduProtobufCodec.constructPayload(ByteString(0, 1, 2, 3, 4, 5, 6))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)
@@ -749,7 +749,7 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         }
 
         val handshakePacket =
-          PekkoPduProtobufCodec$.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = remoteUID))
+          PekkoPduProtobufCodec.constructAssociate(HandshakeInfo(rawRemoteAddress, uid = remoteUID))
 
         // Finish the inbound handshake so now it is handed up to Remoting
         inboundHandle.write(handshakePacket)

@@ -38,8 +38,7 @@ import pekko.util.unused
  * number (and those which are not receive different numbers). This feature can be used to
  *  - materialize a graph, using the slots as indices to an array of Publishers/Subscribers that need to be wired
  *    together
- *  - fuse a graph, using the slots to construct a [[pekko.stream.impl.fusing.GraphInterpreter.GraphAssembly]] which
- *    uses a similar layout
+ *  - fuse a graph
  *  - create a DOT formatted output for visualization
  *  - convert the graph to another data structure
  *
@@ -66,7 +65,7 @@ import pekko.util.unused
 @InternalApi private[pekko] object Concat {
 
   /**
-   * An optimizatzion to remove cheaply recognizable patterns of redundancy, for example PushNotUsed immediately
+   * An optimization to remove cheaply recognizable patterns of redundancy, for example PushNotUsed immediately
    * followed by a Pop. It also rotates the tree to make it more left-leaning, which makes the tree more readable
    * and require less stack-space when traversing. This is only a single rotation, otherwise this implementation
    * would be O(N^2).

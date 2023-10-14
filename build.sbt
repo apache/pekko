@@ -7,7 +7,7 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
-import org.apache.pekko._
+import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
 ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
@@ -15,7 +15,16 @@ scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / apacheSonatypeProjectProfile := "pekko"
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
-sourceDistName := "incubating-pekko"
+sourceDistName := "apache-pekko"
+sourceDistIncubating := true
+
+commands := commands.value.filterNot { command =>
+  command.nameOption.exists { name =>
+    name.contains("sonatypeRelease") || name.contains("sonatypeBundleRelease")
+  }
+}
+
+ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 enablePlugins(
   UnidocRoot,
@@ -27,8 +36,8 @@ enablePlugins(
   JavaFormatterPlugin)
 disablePlugins(MimaPlugin)
 
-addCommandAlias("verifyCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; headerCheckAll")
-addCommandAlias("applyCodeStyle", "headerCreateAll; scalafmtAll; scalafmtSbt")
+addCommandAlias("checkCodeStyle", "scalafmtCheckAll; scalafmtSbtCheck; javafmtCheckAll; +headerCheckAll")
+addCommandAlias("applyCodeStyle", "+headerCreateAll; scalafmtAll; scalafmtSbt; javafmtAll")
 
 addCommandAlias(
   name = "fixall",
@@ -36,8 +45,8 @@ addCommandAlias(
 
 addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
 
-import org.apache.pekko.PekkoBuild._
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys.MultiJvm
+import PekkoBuild._
+import MultiJvmPlugin.MultiJvmKeys.MultiJvm
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbt.Keys.{ initialCommands, parallelExecution }
 import spray.boilerplate.BoilerplatePlugin
@@ -74,7 +83,6 @@ lazy val userProjects: Seq[ProjectReference] = List[ProjectReference](
   persistenceQuery,
   persistenceTyped,
   persistenceTestkit,
-  protobuf,
   protobufV3,
   pki,
   remote,
@@ -95,6 +103,7 @@ lazy val aggregatedProjects: Seq[ProjectReference] = userProjects ++ List[Projec
   persistenceTypedTests,
   remoteTests,
   streamTests,
+  streamTypedTests,
   streamTestsTck)
 
 lazy val root = Project(id = "pekko", base = file("."))
@@ -106,7 +115,6 @@ lazy val root = Project(id = "pekko", base = file("."))
     UnidocRoot.autoImport.unidocRootIgnoreProjects := Seq(
       remoteTests,
       benchJmh,
-      protobuf,
       protobufV3,
       pekkoScalaNightly,
       docs,
@@ -352,14 +360,6 @@ lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
-lazy val protobuf = pekkoModule("protobuf")
-  .settings(OSGi.protobuf)
-  .settings(AutomaticModuleName.settings("pekko.protobuf"))
-  .settings(AddMetaInfLicenseFiles.protobufSettings)
-  .enablePlugins(ScaladocNoVerificationOfDiagrams)
-  .disablePlugins(MimaPlugin)
-  .settings(autoScalaLibrary := false) // Pure java project
-
 lazy val protobufV3 = pekkoModule("protobuf-v3")
   .settings(OSGi.protobufV3)
   .settings(AutomaticModuleName.settings("pekko.protobuf.v3"))
@@ -403,7 +403,6 @@ lazy val remote =
       actor,
       stream,
       pki,
-      protobuf % "test",
       actorTests % "test->test",
       testkit % "test->test",
       streamTestkit % "test",
@@ -568,6 +567,12 @@ lazy val streamTyped = pekkoModule("stream-typed")
     actorTypedTests % "test->test")
   .settings(AutomaticModuleName.settings("pekko.stream.typed"))
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
+
+lazy val streamTypedTests = pekkoModule("stream-typed-tests")
+  .dependsOn(streamTestkit % "test->test", streamTyped)
+  .settings(Dependencies.streamTests)
+  .enablePlugins(NoPublish)
+  .disablePlugins(MimaPlugin)
 
 lazy val actorTestkitTyped = pekkoModule("actor-testkit-typed")
   .dependsOn(actorTyped, slf4j, testkit % "compile->compile;test->test")

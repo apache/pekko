@@ -121,6 +121,20 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseContraMap() {
+    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Flow<Integer, String, NotUsed> flow = Flow.fromFunction(String::valueOf);
+    source
+        .via(flow.contramap(Integer::valueOf))
+        .runWith(TestSink.create(system), system)
+        .request(3)
+        .expectNext("1")
+        .expectNext("2")
+        .expectNext("3")
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseDropWhile() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));
@@ -873,6 +887,54 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMapAsyncPartitioned() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<String> input = Arrays.asList("2c", "1a", "1b");
+    final Flow<String, String, NotUsed> flow =
+        Flow.of(String.class)
+            .mapAsyncPartitioned(
+                4,
+                elem -> elem.substring(0, 1),
+                (elem, p) -> CompletableFuture.completedFuture(elem.toUpperCase()));
+    Source.from(input)
+        .via(flow)
+        .runForeach(
+            new Procedure<String>() {
+              public void apply(String elem) {
+                probe.getRef().tell(elem, ActorRef.noSender());
+              }
+            },
+            system);
+    probe.expectMsgEquals("2C");
+    probe.expectMsgEquals("1A");
+    probe.expectMsgEquals("1B");
+  }
+
+  @Test
+  public void mustBeAbleToUseMapAsyncPartitionedUnordered() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<String> input = Arrays.asList("1a", "1b", "2c");
+    final Flow<String, String, NotUsed> flow =
+        Flow.of(String.class)
+            .mapAsyncPartitionedUnordered(
+                4,
+                elem -> elem.substring(0, 1),
+                (elem, p) -> CompletableFuture.completedFuture(elem.toUpperCase()));
+    Source.from(input)
+        .via(flow)
+        .runForeach(
+            new Procedure<String>() {
+              public void apply(String elem) {
+                probe.getRef().tell(elem, ActorRef.noSender());
+              }
+            },
+            system);
+    probe.expectMsgEquals("1A");
+    probe.expectMsgEquals("1B");
+    probe.expectMsgEquals("2C");
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =
@@ -881,7 +943,7 @@ public class FlowTest extends StreamTest {
     Source.from(input)
         .via(Flow.of(FlowSpec.Fruit.class).collectType(FlowSpec.Apple.class))
         .runForeach((apple) -> probe.getRef().tell(apple, ActorRef.noSender()), system);
-    probe.expectMsgAnyClassOf(FlowSpec.Apple.class);
+    probe.<Apple>expectMsgAnyClassOf(FlowSpec.Apple.class);
   }
 
   @Test

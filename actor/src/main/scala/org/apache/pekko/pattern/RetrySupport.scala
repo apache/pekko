@@ -123,10 +123,10 @@ trait RetrySupport {
    * Given a function from Unit to Future, returns an internally retrying Future.
    * The first attempt will be made immediately, each subsequent attempt will be made after
    * the 'delay' return by `delayFunction`(the input next attempt count start from 1).
-   * Returns [[None]] for no delay.
+   * Returns [[scala.None]] for no delay.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
-   * this function should never return `null`, otherwise an [[IllegalArgumentException]] will be through.
+   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent

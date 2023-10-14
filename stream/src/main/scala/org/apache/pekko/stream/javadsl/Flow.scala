@@ -533,6 +533,17 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
     new Sink(delegate.toMat(sink)(combinerToScala(combine)))
 
   /**
+   * Transform this Flow by applying a function to each *incoming* upstream element before
+   * it is passed to the [[Flow]]
+   *
+   * '''Backpressures when''' original [[Flow]] backpressures
+   *
+   * '''Cancels when''' original [[Flow]] cancels
+   */
+  def contramap[In2](f: function.Function[In2, In]): javadsl.Flow[In2, Out, Mat] =
+    new Flow(delegate.contramap(elem => f(elem)))
+
+  /**
    * Join this [[Flow]] to another [[Flow]], by cross connecting the inputs and outputs, creating a [[RunnableGraph]].
    * {{{
    * +------+        +-------+
@@ -773,6 +784,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The returned `Iterable` MUST NOT contain `null` values,
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
+   * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
+   * Use [[FlowOps.statefulMap]] instead.
+   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the mapping function returns an element or there are still remaining elements
@@ -785,6 +799,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
+  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.statefulMapConcat { () =>
@@ -823,6 +838,72 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def mapAsync[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.mapAsync(parallelism)(x => f(x).asScala))
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry. The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[CompletionStage]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes for the next element in sequence
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[T, P](
+      parallelism: Int,
+      partitioner: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] =
+    new Flow(delegate.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[CompletionStage]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes and downstream available.
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[T, P](
+      parallelism: Int,
+      partitioner: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[T]]): Flow[In, T, Mat] =
+    new Flow(delegate.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
 
   /**
    * Transform this stream by applying the given function to each of the elements

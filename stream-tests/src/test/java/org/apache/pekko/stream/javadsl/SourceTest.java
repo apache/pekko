@@ -569,6 +569,36 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMapAsyncPartitioned() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<String> input = Arrays.asList("2c", "1a", "1b");
+    Source.from(input)
+        .mapAsyncPartitioned(
+            4,
+            elem -> elem.substring(0, 1),
+            (elem, p) -> CompletableFuture.completedFuture(elem.toUpperCase()))
+        .runForeach(elem -> probe.getRef().tell(elem, ActorRef.noSender()), system);
+    probe.expectMsgEquals("2C");
+    probe.expectMsgEquals("1A");
+    probe.expectMsgEquals("1B");
+  }
+
+  @Test
+  public void mustBeAbleToUseMapAsyncPartitionedUnordered() throws Exception {
+    final TestKit probe = new TestKit(system);
+    final Iterable<String> input = Arrays.asList("1a", "1b", "2c");
+    Source.from(input)
+        .mapAsyncPartitionedUnordered(
+            4,
+            elem -> elem.substring(0, 1),
+            (elem, p) -> CompletableFuture.completedFuture(elem.toUpperCase()))
+        .runForeach(elem -> probe.getRef().tell(elem, ActorRef.noSender()), system);
+    probe.expectMsgEquals("1A");
+    probe.expectMsgEquals("1B");
+    probe.expectMsgEquals("2C");
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Apple> input = Collections.singletonList(new FlowSpec.Apple());

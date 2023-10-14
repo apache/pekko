@@ -92,7 +92,7 @@ object StatusReply {
   def error[T](errorMessage: String): StatusReply[T] = Error(errorMessage)
 
   /**
-   * Java API: Create an error response with a user defined [[Throwable]].
+   * Java API: Create an error response with a user defined [[java.lang.Throwable]].
    *
    * Prefer the string based error response over this one when possible to avoid tightly coupled logic across
    * actors and passing internal failure details on to callers that can not do much to handle them.
@@ -150,7 +150,7 @@ object StatusReply {
     def apply[T](errorMessage: String): StatusReply[T] = error(new ErrorMessage(errorMessage))
 
     /**
-     * Scala API: Create an error response with a user defined [[Throwable]].
+     * Scala API: Create an error response with a user defined [[java.lang.Throwable]].
      *
      * Prefer the string based error response over this one when possible to avoid tightly coupled logic across
      * actors and passing internal failure details on to callers that can not do much to handle them.

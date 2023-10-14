@@ -17,15 +17,15 @@ import java.io.Closeable
 import java.util.concurrent.ThreadFactory
 import java.util.concurrent.atomic.{ AtomicLong, AtomicReference }
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 import scala.concurrent.duration._
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-
 import org.apache.pekko
+import pekko.actor.Scheduler.AtomicCancellable
 import pekko.dispatch.AbstractNodeQueue
 import pekko.event.LoggingAdapter
 import pekko.util.Helpers
@@ -112,49 +112,23 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
   override def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
     checkMaxDelay(roundUp(delay).toNanos)
-    try new AtomicReference[Cancellable](InitialRepeatMarker) with Cancellable { self =>
-        compareAndSet(
-          InitialRepeatMarker,
-          schedule(
-            executor,
-            new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
-              override def run(): Unit = {
-                try {
-                  runnable.run()
-                  val driftNanos = clock() - getAndAdd(delay.toNanos)
-                  if (self.get != null)
-                    swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
-                } catch {
-                  case _: SchedulerException => // ignore failure to enqueue or terminated target actor
-                }
+    new AtomicCancellable(InitialRepeatMarker) { self =>
+      final override protected def scheduledFirst(): Cancellable =
+        schedule(
+          executor,
+          new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
+            override def run(): Unit = {
+              try {
+                runnable.run()
+                val driftNanos = clock() - getAndAdd(delay.toNanos)
+                if (self.get() != null)
+                  swap(schedule(executor, this, Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
+              } catch {
+                case _: SchedulerException => // ignore failure to enqueue or terminated target actor
               }
-            },
-            roundUp(initialDelay)))
-
-        @tailrec private def swap(c: Cancellable): Unit = {
-          get match {
-            case null => if (c != null) c.cancel()
-            case old  => if (!compareAndSet(old, c)) swap(c)
-          }
-        }
-
-        final def cancel(): Boolean = {
-          @tailrec def tailrecCancel(): Boolean = {
-            get match {
-              case null => false
-              case c =>
-                if (c.cancel()) compareAndSet(c, null)
-                else compareAndSet(c, null) || tailrecCancel()
             }
-          }
-
-          tailrecCancel()
-        }
-
-        override def isCancelled: Boolean = get == null
-      }
-    catch {
-      case cause @ SchedulerException(msg) => throw new IllegalStateException(msg, cause)
+          },
+          roundUp(initialDelay))
     }
   }
 
@@ -347,6 +321,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 }
 
 object LightArrayRevolverScheduler {
+  @nowarn("msg=deprecated")
   private[this] val taskOffset = unsafe.objectFieldOffset(classOf[TaskHolder].getDeclaredField("task"))
 
   private class TaskQueue extends AbstractNodeQueue[TaskHolder]

@@ -1,0 +1,2 @@
+# JDK9+ classes for JFR
+ProblemFilters.exclude[Problem]("org.apache.pekko.actor.typed.internal.jfr.*")

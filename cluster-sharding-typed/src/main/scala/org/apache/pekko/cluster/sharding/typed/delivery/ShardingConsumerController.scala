@@ -33,13 +33,13 @@ import pekko.cluster.sharding.typed.delivery.internal.ShardingConsumerController
  * `ShardingConsumerController` is the entity that is initialized in `ClusterSharding`. It will manage
  * the lifecycle and message delivery to the destination consumer actor.
  *
- * The destination consumer actor will start the flow by sending an initial [[ConsumerController.Start]]
+ * The destination consumer actor will start the flow by sending an initial [[pekko.actor.typed.delivery.ConsumerController.Start]]
  * message via the `ActorRef` provided in the factory function of the consumer `Behavior`.
  * The `ActorRef` in the `Start` message is typically constructed as a message adapter to map the
- * [[ConsumerController.Delivery]] to the protocol of the consumer actor.
+ * [[pekko.actor.typed.delivery.ConsumerController.Delivery]] to the protocol of the consumer actor.
  *
- * Received messages from the producer are wrapped in [[ConsumerController.Delivery]] when sent to the consumer,
- * which is supposed to reply with [[ConsumerController.Confirmed]] when it has processed the message.
+ * Received messages from the producer are wrapped in [[pekko.actor.typed.delivery.ConsumerController.Delivery]] when sent to the consumer,
+ * which is supposed to reply with [[pekko.actor.typed.delivery.ConsumerController.Confirmed]] when it has processed the message.
  * Next message from a specific producer is not delivered until the previous is confirmed. However, since
  * there can be several producers, e.g. one per node, sending to the same destination entity there can be
  * several `Delivery` in flight at the same time.

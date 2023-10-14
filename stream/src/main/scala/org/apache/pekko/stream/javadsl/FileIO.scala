@@ -31,7 +31,7 @@ import pekko.stream.scaladsl.SourceToCompletionStage
 object FileIO {
 
   /**
-   * Creates a Sink that writes incoming [[ByteString]] elements to the given file.
+   * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file.
    * Overwrites existing files by truncating their contents, if you want to append to an existing file use
    * [[toFile(File, util.Set[OpenOption])]] with [[java.nio.file.StandardOpenOption.APPEND]].
    *
@@ -43,11 +43,11 @@ object FileIO {
    *
    * @param f The file to write to
    */
-  @deprecated("Use `toPath` instead.", "2.4.5")
+  @deprecated("Use `toPath` instead.", "Akka 2.4.5")
   def toFile(f: File): javadsl.Sink[ByteString, CompletionStage[IOResult]] = toPath(f.toPath)
 
   /**
-   * Creates a Sink that writes incoming [[ByteString]] elements to the given file path.
+   * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file path.
    * Overwrites existing files by truncating their contents, if you want to append to an existing file
    * [[toPath(Path, util.Set[OpenOption])]] with [[java.nio.file.StandardOpenOption.APPEND]].
    *
@@ -69,7 +69,7 @@ object FileIO {
     new Sink(scaladsl.FileIO.toPath(f).toCompletionStage())
 
   /**
-   * Creates a Sink that writes incoming [[ByteString]] elements to the given file.
+   * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file.
    *
    * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
@@ -80,12 +80,12 @@ object FileIO {
    * @param f The file to write to
    * @param options File open options, see [[java.nio.file.StandardOpenOption]]
    */
-  @deprecated("Use `toPath` instead.", "2.4.5")
+  @deprecated("Use `toPath` instead.", "Akka 2.4.5")
   def toFile[Opt <: OpenOption](f: File, options: util.Set[Opt]): javadsl.Sink[ByteString, CompletionStage[IOResult]] =
     toPath(f.toPath)
 
   /**
-   * Creates a Sink that writes incoming [[ByteString]] elements to the given file path.
+   * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file path.
    *
    * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
@@ -106,7 +106,7 @@ object FileIO {
     new Sink(scaladsl.FileIO.toPath(f, options.asScala.toSet).toCompletionStage())
 
   /**
-   * Creates a Sink that writes incoming [[ByteString]] elements to the given file path.
+   * Creates a Sink that writes incoming [[pekko.util.ByteString]] elements to the given file path.
    *
    * Materializes a [[java.util.concurrent.CompletionStage]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
    * and a possible exception if IO operation was not completed successfully.
@@ -132,7 +132,7 @@ object FileIO {
 
   /**
    * Creates a Source from a files contents.
-   * Emitted elements are [[ByteString]] elements, chunked by default by 8192 bytes,
+   * Emitted elements are [[pekko.util.ByteString]] elements, chunked by default by 8192 bytes,
    * except the last element, which will be up to 8192 in size.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
@@ -144,12 +144,12 @@ object FileIO {
    *
    * @param f         the file to read from
    */
-  @deprecated("Use `fromPath` instead.", "2.4.5")
+  @deprecated("Use `fromPath` instead.", "Akka 2.4.5")
   def fromFile(f: File): javadsl.Source[ByteString, CompletionStage[IOResult]] = fromPath(f.toPath)
 
   /**
    * Creates a Source from a files contents.
-   * Emitted elements are [[ByteString]] elements, chunked by default by 8192 bytes,
+   * Emitted elements are [[pekko.util.ByteString]] elements, chunked by default by 8192 bytes,
    * except the last element, which will be up to 8192 in size.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
@@ -165,7 +165,7 @@ object FileIO {
 
   /**
    * Creates a synchronous Source from a files contents.
-   * Emitted elements are `chunkSize` sized [[ByteString]] elements,
+   * Emitted elements are `chunkSize` sized [[pekko.util.ByteString]] elements,
    * except the last element, which will be up to `chunkSize` in size.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
@@ -178,13 +178,13 @@ object FileIO {
    * @param f         the file to read from
    * @param chunkSize the size of each read operation
    */
-  @deprecated("Use `fromPath` instead.", "2.4.5")
+  @deprecated("Use `fromPath` instead.", "Akka 2.4.5")
   def fromFile(f: File, chunkSize: Int): javadsl.Source[ByteString, CompletionStage[IOResult]] =
     fromPath(f.toPath, chunkSize)
 
   /**
    * Creates a synchronous Source from a files contents.
-   * Emitted elements are `chunkSize` sized [[ByteString]] elements,
+   * Emitted elements are `chunkSize` sized [[pekko.util.ByteString]] elements,
    * except the last element, which will be up to `chunkSize` in size.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
@@ -202,7 +202,7 @@ object FileIO {
 
   /**
    * Creates a synchronous Source from a files contents.
-   * Emitted elements are `chunkSize` sized [[ByteString]] elements,
+   * Emitted elements are `chunkSize` sized [[pekko.util.ByteString]] elements,
    * except the last element, which will be up to `chunkSize` in size.
    *
    * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or

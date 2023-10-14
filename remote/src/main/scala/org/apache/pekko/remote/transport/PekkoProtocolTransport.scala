@@ -177,7 +177,7 @@ private[transport] class PekkoProtocolManager(
             handle,
             stateActorAssociationHandler,
             stateActorSettings,
-            PekkoPduProtobufCodec$,
+            PekkoPduProtobufCodec,
             failureDetector)),
         actorNameFor(handle.remoteAddress))
 
@@ -210,7 +210,7 @@ private[transport] class PekkoProtocolManager(
           statusPromise,
           stateActorWrappedTransport,
           stateActorSettings,
-          PekkoPduProtobufCodec$,
+          PekkoPduProtobufCodec,
           failureDetector,
           refuseUid)),
       actorNameFor(remoteAddress))

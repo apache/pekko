@@ -99,22 +99,19 @@ abstract class AbstractSystemMessageDeliverySpec(c: Config) extends ArteryMultiN
   }
 
   protected def drop(dropSeqNumbers: Vector[Long]): Flow[OutboundEnvelope, OutboundEnvelope, NotUsed] = {
-    Flow[OutboundEnvelope].statefulMapConcat(() => {
-      var dropping = dropSeqNumbers
-
-      { outboundEnvelope =>
+    Flow[OutboundEnvelope].statefulMap(() => dropSeqNumbers)(
+      (dropping, outboundEnvelope) => {
         outboundEnvelope.message match {
           case SystemMessageEnvelope(_, seqNo, _) =>
             val i = dropping.indexOf(seqNo)
             if (i >= 0) {
-              dropping = dropping.updated(i, -1L)
-              Nil
+              (dropping.updated(i, -1L), None)
             } else
-              List(outboundEnvelope)
-          case _ => Nil
+              (dropping, Some(outboundEnvelope))
+          case _ => (dropping, None)
         }
-      }
-    })
+      }, _ => None)
+      .collect { case Some(outboundEnvelope) => outboundEnvelope }
   }
 
   protected def randomDrop[T](dropRate: Double): Flow[T, T, NotUsed] = Flow[T].mapConcat { elem =>

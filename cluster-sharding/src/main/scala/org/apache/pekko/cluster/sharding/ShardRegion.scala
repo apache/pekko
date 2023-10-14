@@ -304,7 +304,7 @@ object ShardRegion {
    * Intended for testing purpose to see when cluster sharding is "ready" or to monitor
    * the state of the shard regions.
    *
-   * For the statistics for the entire cluster, see [[GetClusterShardingStats$]].
+   * For the statistics for the entire cluster, see [[GetClusterShardingStats]].
    */
   @SerialVersionUID(1L) case object GetShardRegionStats extends ShardRegionQuery with ClusterShardingSerializable
 

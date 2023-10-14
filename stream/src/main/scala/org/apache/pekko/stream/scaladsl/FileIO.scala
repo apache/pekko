@@ -45,7 +45,7 @@ object FileIO {
    * @param f         the file to read from
    * @param chunkSize the size of each read operation, defaults to 8192
    */
-  @deprecated("Use `fromPath` instead", "2.4.5")
+  @deprecated("Use `fromPath` instead", "Akka 2.4.5")
   def fromFile(f: File, chunkSize: Int = 8192): Source[ByteString, Future[IOResult]] =
     fromPath(f.toPath, chunkSize)
 
@@ -87,7 +87,7 @@ object FileIO {
     Source.fromGraph(new FileSource(f, chunkSize, startPosition)).withAttributes(DefaultAttributes.fileSource)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
@@ -99,14 +99,14 @@ object FileIO {
    * @param f the file to write to
    * @param options File open options, see [[java.nio.file.StandardOpenOption]], defaults to Set(WRITE, TRUNCATE_EXISTING, CREATE)
    */
-  @deprecated("Use `toPath` instead", "2.4.5")
+  @deprecated("Use `toPath` instead", "Akka 2.4.5")
   def toFile(
       f: File,
       options: Set[OpenOption] = Set(WRITE, TRUNCATE_EXISTING, CREATE)): Sink[ByteString, Future[IOResult]] =
     toPath(f.toPath, options)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file path. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,
@@ -130,7 +130,7 @@ object FileIO {
     toPath(f, options, startPosition = 0)
 
   /**
-   * Creates a Sink which writes incoming [[ByteString]] elements to the given file path. Overwrites existing files
+   * Creates a Sink which writes incoming [[pekko.util.ByteString]] elements to the given file path. Overwrites existing files
    * by truncating their contents as default.
    *
    * Materializes a [[Future]] of [[IOResult]] that will be completed with the size of the file (in bytes) at the streams completion,

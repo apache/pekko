@@ -11,8 +11,6 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import sbt._
 import Keys._
 import scala.language.implicitConversions
@@ -28,22 +26,22 @@ object Dependencies {
 
   val slf4jVersion = "1.7.36"
   // check agrona version when updating this
-  val aeronVersion = "1.38.1"
+  val aeronVersion = "1.42.1"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
-  val agronaVersion = "1.15.1"
-  val nettyVersion = "3.10.6.Final"
-  val protobufJavaVersion = "3.16.3"
+  val agronaVersion = "1.19.2"
+  val nettyVersion = "4.1.100.Final"
+  val protobufJavaVersion = "3.19.6"
   val logbackVersion = "1.2.11"
 
   val jacksonCoreVersion = "2.14.3"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.18"
-  val scala213Version = "2.13.11"
+  val scala213Version = "2.13.12"
   // To get the fix for https://github.com/lampepfl/dotty/issues/13106
   // and restored static forwarders
-  val scala3Version = "3.3.0"
+  val scala3Version = "3.3.1"
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
   val reactiveStreamsVersion = "1.0.4"
@@ -63,9 +61,11 @@ object Dependencies {
     // Compile
 
     val config = "com.typesafe" % "config" % "1.4.2"
-    val netty = "io.netty" % "netty" % nettyVersion
+    val `netty-transport` = "io.netty" % "netty-transport" % nettyVersion
+    val `netty-handler` = "io.netty" % "netty-handler" % nettyVersion
 
-    val scalaReflect = ScalaVersionDependentModuleID.versioned("org.scala-lang" % "scala-reflect" % _)
+    val scalaReflect: ScalaVersionDependentModuleID =
+      ScalaVersionDependentModuleID.versioned("org.scala-lang" % "scala-reflect" % _)
 
     val slf4jApi = "org.slf4j" % "slf4j-api" % slf4jVersion
 
@@ -282,7 +282,7 @@ object Dependencies {
       Compile.slf4jApi,
       TestDependencies.scalatest.value)
 
-  val remoteDependencies = Seq(netty, aeronDriver, aeronClient)
+  val remoteDependencies = Seq(`netty-transport`, `netty-handler`, aeronDriver, aeronClient)
   val remoteOptionalDependencies = remoteDependencies.map(_ % "optional")
 
   val remote = l ++= Seq(
@@ -294,9 +294,9 @@ object Dependencies {
 
   val remoteTests = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value) ++ remoteDependencies
 
-  val multiNodeTestkit = l ++= Seq(netty)
+  val multiNodeTestkit = l ++= Seq(`netty-transport`, `netty-handler`)
 
-  val cluster = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value)
+  val cluster = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value, TestDependencies.logback)
 
   val clusterTools = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value)
 

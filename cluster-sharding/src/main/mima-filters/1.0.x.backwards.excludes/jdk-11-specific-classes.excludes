@@ -1,0 +1,7 @@
+# Java 11 only flight recorder classes
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.Passivate")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.RememberEntityWrite")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.JFRShardingFlightRecorder")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.RememberEntityAdd")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.RememberEntityRemove")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.cluster.sharding.internal.jfr.PassivateRestart")

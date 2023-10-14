@@ -169,7 +169,7 @@ private[pekko] class Mailboxes(
       dispatcherConfig.hasPath("mailbox-type") &&
       dispatcherConfig.getString("mailbox-type") != Deploy.NoMailboxGiven
 
-    // TODO remove in 2.3
+    // TODO remove in Akka 2.3
     if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig.hasPath("mailbox-size")) {
       eventStream.publish(
         Warning(

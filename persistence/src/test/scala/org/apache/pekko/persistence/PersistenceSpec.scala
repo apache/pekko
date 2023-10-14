@@ -89,7 +89,9 @@ object PersistenceSpec {
 
 trait Cleanup { this: PekkoSpec =>
   val storageLocations =
-    List("pekko.persistence.snapshot-store.local.dir").map(s => new File(system.settings.config.getString(s)))
+    List("pekko.persistence.snapshot-store.local.dir",
+      "pekko.persistence.journal.leveldb.dir",
+      "pekko.persistence.journal.leveldb-shared.store.dir").map(s => new File(system.settings.config.getString(s)))
 
   override protected def atStartup(): Unit = {
     storageLocations.foreach(FileUtils.deleteDirectory)

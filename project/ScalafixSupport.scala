@@ -11,11 +11,9 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package sbt
-import Keys.baseDirectory
+import sbt._
 
-import org.apache.pekko.ProjectFileIgnoreSupport
-import sbt.Keys.unmanagedSources
+import Keys._
 
 trait ScalafixSupport {
   private val ignoreConfigFileName: String = ".scalafix.conf"
@@ -32,13 +30,9 @@ trait ScalafixSupport {
     }
   }
 
-  import sbt.Keys._
-
   def addProjectCommandsIfAbsent(alias: String, value: String): Def.Setting[Seq[Command]] = {
     commands := {
-      val currentCommands = commands.value.collect {
-        case command: SimpleCommand => command.name
-      }.toSet
+      val currentCommands = commands.value.flatMap(_.nameOption).toSet
       val isPresent = currentCommands(alias)
       if (isPresent)
         commands.value
@@ -49,10 +43,7 @@ trait ScalafixSupport {
 
   def updateProjectCommands(alias: String, value: String): Def.Setting[Seq[Command]] = {
     commands := {
-      commands.value.filterNot {
-        case command: SimpleCommand => command.name == alias
-        case _                      => false
-      } :+ BasicCommands.newAlias(name = alias, value = value)
+      commands.value.filterNot(_.nameOption.contains("alias")) :+ BasicCommands.newAlias(name = alias, value = value)
     }
   }
 }

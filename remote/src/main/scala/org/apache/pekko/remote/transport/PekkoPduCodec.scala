@@ -128,7 +128,7 @@ private[remote] trait PekkoPduCodec {
  * INTERNAL API
  */
 @nowarn("msg=deprecated")
-private[remote] object PekkoPduProtobufCodec$ extends PekkoPduCodec {
+private[remote] object PekkoPduProtobufCodec extends PekkoPduCodec {
   import PekkoPduCodec._
 
   private def ackBuilder(ack: Ack): AcknowledgementInfo.Builder = {

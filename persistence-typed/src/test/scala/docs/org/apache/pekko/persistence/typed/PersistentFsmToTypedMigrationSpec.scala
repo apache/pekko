@@ -208,7 +208,7 @@ object ShoppingCartBehavior {
               case _ =>
             }
         }
-    // #signal-handler
+      // #signal-handler
     }
 
 }

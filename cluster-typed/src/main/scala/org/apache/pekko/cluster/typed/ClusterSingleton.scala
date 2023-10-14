@@ -62,7 +62,7 @@ final class ClusterSingletonSettings(
     val bufferSize: Int,
     val leaseSettings: Option[LeaseUsageSettings]) {
 
-  // bin compat for 2.6.14
+  // bin compat for Akka 2.6.14
   @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       role: Option[String],
@@ -223,7 +223,7 @@ abstract class ClusterSingleton extends Extension {
    * Start if needed and provide a proxy to a named singleton
    *
    * If there already is a manager running for the given `singletonName` on this node, no additional manager is started.
-   * If there already is a proxy running for the given `singletonName` on this node, an [[ActorRef]] to that is returned.
+   * If there already is a proxy running for the given `singletonName` on this node, an [[pekko.actor.typed.ActorRef]] to that is returned.
    *
    * @return A proxy actor that can be used to communicate with the singleton in the cluster
    */
@@ -303,7 +303,7 @@ final class ClusterSingletonManagerSettings(
     val handOverRetryInterval: FiniteDuration,
     val leaseSettings: Option[LeaseUsageSettings]) {
 
-  // bin compat for 2.6.14
+  // bin compat for Akka 2.6.14
   @deprecated("Use constructor with leaseSettings", "Akka 2.6.15")
   def this(
       singletonName: String,
@@ -349,7 +349,7 @@ object ClusterSingletonSetup {
 }
 
 /**
- * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[ActorSystem]]
+ * Can be used in [[pekko.actor.setup.ActorSystemSetup]] when starting the [[pekko.actor.typed.ActorSystem]]
  * to replace the default implementation of the [[ClusterSingleton]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */

@@ -11,8 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import sbt._
 import Keys.{ scalacOptions, _ }
 import sbt.plugins.JvmPlugin
@@ -34,8 +32,6 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-actor-typed-tests",
     // references to deprecated PARSER fields in generated message formats?
     "pekko-cluster-typed",
-    // use of deprecated org.apache.pekko.protobuf.GeneratedMessage
-    "pekko-protobuf",
     "pekko-protobuf-v3",
     // references to deprecated PARSER fields in generated message formats?
     "pekko-remote",
@@ -91,6 +87,11 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     ),
     Compile / doc / scalacOptions := Seq())
 
+  // ignore Scala compile warnings for Java 20+
+  lazy val jvmIgnoreWarnings = {
+    System.getProperty("java.version").startsWith("2")
+  }
+
   /**
    * We are a little less strict in docs
    */
@@ -115,11 +116,10 @@ object PekkoDisciplinePlugin extends AutoPlugin {
         Compile / scalacOptions ++= Seq("-Xfatal-warnings"),
         Test / scalacOptions --= testUndiscipline,
         Compile / javacOptions ++= (
-          if (scalaVersion.value.startsWith("3.")) {
-            Seq()
+          if (jvmIgnoreWarnings || scalaVersion.value.startsWith("3.") || nonFatalJavaWarningsFor(name.value)) {
+            Seq.empty
           } else {
-            if (!nonFatalJavaWarningsFor(name.value)) Seq("-Werror", "-Xlint:deprecation", "-Xlint:unchecked")
-            else Seq.empty
+            Seq("-Werror", "-Xlint:deprecation", "-Xlint:unchecked")
           }
         ),
         Compile / doc / javacOptions := Seq("-Xdoclint:none"),

@@ -24,7 +24,7 @@ import pekko.util.ByteString
 
 import scala.util.control.NonFatal
 
-/** Provides JSON framing operators that can separate valid JSON objects from incoming [[ByteString]] objects. */
+/** Provides JSON framing operators that can separate valid JSON objects from incoming [[pekko.util.ByteString]] objects. */
 object JsonFraming {
 
   /** Thrown if upstream completes with a partial object in the buffer. */

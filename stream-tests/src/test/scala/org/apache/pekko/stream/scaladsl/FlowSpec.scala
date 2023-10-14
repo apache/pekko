@@ -207,6 +207,14 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
       c1.expectComplete()
     }
 
+    "perform contramap operation" in {
+      val flow = Flow[Int].contramap(Integer.parseInt)
+      val sub = Source(List("1", "2", "3")).via(flow).runWith(TestSink())
+      sub.request(3)
+      sub.expectNextN(List(1, 2, 3))
+      sub.expectComplete()
+    }
+
     "perform transformation operation" in {
       val flow = Flow[Int].map(i => { testActor ! i.toString; i.toString })
 

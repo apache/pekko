@@ -201,7 +201,7 @@ trait ActorContext extends ActorRefFactory with ClassicActorContextProvider {
    *
    * `watch` is idempotent if it is not mixed with `watchWith`.
    *
-   * It will fail with an [[IllegalStateException]] if the same subject was watched before using `watchWith`.
+   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watchWith`.
    * To clear the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other
@@ -218,7 +218,7 @@ trait ActorContext extends ActorRefFactory with ClassicActorContextProvider {
    *
    * `watchWith` is idempotent if it is called with the same `msg` and not mixed with `watch`.
    *
-   * It will fail with an [[IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
+   * It will fail with an [[java.lang.IllegalStateException]] if the same subject was watched before using `watch` or `watchWith` with
    * another termination message. To change the termination message, unwatch first.
    *
    * *Warning*: This method is not thread-safe and must not be accessed from threads other

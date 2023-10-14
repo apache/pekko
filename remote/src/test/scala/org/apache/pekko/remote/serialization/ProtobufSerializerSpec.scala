@@ -59,7 +59,6 @@ class ProtobufSerializerSpec extends PekkoSpec(s"""
       "com.google.protobuf.GeneratedMessage",
       "com.google.protobuf.GeneratedMessageV3",
       "scalapb.GeneratedMessageCompanion",
-      "org.apache.pekko.protobuf.GeneratedMessage",
       "org.apache.pekko.protobufv3.internal.GeneratedMessageV3",
       "${classOf[AnotherMessage].getName}",
       "${classOf[ProtobufSerializerSpec.AnotherInterface].getName}",

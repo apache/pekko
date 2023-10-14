@@ -22,6 +22,7 @@ import scala.language.postfixOps
 
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import org.apache.pekko
 import pekko.actor.setup.ActorSystemSetup
@@ -125,23 +126,34 @@ object ActorSystemSpec {
 }
 
 @nowarn
-class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSender {
+class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSender with ScalaCheckPropertyChecks {
 
   import ActorSystemSpec.FastActor
 
   "An ActorSystem" must {
 
-    "reject invalid names" in {
-      for (n <- Seq(
+    "reject common invalid names" in {
+      val invalidNamesCombos =
+        Table(
           "-hallowelt",
           "_hallowelt",
+          "hallo welt",
           "hallo*welt",
           "hallo@welt",
           "hallo#welt",
           "hallo$welt",
           "hallo%welt",
-          "hallo/welt")) intercept[IllegalArgumentException] {
-        ActorSystem(n)
+          "hallo/welt")
+      forAll(invalidNamesCombos) { (name: String) =>
+        an[IllegalArgumentException] should be thrownBy ActorSystem(name)
+      }
+    }
+
+    "reject all invalid names" in {
+      forAll { (name: String) =>
+        whenever(!name.matches("""^[a-zA-Z0-9][a-zA-Z0-9-_]*$""")) {
+          an[IllegalArgumentException] should be thrownBy ActorSystem(name)
+        }
       }
     }
 

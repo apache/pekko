@@ -22,7 +22,7 @@ github:
 
   features:
     # Enable wiki for documentation
-    wiki: false
+    wiki: true
     # Enable issue management
     issues: true
     # Enable projects for project management boards
@@ -35,6 +35,18 @@ github:
 
   protected_branches:
     main:
+      required_status_checks:
+        # strict means "Require branches to be up to date before merging".
+        strict: false
+        # contexts are the names of checks that must pass
+        contexts:
+          - Code is formatted
+          - Check headers
+      required_pull_request_reviews:
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: false
+        required_approving_review_count: 1
+    1.0.x:
       required_status_checks:
         # strict means "Require branches to be up to date before merging".
         strict: false

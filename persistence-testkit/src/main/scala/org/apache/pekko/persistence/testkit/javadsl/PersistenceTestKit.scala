@@ -371,7 +371,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    *
    * NOTE! Also clears sequence numbers in storage!
    *
-   * @see [[PersistenceTestKit.clearAllPreservingSeqNumbers()]]
+   * @see [[clearAllPreservingSeqNumbers]]
    */
   def clearAll(): Unit = scalaTestkit.clearAll()
 
@@ -380,21 +380,21 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
    *
    * NOTE! Also clears sequence number in storage!
    *
-   * @see [[PersistenceTestKit.clearByIdPreservingSeqNumbers()]]
+   * @see [[clearByIdPreservingSeqNumbers]]
    */
   def clearByPersistenceId(persistenceId: String): Unit = scalaTestkit.clearByPersistenceId(persistenceId)
 
   /**
    * Clear all data in storage preserving sequence numbers.
    *
-   * @see [[PersistenceTestKit.clearAll()]]
+   * @see [[clearAll]]
    */
   def clearAllPreservingSeqNumbers(): Unit = scalaTestkit.clearAllPreservingSeqNumbers()
 
   /**
    * Clear all data in storage for particular persistence id preserving sequence numbers.
    *
-   * @see [[PersistenceTestKit.clearByPersistenceId()]]
+   * @see [[clearByPersistenceId]]
    */
   def clearByIdPreservingSeqNumbers(persistenceId: String): Unit =
     scalaTestkit.clearByIdPreservingSeqNumbers(persistenceId)
@@ -439,7 +439,7 @@ class PersistenceTestKit(scalaTestkit: ScalaTestKit) {
   }
 
   /**
-   * Returns default policy if it was changed by [[PersistenceTestKit.withPolicy()]].
+   * Returns default policy if it was changed by [[withPolicy]].
    */
   def resetPolicy(): Unit = scalaTestkit.resetPolicy()
 

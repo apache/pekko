@@ -174,6 +174,17 @@ final class Flow[-In, +Out, +Mat](
   }
 
   /**
+   * Transform this Flow by applying a function to each *incoming* upstream element before
+   * it is passed to the [[Flow]]
+   *
+   * '''Backpressures when''' original [[Flow]] backpressures
+   *
+   * '''Cancels when''' original [[Flow]] cancels
+   */
+  def contramap[In2](f: In2 => In): Flow[In2, Out, Mat] =
+    Flow.fromFunction(f).viaMat(this)(Keep.right)
+
+  /**
    * Join this [[Flow]] to another [[Flow]], by cross connecting the inputs and outputs, creating a [[RunnableGraph]].
    * {{{
    * +------+        +-------+
@@ -997,6 +1008,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
+  @nowarn("msg=deprecated")
   def mapConcat[T](f: Out => IterableOnce[T]): Repr[T] = statefulMapConcat(() => f)
 
   /**
@@ -1042,6 +1054,9 @@ trait FlowOps[+Out, +Mat] {
    * The returned `Iterable` MUST NOT contain `null` values,
    * as they are illegal as stream elements - according to the Reactive Streams specification.
    *
+   * This operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
+   * Use [[FlowOps.statefulMap]] instead.
+   *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
    * '''Emits when''' the mapping function returns an element or there are still remaining elements
@@ -1056,6 +1071,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.mapConcat]]
    */
+  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](f: () => Out => IterableOnce[T]): Repr[T] =
     via(new StatefulMapConcat(f))
 
@@ -1126,6 +1142,81 @@ trait FlowOps[+Out, +Mat] {
    * @see [[#mapAsync]]
    */
   def mapAsyncUnordered[T](parallelism: Int)(f: Out => Future[T]): Repr[T] = via(MapAsyncUnordered(parallelism, f))
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry. The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes for the next element in sequence
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsync]]
+   * @see [[#mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitioned[T, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[T]): Repr[T] = {
+    (if (parallelism == 1) {
+       via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
+     } else {
+       via(new MapAsyncPartitioned(parallelism, orderedOutput = true, partitioner, f))
+     })
+      .withAttributes(DefaultAttributes.mapAsyncPartition and SourceLocation.forLambda(f))
+  }
+
+  /**
+   * Transforms this stream. Works very similarly to [[#mapAsyncUnordered]] but with an additional
+   * partition step before the transform step. The transform function receives the an individual
+   * stream entry and the calculated partition value for that entry.The max parallelism of per partition is 1.
+   *
+   * The function `partitioner` is always invoked on the elements in the order they arrive.
+   * The function `f` is always invoked on the elements which in the same partition in the order they arrive.
+   *
+   * If the function `partitioner` or `f` throws an exception or if the [[Future]] is completed
+   * with failure and the supervision decision is [[pekko.stream.Supervision.Stop]]
+   * the stream will be completed with failure, otherwise the stream continues and the current element is dropped.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the Future returned by the provided function finishes and downstream available.
+   *
+   * '''Backpressures when''' the number of futures reaches the configured parallelism and the downstream
+   * backpressures
+   *
+   * '''Completes when''' upstream completes and all futures have been completed and all elements have been emitted
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @since 1.1.0
+   * @see [[#mapAsyncUnordered]]
+   * @see [[#mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitionedUnordered[T, P](parallelism: Int)(
+      partitioner: Out => P)(
+      f: (Out, P) => Future[T]): Repr[T] = {
+    (if (parallelism == 1) {
+       via(MapAsyncUnordered(1, elem => f(elem, partitioner(elem))))
+     } else {
+       via(new MapAsyncPartitioned(parallelism, orderedOutput = false, partitioner, f))
+     }).withAttributes(DefaultAttributes.mapAsyncPartitionUnordered and SourceLocation.forLambda(f))
+  }
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
@@ -2870,16 +2961,10 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipWithIndex: Repr[(Out, Long)] = {
-    statefulMapConcat[(Out, Long)] { () =>
-      var index: Long = 0L
-      elem => {
-        val zipped = (elem, index)
-        index += 1
-        immutable.Iterable[(Out, Long)](zipped)
-      }
-    }
-  }
+  def zipWithIndex: Repr[(Out, Long)] =
+    statefulMap(() => 0L)((index, out) =>
+        (index + 1L, (out, index)), _ => None)
+      .withAttributes(DefaultAttributes.zipWithIndex)
 
   /**
    * Interleave is a deterministic merge of the given [[Source]] with elements of this [[Flow]].

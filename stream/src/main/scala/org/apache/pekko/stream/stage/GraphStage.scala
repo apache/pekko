@@ -13,19 +13,22 @@
 
 package org.apache.pekko.stream.stage
 
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicReference
+
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.{ immutable, mutable }
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.japi.function.{ Effect, Procedure }
-import pekko.stream.Attributes.SourceLocation
 import pekko.stream._
+import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.{ ReactiveStreamsCompliance, TraversalBuilder }
 import pekko.stream.impl.ActorSubscriberMessage
 import pekko.stream.impl.fusing.{ GraphInterpreter, GraphStageModule, SubSink, SubSource }
@@ -200,7 +203,7 @@ object GraphStageLogic {
   /**
    * Minimal actor to work with other actors and watch them in a synchronous ways
    *
-   * Not for user instantiation, use [[#getStageActor]].
+   * Not for user instantiation, use [[GraphStageLogic.getStageActor]].
    */
   final class StageActor @InternalApi() private[pekko] (
       materializer: Materializer,
@@ -1155,9 +1158,9 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Obtain a callback object that can be used asynchronously to re-enter the
-   * current [[GraphStage]] with an asynchronous notification. The [[invoke]] method of the returned
+   * current [[GraphStage]] with an asynchronous notification. The [[AsyncCallback.invoke]] method of the returned
    * [[AsyncCallback]] is safe to be called from other threads. It will in the background thread-safely
-   * delegate to the passed callback function. I.e. [[invoke]] will be called by other thread and
+   * delegate to the passed callback function. I.e. [[AsyncCallback.invoke]] will be called by other thread and
    * the passed handler will be invoked eventually in a thread-safe way by the execution environment.
    *
    * In case stream is not yet materialized [[AsyncCallback]] will buffer events until stream is available.
@@ -1227,13 +1230,11 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
        * Add this promise to the owning logic, so it can be completed afterPostStop if it was never handled otherwise.
        * Returns whether the logic is still running.
        */
-      @tailrec
       def addToWaiting(): Boolean = {
-        val previous = asyncCallbacksInProgress.get()
-        if (previous != null) { // not stopped
-          val updated = promise :: previous
-          if (!asyncCallbacksInProgress.compareAndSet(previous, updated)) addToWaiting()
-          else true
+        val callbacks = asyncCallbacksInProgress.get()
+        if (callbacks ne null) { // not stopped
+          callbacks.add(promise)
+          asyncCallbacksInProgress.get ne null // logic may already stopped
         } else // logic was already stopped
           false
       }
@@ -1267,9 +1268,9 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   /**
    * Java API: Obtain a callback object that can be used asynchronously to re-enter the
-   * current [[GraphStage]] with an asynchronous notification. The [[invoke]] method of the returned
+   * current [[GraphStage]] with an asynchronous notification. The [[AsyncCallback.invoke]] method of the returned
    * [[AsyncCallback]] is safe to be called from other threads. It will in the background thread-safely
-   * delegate to the passed callback function. I.e. [[invoke]] will be called by other thread and
+   * delegate to the passed callback function. I.e. [[AsyncCallback.invoke]] will be called by other thread and
    * the passed handler will be invoked eventually in a thread-safe way by the execution environment.
    *
    * [[AsyncCallback.invokeWithFeedback]] has an internal promise that will be failed if event cannot be processed due to stream completion.
@@ -1282,7 +1283,9 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   private var callbacksWaitingForInterpreter: List[ConcurrentAsyncCallback[_]] = Nil
   // is used for two purposes: keep track of running callbacks and signal that the
   // stage has stopped to fail incoming async callback invocations by being set to null
-  private val asyncCallbacksInProgress = new AtomicReference[List[Promise[Done]]](Nil)
+  // Using ConcurrentHashMap's KeySetView as Set to track the inProgress async callbacks.
+  private val asyncCallbacksInProgress: AtomicReference[java.util.Set[Promise[Done]]] =
+    new AtomicReference(ConcurrentHashMap.newKeySet())
 
   private var _stageActor: StageActor = _
   final def stageActor: StageActor = _stageActor match {
@@ -1307,18 +1310,18 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     _subInletsAndOutlets -= outlet
 
   /**
-   * Initialize a [[StageActorRef]] which can be used to interact with from the outside world "as-if" an [[Actor]].
+   * Initialize a [[GraphStageLogic.StageActorRef]] which can be used to interact with from the outside world "as-if" an [[pekko.actor.Actor]].
    * The messages are looped through the [[getAsyncCallback]] mechanism of [[GraphStage]] so they are safe to modify
    * internal state of this operator.
    *
    * This method must (the earliest) be called after the [[GraphStageLogic]] constructor has finished running,
    * for example from the [[preStart]] callback the graph operator logic provides.
    *
-   * Created [[StageActorRef]] to get messages and watch other actors in synchronous way.
+   * Created [[GraphStageLogic.StageActorRef]] to get messages and watch other actors in synchronous way.
    *
-   * The [[StageActorRef]]'s lifecycle is bound to the operator, in other words when the operator is finished,
-   * the Actor will be terminated as well. The entity backing the [[StageActorRef]] is not a real Actor,
-   * but the [[GraphStageLogic]] itself, therefore it does not react to [[PoisonPill]].
+   * The [[GraphStageLogic.StageActorRef]]'s lifecycle is bound to the operator, in other words when the operator is finished,
+   * the Actor will be terminated as well. The entity backing the [[GraphStageLogic.StageActorRef]] is not a real Actor,
+   * but the [[GraphStageLogic]] itself, therefore it does not react to [[pekko.actor.PoisonPill]].
    *
    * To be thread safe this method must only be called from either the constructor of the graph operator during
    * materialization or one of the methods invoked by the graph operator machinery, such as `onPush` and `onPull`.
@@ -1374,35 +1377,19 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
     }
     // make sure any invokeWithFeedback after this fails fast
     // and fail current outstanding invokeWithFeedback promises
-    val inProgress = asyncCallbacksInProgress.getAndSet(null)
-    if (inProgress.nonEmpty) {
+    val callbacks = asyncCallbacksInProgress.getAndSet(null)
+    if ((callbacks ne null) && !callbacks.isEmpty) {
       val exception = streamDetachedException
-      inProgress.foreach(_.tryFailure(exception))
+      callbacks.forEach((t: Promise[Done]) => t.tryFailure(exception))
     }
     cleanUpSubstreams(OptionVal.None)
   }
 
-  private[this] var asyncCleanupCounter = 0L
-
   /** Called from interpreter thread by GraphInterpreter.runAsyncInput */
-  private[stream] def onFeedbackDispatched(): Unit = {
-    asyncCleanupCounter += 1
-
-    // 256 seemed to be a sweet spot in SendQueueBenchmark.queue benchmarks
-    // It means that at most 255 completed promises are retained per logic that
-    // uses invokeWithFeedback callbacks.
-    //
-    // TODO: add periodical cleanup to get rid of those 255 promises as well
-    if (asyncCleanupCounter % 256 == 0) {
-      @tailrec def cleanup(): Unit = {
-        val previous = asyncCallbacksInProgress.get()
-        if (previous != null) {
-          val updated = previous.filterNot(_.isCompleted)
-          if (!asyncCallbacksInProgress.compareAndSet(previous, updated)) cleanup()
-        }
-      }
-
-      cleanup()
+  private[stream] def onFeedbackDispatched(promise: Promise[Done]): Unit = {
+    val callbacks = asyncCallbacksInProgress.get()
+    if (callbacks ne null) {
+      callbacks.remove(promise)
     }
   }
 

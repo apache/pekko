@@ -169,10 +169,40 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def map[Out2](f: function.Function[Out, Out2]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.map(f.apply))
 
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsync]].
+   *
+   * @see [[pekko.stream.javadsl.Source.mapAsync]]
+   */
   def mapAsync[Out2](
       parallelism: Int,
       f: function.Function[Out, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapAsync[Out2](parallelism)(o => f.apply(o).asScala))
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsyncPartitioned]].
+   *
+   * @since 1.1.0
+   * @see [[pekko.stream.javadsl.Source.mapAsyncPartitioned]]
+   */
+  def mapAsyncPartitioned[Out2, P](
+      parallelism: Int,
+      partitioner: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
+    viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
+  }
+
+  /**
+   * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsyncPartitionedUnordered]].
+   *
+   * @since 1.1.0
+   * @see [[pekko.stream.javadsl.Source.mapAsyncPartitionedUnordered]]
+   */
+  def mapAsyncPartitionedUnordered[Out2, P](
+      parallelism: Int,
+      partitioner: function.Function[Out, P],
+      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+    viaScala(_.mapAsyncPartitionedUnordered(parallelism)(partitioner(_))(f(_, _).asScala))
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapConcat]].

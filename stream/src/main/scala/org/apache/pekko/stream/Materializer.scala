@@ -100,7 +100,7 @@ abstract class Materializer {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    *   supported by the `Scheduler`.
    *
    * @return A [[pekko.actor.Cancellable]] that allows cancelling the timer. Cancelling is best effort, if the event
@@ -136,7 +136,7 @@ abstract class Materializer {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    *   supported by the `Scheduler`.
    *
    * @return A [[pekko.actor.Cancellable]] that allows cancelling the timer. Cancelling is best effort, if the event

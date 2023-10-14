@@ -11,14 +11,13 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import de.heikoseeberger.sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
-import com.typesafe.sbt.MultiJvmPlugin.MultiJvmKeys._
 import org.apache.commons.lang3.StringUtils
 import sbt.Keys._
 import sbt._
+
+import MultiJvmPlugin.MultiJvmKeys._
 
 trait CopyrightHeader extends AutoPlugin {
 
@@ -52,13 +51,30 @@ trait CopyrightHeader extends AutoPlugin {
         (Test / compile).value
       })
 
-  def apacheHeader: String =
+  val apacheFromAkkaSourceHeader: String =
     """Licensed to the Apache Software Foundation (ASF) under one or more
       |license agreements; and to You under the Apache License, version 2.0:
       |
       |  https://www.apache.org/licenses/LICENSE-2.0
       |
       |This file is part of the Apache Pekko project, which was derived from Akka.
+      |""".stripMargin
+
+  val apacheHeader: String =
+    """Licensed to the Apache Software Foundation (ASF) under one or more
+      |contributor license agreements. See the NOTICE file distributed with
+      |this work for additional information regarding copyright ownership.
+      |The ASF licenses this file to You under the Apache License, Version 2.0
+      |(the "License"); you may not use this file except in compliance with
+      |the License. You may obtain a copy of the License at
+      |
+      |   http://www.apache.org/licenses/LICENSE-2.0
+      |
+      |Unless required by applicable law or agreed to in writing, software
+      |distributed under the License is distributed on an "AS IS" BASIS,
+      |WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      |See the License for the specific language governing permissions and
+      |limitations under the License.
       |""".stripMargin
 
   val apacheSpdxHeader: String = "SPDX-License-Identifier: Apache-2.0"
@@ -70,7 +86,8 @@ trait CopyrightHeader extends AutoPlugin {
         case Some(currentText) if isValidCopyrightAnnotated(currentText) =>
           currentText
         case Some(currentText) if isOnlyLightbendOrEpflCopyrightAnnotated(currentText) =>
-          HeaderCommentStyle.cStyleBlockComment.commentCreator(text, existingText) + NewLine * 2 + currentText
+          HeaderCommentStyle.cStyleBlockComment.commentCreator(apacheFromAkkaSourceHeader,
+            existingText) + NewLine * 2 + currentText
         case Some(currentText) =>
           throw new IllegalStateException(s"Unable to detect copyright for header:[$currentText]")
         case None =>
@@ -107,9 +124,8 @@ trait CopyrightHeader extends AutoPlugin {
   private def isLightbendCopyrighted(text: String): Boolean =
     StringUtils.containsIgnoreCase(text, "lightbend inc.")
 
-  private def isValidCopyrightAnnotated(text: String): Boolean = {
+  private def isValidCopyrightAnnotated(text: String): Boolean =
     isApacheCopyrighted(text)
-  }
 
   private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean = {
     (isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text)

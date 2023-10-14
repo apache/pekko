@@ -104,7 +104,7 @@ trait PersistenceRecovery {
   // #persistence-recovery
   /**
    * Called when the persistent actor is started for the first time.
-   * The returned [[Recovery]] object defines how the Actor will recover its persistent state before
+   * The returned [[pekko.persistence.Recovery]] object defines how the Actor will recover its persistent state before
    * handling the first incoming message.
    *
    * To skip recovery completely return `Recovery.none`.
@@ -117,7 +117,7 @@ trait PersistenceRecovery {
 trait PersistenceStash extends Stash with StashFactory {
 
   /**
-   * The returned [[StashOverflowStrategy]] object determines how to handle the message failed to stash
+   * The returned [[pekko.persistence.StashOverflowStrategy]] object determines how to handle the message failed to stash
    * when the internal Stash capacity exceeded.
    */
   def internalStashOverflowStrategy: StashOverflowStrategy =
@@ -128,10 +128,10 @@ trait RuntimePluginConfig {
 
   /**
    * Additional configuration of the journal plugin servicing this persistent actor.
-   * When empty, the whole configuration of the journal plugin will be taken from the [[Config]] loaded into the
-   * [[ActorSystem]].
-   * When configured, the journal plugin configuration will be taken from this [[Config]] merged with the [[Config]]
-   * loaded into the [[ActorSystem]].
+   * When empty, the whole configuration of the journal plugin will be taken from the [[com.typesafe.config.Config]] loaded into the
+   * [[pekko.actor.ActorSystem]].
+   * When configured, the journal plugin configuration will be taken from this [[com.typesafe.config.Config]] merged with the [[com.typesafe.config.Config]]
+   * loaded into the [[pekko.actor.ActorSystem]].
    *
    * @return an additional configuration used to configure the journal plugin.
    */
@@ -139,10 +139,10 @@ trait RuntimePluginConfig {
 
   /**
    * Additional configuration of the snapshot plugin servicing this persistent actor.
-   * When empty, the whole configuration of the snapshot plugin will be taken from the [[Config]] loaded into the
-   * [[ActorSystem]].
-   * When configured, the snapshot plugin configuration will be taken from this [[Config]] merged with the [[Config]]
-   * loaded into the [[ActorSystem]].
+   * When empty, the whole configuration of the snapshot plugin will be taken from the [[com.typesafe.config.Config]] loaded into the
+   * [[pekko.actor.ActorSystem]].
+   * When configured, the snapshot plugin configuration will be taken from this [[com.typesafe.config.Config]] merged with the [[com.typesafe.config.Config]]
+   * loaded into the [[pekko.actor.ActorSystem]].
    *
    * @return an additional configuration used to configure the snapshot plugin.
    */
@@ -178,7 +178,7 @@ object Persistence extends ExtensionId[Persistence] with ExtensionIdProvider {
 
   /**
    * INTERNAL API
-   * @throws IllegalArgumentException if config path for the `pluginId` doesn't exist
+   * @throws java.lang.IllegalArgumentException if config path for the `pluginId` doesn't exist
    */
   @InternalApi private[pekko] def verifyPluginConfigExists(
       config: Config,
@@ -190,7 +190,7 @@ object Persistence extends ExtensionId[Persistence] with ExtensionIdProvider {
 
   /**
    * INTERNAL API
-   * @throws IllegalArgumentException if `pluginId` is empty (undefined)
+   * @throws java.lang.IllegalArgumentException if `pluginId` is empty (undefined)
    */
   @InternalApi private[pekko] def verifyPluginConfigIsDefined(pluginId: String, pluginType: String): Unit = {
     if (isEmpty(pluginId))
@@ -282,13 +282,13 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     })
 
   /**
-   * @throws IllegalArgumentException if `configPath` doesn't exist
+   * @throws java.lang.IllegalArgumentException if `configPath` doesn't exist
    */
   private def verifyJournalPluginConfigExists(pluginConfig: Config, configPath: String): Unit =
     verifyPluginConfigExists(pluginConfig.withFallback(system.settings.config), configPath, "Journal")
 
   /**
-   * @throws IllegalArgumentException if `configPath` doesn't exist
+   * @throws java.lang.IllegalArgumentException if `configPath` doesn't exist
    */
   private def verifySnapshotPluginConfigExists(pluginConfig: Config, configPath: String): Unit =
     verifyPluginConfigExists(pluginConfig.withFallback(system.settings.config), configPath, "Snapshot store")

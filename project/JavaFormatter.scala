@@ -11,7 +11,6 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import org.apache.pekko.ProjectFileIgnoreSupport
 import com.lightbend.sbt.JavaFormatterPlugin
 import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 
@@ -23,8 +22,6 @@ object JavaFormatter extends AutoPlugin {
 
   private val ignoreConfigFileName: String = ".sbt-java-formatter.conf"
   private val descriptor: String = "sbt-java-formatter"
-
-  private val formatOnCompile = !sys.props.contains("pekko.no.discipline")
 
   import JavaFormatterPlugin.autoImport._
   import sbt.Keys._
@@ -39,6 +36,5 @@ object JavaFormatter extends AutoPlugin {
           new ProjectFileIgnoreSupport((ThisBuild / baseDirectory).value / ignoreConfigFileName, descriptor)
         val simpleFileFilter = new SimpleFileFilter(file => ignoreSupport.isIgnoredByFileOrPackages(file))
         simpleFileFilter || (javafmt / excludeFilter).value
-      },
-      javafmtOnCompile := formatOnCompile)
+      })
 }

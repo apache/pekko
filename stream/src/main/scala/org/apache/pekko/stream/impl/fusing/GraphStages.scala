@@ -390,26 +390,24 @@ import pekko.stream.stage._
     override def initialAttributes: Attributes = DefaultAttributes.futureSource
     override def createLogic(attr: Attributes) =
       new GraphStageLogic(shape) with OutHandler {
-        def onPull(): Unit = {
+        override def preStart(): Unit = {
           future.value match {
             case Some(completed) =>
               // optimization if the future is already completed
-              onFutureCompleted(completed)
+              handle(completed)
             case None =>
-              val cb = getAsyncCallback[Try[T]](onFutureCompleted).invoke _
+              val cb = getAsyncCallback[Try[T]](handle).invoke _
               future.onComplete(cb)(ExecutionContexts.parasitic)
           }
-
-          def onFutureCompleted(result: Try[T]): Unit = {
-            result match {
-              case scala.util.Success(null) => completeStage()
-              case scala.util.Success(v)    => emit(out, v, () => completeStage())
-              case scala.util.Failure(t)    => failStage(t)
-            }
-          }
-
-          setHandler(out, eagerTerminateOutput) // After first pull we won't produce anything more
         }
+
+        private def handle(result: Try[T]): Unit = result match {
+          case scala.util.Success(null) => completeStage()
+          case scala.util.Success(v)    => emit(out, v, () => completeStage())
+          case scala.util.Failure(t)    => failStage(t)
+        }
+
+        def onPull(): Unit = ()
 
         setHandler(out, this)
       }
@@ -455,6 +453,21 @@ import pekko.stream.stage._
 
       (logic, promise.future)
     }
+  }
+
+  @InternalApi
+  private[pekko] object NeverSource extends GraphStage[SourceShape[Nothing]] {
+    private val out = Outlet[Nothing]("NeverSource.out")
+    val shape: SourceShape[Nothing] = SourceShape(out)
+
+    override def initialAttributes: Attributes = DefaultAttributes.neverSource
+
+    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic with OutHandler =
+      new GraphStageLogic(shape) with OutHandler {
+        override def onPull(): Unit = ()
+
+        setHandler(out, this)
+      }
   }
 
   @InternalApi

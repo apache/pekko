@@ -146,6 +146,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="collect"></a>@ref[collect](Source-or-Flow/collect.md)|Apply a partial function to each incoming element, if the partial function is defined for a value the returned value is passed downstream.|
 |Source/Flow|<a name="collecttype"></a>@ref[collectType](Source-or-Flow/collectType.md)|Transform this stream by testing the type of each of the elements on which the element is an instance of the provided type as they pass through this processing step.|
 |Flow|<a name="completionstageflow"></a>@ref[completionStageFlow](Flow/completionStageFlow.md)|Streams the elements through the given future flow once it successfully completes.|
+|Flow|<a name="contramap"></a>@ref[contramap](Flow/contramap.md)|Transform this Flow by applying a function to each *incoming* upstream element before it is passed to the Flow.|
 |Source/Flow|<a name="detach"></a>@ref[detach](Source-or-Flow/detach.md)|Detach upstream demand from downstream demand without detaching the stream rates.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
 |Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
@@ -197,7 +198,9 @@ operation at the same time (usually handling the completion of a @scala[`Future`
 
 | |Operator|Description|
 |--|--|--|
-|Source/Flow|<a name="mapasync"></a>@ref[mapAsync](Source-or-Flow/mapAsync.md)|Pass incoming elements to a function that return a @scala[`Future`] @java[`CompletionStage`] result.|
+|Source/Flow|<a name="mapasync"></a>@ref[mapAsync](Source-or-Flow/mapAsync.md)|Pass incoming elements to a function that returns a @scala[`Future`] @java[`CompletionStage`] result.|
+|Source/Flow|<a name="mapasyncpartitioned"></a>@ref[mapAsyncPartitioned](Source-or-Flow/mapAsyncPartitioned.md)|Pass incoming elements to a partitioning function that returns a partition result for each element and then to a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result. The resulting Source or Flow will have elements that retain the order of the original Source or Flow.|
+|Source/Flow|<a name="mapasyncpartitionedunordered"></a>@ref[mapAsyncPartitionedUnordered](Source-or-Flow/mapAsyncPartitionedUnordered.md)|Pass incoming elements to a partitioning function that returns a partition result for each element and then to a processing function that returns a @scala[`Future`] @java[`CompletionStage`] result. The resulting Source or Flow will not have ordered elements.|
 |Source/Flow|<a name="mapasyncunordered"></a>@ref[mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)|Like `mapAsync` but @scala[`Future`] @java[`CompletionStage`] results are passed downstream as they arrive regardless of the order of the elements that triggered them.|
 
 ## Timer driven operators
@@ -419,6 +422,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [concatLazy](Source-or-Flow/concatLazy.md)
 * [conflate](Source-or-Flow/conflate.md)
 * [conflateWithSeed](Source-or-Flow/conflateWithSeed.md)
+* [contramap](Flow/contramap.md)
 * [cycle](Source/cycle.md)
 * [deflate](Compression/deflate.md)
 * [delay](Source-or-Flow/delay.md)
@@ -510,6 +514,8 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [logWithMarker](Source-or-Flow/logWithMarker.md)
 * [map](Source-or-Flow/map.md)
 * [mapAsync](Source-or-Flow/mapAsync.md)
+* [mapAsyncPartitioned](Source-or-Flow/mapAsyncPartitioned.md)
+* [mapAsyncPartitionedUnordered](Source-or-Flow/mapAsyncPartitionedUnordered.md)
 * [mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)
 * [mapConcat](Source-or-Flow/mapConcat.md)
 * [mapError](Source-or-Flow/mapError.md)

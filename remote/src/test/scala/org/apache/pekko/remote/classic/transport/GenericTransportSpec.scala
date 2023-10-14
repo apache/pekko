@@ -57,7 +57,7 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
         transport,
         system,
         new PekkoProtocolSettings(provider.remoteSettings.config),
-        PekkoPduProtobufCodec$)
+        PekkoPduProtobufCodec)
     } else transport
 
   def newTransportA(registry: AssociationRegistry): Transport =
@@ -137,7 +137,7 @@ abstract class GenericTransportSpec(withAkkaProtocol: Boolean = false)
       handleB.readHandlerPromise.success(ActorHandleEventListener(self))
 
       val payload = ByteString("PDU")
-      val pdu = if (withAkkaProtocol) PekkoPduProtobufCodec$.constructPayload(payload) else payload
+      val pdu = if (withAkkaProtocol) PekkoPduProtobufCodec.constructPayload(payload) else payload
 
       awaitCond(registry.existsAssociation(addressATest, addressBTest))
 

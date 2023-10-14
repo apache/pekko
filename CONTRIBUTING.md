@@ -6,12 +6,7 @@ You're always welcome to submit your PR straight away and start the discussion (
 
 ## The Apache Pekko Community
 
-If you have questions about the contribution process or discuss specific issues, please interact with the community using the following resources.
-
-- [GitHub discussions](https://github.com/apache/incubator-pekko/discussions): for questions and general discussion.
-- [Pekko user mailing list](https://lists.apache.org/list.html?user@pekko.apache.org): for Pekko usage discussions.
-- [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
-- [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
+If you have questions about the contribution process or discuss specific issues, please interact with the community using the community links in the [README](README.md).
 
 ## Navigating around the project & codebase
 
@@ -69,7 +64,7 @@ The steps are exactly the same for everyone involved in the project, including t
 1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-pekko-http`
    - Please make sure to follow the general quality guidelines (specified below) when developing your patch.
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
-   - Use the `verifyCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
+   - Use the `checkCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our guide [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
 1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/incubator-pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
@@ -191,7 +186,7 @@ To verify code style with:
 
 ```shell
 sbt
-verifyCodeStyle
+checkCodeStyle
 ```
 
 To apply code style with:
@@ -303,13 +298,13 @@ For a pull request to be considered at all, it has to meet these requirements:
 1. A pull request must be [linked to the issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue) it aims to resolve in the PR's description (or comments). This can be achieved by writing "Fixes #1234" or similar in PR description.
 1. Licensing rules:
    - Existing files with copyright statements must leave those copyright statements intact
-   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/poi/blob/trunk/poi/src/main/java/org/apache/poi/POIDocument.java).
+   - New files should have an Apache license header instead. For an example of this, see [this file](https://github.com/apache/spark/blob/master/core/src/main/scala/org/apache/spark/SparkContext.scala).
 
 #### Additional guidelines
 
 Some additional guidelines regarding source code are:
 
-- Keep the code [DRY](https://www.oreilly.com/library/view/97-things-every/9780596809515/ch30.html).
+- Keep the code [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself).
 - Apply the [Boy Scout Rule](https://www.oreilly.com/library/view/97-things-every/9780596809515/ch08.html) whenever you have the chance to.
 - Never delete or change existing copyright notices, just add additional info.
 - Do not use "@author "tags since it does not encourage [Collective Code Ownership](http://www.extremeprogramming.org/rules/collective.html).
@@ -384,16 +379,14 @@ Each project must also create and maintain a list of all dependencies and their 
 
 Follow these guidelines when creating public commits and writing commit messages.
 
-1. If your work spans multiple local commits (for example; if you do safe point commits while working in a feature branch or work in a branch for a long time doing merges/rebases etc.) then please do not commit it all but rewrite the history by squashing the commits into a single big commit which you write a good commit message for (like discussed in the following sections). For more info read this article: [Git Workflow](https://sandofsky.com/workflow/git-workflow/). Every commit should be able to be used in isolation, cherry picked etc.
-
-2. The first line should be a descriptive sentence what the commit is doing, including the ticket number. It should be possible to fully understand what the commit does—but not necessarily how it does it—by just reading this single line. We follow the "imperative present tense" style for commit messages ([more info here](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)).
+1. The first line should be a descriptive sentence what the commit is doing, including the ticket number. It should be possible to fully understand what the commit does—but not necessarily how it does it—by just reading this single line. We follow the "imperative present tense" style for commit messages ([more info here](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)).
 
    It is **not ok** to only list the ticket number, type "minor fix" or similar.
-   If the commit is a small fix, then you are done. If not, go to 3.
+   If the commit is a small fix, then you are done. If not, go to 2.
 
-3. Following the single line description should be a blank line followed by an enumerated list with the details of the commit.
+2. Following the single line description should be a blank line followed by an enumerated list with the details of the commit.
 
-4. You can request a review by a specific team member  for your commit (depending on the degree of automation we reach, the list may change over time):
+3. You can request a review by a specific team member  for your commit (depending on the degree of automation we reach, the list may change over time):
    * "Review by @gituser "- if you want to notify someone on the team. The others can and are encouraged to participate.
 
 Example:
@@ -503,7 +496,7 @@ You can read up on `remaining` and friends in [TestKit.scala](https://github.com
 For external contributions of entire features, the normal way is to establish it as a stand-alone project first, to show that there is a need for the feature. If there is enough interested, the
 next step would be to add it to Pekko as an "may change"-feature (possibly in a new subproject) and marking it's public api with the `ApiMayChange` annotation, then when the feature is hardened, well documented and tested it becomes an officially supported Pekko feature.
 
-[List of Pekko features marked as may change](https://pekko.apache.org/)
+[List of Pekko features marked as may change](https://pekko.apache.org/docs/pekko/current/common/may-change.html)
 
 ### Java APIs in Pekko
 

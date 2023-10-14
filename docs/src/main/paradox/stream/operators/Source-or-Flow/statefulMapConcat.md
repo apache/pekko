@@ -4,6 +4,15 @@ Transform each element into zero or more elements that are individually passed d
 
 @ref[Simple operators](../index.md#simple-operators)
 
+@@@ warning
+
+The `statefulMapConcat` operator has been deprecated.
+
+- for stateful mapping, use @ref:[statefulMap](./statefulMap.md)
+- for stateful map concat, use @ref:[statefulMap](./statefulMap.md) with @ref:[mapConcat](./mapConcat.md).
+
+@@@
+
 ## Signature
 
 @apidoc[Flow.statefulMapConcat](Flow) { scala="#statefulMapConcat[T](f:()=&gt;Out=&gt;scala.collection.immutable.Iterable[T]):FlowOps.this.Repr[T]" java="#statefulMapConcat(org.apache.pekko.japi.function.Creator)" } 

@@ -44,7 +44,7 @@ object ActorSource {
    * completion.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *
@@ -79,7 +79,7 @@ object ActorSource {
    * if the stream is to drained before completion or should complete immediately.
    *
    * A message that is matched by `failureMatcher` fails the stream. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *
@@ -91,7 +91,7 @@ object ActorSource {
    * @param completionMatcher a partial function applied to the messages received materialized actor,
    *                          a matching message will complete the stream with the return [[CompletionStrategy]]
    * @param failureMatcher a partial function applied to the messages received materialized actor,
-   *                       a matching message will fail the stream with the returned [[Throwable]]
+   *                       a matching message will fail the stream with the returned [[java.lang.Throwable]]
    */
   def actorRefWithBackpressure[T, Ack](
       ackTo: ActorRef[Ack],
@@ -113,7 +113,7 @@ object ActorSource {
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *

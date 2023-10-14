@@ -11,8 +11,6 @@
  * Copyright (C) 2016-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import com.typesafe.sbt.osgi.OsgiKeys
 import com.typesafe.sbt.osgi.SbtOsgi._
 import sbt._
@@ -71,8 +69,6 @@ object OSGi {
   val distributedData = exports(Seq("org.apache.pekko.cluster.ddata.*"))
 
   val osgi = exports(Seq("org.apache.pekko.osgi.*"))
-
-  val protobuf = exports(Seq("org.apache.pekko.protobuf.*"))
 
   val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(

@@ -28,15 +28,16 @@ jobs:
           - persistence/test persistence-shared/test persistence-query/test persistence-typed/test persistence-testkit/test persistence-tck/test persistence-typed-tests/test
           - pki/test slf4j/test
           - serialization-jackson/test
-          - stream/test stream-testkit/test stream-tests/test stream-typed/test
+          - stream/test stream-testkit/test stream-tests/test stream-typed/test stream-typed-tests/test
           - stream-tests-tck/test
-          - remote/test remote-tests/test protobuf/test protobuf-v3/test
+          - remote/test remote-tests/test protobuf-v3/test
       fail-fast: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 11
         uses: actions/setup-java@v3

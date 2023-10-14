@@ -19,7 +19,7 @@ import scala.runtime.BoxedUnit;
 
 /**
  * Used for building a partial function for {@link
- * org.apache.pekko.actor.AbstractActor#createReceive() AbstractActor.createReceive()}.
+ * org.apache.pekko.actor.AbstractActor#createReceive AbstractActor.createReceive()}.
  *
  * <p>There is both a match on type only, and a match on type and predicate.
  *

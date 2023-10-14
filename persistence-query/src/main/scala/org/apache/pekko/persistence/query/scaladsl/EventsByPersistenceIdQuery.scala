@@ -35,7 +35,7 @@ trait EventsByPersistenceIdQuery extends ReadJournal {
    * The stream is not completed when it reaches the end of the currently stored events,
    * but it continues to push new events when new events are persisted.
    * Corresponding query that is completed when it reaches the end of the currently
-   * stored events is provided by [[CurrentEventsByPersistenceIdQuery#currentEventsByPersistenceId]].
+   * stored events is provided by [[pekko.persistence.query.scaladsl.CurrentEventsByPersistenceIdQuery#currentEventsByPersistenceId]].
    */
   def eventsByPersistenceId(
       persistenceId: String,

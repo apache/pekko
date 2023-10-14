@@ -14,9 +14,10 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 11
         uses: actions/setup-java@v3
@@ -86,10 +87,11 @@ jobs:
           - cluster-typed/test cluster-sharding-typed/test
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java 11
         uses: actions/setup-java@v3
@@ -140,15 +142,16 @@ jobs:
       fail-fast: false
       matrix:
         # No need to specify the full Scala version. Only the Scala
-        # binary version is required and Akka build will set the right
+        # binary version is required and Pekko build will set the right
         # full version from it.
         scalaVersion: ["2.12", "2.13"]
         javaVersion: [8, 11, 17]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup Java ${{ matrix.javaVersion }}
         uses: actions/setup-java@v3

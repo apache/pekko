@@ -202,7 +202,7 @@ abstract class DurableStateBehaviorWithEnforcedReplies[Command, State](
    * Use [[DurableStateBehaviorWithEnforcedReplies#newCommandHandlerWithReplyBuilder]] instead, or
    * extend [[DurableStateBehavior]] instead of [[DurableStateBehaviorWithEnforcedReplies]].
    *
-   * @throws UnsupportedOperationException use newCommandHandlerWithReplyBuilder instead
+   * @throws java.lang.UnsupportedOperationException use newCommandHandlerWithReplyBuilder instead
    */
   override protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, State] =
     throw new UnsupportedOperationException("Use newCommandHandlerWithReplyBuilder instead")

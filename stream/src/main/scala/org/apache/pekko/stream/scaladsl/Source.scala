@@ -21,8 +21,6 @@ import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 
-import org.reactivestreams.{ Publisher, Subscriber }
-
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
@@ -30,11 +28,13 @@ import pekko.annotation.InternalApi
 import pekko.stream.{ Outlet, SourceShape, _ }
 import pekko.stream.impl.{ PublisherSource, _ }
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.impl.fusing.GraphStages
+import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
 import pekko.stream.impl.fusing.GraphStages._
 import pekko.stream.stage.GraphStageWithMaterializedValue
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Source` is a set of stream processing steps that has one open output. It can comprise
@@ -293,7 +293,7 @@ object Source {
    */
   def fromJavaStream[T, S <: java.util.stream.BaseStream[T, S]](
       stream: () => java.util.stream.BaseStream[T, S]): Source[T, NotUsed] =
-    StreamConverters.fromJavaStream(stream);
+    StreamConverters.fromJavaStream(stream)
 
   /**
    * Creates [[Source]] that will continually produce given elements in specified order.
@@ -356,7 +356,7 @@ object Source {
    * beginning) regardless of when they subscribed.
    */
   def apply[T](iterable: immutable.Iterable[T]): Source[T, NotUsed] =
-    single(iterable).mapConcat(ConstantFun.scalaIdentityFunction).withAttributes(DefaultAttributes.iterableSource)
+    fromGraph(new IterableSource[T](iterable)).withAttributes(DefaultAttributes.iterableSource)
 
   /**
    * Starts a new `Source` from the given `Future`. The stream will consist of
@@ -419,8 +419,7 @@ object Source {
    * Create a `Source` that will continually emit the given element.
    */
   def repeat[T](element: T): Source[T, NotUsed] = {
-    val next = Some((element, element))
-    unfold(element)(_ => next).withAttributes(DefaultAttributes.repeat)
+    fromIterator(() => Iterator.continually(element)).withAttributes(DefaultAttributes.repeat)
   }
 
   /**
@@ -516,8 +515,7 @@ object Source {
    * This stream could be useful in tests.
    */
   def never[T]: Source[T, NotUsed] = _never
-  private[this] val _never: Source[Nothing, NotUsed] =
-    future(Future.never).withAttributes(DefaultAttributes.neverSource)
+  private[this] val _never: Source[Nothing, NotUsed] = fromGraph(GraphStages.NeverSource)
 
   /**
    * Emits a single value when the given `CompletionStage` is successfully completed and then completes the stream.
@@ -544,7 +542,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazySingle[T](create: () => T): Source[T, NotUsed] =
-    lazySource(() => single(create())).mapMaterializedValue(_ => NotUsed)
+    fromGraph(new LazySingleSource(create))
 
   /**
    * Defers invoking the `create` function to create a future element until there is downstream demand.
@@ -556,10 +554,7 @@ object Source {
    * the laziness and will trigger the factory immediately.
    */
   def lazyFuture[T](create: () => Future[T]): Source[T, NotUsed] =
-    lazySource { () =>
-      val f = create()
-      future(f)
-    }.mapMaterializedValue(_ => NotUsed)
+    fromGraph(new LazyFutureSource(create))
 
   /**
    * Defers invoking the `create` function to create a future source until there is downstream demand.
@@ -625,7 +620,7 @@ object Source {
    * completion.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *
@@ -715,7 +710,7 @@ object Source {
    * The stream will complete with failure if a message is sent before the acknowledgement has been replied back.
    *
    * The stream can be completed with failure by sending a message that is matched by `failureMatcher`. The extracted
-   * [[Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
+   * [[java.lang.Throwable]] will be used to fail the stream. In case the Actor is still draining its internal buffer (after having received
    * a message matched by `completionMatcher`) before signaling completion and it receives a message matched by `failureMatcher`,
    * the failure will be signaled downstream immediately (instead of the completion signal).
    *

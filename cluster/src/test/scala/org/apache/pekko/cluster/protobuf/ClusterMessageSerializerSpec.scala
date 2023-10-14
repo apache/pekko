@@ -131,8 +131,8 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       checkSerialization(InternalClusterAction.Welcome(uniqueAddress, g2))
     }
 
-    // can be removed in 2.6.3 only checks deserialization with new not yet in effect manifests for 2.6.2
-    "be de-serializable with class manifests from 2.6.4 and earlier nodes" in {
+    // can be removed in Akka 2.6.3 only checks deserialization with new not yet in effect manifests for Akka 2.6.2
+    "be de-serializable with class manifests from Akka 2.6.4 and earlier nodes" in {
       val address = Address("pekko", "system", "some.host.org", 4711)
       val uniqueAddress = UniqueAddress(address, 17L)
       val address2 = Address("pekko", "system", "other.host.org", 4711)
@@ -189,11 +189,11 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
     }
   }
 
-  // support for deserializing a new format with a string based manifest was added in 2.5.23 but the next step
+  // support for deserializing a new format with a string based manifest was added in Akka 2.5.23 but the next step
   // was never done, meaning that 2.6.4 still emits the old format
-  "Rolling upgrades for heart beat message changes in 2.5.23" must {
+  "Rolling upgrades for heart beat message changes in Akka 2.5.23" must {
 
-    "deserialize heart beats represented by just an address Address to support versions prior or 2.6.5" in {
+    "deserialize heart beats represented by just an address Address to support versions prior to Akka 2.6.5" in {
       val serialized = serializer.addressToProto(a1.address).build().toByteArray
       val deserialized = serializer.fromBinary(serialized, ClusterMessageSerializer.HeartBeatManifestPre2523)
       deserialized should ===(ClusterHeartbeatSender.Heartbeat(a1.address, -1, -1))

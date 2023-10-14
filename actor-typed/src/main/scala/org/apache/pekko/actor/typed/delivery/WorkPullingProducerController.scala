@@ -45,7 +45,7 @@ import pekko.util.OptionConverters._
  * messages may be routed to two different workers and processed independent of each other.
  *
  * A worker actor (consumer) and its `ConsumerController` is dynamically registered to the
- * `WorkPullingProducerController` via a [[ServiceKey]]. It will register itself to the
+ * `WorkPullingProducerController` via a [[pekko.actor.typed.receptionist.ServiceKey]]. It will register itself to the
  * * [[pekko.actor.typed.receptionist.Receptionist]], and the `WorkPullingProducerController`
  * subscribes to the same key to find active workers. In this way workers can be dynamically
  * added or removed from any node in the cluster.

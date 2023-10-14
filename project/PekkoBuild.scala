@@ -11,11 +11,10 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
+import JdkOptions.autoImport._
+import MultiJvmPlugin.autoImport.MultiJvm
 
-import org.apache.pekko.JdkOptions.autoImport._
 import com.lightbend.paradox.projectinfo.ParadoxProjectInfoPluginKeys._
-import com.typesafe.sbt.MultiJvmPlugin.autoImport.MultiJvm
 import sbt.Def
 import sbt.Keys._
 import sbt._
@@ -286,8 +285,13 @@ object PekkoBuild {
       logoColor := scala.Console.BLUE,
       usefulTasks := Seq(
         UsefulTask("", "compile", "Compile the current project"),
-        UsefulTask("", "test", "Run all the tests "),
+        UsefulTask("", "test", "Run all the tests"),
+        UsefulTask("", "testQuick",
+          "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
         UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("", "testQuick *.AnySpec",
+          "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
+        UsefulTask("", "testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
         UsefulTask("", "publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
         UsefulTask("", "verifyCodeStyle", "Verify code style"),
         UsefulTask("", "applyCodeStyle", "Apply code style"),

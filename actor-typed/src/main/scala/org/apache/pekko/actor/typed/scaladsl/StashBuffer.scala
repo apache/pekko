@@ -90,7 +90,7 @@ import pekko.annotation.{ DoNotInherit, InternalApi }
    * Return the first element of the message buffer without removing it.
    *
    * @return the first element or throws `NoSuchElementException` if the buffer is empty
-   * @throws `NoSuchElementException` if the buffer is empty
+   * @throws java.util.NoSuchElementException if the buffer is empty
    */
   def head: T
 

@@ -5,6 +5,7 @@
 @@@ index
 
 * [security/index](security/index.md)
+* [release-notes/index](release-notes/index.md)
 * [guide/index](typed/guide/index.md)
 * [general/index](general/index.md)
 * [index-actors](typed/index.md)

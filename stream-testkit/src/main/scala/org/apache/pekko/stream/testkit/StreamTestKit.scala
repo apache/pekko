@@ -491,14 +491,14 @@ object TestSubscriber {
     }
 
     /**
-     * Expect and return the signalled [[Throwable]].
+     * Expect and return the signalled [[java.lang.Throwable]].
      */
     def expectError(): Throwable = probe.expectMsgType[OnError].cause
 
     /**
      * Fluent DSL
      *
-     * Expect given [[Throwable]].
+     * Expect given [[java.lang.Throwable]].
      */
     def expectError(cause: Throwable): Self = {
       probe.expectMsg(OnError(cause))
@@ -510,7 +510,7 @@ object TestSubscriber {
      *
      * By default `1` demand will be signalled in order to wake up a possibly lazy upstream.
      *
-     * See also [[#expectSubscriptionAndError(Boolean)]] if no demand should be signalled.
+     * See also [[#expectSubscriptionAndError(signalDemand:Boolean)* #expectSubscriptionAndError(signalDemand: Boolean)]] if no demand should be signalled.
      */
     def expectSubscriptionAndError(): Throwable = {
       expectSubscriptionAndError(true)
@@ -522,7 +522,7 @@ object TestSubscriber {
      * Depending on the `signalDemand` parameter demand may be signalled immediately after obtaining the subscription
      * in order to wake up a possibly lazy upstream. You can disable this by setting the `signalDemand` parameter to `false`.
      *
-     * See also [[#expectSubscriptionAndError]].
+     * See also [[#expectSubscriptionAndError()* #expectSubscriptionAndError()]].
      */
     def expectSubscriptionAndError(signalDemand: Boolean): Throwable = {
       val sub = expectSubscription()
@@ -537,7 +537,7 @@ object TestSubscriber {
      *
      * By default `1` demand will be signalled in order to wake up a possibly lazy upstream.
      *
-     * See also [[#expectSubscriptionAndComplete(cause: Throwable, signalDemand: Boolean)]] if no demand should be signalled.
+     * See also [[#expectSubscriptionAndError(cause:Throwable,signalDemand:Boolean)* #expectSubscriptionAndError(cause: Throwable, signalDemand: Boolean)]] if no demand should be signalled.
      */
     def expectSubscriptionAndError(cause: Throwable): Self =
       expectSubscriptionAndError(cause, signalDemand = true)
@@ -548,7 +548,7 @@ object TestSubscriber {
      * Expect subscription followed by immediate stream completion.
      * By default `1` demand will be signalled in order to wake up a possibly lazy upstream
      *
-     * See also [[#expectSubscriptionAndError(cause: Throwable)]].
+     * See also [[#expectSubscriptionAndError(cause:Throwable)* #expectSubscriptionAndError(cause: Throwable)]].
      */
     def expectSubscriptionAndError(cause: Throwable, signalDemand: Boolean): Self = {
       val sub = expectSubscription()
@@ -563,7 +563,7 @@ object TestSubscriber {
      * Expect subscription followed by immediate stream completion.
      * By default `1` demand will be signalled in order to wake up a possibly lazy upstream
      *
-     * See also [[#expectSubscriptionAndComplete(signalDemand: Boolean)]] if no demand should be signalled.
+     * See also [[#expectSubscriptionAndComplete(signalDemand:Boolean)* #expectSubscriptionAndComplete(signalDemand: Boolean)]] if no demand should be signalled.
      */
     def expectSubscriptionAndComplete(): Self =
       expectSubscriptionAndComplete(true)
@@ -576,7 +576,7 @@ object TestSubscriber {
      * Depending on the `signalDemand` parameter demand may be signalled immediately after obtaining the subscription
      * in order to wake up a possibly lazy upstream. You can disable this by setting the `signalDemand` parameter to `false`.
      *
-     * See also [[#expectSubscriptionAndComplete]].
+     * See also [[#expectSubscriptionAndComplete()* #expectSubscriptionAndComplete]].
      */
     def expectSubscriptionAndComplete(signalDemand: Boolean): Self = {
       val sub = expectSubscription()

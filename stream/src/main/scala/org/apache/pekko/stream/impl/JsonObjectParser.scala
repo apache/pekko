@@ -50,7 +50,7 @@ import pekko.util.ByteString
 /**
  * INTERNAL API: Use [[pekko.stream.scaladsl.JsonFraming]] instead.
  *
- * **Mutable** framing implementation that given any number of [[ByteString]] chunks, can emit JSON objects contained within them.
+ * **Mutable** framing implementation that given any number of [[pekko.util.ByteString]] chunks, can emit JSON objects contained within them.
  * Typically JSON objects are separated by new-lines or commas, however a top-level JSON Array can also be understood and chunked up
  * into valid JSON objects by this framing implementation.
  *
@@ -115,20 +115,21 @@ import pekko.util.ByteString
   private def seekObject(): Boolean = {
     completedObject = false
     val bufSize = buffer.length
+    if (bufSize > 0) {
+      skipToNextObject(bufSize)
+      val maxObjectLengthIndex = if (pos + maximumObjectLength < 0) Int.MaxValue else pos + maximumObjectLength
 
-    skipToNextObject(bufSize)
-    val maxObjectLengthIndex = if (pos + maximumObjectLength < 0) Int.MaxValue else pos + maximumObjectLength
+      while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
+        val input = buffer(pos)
+        proceed(input)
+        pos += 1
+      }
 
-    while (pos < bufSize && pos < maxObjectLengthIndex && !completedObject) {
-      val input = buffer(pos)
-      proceed(input)
-      pos += 1
-    }
+      if (pos >= maxObjectLengthIndex)
+        throw new FramingException(s"""JSON element exceeded maximumObjectLength ($maximumObjectLength bytes)!""")
 
-    if (pos >= maxObjectLengthIndex)
-      throw new FramingException(s"""JSON element exceeded maximumObjectLength ($maximumObjectLength bytes)!""")
-
-    completedObject
+      completedObject
+    } else false
   }
 
   private def skipToNextObject(bufSize: Int): Unit =

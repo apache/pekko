@@ -15,14 +15,14 @@ package org.apache.pekko.actor
 
 import java.util.concurrent.atomic.AtomicReference
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import scala.annotation.nowarn
-
 import org.apache.pekko
+import pekko.actor.Scheduler.AtomicCancellable
 import pekko.annotation.InternalApi
 import pekko.util.JavaDurationConverters
 
@@ -75,57 +75,29 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
   def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
-      implicit executor: ExecutionContext): Cancellable = {
-    try new AtomicReference[Cancellable](Cancellable.initialNotCancelled) with Cancellable { self =>
-        compareAndSet(
-          Cancellable.initialNotCancelled,
-          scheduleOnce(
-            initialDelay,
-            new Runnable {
-              override def run(): Unit = {
-                try {
-                  runnable.run()
-                  if (self.get != null)
-                    swap(scheduleOnce(delay, this))
-                } catch {
-                  // ignore failure to enqueue or terminated target actor
-                  case _: SchedulerException                                                                         =>
-                  case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
-                }
-              }
-            }))
-
-        @tailrec private def swap(c: Cancellable): Unit = {
-          get match {
-            case null => if (c != null) c.cancel()
-            case old  => if (!compareAndSet(old, c)) swap(c)
-          }
-        }
-
-        final def cancel(): Boolean = {
-          @tailrec def tailrecCancel(): Boolean = {
-            get match {
-              case null => false
-              case c =>
-                if (c.cancel()) compareAndSet(c, null)
-                else compareAndSet(c, null) || tailrecCancel()
+      implicit executor: ExecutionContext): Cancellable = new AtomicCancellable(Cancellable.initialNotCancelled) {
+    final override protected def scheduledFirst(): Cancellable =
+      scheduleOnce(
+        initialDelay,
+        new Runnable {
+          override def run(): Unit = {
+            try {
+              runnable.run()
+              if (get != null)
+                swap(scheduleOnce(delay, this))
+            } catch {
+              // ignore failure to enqueue or terminated target actor
+              case _: SchedulerException                                                                         =>
+              case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
             }
           }
-
-          tailrecCancel()
-        }
-
-        override def isCancelled: Boolean = get == null
-      }
-    catch {
-      case SchedulerException(msg) => throw new IllegalStateException(msg)
-    }
+        })
   }
 
   /**
@@ -144,7 +116,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -243,7 +215,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -279,7 +251,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -443,7 +415,7 @@ trait Scheduler {
    * Scala API: Schedules a message to be sent once with a delay, i.e. a time period that has
    * to pass before the message is sent.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -461,7 +433,7 @@ trait Scheduler {
    * Java API: Schedules a message to be sent once with a delay, i.e. a time period that has
    * to pass before the message is sent.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -480,7 +452,7 @@ trait Scheduler {
    * Scala API: Schedules a function to be run once with a delay, i.e. a time period that has
    * to pass before the function is run.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -494,7 +466,7 @@ trait Scheduler {
    * Scala API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -505,7 +477,7 @@ trait Scheduler {
    * Java API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -574,4 +546,46 @@ object Scheduler {
    * a custom implementation of `Scheduler` must also implement this.
    */
   trait TaskRunOnClose extends Runnable
+
+  /**
+   * INTERNAL API
+   */
+  @InternalApi
+  private[pekko] abstract class AtomicCancellable(initialValue: Cancellable)
+      extends AtomicReference[Cancellable](initialValue)
+      with Cancellable {
+
+    try {
+      compareAndSet(initialValue, scheduledFirst())
+    } catch {
+      case cause @ SchedulerException(msg) => throw new IllegalStateException(msg, cause)
+    }
+
+    protected def scheduledFirst(): Cancellable
+
+    @tailrec final protected def swap(c: Cancellable): Unit = {
+      get match {
+        case null => if (c != null) c.cancel()
+        case old =>
+          if (!compareAndSet(old, c))
+            swap(c)
+      }
+    }
+
+    final def cancel(): Boolean = {
+      @tailrec def tailrecCancel(): Boolean = {
+        get match {
+          case null => false
+          case c =>
+            if (c.cancel()) compareAndSet(c, null)
+            else compareAndSet(c, null) || tailrecCancel()
+        }
+      }
+
+      tailrecCancel()
+    }
+
+    final override def isCancelled: Boolean = get == null
+
+  }
 }

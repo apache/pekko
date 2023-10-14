@@ -202,10 +202,8 @@ object Simulator {
 
   object ShardAllocation {
     def apply(numberOfShards: Int, numberOfRegions: Int): Flow[EntityId, Access, NotUsed] =
-      Flow[EntityId].statefulMapConcat(() => {
-        val allocation = new ShardAllocation(numberOfShards, numberOfRegions)
-        entityId => List(allocation.access(entityId))
-      })
+      Flow[EntityId].statefulMap(() => new ShardAllocation(numberOfShards, numberOfRegions))(
+        (allocation, entityId) => (allocation, allocation.access(entityId)), _ => None)
   }
 
   final class ShardAllocation(numberOfShards: Int, numberOfRegions: Int) {
@@ -236,10 +234,9 @@ object Simulator {
 
   object ShardingState {
     def apply(strategyCreator: StrategyCreator): Flow[Access, Event, NotUsed] =
-      Flow[Access].statefulMapConcat(() => {
-        val state = new ShardingState(strategyCreator)
-        access => state.process(access)
-      })
+      Flow[Access].statefulMap(() => new ShardingState(strategyCreator))(
+        (state, access) => (state, state.process(access)), _ => None)
+        .mapConcat(identity)
   }
 
   final class ShardingState(strategyCreator: StrategyCreator) {

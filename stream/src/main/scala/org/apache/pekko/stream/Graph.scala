@@ -53,7 +53,7 @@ trait Graph[+S <: Shape, +M] {
 
   /**
    * Specifies the name of the Graph.
-   * If the name is null or empty the name is ignored, i.e. [[#none]] is returned.
+   * If the name is null or empty the name is ignored, i.e. [[Attributes.none]] is returned.
    */
   def named(name: String): Graph[S, M] = addAttributes(Attributes.name(name))
 

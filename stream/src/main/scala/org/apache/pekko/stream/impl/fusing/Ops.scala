@@ -287,23 +287,17 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-
       import Collect.NotApplied
 
-      var recovered: Option[T] = None
+      var recovered: OptionVal[T] = OptionVal.none
 
-      override def onPush(): Unit = {
-        push(out, grab(in))
-      }
+      override def onPush(): Unit = push(out, grab(in))
 
-      override def onPull(): Unit = {
-        recovered match {
-          case Some(elem) =>
-            push(out, elem)
-            completeStage()
-          case None =>
-            pull(in)
-        }
+      override def onPull(): Unit = recovered match {
+        case OptionVal.Some(elem) =>
+          push(out, elem)
+          completeStage()
+        case _ => pull(in)
       }
 
       override def onUpstreamFailure(ex: Throwable): Unit =
@@ -314,7 +308,7 @@ private[stream] object Collect {
                 push(out, result)
                 completeStage()
               } else {
-                recovered = Some(result)
+                recovered = OptionVal.Some(result)
               }
             }
             case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
@@ -342,10 +336,13 @@ private[stream] object Collect {
   override def createLogic(attr: Attributes) =
     new GraphStageLogic(shape) with InHandler with OutHandler {
       override def onPush(): Unit = push(out, grab(in))
+      import Collect.NotApplied
 
-      override def onUpstreamFailure(ex: Throwable): Unit =
-        if (f.isDefinedAt(ex)) super.onUpstreamFailure(f(ex))
-        else super.onUpstreamFailure(ex)
+      override def onUpstreamFailure(ex: Throwable): Unit = f.applyOrElse(ex, NotApplied) match {
+        case NotApplied   => super.onUpstreamFailure(ex)
+        case t: Throwable => super.onUpstreamFailure(t)
+        case _            => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
+      }
 
       override def onPull(): Unit = pull(in)
 
@@ -667,7 +664,7 @@ private[stream] object Collect {
 
   def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler {
-      val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+      lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       private var aggregator: Out = zero
       private var aggregating: Future[Out] = Future.successful(aggregator)
@@ -1405,13 +1402,13 @@ private[stream] object Collect {
     new GraphStageLogic(shape) with InHandler with OutHandler {
       override def toString = s"MapAsyncUnordered.Logic(inFlight=$inFlight, buffer=$buffer)"
 
-      val decider =
-        inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+      private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
 
       private var inFlight = 0
       private var buffer: BufferImpl[Out] = _
+      private val invokeFutureCB: Try[Out] => Unit = getAsyncCallback(futureCompleted).invoke
 
-      private[this] def todo = inFlight + buffer.used
+      private[this] def todo: Int = inFlight + buffer.used
 
       override def preStart(): Unit = buffer = BufferImpl(parallelism, inheritedAttributes)
 
@@ -1434,9 +1431,6 @@ private[stream] object Collect {
             else if (!hasBeenPulled(in)) tryPull(in)
         }
       }
-
-      private val futureCB = getAsyncCallback(futureCompleted)
-      private val invokeFutureCB: Try[Out] => Unit = futureCB.invoke
 
       override def onPush(): Unit = {
         try {
@@ -2160,52 +2154,43 @@ private[pekko] object TakeWithin {
     val pf: PartialFunction[Throwable, Graph[SourceShape[T], M]])
     extends SimpleLinearGraphStage[T] {
 
-  override def initialAttributes = DefaultAttributes.recoverWith
+  override def initialAttributes: Attributes = DefaultAttributes.recoverWith
 
-  override def createLogic(attr: Attributes) = new GraphStageLogic(shape) {
-    var attempt = 0
+  override def createLogic(attr: Attributes) =
+    new GraphStageLogic(shape) with InHandler with OutHandler {
+      var attempt = 0
 
-    setHandler(in,
-      new InHandler {
-        override def onPush(): Unit = push(out, grab(in))
+      override def onPush(): Unit = push(out, grab(in))
+      override def onUpstreamFailure(ex: Throwable): Unit = onFailure(ex)
 
-        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-      })
+      override def onPull(): Unit = pull(in)
 
-    setHandler(out,
-      new OutHandler {
-        override def onPull(): Unit = pull(in)
-      })
+      def onFailure(ex: Throwable): Unit =
+        if ((maximumRetries < 0 || attempt < maximumRetries) && pf.isDefinedAt(ex)) {
+          switchTo(pf(ex))
+          attempt += 1
+        } else
+          failStage(ex)
 
-    def onFailure(ex: Throwable) =
-      if ((maximumRetries < 0 || attempt < maximumRetries) && pf.isDefinedAt(ex)) {
-        switchTo(pf(ex))
-        attempt += 1
-      } else
-        failStage(ex)
+      def switchTo(source: Graph[SourceShape[T], M]): Unit = {
+        val sinkIn = new SubSinkInlet[T]("RecoverWithSink") with InHandler with OutHandler { self =>
+          override def onPush(): Unit = push(out, self.grab())
+          override def onUpstreamFinish(): Unit = completeStage()
+          override def onUpstreamFailure(ex: Throwable): Unit = onFailure(ex)
 
-    def switchTo(source: Graph[SourceShape[T], M]): Unit = {
-      val sinkIn = new SubSinkInlet[T]("RecoverWithSink")
+          override def onPull(): Unit = self.pull()
+          override def onDownstreamFinish(cause: Throwable): Unit = self.cancel(cause)
 
-      sinkIn.setHandler(new InHandler {
-        override def onPush(): Unit = push(out, sinkIn.grab())
+          setHandler(self)
+        }
 
-        override def onUpstreamFinish(): Unit = completeStage()
-
-        override def onUpstreamFailure(ex: Throwable) = onFailure(ex)
-      })
-
-      val outHandler = new OutHandler {
-        override def onPull(): Unit = sinkIn.pull()
-
-        override def onDownstreamFinish(cause: Throwable): Unit = sinkIn.cancel(cause)
+        Source.fromGraph(source).runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
+        setHandler(out, sinkIn)
+        if (isAvailable(out)) sinkIn.pull()
       }
 
-      Source.fromGraph(source).runWith(sinkIn.sink)(interpreter.subFusingMaterializer)
-      setHandler(out, outHandler)
-      if (isAvailable(out)) sinkIn.pull()
+      setHandlers(in, out, this)
     }
-  }
 
   override def toString: String = "RecoverWith"
 }

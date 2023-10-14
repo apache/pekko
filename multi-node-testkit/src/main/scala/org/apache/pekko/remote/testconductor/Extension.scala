@@ -50,7 +50,7 @@ object TestConductor extends ExtensionId[TestConductorExt] with ExtensionIdProvi
 
 /**
  * This binds together the [[pekko.remote.testconductor.Conductor]] and
- * [[pekko.remote.testconductor.Player]] roles inside an Akka
+ * [[pekko.remote.testconductor.Player]] roles inside a Pekko
  * [[pekko.actor.Extension]]. Please follow the aforementioned links for
  * more information.
  *

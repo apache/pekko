@@ -103,7 +103,7 @@ final case class RemotingErrorEvent(cause: Throwable) extends RemotingLifecycleE
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
 object QuarantinedEvent extends AbstractFunction2[Address, Int, QuarantinedEvent] {
 
-  @deprecated("Use long uid apply", "2.4.x")
+  @deprecated("Use long uid apply", "Akka 2.4.x")
   def apply(address: Address, uid: Int) = new QuarantinedEvent(address, uid)
 }
 
@@ -119,10 +119,10 @@ final case class QuarantinedEvent(address: Address, longUid: Long) extends Remot
 
   // For binary compatibility
 
-  @deprecated("Use long uid constructor", "2.4.x")
+  @deprecated("Use long uid constructor", "Akka 2.4.x")
   def this(address: Address, uid: Int) = this(address, uid.toLong)
 
-  @deprecated("Use long uid", "2.4.x")
+  @deprecated("Use long uid", "Akka 2.4.x")
   def uid: Int = longUid.toInt
 
 }

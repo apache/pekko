@@ -281,7 +281,7 @@ private[pekko] class RemoteActorRefProvider(
   private def checkNettyOnClassPath(system: ActorSystemImpl): Unit = {
     checkClassOrThrow(
       system,
-      "org.jboss.netty.channel.Channel",
+      "io.netty.channel.Channel",
       "Classic",
       "Netty",
       "https://pekko.apache.org/docs/pekko/current/remoting.html")
@@ -701,7 +701,7 @@ private[pekko] class RemoteActorRef private[pekko] (
     }
   }
 
-  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "2.2")
+  @deprecated("Use context.watch(actor) and receive Terminated(actor)", "Akka 2.2")
   override private[pekko] def isTerminated: Boolean = false
 
   private def handleException(message: Any, sender: ActorRef): Catcher[Unit] = {

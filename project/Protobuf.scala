@@ -11,8 +11,6 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-package org.apache.pekko
-
 import java.io.File
 import java.io.PrintWriter
 

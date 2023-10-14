@@ -476,8 +476,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     register(stateName, stateFunction, Option(stateTimeout))
 
   /**
-   * Set initial state. Call this method from the constructor before the [[#initialize]] method.
-   * If different state is needed after a restart this method, followed by [[#initialize]], can
+   * Set initial state. Call this method from the constructor before the [[initialize]] method.
+   * If different state is needed after a restart this method, followed by [[initialize]], can
    * be used in the actor life cycle hooks [[pekko.actor.Actor#preStart]] and [[pekko.actor.Actor#postRestart]].
    *
    * @param stateName initial state designator
@@ -941,7 +941,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   }
 
   /**
-   * By default [[FSM.Failure]] is logged at error level and other reason
+   * By default [[pekko.actor.FSM.Failure]] is logged at error level and other reason
    * types are not logged. It is possible to override this behavior.
    */
   protected def logTermination(reason: Reason): Unit = reason match {
@@ -954,8 +954,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 /**
  * Stackable trait for [[pekko.actor.FSM]] which adds a rolling event log and
  * debug logging capabilities (analogous to [[pekko.event.LoggingReceive]]).
- *
- * @since 1.2
  */
 trait LoggingFSM[S, D] extends FSM[S, D] { this: Actor =>
 

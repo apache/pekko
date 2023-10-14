@@ -128,7 +128,7 @@ object Serialization {
    * local actor refs, or if serializer library e.g. custom serializer/deserializer
    * in Jackson need access to the current `ActorSystem`.
    *
-   * @throws IllegalStateException if the information was not set
+   * @throws java.lang.IllegalStateException if the information was not set
    */
   def getCurrentTransportInformation(): Information = {
     Serialization.currentTransportInformation.value match {
@@ -447,7 +447,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   private[pekko] val bindings: immutable.Seq[ClassSerializer] = {
     val fromConfig = for {
       (className: String, alias: String) <- settings.SerializationBindings
-      if alias != "none" && checkGoogleProtobuf(className) && checkPekkoProtobuf(className)
+      if alias != "none" && checkGoogleProtobuf(className)
     } yield (system.dynamicAccess.getClassFor[Any](className).get, serializers(alias))
 
     val fromSettings = serializerDetails.flatMap { detail =>
@@ -483,10 +483,6 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   // The reason for this special case is for backwards compatibility so that we still can
   // include "com.google.protobuf.GeneratedMessage" = proto in configured serialization-bindings.
   private def checkGoogleProtobuf(className: String): Boolean = checkClass("com.google.protobuf", className)
-
-  // pekko-protobuf is now not a dependency of remote so only load if user has explicitly added it
-  // remove in v1.1
-  private def checkPekkoProtobuf(className: String): Boolean = checkClass("org.apache.pekko.protobuf", className)
 
   private def checkClass(prefix: String, className: String): Boolean =
     !className.startsWith(prefix) || system.dynamicAccess.getClassFor[Any](className).isSuccess
@@ -545,7 +541,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   }
 
   /**
-   * @throws `NoSuchElementException` if no serializer with given `id`
+   * @throws java.util.NoSuchElementException if no serializer with given `id`
    */
   private def getSerializerById(id: Int): Serializer = {
     if (0 <= id && id < quickSerializerByIdentity.length) {

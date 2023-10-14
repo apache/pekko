@@ -59,19 +59,19 @@ class TlsTcpWithCrappyRSAWithMD5OnlyHereToMakeSureThingsWorkSpec
     }
     """))
 
+import pekko.testkit.PekkoSpec._
 class TlsTcpWithRotatingKeysSSLEngineSpec extends TlsTcpSpec(ConfigFactory.parseString(s"""
     pekko.remote.artery.ssl {
        ssl-engine-provider = org.apache.pekko.remote.artery.tcp.ssl.RotatingKeysSSLEngineProvider
        rotating-keys-engine {
-         key-file = ${TlsTcpSpec.resourcePath("ssl/node.example.com.pem")}
-         cert-file = ${TlsTcpSpec.resourcePath("ssl/node.example.com.crt")}
-         ca-cert-file = ${TlsTcpSpec.resourcePath("ssl/exampleca.crt")}
+         key-file = "${resourcePath("ssl/node.example.com.pem")}"
+         cert-file = "${resourcePath("ssl/node.example.com.crt")}"
+         ca-cert-file = "${resourcePath("ssl/exampleca.crt")}"
        }
     }
     """))
 
 object TlsTcpSpec {
-  def resourcePath(name: String): String = getClass.getClassLoader.getResource(name).getPath
 
   lazy val config: Config = {
     ConfigFactory.parseString(s"""

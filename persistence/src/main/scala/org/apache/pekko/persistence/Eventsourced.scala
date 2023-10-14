@@ -371,7 +371,7 @@ private[persistence] trait Eventsourced
 
   /**
    * Recovery handler that receives persisted events during recovery. If a state snapshot
-   * has been captured and saved, this handler will receive a [[SnapshotOffer]] message
+   * has been captured and saved, this handler will receive a [[pekko.persistence.SnapshotOffer]] message
    * followed by events that are younger than the offered snapshot.
    *
    * This handler must not have side-effects other than changing persistent actor state i.e. it
@@ -381,7 +381,7 @@ private[persistence] trait Eventsourced
    * If there is a problem with recovering the state of the actor from the journal, the error
    * will be logged and the actor will be stopped.
    *
-   * @see [[Recovery]]
+   * @see [[pekko.persistence.Recovery]]
    */
   def receiveRecover: Receive
 
@@ -519,11 +519,11 @@ private[persistence] trait Eventsourced
   /**
    * Permanently deletes all persistent messages with sequence numbers less than or equal `toSequenceNr`.
    *
-   * If the delete is successful a [[DeleteMessagesSuccess]] will be sent to the actor.
-   * If the delete fails a [[DeleteMessagesFailure]] will be sent to the actor.
+   * If the delete is successful a [[pekko.persistence.DeleteMessagesSuccess]] will be sent to the actor.
+   * If the delete fails a [[pekko.persistence.DeleteMessagesFailure]] will be sent to the actor.
    *
    * The given `toSequenceNr` must be less than or equal to [[Eventsourced#lastSequenceNr]], otherwise
-   * [[DeleteMessagesFailure]] is sent to the actor without performing the delete. All persistent
+   * [[pekko.persistence.DeleteMessagesFailure]] is sent to the actor without performing the delete. All persistent
    * messages may be deleted without specifying the actual sequence number by using `Long.MaxValue`
    * as the `toSequenceNr`.
    *

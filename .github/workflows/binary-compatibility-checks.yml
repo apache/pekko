@@ -18,23 +18,18 @@ jobs:
     if: github.repository == 'apache/incubator-pekko'
     strategy:
       fail-fast: false
-      matrix:
-        # The versions of scala specified here are only used as `+~...`
-        # which ignores the PATCH portion of the version id. These Scala versions don't need
-        # to be fully defined here then since Akka build handles which patch version will be used.
-        scalaVersion: [ "2.12", "2.13" ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
           fetch-depth: 0
+          fetch-tags: 0
 
-      - name: Setup Java 8
+      - name: Setup Java 11
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 8
+          java-version: 11
 
       - name: Cache Coursier cache
         uses: coursier/cache-action@v6.4.0
@@ -42,29 +37,13 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      # compile code instead of doing mima check (until we re-enable mima check)
       - name: Compile code
-        run: sbt "+~ ${{ matrix.scalaVersion }} Test/compile"
+        run: sbt +compile
 
-      # disable mima check until first pekko release is done
-      #- name: Report MiMa Binary Issues
-      #  run: sbt "+~ ${{ matrix.scalaVersion }} mimaReportBinaryIssues"
+      - name: Report MiMa Binary Issues
+        run: |-
+          sbt +mimaReportBinaryIssues
 
-      #- name: Check correct MiMa filter directories
-      #  run: sbt checkMimaFilterDirectories
-
-      # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
-      #- name: Email on failure
-      #  if: ${{ failure() }}
-      #  uses: dawidd6/action-send-mail@v3
-      #  with:
-      #    server_address: smtp.gmail.com
-      #    server_port: 465
-      #    username: ${{secrets.MAIL_USERNAME}}
-      #    password: ${{secrets.MAIL_PASSWORD}}
-      #    subject: "Failed: ${{ github.workflow }} / ${{ github.job }}"
-      #    to: akka.official@gmail.com
-      #    from: Akka CI (GHActions)
-      #    body: |
-      #      Job ${{ github.job }} in workflow ${{ github.workflow }} of ${{github.repository}} failed!
-      #      https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}
+      - name: Check correct MiMa filter directories
+        run: |
+          sbt checkMimaFilterDirectories

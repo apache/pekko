@@ -31,7 +31,7 @@ object ProtobufSerializer {
   private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
 
   /**
-   * Helper to serialize an [[pekko.actor.ActorRef]] to Akka's
+   * Helper to serialize an [[pekko.actor.ActorRef]] to Pekko's
    * protobuf representation.
    */
   def serializeActorRef(ref: ActorRef): ActorRefData = {
@@ -40,7 +40,7 @@ object ProtobufSerializer {
 
   /**
    * Helper to materialize (lookup) an [[pekko.actor.ActorRef]]
-   * from Akka's protobuf representation in the supplied
+   * from Pekko's protobuf representation in the supplied
    * [[pekko.actor.ActorSystem]].
    */
   def deserializeActorRef(system: ExtendedActorSystem, refProtocol: ActorRefData): ActorRef =
@@ -48,9 +48,11 @@ object ProtobufSerializer {
 }
 
 /**
- * This Serializer serializes `org.apache.pekko.protobuf.Message` and `org.apache.pekko.google.protobuf.Message`
+ * This Serializer serializes `org.apache.pekko.protobufv3.internal.Message`
  * It is using reflection to find the `parseFrom` and `toByteArray` methods to avoid
  * dependency to `com.google.protobuf`.
+ *
+ * This is related to the config property `pekko.serialization.protobuf.allowed-classes`.
  */
 class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
@@ -140,7 +142,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    *
    * If an old class is removed from `serialization-bindings` when it's not used for serialization
    * but still used for deserialization (e.g. rolling update with serialization changes) it can
-   * be allowed by specifying in `pekko.protobuf.allowed-classes`.
+   * be allowed by specifying in `pekko.serialization.protobuf.allowed-classes`.
    *
    * That is also possible when changing a binding from a ProtobufSerializer to another serializer (e.g. Jackson)
    * and still bind with the same class (interface).
