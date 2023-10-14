@@ -17,19 +17,19 @@
 
 package org.apache.pekko.actor.testkit.typed.scaladsl
 
+import org.apache.pekko
+import pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder
+import pekko.actor.typed.ActorSystem
 import com.typesafe.config.ConfigFactory
 import jdocs.org.apache.pekko.actor.testkit.typed.javadsl.GreeterMain
-import org.apache.pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder
-import org.apache.pekko.actor.typed.ActorSystem
+
 import org.scalatest.wordspec.AnyWordSpec
 
 class Junit5TestKitBuilderSpec extends AnyWordSpec {
 
   "the Junit5TestKitBuilder" should {
     "create a Testkit with name hello" in {
-      val actualTestKit = Junit5TestKitBuilder()
-        .withName("hello")
-        .build()
+      val actualTestKit = new Junit5TestKitBuilder().withName("hello").build()
 
       assertResult("hello")(actualTestKit.system.name)
     }
@@ -37,7 +37,7 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec {
 
   "the Junit5TestKitBuilder" should {
     "create a Testkit with the classname as name" in {
-      val actualTestKit = Junit5TestKitBuilder()
+      val actualTestKit = new Junit5TestKitBuilder()
         .build()
 
       assertResult("Junit5TestKitBuilderSpec")(actualTestKit.system.name)
@@ -48,7 +48,7 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec {
     "create a Testkit with a custom config" in {
 
       val conf = ConfigFactory.load("application.conf")
-      val actualTestKit = Junit5TestKitBuilder()
+      val actualTestKit = new Junit5TestKitBuilder()
         .withCustomConfig(conf)
         .build()
       assertResult("someValue")(actualTestKit.system.settings.config.getString("test.value"))
@@ -61,7 +61,7 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec {
     "create a Testkit with a custom config and name" in {
 
       val conf = ConfigFactory.load("application.conf")
-      val actualTestKit = Junit5TestKitBuilder()
+      val actualTestKit = new Junit5TestKitBuilder()
         .withCustomConfig(conf)
         .withName("hello")
         .build()
@@ -76,7 +76,7 @@ class Junit5TestKitBuilderSpec extends AnyWordSpec {
 
       val system: ActorSystem[GreeterMain.SayHello] = ActorSystem(GreeterMain(), "AkkaQuickStart")
 
-      val actualTestKit = Junit5TestKitBuilder()
+      val actualTestKit = new Junit5TestKitBuilder()
         .withSystem(system)
         .build()
       assertResult("AkkaQuickStart")(actualTestKit.system.name)

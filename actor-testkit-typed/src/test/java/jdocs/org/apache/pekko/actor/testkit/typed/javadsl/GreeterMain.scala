@@ -9,8 +9,9 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko.actor.typed.{ ActorRef, Behavior }
-import org.apache.pekko.actor.typed.scaladsl.Behaviors
+import org.apache.pekko
+import pekko.actor.typed.{ ActorRef, Behavior }
+import pekko.actor.typed.scaladsl.Behaviors
 
 object Greeter {
   final case class Greet(whom: String, replyTo: ActorRef[Greeted])

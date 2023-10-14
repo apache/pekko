@@ -17,7 +17,8 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit
+import org.apache.pekko
+import pekko.actor.testkit.typed.annotations.Junit5TestKit
 import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
 import org.junit.platform.commons.support.AnnotationSupport
 
