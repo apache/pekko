@@ -17,12 +17,13 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
+import org.apache.pekko
 import com.typesafe.config.Config
-import org.apache.pekko.actor.testkit.typed.internal.TestKitUtils
-import org.apache.pekko.actor.testkit.typed.scaladsl.ActorTestKit.ApplicationTestConfig
-import org.apache.pekko.actor.typed.ActorSystem
+import pekko.actor.testkit.typed.internal.TestKitUtils
+import pekko.actor.testkit.typed.scaladsl.ActorTestKit.ApplicationTestConfig
+import pekko.actor.typed.ActorSystem
 
-case class Junit5TestKitBuilder() {
+final class Junit5TestKitBuilder() {
 
   var system: Option[ActorSystem[_]] = None
 
