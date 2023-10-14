@@ -9,7 +9,6 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-
 import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
@@ -32,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(LogCapturingExtension.class)
 class ActorTestKitJunit5Test extends JUnitSuite {
 
-  @Junit5TestKit
-  public ActorTestKit testKit = new Junit5TestKitBuilder().build();
+  @Junit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
+
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
     assertEquals("ActorTestKitJunit5Test", testKit.system().name());
