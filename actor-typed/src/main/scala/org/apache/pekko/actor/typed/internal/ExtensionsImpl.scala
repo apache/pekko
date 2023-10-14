@@ -42,7 +42,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
     /*
      * @param throwOnLoadFail Throw exception when an extension fails to load (needed for backwards compatibility)
      */
-    def loadExtensions(key: String, throwOnLoadFail: Boolean): Unit = {
+    def loadExtensionsFor(key: String, throwOnLoadFail: Boolean): Unit = {
 
       settings.config.getStringList(key).asScala.foreach { extensionIdFQCN =>
         // it is either a Scala object or it is a Java class with a static singleton accessor
@@ -72,8 +72,8 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
           }
       }
 
-    loadExtensions("pekko.actor.typed.library-extensions", throwOnLoadFail = true)
-    loadExtensions("pekko.actor.typed.extensions", throwOnLoadFail = false)
+    loadExtensionsFor("pekko.actor.typed.library-extensions", throwOnLoadFail = true)
+    loadExtensionsFor("pekko.actor.typed.extensions", throwOnLoadFail = false)
   }
 
   final override def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null
