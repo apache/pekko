@@ -204,7 +204,7 @@ object Dependencies {
 
     object Provided {
       // TODO remove from "test" config
-      val sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6-rev002" % "optional;provided;test"
+      val sigarLoader = "io.kamon" % "sigar-loader" % "1.6.6" % "optional;provided;test"
 
       val activation = "com.sun.activation" % "javax.activation" % "1.2.0" % "provided;test"
 
