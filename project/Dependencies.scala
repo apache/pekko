@@ -132,7 +132,7 @@ object Dependencies {
     }
 
     object TestDependencies {
-      val bcpkix = "org.bouncycastle" % "bcpkix-jdk15on" % "1.70" % Test
+      val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % "1.76" % Test
       val commonsMath = "org.apache.commons" % "commons-math" % "2.2" % Test
       val commonsIo = "commons-io" % "commons-io" % "2.14.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.16.0" % Test
