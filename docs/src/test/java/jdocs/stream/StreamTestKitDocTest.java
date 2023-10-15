@@ -13,6 +13,9 @@
 
 package jdocs.stream;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,21 +25,17 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-
+import jdocs.AbstractJavaTest;
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
-import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.apache.pekko.actor.*;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.testkit.*;
 import org.apache.pekko.stream.testkit.javadsl.*;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.*;
 
 public class StreamTestKitDocTest extends AbstractJavaTest {
 

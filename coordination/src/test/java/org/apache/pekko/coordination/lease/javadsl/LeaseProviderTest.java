@@ -13,14 +13,14 @@
 
 package org.apache.pekko.coordination.lease.javadsl;
 
+import static org.junit.Assert.assertEquals;
+
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.coordination.lease.scaladsl.LeaseProviderSpec;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 public class LeaseProviderTest {
   @Rule

@@ -13,6 +13,10 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon;
+import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon.Frame;
+import java.time.Duration;
+import java.util.stream.Stream;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Cancellable;
@@ -22,11 +26,6 @@ import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.util.ByteString;
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon;
-import docs.stream.operators.sourceorflow.ExtrapolateAndExpandCommon.Frame;
-
-import java.time.Duration;
-import java.util.stream.Stream;
 
 /** */
 public class ExtrapolateAndExpand {

@@ -13,6 +13,11 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Collections;
+import java.util.Optional;
 import org.apache.pekko.actor.testkit.typed.LoggingEvent;
 import org.apache.pekko.actor.testkit.typed.TestException;
 import org.junit.ClassRule;
@@ -20,12 +25,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import org.slf4j.event.Level;
-
-import java.util.Collections;
-import java.util.Optional;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class LoggingTestKitTest extends JUnitSuite {
 

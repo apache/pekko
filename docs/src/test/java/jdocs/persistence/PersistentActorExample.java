@@ -15,14 +15,13 @@ package jdocs.persistence;
 
 // #persistent-actor-example
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.persistence.AbstractPersistentActor;
 import org.apache.pekko.persistence.SnapshotOffer;
-
-import java.io.Serializable;
-import java.util.ArrayList;
 
 class Cmd implements Serializable {
   private static final long serialVersionUID = 1L;

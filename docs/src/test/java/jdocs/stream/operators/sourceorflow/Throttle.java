@@ -13,16 +13,15 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import docs.stream.operators.sourceorflow.ThrottleCommon.Frame;
+import java.time.Duration;
+import java.util.stream.Stream;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.Materializer;
 import org.apache.pekko.stream.ThrottleMode;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.time.Duration;
-import java.util.stream.Stream;
-import docs.stream.operators.sourceorflow.ThrottleCommon.Frame;
 
 /** */
 public class Throttle {

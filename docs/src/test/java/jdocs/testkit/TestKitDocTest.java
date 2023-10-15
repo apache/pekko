@@ -15,22 +15,12 @@ package jdocs.testkit;
 
 import static org.junit.Assert.*;
 
-import org.apache.pekko.pattern.Patterns;
-import jdocs.AbstractJavaTest;
-import org.junit.Assert;
-import org.apache.pekko.japi.JavaPartialFunction;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.testkit.CallingThreadDispatcher;
-import org.apache.pekko.testkit.TestActor;
-import org.apache.pekko.testkit.TestActorRef;
-import org.apache.pekko.testkit.TestProbe;
-import org.apache.pekko.testkit.javadsl.EventFilter;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.ClassRule;
-import org.junit.Test;
-
 import com.typesafe.config.ConfigFactory;
-
+import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import jdocs.AbstractJavaTest;
+import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.AbstractActorWithTimers;
 import org.apache.pekko.actor.ActorKilledException;
 import org.apache.pekko.actor.ActorRef;
@@ -39,13 +29,19 @@ import org.apache.pekko.actor.Kill;
 import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.actor.Terminated;
-import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.japi.JavaPartialFunction;
+import org.apache.pekko.pattern.Patterns;
+import org.apache.pekko.testkit.CallingThreadDispatcher;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.TestActor;
 import org.apache.pekko.testkit.TestActor.AutoPilot;
-
-import java.util.List;
-
-import java.util.concurrent.CompletableFuture;
-import java.time.Duration;
+import org.apache.pekko.testkit.TestActorRef;
+import org.apache.pekko.testkit.TestProbe;
+import org.apache.pekko.testkit.javadsl.EventFilter;
+import org.apache.pekko.testkit.javadsl.TestKit;
+import org.junit.Assert;
+import org.junit.ClassRule;
+import org.junit.Test;
 
 public class TestKitDocTest extends AbstractJavaTest {
 

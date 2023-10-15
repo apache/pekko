@@ -21,8 +21,8 @@ package com.example;
 */
 
 // #read-protocol-1
-import org.apache.pekko.actor.typed.ActorRef;
 import java.util.Optional;
+import org.apache.pekko.actor.typed.ActorRef;
 
 public class Device {
 

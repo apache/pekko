@@ -13,6 +13,15 @@
 
 package org.apache.pekko.pattern;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.apache.pekko.pattern.Patterns.ask;
+import static org.apache.pekko.pattern.Patterns.pipe;
+import static org.junit.Assert.assertEquals;
+
+import java.time.Duration;
+import java.util.Arrays;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.pekko.actor.*;
 import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
@@ -26,16 +35,6 @@ import scala.concurrent.Await;
 import scala.concurrent.ExecutionContext;
 import scala.concurrent.Future;
 import scala.concurrent.duration.FiniteDuration;
-
-import java.util.Arrays;
-import java.util.concurrent.*;
-import java.time.Duration;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.apache.pekko.pattern.Patterns.ask;
-import static org.apache.pekko.pattern.Patterns.pipe;
-import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
 
 /** Copyright (C) 2009-2018 Lightbend Inc. <https://www.lightbend.com> */
 public class PatternsTest extends JUnitSuite {

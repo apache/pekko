@@ -13,20 +13,19 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
+import java.time.Duration;
 import org.apache.pekko.actor.testkit.typed.TestException;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.pattern.StatusReply;
 import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.time.Duration;
 
 public class ActorContextAskTest extends JUnitSuite {
 

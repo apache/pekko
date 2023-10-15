@@ -17,21 +17,19 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-
-import org.apache.pekko.NotUsed;
-import org.apache.pekko.stream.ClosedShape;
 import jdocs.AbstractJavaTest;
-import org.apache.pekko.testkit.javadsl.TestKit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
+import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.ClosedShape;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.javadsl.Tcp.OutgoingConnection;
+import org.apache.pekko.testkit.javadsl.TestKit;
 import org.apache.pekko.util.ByteString;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class CompositionDocTest extends AbstractJavaTest {
 

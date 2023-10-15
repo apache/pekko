@@ -13,6 +13,12 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import static org.apache.pekko.NotUsed.notUsed;
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.StreamTest;
@@ -20,13 +26,6 @@ import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.List;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.pekko.NotUsed.notUsed;
-import static org.junit.Assert.assertEquals;
 
 public class FlowWithContextTest extends StreamTest {
 

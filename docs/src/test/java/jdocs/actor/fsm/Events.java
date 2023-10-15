@@ -13,8 +13,8 @@
 
 package jdocs.actor.fsm;
 
-import org.apache.pekko.actor.ActorRef;
 import java.util.List;
+import org.apache.pekko.actor.ActorRef;
 
 public class Events {
 

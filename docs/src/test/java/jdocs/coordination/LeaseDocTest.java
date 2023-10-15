@@ -13,21 +13,20 @@
 
 package jdocs.coordination;
 
+import docs.coordination.LeaseDocSpec;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Consumer;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.coordination.lease.LeaseSettings;
 import org.apache.pekko.coordination.lease.javadsl.Lease;
 import org.apache.pekko.coordination.lease.javadsl.LeaseProvider;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import docs.coordination.LeaseDocSpec;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public class LeaseDocTest extends JUnitSuite {

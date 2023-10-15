@@ -13,6 +13,13 @@
 
 package org.apache.pekko.pattern;
 
+import static org.apache.pekko.pattern.Patterns.askWithStatus;
+import static org.junit.Assert.*;
+
+import java.time.Duration;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
@@ -22,15 +29,6 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.time.Duration;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-
-import static org.apache.pekko.pattern.Patterns.askWithStatus;
-
-import static org.junit.Assert.*;
 
 public class StatusReplyTest extends JUnitSuite {
 

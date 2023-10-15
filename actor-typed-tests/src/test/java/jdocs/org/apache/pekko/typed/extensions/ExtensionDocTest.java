@@ -13,14 +13,13 @@
 
 package jdocs.org.apache.pekko.typed.extensions;
 
+import docs.org.apache.pekko.typed.extensions.DatabasePool;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Extension;
 import org.apache.pekko.actor.typed.ExtensionId;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
-import docs.org.apache.pekko.typed.extensions.DatabasePool;
-
-import java.util.concurrent.CompletionStage;
 
 interface ExtensionDocTest {
 

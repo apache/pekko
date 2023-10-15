@@ -13,27 +13,26 @@
 
 package org.apache.pekko.actor.typed.javadsl;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.typed.internal.adapter.SchedulerAdapter;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
-import org.scalatestplus.junit.JUnitSuite;
+import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 import java.time.Duration;
-
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
-import org.apache.pekko.testkit.PekkoSpec;
+import org.apache.pekko.actor.SupervisorStrategy;
+import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.Signal;
 import org.apache.pekko.actor.typed.Terminated;
+import org.apache.pekko.actor.typed.internal.adapter.SchedulerAdapter;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
-import org.apache.pekko.actor.SupervisorStrategy;
-import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.scalatestplus.junit.JUnitSuite;
 
 public class AdapterTest extends JUnitSuite {
 

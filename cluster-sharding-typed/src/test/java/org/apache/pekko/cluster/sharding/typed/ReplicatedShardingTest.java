@@ -13,6 +13,13 @@
 
 package org.apache.pekko.cluster.sharding.typed;
 
+import static org.apache.pekko.cluster.sharding.typed.ReplicatedShardingTest.ProxyActor.ALL_REPLICAS;
+import static org.junit.Assert.assertEquals;
+
+import com.typesafe.config.ConfigFactory;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
@@ -32,18 +39,10 @@ import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitRead
 import org.apache.pekko.persistence.typed.ReplicaId;
 import org.apache.pekko.persistence.typed.ReplicationId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-import com.typesafe.config.ConfigFactory;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
-
-import static org.apache.pekko.cluster.sharding.typed.ReplicatedShardingTest.ProxyActor.ALL_REPLICAS;
-import static org.junit.Assert.assertEquals;
 
 public class ReplicatedShardingTest extends JUnitSuite {
 

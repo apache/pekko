@@ -13,6 +13,11 @@
 
 package jdocs.org.apache.pekko.typed;
 
+import static jdocs.org.apache.pekko.typed.StashDocSample.DB;
+import static jdocs.org.apache.pekko.typed.StashDocSample.DataAccess;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
@@ -22,12 +27,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-
-import static jdocs.org.apache.pekko.typed.StashDocSample.DB;
-import static jdocs.org.apache.pekko.typed.StashDocSample.DataAccess;
 
 public class StashDocTest extends JUnitSuite {
 

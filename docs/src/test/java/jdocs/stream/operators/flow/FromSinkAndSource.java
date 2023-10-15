@@ -13,6 +13,10 @@
 
 package jdocs.stream.operators.flow;
 
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Cancellable;
@@ -21,11 +25,6 @@ import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.util.ByteString;
-
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class FromSinkAndSource {
 

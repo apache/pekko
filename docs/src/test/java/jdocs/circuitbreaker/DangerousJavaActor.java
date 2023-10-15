@@ -15,15 +15,14 @@ package jdocs.circuitbreaker;
 
 // #imports1
 
-import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.event.LoggingAdapter;
-import java.time.Duration;
-import org.apache.pekko.pattern.CircuitBreaker;
-import org.apache.pekko.event.Logging;
-
 import static org.apache.pekko.pattern.Patterns.pipe;
 
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.event.Logging;
+import org.apache.pekko.event.LoggingAdapter;
+import org.apache.pekko.pattern.CircuitBreaker;
 
 // #imports1
 

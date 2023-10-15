@@ -13,10 +13,10 @@
 
 package org.apache.pekko.util;
 
+import static junit.framework.TestCase.assertEquals;
+
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import static junit.framework.TestCase.assertEquals;
 
 public class ByteStringTest extends JUnitSuite {
 

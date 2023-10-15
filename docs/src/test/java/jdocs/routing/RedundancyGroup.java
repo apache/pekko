@@ -14,16 +14,14 @@
 package jdocs.routing;
 
 // #group
-import java.util.List;
-
-import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.dispatch.Dispatchers;
-import org.apache.pekko.routing.Router;
+import static jdocs.routing.CustomRouterDocTest.RedundancyRoutingLogic;
 
 import com.typesafe.config.Config;
-
+import java.util.List;
+import org.apache.pekko.actor.ActorSystem;
+import org.apache.pekko.dispatch.Dispatchers;
 import org.apache.pekko.routing.GroupBase;
-import static jdocs.routing.CustomRouterDocTest.RedundancyRoutingLogic;
+import org.apache.pekko.routing.Router;
 
 public class RedundancyGroup extends GroupBase {
   private final List<String> paths;

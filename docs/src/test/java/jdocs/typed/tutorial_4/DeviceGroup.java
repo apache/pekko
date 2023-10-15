@@ -13,6 +13,8 @@
 
 package jdocs.typed.tutorial_4;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.PostStop;
@@ -20,9 +22,6 @@ import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.Receive;
-
-import java.util.HashMap;
-import java.util.Map;
 
 // #device-group-full
 // #device-group-remove

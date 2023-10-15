@@ -13,10 +13,9 @@
 
 package jdocs.cluster;
 
-import java.util.concurrent.TimeUnit;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.cluster.Cluster;

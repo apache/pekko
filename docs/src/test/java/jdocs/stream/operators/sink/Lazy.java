@@ -13,13 +13,12 @@
 
 package jdocs.stream.operators.sink;
 
+import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.javadsl.Keep;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.Optional;
-import java.util.concurrent.CompletionStage;
 
 public class Lazy {
 

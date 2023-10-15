@@ -13,16 +13,15 @@
 
 package org.apache.pekko.japi;
 
+import static org.junit.Assert.*;
+
+import java.util.concurrent.Callable;
 import org.apache.pekko.actor.ExtendedActorSystem;
 import org.apache.pekko.event.LoggingAdapter;
 import org.apache.pekko.event.NoLogging;
 import org.apache.pekko.serialization.JavaSerializer;
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
-
-import java.util.concurrent.Callable;
-
-import static org.junit.Assert.*;
 
 public class JavaAPITestBase extends JUnitSuite {
 

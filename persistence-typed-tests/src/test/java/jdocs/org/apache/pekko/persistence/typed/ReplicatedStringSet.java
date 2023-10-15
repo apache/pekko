@@ -13,14 +13,13 @@
 
 package jdocs.org.apache.pekko.persistence.typed;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.persistence.testkit.query.javadsl.PersistenceTestKitReadJournal;
 import org.apache.pekko.persistence.typed.ReplicaId;
 import org.apache.pekko.persistence.typed.ReplicationId;
 import org.apache.pekko.persistence.typed.javadsl.*;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public final class ReplicatedStringSet
     extends ReplicatedEventSourcedBehavior<ReplicatedStringSet.Command, String, Set<String>> {

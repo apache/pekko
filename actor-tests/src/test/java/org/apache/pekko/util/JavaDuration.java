@@ -13,11 +13,11 @@
 
 package org.apache.pekko.util;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.duration.Duration;
-
-import static org.junit.Assert.assertTrue;
 
 public class JavaDuration extends JUnitSuite {
 

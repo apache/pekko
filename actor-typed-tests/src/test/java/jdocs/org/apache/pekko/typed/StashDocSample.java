@@ -14,13 +14,13 @@
 package jdocs.org.apache.pekko.typed;
 
 // #import
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import org.apache.pekko.actor.typed.javadsl.StashBuffer;
-import java.util.concurrent.CompletionStage;
 
 // #import
 

@@ -13,13 +13,12 @@
 
 package org.apache.pekko.stream.typed.javadsl;
 
+import java.util.Optional;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.stream.OverflowStrategy;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-
-import java.util.Optional;
 
 public class ActorSourceSinkCompileTest {
 

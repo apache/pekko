@@ -13,6 +13,11 @@
 
 package jdocs.stream.javadsl.cookbook;
 
+import static org.junit.Assert.assertEquals;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.TimeUnit;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.stream.*;
@@ -24,12 +29,6 @@ import org.apache.pekko.util.ByteString;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.assertEquals;
 
 public class RecipeDigest extends RecipeTest {
   static ActorSystem system;

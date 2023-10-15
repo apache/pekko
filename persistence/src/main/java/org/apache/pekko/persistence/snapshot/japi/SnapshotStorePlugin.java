@@ -13,12 +13,11 @@
 
 package org.apache.pekko.persistence.snapshot.japi;
 
+import java.util.Optional;
 import org.apache.pekko.persistence.SelectedSnapshot;
 import org.apache.pekko.persistence.SnapshotMetadata;
 import org.apache.pekko.persistence.SnapshotSelectionCriteria;
 import scala.concurrent.Future;
-
-import java.util.Optional;
 
 interface SnapshotStorePlugin {
   // #snapshot-store-plugin-api

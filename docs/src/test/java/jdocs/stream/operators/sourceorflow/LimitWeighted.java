@@ -13,12 +13,11 @@
 
 package jdocs.stream.operators.sourceorflow;
 
+import java.util.concurrent.CompletionStage;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.util.ByteString;
-
-import java.util.concurrent.CompletionStage;
 
 public class LimitWeighted {
   public void simple() {
