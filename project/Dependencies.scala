@@ -97,7 +97,7 @@ object Dependencies {
     // Added explicitly for when artery tcp is used
     val agrona = "org.agrona" % "agrona" % agronaVersion
 
-    val asnOne = ("com.hierynomus" % "asn-one" % "0.5.0").exclude("org.slf4j", "slf4j-api")
+    val asnOne = ("com.hierynomus" % "asn-one" % "0.6.0").exclude("org.slf4j", "slf4j-api")
 
     val jacksonCore = Def.setting {
       "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
