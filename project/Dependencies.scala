@@ -46,7 +46,7 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = "3.2.14"
+  val scalaTestVersion = "3.2.17"
   val scalaTestBaseVersion = "3.2.10"
   val scalaTestScalaCheckVersion = "1-16"
   val scalaCheckVersion = "1.15.1"
