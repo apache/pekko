@@ -46,10 +46,9 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = "3.2.14"
-  val scalaTestBaseVersion = "3.2.10"
-  val scalaTestScalaCheckVersion = "1-16"
-  val scalaCheckVersion = "1.15.1"
+  val scalaTestVersion = "3.2.17"
+  val scalaTestScalaCheckVersion = "1-17"
+  val scalaCheckVersion = "1.17.0"
 
   val Versions =
     Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
@@ -152,13 +151,13 @@ object Dependencies {
         "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
       }
       val scalatestTestNG = Def.setting {
-        "org.scalatestplus" %% "testng-6-7" % (scalaTestBaseVersion + ".0") % Test
+        "org.scalatestplus" %% "testng-7-5" % (scalaTestVersion + ".0") % Test
       }
       val scalatestScalaCheck = Def.setting {
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
       }
       val scalatestMockito = Def.setting {
-        "org.scalatestplus" %% "mockito-3-4" % (scalaTestBaseVersion + ".0") % Test
+        "org.scalatestplus" %% "mockito-4-11" % (scalaTestVersion + ".0") % Test
       }
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
