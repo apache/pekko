@@ -166,7 +166,7 @@ object Dependencies {
       val log4j = "log4j" % "log4j" % "1.2.17" % Test
 
       // in-memory filesystem for file related tests
-      val jimfs = "com.google.jimfs" % "jimfs" % "1.1" % Test
+      val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
       // docker utils
       val dockerClient = "com.spotify" % "docker-client" % "8.16.0" % Test
