@@ -15,9 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Based on Apache Arrow's java-nightly workflow
-# https://github.com/apache/arrow/blob/master/.github/workflows/java_nightly.yml
-name: Publish check
+name: Generate doc check
 
 on:
   pull_request:
@@ -26,8 +24,8 @@ permissions:
   contents: read
 
 jobs:
-  publish-check:
-    name: Publish check
+  generate-doc-check:
+    name: Generate doc check
     runs-on: ubuntu-20.04
     if: github.repository == 'apache/incubator-pekko'
     steps:
