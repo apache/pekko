@@ -29,7 +29,7 @@ addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.31")
 addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.0.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.10")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.10")
-addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.2.2")
+addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.3.2")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 
 // We have to deliberately use older versions of sbt-paradox because current Pekko sbt build

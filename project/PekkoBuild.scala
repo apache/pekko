@@ -284,24 +284,25 @@ object PekkoBuild {
       },
       logoColor := scala.Console.BLUE,
       usefulTasks := Seq(
-        UsefulTask("", "compile", "Compile the current project"),
-        UsefulTask("", "test", "Run all the tests"),
-        UsefulTask("", "testQuick",
+        UsefulTask("compile", "Compile the current project"),
+        UsefulTask("test", "Run all the tests"),
+        UsefulTask("testQuick",
           "Runs all the tests. When run multiple times will only run previously failing tests (shell mode only)"),
-        UsefulTask("", "testOnly *.AnySpec", "Only run a selected test"),
-        UsefulTask("", "testQuick *.AnySpec",
+        UsefulTask("testOnly *.AnySpec", "Only run a selected test"),
+        UsefulTask("testQuick *.AnySpec",
           "Only run a selected test. When run multiple times will only run previously failing tests (shell mode only)"),
-        UsefulTask("", "testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
-        UsefulTask("", "publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
-        UsefulTask("", "verifyCodeStyle", "Verify code style"),
-        UsefulTask("", "applyCodeStyle", "Apply code style"),
-        UsefulTask("", "sortImports", "Sort the imports"),
-        UsefulTask("", "mimaReportBinaryIssues ", "Check binary issues"),
-        UsefulTask("", "validatePullRequest ", "Validate pull request"),
-        UsefulTask("", "docs/paradox", "Build documentation"),
-        UsefulTask("", "docs/paradoxBrowse", "Browse the generated documentation"),
-        UsefulTask("", "tips:", "prefix commands with `+` to run against cross Scala versions."),
-        UsefulTask("", "Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")))
+        UsefulTask("testQuickUntilPassed", "Runs all tests in a continuous loop until all tests pass"),
+        UsefulTask("publishLocal", "Publish current snapshot version to local ~/.ivy2 repo"),
+        UsefulTask("verifyCodeStyle", "Verify code style"),
+        UsefulTask("applyCodeStyle", "Apply code style"),
+        UsefulTask("sortImports", "Sort the imports"),
+        UsefulTask("mimaReportBinaryIssues ", "Check binary issues"),
+        UsefulTask("validatePullRequest ", "Validate pull request"),
+        UsefulTask("docs/paradox", "Build documentation"),
+        UsefulTask("docs/paradoxBrowse", "Browse the generated documentation"),
+        UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
+        UsefulTask("Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")).map(
+        _.noAlias))
   }
 
   private def optionalDir(path: String): Option[File] =
