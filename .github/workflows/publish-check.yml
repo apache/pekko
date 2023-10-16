@@ -51,4 +51,4 @@ jobs:
           sudo apt-get install graphviz
 
       - name: Publish to Apache Maven Local repo
-        run: sbt +publishM2
+        run: sbt +compile:doc
