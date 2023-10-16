@@ -8,6 +8,7 @@
  */
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
+import org.apache.pekko.Dependencies
 
 ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
