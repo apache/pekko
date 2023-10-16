@@ -30,7 +30,7 @@ object Dependencies {
   val agronaVersion = "1.19.2"
   val nettyVersion = "4.1.100.Final"
   val protobufJavaVersion = "3.19.6"
-  val logbackVersion = "1.2.11"
+  val logbackVersion = "1.2.12"
 
   val jacksonCoreVersion = "2.14.3"
   val jacksonDatabindVersion = jacksonCoreVersion
@@ -46,10 +46,9 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = "3.2.14"
-  val scalaTestBaseVersion = "3.2.10"
-  val scalaTestScalaCheckVersion = "1-16"
-  val scalaCheckVersion = "1.15.1"
+  val scalaTestVersion = "3.2.17"
+  val scalaTestScalaCheckVersion = "1-17"
+  val scalaCheckVersion = "1.17.0"
 
   val Versions =
     Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
@@ -73,7 +72,7 @@ object Dependencies {
 
     val sigar = "org.fusesource" % "sigar" % "1.6.4"
 
-    val jctools = "org.jctools" % "jctools-core" % "3.3.0"
+    val jctools = "org.jctools" % "jctools-core" % "4.0.1"
 
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
@@ -83,7 +82,7 @@ object Dependencies {
       "com.typesafe" %% "ssl-config-core" % sslConfigVersion
     }
 
-    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.7.0"
+    val lmdb = "org.lmdbjava" % "lmdbjava" % "0.8.3"
 
     val junit = "junit" % "junit" % junitVersion
 
@@ -97,7 +96,7 @@ object Dependencies {
     // Added explicitly for when artery tcp is used
     val agrona = "org.agrona" % "agrona" % agronaVersion
 
-    val asnOne = ("com.hierynomus" % "asn-one" % "0.5.0").exclude("org.slf4j", "slf4j-api")
+    val asnOne = ("com.hierynomus" % "asn-one" % "0.6.0").exclude("org.slf4j", "slf4j-api")
 
     val jacksonCore = Def.setting {
       "com.fasterxml.jackson.core" % "jackson-core" % jacksonCoreVersion
@@ -129,15 +128,15 @@ object Dependencies {
 
     object Docs {
       val sprayJson = "io.spray" %% "spray-json" % "1.3.6" % Test
-      val gson = "com.google.code.gson" % "gson" % "2.9.1" % Test
+      val gson = "com.google.code.gson" % "gson" % "2.10.1" % Test
     }
 
     object TestDependencies {
-      val bcpkix = "org.bouncycastle" % "bcpkix-jdk15on" % "1.68" % Test
+      val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % "1.76" % Test
       val commonsMath = "org.apache.commons" % "commons-math" % "2.2" % Test
-      val commonsIo = "commons-io" % "commons-io" % "2.11.0" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.15" % Test
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.23.0" % Test
+      val commonsIo = "commons-io" % "commons-io" % "2.14.0" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.0" % Test
+      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.24.0" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
 
@@ -152,13 +151,13 @@ object Dependencies {
         "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
       }
       val scalatestTestNG = Def.setting {
-        "org.scalatestplus" %% "testng-6-7" % (scalaTestBaseVersion + ".0") % Test
+        "org.scalatestplus" %% "testng-7-5" % (scalaTestVersion + ".0") % Test
       }
       val scalatestScalaCheck = Def.setting {
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
       }
       val scalatestMockito = Def.setting {
-        "org.scalatestplus" %% "mockito-3-4" % (scalaTestBaseVersion + ".0") % Test
+        "org.scalatestplus" %% "mockito-4-11" % (scalaTestVersion + ".0") % Test
       }
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
@@ -166,7 +165,7 @@ object Dependencies {
       val log4j = "log4j" % "log4j" % "1.2.17" % Test
 
       // in-memory filesystem for file related tests
-      val jimfs = "com.google.jimfs" % "jimfs" % "1.1" % Test
+      val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
       // docker utils
       val dockerClient = "com.spotify" % "docker-client" % "8.16.0" % Test
@@ -182,8 +181,8 @@ object Dependencies {
       }
 
       // metrics, measurements, perf testing
-      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.10" % Test
-      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.10" % Test
+      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.21" % Test
+      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.21" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
       val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.1.12" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)
