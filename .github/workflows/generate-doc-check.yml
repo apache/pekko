@@ -48,5 +48,5 @@ jobs:
         run: |-
           sudo apt-get install graphviz
 
-      - name: Publish to Apache Maven Local repo
+      - name: Compile docs for all Scala versions
         run: sbt +compile:doc
