@@ -21,6 +21,8 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.annotation.InternalApi
 
+import scala.annotation.nowarn
+
 /**
  * INTERNAL API
  *
@@ -88,6 +90,7 @@ import pekko.annotation.InternalApi
       case _ => None
     }
 
+    @nowarn("msg=deprecated")
     val loggingEvent = LoggingEvent(
       level = convertLevel(event.getLevel),
       message = event.getFormattedMessage,
