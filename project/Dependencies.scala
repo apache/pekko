@@ -159,7 +159,6 @@ object Dependencies {
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "3.0.0" % Test
-      val log4j = "log4j" % "log4j" % "1.2.17" % Test
 
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.1" % Test
