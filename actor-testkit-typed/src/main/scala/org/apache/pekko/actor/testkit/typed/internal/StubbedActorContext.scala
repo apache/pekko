@@ -21,7 +21,7 @@ import pekko.actor.{ ActorPath, ActorRefProvider, InvalidMessageException }
 import pekko.annotation.InternalApi
 import pekko.util.Helpers
 import pekko.{ actor => classic }
-import org.slf4j.Logger
+import org.slf4j.{ Logger, Marker }
 import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
@@ -243,11 +243,15 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
       .iterator()
       .asScala
       .map { evt =>
-        CapturedLogEvent(
-          level = evt.getLevel,
-          message = MessageFormatter.arrayFormat(evt.getMessage, evt.getArgumentArray).getMessage,
-          cause = Option(evt.getThrowable),
-          marker = Option(evt.getMarker))
+        {
+          val marker: Option[Marker] = Option(evt.getMarkers).flatMap(_.asScala.headOption)
+          CapturedLogEvent(
+            level = evt.getLevel,
+            message = MessageFormatter.arrayFormat(evt.getMessage, evt.getArgumentArray).getMessage,
+            cause = Option(evt.getThrowable),
+            marker = marker)
+
+        }
       }
       .toList
   }

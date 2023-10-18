@@ -16,6 +16,7 @@ package org.apache.pekko.actor.testkit.typed.internal
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.spi.ThrowableProxy
 import ch.qos.logback.core.AppenderBase
+import org.slf4j.Marker
 
 import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
@@ -88,13 +89,14 @@ import pekko.annotation.InternalApi
       case _ => None
     }
 
+    val marker: Option[Marker] = Option(event.getMarkerList).flatMap(_.asScala.headOption)
     val loggingEvent = LoggingEvent(
       level = convertLevel(event.getLevel),
       message = event.getFormattedMessage,
       loggerName = event.getLoggerName,
       threadName = event.getThreadName,
       timeStamp = event.getTimeStamp,
-      marker = Option(event.getMarker),
+      marker = marker,
       throwable = throwable,
       mdc = event.getMDCPropertyMap.asScala.toMap)
 
