@@ -27,22 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @DisplayName("ActorTestKitTestJunit5")
-@ExtendWith(TestKitJUnit5Extension.class)
+@ExtendWith(TestKitJunit5Extension.class)
 @ExtendWith(LogCapturingExtension.class)
-class ActorTestKitJUnit5Test extends JUnitSuite {
+class ActorTestKitJunit5Test extends JUnitSuite {
 
-  @JUnit5TestKit public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
+  @JUnit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
-    assertEquals("ActorTestKitJUnit5Test", testKit.system().name());
+    assertEquals("ActorTestKitJunit5Test", testKit.system().name());
   }
 
   @Test
   void systemNameShouldComeFromTestClass() {
     final ActorTestKit testKit2 = ActorTestKit.create();
     try {
-      assertEquals("ActorTestKitJUnit5Test", testKit2.system().name());
+      assertEquals("ActorTestKitJunit5Test", testKit2.system().name());
     } finally {
       testKit2.shutdownTestKit();
     }

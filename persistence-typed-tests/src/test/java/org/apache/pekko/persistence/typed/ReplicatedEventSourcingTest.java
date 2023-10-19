@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.typed;
 
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -152,8 +152,8 @@ public class ReplicatedEventSourcingTest extends JUnitSuite {
   }
 
   @ClassRule
-  public static final TestKitJUnitResource testKit =
-      new TestKitJUnitResource(
+  public static final TestKitJunitResource testKit =
+      new TestKitJunitResource(
           ConfigFactory.parseString(
                   "pekko.loglevel = INFO\n"
                       + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")

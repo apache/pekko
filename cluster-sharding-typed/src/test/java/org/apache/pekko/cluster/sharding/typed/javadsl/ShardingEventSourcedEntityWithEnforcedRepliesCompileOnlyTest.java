@@ -14,7 +14,7 @@
 package org.apache.pekko.cluster.sharding.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.cluster.typed.Cluster;
@@ -26,7 +26,7 @@ import org.junit.Rule;
 
 public class ShardingEventSourcedEntityWithEnforcedRepliesCompileOnlyTest {
 
-  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
+  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

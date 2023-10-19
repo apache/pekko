@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 public class LoggingTestKitTest extends JUnitSuite {
 
-  @ClassRule public static TestKitJUnitResource testKit = new TestKitJUnitResource();
+  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

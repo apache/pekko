@@ -14,7 +14,7 @@
 package org.apache.pekko.actor.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.PostStop;
@@ -30,7 +30,7 @@ import static org.apache.pekko.actor.typed.javadsl.Behaviors.same;
 /** Test creating [[MutableActor]]s using [[ReceiveBuilder]] */
 public class ReceiveBuilderTest extends JUnitSuite {
 
-  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
+  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

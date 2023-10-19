@@ -59,14 +59,14 @@ import pekko.util.Timeout
  * The application.conf of your project is not used in this case.
  * A specific configuration can be passed as constructor parameter.
  */
-final class TestKitJUnitResource(_kit: ActorTestKit) extends ExternalResource {
+final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
 
   /**
    * Config loaded from `application-test.conf` if that exists, otherwise
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    * The application.conf of your project is not used in this case.
    */
-  def this() = this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJUnitResource])))
+  def this() = this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource])))
 
   /**
    * Use a custom [[pekko.actor.typed.ActorSystem]] for the actor system.
@@ -79,20 +79,20 @@ final class TestKitJUnitResource(_kit: ActorTestKit) extends ExternalResource {
   def this(customConfig: String) =
     this(
       ActorTestKit.create(
-        TestKitUtils.testNameFromCallStack(classOf[TestKitJUnitResource]),
+        TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]),
         ConfigFactory.parseString(customConfig)))
 
   /**
    * Use a custom config for the actor system.
    */
   def this(customConfig: Config) =
-    this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJUnitResource]), customConfig))
+    this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]), customConfig))
 
   /**
    * Use a custom config for the actor system, and a custom [[pekko.actor.testkit.typed.TestKitSettings]].
    */
   def this(customConfig: Config, settings: TestKitSettings) =
-    this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJUnitResource]), customConfig, settings))
+    this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]), customConfig, settings))
 
   @Rule
   val testKit: ActorTestKit = _kit

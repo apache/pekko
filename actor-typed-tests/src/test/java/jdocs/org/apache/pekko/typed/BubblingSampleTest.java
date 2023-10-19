@@ -14,7 +14,7 @@
 package jdocs.org.apache.pekko.typed;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
@@ -30,8 +30,8 @@ import static jdocs.org.apache.pekko.typed.BubblingSample.Protocol;
 public class BubblingSampleTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJUnitResource testKit =
-      new TestKitJUnitResource("pekko.loglevel = off");
+  public static final TestKitJunitResource testKit =
+      new TestKitJunitResource("pekko.loglevel = off");
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

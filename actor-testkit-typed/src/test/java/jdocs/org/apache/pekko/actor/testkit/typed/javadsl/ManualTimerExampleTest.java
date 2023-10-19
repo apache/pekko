@@ -18,7 +18,7 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.scalatestplus.junit.JUnitSuite;
@@ -33,7 +33,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 public class ManualTimerExampleTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJUnitResource testKit = new TestKitJUnitResource(ManualTime.config());
+  public static final TestKitJunitResource testKit = new TestKitJunitResource(ManualTime.config());
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

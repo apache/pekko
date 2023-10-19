@@ -12,7 +12,7 @@ package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
 import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 // #junit5-integration
 @DisplayName("JUnit5")
-@ExtendWith(TestKitJUnit5Extension.class)
-class JUnit5IntegrationExampleTest {
+@ExtendWith(TestKitJunit5Extension.class)
+class Junit5IntegrationExampleTest {
 
-  @JUnit5TestKit public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
+  @JUnit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
 
   @Test
   void junit5Test() {

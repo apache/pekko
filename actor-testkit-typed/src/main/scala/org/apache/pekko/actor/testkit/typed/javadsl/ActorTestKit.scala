@@ -161,9 +161,9 @@ object ActorTestKit {
  * The actor system has a custom guardian that allows for spawning arbitrary actors using the `spawn` methods.
  *
  * Designed to work with any test framework, but framework glue code that calls `shutdownTestKit` after all tests has
- * run needs to be provided by the user or with [[TestKitJUnitResource]].
+ * run needs to be provided by the user or with [[TestKitJunitResource]].
  *
- * Use `TestKit.create` factories to construct manually or [[TestKitJUnitResource]] to use together with JUnit tests
+ * Use `TestKit.create` factories to construct manually or [[TestKitJunitResource]] to use together with JUnit tests
  *
  * For synchronous testing of a `Behavior` see [[BehaviorTestKit]]
  */

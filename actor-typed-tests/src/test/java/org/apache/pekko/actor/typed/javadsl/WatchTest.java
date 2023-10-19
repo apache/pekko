@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.scalatestplus.junit.JUnitSuite;
@@ -33,7 +33,7 @@ import static org.apache.pekko.actor.typed.javadsl.Behaviors.*;
 
 public class WatchTest extends JUnitSuite {
 
-  @ClassRule public static TestKitJUnitResource testKit = new TestKitJUnitResource();
+  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

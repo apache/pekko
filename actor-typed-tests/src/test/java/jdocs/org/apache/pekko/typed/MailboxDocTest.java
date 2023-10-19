@@ -15,7 +15,7 @@ package jdocs.org.apache.pekko.typed;
 
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -30,8 +30,8 @@ import org.scalatestplus.junit.JUnitSuite;
 public class MailboxDocTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJUnitResource testKit =
-      new TestKitJUnitResource(ConfigFactory.load("mailbox-config-sample.conf"));
+  public static final TestKitJunitResource testKit =
+      new TestKitJunitResource(ConfigFactory.load("mailbox-config-sample.conf"));
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

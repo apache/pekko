@@ -14,7 +14,7 @@
 package org.apache.pekko.actor.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -34,7 +34,7 @@ import static org.junit.Assert.assertEquals;
 /** Test creating [[Behavior]]s using [[BehaviorBuilder]] */
 public class BehaviorBuilderTest extends JUnitSuite {
 
-  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
+  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

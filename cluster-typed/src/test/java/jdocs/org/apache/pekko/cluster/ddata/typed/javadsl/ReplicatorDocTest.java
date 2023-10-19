@@ -14,7 +14,7 @@
 package jdocs.org.apache.pekko.cluster.ddata.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.cluster.ddata.GCounter;
@@ -43,7 +43,7 @@ public class ReplicatorDocTest extends JUnitSuite {
               + "pekko.remote.artery.canonical.port = 0 \n"
               + "pekko.remote.artery.canonical.hostname = 127.0.0.1 \n");
 
-  @ClassRule public static TestKitJUnitResource testKit = new TestKitJUnitResource(config);
+  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource(config);
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

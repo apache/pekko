@@ -13,7 +13,7 @@
 
 package jdocs.persistence.testkit;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
@@ -35,8 +35,8 @@ import org.junit.Test;
 public class PersistenceTestKitSampleTest extends AbstractJavaTest {
 
   @ClassRule
-  public static final TestKitJUnitResource testKit =
-      new TestKitJUnitResource(
+  public static final TestKitJunitResource testKit =
+      new TestKitJunitResource(
           PersistenceTestKitPlugin.getInstance()
               .config()
               .withFallback(ConfigFactory.defaultApplication()));

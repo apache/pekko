@@ -13,7 +13,7 @@
 
 package jdocs.persistence.testkit;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 
 import com.typesafe.config.ConfigFactory;
 import jdocs.AbstractJavaTest;
@@ -34,8 +34,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PersistenceInitTest extends AbstractJavaTest {
   @ClassRule
-  public static final TestKitJUnitResource testKit =
-      new TestKitJUnitResource(
+  public static final TestKitJunitResource testKit =
+      new TestKitJunitResource(
           ConfigFactory.parseString(
                   "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
                       + "pekko.persistence.journal.inmem.test-serialization = on \n"
