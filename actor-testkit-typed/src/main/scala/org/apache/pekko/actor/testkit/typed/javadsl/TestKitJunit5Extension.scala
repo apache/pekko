@@ -17,9 +17,8 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl
 
-import org.apache.pekko
-import pekko.actor.testkit.typed.annotations.JUnit5TestKit
-import org.junit.jupiter.api.extension.{ AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext }
+import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit
+import org.junit.jupiter.api.extension.{AfterAllCallback, BeforeTestExecutionCallback, ExtensionContext}
 import org.junit.platform.commons.support.AnnotationSupport
 
 final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExecutionCallback {
@@ -32,7 +31,7 @@ final class TestKitJunit5Extension() extends AfterAllCallback with BeforeTestExe
   override def beforeTestExecution(context: ExtensionContext): Unit = {
 
     context.getTestInstance.ifPresent((instance: AnyRef) => {
-      val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[JUnit5TestKit])
+      val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[Junit5TestKit])
       val fieldValue = annotations.stream().findFirst().orElseThrow(() =>
         throw new IllegalArgumentException("Could not find field annotated with @Junit5TestKit"))
       testKit = Some(fieldValue.asInstanceOf[ActorTestKit])
