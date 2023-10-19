@@ -19,7 +19,7 @@ import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.testkit.typed.javadsl.ManualTime;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.stream.javadsl.Source;
 // #range-imports
 
@@ -43,7 +43,7 @@ import java.util.Optional;
 
 public class SourceDocExamples {
 
-  public static final TestKitJunitResource testKit = new TestKitJunitResource(ManualTime.config());
+  public static final TestKitJUnitResource testKit = new TestKitJUnitResource(ManualTime.config());
 
   public static void fromExample() {
     final ActorSystem system = null;

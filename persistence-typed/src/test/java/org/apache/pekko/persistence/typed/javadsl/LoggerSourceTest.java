@@ -15,7 +15,7 @@ package org.apache.pekko.persistence.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -41,7 +41,7 @@ public class LoggerSourceTest extends JUnitSuite {
           "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
               + "pekko.persistence.journal.inmem.test-serialization = on \n");
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource(config);
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource(config);
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

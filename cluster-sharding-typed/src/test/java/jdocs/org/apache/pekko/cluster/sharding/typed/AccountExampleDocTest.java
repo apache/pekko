@@ -23,7 +23,7 @@ import static org.junit.Assert.*;
 // #test
 import java.math.BigDecimal;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.persistence.testkit.javadsl.EventSourcedBehaviorTestKit;
 import org.apache.pekko.persistence.testkit.javadsl.EventSourcedBehaviorTestKit.CommandResultWithReply;
@@ -45,8 +45,8 @@ public class AccountExampleDocTest
 
   // #testkit
   @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(EventSourcedBehaviorTestKit.config());
+  public static final TestKitJUnitResource testKit =
+      new TestKitJUnitResource(EventSourcedBehaviorTestKit.config());
 
   private EventSourcedBehaviorTestKit<
           AccountEntity.Command, AccountEntity.Event, AccountEntity.Account>

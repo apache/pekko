@@ -15,7 +15,7 @@ package jdocs.org.apache.pekko.cluster.sharding.typed;
 
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
@@ -53,7 +53,7 @@ public class AccountExampleTest extends JUnitSuite {
               + "pekko.persistence.journal.plugin = \"pekko.persistence.journal.inmem\" \n"
               + "pekko.persistence.journal.inmem.test-serialization = on \n");
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource(config);
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource(config);
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

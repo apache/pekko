@@ -16,7 +16,7 @@ package org.apache.pekko.persistence.typed.javadsl;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.*;
 import org.apache.pekko.actor.typed.javadsl.ActorContext;
@@ -54,8 +54,8 @@ import static org.junit.Assert.assertEquals;
 public class EventSourcedBehaviorJavaDslTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
+  public static final TestKitJUnitResource testKit =
+      new TestKitJUnitResource(
           ConfigFactory.parseString(
                   "pekko.loglevel = INFO\n"
                       + "pekko.loggers = [\"org.apache.pekko.testkit.TestEventListener\"]")

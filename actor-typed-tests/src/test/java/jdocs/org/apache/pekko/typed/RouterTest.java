@@ -30,7 +30,7 @@ import org.apache.pekko.actor.typed.javadsl.Routers;
 import org.apache.pekko.actor.typed.receptionist.Receptionist;
 import org.apache.pekko.actor.typed.receptionist.ServiceKey;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 
 import org.junit.ClassRule;
@@ -41,7 +41,7 @@ import org.scalatestplus.junit.JUnitSuite;
 
 public class RouterTest extends JUnitSuite {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
 
   static // #routee
   class Worker {

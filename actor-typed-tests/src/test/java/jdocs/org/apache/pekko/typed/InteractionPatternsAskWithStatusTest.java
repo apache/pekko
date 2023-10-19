@@ -14,7 +14,7 @@
 package jdocs.org.apache.pekko.typed;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletionStage;
 
 public class InteractionPatternsAskWithStatusTest extends JUnitSuite {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

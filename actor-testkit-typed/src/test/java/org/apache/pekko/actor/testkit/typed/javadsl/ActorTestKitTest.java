@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ActorTestKitTest extends JUnitSuite {
 
-  @ClassRule public static TestKitJunitResource testKit = new TestKitJunitResource();
+  @ClassRule public static TestKitJUnitResource testKit = new TestKitJUnitResource();
 
   @Rule public final LogCapturing logCapturing = new LogCapturing();
 

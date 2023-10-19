@@ -13,7 +13,7 @@
 
 package jdocs.typed.tutorial_5;
 
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
@@ -36,7 +36,7 @@ import static jdocs.typed.tutorial_5.DeviceManager.DeviceNotAvailable;
 
 public class DeviceGroupQueryTest extends JUnitSuite {
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
 
   // #query-test-normal
   @Test

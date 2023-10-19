@@ -14,7 +14,7 @@
 package jdocs.typed.tutorial_3;
 
 // #device-read-test
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
@@ -33,7 +33,7 @@ public class DeviceTest {
 public class DeviceTest extends org.scalatestplus.junit.JUnitSuite {
   // #device-read-test
 
-  @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
+  @ClassRule public static final TestKitJUnitResource testKit = new TestKitJUnitResource();
 
   @Test
   public void testReplyWithEmptyReadingIfNoTemperatureIsKnown() {

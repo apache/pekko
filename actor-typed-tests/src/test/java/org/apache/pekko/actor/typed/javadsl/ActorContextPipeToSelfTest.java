@@ -15,7 +15,7 @@ package org.apache.pekko.actor.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.testkit.typed.javadsl.LoggingTestKit;
-import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
+import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJUnitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
@@ -36,8 +36,8 @@ import static org.junit.Assert.*;
 public final class ActorContextPipeToSelfTest extends JUnitSuite {
 
   @ClassRule
-  public static final TestKitJunitResource testKit =
-      new TestKitJunitResource(
+  public static final TestKitJUnitResource testKit =
+      new TestKitJUnitResource(
           ConfigFactory.parseString(
               "pipe-to-self-spec-dispatcher.executor = thread-pool-executor\n"
                   + "pipe-to-self-spec-dispatcher.type = PinnedDispatcher\n"));
