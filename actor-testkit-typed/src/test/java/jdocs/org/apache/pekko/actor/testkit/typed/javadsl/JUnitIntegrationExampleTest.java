@@ -25,7 +25,7 @@ import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-public class JunitIntegrationExampleTest {
+public class JUnitIntegrationExampleTest {
 
   @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();
 
