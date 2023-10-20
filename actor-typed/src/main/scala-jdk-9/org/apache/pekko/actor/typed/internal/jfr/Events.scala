@@ -20,8 +20,6 @@ import jdk.jfr.Label
 import jdk.jfr.StackTrace
 import org.apache.pekko.annotation.InternalApi
 
-import scala.annotation.unused
-
 // requires jdk9+ to compile
 // for editing these in IntelliJ, open module settings, change JDK dependency to 11 for only this module
 
@@ -97,7 +95,7 @@ final class DeliveryProducerReceived(val producerId: String, val currentSeqNr: L
 @StackTrace(false)
 @Category(Array("Pekko", "Delivery", "ProducerController")) @Label(
   "Delivery ProducerController received demand request")
-final class DeliveryProducerReceivedRequest(val producerId: String, val requestedSeqNr: Long, @unused confirmedSeqNr: Long)
+final class DeliveryProducerReceivedRequest(val producerId: String, val requestedSeqNr: Long,  confirmedSeqNr: Long)
     extends Event
 
 /** INTERNAL API */
