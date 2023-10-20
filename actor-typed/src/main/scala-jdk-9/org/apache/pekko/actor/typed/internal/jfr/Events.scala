@@ -18,6 +18,7 @@ import jdk.jfr.Enabled
 import jdk.jfr.Event
 import jdk.jfr.Label
 import jdk.jfr.StackTrace
+
 import org.apache.pekko.annotation.InternalApi
 
 // requires jdk9+ to compile
