@@ -17,9 +17,9 @@
 
 package jdocs.org.apache.pekko.actor.testkit.typed.javadsl;
 
-import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
 import org.apache.pekko.actor.testkit.typed.javadsl.*;
-import org.apache.pekko.actor.testkit.typed.javadsl.Junit5TestKitBuilder;
+import org.apache.pekko.actor.testkit.typed.javadsl.JUnit5TestKitBuilder;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,12 +29,13 @@ import static jdocs.org.apache.pekko.actor.testkit.typed.javadsl.AsyncTestingExa
 
 // test code copied from LogCapturingExampleTest.java
 
-@DisplayName("Junit5 log capturing")
-@ExtendWith(TestKitJunit5Extension.class)
+@DisplayName("JUnit5 log capturing")
+@ExtendWith(TestKitJUnit5Extension.class)
 @ExtendWith(LogCapturingExtension.class)
 class LogCapturingExtensionExampleTest {
 
-  @Junit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
+  @JUnit5TestKit
+  public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
 
   @Test
   void testSomething() {

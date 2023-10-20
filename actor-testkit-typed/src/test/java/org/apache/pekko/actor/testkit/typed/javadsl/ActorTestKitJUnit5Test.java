@@ -9,7 +9,7 @@
 
 package org.apache.pekko.actor.testkit.typed.javadsl;
 
-import org.apache.pekko.actor.testkit.typed.annotations.Junit5TestKit;
+import org.apache.pekko.actor.testkit.typed.annotations.JUnit5TestKit;
 import org.apache.pekko.Done;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 
@@ -26,23 +26,24 @@ import static org.apache.pekko.Done.done;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@DisplayName("ActorTestKitTestJunit5")
-@ExtendWith(TestKitJunit5Extension.class)
+@DisplayName("ActorTestKitTestJUnit5")
+@ExtendWith(TestKitJUnit5Extension.class)
 @ExtendWith(LogCapturingExtension.class)
-class ActorTestKitJunit5Test extends JUnitSuite {
+class ActorTestKitJUnit5Test extends JUnitSuite {
 
-  @Junit5TestKit public ActorTestKit testKit = new Junit5TestKitBuilder().build();
+  @JUnit5TestKit
+  public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
 
   @Test
   void systemNameShouldComeFromTestClassViaJunitResource() {
-    assertEquals("ActorTestKitJunit5Test", testKit.system().name());
+    assertEquals("ActorTestKitJUnit5Test", testKit.system().name());
   }
 
   @Test
   void systemNameShouldComeFromTestClass() {
     final ActorTestKit testKit2 = ActorTestKit.create();
     try {
-      assertEquals("ActorTestKitJunit5Test", testKit2.system().name());
+      assertEquals("ActorTestKitJUnit5Test", testKit2.system().name());
     } finally {
       testKit2.shutdownTestKit();
     }

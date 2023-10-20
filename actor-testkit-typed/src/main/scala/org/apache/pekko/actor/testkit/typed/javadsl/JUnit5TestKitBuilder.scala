@@ -23,25 +23,25 @@ import pekko.actor.testkit.typed.internal.TestKitUtils
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit.ApplicationTestConfig
 import pekko.actor.typed.ActorSystem
 
-final class Junit5TestKitBuilder() {
+final class JUnit5TestKitBuilder() {
 
   var system: Option[ActorSystem[_]] = None
 
   var customConfig: Config = ApplicationTestConfig
 
-  var name: String = TestKitUtils.testNameFromCallStack(classOf[Junit5TestKitBuilder])
+  var name: String = TestKitUtils.testNameFromCallStack(classOf[JUnit5TestKitBuilder])
 
-  def withSystem(system: ActorSystem[_]): Junit5TestKitBuilder = {
+  def withSystem(system: ActorSystem[_]): JUnit5TestKitBuilder = {
     this.system = Some(system)
     this
   }
 
-  def withCustomConfig(customConfig: Config): Junit5TestKitBuilder = {
+  def withCustomConfig(customConfig: Config): JUnit5TestKitBuilder = {
     this.customConfig = customConfig
     this
   }
 
-  def withName(name: String): Junit5TestKitBuilder = {
+  def withName(name: String): JUnit5TestKitBuilder = {
     this.name = name
     this
   }
