@@ -25,7 +25,7 @@ final class LogCapturingExtension extends InvocationInterceptor {
 
   @throws[Throwable]
   override def interceptTestMethod(invocation: Invocation[Void], invocationContext: ReflectiveInvocationContext[Method],
-                                   extensionContext: ExtensionContext): Unit = {
+      extensionContext: ExtensionContext): Unit = {
 
     val testClassName = invocationContext.getTargetClass.getSimpleName
     val testMethodName = invocationContext.getExecutable.getName
@@ -39,11 +39,11 @@ final class LogCapturingExtension extends InvocationInterceptor {
       case NonFatal(e) =>
         println(
           s"--> [${Console.BLUE}${testClassName}: ${testMethodName}${Console.RESET}] " +
-            s"Start of log messages of test that failed with ${e.getMessage}")
+          s"Start of log messages of test that failed with ${e.getMessage}")
         capturingAppender.flush()
         println(
           s"<-- [${Console.BLUE}${testClassName}: ${testMethodName}${Console.RESET}] " +
-            s"End of log messages of test that failed with ${e.getMessage}")
+          s"End of log messages of test that failed with ${e.getMessage}")
         throw e
     } finally {
 
