@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ExtendWith(TestKitJUnit5Extension.class)
 class JUnit5IntegrationExampleTest {
 
-  @JUnit5TestKit
-  public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
+  @JUnit5TestKit public ActorTestKit testKit = new JUnit5TestKitBuilder().build();
 
   @Test
   void junit5Test() {
