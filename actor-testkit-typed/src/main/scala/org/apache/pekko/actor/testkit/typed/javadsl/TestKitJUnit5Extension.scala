@@ -29,8 +29,8 @@ final class TestKitJUnit5Extension() extends AfterAllCallback with BeforeTestExe
    * Get a reference to the field annotated with @JUnit5Testkit  [[JUnit5TestKit]]
    */
   override def beforeTestExecution(context: ExtensionContext): Unit = {
-
-    context.getTestInstance.ifPresent((instance: AnyRef) => {
+    val testInstance: Option[AnyRef] = Option.when(context.getTestInstance.isPresent)(context.getTestInstance.get())
+    testInstance.map(instance => {
       val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[JUnit5TestKit])
       val fieldValue = annotations.stream().findFirst().orElseThrow(() =>
         throw new IllegalArgumentException("Could not find field annotated with @JUnit5TestKit"))
