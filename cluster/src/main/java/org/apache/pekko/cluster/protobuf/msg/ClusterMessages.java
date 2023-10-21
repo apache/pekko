@@ -380,7 +380,7 @@ public final class ClusterMessages {
       super(builder);
     }
     private Join() {
-      roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       appVersion_ = "";
     }
 
@@ -832,7 +832,7 @@ public final class ClusterMessages {
           nodeBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         appVersion_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
@@ -1104,7 +1104,7 @@ public final class ClusterMessages {
         return nodeBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureRolesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           roles_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(roles_);
@@ -1192,7 +1192,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearRoles() {
-        roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        roles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -7294,7 +7294,7 @@ public final class ClusterMessages {
       super(builder);
     }
     private GossipStatus() {
-      allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       seenDigest_ = org.apache.pekko.protobufv3.internal.ByteString.EMPTY;
     }
 
@@ -7779,7 +7779,7 @@ public final class ClusterMessages {
           fromBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
-        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         if (versionBuilder_ == null) {
           version_ = null;
@@ -8072,7 +8072,7 @@ public final class ClusterMessages {
         return fromBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAllHashesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           allHashes_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(allHashes_);
@@ -8160,7 +8160,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearAllHashes() {
-        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -8593,11 +8593,11 @@ public final class ClusterMessages {
     }
     private Gossip() {
       allAddresses_ = java.util.Collections.emptyList();
-      allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
-      allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+      allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       members_ = java.util.Collections.emptyList();
       tombstones_ = java.util.Collections.emptyList();
-      allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -9372,9 +9372,9 @@ public final class ClusterMessages {
         } else {
           allAddressesBuilder_.clear();
         }
-        allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
-        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         if (membersBuilder_ == null) {
           members_ = java.util.Collections.emptyList();
@@ -9400,7 +9400,7 @@ public final class ClusterMessages {
         } else {
           tombstonesBuilder_.clear();
         }
-        allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000080);
         return this;
       }
@@ -9948,7 +9948,7 @@ public final class ClusterMessages {
         return allAddressesBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAllRolesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           allRoles_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(allRoles_);
@@ -10036,7 +10036,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearAllRoles() {
-        allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -10057,7 +10057,7 @@ public final class ClusterMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAllHashesIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
           allHashes_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(allHashes_);
@@ -10145,7 +10145,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearAllHashes() {
-        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allHashes_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
@@ -10886,7 +10886,7 @@ public final class ClusterMessages {
         return tombstonesBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAllAppVersionsIsMutable() {
         if (!((bitField0_ & 0x00000080) != 0)) {
           allAppVersions_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(allAppVersions_);
@@ -10974,7 +10974,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearAllAppVersions() {
-        allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allAppVersions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000080);
         onChanged();
         return this;
@@ -21262,7 +21262,7 @@ public final class ClusterMessages {
     }
     private ClusterRouterPoolSettings() {
       useRole_ = "";
-      useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -21776,7 +21776,7 @@ public final class ClusterMessages {
         bitField0_ = (bitField0_ & ~0x00000004);
         useRole_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
-        useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
@@ -22134,7 +22134,7 @@ public final class ClusterMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureUseRolesIsMutable() {
         if (!((bitField0_ & 0x00000010) != 0)) {
           useRoles_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(useRoles_);
@@ -22222,7 +22222,7 @@ public final class ClusterMessages {
        * @return This builder for chaining.
        */
       public Builder clearUseRoles() {
-        useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        useRoles_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000010);
         onChanged();
         return this;

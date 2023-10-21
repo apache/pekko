@@ -1516,7 +1516,7 @@ public final class ReplicatedEventSourcing {
     private ORSet() {
       originDc_ = "";
       dots_ = java.util.Collections.emptyList();
-      stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       intElements_ = emptyIntList();
       longElements_ = emptyLongList();
       otherElements_ = java.util.Collections.emptyList();
@@ -2340,7 +2340,7 @@ public final class ReplicatedEventSourcing {
         } else {
           dotsBuilder_.clear();
         }
-        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         intElements_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -3133,7 +3133,7 @@ public final class ReplicatedEventSourcing {
       }
 
       private org.apache.pekko.protobufv3.internal.LazyStringList stringElements_ =
-          org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+          org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
 
       private void ensureStringElementsIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
@@ -3226,7 +3226,7 @@ public final class ReplicatedEventSourcing {
        * @return This builder for chaining.
        */
       public Builder clearStringElements() {
-        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        stringElements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;

@@ -2535,7 +2535,7 @@ public final class ArteryControlFormats {
       super(builder);
     }
     private CompressionTableAdvertisement() {
-      keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       values_ = emptyIntList();
     }
 
@@ -3102,7 +3102,7 @@ public final class ArteryControlFormats {
         bitField0_ = (bitField0_ & ~0x00000002);
         tableVersion_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
-        keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         values_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -3474,7 +3474,7 @@ public final class ArteryControlFormats {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureKeysIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
           keys_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(keys_);
@@ -3610,7 +3610,7 @@ public final class ArteryControlFormats {
        * @return This builder for chaining.
        */
       public Builder clearKeys() {
-        keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        keys_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;

@@ -7685,7 +7685,7 @@ public final class ReliableDelivery {
       super(builder);
     }
     private Cleanup() {
-      qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -8001,7 +8001,7 @@ public final class ReliableDelivery {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -8123,7 +8123,7 @@ public final class ReliableDelivery {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureQualifiersIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           qualifiers_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(qualifiers_);
@@ -8211,7 +8211,7 @@ public final class ReliableDelivery {
        * @return This builder for chaining.
        */
       public Builder clearQualifiers() {
-        qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        qualifiers_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
