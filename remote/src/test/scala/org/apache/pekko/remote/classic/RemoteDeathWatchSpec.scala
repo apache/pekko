@@ -134,7 +134,8 @@ pekko.actor.warn-about-java-serializer-usage = off
       extinctPath,
       Nobody,
       props = None,
-      deploy = None)
+      deploy = None,
+      acceptProtocolNames = Set("pekko", "akka"))
 
     val probe = TestProbe()
     probe.watch(extinctRef)

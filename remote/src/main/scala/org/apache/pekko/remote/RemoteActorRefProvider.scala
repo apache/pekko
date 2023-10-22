@@ -464,7 +464,8 @@ private[pekko] class RemoteActorRefProvider(
                 val rpath =
                   (RootActorPath(address) / "remote" / localAddress.protocol / localAddress.hostPort / path.elements)
                     .withUid(path.uid)
-                new RemoteActorRef(transport, localAddress, rpath, supervisor, Some(props), Some(d))
+                new RemoteActorRef(transport, localAddress, rpath, supervisor, Some(props), Some(d),
+                  remoteSettings.AcceptProtocolNames)
               } else {
                 warnIfNotRemoteActorRef(path)
                 local.actorOf(system, props, supervisor, path, systemService, deployment.headOption, false, async)
@@ -488,7 +489,8 @@ private[pekko] class RemoteActorRefProvider(
           RootActorPath(address),
           Nobody,
           props = None,
-          deploy = None)
+          deploy = None,
+          acceptProtocolNames = remoteSettings.AcceptProtocolNames)
       } catch {
         case NonFatal(e) =>
           log.error(e, "No root guardian at [{}]", address)
@@ -513,7 +515,8 @@ private[pekko] class RemoteActorRefProvider(
               RootActorPath(address) / elems,
               Nobody,
               props = None,
-              deploy = None)
+              deploy = None,
+              acceptProtocolNames = remoteSettings.AcceptProtocolNames)
           } catch {
             case NonFatal(e) =>
               log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
@@ -555,7 +558,8 @@ private[pekko] class RemoteActorRefProvider(
             rootPath,
             Nobody,
             props = None,
-            deploy = None)
+            deploy = None,
+            acceptProtocolNames = remoteSettings.AcceptProtocolNames)
         } catch {
           case NonFatal(e) =>
             log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
@@ -578,7 +582,8 @@ private[pekko] class RemoteActorRefProvider(
           path,
           Nobody,
           props = None,
-          deploy = None)
+          deploy = None,
+          acceptProtocolNames = remoteSettings.AcceptProtocolNames)
       } catch {
         case NonFatal(e) =>
           log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
@@ -672,7 +677,8 @@ private[pekko] class RemoteActorRef private[pekko] (
     val path: ActorPath,
     val getParent: InternalActorRef,
     props: Option[Props],
-    deploy: Option[Deploy])
+    deploy: Option[Deploy],
+    val acceptProtocolNames: Set[String])
     extends InternalActorRef
     with RemoteRef {
 
@@ -680,10 +686,17 @@ private[pekko] class RemoteActorRef private[pekko] (
     throw new IllegalArgumentException(s"Unexpected local address in RemoteActorRef [$this]")
 
   remote match {
-    case t: ArteryTransport =>
-      // detect mistakes such as using "pekko.tcp" with Artery
-      if (path.address.protocol != t.localAddress.address.protocol)
-        throw new IllegalArgumentException(s"Wrong protocol of [$path], expected [${t.localAddress.address.protocol}]")
+    case _: ArteryTransport =>
+      // detect mistakes such as using "pekko.tcp" with Artery, also handles pekko.remote.accept-protocol-names
+      if (!acceptProtocolNames.contains(path.address.protocol)) {
+        val expectedString = if (acceptProtocolNames.size == 1)
+          "expected"
+        else
+          "expected one of"
+
+        throw new IllegalArgumentException(
+          s"Wrong protocol of [$path], $expectedString [${acceptProtocolNames.mkString}]")
+      }
     case _ =>
   }
   @volatile private[remote] var cachedAssociation: artery.Association = null
@@ -697,7 +710,8 @@ private[pekko] class RemoteActorRef private[pekko] (
     s.headOption match {
       case None       => this
       case Some("..") => getParent.getChild(name)
-      case _          => new RemoteActorRef(remote, localAddressToUse, path / s, Nobody, props = None, deploy = None)
+      case _ => new RemoteActorRef(remote, localAddressToUse, path / s, Nobody, props = None, deploy = None,
+          acceptProtocolNames = acceptProtocolNames)
     }
   }
 
