@@ -48,9 +48,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+// format: off
 import static jdocs.org.apache.pekko.persistence.typed.AuctionEntity.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+// format: on
 
 public class ReplicatedAuctionExampleTest extends JUnitSuite {
   @ClassRule

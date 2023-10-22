@@ -30,8 +30,10 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+// format: off
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.*;
+// format: on
 
 public final class ActorContextPipeToSelfTest extends JUnitSuite {
 

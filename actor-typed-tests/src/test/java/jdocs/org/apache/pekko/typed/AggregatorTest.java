@@ -36,10 +36,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+// format: off
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.HotelCustomer;
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel1;
 import static jdocs.org.apache.pekko.typed.AggregatorTest.IllustrateUsage.Hotel2;
 import static org.junit.Assert.assertEquals;
+// format: on
 
 public class AggregatorTest extends JUnitSuite {
   @ClassRule public static final TestKitJunitResource testKit = new TestKitJunitResource();

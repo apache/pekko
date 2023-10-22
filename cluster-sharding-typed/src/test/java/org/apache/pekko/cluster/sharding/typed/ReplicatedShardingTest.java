@@ -42,8 +42,10 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+// format: off
 import static org.apache.pekko.cluster.sharding.typed.ReplicatedShardingTest.ProxyActor.ALL_REPLICAS;
 import static org.junit.Assert.assertEquals;
+// format: on
 
 public class ReplicatedShardingTest extends JUnitSuite {
 
