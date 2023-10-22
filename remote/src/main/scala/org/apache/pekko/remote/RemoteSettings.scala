@@ -199,6 +199,12 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val Adapters: Map[String, String] = configToMap(getConfig("pekko.remote.classic.adapters"))
 
+  val ProtocolName: String = getString("pekko.remote.protocol-name")
+
+  val AcceptProtocolNames: Set[String] =
+    immutableSeq(getStringList("pekko.remote.accept-protocol-names")).toSet.requiring(_.nonEmpty,
+      "accept-protocol-names must be non empty")
+
   private def transportNames: immutable.Seq[String] =
     immutableSeq(getStringList("pekko.remote.classic.enabled-transports"))
 

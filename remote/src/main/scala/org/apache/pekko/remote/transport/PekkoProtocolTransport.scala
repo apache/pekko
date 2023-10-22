@@ -71,11 +71,11 @@ private[remote] class PekkoProtocolSettings(config: Config) {
   }
 
   val ManagerNamePrefix: String = config.getString("pekko.remote.classic.manager-name-prefix")
+  val PekkoScheme: String = new RemoteSettings(config).ProtocolName
 }
 
 @nowarn("msg=deprecated")
 private[remote] object PekkoProtocolTransport { // Couldn't these go into the Remoting Extension/ RemoteSettings instead?
-  val PekkoScheme: String = "pekko"
   val PekkoOverhead: Int = 0 // Don't know yet
   val UniqueId = new java.util.concurrent.atomic.AtomicInteger(0)
 
@@ -124,7 +124,7 @@ private[remote] class PekkoProtocolTransport(
     private val codec: PekkoPduCodec)
     extends ActorTransportAdapter(wrappedTransport, system) {
 
-  override val addedSchemeIdentifier: String = PekkoScheme
+  override val addedSchemeIdentifier: String = new RemoteSettings(system.settings.config).ProtocolName
 
   override def managementCommand(cmd: Any): Future[Boolean] = wrappedTransport.managementCommand(cmd)
 
@@ -232,8 +232,9 @@ private[remote] class PekkoProtocolHandle(
     _wrappedHandle: AssociationHandle,
     val handshakeInfo: HandshakeInfo,
     private val stateActor: ActorRef,
-    private val codec: PekkoPduCodec)
-    extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, PekkoScheme) {
+    private val codec: PekkoPduCodec,
+    override val addedSchemeIdentifier: String)
+    extends AbstractTransportAdapterHandle(_localAddress, _remoteAddress, _wrappedHandle, addedSchemeIdentifier) {
 
   override def write(payload: ByteString): Boolean = wrappedHandle.write(codec.constructPayload(payload))
 
@@ -716,7 +717,8 @@ private[remote] class ProtocolStateActor(
         wrappedHandle,
         handshakeInfo,
         self,
-        codec))
+        codec,
+        settings.PekkoScheme))
     readHandlerPromise.future
   }
 
@@ -736,7 +738,8 @@ private[remote] class ProtocolStateActor(
           wrappedHandle,
           handshakeInfo,
           self,
-          codec)))
+          codec,
+          settings.PekkoScheme)))
     readHandlerPromise.future
   }
 

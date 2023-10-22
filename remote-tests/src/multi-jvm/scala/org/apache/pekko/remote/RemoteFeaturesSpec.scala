@@ -260,7 +260,8 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
       remotePath,
       Nobody,
       None,
-      None)
+      None,
+      Set("pekko", "akka"))
 
     rar.start()
     rar
