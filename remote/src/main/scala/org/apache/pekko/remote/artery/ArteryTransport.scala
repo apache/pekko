@@ -393,12 +393,12 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
     val (port, boundPort) = bindInboundStreams()
 
     _localAddress = UniqueAddress(
-      Address(ArteryTransport.ProtocolName, system.name, settings.Canonical.Hostname, port),
+      Address(provider.remoteSettings.ProtocolName, system.name, settings.Canonical.Hostname, port),
       AddressUidExtension(system).longAddressUid)
     _addresses = Set(_localAddress.address)
 
     _bindAddress = UniqueAddress(
-      Address(ArteryTransport.ProtocolName, system.name, settings.Bind.Hostname, boundPort),
+      Address(provider.remoteSettings.ProtocolName, system.name, settings.Bind.Hostname, boundPort),
       AddressUidExtension(system).longAddressUid)
 
     flightRecorder.transportUniqueAddressSet(_localAddress)
@@ -953,8 +953,6 @@ private[remote] abstract class ArteryTransport(_system: ExtendedActorSystem, _pr
  * INTERNAL API
  */
 private[remote] object ArteryTransport {
-
-  val ProtocolName = "pekko"
 
   // Note that the used version of the header format for outbound messages is defined in
   // `ArterySettings.Version` because that may depend on configuration settings.
