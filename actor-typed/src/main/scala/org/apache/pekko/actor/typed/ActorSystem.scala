@@ -17,9 +17,9 @@ import java.util.concurrent.{ CompletionStage, ThreadFactory }
 
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
-import com.typesafe.config.{ Config, ConfigFactory }
-import org.slf4j.Logger
+import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
 
+import org.slf4j.Logger
 import org.apache.pekko
 import pekko.{ actor => classic, Done }
 import pekko.actor.{ Address, BootstrapSetup, ClassicActorSystemProvider }
@@ -324,7 +324,8 @@ final class Settings(val config: Config, val classicSettings: classic.ActorSyste
   /**
    * Returns the String representation of the Config that this Settings is backed by
    */
-  override def toString: String = config.root.render
+  override def toString: String =
+    config.root.render(ConfigRenderOptions.defaults().setShowEnvVariableValues(false))
 
   private val typedConfig = config.getConfig("pekko.actor.typed")
 
