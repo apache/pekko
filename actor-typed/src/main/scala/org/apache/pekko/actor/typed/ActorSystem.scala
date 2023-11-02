@@ -17,8 +17,7 @@ import java.util.concurrent.{ CompletionStage, ThreadFactory }
 
 import scala.concurrent.{ ExecutionContextExecutor, Future }
 
-import com.typesafe.config.{ Config, ConfigFactory, ConfigRenderOptions }
-
+import com.typesafe.config.{ Config, ConfigFactory }
 import org.slf4j.Logger
 import org.apache.pekko
 import pekko.{ actor => classic, Done }
@@ -29,7 +28,7 @@ import pekko.actor.typed.internal.{ EventStreamExtension, InternalRecipientRef }
 import pekko.actor.typed.internal.adapter.{ ActorSystemAdapter, GuardianStartupBehavior, PropsAdapter }
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.DoNotInherit
-import pekko.util.Helpers.Requiring
+import pekko.util.Helpers.{ ConfigOps, Requiring }
 
 /**
  * An ActorSystem is home to a hierarchy of Actors. It is created using
@@ -324,8 +323,7 @@ final class Settings(val config: Config, val classicSettings: classic.ActorSyste
   /**
    * Returns the String representation of the Config that this Settings is backed by
    */
-  override def toString: String =
-    config.root.render(ConfigRenderOptions.defaults().setShowEnvVariableValues(false))
+  override def toString: String = config.renderWithRedactions()
 
   private val typedConfig = config.getConfig("pekko.actor.typed")
 
