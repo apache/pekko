@@ -392,19 +392,19 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         }
       } finally shutdown(sys)
     }
-    "not include env variables in toString" in {
+    "not include username in toString" in {
       // Actor System toString is output to logs and we don't want env variable values appearing in logs
-      // "pekko.test.env.var.home = ${HOME}\n"
       val system =
         ActorSystem(
           "config-test-system",
           ConfigFactory
-            .parseString(
-              """pekko.test.java.property.home = "${user.home}"""")
+            .parseString("""pekko.test.java.property.home = "${user.home}"""")
             .withFallback(PekkoSpec.testConf))
       val debugText = system.settings.toString
       val username = System.getProperty("user.name")
+      val userHome = System.getProperty("user.home")
       (debugText should not).include(username)
+      (debugText should not).include(userHome)
       debugText should include("<username>")
       shutdown(system)
     }
