@@ -66,7 +66,7 @@ object Paradox {
       "scalatest.version" -> Dependencies.scalaTestVersion,
       "sigar_loader.version" -> "1.6.6-rev002",
       "aeron_version" -> Dependencies.aeronVersion,
-      "netty_version" -> Dependencies.nettyVersion,
+      "netty_version" -> Dependencies.netty3Version,
       "logback_version" -> Dependencies.logbackVersion))
 
   val rootsSettings = Seq(

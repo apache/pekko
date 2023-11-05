@@ -28,7 +28,8 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.15.1"
-  val nettyVersion = "3.10.6.Final"
+  val netty3Version = "3.10.6.Final"
+  val netty4Version = "4.1.100.Final"
   val protobufJavaVersion = "3.16.3"
   val logbackVersion = "1.2.11"
 
@@ -57,7 +58,9 @@ object Dependencies {
     // Compile
 
     val config = "com.typesafe" % "config" % "1.4.3"
-    val netty = "io.netty" % "netty" % nettyVersion
+    val netty3 = "io.netty" % "netty" % netty3Version
+    val `netty4-transport` = "io.netty" % "netty-transport" % netty4Version
+    val `netty4-handler` = "io.netty" % "netty-handler" % netty4Version
 
     val scalaReflect = ScalaVersionDependentModuleID.versioned("org.scala-lang" % "scala-reflect" % _)
 
@@ -272,7 +275,7 @@ object Dependencies {
       Compile.slf4jApi,
       TestDependencies.scalatest.value)
 
-  val remoteDependencies = Seq(netty, aeronDriver, aeronClient)
+  val remoteDependencies = Seq(netty3, `netty4-transport`, `netty4-handler`, aeronDriver, aeronClient)
   val remoteOptionalDependencies = remoteDependencies.map(_ % "optional")
 
   val remote = l ++= Seq(
@@ -284,7 +287,7 @@ object Dependencies {
 
   val remoteTests = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value) ++ remoteDependencies
 
-  val multiNodeTestkit = l ++= Seq(netty)
+  val multiNodeTestkit = l ++= Seq(netty3)
 
   val cluster = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value)
 
