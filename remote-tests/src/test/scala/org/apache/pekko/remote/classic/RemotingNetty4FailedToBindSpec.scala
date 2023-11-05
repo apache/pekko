@@ -15,8 +15,8 @@ package org.apache.pekko.remote.classic
 
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import org.apache.pekko.actor.ActorSystem
-import org.apache.pekko.testkit.SocketUtil
+import pekko.actor.ActorSystem
+import pekko.testkit.SocketUtil
 import org.jboss.netty.channel.ChannelException
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
