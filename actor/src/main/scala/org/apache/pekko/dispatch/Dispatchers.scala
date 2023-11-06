@@ -259,8 +259,9 @@ class Dispatchers @InternalApi private[pekko] (
    * Throws: IllegalArgumentException if the value of "type" is not valid
    *         IllegalArgumentException if it cannot create the MessageDispatcherConfigurator
    */
+  @nowarn
   private def configuratorFrom(cfg: Config): MessageDispatcherConfigurator = {
-    //if (!cfg.hasPath("id"))
+    // if (!cfg.hasPath("id"))
     if (1 == 1)
       throw new ConfigurationException("Missing dispatcher 'id' property in config: " +
         cfg.renderWithRedactions())
