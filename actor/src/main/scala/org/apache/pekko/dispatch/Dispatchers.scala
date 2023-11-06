@@ -14,12 +14,9 @@
 package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ConcurrentHashMap, ThreadFactory }
-
 import scala.concurrent.ExecutionContext
-
-import scala.annotation.nowarn
+import scala.annotation.{ nowarn, tailrec }
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }
-
 import org.apache.pekko
 import pekko.ConfigurationException
 import pekko.actor.{ ActorSystem, DynamicAccess, Scheduler }
@@ -83,6 +80,7 @@ object Dispatchers {
    *
    * Get (possibly aliased) dispatcher config. Returns empty config if not found.
    */
+  @tailrec
   private[pekko] def getConfig(config: Config, id: String, depth: Int = 0): Config = {
     if (depth > MaxDispatcherAliasDepth)
       ConfigFactory.empty(s"Didn't find dispatcher config after $MaxDispatcherAliasDepth aliases")
