@@ -90,3 +90,6 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           validatePullRequest
+
+      - name: sbt actor-typed-tests/test (with slf4j2)
+        run: sbt -Dpekko.test.slf4j2=true actor-typed-tests/test
