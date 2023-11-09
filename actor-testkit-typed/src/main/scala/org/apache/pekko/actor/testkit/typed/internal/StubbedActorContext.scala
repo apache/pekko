@@ -22,6 +22,7 @@ import pekko.annotation.InternalApi
 import pekko.util.Helpers
 import pekko.{ actor => classic }
 import org.slf4j.{ Logger, Marker }
+import org.slf4j.event.SubstituteLoggingEvent
 import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
@@ -247,7 +248,9 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
           try {
             Option(evt.getMarker)
           } catch {
-            case _: NoSuchMethodError => None // evt.getMarker was replaced in slf4j v2 with evt.getMarkers
+            case _: NoSuchMethodError =>
+              // evt.getMarker was replaced in slf4j v2 with evt.getMarkers
+              getFirstMarkerFromSlf4J2(evt)
           }
         CapturedLogEvent(
           level = evt.getLevel,
@@ -256,6 +259,16 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
           marker = marker)
       }
       .toList
+  }
+
+  private def getFirstMarkerFromSlf4J2(evt: SubstituteLoggingEvent): Option[Marker] = {
+    try {
+      val method = classOf[SubstituteLoggingEvent].getMethod("getMarkers")
+      val markers = method.invoke(evt).asInstanceOf[java.util.List[Marker]]
+      if (markers.isEmpty) None else Some(markers.get(0))
+    } catch {
+      case _: NoSuchMethodException => None
+    }
   }
 
   /**
