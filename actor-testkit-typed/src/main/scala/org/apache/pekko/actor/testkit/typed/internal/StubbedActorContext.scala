@@ -25,6 +25,7 @@ import org.slf4j.{ Logger, Marker }
 import org.slf4j.helpers.{ MessageFormatter, SubstituteLoggerFactory }
 
 import java.util.concurrent.ThreadLocalRandom.{ current => rnd }
+import scala.annotation.nowarn
 import scala.collection.immutable.TreeMap
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
@@ -237,18 +238,16 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
    * The log entries logged through context.log.{debug, info, warn, error} are captured and can be inspected through
    * this method.
    */
+  @nowarn
   def logEntries: List[CapturedLogEvent] = {
     import pekko.util.ccompat.JavaConverters._
     substituteLoggerFactory.getEventQueue
       .iterator()
       .asScala
       .map { evt =>
-        val marker: Option[Marker] =
-          try {
-            Option(evt.getMarker)
-          } catch {
-            case _: NoSuchMethodError => None // evt.getMarker was replaced in slf4j v2 with evt.getMarkers
-          }
+        if (1 == 1)
+          throw new IllegalStateException("deliberate fail")
+        val marker: Option[Marker] = None
         CapturedLogEvent(
           level = evt.getLevel,
           message = MessageFormatter.arrayFormat(evt.getMessage, evt.getArgumentArray).getMessage,
