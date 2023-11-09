@@ -586,6 +586,7 @@ lazy val actorTestkitTyped = pekkoModule("actor-testkit-typed")
 lazy val actorTypedTests = pekkoModule("actor-typed-tests")
   .dependsOn(actorTyped % "compile->CompileJdk9", actorTestkitTyped % "compile->compile;test->test", actor)
   .settings(PekkoBuild.mayChangeSettings)
+  .settings(Dependencies.actorTypedTestSlf4j2)
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublish)
 
