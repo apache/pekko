@@ -265,6 +265,14 @@ object Dependencies {
     Provided.scalatest.value,
     TestDependencies.scalatestJUnit.value)
 
+  val actorTypedTestSlf4j2 = if (java.lang.Boolean.getBoolean("pekko.test.slf4j2")) {
+    Seq(dependencyOverrides ++= Seq(
+      "org.slf4j" % "slf4j-api" % "2.0.9",
+      "ch.qos.logback" % "logback-classic" % "1.3.11" % Test))
+  } else {
+    Seq.empty
+  }
+
   val pki = l ++=
     Seq(
       asnOne,
