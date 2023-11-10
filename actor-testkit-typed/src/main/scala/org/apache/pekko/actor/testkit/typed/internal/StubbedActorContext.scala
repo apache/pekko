@@ -265,7 +265,7 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     try {
       val method = classOf[SubstituteLoggingEvent].getMethod("getMarkers")
       val markers = method.invoke(evt).asInstanceOf[java.util.List[Marker]]
-      if (markers.isEmpty) None else Some(markers.get(0))
+      if (markers == null || markers.isEmpty) None else Some(markers.get(0))
     } catch {
       case _: NoSuchMethodException => None
     }
