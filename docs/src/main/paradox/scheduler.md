@@ -42,7 +42,7 @@ instances at the same time. The implementation is based on a Hashed Wheel Timer,
 a known datastructure and algorithm for handling such use cases, refer to the [Hashed and Hierarchical Timing Wheels](http://www.cs.columbia.edu/~nahum/w6998/papers/sosp87-timing-wheels.pdf) 
 whitepaper by Varghese and Lauck if you'd like to understand its inner workings. 
 
-The Pekko scheduler is **not** designed for long-term scheduling (see [akka-quartz-scheduler](https://github.com/enragedginger/akka-quartz-scheduler) 
+The Pekko scheduler is **not** designed for long-term scheduling (see [pekko-quartz-scheduler](https://github.com/samueleresca/pekko-quartz-scheduler) 
 instead for this use case) nor is it to be used for highly precise firing of the events.
 The maximum amount of time into the future you can schedule an event to trigger is around 8 months,
 which in practice is too much to be useful since this would assume the system never went down during that period.
