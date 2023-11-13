@@ -400,13 +400,14 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
           ConfigFactory
             .parseString("""pekko.test.java.property.home = "${user.home}"""")
             .withFallback(PekkoSpec.testConf))
-      val debugText = system.settings.toString
-      val username = System.getProperty("user.name")
-      val userHome = System.getProperty("user.home")
-      (debugText should not).include(username)
-      (debugText should not).include(userHome)
-      debugText should include("<username>")
-      shutdown(system)
+      try {
+        val debugText = system.settings.toString
+        val username = System.getProperty("user.name")
+        val userHome = System.getProperty("user.home")
+        (debugText should not).include(username)
+        (debugText should not).include(userHome)
+        debugText should include("<username>")
+      } finally shutdown(system)
     }
   }
 
