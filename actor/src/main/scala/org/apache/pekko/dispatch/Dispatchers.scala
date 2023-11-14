@@ -14,8 +14,9 @@
 package org.apache.pekko.dispatch
 
 import java.util.concurrent.{ ConcurrentHashMap, ThreadFactory }
-import scala.concurrent.ExecutionContext
 import scala.annotation.{ nowarn, tailrec }
+import scala.concurrent.ExecutionContext
+
 import com.typesafe.config.{ Config, ConfigFactory, ConfigValueType }
 import org.apache.pekko
 import pekko.ConfigurationException
@@ -259,7 +260,8 @@ class Dispatchers @InternalApi private[pekko] (
    */
   private def configuratorFrom(cfg: Config): MessageDispatcherConfigurator = {
     if (!cfg.hasPath("id"))
-      throw new ConfigurationException("Missing dispatcher 'id' property in config: " + cfg.root.render)
+      throw new ConfigurationException("Missing dispatcher 'id' property in config: " +
+        cfg.renderWithRedactions())
 
     cfg.getString("type") match {
       case "Dispatcher"          => new DispatcherConfigurator(cfg, prerequisites)
