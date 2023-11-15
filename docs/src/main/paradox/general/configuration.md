@@ -139,7 +139,9 @@ specification.
 
 If the system or config property `pekko.log-config-on-start` is set to `on`, then the
 complete configuration is logged at INFO level when the actor system is started. This is
-useful when you are uncertain of what configuration is used.
+useful when you are uncertain of what configuration is used but it is not recommended to
+use this config in production environments due to the risk of logging sensitive values.
+Since Pekko 1.0.2, we try to redact environment variables and user names.
 
 @@@div { .group-scala }
 
