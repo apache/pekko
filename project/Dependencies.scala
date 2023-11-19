@@ -22,14 +22,14 @@ object Dependencies {
     .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
   val junitVersion = "4.13.2"
-  val junit5Version = "5.10.0"
+  val junit5Version = "5.10.1"
   val slf4jVersion = "2.0.9"
   // check agrona version when updating this
   val aeronVersion = "1.42.1"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.19.2"
-  val nettyVersion = "4.1.100.Final"
+  val nettyVersion = "4.1.101.Final"
   val protobufJavaVersion = "3.20.3"
   val logbackVersion = "1.3.11"
 
@@ -181,8 +181,8 @@ object Dependencies {
       }
 
       // metrics, measurements, perf testing
-      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.21" % Test
-      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.21" % Test
+      val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.22" % Test
+      val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.22" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
       val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.1.12" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)

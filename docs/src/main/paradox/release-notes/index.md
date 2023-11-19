@@ -1,5 +1,13 @@
 # Release Notes
 
+## 1.0.2
+A minor bug fix release.
+
+### Bug Fixes
+
+* Do not render env variables when logging configs. This relates to the optional config `pekko.log-config-on-start`. We do not recommend logging configs in production environments. ([PR771](https://github.com/apache/incubator-pekko/pull/771))
+* Allow `pekko-actor-testkit-typed` to work with slf4j-api v2.0.x. ([PR784](https://github.com/apache/incubator-pekko/pull/784))
+
 ## 1.0.1
 A minor bug fix release. The class renaming described below (`#491`) is not expected to affect anyone
 upgrading from version 1.0.0 but it is strongly recommended that Apache Pekko users switch to the 1.0.1

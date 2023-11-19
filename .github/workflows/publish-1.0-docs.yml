@@ -55,20 +55,20 @@ jobs:
       # TODO come up with a better way to control the version, possibly based on git tags
       - name: Build Documentation
         run: |-
-          sbt -Dpekko.genjavadoc.enabled=true "set ThisBuild / version := \"1.0.1\"; docs/paradox; unidoc"
+          sbt -Dpekko.genjavadoc.enabled=true "set ThisBuild / version := \"1.0.2\"; docs/paradox; unidoc"
 
       # Create directory structure upfront since rsync does not create intermediate directories otherwise
       - name: Create directory structure
         run: |-
-          mkdir -p target/nightly-docs/docs/pekko/1.0.1/
+          mkdir -p target/nightly-docs/docs/pekko/1.0.2/
           mkdir -p target/nightly-docs/docs/pekko/1.0/
-          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0.1/docs
+          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0.2/docs
           cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.0/docs
           rm -r docs/target/paradox/site/main/
-          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0.1/api
+          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0.2/api
           cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.0/api
           rm -r target/scala-2.13/unidoc
-          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.0.1/japi
+          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.0.2/japi
           cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.0/japi
           rm -r target/javaunidoc
 
@@ -77,7 +77,7 @@ jobs:
         with:
           upload: true
           switches: --archive --compress --update --delete --progress --relative
-          local_path: target/nightly-docs/./docs/pekko/1.0.1 # The intermediate dot is to show `--relative` which paths to operate on
+          local_path: target/nightly-docs/./docs/pekko/1.0.2 # The intermediate dot is to show `--relative` which paths to operate on
           remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko
           remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
           remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
