@@ -489,7 +489,7 @@ object ActorSystem {
     /**
      * Returns the String representation of the Config that this Settings is backed by
      */
-    override def toString: String = config.root.render
+    override def toString: String = config.renderWithRedactions()
 
   }
 

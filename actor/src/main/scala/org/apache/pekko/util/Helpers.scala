@@ -28,16 +28,12 @@ package org.apache.pekko.util
 
 import java.time.{ Instant, LocalDateTime, ZoneId }
 import java.time.format.DateTimeFormatter
-import java.util.Comparator
-import java.util.Locale
+import java.util.{ Comparator, Locale }
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
-
 import scala.annotation.tailrec
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration.FiniteDuration
-
-import com.typesafe.config.Config
+import scala.concurrent.duration.{ Duration, FiniteDuration }
+import com.typesafe.config.{ Config, ConfigRenderOptions }
 
 object Helpers {
 
@@ -178,6 +174,22 @@ object Helpers {
     def getMillisDuration(path: String): FiniteDuration = getDuration(path, TimeUnit.MILLISECONDS)
 
     def getNanosDuration(path: String): FiniteDuration = getDuration(path, TimeUnit.NANOSECONDS)
+
+    /**
+     * Used to redact sensitive information in config data when we are logging it
+     * or adding it to exception messages.
+     *
+     * This includes redacting environment variable values and the username associated with the running process.
+     *
+     * @return redacted version of the configuration text
+     * @see https://github.com/apache/incubator-pekko/pull/771
+     * @since 1.0.2
+     */
+    def renderWithRedactions(): String = {
+      val username = System.getProperty("user.name")
+      val configText = config.root.render(ConfigRenderOptions.defaults().setShowEnvVariableValues(false))
+      configText.replace(username, "<username>")
+    }
 
     private def getDuration(path: String, unit: TimeUnit): FiniteDuration =
       Duration(config.getDuration(path, unit), unit)

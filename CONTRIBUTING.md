@@ -15,13 +15,11 @@ If you have questions about the contribution process or discuss specific issues,
 Depending on which version (or sometimes module) you want to work on, you should target a specific branch as explained below:
 
 * `main` – active development branch of Pekko
-* `release-x.y` – maintenance branch of Pekko x.y.z
+* `1.0.x` – maintenance branch of Pekko 1.0
 
 ### Tags
 
 Pekko uses tags to categorise issues into groups or mark their phase in development.
-
-Most notably, many tags start with a `t:` prefix (as in `topic:`), categorizing issues in which module they are related. Examples would be added soon.
 
 In general *all issues are open for anyone working on them*. However, if you're new to the project and looking for an issue
 that will be accepted and likely is a nice one to get started you should check out the following tags:
@@ -30,21 +28,12 @@ that will be accepted and likely is a nice one to get started you should check o
 - [help wanted](https://github.com/apache/incubator-pekko/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
 - [nice-to-have (low-priority)](https://github.com/apache/incubator-pekko/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
 
-Another group of issues is those which start from a number. They're used to signal in what phase of development an issue is:
+If you see an issue that you would like to work on, comment on the issue so that others will know that someone is having a look.
 
-- [0 - new](https://github.com/apache/incubator-pekko/labels/0%20-%20new) - is assigned when an issue is unclear on its purpose or if it is valid or not. Sometimes the additional tag `discuss` is used if they propose large-scale changes and need more discussion before moving into triaged (or being closed as invalid).
-- [1 - triaged](https://github.com/apache/incubator-pekko/labels/1%20-%20triaged) - roughly speaking means "this issue makes sense". Triaged issues are safe to pick up for contributing in terms of the likeliness of a patch for it being accepted. It is not recommended to start working on an issue that is not triaged.
-- [2 - pick next](https://github.com/apache/incubator-pekko/labels/2%20-%20pick%20next) - used to mark issues that are next up in the queue to be worked on. Sometimes it's also used to mark which PRs are expected to be reviewed/merged for the next release. The tag is non-binding and mostly used as an organisational helper.
-- [3 - in progress](https://github.com/apache/incubator-pekko/labels/3%20-%20in%20progress) - means someone is working on this ticket. If you see an issue that has the tag but seems inactive, it could have been an omission with removing the tag. Feel free to ping the ticket then if it's still being worked on.
-
-The last group of special tags indicates specific states a ticket is in:
+These special tags indicates specific states a ticket is in:
 
 - [bug](https://github.com/apache/incubator-pekko/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
 - [failed](https://github.com/apache/incubator-pekko/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
-
-Pull request validation states:
-
-- `validating => [tested | needs-attention]` - signify pull request validation status.
 
 ## Pekko contributing guidelines
 
@@ -74,7 +63,7 @@ The steps are exactly the same for everyone involved in the project, including t
 1. Now, both committers and interested people will review your code. This process ensures that the code we merge is of the best possible quality and that no silly mistakes slip through. You're expected to follow-up on these comments by adding new commits to the same branch. The commit messages of those commits can be more loose, for example: `Removed debugging using printline`, as they all will be squashed into one commit before merging into the main branch.
    - The community and core team are really nice people, so don't be afraid to ask follow-up questions if you didn't understand some comment or would like clarification on how to continue with a given feature. We're here to help, so feel free to ask and discuss any questions you might have during the review process!
 1. After the review, you should fix the issues as needed (pushing a new commit for a new review, etc.), iterating until the reviewers give their approval signaled by GitHub's pull-request approval feature. Usually, a reviewer will add an `LGTM` comment, which means "Looks Good To Me".
-   - In general, a PR is expected to get 2 approvals from the team before it is merged. If the PR is trivial or under exceptional circumstances (such as most of the core team being on vacation, a PR was very thoroughly reviewed/tested and surely is correct), a single LGTM may be fine as well.
+   - In general, a PR is expected to get 1 approval from the team before it is merged. Larger or more complicated PRs would ideally have more people look at it before it gets merged.
 1. If the code change needs to be applied to other branches as well (for example, a bugfix needing to be backported to a previous version), one of the team members will either ask you to submit a PR with the same commits to the old branch or will do this for you.
    - Follow the [backporting steps](#backporting) below.
 1. Once everything is said and done, your pull request gets merged :tada:! Your feature will be available with the next "earliest" release milestone (i.e. if backported so that it will be in release x.y.z, find the relevant milestone for that release). Of course, you will be given credit for the fix in the release stats during the release's announcement. You've made it!
@@ -93,21 +82,7 @@ The TL;DR; of the above very precise workflow version is:
 
 #### Backporting
 
-Backport pull requests such as these are marked using the phrase `for validation` in the title to make the purpose clear in the pull request list.
-They can be merged once validation passes without additional review (if there are no conflicts).
-Using, for example: current.version 2.5.22, previous.version 2.5, milestone.version 2.6.0-M1
-
-1. Label this PR with `to-be-backported`
-1. Mark this PR with Milestone `${milestone.version}`
-1. Mark the issue with Milestone `${current.version}`
-1. `git checkout release-${previous.version}`
-1. `git pull`
-1. Create wip branch
-1. `git cherry-pick <commit>`
-1. Open PR, target `release-${previous.version}`
-1. Label that PR with `backport`
-1. Merge backport PR after validation (no need for full PR reviews)
-1. Close issue.
+If you feel that a PR should be backported so that it will appear in a patch release, comment on the PR. The Pekko team will decide if the backport is a good idea and may request that the original contributor cherry pick the commit into a new PR.
 
 ### Getting started with sbt
 
