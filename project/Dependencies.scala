@@ -168,7 +168,8 @@ object Dependencies {
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
       // docker utils
-      val dockerClient = "com.spotify" % "docker-client" % "8.16.0" % Test
+      val dockerClient = ("com.spotify" % "docker-client" % "8.16.0" % Test)
+        .exclude("org.bouncycastle", "bcpkix-jdk15on")
 
       val jackson = Def.setting {
         Seq(
