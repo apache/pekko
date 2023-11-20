@@ -88,6 +88,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxNumberLength(config.getInt("read.max-number-length"))
       .maxStringLength(config.getInt("read.max-string-length"))
       .maxNameLength(config.getInt("read.max-name-length"))
+      .maxDocumentLength(config.getLong("read.max-document-length"))
       .build()
 
     val streamWriteConstraints = StreamWriteConstraints.builder()
