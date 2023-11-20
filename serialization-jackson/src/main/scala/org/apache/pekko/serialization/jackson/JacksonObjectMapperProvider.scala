@@ -26,6 +26,7 @@ import com.fasterxml.jackson.core.{
   JsonParser,
   StreamReadConstraints,
   StreamReadFeature,
+  StreamWriteConstraints,
   StreamWriteFeature
 }
 import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
@@ -86,6 +87,11 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       .maxNestingDepth(config.getInt("read.max-nesting-depth"))
       .maxNumberLength(config.getInt("read.max-number-length"))
       .maxStringLength(config.getInt("read.max-string-length"))
+      .maxNameLength(config.getInt("read.max-name-length"))
+      .build()
+
+    val streamWriteConstraints = StreamWriteConstraints.builder()
+      .maxNestingDepth(config.getInt("write.max-nesting-depth"))
       .build()
 
     val jsonFactory: JsonFactory = baseJsonFactory match {
@@ -95,8 +101,12 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
         // CBORFactor. Therefore we use JsonFactory and configure the features with mappedFeature
         // instead of using JsonFactoryBuilder (new in Jackson 2.10.0).
         factory.setStreamReadConstraints(streamReadConstraints)
+        factory.setStreamWriteConstraints(streamWriteConstraints)
       case None =>
-        new JsonFactoryBuilder().streamReadConstraints(streamReadConstraints).build()
+        new JsonFactoryBuilder()
+          .streamReadConstraints(streamReadConstraints)
+          .streamWriteConstraints(streamWriteConstraints)
+          .build()
     }
 
     val configuredStreamReadFeatures =
