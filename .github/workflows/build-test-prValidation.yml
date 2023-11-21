@@ -76,7 +76,7 @@ jobs:
           -Dpekko.log.timestamps=true \
           validateCompile
 
-      - name: sbt cluster-typed/test validatePullRequest
+      - name: sbt validatePullRequest
         run: |-
           sbt \
           -Dpekko.mima.enabled=false \
