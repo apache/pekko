@@ -337,11 +337,12 @@ pekko {
 }
 ```
 
-This config option is very good if you want to know what config settings are loaded by Pekko:
+This config option is useful if you want to know what config settings are loaded by Pekko:
 
 ```
 pekko {
   # Log the complete configuration at INFO level when the actor system is started.
+  # This loggong can include sensitive values.
   # This is useful when you are uncertain of what configuration is used.
   log-config-on-start = on
 }
