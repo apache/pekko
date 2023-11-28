@@ -32,6 +32,21 @@ class ActorPathSpec extends AnyWordSpec with Matchers {
       ActorPath.fromString(remote).toString should ===(remote)
     }
 
+    "support parsing remote akka paths" in {
+      val remote = "akka://my_sys@host:1234/some/ref"
+      ActorPath.fromString(remote).toString should ===(remote)
+    }
+
+    "support parsing AddressFromURIString" in {
+      val remote = "pekko://my_sys@host:1234"
+      AddressFromURIString(remote) should ===(Address("pekko", "my_sys", Some("host"), Some(1234)))
+    }
+
+    "support parsing akka AddressFromURIString" in {
+      val remote = "akka://my_sys@host:1234"
+      AddressFromURIString(remote) should ===(Address("akka", "my_sys", Some("host"), Some(1234)))
+    }
+
     "throw exception upon malformed paths" in {
       intercept[MalformedURLException] { ActorPath.fromString("") }
       intercept[MalformedURLException] { ActorPath.fromString("://hallo") }
