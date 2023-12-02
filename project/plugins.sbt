@@ -7,6 +7,8 @@
  * This file is part of the Apache Pekko project, which was derived from Akka.
  */
 
+resolvers ++= Resolver.sonatypeOssRepos("snapshots") // while testing sbt-pekko-build
+
 addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.1.5")
 
 addSbtPlugin("com.lightbend.sbt" % "sbt-java-formatter" % "0.7.0")
@@ -27,6 +29,7 @@ addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.31")
 addSbtPlugin("com.github.sbt" % "sbt-dynver" % "5.0.1")
 addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.11")
 addSbtPlugin("org.mdedetrich" % "sbt-apache-sonatype" % "0.1.10")
+addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.0.0+11-1c009511-SNAPSHOT")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 
