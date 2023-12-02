@@ -21,7 +21,6 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
 import java.util.Optional
-import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import scala.concurrent.Future
 import scala.util.{ Failure, Success, Try }
@@ -124,21 +123,20 @@ import scala.util.{ Failure, Success, Try }
       }
 
       def onPull(): Unit = {
-        f.apply(state) match {
-          case cf: CompletableFuture[Optional[Pair[S, E]] @unchecked] if cf.isDone && !cf.isCompletedExceptionally =>
-            handle(cf.join())
-          case future =>
-            future.handle((r, ex) => {
-              if (ex != null) {
-                asyncHandler(Failure(ex))
-              } else {
-                asyncHandler(Success(r))
-              }
-              null
-            })
+        val future = f.apply(state).toCompletableFuture
+        if (future.isDone && !future.isCompletedExceptionally) {
+          handle(future.getNow(null))
+        } else {
+          future.handle((r, ex) => {
+            if (ex != null) {
+              asyncHandler(Failure(ex))
+            } else {
+              asyncHandler(Success(r))
+            }
+            null
+          })
         }
       }
-
       setHandler(out, this)
     }
 }
