@@ -32,19 +32,7 @@ jobs:
 
       - name: sbt cluster-metrics/test
         run: |-
-          sbt ^
-            -Dpekko.test.sigar=true ^
-            -Dpekko.cluster.assert=on ^
-            -Dpekko.test.timefactor=2 ^
-            -Dpekko.actor.testkit.typed.timefactor=2 ^
-            -Dpekko.test.tags.exclude=gh-exclude,timing ^
-            -Dpekko.log.timestamps=true ^
-            -Dmultinode.XX:MetaspaceSize=128M ^
-            -Dmultinode.Xms256M ^
-            -Dmultinode.Xmx256M ^
-            -Dmultinode.Xlog:gc ^
-            -Dmultinode.XX:+AlwaysActAsServerClassMachine ^
-            clean cluster-metrics/test
+          sbt -Dpekko.test.sigar=true -Dpekko.cluster.assert=on -Dpekko.test.timefactor=2 -Dpekko.actor.testkit.typed.timefactor=2 -Dpekko.test.tags.exclude=gh-exclude,timing -Dpekko.log.timestamps=true -Dmultinode.XX:MetaspaceSize=128M -Dmultinode.Xms256M -Dmultinode.Xmx256M -Dmultinode.Xlog:gc -Dmultinode.XX:+AlwaysActAsServerClassMachine clean cluster-metrics/test
 
 # comment out test report until an apache or GitHub published action (action-surefire-report) can be found or added allowlist from INFRA
 #      - name: Test Reports
@@ -90,14 +78,7 @@ jobs:
       - name: sbt ${{ matrix.command }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt \
-          -Dpekko.remote.artery.enabled=off ^
-          -Dpekko.test.timefactor=2 ^
-          -Dpekko.actor.testkit.typed.timefactor=2 ^
-          -Dpekko.test.tags.exclude=gh-exclude,timing ^
-          -Dpekko.test.multi-in-test=false ^
-          -Dpekko.cluster.assert=on ^
-          clean ${{ matrix.command }}
+          sbt -Dpekko.remote.artery.enabled=off -Dpekko.test.timefactor=2 -Dpekko.actor.testkit.typed.timefactor=2 -Dpekko.test.tags.exclude=gh-exclude,timing -Dpekko.test.multi-in-test=false -Dpekko.cluster.assert=on clean ${{ matrix.command }}
 
   jdk-nightly-build:
     name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }}
@@ -133,11 +114,4 @@ jobs:
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
-          sbt \
-            -Dpekko.cluster.assert=on ^
-            -Dpekko.log.timestamps=true ^
-            -Dpekko.test.timefactor=2 ^
-            -Dpekko.actor.testkit.typed.timefactor=2 ^
-            -Dpekko.test.tags.exclude=gh-exclude,timing ^
-            -Dpekko.test.multi-in-test=false ^
-            clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
+          sbt -Dpekko.cluster.assert=on -Dpekko.log.timestamps=true -Dpekko.test.timefactor=2 -Dpekko.actor.testkit.typed.timefactor=2 -Dpekko.test.tags.exclude=gh-exclude,timing -Dpekko.test.multi-in-test=false clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
