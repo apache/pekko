@@ -15,6 +15,8 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 
 ## Building from Source
 
+The CI build is Linux based (Ubuntu) and most Pekko developers use Macs or Linux machines. There have been reports of issues when building with Windows ([#829](https://github.com/apache/incubator-pekko/issues/829)).
+
 ### Prerequisites
 - Make sure you have installed a Java Development Kit (JDK) version 11 or later.
 - Make sure you have [sbt](https://www.scala-sbt.org/) installed and using this JDK.
