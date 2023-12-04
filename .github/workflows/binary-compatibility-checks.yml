@@ -24,7 +24,7 @@ jobs:
           fetch-tags: 0
 
       - name: Setup Java 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
