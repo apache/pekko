@@ -115,7 +115,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     // suggested in https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850
     serialization
       .deserialize(snapshotBytes, serializerId, manifest)
-      .recover {
+      .recoverWith {
         case _: NotSerializableException if manifest.startsWith("akka") =>
           serialization
             .deserialize(snapshotBytes, serializerId, manifest.replaceFirst("akka", "org.apache.pekko"))
