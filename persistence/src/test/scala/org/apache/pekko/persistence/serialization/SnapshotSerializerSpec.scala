@@ -24,7 +24,6 @@ import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
 
 import java.util.Base64
-import scala.util.Success
 
 class SnapshotSerializerSpec extends PekkoSpec {
 
@@ -38,10 +37,8 @@ class SnapshotSerializerSpec extends PekkoSpec {
       val bytes = Base64.getDecoder.decode(data)
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
-      deserialized shouldBe a[Success[_]]
-      val innerResult = deserialized.asInstanceOf[Success[_]].get
-      innerResult shouldBe a[PersistentFSMSnapshot[_]]
-      val persistentFSMSnapshot = innerResult.asInstanceOf[PersistentFSMSnapshot[_]]
+      deserialized shouldBe a[PersistentFSMSnapshot[_]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
       persistentFSMSnapshot shouldEqual PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
     }
   }
