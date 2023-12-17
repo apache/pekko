@@ -47,6 +47,7 @@ private object ActorRefSource {
       inheritedAttributes: Attributes,
       eagerMaterializer: Materializer): (GraphStageLogic, ActorRef) = {
     val stage: GraphStageLogic with StageLogging with ActorRefStage = new GraphStageLogic(shape)
+      with OutHandler
       with StageLogging
       with ActorRefStage {
       override protected def logSource: Class[_] = classOf[ActorRefSource[_]]
@@ -155,12 +156,9 @@ private object ActorRefSource {
         }
       }
 
-      setHandler(out,
-        new OutHandler {
-          override def onPull(): Unit = {
-            tryPush()
-          }
-        })
+      override def onPull(): Unit = tryPush()
+
+      setHandler(out, this)
     }
 
     (stage, stage.ref)
