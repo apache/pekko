@@ -25,8 +25,6 @@ import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import org.reactivestreams.{ Publisher, Subscriber }
-
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
@@ -42,6 +40,8 @@ import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
 object Source {
@@ -656,10 +656,12 @@ object Source {
       first: Source[T, _ <: Any],
       second: Source[T, _ <: Any],
       rest: java.util.List[Source[T, _ <: Any]],
-      strategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
+      @nowarn
+      @deprecatedName(Symbol("strategy"))
+      fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     val seq = if (rest != null) Util.immutableSeq(rest).map(_.asScala) else immutable.Seq()
-    new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => strategy.apply(num)))
+    new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => fanInStrategy.apply(num)))
   }
 
   /**
@@ -668,10 +670,30 @@ object Source {
   def combineMat[T, U, M1, M2, M](
       first: Source[T, M1],
       second: Source[T, M2],
-      strategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]],
+      @nowarn
+      @deprecatedName(Symbol("strategy"))
+      fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]],
       combine: function.Function2[M1, M2, M]): Source[U, M] = {
     new Source(
-      scaladsl.Source.combineMat(first.asScala, second.asScala)(num => strategy.apply(num))(combinerToScala(combine)))
+      scaladsl.Source.combineMat(first.asScala, second.asScala)(num => fanInStrategy.apply(num))(
+        combinerToScala(combine)))
+  }
+
+  /**
+   * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
+   * @since 1.1.0
+   */
+  def combine[T, U, M](
+      sources: java.util.List[_ <: Graph[SourceShape[T], M]],
+      fanInStrategy: function.Function[java.lang.Integer, Graph[UniformFanInShape[T, U], NotUsed]])
+      : Source[U, java.util.List[M]] = {
+    val seq = if (sources != null) Util.immutableSeq(sources).collect {
+      case source: Source[T @unchecked, M @unchecked] => source.asScala
+      case other                                      => other
+    }
+    else immutable.Seq()
+    import org.apache.pekko.util.ccompat.JavaConverters._
+    new Source(scaladsl.Source.combine(seq)(size => fanInStrategy(size)).mapMaterializedValue(_.asJava))
   }
 
   /**

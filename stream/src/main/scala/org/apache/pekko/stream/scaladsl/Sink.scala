@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
@@ -21,9 +21,6 @@ import scala.concurrent.Future
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 import org.apache.pekko
 import pekko.Done
@@ -39,6 +36,9 @@ import pekko.stream.impl.fusing.GraphStages
 import pekko.stream.javadsl
 import pekko.stream.stage._
 import pekko.util.ccompat._
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
 
 /**
  * A `Sink` is a set of stream processing steps that has one open input.
@@ -339,10 +339,12 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      strategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
+      @nowarn
+      @deprecatedName(Symbol("strategy"))
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
-      val d = b.add(strategy(rest.size + 2))
+      val d = b.add(fanOutStrategy(rest.size + 2))
       d.out(0) ~> first
       d.out(1) ~> second
 
@@ -354,6 +356,41 @@ object Sink {
 
       combineRest(2, rest.iterator)
     })
+
+  /**
+   * Combine two sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink` with 2 outlets.
+   * @since 1.1.0
+   */
+  def combineMat[T, U, M1, M2, M](first: Sink[U, M1], second: Sink[U, M2])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed])(matF: (M1, M2) => M): Sink[T, M] = {
+    Sink.fromGraph(GraphDSL.createGraph(first, second)(matF) { implicit b => (shape1, shape2) =>
+      import GraphDSL.Implicits._
+      val d = b.add(fanOutStrategy(2))
+      d.out(0) ~> shape1
+      d.out(1) ~> shape2
+      new SinkShape[T](d.in)
+    })
+  }
+
+  /**
+   * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
+   * The fanoutGraph's outlets size must match the provides sinks'.
+   * @since 1.1.0
+   */
+  def combine[T, U, M](sinks: immutable.Seq[Graph[SinkShape[U], M]])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, immutable.Seq[M]] =
+    sinks match {
+      case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
+      case immutable.Seq(sink) => sink.asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
+      case _ =>
+        Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
+          import GraphDSL.Implicits._
+          val c = b.add(fanOutStrategy(sinks.size))
+          for ((shape, idx) <- shapes.zipWithIndex)
+            c.out(idx) ~> shape
+          SinkShape(c.in)
+        })
+    }
 
   /**
    * A `Sink` that will invoke the given function to each of the elements

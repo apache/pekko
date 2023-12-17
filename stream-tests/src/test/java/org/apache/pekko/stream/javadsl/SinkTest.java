@@ -26,12 +26,15 @@ import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
 import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.testkit.TestSubscriber;
+import org.apache.pekko.stream.testkit.javadsl.TestSink;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.reactivestreams.Subscription;
 
 import static org.junit.Assert.*;
 
@@ -125,6 +128,41 @@ public class SinkTest extends StreamTest {
 
     probe1.expectMsgEquals("done1");
     probe2.expectMsgEquals("done2");
+  }
+
+  @Test
+  public void mustBeAbleToUseCombineMat() {
+    final Sink<Integer, TestSubscriber.Probe<Integer>> sink1 = TestSink.create(system);
+    final Sink<Integer, TestSubscriber.Probe<Integer>> sink2 = TestSink.create(system);
+    final Sink<Integer, Pair<TestSubscriber.Probe<Integer>, TestSubscriber.Probe<Integer>>> sink =
+        Sink.combineMat(sink1, sink2, Broadcast::create, Keep.both());
+
+    final Pair<TestSubscriber.Probe<Integer>, TestSubscriber.Probe<Integer>> subscribers =
+        Source.from(Arrays.asList(0, 1)).runWith(sink, system);
+    final TestSubscriber.Probe<Integer> subscriber1 = subscribers.first();
+    final TestSubscriber.Probe<Integer> subscriber2 = subscribers.second();
+    final Subscription sub1 = subscriber1.expectSubscription();
+    final Subscription sub2 = subscriber2.expectSubscription();
+    sub1.request(2);
+    sub2.request(2);
+    subscriber1.expectNext(0, 1).expectComplete();
+    subscriber2.expectNext(0, 1).expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseCombineMany() throws Exception {
+    final Sink<Long, CompletionStage<Long>> firstSink = Sink.head();
+    final Sink<Long, CompletionStage<Long>> secondSink = Sink.head();
+    final Sink<Long, CompletionStage<Long>> thirdSink = Sink.head();
+
+    final Sink<Long, List<CompletionStage<Long>>> combineSink =
+        Sink.combine(Arrays.asList(firstSink, secondSink, thirdSink), Broadcast::create);
+    final List<CompletionStage<Long>> results =
+        Source.single(1L).toMat(combineSink, Keep.right()).run(system);
+    for (CompletionStage<Long> result : results) {
+      final long value = result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+      assertEquals(1L, value);
+    }
   }
 
   @Test
