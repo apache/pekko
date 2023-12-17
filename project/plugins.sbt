@@ -17,7 +17,7 @@ addSbtPlugin("com.github.sbt" % "sbt-osgi" % "0.9.4-INVALID-CEN-JAR-PATCH")
 addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "1.1.3")
 addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
-addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.6")
+addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.7")
 addSbtPlugin("io.spray" % "sbt-boilerplate" % "0.6.1")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
