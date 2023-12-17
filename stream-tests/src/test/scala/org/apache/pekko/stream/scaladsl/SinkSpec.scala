@@ -17,15 +17,15 @@ import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
+import org.scalatest.concurrent.ScalaFutures
 import pekko.Done
 import pekko.stream._
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.DefaultTimeout
+
+import org.reactivestreams.Publisher
 
 class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
@@ -136,6 +136,34 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
         p.expectNextN(List(1, 2))
         p.expectComplete()
       }
+    }
+
+    "combine many sinks to one" in {
+      val source = Source(List(0, 1, 2, 3, 4, 5))
+      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      val sink = Sink
+        .combine(
+          List(
+            Sink.reduce[Int]((a, b) => a + b),
+            Sink.reduce[Int]((a, b) => a + b),
+            Sink.reduce[Int]((a, b) => a + b)))(Broadcast[Int](_))
+        .mapMaterializedValue(Future.reduceLeft(_)(_ + _))
+      val result = source.runWith(sink)
+      result.futureValue should be(45)
+    }
+
+    "combine two sinks with combineMat" in {
+      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      Source(List(0, 1, 2, 3, 4, 5))
+        .toMat(Sink.combineMat(Sink.reduce[Int]((a, b) => a + b), Sink.reduce[Int]((a, b) => a + b))(Broadcast[Int](_))(
+          (f1, f2) => {
+            for {
+              r1 <- f1
+              r2 <- f2
+            } yield r1 + r2
+          }))(Keep.right)
+        .run()
+        .futureValue should be(30)
     }
 
     "combine to two sinks with simplified API" in {
