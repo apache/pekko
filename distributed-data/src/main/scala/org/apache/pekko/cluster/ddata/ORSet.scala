@@ -293,10 +293,10 @@ object ORSet {
  * over remove.
  *
  * It is not implemented as in the paper
- * <a href="https://inria.hal.science/file/index/docid/555588/filename/techreport.pdf">A comprehensive study of Convergent and Commutative Replicated Data Types</a>.
+ * <a href="https://hal.inria.fr/file/index/docid/555588/filename/techreport.pdf">A comprehensive study of Convergent and Commutative Replicated Data Types</a>.
  * This is more space efficient and doesn't accumulate garbage for removed elements.
  * It is described in the paper
- * <a href="https://inria.hal.science/file/index/docid/738680/filename/RR-8083.pdf">An optimized conflict-free replicated set</a>
+ * <a href="https://hal.inria.fr/file/index/docid/738680/filename/RR-8083.pdf">An optimized conflict-free replicated set</a>
  * The implementation is inspired by the Riak DT <a href="https://github.com/basho/riak_dt/blob/develop/src/riak_dt_orswot.erl">
  * riak_dt_orswot</a>.
  *

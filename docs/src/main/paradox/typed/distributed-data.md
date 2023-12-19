@@ -670,7 +670,7 @@ All entries can be made durable by specifying:
 pekko.cluster.distributed-data.durable.keys = ["*"]
 ```
 
-@scala[[LMDB](https://www.symas.com/lmdb/technical)]@java[[LMDB](https://github.com/lmdbjava/lmdbjava/)] is the default storage implementation. It is
+@scala[[LMDB](https://symas.com/lmdb/technical/)]@java[[LMDB](https://github.com/lmdbjava/lmdbjava/)] is the default storage implementation. It is
 possible to replace that with another implementation by implementing the actor protocol described in
 `org.apache.pekko.cluster.ddata.DurableStore` and defining the `pekko.cluster.distributed-data.durable.store-actor-class`
 property for the new implementation.

@@ -1197,7 +1197,7 @@ object Replicator {
  * <a href="https://www.infoq.com/presentations/CRDT/">Eventually Consistent Data Structures</a>
  * talk by Sean Cribbs and and the
  * <a href="https://www.microsoft.com/en-us/research/video/strong-eventual-consistency-and-conflict-free-replicated-data-types/">talk by Mark Shapiro</a>
- * and read the excellent paper <a href="https://inria.hal.science/file/index/docid/555588/filename/techreport.pdf">
+ * and read the excellent paper <a href="https://hal.inria.fr/file/index/docid/555588/filename/techreport.pdf">
  * A comprehensive study of Convergent and Commutative Replicated Data Types</a>
  * by Mark Shapiro et. al.
  *

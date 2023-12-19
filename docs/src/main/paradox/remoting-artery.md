@@ -892,7 +892,7 @@ Any space used in the mount will count towards your container's memory usage.
 
 ### Flight Recorder
 
-When running on JDK 11 Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.org/jeps/328).
+When running on JDK 11 Artery specific flight recording is available through the [Java Flight Recorder (JFR)](https://openjdk.java.net/jeps/328).
 The flight recorder is automatically enabled by detecting JDK 11 but can be disabled if needed by setting `pekko.java-flight-recorder.enabled = false`.
 
 Low overhead Artery specific events are emitted by default when JFR is enabled, higher overhead events needs a custom settings template and are not enabled automatically with the `profiling` JFR template.

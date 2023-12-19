@@ -45,7 +45,7 @@ evolution feel free to submit Pull Requests to this page to extend it.
 
 In recent years we have observed a tremendous move towards immutable append-only datastores, with event-sourcing being
 the prime technique successfully being used in these settings. For an excellent overview why and how immutable data makes scalability
-and systems design much simpler you may want to read Pat Helland's excellent [Immutability Changes Everything](http://www.cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf) whitepaper.
+and systems design much simpler you may want to read Pat Helland's excellent [Immutability Changes Everything](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf) whitepaper.
 
 Since with [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) the **events are immutable** and usually never deleted – the way schema evolution is handled
 differs from how one would go about it in a mutable database setting (e.g. in typical CRUD database applications).
@@ -98,12 +98,12 @@ to perform this on a live system.
 recommendation if you don't have other preference. It also has support for
 @ref:[Schema Evolution](serialization-jackson.md#schema-evolution).
 
-[Google Protocol Buffers](https://protobuf.dev/) is good if you want
+[Google Protocol Buffers](https://developers.google.com/protocol-buffers/) is good if you want
 more control over the schema evolution of your messages, but it requires more work to develop and
 maintain the mapping between serialized representation and domain representation.
 
 Binary serialization formats that we have seen work well for long-lived applications include the very flexible IDL based:
-[Google Protocol Buffers](https://protobuf.dev), [Apache Thrift](https://thrift.apache.org/)
+[Google Protocol Buffers](https://developers.google.com/protocol-buffers), [Apache Thrift](https://thrift.apache.org/)
 or [Apache Avro](https://avro.apache.org). Avro schema evolution is more "entire schema" based, instead of
 single fields focused like in protobuf or thrift, and usually requires using some kind of schema registry.
 
@@ -113,7 +113,7 @@ by Martin Kleppmann.
 
 ### Provided default serializers
 
-Pekko Persistence provides [Google Protocol Buffers](https://protobuf.dev/) based serializers (using @ref:[Pekko Serialization](serialization.md))
+Pekko Persistence provides [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) based serializers (using @ref:[Pekko Serialization](serialization.md))
 for its own message types such as @apidoc[PersistentRepr], @apidoc[AtomicWrite] and snapshots. Journal plugin implementations
 *may* choose to use those provided serializers, or pick a serializer which suits the underlying database better.
 
@@ -403,7 +403,7 @@ persist the corresponding events (the "*data model*"). For example because the d
 independently of the domain model.
 
 Another situation where this technique may be useful is when your serialization tool of choice requires generated
-classes to be used for serialization and deserialization of objects, like for example [Google Protocol Buffers](https://protobuf.dev/) do,
+classes to be used for serialization and deserialization of objects, like for example [Google Protocol Buffers](https://developers.google.com/protocol-buffers/) do,
 yet you do not want to leak this implementation detail into the domain model itself, which you'd like to model as
 plain @scala[Scala case]@java[Java] classes.
 

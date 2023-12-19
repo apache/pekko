@@ -5,7 +5,7 @@
 Remote DeathWatch uses heartbeat messages and the failure detector to detect network failures and JVM crashes. 
 
 The heartbeat arrival times are interpreted by an implementation of
-[The Phi Accrual Failure Detector](https://www.semanticscholar.org/paper/The-spl-phi-accrual-failure-detector-Hayashibara-D%C3%A9fago/11ae4c0c0d0c36dc177c1fff5eb84fa49aa3e1a8?p2df) by Hayashibara et al.
+[The Phi Accrual Failure Detector](https://pdfs.semanticscholar.org/11ae/4c0c0d0c36dc177c1fff5eb84fa49aa3e1a8.pdf) by Hayashibara et al.
 
 ## Failure Detector Heartbeats
 

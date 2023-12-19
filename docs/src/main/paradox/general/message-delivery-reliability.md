@@ -96,7 +96,7 @@ Pekko embraces distributed computing and makes the fallibility of communication
 explicit through message passing, therefore it does not try to lie and emulate
 a leaky abstraction. This is a model that has been used with great success in
 Erlang and requires the users to design their applications around it. You can
-read more about this approach in the [Erlang documentation](https://www.erlang.org/faq/academic.html) (section 10.8 and
+read more about this approach in the [Erlang documentation](https://erlang.org/faq/academic.html) (section 10.8 and
 10.9), Pekko follows it closely.
 
 Another angle on this issue is that by providing only basic guarantees those
