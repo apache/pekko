@@ -188,7 +188,7 @@ Challenges Projections solve include the following:
 
 * Constructing alternate or aggregate views over an event stream.
 * Propagating an event stream onto another downstream medium such as a Kafka topic.  
-* A simple way of building read-side projections in the context of [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) and [CQRS system](https://learn.microsoft.com/en-us/previous-versions/msp-n-p/jj591573%28v=pandp.10%29)
+* A simple way of building read-side projections in the context of [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) and [CQRS system](https://docs.microsoft.com/en-us/previous-versions/msp-n-p/jj591573%28v=pandp.10%29)
 
 
 ### Distributed Data

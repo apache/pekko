@@ -768,7 +768,7 @@ API documentation of the `Replicator` for details.
 
  * [Strong Eventual Consistency and Conflict-free Replicated Data Types (video)](https://www.youtube.com/watch?v=oyUHd894w18&amp;feature=youtu.be)
 talk by Mark Shapiro
- * [A comprehensive study of Convergent and Commutative Replicated Data Types](https://inria.hal.science/file/index/docid/555588/filename/techreport.pdf)
+ * [A comprehensive study of Convergent and Commutative Replicated Data Types](https://hal.inria.fr/file/index/docid/555588/filename/techreport.pdf)
 paper by Mark Shapiro et. al.
 
 ## Configuration
