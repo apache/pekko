@@ -1364,10 +1364,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test
@@ -1381,10 +1380,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test
@@ -1398,10 +1396,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test

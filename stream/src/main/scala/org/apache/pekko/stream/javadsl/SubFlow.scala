@@ -2071,7 +2071,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.InitialTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -2087,7 +2087,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.InitialTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -2103,7 +2103,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.CompletionTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -2119,7 +2119,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.CompletionTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -2135,7 +2135,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * with a [[org.apache.pekko.stream.StreamIdleTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -2152,7 +2152,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * with a [[org.apache.pekko.stream.StreamIdleTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -2169,7 +2169,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
-   * the stream is failed with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * the stream is failed with a [[org.apache.pekko.stream.BackpressureTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -2186,7 +2186,7 @@ class SubFlow[In, Out, Mat](
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
-   * the stream is failed with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * the stream is failed with a [[org.apache.pekko.stream.BackpressureTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
