@@ -36,7 +36,7 @@ import pekko.stream.Attributes.{ InputBuffer, LogLevels }
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.OverflowStrategies._
 import pekko.stream.Supervision.Decider
-import pekko.stream.impl.{ Buffer => BufferImpl, ContextPropagation, ReactiveStreamsCompliance }
+import pekko.stream.impl.{ Buffer => BufferImpl, ContextPropagation, ReactiveStreamsCompliance, TraversalBuilder }
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl.{ DelayStrategy, Source }
@@ -2163,12 +2163,21 @@ private[pekko] object TakeWithin {
 
       override def onPull(): Unit = pull(in)
 
-      def onFailure(ex: Throwable): Unit =
-        if ((maximumRetries < 0 || attempt < maximumRetries) && pf.isDefinedAt(ex)) {
-          switchTo(pf(ex))
-          attempt += 1
+      def onFailure(ex: Throwable): Unit = {
+        import Collect.NotApplied
+        if (maximumRetries < 0 || attempt < maximumRetries) {
+          pf.applyOrElse(ex, NotApplied) match {
+            case NotApplied => failStage(ex)
+            case source: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
+              completeStage()
+            case other: Graph[SourceShape[T] @unchecked, M @unchecked] =>
+              switchTo(other)
+              attempt += 1
+            case _ => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
+          }
         } else
           failStage(ex)
+      }
 
       def switchTo(source: Graph[SourceShape[T], M]): Unit = {
         val sinkIn = new SubSinkInlet[T]("RecoverWithSink") with InHandler with OutHandler { self =>
