@@ -118,7 +118,6 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
       sender() ! LoggerInitialized
   }
 
-  @inline
   final def withMdc(logSource: String, logEvent: LogEvent)(logStatement: => Unit): Unit = {
     logEvent match {
       case m: LogEventWithMarker if m.marker ne null =>

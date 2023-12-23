@@ -18,7 +18,6 @@ import java.util.concurrent.locks.ReentrantLock
 
 final class ReentrantGuard extends ReentrantLock {
 
-  @inline
   final def withGuard[T](body: => T): T = {
     lock()
     try body

@@ -1097,7 +1097,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     this
   }
 
-  @inline protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
+  protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
     fillArray(len) {
       case (array, start) =>
         val buffer = ByteBuffer.wrap(array, start, len)
@@ -1128,7 +1128,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     _tempCapacity = _temp.length
   }
 
-  @inline private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
+  private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
 
   private def ensureTempSize(size: Int): Unit = {
     if (shouldResizeTempFor(size)) {

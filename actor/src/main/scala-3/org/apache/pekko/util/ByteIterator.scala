@@ -39,11 +39,11 @@ object ByteIterator {
       extends ByteIterator {
     iterator =>
 
-    @inline final def len: Int = until - from
+    final def len: Int = until - from
 
-    @inline final def hasNext: Boolean = from < until
+    final def hasNext: Boolean = from < until
 
-    @inline final def head: Byte = array(from)
+    final def head: Byte = array(from)
 
     final def next(): Byte = {
       if (!hasNext) EmptyImmutableSeq.iterator.next()
@@ -215,13 +215,13 @@ object ByteIterator {
     }
     normalize()
 
-    @inline private def current: ByteArrayIterator = iterators.head
-    @inline private def dropCurrent(): Unit = { iterators = iterators.tail }
-    @inline def clear(): Unit = { iterators = MultiByteArrayIterator.empty.iterators }
+    private def current: ByteArrayIterator = iterators.head
+    private def dropCurrent(): Unit = { iterators = iterators.tail }
+    def clear(): Unit = { iterators = MultiByteArrayIterator.empty.iterators }
 
-    @inline final def hasNext: Boolean = current.hasNext
+    final def hasNext: Boolean = current.hasNext
 
-    @inline final def head: Byte = current.head
+    final def head: Byte = current.head
 
     final def next(): Byte = {
       val result = current.next()

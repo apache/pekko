@@ -57,7 +57,7 @@ object ActorTestKit {
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    * The application.conf of your project is not used in this case.
    */
-  def apply(): ActorTestKit = {
+  @noinline def apply(): ActorTestKit = {
     val system = ActorSystem(
       ActorTestKitGuardian.testKitGuardian,
       TestKitUtils.testNameFromCallStack(classOf[ActorTestKit]),
@@ -111,7 +111,7 @@ object ActorTestKit {
    * When the test has completed you should terminate the `ActorSystem` and
    * the testkit with [[ActorTestKit#shutdownTestKit]].
    */
-  def apply(customConfig: Config): ActorTestKit = {
+  @noinline def apply(customConfig: Config): ActorTestKit = {
     val system = ActorSystem(
       ActorTestKitGuardian.testKitGuardian,
       TestKitUtils.testNameFromCallStack(classOf[ActorTestKit]),

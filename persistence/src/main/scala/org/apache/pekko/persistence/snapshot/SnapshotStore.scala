@@ -128,7 +128,7 @@ trait SnapshotStore extends Actor with ActorLogging {
   }
 
   /** Documents intent that the sender() is expected to be the PersistentActor */
-  @inline private final def senderPersistentActor(): ActorRef = sender()
+  private final def senderPersistentActor(): ActorRef = sender()
 
   private def tryReceivePluginInternal(evt: Any): Unit =
     if (receivePluginInternal.isDefinedAt(evt)) receivePluginInternal(evt)

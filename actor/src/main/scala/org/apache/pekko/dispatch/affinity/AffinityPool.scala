@@ -72,7 +72,7 @@ private[affinity] object AffinityPool {
     private[this] var parkPeriodNs = 0L
     @volatile private[this] var idling = false
 
-    @inline private[this] def transitionTo(newState: IdleState): Unit = {
+    private[this] def transitionTo(newState: IdleState): Unit = {
       state = newState
       turns = 0
     }

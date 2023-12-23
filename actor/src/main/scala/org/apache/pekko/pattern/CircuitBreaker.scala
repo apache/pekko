@@ -317,7 +317,6 @@ class CircuitBreaker(
    * @param newState Next state on transition
    * @return Whether the previous state matched correctly
    */
-  @inline
   private[this] def swapState(oldState: State, newState: State): Boolean =
     Unsafe.instance.compareAndSwapObject(this, AbstractCircuitBreaker.stateOffset, oldState, newState)
 
@@ -326,14 +325,12 @@ class CircuitBreaker(
    *
    * @return Reference to current state
    */
-  @inline
   private[this] def currentState: State =
     Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.stateOffset).asInstanceOf[State]
 
   /**
    * Helper method for updating the underlying resetTimeout via Unsafe
    */
-  @inline
   private[this] def swapResetTimeout(oldResetTimeout: FiniteDuration, newResetTimeout: FiniteDuration): Boolean =
     Unsafe.instance.compareAndSwapObject(
       this,
@@ -344,7 +341,6 @@ class CircuitBreaker(
   /**
    * Helper method for accessing to the underlying resetTimeout via Unsafe
    */
-  @inline
   private[this] def currentResetTimeout: FiniteDuration =
     Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.resetTimeoutOffset).asInstanceOf[FiniteDuration]
 

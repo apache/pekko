@@ -52,7 +52,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
     _mailboxDoNotCallMeDirectly
   }
 
-  @inline final def mailbox: Mailbox =
+  final def mailbox: Mailbox =
     Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]
 
   @tailrec final def swapMailbox(newMailbox: Mailbox): Mailbox = {
