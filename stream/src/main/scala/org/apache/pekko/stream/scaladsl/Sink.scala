@@ -47,7 +47,6 @@ import org.reactivestreams.Subscriber
 final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilder, override val shape: SinkShape[In])
     extends Graph[SinkShape[In], Mat] {
 
-  // TODO: Debug string
   override def toString: String = s"Sink($shape)"
 
   /**
