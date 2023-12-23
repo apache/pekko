@@ -127,8 +127,8 @@ private[remote] final class TopHeavyHitters[T >: Null](val max: Int)(implicit cl
         v
       }
 
-      @inline private final def index: Int = heap(i)
-      @inline private final def value: T = {
+      private final def index: Int = heap(i)
+      private final def value: T = {
         val idx = index
         if (idx < 0) null else items(idx)
       }

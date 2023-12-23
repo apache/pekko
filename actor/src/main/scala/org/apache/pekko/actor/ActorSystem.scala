@@ -860,7 +860,6 @@ private[pekko] class ActorSystemImpl(
         }
       }
 
-      @inline
       private def logFatalError(message: String, cause: Throwable, thread: Thread): Unit = {
         // First log to stderr as this has the best chance to get through in an 'emergency panic' situation:
         import System.err

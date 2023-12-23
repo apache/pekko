@@ -66,7 +66,7 @@ final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
    * using default configuration from the reference.conf resources that ship with the Akka libraries.
    * The application.conf of your project is not used in this case.
    */
-  def this() = this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource])))
+  @noinline def this() = this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource])))
 
   /**
    * Use a custom [[pekko.actor.typed.ActorSystem]] for the actor system.
@@ -76,7 +76,7 @@ final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
   /**
    * Use a custom config for the actor system.
    */
-  def this(customConfig: String) =
+  @noinline def this(customConfig: String) =
     this(
       ActorTestKit.create(
         TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]),
@@ -85,13 +85,13 @@ final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
   /**
    * Use a custom config for the actor system.
    */
-  def this(customConfig: Config) =
+  @noinline def this(customConfig: Config) =
     this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]), customConfig))
 
   /**
    * Use a custom config for the actor system, and a custom [[pekko.actor.testkit.typed.TestKitSettings]].
    */
-  def this(customConfig: Config, settings: TestKitSettings) =
+  @noinline def this(customConfig: Config, settings: TestKitSettings) =
     this(ActorTestKit.create(TestKitUtils.testNameFromCallStack(classOf[TestKitJunitResource]), customConfig, settings))
 
   @Rule

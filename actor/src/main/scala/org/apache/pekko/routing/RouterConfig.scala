@@ -286,13 +286,13 @@ case object FromConfig extends FromConfig {
    * Java API: get the singleton instance
    */
   def getInstance = this
-  @inline final def apply(
+  final def apply(
       resizer: Option[Resizer] = None,
       supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
       routerDispatcher: String = Dispatchers.DefaultDispatcherId) =
     new FromConfig(resizer, supervisorStrategy, routerDispatcher)
 
-  @inline final def unapply(fc: FromConfig): Option[String] = Some(fc.routerDispatcher)
+  final def unapply(fc: FromConfig): Option[String] = Some(fc.routerDispatcher)
 }
 
 /**

@@ -549,11 +549,9 @@ private[pekko] final class PromiseActorRef(
     _watchedByDoNotCallMeDirectly
   }
 
-  @inline
   private[this] def watchedBy: Set[ActorRef] =
     Unsafe.instance.getObjectVolatile(this, watchedByOffset).asInstanceOf[Set[ActorRef]]
 
-  @inline
   private[this] def updateWatchedBy(oldWatchedBy: Set[ActorRef], newWatchedBy: Set[ActorRef]): Boolean =
     Unsafe.instance.compareAndSwapObject(this, watchedByOffset, oldWatchedBy, newWatchedBy)
 
@@ -575,14 +573,11 @@ private[pekko] final class PromiseActorRef(
     case other => if (!updateWatchedBy(other, null)) clearWatchers() else other
   }
 
-  @inline
   private[this] def state: AnyRef = Unsafe.instance.getObjectVolatile(this, stateOffset)
 
-  @inline
   private[this] def updateState(oldState: AnyRef, newState: AnyRef): Boolean =
     Unsafe.instance.compareAndSwapObject(this, stateOffset, oldState, newState)
 
-  @inline
   private[this] def setState(newState: AnyRef): Unit = Unsafe.instance.putObjectVolatile(this, stateOffset, newState)
 
   override def getParent: InternalActorRef = provider.tempContainer

@@ -329,7 +329,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   /**
    * INTERNAL API
    */
-  @inline protected[pekko] final val isThroughputDeadlineTimeDefined = throughputDeadlineTime.toMillis > 0
+  protected[pekko] final val isThroughputDeadlineTimeDefined = throughputDeadlineTime.toMillis > 0
 
   /**
    * INTERNAL API

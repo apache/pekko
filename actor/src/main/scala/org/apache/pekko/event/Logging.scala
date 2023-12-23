@@ -485,10 +485,10 @@ object Logging {
    * Marker trait for annotating LogLevel, which must be Int after erasure.
    */
   final case class LogLevel(asInt: Int) extends AnyVal {
-    @inline final def >=(other: LogLevel): Boolean = asInt >= other.asInt
-    @inline final def <=(other: LogLevel): Boolean = asInt <= other.asInt
-    @inline final def >(other: LogLevel): Boolean = asInt > other.asInt
-    @inline final def <(other: LogLevel): Boolean = asInt < other.asInt
+    final def >=(other: LogLevel): Boolean = asInt >= other.asInt
+    final def <=(other: LogLevel): Boolean = asInt <= other.asInt
+    final def >(other: LogLevel): Boolean = asInt > other.asInt
+    final def <(other: LogLevel): Boolean = asInt < other.asInt
   }
 
   /**
