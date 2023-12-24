@@ -20,5 +20,5 @@ jobs:
       - name: Check project is formatted
         uses: jrouly/scalafmt-native-action@v2
         with:
-          version: '3.7.14'
+          version: '3.7.17'
           arguments: '--list --mode diff-ref=origin/main'
