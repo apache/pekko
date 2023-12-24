@@ -1088,7 +1088,8 @@ trait FlowOps[+Out, +Mat] {
    *
    * If the function `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Resume]] or
-   * [[pekko.stream.Supervision.Restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision.Restart]] or the `Future` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive.
    *
@@ -1123,7 +1124,8 @@ trait FlowOps[+Out, +Mat] {
    *
    * If the function `f` throws an exception or if the `Future` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision.Resume]] or
-   * [[pekko.stream.Supervision.Restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision.Restart]] or the `Future` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive (even though the result of the futures
    * returned by `f` might be emitted in a different order).

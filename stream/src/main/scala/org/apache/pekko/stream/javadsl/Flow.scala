@@ -821,7 +821,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * If the function `f` throws an exception or if the `CompletionStage` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision#resume]] or
-   * [[pekko.stream.Supervision#restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision#restart]] or the `CompletionStage` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive.
    *
@@ -919,7 +920,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * If the function `f` throws an exception or if the `CompletionStage` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision#resume]] or
-   * [[pekko.stream.Supervision#restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision#restart]] or the `CompletionStage` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive (even though the result of the futures
    * returned by `f` might be emitted in a different order).
