@@ -15,6 +15,7 @@ package org.apache.pekko.actor.typed.javadsl;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.LogCapturing;
 import org.apache.pekko.actor.typed.internal.adapter.SchedulerAdapter;
+import org.apache.pekko.event.Logging;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -341,10 +342,10 @@ public class AdapterTest extends JUnitSuite {
     ActorRef<String> typedRef =
         Adapter.spawnAnonymous(system, Typed1.create(ignore, probe.getRef()));
 
-    int originalLogLevel = system.getEventStream().logLevel();
+    Logging.LogLevel originalLogLevel = system.getEventStream().logLevel();
     try {
       // suppress the logging with stack trace
-      system.getEventStream().setLogLevel(Integer.MIN_VALUE); // OFF
+      system.getEventStream().setLogLevel(Logging.OffLevel()); // OFF
 
       typedRef.tell("supervise-restart");
       probe.expectMsg("ok");
