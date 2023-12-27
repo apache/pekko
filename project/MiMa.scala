@@ -11,15 +11,13 @@
  * Copyright (C) 2009-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import scala.collection.immutable
 import sbt._
 import sbt.Keys._
+import sbtdynver.DynVerPlugin.autoImport.previousStableVersion
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import com.typesafe.tools.mima.plugin.MimaPlugin.autoImport._
 
 object MiMa extends AutoPlugin {
-
-  private val latestPatchOf10 = 0
 
   override def requires = MimaPlugin
   override def trigger = allRequirements
@@ -29,35 +27,36 @@ object MiMa extends AutoPlugin {
 
   override val projectSettings = Seq(
     mimaReportSignatureProblems := true,
-    mimaPreviousArtifacts := pekkoPreviousArtifacts(name.value, organization.value),
-    checkMimaFilterDirectories := checkFilterDirectories(baseDirectory.value))
+    mimaPreviousArtifacts := {
+      previousStableVersion.value match {
+        case Some(previousStableVersion) =>
+          val Some((currentMajor, currentMinor)) = CrossVersion.partialVersion(version.value)
+          val Some((previousStableMajor, _)) = CrossVersion.partialVersion(previousStableVersion)
+          // If we bump up the major then lets assume this intentionally breaks binary compatibility
+          // so lets not check any artifacts
+          // See https://github.com/sbt/sbt-dynver/issues/70#issuecomment-458620722
+          if (currentMajor == previousStableMajor + 1 && currentMinor == 0)
+            Set.empty
+          else
+            Set(organization.value %% moduleName.value % previousStableVersion)
+        case None => Set.empty
+      }
+    },
+    checkMimaFilterDirectories := checkFilterDirectories(baseDirectory.value, version.value))
 
-  def checkFilterDirectories(moduleRoot: File): Unit = {
-    val nextVersionFilterDir =
-      moduleRoot / "src" / "main" / "mima-filters" / s"1.0.${latestPatchOf10 + 1}.backwards.excludes"
-    if (nextVersionFilterDir.exists()) {
-      throw new IllegalArgumentException(s"Incorrect mima filter directory exists: '$nextVersionFilterDir' " +
-        s"should be with number from current release '${moduleRoot / "src" / "main" / "mima-filters" / s"1.0.$latestPatchOf10.backwards.excludes"}")
+  def checkFilterDirectories(moduleRoot: File, version: String): Unit = {
+    val strippedPatchRegex = """(\d+)(.*)""".r
+    val Some((major, minor)) = CrossVersion.partialVersion(version)
+
+    version match {
+      case strippedPatchRegex(_, v) =>
+        val patchVersion = v.toInt
+        val nextVersionFilterDir =
+          moduleRoot / "src" / "main" / "mima-filters" / s"$major.$minor.${patchVersion + 1}.backwards.excludes"
+        if (nextVersionFilterDir.exists()) {
+          throw new IllegalArgumentException(s"Incorrect mima filter directory exists: '$nextVersionFilterDir' " +
+            s"should be with number from current release '${moduleRoot / "src" / "main" / "mima-filters" / s"1.0.$patchVersion.backwards.excludes"}")
+        }
     }
   }
-
-  def pekkoPreviousArtifacts(
-      projectName: String,
-      organization: String): Set[sbt.ModuleID] = {
-    val versions: Seq[String] = {
-      val firstPatchOf10 = 0
-
-      val pekko10Previous = expandVersions(1, 0, 0 to latestPatchOf10)
-
-      pekko10Previous
-    }
-
-    // check against all binary compatible artifacts
-    versions.map { v =>
-      organization %% projectName % v
-    }.toSet
-  }
-
-  private def expandVersions(major: Int, minor: Int, patches: immutable.Seq[Int]): immutable.Seq[String] =
-    patches.map(patch => s"$major.$minor.$patch")
 }
