@@ -662,7 +662,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
     }
 
     "using scheduleAtFixedRate" must {
-      "reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
+      "fixed rate reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
         val zeroInterval = 0.seconds
         import system.dispatcher
         intercept[IllegalArgumentException] {
@@ -671,7 +671,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
         expectNoMessage(1.second)
       }
 
-      "reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
+      "fixed rate reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
         val negativeDelay = -1.seconds
         import system.dispatcher
         intercept[IllegalArgumentException] {
@@ -682,7 +682,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
     }
 
     "using scheduleWithFixedDelay" must {
-      "reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
+      "fixed delay reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
         val zeroInterval = 0.seconds
         import system.dispatcher
         intercept[IllegalArgumentException] {
@@ -691,7 +691,7 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
         expectNoMessage(1.second)
       }
 
-      "reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
+      "fixed delay reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
         val negativeDelay = -1.seconds
         import system.dispatcher
         intercept[IllegalArgumentException] {
