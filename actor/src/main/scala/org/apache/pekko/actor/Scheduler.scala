@@ -76,7 +76,7 @@ trait Scheduler {
    * i.e. the function will not be invoked any more.
    *
    * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
-   * reach (calculated as: `delay / tickNanos > Int.MaxValue`)
+   * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
