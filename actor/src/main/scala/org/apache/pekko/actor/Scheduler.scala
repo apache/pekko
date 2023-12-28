@@ -75,8 +75,8 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
-   * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
+   * reach (calculated as: `delay / tickNanos > Int.MaxValue`)
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
    */
@@ -116,7 +116,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -215,7 +215,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -251,7 +251,7 @@ trait Scheduler {
    * If the `Runnable` throws an exception the repeated scheduling is aborted,
    * i.e. the function will not be invoked any more.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -415,7 +415,7 @@ trait Scheduler {
    * Scala API: Schedules a message to be sent once with a delay, i.e. a time period that has
    * to pass before the message is sent.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -433,7 +433,7 @@ trait Scheduler {
    * Java API: Schedules a message to be sent once with a delay, i.e. a time period that has
    * to pass before the message is sent.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.
@@ -452,7 +452,7 @@ trait Scheduler {
    * Scala API: Schedules a function to be run once with a delay, i.e. a time period that has
    * to pass before the function is run.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -466,7 +466,7 @@ trait Scheduler {
    * Scala API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `with Timers` should be preferred.
@@ -477,7 +477,7 @@ trait Scheduler {
    * Java API: Schedules a Runnable to be run once with a delay, i.e. a time period that
    * has to pass before the runnable is executed.
    *
-   * @throws java.lang.IllegalArgumentException if the given delays exceed the maximum
+   * @throws java.lang.IllegalArgumentException if the given delays is zero, negative or exceed the maximum
    * reach (calculated as: `delay / tickNanos > Int.MaxValue`).
    *
    * Note: For scheduling within actors `AbstractActorWithTimers` should be preferred.

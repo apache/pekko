@@ -105,12 +105,14 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   override def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
+    checkZeroPeriod(delay.toNanos)
     checkMaxDelay(roundUp(delay).toNanos)
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
   override def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
+    checkZeroPeriod(delay.toNanos)
     checkMaxDelay(roundUp(delay).toNanos)
     new AtomicCancellable(InitialRepeatMarker) { self =>
       final override protected def scheduledFirst(): Cancellable =
@@ -199,6 +201,11 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
       throw new IllegalArgumentException(
         s"Task scheduled with [${delayNanos.nanos.toSeconds}] seconds delay, " +
         s"which is too far in future, maximum delay is [${(tickNanos * Int.MaxValue).nanos.toSeconds - 1}] seconds")
+
+  private def checkZeroPeriod(delayNanos: Long): Unit =
+    if (delayNanos <= 0)
+      throw new IllegalArgumentException(
+        "Task scheduled with zero or negative period, which is create an an infinite loop")
 
   private val stopped = new AtomicReference[Promise[immutable.Seq[TimerTask]]]
   private def stop(): Future[immutable.Seq[TimerTask]] = {
