@@ -26,7 +26,7 @@ import pekko.actor.{ ActorSystem, ExtendedActorSystem }
 import pekko.testkit.TestKit
 
 class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
-  with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
+    with AnyWordSpecLike with Matchers with BeforeAndAfterAll {
 
   private val defaultConfig = ConfigFactory.defaultReference()
   private val dynamicAccess = system.asInstanceOf[ExtendedActorSystem].dynamicAccess
@@ -45,7 +45,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val maxDocLen = 123456789L
       val maxNestingDepth = 5
       val config = ConfigFactory.parseString(
-          s"""pekko.serialization.jackson.read.max-number-length=$maxNumLen
+        s"""pekko.serialization.jackson.read.max-number-length=$maxNumLen
              |pekko.serialization.jackson.read.max-string-length=$maxStringLen
              |pekko.serialization.jackson.read.max-document-length=$maxDocLen
              |pekko.serialization.jackson.read.max-nesting-depth=$maxNestingDepth
@@ -64,7 +64,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val bindingName = "testJackson"
       val maxNestingDepth = 54321
       val config = ConfigFactory.parseString(
-          s"pekko.serialization.jackson.write.max-nesting-depth=$maxNestingDepth")
+        s"pekko.serialization.jackson.write.max-nesting-depth=$maxNestingDepth")
         .withFallback(defaultConfig)
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
       val mapper = JacksonObjectMapperProvider.createObjectMapper(
