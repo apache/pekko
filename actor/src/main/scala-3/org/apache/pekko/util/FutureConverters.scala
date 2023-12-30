@@ -23,15 +23,23 @@ import scala.concurrent.Future
 private[pekko] object FutureConverters {
   import scala.jdk.javaapi
 
+  // Ideally this should have the Scala 3 inline keyword but then Java sources are
+  // unable to call this method, see https://github.com/lampepfl/dotty/issues/19346
   def asJava[T](f: Future[T]): CompletionStage[T] = javaapi.FutureConverters.asJava(f)
 
   implicit final class FutureOps[T](private val f: Future[T]) extends AnyVal {
-    inline def asJava: CompletionStage[T] = FutureConverters.asJava(f)
+    // Change to FutureConverters.asJava(f) once https://github.com/lampepfl/dotty/issues/19346
+    // is resolved and the asJava method is marked as inline
+    inline def asJava: CompletionStage[T] = javaapi.FutureConverters.asJava(f)
   }
 
+  // Ideally this should have the Scala 3 inline keyword but then Java sources are
+  // unable to call this method, see https://github.com/lampepfl/dotty/issues/19346
   def asScala[T](cs: CompletionStage[T]): Future[T] = javaapi.FutureConverters.asScala(cs)
 
   implicit final class CompletionStageOps[T](private val cs: CompletionStage[T]) extends AnyVal {
-    inline def asScala: Future[T] = FutureConverters.asScala(cs)
+    // Change to FutureConverters.asScala(cs) once https://github.com/lampepfl/dotty/issues/19346
+    // is resolved and the asScala method is marked as inline
+    inline def asScala: Future[T] = javaapi.FutureConverters.asScala(cs)
   }
 }

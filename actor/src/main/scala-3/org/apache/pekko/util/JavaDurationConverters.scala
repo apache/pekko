@@ -23,13 +23,16 @@ import org.apache.pekko.annotation.InternalStableApi
  */
 @InternalStableApi
 private[pekko] object JavaDurationConverters {
+
+  // Ideally this should have the Scala 3 inline keyword but then Java sources are
+  // unable to call this method, see https://github.com/lampepfl/dotty/issues/19346
   def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
-    def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
+    inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
-    def asJava: JDuration = JDuration.ofNanos(self.toNanos)
+    inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
   }
 }
