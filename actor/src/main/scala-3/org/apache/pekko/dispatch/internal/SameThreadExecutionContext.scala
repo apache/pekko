@@ -25,5 +25,5 @@ import pekko.annotation.InternalApi
  */
 @InternalApi
 private[dispatch] object SameThreadExecutionContext {
-  def apply(): ExecutionContext = ExecutionContext.parasitic
+  inline def apply(): ExecutionContext = ExecutionContext.parasitic
 }
