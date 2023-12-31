@@ -13,7 +13,7 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.util.FutureConverters
+import org.apache.pekko.util.FutureConverters._
 
 import java.util.concurrent.CompletionStage
 
@@ -67,10 +67,10 @@ import scala.concurrent.Future
 package object scaladsl {
   implicit class SourceToCompletionStage[Out, T](val src: Source[Out, Future[T]]) extends AnyVal {
     def toCompletionStage(): Source[Out, CompletionStage[T]] =
-      src.mapMaterializedValue(f => FutureConverters.asJava(f))
+      src.mapMaterializedValue(_.asJava)
   }
   implicit class SinkToCompletionStage[In, T](val sink: Sink[In, Future[T]]) extends AnyVal {
     def toCompletionStage(): Sink[In, CompletionStage[T]] =
-      sink.mapMaterializedValue(f => FutureConverters.asJava(f))
+      sink.mapMaterializedValue(_.asJava)
   }
 }

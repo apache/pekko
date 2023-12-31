@@ -22,15 +22,17 @@ import scala.jdk.OptionShape
 @InternalStableApi
 private[pekko] object OptionConverters {
 
-  inline final def toScala[A](o: Optional[A]): Option[A] = scala.jdk.javaapi.OptionConverters.toScala(o)
+  // Ideally these methods should have the Scala 3 inline keyword but then Java sources are
+  // unable to call these methods, see https://github.com/lampepfl/dotty/issues/19346
+  final def toScala[A](o: Optional[A]): Option[A] = scala.jdk.javaapi.OptionConverters.toScala(o)
 
-  inline def toScala(o: OptionalDouble): Option[java.lang.Double] = scala.jdk.javaapi.OptionConverters.toScala(o)
+  def toScala(o: OptionalDouble): Option[java.lang.Double] = scala.jdk.javaapi.OptionConverters.toScala(o)
 
-  inline def toScala(o: OptionalInt): Option[java.lang.Integer] = scala.jdk.javaapi.OptionConverters.toScala(o)
+  def toScala(o: OptionalInt): Option[java.lang.Integer] = scala.jdk.javaapi.OptionConverters.toScala(o)
 
-  inline def toScala(o: OptionalLong): Option[java.lang.Long] = scala.jdk.javaapi.OptionConverters.toScala(o)
+  def toScala(o: OptionalLong): Option[java.lang.Long] = scala.jdk.javaapi.OptionConverters.toScala(o)
 
-  inline final def toJava[A](o: Option[A]): Optional[A] = scala.jdk.javaapi.OptionConverters.toJava(o)
+  final def toJava[A](o: Option[A]): Optional[A] = scala.jdk.javaapi.OptionConverters.toJava(o)
 
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
     inline def toScala: Option[A] = scala.jdk.OptionConverters.RichOptional(o).toScala
