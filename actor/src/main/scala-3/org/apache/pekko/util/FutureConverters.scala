@@ -28,8 +28,6 @@ private[pekko] object FutureConverters {
   def asJava[T](f: Future[T]): CompletionStage[T] = javaapi.FutureConverters.asJava(f)
 
   implicit final class FutureOps[T](private val f: Future[T]) extends AnyVal {
-    // Change to FutureConverters.asJava(f) once https://github.com/lampepfl/dotty/issues/19346
-    // is resolved and the asJava method is marked as inline
     inline def asJava: CompletionStage[T] = javaapi.FutureConverters.asJava(f)
   }
 
@@ -38,8 +36,6 @@ private[pekko] object FutureConverters {
   def asScala[T](cs: CompletionStage[T]): Future[T] = javaapi.FutureConverters.asScala(cs)
 
   implicit final class CompletionStageOps[T](private val cs: CompletionStage[T]) extends AnyVal {
-    // Change to FutureConverters.asScala(cs) once https://github.com/lampepfl/dotty/issues/19346
-    // is resolved and the asScala method is marked as inline
     inline def asScala: Future[T] = javaapi.FutureConverters.asScala(cs)
   }
 }

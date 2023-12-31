@@ -30,7 +30,7 @@ import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
-import pekko.util.FutureConverters
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.Unsafe
 
@@ -399,9 +399,9 @@ class CircuitBreaker(
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
   def callWithCircuitBreakerCS[T](body: Callable[CompletionStage[T]]): CompletionStage[T] =
-    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-      override def call(): Future[T] = FutureConverters.asScala(body.call())
-    }))
+    callWithCircuitBreaker(new Callable[Future[T]] {
+      override def call(): Future[T] = body.call().asScala
+    }).asJava
 
   /**
    * Java API (8) for [[#withCircuitBreaker]].
@@ -414,9 +414,9 @@ class CircuitBreaker(
   def callWithCircuitBreakerCS[T](
       body: Callable[CompletionStage[T]],
       defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
-    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-        override def call(): Future[T] = FutureConverters.asScala(body.call())
-      }, defineFailureFn))
+    callWithCircuitBreaker(new Callable[Future[T]] {
+        override def call(): Future[T] = body.call().asScala
+      }, defineFailureFn).asJava
 
   /**
    * Wraps invocations of synchronous calls that need to be protected.

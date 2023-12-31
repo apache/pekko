@@ -42,7 +42,7 @@ import pekko.actor.typed.internal.PropsImpl.DispatcherSameAsParent
 import pekko.actor.typed.internal.SystemMessage
 import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation.InternalApi
-import pekko.util.FutureConverters
+import pekko.util.FutureConverters._
 
 /**
  * INTERNAL API. Lightweight wrapper for presenting a classic ActorSystem to a Behavior (via the context).
@@ -120,7 +120,7 @@ import pekko.util.FutureConverters
   override lazy val whenTerminated: scala.concurrent.Future[pekko.Done] =
     system.whenTerminated.map(_ => Done)(parasitic)
   override lazy val getWhenTerminated: CompletionStage[pekko.Done] =
-    FutureConverters.asJava(whenTerminated)
+    whenTerminated.asJava
 
   override def systemActorOf[U](behavior: Behavior[U], name: String, props: Props): ActorRef[U] = {
     val ref = system.systemActorOf(
