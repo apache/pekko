@@ -140,6 +140,14 @@ lazy val actor = pekkoModule("actor")
 lazy val actorTests = pekkoModule("actor-tests")
   .dependsOn(testkit % "compile->compile;test->test", actor)
   .settings(Dependencies.actorTests)
+  .settings(Test / unmanagedSourceDirectories ++= {
+    if (scalaBinaryVersion.value == "2.13" || scalaBinaryVersion.value.startsWith("3")) {
+      Seq(
+        (Test / scalaSource).value.getParentFile / "scala-2.13+")
+    } else {
+      Seq.empty
+    }
+  })
   .enablePlugins(NoPublish)
   .disablePlugins(MimaPlugin)
 

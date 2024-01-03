@@ -26,5 +26,9 @@ class ByteStringBuilderSpec extends AnyWordSpec with Matchers {
       val result: ByteString = ByteString.newBuilder.addAll(List[Byte]('a')).result()
       result shouldEqual ByteString("a")
     }
+    "handle ++=" in {
+      val result: ByteString = ByteString.newBuilder.++=(List[Byte]('a')).result()
+      result shouldEqual ByteString("a")
+    }
   }
 }
