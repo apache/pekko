@@ -1007,8 +1007,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  @nowarn("msg=deprecated")
-  def mapConcat[T](f: Out => IterableOnce[T]): Repr[T] = statefulMapConcat(() => f)
+  def mapConcat[T](f: Out => IterableOnce[T]): Repr[T] = via(new MapConcat(f))
 
   /**
    * Transform each stream element with the help of a state.
