@@ -129,10 +129,6 @@ lazy val actor = pekkoModule("actor")
   .settings(OSGi.actor)
   .settings(AutomaticModuleName.settings("pekko.actor"))
   .settings(AddMetaInfLicenseFiles.actorSettings)
-  .settings(Compile / unmanagedSourceDirectories += {
-    val ver = scalaVersion.value.take(4)
-    (Compile / scalaSource).value.getParentFile / s"scala-$ver"
-  })
   .settings(VersionGenerator.settings)
   .settings(serialversionRemoverPluginSettings)
   .enablePlugins(BoilerplatePlugin)
