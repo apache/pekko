@@ -20,14 +20,21 @@ package org.apache.pekko.util
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class ByteStringBuilderSpec extends AnyWordSpec with Matchers {
+/**
+ * Extra tests to run for ByteStringBuilder when building with Scala 2.13+
+ */
+class ByteStringBuilderScala213PlusSpec extends AnyWordSpec with Matchers {
   "ByteStringBuilder" should {
-    "handle addAll" in {
+    "handle addAll with LinearSeq" in {
       val result: ByteString = ByteString.newBuilder.addAll(List[Byte]('a')).result()
       result shouldEqual ByteString("a")
     }
-    "handle ++=" in {
-      val result: ByteString = ByteString.newBuilder.++=(List[Byte]('a')).result()
+    "handle addAll with IndexedSeq" in {
+      val result: ByteString = ByteString.newBuilder.addAll(Vector[Byte]('a')).result()
+      result shouldEqual ByteString("a")
+    }
+    "handle addAll with ByteString" in {
+      val result: ByteString = ByteString.newBuilder.addAll(ByteString("a")).result()
       result shouldEqual ByteString("a")
     }
   }

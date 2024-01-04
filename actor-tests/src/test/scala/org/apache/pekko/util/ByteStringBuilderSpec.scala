@@ -22,8 +22,16 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ByteStringBuilderSpec extends AnyWordSpec with Matchers {
   "ByteStringBuilder" should {
-    "handle ++=" in {
+    "handle ++= with LinearSeq" in {
       val result: ByteString = ByteString.newBuilder.++=(List[Byte]('a')).result()
+      result shouldEqual ByteString("a")
+    }
+    "handle ++= with IndexedSeq" in {
+      val result: ByteString = ByteString.newBuilder.++=(Vector[Byte]('a')).result()
+      result shouldEqual ByteString("a")
+    }
+    "handle ++= with ByteString" in {
+      val result: ByteString = ByteString.newBuilder.++=(ByteString("a")).result()
       result shouldEqual ByteString("a")
     }
   }
