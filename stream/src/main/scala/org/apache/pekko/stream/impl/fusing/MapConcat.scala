@@ -17,18 +17,18 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.util.control.Exception.Catcher
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.Supervision.Decider
 import pekko.stream.impl.Stages.DefaultAttributes
-import pekko.stream.{ Attributes, FlowShape, Inlet, Outlet, Supervision }
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-import pekko.util.ccompat.ccompatUsedUntil213
-
-import scala.util.control.Exception.Catcher
-import scala.util.control.NonFatal
+import pekko.util.ccompat._
 
 /**
  * INTERNAL API
