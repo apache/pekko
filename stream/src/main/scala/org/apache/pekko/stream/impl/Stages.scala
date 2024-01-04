@@ -67,6 +67,7 @@ import pekko.stream.Attributes._
     val expand = name("expand")
     val statefulMap = name("statefulMap")
     val statefulMapConcat = name("statefulMapConcat")
+    val mapConcat = name("mapConcat")
     val detacher = name("detacher")
     val groupBy = name("groupBy")
     val prefixAndTail = name("prefixAndTail")
