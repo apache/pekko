@@ -69,6 +69,8 @@ private[remote] class PekkoProtocolSettings(config: Config) {
         .getMillisDuration("pekko.remote.classic.handshake-timeout")
         .requiring(_ > Duration.Zero, "handshake-timeout must be > 0")
   }
+
+  val ManagerNamePrefix: String = config.getString("pekko.remote.classic.manager-name-prefix")
 }
 
 @nowarn("msg=deprecated")
@@ -136,7 +138,7 @@ private[remote] class PekkoProtocolTransport(
   }
 
   override val maximumOverhead: Int = PekkoProtocolTransport.PekkoOverhead
-  protected def managerName = s"pekkoprotocolmanager.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
+  protected def managerName = s"${settings.ManagerNamePrefix}.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
     val s = settings
