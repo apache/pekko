@@ -138,7 +138,8 @@ private[remote] class PekkoProtocolTransport(
   }
 
   override val maximumOverhead: Int = PekkoProtocolTransport.PekkoOverhead
-  protected def managerName = s"${settings.ManagerNamePrefix}.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
+  protected def managerName =
+    s"${settings.ManagerNamePrefix}.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
     val s = settings
