@@ -930,6 +930,48 @@ trait FlowOps[+Out, +Mat] {
     via(new RecoverWith(attempts, pf))
 
   /**
+   * onErrorComplete allows to complete the stream when an upstream error occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or failed with exception is an instance of the provided type
+   *
+   * '''Cancels when''' downstream cancels
+   * @since 1.1.0
+   */
+  def onErrorComplete[T <: Throwable]()(implicit tag: ClassTag[T]): Repr[Out] = onErrorComplete {
+    case ex if tag.runtimeClass.isInstance(ex) => true
+  }
+
+  /**
+   * onErrorComplete allows to complete the stream when an upstream error occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or failed with exception pf can handle
+   *
+   * '''Cancels when''' downstream cancels
+   *  @since 1.1.0
+   */
+  def onErrorComplete(pf: PartialFunction[Throwable, Boolean]): Repr[Out] =
+    via(
+      Flow[Out]
+        .recoverWith(pf.andThen({
+          case true => Source.empty[Out]
+        }: PartialFunction[Boolean, Graph[SourceShape[Out], NotUsed]]))
+        .withAttributes(DefaultAttributes.onErrorComplete and SourceLocation.forLambda(pf)))
+
+  /**
    * While similar to [[recover]] this operator can be used to transform an error signal to a different one *without* logging
    * it as an error in the process. So in that sense it is NOT exactly equivalent to `recover(t => throw t2)` since recover
    * would log the `t2` error.
