@@ -341,6 +341,10 @@ class SubSource[Out, Mat](
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): SubSource[T, Mat] =
     new SubSource(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
 
+  def unsafeTransformUnordered[T](
+      parallelism: Int, transform: function.Function2[Out, StreamCollector[T], Unit]): javadsl.SubSource[T, Mat] =
+    new SubSource(delegate.unsafeTransformUnordered[T](parallelism)(collector => out => transform(out, collector)))
+
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
    * partition step before the transform step. The transform function receives the an individual

@@ -941,6 +941,10 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   def mapAsyncUnordered[T](parallelism: Int, f: function.Function[Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.mapAsyncUnordered(parallelism)(x => f(x).asScala))
 
+  def unsafeTransformUnordered[T](
+      parallelism: Int, transform: function.Function2[Out, StreamCollector[T], Unit]): javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.unsafeTransformUnordered[T](parallelism)(collector => out => transform(out, collector)))
+
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor.
    * If any of the asks times out it will fail the stream with a [[pekko.pattern.AskTimeoutException]].

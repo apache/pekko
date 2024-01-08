@@ -20,12 +20,10 @@ import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
-
 import org.reactivestreams.Processor
 import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -828,7 +826,6 @@ final case class RunnableGraph[+Mat](override val traversalBuilder: TraversalBui
 @ccompatUsedUntil213
 trait FlowOps[+Out, +Mat] {
   import GraphDSL.Implicits._
-
   import org.apache.pekko.stream.impl.Stages._
 
   type Repr[+O] <: FlowOps[O, Mat] {
@@ -1183,7 +1180,21 @@ trait FlowOps[+Out, +Mat] {
    *
    * @see [[#mapAsync]]
    */
-  def mapAsyncUnordered[T](parallelism: Int)(f: Out => Future[T]): Repr[T] = via(MapAsyncUnordered(parallelism, f))
+  def mapAsyncUnordered[T](parallelism: Int)(f: Out => Future[T]): Repr[T] =
+    unsafeTransformUnordered[T](parallelism) { implicit collector => out =>
+      import StreamCollectorOps._
+      import StreamCollectorUnsafeOps._
+
+      val future = f(out)
+      future.value match {
+        case Some(elem) => handleSync(elem)
+        case None       => future.onComplete(handle(_))(pekko.dispatch.ExecutionContexts.parasitic)
+      }
+    }
+
+  @ApiMayChange
+  def unsafeTransformUnordered[T](parallelism: Int)(transform: StreamCollector[T] => Out => Unit): Repr[T] =
+    via(new UnsafeTransformUnordered[Out, T](parallelism, (out, emitter) => transform(emitter)(out)))
 
   /**
    * Transforms this stream. Works very similarly to [[#mapAsync]] but with an additional
