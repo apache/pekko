@@ -167,9 +167,11 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
-      // docker utils
-      val dockerClient = ("com.spotify" % "docker-client" % "8.16.0" % Test)
-        .exclude("org.bouncycastle", "bcpkix-jdk15on")
+      val dockerClient = Def.setting {
+        Seq(
+          "com.github.docker-java" % "docker-java-core" % "3.3.4" % Test,
+          "com.github.docker-java" % "docker-java-transport-httpclient5" % "3.3.4" % Test)
+      }
 
       val jackson = Def.setting {
         Seq(
@@ -256,12 +258,11 @@ object Dependencies {
     TestDependencies.commonsIo, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.commonsMath,
     TestDependencies.httpClient, // to force TestDependencies.dockerClient to use safe version of this lib
-    TestDependencies.jimfs,
-    TestDependencies.dockerClient,
-    Provided.activation // dockerClient needs javax.activation.DataSource in JDK 11+
-  ) ++ {
+    TestDependencies.jimfs) ++ {
     // TestDependencies.dockerClient bring in older versions of libs that have CVEs
     TestDependencies.jackson.value
+  } ++ {
+    TestDependencies.dockerClient.value
   }
 
   val actorTestkitTyped = l ++= Seq(
