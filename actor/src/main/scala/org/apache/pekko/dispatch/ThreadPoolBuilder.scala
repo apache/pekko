@@ -176,6 +176,9 @@ object MonitorableThreadFactory {
   private[pekko] class PekkoForkJoinWorkerThread(_pool: ForkJoinPool)
       extends ForkJoinWorkerThread(_pool)
       with BlockContext {
+
+    override def onTermination(exception: Throwable): Unit = super.onTermination(exception)
+
     override def blockOn[T](thunk: => T)(implicit permission: CanAwait): T = {
       val result = new AtomicReference[Option[T]](None)
       ForkJoinPool.managedBlock(new ForkJoinPool.ManagedBlocker {
