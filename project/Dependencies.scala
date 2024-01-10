@@ -252,12 +252,8 @@ object Dependencies {
     TestDependencies.scalatest.value,
     TestDependencies.scalatestJUnit.value,
     TestDependencies.scalatestScalaCheck.value,
-    TestDependencies.bcpkix, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.commonsCodec,
-    TestDependencies.commonsCompress, // to force TestDependencies.dockerClient to use safe version of this lib
-    TestDependencies.commonsIo, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.commonsMath,
-    TestDependencies.httpClient, // to force TestDependencies.dockerClient to use safe version of this lib
     TestDependencies.jimfs) ++ {
     // TestDependencies.dockerClient bring in older versions of libs that have CVEs
     TestDependencies.jackson.value

@@ -44,7 +44,6 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
   val httpClient: ApacheDockerHttpClient = new ApacheDockerHttpClient.Builder()
     .dockerHost(dockerConfig.getDockerHost())
     .sslConfig(dockerConfig.getSSLConfig())
-    .maxConnections(100)
     .build();
 
   val client: DockerClient = DockerClientImpl.getInstance(dockerConfig, httpClient);
@@ -143,12 +142,14 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     super.afterTermination()
     id.foreach(id => client.killContainerCmd(id).exec())
     id.foreach(id => client.removeContainerCmd(id).exec())
+
+    client.close()
   }
 }
 
 class StringBuilderLogReader extends ResultCallback.Adapter[Frame] {
 
-  val builder: StringBuilder = new StringBuilder
+  lazy val builder: StringBuilder = new StringBuilder
 
   override def onNext(item: Frame): Unit = {
     builder.append(new String(item.getPayload))
