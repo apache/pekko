@@ -22,7 +22,7 @@ import com.github.dockerjava.api.DockerClient
 import com.github.dockerjava.api.async.ResultCallback
 import com.github.dockerjava.api.command.CreateContainerCmd
 import com.github.dockerjava.api.model._
-import com.github.dockerjava.core.{ DockerClientConfig, DockerClientImpl, DefaultDockerClientConfig }
+import com.github.dockerjava.core.{ DefaultDockerClientConfig, DockerClientConfig, DockerClientImpl }
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import org.scalatest.concurrent.Eventually
 
