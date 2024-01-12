@@ -254,10 +254,9 @@ object Dependencies {
     TestDependencies.scalatestScalaCheck.value,
     TestDependencies.commonsCodec,
     TestDependencies.commonsMath,
-    TestDependencies.jimfs) ++ {
+    TestDependencies.jimfs,
     // TestDependencies.dockerClient bring in older versions of libs that have CVEs
-    TestDependencies.jackson.value
-  } ++ {
+    TestDependencies.jackson.value,
     TestDependencies.dockerClient.value
   }
 

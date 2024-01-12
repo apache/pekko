@@ -18,24 +18,17 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-import com.github.dockerjava.core.DockerClientConfig
-import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.core.DefaultDockerClientConfig
-import com.github.dockerjava.api.model.Frame;
-import com.github.dockerjava.api.async.ResultCallback;
+import com.github.dockerjava.api.DockerClient
+import com.github.dockerjava.api.async.ResultCallback
+import com.github.dockerjava.api.command.CreateContainerCmd
+import com.github.dockerjava.api.model._
+import com.github.dockerjava.core.{ DockerClientConfig, DockerClientImpl, DefaultDockerClientConfig }
+import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
 import pekko.testkit.PekkoSpec
 import pekko.util.ccompat.JavaConverters._
-import com.github.dockerjava.api.DockerClient
-import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
-import com.github.dockerjava.api.command.CreateContainerCmd
-import com.github.dockerjava.api.model.PortBinding
-import com.github.dockerjava.api.model.Container
-import com.github.dockerjava.api.model.Volume
-import com.github.dockerjava.core.DockerClientImpl
-import com.github.dockerjava.api.model.Bind
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
 
