@@ -255,8 +255,8 @@ object Dependencies {
     TestDependencies.scalatestScalaCheck.value,
     TestDependencies.commonsCodec,
     TestDependencies.commonsMath,
-    TestDependencies.jimfs) ++ 
-    TestDependencies.jackson.value ++ TestDependencies.dockerClient.value
+    TestDependencies.jimfs) ++
+  TestDependencies.jackson.value ++ TestDependencies.dockerClient.value
 
   val actorTestkitTyped = l ++= Seq(
     Provided.logback,
