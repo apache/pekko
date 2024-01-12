@@ -39,7 +39,9 @@ import com.github.dockerjava.api.model.Bind
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
 
-  val dockerConfig: DockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
+  val dockerConfig: DockerClientConfig = DefaultDockerClientConfig
+    .createDefaultConfigBuilder()
+    .build();
 
   val httpClient: ApacheDockerHttpClient = new ApacheDockerHttpClient.Builder()
     .dockerHost(dockerConfig.getDockerHost())
@@ -60,11 +62,11 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
 
     // https://github.com/sameersbn/docker-bind/pull/61
     val image = "raboof/bind:9.11.3-20180713-nochown"
-
     try {
       client
         .pullImageCmd(image)
         .start()
+        .awaitCompletion()
     } catch {
       case NonFatal(_) =>
         log.warning(s"Failed to pull docker image [$image], is docker running?")
