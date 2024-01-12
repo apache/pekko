@@ -247,6 +247,7 @@ object Dependencies {
 
   val testkit = l ++= Seq(TestDependencies.junit, TestDependencies.scalatest.value) ++ TestDependencies.metricsAll
 
+  // TestDependencies.dockerClient brings in older versions of jackson libs that have CVEs
   val actorTests = l ++= Seq(
     TestDependencies.junit,
     TestDependencies.scalatest.value,
@@ -254,12 +255,8 @@ object Dependencies {
     TestDependencies.scalatestScalaCheck.value,
     TestDependencies.commonsCodec,
     TestDependencies.commonsMath,
-    TestDependencies.jimfs) ++ {
-    // TestDependencies.dockerClient bring in older versions of libs that have CVEs
-    TestDependencies.jackson.value
-  } ++ {
-    TestDependencies.dockerClient.value
-  }
+    TestDependencies.jimfs) ++
+  TestDependencies.jackson.value ++ TestDependencies.dockerClient.value
 
   val actorTestkitTyped = l ++= Seq(
     Provided.logback,
