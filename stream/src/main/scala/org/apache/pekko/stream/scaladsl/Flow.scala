@@ -1384,6 +1384,16 @@ trait FlowOps[+Out, +Mat] {
   def filter(p: Out => Boolean): Repr[Out] = via(Filter(p))
 
   /**
+   * Alias for [[filter]], added to enable filtering in for comprehensions.
+   *
+   * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
+   * the internal implementation.
+   * @since 1.1.0
+   */
+  @ApiMayChange
+  def withFilter(p: Out => Boolean): Repr[Out] = filter(p)
+
+  /**
    * Only pass on those elements that NOT satisfy the given predicate.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
@@ -2520,6 +2530,16 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    */
   def flatMapConcat[T, M](f: Out => Graph[SourceShape[T], M]): Repr[T] = map(f).via(new FlattenMerge[T, M](1))
+
+  /**
+   * Alias for [[flatMapConcat]], added to enable for comprehensions.
+   *
+   * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
+   * the internal implementation.
+   * @since 1.1.0
+   */
+  @ApiMayChange
+  def flatMap[T, M](f: Out => Graph[SourceShape[T], M]): Repr[T] = flatMapConcat(f)
 
   /**
    * Transform each input element into a `Source` of output elements that is
@@ -3731,6 +3751,17 @@ trait FlowOpsMat[+Out, +Mat] extends FlowOps[Out, Mat] {
    * where appropriate instead of manually writing functions that pass through one of the values.
    */
   def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(combine: (Mat, Mat2) => Mat3): ClosedMat[Mat3]
+
+  /**
+   * Connect this [[Flow]] to a `foreach` [[Sink]], that will invoke the given procedure for each received element.
+   * Added to enable for comprehensions.
+   *
+   * NOTE: Support for `for` comprehensions is still experimental and it's possible that we might need to change
+   * the internal implementation.
+   * @since 1.1.0
+   */
+  @ApiMayChange
+  def foreach(f: Out => Unit): ClosedMat[Future[Done]] = toMat(Sink.foreach(f))(Keep.right)
 
   /**
    * mat version of [[#flatMapPrefix]], this method gives access to a future materialized value of the downstream flow.

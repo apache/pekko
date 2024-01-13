@@ -91,12 +91,16 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
     "orElseGraph",
     "divertToGraph")
 
+  val forComprehensions = Set("withFilter", "flatMap", "foreach")
+
   val allowMissing: Map[Class[_], Set[String]] = Map(
-    jFlowClass -> graphHelpers,
-    jSourceClass -> (graphHelpers ++ Set("watch", "ask")),
+    jFlowClass -> (graphHelpers ++ forComprehensions),
+    jSourceClass -> (graphHelpers ++ forComprehensions ++ Set("watch", "ask")),
     // Java subflows can only be nested using .via and .to (due to type system restrictions)
-    jSubFlowClass -> (graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow", "watch", "ask")),
-    jSubSourceClass -> (graphHelpers ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow", "watch", "ask")),
+    jSubFlowClass -> (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow", "watch",
+      "ask")),
+    jSubSourceClass -> (graphHelpers ++ forComprehensions ++ Set("groupBy", "splitAfter", "splitWhen", "subFlow",
+      "watch", "ask")),
     sFlowClass -> Set("of"),
     sSourceClass -> Set("adapt", "from", "watch"),
     sSinkClass -> Set("adapt"),
