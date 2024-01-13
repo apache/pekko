@@ -14,7 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import java.nio.{ ByteBuffer, CharBuffer }
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicReference
 
 import org.apache.pekko
@@ -46,7 +46,7 @@ class MetadataCarryingSpy extends Extension {
 class TestInstrument(system: ExtendedActorSystem) extends RemoteInstrument {
   import pekko.remote.artery.MetadataCarryingSpy._
 
-  private val charset = Charset.forName("UTF-8")
+  private val charset = StandardCharsets.UTF_8
   private val encoder = charset.newEncoder()
   private val decoder = charset.newDecoder()
 

@@ -14,7 +14,7 @@
 package docs.persistence
 
 import java.io.NotSerializableException
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.persistence.journal.{ EventAdapter, EventSeq }
@@ -186,7 +186,7 @@ object SimplestCustomSerializer {
    * to perform the actual to/from bytes marshalling.
    */
   class SimplestPossiblePersonSerializer extends SerializerWithStringManifest {
-    val Utf8 = Charset.forName("UTF-8")
+    val Utf8 = StandardCharsets.UTF_8
 
     val PersonManifest = classOf[Person].getName
 
@@ -274,7 +274,7 @@ final case class CustomerBlinked(customerId: Long)
 case object EventDeserializationSkipped
 
 class RemovedEventsAwareSerializer extends SerializerWithStringManifest {
-  val utf8 = Charset.forName("UTF-8")
+  val utf8 = StandardCharsets.UTF_8
   override def identifier: Int = 8337
 
   val SkipEventManifestsEvents = Set("docs.persistence.CustomerBlinked" // ...
@@ -310,7 +310,7 @@ class SkippedEventsAwareAdapter extends EventAdapter {
 
 //#string-serializer-handle-rename
 class RenamedEventAwareSerializer extends SerializerWithStringManifest {
-  val Utf8 = Charset.forName("UTF-8")
+  val Utf8 = StandardCharsets.UTF_8
   override def identifier: Int = 8337
 
   val OldPayloadClassName = "docs.persistence.OldPayload" // class NOT available anymore
