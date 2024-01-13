@@ -89,7 +89,8 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
     "alsoToGraph",
     "wireTapGraph",
     "orElseGraph",
-    "divertToGraph")
+    "divertToGraph",
+    "flatten")
 
   val forComprehensions = Set("withFilter", "flatMap", "foreach")
 

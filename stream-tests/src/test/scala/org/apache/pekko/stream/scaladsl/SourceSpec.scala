@@ -515,4 +515,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       Await.result(result, 4.seconds) shouldBe Done
     }
   }
+
+  "Source of sources" must {
+    "be able to concat with flatten" in {
+      (for {
+        i <- Source(1 to 5)
+        j = Source(1 to i)
+      } yield j).flatten
+        .reduce(_ + _)
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(35)
+        .expectComplete()
+    }
+  }
 }
