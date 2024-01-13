@@ -246,7 +246,7 @@ class FlowFlattenMergeSpec extends StreamSpec {
           Source.single(11)))
 
       val probe =
-        sources.flatMapConcat(identity).runWith(TestSink.probe)
+        sources.flatten.runWith(TestSink.probe)
 
       probe.request(3)
       probe.expectNext(0)

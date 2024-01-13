@@ -2542,6 +2542,20 @@ trait FlowOps[+Out, +Mat] {
   def flatMap[T, M](f: Out => Graph[SourceShape[T], M]): Repr[T] = flatMapConcat(f)
 
   /**
+   * Flattens a stream of `Source` into a single output stream by concatenation,
+   * fully consuming one `Source` after the other. This function is qquivalent to <code>flatMapConcat(identity)</code>.
+   *
+   * '''Emits when''' a currently consumed substream has an element available
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes and all consumed substreams complete
+   *
+   * '''Cancels when''' downstream cancels
+   */
+  def flatten[T, M](implicit ev: Out <:< Graph[SourceShape[T], M]): Repr[T] = flatMap(ev)
+
+  /**
    * Transform each input element into a `Source` of output elements that is
    * then flattened into the output stream by merging, where at most `breadth`
    * substreams are being consumed at any given time.

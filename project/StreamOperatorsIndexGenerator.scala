@@ -83,7 +83,8 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
     "alsoToGraph",
     "orElseGraph",
     "divertToGraph",
-    "zipWithGraph")
+    "zipWithGraph",
+    "flatten")
 
   // FIXME document these methods as well
   val pendingTestCases = Map(
