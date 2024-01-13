@@ -36,6 +36,7 @@ import org.reactivestreams.Publisher;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -214,6 +215,26 @@ public class FlowTest extends StreamTest {
     final CompletionStage<String> grouped =
         source.via(flow).runFold("", (acc, elem) -> acc + elem, system);
     Assert.assertEquals("[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithResource() {
+    final AtomicBoolean gate = new AtomicBoolean(true);
+    Source.from(Arrays.asList("1", "2", "3"))
+        .via(
+            Flow.of(String.class)
+                .mapWithResource(
+                    () -> "resource",
+                    (resource, elem) -> elem,
+                    (resource) -> {
+                      gate.set(false);
+                      return Optional.of("end");
+                    }))
+        .runWith(TestSink.create(system), system)
+        .request(4)
+        .expectNext("1", "2", "3", "end")
+        .expectComplete();
+    Assert.assertFalse(gate.get());
   }
 
   @Test
