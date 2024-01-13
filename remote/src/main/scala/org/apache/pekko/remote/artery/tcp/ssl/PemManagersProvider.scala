@@ -15,7 +15,7 @@ package org.apache.pekko.remote.artery.tcp.ssl
 
 import java.io.ByteArrayInputStream
 import java.io.File
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.security.KeyStore
 import java.security.PrivateKey
@@ -83,7 +83,7 @@ private[ssl] object PemManagersProvider {
   @InternalApi
   private[ssl] def loadPrivateKey(filename: String): PrivateKey = blocking {
     val bytes = Files.readAllBytes(new File(filename).toPath)
-    val pemData = new String(bytes, Charset.forName("UTF-8"))
+    val pemData = new String(bytes, StandardCharsets.UTF_8)
     DERPrivateKeyLoader.load(PEMDecoder.decode(pemData))
   }
 

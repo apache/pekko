@@ -14,7 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import java.nio.{ ByteBuffer, CharBuffer }
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import scala.concurrent.duration._
 import org.apache.pekko
 import pekko.actor.{ ActorRef, ActorSystem, ExtendedActorSystem, InternalActorRef }
@@ -153,7 +153,7 @@ object RemoteInstrumentsSerializationSpec {
       sentThrowable: Throwable = null,
       receiveThrowable: Throwable = null): RemoteInstrument = {
     new RemoteInstrument {
-      private val charset = Charset.forName("UTF-8")
+      private val charset = StandardCharsets.UTF_8
       private val encoder = charset.newEncoder()
       private val decoder = charset.newDecoder()
 

@@ -15,7 +15,7 @@ package org.apache.pekko.remote.artery
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
@@ -30,7 +30,7 @@ import org.apache.pekko.util.Unsafe
 @Measurement(iterations = 10)
 class LiteralEncodingBenchmark {
 
-  private val UsAscii = Charset.forName("US-ASCII")
+  private val UsAscii = StandardCharsets.US_ASCII
   private val str = "pekko://SomeSystem@host12:1234/user/foo"
   private val buffer = ByteBuffer.allocate(128).order(ByteOrder.LITTLE_ENDIAN)
   private val literalChars = Array.ofDim[Char](64)
