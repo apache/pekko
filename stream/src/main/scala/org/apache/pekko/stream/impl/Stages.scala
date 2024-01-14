@@ -32,6 +32,8 @@ import pekko.stream.Attributes._
     val fused = name("fused")
     val materializedValueSource = name("matValueSource")
     val map = name("map")
+    val contramap = name("contramap")
+    val dimap = name("dimap")
     val log = name("log")
     val filter = name("filter")
     val filterNot = name("filterNot")

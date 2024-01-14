@@ -135,6 +135,20 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseDiMap() {
+    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Flow<Integer, Integer, NotUsed> flow = Flow.<Integer>create().map(elem -> elem * 2);
+    source
+        .via(flow.dimap(Integer::valueOf, String::valueOf))
+        .runWith(TestSink.create(system), system)
+        .request(3)
+        .expectNext("2")
+        .expectNext("4")
+        .expectNext("6")
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseDropWhile() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));

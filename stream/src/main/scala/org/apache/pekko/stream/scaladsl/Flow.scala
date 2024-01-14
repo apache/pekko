@@ -21,11 +21,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -48,11 +43,17 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
 import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
 import pekko.util.Timeout
 import pekko.util.ccompat._
+
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 /**
  * A `Flow` is a set of stream processing steps that has one open input and one open output.
@@ -182,7 +183,23 @@ final class Flow[-In, +Out, +Mat](
    * @since 1.1.0
    */
   def contramap[In2](f: In2 => In): Flow[In2, Out, Mat] =
-    Flow.fromFunction(f).viaMat(this)(Keep.right)
+    Flow.fromFunction(f).viaMat(this)(Keep.right).withAttributes(DefaultAttributes.contramap)
+
+  /**
+   * Transform this Flow by applying a function `f` to each *incoming* upstream element before
+   * it is passed to the [[Flow]], and a function `g` to each *outgoing* downstream element.
+   *
+   * '''Emits when''' the mapping function `g` returns an element
+   *
+   * '''Backpressures when''' original [[Flow]] backpressures
+   *
+   * '''Completes when''' original [[Flow]] completes
+   *
+   * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
+   */
+  def dimap[In2, Out2](f: In2 => In)(g: Out => Out2): Flow[In2, Out2, Mat] =
+    Flow.fromFunction(f).viaMat(this)(Keep.right).map(g).withAttributes(DefaultAttributes.dimap)
 
   /**
    * Join this [[Flow]] to another [[Flow]], by cross connecting the inputs and outputs, creating a [[RunnableGraph]].
