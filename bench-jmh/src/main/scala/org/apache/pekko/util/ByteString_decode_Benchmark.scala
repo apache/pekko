@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 import org.openjdk.jmh.annotations._
@@ -31,8 +31,8 @@ class ByteString_decode_Benchmark {
   val bss_large = ByteStrings(Vector.fill(4)(bs_large.asInstanceOf[ByteString1C].toByteString1), 4 * bs_large.length)
   val bc_large = bss_large.compact // compacted
 
-  val utf8String = "utf-8"
-  val utf8 = Charset.forName(utf8String)
+  val utf8 = StandardCharsets.UTF_8
+  val utf8String = utf8.name
 
   /*
     Using Charset helps a bit, but nothing impressive:

@@ -13,10 +13,14 @@
 
 package org.apache.pekko.remote.artery
 
+import java.io.NotSerializableException
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.NANOSECONDS
+
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor._
@@ -27,8 +31,6 @@ import pekko.remote.testkit.{ MultiNodeConfig, PerfFlamesSupport }
 import pekko.serialization.{ ByteBufferSerializer, SerializerWithStringManifest }
 import pekko.serialization.jackson.CborSerializable
 import pekko.testkit._
-
-import java.io.NotSerializableException
 
 object MaxThroughputSpec extends MultiNodeConfig {
   val first = role("first")
@@ -171,7 +173,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
     val numTargets = targets.size
 
     import testSettings._
-    val payload = ("0" * testSettings.payloadSize).getBytes("utf-8")
+    val payload = ("0" * testSettings.payloadSize).getBytes(StandardCharsets.UTF_8)
     var startTime = 0L
     var remaining = totalMessages
     var maxRoundTripMillis = 0L

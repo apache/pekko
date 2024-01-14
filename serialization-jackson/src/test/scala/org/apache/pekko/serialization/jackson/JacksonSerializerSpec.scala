@@ -180,7 +180,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
 
   def serializeToJsonString(obj: AnyRef, sys: ActorSystem = system): String = {
     val blob = serializeToBinary(obj, sys)
-    new String(blob, "utf-8")
+    new String(blob, StandardCharsets.UTF_8)
   }
 
   def deserializeFromJsonString(
@@ -188,7 +188,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       serializerId: Int,
       manifest: String,
       sys: ActorSystem = system): AnyRef = {
-    val blob = json.getBytes("utf-8")
+    val blob = json.getBytes(StandardCharsets.UTF_8)
     deserializeFromBinary(blob, serializerId, manifest, sys)
   }
 

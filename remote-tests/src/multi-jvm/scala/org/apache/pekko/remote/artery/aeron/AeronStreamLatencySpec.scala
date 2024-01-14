@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery
 package aeron
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.CyclicBarrier
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -180,7 +181,7 @@ abstract class AeronStreamLatencySpec
     import testSettings._
 
     runOn(first) {
-      val payload = ("1" * payloadSize).getBytes("utf-8")
+      val payload = ("1" * payloadSize).getBytes(StandardCharsets.UTF_8)
       // by default run for 2 seconds, but can be adjusted with the totalMessagesFactor
       val totalMessages = (2 * messageRate * totalMessagesFactor).toInt
       val sendTimes = new AtomicLongArray(totalMessages)
@@ -193,7 +194,7 @@ abstract class AeronStreamLatencySpec
       val lastRepeat = new AtomicBoolean(false)
       val killSwitch = KillSwitches.shared(testName)
       val started = TestProbe()
-      val startMsg = "0".getBytes("utf-8")
+      val startMsg = "0".getBytes(StandardCharsets.UTF_8)
       Source
         .fromGraph(new AeronSource(channel(first), streamId, aeron, taskRunner, pool, NoOpRemotingFlightRecorder, 0))
         .via(killSwitch.flow)

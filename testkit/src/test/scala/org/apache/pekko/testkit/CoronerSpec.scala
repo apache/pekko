@@ -15,6 +15,7 @@ package org.apache.pekko.testkit
 
 import java.io._
 import java.lang.management.ManagementFactory
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Semaphore
 import java.util.concurrent.locks.ReentrantLock
 
@@ -28,9 +29,9 @@ class CoronerSpec extends AnyWordSpec with Matchers {
 
   private def captureOutput[A](f: PrintStream => A): (A, String) = {
     val bytes = new ByteArrayOutputStream()
-    val out = new PrintStream(bytes, true, "UTF-8")
+    val out = new PrintStream(bytes, true, StandardCharsets.UTF_8.name)
     val result = f(out)
-    (result, new String(bytes.toByteArray(), "UTF-8"))
+    (result, bytes.toString(StandardCharsets.UTF_8.name))
   }
 
   "A Coroner" must {

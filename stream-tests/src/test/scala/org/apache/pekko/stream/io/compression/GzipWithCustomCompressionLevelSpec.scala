@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.io.compression
 
+import java.nio.charset.StandardCharsets
 import java.util.zip.{ Deflater, ZipException }
 
 import org.apache.pekko
@@ -39,7 +40,7 @@ class GzipWithCustomCompressionLevelSpec extends GzipSpec {
       ex.ultimateCause.getMessage should equal("Truncated GZIP stream")
     }
     "throw an error if compressed data is just missing the trailer at the end" in {
-      def brokenCompress(payload: String) = newCompressor().compress(ByteString(payload, "UTF-8"))
+      def brokenCompress(payload: String) = newCompressor().compress(ByteString(payload, StandardCharsets.UTF_8))
       val ex = the[RuntimeException] thrownBy ourDecode(brokenCompress("abcdefghijkl"))
       ex.ultimateCause.getMessage should equal("Truncated GZIP stream")
     }

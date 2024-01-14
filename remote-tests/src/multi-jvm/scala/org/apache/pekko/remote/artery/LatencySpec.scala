@@ -13,6 +13,7 @@
 
 package org.apache.pekko.remote.artery
 
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicLongArray
 import java.util.concurrent.locks.LockSupport
@@ -261,7 +262,7 @@ abstract class LatencySpec extends RemotingMultiNodeSpec(LatencySpec) {
     import testSettings._
 
     runOn(first) {
-      val payload = ("0" * payloadSize).getBytes("utf-8")
+      val payload = ("0" * payloadSize).getBytes(StandardCharsets.UTF_8)
       // by default run for 2 seconds, but can be adjusted with the totalMessagesFactor
       val totalMessages = (2 * messageRate * totalMessagesFactor).toInt
       val sendTimes = new AtomicLongArray(totalMessages)
