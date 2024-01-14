@@ -104,7 +104,7 @@ class FileSourcesBenchmark {
     Await.result(h, 30.seconds)
   }
 
-  /*
+  /**
    * The previous status quo was very slow:
    * Benchmark                                         Mode  Cnt     Score      Error  Units
    * FileSourcesBenchmark.naive_ioSourceLinesIterator  avgt   20  7067.944 ± 1341.847  ms/op

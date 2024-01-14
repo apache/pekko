@@ -913,7 +913,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    */
   def decodeString(charset: Charset): String
 
-  /*
+  /**
    * Returns a ByteString which is the binary representation of this ByteString
    * if this ByteString is Base64-encoded.
    */

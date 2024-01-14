@@ -84,7 +84,7 @@ trait RouterConfig extends Serializable {
     case _                                                                    => false
   }
 
-  /*
+  /**
    * Specify that this router should stop itself when all routees have terminated (been removed).
    * By Default it is `true`, unless a `resizer` is used.
    */
@@ -244,7 +244,7 @@ trait Pool extends RouterConfig {
    */
   def props(routeeProps: Props): Props = routeeProps.withRouter(this)
 
-  /*
+  /**
    * Specify that this router should stop itself when all routees have terminated (been removed).
    * By Default it is `true`, unless a `resizer` is used.
    */

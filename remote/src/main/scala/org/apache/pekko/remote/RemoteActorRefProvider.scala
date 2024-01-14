@@ -108,7 +108,7 @@ private[pekko] object RemoteActorRefProvider {
 
   }
 
-  /*
+  /**
    * Remoting wraps messages destined to a remote host in a remoting specific envelope: EndpointManager.Send
    * As these wrapped messages might arrive to the dead letters of an EndpointWriter, they need to be unwrapped
    * and handled as dead letters to the original (remote) destination. Without this special case, DeathWatch related

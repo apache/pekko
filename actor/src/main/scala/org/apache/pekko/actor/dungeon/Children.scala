@@ -145,7 +145,7 @@ private[pekko] trait Children { this: ActorCell =>
     _nextNameDoNotCallMeDirectly
   }
 
-  /*
+  /**
    * low level CAS helpers
    */
   @inline private final def swapChildrenRefs(oldChildren: ChildrenContainer, newChildren: ChildrenContainer): Boolean =

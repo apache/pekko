@@ -45,7 +45,7 @@ trait ClusterNodeMBean {
    */
   def getUnreachable: String
 
-  /*
+  /**
    * JSON format of the status of all nodes in the cluster as follows:
    * {{{
    * {

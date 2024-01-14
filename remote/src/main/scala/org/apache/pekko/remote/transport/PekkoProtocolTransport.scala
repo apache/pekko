@@ -243,13 +243,13 @@ private[remote] class PekkoProtocolHandle(
 private[remote] object ProtocolStateActor {
   sealed trait AssociationState
 
-  /*
+  /**
    * State when the underlying transport is not yet initialized
    * State data can be OutboundUnassociated
    */
   case object Closed extends AssociationState
 
-  /*
+  /**
    * State when the underlying transport is initialized, there is an association present, and we are waiting
    * for the first message (has to be CONNECT if inbound).
    * State data can be OutboundUnderlyingAssociated (for outbound associations) or InboundUnassociated (for inbound
@@ -257,7 +257,7 @@ private[remote] object ProtocolStateActor {
    */
   case object WaitHandshake extends AssociationState
 
-  /*
+  /**
    * State when the underlying transport is initialized and the handshake succeeded.
    * If the upper layer did not yet provided a handler for incoming messages, state data is AssociatedWaitHandler.
    * If everything is initialized, the state data is HandlerReady
