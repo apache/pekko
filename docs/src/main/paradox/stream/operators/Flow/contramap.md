@@ -6,8 +6,7 @@ Transform this Flow by applying a function to each *incoming* upstream element b
 
 ## Signature
 
-@apidoc[Flow.contramap](Flow) { scala="#contramap[In2](f:In2=&gt;In):Flow[In2, Out, Mat]" java="#map(
-org.apache.pekko.japi.function.Function)" }
+@apidoc[Flow.contramap](Flow) { scala="#contramap%5BIn2%5D(f%3AIn2%3D%3EIn)%3Aorg.apache.pekko.stream.scaladsl.Flow%5BIn2%2COut%2CMat%5D" java="#contramap(org.apache.pekko.japi.function.Function)" }
 
 ## Description
 
