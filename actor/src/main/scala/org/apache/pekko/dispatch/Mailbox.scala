@@ -72,7 +72,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
 
   import Mailbox._
 
-  /**
+  /*
    * This is needed for actually executing the mailbox, i.e. invoking the
    * ActorCell. There are situations (e.g. RepointableActorRef) where a Mailbox
    * is constructed but we know that we will not execute it, in which case this
@@ -203,7 +203,7 @@ private[pekko] abstract class Mailbox(val messageQueue: MessageQueue)
     val s = currentStatus
     updateStatus(s, s & ~Scheduled) || setAsIdle()
   }
-  /**
+  /*
    * AtomicReferenceFieldUpdater for system queue.
    */
   protected final def systemQueueGet: LatestFirstSystemMessageList =

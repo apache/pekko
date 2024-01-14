@@ -404,7 +404,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
   private[pekko] val log: MarkerLoggingAdapter =
     Logging.withMarker(eventStream, classOf[LocalActorRefProvider])
 
-  /**
+  /*
    * This dedicated logger is used whenever a deserialization failure occurs
    * and can therefore be disabled/enabled independently
    */
@@ -422,7 +422,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
 
   def terminationFuture: Future[Terminated] = terminationPromise.future
 
-  /**
+  /*
    * generate name for temporary actor refs
    */
   private val tempNumber = new AtomicLong
@@ -486,7 +486,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
     }
   }
 
-  /**
+  /*
    * The problem is that ActorRefs need a reference to the ActorSystem to
    * provide their service. Hence they cannot be created while the
    * constructors of ActorSystem and ActorRefProvider are still running.
