@@ -110,7 +110,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
     queues -= mbox
   }
 
-  /*
+  /**
    * This method must be called with "own" being this thread's queue for the
    * given mailbox. When this method returns, the queue will be entered
    * (active).
@@ -248,7 +248,7 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
 
   protected[pekko] override def executeTask(invocation: TaskInvocation): Unit = { invocation.run() }
 
-  /*
+  /**
    * This method must be called with this thread's queue.
    *
    * If the catch block is executed, then a non-empty mailbox may be stalled as

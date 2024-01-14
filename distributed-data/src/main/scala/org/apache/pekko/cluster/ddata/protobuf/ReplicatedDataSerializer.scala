@@ -661,7 +661,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       decrements = gcounterFromProto(pncounter.getDecrements))
   }
 
-  /*
+  /**
    * Convert a Map[A, B] to an Iterable[Entry] where Entry is the protobuf map entry.
    */
   private def getEntries[
