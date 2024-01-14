@@ -62,7 +62,7 @@ public class ActorLoggingTest extends JUnitSuite {
   public void loggingProvidesClassWhereLogWasCalled() {
     CustomEventFilter eventFilter =
         new CustomEventFilter(
-            new PFBuilder<Logging.LogEvent, Object>()
+            PFBuilder.<Logging.LogEvent, Object>create()
                 .match(
                     Logging.LogEvent.class, (event) -> event.logClass() == ActorLoggingTest.class)
                 .build(),
@@ -103,7 +103,7 @@ public class ActorLoggingTest extends JUnitSuite {
 
     CustomEventFilter eventFilter =
         new CustomEventFilter(
-            new PFBuilder<Logging.LogEvent, Object>()
+            PFBuilder.<Logging.LogEvent, Object>create()
                 .match(Logging.LogEvent.class, (event) -> event.getMDC().containsKey("txId"))
                 .build(),
             1);
@@ -118,7 +118,7 @@ public class ActorLoggingTest extends JUnitSuite {
 
     CustomEventFilter eventFilter =
         new CustomEventFilter(
-            new PFBuilder<Logging.LogEvent, Object>()
+            PFBuilder.<Logging.LogEvent, Object>create()
                 .match(
                     Logging.LogEvent.class,
                     (event) -> event.message().equals("received message Hello"))

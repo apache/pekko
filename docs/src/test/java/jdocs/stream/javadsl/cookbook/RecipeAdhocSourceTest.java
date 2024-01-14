@@ -62,7 +62,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
                 .backpressureTimeout(timeout)
                 .recoverWithRetries(
                     maxRetries,
-                    new PFBuilder<Throwable, Source<T, NotUsed>>()
+                    PFBuilder.<Throwable, Source<T, NotUsed>>create()
                         .match(
                             TimeoutException.class,
                             ex ->

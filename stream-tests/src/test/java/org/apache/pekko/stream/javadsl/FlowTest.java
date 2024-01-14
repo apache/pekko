@@ -1124,7 +1124,7 @@ public class FlowTest extends StreamTest {
                 })
             .recoverWithRetries(
                 3,
-                new PFBuilder<Throwable, Graph<SourceShape<Integer>, NotUsed>>()
+                PFBuilder.<Throwable, Graph<SourceShape<Integer>, NotUsed>>create()
                     .match(RuntimeException.class, ex -> Source.from(recover))
                     .build());
 

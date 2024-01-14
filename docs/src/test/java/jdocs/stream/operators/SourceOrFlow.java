@@ -395,7 +395,7 @@ class SourceOrFlow {
     Flow<Message, Pong, NotUsed> flow =
         Flow.of(Message.class)
             .collect(
-                new PFBuilder<Message, Pong>()
+                PFBuilder.<Message, Pong>create()
                     .match(Ping.class, p -> p.id != 0, p -> new Pong(p.id))
                     .build());
     // #collect

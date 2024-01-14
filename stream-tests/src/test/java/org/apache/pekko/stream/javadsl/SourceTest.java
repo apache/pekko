@@ -913,7 +913,7 @@ public class SourceTest extends StreamTest {
                 })
             .recoverWithRetries(
                 1,
-                new PFBuilder<Throwable, Source<Integer, NotUsed>>()
+                PFBuilder.<Throwable, Source<Integer, NotUsed>>create()
                     .matchAny(ex -> Source.single(0))
                     .build());
 
