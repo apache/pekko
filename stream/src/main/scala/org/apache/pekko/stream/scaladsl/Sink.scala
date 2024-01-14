@@ -56,6 +56,7 @@ final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilde
    * '''Backpressures when''' original [[Sink]] backpressures
    *
    * '''Cancels when''' original [[Sink]] cancels
+   * @since 1.1.0
    */
   def contramap[In2](f: In2 => In): Sink[In2, Mat] = Flow.fromFunction(f).toMat(this)(Keep.right)
 

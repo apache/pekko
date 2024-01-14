@@ -179,6 +179,7 @@ final class Flow[-In, +Out, +Mat](
    * '''Backpressures when''' original [[Flow]] backpressures
    *
    * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
    */
   def contramap[In2](f: In2 => In): Flow[In2, Out, Mat] =
     Flow.fromFunction(f).viaMat(this)(Keep.right)
