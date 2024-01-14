@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.time.Instant
 import java.time.LocalDateTime
@@ -84,7 +85,7 @@ object BenchmarkFileReporter {
 
       def reportResults(result: String): Unit = synchronized {
         println(result)
-        fos.write(result.getBytes("utf8"))
+        fos.write(result.getBytes(StandardCharsets.UTF_8))
         fos.write('\n')
         fos.flush()
       }

@@ -14,16 +14,16 @@
 package org.apache.pekko.serialization
 
 import java.io._
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
+import java.nio.{ ByteBuffer, ByteOrder }
+import java.nio.charset.StandardCharsets
 
+import scala.annotation.nowarn
 import scala.concurrent.Await
 import scala.concurrent.duration._
+import language.postfixOps
 
 import SerializationTests._
-import scala.annotation.nowarn
 import com.typesafe.config._
-import language.postfixOps
 import test.org.apache.pekko.serialization.NoVerification
 
 import org.apache.pekko
@@ -247,7 +247,7 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
       val byteSerializer = ser.serializerFor(classOf[Array[Byte]])
       (byteSerializer.getClass should be).theSameInstanceAs(classOf[ByteArraySerializer])
 
-      for (a <- Seq("foo".getBytes("UTF-8"), null: Array[Byte], Array[Byte]()))
+      for (a <- Seq("foo".getBytes(StandardCharsets.UTF_8), null: Array[Byte], Array[Byte]()))
         (byteSerializer.fromBinary(byteSerializer.toBinary(a)) should be).theSameInstanceAs(a)
 
       intercept[IllegalArgumentException] {
@@ -261,13 +261,13 @@ class SerializeSpec extends PekkoSpec(SerializationTests.serializeConf) {
 
       val byteBuffer = ByteBuffer.allocate(128).order(ByteOrder.LITTLE_ENDIAN)
       val str = "abcdef"
-      val payload = str.getBytes("UTF-8")
+      val payload = str.getBytes(StandardCharsets.UTF_8)
       byteSerializer.toBinary(payload, byteBuffer)
       byteBuffer.position() should ===(payload.length)
       byteBuffer.flip()
       val deserialized = byteSerializer.fromBinary(byteBuffer, "").asInstanceOf[Array[Byte]]
       byteBuffer.remaining() should ===(0)
-      new String(deserialized, "UTF-8") should ===(str)
+      new String(deserialized, StandardCharsets.UTF_8) should ===(str)
 
       intercept[IllegalArgumentException] {
         byteSerializer.toBinary("pigdog", byteBuffer)

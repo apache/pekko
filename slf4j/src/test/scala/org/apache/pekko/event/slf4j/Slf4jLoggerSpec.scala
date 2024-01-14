@@ -14,6 +14,7 @@
 package org.apache.pekko.event.slf4j
 
 import java.io.ByteArrayOutputStream
+import java.nio.charset.StandardCharsets
 
 import scala.concurrent.duration._
 
@@ -71,7 +72,7 @@ object Slf4jLoggerSpec {
   class MyLogSource
 
   val output = new ByteArrayOutputStream
-  def outputString: String = output.toString("UTF-8")
+  def outputString: String = output.toString(StandardCharsets.UTF_8.name)
 
   class TestAppender[E] extends OutputStreamAppender[E] {
 

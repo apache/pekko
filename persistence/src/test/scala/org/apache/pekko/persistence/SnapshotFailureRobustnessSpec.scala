@@ -14,6 +14,7 @@
 package org.apache.pekko.persistence
 
 import java.io.IOException
+import java.nio.charset.StandardCharsets
 import java.util.UUID
 
 import scala.concurrent.Future
@@ -87,7 +88,7 @@ object SnapshotFailureRobustnessSpec {
   class FailingLocalSnapshotStore(config: Config) extends LocalSnapshotStore(config) {
     override def save(metadata: SnapshotMetadata, snapshot: Any): Unit = {
       if (metadata.sequenceNr == 2 || snapshot.toString.startsWith("boom")) {
-        val bytes = "b0rkb0rk".getBytes("UTF-8") // length >= 8 to prevent EOF exception
+        val bytes = "b0rkb0rk".getBytes(StandardCharsets.UTF_8) // length >= 8 to prevent EOF exception
         val tmpFile = withOutputStream(metadata)(_.write(bytes))
         tmpFile.renameTo(snapshotFileForWrite(metadata))
       } else super.save(metadata, snapshot)

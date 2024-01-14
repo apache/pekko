@@ -13,6 +13,8 @@
 
 package org.apache.pekko.remote.artery
 
+import java.nio.charset.StandardCharsets
+
 import org.apache.pekko
 import pekko.actor.{ ActorIdentity, Identify, RootActorPath }
 import pekko.testkit.EventFilter
@@ -71,7 +73,7 @@ class SerializationErrorSpec extends ArteryMultiNodeSpec(ArterySpecSupport.defau
       EventFilter
         .error(pattern = """Failed to deserialize message from \[.*\] with serializer id \[4\]""", occurrences = 1)
         .intercept {
-          remoteRef ! "boom".getBytes("utf-8")
+          remoteRef ! "boom".getBytes(StandardCharsets.UTF_8)
         }(systemB)
 
       remoteRef ! "ping2"

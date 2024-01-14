@@ -14,6 +14,7 @@
 package org.apache.pekko.serialization
 
 import java.nio.{ BufferOverflowException, ByteBuffer }
+import java.nio.charset.StandardCharsets
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
@@ -115,12 +116,12 @@ import pekko.util.ByteString
   override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = {
     val bytes = new Array[Byte](buf.remaining())
     buf.get(bytes)
-    new String(bytes, "UTF-8")
+    new String(bytes, StandardCharsets.UTF_8)
   }
 
-  override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[String].getBytes("UTF-8")
+  override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[String].getBytes(StandardCharsets.UTF_8)
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = new String(bytes, "UTF-8")
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = new String(bytes, StandardCharsets.UTF_8)
 
 }
 

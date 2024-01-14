@@ -18,10 +18,11 @@ import java.lang.Double.doubleToRawLongBits
 import java.lang.Float.floatToRawIntBits
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.ByteOrder.{ BIG_ENDIAN, LITTLE_ENDIAN }
-
-import scala.collection.mutable.Builder
+import java.nio.charset.StandardCharsets
 
 import scala.annotation.nowarn
+import scala.collection.mutable.Builder
+
 import org.apache.commons.codec.binary.Hex.encodeHex
 import org.scalacheck.{ Arbitrary, Gen }
 import org.scalacheck.Arbitrary.arbitrary
@@ -796,7 +797,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     "behave as expected" when {
       "created from and decoding to String" in {
         check { (s: String) =>
-          ByteString(s, "UTF-8").decodeString("UTF-8") == s
+          ByteString(s, StandardCharsets.UTF_8).decodeString(StandardCharsets.UTF_8) == s
         }
       }
 
