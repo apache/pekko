@@ -539,6 +539,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Backpressures when''' original [[Flow]] backpressures
    *
    * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
    */
   def contramap[In2](f: function.Function[In2, In]): javadsl.Flow[In2, Out, Mat] =
     new Flow(delegate.contramap(elem => f(elem)))

@@ -568,6 +568,7 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    * '''Backpressures when''' original [[Sink]] backpressures
    *
    * '''Cancels when''' original [[Sink]] backpressures
+   * @since 1.1.0
    */
   def contramap[In2](f: function.Function[In2, In]): Sink[In2, Mat] =
     javadsl.Flow.fromFunction(f).toMat(this, Keep.right[NotUsed, Mat])
