@@ -539,7 +539,7 @@ case class AllForOneStrategy(
   def this(decider: SupervisorStrategy.Decider) =
     this()(decider)
 
-  /*
+  /**
    *  this is a performance optimization to avoid re-allocating the pairs upon
    *  every call to requestRestartPermission, assuming that strategies are shared
    *  across actors and thus this field does not take up much space
@@ -650,7 +650,7 @@ case class OneForOneStrategy(
 
   def withMaxNrOfRetries(maxNrOfRetries: Int): OneForOneStrategy = copy(maxNrOfRetries = maxNrOfRetries)(decider)
 
-  /*
+  /**
    *  this is a performance optimization to avoid re-allocating the pairs upon
    *  every call to requestRestartPermission, assuming that strategies are shared
    *  across actors and thus this field does not take up much space

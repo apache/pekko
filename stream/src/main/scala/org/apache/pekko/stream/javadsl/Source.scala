@@ -704,7 +704,7 @@ object Source {
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
   }
 
-  /*
+  /**
    * Combine the elements of multiple streams into a stream of lists using a combiner function.
    */
   def zipWithN[T, O](

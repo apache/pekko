@@ -49,7 +49,7 @@ private[pekko] class RepointableActorRef(
 
   import AbstractActorRef.{ cellOffset, lookupOffset }
 
-  /*
+  /**
    * H E R E   B E   D R A G O N S !
    *
    * There are two main functions of a Cell: message queueing and child lookup.
@@ -204,7 +204,7 @@ private[pekko] class UnstartedCell(
     val supervisor: InternalActorRef)
     extends Cell {
 
-  /*
+  /**
    * This lock protects all accesses to this cell’s queues. It also ensures
    * safe switching to the started ActorCell.
    */

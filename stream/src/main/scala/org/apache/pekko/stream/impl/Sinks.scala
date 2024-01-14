@@ -85,7 +85,7 @@ import pekko.util.ccompat._
 @InternalApi private[pekko] class PublisherSink[In](val attributes: Attributes, shape: SinkShape[In])
     extends SinkModule[In, Publisher[In]](shape) {
 
-  /*
+  /**
    * This method is the reason why SinkModule.create may return something that is
    * not a Subscriber: a VirtualPublisher is used in order to avoid the immediate
    * subscription a VirtualProcessor would perform (and it also saves overhead).

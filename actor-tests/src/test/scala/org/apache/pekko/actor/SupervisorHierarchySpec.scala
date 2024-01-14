@@ -131,7 +131,7 @@ object SupervisorHierarchySpec {
     override def dispatcher(): MessageDispatcher = instance
   }
 
-  /*
+  /**
    * This stores structural data of the hierarchy which would otherwise be lost
    * upon Restart or would have to be managed by the highest supervisor (which
    * is undesirable).

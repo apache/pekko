@@ -209,7 +209,7 @@ object ShardRegion {
    */
   @SerialVersionUID(1L) final case class Passivate(stopMessage: Any) extends ShardRegionCommand
 
-  /*
+  /**
    * Send this message to the `ShardRegion` actor to handoff all shards that are hosted by
    * the `ShardRegion` and then the `ShardRegion` actor will be stopped. You can `watch`
    * it to know when it is completed.

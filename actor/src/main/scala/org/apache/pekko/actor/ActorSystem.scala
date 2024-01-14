@@ -1128,7 +1128,7 @@ private[pekko] class ActorSystemImpl(
       .get
   // #create-scheduler
 
-  /*
+  /**
    * This is called after the last actor has signaled its termination, i.e.
    * after the last dispatcher has had its chance to schedule its shutdown
    * action.

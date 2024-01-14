@@ -440,7 +440,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   type Timeout = Option[FiniteDuration]
   type TransitionHandler = PartialFunction[(S, S), Unit]
 
-  /*
+  /**
    * “import” so that these are visible without an import
    */
   val Event: FSM.Event.type = FSM.Event
@@ -743,7 +743,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     case x    => x.stateData
   }
 
-  /*
+  /**
    * ****************************************************************
    *                PRIVATE IMPLEMENTATION DETAILS
    * ****************************************************************
@@ -751,7 +751,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
 
   private[pekko] def debugEvent: Boolean = false
 
-  /*
+  /**
    * FSM State data and current timeout handling
    */
   private var currentState: State = _
@@ -759,13 +759,13 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private var nextState: State = _
   private var generation: Long = 0L
 
-  /*
+  /**
    * Timer handling
    */
   private val timers = mutable.Map[String, Timer]()
   private val timerGen = Iterator.from(0)
 
-  /*
+  /**
    * State definitions
    */
   private val stateFunctions = mutable.Map[S, StateFunction]()
@@ -781,7 +781,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     }
   }
 
-  /*
+  /**
    * unhandled event handler
    */
   private val handleEventDefault: StateFunction = {
@@ -791,12 +791,12 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   }
   private var handleEvent: StateFunction = handleEventDefault
 
-  /*
+  /**
    * termination handling
    */
   private var terminateEvent: PartialFunction[StopEvent, Unit] = NullFunction
 
-  /*
+  /**
    * transition handling
    */
   private var transitionEvent: List[TransitionHandler] = Nil
@@ -805,7 +805,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
   }
 
-  /*
+  /**
    * *******************************************
    *       Main actor receive() method
    * *******************************************
