@@ -121,7 +121,8 @@ import pekko.util.ByteString
 
   override def toBinary(o: AnyRef): Array[Byte] = o.asInstanceOf[String].getBytes(StandardCharsets.UTF_8)
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = new String(bytes, StandardCharsets.UTF_8)
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+    new String(bytes, StandardCharsets.UTF_8)
 
 }
 
