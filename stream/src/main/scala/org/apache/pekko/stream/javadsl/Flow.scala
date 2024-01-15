@@ -25,8 +25,6 @@ import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -46,6 +44,8 @@ import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
+
+import org.reactivestreams.Processor
 
 object Flow {
 
@@ -543,6 +543,22 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def contramap[In2](f: function.Function[In2, In]): javadsl.Flow[In2, Out, Mat] =
     new Flow(delegate.contramap(elem => f(elem)))
+
+  /**
+   * Transform this Flow by applying a function `f` to each *incoming* upstream element before
+   * it is passed to the [[Flow]], and a function `g` to each *outgoing* downstream element.
+   *
+   * '''Emits when''' the mapping function `g` returns an element
+   *
+   * '''Backpressures when''' original [[Flow]] backpressures
+   *
+   * '''Completes when''' original [[Flow]] completes
+   *
+   * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
+   */
+  def dimap[In2, Out2](f: function.Function[In2, In], g: function.Function[Out, Out2]): javadsl.Flow[In2, Out2, Mat] =
+    new Flow(delegate.dimap(f(_))(g(_)))
 
   /**
    * Join this [[Flow]] to another [[Flow]], by cross connecting the inputs and outputs, creating a [[RunnableGraph]].

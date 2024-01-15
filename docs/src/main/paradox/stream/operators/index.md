@@ -148,6 +148,7 @@ depending on being backpressured by downstream or not.
 |Flow|<a name="completionstageflow"></a>@ref[completionStageFlow](Flow/completionStageFlow.md)|Streams the elements through the given future flow once it successfully completes.|
 |Flow|<a name="contramap"></a>@ref[contramap](Flow/contramap.md)|Transform this Flow by applying a function to each *incoming* upstream element before it is passed to the Flow.|
 |Source/Flow|<a name="detach"></a>@ref[detach](Source-or-Flow/detach.md)|Detach upstream demand from downstream demand without detaching the stream rates.|
+|Flow|<a name="dimap"></a>@ref[dimap](Flow/dimap.md)|Transform this Flow by applying a function `f` to each *incoming* upstream element before it is passed to the Flow, and a function `g` to each *outgoing* downstream element.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
 |Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
 |Source/Flow|<a name="filter"></a>@ref[filter](Source-or-Flow/filter.md)|Filter the incoming elements using a predicate.|
@@ -429,6 +430,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [delay](Source-or-Flow/delay.md)
 * [delayWith](Source-or-Flow/delayWith.md)
 * [detach](Source-or-Flow/detach.md)
+* [dimap](Flow/dimap.md)
 * [divertTo](Source-or-Flow/divertTo.md)
 * [drop](Source-or-Flow/drop.md)
 * [dropWhile](Source-or-Flow/dropWhile.md)

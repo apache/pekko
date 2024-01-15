@@ -215,6 +215,14 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
       sub.expectComplete()
     }
 
+    "perform dimap operation" in {
+      val flow = Flow[Int].dimap(Integer.parseInt)(_ * 2)
+      val sub = Source(List("1", "2", "3")).via(flow).runWith(TestSink())
+      sub.request(3)
+      sub.expectNextN(List(2, 4, 6))
+      sub.expectComplete()
+    }
+
     "perform transformation operation" in {
       val flow = Flow[Int].map(i => { testActor ! i.toString; i.toString })
 
