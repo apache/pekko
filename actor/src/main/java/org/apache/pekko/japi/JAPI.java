@@ -15,8 +15,16 @@ package org.apache.pekko.japi;
 
 import scala.collection.Seq;
 
+@Deprecated
 public class JAPI {
 
+  /**
+   * Create a Scala seq from a Java array.
+   *
+   * @deprecated since 1.1.0. Use <code>
+   *     org.apache.pekko.japi.Util.immutableSeq(java.util.Arrays.asList(...));</code> instead.
+   */
+  @Deprecated
   @SafeVarargs
   public static <T> Seq<T> seq(T... ts) {
     return Util.immutableSeq(ts);
