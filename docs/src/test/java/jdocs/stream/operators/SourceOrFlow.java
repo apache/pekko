@@ -401,6 +401,17 @@ class SourceOrFlow {
     // #collect
   }
 
+  void collectWhileExample() {
+    // #collectWhile
+    Flow<Message, Pong, NotUsed> flow =
+        Flow.of(Message.class)
+            .collectWhile(
+                PFBuilder.<Message, Pong>create()
+                    .match(Ping.class, p -> p.id <= 100, p -> new Pong(p.id))
+                    .build());
+    // #collectWhile
+  }
+
   void collectTypeExample() {
     // #collectType
     Flow<Message, Pong, NotUsed> flow =

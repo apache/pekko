@@ -458,17 +458,39 @@ class SubSource[Out, Mat](
     new SubSource(delegate.collect(pf))
 
   /**
-   * Transform this stream by testing the type of each of the elements
-   * on which the element is an instance of the provided type as they pass through this processing step.
+   * Transform this stream by applying the given partial function to each of the elements
+   * on which the function is defined as they pass through this processing step.
    * Non-matching elements are filtered out.
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
-   * '''Emits when''' the element is an instance of the provided type
+   * '''Emits when''' the provided partial function is defined for the element
    *
-   * '''Backpressures when''' the element is an instance of the provided type and downstream backpressures
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
    *
    * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   * @since 1.1.0
+   */
+  def collectWhile[T](pf: PartialFunction[Out, T]): SubSource[T, Mat] =
+    new SubSource(delegate.collectWhile(pf))
+
+  /**
+   * Transform this stream by applying the given partial function to each of the elements
+   * on which the function is defined as they pass through this processing step, and cancel the
+   * upstream publisher after the partial function is not applied.
+   *
+   * The stream will be completed without producing any elements if the partial function is not applied for
+   * the first stream element, eg: there is a downstream buffer.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the provided partial function is defined for the element
+   *
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes or the partial function is not applied.
    *
    * '''Cancels when''' downstream cancels
    */

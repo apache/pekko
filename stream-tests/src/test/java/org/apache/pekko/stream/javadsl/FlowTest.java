@@ -963,6 +963,20 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseCollectWhile() {
+    Source.from(Arrays.asList(1, 3, 5, 6, 7, 8, 9))
+        .collectWhile(
+            PFBuilder.<Integer, Integer>create()
+                .match(Integer.class, elem -> elem % 2 != 0, elem -> elem)
+                .build())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(5)
+        .expectNextN(Arrays.asList(1, 3, 5))
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =

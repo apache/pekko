@@ -38,6 +38,7 @@ import pekko.stream.Attributes._
     val filter = name("filter")
     val filterNot = name("filterNot")
     val collect = name("collect")
+    val collectWhile = name("collectWhile")
     val recover = name("recover")
     val mapError = name("mapError")
     val mapAsync = name("mapAsync")
