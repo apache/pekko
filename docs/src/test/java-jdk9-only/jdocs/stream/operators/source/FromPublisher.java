@@ -22,8 +22,6 @@ import org.apache.pekko.stream.javadsl.JavaFlowSupport;
 
 //#imports
 
-import org.apache.commons.lang.NotImplementedException;
-
 public interface FromPublisher {
     // We are 'faking' the JavaFlowSupport API here so we can include the signature as a snippet in the API,
     // because we're not publishing those (jdk9+) classes in our API docs yet.
@@ -41,13 +39,13 @@ public interface FromPublisher {
 
     static class Row {
         public String getField(String fieldName) {
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException("Not implemented in sample");
         }
     }
 
     static class DatabaseClient {
         Publisher<Row> fetchRows() {
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException("Not implemented in sample");
         }
     }
 
