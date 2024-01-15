@@ -26,8 +26,7 @@ import java.util.List;
 @SuppressWarnings("rawtypes")
 public class FSMStateFunctionBuilder<S, D> {
 
-  private PFBuilder<FSM.Event<D>, FSM.State<S, D>> builder =
-      new PFBuilder<FSM.Event<D>, FSM.State<S, D>>();
+  private final PFBuilder<FSM.Event<D>, FSM.State<S, D>> builder = PFBuilder.create();
 
   /**
    * An erased processing of the event matcher. The compile time checks are enforced by the public

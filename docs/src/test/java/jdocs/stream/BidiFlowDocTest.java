@@ -260,7 +260,9 @@ public class BidiFlowDocTest extends AbstractJavaTest {
     final Flow<Message, Message, NotUsed> pingpong =
         Flow.of(Message.class)
             .collect(
-                new PFBuilder<Message, Message>().match(Ping.class, p -> new Pong(p.id)).build());
+                PFBuilder.<Message, Message>create()
+                    .match(Ping.class, p -> new Pong(p.id))
+                    .build());
     final Flow<Message, Message, NotUsed> flow = stack.atop(stack.reversed()).join(pingpong);
     final CompletionStage<List<Message>> result =
         Source.from(Arrays.asList(0, 1, 2))

@@ -21,6 +21,15 @@ package org.apache.pekko.japi.pf;
  */
 public final class PFBuilder<I, R> extends AbstractPFBuilder<I, R> {
 
+  /**
+   * Create a new {@link PFBuilder}.
+   *
+   * @since 1.1.0
+   */
+  public static <I, R> PFBuilder<I, R> create() {
+    return new PFBuilder<>();
+  }
+
   /** Create a PFBuilder. */
   public PFBuilder() {}
 

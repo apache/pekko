@@ -31,13 +31,10 @@ import java.util.List;
 @Deprecated
 public class FSMStateFunctionBuilder<S, D, E> {
 
-  private PFBuilder<
+  private final PFBuilder<
           org.apache.pekko.persistence.fsm.PersistentFSM.Event<D>,
           org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>
-      builder =
-          new PFBuilder<
-              org.apache.pekko.persistence.fsm.PersistentFSM.Event<D>,
-              org.apache.pekko.persistence.fsm.PersistentFSM.State<S, D, E>>();
+      builder = PFBuilder.create();
 
   /**
    * An erased processing of the event matcher. The compile time checks are enforced by the public
