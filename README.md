@@ -33,8 +33,8 @@ The CI build is Linux based (Ubuntu) and most Pekko developers use Macs or Linux
 - `sbt testQuick` similar to test but when repeated in shell mode will only run failing tests
 - `sbt testQuickUntilPassed` similar to testQuick but will loop until tests pass.
 - `sbt package` will build the jars
-    - the jars will built into target dirs of the various modules
-    - for the the 'actor' module, the jar will be built to `actor/target/scala-2.13/`
+    - the jars will be built into target dirs of the various modules
+    - for the 'actor' module, the jar will be built to `actor/target/scala-2.13/`
 - `sbt publishLocal` will push the jars to your local Apache Ivy repository
 - `sbt publishM2` will push the jars to your local Apache Maven repository
 - `sbt docs/paradox` will build the docs (the ones describing the module features)
