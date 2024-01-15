@@ -82,7 +82,7 @@ trait Predicate[-T] extends java.io.Serializable {
 
 /**
  * A constructor/factory, takes no parameters but creates a new value of type T every call.
- * Supports throwing `Exception` in the apply, which the `java.util.function.Creator` counterpart does not.
+ * Supports throwing `Exception` in the apply, which the `java.util.function.Supplier` counterpart does not.
  */
 @nowarn("msg=@SerialVersionUID has no effect")
 @SerialVersionUID(1L)
