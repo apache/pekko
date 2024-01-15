@@ -14,15 +14,14 @@
 package org.apache.pekko.stream.testkit
 
 import scala.concurrent.duration._
-
 import org.apache.pekko
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.scaladsl.TestSink
-
 import pekko.testkit._
-
 import pekko.testkit.TestEvent.Mute
 import pekko.testkit.TestEvent.UnMute
+
+import java.util
 
 class StreamTestKitSpec extends PekkoSpec {
 
@@ -198,6 +197,13 @@ class StreamTestKitSpec extends PekkoSpec {
 
     "#expectNextN given specific elements" in {
       Source(1 to 4).runWith(TestSink.probe).request(4).expectNextN(4) should ===(List(1, 2, 3, 4))
+    }
+
+    "#expectNextN given specific elements for java list" in {
+      Source(1 to 4).runWith(TestSink[Int]())
+        .request(4)
+        .expectNextN(util.Arrays.asList(1, 2, 3, 4))
+        .expectComplete()
     }
   }
 }

@@ -23,15 +23,16 @@ import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 import org.apache.pekko
-import pekko.actor.ClassicActorSystemProvider
-import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 import pekko.actor.{ ActorRef, ActorSystem, DeadLetterSuppression, NoSerializationVerificationNeeded }
+import pekko.actor.ClassicActorSystemProvider
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
 import pekko.util.JavaDurationConverters
 import pekko.util.ccompat._
+
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 
 /**
  * Provides factory methods for various Publishers.
@@ -459,6 +460,16 @@ object TestSubscriber {
      */
     def expectNextN(all: immutable.Seq[I]): Self = {
       all.foreach(e => probe.expectMsg(OnNext(e)))
+      self
+    }
+
+    /**
+     * Fluent DSL
+     * Expect the given elements to be signalled in order.
+     * @since 1.1.0
+     */
+    def expectNextN(elems: java.util.List[I]): Self = {
+      elems.forEach(e => probe.expectMsg(OnNext(e)))
       self
     }
 
