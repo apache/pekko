@@ -26,6 +26,11 @@ commands := commands.value.filterNot { command =>
 
 ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
+ThisBuild / pekkoCoreProject := true
+
+// pekkoInlineEnabled must be set to false when this is backported to 1.0.x branch
+ThisBuild / pekkoInlineEnabled := true
+
 enablePlugins(
   UnidocRoot,
   UnidocWithPrValidation,
