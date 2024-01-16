@@ -1545,6 +1545,27 @@ trait FlowOps[+Out, +Mat] {
   def collect[T](pf: PartialFunction[Out, T]): Repr[T] = via(Collect(pf))
 
   /**
+   * Transform this stream by applying the given partial function to each of the elements
+   * on which the function is defined as they pass through this processing step, and cancel the
+   * upstream publisher after the partial function is not applied.
+   *
+   * The stream will be completed without producing any elements if the partial function is not applied for
+   * the first stream element, eg: there is a downstream buffer.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the provided partial function is defined for the element
+   *
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes or the partial function is not applied.
+   *
+   * '''Cancels when''' downstream cancels
+   * @since 1.1.0
+   */
+  def collectWhile[T](pf: PartialFunction[Out, T]): Repr[T] = via(new CollectWhile(pf))
+
+  /**
    * Transform this stream by testing the type of each of the elements
    * on which the element is an instance of the provided type as they pass through this processing step.
    *

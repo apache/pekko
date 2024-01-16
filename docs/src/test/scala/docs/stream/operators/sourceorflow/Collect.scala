@@ -38,4 +38,12 @@ object Collect {
       Flow[Message].collectType[Ping].filter(_.id != 0).map(p => Pong(p.id))
     // #collectType
   }
+
+  def collectWhile(): Unit = {
+    // #collectWhile
+    Flow[Message].collectWhile {
+      case Ping(id) if id <= 100 => Pong(id)
+    }
+    // #collectWhile
+  }
 }
