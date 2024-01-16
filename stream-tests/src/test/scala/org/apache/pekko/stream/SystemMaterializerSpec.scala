@@ -15,13 +15,13 @@ package org.apache.pekko.stream
 
 import scala.concurrent.Future
 
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.StreamSpec
+
+import org.scalatest.concurrent.ScalaFutures
 
 class SystemMaterializerSpec extends StreamSpec with ScalaFutures {
 

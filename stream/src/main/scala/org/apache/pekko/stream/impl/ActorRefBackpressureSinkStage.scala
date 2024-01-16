@@ -13,15 +13,15 @@
 
 package org.apache.pekko.stream.impl
 
+import java.util
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes.InputBuffer
 import pekko.stream._
+import pekko.stream.Attributes.InputBuffer
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
-
-import java.util
 
 /**
  * INTERNAL API

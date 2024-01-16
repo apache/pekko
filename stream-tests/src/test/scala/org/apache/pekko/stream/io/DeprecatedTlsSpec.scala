@@ -26,8 +26,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.Random
 
-import com.typesafe.sslconfig.pekko.PekkoSSLConfig
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.pattern.{ after => later }
@@ -41,6 +39,8 @@ import pekko.testkit.TestDuration
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
 import pekko.util.JavaVersion
+
+import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 object DeprecatedTlsSpec {
 

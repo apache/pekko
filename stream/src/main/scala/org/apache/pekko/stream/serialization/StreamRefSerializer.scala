@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.serialization
 
+import java.nio.charset.StandardCharsets
+
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
 import pekko.annotation.InternalApi
@@ -21,8 +23,6 @@ import pekko.protobufv3.internal.UnsafeByteOperations
 import pekko.serialization._
 import pekko.stream.StreamRefMessages
 import pekko.stream.impl.streamref._
-
-import java.nio.charset.StandardCharsets
 
 /** INTERNAL API */
 @InternalApi

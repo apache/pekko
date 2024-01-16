@@ -13,17 +13,18 @@
 
 package org.apache.pekko.stream.impl
 
+import java.util.Optional
+import java.util.concurrent.CompletionStage
+
+import scala.concurrent.Future
+import scala.util.{ Failure, Success, Try }
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.japi.{ function, Pair }
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
-
-import java.util.Optional
-import java.util.concurrent.CompletionStage
-import scala.concurrent.Future
-import scala.util.{ Failure, Success, Try }
 
 /**
  * INTERNAL API

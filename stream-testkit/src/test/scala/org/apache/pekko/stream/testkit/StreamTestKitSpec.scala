@@ -13,15 +13,16 @@
 
 package org.apache.pekko.stream.testkit
 
+import java.util
+
 import scala.concurrent.duration._
+
 import org.apache.pekko
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit._
 import pekko.testkit.TestEvent.Mute
 import pekko.testkit.TestEvent.UnMute
-
-import java.util
 
 class StreamTestKitSpec extends PekkoSpec {
 

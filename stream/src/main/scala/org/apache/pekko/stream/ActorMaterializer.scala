@@ -15,12 +15,9 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.ActorContext
@@ -35,6 +32,9 @@ import pekko.japi.function
 import pekko.stream.impl._
 import pekko.stream.stage.GraphStageLogic
 import pekko.util.Helpers.toRootLowerCase
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 object ActorMaterializer {
 

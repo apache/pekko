@@ -16,12 +16,12 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.testkit._
 import pekko.testkit.EventFilter
+
+import org.reactivestreams.Publisher
 
 class GraphZipLatestWithSpec extends TwoStreamsSetup {
   import GraphDSL.Implicits._

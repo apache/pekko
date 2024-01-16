@@ -23,7 +23,6 @@ import scala.concurrent.duration._
 import scala.util.Success
 
 import com.google.common.jimfs.{ Configuration, Jimfs }
-import org.scalatest.concurrent.ScalaFutures
 
 import org.apache.pekko
 import pekko.dispatch.ExecutionContexts
@@ -34,6 +33,8 @@ import pekko.stream.scaladsl.{ FileIO, Keep, Sink, Source }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.util.ByteString
+
+import org.scalatest.concurrent.ScalaFutures
 
 @nowarn
 class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {

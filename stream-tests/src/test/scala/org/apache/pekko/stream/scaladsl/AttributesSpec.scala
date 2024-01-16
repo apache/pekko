@@ -14,21 +14,23 @@
 package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.{ CompletionStage, TimeUnit }
+
 import scala.annotation.nowarn
 
-import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.ActorSystem
 import pekko.dispatch.Dispatchers
-import pekko.stream.ActorAttributes.Dispatcher
 import pekko.stream._
+import pekko.stream.ActorAttributes.Dispatcher
 import pekko.stream.Attributes._
 import pekko.stream.javadsl
-import pekko.stream.stage._
 import pekko.stream.snapshot.MaterializerState
+import pekko.stream.stage._
 import pekko.stream.testkit._
 import pekko.testkit.TestKit
+
+import com.typesafe.config.ConfigFactory
 
 object AttributesSpec {
 

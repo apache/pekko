@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.annotation.nowarn
 import scala.util.control.NoStackTrace
 
 import org.apache.pekko
@@ -20,8 +21,6 @@ import pekko.stream.ActorAttributes
 import pekko.stream.Supervision
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import scala.annotation.nowarn
 
 @nowarn("msg=deprecated")
 class FlowStatefulMapConcatSpec extends StreamSpec("""

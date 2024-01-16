@@ -16,8 +16,9 @@ package org.apache.pekko.stream
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
-import org.apache.pekko
 import scala.annotation.nowarn
+
+import org.apache.pekko
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec

@@ -19,10 +19,6 @@ import scala.concurrent.Await
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
@@ -39,6 +35,10 @@ import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
 import pekko.testkit.EventFilter
 import pekko.testkit.TestLatch
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 class ActorGraphInterpreterSpec extends StreamSpec {
   "ActorGraphInterpreter" must {

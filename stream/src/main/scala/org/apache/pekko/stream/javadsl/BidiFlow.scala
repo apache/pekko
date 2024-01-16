@@ -13,9 +13,8 @@
 
 package org.apache.pekko.stream.javadsl
 
-import scala.concurrent.duration.FiniteDuration
-
 import scala.annotation.nowarn
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.NotUsed

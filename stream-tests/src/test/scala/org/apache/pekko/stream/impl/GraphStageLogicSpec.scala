@@ -15,8 +15,6 @@ package org.apache.pekko.stream.impl
 
 import scala.concurrent.duration.Duration
 
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
@@ -26,6 +24,8 @@ import pekko.stream.stage._
 import pekko.stream.stage.GraphStageLogic.{ EagerTerminateInput, EagerTerminateOutput }
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
+
+import org.scalatest.concurrent.ScalaFutures
 
 class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with ScalaFutures {
 

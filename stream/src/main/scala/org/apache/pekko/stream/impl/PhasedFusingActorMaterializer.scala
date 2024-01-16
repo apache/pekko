@@ -16,14 +16,10 @@ package org.apache.pekko.stream.impl
 import java.util
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.collection.immutable.Map
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
-
-import scala.annotation.nowarn
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -54,6 +50,10 @@ import pekko.stream.stage.GraphStageLogic
 import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.util.OptionVal
+
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

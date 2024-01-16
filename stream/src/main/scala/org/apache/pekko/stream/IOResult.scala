@@ -13,10 +13,9 @@
 
 package org.apache.pekko.stream
 
+import scala.annotation.nowarn
 import scala.util.{ Failure, Success, Try }
 import scala.util.control.NoStackTrace
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.Done

@@ -23,9 +23,9 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, Pair, Util }
 import pekko.stream._
 import pekko.util.ConstantFun
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.ccompat.JavaConverters._
 
 object FlowWithContext {
 

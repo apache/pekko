@@ -19,8 +19,6 @@ import javax.net.ssl.SSLParameters
 
 import scala.util.{ Failure, Success, Try }
 
-import com.typesafe.sslconfig.pekko.PekkoSSLConfig
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.actor.ActorSystem
@@ -28,6 +26,8 @@ import pekko.stream._
 import pekko.stream.TLSProtocol._
 import pekko.stream.impl.io.{ TlsModule, TlsUtils }
 import pekko.util.ByteString
+
+import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
 /**
  * Stream cipher support based upon JSSE.

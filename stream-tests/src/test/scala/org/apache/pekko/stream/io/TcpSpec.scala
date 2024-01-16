@@ -25,11 +25,6 @@ import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import org.scalatest.concurrent.PatienceConfiguration
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -58,6 +53,12 @@ import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
 import pekko.testkit.WithLogCapturing
 import pekko.util.ByteString
+
+import org.scalatest.concurrent.PatienceConfiguration
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
+
+import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 
 @nowarn("msg=never used")
 class NonResolvingDnsActor(cache: SimpleDnsCache, config: Config) extends Actor {
@@ -1021,11 +1022,11 @@ class TcpSpec extends StreamSpec("""
       import java.security.KeyStore
       import javax.net.ssl._
 
-      import com.typesafe.sslconfig.pekko.PekkoSSLConfig
-
       import org.apache.pekko
       import pekko.stream.TLSClientAuth
       import pekko.stream.TLSProtocol
+
+      import com.typesafe.sslconfig.pekko.PekkoSSLConfig
 
       val sslConfig = PekkoSSLConfig(system)
 

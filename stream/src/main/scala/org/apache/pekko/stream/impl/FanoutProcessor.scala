@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.impl
 
-import org.reactivestreams.Subscriber
-
 import org.apache.pekko
 import pekko.actor.Actor
 import pekko.actor.ActorRef
@@ -25,6 +23,8 @@ import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.Attributes
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
 import pekko.util.OptionVal
+
+import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API

@@ -13,11 +13,10 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.annotation.nowarn
 import scala.collection.{ Map => SMap }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.actor.ActorSystem

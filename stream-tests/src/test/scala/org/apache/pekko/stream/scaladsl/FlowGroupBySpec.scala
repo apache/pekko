@@ -22,9 +22,6 @@ import scala.concurrent.Await
 import scala.concurrent.Promise
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -40,6 +37,10 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
 import pekko.testkit.TestLatch
 import pekko.util.ByteString
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 object FlowGroupBySpec {
 

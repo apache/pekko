@@ -13,12 +13,12 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.NotUsed
-import pekko.stream.stage.{ GraphStage, GraphStageLogic }
 import pekko.stream.{ Attributes, Inlet, RestartSettings, SinkShape }
-
-import scala.concurrent.duration.FiniteDuration
+import pekko.stream.stage.{ GraphStage, GraphStageLogic }
 
 /**
  * A RestartSink wraps a [[Sink]] that gets restarted when it completes or fails.

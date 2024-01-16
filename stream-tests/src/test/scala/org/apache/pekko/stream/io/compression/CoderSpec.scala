@@ -22,14 +22,14 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.Inspectors
-import org.scalatest.wordspec.AnyWordSpec
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.impl.io.compression.Compressor
 import pekko.stream.scaladsl.{ Compression, Flow, Sink, Source }
 import pekko.util.ByteString
+
+import org.scalatest.Inspectors
+import org.scalatest.wordspec.AnyWordSpec
 
 abstract class CoderSpec(codecName: String) extends AnyWordSpec with CodecSpecSupport with Inspectors {
   import CompressionTestingTools._

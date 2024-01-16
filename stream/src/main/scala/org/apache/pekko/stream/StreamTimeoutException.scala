@@ -17,11 +17,11 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko
-import pekko.annotation.DoNotInherit
-
 import scala.concurrent.TimeoutException
 import scala.util.control.NoStackTrace
+
+import org.apache.pekko
+import pekko.annotation.DoNotInherit
 
 /**
  * Base class for timeout exceptions specific to Pekko Streams

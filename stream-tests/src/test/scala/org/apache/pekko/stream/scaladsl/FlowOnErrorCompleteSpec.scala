@@ -17,11 +17,12 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.apache.pekko.stream.testkit.StreamSpec
-import org.apache.pekko.stream.testkit.scaladsl.TestSink
-
 import scala.concurrent.TimeoutException
 import scala.util.control.NoStackTrace
+
+import org.apache.pekko
+import pekko.stream.testkit.StreamSpec
+import pekko.stream.testkit.scaladsl.TestSink
 
 class FlowOnErrorCompleteSpec extends StreamSpec {
   val ex = new RuntimeException("ex") with NoStackTrace

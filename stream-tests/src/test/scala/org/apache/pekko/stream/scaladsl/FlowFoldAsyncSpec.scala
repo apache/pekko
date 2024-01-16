@@ -19,8 +19,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.ActorAttributes.supervisionStrategy
@@ -30,6 +28,8 @@ import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.testkit.LongRunningTest
+
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 class FlowFoldAsyncSpec extends StreamSpec {
 

@@ -36,6 +36,7 @@ import pekko.stream.impl.LinearTraversalBuilder
 import pekko.stream.impl.ProcessorModule
 import pekko.stream.impl.SetupFlowStage
 import pekko.stream.impl.SingleConcat
+import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.SubFlowImpl
 import pekko.stream.impl.Throttle
 import pekko.stream.impl.Timers
@@ -43,7 +44,6 @@ import pekko.stream.impl.TraversalBuilder
 import pekko.stream.impl.fusing
 import pekko.stream.impl.fusing._
 import pekko.stream.impl.fusing.FlattenMerge
-import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage._
 import pekko.util.ConstantFun
 import pekko.util.OptionVal
