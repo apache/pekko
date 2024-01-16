@@ -17,18 +17,17 @@ import java.io.{ InputStream, OutputStream }
 import java.util.concurrent.CompletionStage
 import java.util.stream.Collector
 
-import scala.concurrent.duration.FiniteDuration
-
 import scala.annotation.nowarn
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.japi.function
 import pekko.stream.{ javadsl, scaladsl }
 import pekko.stream.IOResult
-import pekko.util.ByteString
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
+import pekko.util.ByteString
 
 /**
  * Converters for interacting with the blocking `java.io` streams APIs and Java 8 Streams

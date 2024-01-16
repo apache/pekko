@@ -19,8 +19,6 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import com.typesafe.config._
-
 import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ Actor, ActorIdentity, ActorLogging, ActorRef, ActorSystem, ActorSystemImpl, Identify, Props }
@@ -33,6 +31,8 @@ import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl._
 import pekko.testkit.{ PekkoSpec, TestKit, TestProbe }
 import pekko.util.ByteString
+
+import com.typesafe.config._
 
 object StreamRefsSpec {
 

@@ -18,13 +18,13 @@ import java.util.concurrent.atomic.AtomicBoolean
 import scala.annotation.nowarn
 import scala.concurrent.Future
 
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestSubscriber
 import pekko.testkit.DefaultTimeout
+
+import org.scalatest.concurrent.ScalaFutures
 
 @nowarn("msg=deprecated") // tests deprecated methods
 class LazilyAsyncSpec extends StreamSpec with DefaultTimeout with ScalaFutures {

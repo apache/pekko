@@ -13,10 +13,9 @@
 
 package org.apache.pekko.stream
 
+import scala.annotation.{ implicitNotFound, nowarn }
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
-
-import scala.annotation.{ implicitNotFound, nowarn }
 
 import org.apache.pekko
 import pekko.actor.ActorRef

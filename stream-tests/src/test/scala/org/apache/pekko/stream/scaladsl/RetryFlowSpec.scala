@@ -16,13 +16,13 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
-import org.scalatest.matchers.{ MatchResult, Matcher }
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.OverflowStrategy
 import pekko.stream.testkit.{ StreamSpec, TestPublisher, TestSubscriber }
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
+
+import org.scalatest.matchers.{ MatchResult, Matcher }
 
 class RetryFlowSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 1

@@ -13,13 +13,14 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.StringJoiner
+import java.util.concurrent.atomic.AtomicBoolean
+
+import scala.util.control.NoStackTrace
+
 import org.apache.pekko
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.TestSink
-
-import java.util.StringJoiner
-import java.util.concurrent.atomic.AtomicBoolean
-import scala.util.control.NoStackTrace
 
 class FlowConcatAllLazySpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

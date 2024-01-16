@@ -26,9 +26,9 @@ import pekko.japi.Util
 import pekko.japi.function
 import pekko.stream._
 import pekko.util.ConstantFun
-import pekko.util.ccompat.JavaConverters._
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.ccompat.JavaConverters._
 
 object SourceWithContext {
 

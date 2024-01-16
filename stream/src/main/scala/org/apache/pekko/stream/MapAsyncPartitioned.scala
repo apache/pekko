@@ -19,8 +19,8 @@ package org.apache.pekko.stream
 
 import scala.collection.mutable
 import scala.concurrent.Future
-import scala.util.control.{ NoStackTrace, NonFatal }
 import scala.util.{ Failure, Success, Try }
+import scala.util.control.{ NoStackTrace, NonFatal }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi

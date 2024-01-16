@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.util.FutureConverters._
-
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+
+import org.apache.pekko.util.FutureConverters._
 
 /**
  * Scala API: The flow DSL allows the formulation of stream transformations based on some

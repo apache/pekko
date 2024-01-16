@@ -17,10 +17,6 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.concurrent.PatienceConfiguration
-import org.scalatest.time.Milliseconds
-import org.scalatest.time.Span
-
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
@@ -32,6 +28,10 @@ import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestDuration
 import pekko.testkit.TimingTest
+
+import org.scalatest.concurrent.PatienceConfiguration
+import org.scalatest.time.Milliseconds
+import org.scalatest.time.Span
 
 class FlowDelaySpec extends StreamSpec {
 

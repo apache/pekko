@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream
 
-import SubstreamCancelStrategies._
-
 import scala.annotation.nowarn
+
+import SubstreamCancelStrategies._
 
 /**
  * Represents a strategy that decides how to deal with substream events.

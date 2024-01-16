@@ -19,8 +19,6 @@ import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.util.{ Failure, Try }
 
-import com.typesafe.config.ConfigFactory
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ Actor, ActorSystem, PoisonPill, Props }
@@ -34,6 +32,8 @@ import pekko.stream.scaladsl.{ Sink, Source }
 import pekko.stream.testkit.{ StreamSpec, TestPublisher }
 import pekko.testkit.{ ImplicitSender, TestProbe }
 import pekko.testkit.TestKit
+
+import com.typesafe.config.ConfigFactory
 
 object IndirectMaterializerCreation extends ExtensionId[IndirectMaterializerCreation] with ExtensionIdProvider {
   def createExtension(system: ExtendedActorSystem): IndirectMaterializerCreation =

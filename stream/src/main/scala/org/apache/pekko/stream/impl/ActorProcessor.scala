@@ -13,8 +13,6 @@
 
 package org.apache.pekko.stream.impl
 
-import org.reactivestreams.{ Processor, Subscriber, Subscription }
-
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
@@ -23,6 +21,8 @@ import pekko.stream.{ AbruptTerminationException, Attributes }
 import pekko.stream.ActorAttributes
 import pekko.stream.impl.ActorSubscriberMessage.{ OnComplete, OnError, OnNext, OnSubscribe }
 import pekko.util.unused
+
+import org.reactivestreams.{ Processor, Subscriber, Subscription }
 
 /**
  * INTERNAL API

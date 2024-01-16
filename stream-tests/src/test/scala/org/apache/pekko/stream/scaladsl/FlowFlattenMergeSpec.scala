@@ -16,8 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import org.scalatest.exceptions.TestFailedException
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
@@ -32,6 +30,8 @@ import pekko.stream.testkit.Utils.TE
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
 import pekko.util.OptionVal
+
+import org.scalatest.exceptions.TestFailedException
 
 class FlowFlattenMergeSpec extends StreamSpec {
   import system.dispatcher

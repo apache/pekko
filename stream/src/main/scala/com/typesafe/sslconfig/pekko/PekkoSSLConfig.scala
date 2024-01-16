@@ -15,14 +15,17 @@ package com.typesafe.sslconfig.pekko
 
 import java.util.Collections
 import javax.net.ssl._
-import com.typesafe.sslconfig.pekko.util.PekkoLoggerFactory
-import com.typesafe.sslconfig.ssl._
-import com.typesafe.sslconfig.util.LoggerFactory
+
+import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.InternalApi
 import pekko.event.Logging
-import scala.annotation.nowarn
+
+import com.typesafe.sslconfig.pekko.util.PekkoLoggerFactory
+import com.typesafe.sslconfig.ssl._
+import com.typesafe.sslconfig.util.LoggerFactory
 
 @deprecated("Use Tcp and TLS with SSLEngine parameters instead. Setup the SSLEngine with needed parameters.",
   "Akka 2.6.0")

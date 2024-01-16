@@ -16,8 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.nowarn
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.Done
 import pekko.actor.{ ActorRef, Status }
@@ -25,6 +23,8 @@ import pekko.stream.{ OverflowStrategy, _ }
 import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl._
+
+import org.reactivestreams.Publisher
 
 @nowarn("msg=deprecated")
 class ActorRefSourceSpec extends StreamSpec {

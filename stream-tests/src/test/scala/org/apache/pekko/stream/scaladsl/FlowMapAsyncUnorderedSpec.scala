@@ -23,8 +23,6 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
 import org.apache.pekko
 import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.Supervision.resumingDecider
@@ -32,6 +30,8 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl._
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
+
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 class FlowMapAsyncUnorderedSpec extends StreamSpec {
 

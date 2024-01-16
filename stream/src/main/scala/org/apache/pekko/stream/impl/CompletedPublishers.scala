@@ -13,9 +13,9 @@
 
 package org.apache.pekko.stream.impl
 
-import org.reactivestreams.{ Publisher, Subscriber, Subscription }
-
 import org.apache.pekko.annotation.InternalApi
+
+import org.reactivestreams.{ Publisher, Subscriber, Subscription }
 
 /**
  * INTERNAL API

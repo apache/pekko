@@ -17,15 +17,16 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.util.concurrent.CopyOnWriteArrayList
+
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
+
 import org.apache.pekko
 import pekko.Done
 import pekko.japi.Util
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
-
-import java.util.concurrent.CopyOnWriteArrayList
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
 
 class ForComprehensionsCompileSpec extends StreamSpec {
   "A Source" must {

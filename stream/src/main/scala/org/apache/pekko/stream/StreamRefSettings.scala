@@ -15,15 +15,15 @@ package org.apache.pekko.stream
 
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.duration._
-
 import scala.annotation.nowarn
-import com.typesafe.config.Config
+import scala.concurrent.duration._
 
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.annotation.DoNotInherit
 import pekko.stream.impl.streamref.StreamRefSettingsImpl
+
+import com.typesafe.config.Config
 
 @nowarn("msg=deprecated")
 object StreamRefSettings {

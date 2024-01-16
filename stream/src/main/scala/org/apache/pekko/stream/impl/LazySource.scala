@@ -15,10 +15,11 @@ package org.apache.pekko.stream.impl
 
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes.SourceLocation
 import pekko.stream._
+import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.scaladsl.{ Keep, Source }
 import pekko.stream.stage._

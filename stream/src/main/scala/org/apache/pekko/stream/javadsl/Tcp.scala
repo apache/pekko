@@ -23,11 +23,10 @@ import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLEngine
 import javax.net.ssl.SSLSession
 
+import scala.annotation.nowarn
 import scala.concurrent.duration._
 import scala.util.Failure
 import scala.util.Success
-
-import scala.annotation.nowarn
 
 import org.apache.pekko
 import pekko.{ Done, NotUsed }

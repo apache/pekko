@@ -15,13 +15,13 @@ package org.apache.pekko.stream.scaladsl
 
 import scala.annotation.nowarn
 
-import org.reactivestreams.Subscriber
-
 import org.apache.pekko
 import pekko.stream._
 import pekko.stream.ActorMaterializer
 import pekko.stream.ActorMaterializerSettings
 import pekko.stream.testkit._
+
+import org.reactivestreams.Subscriber
 
 object GraphFlowSpec {
   val source1 = Source(0 to 3)
