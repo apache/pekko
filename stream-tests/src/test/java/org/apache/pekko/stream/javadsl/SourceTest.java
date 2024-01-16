@@ -46,6 +46,7 @@ import scala.util.Try;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -794,6 +795,24 @@ public class SourceTest extends StreamTest {
             .map(Optional::get)
             .runFold("", (acc, elem) -> acc + elem, system);
     Assert.assertEquals("12345", result.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithResource() {
+    final AtomicBoolean gate = new AtomicBoolean(true);
+    Source.from(Arrays.asList("1", "2", "3"))
+        .mapWithResource(
+            () -> "resource",
+            (resource, elem) -> elem,
+            (resource) -> {
+              gate.set(false);
+              return Optional.of("end");
+            })
+        .runWith(TestSink.create(system), system)
+        .request(4)
+        .expectNext("1", "2", "3", "end")
+        .expectComplete();
+    Assert.assertFalse(gate.get());
   }
 
   @Test

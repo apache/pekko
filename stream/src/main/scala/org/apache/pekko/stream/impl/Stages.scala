@@ -44,6 +44,7 @@ import pekko.stream.Attributes._
     val mapAsyncUnordered = name("mapAsyncUnordered")
     val mapAsyncPartition = name("mapAsyncPartition")
     val mapAsyncPartitionUnordered = name("mapAsyncPartitionUnordered")
+    val mapWithResource = name("mapWithResource") and IODispatcher
     val ask = name("ask")
     val grouped = name("grouped")
     val groupedWithin = name("groupedWithin")
