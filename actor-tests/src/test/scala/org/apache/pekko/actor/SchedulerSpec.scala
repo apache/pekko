@@ -770,12 +770,14 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
     @volatile var time: Long = start
     val sched = new LightArrayRevolverScheduler(config.withFallback(system.settings.config), log, tf) {
       override protected def clock(): Long = {
+        // println(s"clock=$time")
         time
       }
 
       override protected def getShutdownTimeout: FiniteDuration = (10 seconds).dilated
 
       override protected def waitNanos(ns: Long): Unit = {
+        // println(s"waiting $ns")
         prb.ref ! ns
         try time += (lbq.get match {
             case q: LinkedBlockingQueue[Long] => q.take()
