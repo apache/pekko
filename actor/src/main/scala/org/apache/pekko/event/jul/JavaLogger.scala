@@ -82,7 +82,7 @@ object Logger {
    * @param logSource - the textual representation of the source of this log stream
    * @return a Logger for the specified parameters
    */
-  def apply(logClass: Class[_], logSource: String): logging.Logger = logClass match {
+  def apply(logClass: Class[?], logSource: String): logging.Logger = logClass match {
     case c if c == classOf[DummyClassForStringSources] => apply(logSource)
     case _                                             => logging.Logger.getLogger(logClass.getName)
   }
@@ -110,12 +110,12 @@ object Logger {
 class JavaLoggingFilter(@unused settings: ActorSystem.Settings, eventStream: EventStream) extends LoggingFilter {
   import Logger.mapLevel
 
-  def isErrorEnabled(logClass: Class[_], logSource: String) =
+  def isErrorEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= ErrorLevel) && Logger(logClass, logSource).isLoggable(mapLevel(ErrorLevel))
-  def isWarningEnabled(logClass: Class[_], logSource: String) =
+  def isWarningEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= WarningLevel) && Logger(logClass, logSource).isLoggable(mapLevel(WarningLevel))
-  def isInfoEnabled(logClass: Class[_], logSource: String) =
+  def isInfoEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= InfoLevel) && Logger(logClass, logSource).isLoggable(mapLevel(InfoLevel))
-  def isDebugEnabled(logClass: Class[_], logSource: String) =
+  def isDebugEnabled(logClass: Class[?], logSource: String) =
     (eventStream.logLevel >= DebugLevel) && Logger(logClass, logSource).isLoggable(mapLevel(DebugLevel))
 }

@@ -410,7 +410,7 @@ object SnapshotTestKit {
 
   def apply(implicit system: ActorSystem): SnapshotTestKit = new SnapshotTestKit(system)
 
-  def apply(implicit system: TypedActorSystem[_]): SnapshotTestKit = apply(system.classicSystem)
+  def apply(implicit system: TypedActorSystem[?]): SnapshotTestKit = apply(system.classicSystem)
 
   object Settings extends ExtensionId[Settings] {
 

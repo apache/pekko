@@ -46,7 +46,7 @@ import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
   private def waitForStart[A](
       context: ActorContext[ConsumerController.Command[A]],
       settings: ShardingConsumerController.Settings,
-      consumer: ActorRef[_]): Behavior[ConsumerController.Command[A]] = {
+      consumer: ActorRef[?]): Behavior[ConsumerController.Command[A]] = {
     Behaviors.withStash(settings.bufferSize) { stashBuffer =>
       Behaviors
         .receiveMessage[ConsumerController.Command[A]] {

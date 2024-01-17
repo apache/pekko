@@ -67,12 +67,12 @@ import pekko.util.Timeout
 
   // impl InternalRecipientRef
   override def provider: ActorRefProvider = {
-    probe.asInstanceOf[InternalRecipientRef[_]].provider
+    probe.asInstanceOf[InternalRecipientRef[?]].provider
   }
 
   // impl InternalRecipientRef
   def isTerminated: Boolean = {
-    probe.asInstanceOf[InternalRecipientRef[_]].isTerminated
+    probe.asInstanceOf[InternalRecipientRef[?]].isTerminated
   }
 
   override def toString: String = s"TestEntityRef($entityId)"

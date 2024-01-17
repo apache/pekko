@@ -76,7 +76,7 @@ class ReplicatorORSetDeltaSpec
         val value = expectMsgPF() {
           case g @ GetSuccess(`key`, _) =>
             g.dataValue match {
-              case c: ORSet[_] => c.elements
+              case c: ORSet[?] => c.elements
               case _           => fail()
             }
         }

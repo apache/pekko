@@ -411,7 +411,7 @@ class TypedActorSpec
             case e: IllegalStateException if e.getMessage == "expected" => SupervisorStrategy.Resume
           }
           def receive = {
-            case p: TypedProps[_] => context.sender() ! pekko.actor.TypedActor(context).typedActorOf(p)
+            case p: TypedProps[?] => context.sender() ! pekko.actor.TypedActor(context).typedActorOf(p)
           }
         }))
         val t = Await.result(
@@ -512,7 +512,7 @@ class TypedActorSpec
         val m = pekko.actor.TypedActor.MethodCall(
           classOf[Foo].getDeclaredMethod(
             "testMethodCallSerialization",
-            Array[Class[_]](classOf[Foo], classOf[String], classOf[Int], classOf[WithStringSerializedClass]): _*),
+            Array[Class[?]](classOf[Foo], classOf[String], classOf[Int], classOf[WithStringSerializedClass]): _*),
           Array[AnyRef](someFoo, null, 1.asInstanceOf[AnyRef], WithStringSerializedClass()))
         val baos = new ByteArrayOutputStream(8192 * 4)
         val out = new ObjectOutputStream(baos)

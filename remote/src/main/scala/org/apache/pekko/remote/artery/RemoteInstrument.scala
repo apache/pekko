@@ -111,7 +111,7 @@ abstract class RemoteInstrument {
 
   private val log = Logging(system, classOf[LoggingRemoteInstrument])
 
-  private val maxPayloadBytes: ConcurrentHashMap[Class[_], Integer] = new ConcurrentHashMap
+  private val maxPayloadBytes: ConcurrentHashMap[Class[?], Integer] = new ConcurrentHashMap
 
   override def identifier: Byte = 1 // Cinnamon is using 0
 

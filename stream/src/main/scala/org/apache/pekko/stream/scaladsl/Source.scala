@@ -239,7 +239,7 @@ final class Source[+Out, +Mat](
    * Combines several sources with fan-in strategy like `Merge` or `Concat` and returns `Source`.
    */
   @deprecated("Use `Source.combine` on companion object instead", "Akka 2.5.5")
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
+  def combine[T, U](first: Source[T, ?], second: Source[T, ?], rest: Source[T, ?]*)(
       strategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
     Source.combine(first, second, rest: _*)(strategy)
 
@@ -395,7 +395,7 @@ object Source {
    */
   @deprecated("Use scala-compat CompletionStage to future converter and 'Source.futureSource' instead", "Akka 2.6.0")
   def fromSourceCompletionStage[T, M](
-      completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
+      completion: CompletionStage[? <: Graph[SourceShape[T], M]]): Source[T, CompletionStage[M]] =
     fromFutureSource(completion.asScala).mapMaterializedValue(_.asJava)
 
   /**
@@ -755,7 +755,7 @@ object Source {
   /**
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
-  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
+  def combine[T, U](first: Source[T, ?], second: Source[T, ?], rest: Source[T, ?]*)(
       @nowarn
       @deprecatedName(Symbol("strategy"))
       fanInStrategy: Int => Graph[UniformFanInShape[T, U], NotUsed]): Source[U, NotUsed] =
@@ -765,7 +765,7 @@ object Source {
       first  ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, ?]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -812,13 +812,13 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of sequences.
    */
-  def zipN[T](sources: immutable.Seq[Source[T, _]]): Source[immutable.Seq[T], NotUsed] =
+  def zipN[T](sources: immutable.Seq[Source[T, ?]]): Source[immutable.Seq[T], NotUsed] =
     zipWithN(ConstantFun.scalaIdentityFunction[immutable.Seq[T]])(sources).addAttributes(DefaultAttributes.zipN)
 
   /**
    * Combine the elements of multiple streams into a stream of sequences using a combiner function.
    */
-  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, _]]): Source[O, NotUsed] = {
+  def zipWithN[T, O](zipper: immutable.Seq[T] => O)(sources: immutable.Seq[Source[T, ?]]): Source[O, NotUsed] = {
     val source = sources match {
       case immutable.Seq()       => empty[O]
       case immutable.Seq(source) => source.map(t => zipper(immutable.Seq(t))).mapMaterializedValue(_ => NotUsed)
@@ -1004,7 +1004,7 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
+      sourcesAndPriorities: immutable.Seq[(Source[T, ?], Int)],
       eagerComplete: Boolean): Source[T, NotUsed] = {
     sourcesAndPriorities match {
       case immutable.Seq()            => Source.empty

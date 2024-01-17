@@ -34,14 +34,14 @@ import pekko.annotation.DoNotInherit
 @DoNotInherit
 class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAccess {
 
-  override def getClassFor[T: ClassTag](fqcn: String): Try[Class[_ <: T]] =
-    Try[Class[_ <: T]] {
-      val c = Class.forName(fqcn, false, classLoader).asInstanceOf[Class[_ <: T]]
+  override def getClassFor[T: ClassTag](fqcn: String): Try[Class[? <: T]] =
+    Try[Class[? <: T]] {
+      val c = Class.forName(fqcn, false, classLoader).asInstanceOf[Class[? <: T]]
       val t = implicitly[ClassTag[T]].runtimeClass
       if (t.isAssignableFrom(c)) c else throw new ClassCastException(t.toString + " is not assignable from " + c)
     }
 
-  override def createInstanceFor[T: ClassTag](clazz: Class[_], args: immutable.Seq[(Class[_], AnyRef)]): Try[T] =
+  override def createInstanceFor[T: ClassTag](clazz: Class[?], args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
     Try {
       val types = args.map(_._1).toArray
       val values = args.map(_._2).toArray
@@ -53,7 +53,7 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader) extends DynamicAcces
       else throw new ClassCastException(clazz.getName + " is not a subtype of " + t)
     }.recover { case i: InvocationTargetException if i.getTargetException ne null => throw i.getTargetException }
 
-  override def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[_], AnyRef)]): Try[T] =
+  override def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[?], AnyRef)]): Try[T] =
     getClassFor(fqcn).flatMap { c =>
       createInstanceFor(c, args)
     }

@@ -179,9 +179,9 @@ private[cluster] object InternalClusterAction {
   final case class AddOnMemberRemovedListener(callback: Runnable) extends NoSerializationVerificationNeeded
 
   sealed trait SubscriptionMessage
-  final case class Subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Set[Class[_]])
+  final case class Subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Set[Class[?]])
       extends SubscriptionMessage
-  final case class Unsubscribe(subscriber: ActorRef, to: Option[Class[_]])
+  final case class Unsubscribe(subscriber: ActorRef, to: Option[Class[?]])
       extends SubscriptionMessage
       with DeadLetterSuppression
 

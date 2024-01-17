@@ -55,7 +55,7 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](
     implicit ev: PluginProvider[T, ScalaDsl, JavaDsl]) {
 
   private val plugins = new AtomicReference[Map[String, ExtensionId[PluginHolder[ScalaDsl, JavaDsl]]]](Map.empty)
-  private val log = Logging(system, classOf[PersistencePlugin[_, _, _]])
+  private val log = Logging(system, classOf[PersistencePlugin[?, ?, ?]])
 
   @tailrec
   final protected def pluginFor(pluginId: String, readJournalPluginConfig: Config): PluginHolder[ScalaDsl, JavaDsl] = {
@@ -86,7 +86,7 @@ private[pekko] abstract class PersistencePlugin[ScalaDsl, JavaDsl, T: ClassTag](
     log.debug(s"Create plugin: $configPath $pluginClassName")
     val pluginClass = system.dynamicAccess.getClassFor[AnyRef](pluginClassName).get
 
-    def instantiate(args: collection.immutable.Seq[(Class[_], AnyRef)]) =
+    def instantiate(args: collection.immutable.Seq[(Class[?], AnyRef)]) =
       system.dynamicAccess.createInstanceFor[T](pluginClass, args)
 
     instantiate(

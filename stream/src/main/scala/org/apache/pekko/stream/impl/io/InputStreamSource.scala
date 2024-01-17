@@ -56,7 +56,7 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
       private var inputStream: InputStream = _
       private def isClosed = mat.isCompleted
 
-      override protected def logSource: Class[_] = classOf[InputStreamSource]
+      override protected def logSource: Class[?] = classOf[InputStreamSource]
 
       override def preStart(): Unit = {
         try {

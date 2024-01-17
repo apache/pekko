@@ -29,13 +29,13 @@ import pekko.util.JavaDurationConverters._
 import com.typesafe.config.Config
 
 object ClusterSingletonSettings {
-  def apply(system: ActorSystem[_]): ClusterSingletonSettings =
+  def apply(system: ActorSystem[?]): ClusterSingletonSettings =
     fromConfig(system.settings.config.getConfig("pekko.cluster"))
 
   /**
    * Java API
    */
-  def create(system: ActorSystem[_]): ClusterSingletonSettings = apply(system)
+  def create(system: ActorSystem[?]): ClusterSingletonSettings = apply(system)
 
   def fromConfig(config: Config): ClusterSingletonSettings = {
     // TODO introduce a config namespace for typed singleton and read that?
@@ -144,12 +144,12 @@ final class ClusterSingletonSettings(
 
 object ClusterSingleton extends ExtensionId[ClusterSingleton] {
 
-  override def createExtension(system: ActorSystem[_]): ClusterSingleton = new AdaptedClusterSingletonImpl(system)
+  override def createExtension(system: ActorSystem[?]): ClusterSingleton = new AdaptedClusterSingletonImpl(system)
 
   /**
    * Java API:
    */
-  def get(system: ActorSystem[_]): ClusterSingleton = apply(system)
+  def get(system: ActorSystem[?]): ClusterSingleton = apply(system)
 }
 
 /**
@@ -236,7 +236,7 @@ object ClusterSingletonManagerSettings {
    * Create settings from the default configuration
    * `pekko.cluster.singleton`.
    */
-  def apply(system: ActorSystem[_]): ClusterSingletonManagerSettings =
+  def apply(system: ActorSystem[?]): ClusterSingletonManagerSettings =
     apply(system.settings.config.getConfig("pekko.cluster.singleton"))
       .withRemovalMargin(pekko.cluster.Cluster(system).downingProvider.downRemovalMargin)
 
@@ -262,7 +262,7 @@ object ClusterSingletonManagerSettings {
    * Java API: Create settings from the default configuration
    * `pekko.cluster.singleton`.
    */
-  def create(system: ActorSystem[_]): ClusterSingletonManagerSettings = apply(system)
+  def create(system: ActorSystem[?]): ClusterSingletonManagerSettings = apply(system)
 
   /**
    * Java API: Create settings from a configuration with the same layout as
@@ -343,7 +343,7 @@ final class ClusterSingletonManagerSettings(
 }
 
 object ClusterSingletonSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => ClusterSingleton): ClusterSingletonSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => ClusterSingleton): ClusterSingletonSetup =
     new ClusterSingletonSetup(createExtension(_))
 
 }
@@ -353,5 +353,5 @@ object ClusterSingletonSetup {
  * to replace the default implementation of the [[ClusterSingleton]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ClusterSingletonSetup(createExtension: java.util.function.Function[ActorSystem[_], ClusterSingleton])
+final class ClusterSingletonSetup(createExtension: java.util.function.Function[ActorSystem[?], ClusterSingleton])
     extends ExtensionSetup[ClusterSingleton](ClusterSingleton, createExtension)

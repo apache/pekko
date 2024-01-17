@@ -232,7 +232,7 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
    *
    * @see [[pekko.stream.javadsl.Source.mapConcat]]
    */
-  def mapConcat[Out2](f: function.Function[Out, _ <: java.lang.Iterable[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
+  def mapConcat[Out2](f: function.Function[Out, ? <: java.lang.Iterable[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapConcat(elem => Util.immutableSeq(f.apply(elem))))
 
   /**

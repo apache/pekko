@@ -30,13 +30,13 @@ object GraphOpsIntegrationSpec {
 
     case class ShufflePorts[In, Out](in1: Inlet[In], in2: Inlet[In], out1: Outlet[Out], out2: Outlet[Out])
         extends Shape {
-      override def inlets: immutable.Seq[Inlet[_]] = List(in1, in2)
-      override def outlets: immutable.Seq[Outlet[_]] = List(out1, out2)
+      override def inlets: immutable.Seq[Inlet[?]] = List(in1, in2)
+      override def outlets: immutable.Seq[Outlet[?]] = List(out1, out2)
 
       override def deepCopy() = ShufflePorts(in1.carbonCopy(), in2.carbonCopy(), out1.carbonCopy(), out2.carbonCopy())
     }
 
-    def apply[In, Out](pipeline: Flow[In, Out, _]): Graph[ShufflePorts[In, Out], NotUsed] = {
+    def apply[In, Out](pipeline: Flow[In, Out, ?]): Graph[ShufflePorts[In, Out], NotUsed] = {
       GraphDSL.create() { implicit b =>
         val merge = b.add(Merge[In](2))
         val balance = b.add(Balance[Out](2))

@@ -119,9 +119,9 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
   }
 
   @InternalStableApi
-  def onRecoveryStart(@unused context: ActorContext[_]): Unit = ()
+  def onRecoveryStart(@unused context: ActorContext[?]): Unit = ()
   @InternalStableApi
-  def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable): Unit = ()
+  def onRecoveryFailed(@unused context: ActorContext[?], @unused reason: Throwable): Unit = ()
 
   private def onRecoveryTick(snapshot: Boolean): Behavior[InternalProtocol] =
     if (snapshot) {

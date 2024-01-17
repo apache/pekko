@@ -256,7 +256,7 @@ class AtLeastOnceDeliverySpec
 
     "not allow using actorSelection with wildcards" in {
       system.actorOf(Props(classOf[DeliverToStarSelection], name)) ! "anything, really."
-      expectMsgType[Failure[_]].toString should include("not supported")
+      expectMsgType[Failure[?]].toString should include("not supported")
     }
 
     "re-deliver lost messages after restart" taggedAs TimingTest in {

@@ -32,9 +32,9 @@ import pekko.cluster.typed.{ Cluster, ClusterSingleton, ClusterSingletonImpl, Cl
  * INTERNAL API:
  */
 @InternalApi
-private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[_]) extends ClusterSingleton {
+private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[?]) extends ClusterSingleton {
   require(
-    system.isInstanceOf[ActorSystemAdapter[_]],
+    system.isInstanceOf[ActorSystemAdapter[?]],
     "only adapted actor systems can be used for the typed cluster singleton")
 
   import ClusterSingletonImpl._
@@ -44,7 +44,7 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[_]) e
   private lazy val cluster = Cluster(system)
   private val classicSystem = system.toClassic.asInstanceOf[ExtendedActorSystem]
 
-  private val proxies = new ConcurrentHashMap[(String, Option[DataCenter]), ActorRef[_]]()
+  private val proxies = new ConcurrentHashMap[(String, Option[DataCenter]), ActorRef[?]]()
 
   override def init[M](singleton: typed.SingletonActor[M]): ActorRef[M] = {
     val settings = singleton.settings match {
@@ -79,8 +79,8 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[_]) e
   }
 
   private def getProxy[T](name: String, settings: ClusterSingletonSettings): ActorRef[T] = {
-    val proxyCreator = new JFunction[(String, Option[DataCenter]), ActorRef[_]] {
-      def apply(singletonNameAndDc: (String, Option[DataCenter])): ActorRef[_] = {
+    val proxyCreator = new JFunction[(String, Option[DataCenter]), ActorRef[?]] {
+      def apply(singletonNameAndDc: (String, Option[DataCenter])): ActorRef[?] = {
         val (singletonName, _) = singletonNameAndDc
         val proxyName = s"singletonProxy$singletonName-${settings.dataCenter.getOrElse("no-dc")}"
         classicSystem.systemActorOf(

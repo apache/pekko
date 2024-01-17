@@ -45,7 +45,7 @@ private[pekko] object ReceptionistMessages {
 
   final case class Registered[T] private[pekko] (key: ServiceKey[T], _serviceInstance: ActorRef[T])
       extends Receptionist.Registered {
-    def isForKey(key: ServiceKey[_]): Boolean = key == this.key
+    def isForKey(key: ServiceKey[?]): Boolean = key == this.key
     def serviceInstance[M](key: ServiceKey[M]): ActorRef[M] = {
       if (key != this.key)
         throw new IllegalArgumentException(s"Wrong key [$key] used, must use listing key [${this.key}]")
@@ -58,7 +58,7 @@ private[pekko] object ReceptionistMessages {
 
   final case class Deregistered[T] private[pekko] (key: ServiceKey[T], _serviceInstance: ActorRef[T])
       extends Receptionist.Deregistered {
-    def isForKey(key: ServiceKey[_]): Boolean = key == this.key
+    def isForKey(key: ServiceKey[?]): Boolean = key == this.key
     def serviceInstance[M](key: ServiceKey[M]): ActorRef[M] = {
       if (key != this.key)
         throw new IllegalArgumentException(s"Wrong key [$key] used, must use listing key [${this.key}]")
@@ -78,7 +78,7 @@ private[pekko] object ReceptionistMessages {
       servicesWereAddedOrRemoved: Boolean)
       extends Receptionist.Listing {
 
-    def isForKey(key: ServiceKey[_]): Boolean = key == this.key
+    def isForKey(key: ServiceKey[?]): Boolean = key == this.key
 
     def serviceInstances[M](key: ServiceKey[M]): Set[ActorRef[M]] = {
       if (key != this.key)

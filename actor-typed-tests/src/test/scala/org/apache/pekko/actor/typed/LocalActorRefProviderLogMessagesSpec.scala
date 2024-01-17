@@ -38,7 +38,7 @@ class LocalActorRefProviderLogMessagesSpec
   "An LocalActorRefProvider" must {
 
     "logs on dedicated 'serialization' logger of unknown path" in {
-      val provider = system.asInstanceOf[ActorSystemAdapter[_]].provider
+      val provider = system.asInstanceOf[ActorSystemAdapter[?]].provider
 
       LoggingTestKit
         .debug("of unknown (invalid) path [dummy/path]")
@@ -49,7 +49,7 @@ class LocalActorRefProviderLogMessagesSpec
     }
 
     "logs on dedicated 'serialization' logger when path doesn't match existing actor" in {
-      val provider = system.asInstanceOf[ActorSystemAdapter[_]].provider
+      val provider = system.asInstanceOf[ActorSystemAdapter[?]].provider
       val invalidPath = provider.rootPath / "user" / "invalid"
 
       LoggingTestKit
@@ -62,10 +62,10 @@ class LocalActorRefProviderLogMessagesSpec
 
     "logs on dedicated 'serialization' logger when of foreign path" in {
 
-      val otherSystem = ActorTestKit("otherSystem").system.asInstanceOf[ActorSystemAdapter[_]]
+      val otherSystem = ActorTestKit("otherSystem").system.asInstanceOf[ActorSystemAdapter[?]]
       val invalidPath = otherSystem.provider.rootPath / "user" / "foo"
 
-      val provider = system.asInstanceOf[ActorSystemAdapter[_]].provider
+      val provider = system.asInstanceOf[ActorSystemAdapter[?]].provider
       try {
         LoggingTestKit
           .debug("Resolve (deserialization) of foreign path [pekko://otherSystem/user/foo]")

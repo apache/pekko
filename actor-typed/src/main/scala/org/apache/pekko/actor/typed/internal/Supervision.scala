@@ -43,8 +43,8 @@ import scala.util.Try
  */
 @InternalApi private[pekko] object Supervisor {
   def apply[T, Thr <: Throwable: ClassTag](initialBehavior: Behavior[T], strategy: SupervisorStrategy): Behavior[T] = {
-    if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[_]] || initialBehavior
-        .isInstanceOf[javadsl.AbstractBehavior[_]]) {
+    if (initialBehavior.isInstanceOf[scaladsl.AbstractBehavior[?]] || initialBehavior
+        .isInstanceOf[javadsl.AbstractBehavior[?]]) {
       throw new IllegalArgumentException(
         "The supervised Behavior must not be a AbstractBehavior instance directly," +
         "because a different instance should be created when it is restarted. Wrap in Behaviors.setup.")
@@ -77,7 +77,7 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
 
   override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean = {
     other match {
-      case as: AbstractSupervisor[_, _] if throwableClass == as.throwableClass => true
+      case as: AbstractSupervisor[?, ?] if throwableClass == as.throwableClass => true
       case _                                                                   => false
     }
   }
@@ -94,10 +94,10 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
     } catch handleSignalException(ctx, target)
   }
 
-  def log(ctx: TypedActorContext[_], t: Throwable): Unit =
+  def log(ctx: TypedActorContext[?], t: Throwable): Unit =
     log(ctx, t, errorCount = -1)
 
-  def log(ctx: TypedActorContext[_], t: Throwable, errorCount: Int): Unit = {
+  def log(ctx: TypedActorContext[?], t: Throwable, errorCount: Int): Unit = {
     if (strategy.loggingEnabled) {
       val unwrapped = UnstashException.unwrap(t)
       val errorCountStr = if (errorCount >= 0) s" [$errorCount]" else ""
@@ -117,7 +117,7 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
     }
   }
 
-  def dropped(ctx: TypedActorContext[_], signalOrMessage: Any): Unit = {
+  def dropped(ctx: TypedActorContext[?], signalOrMessage: Any): Unit = {
     import pekko.actor.typed.scaladsl.adapter._
     ctx.asScala.system.toClassic.eventStream
       .publish(Dropped(signalOrMessage, s"Stash is full in [${getClass.getSimpleName}]", ctx.asScala.self.toClassic))
@@ -195,10 +195,10 @@ private object RestartSupervisor {
     }
   }
 
-  final case class ScheduledRestart(owner: RestartSupervisor[_, _ <: Throwable])
+  final case class ScheduledRestart(owner: RestartSupervisor[?, ? <: Throwable])
       extends Signal
       with DeadLetterSuppression
-  final case class ResetRestartCount(current: Int, owner: RestartSupervisor[_, _ <: Throwable])
+  final case class ResetRestartCount(current: Int, owner: RestartSupervisor[?, ? <: Throwable])
       extends Signal
       with DeadLetterSuppression
 }
@@ -418,7 +418,7 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
         })
   }
 
-  private def stopChildren(ctx: TypedActorContext[_], children: Set[ActorRef[Nothing]]): Unit = {
+  private def stopChildren(ctx: TypedActorContext[?], children: Set[ActorRef[Nothing]]): Unit = {
     children.foreach { child =>
       // Unwatch in case the actor being restarted used watchWith to watch the child.
       ctx.asScala.unwatch(child)

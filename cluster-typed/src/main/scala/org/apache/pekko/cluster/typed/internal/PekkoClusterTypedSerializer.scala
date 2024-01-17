@@ -43,14 +43,14 @@ private[pekko] final class PekkoClusterTypedSerializer(override val system: Exte
 
   override def manifest(o: AnyRef): String = o match {
     case _: Entry                         => ReceptionistEntryManifest
-    case _: TopicImpl.MessagePublished[_] => PubSubPublishManifest
+    case _: TopicImpl.MessagePublished[?] => PubSubPublishManifest
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
     case e: Entry                         => receptionistEntryToBinary(e)
-    case m: TopicImpl.MessagePublished[_] => pubSubPublishToBinary(m)
+    case m: TopicImpl.MessagePublished[?] => pubSubPublishToBinary(m)
     case _ =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
@@ -63,7 +63,7 @@ private[pekko] final class PekkoClusterTypedSerializer(override val system: Exte
         s"Unimplemented deserialization of message with manifest [$manifest] in [${getClass.getName}]")
   }
 
-  private def pubSubPublishToBinary(m: TopicImpl.MessagePublished[_]): Array[Byte] = {
+  private def pubSubPublishToBinary(m: TopicImpl.MessagePublished[?]): Array[Byte] = {
     ClusterMessages.PubSubMessagePublished
       .newBuilder()
       .setMessage(payloadSupport.payloadBuilder(m.message))
@@ -83,7 +83,7 @@ private[pekko] final class PekkoClusterTypedSerializer(override val system: Exte
     b.build().toByteArray
   }
 
-  private def pubSubMessageFromBinary(bytes: Array[Byte]): TopicImpl.MessagePublished[_] = {
+  private def pubSubMessageFromBinary(bytes: Array[Byte]): TopicImpl.MessagePublished[?] = {
     val parsed = ClusterMessages.PubSubMessagePublished.parseFrom(bytes)
     val userMessage = payloadSupport.deserializePayload(parsed.getMessage)
     TopicImpl.MessagePublished(userMessage)

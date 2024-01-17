@@ -61,10 +61,10 @@ class JoinConfigCompatCheckerClusterShardingSpec
 
   private val clusterWaitDuration = 5.seconds
 
-  private def configured(system: ActorSystem[_]): Int =
+  private def configured(system: ActorSystem[?]): Int =
     system.settings.config.getInt(Key)
 
-  private def join(sys: ActorSystem[_]): ClassicCluster = {
+  private def join(sys: ActorSystem[?]): ClassicCluster = {
     if (sys eq system) {
       configured(system) should ===(Shards)
       val seedNode = ClassicCluster(system)

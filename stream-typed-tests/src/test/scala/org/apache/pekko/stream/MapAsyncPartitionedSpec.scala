@@ -96,7 +96,7 @@ class MapAsyncPartitionedSpec
     timeout = 5 seconds,
     interval = 100 millis)
 
-  private implicit val system: ActorSystem[_] = ActorSystem(Behaviors.empty, "test-system")
+  private implicit val system: ActorSystem[?] = ActorSystem(Behaviors.empty, "test-system")
   private implicit val ec: ExecutionContext = ExecutionContext.fromExecutor(Executors.newCachedThreadPool())
 
   override protected def afterAll(): Unit = {

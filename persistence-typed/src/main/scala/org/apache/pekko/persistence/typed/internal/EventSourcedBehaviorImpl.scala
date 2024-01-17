@@ -102,7 +102,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     emptyState: State,
     commandHandler: EventSourcedBehavior.CommandHandler[Command, Event, State],
     eventHandler: EventSourcedBehavior.EventHandler[State, Event],
-    loggerClass: Class[_],
+    loggerClass: Class[?],
     journalPluginId: Option[String] = None,
     snapshotPluginId: Option[String] = None,
     tagger: Event => Set[String] = (_: Event) => Set.empty[String],
@@ -128,7 +128,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def apply(context: typed.TypedActorContext[Command]): Behavior[Command] = {
     val ctx = context.asScala
     val hasCustomLoggerName = ctx match {
-      case internalCtx: ActorContextImpl[_] => internalCtx.hasCustomLoggerName
+      case internalCtx: ActorContextImpl[?] => internalCtx.hasCustomLoggerName
       case _                                => false
     }
     if (!hasCustomLoggerName) ctx.setLoggerName(loggerClass)
@@ -245,7 +245,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   }
 
   @InternalStableApi
-  private[pekko] def initialize(@unused context: ActorContext[_]): Unit = ()
+  private[pekko] def initialize(@unused context: ActorContext[?]): Unit = ()
 
   override def receiveSignal(
       handler: PartialFunction[(State, Signal), Unit]): EventSourcedBehavior[Command, Event, State] =
@@ -275,7 +275,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   override def withTagger(tagger: Event => Set[String]): EventSourcedBehavior[Command, Event, State] =
     copy(tagger = tagger)
 
-  override def eventAdapter(adapter: EventAdapter[Event, _]): EventSourcedBehavior[Command, Event, State] =
+  override def eventAdapter(adapter: EventAdapter[Event, ?]): EventSourcedBehavior[Command, Event, State] =
     copy(eventAdapter = adapter.asInstanceOf[EventAdapter[Event, Any]])
 
   override def snapshotAdapter(adapter: SnapshotAdapter[State]): EventSourcedBehavior[Command, Event, State] =

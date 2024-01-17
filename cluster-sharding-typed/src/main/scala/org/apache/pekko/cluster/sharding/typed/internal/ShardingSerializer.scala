@@ -39,13 +39,13 @@ import java.nio.ByteBuffer
   private val ShardingEnvelopeManifest = "a"
 
   override def manifest(o: AnyRef): String = o match {
-    case _: ShardingEnvelope[_] => ShardingEnvelopeManifest
+    case _: ShardingEnvelope[?] => ShardingEnvelopeManifest
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   override def toBinary(o: AnyRef): Array[Byte] = o match {
-    case env: ShardingEnvelope[_] =>
+    case env: ShardingEnvelope[?] =>
       val builder = ShardingMessages.ShardingEnvelope.newBuilder()
       builder.setEntityId(env.entityId)
       builder.setMessage(payloadSupport.payloadBuilder(env.message))
@@ -68,7 +68,7 @@ import java.nio.ByteBuffer
 
   // buffer based avoiding a copy for artery
   override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = o match {
-    case env: ShardingEnvelope[_] =>
+    case env: ShardingEnvelope[?] =>
       val builder = ShardingMessages.ShardingEnvelope.newBuilder()
       builder.setEntityId(env.entityId)
       builder.setMessage(payloadSupport.payloadBuilder(env.message))

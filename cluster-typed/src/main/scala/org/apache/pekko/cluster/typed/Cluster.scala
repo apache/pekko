@@ -185,12 +185,12 @@ case object PrepareForFullClusterShutdown extends PrepareForFullClusterShutdown 
  */
 object Cluster extends ExtensionId[Cluster] {
 
-  def createExtension(system: ActorSystem[_]): Cluster = new AdapterClusterImpl(system)
+  def createExtension(system: ActorSystem[?]): Cluster = new AdapterClusterImpl(system)
 
   /**
    * Java API
    */
-  def get(system: ActorSystem[_]): Cluster = apply(system)
+  def get(system: ActorSystem[?]): Cluster = apply(system)
 }
 
 /**
@@ -223,7 +223,7 @@ abstract class Cluster extends Extension {
 }
 
 object ClusterSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => Cluster): ClusterSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => Cluster): ClusterSetup =
     new ClusterSetup(createExtension(_))
 
 }
@@ -233,5 +233,5 @@ object ClusterSetup {
  * to replace the default implementation of the [[Cluster]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ClusterSetup(createExtension: java.util.function.Function[ActorSystem[_], Cluster])
+final class ClusterSetup(createExtension: java.util.function.Function[ActorSystem[?], Cluster])
     extends ExtensionSetup[Cluster](Cluster, createExtension)

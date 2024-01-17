@@ -40,8 +40,8 @@ import org.reactivestreams.Subscriber
   private var _subscribed = false
   def subscribed: Boolean = _subscribed
 
-  override type S = ActorSubscriptionWithCursor[_ >: Any]
-  override def createSubscription(subscriber: Subscriber[_ >: Any]): S = {
+  override type S = ActorSubscriptionWithCursor[? >: Any]
+  override def createSubscription(subscriber: Subscriber[? >: Any]): S = {
     _subscribed = true
     new ActorSubscriptionWithCursor(self, subscriber)
   }

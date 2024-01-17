@@ -181,7 +181,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * Transform the event in another type before giving to the journal. Can be used to wrap events
    * in types Journals understand but is of a different type than `Event`.
    */
-  def eventAdapter(): EventAdapter[Event, _] = NoOpEventAdapter.instance[Event]
+  def eventAdapter(): EventAdapter[Event, ?] = NoOpEventAdapter.instance[Event]
 
   /**
    * Transform the state into another type before giving it to and from the journal. Can be used
@@ -240,7 +240,7 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of an `EventSourcedBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[?]): Long = {
     scaladsl.EventSourcedBehavior.lastSequenceNumber(ctx.asScala)
   }
 

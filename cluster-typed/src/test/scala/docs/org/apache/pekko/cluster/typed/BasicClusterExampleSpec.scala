@@ -67,7 +67,7 @@ pekko {
      """).withFallback(configSystem1)
 
   def illustrateJoinSeedNodes(): Unit = {
-    val system: ActorSystem[_] = ???
+    val system: ActorSystem[?] = ???
 
     // #join-seed-nodes
     import pekko.actor.Address
@@ -82,15 +82,15 @@ pekko {
   }
 
   object Backend {
-    def apply(): Behavior[_] = Behaviors.empty
+    def apply(): Behavior[?] = Behaviors.empty
   }
 
   object Frontend {
-    def apply(): Behavior[_] = Behaviors.empty
+    def apply(): Behavior[?] = Behaviors.empty
   }
 
   def illustrateRoles(): Unit = {
-    val context: ActorContext[_] = ???
+    val context: ActorContext[?] = ???
 
     // #hasRole
     val selfMember = Cluster(context.system).selfMember
@@ -104,7 +104,7 @@ pekko {
 
   @nowarn("msg=never used")
   def illustrateDcAccess(): Unit = {
-    val system: ActorSystem[_] = ???
+    val system: ActorSystem[?] = ???
 
     // #dcAccess
     val cluster = Cluster(system)

@@ -30,11 +30,11 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
 
   backing match {
     case null => throw new IllegalArgumentException("Backing Queue may not be null")
-    case b: BlockingQueue[_] =>
+    case b: BlockingQueue[?] =>
       require(maxCapacity > 0)
       require(b.size() == 0)
       require(b.remainingCapacity >= maxCapacity)
-    case b: Queue[_] =>
+    case b: Queue[?] =>
       require(b.size() == 0)
       require(maxCapacity > 0)
   }
@@ -186,9 +186,9 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
     finally lock.unlock()
   }
 
-  def drainTo(c: Collection[_ >: E]): Int = drainTo(c, Int.MaxValue)
+  def drainTo(c: Collection[? >: E]): Int = drainTo(c, Int.MaxValue)
 
-  def drainTo(c: Collection[_ >: E], maxElements: Int): Int = {
+  def drainTo(c: Collection[? >: E], maxElements: Int): Int = {
     if (c eq null) throw new NullPointerException
     if (c eq this) throw new IllegalArgumentException
     if (c eq backing) throw new IllegalArgumentException
@@ -211,13 +211,13 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
     }
   }
 
-  override def containsAll(c: Collection[_]): Boolean = {
+  override def containsAll(c: Collection[?]): Boolean = {
     lock.lock()
     try backing.containsAll(c)
     finally lock.unlock()
   }
 
-  override def removeAll(c: Collection[_]): Boolean = {
+  override def removeAll(c: Collection[?]): Boolean = {
     lock.lock()
     try {
       if (backing.removeAll(c)) {
@@ -229,7 +229,7 @@ class BoundedBlockingQueue[E <: AnyRef](val maxCapacity: Int, private val backin
     } finally lock.unlock()
   }
 
-  override def retainAll(c: Collection[_]): Boolean = {
+  override def retainAll(c: Collection[?]): Boolean = {
     lock.lock()
     try {
       if (backing.retainAll(c)) {

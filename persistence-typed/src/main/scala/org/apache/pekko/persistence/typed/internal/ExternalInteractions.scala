@@ -52,7 +52,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
   def setup: BehaviorSetup[C, E, S]
 
   protected def internalPersist(
-      ctx: ActorContext[_],
+      ctx: ActorContext[?],
       cmd: Any,
       state: Running.RunningState[S],
       event: EventOrTaggedOrReplicated,
@@ -86,12 +86,12 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWriteInitiated(
-      @unused ctx: ActorContext[_],
+      @unused ctx: ActorContext[?],
       @unused cmd: Any,
       @unused repr: PersistentRepr): Unit = ()
 
   protected def internalPersistAll(
-      ctx: ActorContext[_],
+      ctx: ActorContext[?],
       cmd: Any,
       state: Running.RunningState[S],
       events: immutable.Seq[EventToPersist]): Running.RunningState[S] = {
@@ -127,7 +127,7 @@ private[pekko] trait JournalInteractions[C, E, S] {
 
   @InternalStableApi
   private[pekko] def onWritesInitiated(
-      @unused ctx: ActorContext[_],
+      @unused ctx: ActorContext[?],
       @unused cmd: Any,
       @unused repr: immutable.Seq[PersistentRepr]): Unit = ()
 

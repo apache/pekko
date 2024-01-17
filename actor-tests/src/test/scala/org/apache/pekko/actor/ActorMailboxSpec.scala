@@ -241,7 +241,7 @@ class ActorMailboxSpec(conf: Config) extends PekkoSpec(conf) with DefaultTimeout
 
   def this() = this(ActorMailboxSpec.mailboxConf)
 
-  def checkMailboxQueue(props: Props, name: String, types: Seq[Class[_]]): MessageQueue = {
+  def checkMailboxQueue(props: Props, name: String, types: Seq[Class[?]]): MessageQueue = {
     val actor = system.actorOf(props, name)
 
     actor ! "ping"

@@ -81,7 +81,7 @@ final class BehaviorBuilder[T] private (messageHandlers: List[Case[T, T]], signa
    * @param handler action to apply when the type matches
    * @return a new behavior builder with the specified handling appended
    */
-  def onMessageUnchecked[M <: T](`type`: Class[_ <: T], handler: JFunction[M, Behavior[T]]): BehaviorBuilder[T] =
+  def onMessageUnchecked[M <: T](`type`: Class[? <: T], handler: JFunction[M, Behavior[T]]): BehaviorBuilder[T] =
     withMessage[M](OptionVal.Some(`type`.asInstanceOf[Class[M]]), OptionVal.None, handler)
 
   /**
@@ -173,7 +173,7 @@ object BehaviorBuilder {
   /** INTERNAL API */
   @InternalApi
   private[javadsl] final case class Case[BT, MT](
-      `type`: OptionVal[Class[_ <: MT]],
+      `type`: OptionVal[Class[? <: MT]],
       test: OptionVal[MT => Boolean],
       handler: JFunction[MT, Behavior[BT]])
 

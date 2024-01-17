@@ -89,7 +89,7 @@ private[pekko] trait Dispatch { this: ActorCell =>
     // it properly in the normal way
     val actorClass = props.actorClass()
     val createMessage = mailboxType match {
-      case _: ProducesMessageQueue[_] if system.mailboxes.hasRequiredType(actorClass) =>
+      case _: ProducesMessageQueue[?] if system.mailboxes.hasRequiredType(actorClass) =>
         val req = system.mailboxes.getRequiredType(actorClass)
         if (req.isInstance(mbox.messageQueue)) Create(None)
         else {

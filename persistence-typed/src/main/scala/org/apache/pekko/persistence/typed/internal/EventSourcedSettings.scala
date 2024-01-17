@@ -29,7 +29,7 @@ import pekko.persistence.Persistence
  */
 @InternalApi private[pekko] object EventSourcedSettings {
 
-  def apply(system: ActorSystem[_], journalPluginId: String, snapshotPluginId: String): EventSourcedSettings =
+  def apply(system: ActorSystem[?], journalPluginId: String, snapshotPluginId: String): EventSourcedSettings =
     apply(system.settings.config, journalPluginId, snapshotPluginId)
 
   def apply(config: Config, journalPluginId: String, snapshotPluginId: String): EventSourcedSettings = {

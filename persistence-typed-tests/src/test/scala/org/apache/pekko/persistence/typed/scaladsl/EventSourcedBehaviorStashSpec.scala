@@ -79,18 +79,18 @@ object EventSourcedBehaviorStashSpec {
 
   final case class State(value: Int, active: Boolean)
 
-  def counter(persistenceId: PersistenceId, signalProbe: Option[ActorRef[String]] = None): Behavior[Command[_]] =
+  def counter(persistenceId: PersistenceId, signalProbe: Option[ActorRef[String]] = None): Behavior[Command[?]] =
     Behaviors
-      .supervise[Command[_]] {
+      .supervise[Command[?]] {
         Behaviors.setup(_ => eventSourcedCounter(persistenceId, signalProbe))
       }
       .onFailure(SupervisorStrategy.restart.withLoggingEnabled(enabled = false))
 
   def eventSourcedCounter(
       persistenceId: PersistenceId,
-      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[_], Event, State] = {
+      signalProbe: Option[ActorRef[String]]): EventSourcedBehavior[Command[?], Event, State] = {
     EventSourcedBehavior
-      .withEnforcedReplies[Command[_], Event, State](
+      .withEnforcedReplies[Command[?], Event, State](
         persistenceId,
         emptyState = State(0, active = true),
         commandHandler = (state, command) => {
@@ -120,7 +120,7 @@ object EventSourcedBehaviorStashSpec {
       }
   }
 
-  private def active(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def active(state: State, command: Command[?]): ReplyEffect[Event, State] = {
     command match {
       case Increment(id, replyTo) =>
         Effect.persist(Incremented(1)).thenReply(replyTo)(_ => Ack(id))
@@ -146,7 +146,7 @@ object EventSourcedBehaviorStashSpec {
     }
   }
 
-  private def inactive(state: State, command: Command[_]): ReplyEffect[Event, State] = {
+  private def inactive(state: State, command: Command[?]): ReplyEffect[Event, State] = {
     command match {
       case _: Increment =>
         Effect.stash()

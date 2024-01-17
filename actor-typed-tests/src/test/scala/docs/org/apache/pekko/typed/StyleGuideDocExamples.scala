@@ -311,7 +311,7 @@ object StyleGuideDocExamples {
     // #behavior-factory-method
 
     object Usage {
-      val context: ActorContext[_] = ???
+      val context: ActorContext[?] = ???
       val doneRef: ActorRef[Done] = ???
 
       // #behavior-factory-method-spawn

@@ -47,7 +47,7 @@ object GroupRouterSpec {
   """)
 
   object PingActor {
-    case class Pong(workerActor: ActorRef[_]) extends CborSerializable
+    case class Pong(workerActor: ActorRef[?]) extends CborSerializable
     case class Ping(replyTo: ActorRef[Pong]) extends CborSerializable
 
     def apply(): Behavior[Ping] = Behaviors.receive {
@@ -59,8 +59,8 @@ object GroupRouterSpec {
 
   object Pinger {
     sealed trait Command
-    private case class SawPong(worker: ActorRef[_]) extends Command
-    case class DonePinging(pongs: Int, uniqueWorkers: Set[ActorRef[_]])
+    private case class SawPong(worker: ActorRef[?]) extends Command
+    case class DonePinging(pongs: Int, uniqueWorkers: Set[ActorRef[?]])
     def apply(
         router: ActorRef[PingActor.Ping],
         requestedPings: Int,
@@ -71,7 +71,7 @@ object GroupRouterSpec {
         }
         (0 to requestedPings).foreach(_ => router ! PingActor.Ping(pongAdapter))
         var pongs = 0
-        var uniqueWorkers = Set.empty[ActorRef[_]]
+        var uniqueWorkers = Set.empty[ActorRef[?]]
 
         Behaviors.receiveMessage {
           case SawPong(worker) =>

@@ -243,14 +243,14 @@ trait ExecutorServiceDelegate extends ExecutorService {
 
   def submit(runnable: Runnable) = executor.submit(runnable)
 
-  def invokeAll[T](callables: Collection[_ <: Callable[T]]) = executor.invokeAll(callables)
+  def invokeAll[T](callables: Collection[? <: Callable[T]]) = executor.invokeAll(callables)
 
-  def invokeAll[T](callables: Collection[_ <: Callable[T]], l: Long, timeUnit: TimeUnit) =
+  def invokeAll[T](callables: Collection[? <: Callable[T]], l: Long, timeUnit: TimeUnit) =
     executor.invokeAll(callables, l, timeUnit)
 
-  def invokeAny[T](callables: Collection[_ <: Callable[T]]) = executor.invokeAny(callables)
+  def invokeAny[T](callables: Collection[? <: Callable[T]]) = executor.invokeAny(callables)
 
-  def invokeAny[T](callables: Collection[_ <: Callable[T]], l: Long, timeUnit: TimeUnit) =
+  def invokeAny[T](callables: Collection[? <: Callable[T]], l: Long, timeUnit: TimeUnit) =
     executor.invokeAny(callables, l, timeUnit)
 }
 

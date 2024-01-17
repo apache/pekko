@@ -40,13 +40,13 @@ import pekko.annotation.DoNotInherit
    * val obj = DynamicAccess.createInstanceFor(clazz, Seq(classOf[Config] -> config, classOf[String] -> name))
    * }}}
    */
-  def createInstanceFor[T: ClassTag](clazz: Class[_], args: immutable.Seq[(Class[_], AnyRef)]): Try[T]
+  def createInstanceFor[T: ClassTag](clazz: Class[?], args: immutable.Seq[(Class[?], AnyRef)]): Try[T]
 
   /**
    * Obtain a `Class[_]` object loaded with the right class loader (i.e. the one
    * returned by `classLoader`).
    */
-  def getClassFor[T: ClassTag](fqcn: String): Try[Class[_ <: T]]
+  def getClassFor[T: ClassTag](fqcn: String): Try[Class[? <: T]]
 
   def classIsOnClasspath(fqcn: String): Boolean
 
@@ -57,7 +57,7 @@ import pekko.annotation.DoNotInherit
    * `args` argument. The exact usage of args depends on which type is requested,
    * see the relevant requesting code for details.
    */
-  def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[_], AnyRef)]): Try[T]
+  def createInstanceFor[T: ClassTag](fqcn: String, args: immutable.Seq[(Class[?], AnyRef)]): Try[T]
 
   /**
    * Obtain the Scala “object” instance for the given fully-qualified class name, if there is one.

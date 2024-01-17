@@ -45,7 +45,7 @@ trait IndirectActorProducer {
    * that the instance created for calling `actorClass` is not necessarily reused
    * later to produce the actor.
    */
-  def actorClass: Class[_ <: Actor]
+  def actorClass: Class[? <: Actor]
 }
 
 private[pekko] object IndirectActorProducer {
@@ -53,7 +53,7 @@ private[pekko] object IndirectActorProducer {
   val CreatorConsumerClass = classOf[CreatorConsumer]
   val TypedCreatorFunctionConsumerClass = classOf[TypedCreatorFunctionConsumer]
   @nowarn
-  def apply(clazz: Class[_], args: immutable.Seq[Any]): IndirectActorProducer = {
+  def apply(clazz: Class[?], args: immutable.Seq[Any]): IndirectActorProducer = {
     if (classOf[IndirectActorProducer].isAssignableFrom(clazz)) {
       def get1stArg[T]: T = args.head.asInstanceOf[T]
       def get2ndArg[T]: T = args.tail.head.asInstanceOf[T]
@@ -70,8 +70,8 @@ private[pekko] object IndirectActorProducer {
           Reflect.instantiate(clazz, args).asInstanceOf[IndirectActorProducer]
       }
     } else if (classOf[Actor].isAssignableFrom(clazz)) {
-      if (args.isEmpty) new NoArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]])
-      else new ArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]], args)
+      if (args.isEmpty) new NoArgsReflectConstructor(clazz.asInstanceOf[Class[? <: Actor]])
+      else new ArgsReflectConstructor(clazz.asInstanceOf[Class[? <: Actor]], args)
     } else throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
   }
 }
@@ -87,7 +87,7 @@ private[pekko] class CreatorFunctionConsumer(creator: () => Actor) extends Indir
 /**
  * INTERNAL API
  */
-private[pekko] class CreatorConsumer(clazz: Class[_ <: Actor], creator: Creator[Actor]) extends IndirectActorProducer {
+private[pekko] class CreatorConsumer(clazz: Class[? <: Actor], creator: Creator[Actor]) extends IndirectActorProducer {
   override def actorClass = clazz
   override def produce() = creator.create()
 }
@@ -95,7 +95,7 @@ private[pekko] class CreatorConsumer(clazz: Class[_ <: Actor], creator: Creator[
 /**
  * INTERNAL API
  */
-private[pekko] class TypedCreatorFunctionConsumer(clz: Class[_ <: Actor], creator: () => Actor)
+private[pekko] class TypedCreatorFunctionConsumer(clz: Class[? <: Actor], creator: () => Actor)
     extends IndirectActorProducer {
   override def actorClass = clz
   override def produce() = creator()
@@ -104,7 +104,7 @@ private[pekko] class TypedCreatorFunctionConsumer(clz: Class[_ <: Actor], creato
 /**
  * INTERNAL API
  */
-private[pekko] class ArgsReflectConstructor(clz: Class[_ <: Actor], args: immutable.Seq[Any])
+private[pekko] class ArgsReflectConstructor(clz: Class[? <: Actor], args: immutable.Seq[Any])
     extends IndirectActorProducer {
   private[this] val constructor = Reflect.findConstructor(clz, args)
   override def actorClass = clz
@@ -114,7 +114,7 @@ private[pekko] class ArgsReflectConstructor(clz: Class[_ <: Actor], args: immuta
 /**
  * INTERNAL API
  */
-private[pekko] class NoArgsReflectConstructor(clz: Class[_ <: Actor]) extends IndirectActorProducer {
+private[pekko] class NoArgsReflectConstructor(clz: Class[? <: Actor]) extends IndirectActorProducer {
   Reflect.findConstructor(clz, List.empty)
   override def actorClass = clz
   override def produce() = Reflect.instantiate(clz)

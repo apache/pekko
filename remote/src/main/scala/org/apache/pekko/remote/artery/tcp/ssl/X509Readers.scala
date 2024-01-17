@@ -34,7 +34,7 @@ private[pekko] object X509Readers {
           attr.getValue.toString
       }
 
-    val iterable: Iterable[util.List[_]] = Option(cert.getSubjectAlternativeNames).map(_.asScala).getOrElse(Nil)
+    val iterable: Iterable[util.List[?]] = Option(cert.getSubjectAlternativeNames).map(_.asScala).getOrElse(Nil)
     val alternates = iterable.collect {
       // See the javadocs of cert.getSubjectAlternativeNames for what this list contains,
       // first element should be an integer, if that integer is 2, then the second element

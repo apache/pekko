@@ -59,8 +59,8 @@ private[pekko] object ActorRefAdapter {
 
   def toClassic[U](ref: ActorRef[U]): pekko.actor.InternalActorRef =
     ref match {
-      case adapter: ActorRefAdapter[_]    => adapter.classicRef
-      case adapter: ActorSystemAdapter[_] => adapter.system.guardian
+      case adapter: ActorRefAdapter[?]    => adapter.classicRef
+      case adapter: ActorSystemAdapter[?] => adapter.system.guardian
       case _ =>
         throw new UnsupportedOperationException(
           "Only adapted classic ActorRefs permissible " +

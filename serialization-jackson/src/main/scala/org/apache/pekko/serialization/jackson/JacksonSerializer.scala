@@ -61,14 +61,14 @@ import pekko.util.OptionVal
         true
     }
 
-    def isAllowedClass(clazz: Class[_]): Boolean = {
+    def isAllowedClass(clazz: Class[?]): Boolean = {
       if (clazz.getName.startsWith(prefixSpring)) {
         isAllowedSpringClass(clazz)
       } else
         true
     }
 
-    @tailrec private def isAllowedSpringClass(clazz: Class[_]): Boolean = {
+    @tailrec private def isAllowedSpringClass(clazz: Class[?]): Boolean = {
       if (clazz == null || clazz.equals(classOf[java.lang.Object]))
         true
       else {
@@ -84,8 +84,8 @@ import pekko.util.OptionVal
     }
   }
 
-  val disallowedSerializationBindings: Set[Class[_]] =
-    Set(classOf[java.io.Serializable], classOf[java.io.Serializable], classOf[java.lang.Comparable[_]])
+  val disallowedSerializationBindings: Set[Class[?]] =
+    Set(classOf[java.io.Serializable], classOf[java.io.Serializable], classOf[java.lang.Comparable[?]])
 
   def isGZipped(bytes: Array[Byte]): Boolean = {
     (bytes != null) && (bytes.length >= 2) &&
@@ -221,7 +221,7 @@ import pekko.util.OptionVal
   }
   private val typeInManifest: Boolean = conf.getBoolean("type-in-manifest")
   // Calculated eagerly so as to fail fast
-  private val configuredDeserializationType: Option[Class[_ <: AnyRef]] = conf.getString("deserialization-type") match {
+  private val configuredDeserializationType: Option[Class[? <: AnyRef]] = conf.getString("deserialization-type") match {
     case "" => None
     case className =>
       system.dynamicAccess.getClassFor[AnyRef](className) match {
@@ -236,7 +236,7 @@ import pekko.util.OptionVal
   private lazy val serialization = SerializationExtension(system)
 
   // This must be lazy since it depends on serialization above
-  private lazy val deserializationType: Option[Class[_ <: AnyRef]] = if (typeInManifest) {
+  private lazy val deserializationType: Option[Class[? <: AnyRef]] = if (typeInManifest) {
     None
   } else {
     configuredDeserializationType.orElse {
@@ -395,7 +395,7 @@ import pekko.util.OptionVal
       bytes: Array[Byte],
       decompressBytes: Array[Byte],
       startTime: Long,
-      clazz: Class[_ <: AnyRef]) = {
+      clazz: Class[? <: AnyRef]) = {
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == decompressBytes.length)
@@ -426,7 +426,7 @@ import pekko.util.OptionVal
     }
   }
 
-  private def checkAllowedClass(clazz: Class[_]): Unit = {
+  private def checkAllowedClass(clazz: Class[?]): Unit = {
     if (!denyList.isAllowedClass(clazz)) {
       val warnMsg = s"Can't serialize/deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         s"Not allowed for security reasons."
@@ -457,11 +457,11 @@ import pekko.util.OptionVal
    * That is also possible when changing a binding from a JacksonSerializer to another serializer (e.g. protobuf)
    * and still bind with the same class (interface).
    */
-  private def isInAllowList(clazz: Class[_]): Boolean = {
+  private def isInAllowList(clazz: Class[?]): Boolean = {
     isBoundToJacksonSerializer(clazz) || hasAllowedClassPrefix(clazz.getName)
   }
 
-  private def isBoundToJacksonSerializer(clazz: Class[_]): Boolean = {
+  private def isBoundToJacksonSerializer(clazz: Class[?]): Boolean = {
     try {
       // The reason for using isInstanceOf rather than `eq this` is to allow change of
       // serializer within the Jackson family, but we don't trust other serializers
@@ -485,7 +485,7 @@ import pekko.util.OptionVal
    */
   private def checkAllowedSerializationBindings(): Unit = {
     if (!serializationBindingsCheckedOk) {
-      def isBindingOk(clazz: Class[_]): Boolean =
+      def isBindingOk(clazz: Class[?]): Boolean =
         try {
           serialization.serializerFor(clazz) ne this
         } catch {

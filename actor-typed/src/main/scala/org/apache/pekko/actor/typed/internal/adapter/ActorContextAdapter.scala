@@ -25,19 +25,19 @@ import pekko.annotation.InternalApi
 @InternalApi
 private[pekko] object ActorContextAdapter {
 
-  private def toClassicImp[U](context: TypedActorContext[_]): classic.ActorContext =
+  private def toClassicImp[U](context: TypedActorContext[?]): classic.ActorContext =
     context match {
-      case adapter: ActorContextAdapter[_] => adapter.classicContext
+      case adapter: ActorContextAdapter[?] => adapter.classicContext
       case _ =>
         throw new UnsupportedOperationException(
           "Only adapted classic ActorContext permissible " +
           s"($context of class ${context.getClass.getName})")
     }
 
-  def toClassic[U](context: scaladsl.ActorContext[_]): classic.ActorContext =
+  def toClassic[U](context: scaladsl.ActorContext[?]): classic.ActorContext =
     toClassicImp(context)
 
-  def toClassic[U](context: javadsl.ActorContext[_]): classic.ActorContext =
+  def toClassic[U](context: javadsl.ActorContext[?]): classic.ActorContext =
     toClassicImp(context)
 }
 

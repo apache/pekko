@@ -2675,10 +2675,10 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       // Try again with the full state
       sender() ! writeMsg
 
-    case _: Replicator.UpdateSuccess[_] =>
+    case _: Replicator.UpdateSuccess[?] =>
       gotLocalStoreReply = true
       if (isDone) reply(isTimeout = false)
-    case _: Replicator.StoreFailure[_] =>
+    case _: Replicator.StoreFailure[?] =>
       gotLocalStoreReply = true
       gotWriteNackFrom += selfUniqueAddress.address
       if (isDone) reply(isTimeout = false)

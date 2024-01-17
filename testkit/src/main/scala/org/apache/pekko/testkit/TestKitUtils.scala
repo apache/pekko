@@ -25,7 +25,7 @@ import org.apache.pekko.annotation.InternalApi
 @InternalApi
 private[pekko] object TestKitUtils {
 
-  def testNameFromCallStack(classToStartFrom: Class[_], testKitRegex: Regex): String = {
+  def testNameFromCallStack(classToStartFrom: Class[?], testKitRegex: Regex): String = {
 
     def isAbstractClass(className: String): Boolean = {
       try {

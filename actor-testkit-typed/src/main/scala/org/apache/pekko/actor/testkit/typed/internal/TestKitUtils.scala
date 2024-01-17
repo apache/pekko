@@ -79,7 +79,7 @@ private[pekko] object TestKitUtils {
   // common internal utility impls for Java and Scala
   private val TestKitRegex = """org\.apache\.pekko\.testkit\.typed\.(?:javadsl|scaladsl)\.ActorTestKit(?:\$.*)?""".r
 
-  def testNameFromCallStack(classToStartFrom: Class[_]): String =
+  def testNameFromCallStack(classToStartFrom: Class[?]): String =
     pekko.testkit.TestKitUtils.testNameFromCallStack(classToStartFrom, TestKitRegex)
 
   /**
@@ -90,7 +90,7 @@ private[pekko] object TestKitUtils {
   def scrubActorSystemName(name: String): String =
     pekko.testkit.TestKitUtils.scrubActorSystemName(name)
 
-  def shutdown(system: ActorSystem[_], timeout: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
+  def shutdown(system: ActorSystem[?], timeout: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
     system.terminate()
     try Await.ready(system.whenTerminated, timeout)
     catch {

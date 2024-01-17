@@ -114,7 +114,7 @@ class DurableShardingSpec
       (1 to 4).foreach { n =>
         producerProbe.receiveMessage().sendNextTo ! ShardingEnvelope("entity-1", TestConsumer.Job(s"msg-$n"))
         journalOperations.expectMessageType[InmemJournal.Write].event.getClass should ===(
-          classOf[DurableProducerQueue.MessageSent[_]])
+          classOf[DurableProducerQueue.MessageSent[?]])
       }
 
       journalOperations.expectNoMessage()
@@ -183,7 +183,7 @@ class DurableShardingSpec
       val next5 = producerProbe.receiveMessage()
       next5.sendNextTo ! ShardingEnvelope("entity-1", TestConsumer.Job(s"msg-5"))
       journalOperations.expectMessageType[InmemJournal.Write].event.getClass should ===(
-        classOf[DurableProducerQueue.MessageSent[_]])
+        classOf[DurableProducerQueue.MessageSent[?]])
 
       // issue #30489: the consumer controller may have stopped after msg-5, so allow for resend on timeout (10-15s)
       val delivery5 = consumerProbe.receiveMessage(20.seconds)
@@ -225,7 +225,7 @@ class DurableShardingSpec
         TestConsumer.Job(s"msg-1"),
         replyProbe.ref)
       journalOperations.expectMessageType[InmemJournal.Write].event.getClass should ===(
-        classOf[DurableProducerQueue.MessageSent[_]])
+        classOf[DurableProducerQueue.MessageSent[?]])
       replyProbe.expectMessage(Done)
 
       producerProbe.receiveMessage().askNextTo ! MessageWithConfirmation(
@@ -233,7 +233,7 @@ class DurableShardingSpec
         TestConsumer.Job(s"msg-2"),
         replyProbe.ref)
       journalOperations.expectMessageType[InmemJournal.Write].event.getClass should ===(
-        classOf[DurableProducerQueue.MessageSent[_]])
+        classOf[DurableProducerQueue.MessageSent[?]])
       replyProbe.expectMessage(Done)
 
       testKit.stop(shardingProducerController)

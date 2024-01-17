@@ -108,7 +108,7 @@ import pekko.annotation.DoNotInherit
    *
    * Care is taken to remove the testkit when the block is finished or aborted.
    */
-  def expect[T](code: => T)(implicit system: ActorSystem[_]): T
+  def expect[T](code: => T)(implicit system: ActorSystem[?]): T
 
   /**
    * Run the given code block and assert that the criteria of this `LoggingTestKit` has
@@ -118,7 +118,7 @@ import pekko.annotation.DoNotInherit
    * Care is taken to remove the testkit when the block is finished or aborted.
    */
   @deprecated("Use expect instead.", "Akka 2.6.0")
-  def intercept[T](code: => T)(implicit system: ActorSystem[_]): T
+  def intercept[T](code: => T)(implicit system: ActorSystem[?]): T
 
 }
 

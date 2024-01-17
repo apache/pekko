@@ -27,7 +27,7 @@ abstract class TwoStreamsSetup extends BaseTwoStreamsSetup {
     def out: Outlet[Outputs]
   }
 
-  def fixture(b: GraphDSL.Builder[_]): Fixture
+  def fixture(b: GraphDSL.Builder[?]): Fixture
 
   override def setup(p1: Publisher[Int], p2: Publisher[Int]) = {
     val subscriber = TestSubscriber.probe[Outputs]()

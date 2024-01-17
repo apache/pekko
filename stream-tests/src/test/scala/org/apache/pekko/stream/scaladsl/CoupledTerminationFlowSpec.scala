@@ -112,7 +112,7 @@ class CoupledTerminationFlowSpec extends StreamSpec("""
       val probe = TestProbe()
       val f = Flow.fromSinkAndSourceCoupledMat(Sink.cancelled,
         Source.fromPublisher(new Publisher[String] {
-          override def subscribe(subscriber: Subscriber[_ >: String]): Unit = {
+          override def subscribe(subscriber: Subscriber[? >: String]): Unit = {
             subscriber.onSubscribe(new Subscription {
               override def cancel(): Unit = probe.ref ! "cancelled"
 
@@ -159,7 +159,7 @@ class CoupledTerminationFlowSpec extends StreamSpec("""
 
     val downstreamEffect = Sink.onComplete(s => probe.ref ! s)
     val upstreamEffect = Source.fromPublisher(new Publisher[String] {
-      override def subscribe(s: Subscriber[_ >: String]): Unit =
+      override def subscribe(s: Subscriber[? >: String]): Unit =
         s.onSubscribe(new Subscription {
           override def cancel(): Unit = probe.ref ! "cancel-received"
 

@@ -93,11 +93,11 @@ class ReplicatorGossipSpec extends MultiNodeSpec(ReplicatorGossipSpec) with STMu
       runOn(first) {
         (0 until numberOfSmall).foreach { i =>
           replicator ! Update(smallORSetKeys(i), ORSet.empty[String], WriteLocal)(_ :+ smallPayload())
-          expectMsgType[UpdateSuccess[_]]
+          expectMsgType[UpdateSuccess[?]]
         }
         (0 until numberOfLarge).foreach { i =>
           replicator ! Update(largeORSetKeys(i), ORSet.empty[String], WriteLocal)(_ :+ largePayload())
-          expectMsgType[UpdateSuccess[_]]
+          expectMsgType[UpdateSuccess[?]]
         }
       }
       enterBarrier("updated-first")

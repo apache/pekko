@@ -255,7 +255,7 @@ object Util {
    * Returns an immutable.Seq representing the provided array of Classes,
    * an overloading of the generic immutableSeq in Util, to accommodate for erasure.
    */
-  def immutableSeq(arr: Array[Class[_]]): immutable.Seq[Class[_]] = immutableSeq[Class[_]](arr)
+  def immutableSeq(arr: Array[Class[?]]): immutable.Seq[Class[?]] = immutableSeq[Class[?]](arr)
 
   /**
    * Turns an array into an immutable Scala sequence (by copying it).
@@ -268,7 +268,7 @@ object Util {
    */
   def immutableSeq[T](iterable: java.lang.Iterable[T]): immutable.Seq[T] =
     iterable match {
-      case imm: immutable.Seq[_] => imm.asInstanceOf[immutable.Seq[T]]
+      case imm: immutable.Seq[?] => imm.asInstanceOf[immutable.Seq[T]]
       case other =>
         val i = other.iterator()
         if (i.hasNext) {

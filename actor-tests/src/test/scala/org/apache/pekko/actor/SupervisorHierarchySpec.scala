@@ -928,8 +928,8 @@ class SupervisorHierarchySpec extends PekkoSpec(SupervisorHierarchySpec.config) 
 
       fsm ! FSM.SubscribeTransitionCallBack(system.actorOf(Props(new Actor {
         def receive = {
-          case s: FSM.CurrentState[_] => log.info("{}", s)
-          case t: FSM.Transition[_]   => log.info("{}", t)
+          case s: FSM.CurrentState[?] => log.info("{}", s)
+          case t: FSM.Transition[?]   => log.info("{}", t)
         }
       })))
 

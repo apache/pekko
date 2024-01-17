@@ -44,7 +44,7 @@ object DurableStateBehavior {
    */
   type CommandHandler[Command, State] = (State, Command) => Effect[State]
 
-  private val logPrefixSkipList = classOf[DurableStateBehavior[_, _]].getName :: Nil
+  private val logPrefixSkipList = classOf[DurableStateBehavior[?, ?]].getName :: Nil
 
   /**
    * Create a `Behavior` for a persistent actor with durable storage of its state.
@@ -57,7 +57,7 @@ object DurableStateBehavior {
       persistenceId: PersistenceId,
       emptyState: State,
       commandHandler: (State, Command) => Effect[State]): DurableStateBehavior[Command, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[?, ?]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }
 
@@ -70,7 +70,7 @@ object DurableStateBehavior {
       persistenceId: PersistenceId,
       emptyState: State,
       commandHandler: (State, Command) => ReplyEffect[State]): DurableStateBehavior[Command, State] = {
-    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[_, _]], logPrefixSkipList)
+    val loggerClass = LoggerClass.detectLoggerClassFromStack(classOf[DurableStateBehavior[?, ?]], logPrefixSkipList)
     DurableStateBehaviorImpl(persistenceId, emptyState, commandHandler, loggerClass)
   }
 
@@ -100,11 +100,11 @@ object DurableStateBehavior {
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of a `DurableStateBehavior`
    */
-  def lastSequenceNumber(context: ActorContext[_]): Long = {
+  def lastSequenceNumber(context: ActorContext[?]): Long = {
     @tailrec
-    def extractConcreteBehavior(beh: Behavior[_]): Behavior[_] =
+    def extractConcreteBehavior(beh: Behavior[?]): Behavior[?] =
       beh match {
-        case interceptor: InterceptorImpl[_, _] => extractConcreteBehavior(interceptor.nestedBehavior)
+        case interceptor: InterceptorImpl[?, ?] => extractConcreteBehavior(interceptor.nestedBehavior)
         case concrete                           => concrete
       }
 

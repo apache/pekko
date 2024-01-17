@@ -128,7 +128,7 @@ private[stream] final class SourceRefStageImpl[Out](val initialPartnerRef: Optio
       eagerMaterializer: Materializer): (GraphStageLogic, SinkRef[Out]) = {
 
     val logic = new TimerGraphStageLogic(shape) with StageLogging with ActorRefStage with OutHandler {
-      override protected def logSource: Class[_] = classOf[SourceRefStageImpl[_]]
+      override protected def logSource: Class[?] = classOf[SourceRefStageImpl[?]]
 
       private[this] val streamRefsMaster = StreamRefsMaster(eagerMaterializer.system)
 

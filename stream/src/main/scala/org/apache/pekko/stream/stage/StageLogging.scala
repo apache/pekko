@@ -33,7 +33,7 @@ trait StageLogging { self: GraphStageLogic =>
   private[this] var _log: LoggingAdapter = _
 
   /** Override to customise reported log source */
-  protected def logSource: Class[_] = this.getClass
+  protected def logSource: Class[?] = this.getClass
 
   def log: LoggingAdapter = {
     // only used in StageLogic, i.e. thread safe

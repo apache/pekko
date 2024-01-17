@@ -244,7 +244,7 @@ private[pekko] object Running {
 
     _currentSequenceNumber = state.seqNr
 
-    private def alreadySeen(e: ReplicatedEvent[_]): Boolean = {
+    private def alreadySeen(e: ReplicatedEvent[?]): Boolean = {
       e.originSequenceNr <= state.seenPerReplica.getOrElse(e.originReplica, 0L)
     }
 
@@ -577,7 +577,7 @@ private[pekko] object Running {
         state: RunningState[S],
         effect: Effect[E, S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
-      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_, _]])
+      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?, ?]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
@@ -915,7 +915,7 @@ private[pekko] object Running {
         unstashAll()
         behavior
 
-      case callback: Callback[_] =>
+      case callback: Callback[?] =>
         callback.sideEffect(state.state)
         behavior
     }
@@ -982,16 +982,16 @@ private[pekko] object Running {
 
   @InternalStableApi
   private[pekko] def onWriteFailed(
-      @unused ctx: ActorContext[_],
+      @unused ctx: ActorContext[?],
       @unused reason: Throwable,
       @unused event: PersistentRepr): Unit = ()
   @InternalStableApi
   private[pekko] def onWriteRejected(
-      @unused ctx: ActorContext[_],
+      @unused ctx: ActorContext[?],
       @unused reason: Throwable,
       @unused event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[_], @unused event: PersistentRepr): Unit = ()
+  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[?], @unused event: PersistentRepr): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteDone(@unused ctx: ActorContext[_], @unused event: PersistentRepr): Unit = ()
+  private[pekko] def onWriteDone(@unused ctx: ActorContext[?], @unused event: PersistentRepr): Unit = ()
 }

@@ -41,7 +41,7 @@ object ManualTime {
    * Access the manual scheduler, note that you need to setup the actor system/testkit with [[ManualTime.config]]
    * for this to work.
    */
-  def apply()(implicit system: ActorSystem[_]): ManualTime =
+  def apply()(implicit system: ActorSystem[?]): ManualTime =
     system.scheduler match {
       case adapter: SchedulerAdapter =>
         adapter.classicScheduler match {
@@ -73,7 +73,7 @@ final class ManualTime(delegate: pekko.testkit.ExplicitlyTriggeredScheduler) {
   def timePasses(amount: FiniteDuration): Unit = delegate.timePasses(amount)
 
   @varargs
-  def expectNoMessageFor(duration: FiniteDuration, on: TestProbe[_]*): Unit = {
+  def expectNoMessageFor(duration: FiniteDuration, on: TestProbe[?]*): Unit = {
     delegate.timePasses(duration)
     on.foreach(_.expectNoMessage(Duration.Zero))
   }

@@ -607,7 +607,7 @@ class TestKit(system: ActorSystem) {
    * Same as `expectMsgAnyClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
   @varargs
-  def expectMsgAnyClassOf[T](objs: Class[_]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
+  def expectMsgAnyClassOf[T](objs: Class[?]*): T = tp.expectMsgAnyClassOf(objs: _*).asInstanceOf[T]
 
   /**
    * Receive one message from the test actor and assert that it conforms to
@@ -616,7 +616,7 @@ class TestKit(system: ActorSystem) {
    */
   @varargs
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.12")
-  def expectMsgAnyClassOf[T](max: FiniteDuration, objs: Class[_]*): T =
+  def expectMsgAnyClassOf[T](max: FiniteDuration, objs: Class[?]*): T =
     tp.expectMsgAnyClassOf(max, objs: _*).asInstanceOf[T]
 
   /**
@@ -625,7 +625,7 @@ class TestKit(system: ActorSystem) {
    * with an AssertionFailure being thrown in case of timeout.
    */
   @varargs
-  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[_]*): T =
+  def expectMsgAnyClassOf[T](max: java.time.Duration, objs: Class[?]*): T =
     tp.expectMsgAnyClassOf(max.asScala, objs: _*).asInstanceOf[T]
 
   /**

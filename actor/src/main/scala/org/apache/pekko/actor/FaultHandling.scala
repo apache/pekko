@@ -245,17 +245,17 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Implicit conversion from `Seq` of Throwables to a `Decider`.
    * This maps the given Throwables to restarts, otherwise escalates.
    */
-  implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = makeDecider(trapExit)
+  implicit def seqThrowable2Decider(trapExit: immutable.Seq[Class[? <: Throwable]]): Decider = makeDecider(trapExit)
 
   type Decider = PartialFunction[Throwable, Directive]
   type JDecider = pekko.japi.Function[Throwable, Directive]
-  type CauseDirective = (Class[_ <: Throwable], Directive)
+  type CauseDirective = (Class[? <: Throwable], Directive)
 
   /**
    * Decider builder which just checks whether one of
    * the given Throwables matches the cause and restarts, otherwise escalates.
    */
-  def makeDecider(trapExit: immutable.Seq[Class[_ <: Throwable]]): Decider = {
+  def makeDecider(trapExit: immutable.Seq[Class[? <: Throwable]]): Decider = {
     case x => if (trapExit.exists(_.isInstance(x))) Restart else Escalate
   }
 
@@ -263,7 +263,7 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
    * Decider builder which just checks whether one of
    * the given Throwables matches the cause and restarts, otherwise escalates.
    */
-  def makeDecider(trapExit: JIterable[Class[_ <: Throwable]]): Decider = makeDecider(immutableSeq(trapExit))
+  def makeDecider(trapExit: JIterable[Class[? <: Throwable]]): Decider = makeDecider(immutableSeq(trapExit))
 
   /**
    * Decider builder for Iterables of cause-directive pairs, e.g. a map obtained
@@ -506,13 +506,13 @@ case class AllForOneStrategy(
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange.asScala)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
@@ -618,13 +618,13 @@ case class OneForOneStrategy(
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(trapExit))
 
   /**
    * Java API
    */
-  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[_ <: Throwable]]) =
+  def this(maxNrOfRetries: Int, withinTimeRange: java.time.Duration, trapExit: JIterable[Class[? <: Throwable]]) =
     this(maxNrOfRetries, withinTimeRange.asScala)(SupervisorStrategy.makeDecider(trapExit))
 
   /**

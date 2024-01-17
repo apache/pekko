@@ -213,7 +213,7 @@ object Source {
    * stream completes the materialized [[Future]] will be failed with a [[StreamDetachedException]].
    */
   @deprecated("Use 'Source.futureSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
-  def fromFutureSource[T, M](future: Future[_ <: Graph[SourceShape[T], M]]): javadsl.Source[T, Future[M]] =
+  def fromFutureSource[T, M](future: Future[? <: Graph[SourceShape[T], M]]): javadsl.Source[T, Future[M]] =
     new Source(scaladsl.Source.fromFutureSource(future))
 
   /**
@@ -224,7 +224,7 @@ object Source {
    */
   @deprecated("Use 'Source.completionStageSource' (potentially together with `Source.fromGraph`) instead", "Akka 2.6.0")
   def fromSourceCompletionStage[T, M](
-      completion: CompletionStage[_ <: Graph[SourceShape[T], M]]): javadsl.Source[T, CompletionStage[M]] =
+      completion: CompletionStage[? <: Graph[SourceShape[T], M]]): javadsl.Source[T, CompletionStage[M]] =
     completionStageSource(completion.thenApply(fromGraph[T, M]))
 
   /**
@@ -653,12 +653,12 @@ object Source {
    * Combines several sources with fan-in strategy like [[Merge]] or [[Concat]] into a single [[Source]].
    */
   def combine[T, U](
-      first: Source[T, _ <: Any],
-      second: Source[T, _ <: Any],
-      rest: java.util.List[Source[T, _ <: Any]],
+      first: Source[T, ? <: Any],
+      second: Source[T, ? <: Any],
+      rest: java.util.List[Source[T, ? <: Any]],
       @nowarn
       @deprecatedName(Symbol("strategy"))
-      fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]])
+      fanInStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, NotUsed] = {
     val seq = if (rest != null) Util.immutableSeq(rest).map(_.asScala) else immutable.Seq()
     new Source(scaladsl.Source.combine(first.asScala, second.asScala, seq: _*)(num => fanInStrategy.apply(num)))
@@ -672,7 +672,7 @@ object Source {
       second: Source[T, M2],
       @nowarn
       @deprecatedName(Symbol("strategy"))
-      fanInStrategy: function.Function[java.lang.Integer, _ <: Graph[UniformFanInShape[T, U], NotUsed]],
+      fanInStrategy: function.Function[java.lang.Integer, ? <: Graph[UniformFanInShape[T, U], NotUsed]],
       combine: function.Function2[M1, M2, M]): Source[U, M] = {
     new Source(
       scaladsl.Source.combineMat(first.asScala, second.asScala)(num => fanInStrategy.apply(num))(
@@ -684,7 +684,7 @@ object Source {
    * @since 1.1.0
    */
   def combine[T, U, M](
-      sources: java.util.List[_ <: Graph[SourceShape[T], M]],
+      sources: java.util.List[? <: Graph[SourceShape[T], M]],
       fanInStrategy: function.Function[java.lang.Integer, Graph[UniformFanInShape[T, U], NotUsed]])
       : Source[U, java.util.List[M]] = {
     val seq = if (sources != null) Util.immutableSeq(sources).collect {
@@ -699,7 +699,7 @@ object Source {
   /**
    * Combine the elements of multiple streams into a stream of lists.
    */
-  def zipN[T](sources: java.util.List[Source[T, _ <: Any]]): Source[java.util.List[T], NotUsed] = {
+  def zipN[T](sources: java.util.List[Source[T, ? <: Any]]): Source[java.util.List[T], NotUsed] = {
     val seq = if (sources != null) Util.immutableSeq(sources).map(_.asScala) else immutable.Seq()
     new Source(scaladsl.Source.zipN(seq).map(_.asJava))
   }
@@ -709,7 +709,7 @@ object Source {
    */
   def zipWithN[T, O](
       zipper: function.Function[java.util.List[T], O],
-      sources: java.util.List[Source[T, _ <: Any]]): Source[O, NotUsed] = {
+      sources: java.util.List[Source[T, ? <: Any]]): Source[O, NotUsed] = {
     val seq = if (sources != null) Util.immutableSeq(sources).map(_.asScala) else immutable.Seq()
     new Source(scaladsl.Source.zipWithN[T, O](seq => zipper.apply(seq.asJava))(seq))
   }
@@ -918,7 +918,7 @@ object Source {
    * '''Cancels when''' downstream cancels
    */
   def mergePrioritizedN[T](
-      sourcesAndPriorities: java.util.List[Pair[Source[T, _ <: Any], java.lang.Integer]],
+      sourcesAndPriorities: java.util.List[Pair[Source[T, ? <: Any], java.lang.Integer]],
       eagerComplete: Boolean): javadsl.Source[T, NotUsed] = {
     val seq =
       if (sourcesAndPriorities != null)
@@ -1274,7 +1274,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], _]*): javadsl.Source[Out, Mat] =
+  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): javadsl.Source[Out, Mat] =
     new Source(delegate.concatAllLazy(those: _*))
 
   /**
@@ -1464,7 +1464,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): javadsl.Source[Out, Mat] =
+  def alsoTo(that: Graph[SinkShape[Out], ?]): javadsl.Source[Out, Mat] =
     new Source(delegate.alsoTo(that))
 
   /**
@@ -1483,7 +1483,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], _]*): javadsl.Source[Out, Mat] =
+  def alsoToAll(those: Graph[SinkShape[Out], ?]*): javadsl.Source[Out, Mat] =
     new Source(delegate.alsoToAll(those: _*))
 
   /**
@@ -1514,7 +1514,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], _], when: function.Predicate[Out]): javadsl.Source[Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): javadsl.Source[Out, Mat] =
     new Source(delegate.divertTo(that, when.test))
 
   /**
@@ -1548,7 +1548,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): javadsl.Source[Out, Mat] =
+  def wireTap(that: Graph[SinkShape[Out], ?]): javadsl.Source[Out, Mat] =
     new Source(delegate.wireTap(that))
 
   /**
@@ -1592,7 +1592,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int): javadsl.Source[Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): javadsl.Source[Out, Mat] =
     new Source(delegate.interleave(that, segmentSize))
 
   /**
@@ -1615,7 +1615,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int, eagerClose: Boolean): javadsl.Source[Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int, eagerClose: Boolean): javadsl.Source[Out, Mat] =
     new Source(delegate.interleave(that, segmentSize, eagerClose))
 
   /**
@@ -1682,11 +1682,11 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): javadsl.Source[Out, Mat] = {
     val seq = if (those != null) Util.immutableSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -1705,7 +1705,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _]): javadsl.Source[Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?]): javadsl.Source[Out, Mat] =
     new Source(delegate.merge(that))
 
   /**
@@ -1720,7 +1720,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _], eagerComplete: Boolean): javadsl.Source[Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?], eagerComplete: Boolean): javadsl.Source[Out, Mat] =
     new Source(delegate.merge(that, eagerComplete))
 
   /**
@@ -1763,10 +1763,10 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): javadsl.Source[Out, Mat] = {
     val seq = if (those != null) Util.immutableSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -1912,7 +1912,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](that: Graph[SourceShape[T], _]): javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
+  def zip[T](that: Graph[SourceShape[T], ?]): javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
     zipMat(that, Keep.left)
 
   /**
@@ -1939,7 +1939,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAll[U, A >: Out](that: Graph[SourceShape[U], _], thisElem: A, thatElem: U): Source[Pair[A, U], Mat] =
+  def zipAll[U, A >: Out](that: Graph[SourceShape[U], ?], thisElem: A, thatElem: U): Source[Pair[A, U], Mat] =
     new Source(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
 
   /**
@@ -1975,7 +1975,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](that: Graph[SourceShape[T], _]): javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
+  def zipLatest[T](that: Graph[SourceShape[T], ?]): javadsl.Source[Out @uncheckedVariance Pair T, Mat] =
     zipLatestMat(that, Keep.left)
 
   /**
@@ -2004,7 +2004,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): javadsl.Source[Out3, Mat] =
     new Source(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2041,7 +2041,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *   '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): javadsl.Source[Out3, Mat] =
     new Source(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2063,7 +2063,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *   '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       eagerComplete: Boolean,
       combine: function.Function2[Out, Out2, Out3]): javadsl.Source[Out3, Mat] =
     new Source(delegate.zipLatestWith[Out2, Out3](that, eagerComplete)(combinerToScala(combine)))
@@ -2217,7 +2217,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def recover(clazz: Class[_ <: Throwable], supplier: Supplier[Out]): javadsl.Source[Out, Mat] =
+  def recover(clazz: Class[? <: Throwable], supplier: Supplier[Out]): javadsl.Source[Out, Mat] =
     recover {
       case elem if clazz.isInstance(elem) => supplier.get()
     }
@@ -2287,7 +2287,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * @deprecated use `recoverWithRetries` instead
    */
-  def recoverWith(pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+  def recoverWith(pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWith(pf))
 
   /**
@@ -2314,7 +2314,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
   @deprecated("Use recoverWithRetries instead.", "Akka 2.6.6")
   @nowarn("msg=deprecated")
   def recoverWith(
-      clazz: Class[_ <: Throwable],
+      clazz: Class[? <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWith({
       case elem if clazz.isInstance(elem) => supplier.get()
@@ -2344,7 +2344,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def recoverWithRetries(
       attempts: Int,
-      pf: PartialFunction[Throwable, _ <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
+      pf: PartialFunction[Throwable, ? <: Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     new Source(delegate.recoverWithRetries(attempts, pf))
 
   /**
@@ -2375,7 +2375,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    */
   def recoverWithRetries(
       attempts: Int,
-      clazz: Class[_ <: Throwable],
+      clazz: Class[? <: Throwable],
       supplier: Supplier[Graph[SourceShape[Out], NotUsed]]): Source[Out, Mat] =
     recoverWithRetries(attempts,
       {
@@ -2414,7 +2414,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(clazz: Class[_ <: Throwable]): javadsl.Source[Out, Mat] =
+  def onErrorComplete(clazz: Class[? <: Throwable]): javadsl.Source[Out, Mat] =
     onErrorComplete(ex => clazz.isInstance(ex))
 
   /**
@@ -2432,7 +2432,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): javadsl.Source[Out, Mat] =
+  def onErrorComplete(predicate: java.util.function.Predicate[? >: Throwable]): javadsl.Source[Out, Mat] =
     new Source(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -2458,7 +2458,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def mapConcat[T](f: function.Function[Out, _ <: java.lang.Iterable[T]]): javadsl.Source[T, Mat] =
+  def mapConcat[T](f: function.Function[Out, ? <: java.lang.Iterable[T]]): javadsl.Source[T, Mat] =
     new Source(delegate.mapConcat(elem => Util.immutableSeq(f.apply(elem))))
 
   /**
@@ -4102,7 +4102,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Source[T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Source[T, Mat] =
     new Source(delegate.flatMapConcat[T, M](x => f(x)))
 
   /**
@@ -4118,7 +4118,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Source[T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): Source[T, Mat] =
     new Source(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**

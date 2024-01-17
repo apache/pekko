@@ -322,7 +322,7 @@ object EventFilter {
  * If you want to match all Error events, the most efficient is to use <code>Left("")</code>.
  */
 final case class ErrorFilter(
-    throwable: Class[_],
+    throwable: Class[?],
     override val source: Option[String],
     override val message: Either[String, Regex],
     override val complete: Boolean)(occurrences: Int)
@@ -353,7 +353,7 @@ final case class ErrorFilter(
    *   whether the event’s message must match the given message string or pattern completely
    */
   def this(
-      throwable: Class[_],
+      throwable: Class[?],
       source: String,
       message: String,
       pattern: Boolean,
@@ -370,7 +370,7 @@ final case class ErrorFilter(
   /**
    * Java API: filter only on the given type of exception
    */
-  def this(throwable: Class[_]) = this(throwable, null, null, false, false, Int.MaxValue)
+  def this(throwable: Class[?]) = this(throwable, null, null, false, false, Int.MaxValue)
 
 }
 
@@ -530,7 +530,7 @@ object DeadLettersFilter {
  * Filter which matches DeadLetter events, if the wrapped message conforms to the
  * given type.
  */
-final case class DeadLettersFilter(val messageClass: Class[_])(occurrences: Int) extends EventFilter(occurrences) {
+final case class DeadLettersFilter(val messageClass: Class[?])(occurrences: Int) extends EventFilter(occurrences) {
 
   def matches(event: LogEvent) = {
     event match {

@@ -40,7 +40,7 @@ object AskPattern {
    * Provides a scheduler from an actor system (that will likely already be implicit in the scope) to minimize ask
    * boilerplate.
    */
-  implicit def schedulerFromActorSystem(implicit system: ActorSystem[_]): Scheduler = system.scheduler
+  implicit def schedulerFromActorSystem(implicit system: ActorSystem[?]): Scheduler = system.scheduler
 
   /**
    * See [[ask]]
@@ -140,7 +140,7 @@ object AskPattern {
 
   private val onTimeout: String => Throwable = msg => new TimeoutException(msg)
 
-  private final class PromiseRef[U](target: InternalRecipientRef[_], timeout: Timeout) {
+  private final class PromiseRef[U](target: InternalRecipientRef[?], timeout: Timeout) {
 
     // Note: _promiseRef mustn't have a type pattern, since it can be null
     private[this] val (_ref: ActorRef[U], _future: Future[U], _promiseRef) =

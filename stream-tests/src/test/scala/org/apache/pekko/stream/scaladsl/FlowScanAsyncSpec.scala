@@ -276,7 +276,7 @@ class FlowScanAsyncSpec extends StreamSpec with Matchers {
         elements: immutable.Seq[String],
         zero: String,
         decider: Supervision.Decider = Supervision.stoppingDecider): Probe[String] = {
-      val nullFutureScanFlow: Flow[String, String, _] = Flow[String].scanAsync(zero) { (_: String, next: String) =>
+      val nullFutureScanFlow: Flow[String, String, ?] = Flow[String].scanAsync(zero) { (_: String, next: String) =>
         if (next != "null") Future(next)
         else Future(null)
       }

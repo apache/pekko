@@ -72,7 +72,7 @@ final private[pekko] class EventsByPersistenceIdStage(
       var nextSequenceNr = fromSequenceNr
       var toSequenceNr = initialToSequenceNr
 
-      override protected def logSource: Class[_] = classOf[EventsByPersistenceIdStage]
+      override protected def logSource: Class[?] = classOf[EventsByPersistenceIdStage]
 
       override def preStart(): Unit = {
         stageActorRef = getStageActor(journalInteraction).ref

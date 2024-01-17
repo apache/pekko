@@ -28,7 +28,7 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
 @InternalApi private[pekko] object ShardedServiceRegistry {
   def apply(numberOfKeys: Int): ShardedServiceRegistry = {
     val emptyRegistries = (0 until numberOfKeys).map { n =>
-      val key = ORMultiMapKey[ServiceKey[_], Entry](s"ReceptionistKey_$n")
+      val key = ORMultiMapKey[ServiceKey[?], Entry](s"ReceptionistKey_$n")
       key -> new ServiceRegistry(EmptyORMultiMap)
     }.toMap
     new ShardedServiceRegistry(emptyRegistries, Set.empty, Set.empty)
@@ -53,10 +53,10 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
 
   def allDdataKeys: Iterable[DDataKey] = keys
 
-  def ddataKeyFor(serviceKey: ServiceKey[_]): DDataKey =
+  def ddataKeyFor(serviceKey: ServiceKey[?]): DDataKey =
     keys(math.abs(serviceKey.id.hashCode() % serviceRegistries.size))
 
-  def allServices: Iterator[(ServiceKey[_], Set[Entry])] =
+  def allServices: Iterator[(ServiceKey[?], Set[Entry])] =
     serviceRegistries.valuesIterator.flatMap(_.entries.entries)
 
   def allEntries: Iterator[Entry] = allServices.flatMap(_._2)
@@ -113,7 +113,7 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final case class ServiceRegistry(entries: ORMultiMap[ServiceKey[_], Entry]) extends AnyVal {
+@InternalApi private[pekko] final case class ServiceRegistry(entries: ORMultiMap[ServiceKey[?], Entry]) extends AnyVal {
 
   // let's hide all the ugly casts we can in here
   def actorRefsFor[T](key: AbstractServiceKey): Set[ActorRef[key.Protocol]] =
@@ -122,7 +122,7 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
   def entriesFor(key: AbstractServiceKey): Set[Entry] =
     entries.getOrElse(key.asServiceKey, Set.empty[Entry])
 
-  def keysFor(address: UniqueAddress)(implicit node: SelfUniqueAddress): Set[ServiceKey[_]] =
+  def keysFor(address: UniqueAddress)(implicit node: SelfUniqueAddress): Set[ServiceKey[?]] =
     entries.entries.collect {
       case (key, entries) if entries.exists(_.uniqueAddress(node.uniqueAddress.address) == address) =>
         key
@@ -144,7 +144,7 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
     }
   }
 
-  def toORMultiMap: ORMultiMap[ServiceKey[_], Entry] = entries
+  def toORMultiMap: ORMultiMap[ServiceKey[?], Entry] = entries
 
 }
 

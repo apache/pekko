@@ -101,7 +101,7 @@ private[pekko] object ShardedDaemonProcessImpl {
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[_])
+private[pekko] final class ShardedDaemonProcessImpl(system: ActorSystem[?])
     extends javadsl.ShardedDaemonProcess
     with scaladsl.ShardedDaemonProcess {
 

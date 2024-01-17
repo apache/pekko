@@ -20,21 +20,21 @@ import pekko.actor.ActorSystem
 import pekko.event.Logging
 import pekko.testkit.{ DebugFilter, ErrorFilter, InfoFilter, WarningFilter }
 
-class EventFilter(clazz: Class[_], system: ActorSystem) {
+class EventFilter(clazz: Class[?], system: ActorSystem) {
 
   require(
     classOf[Throwable].isAssignableFrom(clazz) || classOf[Logging.LogEvent].isAssignableFrom(clazz),
     "supplied class must either be LogEvent or Throwable")
 
-  private val _clazz: Class[_ <: Logging.LogEvent] =
+  private val _clazz: Class[? <: Logging.LogEvent] =
     if (classOf[Throwable].isAssignableFrom(clazz))
       classOf[Logging.Error]
     else
-      clazz.asInstanceOf[Class[_ <: Logging.LogEvent]]
+      clazz.asInstanceOf[Class[? <: Logging.LogEvent]]
 
-  private var exceptionType: Class[_ <: Throwable] =
+  private var exceptionType: Class[? <: Throwable] =
     if (classOf[Throwable].isAssignableFrom(clazz))
-      clazz.asInstanceOf[Class[_ <: Throwable]]
+      clazz.asInstanceOf[Class[? <: Throwable]]
     else
       null
 

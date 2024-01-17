@@ -116,7 +116,7 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
         s
       case Failure(_: NoSuchMethodException) =>
         dynamicAccess.createInstanceFor[T](fqcn, immutable.Seq((classOf[LeaseSettings], leaseSettings)))
-      case f: Failure[_] =>
+      case f: Failure[?] =>
         f
     }
 

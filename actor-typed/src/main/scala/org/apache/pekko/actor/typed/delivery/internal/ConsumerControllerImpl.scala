@@ -89,7 +89,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
 
   private case object Retry extends InternalCommand
 
-  private final case class ConsumerTerminated(consumer: ActorRef[_]) extends InternalCommand
+  private final case class ConsumerTerminated(consumer: ActorRef[?]) extends InternalCommand
 
   private final case class State[A](
       producerController: ActorRef[ProducerControllerImpl.InternalCommand],
@@ -170,7 +170,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
                     }
                     Behaviors.same
 
-                  case _: DeliverThenStop[_] =>
+                  case _: DeliverThenStop[?] =>
                     if (stashBuffer.isEmpty) {
                       Behaviors.stopped
                     } else {
@@ -203,7 +203,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
 
   private def mdcForMessage(msg: InternalCommand): Map[String, String] = {
     msg match {
-      case seqMsg: SequencedMessage[_] => Map("producerId" -> seqMsg.producerId)
+      case seqMsg: SequencedMessage[?] => Map("producerId" -> seqMsg.producerId)
       case _                           => Map.empty
     }
   }
@@ -225,7 +225,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
       stopping)
   }
 
-  def enforceLocalConsumer(ref: ActorRef[_]): Unit = {
+  def enforceLocalConsumer(ref: ActorRef[?]): Unit = {
     if (ref.path.address.hasGlobalScope)
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
   }
@@ -359,7 +359,7 @@ private class ConsumerControllerImpl[A] private (
         case reg: RegisterToProducerController[A @unchecked] =>
           receiveRegisterToProducerController(s, reg, newState => active(newState))
 
-        case _: DeliverThenStop[_] =>
+        case _: DeliverThenStop[?] =>
           receiveDeliverThenStop(s, newState => active(newState))
 
         case _: UnsealedInternalCommand =>
@@ -484,7 +484,7 @@ private class ConsumerControllerImpl[A] private (
         case reg: RegisterToProducerController[A @unchecked] =>
           receiveRegisterToProducerController(s, reg, newState => active(newState))
 
-        case _: DeliverThenStop[_] =>
+        case _: DeliverThenStop[?] =>
           receiveDeliverThenStop(s, newState => resending(newState))
 
         case _: UnsealedInternalCommand =>
@@ -604,7 +604,7 @@ private class ConsumerControllerImpl[A] private (
               scalaIdentityFunction)
           }
 
-        case msg: SequencedMessage[_] =>
+        case msg: SequencedMessage[?] =>
           flightRecorder.consumerReceivedPreviousInProgress(msg.producerId, msg.seqNr, stashBuffer.size + 1)
           val expectedSeqNr = seqMsg.seqNr + stashBuffer.size + 1
           if (msg.seqNr < expectedSeqNr && msg.producerController == seqMsg.producerController) {
@@ -642,7 +642,7 @@ private class ConsumerControllerImpl[A] private (
         case reg: RegisterToProducerController[A @unchecked] =>
           receiveRegisterToProducerController(s, reg, newState => waitingForConfirmation(newState, seqMsg))
 
-        case _: DeliverThenStop[_] =>
+        case _: DeliverThenStop[?] =>
           receiveDeliverThenStop(s, newState => waitingForConfirmation(newState, seqMsg))
 
         case _: UnsealedInternalCommand =>
@@ -708,7 +708,7 @@ private class ConsumerControllerImpl[A] private (
     }
   }
 
-  private def receiveConsumerTerminated(c: ActorRef[_]): Behavior[InternalCommand] = {
+  private def receiveConsumerTerminated(c: ActorRef[?]): Behavior[InternalCommand] = {
     context.log.debug("Consumer [{}] terminated.", c)
     Behaviors.stopped
   }

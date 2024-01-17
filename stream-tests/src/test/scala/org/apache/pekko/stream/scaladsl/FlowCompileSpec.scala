@@ -34,47 +34,47 @@ class FlowCompileSpec extends StreamSpec {
 
   "Flow" should {
     "not run" in {
-      val open: Flow[Int, Int, _] = Flow[Int]
+      val open: Flow[Int, Int, ?] = Flow[Int]
       "open.run()" shouldNot compile
     }
     "accept Iterable" in {
-      val f: Source[Int, _] = intSeq.via(Flow[Int])
+      val f: Source[Int, ?] = intSeq.via(Flow[Int])
     }
     "accept Future" in {
-      val f: Source[Int, _] = intFut.via(Flow[Int])
+      val f: Source[Int, ?] = intFut.via(Flow[Int])
     }
     "append Flow" in {
-      val open1: Flow[Int, String, _] = Flow[Int].map(_.toString)
-      val open2: Flow[String, Int, _] = Flow[String].map(_.hashCode)
-      val open3: Flow[Int, Int, _] = open1.via(open2)
+      val open1: Flow[Int, String, ?] = Flow[Int].map(_.toString)
+      val open2: Flow[String, Int, ?] = Flow[String].map(_.hashCode)
+      val open3: Flow[Int, Int, ?] = open1.via(open2)
       "open3.run()" shouldNot compile
 
-      val closedSource: Source[Int, _] = intSeq.via(open3)
-      val closedSink: Sink[Int, _] = open3.to(Sink.asPublisher[Int](false))
+      val closedSource: Source[Int, ?] = intSeq.via(open3)
+      val closedSink: Sink[Int, ?] = open3.to(Sink.asPublisher[Int](false))
       "closedSink.run()" shouldNot compile
 
       closedSource.to(Sink.asPublisher[Int](false)).run()
       intSeq.to(closedSink).run()
     }
     "append Sink" in {
-      val open: Flow[Int, String, _] = Flow[Int].map(_.toString)
-      val closedSink: Sink[String, _] = Flow[String].map(_.hashCode).to(Sink.asPublisher[Int](false))
-      val appended: Sink[Int, _] = open.to(closedSink)
+      val open: Flow[Int, String, ?] = Flow[Int].map(_.toString)
+      val closedSink: Sink[String, ?] = Flow[String].map(_.hashCode).to(Sink.asPublisher[Int](false))
+      val appended: Sink[Int, ?] = open.to(closedSink)
       "appended.run()" shouldNot compile
       "appended.to(Sink.head[Int])" shouldNot compile
       intSeq.to(appended).run()
     }
     "be appended to Source" in {
-      val open: Flow[Int, String, _] = Flow[Int].map(_.toString)
-      val closedSource: Source[Int, _] = strSeq.via(Flow[String].map(_.hashCode))
-      val closedSource2: Source[String, _] = closedSource.via(open)
+      val open: Flow[Int, String, ?] = Flow[Int].map(_.toString)
+      val closedSource: Source[Int, ?] = strSeq.via(Flow[String].map(_.hashCode))
+      val closedSource2: Source[String, ?] = closedSource.via(open)
       "strSeq.to(closedSource2)" shouldNot compile
       closedSource2.to(Sink.asPublisher[String](false)).run()
     }
   }
 
   "Sink" should {
-    val openSink: Sink[Int, _] =
+    val openSink: Sink[Int, ?] =
       Flow[Int].map(_.toString).to(Sink.asPublisher[String](false))
     "accept Source" in {
       intSeq.to(openSink)
@@ -88,7 +88,7 @@ class FlowCompileSpec extends StreamSpec {
   }
 
   "Source" should {
-    val openSource: Source[String, _] =
+    val openSource: Source[String, ?] =
       Source(Seq(1, 2, 3)).map(_.toString)
     "accept Sink" in {
       openSource.to(Sink.asPublisher[String](false))

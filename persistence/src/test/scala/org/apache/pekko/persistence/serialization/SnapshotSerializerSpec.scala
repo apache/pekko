@@ -37,8 +37,8 @@ class SnapshotSerializerSpec extends PekkoSpec {
       val bytes = Base64.getDecoder.decode(data)
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
-      deserialized shouldBe a[PersistentFSMSnapshot[_]]
-      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      deserialized shouldBe a[PersistentFSMSnapshot[?]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[?]]
       persistentFSMSnapshot shouldEqual PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
     }
   }

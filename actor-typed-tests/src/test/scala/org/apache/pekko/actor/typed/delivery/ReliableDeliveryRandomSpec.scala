@@ -105,7 +105,7 @@ class ReliableDeliveryRandomSpec(config: Config)
 
     // RandomFlakyNetwork to simulate lost messages from producerController to consumerController
     val consumerDrop: Any => Double = {
-      case _: ConsumerController.SequencedMessage[_] => consumerDropProbability
+      case _: ConsumerController.SequencedMessage[?] => consumerDropProbability
       case _                                         => 0.0
     }
 
@@ -123,7 +123,7 @@ class ReliableDeliveryRandomSpec(config: Config)
     val producerDrop: Any => Double = {
       case _: ProducerControllerImpl.Request         => producerDropProbability
       case _: ProducerControllerImpl.Resend          => producerDropProbability
-      case _: ProducerController.RegisterConsumer[_] => producerDropProbability
+      case _: ProducerController.RegisterConsumer[?] => producerDropProbability
       case _                                         => 0.0
     }
 

@@ -95,7 +95,7 @@ object DistributedDataDocSpec {
           replicator ! Update(DataKey, ORSet.empty[String], WriteLocal)(_.remove(s))
         }
 
-      case _: UpdateResponse[_] => // ignore
+      case _: UpdateResponse[?] => // ignore
       case c @ Changed(DataKey) =>
         val data = c.get(DataKey)
         log.info("Current elements: {}", data.elements)
@@ -136,14 +136,14 @@ class DistributedDataDocSpec extends PekkoSpec(DistributedDataDocSpec.config) {
     replicator ! Update(ActiveFlagKey, Flag.Disabled, writeAll)(_.switchOn)
     // #update
 
-    probe.expectMsgType[UpdateResponse[_]] match {
+    probe.expectMsgType[UpdateResponse[?]] match {
       // #update-response1
       case UpdateSuccess(Counter1Key, req) => // ok
       // #update-response1
       case unexpected => fail("Unexpected response: " + unexpected)
     }
 
-    probe.expectMsgType[UpdateResponse[_]] match {
+    probe.expectMsgType[UpdateResponse[?]] match {
       // #update-response2
       case UpdateSuccess(Set1Key, req) => // ok
       case UpdateTimeout(Set1Key, req) =>
@@ -203,7 +203,7 @@ class DistributedDataDocSpec extends PekkoSpec(DistributedDataDocSpec.config) {
     replicator ! Get(ActiveFlagKey, readAll)
     // #get
 
-    probe.expectMsgType[GetResponse[_]] match {
+    probe.expectMsgType[GetResponse[?]] match {
       // #get-response1
       case g @ GetSuccess(Counter1Key, req) =>
         val value = g.get(Counter1Key).value
@@ -212,7 +212,7 @@ class DistributedDataDocSpec extends PekkoSpec(DistributedDataDocSpec.config) {
       case unexpected => fail("Unexpected response: " + unexpected)
     }
 
-    probe.expectMsgType[GetResponse[_]] match {
+    probe.expectMsgType[GetResponse[?]] match {
       // #get-response2
       case g @ GetSuccess(Set1Key, req) =>
         val elements = g.get(Set1Key).elements

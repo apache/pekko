@@ -94,7 +94,7 @@ abstract class PekkoSpec(_system: ActorSystem)
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 
-  def this(configMap: Map[String, _]) = this(PekkoSpec.mapToConfig(configMap))
+  def this(configMap: Map[String, ?]) = this(PekkoSpec.mapToConfig(configMap))
 
   def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[PekkoSpec], "".r), PekkoSpec.testConf))
 
@@ -128,9 +128,9 @@ abstract class PekkoSpec(_system: ActorSystem)
 
   override def expectedTestDuration: FiniteDuration = 60 seconds
 
-  def muteDeadLetters(messageClasses: Class[_]*)(sys: ActorSystem = system): Unit =
+  def muteDeadLetters(messageClasses: Class[?]*)(sys: ActorSystem = system): Unit =
     if (!sys.log.isDebugEnabled) {
-      def mute(clazz: Class[_]): Unit =
+      def mute(clazz: Class[?]): Unit =
         sys.eventStream.publish(Mute(DeadLettersFilter(clazz)(occurrences = Int.MaxValue)))
       if (messageClasses.isEmpty) mute(classOf[AnyRef])
       else messageClasses.foreach(mute)
@@ -142,7 +142,7 @@ abstract class PekkoSpec(_system: ActorSystem)
       def areEqual(a: Class[A], b: Class[B]) = a == b
     }
 
-  implicit def setEqualityConstraint[A, T <: Set[_ <: A]]: CanEqual[Set[A], T] =
+  implicit def setEqualityConstraint[A, T <: Set[? <: A]]: CanEqual[Set[A], T] =
     new CanEqual[Set[A], T] {
       def areEqual(a: Set[A], b: T) = a == b
     }

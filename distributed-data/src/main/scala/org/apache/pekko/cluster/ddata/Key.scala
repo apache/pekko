@@ -18,7 +18,7 @@ object Key {
   /**
    * Extract the [[Key#id]].
    */
-  def unapply(k: Key[_]): Option[String] = Some(k.id)
+  def unapply(k: Key[?]): Option[String] = Some(k.id)
 
   private[pekko] type KeyR = Key[ReplicatedData]
 
@@ -37,7 +37,7 @@ object Key {
 abstract class Key[+T <: ReplicatedData](val id: Key.KeyId) extends Serializable {
 
   override final def equals(o: Any): Boolean = o match {
-    case k: Key[_] => id == k.id
+    case k: Key[?] => id == k.id
     case _         => false
   }
 

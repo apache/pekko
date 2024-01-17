@@ -44,7 +44,7 @@ object EventSourcedBehaviorWatchSpec {
   case object Fail extends Command
   case object Stop extends Command
   final case class ChildHasFailed(t: pekko.actor.typed.ChildFailed)
-  final case class HasTerminated(ref: ActorRef[_])
+  final case class HasTerminated(ref: ActorRef[?])
 }
 
 class EventSourcedBehaviorWatchSpec
@@ -65,7 +65,7 @@ class EventSourcedBehaviorWatchSpec
   private def setup(
       pf: PartialFunction[(String, Signal), Unit],
       settings: EventSourcedSettings,
-      context: ActorContext[_]): BehaviorSetup[Command, String, String] =
+      context: ActorContext[?]): BehaviorSetup[Command, String, String] =
     new BehaviorSetup[Command, String, String](
       context.asInstanceOf[ActorContext[InternalProtocol]],
       nextPid,

@@ -49,9 +49,9 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
   s"${if (eager) "An eager" else "A lazy"} Concat for Flow " must {
 
     "be able to concat Flow with a Source" in {
-      val f1: Flow[Int, String, _] = Flow[Int].map(_.toString + "-s")
-      val s1: Source[Int, _] = Source(List(1, 2, 3))
-      val s2: Source[String, _] = Source(List(4, 5, 6)).map(_.toString + "-s")
+      val f1: Flow[Int, String, ?] = Flow[Int].map(_.toString + "-s")
+      val s1: Source[Int, ?] = Source(List(1, 2, 3))
+      val s2: Source[String, ?] = Source(List(4, 5, 6)).map(_.toString + "-s")
 
       val subs = TestSubscriber.manualProbe[Any]()
       val subSink = Sink.asPublisher[Any](false)
@@ -67,9 +67,9 @@ abstract class AbstractFlowConcatSpec extends BaseTwoStreamsSetup {
     }
 
     "be able to prepend a Source to a Flow" in {
-      val s1: Source[String, _] = Source(List(1, 2, 3)).map(_.toString + "-s")
-      val s2: Source[Int, _] = Source(List(4, 5, 6))
-      val f2: Flow[Int, String, _] = Flow[Int].map(_.toString + "-s")
+      val s1: Source[String, ?] = Source(List(1, 2, 3)).map(_.toString + "-s")
+      val s2: Source[Int, ?] = Source(List(4, 5, 6))
+      val f2: Flow[Int, String, ?] = Flow[Int].map(_.toString + "-s")
 
       val subs = TestSubscriber.manualProbe[Any]()
       val subSink = Sink.asPublisher[Any](false)

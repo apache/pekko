@@ -339,7 +339,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    *
    * If possible a link back to the operator that the logic was created with, used for debugging.
    */
-  private[stream] var originalStage: OptionVal[GraphStageWithMaterializedValue[_ <: Shape, _]] = OptionVal.None
+  private[stream] var originalStage: OptionVal[GraphStageWithMaterializedValue[? <: Shape, ?]] = OptionVal.None
 
   /**
    * INTERNAL API
@@ -453,7 +453,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Assigns callbacks for the events for an [[Inlet]]
    */
-  final protected def setHandler(in: Inlet[_], handler: InHandler): Unit = {
+  final protected def setHandler(in: Inlet[?], handler: InHandler): Unit = {
     handlers(in.id) = handler
     if (_interpreter != null) _interpreter.setHandler(conn(in), handler)
   }
@@ -461,7 +461,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Assign callbacks for linear operator for both [[Inlet]] and [[Outlet]]
    */
-  final protected def setHandlers(in: Inlet[_], out: Outlet[_], handler: InHandler with OutHandler): Unit = {
+  final protected def setHandlers(in: Inlet[?], out: Outlet[?], handler: InHandler with OutHandler): Unit = {
     setHandler(in, handler)
     setHandler(out, handler)
   }
@@ -469,31 +469,31 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Retrieves the current callback for the events on the given [[Inlet]]
    */
-  final protected def getHandler(in: Inlet[_]): InHandler = {
+  final protected def getHandler(in: Inlet[?]): InHandler = {
     handlers(in.id).asInstanceOf[InHandler]
   }
 
   /**
    * Assigns callbacks for the events for an [[Outlet]]
    */
-  final protected def setHandler(out: Outlet[_], handler: OutHandler): Unit = {
+  final protected def setHandler(out: Outlet[?], handler: OutHandler): Unit = {
     handlers(out.id + inCount) = handler
     if (_interpreter != null) _interpreter.setHandler(conn(out), handler)
   }
 
-  private def conn(in: Inlet[_]): Connection = portToConn(in.id)
-  private def conn(out: Outlet[_]): Connection = portToConn(out.id + inCount)
+  private def conn(in: Inlet[?]): Connection = portToConn(in.id)
+  private def conn(out: Outlet[?]): Connection = portToConn(out.id + inCount)
 
   /**
    * Retrieves the current callback for the events on the given [[Outlet]]
    */
-  final protected def getHandler(out: Outlet[_]): OutHandler = {
+  final protected def getHandler(out: Outlet[?]): OutHandler = {
     handlers(out.id + inCount).asInstanceOf[OutHandler]
   }
 
-  private def getNonEmittingHandler(out: Outlet[_]): OutHandler =
+  private def getNonEmittingHandler(out: Outlet[?]): OutHandler =
     getHandler(out) match {
-      case e: Emitting[_] => e.previous
+      case e: Emitting[?] => e.previous
       case other          => other
     }
 
@@ -757,14 +757,14 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
 
   private def cleanUpSubstreams(optionalFailureCause: OptionVal[Throwable]): Unit = {
     _subInletsAndOutlets.foreach {
-      case inlet: SubSinkInlet[_] =>
-        val subSink = inlet.sink.asInstanceOf[SubSink[_]]
+      case inlet: SubSinkInlet[?] =>
+        val subSink = inlet.sink.asInstanceOf[SubSink[?]]
         optionalFailureCause match {
           case OptionVal.Some(cause) => subSink.cancelSubstream(cause)
           case _                     => subSink.cancelSubstream()
         }
-      case outlet: SubSourceOutlet[_] =>
-        val subSource = outlet.source.asInstanceOf[SubSource[_]]
+      case outlet: SubSourceOutlet[?] =>
+        val subSource = outlet.source.asInstanceOf[SubSource[?]]
         optionalFailureCause match {
           case OptionVal.Some(cause) => subSource.failSubstream(cause)
           case _                     => subSource.completeSubstream()
@@ -871,15 +871,15 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * This will reinstall the replaced handler that was in effect before the `read`
    * call.
    */
-  final protected def abortReading(in: Inlet[_]): Unit =
+  final protected def abortReading(in: Inlet[?]): Unit =
     getHandler(in) match {
-      case r: Reading[_] =>
+      case r: Reading[?] =>
         setHandler(in, r.previous)
       case _ =>
     }
 
-  private def requireNotReading(in: Inlet[_]): Unit =
-    if (getHandler(in).isInstanceOf[Reading[_]])
+  private def requireNotReading(in: Inlet[?]): Unit =
+    if (getHandler(in).isInstanceOf[Reading[?]])
       throw new IllegalStateException("already reading on inlet " + in)
 
   /**
@@ -1019,15 +1019,15 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * This will reinstall the replaced handler that was in effect before the `emit`
    * call.
    */
-  final protected def abortEmitting(out: Outlet[_]): Unit =
+  final protected def abortEmitting(out: Outlet[?]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] => setHandler(out, e.previous)
+      case e: Emitting[?] => setHandler(out, e.previous)
       case _              =>
     }
 
   private def setOrAddEmitting[T](out: Outlet[T], next: Emitting[T]): Unit =
     getHandler(out) match {
-      case e: Emitting[_] => e.asInstanceOf[Emitting[T]].addFollowUp(next)
+      case e: Emitting[?] => e.asInstanceOf[Emitting[T]].addFollowUp(next)
       case _              => setHandler(out, next)
     }
 
@@ -1046,11 +1046,11 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
          * we should add it to the end of emission queue
          */
         val currentHandler = getHandler(out)
-        if (currentHandler.isInstanceOf[Emitting[_]])
+        if (currentHandler.isInstanceOf[Emitting[?]])
           addFollowUp(currentHandler.asInstanceOf[Emitting[T]])
 
         val next = dequeue()
-        if (next.isInstanceOf[EmittingCompletion[_]]) {
+        if (next.isInstanceOf[EmittingCompletion[?]]) {
 
           /*
            * If next element is emitting completion and there are some elements after it,
@@ -1280,7 +1280,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   final protected def createAsyncCallback[T](handler: Procedure[T]): AsyncCallback[T] =
     getAsyncCallback(handler.apply)
 
-  private var callbacksWaitingForInterpreter: List[ConcurrentAsyncCallback[_]] = Nil
+  private var callbacksWaitingForInterpreter: List[ConcurrentAsyncCallback[?]] = Nil
   // is used for two purposes: keep track of running callbacks and signal that the
   // stage has stopped to fail incoming async callback invocations by being set to null
   // Using ConcurrentHashMap's KeySetView as Set to track the inProgress async callbacks.
@@ -1297,16 +1297,16 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   // when this stage completes/fails, not threadsafe only accessed from stream machinery callbacks etc.
   private var _subInletsAndOutlets: Set[AnyRef] = Set.empty
 
-  private def created(inlet: SubSinkInlet[_]): Unit =
+  private def created(inlet: SubSinkInlet[?]): Unit =
     _subInletsAndOutlets += inlet
 
-  private def completedOrFailed(inlet: SubSinkInlet[_]): Unit =
+  private def completedOrFailed(inlet: SubSinkInlet[?]): Unit =
     _subInletsAndOutlets -= inlet
 
-  private def created(outlet: SubSourceOutlet[_]): Unit =
+  private def created(outlet: SubSourceOutlet[?]): Unit =
     _subInletsAndOutlets += outlet
 
-  private def completedOrFailed(outlet: SubSourceOutlet[_]): Unit =
+  private def completedOrFailed(outlet: SubSourceOutlet[?]): Unit =
     _subInletsAndOutlets -= outlet
 
   /**

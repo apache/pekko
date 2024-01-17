@@ -33,7 +33,7 @@ import pekko.annotation.InternalApi
 private[pekko] final case class GroupRouterBuilder[T] private[pekko] (
     key: ServiceKey[T],
     preferLocalRoutees: Boolean = false,
-    logicFactory: ActorSystem[_] => RoutingLogic[T] = (_: ActorSystem[_]) => new RoutingLogics.RandomLogic[T]())
+    logicFactory: ActorSystem[?] => RoutingLogic[T] = (_: ActorSystem[?]) => new RoutingLogics.RandomLogic[T]())
     extends javadsl.GroupRouter[T]
     with scaladsl.GroupRouter[T] {
 

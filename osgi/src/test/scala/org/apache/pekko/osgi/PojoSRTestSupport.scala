@@ -150,7 +150,7 @@ class BundleDescriptorBuilder(name: String) {
   /**
    * Add a Bundle activator to our test bundle
    */
-  def withActivator(activator: Class[_ <: BundleActivator]): BundleDescriptorBuilder = {
+  def withActivator(activator: Class[? <: BundleActivator]): BundleDescriptorBuilder = {
     tinybundle.set(Constants.BUNDLE_ACTIVATOR, activator.getName)
     this
   }

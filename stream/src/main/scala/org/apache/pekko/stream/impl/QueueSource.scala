@@ -55,7 +55,7 @@ import pekko.stream.stage._
     val name = inheritedAttributes.nameOrDefault(getClass.toString)
 
     val stageLogic = new GraphStageLogic(shape) with OutHandler with SourceQueueWithComplete[T] with StageLogging {
-      override protected def logSource: Class[_] = classOf[QueueSource[_]]
+      override protected def logSource: Class[?] = classOf[QueueSource[?]]
 
       var buffer: Buffer[T] = _
       var pendingOffers: Buffer[Offer[T]] = _

@@ -58,11 +58,11 @@ import org.reactivestreams.Subscription
   // SubscribePending message. The AtomicReference is set to null by the shutdown method, which is
   // called by the actor from postStop. Pending (unregistered) subscription attempts are denied by
   // the shutdown method. Subscription attempts after shutdown can be denied immediately.
-  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[_ >: T]]](Nil)
+  private val pendingSubscribers = new AtomicReference[immutable.Seq[Subscriber[? >: T]]](Nil)
 
   protected val wakeUpMsg: Any = SubscribePending
 
-  override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
+  override def subscribe(subscriber: Subscriber[? >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
     @tailrec def doSubscribe(): Unit = {
       val current = pendingSubscribers.get
@@ -79,7 +79,7 @@ import org.reactivestreams.Subscription
     doSubscribe()
   }
 
-  def takePendingSubscribers(): immutable.Seq[Subscriber[_ >: T]] = {
+  def takePendingSubscribers(): immutable.Seq[Subscriber[? >: T]] = {
     val pending = pendingSubscribers.getAndSet(Nil)
     if (pending eq null) Nil else pending.reverse
   }
@@ -94,7 +94,7 @@ import org.reactivestreams.Subscription
 
   @volatile private var shutdownReason: Option[Throwable] = None
 
-  private def reportSubscribeFailure(subscriber: Subscriber[_ >: T]): Unit =
+  private def reportSubscribeFailure(subscriber: Subscriber[? >: T]): Unit =
     try shutdownReason match {
         case Some(_: SpecViolation) => // ok, not allowed to call onError
         case Some(e) =>
@@ -115,7 +115,7 @@ import org.reactivestreams.Subscription
  */
 @InternalApi private[pekko] class ActorSubscription[T](
     final val impl: ActorRef,
-    final val subscriber: Subscriber[_ >: T])
+    final val subscriber: Subscriber[? >: T])
     extends Subscription {
   override def request(elements: Long): Unit = impl ! RequestMore(this, elements)
   override def cancel(): Unit = impl ! Cancel(this)
@@ -124,7 +124,7 @@ import org.reactivestreams.Subscription
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class ActorSubscriptionWithCursor[T](_impl: ActorRef, _subscriber: Subscriber[_ >: T])
+@InternalApi private[pekko] class ActorSubscriptionWithCursor[T](_impl: ActorRef, _subscriber: Subscriber[? >: T])
     extends ActorSubscription[T](_impl, _subscriber)
     with SubscriptionWithCursor[T]
 

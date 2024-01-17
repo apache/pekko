@@ -213,7 +213,7 @@ final class LWWRegister[A] private[pekko] (private[pekko] val node: UniqueAddres
   override def toString: String = s"LWWRegister($value)"
 
   override def equals(o: Any): Boolean = o match {
-    case other: LWWRegister[_] =>
+    case other: LWWRegister[?] =>
       timestamp == other.timestamp && value == other.value && node == other.node
     case _ => false
   }

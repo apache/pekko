@@ -75,17 +75,17 @@ class FlowGroupBySpec extends StreamSpec("""
     val max = if (maxSubstreams > 0) maxSubstreams else groupCount
     val groupStream =
       Source.fromPublisher(source).groupBy(max, _ % groupCount).lift(_ % groupCount).runWith(Sink.asPublisher(false))
-    val masterSubscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+    val masterSubscriber = TestSubscriber.manualProbe[(Int, Source[Int, ?])]()
 
     groupStream.subscribe(masterSubscriber)
     val masterSubscription = masterSubscriber.expectSubscription()
 
-    def getSubFlow(expectedKey: Int): Source[Int, _] = {
+    def getSubFlow(expectedKey: Int): Source[Int, ?] = {
       masterSubscription.request(1)
       expectSubFlow(expectedKey)
     }
 
-    def expectSubFlow(expectedKey: Int): Source[Int, _] = {
+    def expectSubFlow(expectedKey: Int): Source[Int, ?] = {
       val (key, substream) = masterSubscriber.expectNext()
       key should be(expectedKey)
       substream
@@ -184,7 +184,7 @@ class FlowGroupBySpec extends StreamSpec("""
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val publisher =
         Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, ?])]()
       publisher.subscribe(subscriber)
 
       val upstreamSubscription = publisherProbeProbe.expectSubscription()
@@ -195,7 +195,7 @@ class FlowGroupBySpec extends StreamSpec("""
 
     "work with empty input stream" in {
       val publisher = Source(List.empty[Int]).groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, ?])]()
       publisher.subscribe(subscriber)
 
       subscriber.expectSubscriptionAndComplete()
@@ -205,7 +205,7 @@ class FlowGroupBySpec extends StreamSpec("""
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val publisher =
         Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, ?])]()
       publisher.subscribe(subscriber)
 
       val upstreamSubscription = publisherProbeProbe.expectSubscription()
@@ -223,7 +223,7 @@ class FlowGroupBySpec extends StreamSpec("""
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val publisher =
         Source.fromPublisher(publisherProbeProbe).groupBy(2, _ % 2).lift(_ % 2).runWith(Sink.asPublisher(false))
-      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, _])]()
+      val subscriber = TestSubscriber.manualProbe[(Int, Source[Int, ?])]()
       publisher.subscribe(subscriber)
 
       val upstreamSubscription = publisherProbeProbe.expectSubscription()

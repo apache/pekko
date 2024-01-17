@@ -44,7 +44,7 @@ class StatusReplySpec extends PekkoSpec with ScalaFutures {
       }
     }
     "not throw exception if null" in {
-      (null: StatusReply[_]) match {
+      (null: StatusReply[?]) match {
         case StatusReply.Success(_) => fail()
         case StatusReply.Error(_)   => fail()
         case _                      =>

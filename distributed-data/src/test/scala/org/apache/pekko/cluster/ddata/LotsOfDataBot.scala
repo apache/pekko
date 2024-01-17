@@ -122,7 +122,7 @@ class LotsOfDataBot extends Actor with ActorLogging {
         }
       }
 
-    case _: UpdateResponse[_] => // ignore
+    case _: UpdateResponse[?] => // ignore
     case c @ Changed(ORSetKey(id)) =>
       val elements = c.dataValue match {
         case ORSet(e) => e

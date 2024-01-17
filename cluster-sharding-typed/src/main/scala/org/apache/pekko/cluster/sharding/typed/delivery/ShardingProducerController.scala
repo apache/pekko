@@ -175,7 +175,7 @@ object ShardingProducerController {
      * Scala API: Factory method from config `pekko.reliable-delivery.sharding.producer-controller`
      * of the `ActorSystem`.
      */
-    def apply(system: ActorSystem[_]): Settings =
+    def apply(system: ActorSystem[?]): Settings =
       apply(system.settings.config.getConfig("pekko.reliable-delivery.sharding.producer-controller"))
 
     /**
@@ -195,7 +195,7 @@ object ShardingProducerController {
      * Java API: Factory method from config `pekko.reliable-delivery.sharding.producer-controller`
      * of the `ActorSystem`.
      */
-    def create(system: ActorSystem[_]): Settings =
+    def create(system: ActorSystem[?]): Settings =
       apply(system)
 
     /**

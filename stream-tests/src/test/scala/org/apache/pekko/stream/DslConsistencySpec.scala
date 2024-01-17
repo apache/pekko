@@ -38,23 +38,23 @@ object DslConsistencySpec {
 
 class DslConsistencySpec extends AnyWordSpec with Matchers {
 
-  val sFlowClass: Class[_] = classOf[pekko.stream.scaladsl.Flow[_, _, _]]
-  val jFlowClass: Class[_] = classOf[pekko.stream.javadsl.Flow[_, _, _]]
+  val sFlowClass: Class[?] = classOf[pekko.stream.scaladsl.Flow[?, ?, ?]]
+  val jFlowClass: Class[?] = classOf[pekko.stream.javadsl.Flow[?, ?, ?]]
 
-  val sSubFlowClass: Class[_] = classOf[DslConsistencySpec.ScalaSubFlow[_, _, _]]
-  val jSubFlowClass: Class[_] = classOf[pekko.stream.javadsl.SubFlow[_, _, _]]
+  val sSubFlowClass: Class[?] = classOf[DslConsistencySpec.ScalaSubFlow[?, ?, ?]]
+  val jSubFlowClass: Class[?] = classOf[pekko.stream.javadsl.SubFlow[?, ?, ?]]
 
-  val sSourceClass: Class[_] = classOf[pekko.stream.scaladsl.Source[_, _]]
-  val jSourceClass: Class[_] = classOf[pekko.stream.javadsl.Source[_, _]]
+  val sSourceClass: Class[?] = classOf[pekko.stream.scaladsl.Source[?, ?]]
+  val jSourceClass: Class[?] = classOf[pekko.stream.javadsl.Source[?, ?]]
 
-  val sSubSourceClass: Class[_] = classOf[DslConsistencySpec.ScalaSubSource[_, _]]
-  val jSubSourceClass: Class[_] = classOf[pekko.stream.javadsl.SubSource[_, _]]
+  val sSubSourceClass: Class[?] = classOf[DslConsistencySpec.ScalaSubSource[?, ?]]
+  val jSubSourceClass: Class[?] = classOf[pekko.stream.javadsl.SubSource[?, ?]]
 
-  val sSinkClass: Class[_] = classOf[pekko.stream.scaladsl.Sink[_, _]]
-  val jSinkClass: Class[_] = classOf[pekko.stream.javadsl.Sink[_, _]]
+  val sSinkClass: Class[?] = classOf[pekko.stream.scaladsl.Sink[?, ?]]
+  val jSinkClass: Class[?] = classOf[pekko.stream.javadsl.Sink[?, ?]]
 
-  val jRunnableGraphClass: Class[_] = classOf[pekko.stream.javadsl.RunnableGraph[_]]
-  val sRunnableGraphClass: Class[_] = classOf[pekko.stream.scaladsl.RunnableGraph[_]]
+  val jRunnableGraphClass: Class[?] = classOf[pekko.stream.javadsl.RunnableGraph[?]]
+  val sRunnableGraphClass: Class[?] = classOf[pekko.stream.scaladsl.RunnableGraph[?]]
 
   val ignore: Set[String] =
     Set("equals", "hashCode", "notify", "notifyAll", "wait", "toString", "getClass") ++
@@ -95,7 +95,7 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
 
   val forComprehensions = Set("withFilter", "flatMap", "foreach")
 
-  val allowMissing: Map[Class[_], Set[String]] = Map(
+  val allowMissing: Map[Class[?], Set[String]] = Map(
     jFlowClass -> (graphHelpers ++ forComprehensions),
     jSourceClass -> (graphHelpers ++ forComprehensions ++ Set("watch", "ask")),
     // Java subflows can only be nested using .via and .to (due to type system restrictions)
@@ -113,7 +113,7 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
   @nowarn
   def materializing(m: Method): Boolean = m.getParameterTypes.contains(classOf[ActorMaterializer])
 
-  def assertHasMethod(c: Class[_], name: String): Unit = {
+  def assertHasMethod(c: Class[?], name: String): Unit = {
     // include class name to get better error message
     if (!allowMissing.getOrElse(c, Set.empty).contains(name))
       c.getMethods.collect { case m if !ignore(m.getName) => c.getName + "." + m.getName } should contain(
@@ -122,12 +122,12 @@ class DslConsistencySpec extends AnyWordSpec with Matchers {
 
   "Java and Scala DSLs" must {
 
-    (("Source" -> List[Class[_]](sSourceClass, jSourceClass)) ::
-    ("SubSource" -> List[Class[_]](sSubSourceClass, jSubSourceClass)) ::
-    ("Flow" -> List[Class[_]](sFlowClass, jFlowClass)) ::
-    ("SubFlow" -> List[Class[_]](sSubFlowClass, jSubFlowClass)) ::
-    ("Sink" -> List[Class[_]](sSinkClass, jSinkClass)) ::
-    ("RunnableFlow" -> List[Class[_]](sRunnableGraphClass, jRunnableGraphClass)) ::
+    (("Source" -> List[Class[?]](sSourceClass, jSourceClass)) ::
+    ("SubSource" -> List[Class[?]](sSubSourceClass, jSubSourceClass)) ::
+    ("Flow" -> List[Class[?]](sFlowClass, jFlowClass)) ::
+    ("SubFlow" -> List[Class[?]](sSubFlowClass, jSubFlowClass)) ::
+    ("Sink" -> List[Class[?]](sSinkClass, jSinkClass)) ::
+    ("RunnableFlow" -> List[Class[?]](sRunnableGraphClass, jRunnableGraphClass)) ::
     Nil).foreach {
       case (element, classes) =>
         s"provide same $element transforming operators" in {

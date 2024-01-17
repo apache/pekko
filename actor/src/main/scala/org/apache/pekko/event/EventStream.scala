@@ -36,24 +36,24 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
   def this(sys: ActorSystem) = this(sys, debug = false)
 
   type Event = Any
-  type Classifier = Class[_]
+  type Classifier = Class[?]
 
   /** Either the list of subscribed actors, or a ref to an [[pekko.event.EventStreamUnsubscriber]] */
   private val initiallySubscribedOrUnsubscriber = new AtomicReference[Either[Set[ActorRef], ActorRef]](Left(Set.empty))
 
-  protected implicit val subclassification: Subclassification[Classifier] = new Subclassification[Class[_]] {
-    def isEqual(x: Class[_], y: Class[_]) = x == y
-    def isSubclass(x: Class[_], y: Class[_]) = y.isAssignableFrom(x)
+  protected implicit val subclassification: Subclassification[Classifier] = new Subclassification[Class[?]] {
+    def isEqual(x: Class[?], y: Class[?]) = x == y
+    def isSubclass(x: Class[?], y: Class[?]) = y.isAssignableFrom(x)
   }
 
-  protected def classify(event: Any): Class[_] = event.getClass
+  protected def classify(event: Any): Class[?] = event.getClass
 
   protected def publish(event: Any, subscriber: ActorRef) = {
     if (sys == null && subscriber.isTerminated) unsubscribe(subscriber)
     else subscriber ! event
   }
 
-  override def subscribe(subscriber: ActorRef, channel: Class[_]): Boolean = {
+  override def subscribe(subscriber: ActorRef, channel: Class[?]): Boolean = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
     if (debug)
       publish(Logging.Debug(simpleName(this), this.getClass, "subscribing " + subscriber + " to channel " + channel))
@@ -61,7 +61,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
     super.subscribe(subscriber, channel)
   }
 
-  override def unsubscribe(subscriber: ActorRef, channel: Class[_]): Boolean = {
+  override def unsubscribe(subscriber: ActorRef, channel: Class[?]): Boolean = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
     val ret = super.unsubscribe(subscriber, channel)
     unregisterIfNoMoreSubscribedChannels(subscriber)
