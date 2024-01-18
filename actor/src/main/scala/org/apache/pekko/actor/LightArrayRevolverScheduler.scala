@@ -196,7 +196,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     }
 
   private def checkPeriod(delay: FiniteDuration): Unit =
-    if (delay.toNanos <= 0)
+    if (delay.length <= 0)
       throw new IllegalArgumentException(
         s"Task scheduled with [${delay.toSeconds}] seconds delay, which means creating an infinite loop. " +
         s"The expected delay must be greater than 0.")
