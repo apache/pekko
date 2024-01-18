@@ -661,6 +661,45 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
       }
     }
 
+    "using scheduleAtFixedRate" must {
+      "fixed rate reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
+        val zeroInterval = 0.seconds
+        import system.dispatcher
+        intercept[IllegalArgumentException] {
+          system.scheduler.scheduleAtFixedRate(100.millis, zeroInterval, testActor, "Not Allowed")
+        }
+        expectNoMessage(1.second)
+      }
+
+      "fixed rate reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
+        val negativeDelay = -1.seconds
+        import system.dispatcher
+        intercept[IllegalArgumentException] {
+          system.scheduler.scheduleAtFixedRate(100.millis, negativeDelay, testActor, "Not Allowed")
+        }
+        expectNoMessage(1.second)
+      }
+    }
+
+    "using scheduleWithFixedDelay" must {
+      "fixed delay reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
+        val zeroInterval = 0.seconds
+        import system.dispatcher
+        intercept[IllegalArgumentException] {
+          system.scheduler.scheduleWithFixedDelay(100.millis, zeroInterval, testActor, "Not Allowed")
+        }
+        expectNoMessage(1.second)
+      }
+
+      "fixed delay reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
+        val negativeDelay = -1.seconds
+        import system.dispatcher
+        intercept[IllegalArgumentException] {
+          system.scheduler.scheduleWithFixedDelay(100.millis, negativeDelay, testActor, "Not Allowed")
+        }
+        expectNoMessage(1.second)
+      }
+    }
     // same tests for fixedDelay and fixedRate
     List(new ScheduleWithFixedDelayAdapter, new ScheduleAtFixedRateAdapter).foreach { scheduleAdapter =>
       s"using $scheduleAdapter" must {
@@ -681,6 +720,24 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
           expectMsg("OK")
           intercept[IllegalArgumentException] {
             scheduleAdapter.schedule(100.millis, maxDelay + tickDuration, testActor, "Too long")
+          }
+          expectNoMessage(1.second)
+        }
+
+        "reject periodic tasks scheduled with zero interval" taggedAs TimingTest in {
+          val zeroInterval = 0.seconds
+          import system.dispatcher
+          intercept[IllegalArgumentException] {
+            scheduleAdapter.schedule(100.millis, zeroInterval, testActor, "Not Allowed")
+          }
+          expectNoMessage(1.second)
+        }
+
+        "reject periodic tasks scheduled with negative interval" taggedAs TimingTest in {
+          val negativeInterval = -1.seconds
+          import system.dispatcher
+          intercept[IllegalArgumentException] {
+            scheduleAdapter.schedule(100.millis, negativeInterval, testActor, "Not Allowed")
           }
           expectNoMessage(1.second)
         }
