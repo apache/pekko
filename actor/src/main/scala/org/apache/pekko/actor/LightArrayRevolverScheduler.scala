@@ -105,12 +105,14 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   override def scheduleWithFixedDelay(initialDelay: FiniteDuration, delay: FiniteDuration)(runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
+    checkPeriod(delay)
     checkMaxDelay(roundUp(delay).toNanos)
     super.scheduleWithFixedDelay(initialDelay, delay)(runnable)
   }
 
   override def schedule(initialDelay: FiniteDuration, delay: FiniteDuration, runnable: Runnable)(
       implicit executor: ExecutionContext): Cancellable = {
+    checkPeriod(delay)
     checkMaxDelay(roundUp(delay).toNanos)
     new AtomicCancellable(InitialRepeatMarker) { self =>
       final override protected def scheduledFirst(): Cancellable =
@@ -192,6 +194,12 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         throw SchedulerException("cannot enqueue after timer shutdown")
       task
     }
+
+  private def checkPeriod(delay: FiniteDuration): Unit =
+    if (delay.length <= 0)
+      throw new IllegalArgumentException(
+        s"Task scheduled with [${delay.toSeconds}] seconds delay, which means creating an infinite loop. " +
+        s"The expected delay must be greater than 0.")
 
   private def checkMaxDelay(delayNanos: Long): Unit =
     if (delayNanos / tickNanos > Int.MaxValue)
