@@ -61,7 +61,7 @@ class FlowCollectWhileSpec extends StreamSpec with ScriptedTest {
 
     "restart when pf throws" in {
       Source(1 to 6)
-        .collect { case x: Int => if (x % 2 == 0) throw TE("") else x }
+        .collectWhile { case x: Int => if (x % 2 == 0) throw TE("") else x }
         .withAttributes(supervisionStrategy(restartingDecider))
         .runWith(TestSink[Int]())
         .request(1)
@@ -76,7 +76,7 @@ class FlowCollectWhileSpec extends StreamSpec with ScriptedTest {
 
     "resume when pf throws" in {
       Source(1 to 6)
-        .collect { case x: Int => if (x % 2 == 0) throw TE("") else x }
+        .collectWhile { case x: Int => if (x % 2 == 0) throw TE("") else x }
         .withAttributes(supervisionStrategy(resumingDecider))
         .runWith(TestSink[Int]())
         .request(1)
