@@ -15,7 +15,8 @@ package org.apache.pekko.stream.impl.fusing
 
 import java.util.concurrent.TimeUnit.NANOSECONDS
 
-import scala.annotation.{ nowarn, tailrec }
+import scala.annotation.nowarn
+import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future

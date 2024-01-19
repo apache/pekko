@@ -236,4 +236,13 @@ public class SinkTest extends StreamTest {
     // #foreach
     assertEquals(Done.done(), done);
   }
+
+  @Test
+  public void sinkMustBeAbleToUseForall()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    CompletionStage<Boolean> cs =
+        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.forall(param -> param > 0), system);
+    boolean allMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
+    assertTrue(allMatch);
+  }
 }

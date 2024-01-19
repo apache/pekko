@@ -14,8 +14,7 @@
 package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
+import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.function.BiFunction
 import java.util.stream.Collector
 
@@ -27,22 +26,17 @@ import scala.util.Try
 
 import org.apache.pekko
 import pekko._
-import pekko.actor.ActorRef
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Status
+import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
 import pekko.dispatch.ExecutionContexts
 import pekko.japi.{ function, Util }
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
-import pekko.stream.javadsl
-import pekko.stream.scaladsl
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
 
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
 object Sink {
@@ -79,6 +73,31 @@ object Sink {
       zero: U,
       f: function.Function2[U, In, CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.foldAsync[U, In](zero)(f(_, _).asScala).toCompletionStage())
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[java.util.concurrent.CompletionStage]]  of `true` if the predicate is true for all elements;
+   *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[java.util.concurrent.CompletionStage]]  of `false` if the predicate is false for any element.
+   *
+   * The materialized value [[java.util.concurrent.CompletionStage]]  will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `false`
+   *
+   * @since 1.1.0
+   */
+  def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+    import pekko.util.FutureConverters._
+    new Sink(scaladsl.Sink.forall[In](p.test)
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+  }
 
   /**
    * Creates a sink which materializes into a ``CompletionStage`` which will be completed with a result of the Java ``Collector``
