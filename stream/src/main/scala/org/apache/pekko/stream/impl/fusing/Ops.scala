@@ -193,9 +193,8 @@ import pekko.util.ccompat._
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
-              case Supervision.Stop    => failStage(ex)
-              case Supervision.Resume  => if (!hasBeenPulled(in)) pull(in)
-              case Supervision.Restart => if (!hasBeenPulled(in)) pull(in)
+              case Supervision.Stop => failStage(ex)
+              case _                => pull(in)
             }
         }
 
@@ -267,9 +266,8 @@ private[stream] object Collect {
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
-              case Supervision.Stop    => failStage(ex)
-              case Supervision.Resume  => if (!hasBeenPulled(in)) pull(in)
-              case Supervision.Restart => if (!hasBeenPulled(in)) pull(in)
+              case Supervision.Stop => failStage(ex)
+              case _                => pull(in)
             }
         }
 
