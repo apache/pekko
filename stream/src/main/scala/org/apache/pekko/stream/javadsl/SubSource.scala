@@ -499,6 +499,26 @@ class SubSource[Out, Mat](
     new SubSource(delegate.collect(pf))
 
   /**
+   * Transform this stream by applying the given partial function to the first element
+   * on which the function is defined as it pass through this processing step, and cancel the upstream publisher
+   * after the first element is emitted.
+   *
+   * Non-matching elements are filtered out.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the provided partial function is defined for the first element
+   *
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes or the first element is emitted
+   *
+   * '''Cancels when''' downstream cancels
+   */
+  def collectFirst[T](pf: PartialFunction[Out, T]): SubSource[T, Mat] =
+    new SubSource(delegate.collectFirst(pf))
+
+  /**
    * Transform this stream by applying the given partial function to each of the elements
    * on which the function is defined as they pass through this processing step.
    * Non-matching elements are filtered out.
