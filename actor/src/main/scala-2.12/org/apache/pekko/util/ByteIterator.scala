@@ -123,7 +123,7 @@ object ByteIterator {
 
     def getBytes(xs: Array[Byte], offset: Int, n: Int): this.type = {
       if (n <= this.len) {
-        Array.copy(this.array, this.from, xs, offset, n)
+        System.arraycopy(this.array, this.from, xs, offset, n)
         this.drop(n)
       } else EmptyImmutableSeq.iterator.next()
     }
