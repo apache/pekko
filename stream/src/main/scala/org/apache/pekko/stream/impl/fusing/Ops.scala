@@ -267,7 +267,11 @@ private[stream] object Collect {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
-              case _                => pull(in)
+              case _                =>
+                // The !hasBeenPulled(in) check is not required here since it
+                // isn't possible to do an additional pull(in) due to the nature
+                // of how collect works
+                pull(in)
             }
         }
 
