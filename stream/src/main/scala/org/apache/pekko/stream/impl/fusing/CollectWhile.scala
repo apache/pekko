@@ -45,16 +45,26 @@ private[pekko] final class CollectWhile[In, Out](pf: PartialFunction[In, Out]) e
 
       override final def onPush(): Unit =
         try {
-          pf.applyOrElse(grab(in), NotApplied) match {
-            case NotApplied             => completeStage()
-            case result: Out @unchecked => push(out, result)
-            case _                      => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
+          // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
+          // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
+          //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `Collect` operator.
+          //   If you interest, you can check the associated PR for this change and the
+          //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
+          val result = pf.applyOrElse(grab(in), NotApplied)
+          if (result.asInstanceOf[AnyRef] eq NotApplied) {
+            completeStage()
+          } else {
+            push(out, result.asInstanceOf[Out])
           }
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
               case Supervision.Stop => failStage(ex)
-              case _                => pull(in)
+              case _                =>
+                // The !hasBeenPulled(in) check is not required here since it
+                // isn't possible to do an additional pull(in) due to the nature
+                // of how collect works
+                pull(in)
             }
         }
 

@@ -258,10 +258,16 @@ private[stream] object Collect {
 
       override def onPush(): Unit =
         try {
-          pf.applyOrElse(grab(in), NotApplied) match {
-            case NotApplied             => pull(in)
-            case result: Out @unchecked => push(out, result)
-            case _                      => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
+          val result = pf.applyOrElse(grab(in), NotApplied)
+          // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
+          // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
+          //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
+          //   If you interest, you can check the associated PR for this change and the
+          //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
+          if (result.asInstanceOf[AnyRef] eq Collect.NotApplied) {
+            pull(in)
+          } else {
+            push(out, result.asInstanceOf[Out])
           }
         } catch {
           case NonFatal(ex) =>
