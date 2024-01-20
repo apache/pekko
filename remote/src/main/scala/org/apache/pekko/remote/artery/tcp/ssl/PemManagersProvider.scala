@@ -14,6 +14,7 @@
 package org.apache.pekko.remote.artery.tcp.ssl
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.security.{ KeyStore, PrivateKey }
 import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
@@ -74,7 +75,8 @@ private[ssl] object PemManagersProvider {
    */
   @InternalApi
   private[ssl] def loadPrivateKey(filename: String): PrivateKey = blocking {
-    val pemData = Files.readString(new File(filename).toPath)
+    val bytes = Files.readAllBytes(new File(filename).toPath)
+    val pemData = new String(bytes, StandardCharsets.UTF_8)
     DERPrivateKeyLoader.load(PEMDecoder.decode(pemData))
   }
 
