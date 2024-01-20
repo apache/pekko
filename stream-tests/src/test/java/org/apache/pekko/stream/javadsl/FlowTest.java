@@ -998,6 +998,25 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseCollectFirst() {
+    Source.from(
+            Arrays.asList(
+                Optional.of(1), Optional.<Integer>empty(), Optional.of(2), Optional.of(3)))
+        .collectFirst(
+            PFBuilder.<Optional<Integer>, Integer>create()
+                .match(
+                    Optional.class,
+                    elem -> elem.isPresent() && (Integer) elem.get() % 2 == 0,
+                    elem -> (Integer) elem.get())
+                .build())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(4)
+        .expectNext(2)
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =

@@ -14,9 +14,11 @@
 package docs.stream.operators.sourceorflow
 
 import org.apache.pekko.NotUsed
-import org.apache.pekko.stream.scaladsl.Flow
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.scaladsl.{ Flow, Sink, Source }
 
 object Collect {
+  private implicit val system: ActorSystem = null
   // #collect-elements
   trait Message
   final case class Ping(id: Int) extends Message
@@ -45,5 +47,17 @@ object Collect {
       case Ping(id) if id <= 100 => Pong(id)
     }
     // #collectWhile
+  }
+
+  def collectFirst(): Unit = {
+    // #collectFirst
+    Source(List(1, 3, 5, 7, 8, 9, 10))
+      .collectFirst {
+        case elem if elem % 2 == 0 => elem
+      }
+      .runWith(Sink.foreach(println))
+    // expect prints output:
+    // 8
+    // #collectFirst
   }
 }
