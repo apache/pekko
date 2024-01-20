@@ -29,8 +29,6 @@ import pekko.stream.Attributes._
     val inputBufferOne = inputBuffer(initial = 1, max = 1)
 
     // stage specific default attributes
-    val fused = name("fused")
-    val materializedValueSource = name("matValueSource")
     val map = name("map")
     val contramap = name("contramap")
     val dimap = name("dimap")
@@ -79,9 +77,7 @@ import pekko.stream.Attributes._
     val prefixAndTail = name("prefixAndTail")
     val flatMapPrefix = name("flatMapPrefix")
     val split = name("split")
-    val concatAll = name("concatAll")
     val processor = name("processor")
-    val processorWithKey = name("processorWithKey")
     val identityOp = name("identityOp")
     val delimiterFraming = name("delimiterFraming")
 
@@ -131,10 +127,7 @@ import pekko.stream.Attributes._
     val maybeSource = name("MaybeSource")
     val neverSource = name("neverSource")
     val failedSource = name("failedSource")
-    val concatSource = name("concatSource")
-    val concatMatSource = name("concatMatSource")
     val subscriberSource = name("subscriberSource")
-    val actorPublisherSource = name("actorPublisherSource")
     val actorRefSource = name("actorRefSource")
     val actorRefWithBackpressureSource = name("actorRefWithBackpressureSource")
     val queueSource = name("queueSource")
@@ -161,7 +154,6 @@ import pekko.stream.Attributes._
     val neverSink = name("neverSink")
     val actorRefSink = name("actorRefSink")
     val actorRefWithBackpressureSink = name("actorRefWithBackpressureSink")
-    val actorSubscriberSink = name("actorSubscriberSink")
     val queueSink = name("queueSink")
     val lazySink = name("lazySink")
     val lazyFlow = name("lazyFlow")
