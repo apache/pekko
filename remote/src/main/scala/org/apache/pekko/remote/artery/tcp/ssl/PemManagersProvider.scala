@@ -13,24 +13,17 @@
 
 package org.apache.pekko.remote.artery.tcp.ssl
 
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.security.KeyStore
-import java.security.PrivateKey
-import java.security.cert.Certificate
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
+import java.security.{ KeyStore, PrivateKey }
+import java.security.cert.{ Certificate, CertificateFactory, X509Certificate }
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.pki.pem.DERPrivateKeyLoader
-import pekko.pki.pem.PEMDecoder
-import javax.net.ssl.KeyManager
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.TrustManager
-import javax.net.ssl.TrustManagerFactory
+import pekko.pki.pem.{ DERPrivateKeyLoader, PEMDecoder }
+
+import javax.net.ssl.{ KeyManager, KeyManagerFactory, TrustManager, TrustManagerFactory }
 
 import scala.concurrent.blocking
 
@@ -94,8 +87,7 @@ private[ssl] object PemManagersProvider {
    */
   @InternalApi
   private[ssl] def loadCertificate(filename: String): Certificate = blocking {
-    val bytes = Files.readAllBytes(new File(filename).toPath)
-    certFactory.generateCertificate(new ByteArrayInputStream(bytes))
+    certFactory.generateCertificate(Files.newInputStream(new File(filename).toPath))
   }
 
 }
