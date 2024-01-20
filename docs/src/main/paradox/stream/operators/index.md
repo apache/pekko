@@ -60,6 +60,7 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="collection"></a>@ref[collection](Sink/collection.md)|@scala[Collect all values emitted from the stream into a collection.]@java[Operator only available in the Scala API. The closest operator in the Java API is @ref[`Sink.seq`](Sink/seq.md)].|
 |Sink|<a name="combine"></a>@ref[combine](Sink/combine.md)|Combine several sinks into one using a user specified strategy|
 |Sink|<a name="completionstagesink"></a>@ref[completionStageSink](Sink/completionStageSink.md)|Streams the elements to the given future sink once it successfully completes. |
+|Sink|<a name="exists"></a>@ref[exists](Sink/exists.md)|Completes the stream with true as soon as there's an element satisfy the *predicate*, or emits false when the stream|
 |Sink|<a name="fold"></a>@ref[fold](Sink/fold.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
 |Sink|<a name="foldwhile"></a>@ref[foldWhile](Sink/foldWhile.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
 |Sink|<a name="forall"></a>@ref[forall](Sink/forall.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
@@ -155,6 +156,7 @@ depending on being backpressured by downstream or not.
 |Flow|<a name="dimap"></a>@ref[dimap](Flow/dimap.md)|Transform this Flow by applying a function `f` to each *incoming* upstream element before it is passed to the Flow, and a function `g` to each *outgoing* downstream element.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
 |Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
+|Source/Flow|<a name="exists"></a>@ref[exists](Source-or-Flow/exists.md)|Emits true and completes the stream as soon as there's an element satisfy the *predicate*, or emits false when upstream|
 |Source/Flow|<a name="filter"></a>@ref[filter](Source-or-Flow/filter.md)|Filter the incoming elements using a predicate.|
 |Source/Flow|<a name="filternot"></a>@ref[filterNot](Source-or-Flow/filterNot.md)|Filter the incoming elements using a predicate.|
 |Flow|<a name="flattenoptional"></a>@ref[flattenOptional](Flow/flattenOptional.md)|Collect the value of `Optional` from all the elements passing through this flow , empty `Optional` is filtered out.|
@@ -445,6 +447,8 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [dropWhile](Source-or-Flow/dropWhile.md)
 * [dropWithin](Source-or-Flow/dropWithin.md)
 * [empty](Source/empty.md)
+* [exists](Source-or-Flow/exists.md)
+* [exists](Sink/exists.md)
 * [expand](Source-or-Flow/expand.md)
 * [extrapolate](Source-or-Flow/extrapolate.md)
 * [failed](Source/failed.md)

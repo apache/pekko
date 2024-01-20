@@ -125,6 +125,22 @@ object Sink {
     new Sink(scaladsl.Sink.reduce[In](f.apply).toCompletionStage())
 
   /**
+   * A `Sink` that will invoke the given predicate for every received element.
+   *
+   * The returned [[java.util.concurrent.CompletionStage]] will be completed with true as soon as
+   * predicate returned true, or be completed with false if there's no element satisfy
+   * predicate and the stream was completed.
+   *
+   * If the stream is empty (i.e. completes before signalling any elements),
+   * the returned [[java.util.concurrent.CompletionStage]] will be completed immediately with true.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   */
+  def exists[In](p: function.Predicate[In]): Sink[In, CompletionStage[java.lang.Boolean]] =
+    new Sink(scaladsl.Sink.exists(p.test).mapMaterializedValue(
+      _.map(Boolean.box)(ExecutionContexts.parasitic)).toCompletionStage())
+
+  /**
    * Helper to create [[Sink]] from `Subscriber`.
    */
   def fromSubscriber[In](subs: Subscriber[In]): Sink[In, NotUsed] =
