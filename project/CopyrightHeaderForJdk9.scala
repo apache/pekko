@@ -15,10 +15,12 @@ import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSources
 import sbt.Keys.sourceDirectory
 import sbt.{ Compile, Def, Test, _ }
 
-object CopyrightHeaderForJdk9 extends CopyrightHeader {
+object CopyrightHeaderForJdk9 extends AutoPlugin {
 
-  override protected def headerMappingSettings: Seq[Def.Setting[_]] = {
-    super.headerMappingSettings
+  override def requires = CopyrightHeader && Jdk9
+  override def trigger = allRequirements
+
+  override def projectSettings: Seq[Def.Setting[_]] = {
     import Jdk9._
     Seq(
       Compile / headerSources ++=

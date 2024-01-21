@@ -11,22 +11,18 @@
  * Copyright (C) 2018-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import de.heikoseeberger.sbtheader.{ CommentCreator, HeaderPlugin, NewLine }
 import org.apache.commons.lang3.StringUtils
-import sbt.Keys._
 import sbt._
 
-import MultiJvmPlugin.MultiJvmKeys._
+object CopyrightHeader extends AutoPlugin {
+  import HeaderPlugin.autoImport._
 
-trait CopyrightHeader extends AutoPlugin {
+  override def requires = HeaderPlugin
+  override def trigger = allRequirements
 
-  override def requires: Plugins = HeaderPlugin
-
-  override def trigger: PluginTrigger = allRequirements
-
-  protected def headerMappingSettings: Seq[Def.Setting[_]] =
-    Seq(Compile, Test, MultiJvm).flatMap { config =>
+  override def projectSettings = Def.settings(
+    Seq(Compile, Test).flatMap { config =>
       inConfig(config)(
         Seq(
           headerLicense := Some(HeaderLicense.Custom(apacheHeader)),
@@ -36,20 +32,7 @@ trait CopyrightHeader extends AutoPlugin {
             HeaderFileType.conf -> hashLineComment,
             HeaderFileType("template") -> cStyleComment,
             HeaderFileType("sbt") -> cStyleComment)))
-    }
-
-  override def projectSettings: Seq[Def.Setting[_]] =
-    Def.settings(headerMappingSettings, additional)
-
-  def additional: Seq[Def.Setting[_]] =
-    Def.settings(Compile / compile := {
-        (Compile / headerCreate).value
-        (Compile / compile).value
-      },
-      Test / compile := {
-        (Test / headerCreate).value
-        (Test / compile).value
-      })
+    })
 
   val apacheFromAkkaSourceHeader: String =
     """Licensed to the Apache Software Foundation (ASF) under one or more
@@ -89,7 +72,7 @@ trait CopyrightHeader extends AutoPlugin {
           HeaderCommentStyle.cStyleBlockComment.commentCreator(apacheFromAkkaSourceHeader,
             existingText) + NewLine * 2 + currentText
         case Some(currentText) =>
-          throw new IllegalStateException(s"Unable to detect copyright for header:[$currentText]")
+          throw new IllegalStateException(s"Unable to detect copyright for header: [$currentText]")
         case None =>
           HeaderCommentStyle.cStyleBlockComment.commentCreator(text, existingText)
       }
@@ -127,11 +110,6 @@ trait CopyrightHeader extends AutoPlugin {
   private def isValidCopyrightAnnotated(text: String): Boolean =
     isApacheCopyrighted(text)
 
-  private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean = {
+  private def isOnlyLightbendOrEpflCopyrightAnnotated(text: String): Boolean =
     (isLightbendCopyrighted(text) || isLAMPCopyrighted(text)) && !isApacheCopyrighted(text)
-  }
 }
-
-object CopyrightHeader extends CopyrightHeader
-
-object CopyrightHeaderInPr extends CopyrightHeader
