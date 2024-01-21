@@ -62,6 +62,7 @@ import pekko.stream.Attributes._
     val scan = name("scan")
     val scanAsync = name("scanAsync")
     val fold = name("fold")
+    val foldWhile = name("foldWhile")
     val foldAsync = name("foldAsync")
     val reduce = name("reduce")
     val intersperse = name("intersperse")

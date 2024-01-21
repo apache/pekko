@@ -13,28 +13,30 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import java.util.Arrays;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
-import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.Graph;
+import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.UniformFanOutShape;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -68,6 +70,16 @@ public class SinkTest extends StreamTest {
     @SuppressWarnings("unused")
     CompletionStage<Integer> integerFuture =
         Source.from(new ArrayList<Integer>()).runWith(foldSink, system);
+  }
+
+  @Test
+  public void mustBeAbleToUseFoldWhile() throws Exception {
+    final int result =
+        Source.range(1, 10)
+            .runWith(Sink.foldWhile(0, acc -> acc < 10, Integer::sum), system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    assertEquals(10, result);
   }
 
   @Test

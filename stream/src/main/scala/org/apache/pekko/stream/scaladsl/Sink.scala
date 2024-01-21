@@ -424,6 +424,18 @@ object Sink {
     Flow[T].fold(zero)(f).toMat(Sink.head)(Keep.right).named("foldSink")
 
   /**
+   * A `Sink` that will invoke the given function for every received element, giving it its previous
+   * output (or the given `zero` value) and the element as input.
+   * The returned [[scala.concurrent.Future]] will be completed with value of the final
+   * function evaluation when the input stream ends, predicate `p` returns false, or completed with `Failure`
+   * if there is a failure signaled in the stream.
+   *
+   * @see [[#fold]]
+   */
+  def foldWhile[U, T](zero: U)(p: U => Boolean)(f: (U, T) => U): Sink[T, Future[U]] =
+    Flow[T].foldWhile(zero)(p)(f).toMat(Sink.head)(Keep.right).named("foldWhileSink")
+
+  /**
    * A `Sink` that will invoke the given asynchronous function for every received element, giving it its previous
    * output (or the given `zero` value) and the element as input.
    * The returned [[scala.concurrent.Future]] will be completed with value of the final

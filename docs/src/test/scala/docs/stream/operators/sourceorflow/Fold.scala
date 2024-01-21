@@ -34,4 +34,10 @@ object Fold extends App {
 
   // Prints: Histogram(99,51)
   // #fold
+
+  // #foldWhile
+  Source(1 to 100)
+    .foldWhile(0)(elem => elem < 100)(_ + _)
+    .runForeach(println)
+  // #foldWhile
 }

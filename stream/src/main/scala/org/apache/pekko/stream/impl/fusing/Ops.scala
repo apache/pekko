@@ -14,7 +14,6 @@
 package org.apache.pekko.stream.impl.fusing
 
 import java.util.concurrent.TimeUnit.NANOSECONDS
-
 import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.collection.immutable
@@ -41,7 +40,7 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages.SimpleLinearGraphStage
 import pekko.stream.scaladsl.{ DelayStrategy, Source }
 import pekko.stream.stage._
-import pekko.util.{ unused, OptionVal }
+import pekko.util.{ unused, ConstantFun, OptionVal }
 import pekko.util.ccompat._
 
 /**
@@ -601,14 +600,21 @@ private[stream] object Collect {
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final case class Fold[In, Out](zero: Out, f: (Out, In) => Out)
+@InternalApi private[pekko] object Fold {
+  def apply[In, Out](zero: Out, f: (Out, In) => Out): Fold[In, Out] = new Fold(zero, ConstantFun.anyToTrue, f)
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi private[pekko] final case class Fold[In, Out](zero: Out,
+    predicate: Out => Boolean,
+    f: (Out, In) => Out)
     extends GraphStage[FlowShape[In, Out]] {
 
   val in = Inlet[In]("Fold.in")
   val out = Outlet[Out]("Fold.out")
   override val shape: FlowShape[In, Out] = FlowShape(in, out)
-
-  override def toString: String = "Fold"
 
   override val initialAttributes = DefaultAttributes.fold and SourceLocation.forLambda(f)
 
@@ -623,6 +629,10 @@ private[stream] object Collect {
         val elem = grab(in)
         try {
           aggregator = f(aggregator, elem)
+          if (!predicate(aggregator)) {
+            push(out, aggregator)
+            completeStage()
+          }
         } catch {
           case NonFatal(ex) =>
             decider(ex) match {
@@ -653,6 +663,8 @@ private[stream] object Collect {
 
       setHandlers(in, out, this)
     }
+
+  override def toString: String = "Fold"
 }
 
 /**

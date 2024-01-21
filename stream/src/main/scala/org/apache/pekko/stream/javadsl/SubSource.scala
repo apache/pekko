@@ -749,6 +749,32 @@ class SubSource[Out, Mat](
     new SubSource(delegate.fold(zero)(f.apply))
 
   /**
+   * Similar to `scan` but only emits its result when the upstream completes or the predicate `p` returns `false`.
+   * after which it also completes. Applies the given function towards its current and next value,
+   * yielding the next current value.
+   *
+   * If the function `f` throws an exception and the supervision decision is
+   * [[pekko.stream.Supervision.Restart]] current value starts at `zero` again
+   * the stream will continue.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * Note that the `zero` value must be immutable.
+   *
+   * '''Emits when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * See also [[FlowOps.fold]]
+   */
+  def foldWhile[T](zero: T, p: function.Predicate[T], f: function.Function2[T, Out, T]): SubSource[T, Mat] =
+    new SubSource(delegate.foldWhile(zero)(p.test)(f.apply))
+
+  /**
    * Similar to `fold` but with an asynchronous function.
    * Applies the given function towards its current and next value,
    * yielding the next current value.
