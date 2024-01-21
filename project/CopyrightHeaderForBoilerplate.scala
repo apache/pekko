@@ -11,17 +11,17 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
-import de.heikoseeberger.sbtheader.HeaderPlugin
+import CopyrightHeader.cStyleComment
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._
 import sbt.Keys.sourceDirectory
 import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
 import spray.boilerplate.BoilerplatePlugin
 
-object CopyrightHeaderForBoilerplate extends CopyrightHeader {
-  override def requires: Plugins = BoilerplatePlugin && HeaderPlugin
+object CopyrightHeaderForBoilerplate extends AutoPlugin {
+  override def requires: Plugins = BoilerplatePlugin && CopyrightHeader
+  override def trigger: PluginTrigger = allRequirements
 
-  override protected def headerMappingSettings: Seq[Def.Setting[_]] = {
-    super.headerMappingSettings
+  override def projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(

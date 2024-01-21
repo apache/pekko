@@ -35,8 +35,6 @@ enablePlugins(
   UnidocRoot,
   UnidocWithPrValidation,
   NoPublish,
-  CopyrightHeader,
-  CopyrightHeaderInPr,
   ScalafixIgnoreFilePlugin,
   JavaFormatterPlugin)
 disablePlugins(MimaPlugin)
@@ -51,7 +49,6 @@ addCommandAlias(
 addCommandAlias(name = "sortImports", value = ";scalafixEnable; scalafixAll SortImports; scalafmtAll")
 
 import PekkoBuild._
-import MultiJvmPlugin.MultiJvmKeys.MultiJvm
 import com.typesafe.tools.mima.plugin.MimaPlugin
 import sbt.Keys.{ initialCommands, parallelExecution }
 import spray.boilerplate.BoilerplatePlugin
@@ -147,7 +144,7 @@ lazy val actorTests = pekkoModule("actor-tests")
 lazy val pekkoScalaNightly = pekkoModule("scala-nightly")
   .aggregate(aggregatedProjects: _*)
   .disablePlugins(MimaPlugin)
-  .disablePlugins(ValidatePullRequest, MimaPlugin, CopyrightHeaderInPr)
+  .disablePlugins(ValidatePullRequest, MimaPlugin)
 
 lazy val benchJmh = pekkoModule("bench-jmh")
   .enablePlugins(Jdk9)
@@ -155,8 +152,8 @@ lazy val benchJmh = pekkoModule("bench-jmh")
     _ % "compile->compile;compile->test"): _*)
   .settings(Dependencies.benchJmh)
   .settings(javacOptions += "-parameters") // for Jackson
-  .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish, CopyrightHeader)
-  .disablePlugins(MimaPlugin, ValidatePullRequest, CopyrightHeaderInPr)
+  .enablePlugins(JmhPlugin, ScaladocNoVerificationOfDiagrams, NoPublish)
+  .disablePlugins(MimaPlugin, ValidatePullRequest)
 
 lazy val cluster = pekkoModule("cluster")
   .dependsOn(
@@ -171,7 +168,6 @@ lazy val cluster = pekkoModule("cluster")
   .settings(OSGi.cluster)
   .settings(Protobuf.settings)
   .settings(Test / parallelExecution := false)
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val clusterMetrics = pekkoModule("cluster-metrics")
@@ -185,7 +181,6 @@ lazy val clusterMetrics = pekkoModule("cluster-metrics")
   .settings(Protobuf.settings)
   .settings(SigarLoader.sigarSettings)
   .settings(Test / parallelExecution := false)
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val clusterSharding = pekkoModule("cluster-sharding")
@@ -203,7 +198,6 @@ lazy val clusterSharding = pekkoModule("cluster-sharding")
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
   .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
-  .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
   .enablePlugins(Jdk9)
 
@@ -216,7 +210,6 @@ lazy val clusterTools = pekkoModule("cluster-tools")
   .settings(AutomaticModuleName.settings("pekko.cluster.tools"))
   .settings(OSGi.clusterTools)
   .settings(Protobuf.settings)
-  .configs(MultiJvm)
   .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams)
 
 lazy val distributedData = pekkoModule("distributed-data")
@@ -226,7 +219,6 @@ lazy val distributedData = pekkoModule("distributed-data")
   .settings(AddMetaInfLicenseFiles.distributedDataSettings)
   .settings(OSGi.distributedData)
   .settings(Protobuf.settings)
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val docs = pekkoModule("docs")
@@ -427,7 +419,6 @@ lazy val remoteTests = pekkoModule("remote-tests")
   .settings(Dependencies.remoteTests)
   .settings(Protobuf.settings)
   .settings(Test / parallelExecution := false)
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest, NoPublish)
   .disablePlugins(MimaPlugin)
 
@@ -535,7 +526,6 @@ lazy val clusterTyped = pekkoModule("cluster-typed")
   .settings(Protobuf.settings)
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
@@ -556,7 +546,6 @@ lazy val clusterShardingTyped = pekkoModule("cluster-sharding-typed")
   // To be able to import ContainerFormats.proto
   .settings(Protobuf.settings)
   .settings(Protobuf.importPath := Some(baseDirectory.value / ".." / "remote" / "src" / "main" / "protobuf"))
-  .configs(MultiJvm)
   .enablePlugins(MultiNodeScalaTest)
 
 lazy val streamTyped = pekkoModule("stream-typed")

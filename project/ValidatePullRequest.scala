@@ -85,7 +85,6 @@ object PekkoValidatePullRequest extends AutoPlugin {
  */
 object MultiNodeWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
-  import MultiJvmPlugin.MultiJvmKeys.MultiJvm
 
   override def trigger = allRequirements
   override def requires = PekkoValidatePullRequest && MultiNode

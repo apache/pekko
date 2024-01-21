@@ -12,8 +12,8 @@
  */
 
 import TestExtras.Filter.Keys._
-import MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
-import MultiJvmPlugin.MultiJvmKeys._
+import MultiJvmPlugin.autoImport.multiJvmCreateLogger
+import MultiJvmPlugin.autoImport._
 
 import sbt.{ Def, _ }
 import sbt.Keys._
@@ -47,7 +47,7 @@ object MultiNode extends AutoPlugin {
   val multiTest = CliOptions.multiNode.ifTrue(MultiJvm / multiNodeTest).getOrElse(MultiJvm / test)
 
   override def trigger = noTrigger
-  override def requires = plugins.JvmPlugin
+  override def requires = plugins.JvmPlugin && MultiJvmPlugin
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = multiJvmSettings
 
