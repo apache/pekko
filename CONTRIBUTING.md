@@ -171,6 +171,12 @@ sbt
 applyCodeStyle
 ```
 
+or you could format code via [Scala-Cli](https://scala-cli.virtuslab.org/), which can be improve the code format speed.
+
+```shell
+Scala-cli fmt
+```
+
 #### Do not use `-optimize` Scala compiler flag
 
 Pekko has not been compiled or tested with `-optimize` Scala compiler flag. (In sbt, you can specify compiler options in the `scalacOptions` key.)
