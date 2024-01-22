@@ -25,12 +25,12 @@ import sbt.ScopeFilter.ProjectFilter
 object Scaladoc extends AutoPlugin {
 
   object CliOptions {
-    val scaladocDiagramsEnabled = CliOption("pekko.scaladoc.diagrams", true)
-    val scaladocAutoAPI = CliOption("pekko.scaladoc.autoapi", true)
+    lazy val scaladocDiagramsEnabled = CliOption("pekko.scaladoc.diagrams", true)
+    lazy val scaladocAutoAPI = CliOption("pekko.scaladoc.autoapi", true)
   }
 
-  override def trigger = allRequirements
-  override def requires = plugins.JvmPlugin
+  override lazy val trigger = allRequirements
+  override lazy val requires = plugins.JvmPlugin
 
   val validateDiagrams = settingKey[Boolean]("Validate generated scaladoc diagrams")
 
@@ -112,8 +112,8 @@ object Scaladoc extends AutoPlugin {
  */
 object ScaladocNoVerificationOfDiagrams extends AutoPlugin {
 
-  override def trigger = noTrigger
-  override def requires = Scaladoc
+  override lazy val trigger = noTrigger
+  override lazy val requires = Scaladoc
 
   override lazy val projectSettings = Seq(Compile / Scaladoc.validateDiagrams := false)
 }
@@ -124,21 +124,21 @@ object ScaladocNoVerificationOfDiagrams extends AutoPlugin {
 object UnidocRoot extends AutoPlugin {
 
   object CliOptions {
-    val genjavadocEnabled = CliOption("pekko.genjavadoc.enabled", false)
+    lazy val genjavadocEnabled = CliOption("pekko.genjavadoc.enabled", false)
   }
 
   object autoImport {
-    val unidocRootIgnoreProjects = settingKey[Seq[ProjectReference]]("Projects to ignore when generating unidoc")
+    lazy val unidocRootIgnoreProjects = settingKey[Seq[ProjectReference]]("Projects to ignore when generating unidoc")
   }
   import autoImport._
 
-  override def trigger = noTrigger
-  override def requires =
+  override lazy val trigger = noTrigger
+  override lazy val requires =
     UnidocRoot.CliOptions.genjavadocEnabled
       .ifTrue(sbtunidoc.ScalaUnidocPlugin && sbtunidoc.JavaUnidocPlugin && sbtunidoc.GenJavadocPlugin)
       .getOrElse(sbtunidoc.ScalaUnidocPlugin)
 
-  val pekkoSettings = UnidocRoot.CliOptions.genjavadocEnabled
+  lazy val pekkoSettings = UnidocRoot.CliOptions.genjavadocEnabled
     .ifTrue(Seq(
       JavaUnidoc / unidoc / javacOptions := {
         if (JdkOptions.isJdk8) Seq("-Xdoclint:none")
@@ -209,9 +209,9 @@ object UnidocRoot extends AutoPlugin {
  */
 object BootstrapGenjavadoc extends AutoPlugin {
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
-  override def requires =
+  override lazy val requires =
     UnidocRoot.CliOptions.genjavadocEnabled
       .ifTrue {
         // require 11, fail fast for 8, 9, 10

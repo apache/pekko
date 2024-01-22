@@ -23,7 +23,7 @@ object OSGi {
   // The included osgiSettings that creates bundles also publish the jar files
   // in the .../bundles directory which makes testing locally published artifacts
   // a pain. Create bundles but publish them to the normal .../jars directory.
-  def osgiSettings =
+  lazy val osgiSettings =
     defaultOsgiSettings ++ Seq(
       Compile / packageBin := {
         val bundle = OsgiKeys.bundle.value
@@ -45,7 +45,7 @@ object OSGi {
       // Recent versions of BND create corrupted jars so use JDK jar instead, see https://github.com/sbt/sbt-osgi/pull/81
       OsgiKeys.packageWithJVMJar := true)
 
-  val actor = osgiSettings ++ Seq(
+  lazy val actor = osgiSettings ++ Seq(
     OsgiKeys.exportPackage := Seq("org.apache.pekko*"),
     OsgiKeys.privatePackage := Seq("org.apache.pekko.osgi.impl"),
     // pekko-actor packages are not imported, as contained in the CP
@@ -58,22 +58,23 @@ object OSGi {
     // dynamicImportPackage needed for loading classes defined in configuration
     OsgiKeys.dynamicImportPackage := Seq("*"))
 
-  val actorTyped = exports(Seq("org.apache.pekko.actor.typed.*"))
+  lazy val actorTyped = exports(Seq("org.apache.pekko.actor.typed.*"))
 
-  val cluster = exports(Seq("org.apache.pekko.cluster.*"))
+  lazy val cluster = exports(Seq("org.apache.pekko.cluster.*"))
 
-  val clusterTools = exports(Seq("org.apache.pekko.cluster.singleton.*", "org.apache.pekko.cluster.client.*",
+  lazy val clusterTools = exports(Seq("org.apache.pekko.cluster.singleton.*", "org.apache.pekko.cluster.client.*",
     "org.apache.pekko.cluster.pubsub.*"))
 
-  val clusterSharding = exports(Seq("org.apache.pekko.cluster.sharding.*"))
+  lazy val clusterSharding = exports(Seq("org.apache.pekko.cluster.sharding.*"))
 
-  val clusterMetrics = exports(Seq("org.apache.pekko.cluster.metrics.*"), imports = Seq(kamonImport(), sigarImport()))
+  lazy val clusterMetrics =
+    exports(Seq("org.apache.pekko.cluster.metrics.*"), imports = Seq(kamonImport(), sigarImport()))
 
-  val distributedData = exports(Seq("org.apache.pekko.cluster.ddata.*"))
+  lazy val distributedData = exports(Seq("org.apache.pekko.cluster.ddata.*"))
 
-  val osgi = exports(Seq("org.apache.pekko.osgi.*"))
+  lazy val osgi = exports(Seq("org.apache.pekko.osgi.*"))
 
-  val protobufV3 = osgiSettings ++ Seq(
+  lazy val protobufV3 = osgiSettings ++ Seq(
     OsgiKeys.importPackage := Seq(
       "!sun.misc",
       scalaJava8CompatImport(),
@@ -89,11 +90,11 @@ object OSGi {
     // (including typical ones such as scala runtime)
     OsgiKeys.explodedJars := Seq(assembly.value))
 
-  val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
+  lazy val jackson = exports(Seq("org.apache.pekko.serialization.jackson.*"))
 
-  val remote = exports(Seq("org.apache.pekko.remote.*"))
+  lazy val remote = exports(Seq("org.apache.pekko.remote.*"))
 
-  val stream =
+  lazy val stream =
     exports(
       packages = Seq("org.apache.pekko.stream.*", "com.typesafe.sslconfig.pekko.*"),
       imports = Seq(
@@ -103,25 +104,25 @@ object OSGi {
         sslConfigCoreImport("com.typesafe.sslconfig.util.*"),
         "!com.typesafe.sslconfig.pekko.*"))
 
-  val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
+  lazy val streamTestkit = exports(Seq("org.apache.pekko.stream.testkit.*"))
 
-  val slf4j = exports(Seq("org.apache.pekko.event.slf4j.*"))
+  lazy val slf4j = exports(Seq("org.apache.pekko.event.slf4j.*"))
 
-  val persistence = exports(
+  lazy val persistence = exports(
     Seq("org.apache.pekko.persistence.*"),
     imports = Seq(optionalResolution("org.fusesource.leveldbjni.*"), optionalResolution("org.iq80.leveldb.*")))
 
-  val persistenceTyped = exports(Seq("org.apache.pekko.persistence.typed.*"))
+  lazy val persistenceTyped = exports(Seq("org.apache.pekko.persistence.typed.*"))
 
-  val persistenceQuery = exports(Seq("org.apache.pekko.persistence.query.*"))
+  lazy val persistenceQuery = exports(Seq("org.apache.pekko.persistence.query.*"))
 
-  val testkit = exports(Seq("org.apache.pekko.testkit.*"))
+  lazy val testkit = exports(Seq("org.apache.pekko.testkit.*"))
 
-  val discovery = exports(Seq("org.apache.pekko.discovery.*"))
+  lazy val discovery = exports(Seq("org.apache.pekko.discovery.*"))
 
-  val coordination = exports(Seq("org.apache.pekko.coordination.*"))
+  lazy val coordination = exports(Seq("org.apache.pekko.coordination.*"))
 
-  val osgiOptionalImports = Seq(
+  lazy val osgiOptionalImports = Seq(
     // needed because testkit is normally not used in the application bundle,
     // but it should still be included as transitive dependency and used by BundleDelegatingClassLoader
     // to be able to find reference.conf

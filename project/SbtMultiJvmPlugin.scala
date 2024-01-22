@@ -78,11 +78,11 @@ object MultiJvmPlugin extends AutoPlugin {
 
   import MultiJvmKeys._
 
-  override def requires = plugins.JvmPlugin
+  override lazy val requires = plugins.JvmPlugin
 
   override def projectConfigurations = Seq(MultiJvm)
 
-  override def projectSettings = multiJvmSettings
+  override lazy val projectSettings = multiJvmSettings
 
   private[this] def noTestsMessage(scoped: ScopedKey[_])(implicit display: Show[ScopedKey[_]]): String =
     "No tests to run for " + display.show(scoped)

@@ -17,10 +17,10 @@ import sbt.Keys.baseDirectory
 import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
 
 object CopyrightHeaderForBuild extends AutoPlugin {
-  override def requires: Plugins = CopyrightHeader
-  override def trigger: PluginTrigger = noTrigger
+  override lazy val requires: Plugins = CopyrightHeader
+  override lazy val trigger: PluginTrigger = noTrigger
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(

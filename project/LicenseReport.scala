@@ -37,8 +37,8 @@ object LicenseReport extends AutoPlugin {
       Column.OriginatingArtifactName,
       Column.Configuration))
 
-  override def requires = plugins.JvmPlugin && SbtLicenseReport
+  override lazy val requires = plugins.JvmPlugin && SbtLicenseReport
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
 }

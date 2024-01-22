@@ -20,12 +20,12 @@ import sbt.Keys._
 import sbt.plugins.JvmPlugin
 
 object TestQuickUntilPassed extends AutoPlugin {
-  override def requires = JvmPlugin
+  override lazy val requires = JvmPlugin
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
   object autoImport {
-    val testQuickUntilPassed = inputKey[Unit]("runs testQuick continuously until it passes")
+    lazy val testQuickUntilPassed = inputKey[Unit]("runs testQuick continuously until it passes")
   }
 
   import autoImport._

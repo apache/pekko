@@ -19,22 +19,22 @@ import sbt.librarymanagement.VersionNumber
 
 object JdkOptions extends AutoPlugin {
   object autoImport {
-    val jdk8home = settingKey[String]("JDK 8 home. Only needs to be set when it cannot be auto-detected by sbt")
-    val targetSystemJdk = settingKey[Boolean](
+    lazy val jdk8home = settingKey[String]("JDK 8 home. Only needs to be set when it cannot be auto-detected by sbt")
+    lazy val targetSystemJdk = settingKey[Boolean](
       "Target the system JDK instead of building against JDK 8. When this is enabled resulting artifacts may not work on JDK 8!")
   }
   import autoImport._
 
-  val specificationVersion: String = sys.props("java.specification.version")
+  lazy val specificationVersion: String = sys.props("java.specification.version")
 
-  val isJdk8: Boolean =
+  lazy val isJdk8: Boolean =
     VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(s"=1.8"))
-  val isJdk11orHigher: Boolean =
+  lazy val isJdk11orHigher: Boolean =
     VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(">=11"))
-  val isJdk17orHigher: Boolean =
+  lazy val isJdk17orHigher: Boolean =
     VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(">=17"))
 
-  val versionSpecificJavaOptions =
+  lazy val versionSpecificJavaOptions =
     if (isJdk17orHigher) {
       // for aeron
       "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED" ::
@@ -87,5 +87,5 @@ object JdkOptions extends AutoPlugin {
             "A JDK 8 installation was not found, but is required to build Apache Pekko. To manually specify a JDK 8 installation, set the JAVA_8_HOME environment variable to its path or use the \"set every jdk8home := \\\"/path/to/jdk\\\" sbt command. If you have no JDK 8 installation, target your system JDK with the \"set every targetSystemJdk := true\" sbt command, but beware resulting artifacts will not work on JDK 8")
       }
 
-  val targetJdkSettings = Seq(targetSystemJdk := false, jdk8home := sys.env.get("JAVA_8_HOME").getOrElse(""))
+  lazy val targetJdkSettings = Seq(targetSystemJdk := false, jdk8home := sys.env.get("JAVA_8_HOME").getOrElse(""))
 }

@@ -16,13 +16,13 @@ import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 import scalafix.sbt.ScalafixPlugin
 
 object ScalafixIgnoreFilePlugin extends AutoPlugin with ScalafixSupport {
-  override def trigger: PluginTrigger = allRequirements
+  override lazy val trigger: PluginTrigger = allRequirements
 
-  override def requires: Plugins = JvmPlugin && ScalafixPlugin
+  override lazy val requires: Plugins = JvmPlugin && ScalafixPlugin
   import sbt._
   lazy val scalafixIgnoredSetting: Seq[Setting[_]] = if (ScalafixSupport.fixTestScope) Nil else Seq(ignore(Test))
 
-  override def projectSettings: Seq[Def.Setting[_]] =
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     scalafixIgnoredSetting ++ Seq(
       addProjectCommandsIfAbsent(alias = "fixall", value = ";scalafixEnable;scalafixAll;test:compile;reload"))
 }

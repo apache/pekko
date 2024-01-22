@@ -17,12 +17,12 @@ import sbt.plugins.JvmPlugin
 
 object PekkoDisciplinePlugin extends AutoPlugin {
 
-  override def trigger: PluginTrigger = allRequirements
-  override def requires: Plugins = JvmPlugin
+  override lazy val trigger: PluginTrigger = allRequirements
+  override lazy val requires: Plugins = JvmPlugin
   override lazy val projectSettings = disciplineSettings
 
   // allow toggling for pocs/exploration of ideas without discipline
-  val enabled = !sys.props.contains("pekko.no.discipline")
+  lazy val enabled = !sys.props.contains("pekko.no.discipline")
 
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalJavaWarningsFor = Set(
@@ -95,7 +95,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   /**
    * We are a little less strict in docs
    */
-  val docs =
+  lazy val docs =
     Seq(
       Compile / scalacOptions -= defaultScalaOptions,
       Compile / scalacOptions ++= (
