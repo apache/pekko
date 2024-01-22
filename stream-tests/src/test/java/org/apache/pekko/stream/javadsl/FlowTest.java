@@ -238,6 +238,18 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseFoldWhile() throws Exception {
+    final int result =
+        Source.range(1, 10)
+            .via(Flow.of(Integer.class).foldWhile(0, acc -> acc < 10, Integer::sum))
+            .toMat(Sink.head(), Keep.right())
+            .run(system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    Assert.assertEquals(10, result);
+  }
+
+  @Test
   public void mustBeAbleToUseIntersperse() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<String, NotUsed> source = Source.from(Arrays.asList("0", "1", "2", "3"));
