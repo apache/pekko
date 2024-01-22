@@ -180,7 +180,7 @@ scala-cli fmt
 **With Coursier CLI**
 ```Shell
 cs install scalafmt
-scalafmt --version # should be 3.7.17
+scalafmt
 ```
 
 #### Do not use `-optimize` Scala compiler flag
