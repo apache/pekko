@@ -18,7 +18,7 @@ github:
     - "v*.*.*"
 
   dependabot_alerts:  true
-  dependabot_updates: true
+  dependabot_updates: false
 
   features:
     # Enable wiki for documentation
