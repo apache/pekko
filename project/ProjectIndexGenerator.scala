@@ -21,7 +21,7 @@ import Keys._
 object ProjectIndexGenerator extends AutoPlugin {
 
   object CliOptions {
-    val generateLicenseReportEnabled = CliOption("pekko.genlicensereport.enabled", true)
+    val generateLicenseReportEnabled = CliOption("pekko.genlicensereport.enabled", false)
   }
 
   override val projectSettings: Seq[Setting[_]] = inConfig(Compile)(
