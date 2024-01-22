@@ -49,5 +49,5 @@ trait ScalafixSupport {
 }
 
 object ScalafixSupport {
-  def fixTestScope: Boolean = System.getProperty("pekko.scalafix.fixTestScope", "false").toBoolean
+  lazy val fixTestScope: Boolean = System.getProperty("pekko.scalafix.fixTestScope", "false").toBoolean
 }

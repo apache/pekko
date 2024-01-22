@@ -18,10 +18,10 @@ import sbt.{ inConfig, Compile, Def, Plugins, Test, _ }
 import spray.boilerplate.BoilerplatePlugin
 
 object CopyrightHeaderForBoilerplate extends AutoPlugin {
-  override def requires: Plugins = BoilerplatePlugin && CopyrightHeader
-  override def trigger: PluginTrigger = allRequirements
+  override lazy val requires: Plugins = BoilerplatePlugin && CopyrightHeader
+  override lazy val trigger: PluginTrigger = allRequirements
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(

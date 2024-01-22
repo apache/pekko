@@ -18,25 +18,25 @@ object TestExtras {
   import JdkOptions.isJdk8
   object Filter {
     object Keys {
-      val excludeTestNames = settingKey[Set[String]](
+      lazy val excludeTestNames = settingKey[Set[String]](
         "Names of tests to be excluded. Not supported by MultiJVM tests. Example usage: -Dpekko.test.names.exclude=TimingSpec")
-      val excludeTestTags = settingKey[Set[String]](
+      lazy val excludeTestTags = settingKey[Set[String]](
         "Tags of tests to be excluded. It will not be used if you specify -Dpekko.test.tags.only. Example usage: -Dpekko.test.tags.exclude=long-running")
-      val onlyTestTags =
+      lazy val onlyTestTags =
         settingKey[Set[String]]("Tags of tests to be ran. Example usage: -Dpekko.test.tags.only=long-running")
 
-      val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run")
+      lazy val checkTestsHaveRun = taskKey[Unit]("Verify a number of notable tests have actually run")
     }
 
     import Keys._
 
     private[Filter] object Params {
-      val testNamesExclude = systemPropertyAsSeq("pekko.test.names.exclude").toSet
-      val testTagsExlcude = systemPropertyAsSeq("pekko.test.tags.exclude").toSet
-      val testTagsOnly = systemPropertyAsSeq("pekko.test.tags.only").toSet
+      lazy val testNamesExclude = systemPropertyAsSeq("pekko.test.names.exclude").toSet
+      lazy val testTagsExlcude = systemPropertyAsSeq("pekko.test.tags.exclude").toSet
+      lazy val testTagsOnly = systemPropertyAsSeq("pekko.test.tags.only").toSet
     }
 
-    def settings = {
+    lazy val settings = {
       Seq(
         excludeTestNames := Params.testNamesExclude,
         excludeTestTags := {

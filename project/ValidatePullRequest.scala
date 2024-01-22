@@ -24,19 +24,19 @@ import sbt._
 object PekkoValidatePullRequest extends AutoPlugin {
 
   object CliOptions {
-    val mimaEnabled = CliOption("pekko.mima.enabled", true)
+    lazy val mimaEnabled = CliOption("pekko.mima.enabled", true)
   }
 
   import ValidatePullRequest.autoImport._
 
-  override def trigger = allRequirements
-  override def requires = ValidatePullRequest
+  override lazy val trigger = allRequirements
+  override lazy val requires = ValidatePullRequest
 
-  val ValidatePR = config("pr-validation").extend(Test)
+  lazy val ValidatePR = config("pr-validation").extend(Test)
 
   override lazy val projectConfigurations = Seq(ValidatePR)
 
-  val additionalTasks = settingKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
+  lazy val additionalTasks = settingKey[Seq[TaskKey[_]]]("Additional tasks for pull request validation")
 
   override lazy val globalSettings = Seq(credentials ++= {
       // todo this should probably be supplied properly
@@ -86,8 +86,8 @@ object PekkoValidatePullRequest extends AutoPlugin {
 object MultiNodeWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
 
-  override def trigger = allRequirements
-  override def requires = PekkoValidatePullRequest && MultiNode
+  override lazy val trigger = allRequirements
+  override lazy val requires = PekkoValidatePullRequest && MultiNode
   override lazy val projectSettings =
     if (MultiNode.multiNodeTestInTest) Seq(additionalTasks += MultiNode.multiTest)
     else Seq.empty
@@ -100,8 +100,8 @@ object MultiNodeWithPrValidation extends AutoPlugin {
 object MimaWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
 
-  override def trigger = allRequirements
-  override def requires = PekkoValidatePullRequest && MimaPlugin
+  override lazy val trigger = allRequirements
+  override lazy val requires = PekkoValidatePullRequest && MimaPlugin
   override lazy val projectSettings =
     CliOptions.mimaEnabled.ifTrue(additionalTasks += mimaReportBinaryIssues).toList
 }
@@ -113,14 +113,14 @@ object MimaWithPrValidation extends AutoPlugin {
 object ParadoxWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
 
-  override def trigger = allRequirements
-  override def requires = PekkoValidatePullRequest && ParadoxPlugin
+  override lazy val trigger = allRequirements
+  override lazy val requires = PekkoValidatePullRequest && ParadoxPlugin
   override lazy val projectSettings = Seq(additionalTasks += Compile / paradox)
 }
 
 object UnidocWithPrValidation extends AutoPlugin {
   import PekkoValidatePullRequest._
 
-  override def trigger = noTrigger
+  override lazy val trigger = noTrigger
   override lazy val projectSettings = Seq(additionalTasks += Compile / unidoc)
 }

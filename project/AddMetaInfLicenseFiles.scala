@@ -78,7 +78,7 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
         }
       }))
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
-  override def requires = ApacheSonatypePlugin
+  override lazy val requires = ApacheSonatypePlugin
 }

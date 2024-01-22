@@ -17,10 +17,10 @@ import sbt.{ Compile, Def, Test, _ }
 
 object CopyrightHeaderForJdk9 extends AutoPlugin {
 
-  override def requires = CopyrightHeader && Jdk9
-  override def trigger = allRequirements
+  override lazy val requires = CopyrightHeader && Jdk9
+  override lazy val trigger = allRequirements
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     import Jdk9._
     Seq(
       Compile / headerSources ++=

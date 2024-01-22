@@ -18,10 +18,10 @@ import sbt._
 object CopyrightHeader extends AutoPlugin {
   import HeaderPlugin.autoImport._
 
-  override def requires = HeaderPlugin
-  override def trigger = allRequirements
+  override lazy val requires = HeaderPlugin
+  override lazy val trigger = allRequirements
 
-  override def projectSettings = Def.settings(
+  override lazy val projectSettings = Def.settings(
     Seq(Compile, Test).flatMap { config =>
       inConfig(config)(
         Seq(

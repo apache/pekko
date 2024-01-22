@@ -19,12 +19,12 @@ import sbt._
 object ParadoxBrowse extends AutoPlugin {
 
   object autoImport {
-    val paradoxBrowse = taskKey[Unit]("Open the docs in the default browser")
+    lazy val paradoxBrowse = taskKey[Unit]("Open the docs in the default browser")
   }
   import autoImport._
 
-  override def trigger = allRequirements
-  override def requires = ParadoxPlugin
+  override lazy val trigger = allRequirements
+  override lazy val requires = ParadoxPlugin
 
   override lazy val projectSettings = Seq(paradoxBrowse := {
     import java.awt.Desktop

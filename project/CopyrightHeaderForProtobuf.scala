@@ -18,10 +18,10 @@ import sbt.{ inConfig, Compile, Def, Test, _ }
 
 object CopyrightHeaderForProtobuf extends AutoPlugin {
 
-  override def requires = CopyrightHeader
-  override def trigger = allRequirements
+  override lazy val requires = CopyrightHeader
+  override lazy val trigger = allRequirements
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
