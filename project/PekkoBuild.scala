@@ -309,7 +309,8 @@ object PekkoBuild {
         UsefulTask("mimaReportBinaryIssues ", "Check binary issues"),
         UsefulTask("validatePullRequest ", "Validate pull request"),
         UsefulTask("docs/paradox", "Build documentation (license report will be generate on CI or Publish)"),
-        UsefulTask("docs/paradoxBrowse", "Browse the generated documentation (license report will be generate on CI or Publish)"),
+        UsefulTask("docs/paradoxBrowse",
+          "Browse the generated documentation (license report will be generate on CI or Publish)"),
         UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
         UsefulTask("Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")).map(
         _.noAlias))
