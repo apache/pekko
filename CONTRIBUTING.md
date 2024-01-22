@@ -171,10 +171,16 @@ sbt
 applyCodeStyle
 ```
 
-or you could format code via [Scala-Cli](https://scala-cli.virtuslab.org/), which can be improve the code format speed.
+To format Scala code more faster, you could format code with [Scala-CLI](https://scala-cli.virtuslab.org/) or [Coursier CLI](https://scalameta.org/scalafmt/docs/installation.html#cli):
 
+**With Scala-Cli**
 ```shell
-Scala-cli fmt
+scala-cli fmt
+```
+**With Coursier CLI**
+```Shell
+cs install scalafmt
+scalafmt --version # should be 3.7.17
 ```
 
 #### Do not use `-optimize` Scala compiler flag
