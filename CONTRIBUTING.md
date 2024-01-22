@@ -339,6 +339,13 @@ Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This
 In case you want to change the index of `Project Information` page, you need to change it on the
 `project/ProjectIndexGenerator.scala` so it can be included in the automatic docs generation.
 
+#### License Report Generation
+
+By default, license report generation is disabled to improve compilation speed. You can enable it by configuring `-Dpekko.genlicensereport.enabled=true`. e.g.:
+
+- `sbt -Dpekko.genlicensereport.enabled=true "docs/paradox"`
+- `sbt -Dpekko.genlicensereport.enabled=true shell` And then `docs/paradox`
+
 ### External dependencies
 
 All the external runtime dependencies for the project, including transitive dependencies, must have an open source license that is equal to, or compatible with, [Apache 2](https://www.apache.org/licenses/LICENSE-2.0).
