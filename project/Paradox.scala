@@ -95,10 +95,10 @@ object Paradox {
   lazy val sourceGeneratorSettings = Seq(
     Compile / paradoxMarkdownToHtml / sourceGenerators += Def.taskDyn {
       val targetFile = (Compile / paradox / sourceManaged).value / "project" / "license-report.md"
-
-      (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
-        IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
-      }
+      ProjectIndexGenerator.CliOptions.generateLicenseReportEnabled.ifTrue(
+        (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
+          IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
+        }).orElse(Some(Def.task(List.empty[File]))).get
     }.taskValue)
 
   lazy val settings =

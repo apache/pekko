@@ -35,7 +35,7 @@ jobs:
         uses: coursier/setup-action@v1.3.3
 
       - name: Create the Pekko site
-        run: sbt -Dpekko.genjavadoc.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
+        run: sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true "Javaunidoc/doc; Compile/unidoc; docs/paradox"
 
       - name: Run Link Validator
         run: cs launch net.runne::site-link-validator:0.2.2 -- scripts/link-validator.conf
