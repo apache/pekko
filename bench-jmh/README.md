@@ -8,7 +8,7 @@ You can run them like:
 
 ```shell
 sbt shell
-sbt:pekko> project bench-jmh
+pekko > project bench-jmh
 sbt:pekko-bench-jmh> jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
 ```
 
