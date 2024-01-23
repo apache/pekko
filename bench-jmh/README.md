@@ -19,7 +19,7 @@ sbt bench-jmh/Jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
 ```
    
 
-Use 'jmh:run -h' to get an overview of the available options.
+Use 'Jmh:run -h' to get an overview of the available options.
 
 Some potentially out of date resources for writing JMH benchmarks:
 
