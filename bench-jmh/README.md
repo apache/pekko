@@ -6,8 +6,18 @@ own jmh module)
 
 You can run them like:
 
-   project bench-jmh
-   jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```shell
+sbt shell
+sbt:pekko> project bench-jmh
+sbt:pekko-bench-jmh> jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```
+
+or execute in one line command
+
+```shell
+sbt bench-jmh/jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```
+   
 
 Use 'jmh:run -h' to get an overview of the available options.
 
