@@ -171,6 +171,18 @@ sbt
 applyCodeStyle
 ```
 
+To format Scala code more faster, you could format code with [Scala-CLI](https://scala-cli.virtuslab.org/) or [Coursier CLI](https://scalameta.org/scalafmt/docs/installation.html#cli):
+
+**With Scala-Cli**
+```shell
+scala-cli fmt
+```
+**With Coursier CLI**
+```Shell
+cs install scalafmt // skip it if scalafmt is already installed. If you are a macOS or Linux user, you can simply download the native binaries from the Coursier CLI installation page.
+scalafmt
+```
+
 #### Do not use `-optimize` Scala compiler flag
 
 Pekko has not been compiled or tested with `-optimize` Scala compiler flag. (In sbt, you can specify compiler options in the `scalacOptions` key.)
