@@ -628,8 +628,7 @@ def setModuleName(moduleName: String) = Def.settings {
     .withPublishMavenStyle(true)
   // rename module
   makePomConfiguration := makePomConfiguration.value.withModuleInfo(
-    makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")
-  )
+    makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}"))
 }
 
 /* Command aliases one can run locally against a module
