@@ -594,15 +594,8 @@ lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"
   .disablePlugins(MimaPlugin, PekkoDisciplinePlugin)
   // buildSettings and defaultSettings configure organization name, licenses, etc...
   .settings(PekkoBuild.defaultSettings)
+  .settings(setModuleName("bom"))
   .settings(
-    name := "pekko-bom",
-    publishM2Configuration := publishM2Configuration.value
-      .withOverwrite(true)
-      .withPublishMavenStyle(true),
-    // rename module
-    makePomConfiguration := makePomConfiguration.value.withModuleInfo(
-      makePomConfiguration.value.moduleInfo.get.withNameFormal("Apache Pekko Bill of Materials")
-    ),
     bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
 
@@ -625,16 +618,19 @@ def pekkoModule(moduleName: String): Project =
     .enablePlugins(ReproducibleBuildsPlugin)
     .disablePlugins(WelcomePlugin)
     .settings(PekkoBuild.defaultSettings)
-    .settings(
-      name := s"pekko-$moduleName",
-      publishM2Configuration := publishM2Configuration.value
-        .withOverwrite(true)
-        .withPublishMavenStyle(true),
-      // rename module
-      makePomConfiguration := makePomConfiguration.value.withModuleInfo(
-        makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")
-      ))
+    .settings(setModuleName(moduleName))
     .enablePlugins(BootstrapGenjavadoc)
+
+def setModuleName(moduleName: String) = Def.settings {
+  name := "pekko-$moduleName"
+  publishM2Configuration := publishM2Configuration.value
+    .withOverwrite(true)
+    .withPublishMavenStyle(true)
+  // rename module
+  makePomConfiguration := makePomConfiguration.value.withModuleInfo(
+    makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")
+  )
+}
 
 /* Command aliases one can run locally against a module
   - where three or more tasks should be checked for faster turnaround
