@@ -8,6 +8,7 @@
  */
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
+import org.apache.commons.text.WordUtils
 
 ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
@@ -595,6 +596,13 @@ lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"
   .settings(PekkoBuild.defaultSettings)
   .settings(
     name := "pekko-bom",
+    publishM2Configuration := publishM2Configuration.value
+      .withOverwrite(true)
+      .withPublishMavenStyle(true),
+    // rename module
+    makePomConfiguration := makePomConfiguration.value.withModuleInfo(
+      makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko Bill of Materials")
+    ),
     bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
 
@@ -618,7 +626,14 @@ def pekkoModule(moduleName: String): Project =
     .disablePlugins(WelcomePlugin)
     .settings(PekkoBuild.defaultSettings)
     .settings(
-      name := s"pekko-$moduleName")
+      name := s"pekko-$moduleName",
+      publishM2Configuration := publishM2Configuration.value
+        .withOverwrite(true)
+        .withPublishMavenStyle(true),
+      // rename module
+      makePomConfiguration := makePomConfiguration.value.withModuleInfo(
+        makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")
+      ))
     .enablePlugins(BootstrapGenjavadoc)
 
 /* Command aliases one can run locally against a module
