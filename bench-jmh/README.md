@@ -12,7 +12,7 @@ sbt:pekko> project bench-jmh
 sbt:pekko-bench-jmh> jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
 ```
 
-or execute in one line command
+or execute in one-line command
 
 ```shell
 sbt bench-jmh/jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
