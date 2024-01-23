@@ -179,7 +179,7 @@ scala-cli fmt
 ```
 **With Coursier CLI**
 ```Shell
-cs install scalafmt // skip it if scalafmt is already installed.
+cs install scalafmt // skip it if scalafmt is already installed. If you are a macOS or Linux user, you can simply download the native binaries from the Coursier CLI installation page.
 scalafmt
 ```
 
