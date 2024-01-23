@@ -601,8 +601,7 @@ lazy val billOfMaterials = Project("bill-of-materials", file("bill-of-materials"
       .withPublishMavenStyle(true),
     // rename module
     makePomConfiguration := makePomConfiguration.value.withModuleInfo(
-      makePomConfiguration.value.moduleInfo.get.withNameFormal("Apache Pekko Bill of Materials")
-    ),
+      makePomConfiguration.value.moduleInfo.get.withNameFormal("Apache Pekko Bill of Materials")),
     bomIncludeProjects := userProjects,
     description := s"${description.value} (depending on Scala ${CrossVersion.binaryScalaVersion(scalaVersion.value)})")
 
@@ -632,8 +631,8 @@ def pekkoModule(moduleName: String): Project =
         .withPublishMavenStyle(true),
       // rename module
       makePomConfiguration := makePomConfiguration.value.withModuleInfo(
-        makePomConfiguration.value.moduleInfo.get.withNameFormal(s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")
-      ))
+        makePomConfiguration.value.moduleInfo.get.withNameFormal(
+          s"Apache Pekko ${WordUtils.capitalizeFully(moduleName)}")))
     .enablePlugins(BootstrapGenjavadoc)
 
 /* Command aliases one can run locally against a module
