@@ -15,14 +15,15 @@ package org.apache.pekko.stream
 
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
-import org.apache.pekko.stream.ActorAttributes.SupervisionStrategy
-import org.apache.pekko.stream.Attributes.SourceLocation
-import org.apache.pekko.stream.impl.Stages.DefaultAttributes
-import org.apache.pekko.stream.impl.fusing.Collect
-import org.apache.pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import org.openjdk.jmh.annotations._
 import pekko.actor.ActorSystem
+import pekko.stream.ActorAttributes.SupervisionStrategy
+import pekko.stream.Attributes.SourceLocation
+import pekko.stream.impl.Stages.DefaultAttributes
+import pekko.stream.impl.fusing.Collect
+import pekko.stream.impl.fusing.Collect.NotApplied
 import pekko.stream.scaladsl._
+import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 
 import java.util.concurrent.TimeUnit
 import scala.annotation.nowarn
@@ -82,6 +83,7 @@ class CollectBenchmark {
         private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
         import Collect.NotApplied
 
+        @nowarn("msg=Any")
         override def onPush(): Unit =
           try {
             pf.applyOrElse(grab(in), NotApplied) match {
@@ -115,5 +117,29 @@ class CollectBenchmark {
   @OperationsPerInvocation(OperationsPerInvocation)
   def benchNewCollect(): Unit =
     Await.result(newCollect.run(), Duration.Inf)
+
+  @nowarn("msg=Any")
+  def collectOnSingleton[A](a: A, pf: PartialFunction[A, A]): A = pf.applyOrElse(a, NotApplied) match {
+    case NotApplied => a
+    case _          => a
+  }
+
+  @nowarn("msg=Any")
+  def collectOnSingletonType[A](a: A, pf: PartialFunction[A, A]): A = pf.applyOrElse(a, NotApplied) match {
+    case _: NotApplied.type => a
+    case _                  => a
+  }
+
+  private val string2String: PartialFunction[String, String] = { case a => a }
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def benchCollectOnSingleton(): Unit =
+    collectOnSingleton("", string2String)
+
+  @Benchmark
+  @OperationsPerInvocation(OperationsPerInvocation)
+  def benchCollectOnSingletonType(): Unit =
+    collectOnSingletonType("", string2String)
 
 }

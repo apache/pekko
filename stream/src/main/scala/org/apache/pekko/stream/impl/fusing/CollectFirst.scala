@@ -25,6 +25,7 @@ import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
 import pekko.stream._
 
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 /**
@@ -43,6 +44,7 @@ private[pekko] final class CollectFirst[In, Out](pf: PartialFunction[In, Out]) e
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       import Collect.NotApplied
 
+      @nowarn("msg=Any")
       override final def onPush(): Unit =
         try {
           // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
@@ -50,12 +52,11 @@ private[pekko] final class CollectFirst[In, Out](pf: PartialFunction[In, Out]) e
           //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
           //   If you interest, you can check the associated PR for this change and the
           //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
-          val result = pf.applyOrElse(grab(in), NotApplied)
-          if (result.asInstanceOf[AnyRef] eq NotApplied) {
-            pull(in)
-          } else {
-            push(out, result.asInstanceOf[Out])
-            completeStage()
+          pf.applyOrElse(grab(in), NotApplied) match {
+            case _: NotApplied.type => pull(in)
+            case elem: Out @unchecked =>
+              push(out, elem)
+              completeStage()
           }
         } catch {
           case NonFatal(ex) =>

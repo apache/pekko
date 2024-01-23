@@ -17,6 +17,7 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.annotation.nowarn
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -43,6 +44,7 @@ private[pekko] final class CollectWhile[In, Out](pf: PartialFunction[In, Out]) e
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       import Collect.NotApplied
 
+      @nowarn("msg=Any")
       override final def onPush(): Unit =
         try {
           // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
@@ -50,11 +52,9 @@ private[pekko] final class CollectWhile[In, Out](pf: PartialFunction[In, Out]) e
           //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `Collect` operator.
           //   If you interest, you can check the associated PR for this change and the
           //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
-          val result = pf.applyOrElse(grab(in), NotApplied)
-          if (result.asInstanceOf[AnyRef] eq NotApplied) {
-            completeStage()
-          } else {
-            push(out, result.asInstanceOf[Out])
+          pf.applyOrElse(grab(in), NotApplied) match {
+            case _: NotApplied.type   => completeStage()
+            case elem: Out @unchecked => push(out, elem)
           }
         } catch {
           case NonFatal(ex) =>
