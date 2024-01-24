@@ -13,7 +13,6 @@ ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
 
 scalaVersion := Dependencies.allScalaVersions.head
 
-ThisBuild / apacheSonatypeProjectProfile := "pekko"
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
 sourceDistName := "apache-pekko"
 sourceDistIncubating := true
