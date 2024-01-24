@@ -304,7 +304,7 @@ lazy val persistenceQuery = pekkoModule("persistence-query")
     persistence % "compile->compile;test->test",
     remote % "provided",
     protobufV3,
-    streamTestkit % "test")
+    streamTestkit % Test)
   .settings(Dependencies.persistenceQuery)
   .settings(AutomaticModuleName.settings("pekko.persistence.query"))
   .settings(OSGi.persistenceQuery)
@@ -315,7 +315,7 @@ lazy val persistenceQuery = pekkoModule("persistence-query")
   .enablePlugins(ScaladocNoVerificationOfDiagrams)
 
 lazy val persistenceShared = pekkoModule("persistence-shared")
-  .dependsOn(persistence % "test->test", testkit % "test->test", remote % "test")
+  .dependsOn(persistence % "test->test", testkit % "test->test", remote % Test)
   .settings(Dependencies.persistenceShared)
   .settings(AutomaticModuleName.settings("pekko.persistence.shared"))
   .settings(Test / fork := true)
@@ -335,7 +335,7 @@ lazy val persistenceTestkit = pekkoModule("persistence-testkit")
     persistenceTyped % "compile->compile;provided->provided;test->test",
     testkit % "compile->compile;test->test",
     actorTestkitTyped,
-    persistenceTck % "test")
+    persistenceTck % Test)
   .settings(Dependencies.persistenceTestKit)
   .settings(AutomaticModuleName.settings("pekko.persistence.testkit"))
   .disablePlugins(MimaPlugin)
@@ -343,8 +343,8 @@ lazy val persistenceTestkit = pekkoModule("persistence-testkit")
 lazy val persistenceTypedTests = pekkoModule("persistence-typed-tests")
   .dependsOn(
     persistenceTyped,
-    persistenceTestkit % "test",
-    actorTestkitTyped % "test",
+    persistenceTestkit % Test,
+    actorTestkitTyped % Test,
     persistence % "test->test", // for SteppingInMemJournal
     jackson % "test->test")
   .settings(PekkoBuild.mayChangeSettings)
@@ -398,7 +398,7 @@ lazy val remote =
       pki,
       actorTests % "test->test",
       testkit % "test->test",
-      streamTestkit % "test",
+      streamTestkit % Test,
       jackson % "test->test")
     .settings(Dependencies.remote)
     .settings(AutomaticModuleName.settings("pekko.remote"))
@@ -413,7 +413,7 @@ lazy val remoteTests = pekkoModule("remote-tests")
   .dependsOn(
     actorTests % "test->test",
     remote % "compile->CompileJdk9;test->test",
-    streamTestkit % "test",
+    streamTestkit % Test,
     multiNodeTestkit,
     jackson % "test->test")
   .settings(Dependencies.remoteTests)
