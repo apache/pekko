@@ -51,6 +51,13 @@ class FlowFlattenMergeSpec extends StreamSpec {
         .futureValue should ===((0 until 40).toSet)
     }
 
+    "work in the nominal case with flattenMerge" in {
+      Source(List(src10(0), src10(10), src10(20), src10(30)))
+        .flattenMerge(4)
+        .runWith(toSet)
+        .futureValue should ===((0 until 40).toSet)
+    }
+
     "not be held back by one slow stream" in {
       Source(List(src10(0), src10(10), blocked, src10(20), src10(30)))
         .flatMapMerge(3, identity)
