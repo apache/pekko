@@ -2678,6 +2678,8 @@ trait FlowOps[+Out, +Mat] {
    * '''Completes when''' upstream completes and all consumed substreams complete
    *
    * '''Cancels when''' downstream cancels
+   * 
+   * @since 1.1.0
    */
   def flatten[T, M](implicit ev: Out <:< Graph[SourceShape[T], M]): Repr[T] = flatMap(ev)
 
