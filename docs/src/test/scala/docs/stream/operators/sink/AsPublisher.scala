@@ -13,9 +13,10 @@
 
 package docs.stream.operators.sink
 
-import scala.concurrent.{ ExecutionContextExecutor, Future }
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl.{ Sink, Source }
+
+import scala.concurrent.ExecutionContextExecutor
 
 object AsPublisher {
   implicit val system: ActorSystem = ???

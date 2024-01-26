@@ -48,5 +48,5 @@ jobs:
         run: |-
           sudo apt-get install graphviz
 
-      - name: Compile docs for all Scala versions
-        run: sbt +compile:doc
+      - name: Compile docs&paradox for all Scala versions
+        run: sbt ";Test / compile ;TestJdk9 / compile ;docs/paradox ;+compile:doc"
