@@ -1055,7 +1055,7 @@ object CompactByteString {
     if (copyLength == 0) empty
     else {
       val copyArray = new Array[Byte](copyLength)
-      Array.copy(array, copyOffset, copyArray, 0, copyLength)
+      System.arraycopy(array, copyOffset, copyArray, 0, copyLength)
       ByteString.ByteString1C(copyArray)
     }
   }
@@ -1115,7 +1115,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   private def clearTemp(): Unit = {
     if (_tempLength > 0) {
       val arr = new Array[Byte](_tempLength)
-      Array.copy(_temp, 0, arr, 0, _tempLength)
+      System.arraycopy(_temp, 0, arr, 0, _tempLength)
       _builder += ByteString1(arr)
       _tempLength = 0
     }
@@ -1123,7 +1123,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   private def resizeTemp(size: Int): Unit = {
     val newtemp = new Array[Byte](size)
-    if (_tempLength > 0) Array.copy(_temp, 0, newtemp, 0, _tempLength)
+    if (_tempLength > 0) System.arraycopy(_temp, 0, newtemp, 0, _tempLength)
     _temp = newtemp
     _tempCapacity = _temp.length
   }
@@ -1313,7 +1313,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    * Add a number of Bytes from an array to this builder.
    */
   def putBytes(array: Array[Byte], start: Int, len: Int): this.type =
-    fillArray(len) { case (target, targetOffset) => Array.copy(array, start, target, targetOffset, len) }
+    fillArray(len) { case (target, targetOffset) => System.arraycopy(array, start, target, targetOffset, len) }
 
   /**
    * Add a number of Shorts from an array to this builder.
