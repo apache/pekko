@@ -29,7 +29,7 @@ import pekko.stream._
 import pekko.stream.impl._
 import pekko.testkit.{ TestActor, TestProbe }
 import pekko.testkit.TestActor.AutoPilot
-import pekko.util.JavaDurationConverters
+import pekko.util.JavaDurationConverters._
 import pekko.util.ccompat._
 
 import org.reactivestreams.{ Publisher, Subscriber, Subscription }
@@ -190,6 +190,14 @@ object TestPublisher {
     }
 
     /**
+     * Expect no messages for a given duration.
+     */
+    def expectNoMessage(max: java.time.Duration): Self = executeAfterSubscription {
+      probe.expectNoMessage(max.asScala)
+      self
+    }
+
+    /**
      * Receive messages for a given duration or until one does not match a given partial function.
      */
     def receiveWhile[T](
@@ -224,9 +232,34 @@ object TestPublisher {
     }
 
     /**
+     * Execute code block while bounding its execution time between `min` and
+     * `max`. `within` blocks may be nested. All methods in this trait which
+     * take maximum wait times are available in a version which implicitly uses
+     * the remaining time governed by the innermost enclosing `within` block.
+     *
+     * Note that the timeout is scaled using Duration.dilated, which uses the
+     * configuration entry "pekko.test.timefactor", while the min Duration is not.
+     *
+     * {{{
+     * val ret = within(Duration.ofMillis(50)) {
+     *   test ! "ping"
+     *   expectMsgClass(classOf[String])
+     * }
+     * }}}
+     */
+    def within[T](min: java.time.Duration, max: java.time.Duration)(f: => T): T = executeAfterSubscription {
+      probe.within(min.asScala, max.asScala)(f)
+    }
+
+    /**
      * Same as calling `within(0 seconds, max)(f)`.
      */
     def within[T](max: FiniteDuration)(f: => T): T = executeAfterSubscription { probe.within(max)(f) }
+
+    /**
+     * Same as calling `within(Duration.ofSeconds(0), max)(f)`.
+     */
+    def within[T](max: java.time.Duration)(f: => T): T = executeAfterSubscription { probe.within(max.asScala)(f) }
   }
 
   object Probe {
@@ -373,6 +406,12 @@ object TestSubscriber {
       probe.expectMsgType[SubscriberEvent](max)
 
     /**
+     * Expect and return [[SubscriberEvent]] (any of: `OnSubscribe`, `OnNext`, `OnError` or `OnComplete`).
+     */
+    def expectEvent(max: java.time.Duration): SubscriberEvent =
+      probe.expectMsgType[SubscriberEvent](max.asScala)
+
+    /**
      * Fluent DSL
      *
      * Expect [[SubscriberEvent]] (any of: `OnSubscribe`, `OnNext`, `OnError` or `OnComplete`).
@@ -402,6 +441,12 @@ object TestSubscriber {
     }
 
     /**
+     * Expect and return a stream element during specified time or timeout.
+     */
+    def expectNext(d: java.time.Duration): I =
+      expectNext(d.asScala)
+
+    /**
      * Fluent DSL
      *
      * Expect a stream element.
@@ -418,6 +463,16 @@ object TestSubscriber {
      */
     def expectNext(d: FiniteDuration, element: I): Self = {
       probe.expectMsg(d, OnNext(element))
+      self
+    }
+
+    /**
+     * Fluent DSL
+     *
+     * Expect a stream element during specified time or timeout.
+     */
+    def expectNext(d: java.time.Duration, element: I): Self = {
+      probe.expectMsg(d.asScala, OnNext(element))
       self
     }
 
@@ -704,7 +759,6 @@ object TestSubscriber {
      * Java API: Assert that no message is received for the specified time.
      */
     def expectNoMessage(remaining: java.time.Duration): Self = {
-      import JavaDurationConverters._
       probe.expectNoMessage(remaining.asScala)
       self
     }
@@ -771,6 +825,12 @@ object TestSubscriber {
         .flatten
 
     /**
+     * Drains a given number of messages
+     */
+    def receiveWithin(max: java.time.Duration, messages: Int = Int.MaxValue): immutable.Seq[I] =
+      receiveWithin(max.asScala, messages)
+
+    /**
      * Attempt to drain the stream into a strict collection (by requesting `Long.MaxValue` elements).
      *
      * '''Use with caution: Be warned that this may not be a good idea if the stream is infinite or its elements are very large!'''
@@ -801,6 +861,14 @@ object TestSubscriber {
     }
 
     /**
+     * Attempt to drain the stream into a strict collection (by requesting `Long.MaxValue` elements).
+     *
+     * '''Use with caution: Be warned that this may not be a good idea if the stream is infinite or its elements are very large!'''
+     */
+    def toStrict(atMost: java.time.Duration): immutable.Seq[I] =
+      toStrict(atMost.asScala)
+
+    /**
      * Execute code block while bounding its execution time between `min` and
      * `max`. `within` blocks may be nested. All methods in this trait which
      * take maximum wait times are available in a version which implicitly uses
@@ -819,9 +887,33 @@ object TestSubscriber {
     def within[T](min: FiniteDuration, max: FiniteDuration)(f: => T): T = probe.within(min, max)(f)
 
     /**
+     * Execute code block while bounding its execution time between `min` and
+     * `max`. `within` blocks may be nested. All methods in this trait which
+     * take maximum wait times are available in a version which implicitly uses
+     * the remaining time governed by the innermost enclosing `within` block.
+     *
+     * Note that the timeout is scaled using Duration.dilated, which uses the
+     * configuration entry "pekko.test.timefactor", while the min Duration is not.
+     *
+     * {{{
+     * val ret = within(Duration.ofMillis(50)) {
+     *   test ! "ping"
+     *   expectMsgClass(classOf[String])
+     * }
+     * }}}
+     */
+    def within[T](min: java.time.Duration, max: java.time.Duration)(f: pekko.japi.function.Function[Unit, T]): T =
+      probe.within(min.asScala, max.asScala)(f.apply())
+
+    /**
      * Same as calling `within(0 seconds, max)(f)`.
      */
     def within[T](max: FiniteDuration)(f: => T): T = probe.within(max)(f)
+
+    /**
+     * Same as calling `within(Duration.ofSeconds(0), max)(f)`.
+     */
+    def within[T](max: java.time.Duration)(f: => T): T = probe.within(max.asScala)(f)
 
     def onSubscribe(subscription: Subscription): Unit = probe.ref ! OnSubscribe(subscription)
     def onNext(element: I): Unit = probe.ref ! OnNext(element)
@@ -888,6 +980,14 @@ object TestSubscriber {
      * Request and expect a stream element during the specified time or timeout.
      */
     def requestNext(d: FiniteDuration): T = {
+      subscription.request(1)
+      expectNext(d)
+    }
+
+    /**
+     * Request and expect a stream element during the specified time or timeout.
+     */
+    def requestNext(d: java.time.Duration): T = {
       subscription.request(1)
       expectNext(d)
     }
