@@ -52,7 +52,7 @@ object Jdk9 extends AutoPlugin {
     // so we add them to the fullClasspath instead.
     //    Compile / packageBin / mappings
     //      ++= (CompileJdk9 / products).value.flatMap(Path.allSubpaths),
-    // After sbt-osgi 0.9.5, there not use fullClasspath as package source, so we have to
+    // Since sbt-osgi upgrade to 0.9.5, the fullClasspath is no longer used on packaging when use sbt-osgi, so we have to
     // add jdk9 products to dependencyClasspathAsJars instead.
     //    Compile / fullClasspath ++= (CompileJdk9 / exportedProducts).value)
     Compile / dependencyClasspathAsJars ++= (CompileJdk9 / exportedProducts).value)
