@@ -71,6 +71,8 @@ private[remote] class PekkoProtocolSettings(config: Config) {
   }
 
   val PekkoScheme: String = new RemoteSettings(config).ProtocolName
+
+  val ManagerNamePrefix: String = config.getString("pekko.remote.classic.manager-name-prefix")
 }
 
 @nowarn("msg=deprecated")
@@ -137,7 +139,8 @@ private[remote] class PekkoProtocolTransport(
   }
 
   override val maximumOverhead: Int = PekkoProtocolTransport.PekkoOverhead
-  protected def managerName = s"akkaprotocolmanager.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
+  protected def managerName =
+    s"${settings.ManagerNamePrefix}.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
     val s = settings
