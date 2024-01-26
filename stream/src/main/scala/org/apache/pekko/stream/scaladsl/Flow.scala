@@ -1561,9 +1561,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * '''Cancels when''' downstream cancels
    */
-  def collectFirst[T](pf: PartialFunction[Out, T]): Repr[T] =
-    via(Flow[Out].collect(pf).take(1)
-      .withAttributes(DefaultAttributes.collectFirst and SourceLocation.forLambda(pf)))
+  def collectFirst[T](pf: PartialFunction[Out, T]): Repr[T] = via(new CollectFirst(pf))
 
   /**
    * Transform this stream by applying the given partial function to each of the elements
