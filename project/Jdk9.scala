@@ -55,7 +55,7 @@ object Jdk9 extends AutoPlugin {
     // Since sbt-osgi upgrade to 0.9.5, the fullClasspath is no longer used on packaging when use sbt-osgi, so we have to
     // add jdk9 products to dependencyClasspathAsJars instead.
     //    Compile / fullClasspath ++= (CompileJdk9 / exportedProducts).value)
-    Compile / dependencyClasspathAsJars ++= (CompileJdk9 / exportedProducts).value)
+    Compile / dependencyClasspathAsJars ++= notOnJdk8((CompileJdk9 / exportedProducts).value))
 
   lazy val testSettings = Seq((Test / test) := {
     (Test / test).value
