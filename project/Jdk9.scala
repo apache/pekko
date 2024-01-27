@@ -27,60 +27,33 @@ object Jdk9 extends AutoPlugin {
 
   lazy val TestJdk9 = config("TestJdk9").extend(Test).extend(CompileJdk9)
 
-  lazy val ScalaSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("scala", isTest = false)
+  lazy val ScalaSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("scala")
   lazy val ScalaTestSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("scala", isTest = true)
 
-  lazy val JavaSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("java", isTest = false)
+  lazy val JavaSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("java")
   lazy val JavaTestSourceDirectories: Seq[String] = getAdditionalSourceDirectoryNames("java", isTest = true)
 
-  private lazy val additionalScalaSourceDirectories = Def.setting {
-    getAdditionalSourceDirectories(
-      (Compile / sourceDirectory).value,
-      ScalaSourceDirectories)
-  }
+  lazy val additionalSourceDirectories =
+    getAdditionalSourceDirectories(Compile, ScalaSourceDirectories ++ JavaSourceDirectories)
 
-  private lazy val additionalJavaSourceDirectories = Def.setting {
-    getAdditionalSourceDirectories(
-      (Compile / sourceDirectory).value,
-      JavaSourceDirectories)
-  }
+  lazy val additionalTestSourceDirectories =
+    getAdditionalSourceDirectories(Test, ScalaTestSourceDirectories ++ JavaTestSourceDirectories)
 
-  lazy val additionalSourceDirectories = Def.setting {
-    additionalScalaSourceDirectories.value ++ additionalJavaSourceDirectories.value
-  }
-
-  private lazy val additionalScalaTestSourceDirectories = Def.setting {
-    getAdditionalSourceDirectories(
-      (Test / sourceDirectory).value,
-      ScalaTestSourceDirectories)
-  }
-
-  private lazy val additionalJavaTestSourceDirectories = Def.setting {
-    getAdditionalSourceDirectories(
-      (Test / sourceDirectory).value,
-      JavaTestSourceDirectories)
-  }
-
-  lazy val additionalTestSourceDirectories = Def.setting {
-    additionalScalaTestSourceDirectories.value ++ additionalJavaTestSourceDirectories.value
-  }
-
-  private def getAdditionalSourceDirectoryNames(language: String, isTest: Boolean): Seq[String] = {
+  private def getAdditionalSourceDirectoryNames(language: String, isTest: Boolean = false): Seq[String] = {
     for {
       version <- supportedJavaLTSVersions if version.toInt <= JdkOptions.JavaVersion.majorVersion
     } yield {
       if (isTest) {
-        s"$language-jdk${version}-only"
+        s"$language-jdk$version-only"
       } else {
         s"$language-jdk-$version"
       }
     }
   }
 
-  private def getAdditionalSourceDirectories(baseDirectory: File,
-      sourceDirectoryNames: Seq[String]): Seq[File] = {
+  private def getAdditionalSourceDirectories(task: Configuration, sourceDirectoryNames: Seq[String]) = Def.setting {
     for (sourceDirectoryName <- sourceDirectoryNames)
-      yield baseDirectory / sourceDirectoryName
+      yield (task / sourceDirectory).value / sourceDirectoryName
   }
 
   lazy val compileJdk9Settings = Seq(
