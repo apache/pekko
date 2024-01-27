@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -813,6 +814,18 @@ public class SourceTest extends StreamTest {
         .expectNext("1", "2", "3", "end")
         .expectComplete();
     Assert.assertFalse(gate.get());
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithAutoCloseableResource() {
+    final AtomicInteger closed = new AtomicInteger();
+    Source.from(Arrays.asList("1", "2", "3"))
+        .mapWithResource(() -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem)
+        .runWith(TestSink.create(system), system)
+        .request(4)
+        .expectNext("1", "2", "3")
+        .expectComplete();
+    Assert.assertEquals(closed.get(), 3);
   }
 
   @Test

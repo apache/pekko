@@ -410,6 +410,25 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       Await.result(promise.future, 3.seconds) shouldBe Done
     }
 
+    "will close the autocloseable resource" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val (pub, sub) = TestSource
+        .probe[Int]
+        .mapWithResource(create, (_, count) => count)
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
+      sub.expectSubscription().request(2)
+      pub.sendNext(1)
+      sub.expectNext(1)
+      pub.sendComplete()
+      sub.expectComplete()
+      closedCounter.get shouldBe 1
+    }
+
   }
   override def afterTermination(): Unit = {
     fs.close()

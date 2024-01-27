@@ -829,6 +829,45 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
         resource => close.apply(resource).toScala))
 
   /**
+   * Transform each stream element with the help of a [[AutoCloseable]] resource and close it.
+   *
+   * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
+   * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
+   * downstream. The returned `T` MUST NOT be `null` as it is illegal as stream element - according to the Reactive Streams specification.
+   *
+   * The [[AutoCloseable]] resource is closed only once when the upstream or downstream finishes or fails.
+   *
+   * Early completion can be done with combination of the [[takeWhile]] operator.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * You can configure the default dispatcher for this Source by changing the `akka.stream.materializer.blocking-io-dispatcher` or
+   * set it for a given Source by using [[ActorAttributes]].
+   *
+   * '''Emits when''' the mapping function returns an element and downstream is ready to consume it
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @tparam R the type of the resource
+   * @tparam T the type of the output elements
+   * @param create function that creates the resource
+   * @param f function that transforms the upstream element and the resource to output element
+   * @since 1.1.0
+   */
+  def mapWithResource[R <: AutoCloseable, T](
+      create: function.Creator[R],
+      f: function.Function2[R, Out, T]): javadsl.Flow[In, T, Mat] =
+    mapWithResource(create, f,
+      (resource: AutoCloseable) => {
+        resource.close()
+        Optional.empty()
+      })
+
+  /**
    * Transform each input element into an `Iterable` of output elements that is
    * then flattened into the output stream. The transformation is meant to be stateful,
    * which is enabled by creating the transformation function anew for every materialization —
