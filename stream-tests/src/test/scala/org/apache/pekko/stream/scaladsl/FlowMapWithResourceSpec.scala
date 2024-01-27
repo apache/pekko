@@ -410,7 +410,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       Await.result(promise.future, 3.seconds) shouldBe Done
     }
 
-    "will close the autocloseable resource" in {
+    "will close the autocloseable resource when upstream complete" in {
       val closedCounter = new AtomicInteger(0)
       val create = () =>
         new AutoCloseable {
@@ -418,14 +418,103 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
         }
       val (pub, sub) = TestSource
         .probe[Int]
-        .mapWithResource(create, (_, count) => count)
+        .mapWithResource(create, (_: AutoCloseable, count) => count)
         .toMat(TestSink.probe)(Keep.both)
         .run()
       sub.expectSubscription().request(2)
+      closedCounter.get shouldBe 0
       pub.sendNext(1)
       sub.expectNext(1)
+      closedCounter.get shouldBe 0
       pub.sendComplete()
       sub.expectComplete()
+      closedCounter.get shouldBe 1
+    }
+
+    "will close the autocloseable resource when upstream fail" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val (pub, sub) = TestSource
+        .probe[Int]
+        .mapWithResource(create, (_: AutoCloseable, count) => count)
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
+      sub.expectSubscription().request(2)
+      closedCounter.get shouldBe 0
+      pub.sendNext(1)
+      sub.expectNext(1)
+      closedCounter.get shouldBe 0
+      pub.sendError(ex)
+      sub.expectError(ex)
+      closedCounter.get shouldBe 1
+    }
+
+    "will close the autocloseable resource when downstream cancel" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val (pub, sub) = TestSource
+        .probe[Int]
+        .mapWithResource(create, (_: AutoCloseable, count) => count)
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
+      val subscription = sub.expectSubscription()
+      subscription.request(2)
+      closedCounter.get shouldBe 0
+      pub.sendNext(1)
+      sub.expectNext(1)
+      closedCounter.get shouldBe 0
+      subscription.cancel()
+      pub.expectCancellation()
+      closedCounter.get shouldBe 1
+    }
+
+    "will close the autocloseable resource when downstream fail" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val (pub, sub) = TestSource
+        .probe[Int]
+        .mapWithResource(create, (_: AutoCloseable, count) => count)
+        .toMat(TestSink.probe)(Keep.both)
+        .run()
+      sub.request(2)
+      closedCounter.get shouldBe 0
+      pub.sendNext(1)
+      sub.expectNext(1)
+      closedCounter.get shouldBe 0
+      sub.cancel(ex)
+      pub.expectCancellationWithCause(ex)
+      closedCounter.get shouldBe 1
+    }
+
+    "will close the autocloseable resource on abrupt materializer termination" in {
+      val closedCounter = new AtomicInteger(0)
+      @nowarn("msg=deprecated")
+      val mat = ActorMaterializer()
+      val promise = Promise[Done]()
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = {
+            closedCounter.incrementAndGet()
+            promise.complete(Success(Done))
+          }
+        }
+      val matVal = Source
+        .single(1)
+        .mapWithResource(create, (_: AutoCloseable, count) => count)
+        .runWith(Sink.never)(mat)
+      closedCounter.get shouldBe 0
+      mat.shutdown()
+      matVal.failed.futureValue shouldBe an[AbruptTerminationException]
+      Await.result(promise.future, 3.seconds) shouldBe Done
       closedCounter.get shouldBe 1
     }
 

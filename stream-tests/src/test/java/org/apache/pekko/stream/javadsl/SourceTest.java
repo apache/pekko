@@ -818,14 +818,15 @@ public class SourceTest extends StreamTest {
 
   @Test
   public void mustBeAbleToUseMapWithAutoCloseableResource() {
+    final TestKit probe = new TestKit(system);
     final AtomicInteger closed = new AtomicInteger();
     Source.from(Arrays.asList("1", "2", "3"))
         .mapWithResource(() -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem)
-        .runWith(TestSink.create(system), system)
-        .request(4)
-        .expectNext("1", "2", "3")
-        .expectComplete();
-    Assert.assertEquals(closed.get(), 3);
+        .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system);
+
+    Assert.assertEquals(closed.get(), 0);
+    probe.expectMsgAllOf("1", "2", "3");
+    Assert.assertEquals(closed.get(), 1);
   }
 
   @Test
