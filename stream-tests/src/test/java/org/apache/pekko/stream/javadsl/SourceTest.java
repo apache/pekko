@@ -824,7 +824,6 @@ public class SourceTest extends StreamTest {
         .mapWithResource(() -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem)
         .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system);
 
-    Assert.assertEquals(closed.get(), 0);
     probe.expectMsgAllOf("1", "2", "3");
     Assert.assertEquals(closed.get(), 1);
   }

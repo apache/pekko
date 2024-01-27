@@ -1155,7 +1155,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
    *
-   * You can configure the default dispatcher for this Source by changing the `akka.stream.materializer.blocking-io-dispatcher` or
+   * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
    * set it for a given Source by using [[ActorAttributes]].
    *
    * '''Emits when''' the mapping function returns an element and downstream is ready to consume it
