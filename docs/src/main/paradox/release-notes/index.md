@@ -5,7 +5,7 @@ This is milestone release and is aimed at testing some new support for users who
 
 ### Bug Fixes
 
-* fix ByteStringBuilder.addAll ([PR903](https://github.com/apache/incubator-pekko/pull/903))
+* Fix StackOverflowError in ByteStringBuilder.addAll ([PR903](https://github.com/apache/incubator-pekko/pull/903))
 
 ### Other Changes
 
