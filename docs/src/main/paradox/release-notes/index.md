@@ -1,5 +1,21 @@
 # Release Notes
 
+## 1.0.3-M1
+This is milestone release and is aimed at testing some new support for users who want to add Pekko nodes to an existing Akka cluster. This support is experimental. This release should not be used in production.
+
+### Bug Fixes
+
+* fix ByteStringBuilder.addAll ([PR903](https://github.com/apache/incubator-pekko/pull/903))
+
+### Other Changes
+
+* Change the manager name to use `pekko` in the name ([PR587](https://github.com/apache/incubator-pekko/pull/587))
+* Support interacting with Akka Remote and Cluster nodes ([PR765](https://github.com/apache/incubator-pekko/pull/765))
+* Change noisy logging in DNS handler ([PR835](https://github.com/apache/incubator-pekko/pull/835))
+* Support reading akka-persistence snapshots ([PR837](https://github.com/apache/incubator-pekko/pull/837), [PR841](https://github.com/apache/incubator-pekko/pull/841))
+* Fix deprecation version on GraphApply ([PR877](https://github.com/apache/incubator-pekko/pull/877))
+* Reject zero and negative periodic tasks schedule ([PR887](https://github.com/apache/incubator-pekko/pull/887))
+
 ## 1.0.2
 A minor bug fix release.
 
