@@ -14,8 +14,8 @@
 package org.apache.pekko.stream.impl.fusing
 
 import java.util.concurrent.TimeUnit.NANOSECONDS
-import scala.annotation.nowarn
-import scala.annotation.tailrec
+
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.collection.immutable.VectorBuilder
 import scala.concurrent.Future
@@ -236,7 +236,9 @@ private[stream] object Collect {
   // Cached function that can be used with PartialFunction.applyOrElse to ensure that A) the guard is only applied once,
   // and the caller can check the returned value with Collect.notApplied to query whether the PF was applied or not.
   // Prior art: https://github.com/scala/scala/blob/v2.11.4/src/library/scala/collection/immutable/List.scala#L458
-  final val NotApplied: Any => Any = _ => Collect.NotApplied
+  object NotApplied extends (Any => Any) {
+    final override def apply(v1: Any): Any = this
+  }
 }
 
 /**
@@ -255,18 +257,17 @@ private[stream] object Collect {
       private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
       import Collect.NotApplied
 
+      @nowarn("msg=Any")
       override def onPush(): Unit =
         try {
-          val result = pf.applyOrElse(grab(in), NotApplied)
           // 1. `applyOrElse` is faster than (`pf.isDefinedAt` and then `pf.apply`)
           // 2. using reference comparing here instead of pattern matching can generate less and quicker bytecode,
           //   eg: just a simple `IF_ACMPNE`, and you can find the same trick in `CollectWhile` operator.
           //   If you interest, you can check the associated PR for this change and the
           //   current implementation of `scala.collection.IterableOnceOps.collectFirst`.
-          if (result.asInstanceOf[AnyRef] eq Collect.NotApplied) {
-            pull(in)
-          } else {
-            push(out, result.asInstanceOf[Out])
+          pf.applyOrElse(grab(in), NotApplied) match {
+            case _: NotApplied.type   => pull(in)
+            case elem: Out @unchecked => push(out, elem)
           }
         } catch {
           case NonFatal(ex) =>
@@ -310,9 +311,10 @@ private[stream] object Collect {
         case _ => pull(in)
       }
 
+      @nowarn("msg=Any")
       override def onUpstreamFailure(ex: Throwable): Unit =
         try pf.applyOrElse(ex, NotApplied) match {
-            case NotApplied => failStage(ex)
+            case _: NotApplied.type => failStage(ex)
             case result: T @unchecked => {
               if (isAvailable(out)) {
                 push(out, result)
@@ -348,10 +350,11 @@ private[stream] object Collect {
       override def onPush(): Unit = push(out, grab(in))
       import Collect.NotApplied
 
+      @nowarn("msg=Any")
       override def onUpstreamFailure(ex: Throwable): Unit = f.applyOrElse(ex, NotApplied) match {
-        case NotApplied   => super.onUpstreamFailure(ex)
-        case t: Throwable => super.onUpstreamFailure(t)
-        case _            => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
+        case _: NotApplied.type => super.onUpstreamFailure(ex)
+        case t: Throwable       => super.onUpstreamFailure(t)
+        case _                  => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
       }
 
       override def onPull(): Unit = pull(in)
@@ -2186,11 +2189,12 @@ private[pekko] object TakeWithin {
 
       override def onPull(): Unit = pull(in)
 
+      @nowarn("msg=Any")
       def onFailure(ex: Throwable): Unit = {
         import Collect.NotApplied
         if (maximumRetries < 0 || attempt < maximumRetries) {
           pf.applyOrElse(ex, NotApplied) match {
-            case NotApplied => failStage(ex)
+            case _: NotApplied.type => failStage(ex)
             case source: Graph[SourceShape[T] @unchecked, M @unchecked] if TraversalBuilder.isEmptySource(source) =>
               completeStage()
             case other: Graph[SourceShape[T] @unchecked, M @unchecked] =>
