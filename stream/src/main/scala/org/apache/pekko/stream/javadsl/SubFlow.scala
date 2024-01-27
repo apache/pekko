@@ -286,7 +286,7 @@ class SubFlow[In, Out, Mat](
         resource => close.apply(resource).toScala))
 
   /**
-   * Transform each stream element with the help of a [[AutoCloseable]] resource and close it.
+   * Transform each stream element with the help of a [[AutoCloseable]] resource and close it when the stream finishes or fails.
    *
    * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
    * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
