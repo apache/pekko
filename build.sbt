@@ -188,7 +188,7 @@ lazy val clusterSharding = pekkoModule("cluster-sharding")
   .settings(AutomaticModuleName.settings("pekko.cluster.sharding"))
   .settings(OSGi.clusterSharding)
   .settings(Protobuf.settings)
-  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, Jdk9, SbtOsgi)
+  .enablePlugins(MultiNode, ScaladocNoVerificationOfDiagrams, Jdk9, Jdk9PackageCheck, SbtOsgi)
 
 lazy val clusterTools = pekkoModule("cluster-tools")
   .dependsOn(
@@ -399,7 +399,7 @@ lazy val remote =
     .settings(Protobuf.settings)
     .settings(Test / parallelExecution := false)
     .settings(serialversionRemoverPluginSettings)
-    .enablePlugins(Jdk9, SbtOsgi)
+    .enablePlugins(Jdk9, Jdk9PackageCheck, SbtOsgi)
 
 lazy val remoteTests = pekkoModule("remote-tests")
   .dependsOn(
@@ -428,7 +428,7 @@ lazy val stream = pekkoModule("stream")
   .settings(OSGi.stream)
   .settings(Protobuf.settings)
   .settings(VerifyJDK9Classes.settings)
-  .enablePlugins(BoilerplatePlugin, Jdk9, SbtOsgi)
+  .enablePlugins(BoilerplatePlugin, Jdk9, Jdk9PackageCheck, SbtOsgi)
 
 lazy val streamTestkit = pekkoModule("stream-testkit")
   .dependsOn(stream, testkit % "compile->compile;test->test")
@@ -483,7 +483,7 @@ lazy val actorTyped = pekkoModule("actor-typed")
 
       implicit val timeout = Timeout(5 seconds)
     """)
-  .enablePlugins(Jdk9, Jdk9Check, SbtOsgi)
+  .enablePlugins(Jdk9, Jdk9PackageCheck, SbtOsgi)
 
 lazy val persistenceTyped = pekkoModule("persistence-typed")
   .dependsOn(

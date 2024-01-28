@@ -22,7 +22,7 @@ import sbt.Keys._
 import sbt._
 import sbt.internal.BuildStructure
 
-object Jdk9Check extends AutoPlugin {
+object Jdk9PackageCheck extends AutoPlugin {
 
   object autoImport {
     lazy val jdk9Check = taskKey[Unit]("Report which jars are in each scope.")
@@ -30,7 +30,7 @@ object Jdk9Check extends AutoPlugin {
 
   import autoImport._
 
-  override lazy val trigger = allRequirements
+  override lazy val trigger = NoTrigger
   override lazy val requires = Jdk9
   val validScopeKey = (Compile / packageBin).scopedKey
 
