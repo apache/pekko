@@ -15,6 +15,8 @@ package org.apache.pekko.compat
 
 import org.apache.pekko.annotation.InternalApi
 
+import scala.annotation.targetName
+
 /**
  * INTERNAL API
  *
@@ -22,10 +24,15 @@ import org.apache.pekko.annotation.InternalApi
  * against Scala 2.12, 2.13, 3.0
  *
  * Remove these classes as soon as support for Scala 2.12 is dropped!
+ * Remove the @targetName bytecode forwarded methods for Pekko 2.0.x since we only care about source compatibility
  */
 @InternalApi private[pekko] object PartialFunction {
 
   inline def fromFunction[A, B](f: A => B): scala.PartialFunction[A, B] =
+    scala.PartialFunction.fromFunction(f)
+
+  @targetName("fromFunction")
+  def _pekko10FromFunction[A, B](f: A => B): scala.PartialFunction[A, B] =
     scala.PartialFunction.fromFunction(f)
 
 }

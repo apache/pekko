@@ -12,14 +12,17 @@
  */
 
 package org.apache.pekko.util
+
 import java.time.{ Duration => JDuration }
 
+import scala.annotation.targetName
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 
 import org.apache.pekko.annotation.InternalStableApi
 
 /**
  * INTERNAL API
+ * Remove the @targetName bytecode forwarded methods for Pekko 2.0.x since we only care about source compatibility
  */
 @InternalStableApi
 private[pekko] object JavaDurationConverters {
@@ -30,9 +33,15 @@ private[pekko] object JavaDurationConverters {
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
     inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
+
+    @targetName("asScala")
+    def _pekko1AsScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
     inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
+
+    @targetName("asJava")
+    def _pekko1AsJava: JDuration = JDuration.ofNanos(self.toNanos)
   }
 }
