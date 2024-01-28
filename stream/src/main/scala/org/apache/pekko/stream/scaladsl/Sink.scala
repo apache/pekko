@@ -16,29 +16,22 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.{ nowarn, tailrec }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.actor.Status
+import pekko.{ util, Done, NotUsed }
+import pekko.actor.{ ActorRef, Status }
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages
-import pekko.stream.javadsl
 import pekko.stream.stage._
 import pekko.util.ccompat._
 
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Sink` is a set of stream processing steps that has one open input.
@@ -446,6 +439,30 @@ object Sink {
    */
   def foldAsync[U, T](zero: U)(f: (U, T) => Future[U]): Sink[T, Future[U]] =
     Flow[T].foldAsync(zero)(f).toMat(Sink.head)(Keep.right).named("foldAsyncSink")
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[scala.concurrent.Future]] of `true` if the predicate is true for all elements;
+   *  2. completes and returns [[scala.concurrent.Future]] of `true` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[scala.concurrent.Future]] of `false` if the predicate is false for any element.
+   *
+   * The materialized value [[scala.concurrent.Future]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `false`
+   *
+   * @since 1.1.0
+   */
+  def forall[T](p: T => Boolean): Sink[T, Future[Boolean]] =
+    Flow[T].foldWhile(true)(util.ConstantFun.scalaIdentityFunction)(_ && p(_))
+      .toMat(Sink.head)(Keep.right)
+      .named("forallSink")
 
   /**
    * A `Sink` that will invoke the given function for every received element, giving it its previous
