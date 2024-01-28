@@ -483,7 +483,7 @@ lazy val actorTyped = pekkoModule("actor-typed")
 
       implicit val timeout = Timeout(5 seconds)
     """)
-  .enablePlugins(Jdk9, SbtOsgi)
+  .enablePlugins(Jdk9, Jdk9Check, SbtOsgi)
 
 lazy val persistenceTyped = pekkoModule("persistence-typed")
   .dependsOn(
