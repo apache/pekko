@@ -133,6 +133,9 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
+      - name: Verify JDK9 settings apply
+        run: sbt actor-typed/jdk9Check
+
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
