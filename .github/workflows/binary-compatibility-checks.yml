@@ -39,7 +39,7 @@ jobs:
         run: sbt +compile
 
       - name: Verify JDK9 settings apply
-        run: sbt actor-typed/jdk9Check
+        run: sbt jdk9Check
 
       - name: Report MiMa Binary Issues
         run: |-
