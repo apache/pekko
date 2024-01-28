@@ -35,11 +35,10 @@ object Jdk9Check extends AutoPlugin {
   val validScopeKey = (Compile / packageBin).scopedKey
 
   def scopedKeyMatch(scopedKey: ScopedKey[_], projectRef: ProjectRef): Boolean = {
-    val (key, scope): (AttributeKey[_], Scope) = scopedKey
-    if (key != validScopeKey.key || scope.config != validScopeKey.scope.config)
+    if (scopedKey.key != validScopeKey.key || scopedKey.scope.config != validScopeKey.scope.config)
       return false
 
-    scope.project match {
+    scopedKey.scope.project match {
       case Select(s) => s == projectRef
       case _         => false
     }
