@@ -35,45 +35,45 @@ private[pekko] object OptionConverters {
   final def toJava[A](o: Option[A]): Optional[A] = scala.jdk.javaapi.OptionConverters.toJava(o)
 
   implicit final class RichOptional[A](private val o: java.util.Optional[A]) extends AnyVal {
-    inline def toScala: Option[A] = scala.jdk.OptionConverters.RichOptional(o).toScala
+    def toScala: Option[A] = scala.jdk.OptionConverters.RichOptional(o).toScala
 
-    inline def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
+    def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
       scala.jdk.OptionConverters.RichOptional(o).toJavaPrimitive
   }
 
   implicit final class RichOption[A](private val o: Option[A]) extends AnyVal {
-    inline def toJava: Optional[A] = scala.jdk.OptionConverters.RichOption(o).toJava
+    def toJava: Optional[A] = scala.jdk.OptionConverters.RichOption(o).toJava
 
-    inline def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
+    def toJavaPrimitive[O](implicit shape: OptionShape[A, O]): O =
       scala.jdk.OptionConverters.RichOption(o).toJavaPrimitive
   }
 
   implicit class RichOptionalDouble(private val o: OptionalDouble) extends AnyVal {
 
     /** Convert a Java `OptionalDouble` to a Scala `Option` */
-    inline def toScala: Option[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toScala
+    def toScala: Option[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toScala
 
     /** Convert a Java `OptionalDouble` to a generic Java `Optional` */
-    inline def toJavaGeneric: Optional[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toJavaGeneric
+    def toJavaGeneric: Optional[Double] = scala.jdk.OptionConverters.RichOptionalDouble(o).toJavaGeneric
   }
 
   /** Provides conversions from `OptionalInt` to Scala `Option` and the generic `Optional` */
   implicit class RichOptionalInt(private val o: OptionalInt) extends AnyVal {
 
     /** Convert a Java `OptionalInt` to a Scala `Option` */
-    inline def toScala: Option[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toScala
+    def toScala: Option[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toScala
 
     /** Convert a Java `OptionalInt` to a generic Java `Optional` */
-    inline def toJavaGeneric: Optional[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toJavaGeneric
+    def toJavaGeneric: Optional[Int] = scala.jdk.OptionConverters.RichOptionalInt(o).toJavaGeneric
   }
 
   /** Provides conversions from `OptionalLong` to Scala `Option` and the generic `Optional` */
   implicit class RichOptionalLong(private val o: OptionalLong) extends AnyVal {
 
     /** Convert a Java `OptionalLong` to a Scala `Option` */
-    inline def toScala: Option[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toScala
+    def toScala: Option[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toScala
 
     /** Convert a Java `OptionalLong` to a generic Java `Optional` */
-    inline def toJavaGeneric: Optional[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toJavaGeneric
+    def toJavaGeneric: Optional[Long] = scala.jdk.OptionConverters.RichOptionalLong(o).toJavaGeneric
   }
 }

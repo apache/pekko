@@ -29,10 +29,10 @@ private[pekko] object JavaDurationConverters {
   def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
-    inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
+    def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
-    inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
+    def asJava: JDuration = JDuration.ofNanos(self.toNanos)
   }
 }
