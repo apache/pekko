@@ -21,7 +21,7 @@ addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.3")
 addSbtPlugin("io.spray" % "sbt-boilerplate" % "0.6.1")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
-addSbtPlugin("com.hpe.sbt" % "sbt-pull-request-validator" % "1.0.0")
+addSbtPlugin("com.github.sbt" % "sbt-pull-request-validator" % "2.0.0")
 addSbtPlugin("net.bzzt" % "sbt-reproducible-builds" % "0.31")
 
 addSbtPlugin("com.dwijnand" % "sbt-dynver" % "4.1.1")
