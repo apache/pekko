@@ -34,12 +34,12 @@ object Jdk9Check extends AutoPlugin {
 
   override lazy val trigger = allRequirements
   override lazy val requires = Jdk9
-  implicit val display = Project.showContextKey(state.value)
   val validScopeKey = (Compile / packageBin).scopedKey
 
 
   lazy val checkSettings = Seq(
     jdk9Check := {
+      implicit val display = Project.showContextKey(state.value)
       val structure: BuildStructure = Project.extract(state.value).structure
       val currentProjectRef = thisProjectRef.value
 
