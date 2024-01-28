@@ -35,37 +35,27 @@ object Jdk9Check extends AutoPlugin {
   val validScopeKey = (Compile / packageBin).scopedKey
 
   def scopedKeyMatch(scopedKey: ScopedKey[_], projectRef: ProjectRef): Boolean = {
-    if (scopedKey.key != validScopeKey.key)
+    val (key, scope): (AttributeKey[_], Scope) = scopedKey
+    if (key != validScopeKey.key || scope.config != validScopeKey.scope.config)
       return false
-    if (scopedKey.scope.config != validScopeKey.scope.config) {
-      return false
-    }
-    scopedKey.scope.project match {
+
+    scope.project match {
       case Select(s) => s == projectRef
       case _         => false
     }
   }
 
   def hasJdk9Config(set: Set[_ <: sbt.ScopedKey[_]])(implicit cMap: Map[Def.ScopedKey[_], Def.Flattened]): Boolean = {
-    var matchConfig = false
-    for (elem <- set) {
-      matchConfig = elem.scope.config match {
-        case Select(s) => s.name == CompileJdk9.name
-        case _         => false
-      }
-      if (matchConfig) {
-        return true
-      } else {
-        val dd: Set[_ <: sbt.ScopedKey[_]] = cMap.get(elem) match {
-          case Some(c) => c.dependencies.toSet;
-          case None    => Set.empty
-        }
-        if (dd.nonEmpty) {
-          matchConfig = hasJdk9Config(dd)
-        }
+    set.exists { key =>
+      key.scope.config match {
+        case Select(s) if s.name == CompileJdk9.name => true
+        case _ =>
+          cMap.get(key).exists { flattened =>
+            val dependencies = flattened.dependencies.toSet
+            dependencies.nonEmpty && hasJdk9Config(dependencies)
+          }
       }
     }
-    matchConfig
   }
 
   lazy val checkSettings = Seq(
@@ -73,24 +63,27 @@ object Jdk9Check extends AutoPlugin {
       implicit val display = Project.showContextKey(state.value)
       val structure: BuildStructure = Project.extract(state.value).structure
       val currentProjectRef = thisProjectRef.value
+
       // Crawl all configurations of the current project
       val comp = Def.compiled(structure.settings, true)(structure.delegates, structure.scopeLocal, display)
       implicit val cMap = Def.flattenLocals(comp)
+
       // Filter: The packaging task of the current execution module
-      val checkScopeKey = cMap.map(_._1).filter(sk => scopedKeyMatch(sk, currentProjectRef))
+      val checkScopeKey = cMap.collect {
+        case (key, _) if scopedKeyMatch(key, currentProjectRef) => key
+      }
       // Dependency walking and check
       for (t <- checkScopeKey) {
-        val dd = cMap.get(t) match {
+        val depends = cMap.get(t) match {
           case Some(c) => c.dependencies.toSet;
           case None    => Set.empty
         }
-        if (!hasJdk9Config(dd)) {
-          // FIXME need change
-          throw ScalaReflectionException("JDK9 not working")
+        if (!hasJdk9Config(depends)) {
+          throw new Exception("No JDK9 configuration detected.")
         }
       }
     })
 
-  override def projectSettings: Seq[Def.Setting[_]] = Jdk9.compileSettings ++ checkSettings
+  override def projectSettings: Seq[Def.Setting[_]] = checkSettings
 
 }
