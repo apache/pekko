@@ -26,7 +26,7 @@ import scala.concurrent.{ Await, ExecutionContextExecutor, Future }
 object ForAll {
   implicit val system: ActorSystem = ???
   implicit val ec: ExecutionContextExecutor = system.dispatcher
-  def foldExample: Unit = {
+  def forAllExample(): Unit = {
     // #forall
     val result: Future[Boolean] =
       Source(1 to 100)
