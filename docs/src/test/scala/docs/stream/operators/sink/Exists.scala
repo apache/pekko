@@ -30,7 +30,7 @@ object Exists {
   implicit val system: ActorSystem = null
   implicit val ec: ExecutionContext = system.dispatcher
 
-  def detectAnomaly(): Unit = {
+  def existsExample(): Unit = {
     // #exists
     val result = Source(1 to 4)
       .runWith(Sink.exists(_ > 3))

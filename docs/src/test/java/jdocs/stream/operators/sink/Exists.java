@@ -29,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 public class Exists {
   private static final ActorSystem system = null;
 
-  private void detectAnomaly() throws Exception {
+  private void existsExample() throws Exception {
     // #exists
     final boolean anyMatch =
         Source.range(1, 4)
