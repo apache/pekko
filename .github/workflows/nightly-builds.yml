@@ -173,7 +173,7 @@ jobs:
 
       - name: Publish
         # Publish (osgi bundle) not working with JDK 17, issue #31132
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ contains('11,17,21', matrix.javaVersion) }}
         run: |-
           sudo apt-get install graphviz
           sbt \
