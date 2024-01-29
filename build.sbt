@@ -374,10 +374,10 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
+    assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     // Both assembly and osgi change the (Compile / packageBin) task define/semantic, so when we apply assembly then we have to
     // let osgi first, and let osgi dependOn assembly.
     OsgiKeys.explodedJars += assembly.value,
-    assembly / test := {}, // assembly runs tests for unknown reason which introduces another cyclic dependency to packageBin via exportedJars
     description := "Apache Pekko Protobuf V3 is a shaded version of the protobuf runtime. Original POM: https://github.com/protocolbuffers/protobuf/blob/v3.9.0/java/pom.xml")
   .settings(PekkoDependWalker.protobufV3Settings)
   .enablePlugins(DependWalkerPlugin)
