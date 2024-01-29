@@ -1,6 +1,0 @@
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#CompletionStageOps.asScala$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#CompletionStageOps.asScala")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#CompletionStageOps.asScala$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.FutureConverters#FutureOps.asJava$extension")
