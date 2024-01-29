@@ -19,6 +19,7 @@ addSbtPlugin("com.github.sbt" % "sbt-unidoc" % "0.5.0")
 addSbtPlugin("com.thoughtworks.sbt-api-mappings" % "sbt-api-mappings" % "3.0.2")
 addSbtPlugin("pl.project13.scala" % "sbt-jmh" % "0.4.7")
 addSbtPlugin("com.github.sbt" % "sbt-boilerplate" % "0.7.0")
+addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.0")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "5.10.0")
 addSbtPlugin("com.github.sbt" % "sbt-pull-request-validator" % "2.0.0")
