@@ -245,4 +245,13 @@ public class SinkTest extends StreamTest {
     boolean allMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
     assertTrue(allMatch);
   }
+
+  @Test
+  public void sinkMustBeAbleToUseForExists()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    CompletionStage<Boolean> cs =
+        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.exists(param -> param > 3), system);
+    boolean anyMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
+    assertTrue(anyMatch);
+  }
 }

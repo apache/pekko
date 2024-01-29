@@ -465,6 +465,30 @@ object Sink {
       .named("forallSink")
 
   /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[scala.concurrent.Future]] of `true` if the predicate is true for any element;
+   *  2. completes and returns [[scala.concurrent.Future]] of `false` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[scala.concurrent.Future]] of `false` if the predicate is false for all elements.
+   *
+   * The materialized value [[scala.concurrent.Future]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `true`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `true`
+   *
+   * @since 1.1.0
+   */
+  def exists[T](p: T => Boolean): Sink[T, Future[Boolean]] =
+    Flow[T].foldWhile(false)(!_)(_ || p(_))
+      .toMat(Sink.head)(Keep.right)
+      .named("existsSink")
+
+  /**
    * A `Sink` that will invoke the given function for every received element, giving it its previous
    * output (from the second element) and the element as input.
    * The returned [[scala.concurrent.Future]] will be completed with value of the final
@@ -480,22 +504,6 @@ object Sink {
    */
   def reduce[T](f: (T, T) => T): Sink[T, Future[T]] =
     Flow[T].reduce(f).toMat(Sink.head)(Keep.right).named("reduceSink")
-
-  /**
-   * A `Sink` that will invoke the given predicate for every received element.
-   *
-   * The returned [[scala.concurrent.Future]] will be completed with true as soon as
-   * predicate returned true, or be completed with false if there's no element satisfy
-   * predicate and the stream was completed.
-   *
-   * If the stream is empty (i.e. completes before signalling any elements),
-   * the returned [[scala.concurrent.Future]] will be completed immediately with true.
-   *
-   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
-   * @since 1.1.0
-   */
-  def exists[T](p: T => Boolean): Sink[T, Future[Boolean]] =
-    Flow[T].exists(p).toMat(Sink.head)(Keep.right).named("existsSink")
 
   /**
    * A `Sink` that when the flow is completed, either through a failure or normal

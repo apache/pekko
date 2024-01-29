@@ -100,6 +100,31 @@ object Sink {
   }
 
   /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the predicate is true for any element;
+   *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the predicate is false for all elements.
+   *
+   * The materialized value [[java.util.concurrent.CompletionStage]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `true`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `true`
+   *
+   * @since 1.1.0
+   */
+  def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+    import pekko.util.FutureConverters._
+    new Sink(scaladsl.Sink.exists[In](p.test)
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+  }
+
+  /**
    * Creates a sink which materializes into a ``CompletionStage`` which will be completed with a result of the Java ``Collector``
    * transformation and reduction operations. This allows usage of Java streams transformations for reactive streams.
    * The ``Collector`` will trigger demand downstream. Elements emitted through the stream will be accumulated into a mutable
@@ -123,22 +148,6 @@ object Sink {
    */
   def reduce[In](f: function.Function2[In, In, In]): Sink[In, CompletionStage[In]] =
     new Sink(scaladsl.Sink.reduce[In](f.apply).toCompletionStage())
-
-  /**
-   * A `Sink` that will invoke the given predicate for every received element.
-   *
-   * The returned [[java.util.concurrent.CompletionStage]] will be completed with true as soon as
-   * predicate returned true, or be completed with false if there's no element satisfy
-   * predicate and the stream was completed.
-   *
-   * If the stream is empty (i.e. completes before signalling any elements),
-   * the returned [[java.util.concurrent.CompletionStage]] will be completed immediately with true.
-   *
-   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
-   */
-  def exists[In](p: function.Predicate[In]): Sink[In, CompletionStage[java.lang.Boolean]] =
-    new Sink(scaladsl.Sink.exists(p.test).mapMaterializedValue(
-      _.map(Boolean.box)(ExecutionContexts.parasitic)).toCompletionStage())
 
   /**
    * Helper to create [[Sink]] from `Subscriber`.

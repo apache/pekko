@@ -19,40 +19,26 @@ package jdocs.stream.operators.sink;
 
 // #imports
 
-import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
-import org.apache.pekko.japi.function.Predicate;
-import org.apache.pekko.japi.function.Procedure;
-import org.apache.pekko.stream.javadsl.Flow;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
 // #imports
 
 public class Exists {
   private static final ActorSystem system = null;
 
-  private void detectAnomaly() {
+  private void detectAnomaly() throws Exception {
     // #exists
-    final Source<String, NotUsed> source =
-        Source.from(Arrays.asList("Sun is shining", "Unidentified Object", "River is flowing"));
-
-    List<String> anomalies = Collections.singletonList("Unidentified Object");
-    Predicate<String> isAnomaly =
-        new Predicate<String>() {
-          @Override
-          public boolean test(String phenomenon) {
-            return anomalies.contains(phenomenon);
-          }
-        };
-
-    CompletionStage<Boolean> result = source.runWith(Sink.exists(isAnomaly), system);
-
-    result.toCompletableFuture().complete(true);
+    final boolean anyMatch =
+        Source.range(1, 4)
+            .runWith(Sink.exists(elem -> elem > 3), system)
+            .toCompletableFuture()
+            .get(3, TimeUnit.SECONDS);
+    System.out.println(anyMatch);
+    // Expected prints:
+    // true
     // #exists
   }
 }

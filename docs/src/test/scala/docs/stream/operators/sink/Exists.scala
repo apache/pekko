@@ -21,7 +21,8 @@ package docs.stream.operators.sink
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.scaladsl._
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.DurationInt
+import scala.concurrent.{ Await, ExecutionContext }
 //#imports
 
 object Exists {
@@ -31,14 +32,11 @@ object Exists {
 
   def detectAnomaly(): Unit = {
     // #exists
-    val source = Source(Seq("Sun is shining", "Unidentified Object", "River is flowing"))
-
-    val anomalies = Seq("Unidentified Object")
-    def isAnomaly(phenomenon: String): Boolean = anomalies.contains(phenomenon)
-
-    val result = source.runWith(Sink.exists(isAnomaly))
-    result.map(println)
-    // expected print:
+    val result = Source(1 to 4)
+      .runWith(Sink.exists(_ > 3))
+    val anyMatch = Await.result(result, 3.seconds)
+    println(anyMatch)
+    // Expect prints:
     // true
     // #exists
   }
