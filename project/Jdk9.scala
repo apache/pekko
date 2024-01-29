@@ -16,6 +16,7 @@ import sbt._
 
 object Jdk9 extends AutoPlugin {
   import JdkOptions.notOnJdk8
+  import JdkOptions.JavaVersion._
 
   // The version 9 is special for any Java versions >= 9
   // and the version 11 is special for any Java versions >= 11
@@ -41,7 +42,7 @@ object Jdk9 extends AutoPlugin {
 
   private def getAdditionalSourceDirectoryNames(language: String, isTest: Boolean = false): Seq[String] = {
     for {
-      version <- supportedJavaLTSVersions if version.toInt <= JdkOptions.JavaVersion.majorVersion
+      version <- supportedJavaLTSVersions if version.toInt <= majorVersion
     } yield {
       if (isTest) {
         s"$language-jdk$version-only"
@@ -59,14 +60,14 @@ object Jdk9 extends AutoPlugin {
   lazy val compileJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := notOnJdk8(additionalSourceDirectories.value),
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")))
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", majorVersion.toString)),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", majorVersion.toString)))
 
   lazy val testJdk9Settings = Seq(
     // following the scala-2.12, scala-sbt-1.0, ... convention
     unmanagedSourceDirectories := notOnJdk8(additionalTestSourceDirectories.value),
-    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", "11")),
-    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", "11")),
+    scalacOptions := PekkoBuild.DefaultScalacOptions.value ++ notOnJdk8(Seq("-release", majorVersion.toString)),
+    javacOptions := PekkoBuild.DefaultJavacOptions ++ notOnJdk8(Seq("--release", majorVersion.toString)),
     compile := compile.dependsOn(CompileJdk9 / compile).value,
     classpathConfiguration := TestJdk9,
     externalDependencyClasspath := (Test / externalDependencyClasspath).value)

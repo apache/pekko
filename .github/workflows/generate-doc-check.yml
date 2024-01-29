@@ -49,4 +49,4 @@ jobs:
           sudo apt-get install graphviz
 
       - name: Compile testClass&docs for all Scala versions
-        run: sbt ";TestJdk9 / compile ; +compile:doc"
+        run: sbt ";+TestJdk9 / compile ; +compile:doc"
