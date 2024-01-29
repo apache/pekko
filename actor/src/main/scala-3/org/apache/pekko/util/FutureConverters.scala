@@ -13,13 +13,11 @@ import org.apache.pekko.annotation.InternalStableApi
 
 import java.util.concurrent.CompletionStage
 import scala.concurrent.Future
-import scala.annotation.targetName
 
 /**
  * INTERNAL API
  *
  * Remove this once Scala 2.12 support is dropped since all methods are in Scala 2.13+ stdlib
- * Remove the @targetName bytecode forwarded methods for Pekko 2.0.x since we only care about source compatibility
  */
 @InternalStableApi
 private[pekko] object FutureConverters {
@@ -30,10 +28,7 @@ private[pekko] object FutureConverters {
   def asJava[T](f: Future[T]): CompletionStage[T] = javaapi.FutureConverters.asJava(f)
 
   implicit final class FutureOps[T](private val f: Future[T]) extends AnyVal {
-    inline def asJava: CompletionStage[T] = javaapi.FutureConverters.asJava(f)
-
-    @targetName("asJava")
-    def _pekko1AsJava: CompletionStage[T] = javaapi.FutureConverters.asJava(f)
+    def asJava: CompletionStage[T] = javaapi.FutureConverters.asJava(f)
   }
 
   // Ideally this should have the Scala 3 inline keyword but then Java sources are
@@ -41,9 +36,6 @@ private[pekko] object FutureConverters {
   def asScala[T](cs: CompletionStage[T]): Future[T] = javaapi.FutureConverters.asScala(cs)
 
   implicit final class CompletionStageOps[T](private val cs: CompletionStage[T]) extends AnyVal {
-    inline def asScala: Future[T] = javaapi.FutureConverters.asScala(cs)
-
-    @targetName("asScala")
-    def _pekko1AsScala: Future[T] = javaapi.FutureConverters.asScala(cs)
+    def asScala: Future[T] = javaapi.FutureConverters.asScala(cs)
   }
 }

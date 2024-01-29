@@ -1,4 +1,0 @@
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.JavaDurationConverters#JavaDurationOps.asScala$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.JavaDurationConverters#JavaDurationOps.asScala")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.JavaDurationConverters#ScalaDurationOps.asJava$extension")
-ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.pekko.util.JavaDurationConverters#ScalaDurationOps.asJava")
