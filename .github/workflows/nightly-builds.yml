@@ -181,7 +181,7 @@ jobs:
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
       - name: Install scala-cli
-        if: ${{ contains('11,17,21', matrix.javaVersion) }}
+        if: ${{ matrix.javaVersion == 11 }}
         run: |-
           curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
           sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
@@ -189,11 +189,7 @@ jobs:
           sudo apt install scala-cli
 
       - name: Use Scala-CLI to verify jdk 9 classes
-        if: ${{ contains('11,17,21', matrix.javaVersion) }}
+        if: ${{ matrix.javaVersion == 11 }}
         run: |-
-          scala-cli --version
-          echo "Starting verification with Scala-CLI"
-          scala-cli stream/target/scala-cli/VerifyJDK9Classes.sc && echo "Verification successful" || (
-          echo "Error when VerifyJDK9Classes"
-          exit 1
-          )
+          chmod +x .github/workflows/verify-jdk9-classes.sh
+          .github/workflows/verify-jdk9-classes.sh

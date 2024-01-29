@@ -22,24 +22,23 @@ object VerifyJDK9Classes {
   lazy val settings: Seq[Setting[_]] = inConfig(Compile) {
     Seq {
       sourceGenerators += {
-        generateAndWriteScalaCLIScript(
-          target,
-          _ / "scala-cli" / "VerifyJDK9Classes.sc")
+        generateAndWriteScalaCLIScript(target)
       }
     }
   }
 
-  def generateAndWriteScalaCLIScript(dir: SettingKey[File], locate: File => File): Def.Initialize[Task[Seq[sbt.File]]] =
+  def generateAndWriteScalaCLIScript(dir: SettingKey[File]): Def.Initialize[Task[Seq[sbt.File]]] =
     Def.task[Seq[File]] {
-      val script = generateScalaCLIScript(version.value)
-      val file = locate(dir.value)
+      val binaryVersion = scalaBinaryVersion.value
+      val script = generateScalaCLIScript(version.value, binaryVersion)
+      val file = dir.value / "scala-cli" / s"VerifyJDK9Classes-${binaryVersion}.sc"
       val content = script.stripMargin.format(version.value)
       if (!file.exists || IO.read(file) != content) IO.write(file, content)
       // the generated file is not used.
       Nil
     }
 
-  private def generateScalaCLIScript(version: String): String =
+  private def generateScalaCLIScript(version: String, scalaBinaryVersion: String): String =
     s"""
       |/*
       | * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,9 +56,8 @@ object VerifyJDK9Classes {
       | * See the License for the specific language governing permissions and
       | * limitations under the License.
       | */
-      |//> using scala 2.13
+      |//> using scala ${scalaBinaryVersion}
       |//> using dep "org.apache.pekko::pekko-stream:${version}"
-      |////> using jvm 11
       |object VerifyJDK9Classes {
       |  def main(args: Array[String]): Unit = {
       |    import org.apache.pekko.actor.ActorSystem
