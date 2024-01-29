@@ -241,7 +241,7 @@ object TestPublisher {
      * configuration entry "pekko.test.timefactor", while the min Duration is not.
      *
      * {{{
-     * val ret = within(50 millis) {
+     * val ret = within(Duration.ofMillis(50)) {
      *   test ! "ping"
      *   expectMsgClass(classOf[String])
      * }
@@ -257,7 +257,7 @@ object TestPublisher {
     def within[T](max: FiniteDuration)(f: => T): T = executeAfterSubscription { probe.within(max)(f) }
 
     /**
-     * Same as calling `within(0 seconds, max)(f)`.
+     * Same as calling `within(Duration.ofSeconds(0), max)(f)`.
      */
     def within[T](max: java.time.Duration)(f: => T): T = executeAfterSubscription { probe.within(max.asScala)(f) }
   }
@@ -896,14 +896,14 @@ object TestSubscriber {
      * configuration entry "pekko.test.timefactor", while the min Duration is not.
      *
      * {{{
-     * val ret = within(50 millis) {
+     * val ret = within(Duration.ofMillis(50)) {
      *   test ! "ping"
      *   expectMsgClass(classOf[String])
      * }
      * }}}
      */
-    def within[T](min: java.time.Duration, max: java.time.Duration)(f: => T): T =
-      probe.within(min.asScala, max.asScala)(f)
+    def within[T](min: java.time.Duration, max: java.time.Duration)(f: pekko.japi.function.Function[Unit, T]): T =
+      probe.within(min.asScala, max.asScala)(f.apply())
 
     /**
      * Same as calling `within(0 seconds, max)(f)`.
@@ -911,7 +911,7 @@ object TestSubscriber {
     def within[T](max: FiniteDuration)(f: => T): T = probe.within(max)(f)
 
     /**
-     * Same as calling `within(0 seconds, max)(f)`.
+     * Same as calling `within(Duration.ofSeconds(0), max)(f)`.
      */
     def within[T](max: java.time.Duration)(f: => T): T = probe.within(max.asScala)(f)
 
