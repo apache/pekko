@@ -880,9 +880,10 @@ sealed abstract class ByteString
    * Return the bytes in this ByteString as an InputStream.
    *
    * @return the bytes in this ByteString accessible as an InputStream
+   * @see [[asByteBuffer]]
    * @since 1.1.0
    */
-  def getInputStream(): InputStream = new ByteArrayInputStream(toArrayUnsafe())
+  def asInputStream: InputStream = new ByteArrayInputStream(toArrayUnsafe())
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
