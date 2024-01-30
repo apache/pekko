@@ -395,7 +395,7 @@ class DispatcherDocSpec extends PekkoSpec(DispatcherDocSpec.config) {
           case x => log.info(x.toString)
         }
       }
-      val a = system.actorOf(Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
+      val a = system.actorOf(Props(classOf[Logger]).withDispatcher("prio-dispatcher"))
 
       /*
        * Logs:

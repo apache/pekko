@@ -664,7 +664,7 @@ class ActorDocSpec extends PekkoSpec("""
       // #identify
 
       val a = system.actorOf(Props.empty)
-      val b = system.actorOf(Props(classOf[Follower], this))
+      val b = system.actorOf(Props(classOf[Follower]))
       watch(b)
       system.stop(a)
       expectMsgType[pekko.actor.Terminated].actor should be(b)
