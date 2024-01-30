@@ -29,6 +29,7 @@ addSbtPlugin("com.github.pjfanning" % "sbt-source-dist" % "0.1.11")
 addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.3.2")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
+addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 
 // We have to deliberately use older versions of sbt-paradox because current Pekko sbt build
 // only loads on JDK 1.8 so we need to bring in older versions of parboiled which support JDK 1.8

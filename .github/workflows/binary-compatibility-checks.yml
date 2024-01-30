@@ -38,6 +38,9 @@ jobs:
       - name: Compile code
         run: sbt +compile
 
+      - name: Check if the dependency task in the built correctly
+        run: sbt dependWalkerCheck
+
       - name: Report MiMa Binary Issues
         run: |-
           sbt +mimaReportBinaryIssues
