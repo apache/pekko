@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ObjectInputStream, ObjectOutputStream }
+import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream }
 import java.lang.{ Iterable => JIterable }
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
@@ -826,6 +826,14 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    * toArray method - which provide the immutability guarantees by copying the backing array.
    */
   def toArrayUnsafe(): Array[Byte] = toArray
+
+  /**
+   * Return the bytes in this ByteString as an InputStream.
+   *
+   * @return the bytes in this ByteString accessible as an InputStream
+   * @since 1.1.0
+   */
+  def getInputStream(): InputStream = new ByteArrayInputStream(toArrayUnsafe())
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
