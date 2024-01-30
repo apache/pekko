@@ -42,7 +42,7 @@ case class Wallet()
 // #per-session-child
 
 class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
-
+  private class DummyContext[T](val self: ActorRef[T])
   "The interaction patterns docs" must {
 
     "contain a sample for fire and forget" in {
@@ -97,10 +97,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
       val cookieFabric: ActorRef[CookieFabric.Request] = spawn(CookieFabric())
       val probe = createTestProbe[CookieFabric.Response]()
       // shhh, don't tell anyone
-      import scala.language.reflectiveCalls
-      val context: { def self: ActorRef[CookieFabric.Response] } = new {
-        def self = probe.ref
-      }
+      val context = new DummyContext[CookieFabric.Response](probe.ref)
 
       // #request-response-send
       cookieFabric ! CookieFabric.Request("give me cookies", context.self)
