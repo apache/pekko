@@ -13,19 +13,17 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ObjectInputStream, ObjectOutputStream }
+import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream }
 import java.lang.{ Iterable => JIterable }
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
 import java.util.Base64
 
-import scala.annotation.{ tailrec, varargs }
+import scala.annotation.{ nowarn, tailrec, varargs }
 import scala.collection.{ immutable, mutable }
 import scala.collection.immutable.{ IndexedSeq, IndexedSeqOps, StrictOptimizedSeqOps, VectorBuilder }
 import scala.collection.mutable.{ Builder, WrappedArray }
 import scala.reflect.ClassTag
-
-import scala.annotation.nowarn
 
 object ByteString {
 
@@ -875,6 +873,14 @@ sealed abstract class ByteString
    * toArray method - which provide the immutability guarantees by copying the backing array.
    */
   def toArrayUnsafe(): Array[Byte] = toArray
+
+  /**
+   * Return the bytes in this ByteString as an InputStream.
+   *
+   * @return the bytes in this ByteString accessible as an InputStream
+   * @since 1.1.0
+   */
+  def getInputStream(): InputStream = new ByteArrayInputStream(toArrayUnsafe())
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
