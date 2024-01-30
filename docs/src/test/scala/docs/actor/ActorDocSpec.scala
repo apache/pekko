@@ -345,7 +345,7 @@ class ActorDocSpec extends PekkoSpec("""
       }
       // #import-context
 
-      val first = system.actorOf(Props(classOf[FirstActor], this), name = "first")
+      val first = system.actorOf(Props(classOf[FirstActor]), name = "first")
       system.stop(first)
     }
   }
@@ -599,7 +599,7 @@ class ActorDocSpec extends PekkoSpec("""
       }
       // #watch
 
-      val victim = system.actorOf(Props(classOf[WatchActor], this))
+      val victim = system.actorOf(Props(classOf[WatchActor]))
       victim.tell("kill", testActor)
       expectMsg("finished")
     }
