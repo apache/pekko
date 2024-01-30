@@ -35,7 +35,7 @@ import org.apache.pekko
 import pekko.Done
 import pekko.stream.{ AbruptTerminationException, ActorAttributes, ActorMaterializer, SystemMaterializer }
 import pekko.stream.ActorAttributes.supervisionStrategy
-import pekko.stream.Supervision.{ restartingDecider, resumingDecider }
+import pekko.stream.Supervision.{ restartingDecider, resumingDecider, stoppingDecider }
 import pekko.stream.impl.{ PhasedFusingActorMaterializer, StreamSupervisor }
 import pekko.stream.impl.StreamSupervisor.Children
 import pekko.stream.testkit.{ StreamSpec, TestSubscriber }
@@ -515,6 +515,118 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       mat.shutdown()
       matVal.failed.futureValue shouldBe an[AbruptTerminationException]
       Await.result(promise.future, 3.seconds) shouldBe Done
+      closedCounter.get shouldBe 1
+    }
+
+    "continue with autoCloseable when Strategy is Resume and exception happened" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val p = Source
+        .fromIterator(() => (0 to 50).iterator)
+        .mapWithResource(create,
+          (_: AutoCloseable, elem) => {
+            if (elem == 10) throw TE("") else elem
+          })
+        .withAttributes(supervisionStrategy(resumingDecider))
+        .runWith(Sink.asPublisher(false))
+      val c = TestSubscriber.manualProbe[Int]()
+
+      p.subscribe(c)
+      val sub = c.expectSubscription()
+
+      (0 to 48).foreach(i => {
+        sub.request(1)
+        c.expectNext() should ===(if (i < 10) i else i + 1)
+      })
+      sub.request(1)
+      c.expectNext(50)
+      c.expectComplete()
+      closedCounter.get shouldBe 1
+    }
+
+    "continue with autoCloseable when Strategy is Resume and exception happened on map" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val p = Source
+        .fromIterator(() => (0 to 50).iterator)
+        .mapWithResource(create, (_: AutoCloseable, elem) => elem)
+        .map(elem => {
+          if (elem == 10) throw TE("") else elem
+        })
+        .withAttributes(supervisionStrategy(resumingDecider))
+        .runWith(Sink.asPublisher(false))
+      val c = TestSubscriber.manualProbe[Int]()
+
+      p.subscribe(c)
+      val sub = c.expectSubscription()
+
+      (0 to 48).foreach(i => {
+        sub.request(1)
+        c.expectNext() should ===(if (i < 10) i else i + 1)
+      })
+      sub.request(1)
+      c.expectNext(50)
+      c.expectComplete()
+      closedCounter.get shouldBe 1
+    }
+
+    "close and open stream with autocloseable again when Strategy is Restart" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val p = Source
+        .fromIterator(() => (0 to 50).iterator)
+        .mapWithResource(create,
+          (_: AutoCloseable, elem) => {
+            if (elem == 10) throw TE("") else elem
+          })
+        .withAttributes(supervisionStrategy(restartingDecider))
+        .runWith(Sink.asPublisher(false))
+      val c = TestSubscriber.manualProbe[Int]()
+
+      p.subscribe(c)
+      val sub = c.expectSubscription()
+
+      (0 to 18).foreach(i => {
+        sub.request(1)
+        c.expectNext() should ===(if (i < 10) i else i + 1)
+      })
+      sub.cancel()
+    }
+
+    "stop stream with autoCloseable when Strategy is Stop and exception happened" in {
+      val closedCounter = new AtomicInteger(0)
+      val create = () =>
+        new AutoCloseable {
+          override def close(): Unit = closedCounter.incrementAndGet()
+        }
+      val p = Source
+        .fromIterator(() => (0 to 50).iterator)
+        .mapWithResource(create,
+          (_: AutoCloseable, elem) => {
+            if (elem == 10) throw TE("") else elem
+          })
+        .withAttributes(supervisionStrategy(stoppingDecider))
+        .runWith(Sink.asPublisher(false))
+      val c = TestSubscriber.manualProbe[Int]()
+
+      p.subscribe(c)
+      val sub = c.expectSubscription()
+
+      (0 to 9).foreach(i => {
+        sub.request(1)
+        c.expectNext() shouldBe i
+      })
+      sub.request(1)
+      c.expectError()
       closedCounter.get shouldBe 1
     }
 
