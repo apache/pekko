@@ -381,6 +381,47 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
   }
 
+  "The exists sink" must {
+
+    "completes with `false` when none element match" in {
+      Source(1 to 4)
+        .runWith(Sink.exists[Int](_ > 5))
+        .futureValue shouldBe false
+    }
+
+    "completes with `true` when any element match" in {
+      Source(1 to 4)
+        .runWith(Sink.exists(_ > 2))
+        .futureValue shouldBe true
+    }
+
+    "completes with `false` if the stream is empty" in {
+      Source.empty[Int]
+        .runWith(Sink.exists(_ > 2))
+        .futureValue shouldBe false
+    }
+
+    "completes with `Failure` if the stream failed" in {
+      Source.failed[Int](new RuntimeException("Oops"))
+        .runWith(Sink.exists(_ > 2))
+        .failed.futureValue shouldBe a[RuntimeException]
+    }
+
+    "completes with `exists` with restart strategy" in {
+      val sink = Sink.exists[Int](elem => {
+        if (elem == 2) {
+          throw new RuntimeException("Oops")
+        }
+        elem > 1
+      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+
+      Source(1 to 2)
+        .runWith(sink)
+        .futureValue shouldBe false
+    }
+
+  }
+
   "Sink pre-materialization" must {
     "materialize the sink and wrap its exposed publisher in a Source" in {
       val publisherSink: Sink[String, Publisher[String]] = Sink.asPublisher[String](false)
