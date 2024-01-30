@@ -834,7 +834,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    * @see [[asByteBuffer]]
    * @since 1.1.0
    */
-  def asInputStream: InputStream = new ByteArrayInputStream(toArrayUnsafe())
+  final def asInputStream: InputStream = new ByteArrayInputStream(toArrayUnsafe())
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
