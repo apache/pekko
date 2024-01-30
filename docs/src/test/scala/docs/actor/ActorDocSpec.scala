@@ -441,6 +441,9 @@ class ActorDocSpec extends PekkoSpec("""
     // #system-actorOf
     shutdown(system)
   }
+  private abstract class DummyActorProxy {
+    def actorRef: ActorRef
+  }
 
   "creating actor with IndirectActorProducer" in {
     class Echo(name: String) extends Actor {
@@ -454,7 +457,8 @@ class ActorDocSpec extends PekkoSpec("""
       }
     }
 
-    val a: { def actorRef: ActorRef } = new AnyRef {
+    import scala.language.existentials
+    val a: DummyActorProxy = new DummyActorProxy() {
       val applicationContext = this
 
       // #creating-indirectly
@@ -474,10 +478,8 @@ class ActorDocSpec extends PekkoSpec("""
       val actorRef = system.actorOf(Props(classOf[DependencyInjector], applicationContext, "hello"), "helloBean")
       // #creating-indirectly
     }
-    val actorRef = {
-      import scala.language.reflectiveCalls
-      a.actorRef
-    }
+
+    val actorRef = a.actorRef
 
     val message = 42
     implicit val self = testActor
