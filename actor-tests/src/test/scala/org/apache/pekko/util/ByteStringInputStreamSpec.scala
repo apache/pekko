@@ -39,6 +39,8 @@ class ByteStringInputStreamSpec extends AnyWordSpec with Matchers {
     "support asInputStream" in {
       toUtf8String(ByteString1C.fromString("").asInputStream) shouldEqual ""
       toUtf8String(ByteString1C.fromString("abc").asInputStream) shouldEqual "abc"
+      val bytes = "abcdef".getBytes(StandardCharsets.US_ASCII)
+      toUtf8String(ByteString.fromArray(bytes, 1, 3).asInputStream) shouldEqual "bcd"
     }
   }
   "ByteStrings" must {
