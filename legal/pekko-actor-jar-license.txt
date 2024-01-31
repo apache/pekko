@@ -240,15 +240,6 @@ Copyright 2014 The Netty Project
 pekko-actor contains code from java-uuid-generator <https://github.com/cowtowncoder/java-uuid-generator>
 in `org.apache.pekko.util.UUIDComparator.scala` which was released under an Apache 2.0 license.
 
-Copyright (c) 2002- Tatu Saloranta, tatu.saloranta@iki.fi
-
----------------
-
-pekko-actor contains code from jackson-databind <https://github.com/FasterXML/jackson-databind>
-in `org.apache.pekko.util.ByteBufferBackedInputStream.scala` which was released under an Apache 2.0 license.
-
-Copyright 2007-, Tatu Saloranta (tatu.saloranta@iki.fi)
-
 ---------------
 
 pekko-actor contains code in `org.apache.pekko.dispatch.AbstractNodeQueue.java` and in

@@ -890,8 +890,7 @@ sealed abstract class ByteString
    * @see [[asByteBuffer]]
    * @since 1.1.0
    */
-  def asInputStream: InputStream =
-    new SequenceInputStream(asByteBuffers.map(bb => new ByteBufferBackedInputStream(bb)).iterator.asJavaEnumeration)
+  def asInputStream: InputStream
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
