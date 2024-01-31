@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream }
+import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
 import java.lang.{ Iterable => JIterable }
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
@@ -21,6 +21,7 @@ import java.util.Base64
 
 import scala.annotation.{ tailrec, varargs }
 import scala.collection.IndexedSeqOptimized
+import scala.collection.JavaConverters._
 import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable
 import scala.collection.immutable.{ IndexedSeq, VectorBuilder }
@@ -271,6 +272,8 @@ object ByteString {
     }
 
     override def toArrayUnsafe(): Array[Byte] = bytes
+
+    override def asInputStream: InputStream = new ByteArrayInputStream(bytes)
   }
 
   /** INTERNAL API: ByteString backed by exactly one array, with start / end markers */
@@ -436,6 +439,9 @@ object ByteString {
       if (startIndex == 0 && length == bytes.length) bytes
       else toArray
     }
+
+    override def asInputStream: InputStream =
+      new ByteArrayInputStream(bytes, startIndex, length)
   }
 
   private[pekko] object ByteStrings extends Companion {
@@ -565,6 +571,9 @@ object ByteString {
     def asByteBuffer: ByteBuffer = compact.asByteBuffer
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = bytestrings.map { _.asByteBuffer }
+
+    override def asInputStream: InputStream =
+      new SequenceInputStream(bytestrings.map(_.asInputStream).iterator.asJavaEnumeration)
 
     def decodeString(charset: String): String = compact.decodeString(charset)
 
@@ -834,7 +843,8 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    * @see [[asByteBuffer]]
    * @since 1.1.0
    */
-  final def asInputStream: InputStream = new ByteArrayInputStream(toArrayUnsafe())
+  def asInputStream: InputStream =
+    new SequenceInputStream(asByteBuffers.map(bb => new ByteBufferBackedInputStream(bb)).iterator.asJavaEnumeration)
 
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
@@ -895,7 +905,6 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    * all fragments. Will always have at least one entry.
    */
   def getByteBuffers(): JIterable[ByteBuffer] = {
-    import scala.collection.JavaConverters.asJavaIterableConverter
     asByteBuffers.asJava
   }
 
