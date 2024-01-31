@@ -23,15 +23,18 @@ import java.nio.ByteBuffer
 /**
  * Simple {@link InputStream} implementation that exposes currently
  * available content of a {@link ByteBuffer}.
- * 
+ *
  * Derived from https://github.com/FasterXML/jackson-databind/blob/1e73db1fabd181937c68b49ffc502fb7f614d0c2/src/main/java/com/fasterxml/jackson/databind/util/ByteBufferBackedInputStream.java
  */
 private[util] class ByteBufferBackedInputStream(bb: ByteBuffer) extends InputStream {
+
   override def available: Int = bb.remaining
 
   @throws[IOException]
-  override def read: Int = if (bb.hasRemaining) bb.get & 0xFF
-  else -1
+  override def read: Int = {
+    if (bb.hasRemaining) bb.get & 0xFF
+    else -1
+  }
 
   @throws[IOException]
   override def read(bytes: Array[Byte], off: Int, len: Int): Int = {
