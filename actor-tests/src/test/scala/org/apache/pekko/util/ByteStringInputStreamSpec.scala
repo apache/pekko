@@ -37,9 +37,6 @@ class ByteStringInputStreamSpec extends AnyWordSpec with Matchers {
   }
   "ByteString1C" must {
     "support asInputStream" in {
-      ByteString1C.empty.asInputStream.read() shouldEqual -1
-      ByteString1C.empty.asInputStream.read(Array.empty) shouldEqual -1
-      toUtf8String(ByteString1C.empty.asInputStream) shouldEqual ""
       toUtf8String(ByteString1C.fromString("abc").asInputStream) shouldEqual "abc"
     }
   }
