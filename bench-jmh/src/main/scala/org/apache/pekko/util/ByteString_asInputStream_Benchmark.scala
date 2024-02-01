@@ -25,7 +25,7 @@ import org.openjdk.jmh.infra.Blackhole
 
 /**
  * Compares ByteString.asInputStream and new ByteStreamArray(ByteString.toArray).
- */ 
+ */
 @State(Scope.Benchmark)
 @Measurement(timeUnit = TimeUnit.MILLISECONDS)
 class ByteString_asInputStream_Benchmark {
@@ -53,7 +53,7 @@ class ByteString_asInputStream_Benchmark {
     [info] ByteString_asInputStream_Benchmark.single_bs_bytes_to_input_stream      10  thrpt    3   619077.237 ±  200242.708  ops/s
     [info] ByteString_asInputStream_Benchmark.single_bs_bytes_to_input_stream     100  thrpt    3    50481.984 ±   78485.741  ops/s
     [info] ByteString_asInputStream_Benchmark.single_bs_bytes_to_input_stream    1000  thrpt    3     4271.984 ±    1061.978  ops/s
-  */
+   */
 
   @Setup
   def setup(): Unit = {
