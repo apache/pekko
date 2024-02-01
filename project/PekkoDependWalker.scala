@@ -30,7 +30,16 @@ object PekkoDependWalker {
     walkTasks := Seq(
       WalkTask(
         ScopeKeyMatcher((Compile / packageBin).scopedKey, CheckBoth),
-        ScopeKeyMatcher((CompileJdk9 / compile).scopedKey, CheckConfig))))
+        ScopeKeyMatcher((CompileJdk9 / compile).scopedKey, CheckConfig)),
+      WalkTask(
+        ScopeKeyMatcher((Compile / fullClasspath).scopedKey, CheckBoth),
+        ScopeKeyMatcher((CompileJdk9 / exportedProducts).scopedKey, CheckConfig)),
+      WalkTask(
+        ScopeKeyMatcher((Compile / packageBin).scopedKey, CheckBoth),
+        ScopeKeyMatcher((CompileJdk9 / fullClasspath).scopedKey, CheckConfig)),
+      WalkTask(
+        ScopeKeyMatcher((Compile / packageBin).scopedKey, CheckBoth),
+        ScopeKeyMatcher(OsgiKeys.bundle.scopedKey, CheckTask))))
 
   lazy val protobufV3Settings = Seq(
     walkTasks := Seq(
