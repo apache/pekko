@@ -26,7 +26,7 @@ jobs:
           java-version: 11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -84,7 +84,7 @@ jobs:
           java-version: 11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -128,7 +128,7 @@ jobs:
           java-version: ${{ matrix.javaVersion }}
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
