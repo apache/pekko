@@ -368,8 +368,19 @@ lazy val protobufV3 = pekkoModule("protobuf-v3")
     Compile / packageBin / packagedArtifact := Scoped.mkTuple2(
       (Compile / packageBin / artifact).value,
       ReproducibleBuildsPlugin.postProcessJar(OsgiKeys.bundle.value)),
-    Compile / packageBin := ReproducibleBuildsPlugin
-      .postProcessJar((Compile / assembly).value), // package by running assembly
+    Compile / packageBin := Def.taskDyn {
+      val store = streams.value.cacheStoreFactory.make("shaded-output")
+      val uberJarLocation = (assembly / assemblyOutputPath).value
+      val tracker = Tracked.outputChanged(store) { (changed: Boolean, file: File) =>
+        if (changed) {
+          Def.task {
+            val uberJar = (Compile / assembly).value
+            ReproducibleBuildsPlugin.postProcessJar(uberJar)
+          }
+        } else Def.task { file }
+      }
+      tracker(() => uberJarLocation)
+    }.value,
     // Prevent cyclic task dependencies, see https://github.com/sbt/sbt-assembly/issues/365 by
     // redefining the fullClasspath with just what we need to avoid the cyclic task dependency
     assembly / fullClasspath := (Runtime / managedClasspath).value ++ (Compile / products).value.map(Attributed.blank),
