@@ -584,7 +584,7 @@ object ByteString {
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = bytestrings.map { _.asByteBuffer }
 
     override def asInputStream: InputStream =
-      new SequenceInputStream(bytestrings.map(_.asInputStream).iterator.asJavaEnumeration)
+      new SequenceInputStream(bytestrings.iterator.map(_.asInputStream).asJavaEnumeration)
 
     def decodeString(charset: String): String = compact.decodeString(charset)
 
