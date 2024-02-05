@@ -19,21 +19,22 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.ActorCell
-import org.apache.pekko.actor.testkit.typed.scaladsl.LogCapturing
-import org.apache.pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
-import org.apache.pekko.actor.typed.ActorRef
-import org.apache.pekko.actor.typed.Behavior
-import org.apache.pekko.actor.typed.DispatcherSelector
-import org.apache.pekko.actor.typed.MailboxSelector
-import org.apache.pekko.actor.typed.Props
-import org.apache.pekko.actor.typed.internal.adapter.ActorContextAdapter
-import org.apache.pekko.actor.typed.scaladsl.AskPattern._
-import org.apache.pekko.dispatch.BoundedMessageQueueSemantics
-import org.apache.pekko.dispatch.BoundedNodeMessageQueue
-import org.apache.pekko.dispatch.Dispatchers
-import org.apache.pekko.dispatch.MessageQueue
-import org.apache.pekko.dispatch.NodeMessageQueue
+import org.apache.pekko
+import pekko.actor.ActorCell
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.typed.ActorRef
+import pekko.actor.typed.Behavior
+import pekko.actor.typed.DispatcherSelector
+import pekko.actor.typed.MailboxSelector
+import pekko.actor.typed.Props
+import pekko.actor.typed.internal.adapter.ActorContextAdapter
+import pekko.actor.typed.scaladsl.AskPattern._
+import pekko.dispatch.BoundedMessageQueueSemantics
+import pekko.dispatch.BoundedNodeMessageQueue
+import pekko.dispatch.Dispatchers
+import pekko.dispatch.MessageQueue
+import pekko.dispatch.NodeMessageQueue
 import org.scalatest.wordspec.AnyWordSpecLike
 
 object MailboxSelectorSpec {

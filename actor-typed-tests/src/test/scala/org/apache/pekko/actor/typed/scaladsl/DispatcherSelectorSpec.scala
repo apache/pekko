@@ -17,9 +17,9 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
-import org.apache.pekko.actor.typed.DispatcherSelector
-import org.apache.pekko.actor.typed.Props
-import org.apache.pekko.actor.typed.scaladsl.AskPattern._
+import pekko.actor.typed.DispatcherSelector
+import pekko.actor.typed.Props
+import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
