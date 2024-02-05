@@ -18,6 +18,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.apache.pekko
 import org.apache.pekko.actor.typed.DispatcherSelector
+import org.apache.pekko.actor.typed.Props
 import org.apache.pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
@@ -32,8 +33,7 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.SpawnProtocol
 
 object DispatcherSelectorSpec {
-  val config = ConfigFactory.parseString(
-    """
+  val config = ConfigFactory.parseString("""
       ping-pong-dispatcher {
         executor = thread-pool-executor
         type = PinnedDispatcher
@@ -42,7 +42,6 @@ object DispatcherSelectorSpec {
 
   object PingPong {
     case class Ping(replyTo: ActorRef[Pong])
-
     case class Pong(threadName: String)
 
     def apply(): Behavior[Ping] =
@@ -59,7 +58,6 @@ class DispatcherSelectorSpec(config: Config)
     extends ScalaTestWithActorTestKit(config)
     with AnyWordSpecLike
     with LogCapturing {
-
   import DispatcherSelectorSpec.PingPong
   import DispatcherSelectorSpec.PingPong._
 
@@ -69,7 +67,7 @@ class DispatcherSelectorSpec(config: Config)
 
     "select dispatcher from empty Props" in {
       val probe = createTestProbe[Pong]()
-      val pingPong = spawn(PingPong(), DispatcherSelector.fromConfig("ping-pong-dispatcher"))
+      val pingPong = spawn(PingPong(), Props.empty.withDispatcherFromConfig("ping-pong-dispatcher"))
       pingPong ! Ping(probe.ref)
 
       val response = probe.receiveMessage()
