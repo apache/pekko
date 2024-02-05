@@ -16,8 +16,9 @@ package org.apache.pekko.actor.typed.scaladsl
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
-
 import org.apache.pekko
+import org.apache.pekko.actor.typed.DispatcherSelector
+import org.apache.pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
@@ -28,11 +29,11 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
-import pekko.actor.typed.Props
 import pekko.actor.typed.SpawnProtocol
 
 object DispatcherSelectorSpec {
-  val config = ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString(
+    """
       ping-pong-dispatcher {
         executor = thread-pool-executor
         type = PinnedDispatcher
@@ -41,6 +42,7 @@ object DispatcherSelectorSpec {
 
   object PingPong {
     case class Ping(replyTo: ActorRef[Pong])
+
     case class Pong(threadName: String)
 
     def apply(): Behavior[Ping] =
@@ -57,6 +59,7 @@ class DispatcherSelectorSpec(config: Config)
     extends ScalaTestWithActorTestKit(config)
     with AnyWordSpecLike
     with LogCapturing {
+
   import DispatcherSelectorSpec.PingPong
   import DispatcherSelectorSpec.PingPong._
 
@@ -64,9 +67,18 @@ class DispatcherSelectorSpec(config: Config)
 
   "DispatcherSelector" must {
 
-    "select dispatcher from config" in {
+    "select dispatcher from empty Props" in {
       val probe = createTestProbe[Pong]()
-      val pingPong = spawn(PingPong(), Props.empty.withDispatcherFromConfig("ping-pong-dispatcher"))
+      val pingPong = spawn(PingPong(), DispatcherSelector.fromConfig("ping-pong-dispatcher"))
+      pingPong ! Ping(probe.ref)
+
+      val response = probe.receiveMessage()
+      response.threadName should startWith("DispatcherSelectorSpec-ping-pong-dispatcher")
+    }
+
+    "select dispatcher from DispatcherSelector" in {
+      val probe = createTestProbe[Pong]()
+      val pingPong = spawn(PingPong(), DispatcherSelector.fromConfig("ping-pong-dispatcher"))
       pingPong ! Ping(probe.ref)
 
       val response = probe.receiveMessage()
@@ -76,15 +88,15 @@ class DispatcherSelectorSpec(config: Config)
     "detect unknown dispatcher from config" in {
       val probe = createTestProbe[Pong]()
       LoggingTestKit.error("Spawn failed").expect {
-        val ref = spawn(PingPong(), Props.empty.withDispatcherFromConfig("unknown"))
+        val ref = spawn(PingPong(), DispatcherSelector.fromConfig("unknown"))
         probe.expectTerminated(ref)
       }
     }
 
     "select same dispatcher as parent" in {
-      val parent = spawn(SpawnProtocol(), Props.empty.withDispatcherFromConfig("ping-pong-dispatcher"))
+      val parent = spawn(SpawnProtocol(), DispatcherSelector.fromConfig("ping-pong-dispatcher"))
       val childProbe = createTestProbe[ActorRef[Ping]]()
-      parent ! SpawnProtocol.Spawn(PingPong(), "child", Props.empty.withDispatcherSameAsParent, childProbe.ref)
+      parent ! SpawnProtocol.Spawn(PingPong(), "child", DispatcherSelector.sameAsParent(), childProbe.ref)
 
       val probe = createTestProbe[Pong]()
       val child = childProbe.receiveMessage()
@@ -95,19 +107,13 @@ class DispatcherSelectorSpec(config: Config)
     }
 
     "select same dispatcher as parent, several levels" in {
-      val grandParent = spawn(SpawnProtocol(), Props.empty.withDispatcherFromConfig("ping-pong-dispatcher"))
-      val parentProbe = createTestProbe[ActorRef[SpawnProtocol.Spawn[Ping]]]()
-      grandParent ! SpawnProtocol.Spawn(
-        SpawnProtocol(),
-        "parent",
-        Props.empty.withDispatcherSameAsParent,
-        parentProbe.ref)
-
-      val childProbe = createTestProbe[ActorRef[Ping]]()
-      grandParent ! SpawnProtocol.Spawn(PingPong(), "child", Props.empty.withDispatcherSameAsParent, childProbe.ref)
+      val guardian = spawn(SpawnProtocol(), DispatcherSelector.fromConfig("ping-pong-dispatcher"))
+      val parent: ActorRef[SpawnProtocol.Command] = guardian.ask((replyTo: ActorRef[ActorRef[SpawnProtocol.Command]]) =>
+        SpawnProtocol.Spawn(SpawnProtocol(), "parent", DispatcherSelector.sameAsParent(), replyTo)).futureValue
+      val child: ActorRef[Ping] = parent.ask((reply: ActorRef[ActorRef[Ping]]) =>
+        SpawnProtocol.Spawn(PingPong(), "child", DispatcherSelector.sameAsParent(), reply)).futureValue
 
       val probe = createTestProbe[Pong]()
-      val child = childProbe.receiveMessage()
       child ! Ping(probe.ref)
 
       val response = probe.receiveMessage()
@@ -119,7 +125,7 @@ class DispatcherSelectorSpec(config: Config)
         PingPong(),
         "DispatcherSelectorSpec2",
         ActorSystemSetup.create(BootstrapSetup()),
-        Props.empty.withDispatcherSameAsParent)
+        DispatcherSelector.sameAsParent())
       try {
         val probe = TestProbe[Pong]()(sys)
         sys ! Ping(probe.ref)
