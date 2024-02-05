@@ -6,6 +6,7 @@ This is milestone release and is aimed at testing some new support for users who
 ### Bug Fixes
 
 * Fix StackOverflowError in ByteStringBuilder.addAll ([PR903](https://github.com/apache/incubator-pekko/pull/903))
+* Fix issue with possible int overflow in sbapshot interval calculation ([PR1088](https://github.com/apache/incubator-pekko/pull/1088))
 
 ### Other Changes
 
