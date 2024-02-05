@@ -9,7 +9,7 @@ Pekko uses [sbt-jmh](https://github.com/sbt/sbt-jmh) to integrate [Java Microben
 ```shell
 sbt shell
 pekko > project bench-jmh
-sbt:bench-jmh> Jmh/run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+sbt:pekko-bench-jmh> Jmh/run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
 ```
 
 or execute in one-line command
