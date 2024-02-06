@@ -78,7 +78,7 @@ public class MailboxDocTest extends JUnitSuite {
                   childBehavior,
                   "from-config-mailbox-child",
                   MailboxSelector.fromConfig("my-app.my-special-mailbox")
-                      .withMailboxFromConfig("custom-dispatcher"));
+                      .withMailboxFromConfig("your-dispatcher"));
               // #interoperability-with-dispatcher
 
               testProbe.ref().tell(Done.getInstance());

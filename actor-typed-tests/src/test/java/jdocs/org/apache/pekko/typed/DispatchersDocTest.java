@@ -36,19 +36,20 @@ public class DispatchersDocTest {
     context.spawn(
         behavior,
         "ExplicitDefaultDispatcher",
-        DispatcherSelector.defaultDispatcher().withMailboxFromConfig("your-mailbox"));
+        DispatcherSelector.defaultDispatcher().withMailboxFromConfig("my-app.my-special-mailbox"));
     context.spawn(
         behavior,
         "BlockingDispatcher",
-        DispatcherSelector.blocking().withMailboxFromConfig("your-mailbox"));
+        DispatcherSelector.blocking().withMailboxFromConfig("my-app.my-special-mailbox"));
     context.spawn(
         behavior,
         "ParentDispatcher",
-        DispatcherSelector.sameAsParent().withMailboxFromConfig("your-mailbox"));
+        DispatcherSelector.sameAsParent().withMailboxFromConfig("my-app.my-special-mailbox"));
     context.spawn(
         behavior,
         "DispatcherFromConfig",
-        DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("your-mailbox"));
+        DispatcherSelector.fromConfig("your-dispatcher")
+            .withMailboxFromConfig("my-app.my-special-mailbox"));
     // #interoperability-with-mailbox
   }
 }

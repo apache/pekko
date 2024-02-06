@@ -24,7 +24,8 @@ import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class MailboxDocSpec
-    extends ScalaTestWithActorTestKit(ConfigFactory.load("mailbox-config-sample.conf"))
+    extends ScalaTestWithActorTestKit(
+      ConfigFactory.load("mailbox-config-sample.conf").withFallback(DispatchersDocSpec.config))
     with AnyWordSpecLike
     with LogCapturing {
 
@@ -57,7 +58,7 @@ class MailboxDocSpec
         context.spawn(childBehavior, "bounded-mailbox-child", MailboxSelector.bounded(100).withDispatcherDefault)
 
         val props =
-          MailboxSelector.fromConfig("my-app.my-special-mailbox").withDispatcherFromConfig("custom-dispatcher")
+          MailboxSelector.fromConfig("my-app.my-special-mailbox").withDispatcherFromConfig("your-dispatcher")
         context.spawn(childBehavior, "from-config-mailbox-child", props)
         // #interoperability-with-dispatcher
 

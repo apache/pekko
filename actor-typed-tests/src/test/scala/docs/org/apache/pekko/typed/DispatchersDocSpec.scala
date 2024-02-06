@@ -71,13 +71,13 @@ object DispatchersDocSpec {
 
     context.spawn(yourBehavior, "DefaultDispatcher")
     context.spawn(yourBehavior, "ExplicitDefaultDispatcher",
-      DispatcherSelector.default().withMailboxFromConfig("your-mailbox"))
+      DispatcherSelector.default().withMailboxFromConfig("my-app.my-special-mailbox"))
     context.spawn(yourBehavior, "BlockingDispatcher",
-      DispatcherSelector.blocking().withMailboxFromConfig("your-mailbox"))
+      DispatcherSelector.blocking().withMailboxFromConfig("my-app.my-special-mailbox"))
     context.spawn(yourBehavior, "ParentDispatcher",
-      DispatcherSelector.sameAsParent().withMailboxFromConfig("your-mailbox"))
+      DispatcherSelector.sameAsParent().withMailboxFromConfig("my-app.my-special-mailbox"))
     context.spawn(yourBehavior, "DispatcherFromConfig",
-      DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("your-mailbox"))
+      DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("my-app.my-special-mailbox"))
     // #interoperability-with-mailbox
 
     Behaviors.same
@@ -86,7 +86,8 @@ object DispatchersDocSpec {
 }
 
 class DispatchersDocSpec
-    extends ScalaTestWithActorTestKit(DispatchersDocSpec.config)
+    extends ScalaTestWithActorTestKit(
+      DispatchersDocSpec.config.withFallback(ConfigFactory.load("mailbox-config-sample.conf")))
     with AnyWordSpecLike
     with LogCapturing {
 
