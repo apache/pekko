@@ -85,6 +85,7 @@ abstract class Props private[pekko] () extends Product with Serializable {
    * Prepend a selection of the mailbox found at the given Config path to this Props.
    * The path is relative to the configuration root of the [[ActorSystem]] that looks up the
    * mailbox.
+   * @since 1.1.0
    */
   def withMailboxFromConfig(path: String): Props = MailboxFromConfigSelector(path, this)
 
