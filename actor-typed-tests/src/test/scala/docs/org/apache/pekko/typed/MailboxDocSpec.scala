@@ -18,10 +18,10 @@ import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed.Behavior
+import pekko.actor.typed.Dispatchers
 import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.ConfigFactory
-import org.apache.pekko.actor.typed.Dispatchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class MailboxDocSpec
