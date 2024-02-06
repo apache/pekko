@@ -19,6 +19,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.Dispatchers;
 import org.apache.pekko.actor.typed.MailboxSelector;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import com.typesafe.config.ConfigFactory;
@@ -78,7 +79,7 @@ public class MailboxDocTest extends JUnitSuite {
                   childBehavior,
                   "from-config-mailbox-child",
                   MailboxSelector.fromConfig("my-app.my-special-mailbox")
-                      .withMailboxFromConfig("your-dispatcher"));
+                      .withDispatcherFromConfig(Dispatchers.DefaultDispatcherId()));
               // #interoperability-with-dispatcher
 
               testProbe.ref().tell(Done.getInstance());

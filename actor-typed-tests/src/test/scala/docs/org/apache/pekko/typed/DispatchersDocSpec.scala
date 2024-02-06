@@ -40,6 +40,9 @@ object DispatchersDocSpec {
         throughput = 1
       }
        //#config
+      your-mailbox {
+        mailbox-type = "org.apache.pekko.dispatch.SingleConsumerOnlyUnboundedMailbox"
+      }
     """.stripMargin)
 
   case class WhichDispatcher(replyTo: ActorRef[Dispatcher])
@@ -71,13 +74,13 @@ object DispatchersDocSpec {
 
     context.spawn(yourBehavior, "DefaultDispatcher")
     context.spawn(yourBehavior, "ExplicitDefaultDispatcher",
-      DispatcherSelector.default().withMailboxFromConfig("my-app.my-special-mailbox"))
+      DispatcherSelector.default().withMailboxFromConfig("your-mailbox"))
     context.spawn(yourBehavior, "BlockingDispatcher",
-      DispatcherSelector.blocking().withMailboxFromConfig("my-app.my-special-mailbox"))
+      DispatcherSelector.blocking().withMailboxFromConfig("your-mailbox"))
     context.spawn(yourBehavior, "ParentDispatcher",
-      DispatcherSelector.sameAsParent().withMailboxFromConfig("my-app.my-special-mailbox"))
+      DispatcherSelector.sameAsParent().withMailboxFromConfig("your-mailbox"))
     context.spawn(yourBehavior, "DispatcherFromConfig",
-      DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("my-app.my-special-mailbox"))
+      DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("your-mailbox"))
     // #interoperability-with-mailbox
 
     Behaviors.same
@@ -86,8 +89,7 @@ object DispatchersDocSpec {
 }
 
 class DispatchersDocSpec
-    extends ScalaTestWithActorTestKit(
-      DispatchersDocSpec.config.withFallback(ConfigFactory.load("mailbox-config-sample.conf")))
+    extends ScalaTestWithActorTestKit(DispatchersDocSpec.config)
     with AnyWordSpecLike
     with LogCapturing {
 

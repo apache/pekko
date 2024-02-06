@@ -21,11 +21,11 @@ import pekko.actor.typed.Behavior
 import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.ConfigFactory
+import org.apache.pekko.actor.typed.Dispatchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
 class MailboxDocSpec
-    extends ScalaTestWithActorTestKit(
-      ConfigFactory.load("mailbox-config-sample.conf").withFallback(DispatchersDocSpec.config))
+    extends ScalaTestWithActorTestKit(ConfigFactory.load("mailbox-config-sample.conf"))
     with AnyWordSpecLike
     with LogCapturing {
 
@@ -58,7 +58,8 @@ class MailboxDocSpec
         context.spawn(childBehavior, "bounded-mailbox-child", MailboxSelector.bounded(100).withDispatcherDefault)
 
         val props =
-          MailboxSelector.fromConfig("my-app.my-special-mailbox").withDispatcherFromConfig("your-dispatcher")
+          MailboxSelector.fromConfig("my-app.my-special-mailbox").withDispatcherFromConfig(
+            Dispatchers.DefaultDispatcherId)
         context.spawn(childBehavior, "from-config-mailbox-child", props)
         // #interoperability-with-dispatcher
 
