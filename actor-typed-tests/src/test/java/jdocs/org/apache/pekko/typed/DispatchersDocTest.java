@@ -29,4 +29,26 @@ public class DispatchersDocTest {
         behavior, "DispatcherFromConfig", DispatcherSelector.fromConfig("your-dispatcher"));
     // #spawn-dispatcher
   }
+
+  public static void spawnDispatchersWithInteroperability(
+      ActorContext<Integer> context, Behavior<String> behavior) {
+    // #interoperability-with-mailbox
+    context.spawn(
+        behavior,
+        "ExplicitDefaultDispatcher",
+        DispatcherSelector.defaultDispatcher().withMailboxFromConfig("your-mailbox"));
+    context.spawn(
+        behavior,
+        "BlockingDispatcher",
+        DispatcherSelector.blocking().withMailboxFromConfig("your-mailbox"));
+    context.spawn(
+        behavior,
+        "ParentDispatcher",
+        DispatcherSelector.sameAsParent().withMailboxFromConfig("your-mailbox"));
+    context.spawn(
+        behavior,
+        "DispatcherFromConfig",
+        DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("your-mailbox"));
+    // #interoperability-with-mailbox
+  }
 }

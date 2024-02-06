@@ -59,4 +59,33 @@ public class MailboxDocTest extends JUnitSuite {
     ActorRef<Void> ref = testKit.spawn(setup);
     testProbe.receiveMessage();
   }
+
+  @Test
+  public void startSomeActorsWithMailboxSelectorInteroperability() {
+    TestProbe<Done> testProbe = testKit.createTestProbe();
+    Behavior<String> childBehavior = Behaviors.empty();
+
+    Behavior<Void> setup =
+        Behaviors.setup(
+            context -> {
+              // #interoperability-with-dispatcher
+              context.spawn(
+                  childBehavior,
+                  "bounded-mailbox-child",
+                  MailboxSelector.bounded(100).withDispatcherDefault());
+
+              context.spawn(
+                  childBehavior,
+                  "from-config-mailbox-child",
+                  MailboxSelector.fromConfig("my-app.my-special-mailbox")
+                      .withMailboxFromConfig("custom-dispatcher"));
+              // #interoperability-with-dispatcher
+
+              testProbe.ref().tell(Done.getInstance());
+              return Behaviors.stopped();
+            });
+
+    ActorRef<Void> ref = testKit.spawn(setup);
+    testProbe.receiveMessage();
+  }
 }

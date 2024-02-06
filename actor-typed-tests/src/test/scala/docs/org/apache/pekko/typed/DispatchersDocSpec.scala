@@ -65,6 +65,24 @@ object DispatchersDocSpec {
     Behaviors.same
   }
 
+  val interoperableExample = Behaviors.receive[Any] { (context, _) =>
+    // #interoperability-with-mailbox
+    import org.apache.pekko.actor.typed.DispatcherSelector
+
+    context.spawn(yourBehavior, "DefaultDispatcher")
+    context.spawn(yourBehavior, "ExplicitDefaultDispatcher",
+      DispatcherSelector.default().withMailboxFromConfig("your-mailbox"))
+    context.spawn(yourBehavior, "BlockingDispatcher",
+      DispatcherSelector.blocking().withMailboxFromConfig("your-mailbox"))
+    context.spawn(yourBehavior, "ParentDispatcher",
+      DispatcherSelector.sameAsParent().withMailboxFromConfig("your-mailbox"))
+    context.spawn(yourBehavior, "DispatcherFromConfig",
+      DispatcherSelector.fromConfig("your-dispatcher").withMailboxFromConfig("your-mailbox"))
+    // #interoperability-with-mailbox
+
+    Behaviors.same
+  }
+
 }
 
 class DispatchersDocSpec
