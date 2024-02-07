@@ -5886,7 +5886,7 @@ public final class WireFormats {
     private PropsData() {
       clazz_ = "";
       args_ = java.util.Collections.emptyList();
-      manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       serializerIds_ = emptyIntList();
       hasManifest_ = emptyBooleanList();
     }
@@ -6586,7 +6586,7 @@ public final class WireFormats {
         bitField0_ = (bitField0_ & ~0x00000002);
         args_ = java.util.Collections.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
-        manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         serializerIds_ = emptyIntList();
         bitField0_ = (bitField0_ & ~0x00000010);
@@ -7077,7 +7077,7 @@ public final class WireFormats {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureManifestsIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
           manifests_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(manifests_);
@@ -7213,7 +7213,7 @@ public final class WireFormats {
        * @return This builder for chaining.
        */
       public Builder clearManifests() {
-        manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        manifests_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
@@ -7729,7 +7729,7 @@ public final class WireFormats {
       scopeManifest_ = "";
       configManifest_ = "";
       routerConfigManifest_ = "";
-      tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -8641,7 +8641,7 @@ public final class WireFormats {
         bitField0_ = (bitField0_ & ~0x00000200);
         routerConfigManifest_ = "";
         bitField0_ = (bitField0_ & ~0x00000400);
-        tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000800);
         return this;
       }
@@ -9526,7 +9526,7 @@ public final class WireFormats {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureTagsIsMutable() {
         if (!((bitField0_ & 0x00000800) != 0)) {
           tags_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(tags_);
@@ -9614,7 +9614,7 @@ public final class WireFormats {
        * @return This builder for chaining.
        */
       public Builder clearTags() {
-        tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        tags_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000800);
         onChanged();
         return this;

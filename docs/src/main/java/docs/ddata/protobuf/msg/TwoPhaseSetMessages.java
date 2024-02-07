@@ -94,8 +94,8 @@ public final class TwoPhaseSetMessages {
       super(builder);
     }
     private TwoPhaseSet() {
-      adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
-      removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+      removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -471,9 +471,9 @@ public final class TwoPhaseSetMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
-        removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -610,7 +610,7 @@ public final class TwoPhaseSetMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAddsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           adds_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(adds_);
@@ -698,7 +698,7 @@ public final class TwoPhaseSetMessages {
        * @return This builder for chaining.
        */
       public Builder clearAdds() {
-        adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        adds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
@@ -719,7 +719,7 @@ public final class TwoPhaseSetMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureRemovalsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           removals_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(removals_);
@@ -807,7 +807,7 @@ public final class TwoPhaseSetMessages {
        * @return This builder for chaining.
        */
       public Builder clearRemovals() {
-        removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        removals_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
