@@ -57,8 +57,10 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     val cfg = context.system.settings.config
     if (cfg.hasPath("akka.version")) {
       cfg.getString("akka.version")
-    } else {
+    } else if (cfg.hasPath("pekko.cluster.akka.version")) {
       cfg.getString("pekko.cluster.akka.version")
+    } else {
+      "2.6.21"
     }
   }
 
