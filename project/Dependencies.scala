@@ -23,7 +23,7 @@ object Dependencies {
 
   val junitVersion = "4.13.2"
   val junit5Version = "5.10.2"
-  val slf4jVersion = "2.0.11"
+  val slf4jVersion = "2.0.12"
   // check agrona version when updating this
   val aeronVersion = "1.43.0"
   // needs to be inline with the aeron version, check
@@ -71,7 +71,7 @@ object Dependencies {
 
     val sigar = "org.fusesource" % "sigar" % "1.6.4"
 
-    val jctools = "org.jctools" % "jctools-core" % "4.0.2"
+    val jctools = "org.jctools" % "jctools-core" % "4.0.3"
 
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
@@ -115,7 +115,7 @@ object Dependencies {
 
     object TestDependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.15.1" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.0" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
