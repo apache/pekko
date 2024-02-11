@@ -216,7 +216,7 @@ final class RemoteSettings(val config: Config) {
       throw new ConfigurationException("pekko.remote.accept-protocol-names setting must not be empty. " +
         "The setting is an array and the only acceptable values are \"pekko\" and \"akka\".")
     }
-    val filteredSet = set.filterNot(s => s == "akka" || s == "pekko")
+    val filteredSet = set.filterNot(AllowableProtocolNames.contains)
     if (filteredSet.nonEmpty) {
       throw new ConfigurationException("pekko.remote.accept-protocol-names is an array setting " +
         "that only accepts the values \"pekko\" and \"akka\".")
