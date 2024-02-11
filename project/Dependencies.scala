@@ -128,7 +128,7 @@ object Dependencies {
       // but the version of each module starts with the scalatest
       // version it was intended to work with
       val scalatestJUnit = "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
-      val scalatestTestNG = "org.scalatestplus" %% "testng-7-9" % (scalaTestVersion + ".0") % Test
+      val scalatestTestNG = "org.scalatestplus" %% "testng-7-5" % "3.2.17.0" % Test
       val scalatestScalaCheck =
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
       // https://github.com/scalatest/scalatest/issues/2311
