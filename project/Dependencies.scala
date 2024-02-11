@@ -131,7 +131,8 @@ object Dependencies {
       val scalatestTestNG = "org.scalatestplus" %% "testng-7-9" % (scalaTestVersion + ".0") % Test
       val scalatestScalaCheck =
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
-      val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % (scalaTestVersion + ".0") % Test
+      // https://github.com/scalatest/scalatest/issues/2311
+      val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % "3.2.17.0" % Test
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "3.0.0" % Test
