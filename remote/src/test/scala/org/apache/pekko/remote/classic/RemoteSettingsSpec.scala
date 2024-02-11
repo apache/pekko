@@ -42,16 +42,16 @@ class RemoteSettingsSpec extends AnyWordSpec with Matchers {
         .withFallback(PekkoSpec.testConf)
       val ex = intercept[ConfigurationException] {
         new RemoteSettings(ConfigFactory.load(cfg))
-      }  
+      }
       ex.getMessage shouldEqual
-        """The only allowed values for pekko.remote.protocol-name are "pekko" and "akka"."""
+      """The only allowed values for pekko.remote.protocol-name are "pekko" and "akka"."""
     }
     "fail if empty accept-protocol-names is used" in {
       val cfg = ConfigFactory.parseString("pekko.remote.accept-protocol-names=[]")
         .withFallback(PekkoSpec.testConf)
       val ex = intercept[ConfigurationException] {
         new RemoteSettings(ConfigFactory.load(cfg))
-      }  
+      }
       ex.getMessage should startWith("pekko.remote.accept-protocol-names setting must not be empty")
     }
     "fail if invalid accept-protocol-names value is used" in {
@@ -59,9 +59,9 @@ class RemoteSettingsSpec extends AnyWordSpec with Matchers {
         .withFallback(PekkoSpec.testConf)
       val ex = intercept[ConfigurationException] {
         new RemoteSettings(ConfigFactory.load(cfg))
-      }  
+      }
       ex.getMessage shouldEqual
-        """pekko.remote.accept-protocol-names is an array setting that only accepts the values "pekko" and "akka"."""
+      """pekko.remote.accept-protocol-names is an array setting that only accepts the values "pekko" and "akka"."""
     }
   }
 
