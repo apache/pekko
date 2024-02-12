@@ -58,7 +58,7 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     if (cfg.hasPath("akka.version")) {
       cfg.getString("akka.version")
     } else {
-      cfg.getString("pekko.cluster.akka.version")
+      cfg.getString("pekko.remote.akka.version")
     }
   }
 
