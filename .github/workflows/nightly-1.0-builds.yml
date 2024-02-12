@@ -126,9 +126,6 @@ jobs:
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
 
-      - name: Check if the dependency task in the built correctly
-        run: sbt dependWalkerCheck
-
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
