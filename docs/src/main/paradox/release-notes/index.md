@@ -6,12 +6,12 @@ This is milestone release and is aimed at testing some new support for users who
 ### Bug Fixes
 
 * Fix StackOverflowError in ByteStringBuilder.addAll ([PR903](https://github.com/apache/incubator-pekko/pull/903))
-* Fix issue with possible int overflow in sbapshot interval calculation ([PR1088](https://github.com/apache/incubator-pekko/pull/1088))
+* Fix issue with possible int overflow in snapshot interval calculation ([PR1088](https://github.com/apache/incubator-pekko/pull/1088))
 
 ### Other Changes
 
 * Change the manager name to use `pekko` in the name ([PR587](https://github.com/apache/incubator-pekko/pull/587))
-* Support interacting with Akka Remote and Cluster nodes ([PR765](https://github.com/apache/incubator-pekko/pull/765))
+* Support interacting with Akka Remote and Cluster nodes ([PR765](https://github.com/apache/incubator-pekko/pull/765), [PR1112](https://github.com/apache/incubator-pekko/pull/1112))
   * See the [wiki notes](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) about uptaking this 
 * Change noisy logging in DNS handler ([PR835](https://github.com/apache/incubator-pekko/pull/835))
 * Support reading akka-persistence snapshots ([PR837](https://github.com/apache/incubator-pekko/pull/837), [PR841](https://github.com/apache/incubator-pekko/pull/841))
