@@ -22,7 +22,7 @@ object Dependencies {
     .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
   val junitVersion = "4.13.2"
-  val junit5Version = "5.10.1"
+  val junit5Version = "5.10.2"
   val slf4jVersion = "2.0.12"
   // check agrona version when updating this
   val aeronVersion = "1.43.0"
@@ -45,7 +45,7 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = "3.2.17"
+  val scalaTestVersion = "3.2.18"
   val scalaTestScalaCheckVersion = "1-17"
   val scalaCheckVersion = "1.17.0"
 
@@ -71,7 +71,7 @@ object Dependencies {
 
     val sigar = "org.fusesource" % "sigar" % "1.6.4"
 
-    val jctools = "org.jctools" % "jctools-core" % "4.0.2"
+    val jctools = "org.jctools" % "jctools-core" % "4.0.3"
 
     // reactive streams
     val reactiveStreams = "org.reactivestreams" % "reactive-streams" % reactiveStreamsVersion
@@ -115,7 +115,7 @@ object Dependencies {
 
     object TestDependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.15.1" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.0" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
@@ -128,10 +128,11 @@ object Dependencies {
       // but the version of each module starts with the scalatest
       // version it was intended to work with
       val scalatestJUnit = "org.scalatestplus" %% "junit-4-13" % (scalaTestVersion + ".0") % Test
-      val scalatestTestNG = "org.scalatestplus" %% "testng-7-5" % (scalaTestVersion + ".0") % Test
+      val scalatestTestNG = "org.scalatestplus" %% "testng-7-5" % "3.2.17.0" % Test
       val scalatestScalaCheck =
         "org.scalatestplus" %% s"scalacheck-$scalaTestScalaCheckVersion" % (scalaTestVersion + ".0") % Test
-      val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % (scalaTestVersion + ".0") % Test
+      // https://github.com/scalatest/scalatest/issues/2311
+      val scalatestMockito = "org.scalatestplus" %% "mockito-4-11" % "3.2.17.0" % Test
 
       val pojosr = "com.googlecode.pojosr" % "de.kalpatec.pojosr.framework" % "0.2.1" % Test
       val tinybundles = "org.ops4j.pax.tinybundles" % "tinybundles" % "3.0.0" % Test
