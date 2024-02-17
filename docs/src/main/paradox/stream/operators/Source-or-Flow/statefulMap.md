@@ -25,7 +25,7 @@ For mapping stream elements without keeping a state see @ref:[map](map.md).
 
 ## Examples
 
-In the first example we implement an `zipWithIndex` operator like @ref:[zipWithIndex](zipWithIndex.md), it always associates a unique index
+In the first example, we implement an `zipWithIndex` operator like @ref:[zipWithIndex](zipWithIndex.md), it always associates a unique index
 with each element of the stream, the index starts from 0.
 
 Scala
@@ -45,7 +45,7 @@ Scala
 Java
 :   @@snip [StatefulMap.java](/docs/src/test/java/jdocs/stream/operators/flow/StatefulMap.java) { #bufferUntilChanged }
 
-In the forth example, repeated incoming elements are only emitted once and then dropped.
+In the third example, repeated incoming elements are only emitted once and then dropped.
 
 Scala
 :  @@snip [StatefulMap.scala](/docs/src/test/scala/docs/stream/operators/flow/StatefulMap.scala) { #distinctUntilChanged }
@@ -53,7 +53,7 @@ Scala
 Java
 :   @@snip [StatefulMap.java](/docs/src/test/java/jdocs/stream/operators/flow/StatefulMap.java) { #distinctUntilChanged }
 
-In the fifth example, we combine the @ref:[statefulMap](statefulMap.md) and @ref:[mapConcat](mapConcat.md) to implement 
+In the fourth example, we combine the @ref:[statefulMap](statefulMap.md) and @ref:[mapConcat](mapConcat.md) to implement 
 a @ref:[statefulMapConcat](statefulMapConcat.md) like behavior.
 
 Scala
