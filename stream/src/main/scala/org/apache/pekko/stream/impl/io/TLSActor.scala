@@ -421,7 +421,6 @@ import pekko.util.ByteString
       case OK =>
         result.getHandshakeStatus match {
           case NEED_WRAP =>
-            flushToUser()
             // https://github.com/apache/incubator-pekko/issues/442
             // A second workaround for an infinite loop we have not been able to reproduce/isolate,
             // if you see this, and can reproduce consistently, please report back to the Apache Pekko team
@@ -481,6 +480,7 @@ import pekko.util.ByteString
       case Success(()) =>
         currentSession = session
         corkUser = false
+        flushToUser()
       case Failure(ex) =>
         fail(ex, closeTransport = true)
     }
