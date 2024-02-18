@@ -38,9 +38,9 @@ object Protobuf {
     outputPaths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "java"),
     importPath := None,
     // this keeps intellij happy for files that use the shaded protobuf
-    Compile / unmanagedJars += (LocalProject("protobuf-v3") / assembly).value,
+    Compile / unmanagedJars += (LocalProject("protobuf-v3") / Compile / packageBin).value,
     protoc := "protoc",
-    protocVersion := "3.11.4",
+    protocVersion := "3.20.3",
     generate := {
       val sourceDirs = paths.value
       val targetDirs = outputPaths.value
