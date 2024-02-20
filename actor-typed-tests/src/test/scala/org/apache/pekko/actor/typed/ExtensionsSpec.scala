@@ -31,17 +31,17 @@ import pekko.actor.typed.scaladsl.Behaviors
 
 class DummyExtension1 extends Extension
 object DummyExtension1 extends ExtensionId[DummyExtension1] {
-  def createExtension(system: ActorSystem[_]) = new DummyExtension1
-  def get(system: ActorSystem[_]): DummyExtension1 = apply(system)
+  def createExtension(system: ActorSystem[?]) = new DummyExtension1
+  def get(system: ActorSystem[?]): DummyExtension1 = apply(system)
 }
-class DummyExtension1Setup(factory: ActorSystem[_] => DummyExtension1)
+class DummyExtension1Setup(factory: ActorSystem[?] => DummyExtension1)
     extends AbstractExtensionSetup[DummyExtension1](DummyExtension1, factory)
 
 class DummyExtension1ViaSetup extends DummyExtension1
 
 class SlowExtension extends Extension
 object SlowExtension extends ExtensionId[SlowExtension] {
-  def createExtension(system: ActorSystem[_]) = {
+  def createExtension(system: ActorSystem[?]) = {
     Thread.sleep(25)
     new SlowExtension
   }
@@ -49,29 +49,29 @@ object SlowExtension extends ExtensionId[SlowExtension] {
 
 class FailingToLoadExtension extends Extension
 object FailingToLoadExtension extends ExtensionId[FailingToLoadExtension] {
-  def createExtension(system: ActorSystem[_]) = {
+  def createExtension(system: ActorSystem[?]) = {
     throw new RuntimeException("I cannot be trusted!")
   }
 }
 
 class MultiExtension(val n: Int) extends Extension
 class MultiExtensionId(n: Int) extends ExtensionId[MultiExtension] {
-  def createExtension(system: ActorSystem[_]): MultiExtension = new MultiExtension(n)
+  def createExtension(system: ActorSystem[?]): MultiExtension = new MultiExtension(n)
 }
 
 object InstanceCountingExtension extends ExtensionId[DummyExtension1] {
   val createCount = new AtomicInteger(0)
-  override def createExtension(system: ActorSystem[_]): DummyExtension1 = {
+  override def createExtension(system: ActorSystem[?]): DummyExtension1 = {
     createCount.addAndGet(1)
     new DummyExtension1
   }
 }
 
 object AccessSystemFromConstructorExtensionId extends ExtensionId[AccessSystemFromConstructor] {
-  override def createExtension(system: ActorSystem[_]): AccessSystemFromConstructor =
+  override def createExtension(system: ActorSystem[?]): AccessSystemFromConstructor =
     new AccessSystemFromConstructor(system)
 }
-class AccessSystemFromConstructor(system: ActorSystem[_]) extends Extension {
+class AccessSystemFromConstructor(system: ActorSystem[?]) extends Extension {
   system.log.info("I log from the constructor")
   system.receptionist ! Receptionist.Find(ServiceKey[String]("i-just-made-it-up"), system.deadLetters) // or touch the receptionist!
 }
@@ -266,7 +266,7 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
   }
 
   def withEmptyActorSystem[T](name: String, config: Option[Config] = None, setup: Option[ActorSystemSetup] = None)(
-      f: ActorSystem[_] => T): T = {
+      f: ActorSystem[?] => T): T = {
 
     val bootstrap = config match {
       case Some(c) => BootstrapSetup(c)

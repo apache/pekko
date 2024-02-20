@@ -238,7 +238,7 @@ final class FlowWithContext[In, CtxIn, Out, CtxOut, +Mat](
    * @see [[pekko.stream.javadsl.Flow.mapConcat]]
    */
   def mapConcat[Out2](
-      f: function.Function[Out, _ <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
+      f: function.Function[Out, ? <: java.lang.Iterable[Out2]]): FlowWithContext[In, CtxIn, Out2, CtxOut, Mat] =
     viaScala(_.mapConcat(elem => Util.immutableSeq(f.apply(elem))))
 
   /**

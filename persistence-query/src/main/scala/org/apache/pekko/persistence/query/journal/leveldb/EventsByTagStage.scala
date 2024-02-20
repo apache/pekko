@@ -72,7 +72,7 @@ final private[leveldb] class EventsByTagStage(
       var replayInProgress = false
       var outstandingReplay = false
 
-      override protected def logSource: Class[_] = classOf[EventsByTagStage]
+      override protected def logSource: Class[?] = classOf[EventsByTagStage]
 
       override def preStart(): Unit = {
         stageActorRef = getStageActor(journalInteraction).ref

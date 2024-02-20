@@ -196,7 +196,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     (!strict || (bsAIt.toSeq -> bsBIt.toSeq) == (vecAIt.toSeq -> vecBIt.toSeq))
   }
 
-  def likeVecBld(body: Builder[Byte, _] => Unit): Boolean = {
+  def likeVecBld(body: Builder[Byte, ?] => Unit): Boolean = {
     val bsBuilder = ByteString.newBuilder
     val vecBuilder = Vector.newBuilder[Byte]
 

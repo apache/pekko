@@ -30,7 +30,7 @@ import pekko.persistence.Persistence
  */
 @InternalApi private[pekko] object DurableStateSettings {
 
-  def apply(system: ActorSystem[_], durableStateStorePluginId: String): DurableStateSettings =
+  def apply(system: ActorSystem[?], durableStateStorePluginId: String): DurableStateSettings =
     apply(system.settings.config, durableStateStorePluginId)
 
   def apply(config: Config, durableStateStorePluginId: String): DurableStateSettings = {

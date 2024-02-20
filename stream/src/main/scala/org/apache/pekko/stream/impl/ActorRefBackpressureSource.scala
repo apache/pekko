@@ -51,7 +51,7 @@ private object ActorRefBackpressureSource {
       with OutHandler
       with StageLogging
       with ActorRefStage {
-      override protected def logSource: Class[_] = classOf[ActorRefSource[_]]
+      override protected def logSource: Class[?] = classOf[ActorRefSource[?]]
 
       private var isCompleting: Boolean = false
       private var element: OptionVal[(ActorRef, T)] = OptionVal.none

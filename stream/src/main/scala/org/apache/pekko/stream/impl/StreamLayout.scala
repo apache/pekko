@@ -67,7 +67,7 @@ import org.reactivestreams.Subscription
       onErrorBuffered: OptionVal[Throwable] = OptionVal.None)
       extends HasActualSubscriber
   object Establishing {
-    def create(s: Subscriber[_]) = Establishing(s.asInstanceOf[Subscriber[Any]])
+    def create(s: Subscriber[?]) = Establishing(s.asInstanceOf[Subscriber[Any]])
   }
 }
 
@@ -135,7 +135,7 @@ import org.reactivestreams.Subscription
   override def toString: String = s"VirtualProcessor(${this.hashCode()})"
   if (VirtualProcessor.Debug) println(s"created: $this")
 
-  override def subscribe(s: Subscriber[_ >: T]): Unit = {
+  override def subscribe(s: Subscriber[? >: T]): Unit = {
     @tailrec def rec(sub: Subscriber[Any]): Unit = {
       get() match {
         case null =>
@@ -147,7 +147,7 @@ import org.reactivestreams.Subscription
           val establishing = Establishing(sub, false)
           if (compareAndSet(subscription, establishing)) establishSubscription(establishing, subscription)
           else rec(sub)
-        case pub: Publisher[_] =>
+        case pub: Publisher[?] =>
           if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode($pub).subscribe.rec($s) -> Inert")
           if (compareAndSet(pub, Inert)) pub.subscribe(sub)
           else rec(sub)
@@ -172,7 +172,7 @@ import org.reactivestreams.Subscription
           if (VirtualProcessor.Debug)
             println(s"VirtualPublisher#$hashCode(null).onSubscribe.rec($obj) -> ${obj.getClass}")
           if (!compareAndSet(null, obj)) rec(obj)
-        case subscriber: Subscriber[_] =>
+        case subscriber: Subscriber[?] =>
           obj match {
             case subscription: Subscription =>
               if (VirtualProcessor.Debug)
@@ -180,7 +180,7 @@ import org.reactivestreams.Subscription
               val establishing = Establishing.create(subscriber)
               if (compareAndSet(subscriber, establishing)) establishSubscription(establishing, subscription)
               else rec(obj)
-            case pub: Publisher[_] =>
+            case pub: Publisher[?] =>
               if (VirtualProcessor.Debug)
                 println(s"VirtualPublisher#$hashCode($subscriber).onSubscribe.rec($obj) -> INert")
               getAndSet(Inert) match {
@@ -274,7 +274,7 @@ import org.reactivestreams.Subscription
             println(s"VirtualPublisher#$hashCode(Both($s)).onError(${ex.getMessage}) -> ErrorPublisher")
           set(Inert)
           tryOnError(s, ex)
-        case s: Subscriber[_] => // spec violation
+        case s: Subscriber[?] => // spec violation
           if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode($s).onError(${ex.getMessage}) -> Inert")
           getAndSet(Inert) match {
             case Inert => // nothing to be done
@@ -308,7 +308,7 @@ import org.reactivestreams.Subscription
         if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode($s).onComplete -> Inert")
         set(Inert)
         tryOnComplete(s)
-      case s: Subscriber[_] => // spec violation
+      case s: Subscriber[?] => // spec violation
         if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode($s).onComplete -> Inert")
         set(Inert)
         EmptyPublisher.subscribe(s)
@@ -330,7 +330,7 @@ import org.reactivestreams.Subscription
         get() match {
           case x @ (null | _: Subscription) =>
             if (!compareAndSet(x, ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
-          case s: Subscriber[_] =>
+          case s: Subscriber[?] =>
             try s.onError(ex)
             catch { case NonFatal(_) => }
             finally set(Inert)
@@ -359,7 +359,7 @@ import org.reactivestreams.Subscription
                 throw new IllegalStateException("Subscriber threw exception, this is in violation of rule 2:13", e)
             }
 
-          case s: Subscriber[_] => // spec violation
+          case s: Subscriber[?] => // spec violation
             if (VirtualProcessor.Debug)
               println(s"VirtualPublisher#$hashCode($s).onNext($t).rec(): spec violation -> Inert")
             val ex = new IllegalStateException(noDemand)
@@ -368,7 +368,7 @@ import org.reactivestreams.Subscription
               case _     => ErrorPublisher(ex, "failed-VirtualProcessor").subscribe(s)
             }
             throw ex
-          case Inert | _: Publisher[_] =>
+          case Inert | _: Publisher[?] =>
             if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode(Inert|Publisher).onNext($t).rec(): nop")
           // nothing to be done
           case other =>
@@ -474,7 +474,7 @@ import org.reactivestreams.Subscription
 
   import ReactiveStreamsCompliance._
   import VirtualProcessor.Inert
-  override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
+  override def subscribe(subscriber: Subscriber[? >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
     if (VirtualProcessor.Debug) println(s"$this.subscribe: $subscriber")
     @tailrec def rec(): Unit = {
@@ -482,12 +482,12 @@ import org.reactivestreams.Subscription
         case null =>
           if (!compareAndSet(null, subscriber)) rec() // retry
 
-        case pub: Publisher[_] =>
+        case pub: Publisher[?] =>
           if (compareAndSet(pub, Inert.subscriber)) {
             pub.asInstanceOf[Publisher[T]].subscribe(subscriber)
           } else rec() // retry
 
-        case _: Subscriber[_] =>
+        case _: Subscriber[?] =>
           rejectAdditionalSubscriber(subscriber, "Sink.asPublisher(fanout = false)")
 
         case unexpected => throw new IllegalStateException(s"Unexpected state in VirtualPublisher: $unexpected")
@@ -496,7 +496,7 @@ import org.reactivestreams.Subscription
     rec() // return value is boolean only to make the expressions above compile
   }
 
-  @tailrec final def registerPublisher(pub: Publisher[_]): Unit = {
+  @tailrec final def registerPublisher(pub: Publisher[?]): Unit = {
     if (VirtualProcessor.Debug) println(s"$this.registerPublisher: $pub")
     get() match {
       case null =>
@@ -506,7 +506,7 @@ import org.reactivestreams.Subscription
         set(Inert.subscriber)
         pub.asInstanceOf[Publisher[r]].subscribe(sub)
 
-      case p: Publisher[_] =>
+      case p: Publisher[?] =>
         throw new IllegalStateException(
           s"internal error, already registered [$p], yet attempted to register 2nd publisher [$pub]!")
 
@@ -520,7 +520,7 @@ import org.reactivestreams.Subscription
   def onSubscriptionTimeout(am: Materializer, mode: StreamSubscriptionTimeoutTerminationMode): Unit = {
     import StreamSubscriptionTimeoutTerminationMode._
     get() match {
-      case null | _: Publisher[_] =>
+      case null | _: Publisher[?] =>
         mode match {
           case CancelTermination => subscribe(new CancellingSubscriber[T])
           case WarnTermination =>

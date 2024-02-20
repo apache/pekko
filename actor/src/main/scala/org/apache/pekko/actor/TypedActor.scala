@@ -148,9 +148,9 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
   final case class MethodCall(method: Method, parameters: Array[AnyRef]) {
 
     def isOneWay = method.getReturnType == java.lang.Void.TYPE
-    def returnsFuture = classOf[Future[_]].isAssignableFrom(method.getReturnType)
-    def returnsJOption = classOf[pekko.japi.Option[_]].isAssignableFrom(method.getReturnType)
-    def returnsOption = classOf[scala.Option[_]].isAssignableFrom(method.getReturnType)
+    def returnsFuture = classOf[Future[?]].isAssignableFrom(method.getReturnType)
+    def returnsJOption = classOf[pekko.japi.Option[?]].isAssignableFrom(method.getReturnType)
+    def returnsOption = classOf[scala.Option[?]].isAssignableFrom(method.getReturnType)
 
     /**
      * Invokes the Method on the supplied instance
@@ -190,9 +190,9 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
    * Represents the serialized form of a MethodCall, uses readResolve and writeReplace to marshall the call
    */
   private[pekko] final case class SerializedMethodCall(
-      ownerType: Class[_],
+      ownerType: Class[?],
       methodName: String,
-      parameterTypes: Array[Class[_]],
+      parameterTypes: Array[Class[?]],
       serializedParameters: Array[(Int, String, Array[Byte])]) {
 
     // TODO implement writeObject and readObject to serialize
@@ -274,7 +274,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
   private[pekko] class TypedActor[R <: AnyRef, T <: R](
       val proxyVar: AtomVar[R],
       createInstance: => T,
-      interfaces: immutable.Seq[Class[_]])
+      interfaces: immutable.Seq[Class[?]])
       extends Actor {
     self =>
     // if we were remote deployed we need to create a local proxy
@@ -349,7 +349,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
             try {
               val s = sender()
               m(me) match {
-                case f: Future[_] if m.returnsFuture =>
+                case f: Future[?] if m.returnsFuture =>
                   implicit val dispatcher = this.context.dispatcher
                   f.onComplete {
                     case Success(result) =>
@@ -487,7 +487,7 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
             } catch { case _: TimeoutException => None }) match {
               case None | Some(Success(NullResponse)) | Some(Failure(_: AskTimeoutException)) =>
                 if (m.returnsJOption) JOption.none[Any] else None
-              case Some(t: Try[_]) =>
+              case Some(t: Try[?]) =>
                 t.get.asInstanceOf[AnyRef]
             }
           case m =>
@@ -537,7 +537,7 @@ object TypedProps {
    * @return a sequence of interfaces that the specified class implements,
    * or a sequence containing only itself, if itself is an interface.
    */
-  def extractInterfaces(clazz: Class[_]): immutable.Seq[Class[_]] =
+  def extractInterfaces(clazz: Class[?]): immutable.Seq[Class[?]] =
     if (clazz.isInterface) immutableSingletonSeq(clazz) else immutableSeq(clazz.getInterfaces)
 
   /**
@@ -557,7 +557,7 @@ object TypedProps {
    *
    * Scala API
    */
-  def apply[T <: AnyRef](interface: Class[_ >: T], implementation: Class[T]): TypedProps[T] =
+  def apply[T <: AnyRef](interface: Class[? >: T], implementation: Class[T]): TypedProps[T] =
     new TypedProps[T](extractInterfaces(interface), instantiator(implementation))
 
   /**
@@ -568,7 +568,7 @@ object TypedProps {
    *
    * Scala API
    */
-  def apply[T <: AnyRef](interface: Class[_ >: T], creator: => T): TypedProps[T] =
+  def apply[T <: AnyRef](interface: Class[? >: T], creator: => T): TypedProps[T] =
     new TypedProps[T](extractInterfaces(interface), () => creator)
 
   /**
@@ -583,7 +583,7 @@ object TypedProps {
   /**
    * INTERNAL API
    */
-  private[pekko] def apply[T <: AnyRef](interfaces: immutable.Seq[Class[_]], creator: => T): TypedProps[T] =
+  private[pekko] def apply[T <: AnyRef](interfaces: immutable.Seq[Class[?]], creator: => T): TypedProps[T] =
     new TypedProps[T](interfaces, () => creator)
 }
 
@@ -593,7 +593,7 @@ object TypedProps {
  */
 @SerialVersionUID(1L)
 final case class TypedProps[T <: AnyRef] protected[TypedProps] (
-    interfaces: immutable.Seq[Class[_]],
+    interfaces: immutable.Seq[Class[?]],
     creator: () => T,
     dispatcher: String = TypedProps.defaultDispatcherId,
     deploy: Deploy = Props.defaultDeploy,
@@ -615,7 +615,7 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
    * or if the interface class is not an interface, all the interfaces it implements,
    * appended in the sequence of interfaces.
    */
-  def this(interface: Class[_ >: T], implementation: Creator[T]) =
+  def this(interface: Class[? >: T], implementation: Creator[T]) =
     this(interfaces = TypedProps.extractInterfaces(interface), creator = implementation.create _)
 
   /**
@@ -624,7 +624,7 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
    * or if the interface class is not an interface, all the interfaces it implements,
    * appended in the sequence of interfaces.
    */
-  def this(interface: Class[_ >: T], implementation: Class[T]) =
+  def this(interface: Class[? >: T], implementation: Class[T]) =
     this(interfaces = TypedProps.extractInterfaces(interface), creator = instantiator(implementation))
 
   /**
@@ -668,14 +668,14 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
    * or if the interface class is not an interface, all the interfaces it implements,
    * appended in the sequence of interfaces.
    */
-  def withInterface(interface: Class[_ >: T]): TypedProps[T] =
+  def withInterface(interface: Class[? >: T]): TypedProps[T] =
     this.copy(interfaces = interfaces ++ TypedProps.extractInterfaces(interface))
 
   /**
    * Returns a new TypedProps without the specified interface,
    * or if the interface class is not an interface, all the interfaces it implements.
    */
-  def withoutInterface(interface: Class[_ >: T]): TypedProps[T] =
+  def withoutInterface(interface: Class[? >: T]): TypedProps[T] =
     this.copy(interfaces = interfaces.diff(TypedProps.extractInterfaces(interface)))
 
   /**

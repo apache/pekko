@@ -24,7 +24,7 @@ import pekko.cluster.sharding.ShardCoordinator.ShardAllocationStrategy
 import pekko.cluster.sharding.typed.ShardedDaemonProcessSettings
 
 object ShardedDaemonProcess {
-  def get(system: ActorSystem[_]): ShardedDaemonProcess =
+  def get(system: ActorSystem[?]): ShardedDaemonProcess =
     pekko.cluster.sharding.typed.scaladsl.ShardedDaemonProcess(system).asJava
 }
 

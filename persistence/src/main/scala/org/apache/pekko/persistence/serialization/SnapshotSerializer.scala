@@ -51,7 +51,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    * Deserializes a [[Snapshot]]. Delegates deserialization of snapshot `data` to a matching
    * `org.apache.pekko.serialization.Serializer`.
    */
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): AnyRef =
     Snapshot(snapshotFromBinary(bytes))
 
   private def headerToBinary(snapshot: AnyRef, snapshotSerializer: Serializer): Array[Byte] = {

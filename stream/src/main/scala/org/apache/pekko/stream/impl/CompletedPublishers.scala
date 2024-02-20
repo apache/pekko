@@ -22,7 +22,7 @@ import org.reactivestreams.{ Publisher, Subscriber, Subscription }
  */
 @InternalApi private[pekko] case object EmptyPublisher extends Publisher[Nothing] {
   import ReactiveStreamsCompliance._
-  override def subscribe(subscriber: Subscriber[_ >: Nothing]): Unit =
+  override def subscribe(subscriber: Subscriber[? >: Nothing]): Unit =
     try {
       requireNonNullSubscriber(subscriber)
       tryOnSubscribe(subscriber, CancelledSubscription)
@@ -41,7 +41,7 @@ import org.reactivestreams.{ Publisher, Subscriber, Subscription }
   ReactiveStreamsCompliance.requireNonNullElement(t)
 
   import ReactiveStreamsCompliance._
-  override def subscribe(subscriber: Subscriber[_ >: Nothing]): Unit =
+  override def subscribe(subscriber: Subscriber[? >: Nothing]): Unit =
     try {
       requireNonNullSubscriber(subscriber)
       tryOnSubscribe(subscriber, CancelledSubscription)
@@ -78,7 +78,7 @@ import org.reactivestreams.{ Publisher, Subscriber, Subscription }
  */
 @InternalApi private[pekko] case object RejectAdditionalSubscribers extends Publisher[Nothing] {
   import ReactiveStreamsCompliance._
-  override def subscribe(subscriber: Subscriber[_ >: Nothing]): Unit =
+  override def subscribe(subscriber: Subscriber[? >: Nothing]): Unit =
     try rejectAdditionalSubscriber(subscriber, "Publisher")
     catch {
       case _: SpecViolation => // nothing we can do

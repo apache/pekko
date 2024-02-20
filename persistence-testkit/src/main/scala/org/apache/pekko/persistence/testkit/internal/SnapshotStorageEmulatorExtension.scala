@@ -35,6 +35,6 @@ private[testkit] object SnapshotStorageEmulatorExtension extends ExtensionId[Sna
       new SimpleSnapshotStorageImpl
     }
 
-  override def lookup: ExtensionId[_ <: Extension] =
+  override def lookup: ExtensionId[? <: Extension] =
     SnapshotStorageEmulatorExtension
 }

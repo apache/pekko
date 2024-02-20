@@ -49,8 +49,8 @@ object SupervisionSpec {
   case object IncrementState extends Command
   case object GetState extends Command
   final case class CreateChild[T](behavior: Behavior[T], name: String) extends Command
-  final case class Watch(ref: ActorRef[_]) extends Command
-  final case class WatchWith(ref: ActorRef[_], cmd: Command) extends Command
+  final case class Watch(ref: ActorRef[?]) extends Command
+  final case class WatchWith(ref: ActorRef[?], cmd: Command) extends Command
 
   sealed trait Event
   final case class Pong(n: Int) extends Event
@@ -1408,7 +1408,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
 
       LoggingTestKit.error[DeathPactException].expect {
         actor ! "boom"
-        val child = probe.expectMessageType[ActorRef[_]]
+        val child = probe.expectMessageType[ActorRef[?]]
         probe.expectTerminated(child, 3.seconds)
       }
       actor ! "ping"

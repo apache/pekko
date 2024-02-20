@@ -51,7 +51,7 @@ object DurableStatePersistentBehaviorCompileOnly {
     // #command-handler
     import pekko.persistence.typed.state.scaladsl.Effect
 
-    val commandHandler: (State, Command[_]) => Effect[State] = (state, command) =>
+    val commandHandler: (State, Command[?]) => Effect[State] = (state, command) =>
       command match {
         case Increment         => Effect.persist(state.copy(value = state.value + 1))
         case IncrementBy(by)   => Effect.persist(state.copy(value = state.value + by))
@@ -61,8 +61,8 @@ object DurableStatePersistentBehaviorCompileOnly {
     // #command-handler
 
     // #behavior
-    def counter(id: String): DurableStateBehavior[Command[_], State] = {
-      DurableStateBehavior.apply[Command[_], State](
+    def counter(id: String): DurableStateBehavior[Command[?], State] = {
+      DurableStateBehavior.apply[Command[?], State](
         persistenceId = PersistenceId.ofUniqueId(id),
         emptyState = State(0),
         commandHandler = commandHandler)
@@ -76,8 +76,8 @@ object DurableStatePersistentBehaviorCompileOnly {
 
     final case class State(value: Int) extends CborSerializable
 
-    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
-      DurableStateBehavior.apply[Command[_], State](
+    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[?], State] = {
+      DurableStateBehavior.apply[Command[?], State](
         persistenceId,
         emptyState = State(0),
         commandHandler =
@@ -97,8 +97,8 @@ object DurableStatePersistentBehaviorCompileOnly {
 
     final case class State(value: Int) extends CborSerializable
 
-    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
-      DurableStateBehavior.withEnforcedReplies[Command[_], State](
+    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[?], State] = {
+      DurableStateBehavior.withEnforcedReplies[Command[?], State](
         persistenceId,
         emptyState = State(0),
         commandHandler = (state, command) =>
@@ -134,9 +134,9 @@ object DurableStatePersistentBehaviorCompileOnly {
   }
 
   object TaggingBehavior {
-    def apply(): Behavior[Command[_]] =
+    def apply(): Behavior[Command[?]] =
       // #tagging
-      DurableStateBehavior[Command[_], State](
+      DurableStateBehavior[Command[?], State](
         persistenceId = PersistenceId.ofUniqueId("abc"),
         emptyState = State(0),
         commandHandler = (state, cmd) => throw new NotImplementedError("TODO: process the command & return an Effect"))
@@ -148,10 +148,10 @@ object DurableStatePersistentBehaviorCompileOnly {
     import pekko.persistence.typed.state.scaladsl.Effect
     import pekko.persistence.typed.state.scaladsl.DurableStateBehavior.CommandHandler
 
-    def apply(): Behavior[Command[_]] =
+    def apply(): Behavior[Command[?]] =
       // #wrapPersistentBehavior
-      Behaviors.setup[Command[_]] { context =>
-        DurableStateBehavior[Command[_], State](
+      Behaviors.setup[Command[?]] { context =>
+        DurableStateBehavior[Command[?], State](
           persistenceId = PersistenceId.ofUniqueId("abc"),
           emptyState = State(0),
           commandHandler = CommandHandler.command { cmd =>

@@ -40,7 +40,7 @@ object Serialization {
   /**
    * Tuple that represents mapping from Class to Serializer
    */
-  type ClassSerializer = (Class[_], Serializer)
+  type ClassSerializer = (Class[?], Serializer)
 
   /**
    * INTERNAL API: This holds a reference to the current transport serialization information used for
@@ -153,7 +153,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private[this] val _log = Logging.withMarker(system, getClass.getName)
   val log: LoggingAdapter = _log
-  private val manifestCache = new AtomicReference[Map[String, Option[Class[_]]]](Map.empty[String, Option[Class[_]]])
+  private val manifestCache = new AtomicReference[Map[String, Option[Class[?]]]](Map.empty[String, Option[Class[?]]])
 
   /** INTERNAL API */
   @InternalApi private[pekko] def serializationInformation: Serialization.Information =
@@ -184,7 +184,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Returns either the resulting object or an Exception if one was thrown.
    */
   @deprecated("Use deserialize that accepts the `manifest` as a class name.", since = "Akka 2.6.0")
-  def deserialize[T](bytes: Array[Byte], serializerId: Int, clazz: Option[Class[_ <: T]]): Try[T] =
+  def deserialize[T](bytes: Array[Byte], serializerId: Int, clazz: Option[Class[? <: T]]): Try[T] =
     Try {
       val serializer =
         try getSerializerById(serializerId)
@@ -220,7 +220,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private def deserializeByteArray(bytes: Array[Byte], serializer: Serializer, manifest: String): AnyRef = {
 
-    @tailrec def updateCache(cache: Map[String, Option[Class[_]]], key: String, value: Option[Class[_]]): Boolean = {
+    @tailrec def updateCache(cache: Map[String, Option[Class[?]]], key: String, value: Option[Class[?]]): Boolean = {
       manifestCache.compareAndSet(cache, cache.updated(key, value)) ||
       updateCache(manifestCache.get, key, value) // recursive, try again
     }
@@ -238,7 +238,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
               case None =>
                 system.dynamicAccess.getClassFor[AnyRef](manifest) match {
                   case Success(classManifest) =>
-                    val classManifestOption: Option[Class[_]] = Some(classManifest)
+                    val classManifestOption: Option[Class[?]] = Some(classManifest)
                     updateCache(cache, manifest, classManifestOption)
                     s1.fromBinary(bytes, classManifestOption)
                   case Failure(_) =>
@@ -314,10 +314,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Throws java.io.NotSerializableException if no `serialization-bindings` is configured for the class.
    */
   @throws(classOf[NotSerializableException])
-  def serializerFor(clazz: Class[_]): Serializer =
+  def serializerFor(clazz: Class[?]): Serializer =
     serializerMap.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
-        def unique(possibilities: immutable.Seq[(Class[_], Serializer)]): Boolean =
+        def unique(possibilities: immutable.Seq[(Class[?], Serializer)]): Boolean =
           possibilities.size == 1 ||
           (possibilities.forall(_._1.isAssignableFrom(possibilities(0)._1))) ||
           (possibilities.forall(_._2 == possibilities(0)._2))
@@ -466,7 +466,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     }
   }
 
-  private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
+  private def warnUnexpectedNonPekkoSerializer(clazz: Class[?], ser: Serializer): Boolean = {
     if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.")) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
@@ -506,8 +506,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * serializerMap is a Map whose keys is the class that is serializable and values is the serializer
    * to be used for that class.
    */
-  private val serializerMap: ConcurrentHashMap[Class[_], Serializer] =
-    bindings.foldLeft(new ConcurrentHashMap[Class[_], Serializer]) { case (map, (c, s)) => map.put(c, s); map }
+  private val serializerMap: ConcurrentHashMap[Class[?], Serializer] =
+    bindings.foldLeft(new ConcurrentHashMap[Class[?], Serializer]) { case (map, (c, s)) => map.put(c, s); map }
 
   /**
    * Maps from a Serializer Identity (Int) to a Serializer instance (optimization)
@@ -565,9 +565,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def shouldWarnAboutJavaSerializer(serializedClass: Class[_], serializer: Serializer) = {
+  @InternalApi private[pekko] def shouldWarnAboutJavaSerializer(serializedClass: Class[?], serializer: Serializer) = {
 
-    def suppressWarningOnNonSerializationVerification(serializedClass: Class[_]) = {
+    def suppressWarningOnNonSerializationVerification(serializedClass: Class[?]) = {
       // suppressed, only when warn-on-no-serialization-verification = off, and extending NoSerializationVerificationNeeded
       !isWarningOnNoVerificationEnabled && classOf[NoSerializationVerificationNeeded].isAssignableFrom(serializedClass)
     }

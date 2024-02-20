@@ -31,7 +31,7 @@ object ReplicatedShardingCompileOnlySpec {
 
   sealed trait Command
 
-  val system: ActorSystem[_] = ???
+  val system: ActorSystem[?] = ???
 
   object MyEventSourcedBehavior {
     def apply(replicationId: ReplicationId): Behavior[Command] = ???

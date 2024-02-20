@@ -38,7 +38,7 @@ object ForkJoinExecutorConfigurator {
     override def execute(r: Runnable): Unit =
       if (r ne null)
         super.execute(
-          (if (r.isInstanceOf[ForkJoinTask[_]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
+          (if (r.isInstanceOf[ForkJoinTask[?]]) r else new PekkoForkJoinTask(r)).asInstanceOf[ForkJoinTask[Any]])
       else
         throw new NullPointerException("Runnable was null")
 

@@ -125,7 +125,7 @@ class SubSource[Out, Mat](
    *     +----------------------------+
    * }}}
    */
-  def to(sink: Graph[SinkShape[Out], _]): RunnableGraph[Mat] =
+  def to(sink: Graph[SinkShape[Out], ?]): RunnableGraph[Mat] =
     RunnableGraph.fromGraph(delegate.to(sink))
 
   /**
@@ -1326,7 +1326,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(clazz: Class[_ <: Throwable]): SubSource[Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
+  def onErrorComplete(clazz: Class[? <: Throwable]): SubSource[Out, Mat] = onErrorComplete(ex => clazz.isInstance(ex))
 
   /**
    * onErrorComplete allows to complete the stream when an upstream error occurs.
@@ -1343,7 +1343,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    *  @since 1.1.0
    */
-  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): SubSource[Out, Mat] =
+  def onErrorComplete(predicate: java.util.function.Predicate[? >: Throwable]): SubSource[Out, Mat] =
     new SubSource(delegate.onErrorComplete {
       case ex: Throwable if predicate.test(ex) => true
     })
@@ -1754,7 +1754,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapConcat[T, M](f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+  def flatMapConcat[T, M](f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapConcat(x => f(x)))
 
   /**
@@ -1770,7 +1770,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
+  def flatMapMerge[T, M](breadth: Int, f: function.Function[Out, ? <: Graph[SourceShape[T], M]]): SubSource[T, Mat] =
     new SubSource(delegate.flatMapMerge(breadth, o => f(o)))
 
   /**
@@ -1848,7 +1848,7 @@ class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def concatAllLazy(those: Graph[SourceShape[Out], _]*): SubSource[Out, Mat] =
+  def concatAllLazy(those: Graph[SourceShape[Out], ?]*): SubSource[Out, Mat] =
     new SubSource(delegate.concatAllLazy(those: _*))
 
   /**
@@ -1937,7 +1937,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream or Sink cancels
    */
-  def alsoTo(that: Graph[SinkShape[Out], _]): SubSource[Out, Mat] =
+  def alsoTo(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.alsoTo(that))
 
   /**
@@ -1956,7 +1956,7 @@ class SubSource[Out, Mat](
    */
   @varargs
   @SafeVarargs
-  def alsoToAll(those: Graph[SinkShape[Out], _]*): SubSource[Out, Mat] =
+  def alsoToAll(those: Graph[SinkShape[Out], ?]*): SubSource[Out, Mat] =
     new SubSource(delegate.alsoToAll(those: _*))
 
   /**
@@ -1971,7 +1971,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' any of the downstreams cancel
    */
-  def divertTo(that: Graph[SinkShape[Out], _], when: function.Predicate[Out]): SubSource[Out, Mat] =
+  def divertTo(that: Graph[SinkShape[Out], ?], when: function.Predicate[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.divertTo(that, when.test))
 
   /**
@@ -1990,7 +1990,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def wireTap(that: Graph[SinkShape[Out], _]): SubSource[Out, Mat] =
+  def wireTap(that: Graph[SinkShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.wireTap(that))
 
   /**
@@ -2005,7 +2005,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def merge(that: Graph[SourceShape[Out], _]): SubSource[Out, Mat] =
+  def merge(that: Graph[SourceShape[Out], ?]): SubSource[Out, Mat] =
     new SubSource(delegate.merge(that))
 
   /**
@@ -2021,10 +2021,10 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def mergeAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       eagerComplete: Boolean): SubSource[Out, Mat] = {
     val seq = if (those != null) Util.immutableSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -2055,7 +2055,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def interleave(that: Graph[SourceShape[Out], _], segmentSize: Int): SubSource[Out, Mat] =
+  def interleave(that: Graph[SourceShape[Out], ?], segmentSize: Int): SubSource[Out, Mat] =
     new SubSource(delegate.interleave(that, segmentSize))
 
   /**
@@ -2079,11 +2079,11 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def interleaveAll(
-      those: java.util.List[_ <: Graph[SourceShape[Out], _ <: Any]],
+      those: java.util.List[? <: Graph[SourceShape[Out], ? <: Any]],
       segmentSize: Int,
       eagerClose: Boolean): SubSource[Out, Mat] = {
     val seq = if (those != null) Util.immutableSeq(those).collect {
-      case source: Source[Out @unchecked, _] => source.asScala
+      case source: Source[Out @unchecked, ?] => source.asScala
       case other                             => other
     }
     else immutable.Seq()
@@ -2165,7 +2165,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zip[T](source: Graph[SourceShape[T], _]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zip[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubSource(delegate.zip(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
@@ -2180,7 +2180,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipAll[U, A >: Out](
-      that: Graph[SourceShape[U], _],
+      that: Graph[SourceShape[U], ?],
       thisElem: A,
       thatElem: U): SubSource[pekko.japi.Pair[A, U], Mat] =
     new SubSource(delegate.zipAll(that, thisElem, thatElem).map { case (a, u) => Pair.create(a, u) })
@@ -2197,7 +2197,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipLatest[T](source: Graph[SourceShape[T], _]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
+  def zipLatest[T](source: Graph[SourceShape[T], ?]): SubSource[pekko.japi.Pair[Out @uncheckedVariance, T], Mat] =
     new SubSource(delegate.zipLatest(source).map { case (o, t) => pekko.japi.Pair.create(o, t) })
 
   /**
@@ -2213,7 +2213,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): SubSource[Out3, Mat] =
     new SubSource(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
@@ -2231,7 +2231,7 @@ class SubSource[Out, Mat](
    * '''Cancels when''' downstream cancels
    */
   def zipLatestWith[Out2, Out3](
-      that: Graph[SourceShape[Out2], _],
+      that: Graph[SourceShape[Out2], ?],
       combine: function.Function2[Out, Out2, Out3]): SubSource[Out3, Mat] =
     new SubSource(delegate.zipLatestWith[Out2, Out3](that)(combinerToScala(combine)))
 

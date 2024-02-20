@@ -40,13 +40,13 @@ object EventSourcedBehaviorReplySpec {
 
   final case class State(value: Int, history: Vector[Int]) extends CborSerializable
 
-  def counter(persistenceId: PersistenceId): Behavior[Command[_]] =
+  def counter(persistenceId: PersistenceId): Behavior[Command[?]] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
   def counter(
-      ctx: ActorContext[Command[_]],
-      persistenceId: PersistenceId): EventSourcedBehavior[Command[_], Event, State] = {
-    EventSourcedBehavior.withEnforcedReplies[Command[_], Event, State](
+      ctx: ActorContext[Command[?]],
+      persistenceId: PersistenceId): EventSourcedBehavior[Command[?], Event, State] = {
+    EventSourcedBehavior.withEnforcedReplies[Command[?], Event, State](
       persistenceId,
       emptyState = State(0, Vector.empty),
       commandHandler = (state, command) =>

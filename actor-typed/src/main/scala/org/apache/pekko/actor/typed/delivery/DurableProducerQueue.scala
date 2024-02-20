@@ -173,7 +173,7 @@ object DurableProducerQueue {
 
     override def equals(obj: Any): Boolean = {
       obj match {
-        case other: MessageSent[_] =>
+        case other: MessageSent[?] =>
           seqNr == other.seqNr && message == other.message && ack == other.ack && confirmationQualifier == other.confirmationQualifier && timestampMillis == other.timestampMillis
         case _ => false
       }
@@ -224,7 +224,7 @@ object DurableProducerQueue {
       new MessageSent(seqNr, message, ack, confirmationQualifier, timestampMillis)
 
     def unapply(
-        sent: MessageSent[_]): Option[(SeqNr, MessageOrChunk, Boolean, ConfirmationQualifier, TimestampMillis)] =
+        sent: MessageSent[?]): Option[(SeqNr, MessageOrChunk, Boolean, ConfirmationQualifier, TimestampMillis)] =
       Some((sent.seqNr, sent.message, sent.ack, sent.confirmationQualifier, sent.timestampMillis))
   }
 

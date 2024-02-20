@@ -37,7 +37,7 @@ import pekko.util.ccompat.JavaConverters._
  * INTERNAL API
  */
 @InternalApi
-private[pekko] final class ReplicatedShardingExtensionImpl(system: ActorSystem[_]) extends ReplicatedShardingExtension {
+private[pekko] final class ReplicatedShardingExtensionImpl(system: ActorSystem[?]) extends ReplicatedShardingExtension {
 
   private val counter = new AtomicLong(0)
 

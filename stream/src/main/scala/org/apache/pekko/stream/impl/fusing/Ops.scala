@@ -969,7 +969,7 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
-      override protected def logSource: Class[_] = classOf[Buffer[_]]
+      override protected def logSource: Class[?] = classOf[Buffer[?]]
 
       private val buffer: BufferImpl[T] = BufferImpl(size, inheritedAttributes)
 
@@ -1493,7 +1493,7 @@ private[stream] object Collect {
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
-      override protected def logSource: Class[_] = classOf[Watch[_]]
+      override protected def logSource: Class[?] = classOf[Watch[?]]
 
       override def preStart(): Unit = {
         val self = getStageActor {
@@ -1613,7 +1613,7 @@ private[stream] object Collect {
   final val fromMaterializer = new LogSource[Materializer] {
 
     // do not expose private context classes (of OneBoundedInterpreter)
-    override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
+    override def getClazz(t: Materializer): Class[?] = classOf[Materializer]
 
     override def genString(t: Materializer): String = {
       try s"$DefaultLoggerName(${t.supervisor.path})"
@@ -1733,7 +1733,7 @@ private[stream] object Collect {
   final val fromMaterializer = new LogSource[Materializer] {
 
     // do not expose private context classes (of OneBoundedInterpreter)
-    override def getClazz(t: Materializer): Class[_] = classOf[Materializer]
+    override def getClazz(t: Materializer): Class[?] = classOf[Materializer]
 
     override def genString(t: Materializer): String = {
       try s"$DefaultLoggerName(${t.supervisor.path})"

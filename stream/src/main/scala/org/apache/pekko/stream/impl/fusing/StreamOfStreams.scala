@@ -134,7 +134,7 @@ import pekko.util.ccompat.JavaConverters._
         src match {
           case sub: SubSinkInlet[T] @unchecked =>
             sources -= sub
-          case _: SingleSource[_] =>
+          case _: SingleSource[?] =>
             pendingSingleSources -= 1
           case other => throw new IllegalArgumentException(s"Unexpected source type: '${other.getClass}'")
         }
@@ -735,7 +735,7 @@ import pekko.util.ccompat.JavaConverters._
   override def createLogic(attr: Attributes) = new GraphStageLogic(shape) with InHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
     private[this] val materializationException: OptionVal[IllegalStateException] =
-      if (status.get.isInstanceOf[AsyncCallback[_]])
+      if (status.get.isInstanceOf[AsyncCallback[?]])
         OptionVal.Some(createMaterializedTwiceException())
       else
         OptionVal.None
@@ -830,7 +830,7 @@ import pekko.util.ccompat.JavaConverters._
   override def createLogic(inheritedAttributes: Attributes) = new GraphStageLogic(shape) with OutHandler {
     // check for previous materialization eagerly so we fail with a more useful stacktrace
     private[this] val materializationException: OptionVal[IllegalStateException] =
-      if (status.get.isInstanceOf[AsyncCallback[_]])
+      if (status.get.isInstanceOf[AsyncCallback[?]])
         OptionVal.Some(createMaterializedTwiceException())
       else
         OptionVal.None
@@ -842,7 +842,7 @@ import pekko.util.ccompat.JavaConverters._
         case null                               => if (!status.compareAndSet(null, cb)) setCB(cb)
         case ActorSubscriberMessage.OnComplete  => completeStage()
         case ActorSubscriberMessage.OnError(ex) => failStage(ex)
-        case _: AsyncCallback[_] =>
+        case _: AsyncCallback[?] =>
           failStage(materializationException.getOrElse(createMaterializedTwiceException()))
         case _ => throw new RuntimeException() // won't happen, compiler exhaustiveness check pleaser
       }

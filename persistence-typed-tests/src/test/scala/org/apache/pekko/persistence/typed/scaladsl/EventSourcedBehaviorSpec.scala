@@ -128,15 +128,15 @@ object EventSourcedBehaviorSpec {
   val firstLogging = "first logging"
   val secondLogging = "second logging"
 
-  def counter(persistenceId: PersistenceId)(implicit system: ActorSystem[_]): Behavior[Command] =
+  def counter(persistenceId: PersistenceId)(implicit system: ActorSystem[?]): Behavior[Command] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
   def counter(persistenceId: PersistenceId, logging: ActorRef[String])(
-      implicit system: ActorSystem[_]): Behavior[Command] =
+      implicit system: ActorSystem[?]): Behavior[Command] =
     Behaviors.setup(ctx => counter(ctx, persistenceId, logging))
 
   def counter(ctx: ActorContext[Command], persistenceId: PersistenceId)(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(
       ctx,
       persistenceId,
@@ -145,7 +145,7 @@ object EventSourcedBehaviorSpec {
       snapshotProbe = TestProbe[Try[SnapshotMetadata]]().ref)
 
   def counter(ctx: ActorContext[Command], persistenceId: PersistenceId, logging: ActorRef[String])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(
       ctx,
       persistenceId,
@@ -158,18 +158,18 @@ object EventSourcedBehaviorSpec {
       persistenceId: PersistenceId,
       probe: ActorRef[(State, Event)],
       snapshotProbe: ActorRef[Try[SnapshotMetadata]])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, probe, snapshotProbe)
 
   def counterWithProbe(ctx: ActorContext[Command], persistenceId: PersistenceId, probe: ActorRef[(State, Event)])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, probe, TestProbe[Try[SnapshotMetadata]]().ref)
 
   def counterWithSnapshotProbe(
       ctx: ActorContext[Command],
       persistenceId: PersistenceId,
       probe: ActorRef[Try[SnapshotMetadata]])(
-      implicit system: ActorSystem[_]): EventSourcedBehavior[Command, Event, State] =
+      implicit system: ActorSystem[?]): EventSourcedBehavior[Command, Event, State] =
     counter(ctx, persistenceId, TestProbe[String]().ref, TestProbe[(State, Event)]().ref, snapshotProbe = probe)
 
   def counter(
@@ -728,7 +728,7 @@ class EventSourcedBehaviorSpec
       firstThree ++ others should contain theSameElementsInOrderAs all
     }
 
-    def watcher(toWatch: ActorRef[_]): TestProbe[String] = {
+    def watcher(toWatch: ActorRef[?]): TestProbe[String] = {
       val probe = TestProbe[String]()
       val w = Behaviors.setup[Any] { ctx =>
         ctx.watch(toWatch)

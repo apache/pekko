@@ -29,7 +29,7 @@ class ByteStringInitializationSpec extends AnyWordSpec with Matchers {
       val cleanCl = new ClassLoader(null) {
         val outerCl = ByteStringInitializationSpec.this.getClass.getClassLoader
         val buffer = new Array[Byte](1000000)
-        override def loadClass(name: String): Class[_] =
+        override def loadClass(name: String): Class[?] =
           if (!name.startsWith("org.apache.pekko")) outerCl.loadClass(name)
           else {
             val classFile = name.replace(".", "/") + ".class"

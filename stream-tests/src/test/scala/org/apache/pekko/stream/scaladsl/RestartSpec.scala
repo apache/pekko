@@ -674,7 +674,7 @@ class RestartSpec
     // helps reuse all the setupFlow code for both methods: withBackoff, and onlyOnFailuresWithBackoff
     def RestartFlowFactory[In, Out](
         onlyOnFailures: Boolean,
-        settings: RestartSettings): (() => Flow[In, Out, _]) => Flow[In, Out, NotUsed] =
+        settings: RestartSettings): (() => Flow[In, Out, ?]) => Flow[In, Out, NotUsed] =
       if (onlyOnFailures) RestartFlow.onFailuresWithBackoff(settings)
       else RestartFlow.withBackoff(settings)
 

@@ -61,7 +61,7 @@ object ActorSystemSetup {
  * Constructor is *Internal API*. Use the factory methods [[ActorSystemSetup#create]] and [[ActorSystemSetup#apply]] to create
  * instances.
  */
-final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val setups: Map[Class[_], AnyRef]) {
+final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val setups: Map[Class[?], AnyRef]) {
 
   /**
    * Java API: Extract a concrete [[pekko.actor.setup.Setup]] of type `T` if it is defined in the settings.

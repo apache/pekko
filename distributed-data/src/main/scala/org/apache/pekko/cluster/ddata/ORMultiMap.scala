@@ -362,7 +362,7 @@ final class ORMultiMap[A, B] private[pekko] (
   override def toString: String = s"ORMulti$entries"
 
   override def equals(o: Any): Boolean = o match {
-    case other: ORMultiMap[_, _] => underlying == other.underlying
+    case other: ORMultiMap[?, ?] => underlying == other.underlying
     case _                       => false
   }
 

@@ -28,7 +28,7 @@ class GraphMergeSortedSpec extends TwoStreamsSetup with ScalaCheckPropertyChecks
 
   override type Outputs = Int
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture {
+  override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
     val merge = b.add(new MergeSorted[Outputs])
 
     override def left: Inlet[Outputs] = merge.in0

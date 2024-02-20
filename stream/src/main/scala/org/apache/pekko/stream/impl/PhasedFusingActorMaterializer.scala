@@ -922,7 +922,7 @@ private final case class SavedIslandData(
 
   override def takePublisher(slot: Int, publisher: Publisher[Any], attributes: Attributes): Unit = {
     subscriberOrVirtualPublisher match {
-      case v: VirtualPublisher[_]        => v.registerPublisher(publisher)
+      case v: VirtualPublisher[?]        => v.registerPublisher(publisher)
       case s: Subscriber[Any] @unchecked => publisher.subscribe(s)
       case _                             => throw new IllegalStateException() // won't happen, compiler exhaustiveness check pleaser
     }

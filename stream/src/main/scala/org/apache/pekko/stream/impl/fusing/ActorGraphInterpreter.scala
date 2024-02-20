@@ -332,7 +332,7 @@ import org.reactivestreams.Subscription
 
     protected val wakeUpMsg: Any = SubscribePending(boundary)
 
-    override def subscribe(subscriber: Subscriber[_ >: Any]): Unit = {
+    override def subscribe(subscriber: Subscriber[? >: Any]): Unit = {
       requireNonNullSubscriber(subscriber)
       @tailrec def doSubscribe(): Unit = {
         val current = pendingSubscribers.get

@@ -729,5 +729,5 @@ private[pekko] class ActorCell(
     try system.eventStream.publish(e)
     catch { case NonFatal(_) => }
 
-  protected final def clazz(o: AnyRef): Class[_] = if (o eq null) this.getClass else o.getClass
+  protected final def clazz(o: AnyRef): Class[?] = if (o eq null) this.getClass else o.getClass
 }

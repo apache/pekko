@@ -35,7 +35,7 @@ object EchoServer extends App {
   system.terminate()
 }
 
-class EchoManager(handlerClass: Class[_]) extends Actor with ActorLogging {
+class EchoManager(handlerClass: Class[?]) extends Actor with ActorLogging {
 
   import Tcp._
   import context.system

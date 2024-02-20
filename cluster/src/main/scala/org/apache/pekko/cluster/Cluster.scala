@@ -266,7 +266,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * A snapshot of [[pekko.cluster.ClusterEvent.CurrentClusterState]]
    * will be sent to the subscriber as the first message.
    */
-  @varargs def subscribe(subscriber: ActorRef, to: Class[_]*): Unit =
+  @varargs def subscribe(subscriber: ActorRef, to: Class[?]*): Unit =
     subscribe(subscriber, initialStateMode = InitialStateAsSnapshot, to: _*)
 
   /**
@@ -284,7 +284,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    *
    * Note that for large clusters it is more efficient to use `InitialStateAsSnapshot`.
    */
-  @varargs def subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Class[_]*): Unit = {
+  @varargs def subscribe(subscriber: ActorRef, initialStateMode: SubscriptionInitialStateMode, to: Class[?]*): Unit = {
     require(to.length > 0, "at least one `ClusterDomainEvent` class is required")
     require(
       to.forall(classOf[ClusterDomainEvent].isAssignableFrom),
@@ -303,7 +303,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
    * Unsubscribe to a specific type of cluster domain events,
    * matching previous `subscribe` registration.
    */
-  def unsubscribe(subscriber: ActorRef, to: Class[_]): Unit =
+  def unsubscribe(subscriber: ActorRef, to: Class[?]): Unit =
     clusterCore ! InternalClusterAction.Unsubscribe(subscriber, Some(to))
 
   /**

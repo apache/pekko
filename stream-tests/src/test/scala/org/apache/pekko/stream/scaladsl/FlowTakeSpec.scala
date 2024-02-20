@@ -28,7 +28,7 @@ class FlowTakeSpec extends StreamSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2
   """) with ScriptedTest {
 
-  muteDeadLetters(classOf[OnNext], OnComplete.getClass, classOf[RequestMore[_]])()
+  muteDeadLetters(classOf[OnNext], OnComplete.getClass, classOf[RequestMore[?]])()
 
   "A Take" must {
 

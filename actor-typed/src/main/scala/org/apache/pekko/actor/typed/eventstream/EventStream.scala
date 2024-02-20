@@ -63,7 +63,7 @@ object EventStream {
     /**
      * INTERNAL API
      */
-    @InternalApi private[pekko] def topic: Class[_] = classTag.runtimeClass
+    @InternalApi private[pekko] def topic: Class[?] = classTag.runtimeClass
   }
 
   /**

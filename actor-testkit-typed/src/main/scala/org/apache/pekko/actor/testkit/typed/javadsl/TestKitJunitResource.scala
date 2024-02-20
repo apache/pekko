@@ -71,7 +71,7 @@ final class TestKitJunitResource(_kit: ActorTestKit) extends ExternalResource {
   /**
    * Use a custom [[pekko.actor.typed.ActorSystem]] for the actor system.
    */
-  def this(system: ActorSystem[_]) = this(ActorTestKit.create(system))
+  def this(system: ActorSystem[?]) = this(ActorTestKit.create(system))
 
   /**
    * Use a custom config for the actor system.

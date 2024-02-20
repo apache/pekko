@@ -32,7 +32,7 @@ import pekko.annotation.DoNotInherit
  * Not for user extension
  */
 @DoNotInherit
-trait ActorRef[-T] extends RecipientRef[T] with java.lang.Comparable[ActorRef[_]] with java.io.Serializable {
+trait ActorRef[-T] extends RecipientRef[T] with java.lang.Comparable[ActorRef[?]] with java.io.Serializable {
   this: InternalRecipientRef[T] =>
 
   /**

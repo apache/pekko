@@ -52,10 +52,10 @@ object FishingOutcomes {
 }
 
 object TestProbe {
-  def apply[M]()(implicit system: ActorSystem[_]): TestProbe[M] =
+  def apply[M]()(implicit system: ActorSystem[?]): TestProbe[M] =
     apply(name = "testProbe")
 
-  def apply[M](name: String)(implicit system: ActorSystem[_]): TestProbe[M] =
+  def apply[M](name: String)(implicit system: ActorSystem[?]): TestProbe[M] =
     new TestProbeImpl[M](name, system)
 
 }

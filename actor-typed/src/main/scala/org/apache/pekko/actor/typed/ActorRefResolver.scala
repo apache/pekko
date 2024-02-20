@@ -18,9 +18,9 @@ import pekko.actor.{ ActorRefWithCell, ExtendedActorSystem }
 import pekko.annotation.{ DoNotInherit, InternalApi }
 
 object ActorRefResolver extends ExtensionId[ActorRefResolver] {
-  def get(system: ActorSystem[_]): ActorRefResolver = apply(system)
+  def get(system: ActorSystem[?]): ActorRefResolver = apply(system)
 
-  override def createExtension(system: ActorSystem[_]): ActorRefResolver =
+  override def createExtension(system: ActorSystem[?]): ActorRefResolver =
     new ActorRefResolverImpl(system)
 }
 
@@ -53,7 +53,7 @@ abstract class ActorRefResolver extends Extension {
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class ActorRefResolverImpl(system: ActorSystem[_]) extends ActorRefResolver {
+@InternalApi private[pekko] class ActorRefResolverImpl(system: ActorSystem[?]) extends ActorRefResolver {
   import pekko.actor.typed.scaladsl.adapter._
 
   private val classicSystem = system.toClassic.asInstanceOf[ExtendedActorSystem]
@@ -93,7 +93,7 @@ abstract class ActorRefResolver extends Extension {
 }
 
 object ActorRefResolverSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => ActorRefResolver): ActorRefResolverSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => ActorRefResolver): ActorRefResolverSetup =
     new ActorRefResolverSetup(sys => createExtension(sys))
 
 }
@@ -103,5 +103,5 @@ object ActorRefResolverSetup {
  * to replace the default implementation of the [[ActorRefResolver]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class ActorRefResolverSetup(createExtension: java.util.function.Function[ActorSystem[_], ActorRefResolver])
+final class ActorRefResolverSetup(createExtension: java.util.function.Function[ActorSystem[?], ActorRefResolver])
     extends ExtensionSetup[ActorRefResolver](ActorRefResolver, createExtension)

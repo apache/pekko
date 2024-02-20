@@ -24,7 +24,7 @@ import pekko.remote.testkit.MultiNodeConfig
 
 object MultiNodeClusterShardingConfig {
 
-  private[sharding] def testNameFromCallStack(classToStartFrom: Class[_]): String = {
+  private[sharding] def testNameFromCallStack(classToStartFrom: Class[?]): String = {
 
     def isAbstractClass(className: String): Boolean = {
       try {

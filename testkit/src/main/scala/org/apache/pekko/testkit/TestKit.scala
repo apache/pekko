@@ -608,7 +608,7 @@ trait TestKitBase {
   /**
    * Same as `expectMsgAnyClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAnyClassOf[C](obj: Class[_ <: C]*): C = expectMsgAnyClassOf_internal(remainingOrDefault, obj: _*)
+  def expectMsgAnyClassOf[C](obj: Class[? <: C]*): C = expectMsgAnyClassOf_internal(remainingOrDefault, obj: _*)
 
   /**
    * Receive one message from the test actor and assert that it conforms to
@@ -617,10 +617,10 @@ trait TestKitBase {
    *
    * @return the received object
    */
-  def expectMsgAnyClassOf[C](max: FiniteDuration, obj: Class[_ <: C]*): C =
+  def expectMsgAnyClassOf[C](max: FiniteDuration, obj: Class[? <: C]*): C =
     expectMsgAnyClassOf_internal(max.dilated, obj: _*)
 
-  private def expectMsgAnyClassOf_internal[C](max: FiniteDuration, obj: Class[_ <: C]*): C = {
+  private def expectMsgAnyClassOf_internal[C](max: FiniteDuration, obj: Class[? <: C]*): C = {
     val o = receiveOne(max)
     assert(o ne null, s"timeout ($max) during expectMsgAnyClassOf waiting for ${obj.mkString("(", ", ", ")")}")
     assert(obj.exists(c => BoxedType(c).isInstance(o)), s"found unexpected $o")
@@ -669,7 +669,7 @@ trait TestKitBase {
   /**
    * Same as `expectMsgAllClassOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAllClassOf[T](obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllClassOf[T](obj: Class[? <: T]*): immutable.Seq[T] =
     internalExpectMsgAllClassOf(remainingOrDefault, obj: _*)
 
   /**
@@ -680,10 +680,10 @@ trait TestKitBase {
    * Wait time is bounded by the given duration, with an AssertionFailure
    * being thrown in case of timeout.
    */
-  def expectMsgAllClassOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllClassOf[T](max: FiniteDuration, obj: Class[? <: T]*): immutable.Seq[T] =
     internalExpectMsgAllClassOf(max.dilated, obj: _*)
 
-  private def internalExpectMsgAllClassOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] = {
+  private def internalExpectMsgAllClassOf[T](max: FiniteDuration, obj: Class[? <: T]*): immutable.Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
     val missing = obj.filterNot(x => recv.exists(_.getClass eq BoxedType(x)))
     val unexpected = recv.filterNot(x => obj.exists(c => BoxedType(c) eq x.getClass))
@@ -694,7 +694,7 @@ trait TestKitBase {
   /**
    * Same as `expectMsgAllConformingOf(remainingOrDefault, obj...)`, but correctly treating the timeFactor.
    */
-  def expectMsgAllConformingOf[T](obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllConformingOf[T](obj: Class[? <: T]*): immutable.Seq[T] =
     internalExpectMsgAllConformingOf(remainingOrDefault, obj: _*)
 
   /**
@@ -708,10 +708,10 @@ trait TestKitBase {
    * Beware that one object may satisfy all given class constraints, which
    * may be counter-intuitive.
    */
-  def expectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] =
+  def expectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[? <: T]*): immutable.Seq[T] =
     internalExpectMsgAllConformingOf(max.dilated, obj: _*)
 
-  private def internalExpectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[_ <: T]*): immutable.Seq[T] = {
+  private def internalExpectMsgAllConformingOf[T](max: FiniteDuration, obj: Class[? <: T]*): immutable.Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
     val missing = obj.filterNot(x => recv.exists(BoxedType(x).isInstance(_)))
     val unexpected = recv.filterNot(x => obj.exists(c => BoxedType(c).isInstance(x)))

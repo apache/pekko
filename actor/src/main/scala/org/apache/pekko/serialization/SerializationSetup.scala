@@ -55,7 +55,7 @@ object SerializerDetails {
    * @param useFor A set of classes or superclasses to bind to the serializer, selection works just as if
    *               the classes, the alias and the serializer had been in the config.
    */
-  def apply(alias: String, serializer: Serializer, useFor: immutable.Seq[Class[_]]): SerializerDetails =
+  def apply(alias: String, serializer: Serializer, useFor: immutable.Seq[Class[?]]): SerializerDetails =
     new SerializerDetails(alias, serializer, useFor)
 
   /**
@@ -65,7 +65,7 @@ object SerializerDetails {
    * @param useFor A set of classes or superclasses to bind to the serializer, selection works just as if
    *               the classes, the alias and the serializer had been in the config.
    */
-  def create(alias: String, serializer: Serializer, useFor: java.util.List[Class[_]]): SerializerDetails =
+  def create(alias: String, serializer: Serializer, useFor: java.util.List[Class[?]]): SerializerDetails =
     apply(alias, serializer, useFor.asScala.toVector)
 
 }
@@ -77,4 +77,4 @@ object SerializerDetails {
 final class SerializerDetails private (
     val alias: String,
     val serializer: Serializer,
-    val useFor: immutable.Seq[Class[_]])
+    val useFor: immutable.Seq[Class[?]])

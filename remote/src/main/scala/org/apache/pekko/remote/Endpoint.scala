@@ -82,7 +82,7 @@ private[remote] class DefaultMessageDispatcher(
     import provider.remoteSettings._
 
     lazy val payload: AnyRef = MessageSerializer.deserialize(system, serializedMessage)
-    def payloadClass: Class[_] = if (payload eq null) null else payload.getClass
+    def payloadClass: Class[?] = if (payload eq null) null else payload.getClass
     val sender: ActorRef = senderOption.getOrElse(system.deadLetters)
     val originalReceiver = recipient.path
 

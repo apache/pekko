@@ -167,7 +167,7 @@ class DurableWorkPullingSpec
       val durable = TestDurableProducerQueue[TestConsumer.Job](
         Duration.Zero,
         stateHolder,
-        (_: DurableProducerQueue.Command[_]) => false)
+        (_: DurableProducerQueue.Command[?]) => false)
 
       val workPullingController =
         spawn(
@@ -289,7 +289,7 @@ class DurableWorkPullingSpec
       val durable = TestDurableProducerQueue[TestConsumer.Job](
         Duration.Zero,
         stateHolder,
-        (_: DurableProducerQueue.Command[_]) => false)
+        (_: DurableProducerQueue.Command[?]) => false)
 
       val workPullingController =
         spawn(

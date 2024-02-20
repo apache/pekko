@@ -495,7 +495,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Reply] = cookieFabric.ask(ref => CookieFabric.GiveMeCookies(3, ref))
 
@@ -560,7 +560,7 @@ class InteractionPatternsSpec extends ScalaTestWithActorTestKit with AnyWordSpec
     // the ask is failed with a TimeoutException
     implicit val timeout: Timeout = 3.seconds
     // implicit ActorSystem in scope
-    implicit val system: ActorSystem[_] = theSystem
+    implicit val system: ActorSystem[?] = theSystem
 
     val result: Future[CookieFabric.Cookies] = cookieFabric.askWithStatus(ref => CookieFabric.GiveMeCookies(3, ref))
 

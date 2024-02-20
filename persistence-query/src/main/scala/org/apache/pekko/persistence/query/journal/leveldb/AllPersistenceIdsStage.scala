@@ -46,7 +46,7 @@ final private[pekko] class AllPersistenceIdsStage(liveQuery: Boolean, writeJourn
       val journal: ActorRef = Persistence(mat.system).journalFor(writeJournalPluginId)
       var initialResponseReceived = false
 
-      override protected def logSource: Class[_] = classOf[AllPersistenceIdsStage]
+      override protected def logSource: Class[?] = classOf[AllPersistenceIdsStage]
 
       override def preStart(): Unit = {
         journal.tell(LeveldbJournal.SubscribeAllPersistenceIds, getStageActor(journalInteraction).ref)

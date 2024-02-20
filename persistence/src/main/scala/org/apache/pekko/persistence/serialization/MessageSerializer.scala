@@ -71,7 +71,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
    * Deserializes persistent messages. Delegates deserialization of a persistent
    * message's payload to a matching `org.apache.pekko.serialization.Serializer`.
    */
-  def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): Message = manifest match {
+  def fromBinary(bytes: Array[Byte], manifest: Option[Class[?]]): Message = manifest match {
     case None => persistent(mf.PersistentMessage.parseFrom(bytes))
     case Some(c) =>
       c match {

@@ -103,7 +103,7 @@ abstract class SurviveNetworkInstabilitySpec
   private val remoteSettings = RARP(system).provider.remoteSettings
 
   @nowarn
-  def quarantinedEventClass: Class[_] =
+  def quarantinedEventClass: Class[?] =
     if (remoteSettings.Artery.Enabled)
       classOf[QuarantinedEvent]
     else

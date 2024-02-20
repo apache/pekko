@@ -719,7 +719,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
    * Returns whether the specified extension is already registered, this method can potentially block, waiting for the initialization
    * of the payload, if is in the process of registration from another Thread of execution
    */
-  def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean
+  def hasExtension(ext: ExtensionId[? <: Extension]): Boolean
 }
 
 /**
@@ -1142,7 +1142,7 @@ private[pekko] class ActorSystemImpl(
   // 1) a CountDownLatch (if it's still in the process of being registered),
   // 2) a Throwable (if it failed initializing), or
   // 3) the registered extension.
-  private val extensions = new ConcurrentHashMap[ExtensionId[_], AnyRef]
+  private val extensions = new ConcurrentHashMap[ExtensionId[?], AnyRef]
 
   /**
    * Returns any extension registered to the specified Extension or returns null if not registered
@@ -1199,7 +1199,7 @@ private[pekko] class ActorSystemImpl(
     case some => some.asInstanceOf[T]
   }
 
-  def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null
+  def hasExtension(ext: ExtensionId[? <: Extension]): Boolean = findExtension(ext) != null
 
   private def loadExtensions(): Unit = {
 
@@ -1217,7 +1217,7 @@ private[pekko] class ActorSystemImpl(
         } match {
           case Success(p: ExtensionIdProvider) =>
             registerExtension(p.lookup)
-          case Success(p: ExtensionId[_]) =>
+          case Success(p: ExtensionId[?]) =>
             registerExtension(p)
           case Success(_) =>
             if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionIdProvider' or 'ExtensionId', skipping...", fqcn)

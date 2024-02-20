@@ -802,8 +802,8 @@ class CircuitBreaker(
       case _                       => allowExceptions.contains(ex.getClass.getName)
     })
 
-  private val failureFn: Try[_] => Boolean = {
-    case _: Success[_]                       => false
+  private val failureFn: Try[?] => Boolean = {
+    case _: Success[?]                       => false
     case Failure(t) if isIgnoredException(t) => false
     case _                                   => true
   }
@@ -862,7 +862,7 @@ class CircuitBreaker(
         val f = materialize(body)
 
         f.onComplete {
-          case _: Success[_] =>
+          case _: Success[?] =>
             notifyCallSuccessListeners(start)
             callSucceeds()
           case Failure(_) =>

@@ -36,7 +36,7 @@ sealed trait ClusterShardingQuery
  *
  * For the statistics for the entire cluster, see [[GetClusterShardingStats]].
  */
-final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: ActorRef[CurrentShardRegionState])
+final case class GetShardRegionState(entityTypeKey: EntityTypeKey[?], replyTo: ActorRef[CurrentShardRegionState])
     extends ClusterShardingQuery {
 
   /**
@@ -45,7 +45,7 @@ final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: A
    * Query the ShardRegion state for the given entity type key. This will get the state of the
    * local ShardRegion's state.
    */
-  def this(entityTypeKey: javadsl.EntityTypeKey[_], replyTo: ActorRef[CurrentShardRegionState]) =
+  def this(entityTypeKey: javadsl.EntityTypeKey[?], replyTo: ActorRef[CurrentShardRegionState]) =
     this(entityTypeKey.asScala, replyTo)
 }
 
@@ -61,7 +61,7 @@ final case class GetShardRegionState(entityTypeKey: EntityTypeKey[_], replyTo: A
  * @param replyTo the actor to send the result to
  */
 final case class GetClusterShardingStats(
-    entityTypeKey: EntityTypeKey[_],
+    entityTypeKey: EntityTypeKey[?],
     timeout: FiniteDuration,
     replyTo: ActorRef[ClusterShardingStats])
     extends ClusterShardingQuery {
@@ -74,7 +74,7 @@ final case class GetClusterShardingStats(
    * shard regions the reply will contain an empty map of regions.
    */
   def this(
-      entityTypeKey: javadsl.EntityTypeKey[_],
+      entityTypeKey: javadsl.EntityTypeKey[?],
       timeout: java.time.Duration,
       replyTo: ActorRef[ClusterShardingStats]) =
     this(entityTypeKey.asScala, JavaDurationConverters.asFiniteDuration(timeout), replyTo)

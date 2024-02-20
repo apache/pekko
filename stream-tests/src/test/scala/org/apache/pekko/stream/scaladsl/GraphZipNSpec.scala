@@ -26,7 +26,7 @@ class GraphZipNSpec extends TwoStreamsSetup {
 
   override type Outputs = immutable.Seq[Int]
 
-  override def fixture(b: GraphDSL.Builder[_]): Fixture = new Fixture {
+  override def fixture(b: GraphDSL.Builder[?]): Fixture = new Fixture {
     val zipN = b.add(ZipN[Int](2))
 
     override def left: Inlet[Int] = zipN.in(0)

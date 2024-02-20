@@ -39,7 +39,7 @@ abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
 
   def this(s: String) = this(ConfigFactory.parseString(s))
 
-  def this(configMap: Map[String, _]) = this(PekkoSpec.mapToConfig(configMap))
+  def this(configMap: Map[String, ?]) = this(PekkoSpec.mapToConfig(configMap))
 
   def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[StreamSpec], "".r), PekkoSpec.testConf))
 

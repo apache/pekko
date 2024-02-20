@@ -133,7 +133,7 @@ private[pekko] object Running {
         state: RunningState[S],
         effect: Effect[S],
         sideEffects: immutable.Seq[SideEffect[S]] = Nil): (Behavior[InternalProtocol], Boolean) = {
-      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[_]])
+      if (setup.internalLogger.isDebugEnabled && !effect.isInstanceOf[CompositeEffect[?]])
         setup.internalLogger.debugN(
           s"Handled command [{}], resulting effect: [{}], side effects: [{}]",
           msg.getClass.getName,
@@ -151,7 +151,7 @@ private[pekko] object Running {
         case _: PersistNothing.type =>
           (applySideEffects(sideEffects, state), true)
 
-        case _: Delete[_] =>
+        case _: Delete[?] =>
           val nextState = internalDelete(setup.context, msg, state)
           (applySideEffects(sideEffects, nextState), true)
 
@@ -206,7 +206,7 @@ private[pekko] object Running {
         case get: GetState[S @unchecked]       => stashInternal(get)
         case RecoveryTimeout                   => Behaviors.unhandled
         case RecoveryPermitGranted             => Behaviors.unhandled
-        case _: GetSuccess[_]                  => Behaviors.unhandled
+        case _: GetSuccess[?]                  => Behaviors.unhandled
         case _: GetFailure                     => Behaviors.unhandled
         case DeleteSuccess                     => Behaviors.unhandled
         case DeleteFailure(_)                  => Behaviors.unhandled
@@ -287,15 +287,15 @@ private[pekko] object Running {
         unstashAll()
         behavior
 
-      case callback: Callback[_] =>
+      case callback: Callback[?] =>
         callback.sideEffect(state.state)
         behavior
     }
   }
 
   @InternalStableApi
-  private[pekko] def onWriteFailed(@unused ctx: ActorContext[_], @unused reason: Throwable): Unit = ()
+  private[pekko] def onWriteFailed(@unused ctx: ActorContext[?], @unused reason: Throwable): Unit = ()
   @InternalStableApi
-  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[_]): Unit = ()
+  private[pekko] def onWriteSuccess(@unused ctx: ActorContext[?]): Unit = ()
 
 }

@@ -30,9 +30,9 @@ import pekko.cluster.ddata.SelfUniqueAddress
 import pekko.util.JavaDurationConverters._
 
 object DistributedData extends ExtensionId[DistributedData] {
-  def get(system: ActorSystem[_]): DistributedData = apply(system)
+  def get(system: ActorSystem[?]): DistributedData = apply(system)
 
-  override def createExtension(system: ActorSystem[_]): DistributedData =
+  override def createExtension(system: ActorSystem[?]): DistributedData =
     new DistributedDataImpl(system)
 
   /**
@@ -97,7 +97,7 @@ abstract class DistributedData extends Extension {
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] class DistributedDataImpl(system: ActorSystem[_]) extends DistributedData {
+@InternalApi private[pekko] class DistributedDataImpl(system: ActorSystem[?]) extends DistributedData {
 
   override val replicator: ActorRef[Replicator.Command] =
     pekko.cluster.ddata.typed.scaladsl.DistributedData(system).replicator.narrow[Replicator.Command]
@@ -108,7 +108,7 @@ abstract class DistributedData extends Extension {
 }
 
 object DistributedDataSetup {
-  def apply[T <: Extension](createExtension: ActorSystem[_] => DistributedData): DistributedDataSetup =
+  def apply[T <: Extension](createExtension: ActorSystem[?] => DistributedData): DistributedDataSetup =
     new DistributedDataSetup(createExtension(_))
 
 }
@@ -118,5 +118,5 @@ object DistributedDataSetup {
  * to replace the default implementation of the [[DistributedData]] extension. Intended
  * for tests that need to replace extension with stub/mock implementations.
  */
-final class DistributedDataSetup(createExtension: java.util.function.Function[ActorSystem[_], DistributedData])
+final class DistributedDataSetup(createExtension: java.util.function.Function[ActorSystem[?], DistributedData])
     extends ExtensionSetup[DistributedData](DistributedData, createExtension)

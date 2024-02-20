@@ -34,13 +34,13 @@ import pekko.serialization.{ BaseSerializer, SerializerWithStringManifest }
   private val ActorRefManifest = "a"
 
   def manifest(o: AnyRef): String = o match {
-    case _: ActorRef[_] => ActorRefManifest
+    case _: ActorRef[?] => ActorRefManifest
     case _ =>
       throw new IllegalArgumentException(s"Can't serialize object of type ${o.getClass} in [${getClass.getName}]")
   }
 
   def toBinary(o: AnyRef): Array[Byte] = o match {
-    case ref: ActorRef[_] => resolver.toSerializationFormat(ref).getBytes(StandardCharsets.UTF_8)
+    case ref: ActorRef[?] => resolver.toSerializationFormat(ref).getBytes(StandardCharsets.UTF_8)
     case _ =>
       throw new IllegalArgumentException(s"Cannot serialize object of type [${o.getClass.getName}]")
   }
