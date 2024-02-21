@@ -73,7 +73,7 @@ class PhiAccrualFailureDetector(
     eventStream: Option[EventStream])(
     implicit
     clock: Clock)
-    extends FailureDetector {
+    extends FailureDetector with FailureDetectorWithAddress {
 
   /**
    * Constructor without eventStream to support backwards compatibility
@@ -118,8 +118,10 @@ class PhiAccrualFailureDetector(
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis
 
+  def address_=(addr: String): Unit = this._address = addr
+  private[pekko] def address: String = this._address
   // address below was introduced as a var because of binary compatibility constraints
-  private[pekko] var address: String = "N/A"
+  private var _address: String = "N/A"
 
   /**
    * Implement using optimistic lockless concurrency, all state is represented

@@ -59,8 +59,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () => FailureDetector) 
 
               // address below was introduced as a var because of binary compatibility constraints
               newDetector match {
-                case phi: PhiAccrualFailureDetector => phi.address = resource.toString
-                case _                              =>
+                case dwa: FailureDetectorWithAddress => dwa.address = resource.toString
+                case _                               =>
               }
 
               newDetector.heartbeat()

@@ -40,6 +40,16 @@ trait FailureDetector {
 
 }
 
+trait FailureDetectorWithAddress {
+
+  /**
+   * Address of observed host will be set after detector creation.
+   */
+  def address_=(addr: String): Unit
+
+  private[pekko] def address: String
+}
+
 object FailureDetector {
 
   /**
@@ -50,6 +60,6 @@ object FailureDetector {
   abstract class Clock extends (() => Long)
 
   implicit val defaultClock: Clock = new Clock {
-    def apply() = NANOSECONDS.toMillis(System.nanoTime)
+    def apply(): Long = NANOSECONDS.toMillis(System.nanoTime)
   }
 }
