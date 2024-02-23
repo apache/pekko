@@ -116,10 +116,9 @@ class PhiAccrualFailureDetector(
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis
 
-  def address_=(addr: String): Unit = this._address = addr
-  private[pekko] def address: String = this._address
   // address below was introduced as a var because of binary compatibility constraints
-  private var _address: String = "N/A"
+  private var address: String = "N/A"
+  def setAddress(addr: String): Unit = this.address = addr
 
   /**
    * Implement using optimistic lockless concurrency, all state is represented

@@ -45,9 +45,7 @@ trait FailureDetectorWithAddress {
   /**
    * Address of observed host will be set after detector creation.
    */
-  def address_=(addr: String): Unit
-
-  private[pekko] def address: String
+  def setAddress(addr: String): Unit
 }
 
 object FailureDetector {
