@@ -1206,7 +1206,6 @@ trait FlowOps[+Out, +Mat] {
    *
    * See also [[FlowOps.mapConcat]]
    */
-  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](f: () => Out => IterableOnce[T]): Repr[T] =
     via(new StatefulMapConcat(f))
 

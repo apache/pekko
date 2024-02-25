@@ -896,7 +896,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.statefulMapConcat { () =>

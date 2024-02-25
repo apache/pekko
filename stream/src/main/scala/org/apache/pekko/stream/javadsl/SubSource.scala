@@ -344,7 +344,6 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): SubSource[T, Mat] =
     new SubSource(delegate.statefulMapConcat { () =>
       val fun = f.create()
