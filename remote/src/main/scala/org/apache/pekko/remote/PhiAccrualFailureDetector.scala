@@ -116,7 +116,7 @@ class PhiAccrualFailureDetector(
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis
 
-  // Note: address below was introduced as a var because of binary compatibility constraints
+  // NOTE: address below was introduced as a var because of binary compatibility constraints
   private var address: String = "N/A"
   def setAddress(addr: String): Unit = this.address = addr
 
