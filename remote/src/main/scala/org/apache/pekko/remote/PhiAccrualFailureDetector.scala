@@ -116,7 +116,7 @@ class PhiAccrualFailureDetector(
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis
 
-  // address below was introduced as a var because of binary compatibility constraints
+  // Note: address below was introduced as a var because of binary compatibility constraints
   private var address: String = "N/A"
   def setAddress(addr: String): Unit = this.address = addr
 
@@ -150,9 +150,10 @@ class PhiAccrualFailureDetector(
         // this is a known connection
         val interval = timestamp - latestTimestamp
         // don't use the first heartbeat after failure for the history, since a long pause will skew the stats
-        if (isAvailable(timestamp)) {
+        if (isAvailable(timestamp))
           recordInterval(interval)
-        } else oldState.history
+        else
+          oldState.history
     }
 
     // record new timestamp and possibly-amended history
