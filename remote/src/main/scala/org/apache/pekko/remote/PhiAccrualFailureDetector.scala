@@ -14,15 +14,13 @@
 package org.apache.pekko.remote
 
 import java.util.concurrent.atomic.AtomicReference
-
 import scala.annotation.tailrec
 import scala.collection.immutable
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.FiniteDuration
-
 import com.typesafe.config.Config
-
 import org.apache.pekko
+import pekko.annotation.InternalApi
 import pekko.event.EventStream
 import pekko.event.Logging
 import pekko.event.Logging.Warning
@@ -73,7 +71,7 @@ class PhiAccrualFailureDetector(
     eventStream: Option[EventStream])(
     implicit
     clock: Clock)
-    extends FailureDetector {
+    extends FailureDetector with FailureDetectorWithAddress {
 
   /**
    * Constructor without eventStream to support backwards compatibility
@@ -118,8 +116,9 @@ class PhiAccrualFailureDetector(
 
   private val acceptableHeartbeatPauseMillis = acceptableHeartbeatPause.toMillis
 
-  // address below was introduced as a var because of binary compatibility constraints
-  private[pekko] var address: String = "N/A"
+  // NOTE: address below was introduced as a var because of binary compatibility constraints
+  private var address: String = "N/A"
+  def setAddress(addr: String): Unit = this.address = addr
 
   /**
    * Implement using optimistic lockless concurrency, all state is represented
@@ -139,7 +138,6 @@ class PhiAccrualFailureDetector(
 
   @tailrec
   final override def heartbeat(): Unit = {
-
     val timestamp = clock()
     val oldState = state.get
 
@@ -152,17 +150,10 @@ class PhiAccrualFailureDetector(
         // this is a known connection
         val interval = timestamp - latestTimestamp
         // don't use the first heartbeat after failure for the history, since a long pause will skew the stats
-        if (isAvailable(timestamp)) {
-          if (interval >= (acceptableHeartbeatPauseMillis / 3 * 2) && eventStream.isDefined)
-            eventStream.get.publish(
-              Warning(
-                this.toString,
-                getClass,
-                s"heartbeat interval is growing too large for address $address: $interval millis",
-                Logging.emptyMDC,
-                RemoteLogMarker.failureDetectorGrowing(address)))
-          oldState.history :+ interval
-        } else oldState.history
+        if (isAvailable(timestamp))
+          recordInterval(interval)
+        else
+          oldState.history
     }
 
     // record new timestamp and possibly-amended history
@@ -170,6 +161,19 @@ class PhiAccrualFailureDetector(
 
     // if we won the race then update else try again
     if (!state.compareAndSet(oldState, newState)) heartbeat() // recur
+  }
+
+  @InternalApi
+  protected def recordInterval(interval: Long): HeartbeatHistory = {
+    if (interval >= (acceptableHeartbeatPauseMillis / 3 * 2) && eventStream.isDefined)
+      eventStream.get.publish(
+        Warning(
+          this.toString,
+          getClass,
+          s"heartbeat interval is growing too large for address $address: $interval millis",
+          Logging.emptyMDC,
+          RemoteLogMarker.failureDetectorGrowing(address)))
+    state.get.history :+ interval
   }
 
   /**

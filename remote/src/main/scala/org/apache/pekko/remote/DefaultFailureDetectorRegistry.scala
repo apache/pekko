@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.{ Lock, ReentrantLock }
 
 import scala.annotation.tailrec
-import scala.collection.immutable.Map
 
 /**
  * A lock-less thread-safe implementation of [[org.apache.pekko.remote.FailureDetectorRegistry]].
@@ -59,8 +58,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () => FailureDetector) 
 
               // address below was introduced as a var because of binary compatibility constraints
               newDetector match {
-                case phi: PhiAccrualFailureDetector => phi.address = resource.toString
-                case _                              =>
+                case dwa: FailureDetectorWithAddress => dwa.setAddress(resource.toString)
+                case _                               =>
               }
 
               newDetector.heartbeat()
