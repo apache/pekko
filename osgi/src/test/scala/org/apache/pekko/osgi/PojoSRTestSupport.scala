@@ -167,7 +167,6 @@ class BundleDescriptorBuilder(name: String) {
   }
 
   def extractHeaders(file: File): HashMap[String, String] = {
-    import scala.collection.JavaConverters.iterableAsScalaIterableConverter
     val headers = new HashMap[String, String]()
     val jis = new JarInputStream(new FileInputStream(file))
     try {
