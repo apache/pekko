@@ -6,7 +6,7 @@ Transform each element into zero or more elements that are individually passed d
 
 @@@ warning
 
-The `statefulMapConcat` operator has been deprecated.
+The `statefulMapConcat` operator doesn't handle upstream's completion signal since the state kept in the closure can be lost.
 
 - for stateful mapping, use @ref:[statefulMap](./statefulMap.md)
 - for stateful map concat, use @ref:[statefulMap](./statefulMap.md) with @ref:[mapConcat](./mapConcat.md).
