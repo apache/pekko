@@ -37,7 +37,7 @@ import pekko.actor.typed.internal.ActorRefImpl
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.receptionist.Receptionist
 import pekko.annotation.InternalApi
-import pekko.util.FutureConverters
+import pekko.util.FutureConverters._
 
 /**
  * INTERNAL API
@@ -108,7 +108,7 @@ import pekko.util.FutureConverters
   private val terminationPromise = Promise[Done]()
   override def terminate(): Unit = terminationPromise.trySuccess(Done)
   override def whenTerminated: Future[Done] = terminationPromise.future
-  override def getWhenTerminated: CompletionStage[Done] = FutureConverters.asJava(whenTerminated)
+  override def getWhenTerminated: CompletionStage[Done] = whenTerminated.asJava
   override val startTime: Long = System.currentTimeMillis()
   override def uptime: Long = System.currentTimeMillis() - startTime
   override def threadFactory: java.util.concurrent.ThreadFactory = new ThreadFactory {

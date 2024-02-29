@@ -4,12 +4,22 @@ This subproject contains some microbenchmarks excercising key parts of Apache Pe
 own jmh module)
 
 
-You can run them like:
+Pekko uses [sbt-jmh](https://github.com/sbt/sbt-jmh) to integrate [Java Microbenchmark Harness](https://github.com/openjdk/jmh). You can run them like:
 
-   project bench-jmh
-   jmh:run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```shell
+sbt shell
+pekko > project bench-jmh
+sbt:pekko-bench-jmh> Jmh/run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```
 
-Use 'jmh:run -h' to get an overview of the available options.
+or execute in one-line command
+
+```shell
+sbt bench-jmh/Jmh/run -i 3 -wi 3 -f 1 .*ActorCreationBenchmark
+```
+   
+
+Use 'Jmh/run -h' to get an overview of the available options.
 
 Some potentially out of date resources for writing JMH benchmarks:
 

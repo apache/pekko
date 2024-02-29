@@ -282,7 +282,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
       mbox.suspend()
   }
 
-  /*
+  /**
    * After the call to this method, the dispatcher must begin any new message processing for the specified reference
    */
   protected[pekko] def resume(actor: ActorCell): Unit = {
@@ -329,7 +329,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   /**
    * INTERNAL API
    */
-  @inline protected[pekko] final val isThroughputDeadlineTimeDefined = throughputDeadlineTime.toMillis > 0
+  protected[pekko] final val isThroughputDeadlineTimeDefined = throughputDeadlineTime.toMillis > 0
 
   /**
    * INTERNAL API

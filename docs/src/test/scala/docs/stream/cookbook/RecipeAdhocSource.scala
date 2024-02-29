@@ -14,11 +14,12 @@
 package docs.stream.cookbook
 
 import java.util.concurrent.atomic.{ AtomicBoolean, AtomicInteger }
-
-import org.apache.pekko.stream.scaladsl.Source
-import org.apache.pekko.stream.testkit.scaladsl.TestSink
-import org.apache.pekko.testkit.TimingTest
-import org.apache.pekko.{ Done, NotUsed }
+import org.apache.pekko
+import pekko.stream.scaladsl.Source
+import pekko.stream.testkit.scaladsl.TestSink
+import pekko.stream.BackpressureTimeoutException
+import pekko.testkit.TimingTest
+import pekko.{ Done, NotUsed }
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -127,7 +128,7 @@ class RecipeAdhocSource extends RecipeSpec {
       startedCount.get() should be(4) // startCount == 4, which means "re"-tried 3 times
 
       Thread.sleep(500)
-      sink.expectError().getClass should be(classOf[TimeoutException])
+      sink.expectError().getClass should be(classOf[BackpressureTimeoutException])
       sink.request(1) // send demand
       sink.expectNoMessage(200.milliseconds) // but no more restart
     }

@@ -15,11 +15,11 @@ package org.apache.pekko.stream.impl
 
 import scala.util.control.NonFatal
 
-import org.reactivestreams.{ Subscriber, Subscription }
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream.SubscriptionWithCancelException
+
+import org.reactivestreams.{ Subscriber, Subscription }
 
 /**
  * INTERNAL API

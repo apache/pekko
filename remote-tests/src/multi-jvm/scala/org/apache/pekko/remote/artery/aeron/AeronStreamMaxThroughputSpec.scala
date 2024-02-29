@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery
 package aeron
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 import scala.collection.AbstractIterator
@@ -196,7 +197,7 @@ abstract class AeronStreamMaxThroughputSpec
     runOn(first) {
       enterBarrier(receiverName + "-started")
 
-      val payload = ("0" * payloadSize).getBytes("utf-8")
+      val payload = ("0" * payloadSize).getBytes(StandardCharsets.UTF_8)
       Source
         .fromIterator(() => iterate(1, totalMessages))
         .map { _ =>

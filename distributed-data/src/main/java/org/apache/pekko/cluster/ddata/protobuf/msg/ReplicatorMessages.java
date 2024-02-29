@@ -22152,7 +22152,7 @@ public final class ReplicatorMessages {
       super(builder);
     }
     private StringGSet() {
-      elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -22464,7 +22464,7 @@ public final class ReplicatorMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -22586,7 +22586,7 @@ public final class ReplicatorMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureElementsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           elements_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(elements_);
@@ -22674,7 +22674,7 @@ public final class ReplicatorMessages {
        * @return This builder for chaining.
        */
       public Builder clearElements() {
-        elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        elements_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;

@@ -69,6 +69,8 @@ private[remote] class PekkoProtocolSettings(config: Config) {
         .getMillisDuration("pekko.remote.classic.handshake-timeout")
         .requiring(_ > Duration.Zero, "handshake-timeout must be > 0")
   }
+
+  val ManagerNamePrefix: String = config.getString("pekko.remote.classic.manager-name-prefix")
 }
 
 @nowarn("msg=deprecated")
@@ -136,7 +138,8 @@ private[remote] class PekkoProtocolTransport(
   }
 
   override val maximumOverhead: Int = PekkoProtocolTransport.PekkoOverhead
-  protected def managerName = s"akkaprotocolmanager.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
+  protected def managerName =
+    s"${settings.ManagerNamePrefix}.${wrappedTransport.schemeIdentifier}${UniqueId.getAndIncrement}"
   protected def managerProps = {
     val wt = wrappedTransport
     val s = settings
@@ -243,13 +246,13 @@ private[remote] class PekkoProtocolHandle(
 private[remote] object ProtocolStateActor {
   sealed trait AssociationState
 
-  /*
+  /**
    * State when the underlying transport is not yet initialized
    * State data can be OutboundUnassociated
    */
   case object Closed extends AssociationState
 
-  /*
+  /**
    * State when the underlying transport is initialized, there is an association present, and we are waiting
    * for the first message (has to be CONNECT if inbound).
    * State data can be OutboundUnderlyingAssociated (for outbound associations) or InboundUnassociated (for inbound
@@ -257,7 +260,7 @@ private[remote] object ProtocolStateActor {
    */
   case object WaitHandshake extends AssociationState
 
-  /*
+  /**
    * State when the underlying transport is initialized and the handshake succeeded.
    * If the upper layer did not yet provided a handler for incoming messages, state data is AssociatedWaitHandler.
    * If everything is initialized, the state data is HandlerReady

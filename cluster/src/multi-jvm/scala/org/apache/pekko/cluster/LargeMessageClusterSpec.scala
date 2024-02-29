@@ -13,7 +13,11 @@
 
 package org.apache.pekko.cluster
 
+import java.io.NotSerializableException
+import java.nio.charset.StandardCharsets
+
 import scala.concurrent.duration._
+
 import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.ActorIdentity
@@ -28,8 +32,6 @@ import pekko.remote.testkit.MultiNodeConfig
 import pekko.serialization.SerializerWithStringManifest
 import pekko.testkit._
 import pekko.util.unused
-
-import java.io.NotSerializableException
 
 object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
   val first = role("first")
@@ -140,7 +142,7 @@ abstract class LargeMessageClusterSpec
         val largeEchoProbe = TestProbe(name = "largeEchoProbe")
 
         val largeMsgSize = 2 * 1000 * 1000
-        val largeMsg = ("0" * largeMsgSize).getBytes("utf-8")
+        val largeMsg = ("0" * largeMsgSize).getBytes(StandardCharsets.UTF_8)
         val largeMsgBurst = 3
         val repeat = 15
         for (n <- 1 to repeat) {
@@ -150,7 +152,7 @@ abstract class LargeMessageClusterSpec
           }
 
           val ordinaryProbe = TestProbe()
-          echo3.tell(("0" * 1000).getBytes("utf-8"), ordinaryProbe.ref)
+          echo3.tell(("0" * 1000).getBytes(StandardCharsets.UTF_8), ordinaryProbe.ref)
           ordinaryProbe.expectMsgType[Array[Byte]]
           val ordinaryDurationMs = (System.nanoTime() - startTime) / 1000 / 1000
 
@@ -177,7 +179,7 @@ abstract class LargeMessageClusterSpec
         val largeEcho3 = identify(third, "largeEcho")
 
         val largeMsgSize = 1 * 1000 * 1000
-        val payload = ("0" * largeMsgSize).getBytes("utf-8")
+        val payload = ("0" * largeMsgSize).getBytes(StandardCharsets.UTF_8)
         val largeMsg = if (aeronUdpEnabled) payload else Slow(payload)
         (1 to 3).foreach { _ =>
           // this will ping-pong between second and third

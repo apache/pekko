@@ -156,7 +156,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
               else return n.toString();
             })
         .recover(
-            new PFBuilder<Throwable, String>()
+            PFBuilder.<Throwable, String>create()
                 .match(RuntimeException.class, Throwable::getMessage)
                 .build())
         .runForeach(System.out::println, system);
@@ -187,7 +187,7 @@ public class FlowErrorDocTest extends AbstractJavaTest {
             })
         .recoverWithRetries(
             1, // max attempts
-            new PFBuilder<Throwable, Source<String, NotUsed>>()
+            PFBuilder.<Throwable, Source<String, NotUsed>>create()
                 .match(RuntimeException.class, ex -> planB)
                 .build())
         .runForeach(System.out::println, system);

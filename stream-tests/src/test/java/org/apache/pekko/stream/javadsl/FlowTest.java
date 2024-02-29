@@ -36,6 +36,8 @@ import org.reactivestreams.Publisher;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -135,6 +137,20 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseDiMap() {
+    final Source<String, NotUsed> source = Source.from(Arrays.asList("1", "2", "3"));
+    final Flow<Integer, Integer, NotUsed> flow = Flow.<Integer>create().map(elem -> elem * 2);
+    source
+        .via(flow.dimap(Integer::valueOf, String::valueOf))
+        .runWith(TestSink.create(system), system)
+        .request(3)
+        .expectNext("2")
+        .expectNext("4")
+        .expectNext("6")
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseDropWhile() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<Integer, NotUsed> source = Source.from(Arrays.asList(0, 1, 2, 3));
@@ -200,6 +216,53 @@ public class FlowTest extends StreamTest {
     final CompletionStage<String> grouped =
         source.via(flow).runFold("", (acc, elem) -> acc + elem, system);
     Assert.assertEquals("[1, 2][3, 4][5]", grouped.toCompletableFuture().get(3, TimeUnit.SECONDS));
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithResource() {
+    final AtomicBoolean gate = new AtomicBoolean(true);
+    Source.from(Arrays.asList("1", "2", "3"))
+        .via(
+            Flow.of(String.class)
+                .mapWithResource(
+                    () -> "resource",
+                    (resource, elem) -> elem,
+                    (resource) -> {
+                      gate.set(false);
+                      return Optional.of("end");
+                    }))
+        .runWith(TestSink.create(system), system)
+        .request(4)
+        .expectNext("1", "2", "3", "end")
+        .expectComplete();
+    Assert.assertFalse(gate.get());
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithAutoCloseableResource() {
+    final TestKit probe = new TestKit(system);
+    final AtomicInteger closed = new AtomicInteger();
+    Source.from(Arrays.asList("1", "2", "3"))
+        .via(
+            Flow.of(String.class)
+                .mapWithResource(
+                    () -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem))
+        .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system);
+
+    probe.expectMsgAllOf("1", "2", "3");
+    Assert.assertEquals(closed.get(), 1);
+  }
+
+  @Test
+  public void mustBeAbleToUseFoldWhile() throws Exception {
+    final int result =
+        Source.range(1, 10)
+            .via(Flow.of(Integer.class).foldWhile(0, acc -> acc < 10, Integer::sum))
+            .toMat(Sink.head(), Keep.right())
+            .run(system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    Assert.assertEquals(10, result);
   }
 
   @Test
@@ -935,6 +998,53 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseCollect() {
+    Source.from(Arrays.asList(1, 2, 3, 4, 5))
+        .collect(
+            PFBuilder.<Integer, Integer>create()
+                .match(Integer.class, elem -> elem % 2 != 0, elem -> elem)
+                .build())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(5)
+        .expectNext(1, 3, 5)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseCollectWhile() {
+    Source.from(Arrays.asList(1, 3, 5, 6, 7, 8, 9))
+        .collectWhile(
+            PFBuilder.<Integer, Integer>create()
+                .match(Integer.class, elem -> elem % 2 != 0, elem -> elem)
+                .build())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(5)
+        .expectNextN(Arrays.asList(1, 3, 5))
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseCollectFirst() {
+    Source.from(
+            Arrays.asList(
+                Optional.of(1), Optional.<Integer>empty(), Optional.of(2), Optional.of(3)))
+        .collectFirst(
+            PFBuilder.<Optional<Integer>, Integer>create()
+                .match(
+                    Optional.class,
+                    elem -> elem.isPresent() && (Integer) elem.get() % 2 == 0,
+                    elem -> (Integer) elem.get())
+                .build())
+        .runWith(TestSink.create(system), system)
+        .ensureSubscription()
+        .request(4)
+        .expectNext(2)
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseCollectType() throws Exception {
     final TestKit probe = new TestKit(system);
     final Iterable<FlowSpec.Fruit> input =
@@ -1110,7 +1220,7 @@ public class FlowTest extends StreamTest {
                 })
             .recoverWithRetries(
                 3,
-                new PFBuilder<Throwable, Graph<SourceShape<Integer>, NotUsed>>()
+                PFBuilder.<Throwable, Graph<SourceShape<Integer>, NotUsed>>create()
                     .match(RuntimeException.class, ex -> Source.from(recover))
                     .build());
 
@@ -1163,6 +1273,79 @@ public class FlowTest extends StreamTest {
     probe.expectMsgEquals(55);
     probe.expectMsgEquals(0);
     future.toCompletableFuture().get(3, TimeUnit.SECONDS);
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorComplete() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new RuntimeException("ex");
+              } else {
+                return elem;
+              }
+            })
+        .onErrorComplete()
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorCompleteWithDedicatedException() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new IllegalArgumentException("ex");
+              } else {
+                return elem;
+              }
+            })
+        .onErrorComplete(IllegalArgumentException.class)
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToFailWhenExceptionTypeNotMatch() {
+    final IllegalArgumentException ex = new IllegalArgumentException("ex");
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw ex;
+              } else {
+                return elem;
+              }
+            })
+        .onErrorComplete(TimeoutException.class)
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectError(ex);
+  }
+
+  @Test
+  public void mustBeAbleToOnErrorCompleteWithPredicate() {
+    Source.from(Arrays.asList(1, 2))
+        .map(
+            elem -> {
+              if (elem == 2) {
+                throw new IllegalArgumentException("Boom");
+              } else {
+                return elem;
+              }
+            })
+        .onErrorComplete(ex -> ex.getMessage().contains("Boom"))
+        .runWith(TestSink.probe(system), system)
+        .request(2)
+        .expectNext(1)
+        .expectComplete();
   }
 
   @Test
@@ -1364,10 +1547,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test
@@ -1381,10 +1563,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test
@@ -1398,10 +1579,9 @@ public class FlowTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "A TimeoutException was expected",
-        TimeoutException.class,
-        executionException.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(executionException.getCause().getClass()));
   }
 
   @Test

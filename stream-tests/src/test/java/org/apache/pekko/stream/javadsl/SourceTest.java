@@ -46,6 +46,8 @@ import scala.util.Try;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -55,8 +57,7 @@ import static org.apache.pekko.stream.testkit.StreamTestKit.PublisherProbeSubscr
 import static org.apache.pekko.stream.testkit.TestPublisher.ManualProbe;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("serial")
 public class SourceTest extends StreamTest {
@@ -285,6 +286,17 @@ public class SourceTest extends StreamTest {
 
     List<Object> output = probe.receiveN(6);
     assertEquals(Arrays.asList("A", "B", "C", "D", "E", "F"), output);
+  }
+
+  @Test
+  public void mustBeAbleToConcatEmptySource() {
+    Source.from(Arrays.asList("A", "B", "C"))
+        .concat(Source.empty())
+        .runWith(TestSink.probe(system), system)
+        .ensureSubscription()
+        .request(3)
+        .expectNext("A", "B", "C")
+        .expectComplete();
   }
 
   @Test
@@ -787,6 +799,48 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseMapWithResource() {
+    final AtomicBoolean gate = new AtomicBoolean(true);
+    Source.from(Arrays.asList("1", "2", "3"))
+        .mapWithResource(
+            () -> "resource",
+            (resource, elem) -> elem,
+            (resource) -> {
+              gate.set(false);
+              return Optional.of("end");
+            })
+        .runWith(TestSink.create(system), system)
+        .request(4)
+        .expectNext("1", "2", "3", "end")
+        .expectComplete();
+    Assert.assertFalse(gate.get());
+  }
+
+  @Test
+  public void mustBeAbleToUseMapWithAutoCloseableResource() {
+    final TestKit probe = new TestKit(system);
+    final AtomicInteger closed = new AtomicInteger();
+    Source.from(Arrays.asList("1", "2", "3"))
+        .mapWithResource(() -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem)
+        .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system);
+
+    probe.expectMsgAllOf("1", "2", "3");
+    Assert.assertEquals(closed.get(), 1);
+  }
+
+  @Test
+  public void mustBeAbleToUseFoldWhile() throws Exception {
+    final int result =
+        Source.range(1, 10)
+            .foldWhile(0, acc -> acc < 10, Integer::sum)
+            .toMat(Sink.head(), Keep.right())
+            .run(system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    Assert.assertEquals(10, result);
+  }
+
+  @Test
   public void mustBeAbleToUseIntersperse() throws Exception {
     final TestKit probe = new TestKit(system);
     final Source<String, NotUsed> source =
@@ -903,7 +957,7 @@ public class SourceTest extends StreamTest {
                 })
             .recoverWithRetries(
                 1,
-                new PFBuilder<Throwable, Source<Integer, NotUsed>>()
+                PFBuilder.<Throwable, Source<Integer, NotUsed>>create()
                     .matchAny(ex -> Source.single(0))
                     .build());
 
@@ -966,6 +1020,19 @@ public class SourceTest extends StreamTest {
     // elements from source1 (i.e. first of combined source) come first, then source2 elements, due
     // to `Concat`
     probe.expectMsgAllOf(0, 1, 2, 3);
+  }
+
+  @Test
+  public void mustBeAbleToCombineN() throws Exception {
+    final Source<Integer, NotUsed> source1 = Source.single(1);
+    final Source<Integer, NotUsed> source2 = Source.single(2);
+    final Source<Integer, NotUsed> source3 = Source.single(3);
+    final List<Source<Integer, NotUsed>> sources = Arrays.asList(source1, source2, source3);
+    final CompletionStage<Integer> result =
+        Source.combine(sources, Concat::create)
+            .runWith(Sink.collect(Collectors.toList()), system)
+            .thenApply(list -> list.stream().mapToInt(l -> l).sum());
+    assertEquals(6, result.toCompletableFuture().get(3, TimeUnit.SECONDS).intValue());
   }
 
   @SuppressWarnings("unchecked")
@@ -1191,10 +1258,9 @@ public class SourceTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class,
-        exception.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
   }
 
   @Test
@@ -1209,10 +1275,9 @@ public class SourceTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class,
-        exception.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
   }
 
   @Test
@@ -1227,10 +1292,9 @@ public class SourceTest extends StreamTest {
                     .runWith(Sink.head(), system)
                     .toCompletableFuture()
                     .get(3, TimeUnit.SECONDS));
-    assertEquals(
+    assertTrue(
         "The cause of ExecutionException should be TimeoutException",
-        TimeoutException.class,
-        exception.getCause().getClass());
+        TimeoutException.class.isAssignableFrom(exception.getCause().getClass()));
   }
 
   @Test

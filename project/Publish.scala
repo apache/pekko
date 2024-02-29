@@ -19,7 +19,7 @@ import sbtdynver.DynVerPlugin.autoImport.dynverSonatypeSnapshots
 
 object Publish extends AutoPlugin {
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
   override lazy val projectSettings = Seq(
     startYear := Some(2022),
@@ -33,15 +33,15 @@ object Publish extends AutoPlugin {
   override lazy val buildSettings = Seq(
     dynverSonatypeSnapshots := true)
 
-  override def requires = ApacheSonatypePlugin && DynVerPlugin
+  override lazy val requires = ApacheSonatypePlugin && DynVerPlugin
 }
 
 /**
  * For projects that are not to be published.
  */
 object NoPublish extends AutoPlugin {
-  override def requires = plugins.JvmPlugin
+  override lazy val requires = plugins.JvmPlugin
 
-  override def projectSettings =
+  override lazy val projectSettings =
     Seq(publish / skip := true, Compile / doc / sources := Seq.empty)
 }

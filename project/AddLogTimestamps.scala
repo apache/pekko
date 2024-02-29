@@ -23,12 +23,12 @@ import sbt.internal.util.ConsoleOut
 object AddLogTimestamps extends AutoPlugin {
   val enableTimestamps: Boolean = CliOption("pekko.log.timestamps", false).get
 
-  override def requires: Plugins = plugins.JvmPlugin
-  override def trigger: PluginTrigger = allRequirements
+  override lazy val requires: Plugins = plugins.JvmPlugin
+  override lazy val trigger: PluginTrigger = allRequirements
 
   private val UTC = ZoneId.of("UTC")
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     logManager := {
       val original = logManager.value
 

@@ -17,7 +17,6 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 
 import org.scalacheck.Gen
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 import org.apache.pekko
@@ -28,6 +27,8 @@ import pekko.stream.testkit.TestPublisher.Probe
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.stream.testkit.scaladsl.TestSource
+
+import org.scalatest.concurrent.ScalaFutures
 
 object GraphZipLatestSpec {
   val someString = "someString"

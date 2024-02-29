@@ -17,15 +17,17 @@ import scala.annotation.nowarn
 import scala.concurrent.{ Await, Future }
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.Done
 import pekko.stream._
+import pekko.stream.ActorAttributes.supervisionStrategy
 import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.DefaultTimeout
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.concurrent.ScalaFutures
 
 class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
 
@@ -136,6 +138,34 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
         p.expectNextN(List(1, 2))
         p.expectComplete()
       }
+    }
+
+    "combine many sinks to one" in {
+      val source = Source(List(0, 1, 2, 3, 4, 5))
+      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      val sink = Sink
+        .combine(
+          List(
+            Sink.reduce[Int]((a, b) => a + b),
+            Sink.reduce[Int]((a, b) => a + b),
+            Sink.reduce[Int]((a, b) => a + b)))(Broadcast[Int](_))
+        .mapMaterializedValue(Future.reduceLeft(_)(_ + _))
+      val result = source.runWith(sink)
+      result.futureValue should be(45)
+    }
+
+    "combine two sinks with combineMat" in {
+      implicit val ex = org.apache.pekko.dispatch.ExecutionContexts.parasitic
+      Source(List(0, 1, 2, 3, 4, 5))
+        .toMat(Sink.combineMat(Sink.reduce[Int]((a, b) => a + b), Sink.reduce[Int]((a, b) => a + b))(Broadcast[Int](_))(
+          (f1, f2) => {
+            for {
+              r1 <- f1
+              r2 <- f2
+            } yield r1 + r2
+          }))(Keep.right)
+        .run()
+        .futureValue should be(30)
     }
 
     "combine to two sinks with simplified API" in {
@@ -308,6 +338,88 @@ class SinkSpec extends StreamSpec with DefaultTimeout with ScalaFutures {
       // #foreach
       done shouldBe Done
     }
+  }
+
+  "The forall sink" must {
+
+    "completes with `ture` when all elements match" in {
+      Source(1 to 4)
+        .runWith(Sink.forall(_ > 0))
+        .futureValue shouldBe true
+    }
+
+    "completes with `false` when any element match" in {
+      Source(1 to 4)
+        .runWith(Sink.forall(_ > 2))
+        .futureValue shouldBe false
+    }
+
+    "completes with `true` if the stream is empty" in {
+      Source.empty[Int]
+        .runWith(Sink.forall(_ > 2))
+        .futureValue shouldBe true
+    }
+
+    "completes with `Failure` if the stream failed" in {
+      Source.failed[Int](new RuntimeException("Oops"))
+        .runWith(Sink.forall(_ > 2))
+        .failed.futureValue shouldBe a[RuntimeException]
+    }
+
+    "completes with `true` with restart strategy" in {
+      val sink = Sink.forall[Int](elem => {
+        if (elem == 2) {
+          throw new RuntimeException("Oops")
+        }
+        elem > 0
+      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+
+      Source(1 to 2)
+        .runWith(sink)
+        .futureValue shouldBe true
+    }
+
+  }
+
+  "The exists sink" must {
+
+    "completes with `false` when none element match" in {
+      Source(1 to 4)
+        .runWith(Sink.exists[Int](_ > 5))
+        .futureValue shouldBe false
+    }
+
+    "completes with `true` when any element match" in {
+      Source(1 to 4)
+        .runWith(Sink.exists(_ > 2))
+        .futureValue shouldBe true
+    }
+
+    "completes with `false` if the stream is empty" in {
+      Source.empty[Int]
+        .runWith(Sink.exists(_ > 2))
+        .futureValue shouldBe false
+    }
+
+    "completes with `Failure` if the stream failed" in {
+      Source.failed[Int](new RuntimeException("Oops"))
+        .runWith(Sink.exists(_ > 2))
+        .failed.futureValue shouldBe a[RuntimeException]
+    }
+
+    "completes with `exists` with restart strategy" in {
+      val sink = Sink.exists[Int](elem => {
+        if (elem == 2) {
+          throw new RuntimeException("Oops")
+        }
+        elem > 1
+      }).withAttributes(supervisionStrategy(Supervision.restartingDecider))
+
+      Source(1 to 2)
+        .runWith(sink)
+        .futureValue shouldBe false
+    }
+
   }
 
   "Sink pre-materialization" must {

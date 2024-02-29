@@ -15,10 +15,11 @@ package org.apache.pekko.stream.impl
 
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
-import scala.annotation.nowarn
+
 import org.apache.pekko
 import pekko.actor._
 import pekko.annotation.DoNotInherit
@@ -63,6 +64,7 @@ import pekko.util.OptionVal
       case Dispatchers.DefaultDispatcherId =>
         // the caller said to use the default dispatcher, but that can been trumped by the dispatcher attribute
         props.withDispatcher(context.effectiveAttributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher)
+          .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
       case _ => props
     }
 
@@ -195,10 +197,13 @@ private[pekko] class SubFusingActorMaterializerImpl(
  * INTERNAL API
  */
 @InternalApi private[pekko] object StreamSupervisor {
-  def props(attributes: Attributes, haveShutDown: AtomicBoolean): Props =
+  def props(attributes: Attributes, haveShutDown: AtomicBoolean): Props = {
     Props(new StreamSupervisor(haveShutDown))
       .withDeploy(Deploy.local)
       .withDispatcher(attributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher)
+      .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
+  }
+
   private[stream] val baseName = "StreamSupervisor"
   private val actorName = SeqActorName(baseName)
   def nextName(): String = actorName.next()

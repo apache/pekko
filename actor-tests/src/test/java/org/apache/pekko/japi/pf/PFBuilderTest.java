@@ -25,7 +25,7 @@ public class PFBuilderTest extends JUnitSuite {
   @Test
   public void pfbuilder_matchAny_should_infer_declared_input_type_for_lambda() {
     PartialFunction<String, Integer> pf =
-        new PFBuilder<String, Integer>()
+        PFBuilder.<String, Integer>create()
             .matchEquals("hello", s -> 1)
             .matchAny(s -> Integer.valueOf(s))
             .build();

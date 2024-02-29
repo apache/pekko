@@ -13,7 +13,7 @@
 
 package org.apache.pekko.util
 
-import java.io.{ ObjectInputStream, ObjectOutputStream }
+import java.io.{ ByteArrayInputStream, InputStream, ObjectInputStream, ObjectOutputStream, SequenceInputStream }
 import java.lang.{ Iterable => JIterable }
 import java.nio.{ ByteBuffer, ByteOrder }
 import java.nio.charset.{ Charset, StandardCharsets }
@@ -21,6 +21,7 @@ import java.util.Base64
 
 import scala.annotation.{ tailrec, varargs }
 import scala.collection.IndexedSeqOptimized
+import scala.collection.JavaConverters._
 import scala.collection.generic.CanBuildFrom
 import scala.collection.immutable
 import scala.collection.immutable.{ IndexedSeq, VectorBuilder }
@@ -271,6 +272,8 @@ object ByteString {
     }
 
     override def toArrayUnsafe(): Array[Byte] = bytes
+
+    override def asInputStream: InputStream = new ByteArrayInputStream(bytes)
   }
 
   /** INTERNAL API: ByteString backed by exactly one array, with start / end markers */
@@ -436,6 +439,9 @@ object ByteString {
       if (startIndex == 0 && length == bytes.length) bytes
       else toArray
     }
+
+    override def asInputStream: InputStream =
+      new ByteArrayInputStream(bytes, startIndex, length)
   }
 
   private[pekko] object ByteStrings extends Companion {
@@ -565,6 +571,9 @@ object ByteString {
     def asByteBuffer: ByteBuffer = compact.asByteBuffer
 
     def asByteBuffers: scala.collection.immutable.Iterable[ByteBuffer] = bytestrings.map { _.asByteBuffer }
+
+    override def asInputStream: InputStream =
+      new SequenceInputStream(bytestrings.iterator.map(_.asInputStream).asJavaEnumeration)
 
     def decodeString(charset: String): String = compact.decodeString(charset)
 
@@ -827,6 +836,15 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    */
   def toArrayUnsafe(): Array[Byte] = toArray
 
+  /**
+   * Return the bytes in this ByteString as an InputStream.
+   *
+   * @return the bytes in this ByteString accessible as an InputStream
+   * @see [[asByteBuffer]]
+   * @since 1.1.0
+   */
+  def asInputStream: InputStream
+
   override def foreach[@specialized U](f: Byte => U): Unit = iterator.foreach(f)
 
   private[pekko] def writeToOutputStream(os: ObjectOutputStream): Unit
@@ -886,7 +904,6 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    * all fragments. Will always have at least one entry.
    */
   def getByteBuffers(): JIterable[ByteBuffer] = {
-    import scala.collection.JavaConverters.asJavaIterableConverter
     asByteBuffers.asJava
   }
 
@@ -913,7 +930,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    */
   def decodeString(charset: Charset): String
 
-  /*
+  /**
    * Returns a ByteString which is the binary representation of this ByteString
    * if this ByteString is Base64-encoded.
    */
@@ -1005,7 +1022,7 @@ object CompactByteString {
     if (copyLength == 0) empty
     else {
       val copyArray = new Array[Byte](copyLength)
-      Array.copy(array, copyOffset, copyArray, 0, copyLength)
+      System.arraycopy(array, copyOffset, copyArray, 0, copyLength)
       ByteString.ByteString1C(copyArray)
     }
   }
@@ -1047,7 +1064,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     this
   }
 
-  @inline protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
+  protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(fill: ByteBuffer => Unit): this.type = {
     fillArray(len) {
       case (array, start) =>
         val buffer = ByteBuffer.wrap(array, start, len)
@@ -1065,7 +1082,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
   private def clearTemp(): Unit = {
     if (_tempLength > 0) {
       val arr = new Array[Byte](_tempLength)
-      Array.copy(_temp, 0, arr, 0, _tempLength)
+      System.arraycopy(_temp, 0, arr, 0, _tempLength)
       _builder += ByteString1(arr)
       _tempLength = 0
     }
@@ -1073,12 +1090,12 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   private def resizeTemp(size: Int): Unit = {
     val newtemp = new Array[Byte](size)
-    if (_tempLength > 0) Array.copy(_temp, 0, newtemp, 0, _tempLength)
+    if (_tempLength > 0) System.arraycopy(_temp, 0, newtemp, 0, _tempLength)
     _temp = newtemp
     _tempCapacity = _temp.length
   }
 
-  @inline private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
+  private def shouldResizeTempFor(size: Int): Boolean = _tempCapacity < size || _tempCapacity == 0
 
   private def ensureTempSize(size: Int): Unit = {
     if (shouldResizeTempFor(size)) {
@@ -1257,7 +1274,7 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
    * Add a number of Bytes from an array to this builder.
    */
   def putBytes(array: Array[Byte], start: Int, len: Int): this.type =
-    fillArray(len) { case (target, targetOffset) => Array.copy(array, start, target, targetOffset, len) }
+    fillArray(len) { case (target, targetOffset) => System.arraycopy(array, start, target, targetOffset, len) }
 
   /**
    * Add a number of Shorts from an array to this builder.

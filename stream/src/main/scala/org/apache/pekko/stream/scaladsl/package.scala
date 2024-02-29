@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream
 
-import org.apache.pekko.util.FutureConverters
-
 import java.util.concurrent.CompletionStage
 
 import scala.concurrent.Future
+
+import org.apache.pekko.util.FutureConverters._
 
 /**
  * Scala API: The flow DSL allows the formulation of stream transformations based on some
@@ -67,10 +67,10 @@ import scala.concurrent.Future
 package object scaladsl {
   implicit class SourceToCompletionStage[Out, T](val src: Source[Out, Future[T]]) extends AnyVal {
     def toCompletionStage(): Source[Out, CompletionStage[T]] =
-      src.mapMaterializedValue(FutureConverters.asJava)
+      src.mapMaterializedValue(_.asJava)
   }
   implicit class SinkToCompletionStage[In, T](val sink: Sink[In, Future[T]]) extends AnyVal {
     def toCompletionStage(): Sink[In, CompletionStage[T]] =
-      sink.mapMaterializedValue(FutureConverters.asJava)
+      sink.mapMaterializedValue(_.asJava)
   }
 }

@@ -18,6 +18,7 @@ import org.apache.pekko.NotUsed;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.japi.pf.PFBuilder;
+import org.apache.pekko.stream.BackpressureTimeoutException;
 import org.apache.pekko.stream.javadsl.Keep;
 import org.apache.pekko.stream.javadsl.Source;
 import org.apache.pekko.stream.testkit.TestSubscriber;
@@ -61,7 +62,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
                 .backpressureTimeout(timeout)
                 .recoverWithRetries(
                     maxRetries,
-                    new PFBuilder<Throwable, Source<T, NotUsed>>()
+                    PFBuilder.<Throwable, Source<T, NotUsed>>create()
                         .match(
                             TimeoutException.class,
                             ex ->
@@ -232,7 +233,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         assertEquals(4, startedCount.get()); // startCount == 4, which means "re"-tried 3 times
 
         Thread.sleep(500);
-        assertEquals(TimeoutException.class, probe.expectError().getClass());
+        assertEquals(BackpressureTimeoutException.class, probe.expectError().getClass());
         probe.request(1); // send demand
         probe.expectNoMessage(FiniteDuration.create(200, "milliseconds")); // but no more restart
       }

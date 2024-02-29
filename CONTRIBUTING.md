@@ -171,6 +171,18 @@ sbt
 applyCodeStyle
 ```
 
+To format Scala code more faster, you could format code with [Scala-CLI](https://scala-cli.virtuslab.org/) or [Coursier CLI](https://scalameta.org/scalafmt/docs/installation.html#cli):
+
+**With Scala-Cli**
+```shell
+scala-cli fmt
+```
+**With Coursier CLI**
+```Shell
+cs install scalafmt // skip it if scalafmt is already installed. If you are a macOS or Linux user, you can simply download the native binaries from the Coursier CLI installation page.
+scalafmt
+```
+
 #### Do not use `-optimize` Scala compiler flag
 
 Pekko has not been compiled or tested with `-optimize` Scala compiler flag. (In sbt, you can specify compiler options in the `scalacOptions` key.)
@@ -333,6 +345,18 @@ sbt -Dpekko.genjavadoc.enabled=true Javaunidoc/doc
 ```
 
 Which will generate JavaDoc style docs in `./target/javaunidoc/index.html`. This requires a JDK version 11 or later.
+
+#### Changing the project information page index
+
+In case you want to change the index of `Project Information` page, you need to change it on the
+`project/ProjectIndexGenerator.scala` so it can be included in the automatic docs generation.
+
+#### License Report Generation
+
+By default, license report generation is disabled to improve compilation speed. You can enable it by configuring `-Dpekko.genlicensereport.enabled=true`. e.g.:
+
+- `sbt -Dpekko.genlicensereport.enabled=true "docs/paradox"`
+- `sbt -Dpekko.genlicensereport.enabled=true shell` And then `docs/paradox`
 
 ### External dependencies
 

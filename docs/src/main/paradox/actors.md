@@ -838,7 +838,14 @@ that the JVM can have problems optimizing and the resulting code might not be as
 untyped version. When extending `UntypedAbstractActor` each message is received as an untyped
 `Object` and you have to inspect and cast it to the actual message type in other ways, like this:
 
-@@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/ActorDocTest.java) { #optimized }
+In addition, Java 21 introduces [powerful pattern matching for switch](https://openjdk.org/jeps/441) supporting any
+reference type. We can use `switch` instead of `if ... else ...` for conditional branches:
+
+Java
+: @@snip [ActorDocTest.java](/docs/src/test/java/jdocs/actor/ActorDocTest.java) { #optimized }
+
+Java 21
+: @@snip [OptimizedActorWithJava21.java](/docs/src/main/java-jdk-21/docs/actors/classical/OptimizedActorWithJava21.java) { #pattern-matching }
 
 @@@
 

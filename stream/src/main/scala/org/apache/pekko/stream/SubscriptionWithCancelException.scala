@@ -15,9 +15,9 @@ package org.apache.pekko.stream
 
 import scala.util.control.NoStackTrace
 
-import org.reactivestreams.Subscription
-
 import org.apache.pekko.annotation.DoNotInherit
+
+import org.reactivestreams.Subscription
 
 /**
  * Extension of Subscription that allows to pass a cause when a subscription is cancelled.

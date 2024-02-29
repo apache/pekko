@@ -11,14 +11,16 @@
  * Copyright (C) 2019-2022 Lightbend Inc. <https://www.lightbend.com>
  */
 
+import CopyrightHeader.cStyleComment
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.{ headerMappings, headerSources, HeaderFileType }
 import sbt.Keys.baseDirectory
 import sbt.{ inConfig, Compile, Def, PluginTrigger, Test, _ }
 
-object CopyrightHeaderForBuild extends CopyrightHeader {
-  override def trigger: PluginTrigger = noTrigger
+object CopyrightHeaderForBuild extends AutoPlugin {
+  override lazy val requires: Plugins = CopyrightHeader
+  override lazy val trigger: PluginTrigger = noTrigger
 
-  override def projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(

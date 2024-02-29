@@ -21,7 +21,7 @@ import scala.concurrent.{ ExecutionContextExecutor, Future }
 object Fold {
   implicit val system: ActorSystem = ???
   implicit val ec: ExecutionContextExecutor = system.dispatcher
-  def foldExample: Future[Unit] = {
+  def foldExample(): Future[Unit] = {
     // #fold
     val source = Source(1 to 100)
     val result: Future[Int] = source.runWith(Sink.fold(0)((acc, element) => acc + element))

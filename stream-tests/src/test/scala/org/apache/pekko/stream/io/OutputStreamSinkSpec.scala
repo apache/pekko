@@ -18,8 +18,6 @@ import java.io.OutputStream
 import scala.annotation.nowarn
 import scala.util.Success
 
-import org.scalatest.concurrent.ScalaFutures
-
 import org.apache.pekko
 import pekko.Done
 import pekko.stream.{ ActorMaterializer, ActorMaterializerSettings, IOOperationIncompleteException }
@@ -28,6 +26,8 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.Utils._
 import pekko.testkit.TestProbe
 import pekko.util.ByteString
+
+import org.scalatest.concurrent.ScalaFutures
 
 @nowarn
 class OutputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures {

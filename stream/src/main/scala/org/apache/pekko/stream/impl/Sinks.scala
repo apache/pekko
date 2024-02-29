@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.impl
 
 import java.util.function.BinaryOperator
+
 import scala.collection.immutable
 import scala.collection.mutable
 import scala.concurrent.Future
@@ -22,8 +23,7 @@ import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
 import scala.util.control.NonFatal
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit
@@ -41,6 +41,9 @@ import pekko.stream.impl.StreamLayout.AtomicModule
 import pekko.stream.scaladsl.{ Keep, Sink, SinkQueueWithCancel, Source }
 import pekko.stream.stage._
 import pekko.util.ccompat._
+
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
 
 /**
  * INTERNAL API
@@ -85,7 +88,7 @@ import pekko.util.ccompat._
 @InternalApi private[pekko] class PublisherSink[In](val attributes: Attributes, shape: SinkShape[In])
     extends SinkModule[In, Publisher[In]](shape) {
 
-  /*
+  /**
    * This method is the reason why SinkModule.create may return something that is
    * not a Subscriber: a VirtualPublisher is used in order to avoid the immediate
    * subscription a VirtualProcessor would perform (and it also saves overhead).

@@ -64,7 +64,7 @@ jobs:
 
       - name: Build Documentation
         run: |-
-          sbt -Dpekko.genjavadoc.enabled=true docs/paradox unidoc
+          sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true docs/paradox unidoc
 
       # Create directory structure upfront since rsync does not create intermediate directories otherwise
       - name: Create nightly directory structure

@@ -1098,7 +1098,7 @@ public final class ClusterMetricsMessages {
     }
     private MetricsGossip() {
       allAddresses_ = java.util.Collections.emptyList();
-      allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       nodeMetrics_ = java.util.Collections.emptyList();
     }
 
@@ -1556,7 +1556,7 @@ public final class ClusterMetricsMessages {
         } else {
           allAddressesBuilder_.clear();
         }
-        allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         if (nodeMetricsBuilder_ == null) {
           nodeMetrics_ = java.util.Collections.emptyList();
@@ -2004,7 +2004,7 @@ public final class ClusterMetricsMessages {
         return allAddressesBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureAllMetricNamesIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           allMetricNames_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(allMetricNames_);
@@ -2092,7 +2092,7 @@ public final class ClusterMetricsMessages {
        * @return This builder for chaining.
        */
       public Builder clearAllMetricNames() {
-        allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        allMetricNames_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;

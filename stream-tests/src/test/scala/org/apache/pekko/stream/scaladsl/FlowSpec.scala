@@ -14,13 +14,14 @@
 package org.apache.pekko.stream.scaladsl
 
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.atomic.AtomicLong
+
+import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
-import scala.annotation.nowarn
-import com.typesafe.config.ConfigFactory
-import org.reactivestreams.{ Publisher, Subscriber }
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
@@ -30,7 +31,9 @@ import pekko.stream.testkit._
 import pekko.stream.testkit.scaladsl.{ TestSink, TestSource }
 import pekko.testkit.TestDuration
 
-import java.util.concurrent.atomic.AtomicLong
+import org.reactivestreams.{ Publisher, Subscriber }
+
+import com.typesafe.config.ConfigFactory
 
 object FlowSpec {
   class Fruit extends Serializable
@@ -212,6 +215,14 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
       val sub = Source(List("1", "2", "3")).via(flow).runWith(TestSink())
       sub.request(3)
       sub.expectNextN(List(1, 2, 3))
+      sub.expectComplete()
+    }
+
+    "perform dimap operation" in {
+      val flow = Flow[Int].dimap(Integer.parseInt)(_ * 2)
+      val sub = Source(List("1", "2", "3")).via(flow).runWith(TestSink())
+      sub.request(3)
+      sub.expectNextN(List(2, 4, 6))
       sub.expectComplete()
     }
 

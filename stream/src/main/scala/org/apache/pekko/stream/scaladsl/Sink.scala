@@ -13,32 +13,25 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
-import scala.util.Failure
-import scala.util.Success
-import scala.util.Try
-
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success, Try }
 
 import org.apache.pekko
-import pekko.Done
-import pekko.NotUsed
-import pekko.actor.ActorRef
-import pekko.actor.Status
+import pekko.{ util, Done, NotUsed }
+import pekko.actor.{ ActorRef, Status }
 import pekko.annotation.InternalApi
 import pekko.dispatch.ExecutionContexts
 import pekko.stream._
 import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.GraphStages
-import pekko.stream.javadsl
 import pekko.stream.stage._
 import pekko.util.ccompat._
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /**
  * A `Sink` is a set of stream processing steps that has one open input.
@@ -47,7 +40,6 @@ import pekko.util.ccompat._
 final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilder, override val shape: SinkShape[In])
     extends Graph[SinkShape[In], Mat] {
 
-  // TODO: Debug string
   override def toString: String = s"Sink($shape)"
 
   /**
@@ -57,6 +49,7 @@ final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilde
    * '''Backpressures when''' original [[Sink]] backpressures
    *
    * '''Cancels when''' original [[Sink]] cancels
+   * @since 1.1.0
    */
   def contramap[In2](f: In2 => In): Sink[In2, Mat] = Flow.fromFunction(f).toMat(this)(Keep.right)
 
@@ -339,10 +332,12 @@ object Sink {
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
    */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      strategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
+      @nowarn
+      @deprecatedName(Symbol("strategy"))
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
     Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
-      val d = b.add(strategy(rest.size + 2))
+      val d = b.add(fanOutStrategy(rest.size + 2))
       d.out(0) ~> first
       d.out(1) ~> second
 
@@ -354,6 +349,41 @@ object Sink {
 
       combineRest(2, rest.iterator)
     })
+
+  /**
+   * Combine two sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink` with 2 outlets.
+   * @since 1.1.0
+   */
+  def combineMat[T, U, M1, M2, M](first: Sink[U, M1], second: Sink[U, M2])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed])(matF: (M1, M2) => M): Sink[T, M] = {
+    Sink.fromGraph(GraphDSL.createGraph(first, second)(matF) { implicit b => (shape1, shape2) =>
+      import GraphDSL.Implicits._
+      val d = b.add(fanOutStrategy(2))
+      d.out(0) ~> shape1
+      d.out(1) ~> shape2
+      new SinkShape[T](d.in)
+    })
+  }
+
+  /**
+   * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
+   * The fanoutGraph's outlets size must match the provides sinks'.
+   * @since 1.1.0
+   */
+  def combine[T, U, M](sinks: immutable.Seq[Graph[SinkShape[U], M]])(
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, immutable.Seq[M]] =
+    sinks match {
+      case immutable.Seq()     => Sink.cancelled.mapMaterializedValue(_ => Nil)
+      case immutable.Seq(sink) => sink.asInstanceOf[Sink[T, M]].mapMaterializedValue(_ :: Nil)
+      case _ =>
+        Sink.fromGraph(GraphDSL.create(sinks) { implicit b => shapes =>
+          import GraphDSL.Implicits._
+          val c = b.add(fanOutStrategy(sinks.size))
+          for ((shape, idx) <- shapes.zipWithIndex)
+            c.out(idx) ~> shape
+          SinkShape(c.in)
+        })
+    }
 
   /**
    * A `Sink` that will invoke the given function to each of the elements
@@ -387,6 +417,18 @@ object Sink {
     Flow[T].fold(zero)(f).toMat(Sink.head)(Keep.right).named("foldSink")
 
   /**
+   * A `Sink` that will invoke the given function for every received element, giving it its previous
+   * output (or the given `zero` value) and the element as input.
+   * The returned [[scala.concurrent.Future]] will be completed with value of the final
+   * function evaluation when the input stream ends, predicate `p` returns false, or completed with `Failure`
+   * if there is a failure signaled in the stream.
+   *
+   * @see [[#fold]]
+   */
+  def foldWhile[U, T](zero: U)(p: U => Boolean)(f: (U, T) => U): Sink[T, Future[U]] =
+    Flow[T].foldWhile(zero)(p)(f).toMat(Sink.head)(Keep.right).named("foldWhileSink")
+
+  /**
    * A `Sink` that will invoke the given asynchronous function for every received element, giving it its previous
    * output (or the given `zero` value) and the element as input.
    * The returned [[scala.concurrent.Future]] will be completed with value of the final
@@ -397,6 +439,54 @@ object Sink {
    */
   def foldAsync[U, T](zero: U)(f: (U, T) => Future[U]): Sink[T, Future[U]] =
     Flow[T].foldAsync(zero)(f).toMat(Sink.head)(Keep.right).named("foldAsyncSink")
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[scala.concurrent.Future]] of `true` if the predicate is true for all elements;
+   *  2. completes and returns [[scala.concurrent.Future]] of `true` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[scala.concurrent.Future]] of `false` if the predicate is false for any element.
+   *
+   * The materialized value [[scala.concurrent.Future]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `false`
+   *
+   * @since 1.1.0
+   */
+  def forall[T](p: T => Boolean): Sink[T, Future[Boolean]] =
+    Flow[T].foldWhile(true)(util.ConstantFun.scalaIdentityFunction)(_ && p(_))
+      .toMat(Sink.head)(Keep.right)
+      .named("forallSink")
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[scala.concurrent.Future]] of `true` if the predicate is true for any element;
+   *  2. completes and returns [[scala.concurrent.Future]] of `false` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[scala.concurrent.Future]] of `false` if the predicate is false for all elements.
+   *
+   * The materialized value [[scala.concurrent.Future]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `true`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `true`
+   *
+   * @since 1.1.0
+   */
+  def exists[T](p: T => Boolean): Sink[T, Future[Boolean]] =
+    Flow[T].foldWhile(false)(!_)(_ || p(_))
+      .toMat(Sink.head)(Keep.right)
+      .named("existsSink")
 
   /**
    * A `Sink` that will invoke the given function for every received element, giving it its previous

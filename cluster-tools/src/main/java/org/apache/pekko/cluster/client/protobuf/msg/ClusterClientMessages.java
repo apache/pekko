@@ -69,7 +69,7 @@ public final class ClusterClientMessages {
       super(builder);
     }
     private Contacts() {
-      contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -381,7 +381,7 @@ public final class ClusterClientMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -503,7 +503,7 @@ public final class ClusterClientMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureContactPointsIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           contactPoints_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(contactPoints_);
@@ -591,7 +591,7 @@ public final class ClusterClientMessages {
        * @return This builder for chaining.
        */
       public Builder clearContactPoints() {
-        contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        contactPoints_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;

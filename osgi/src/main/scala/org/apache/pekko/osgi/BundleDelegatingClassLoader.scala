@@ -31,7 +31,7 @@ import org.apache.pekko.util.ccompat.JavaConverters._
  */
 object BundleDelegatingClassLoader {
 
-  /*
+  /**
    * Create a bundle delegating ClassLoader for the bundle context's bundle
    */
   def apply(context: BundleContext): BundleDelegatingClassLoader =

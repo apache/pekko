@@ -13,9 +13,8 @@
 
 package org.apache.pekko.stream.javadsl
 
-import scala.concurrent.duration.FiniteDuration
-
 import scala.annotation.nowarn
+import scala.concurrent.duration.FiniteDuration
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -97,7 +96,7 @@ object BidiFlow {
 
   /**
    * If the time between two processed elements *in any direction* exceed the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.BackpressureTimeoutException]].
    *
    * There is a difference between this operator and having two idleTimeout Flows assembled into a BidiStage.
    * If the timeout is configured to be 1 seconds, then this operator will not fail even though there are elements flowing
@@ -110,7 +109,7 @@ object BidiFlow {
 
   /**
    * If the time between two processed elements *in any direction* exceed the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.BackpressureTimeoutException]].
    *
    * There is a difference between this operator and having two idleTimeout Flows assembled into a BidiStage.
    * If the timeout is configured to be 1 seconds, then this operator will not fail even though there are elements flowing

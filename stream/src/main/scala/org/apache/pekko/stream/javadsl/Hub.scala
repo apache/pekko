@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.javadsl
 
 import java.util.function.{ BiFunction, Supplier, ToLongBiFunction }
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.DoNotInherit

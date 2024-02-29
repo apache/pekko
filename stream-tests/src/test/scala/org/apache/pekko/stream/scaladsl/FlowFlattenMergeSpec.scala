@@ -16,8 +16,6 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent._
 import scala.concurrent.duration._
 
-import org.scalatest.exceptions.TestFailedException
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
@@ -33,6 +31,8 @@ import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
 import pekko.util.OptionVal
 
+import org.scalatest.exceptions.TestFailedException
+
 class FlowFlattenMergeSpec extends StreamSpec {
   import system.dispatcher
 
@@ -47,6 +47,13 @@ class FlowFlattenMergeSpec extends StreamSpec {
     "work in the nominal case" in {
       Source(List(src10(0), src10(10), src10(20), src10(30)))
         .flatMapMerge(4, identity)
+        .runWith(toSet)
+        .futureValue should ===((0 until 40).toSet)
+    }
+
+    "work in the nominal case with flattenMerge" in {
+      Source(List(src10(0), src10(10), src10(20), src10(30)))
+        .flattenMerge(4)
         .runWith(toSet)
         .futureValue should ===((0 until 40).toSet)
     }
@@ -246,7 +253,7 @@ class FlowFlattenMergeSpec extends StreamSpec {
           Source.single(11)))
 
       val probe =
-        sources.flatMapConcat(identity).runWith(TestSink.probe)
+        sources.flatten.runWith(TestSink.probe)
 
       probe.request(3)
       probe.expectNext(0)

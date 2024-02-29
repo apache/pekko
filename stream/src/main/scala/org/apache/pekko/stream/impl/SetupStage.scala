@@ -16,10 +16,11 @@ package org.apache.pekko.stream.impl
 import scala.concurrent.Future
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes.SourceLocation
 import pekko.stream._
+import pekko.stream.Attributes.SourceLocation
 import pekko.stream.scaladsl.Flow
 import pekko.stream.scaladsl.Keep
 import pekko.stream.scaladsl.Sink

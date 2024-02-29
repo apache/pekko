@@ -166,6 +166,16 @@ object PekkoBuild {
         case _                       => Nil
       }
     },
+    // Adds a `src/test/scala-2.13+` source directory for code shared
+    // between Scala 2.13 and Scala 3
+    Test / unmanagedSourceDirectories ++= {
+      val sourceDir = (Test / sourceDirectory).value
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((3, n))            => Seq(sourceDir / "scala-2.13+")
+        case Some((2, n)) if n >= 13 => Seq(sourceDir / "scala-2.13+")
+        case _                       => Nil
+      }
+    },
     ThisBuild / ivyLoggingLevel := UpdateLogging.Quiet,
     licenses := Seq(("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))),
     homepage := Some(url("https://pekko.apache.org/")),
@@ -298,8 +308,9 @@ object PekkoBuild {
         UsefulTask("sortImports", "Sort the imports"),
         UsefulTask("mimaReportBinaryIssues ", "Check binary issues"),
         UsefulTask("validatePullRequest ", "Validate pull request"),
-        UsefulTask("docs/paradox", "Build documentation"),
-        UsefulTask("docs/paradoxBrowse", "Browse the generated documentation"),
+        UsefulTask("docs/paradox", "Build documentation (license report will be generate on CI or Publish)"),
+        UsefulTask("docs/paradoxBrowse",
+          "Browse the generated documentation (license report will be generate on CI or Publish)"),
         UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
         UsefulTask("Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")).map(
         _.noAlias))

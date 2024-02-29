@@ -60,7 +60,10 @@ These built-in sinks are available from @scala[`org.apache.pekko.stream.scaladsl
 |Sink|<a name="collection"></a>@ref[collection](Sink/collection.md)|@scala[Collect all values emitted from the stream into a collection.]@java[Operator only available in the Scala API. The closest operator in the Java API is @ref[`Sink.seq`](Sink/seq.md)].|
 |Sink|<a name="combine"></a>@ref[combine](Sink/combine.md)|Combine several sinks into one using a user specified strategy|
 |Sink|<a name="completionstagesink"></a>@ref[completionStageSink](Sink/completionStageSink.md)|Streams the elements to the given future sink once it successfully completes. |
-|Sink|<a name="fold"></a>@ref[fold](Sink/fold.md)|Fold over emitted element with a function, where each invocation will get the new element and the result from the previous fold invocation.|
+|Sink|<a name="exists"></a>@ref[exists](Sink/exists.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
+|Sink|<a name="fold"></a>@ref[fold](Sink/fold.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
+|Sink|<a name="foldwhile"></a>@ref[foldWhile](Sink/foldWhile.md)|Fold over emitted elements with a function, where each invocation will get the new element and the result from the previous fold invocation.|
+|Sink|<a name="forall"></a>@ref[forall](Sink/forall.md)|A `Sink` that will test the given predicate `p` for every received element and completes with the result.|
 |Sink|<a name="foreach"></a>@ref[foreach](Sink/foreach.md)|Invoke a given procedure for each element received.|
 |Sink|<a name="foreachasync"></a>@ref[foreachAsync](Sink/foreachAsync.md)|Invoke a given procedure asynchronously for each element received.|
 |Sink|<a name="foreachparallel"></a>@ref[foreachParallel](Sink/foreachParallel.md)|Like `foreach` but allows up to `parallellism` procedure calls to happen in parallel.|
@@ -144,10 +147,13 @@ depending on being backpressured by downstream or not.
 |--|--|--|
 |Flow|<a name="asflowwithcontext"></a>@ref[asFlowWithContext](Flow/asFlowWithContext.md)|Extracts context data from the elements of a `Flow` so that it can be turned into a `FlowWithContext` which can propagate that context per element along a stream.|
 |Source/Flow|<a name="collect"></a>@ref[collect](Source-or-Flow/collect.md)|Apply a partial function to each incoming element, if the partial function is defined for a value the returned value is passed downstream.|
+|Source/Flow|<a name="collectfirst"></a>@ref[collectFirst](Source-or-Flow/collectFirst.md)|Transform this stream by applying the given partial function to the first element on which the function is defined as it pass through this processing step, and cancel the upstream publisher after the first element is emitted.|
 |Source/Flow|<a name="collecttype"></a>@ref[collectType](Source-or-Flow/collectType.md)|Transform this stream by testing the type of each of the elements on which the element is an instance of the provided type as they pass through this processing step.|
+|Source/Flow|<a name="collectwhile"></a>@ref[collectWhile](Source-or-Flow/collectWhile.md)|Transform this stream by applying the given partial function to each of the elements on which the function is defined as they pass through this processing step, and cancel the upstream publisher after the partial function is not applied.|
 |Flow|<a name="completionstageflow"></a>@ref[completionStageFlow](Flow/completionStageFlow.md)|Streams the elements through the given future flow once it successfully completes.|
 |Flow|<a name="contramap"></a>@ref[contramap](Flow/contramap.md)|Transform this Flow by applying a function to each *incoming* upstream element before it is passed to the Flow.|
 |Source/Flow|<a name="detach"></a>@ref[detach](Source-or-Flow/detach.md)|Detach upstream demand from downstream demand without detaching the stream rates.|
+|Flow|<a name="dimap"></a>@ref[dimap](Flow/dimap.md)|Transform this Flow by applying a function `f` to each *incoming* upstream element before it is passed to the Flow, and a function `g` to each *outgoing* downstream element.|
 |Source/Flow|<a name="drop"></a>@ref[drop](Source-or-Flow/drop.md)|Drop `n` elements and then pass any subsequent element downstream.|
 |Source/Flow|<a name="dropwhile"></a>@ref[dropWhile](Source-or-Flow/dropWhile.md)|Drop elements as long as a predicate function return true for the element|
 |Source/Flow|<a name="filter"></a>@ref[filter](Source-or-Flow/filter.md)|Filter the incoming elements using a predicate.|
@@ -155,6 +161,7 @@ depending on being backpressured by downstream or not.
 |Flow|<a name="flattenoptional"></a>@ref[flattenOptional](Flow/flattenOptional.md)|Collect the value of `Optional` from all the elements passing through this flow , empty `Optional` is filtered out.|
 |Source/Flow|<a name="fold"></a>@ref[fold](Source-or-Flow/fold.md)|Start with current value `zero` and then apply the current and next value to the given function. When upstream completes, the current value is emitted downstream.|
 |Source/Flow|<a name="foldasync"></a>@ref[foldAsync](Source-or-Flow/foldAsync.md)|Just like `fold` but receives a function that results in a @scala[`Future`] @java[`CompletionStage`] to the next value.|
+|Source/Flow|<a name="foldwhile"></a>@ref[foldWhile](Source-or-Flow/foldWhile.md)|Start with current value `zero` and then apply the current and next value to the given function. When upstream completes or the predicate `p` returns `false`, the current value is emitted downstream.|
 |Source/Flow|<a name="frommaterializer"></a>@ref[fromMaterializer](Source-or-Flow/fromMaterializer.md)|Defer the creation of a `Source/Flow` until materialization and access `Materializer` and `Attributes`|
 |Flow|<a name="futureflow"></a>@ref[futureFlow](Flow/futureFlow.md)|Streams the elements through the given future flow once it successfully completes.|
 |Source/Flow|<a name="grouped"></a>@ref[grouped](Source-or-Flow/grouped.md)|Accumulate incoming events until the specified number of elements have been accumulated and then pass the collection of elements downstream.|
@@ -170,6 +177,7 @@ depending on being backpressured by downstream or not.
 |Source/Flow|<a name="logwithmarker"></a>@ref[logWithMarker](Source-or-Flow/logWithMarker.md)|Log elements flowing through the stream as well as completion and erroring.|
 |Source/Flow|<a name="map"></a>@ref[map](Source-or-Flow/map.md)|Transform each element in the stream by calling a mapping function with it and passing the returned value downstream.|
 |Source/Flow|<a name="mapconcat"></a>@ref[mapConcat](Source-or-Flow/mapConcat.md)|Transform each element into zero or more elements that are individually passed downstream.|
+|Source/Flow|<a name="mapwithresource"></a>@ref[mapWithResource](Source-or-Flow/mapWithResource.md)|Map elements with the help of a resource that can be opened, transform each element (in a blocking way) and closed.|
 |Source/Flow|<a name="prematerialize"></a>@ref[preMaterialize](Source-or-Flow/preMaterialize.md)|Materializes this Graph, immediately returning (1) its materialized value, and (2) a new pre-materialized Graph.|
 |Source/Flow|<a name="reduce"></a>@ref[reduce](Source-or-Flow/reduce.md)|Start with first element and then apply the current and next value to the given function, when upstream complete the current value is emitted downstream.|
 |Source/Flow|<a name="scan"></a>@ref[scan](Source-or-Flow/scan.md)|Emit its current value, which starts at `zero`, and then apply the current and next value to the given function, emitting the next current value.|
@@ -245,6 +253,7 @@ See the @ref:[Substreams](../stream-substream.md) page for more detail and code 
 |Source/Flow|<a name="flatmapconcat"></a>@ref[flatMapConcat](Source-or-Flow/flatMapConcat.md)|Transform each input element into a `Source` whose elements are then flattened into the output stream through concatenation.|
 |Source/Flow|<a name="flatmapmerge"></a>@ref[flatMapMerge](Source-or-Flow/flatMapMerge.md)|Transform each input element into a `Source` whose elements are then flattened into the output stream through merging.|
 |Source/Flow|<a name="flatmapprefix"></a>@ref[flatMapPrefix](Source-or-Flow/flatMapPrefix.md)|Use the first `n` elements from the stream to determine how to process the rest.|
+|Flow|<a name="flattenmerge"></a>@ref[flattenMerge](Flow/flattenMerge.md)|Flattens a stream of Source into a single output stream by merging.|
 |Source/Flow|<a name="groupby"></a>@ref[groupBy](Source-or-Flow/groupBy.md)|Demultiplex the incoming stream into separate output streams.|
 |Source/Flow|<a name="prefixandtail"></a>@ref[prefixAndTail](Source-or-Flow/prefixAndTail.md)|Take up to *n* elements from the stream (less than *n* only if the upstream completes before emitting *n* elements) and returns a pair containing a strict sequence of the taken element and a stream representing the remaining elements.|
 |Source/Flow|<a name="splitafter"></a>@ref[splitAfter](Source-or-Flow/splitAfter.md)|End the current substream whenever a predicate returns `true`, starting a new substream for the next element.|
@@ -363,6 +372,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 | |Operator|Description|
 |--|--|--|
 |Source/Flow|<a name="maperror"></a>@ref[mapError](Source-or-Flow/mapError.md)|While similar to `recover` this operators can be used to transform an error signal to a different one *without* logging it as an error in the process.|
+|Source/Flow|<a name="onerrorcomplete"></a>@ref[onErrorComplete](Source-or-Flow/onErrorComplete.md)|Allows completing the stream when an upstream error occurs.|
 |RestartSource|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)|Wrap the given @apidoc[Source] with a @apidoc[Source] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Source] will not restart on completion of the wrapped flow.|
 |RestartFlow|<a name="onfailureswithbackoff"></a>@ref[onFailuresWithBackoff](RestartFlow/onFailuresWithBackoff.md)|Wrap the given @apidoc[Flow] with a @apidoc[Flow] that will restart it when it fails using an exponential backoff. Notice that this @apidoc[Flow] will not restart on completion of the wrapped flow.|
 |Source/Flow|<a name="recover"></a>@ref[recover](Source-or-Flow/recover.md)|Allow sending of one last element downstream when a failure has happened upstream.|
@@ -408,8 +418,10 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [cancelled](Sink/cancelled.md)
 * [collect](Source-or-Flow/collect.md)
 * [collect](Sink/collect.md)
+* [collectFirst](Source-or-Flow/collectFirst.md)
 * [collection](Sink/collection.md)
 * [collectType](Source-or-Flow/collectType.md)
+* [collectWhile](Source-or-Flow/collectWhile.md)
 * [combine](Source/combine.md)
 * [combine](Sink/combine.md)
 * [completionStage](Source/completionStage.md)
@@ -428,11 +440,13 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [delay](Source-or-Flow/delay.md)
 * [delayWith](Source-or-Flow/delayWith.md)
 * [detach](Source-or-Flow/detach.md)
+* [dimap](Flow/dimap.md)
 * [divertTo](Source-or-Flow/divertTo.md)
 * [drop](Source-or-Flow/drop.md)
 * [dropWhile](Source-or-Flow/dropWhile.md)
 * [dropWithin](Source-or-Flow/dropWithin.md)
 * [empty](Source/empty.md)
+* [exists](Sink/exists.md)
 * [expand](Source-or-Flow/expand.md)
 * [extrapolate](Source-or-Flow/extrapolate.md)
 * [failed](Source/failed.md)
@@ -441,10 +455,14 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [flatMapConcat](Source-or-Flow/flatMapConcat.md)
 * [flatMapMerge](Source-or-Flow/flatMapMerge.md)
 * [flatMapPrefix](Source-or-Flow/flatMapPrefix.md)
+* [flattenMerge](Flow/flattenMerge.md)
 * [flattenOptional](Flow/flattenOptional.md)
 * [fold](Source-or-Flow/fold.md)
 * [fold](Sink/fold.md)
 * [foldAsync](Source-or-Flow/foldAsync.md)
+* [foldWhile](Source-or-Flow/foldWhile.md)
+* [foldWhile](Sink/foldWhile.md)
+* [forall](Sink/forall.md)
 * [foreach](Sink/foreach.md)
 * [foreachAsync](Sink/foreachAsync.md)
 * [foreachParallel](Sink/foreachParallel.md)
@@ -519,6 +537,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [mapAsyncUnordered](Source-or-Flow/mapAsyncUnordered.md)
 * [mapConcat](Source-or-Flow/mapConcat.md)
 * [mapError](Source-or-Flow/mapError.md)
+* [mapWithResource](Source-or-Flow/mapWithResource.md)
 * [maybe](Source/maybe.md)
 * [merge](Source-or-Flow/merge.md)
 * [mergeAll](Source-or-Flow/mergeAll.md)
@@ -532,6 +551,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [never](Source/never.md)
 * [never](Sink/never.md)
 * [onComplete](Sink/onComplete.md)
+* [onErrorComplete](Source-or-Flow/onErrorComplete.md)
 * [onFailuresWithBackoff](RestartSource/onFailuresWithBackoff.md)
 * [onFailuresWithBackoff](RestartFlow/onFailuresWithBackoff.md)
 * [orElse](Source-or-Flow/orElse.md)

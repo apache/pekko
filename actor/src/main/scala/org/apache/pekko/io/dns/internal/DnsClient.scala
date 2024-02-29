@@ -168,11 +168,13 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
               msg.id,
               msg.questions.mkString(","),
               orig.questions.mkString(","))
-          case Some((_, orig)) =>
-            log.warning("DNS response id {} question [{}] question asked [{}]",
-              msg.id,
-              msg.questions.mkString(","),
-              orig.questions.mkString(","))
+          case Some((_, _)) =>
+            if (log.isDebugEnabled) {
+              log.debug("DNS response id {} has response code {}: question [{}]",
+                msg.id,
+                msg.flags.responseCode,
+                msg.questions.mkString(","))
+            }
             val (recs, additionalRecs) =
               if (msg.flags.responseCode == ResponseCode.SUCCESS) (msg.answerRecs, msg.additionalRecs) else (Nil, Nil)
             self ! Answer(msg.id, recs, additionalRecs)

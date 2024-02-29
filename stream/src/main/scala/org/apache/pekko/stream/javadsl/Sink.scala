@@ -14,34 +14,29 @@
 package org.apache.pekko.stream.javadsl
 
 import java.util.Optional
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletionStage
+import java.util.concurrent.{ CompletableFuture, CompletionStage }
 import java.util.function.BiFunction
 import java.util.stream.Collector
 
+import scala.annotation.nowarn
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-
 import org.apache.pekko
 import pekko._
-import pekko.actor.ActorRef
-import pekko.actor.ClassicActorSystemProvider
-import pekko.actor.Status
+import pekko.actor.{ ActorRef, ClassicActorSystemProvider, Status }
 import pekko.dispatch.ExecutionContexts
-import pekko.japi.function
+import pekko.japi.{ function, Util }
 import pekko.japi.function.Creator
 import pekko.stream._
 import pekko.stream.impl.LinearTraversalBuilder
-import pekko.stream.javadsl
-import pekko.stream.scaladsl
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.util.FutureConverters._
 import pekko.util.OptionConverters._
+
+import org.reactivestreams.{ Publisher, Subscriber }
 
 /** Java API */
 object Sink {
@@ -57,6 +52,17 @@ object Sink {
     new Sink(scaladsl.Sink.fold[U, In](zero)(f.apply).toCompletionStage())
 
   /**
+   * A `Sink` that will invoke the given function for every received element, giving it its previous
+   * output (or the given `zero` value) and the element as input.
+   * The returned [[java.util.concurrent.CompletionStage]] will be completed with value of the final
+   * function evaluation when the input stream ends, predicate `p` returns false, or completed with `Failure`
+   * if there is a failure is signaled in the stream.
+   */
+  def foldWhile[U, In](
+      zero: U, p: function.Predicate[U], f: function.Function2[U, In, U]): javadsl.Sink[In, CompletionStage[U]] =
+    new Sink(scaladsl.Sink.foldWhile[U, In](zero)(p.test)(f.apply).toCompletionStage())
+
+  /**
    * A `Sink` that will invoke the given asynchronous function for every received element, giving it its previous
    * output (or the given `zero` value) and the element as input.
    * The returned [[java.util.concurrent.CompletionStage]] will be completed with value of the final
@@ -67,6 +73,56 @@ object Sink {
       zero: U,
       f: function.Function2[U, In, CompletionStage[U]]): javadsl.Sink[In, CompletionStage[U]] =
     new Sink(scaladsl.Sink.foldAsync[U, In](zero)(f(_, _).asScala).toCompletionStage())
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[java.util.concurrent.CompletionStage]]  of `true` if the predicate is true for all elements;
+   *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[java.util.concurrent.CompletionStage]]  of `false` if the predicate is false for any element.
+   *
+   * The materialized value [[java.util.concurrent.CompletionStage]]  will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `false`
+   *
+   * @since 1.1.0
+   */
+  def forall[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+    import pekko.util.FutureConverters._
+    new Sink(scaladsl.Sink.forall[In](p.test)
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+  }
+
+  /**
+   * A `Sink` that will test the given predicate `p` for every received element and
+   *  1. completes and returns [[java.util.concurrent.CompletionStage]] of `true` if the predicate is true for any element;
+   *  2. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the stream is empty (i.e. completes before signalling any elements);
+   *  3. completes and returns [[java.util.concurrent.CompletionStage]] of `false` if the predicate is false for all elements.
+   *
+   * The materialized value [[java.util.concurrent.CompletionStage]] will be completed with the value `true` or `false`
+   * when the input stream ends, or completed with `Failure` if there is a failure signaled in the stream.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Completes when''' upstream completes or the predicate `p` returns `true`
+   *
+   * '''Backpressures when''' the invocation of predicate `p` has not yet completed
+   *
+   * '''Cancels when''' predicate `p` returns `true`
+   *
+   * @since 1.1.0
+   */
+  def exists[In](p: function.Predicate[In]): javadsl.Sink[In, CompletionStage[java.lang.Boolean]] = {
+    import pekko.util.FutureConverters._
+    new Sink(scaladsl.Sink.exists[In](p.test)
+      .mapMaterializedValue(_.map(Boolean.box)(ExecutionContexts.parasitic).asJava))
+  }
 
   /**
    * Creates a sink which materializes into a ``CompletionStage`` which will be completed with a result of the Java ``Collector``
@@ -372,10 +428,44 @@ object Sink {
       output1: Sink[U, _],
       output2: Sink[U, _],
       rest: java.util.List[Sink[U, _]],
-      strategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]]): Sink[T, NotUsed] = {
+      @nowarn
+      @deprecatedName(Symbol("strategy"))
+      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
+      : Sink[T, NotUsed] = {
     import pekko.util.ccompat.JavaConverters._
     val seq = if (rest != null) rest.asScala.map(_.asScala).toSeq else immutable.Seq()
-    new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => strategy.apply(num)))
+    new Sink(scaladsl.Sink.combine(output1.asScala, output2.asScala, seq: _*)(num => fanOutStrategy.apply(num)))
+  }
+
+  /**
+   * Combine two sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink` with 2 outlets.
+   * @since 1.1.0
+   */
+  def combineMat[T, U, M1, M2, M](
+      first: Sink[U, M1],
+      second: Sink[U, M2],
+      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]],
+      matF: function.Function2[M1, M2, M]): Sink[T, M] = {
+    new Sink(
+      scaladsl.Sink.combineMat(first.asScala, second.asScala)(size => fanOutStrategy(size))(combinerToScala(matF)))
+  }
+
+  /**
+   * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
+   * The fanoutGraph's outlets size must match the provides sinks'.
+   * @since 1.1.0
+   */
+  def combine[T, U, M](
+      sinks: java.util.List[_ <: Graph[SinkShape[U], M]],
+      fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]])
+      : Sink[T, java.util.List[M]] = {
+    val seq = if (sinks != null) Util.immutableSeq(sinks).collect {
+      case sink: Sink[U @unchecked, M @unchecked] => sink.asScala
+      case other                                  => other
+    }
+    else immutable.Seq()
+    import org.apache.pekko.util.ccompat.JavaConverters._
+    new Sink(scaladsl.Sink.combine(seq)(size => fanOutStrategy(size)).mapMaterializedValue(_.asJava))
   }
 
   /**
@@ -533,6 +623,7 @@ final class Sink[In, Mat](delegate: scaladsl.Sink[In, Mat]) extends Graph[SinkSh
    * '''Backpressures when''' original [[Sink]] backpressures
    *
    * '''Cancels when''' original [[Sink]] backpressures
+   * @since 1.1.0
    */
   def contramap[In2](f: function.Function[In2, In]): Sink[In2, Mat] =
     javadsl.Flow.fromFunction(f).toMat(this, Keep.right[NotUsed, Mat])

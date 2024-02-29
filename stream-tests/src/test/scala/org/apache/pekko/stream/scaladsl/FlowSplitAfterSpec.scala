@@ -16,18 +16,18 @@ package org.apache.pekko.stream.scaladsl
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream._
 import pekko.stream.StreamSubscriptionTimeoutTerminationMode
-import pekko.stream.Supervision.resumingDecider
+import pekko.stream.Supervision.{ resumingDecider, Decider }
 import pekko.stream.impl.SubscriptionTimeoutException
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.TestPublisher
 import pekko.stream.testkit.TestSubscriber
 import pekko.stream.testkit.Utils._
+
+import org.reactivestreams.Publisher
 
 object FlowSplitAfterSpec {
 
@@ -58,13 +58,16 @@ class FlowSplitAfterSpec extends StreamSpec("""
     def cancel(): Unit = subscription.cancel()
   }
 
-  class SubstreamsSupport(
-      splitAfter: Int = 3,
+  class SubstreamsSupport(splitAfter: Int = 3,
       elementCount: Int = 6,
-      substreamCancelStrategy: SubstreamCancelStrategy = SubstreamCancelStrategy.drain) {
+      decider: Decider = Supervision.resumingDecider) {
 
     val source = Source(1 to elementCount)
-    val groupStream = source.splitAfter(substreamCancelStrategy)(_ == splitAfter).lift.runWith(Sink.asPublisher(false))
+    val groupStream = source
+      .splitAfter(_ == splitAfter)
+      .lift
+      .withAttributes(ActorAttributes.supervisionStrategy(decider))
+      .runWith(Sink.asPublisher(false))
     val masterSubscriber = TestSubscriber.manualProbe[Source[Int, _]]()
 
     groupStream.subscribe(masterSubscriber)
@@ -272,7 +275,7 @@ class FlowSplitAfterSpec extends StreamSpec("""
     }
 
     "support eager cancellation of master stream on cancelling substreams" in {
-      new SubstreamsSupport(splitAfter = 5, elementCount = 8, SubstreamCancelStrategy.propagate) {
+      new SubstreamsSupport(splitAfter = 5, elementCount = 8, Supervision.stoppingDecider) {
         val s1 = StreamPuppet(expectSubFlow().runWith(Sink.asPublisher(false)))
         s1.cancel()
         masterSubscriber.expectComplete()
@@ -300,7 +303,7 @@ class FlowSplitAfterSpec extends StreamSpec("""
       val streamWithTightTimeout =
         testSource.lift
           .delay(1.second)
-          .flatMapConcat(identity)
+          .flatten
           .toMat(Sink.ignore)(Keep.right)
           .withAttributes(ActorAttributes
             .streamSubscriptionTimeout(500.milliseconds, StreamSubscriptionTimeoutTerminationMode.cancel))

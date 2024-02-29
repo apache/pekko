@@ -266,6 +266,29 @@ class AskSpec extends PekkoSpec("""
       val (promiseActorRefForSelection, "ask") = p.expectMsgType[(ActorRef, String)]: @unchecked
       promiseActorRefForSelection.path.name should startWith("_user_myName")
     }
+
+    "proper path when promise actor terminated" in {
+      implicit val timeout: Timeout = Timeout(300 millis)
+      val p = TestProbe()
+
+      val act = system.actorOf(Props(new Actor {
+          def receive = {
+            case _ =>
+              val senderRef: ActorRef = sender()
+              senderRef ! "complete"
+              p.ref ! senderRef
+          }
+        }), "pathPrefix")
+
+      val f = (act ? "ask").mapTo[String]
+      val promiseActorRef = p.expectMsgType[ActorRef]: @unchecked
+
+      // verify ask complete
+      val completed = f.futureValue
+      completed should ===("complete")
+      // verify path was proper
+      promiseActorRef.path.toString should include("pathPrefix")
+    }
   }
 
 }

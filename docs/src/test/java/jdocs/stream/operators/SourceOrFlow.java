@@ -66,6 +66,7 @@ import org.apache.pekko.stream.Attributes;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class SourceOrFlow {
@@ -395,10 +396,34 @@ class SourceOrFlow {
     Flow<Message, Pong, NotUsed> flow =
         Flow.of(Message.class)
             .collect(
-                new PFBuilder<Message, Pong>()
+                PFBuilder.<Message, Pong>create()
                     .match(Ping.class, p -> p.id != 0, p -> new Pong(p.id))
                     .build());
     // #collect
+  }
+
+  void collectWhileExample() {
+    // #collectWhile
+    Flow<Message, Pong, NotUsed> flow =
+        Flow.of(Message.class)
+            .collectWhile(
+                PFBuilder.<Message, Pong>create()
+                    .match(Ping.class, p -> p.id <= 100, p -> new Pong(p.id))
+                    .build());
+    // #collectWhile
+  }
+
+  void collectFirstExample() {
+    // #collectFirst
+    Source.from(Arrays.asList(1, 3, 5, 7, 8, 9, 10))
+        .collectFirst(
+            PFBuilder.<Integer, Integer>create()
+                .match(Integer.class, i -> i % 2 == 0, i -> i)
+                .build())
+        .runWith(Sink.foreach(System.out::println), system);
+    // expect prints output:
+    // 8
+    // #collectFirst
   }
 
   void collectTypeExample() {

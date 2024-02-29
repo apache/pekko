@@ -17,12 +17,12 @@ import sbt.plugins.JvmPlugin
 
 object PekkoDisciplinePlugin extends AutoPlugin {
 
-  override def trigger: PluginTrigger = allRequirements
-  override def requires: Plugins = JvmPlugin
+  override lazy val trigger: PluginTrigger = allRequirements
+  override lazy val requires: Plugins = JvmPlugin
   override lazy val projectSettings = disciplineSettings
 
   // allow toggling for pocs/exploration of ideas without discipline
-  val enabled = !sys.props.contains("pekko.no.discipline")
+  lazy val enabled = !sys.props.contains("pekko.no.discipline")
 
   // We allow warnings in docs to get the 'snippets' right
   val nonFatalJavaWarningsFor = Set(
@@ -74,16 +74,19 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     "pekko-stream-tests-tck",
     "pekko-testkit")
 
-  val defaultScalaOptions = "-Wconf:cat=unused-nowarn:s,any:e"
+  lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, 12)) => "-Wconf:cat=unused-nowarn:s,any:e"
+    case _             => "-Wconf:cat=unused-nowarn:s,cat=lint-named-booleans:s,cat=other-shadowing:s,any:e"
+  })
 
   lazy val nowarnSettings = Seq(
     Compile / scalacOptions ++= (
       if (scalaVersion.value.startsWith("3.")) Nil
-      else Seq(defaultScalaOptions)
+      else Seq(defaultScalaOptions.value)
     ),
     Test / scalacOptions ++= (
       if (scalaVersion.value.startsWith("3.")) Nil
-      else Seq(defaultScalaOptions)
+      else Seq(defaultScalaOptions.value)
     ),
     Compile / doc / scalacOptions := Seq())
 
@@ -95,15 +98,15 @@ object PekkoDisciplinePlugin extends AutoPlugin {
   /**
    * We are a little less strict in docs
    */
-  val docs =
+  lazy val docs =
     Seq(
-      Compile / scalacOptions -= defaultScalaOptions,
+      Compile / scalacOptions -= defaultScalaOptions.value,
       Compile / scalacOptions ++= (
         if (scalaVersion.value.startsWith("3.")) Nil
         else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")
       ),
       Test / scalacOptions --= Seq("-Xlint", "-unchecked", "-deprecation"),
-      Test / scalacOptions -= defaultScalaOptions,
+      Test / scalacOptions -= defaultScalaOptions.value,
       Test / scalacOptions ++= (
         if (scalaVersion.value.startsWith("3.")) Nil
         else Seq("-Wconf:cat=unused:s,cat=deprecation:s,cat=unchecked:s,any:e")

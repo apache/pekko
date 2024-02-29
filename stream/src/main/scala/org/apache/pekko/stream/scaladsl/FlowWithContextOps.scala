@@ -17,6 +17,7 @@ import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.ApiMayChange
@@ -24,8 +25,8 @@ import pekko.dispatch.ExecutionContexts
 import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.stream._
 import pekko.stream.impl.Throttle
-import pekko.util.{ ccompat, ConstantFun }
-import ccompat._
+import pekko.util.ConstantFun
+import pekko.util.ccompat._
 
 /**
  * Shared stream operations for [[FlowWithContext]] and [[SourceWithContext]] that automatically propagate a context

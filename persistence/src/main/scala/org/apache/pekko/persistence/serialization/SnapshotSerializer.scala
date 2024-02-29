@@ -112,7 +112,15 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
     val (serializerId, manifest) = headerFromBinary(headerBytes)
 
-    serialization.deserialize(snapshotBytes, serializerId, manifest).get
+    // suggested in https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850
+    serialization
+      .deserialize(snapshotBytes, serializerId, manifest)
+      .recoverWith {
+        case _: NotSerializableException if manifest.startsWith("akka") =>
+          serialization
+            .deserialize(snapshotBytes, serializerId, manifest.replaceFirst("akka", "org.apache.pekko"))
+      }
+      .get
   }
 
   private def writeInt(out: OutputStream, i: Int): Unit = {

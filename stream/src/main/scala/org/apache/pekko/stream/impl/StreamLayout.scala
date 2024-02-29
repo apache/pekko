@@ -18,16 +18,16 @@ import java.util.concurrent.atomic.AtomicReference
 import scala.annotation.tailrec
 import scala.util.control.NonFatal
 
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
-import org.reactivestreams.Subscription
-
 import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.util.OptionVal
+
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 /**
  * INTERNAL API

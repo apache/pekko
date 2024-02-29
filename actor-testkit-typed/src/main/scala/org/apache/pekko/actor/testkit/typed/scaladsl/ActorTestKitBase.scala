@@ -29,7 +29,7 @@ import pekko.actor.typed.Props
 import pekko.util.Timeout
 
 object ActorTestKitBase {
-  def testNameFromCallStack(): String = TestKitUtils.testNameFromCallStack(classOf[ActorTestKitBase])
+  @noinline def testNameFromCallStack(): String = TestKitUtils.testNameFromCallStack(classOf[ActorTestKitBase])
 }
 
 /**

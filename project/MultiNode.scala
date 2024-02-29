@@ -12,8 +12,8 @@
  */
 
 import TestExtras.Filter.Keys._
-import MultiJvmPlugin.MultiJvmKeys.multiJvmCreateLogger
-import MultiJvmPlugin.MultiJvmKeys._
+import MultiJvmPlugin.autoImport.multiJvmCreateLogger
+import MultiJvmPlugin.autoImport._
 
 import sbt.{ Def, _ }
 import sbt.Keys._
@@ -25,33 +25,33 @@ import sbtassembly.AssemblyKeys._
 object MultiNode extends AutoPlugin {
 
   object autoImport {
-    val validateCompile = taskKey[Unit]("Validates compile for any project it is enabled")
+    lazy val validateCompile = taskKey[Unit]("Validates compile for any project it is enabled")
   }
   import autoImport._
 
   // MultiJvm tests can be excluded from normal test target an validatePullRequest
   // with -Dpekko.test.multi-in-test=false
-  val multiNodeTestInTest: Boolean = sys.props.getOrElse("pekko.test.multi-in-test", "true").toBoolean
+  lazy val multiNodeTestInTest: Boolean = sys.props.getOrElse("pekko.test.multi-in-test", "true").toBoolean
 
   object CliOptions {
-    val multiNode = CliOption("pekko.test.multi-node", false)
-    val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
+    lazy val multiNode = CliOption("pekko.test.multi-node", false)
+    lazy val sbtLogNoFormat = CliOption("sbt.log.noformat", false)
 
-    val hostsFileName = sys.props.get("pekko.test.multi-node.hostsFileName").toSeq
-    val javaName = sys.props.get("pekko.test.multi-node.java").toSeq
-    val targetDirName = sys.props.get("pekko.test.multi-node.targetDirName").toSeq
+    lazy val hostsFileName = sys.props.get("pekko.test.multi-node.hostsFileName").toSeq
+    lazy val javaName = sys.props.get("pekko.test.multi-node.java").toSeq
+    lazy val targetDirName = sys.props.get("pekko.test.multi-node.targetDirName").toSeq
   }
 
-  val multiExecuteTests =
+  lazy val multiExecuteTests =
     CliOptions.multiNode.ifTrue(MultiJvm / multiNodeExecuteTests).getOrElse(MultiJvm / executeTests)
-  val multiTest = CliOptions.multiNode.ifTrue(MultiJvm / multiNodeTest).getOrElse(MultiJvm / test)
+  lazy val multiTest = CliOptions.multiNode.ifTrue(MultiJvm / multiNodeTest).getOrElse(MultiJvm / test)
 
-  override def trigger = noTrigger
-  override def requires = plugins.JvmPlugin
+  override lazy val trigger = noTrigger
+  override lazy val requires = plugins.JvmPlugin && MultiJvmPlugin
 
   override lazy val projectSettings: Seq[Def.Setting[_]] = multiJvmSettings
 
-  private val defaultMultiJvmOptions: Seq[String] = {
+  private lazy val defaultMultiJvmOptions: Seq[String] = {
     import scala.collection.JavaConverters._
     // multinode.D= and multinode.X= makes it possible to pass arbitrary
     // -D or -X arguments to the forked jvm, e.g.
@@ -69,9 +69,9 @@ object MultiNode extends AutoPlugin {
     "-Xmx256m" :: pekkoProperties ::: CliOptions.sbtLogNoFormat.ifTrue("-Dpekko.test.nocolor=true").toList
   } ++ JdkOptions.versionSpecificJavaOptions
 
-  private val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)
+  private lazy val anyConfigsInThisProject = ScopeFilter(configurations = inAnyConfiguration)
 
-  private val multiJvmSettings =
+  private lazy val multiJvmSettings =
     MultiJvmPlugin.multiJvmSettings ++
     inConfig(MultiJvm)(scalafmtConfigSettings) ++
     Seq(
@@ -137,7 +137,7 @@ object MultiNode extends AutoPlugin {
  */
 object MultiNodeScalaTest extends AutoPlugin {
 
-  override def requires = MultiNode
+  override lazy val requires = MultiNode
 
   override lazy val projectSettings =
     Seq(

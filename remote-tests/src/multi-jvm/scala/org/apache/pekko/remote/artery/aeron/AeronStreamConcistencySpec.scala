@@ -15,6 +15,7 @@ package org.apache.pekko.remote.artery
 package aeron
 
 import java.io.File
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 import scala.concurrent.Await
@@ -127,7 +128,7 @@ abstract class AeronStreamConsistencySpec
         val done = TestLatch(1)
         val killSwitch = KillSwitches.shared("test")
         val started = TestProbe()
-        val startMsg = "0".getBytes("utf-8")
+        val startMsg = "0".getBytes(StandardCharsets.UTF_8)
         Source
           .fromGraph(new AeronSource(channel(first), streamId, aeron, taskRunner, pool, NoOpRemotingFlightRecorder, 0))
           .via(killSwitch.flow)
@@ -137,7 +138,7 @@ abstract class AeronStreamConsistencySpec
               started.ref ! Done
             else {
               val c = count.incrementAndGet()
-              val x = new String(bytes.toArray, "utf-8").toInt
+              val x = new String(bytes.toArray, StandardCharsets.UTF_8).toInt
               if (x != c) {
                 throw new IllegalArgumentException(s"# wrong message $x expected $c")
               }
@@ -174,7 +175,7 @@ abstract class AeronStreamConsistencySpec
           .throttle(10000, 1.second, 1000, ThrottleMode.Shaping)
           .map { n =>
             val envelope = pool.acquire()
-            envelope.byteBuffer.put(n.toString.getBytes("utf-8"))
+            envelope.byteBuffer.put(n.toString.getBytes(StandardCharsets.UTF_8))
             envelope.byteBuffer.flip()
             envelope
           }

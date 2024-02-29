@@ -26,7 +26,7 @@ jobs:
           java-version: 11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -84,7 +84,7 @@ jobs:
           java-version: 11
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
@@ -112,7 +112,7 @@ jobs:
         # No need to specify the full Scala version. Only the Scala
         # binary version is required and Pekko build will set the right
         # full version from it.
-        scalaVersion: ["2.12", "2.13"]
+        scalaVersion: ["2.12", "2.13", "3.3"]
         javaVersion: [8, 11, 17, 21]
     steps:
       - name: Checkout
@@ -128,10 +128,13 @@ jobs:
           java-version: ${{ matrix.javaVersion }}
 
       - name: Cache Coursier cache
-        uses: coursier/cache-action@v6.4.0
+        uses: coursier/cache-action@v6
 
       - name: Enable jvm-opts
         run: cp .jvmopts-ci .jvmopts
+
+      - name: Check if the dependency task in the built correctly
+        run: sbt dependWalkerCheck
 
       - name: Compile and Test
         # note that this is not running any multi-jvm tests because multi-in-test=false
@@ -179,3 +182,17 @@ jobs:
           sbt \
             -Dpekko.build.scalaVersion=${{ matrix.scalaVersion }} \
             "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
+
+      - name: Install scala-cli
+        if: ${{ matrix.javaVersion == 11 }}
+        run: |-
+          curl -sS "https://virtuslab.github.io/scala-cli-packages/KEY.gpg" | sudo gpg --dearmor  -o /etc/apt/trusted.gpg.d/scala-cli.gpg 2>/dev/null
+          sudo curl -s --compressed -o /etc/apt/sources.list.d/scala_cli_packages.list "https://virtuslab.github.io/scala-cli-packages/debian/scala_cli_packages.list"
+          sudo apt update
+          sudo apt install scala-cli
+
+      - name: Use Scala-CLI to verify jdk 9 classes
+        if: ${{ matrix.javaVersion == 11 }}
+        run: |-
+          chmod +x .github/workflows/verify-jdk9-classes.sh
+          .github/workflows/verify-jdk9-classes.sh

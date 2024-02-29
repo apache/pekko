@@ -25,8 +25,6 @@ import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
-import org.reactivestreams.Processor
-
 import org.apache.pekko
 import pekko.Done
 import pekko.NotUsed
@@ -46,6 +44,8 @@ import pekko.util.JavaDurationConverters._
 import pekko.util.OptionConverters._
 import pekko.util.Timeout
 import pekko.util.unused
+
+import org.reactivestreams.Processor
 
 object Flow {
 
@@ -539,9 +539,26 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * '''Backpressures when''' original [[Flow]] backpressures
    *
    * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
    */
   def contramap[In2](f: function.Function[In2, In]): javadsl.Flow[In2, Out, Mat] =
     new Flow(delegate.contramap(elem => f(elem)))
+
+  /**
+   * Transform this Flow by applying a function `f` to each *incoming* upstream element before
+   * it is passed to the [[Flow]], and a function `g` to each *outgoing* downstream element.
+   *
+   * '''Emits when''' the mapping function `g` returns an element
+   *
+   * '''Backpressures when''' original [[Flow]] backpressures
+   *
+   * '''Completes when''' original [[Flow]] completes
+   *
+   * '''Cancels when''' original [[Flow]] cancels
+   * @since 1.1.0
+   */
+  def dimap[In2, Out2](f: function.Function[In2, In], g: function.Function[Out, Out2]): javadsl.Flow[In2, Out2, Mat] =
+    new Flow(delegate.dimap(f(_))(g(_)))
 
   /**
    * Join this [[Flow]] to another [[Flow]], by cross connecting the inputs and outputs, creating a [[RunnableGraph]].
@@ -771,6 +788,86 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
         (s: S) => onComplete.apply(s).toScala))
 
   /**
+   * Transform each stream element with the help of a resource.
+   *
+   * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
+   * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
+   * downstream. The returned `T` MUST NOT be `null` as it is illegal as stream element - according to the Reactive Streams specification.
+   *
+   * The `close` function is called only once when the upstream or downstream finishes or fails. You can do some clean-up here,
+   * and if the returned value is not empty, it will be emitted to the downstream if available, otherwise the value will be dropped.
+   *
+   * Early completion can be done with combination of the [[takeWhile]] operator.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
+   * set it for a given Source by using [[ActorAttributes]].
+   *
+   * '''Emits when''' the mapping function returns an element and downstream is ready to consume it
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @tparam R the type of the resource
+   * @tparam T the type of the output elements
+   * @param create function that creates the resource
+   * @param f function that transforms the upstream element and the resource to output element
+   * @param close function that closes the resource, optionally outputting a last element
+   * @since 1.1.0
+   */
+  def mapWithResource[R, T](
+      create: function.Creator[R],
+      f: function.Function2[R, Out, T],
+      close: function.Function[R, Optional[T]]): javadsl.Flow[In, T, Mat] =
+    new Flow(
+      delegate.mapWithResource(() => create.create())(
+        (resource, out) => f(resource, out),
+        resource => close.apply(resource).toScala))
+
+  /**
+   * Transform each stream element with the help of an [[AutoCloseable]] resource and close it when the stream finishes or fails.
+   *
+   * The resource creation function is invoked once when the stream is materialized and the returned resource is passed to
+   * the mapping function for mapping the first element. The mapping function returns a mapped element to emit
+   * downstream. The returned `T` MUST NOT be `null` as it is illegal as stream element - according to the Reactive Streams specification.
+   *
+   * The [[AutoCloseable]] resource is closed only once when the upstream or downstream finishes or fails.
+   *
+   * Early completion can be done with combination of the [[takeWhile]] operator.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * You can configure the default dispatcher for this Source by changing the `pekko.stream.materializer.blocking-io-dispatcher` or
+   * set it for a given Source by using [[ActorAttributes]].
+   *
+   * '''Emits when''' the mapping function returns an element and downstream is ready to consume it
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @tparam R the type of the resource
+   * @tparam T the type of the output elements
+   * @param create function that creates the resource
+   * @param f function that transforms the upstream element and the resource to output element
+   * @since 1.1.0
+   */
+  def mapWithResource[R <: AutoCloseable, T](
+      create: function.Creator[R],
+      f: function.Function2[R, Out, T]): javadsl.Flow[In, T, Mat] =
+    mapWithResource(create, f,
+      (resource: AutoCloseable) => {
+        resource.close()
+        Optional.empty()
+      })
+
+  /**
    * Transform each input element into an `Iterable` of output elements that is
    * then flattened into the output stream. The transformation is meant to be stateful,
    * which is enabled by creating the transformation function anew for every materialization —
@@ -799,7 +896,6 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  @deprecated("Use `statefulMap` with `mapConcat` instead.", "1.0.2")
   def statefulMapConcat[T](
       f: function.Creator[function.Function[Out, java.lang.Iterable[T]]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.statefulMapConcat { () =>
@@ -821,7 +917,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * If the function `f` throws an exception or if the `CompletionStage` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision#resume]] or
-   * [[pekko.stream.Supervision#restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision#restart]] or the `CompletionStage` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive.
    *
@@ -919,7 +1016,8 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * If the function `f` throws an exception or if the `CompletionStage` is completed
    * with failure and the supervision decision is [[pekko.stream.Supervision#resume]] or
-   * [[pekko.stream.Supervision#restart]] the element is dropped and the stream continues.
+   * [[pekko.stream.Supervision#restart]] or the `CompletionStage` completed with `null`,
+   * the element is dropped and the stream continues.
    *
    * The function `f` is always invoked on the elements in the order they arrive (even though the result of the futures
    * returned by `f` might be emitted in a different order).
@@ -1064,6 +1162,48 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def collect[T](pf: PartialFunction[Out, T]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.collect(pf))
+
+  /**
+   * Transform this stream by applying the given partial function to the first element
+   * on which the function is defined as it pass through this processing step, and cancel the upstream publisher
+   * after the first element is emitted.
+   *
+   * Non-matching elements are filtered out.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the provided partial function is defined for the first element
+   *
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes or the first element is emitted
+   *
+   * '''Cancels when''' downstream cancels
+   */
+  def collectFirst[T](pf: PartialFunction[Out, T]): javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.collectFirst(pf))
+
+  /**
+   * Transform this stream by applying the given partial function to each of the elements
+   * on which the function is defined as they pass through this processing step, and cancel the
+   * upstream publisher after the partial function is not applied.
+   *
+   * The stream will be completed without producing any elements if the partial function is not applied for
+   * the first stream element, eg: there is a downstream buffer.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * '''Emits when''' the provided partial function is defined for the element
+   *
+   * '''Backpressures when''' the partial function is defined for the element and downstream backpressures
+   *
+   * '''Completes when''' upstream completes or the partial function is not applied.
+   *
+   * '''Cancels when''' downstream cancels
+   * @since 1.1.0
+   */
+  def collectWhile[T](pf: PartialFunction[Out, T]): javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.collectWhile(pf))
 
   /**
    * Transform this stream by testing the type of each of the elements
@@ -1276,6 +1416,32 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    */
   def fold[T](zero: T)(f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.fold(zero)(f.apply))
+
+  /**
+   * Similar to `scan` but only emits its result when the upstream completes or the predicate `p` returns `false`.
+   * after which it also completes. Applies the given function towards its current and next value,
+   * yielding the next current value.
+   *
+   * If the function `f` throws an exception and the supervision decision is
+   * [[pekko.stream.Supervision.Restart]] current value starts at `zero` again
+   * the stream will continue.
+   *
+   * Adheres to the [[ActorAttributes.SupervisionStrategy]] attribute.
+   *
+   * Note that the `zero` value must be immutable.
+   *
+   * '''Emits when''' upstream completes or the predicate `p` returns `false`
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * See also [[FlowOps.fold]]
+   */
+  def foldWhile[T](zero: T, p: function.Predicate[T], f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
+    new Flow(delegate.foldWhile(zero)(p.test)(f.apply))
 
   /**
    * Similar to `fold` but with an asynchronous function.
@@ -1906,6 +2072,61 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
       })
 
   /**
+   * onErrorComplete allows to complete the stream when an upstream error occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or failed with exception is an instance of the provided type
+   *
+   * '''Cancels when''' downstream cancels
+   *  @since 1.1.0
+   */
+  def onErrorComplete(): javadsl.Flow[In, Out, Mat] = onErrorComplete(classOf[Throwable])
+
+  /**
+   * onErrorComplete allows to complete the stream when an upstream error occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or failed with exception is an instance of the provided type
+   *
+   * '''Cancels when''' downstream cancels
+   *  @since 1.1.0
+   */
+  def onErrorComplete(clazz: Class[_ <: Throwable]): javadsl.Flow[In, Out, Mat] =
+    onErrorComplete(ex => clazz.isInstance(ex))
+
+  /**
+   * onErrorComplete allows to complete the stream when an upstream error occurs.
+   *
+   * Since the underlying failure signal onError arrives out-of-band, it might jump over existing elements.
+   * This operator can recover the failure signal, but not the skipped elements, which will be dropped.
+   *
+   * '''Emits when''' element is available from the upstream
+   *
+   * '''Backpressures when''' downstream backpressures
+   *
+   * '''Completes when''' upstream completes or failed with predicate return ture
+   *
+   * '''Cancels when''' downstream cancels
+   *  @since 1.1.0
+   */
+  def onErrorComplete(predicate: java.util.function.Predicate[_ >: Throwable]): javadsl.Flow[In, Out, Mat] =
+    new Flow(delegate.onErrorComplete {
+      case ex: Throwable if predicate.test(ex) => true
+    })
+
+  /**
    * Terminate processing (and cancel the upstream publisher) after the given
    * number of elements. Due to input buffering some elements may have been
    * requested from upstream publishers that will then not be processed downstream
@@ -2412,6 +2633,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @see [[#splitWhen]]
    */
+  @deprecated(
+    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+    since = "1.1.0")
   def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitWhen(substreamCancelStrategy)(p.test))
 
@@ -2470,6 +2694,9 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * @see [[#splitAfter]]
    */
+  @deprecated(
+    "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+    since = "1.1.0")
   def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitAfter(substreamCancelStrategy)(p.test))
 
@@ -3443,7 +3670,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.InitialTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -3459,7 +3686,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the first element has not passed through this operator before the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.InitialTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -3475,7 +3702,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.CompletionTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -3491,7 +3718,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the completion of the stream does not happen until the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.stream.CompletionTimeoutException]].
    *
    * '''Emits when''' upstream emits an element
    *
@@ -3507,7 +3734,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * with a [[org.apache.pekko.stream.StreamIdleTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -3524,7 +3751,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the time between two processed elements exceeds the provided timeout, the stream is failed
-   * with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * with a [[org.apache.pekko.stream.StreamIdleTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -3541,7 +3768,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
-   * the stream is failed with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * the stream is failed with a [[org.apache.pekko.stream.BackpressureTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element
@@ -3558,7 +3785,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
 
   /**
    * If the time between the emission of an element and the following downstream demand exceeds the provided timeout,
-   * the stream is failed with a [[java.util.concurrent.TimeoutException]]. The timeout is checked periodically,
+   * the stream is failed with a [[org.apache.pekko.stream.BackpressureTimeoutException]]. The timeout is checked periodically,
    * so the resolution of the check is one period (equals to timeout value).
    *
    * '''Emits when''' upstream emits an element

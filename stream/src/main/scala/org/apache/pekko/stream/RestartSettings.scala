@@ -14,6 +14,7 @@
 package org.apache.pekko.stream
 
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.event.Logging
 import pekko.event.Logging.LogLevel

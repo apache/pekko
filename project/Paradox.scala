@@ -24,7 +24,7 @@ import scala.concurrent.duration._
 
 object Paradox {
   val pekkoBaseURL = "https://pekko.apache.org"
-  val propertiesSettings = Seq(
+  lazy val propertiesSettings = Seq(
     Compile / paradoxProperties ++= Map(
       "canonical.base_url" -> s"$pekkoBaseURL/docs/pekko/current",
       "github.base_url" -> GitHub
@@ -69,18 +69,18 @@ object Paradox {
       "netty_version" -> Dependencies.nettyVersion,
       "logback_version" -> Dependencies.logbackVersion))
 
-  val rootsSettings = Seq(
+  lazy val rootsSettings = Seq(
     paradoxRoots := List(
       "index.html",
       // TODO page not linked to
       "fault-tolerance-sample.html"))
 
-  val themeSettings = Seq(
+  lazy val themeSettings = Seq(
     pekkoParadoxGithub := Some("https://github.com/apache/incubator-pekko"))
 
   // FIXME https://github.com/lightbend/paradox/issues/350
   // Exclusions from direct compilation for includes dirs/files not belonging in a TOC
-  val includesSettings = Seq(
+  lazy val includesSettings = Seq(
     (Compile / paradoxMarkdownToHtml / excludeFilter) := (Compile / paradoxMarkdownToHtml / excludeFilter).value ||
     ParadoxPlugin.InDirectoryFilter((Compile / paradox / sourceDirectory).value / "includes"),
     // Links are interpreted relative to the page the snippet is included in,
@@ -88,20 +88,20 @@ object Paradox {
     (Compile / paradoxMarkdownToHtml / excludeFilter) := (Compile / paradoxMarkdownToHtml / excludeFilter).value ||
     ParadoxPlugin.InDirectoryFilter((Compile / paradox / sourceDirectory).value / "includes.html"))
 
-  val groupsSettings = Seq(Compile / paradoxGroups := Map("Language" -> Seq("Scala", "Java")))
+  lazy val groupsSettings = Seq(Compile / paradoxGroups := Map("Language" -> Seq("Scala", "Java")))
 
-  val parsingSettings = Seq(Compile / paradoxParsingTimeout := 5.seconds)
+  lazy val parsingSettings = Seq(Compile / paradoxParsingTimeout := 5.seconds)
 
-  val sourceGeneratorSettings = Seq(
+  lazy val sourceGeneratorSettings = Seq(
     Compile / paradoxMarkdownToHtml / sourceGenerators += Def.taskDyn {
       val targetFile = (Compile / paradox / sourceManaged).value / "project" / "license-report.md"
-
-      (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
-        IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
-      }
+      ProjectIndexGenerator.CliOptions.generateLicenseReportEnabled.ifTrue(
+        (LocalRootProject / dumpLicenseReportAggregate).map { dir =>
+          IO.copy(List(dir / "pekko-root-licenses.md" -> targetFile)).toList
+        }).orElse(Some(Def.task(List.empty[File]))).get
     }.taskValue)
 
-  val settings =
+  lazy val settings =
     propertiesSettings ++
     rootsSettings ++
     includesSettings ++

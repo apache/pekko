@@ -23,13 +23,13 @@ import org.apache.pekko.annotation.InternalStableApi
  */
 @InternalStableApi
 private[pekko] object JavaDurationConverters {
-  def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
+  @inline def asFiniteDuration(duration: JDuration): FiniteDuration = duration.asScala
 
   final implicit class JavaDurationOps(val self: JDuration) extends AnyVal {
-    def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
+    @inline def asScala: FiniteDuration = Duration.fromNanos(self.toNanos)
   }
 
   final implicit class ScalaDurationOps(val self: Duration) extends AnyVal {
-    def asJava: JDuration = JDuration.ofNanos(self.toNanos)
+    @inline def asJava: JDuration = JDuration.ofNanos(self.toNanos)
   }
 }

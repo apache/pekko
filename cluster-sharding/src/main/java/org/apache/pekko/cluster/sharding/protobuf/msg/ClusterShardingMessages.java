@@ -144,9 +144,9 @@ public final class ClusterShardingMessages {
     }
     private CoordinatorState() {
       shards_ = java.util.Collections.emptyList();
-      regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
-      regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
-      unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+      regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
+      unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -1455,11 +1455,11 @@ public final class ClusterShardingMessages {
         } else {
           shardsBuilder_.clear();
         }
-        regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
-        regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
-        unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
@@ -1891,7 +1891,7 @@ public final class ClusterShardingMessages {
         return shardsBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureRegionsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           regions_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(regions_);
@@ -1979,7 +1979,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearRegions() {
-        regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        regions_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -2000,7 +2000,7 @@ public final class ClusterShardingMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureRegionProxiesIsMutable() {
         if (!((bitField0_ & 0x00000004) != 0)) {
           regionProxies_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(regionProxies_);
@@ -2088,7 +2088,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearRegionProxies() {
-        regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        regionProxies_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000004);
         onChanged();
         return this;
@@ -2109,7 +2109,7 @@ public final class ClusterShardingMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureUnallocatedShardsIsMutable() {
         if (!((bitField0_ & 0x00000008) != 0)) {
           unallocatedShards_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(unallocatedShards_);
@@ -2197,7 +2197,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearUnallocatedShards() {
-        unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        unallocatedShards_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
         return this;
@@ -5146,7 +5146,7 @@ public final class ClusterShardingMessages {
     }
     private ShardHomesEntry() {
       region_ = "";
-      shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -5535,7 +5535,7 @@ public final class ClusterShardingMessages {
         super.clear();
         region_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -5755,7 +5755,7 @@ public final class ClusterShardingMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureShardIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           shard_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(shard_);
@@ -5843,7 +5843,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearShard() {
-        shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        shard_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -6757,7 +6757,7 @@ public final class ClusterShardingMessages {
       super(builder);
     }
     private EntityState() {
-      entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -7069,7 +7069,7 @@ public final class ClusterShardingMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -7191,7 +7191,7 @@ public final class ClusterShardingMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureEntitiesIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           entities_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(entities_);
@@ -7279,7 +7279,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearEntities() {
-        entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entities_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
@@ -8012,7 +8012,7 @@ public final class ClusterShardingMessages {
       super(builder);
     }
     private EntitiesStarted() {
-      entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -8324,7 +8324,7 @@ public final class ClusterShardingMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -8446,7 +8446,7 @@ public final class ClusterShardingMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureEntityIdIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           entityId_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(entityId_);
@@ -8534,7 +8534,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearEntityId() {
-        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
@@ -9267,7 +9267,7 @@ public final class ClusterShardingMessages {
       super(builder);
     }
     private EntitiesStopped() {
-      entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -9579,7 +9579,7 @@ public final class ClusterShardingMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
@@ -9701,7 +9701,7 @@ public final class ClusterShardingMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureEntityIdIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           entityId_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(entityId_);
@@ -9789,7 +9789,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearEntityId() {
-        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
@@ -10641,7 +10641,7 @@ public final class ClusterShardingMessages {
     }
     private ShardRegionStats() {
       stats_ = java.util.Collections.emptyList();
-      failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -11020,7 +11020,7 @@ public final class ClusterShardingMessages {
         } else {
           statsBuilder_.clear();
         }
-        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -11417,7 +11417,7 @@ public final class ClusterShardingMessages {
         return statsBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureFailedIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           failed_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(failed_);
@@ -11505,7 +11505,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearFailed() {
-        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -17816,7 +17816,7 @@ public final class ClusterShardingMessages {
     }
     private CurrentShardState() {
       shardId_ = "";
-      entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -18201,7 +18201,7 @@ public final class ClusterShardingMessages {
         super.clear();
         shardId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -18421,7 +18421,7 @@ public final class ClusterShardingMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureEntityIdsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           entityIds_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(entityIds_);
@@ -18509,7 +18509,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearEntityIds() {
-        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -18642,7 +18642,7 @@ public final class ClusterShardingMessages {
     }
     private ShardState() {
       shardId_ = "";
-      entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -19027,7 +19027,7 @@ public final class ClusterShardingMessages {
         super.clear();
         shardId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -19247,7 +19247,7 @@ public final class ClusterShardingMessages {
         return this;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureEntityIdsIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           entityIds_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(entityIds_);
@@ -19335,7 +19335,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearEntityIds() {
-        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        entityIds_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -19475,7 +19475,7 @@ public final class ClusterShardingMessages {
     }
     private CurrentShardRegionState() {
       shards_ = java.util.Collections.emptyList();
-      failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -19860,7 +19860,7 @@ public final class ClusterShardingMessages {
         } else {
           shardsBuilder_.clear();
         }
-        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
@@ -20262,7 +20262,7 @@ public final class ClusterShardingMessages {
         return shardsBuilder_;
       }
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureFailedIsMutable() {
         if (!((bitField0_ & 0x00000002) != 0)) {
           failed_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(failed_);
@@ -20350,7 +20350,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearFailed() {
-        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        failed_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000002);
         onChanged();
         return this;
@@ -20476,7 +20476,7 @@ public final class ClusterShardingMessages {
       super(builder);
     }
     private RememberedShardState() {
-      shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
     }
 
     @java.lang.Override
@@ -20828,7 +20828,7 @@ public final class ClusterShardingMessages {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         marker_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -20961,7 +20961,7 @@ public final class ClusterShardingMessages {
       }
       private int bitField0_;
 
-      private org.apache.pekko.protobufv3.internal.LazyStringList shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+      private org.apache.pekko.protobufv3.internal.LazyStringList shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
       private void ensureShardIdIsMutable() {
         if (!((bitField0_ & 0x00000001) != 0)) {
           shardId_ = new org.apache.pekko.protobufv3.internal.LazyStringArrayList(shardId_);
@@ -21049,7 +21049,7 @@ public final class ClusterShardingMessages {
        * @return This builder for chaining.
        */
       public Builder clearShardId() {
-        shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.EMPTY;
+        shardId_ = org.apache.pekko.protobufv3.internal.LazyStringArrayList.emptyList();
         bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;

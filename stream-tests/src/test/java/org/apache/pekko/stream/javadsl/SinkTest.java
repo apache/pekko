@@ -13,25 +13,30 @@
 
 package org.apache.pekko.stream.javadsl;
 
-import java.util.Arrays;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.*;
-import java.util.stream.Collectors;
-
 import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.japi.function.Function;
-import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.Graph;
+import org.apache.pekko.stream.StreamTest;
+import org.apache.pekko.stream.UniformFanOutShape;
+import org.apache.pekko.stream.testkit.TestSubscriber;
+import org.apache.pekko.stream.testkit.javadsl.TestSink;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.reactivestreams.Publisher;
-import org.apache.pekko.testkit.PekkoSpec;
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.reactivestreams.Subscription;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -65,6 +70,16 @@ public class SinkTest extends StreamTest {
     @SuppressWarnings("unused")
     CompletionStage<Integer> integerFuture =
         Source.from(new ArrayList<Integer>()).runWith(foldSink, system);
+  }
+
+  @Test
+  public void mustBeAbleToUseFoldWhile() throws Exception {
+    final int result =
+        Source.range(1, 10)
+            .runWith(Sink.foldWhile(0, acc -> acc < 10, Integer::sum), system)
+            .toCompletableFuture()
+            .get(1, TimeUnit.SECONDS);
+    assertEquals(10, result);
   }
 
   @Test
@@ -128,6 +143,41 @@ public class SinkTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToUseCombineMat() {
+    final Sink<Integer, TestSubscriber.Probe<Integer>> sink1 = TestSink.create(system);
+    final Sink<Integer, TestSubscriber.Probe<Integer>> sink2 = TestSink.create(system);
+    final Sink<Integer, Pair<TestSubscriber.Probe<Integer>, TestSubscriber.Probe<Integer>>> sink =
+        Sink.combineMat(sink1, sink2, Broadcast::create, Keep.both());
+
+    final Pair<TestSubscriber.Probe<Integer>, TestSubscriber.Probe<Integer>> subscribers =
+        Source.from(Arrays.asList(0, 1)).runWith(sink, system);
+    final TestSubscriber.Probe<Integer> subscriber1 = subscribers.first();
+    final TestSubscriber.Probe<Integer> subscriber2 = subscribers.second();
+    final Subscription sub1 = subscriber1.expectSubscription();
+    final Subscription sub2 = subscriber2.expectSubscription();
+    sub1.request(2);
+    sub2.request(2);
+    subscriber1.expectNext(0, 1).expectComplete();
+    subscriber2.expectNext(0, 1).expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToUseCombineMany() throws Exception {
+    final Sink<Long, CompletionStage<Long>> firstSink = Sink.head();
+    final Sink<Long, CompletionStage<Long>> secondSink = Sink.head();
+    final Sink<Long, CompletionStage<Long>> thirdSink = Sink.head();
+
+    final Sink<Long, List<CompletionStage<Long>>> combineSink =
+        Sink.combine(Arrays.asList(firstSink, secondSink, thirdSink), Broadcast::create);
+    final List<CompletionStage<Long>> results =
+        Source.single(1L).toMat(combineSink, Keep.right()).run(system);
+    for (CompletionStage<Long> result : results) {
+      final long value = result.toCompletableFuture().get(3, TimeUnit.SECONDS);
+      assertEquals(1L, value);
+    }
+  }
+
+  @Test
   public void mustBeAbleToUseContramap() throws Exception {
     List<Integer> out =
         Source.range(0, 2)
@@ -185,5 +235,23 @@ public class SinkTest extends StreamTest {
     // 4
     // #foreach
     assertEquals(Done.done(), done);
+  }
+
+  @Test
+  public void sinkMustBeAbleToUseForall()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    CompletionStage<Boolean> cs =
+        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.forall(param -> param > 0), system);
+    boolean allMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
+    assertTrue(allMatch);
+  }
+
+  @Test
+  public void sinkMustBeAbleToUseForExists()
+      throws InterruptedException, ExecutionException, TimeoutException {
+    CompletionStage<Boolean> cs =
+        Source.from(Arrays.asList(1, 2, 3, 4)).runWith(Sink.exists(param -> param > 3), system);
+    boolean anyMatch = cs.toCompletableFuture().get(100, TimeUnit.MILLISECONDS);
+    assertTrue(anyMatch);
   }
 }

@@ -14,7 +14,7 @@
 package org.apache.pekko.pki.pem
 
 import java.io.File
-import java.nio.charset.Charset
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.security.PrivateKey
 
@@ -55,7 +55,7 @@ class DERPrivateKeyLoaderSpec extends AnyWordSpec with Matchers with EitherValue
     resourceUrl.getProtocol should ===("file")
     val path = new File(resourceUrl.toURI).toPath
     val bytes = Files.readAllBytes(path)
-    val str = new String(bytes, Charset.forName("UTF-8"))
+    val str = new String(bytes, StandardCharsets.UTF_8)
     val derData = PEMDecoder.decode(str)
     derData
   }

@@ -13,14 +13,14 @@
 
 package org.apache.pekko.stream.io.compression
 
-import org.scalatest.BeforeAndAfterAll
-import org.scalatest.Suite
-import org.scalatest.matchers.should.Matchers
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.testkit.TestKit
 import pekko.util.ByteString
+
+import org.scalatest.BeforeAndAfterAll
+import org.scalatest.Suite
+import org.scalatest.matchers.should.Matchers
 
 trait CodecSpecSupport extends Matchers with BeforeAndAfterAll { self: Suite =>
 

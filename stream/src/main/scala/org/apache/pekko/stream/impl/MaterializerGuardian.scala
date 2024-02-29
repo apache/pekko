@@ -13,9 +13,8 @@
 
 package org.apache.pekko.stream.impl
 
-import scala.concurrent.Promise
-
 import scala.annotation.nowarn
+import scala.concurrent.Promise
 
 import org.apache.pekko
 import pekko.actor.Actor

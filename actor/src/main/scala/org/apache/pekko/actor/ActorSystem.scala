@@ -860,7 +860,6 @@ private[pekko] class ActorSystemImpl(
         }
       }
 
-      @inline
       private def logFatalError(message: String, cause: Throwable, thread: Thread): Unit = {
         // First log to stderr as this has the best chance to get through in an 'emergency panic' situation:
         import System.err
@@ -1129,7 +1128,7 @@ private[pekko] class ActorSystemImpl(
       .get
   // #create-scheduler
 
-  /*
+  /**
    * This is called after the last actor has signaled its termination, i.e.
    * after the last dispatcher has had its chance to schedule its shutdown
    * action.

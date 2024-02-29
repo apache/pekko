@@ -17,11 +17,11 @@ import com.typesafe.config.ConfigFactory
 import sbt.ConsoleLogger
 
 class ProjectFileIgnoreSupport(ignoreConfigFile: File, descriptor: String) {
-  private val stdoutLogger = ConsoleLogger(System.out)
+  private lazy val stdoutLogger = ConsoleLogger(System.out)
 
-  private val javaSourceDirectories = Set("java", Jdk9.JAVA_SOURCE_DIRECTORY, Jdk9.JAVA_TEST_SOURCE_DIRECTORY)
+  private val javaSourceDirectories = Set("java") ++ Jdk9.JavaSourceDirectories ++ Jdk9.JavaTestSourceDirectories
 
-  private val scalaSourceDirectories = Set("scala", Jdk9.SCALA_SOURCE_DIRECTORY, Jdk9.SCALA_TEST_SOURCE_DIRECTORY)
+  private val scalaSourceDirectories = Set("scala") ++ Jdk9.ScalaSourceDirectories ++ Jdk9.ScalaTestSourceDirectories
 
   private lazy val ignoreConfig = {
     require(

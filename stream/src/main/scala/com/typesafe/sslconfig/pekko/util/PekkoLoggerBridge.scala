@@ -13,12 +13,12 @@
 
 package com.typesafe.sslconfig.pekko.util
 
-import com.typesafe.sslconfig.util.{ LoggerFactory, NoDepsLogger }
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.event.{ DummyClassForStringSources, EventStream }
 import pekko.event.Logging._
+
+import com.typesafe.sslconfig.util.{ LoggerFactory, NoDepsLogger }
 
 final class PekkoLoggerFactory(system: ActorSystem) extends LoggerFactory {
   override def apply(clazz: Class[_]): NoDepsLogger = new PekkoLoggerBridge(system.eventStream, clazz)

@@ -13,11 +13,11 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream.testkit.{ BaseTwoStreamsSetup, TestSubscriber }
 import pekko.stream.testkit.scaladsl.StreamTestKit._
+
+import org.reactivestreams.Publisher
 
 class FlowZipAllSpec extends BaseTwoStreamsSetup {
   override type Outputs = (Int, Int)

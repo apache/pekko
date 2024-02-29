@@ -444,7 +444,7 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
     settings.ServerSocketWorkerPoolSize,
     new ConductorHandler(settings.QueryTimeout, self, Logging(context.system, classOf[ConductorHandler])))
 
-  /*
+  /**
    * Supervision of the BarrierCoordinator means to catch all his bad emotions
    * and sometimes console him (BarrierEmpty, BarrierTimeout), sometimes tell
    * him to hate the world (WrongBarrier, DuplicateNode, ClientLost). The latter shall help

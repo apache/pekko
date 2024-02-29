@@ -13,6 +13,8 @@
 
 package org.apache.pekko.stream.scaladsl
 
+import java.nio.charset.StandardCharsets
+
 import scala.annotation.nowarn
 import scala.collection.immutable
 import scala.concurrent.Await
@@ -31,7 +33,7 @@ class BidiFlowSpec extends StreamSpec {
 
   val bidi = BidiFlow.fromFlows(
     Flow[Int].map(x => x.toLong + 2).withAttributes(name("top")),
-    Flow[ByteString].map(_.decodeString("UTF-8")).withAttributes(name("bottom")))
+    Flow[ByteString].map(_.decodeString(StandardCharsets.UTF_8)).withAttributes(name("bottom")))
 
   val inverse = BidiFlow.fromFlows(
     Flow[Long].map(x => x.toInt + 2).withAttributes(name("top")),
@@ -41,7 +43,7 @@ class BidiFlowSpec extends StreamSpec {
     Source.single(42) ~> s
 
     val top = b.add(Flow[Int].map(x => x.toLong + 2))
-    val bottom = b.add(Flow[ByteString].map(_.decodeString("UTF-8")))
+    val bottom = b.add(Flow[ByteString].map(_.decodeString(StandardCharsets.UTF_8)))
     BidiShape(top.in, top.out, bottom.in, bottom.out)
   })
 

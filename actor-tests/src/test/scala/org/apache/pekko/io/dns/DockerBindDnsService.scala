@@ -18,9 +18,12 @@ import scala.util.Try
 import scala.util.control.NonFatal
 
 import com.typesafe.config.Config
-import com.spotify.docker.client.DefaultDockerClient
-import com.spotify.docker.client.DockerClient.{ ListContainersParam, LogsParam }
-import com.spotify.docker.client.messages.{ ContainerConfig, HostConfig, PortBinding }
+import com.github.dockerjava.api.DockerClient
+import com.github.dockerjava.api.async.ResultCallback
+import com.github.dockerjava.api.command.CreateContainerCmd
+import com.github.dockerjava.api.model._
+import com.github.dockerjava.core.{ DefaultDockerClientConfig, DockerClientConfig, DockerClientImpl }
+import com.github.dockerjava.httpclient5.ApacheDockerHttpClient
 import org.scalatest.concurrent.Eventually
 
 import org.apache.pekko
@@ -28,13 +31,23 @@ import pekko.testkit.PekkoSpec
 import pekko.util.ccompat.JavaConverters._
 
 abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) with Eventually {
-  val client = DefaultDockerClient.fromEnv().build()
+
+  val dockerConfig: DockerClientConfig = DefaultDockerClientConfig
+    .createDefaultConfigBuilder()
+    .build();
+
+  val httpClient: ApacheDockerHttpClient = new ApacheDockerHttpClient.Builder()
+    .dockerHost(dockerConfig.getDockerHost())
+    .sslConfig(dockerConfig.getSSLConfig())
+    .build();
+
+  val client: DockerClient = DockerClientImpl.getInstance(dockerConfig, httpClient);
 
   val hostPort: Int
 
   var id: Option[String] = None
 
-  def dockerAvailable() = Try(client.ping()).isSuccess
+  def dockerAvailable() = Try(client.pingCmd().exec()).isSuccess
 
   override def atStartup(): Unit = {
     log.info("Running on port port {}", hostPort)
@@ -43,64 +56,100 @@ abstract class DockerBindDnsService(config: Config) extends PekkoSpec(config) wi
     // https://github.com/sameersbn/docker-bind/pull/61
     val image = "raboof/bind:9.11.3-20180713-nochown"
     try {
-      client.pull(image)
+      client
+        .pullImageCmd(image)
+        .start()
+        .awaitCompletion()
     } catch {
       case NonFatal(_) =>
         log.warning(s"Failed to pull docker image [$image], is docker running?")
         return
     }
 
-    val containerConfig = ContainerConfig
-      .builder()
-      .image(image)
-      .env("NO_CHOWN=true")
-      .cmd("-4") // only listen on ipv4
-      .hostConfig(
-        HostConfig
-          .builder()
-          .portBindings(Map(
-            "53/tcp" -> List(PortBinding.of("", hostPort)).asJava,
-            "53/udp" -> List(PortBinding.of("", hostPort)).asJava).asJava)
-          .binds(HostConfig.Bind
-            .from(new java.io.File("actor-tests/src/test/bind/").getAbsolutePath)
-            .to("/data/bind")
-            .build())
-          .build())
-      .build()
-
     val containerName = "pekko-test-dns-" + getClass.getCanonicalName
 
+    val containerCommand: CreateContainerCmd = client
+      .createContainerCmd(image)
+      .withName(containerName)
+      .withEnv("NO_CHOWN=true")
+      .withCmd("-4")
+      .withHostConfig(
+        HostConfig.newHostConfig()
+          .withPortBindings(
+            PortBinding.parse(s"$hostPort:53/tcp"),
+            PortBinding.parse(s"$hostPort:53/udp"))
+          .withBinds(new Bind(new java.io.File("actor-tests/src/test/bind/").getAbsolutePath,
+            new Volume("/data/bind"))))
+
     client
-      .listContainers(ListContainersParam.allContainers())
+      .listContainersCmd()
+      .exec()
       .asScala
-      .find(_.names().asScala.exists(_.contains(containerName)))
-      .foreach(c => {
-        if ("running" == c.state()) {
-          client.killContainer(c.id)
+      .find((c: Container) => c.getNames().exists(_.contains(containerName)))
+      .foreach((c: Container) => {
+        if ("running" == c.getState()) {
+          client.killContainerCmd(c.getId()).exec()
         }
-        client.removeContainer(c.id)
+        client.removeContainerCmd(c.getId()).exec()
       })
 
-    val creation = client.createContainer(containerConfig, containerName)
-    if (creation.warnings() != null)
-      creation.warnings() should have(size(0))
-    id = Some(creation.id())
+    val creation = containerCommand.exec()
+    if (creation.getWarnings() != null)
+      creation.getWarnings() should have(size(0))
+    id = Some(creation.getId())
 
-    client.startContainer(creation.id())
+    client.startContainerCmd(creation.getId()).exec()
+    val reader = new StringBuilderLogReader
 
     eventually(timeout(25.seconds)) {
-      client.logs(creation.id(), LogsParam.stderr()).readFully() should include("all zones loaded")
+      client
+        .logContainerCmd(creation.getId())
+        .withStdErr(true)
+        .exec(reader)
+
+      reader.toString should include("all zones loaded")
     }
   }
 
   def dumpNameserverLogs(): Unit = {
-    id.foreach(id => log.info("Nameserver std out: {} ", client.logs(id, LogsParam.stdout()).readFully()))
-    id.foreach(id => log.info("Nameserver std err: {} ", client.logs(id, LogsParam.stderr()).readFully()))
+    id.foreach(id => {
+      val reader = new StringBuilderLogReader
+      client
+        .logContainerCmd(id)
+        .withStdOut(true)
+        .exec(reader)
+        .awaitCompletion()
+
+      log.info("Nameserver std out: {} ", reader.toString())
+    })
+    id.foreach(id => {
+      val reader = new StringBuilderLogReader
+      client
+        .logContainerCmd(id)
+        .withStdErr(true)
+        .exec(reader)
+        .awaitCompletion()
+      log.info("Nameserver std err: {} ", reader.toString())
+    })
   }
 
   override def afterTermination(): Unit = {
     super.afterTermination()
-    id.foreach(client.killContainer)
-    id.foreach(client.removeContainer)
+    id.foreach(id => client.killContainerCmd(id).exec())
+    id.foreach(id => client.removeContainerCmd(id).exec())
+
+    client.close()
   }
+}
+
+class StringBuilderLogReader extends ResultCallback.Adapter[Frame] {
+
+  lazy val builder: StringBuilder = new StringBuilder
+
+  override def onNext(item: Frame): Unit = {
+    builder.append(new String(item.getPayload))
+    super.onNext(item)
+  }
+
+  override def toString(): String = builder.toString()
 }

@@ -16,15 +16,15 @@ import scalafix.sbt.ScalafixPlugin
 import scalafix.sbt.ScalafixPlugin.autoImport.scalafixConfigSettings
 
 object ScalafixForMultiNodePlugin extends AutoPlugin with ScalafixSupport {
-  override def trigger: PluginTrigger = allRequirements
+  override lazy val trigger: PluginTrigger = allRequirements
 
-  override def requires: Plugins = MultiNode && ScalafixPlugin
+  override lazy val requires: Plugins = MultiNode && ScalafixPlugin
 
   import MultiJvmPlugin.autoImport._
 
   lazy val scalafixIgnoredSetting: Seq[Setting[_]] = Seq(ignore(MultiJvm))
 
-  override def projectSettings: Seq[Def.Setting[_]] =
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(MultiJvm).flatMap(c => inConfig(c)(scalafixConfigSettings(c))) ++
     scalafixIgnoredSetting ++ Seq(
       updateProjectCommands(alias = "fixall", value = ";scalafixEnable;scalafixAll;scalafmtAll"),

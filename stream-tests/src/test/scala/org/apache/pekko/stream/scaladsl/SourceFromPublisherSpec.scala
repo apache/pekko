@@ -13,14 +13,14 @@
 
 package org.apache.pekko.stream.scaladsl
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AsyncWordSpecLike
-
 import org.apache.pekko
 import pekko.actor.ActorSystem
 import pekko.stream.Attributes
 import pekko.stream.testkit.TestPublisher
 import pekko.testkit.TestKit
+
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AsyncWordSpecLike
 
 class SourceFromPublisherSpec
     extends TestKit(ActorSystem("source-from-publisher-spec"))

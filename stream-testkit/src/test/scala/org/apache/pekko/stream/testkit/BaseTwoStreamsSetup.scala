@@ -16,12 +16,12 @@ package org.apache.pekko.stream.testkit
 import scala.collection.immutable
 import scala.util.control.NoStackTrace
 
-import org.reactivestreams.Publisher
-
 import org.apache.pekko
 import pekko.stream.scaladsl._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 import pekko.testkit.PekkoSpec
+
+import org.reactivestreams.Publisher
 
 abstract class BaseTwoStreamsSetup extends PekkoSpec("""
     pekko.stream.materializer.initial-input-buffer-size = 2

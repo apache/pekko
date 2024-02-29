@@ -16,10 +16,11 @@ package org.apache.pekko.stream.impl.fusing
 import scala.collection.immutable
 import scala.concurrent.{ Future, Promise }
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
-import pekko.stream.Attributes.SourceLocation
 import pekko.stream._
+import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.scaladsl.{ Flow, Keep, Source }
 import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, InHandler, OutHandler }
@@ -131,38 +132,37 @@ import pekko.util.OptionVal
           accumulated.clear()
           subSource = OptionVal.Some(new SubSourceOutlet[In]("FlatMapPrefix.subSource"))
           val theSubSource = subSource.get
-          theSubSource.setHandler {
-            new OutHandler {
-              override def onPull(): Unit = {
-                if (!isClosed(in) && !hasBeenPulled(in)) {
-                  pull(in)
-                }
-              }
-
-              override def onDownstreamFinish(cause: Throwable): Unit = {
-                if (!isClosed(in)) {
-                  cancel(in, cause)
-                }
-              }
-            }
-          }
           subSink = OptionVal.Some(new SubSinkInlet[Out]("FlatMapPrefix.subSink"))
           val theSubSink = subSink.get
-          theSubSink.setHandler {
-            new InHandler {
-              override def onPush(): Unit = {
-                push(out, theSubSink.grab())
-              }
+          val handler = new InHandler with OutHandler {
+            override def onPush(): Unit = {
+              push(out, theSubSink.grab())
+            }
 
-              override def onUpstreamFinish(): Unit = {
-                complete(out)
-              }
+            override def onUpstreamFinish(): Unit = {
+              complete(out)
+            }
 
-              override def onUpstreamFailure(ex: Throwable): Unit = {
-                fail(out, ex)
+            override def onUpstreamFailure(ex: Throwable): Unit = {
+              fail(out, ex)
+            }
+
+            override def onPull(): Unit = {
+              if (!isClosed(in) && !hasBeenPulled(in)) {
+                pull(in)
+              }
+            }
+
+            override def onDownstreamFinish(cause: Throwable): Unit = {
+              if (!isClosed(in)) {
+                cancel(in, cause)
               }
             }
           }
+
+          theSubSource.setHandler(handler)
+          theSubSink.setHandler(handler)
+
           val matVal =
             try {
               val flow = f(prefix)

@@ -108,8 +108,10 @@ abstract class ActorSelection extends Serializable {
    * supplied `timeout`.
    */
   @deprecated("Use the overloaded method resolveOne which accepts java.time.Duration instead.", since = "Akka 2.5.20")
-  def resolveOneCS(timeout: FiniteDuration): CompletionStage[ActorRef] =
-    FutureConverters.asJava[ActorRef](resolveOne(timeout))
+  def resolveOneCS(timeout: FiniteDuration): CompletionStage[ActorRef] = {
+    import FutureConverters._
+    resolveOne(timeout).asJava
+  }
 
   /**
    * Java API for [[#resolveOne]]
@@ -133,8 +135,9 @@ abstract class ActorSelection extends Serializable {
    * supplied `timeout`.
    */
   def resolveOne(timeout: java.time.Duration): CompletionStage[ActorRef] = {
+    import FutureConverters._
     import JavaDurationConverters._
-    FutureConverters.asJava[ActorRef](resolveOne(timeout.asScala))
+    resolveOne(timeout.asScala).asJava
   }
 
   override def toString: String = {

@@ -12,22 +12,25 @@
  */
 
 import de.heikoseeberger.sbtheader.HeaderPlugin.autoImport.headerSources
-import sbt.Keys.sourceDirectory
 import sbt.{ Compile, Def, Test, _ }
 
-object CopyrightHeaderForJdk9 extends CopyrightHeader {
+object CopyrightHeaderForJdk9 extends AutoPlugin {
 
-  override protected def headerMappingSettings: Seq[Def.Setting[_]] = {
-    super.headerMappingSettings
+  override lazy val requires = CopyrightHeader && Jdk9
+  override lazy val trigger = allRequirements
+
+  private lazy val additionalFiles = Def.setting {
     import Jdk9._
-    Seq(
-      Compile / headerSources ++=
-        (((Compile / sourceDirectory).value / SCALA_SOURCE_DIRECTORY) ** "*.scala").get,
-      Test / headerSources ++=
-        (((Test / sourceDirectory).value / SCALA_TEST_SOURCE_DIRECTORY) ** "*.scala").get,
-      Compile / headerSources ++=
-        (((Compile / sourceDirectory).value / JAVA_SOURCE_DIRECTORY) ** "*.java").get,
-      Test / headerSources ++=
-        (((Test / sourceDirectory).value / JAVA_TEST_SOURCE_DIRECTORY) ** "*.java").get)
+    for {
+      dir <- additionalSourceDirectories.value ++ additionalTestSourceDirectories.value
+      language <- List("java", "scala")
+      file <- (dir ** s"*.$language").get
+    } yield file
+  }
+
+  override lazy val projectSettings: Seq[Def.Setting[_]] = {
+
+    Seq(Compile / headerSources ++= additionalFiles.value,
+      Test / headerSources ++= additionalFiles.value)
   }
 }

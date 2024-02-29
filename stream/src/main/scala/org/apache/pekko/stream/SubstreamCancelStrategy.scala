@@ -13,11 +13,16 @@
 
 package org.apache.pekko.stream
 
+import scala.annotation.nowarn
+
 import SubstreamCancelStrategies._
 
 /**
  * Represents a strategy that decides how to deal with substream events.
  */
+@deprecated(
+  "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+  since = "1.1.0")
 sealed abstract class SubstreamCancelStrategy
 
 private[pekko] object SubstreamCancelStrategies {
@@ -25,14 +30,19 @@ private[pekko] object SubstreamCancelStrategies {
   /**
    * INTERNAL API
    */
+  @nowarn("msg=deprecated")
   private[pekko] case object Propagate extends SubstreamCancelStrategy
 
   /**
    * INTERNAL API
    */
+  @nowarn("msg=deprecated")
   private[pekko] case object Drain extends SubstreamCancelStrategy
 }
 
+@deprecated(
+  "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
+  since = "1.1.0")
 object SubstreamCancelStrategy {
 
   /**

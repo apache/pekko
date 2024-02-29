@@ -16,9 +16,9 @@ import sbt.{ AutoPlugin, PluginTrigger, Plugins }
 
 object JavaFormatter extends AutoPlugin {
 
-  override def trigger = PluginTrigger.AllRequirements
+  override lazy val trigger = PluginTrigger.AllRequirements
 
-  override def requires: Plugins = JavaFormatterPlugin
+  override lazy val requires: Plugins = JavaFormatterPlugin
 
   private val ignoreConfigFileName: String = ".sbt-java-formatter.conf"
   private val descriptor: String = "sbt-java-formatter"
@@ -28,7 +28,7 @@ object JavaFormatter extends AutoPlugin {
   import sbt._
   import sbt.io._
 
-  override def projectSettings: Seq[Def.Setting[_]] =
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(
       // below is for sbt java formatter
       javafmt / excludeFilter := {

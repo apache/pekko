@@ -24,8 +24,6 @@ import scala.concurrent.Promise
 import scala.concurrent.duration._
 import scala.util.control.NoStackTrace
 
-import org.scalatest.concurrent.PatienceConfiguration.Timeout
-
 import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.ActorAttributes.supervisionStrategy
@@ -36,6 +34,8 @@ import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.TestSink
 import pekko.testkit.TestLatch
 import pekko.testkit.TestProbe
+
+import org.scalatest.concurrent.PatienceConfiguration.Timeout
 
 class FlowMapAsyncSpec extends StreamSpec {
 

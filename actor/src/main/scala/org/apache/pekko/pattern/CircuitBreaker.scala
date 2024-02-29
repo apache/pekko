@@ -30,7 +30,7 @@ import pekko.PekkoException
 import pekko.actor.{ ExtendedActorSystem, Scheduler }
 import pekko.dispatch.ExecutionContexts.parasitic
 import pekko.pattern.internal.{ CircuitBreakerNoopTelemetry, CircuitBreakerTelemetry }
-import pekko.util.FutureConverters
+import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
 import pekko.util.Unsafe
 
@@ -317,7 +317,6 @@ class CircuitBreaker(
    * @param newState Next state on transition
    * @return Whether the previous state matched correctly
    */
-  @inline
   private[this] def swapState(oldState: State, newState: State): Boolean =
     Unsafe.instance.compareAndSwapObject(this, AbstractCircuitBreaker.stateOffset, oldState, newState)
 
@@ -326,14 +325,12 @@ class CircuitBreaker(
    *
    * @return Reference to current state
    */
-  @inline
   private[this] def currentState: State =
     Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.stateOffset).asInstanceOf[State]
 
   /**
    * Helper method for updating the underlying resetTimeout via Unsafe
    */
-  @inline
   private[this] def swapResetTimeout(oldResetTimeout: FiniteDuration, newResetTimeout: FiniteDuration): Boolean =
     Unsafe.instance.compareAndSwapObject(
       this,
@@ -344,7 +341,6 @@ class CircuitBreaker(
   /**
    * Helper method for accessing to the underlying resetTimeout via Unsafe
    */
-  @inline
   private[this] def currentResetTimeout: FiniteDuration =
     Unsafe.instance.getObjectVolatile(this, AbstractCircuitBreaker.resetTimeoutOffset).asInstanceOf[FiniteDuration]
 
@@ -403,9 +399,9 @@ class CircuitBreaker(
    *   `scala.concurrent.TimeoutException` if the call timed out
    */
   def callWithCircuitBreakerCS[T](body: Callable[CompletionStage[T]]): CompletionStage[T] =
-    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-      override def call(): Future[T] = FutureConverters.asScala(body.call())
-    }))
+    callWithCircuitBreaker(new Callable[Future[T]] {
+      override def call(): Future[T] = body.call().asScala
+    }).asJava
 
   /**
    * Java API (8) for [[#withCircuitBreaker]].
@@ -418,9 +414,9 @@ class CircuitBreaker(
   def callWithCircuitBreakerCS[T](
       body: Callable[CompletionStage[T]],
       defineFailureFn: BiFunction[Optional[T], Optional[Throwable], java.lang.Boolean]): CompletionStage[T] =
-    FutureConverters.asJava[T](callWithCircuitBreaker(new Callable[Future[T]] {
-        override def call(): Future[T] = FutureConverters.asScala(body.call())
-      }, defineFailureFn))
+    callWithCircuitBreaker(new Callable[Future[T]] {
+        override def call(): Future[T] = body.call().asScala
+      }, defineFailureFn).asJava
 
   /**
    * Wraps invocations of synchronous calls that need to be protected.

@@ -15,12 +15,9 @@ package org.apache.pekko.stream.testkit
 
 import java.util.concurrent.ThreadLocalRandom
 
+import scala.annotation.nowarn
 import scala.annotation.tailrec
 import scala.concurrent.duration._
-
-import scala.annotation.nowarn
-import org.reactivestreams.Publisher
-import org.scalatest.matchers.should.Matchers
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -33,6 +30,10 @@ import pekko.stream.scaladsl.Sink
 import pekko.stream.scaladsl.Source
 import pekko.stream.testkit.TestPublisher._
 import pekko.stream.testkit.TestSubscriber._
+
+import org.reactivestreams.Publisher
+
+import org.scalatest.matchers.should.Matchers
 
 trait ScriptedTest extends Matchers {
 

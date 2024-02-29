@@ -84,7 +84,7 @@ trait RouterConfig extends Serializable {
     case _                                                                    => false
   }
 
-  /*
+  /**
    * Specify that this router should stop itself when all routees have terminated (been removed).
    * By Default it is `true`, unless a `resizer` is used.
    */
@@ -244,7 +244,7 @@ trait Pool extends RouterConfig {
    */
   def props(routeeProps: Props): Props = routeeProps.withRouter(this)
 
-  /*
+  /**
    * Specify that this router should stop itself when all routees have terminated (been removed).
    * By Default it is `true`, unless a `resizer` is used.
    */
@@ -286,13 +286,13 @@ case object FromConfig extends FromConfig {
    * Java API: get the singleton instance
    */
   def getInstance = this
-  @inline final def apply(
+  final def apply(
       resizer: Option[Resizer] = None,
       supervisorStrategy: SupervisorStrategy = Pool.defaultSupervisorStrategy,
       routerDispatcher: String = Dispatchers.DefaultDispatcherId) =
     new FromConfig(resizer, supervisorStrategy, routerDispatcher)
 
-  @inline final def unapply(fc: FromConfig): Option[String] = Some(fc.routerDispatcher)
+  final def unapply(fc: FromConfig): Option[String] = Some(fc.routerDispatcher)
 }
 
 /**

@@ -16,14 +16,10 @@ package org.apache.pekko.stream.impl
 import java.util
 import java.util.concurrent.atomic.AtomicBoolean
 
+import scala.annotation.nowarn
 import scala.collection.immutable.Map
 import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration.FiniteDuration
-
-import scala.annotation.nowarn
-import org.reactivestreams.Processor
-import org.reactivestreams.Publisher
-import org.reactivestreams.Subscriber
 
 import org.apache.pekko
 import pekko.NotUsed
@@ -55,12 +51,18 @@ import pekko.stream.stage.InHandler
 import pekko.stream.stage.OutHandler
 import pekko.util.OptionVal
 
+import org.reactivestreams.Processor
+import org.reactivestreams.Publisher
+import org.reactivestreams.Subscriber
+
 /**
  * INTERNAL API
  */
 @InternalApi private[pekko] object PhasedFusingActorMaterializer {
 
   val Debug = false
+
+  val MailboxConfigName: String = "pekko.stream.materializer.mailbox"
 
   val DefaultPhase: Phase[Any] = new Phase[Any] {
     override def apply(
@@ -116,7 +118,10 @@ import pekko.util.OptionVal
 
     val dispatcher = attributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher
     val supervisorProps =
-      StreamSupervisor.props(attributes, haveShutDown).withDispatcher(dispatcher).withDeploy(Deploy.local)
+      StreamSupervisor.props(attributes, haveShutDown)
+        .withDispatcher(dispatcher)
+        .withMailbox(MailboxConfigName)
+        .withDeploy(Deploy.local)
 
     // FIXME why do we need a global unique name for the child?
     val streamSupervisor = context.actorOf(supervisorProps, StreamSupervisor.nextName())
@@ -625,6 +630,7 @@ private final case class SavedIslandData(
     val effectiveProps = props.dispatcher match {
       case Dispatchers.DefaultDispatcherId =>
         props.withDispatcher(context.effectiveAttributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher)
+          .withMailbox(MailboxConfigName)
       case _ => props
     }
 
@@ -819,6 +825,7 @@ private final case class SavedIslandData(
         val props = ActorGraphInterpreter
           .props(shell)
           .withDispatcher(effectiveAttributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher)
+          .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
 
         val actorName = fullIslandName match {
           case OptionVal.Some(n) => n
@@ -974,7 +981,10 @@ private final case class SavedIslandData(
     val maxInputBuffer = attributes.mandatoryAttribute[Attributes.InputBuffer].max
 
     val props =
-      TLSActor.props(maxInputBuffer, tls.createSSLEngine, tls.verifySession, tls.closing).withDispatcher(dispatcher)
+      TLSActor.props(maxInputBuffer, tls.createSSLEngine, tls.verifySession, tls.closing)
+        .withDispatcher(dispatcher)
+        .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
+
     tlsActor = materializer.actorOf(props, "TLS-for-" + islandName)
     def factory(id: Int) = new ActorPublisher[Any](tlsActor) {
       override val wakeUpMsg = FanOut.SubstreamSubscribePending(id)

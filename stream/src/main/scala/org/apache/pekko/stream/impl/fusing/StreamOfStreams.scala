@@ -15,10 +15,12 @@ package org.apache.pekko.stream.impl.fusing
 
 import java.util.Collections
 import java.util.concurrent.atomic.AtomicReference
-import scala.annotation.tailrec
+
+import scala.annotation.{ nowarn, tailrec }
 import scala.collection.immutable
 import scala.concurrent.duration.FiniteDuration
 import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.annotation.InternalApi
@@ -26,6 +28,7 @@ import pekko.stream._
 import pekko.stream.ActorAttributes.StreamSubscriptionTimeout
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
+import pekko.stream.Supervision.Decider
 import pekko.stream.impl.{ Buffer => BufferImpl }
 import pekko.stream.impl.ActorSubscriberMessage
 import pekko.stream.impl.ActorSubscriberMessage.OnError
@@ -467,24 +470,25 @@ import pekko.util.ccompat.JavaConverters._
   /** Splits after the current element. The current element will be the last element in the current substream. */
   case object SplitAfter extends SplitDecision
 
-  def when[T](
-      p: T => Boolean,
-      substreamCancelStrategy: SubstreamCancelStrategy): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
-    new Split(Split.SplitBefore, p, substreamCancelStrategy)
+  @nowarn("msg=deprecated")
+  def cancelStrategyToDecider(substreamCancelStrategy: SubstreamCancelStrategy): Decider =
+    substreamCancelStrategy match {
+      case SubstreamCancelStrategies.Propagate => Supervision.stoppingDecider
+      case SubstreamCancelStrategies.Drain     => Supervision.resumingDecider
+    }
 
-  def after[T](
-      p: T => Boolean,
-      substreamCancelStrategy: SubstreamCancelStrategy): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
-    new Split(Split.SplitAfter, p, substreamCancelStrategy)
+  def when[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] = {
+    new Split(Split.SplitBefore, p)
+  }
+
+  def after[T](p: T => Boolean): Graph[FlowShape[T, Source[T, NotUsed]], NotUsed] =
+    new Split(Split.SplitAfter, p)
 }
 
 /**
  * INTERNAL API
  */
-@InternalApi private[pekko] final class Split[T](
-    val decision: Split.SplitDecision,
-    val p: T => Boolean,
-    val substreamCancelStrategy: SubstreamCancelStrategy)
+@InternalApi private[pekko] final class Split[T](val decision: Split.SplitDecision, val p: T => Boolean)
     extends GraphStage[FlowShape[T, Source[T, NotUsed]]] {
 
   val in: Inlet[T] = Inlet("Split.in")
@@ -492,23 +496,27 @@ import pekko.util.ccompat.JavaConverters._
 
   override val shape: FlowShape[T, Source[T, NotUsed]] = FlowShape(in, out)
 
-  private val propagateSubstreamCancel = substreamCancelStrategy match {
-    case SubstreamCancelStrategies.Propagate => true
-    case SubstreamCancelStrategies.Drain     => false
-  }
-
-  override protected def initialAttributes: Attributes = DefaultAttributes.split and SourceLocation.forLambda(p)
+  override def initialAttributes: Attributes = DefaultAttributes.split and SourceLocation.forLambda(p)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new TimerGraphStageLogic(shape) {
     import Split._
 
     private val SubscriptionTimer = "SubstreamSubscriptionTimer"
 
+    private lazy val decider = inheritedAttributes.mandatoryAttribute[SupervisionStrategy].decider
+
     private val timeout: FiniteDuration =
       inheritedAttributes.mandatoryAttribute[ActorAttributes.StreamSubscriptionTimeout].timeout
     private var substreamSource: SubSourceOutlet[T] = null
     private var substreamWaitingToBePushed = false
     private var substreamCancelled = false
+
+    def propagateSubstreamCancel(ex: Throwable): Boolean =
+      decider(ex) match {
+        case Supervision.Stop    => true
+        case Supervision.Resume  => false
+        case Supervision.Restart => false
+      }
 
     setHandler(
       out,
@@ -606,7 +614,7 @@ import pekko.util.ccompat.JavaConverters._
 
       override def onDownstreamFinish(cause: Throwable): Unit = {
         substreamCancelled = true
-        if (isClosed(in) || propagateSubstreamCancel) {
+        if (isClosed(in) || propagateSubstreamCancel(cause)) {
           cancelStage(cause)
         } else {
           // Start draining

@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.scaladsl
 
 import scala.concurrent.duration.FiniteDuration
+
 import org.apache.pekko
 import pekko.NotUsed
 import pekko.stream.{ BidiShape, _ }
@@ -312,7 +313,7 @@ object BidiFlow {
 
   /**
    * If the time between two processed elements *in any direction* exceed the provided timeout, the stream is failed
-   * with a [[scala.concurrent.TimeoutException]].
+   * with a [[org.apache.pekko.StreamIdleTimeoutException]].
    *
    * There is a difference between this operator and having two idleTimeout Flows assembled into a BidiStage.
    * If the timeout is configured to be 1 seconds, then this operator will not fail even though there are elements flowing

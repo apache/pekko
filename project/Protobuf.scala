@@ -23,24 +23,24 @@ import Keys._
 import sbtassembly.AssemblyKeys._
 
 object Protobuf {
-  val paths = SettingKey[Seq[File]]("protobuf-paths", "The paths that contain *.proto files.")
-  val outputPaths =
+  lazy val paths = SettingKey[Seq[File]]("protobuf-paths", "The paths that contain *.proto files.")
+  lazy val outputPaths =
     SettingKey[Seq[File]]("protobuf-output-paths", "The paths where to save the generated *.java files.")
-  val importPath = SettingKey[Option[File]](
+  lazy val importPath = SettingKey[Option[File]](
     "protobuf-import-path",
     "The path that contain additional *.proto files that can be imported.")
-  val protoc = SettingKey[String]("protobuf-protoc", "The path and name of the protoc executable.")
-  val protocVersion = SettingKey[String]("protobuf-protoc-version", "The version of the protoc executable.")
-  val generate = TaskKey[Unit]("protobuf-generate", "Compile the protobuf sources and do all processing.")
+  lazy val protoc = SettingKey[String]("protobuf-protoc", "The path and name of the protoc executable.")
+  lazy val protocVersion = SettingKey[String]("protobuf-protoc-version", "The version of the protoc executable.")
+  lazy val generate = TaskKey[Unit]("protobuf-generate", "Compile the protobuf sources and do all processing.")
 
   lazy val settings: Seq[Setting[_]] = Seq(
     paths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "protobuf"),
     outputPaths := Seq((Compile / sourceDirectory).value, (Test / sourceDirectory).value).map(_ / "java"),
     importPath := None,
     // this keeps intellij happy for files that use the shaded protobuf
-    Compile / unmanagedJars += (LocalProject("protobuf-v3") / assembly).value,
+    Compile / unmanagedJars += (LocalProject("protobuf-v3") / Compile / packageBin).value,
     protoc := "protoc",
-    protocVersion := "3.11.4",
+    protocVersion := "3.20.3",
     generate := {
       val sourceDirs = paths.value
       val targetDirs = outputPaths.value

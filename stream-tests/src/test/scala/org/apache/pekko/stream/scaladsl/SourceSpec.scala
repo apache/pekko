@@ -150,6 +150,14 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       out.expectComplete()
     }
 
+    "combine many sources into one" in {
+      val sources = Vector.tabulate(5)(_ => Source.maybe[Int])
+      val (promises, sub) = Source.combine(sources)(Concat(_)).toMat(TestSink.probe[Int])(Keep.both).run()
+      for ((promise, idx) <- promises.zipWithIndex)
+        promise.success(Some(idx))
+      sub.request(5).expectNextN(0 to 4).expectComplete()
+    }
+
     "combine from two inputs with simplified API" in {
       val probes = immutable.Seq.fill(2)(TestPublisher.manualProbe[Int]())
       val source = Source.fromPublisher(probes(0)) :: Source.fromPublisher(probes(1)) :: Nil
@@ -505,6 +513,20 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
         .runWith(Sink.ignore)
 
       Await.result(result, 4.seconds) shouldBe Done
+    }
+  }
+
+  "Source of sources" must {
+    "be able to concat with flatten" in {
+      (for {
+        i <- Source(1 to 5)
+        j = Source(1 to i)
+      } yield j).flatten
+        .reduce(_ + _)
+        .runWith(TestSink[Int]())
+        .request(1)
+        .expectNext(35)
+        .expectComplete()
     }
   }
 }

@@ -26,15 +26,15 @@ import java.util.stream.Collectors
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import org.scalatest.time.Millis
-import org.scalatest.time.Span
-
 import org.apache.pekko
 import pekko.stream.ActorAttributes
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils.TE
 import pekko.testkit.DefaultTimeout
 import pekko.util.ByteString
+
+import org.scalatest.time.Millis
+import org.scalatest.time.Span
 
 class StreamConvertersSpec extends StreamSpec with DefaultTimeout {
 

@@ -20,10 +20,10 @@ import java.util.concurrent.CompletionStage
 
 import org.apache.pekko
 import pekko.stream.{ javadsl, scaladsl, IOResult }
-import pekko.util.ByteString
-import pekko.util.ccompat.JavaConverters._
 import pekko.stream.scaladsl.SinkToCompletionStage
 import pekko.stream.scaladsl.SourceToCompletionStage
+import pekko.util.ByteString
+import pekko.util.ccompat.JavaConverters._
 
 /**
  * Java API: Factories to create sinks and sources from files
