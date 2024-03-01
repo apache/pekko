@@ -523,7 +523,7 @@ object ActorSystem {
  * <b><i>Important Notice:</i></b>
  *
  * This class is not meant to be extended by user code. If you want to
- * actually roll your own Akka, it will probably be better to look into
+ * actually roll your own Pekko, it will probably be better to look into
  * extending [[pekko.actor.ExtendedActorSystem]] instead, but beware that you
  * are completely on your own in that case!
  */
@@ -728,7 +728,7 @@ abstract class ActorSystem extends ActorRefFactory with ClassicActorSystemProvid
  * <b><i>Important Notice:</i></b>
  *
  * This class is not meant to be extended by user code. If you want to
- * actually roll your own Akka, beware that you are completely on your own in
+ * actually roll your own Pekko, beware that you are completely on your own in
  * that case!
  */
 @DoNotInherit
