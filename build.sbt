@@ -24,6 +24,8 @@ ThisBuild / pekkoCoreProject := true
 // pekkoInlineEnabled must be set to false when this is backported to 1.0.x branch
 ThisBuild / pekkoInlineEnabled := false
 
+ThisBuild / resolvers += Resolver.ApacheMavenSnapshotsRepo
+
 enablePlugins(
   UnidocRoot,
   UnidocWithPrValidation,
