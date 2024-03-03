@@ -21,6 +21,8 @@ ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 
 ThisBuild / pekkoCoreProject := true
 
+ThisBuild / resolvers += Resolver.ApacheMavenSnapshotsRepo
+
 enablePlugins(
   UnidocRoot,
   UnidocWithPrValidation,
