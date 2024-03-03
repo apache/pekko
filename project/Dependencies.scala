@@ -141,8 +141,8 @@ object Dependencies {
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
       val dockerClient = Seq(
-        "com.github.docker-java" % "docker-java-core" % "3.3.5" % Test,
-        "com.github.docker-java" % "docker-java-transport-httpclient5" % "3.3.5" % Test)
+        "com.github.docker-java" % "docker-java-core" % "3.3.6" % Test,
+        "com.github.docker-java" % "docker-java-transport-httpclient5" % "3.3.6" % Test)
 
       val jackson = Seq(
         (jacksonCore % Test).force(),
