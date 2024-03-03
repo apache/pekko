@@ -31,14 +31,6 @@ addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 
-// We have to deliberately use older versions of sbt-paradox because current Pekko sbt build
-// only loads on JDK 1.8 so we need to bring in older versions of parboiled which support JDK 1.8
-addSbtPlugin(("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.0").excludeAll(
-  "com.lightbend.paradox", "sbt-paradox",
-  "com.lightbend.paradox" % "sbt-paradox-apidoc",
-  "com.lightbend.paradox" % "sbt-paradox-project-info"))
-addSbtPlugin(("com.lightbend.paradox" % "sbt-paradox" % "0.9.2").force().exclude("com.typesafe.sbt", "sbt-web"))
-addSbtPlugin(("com.lightbend.paradox" % "sbt-paradox-apidoc" % "0.10.1").force().exclude("com.typesafe.sbt", "sbt-web"))
-addSbtPlugin(("com.lightbend.paradox" % "sbt-paradox-project-info" % "2.0.0").force()
-  .exclude("com.typesafe.sbt", "sbt-web"))
-addSbtPlugin("com.github.sbt" % "sbt-web" % "1.5.4") // sbt-paradox 0.9.2 depends on old sbt-web 1.4.x, but we want a newer version
+resolvers += Resolver.ApacheMavenSnapshotsRepo
+
+addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+3-2b1f8708-SNAPSHOT")
