@@ -33,4 +33,4 @@ addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 
 resolvers += Resolver.ApacheMavenSnapshotsRepo
 
-addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+3-2b1f8708-SNAPSHOT")
+addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+5-13892678-SNAPSHOT")
