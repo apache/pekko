@@ -32,4 +32,4 @@ addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.5.0")
 
 resolvers += Resolver.ApacheMavenSnapshotsRepo
 
-addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+3-2b1f8708-SNAPSHOT")
+addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+5-13892678-SNAPSHOT")
