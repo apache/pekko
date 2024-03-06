@@ -116,6 +116,8 @@ object Dependencies {
     object TestDependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.15.1" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
+      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.0" % Test
+      val guava = "com.google.guava" % "guava" % "33.0.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
@@ -140,9 +142,12 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
+      val dockerClientVersion = "3.3.6"
       val dockerClient = Seq(
-        "com.github.docker-java" % "docker-java-core" % "3.3.6" % Test,
-        "com.github.docker-java" % "docker-java-transport-httpclient5" % "3.3.6" % Test)
+        "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
+        "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
+        TestDependencies.commonsCompress,
+        TestDependencies.guava)
 
       val jackson = Seq(
         (jacksonCore % Test).force(),
