@@ -18,12 +18,12 @@ import java.net.InetSocketAddress
 import scala.collection.immutable.Seq
 
 import org.apache.pekko
-import pekko.actor.Props
+import pekko.actor.{ ActorKilledException, Kill, Props }
 import pekko.io.Tcp
 import pekko.io.Tcp.{ Connected, PeerClosed, Register }
 import pekko.io.dns.{ RecordClass, RecordType }
 import pekko.io.dns.internal.DnsClient.Answer
-import pekko.testkit.{ ImplicitSender, PekkoSpec, TestProbe }
+import pekko.testkit.{ EventFilter, ImplicitSender, PekkoSpec, TestProbe }
 
 class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
   import TcpDnsClient._
@@ -106,6 +106,25 @@ class TcpDnsClientSpec extends PekkoSpec with ImplicitSender {
 
       answerProbe.expectMsg(Answer(42, Nil))
       answerProbe.expectMsg(Answer(43, Nil))
+    }
+
+    "fail when the connection just terminates" in {
+      val tcpExtensionProbe = TestProbe()
+      val answerProbe = TestProbe()
+      val connectionProbe = TestProbe()
+
+      val client = system.actorOf(Props(new TcpDnsClient(tcpExtensionProbe.ref, dnsServerAddress, answerProbe.ref)))
+
+      client ! exampleRequestMessage
+
+      tcpExtensionProbe.expectMsg(Tcp.Connect(dnsServerAddress))
+      connectionProbe.send(tcpExtensionProbe.lastSender, Connected(dnsServerAddress, localAddress))
+      connectionProbe.expectMsgType[Register]
+
+      EventFilter[ActorKilledException](occurrences = 1).intercept {
+        // simulate connection stopping due to register timeout => client must fail
+        connectionProbe.ref ! Kill
+      }
     }
   }
 }
