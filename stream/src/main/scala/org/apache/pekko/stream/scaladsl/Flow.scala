@@ -638,8 +638,8 @@ object Flow {
    *
    * '''Cancels when''' downstream cancels (see below)
    *
-   * The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
   @deprecated(
@@ -670,8 +670,8 @@ object Flow {
    *
    * '''Cancels when''' downstream cancels (see below)
    *
-   * The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
   @deprecated("Use 'Flow.lazyFutureFlow' instead", "Akka 2.6.0")
@@ -688,8 +688,8 @@ object Flow {
    * The materialized future value is completed with the materialized value of the future flow or failed with a
    * [[NeverMaterializedException]] if upstream fails or downstream cancels before the future has completed.
    *
-   * The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
   def futureFlow[I, O, M](flow: Future[Flow[I, O, M]]): Flow[I, O, Future[M]] =
@@ -716,8 +716,8 @@ object Flow {
    *
    * '''Cancels when''' downstream cancels (see below)
    *
-   * The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
   def lazyFlow[I, O, M](create: () => Flow[I, O, M]): Flow[I, O, Future[M]] =
@@ -744,8 +744,8 @@ object Flow {
    *
    * '''Cancels when''' downstream cancels (see below)
    *
-   * The operator's default behaviour in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
-   *  This behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
+   * The operator's default behavior in case of downstream cancellation before nested flow materialization (future completion) is to cancel immediately.
+   *  This behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy.PropagateToNested]] attribute,
    * this will delay downstream cancellation until nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    */
   def lazyFutureFlow[I, O, M](create: () => Future[Flow[I, O, M]]): Flow[I, O, Future[M]] =
@@ -1405,7 +1405,7 @@ trait FlowOps[+Out, +Mat] {
    *
    * Parallelism limits the number of how many asks can be "in flight" at the same time.
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
-   * (i.e. same behaviour as mapAsync).
+   * (i.e. same behavior as mapAsync).
    *
    * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated,
    * or with an [[java.util.concurrent.TimeoutException]] in case the ask exceeds the timeout passed in.
@@ -2398,8 +2398,8 @@ trait FlowOps[+Out, +Mat] {
    *  the resulting flow will be materialized and signalled for upstream completion, it can then complete or continue to emit elements at its own discretion.
    *
    * '''Cancels when''' the materialized flow cancels.
-   *  When downstream cancels before materialization of the nested flow, the operator's default behaviour is to cancel immediately,
-   *  this behaviour can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy]] attribute on the flow.
+   *  When downstream cancels before materialization of the nested flow, the operator's default behavior is to cancel immediately,
+   *  this behavior can be controlled by setting the [[pekko.stream.Attributes.NestedMaterializationCancellationPolicy]] attribute on the flow.
    *  When this attribute is configured to true, downstream cancellation is delayed until the nested flow's materialization which is then immediately cancelled (with the original cancellation cause).
    *
    *  @param n the number of elements to accumulate before materializing the downstream flow.

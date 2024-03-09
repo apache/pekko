@@ -14,11 +14,11 @@ You may have to add explicit dependencies to the new Apache Pekko version in you
 That said, there are some changes to configuration and behavior that should be considered, so
 reading this migration guide and testing your application thoroughly is recommended.
 
-## `Source.splitWhen`/`Flow.splitWhen`/`Source.splitAfter`/`Flow.splitAfter` behavioural change
+## splitWhen/splitAfter behavior change
 
 In Apache Pekko 1.0.x, the `splitWhen`/`splitAfter` stream operators on `Source`/`Flow` had an optional
 `SubstreamCancelStrategy` parameter which defaulted to `SubstreamCancelStrategy.drain`. In Apache Pekko
-1.1.x the usage of `SubstreamCancelStrategy` has been deprecated and instead `splitWhen`/`splitAfter`
+1.1.x, the usage of `SubstreamCancelStrategy` has been deprecated and instead `splitWhen`/`splitAfter`
 inherits the already existing `Supervision` strategy `Attribute` to achieve the same effect with the
 following translation
 
@@ -27,14 +27,14 @@ following translation
 * `Supervision.restart` doesn't have an equivalent `SubstreamCancelStrategy`. Since it doesn't make semantic
 sense for `SubFlow`s it behaves the same way as `Supervision.stop`.
 
-The potential behavioural change results from the fact that in Apache Pekko Streams the default `Supervision`
+The potential behavior change results from the fact that in Apache Pekko Streams the default `Supervision`
 strategy is `Supervision.stop` whereas the default `SubstreamCancelStrategy` for Apache Pekko 1.0.x is
 `SubstreamCancelStrategy.drain` (which translates to `Supervision.resume` in Apache Pekko 1.1.x). This means
 that when you upgrade from Apache Pekko 1.0.x to 1.1.x its possible that previously if `SubFlow`s
 resulted in errors the parent stream would continue to operate whereas in Apache Pekko 1.1.x the stream would cancel.
 
-If you would like to keep the previous Apache Pekko 1.0.x behaviour you can just specify the
-`Supervision.resumingDecider` attribute on your stream in the standard way, i.e. you would change
+If you would like to keep the previous Apache Pekko 1.0.x behavior you can just specify the
+`Supervision.resumingDecider` attribute on your stream in the standard way. That is, you would change
 
 @@@div { .group-java }
 ```java
@@ -67,6 +67,6 @@ source
 @@@
 
 If you already happen to have already explicitly defined a `SubstreamCancelStrategy` in the
-`splitWhen`/`splitAfter` operators then there won't be any behavioural change albeit you
+`splitWhen`/`splitAfter` operators then there won't be any behavior change albeit you
 will get deprecation warnings on compilation so its recommended to migrate your code to use
 the equivalent `SupervisionStrategy` as described earlier.
