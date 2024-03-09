@@ -137,7 +137,7 @@ import pekko.util.FutureConverters
 
 @InternalApi private[pekko] object ActorSystemStub {
   object config {
-    // this is backward compatible with the old behaviour, hence it uses the loader used to load the test-kit
+    // this is backward compatible with the old behavior, hence it uses the loader used to load the test-kit
     // which is not necessarily the one used to load the tests...
     // hence this might not include reference config related to the actually executing test
     // todo: might be better NOT to pass any class loader and let typesafeConfig rely on the contextClassLoader

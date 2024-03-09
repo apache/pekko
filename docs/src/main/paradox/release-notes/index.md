@@ -12,7 +12,7 @@ This is milestone release and is aimed at testing some new support for users who
 
 * Change the manager name to use `pekko` in the name ([PR587](https://github.com/apache/incubator-pekko/pull/587))
 * Support interacting with Akka Remote and Cluster nodes ([PR765](https://github.com/apache/incubator-pekko/pull/765), [PR1112](https://github.com/apache/incubator-pekko/pull/1112))
-  * See the [wiki notes](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) about uptaking this 
+    * See the [wiki notes](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility) about uptaking this 
 * Change noisy logging in DNS handler ([PR835](https://github.com/apache/incubator-pekko/pull/835))
 * Support reading akka-persistence snapshots ([PR837](https://github.com/apache/incubator-pekko/pull/837), [PR841](https://github.com/apache/incubator-pekko/pull/841))
 * Fix deprecation version on GraphApply ([PR877](https://github.com/apache/incubator-pekko/pull/877))

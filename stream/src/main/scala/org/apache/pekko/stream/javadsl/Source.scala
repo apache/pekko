@@ -2575,7 +2575,7 @@ final class Source[Out, Mat](delegate: scaladsl.Source[Out, Mat]) extends Graph[
    *
    * Parallelism limits the number of how many asks can be "in flight" at the same time.
    * Please note that the elements emitted by this operator are in-order with regards to the asks being issued
-   * (i.e. same behaviour as mapAsync).
+   * (i.e. same behavior as mapAsync).
    *
    * The operator fails with an [[pekko.stream.WatchedActorTerminatedException]] if the target actor is terminated.
    *

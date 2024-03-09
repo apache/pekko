@@ -29,9 +29,9 @@ class FlowFutureFlowSpec extends StreamSpec {
     case x        => x
   }
 
-  // this stage's behaviour in case of an 'early' downstream cancellation is governed by an attribute
+  // this stage's behavior in case of an 'early' downstream cancellation is governed by an attribute
   // so we run all tests cases using both modes of the attributes.
-  // please notice most of the cases don't exhibit any difference in behaviour between the two modes
+  // please notice most of the cases don't exhibit any difference in behavior between the two modes
   for {
     (att, name) <- List(
       (Attributes.NestedMaterializationCancellationPolicy.EagerCancellation, "EagerCancellation"),
