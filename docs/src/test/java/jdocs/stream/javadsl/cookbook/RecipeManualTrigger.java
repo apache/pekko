@@ -15,7 +15,10 @@ package jdocs.stream.javadsl.cookbook;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.ClosedShape;
+import org.apache.pekko.stream.FanInShape2;
+import org.apache.pekko.stream.FlowShape;
+import org.apache.pekko.stream.SourceShape;
 import org.apache.pekko.stream.javadsl.*;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
@@ -25,10 +28,9 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import scala.concurrent.duration.FiniteDuration;
 
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 public class RecipeManualTrigger extends RecipeTest {
   static ActorSystem system;
@@ -85,7 +87,7 @@ public class RecipeManualTrigger extends RecipeTest {
         TestPublisher.Probe<Trigger> pub = pubSub.first();
         TestSubscriber.Probe<Message> sub = pubSub.second();
 
-        FiniteDuration timeout = FiniteDuration.create(100, TimeUnit.MILLISECONDS);
+        Duration timeout = Duration.ofMillis(100);
         sub.expectSubscription().request(1000);
         sub.expectNoMessage(timeout);
 
@@ -140,7 +142,7 @@ public class RecipeManualTrigger extends RecipeTest {
         TestPublisher.Probe<Trigger> pub = pubSub.first();
         TestSubscriber.Probe<Message> sub = pubSub.second();
 
-        FiniteDuration timeout = FiniteDuration.create(100, TimeUnit.MILLISECONDS);
+        Duration timeout = Duration.ofMillis(100);
         sub.expectSubscription().request(1000);
         sub.expectNoMessage(timeout);
 

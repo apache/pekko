@@ -31,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import scala.concurrent.Await;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 public class RecipeMissedTicks extends RecipeTest {
@@ -83,8 +84,7 @@ public class RecipeMissedTicks extends RecipeTest {
         pub.sendNext(Tick);
         pub.sendNext(Tick);
 
-        scala.concurrent.duration.FiniteDuration timeout =
-            scala.concurrent.duration.FiniteDuration.create(200, TimeUnit.MILLISECONDS);
+        Duration timeout = Duration.ofMillis(200);
 
         Await.ready(latch, scala.concurrent.duration.Duration.create(1, TimeUnit.SECONDS));
 

@@ -15,11 +15,17 @@ package jdocs.stream.javadsl.cookbook;
 
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.stream.*;
+import org.apache.pekko.stream.Attributes;
+import org.apache.pekko.stream.FlowShape;
+import org.apache.pekko.stream.Inlet;
+import org.apache.pekko.stream.Outlet;
 import org.apache.pekko.stream.javadsl.Keep;
 import org.apache.pekko.stream.javadsl.Sink;
 import org.apache.pekko.stream.javadsl.Source;
-import org.apache.pekko.stream.stage.*;
+import org.apache.pekko.stream.stage.AbstractInHandler;
+import org.apache.pekko.stream.stage.AbstractOutHandler;
+import org.apache.pekko.stream.stage.GraphStage;
+import org.apache.pekko.stream.stage.GraphStageLogic;
 import org.apache.pekko.stream.testkit.TestPublisher;
 import org.apache.pekko.stream.testkit.TestSubscriber;
 import org.apache.pekko.stream.testkit.javadsl.TestSink;
@@ -28,9 +34,8 @@ import org.apache.pekko.testkit.javadsl.TestKit;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import scala.concurrent.duration.FiniteDuration;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 public class RecipeHold extends RecipeTest {
   static ActorSystem system;
@@ -188,10 +193,8 @@ public class RecipeHold extends RecipeTest {
         TestPublisher.Probe<Integer> pub = pubSub.first();
         TestSubscriber.Probe<Integer> sub = pubSub.second();
 
-        FiniteDuration timeout = FiniteDuration.create(200, TimeUnit.MILLISECONDS);
-
         sub.request(1);
-        sub.expectNoMessage(timeout);
+        sub.expectNoMessage(Duration.ofMillis(200));
 
         pub.sendNext(1);
         sub.expectNext(1);

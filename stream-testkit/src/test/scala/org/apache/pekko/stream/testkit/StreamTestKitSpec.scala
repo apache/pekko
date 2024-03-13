@@ -136,15 +136,15 @@ class StreamTestKitSpec extends PekkoSpec {
         // It also needs to be dilated since the testkit will dilate the timeout
         // accordingly to `-Dpekko.test.timefactor` value.
         val initialDelay = (timeout * 2).dilated
+        val pf: PartialFunction[Any, Unit] = {
+          case 1 =>
+            system.log.info("Message received :(")
+        }
         Source
           .tick(initialDelay, 1.millis, 1)
           .runWith(TestSink.probe)
           .request(1)
-          .expectNextWithTimeoutPF(timeout,
-            {
-              case 1 =>
-                system.log.info("Message received :(")
-            })
+          .expectNextWithTimeoutPF(timeout, pf)
 
       }.getMessage should include("timeout")
     }
@@ -180,15 +180,15 @@ class StreamTestKitSpec extends PekkoSpec {
         // It also needs to be dilated since the testkit will dilate the timeout
         // accordingly to `-Dpekko.test.timefactor` value.
         val initialDelay = (timeout * 2).dilated
+        val pf: PartialFunction[Any, Unit] = {
+          case 1 =>
+            system.log.info("Message received :(")
+        }
         Source
           .tick(initialDelay, 1.millis, 1)
           .runWith(TestSink.probe)
           .request(1)
-          .expectNextChainingPF(timeout,
-            {
-              case 1 =>
-                system.log.info("Message received :(")
-            })
+          .expectNextChainingPF(timeout, pf)
       }.getMessage should include("timeout")
     }
 
