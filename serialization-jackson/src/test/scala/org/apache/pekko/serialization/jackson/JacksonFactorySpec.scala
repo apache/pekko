@@ -17,6 +17,7 @@
 
 package org.apache.pekko.serialization.jackson
 
+import com.fasterxml.jackson.core.util.JsonRecyclerPools.BoundedPool
 import com.typesafe.config.ConfigFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -71,6 +72,22 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
         bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
       val streamWriteConstraints = mapper.getFactory.streamWriteConstraints()
       streamWriteConstraints.getMaxNestingDepth shouldEqual maxNestingDepth
+    }
+    "support BufferRecycler" in {
+      val bindingName = "testJackson"
+      val poolInstance = "bounded"
+      val boundedPoolSize = 1234
+      val config = ConfigFactory.parseString(
+        s"""pekko.serialization.jackson.buffer-recycler.pool-instance=$poolInstance
+           |pekko.serialization.jackson.buffer-recycler.bounded-pool-size=$boundedPoolSize
+           |""".stripMargin)
+        .withFallback(defaultConfig)
+      val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, config)
+      val mapper = JacksonObjectMapperProvider.createObjectMapper(
+        bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
+      val recyclerPool = mapper.getFactory._getRecyclerPool()
+      recyclerPool.getClass.getSimpleName shouldEqual "BoundedPool"
+      recyclerPool.asInstanceOf[BoundedPool].capacity() shouldEqual boundedPoolSize
     }
   }
 }

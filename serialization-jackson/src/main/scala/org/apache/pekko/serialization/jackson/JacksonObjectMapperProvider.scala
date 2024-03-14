@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.{
   StreamWriteFeature
 }
 import com.fasterxml.jackson.core.json.{ JsonReadFeature, JsonWriteFeature }
+import com.fasterxml.jackson.core.util.{ BufferRecycler, JsonRecyclerPools, RecyclerPool }
 import com.fasterxml.jackson.databind.{
   DeserializationFeature,
   MapperFeature,
@@ -103,10 +104,12 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
         // instead of using JsonFactoryBuilder (new in Jackson 2.10.0).
         factory.setStreamReadConstraints(streamReadConstraints)
         factory.setStreamWriteConstraints(streamWriteConstraints)
+        factory.setRecyclerPool(getBufferRecyclerPool(config))
       case None =>
         new JsonFactoryBuilder()
           .streamReadConstraints(streamReadConstraints)
           .streamWriteConstraints(streamWriteConstraints)
+          .recyclerPool(getBufferRecyclerPool(config))
           .build()
     }
 
@@ -151,6 +154,18 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     }
 
     jsonFactory
+  }
+
+  private def getBufferRecyclerPool(cfg: Config): RecyclerPool[BufferRecycler] = {
+    cfg.getString("buffer-recycler.pool-instance") match {
+      case "thread-local"            => JsonRecyclerPools.threadLocalPool()
+      case "lock-free"               => JsonRecyclerPools.newLockFreePool()
+      case "shared-lock-free"        => JsonRecyclerPools.sharedLockFreePool()
+      case "concurrent-deque"        => JsonRecyclerPools.newConcurrentDequePool()
+      case "shared-concurrent-deque" => JsonRecyclerPools.sharedConcurrentDequePool()
+      case "bounded"                 => JsonRecyclerPools.newBoundedPool(cfg.getInt("buffer-recycler.bounded-pool-size"))
+      case other                     => throw new IllegalArgumentException(s"Unknown recycler-pool: $other")
+    }
   }
 
   @nowarn("msg=deprecated")
