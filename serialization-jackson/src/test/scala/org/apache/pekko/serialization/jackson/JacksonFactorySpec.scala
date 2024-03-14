@@ -75,8 +75,6 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
     }
     "support BufferRecycler (default)" in {
       val bindingName = "testJackson"
-      val poolInstance = "bounded"
-      val boundedPoolSize = 1234
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, defaultConfig)
       val mapper = JacksonObjectMapperProvider.createObjectMapper(
         bindingName, None, objectMapperFactory, jacksonConfig, dynamicAccess, None)
