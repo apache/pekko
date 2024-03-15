@@ -40,7 +40,6 @@ object ProjectIndexGenerator extends AutoPlugin {
       "../additional/ide.md",
       "immutable.md",
       "../additional/osgi.md",
-      "migration-guides.md",
       "rolling-update.md",
       "issue-tracking.md",
       "licenses.md")

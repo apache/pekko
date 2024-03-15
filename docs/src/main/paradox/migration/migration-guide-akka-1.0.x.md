@@ -1,12 +1,10 @@
 ---
 project.description: Apache Pekko version migration guides.
 ---
-# Migration Guides
-
 Apache Pekko is based on the latest version of Akka in the v2.6.x series. If migrating from an earlier version of Akka, 
 please [migrate to Akka 2.6](https://doc.akka.io/docs/akka/current/project/migration-guides.html) before migrating to Pekko.
 
-## Migration from Akka to Apache Pekko
+# Migration from Akka to Apache Pekko
 
 These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.0 and assume a basic level of Akka experience. Please feel free to submit an issue or a patch if you feel like the notes can be improved.
 
@@ -23,7 +21,7 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
     * With @ref:[Classic Remoting](../remoting.md), Akka defaults to 2552, while Pekko defaults to 7355.
     * With @ref:[Artery Remoting](../remoting-artery.md), Akka defaults to 25520, while Pekko defaults to 17355.
 
-### Dependency Changes
+## Dependency Changes
 * The Scala 2.13/Scala 3 versions of Pekko no longer include [scala-java8-compat](https://github.com/scala/scala-java8-compat)
   as a dependency. This means if you were relying on `scala-java8-compat` along with Scala 2.12/Scala 3 as a transitive 
   dependency that it's recommended to migrate to using [`scala.jdk` instead](https://github.com/scala/scala-java8-compat#do-you-need-this).
@@ -39,17 +37,8 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 * reactivestreams is upgraded to 1.0.4.
 * pekko-protobuf-v3 is based on protobuf-java 3.16.3.
 
-### Miscellaneous Notes
+## Miscellaneous Notes
 
 Data persisted with "akka-persistence" is usable with "pekko-persistence" and vice versa (@ref:[Persistence](../persistence.md)). There is one [issue](https://github.com/apache/incubator-pekko/pull/837) that is fixed in v1.0.3-M1 (related to persisted snapshots - for which there is a [workaround](https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850)).
 
 Early releases of Apache Pekko could not be used to allow Akka and Pekko nodes to combine to form a @ref:[cluster](../cluster-usage.md). The v1.0.3-M1 @ref:[release](../release-notes/index.md) has experimental support that we would appreciate users to try out in test environments ([wiki page](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).
-
-
-@@toc { depth=1 }
-
-@@@ index
-
-* [migration-guide-1.0.x-1.1.x](migration-guide-1.0.x-1.1.x.md)
-
-@@@

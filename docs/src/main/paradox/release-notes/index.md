@@ -47,7 +47,7 @@ a license that is not compatible with Open Source usage.
 
 Apache Pekko has changed the package names, among other changes. Config names have changed to use `pekko` instead
 of `akka` in their names. The default ports for pekko-remote have changed to avoid clashing with the akka-remote
-defaults. Users switching from Akka to Pekko should read our @ref:[Migration Guide](../project/migration-guides.md).
+defaults. Users switching from Akka to Pekko should read our @ref:[Migration Guide](../migration/index.md).
 
 Generally, we have tried to make it as easy as possible to switch existing Akka 2.6 based projects over to using
 Pekko 1.0.
