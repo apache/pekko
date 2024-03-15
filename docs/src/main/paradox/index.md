@@ -19,5 +19,6 @@
 * [additional/deploy](additional/deploy.md)
 * [project/index](project/project-index.md)
 * [classic](index-classic.md)
+* [migration](migration/index.md)
 
 @@@

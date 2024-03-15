@@ -1,7 +1,7 @@
 ---
 project.description: Migrating to Apache Pekko 1.1.
 ---
-# Migration Guide 1.0.x to 1.1.x
+# Migration from Apache Pekko 1.0.x to 1.1.x
 
 Apache Pekko 1.1.x is binary backwards compatible with 1.0.x with the ordinary exceptions listed in the
 @ref:[Binary Compatibility Rules](../common/binary-compatibility-rules.md).
