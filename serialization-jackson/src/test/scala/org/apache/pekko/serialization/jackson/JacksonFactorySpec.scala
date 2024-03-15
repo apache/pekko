@@ -61,6 +61,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       streamReadConstraints.getMaxDocumentLength shouldEqual maxDocLen
       streamReadConstraints.getMaxNestingDepth shouldEqual maxNestingDepth
     }
+
     "support StreamWriteConstraints" in {
       val bindingName = "testJackson"
       val maxNestingDepth = 54321
@@ -73,6 +74,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val streamWriteConstraints = mapper.getFactory.streamWriteConstraints()
       streamWriteConstraints.getMaxNestingDepth shouldEqual maxNestingDepth
     }
+
     "support BufferRecycler (default)" in {
       val bindingName = "testJackson"
       val jacksonConfig = JacksonObjectMapperProvider.configForBinding(bindingName, defaultConfig)
@@ -81,6 +83,7 @@ class JacksonFactorySpec extends TestKit(ActorSystem("JacksonFactorySpec"))
       val recyclerPool = mapper.getFactory._getRecyclerPool()
       recyclerPool.getClass.getSimpleName shouldEqual "ThreadLocalPool"
     }
+
     "support BufferRecycler with config override" in {
       val bindingName = "testJackson"
       val poolInstance = "bounded"
