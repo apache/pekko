@@ -40,10 +40,6 @@ object JdkOptions extends AutoPlugin {
     }
   }
 
-  lazy val isJdk8: Boolean =
-    VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(s"=1.8"))
-  lazy val isJdk11orHigher: Boolean =
-    VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(">=11"))
   lazy val isJdk17orHigher: Boolean =
     VersionNumber(specificationVersion).matchesSemVer(SemanticSelector(">=17"))
 
@@ -55,8 +51,6 @@ object JdkOptions extends AutoPlugin {
       "--add-opens=java.base/java.nio=ALL-UNNAMED" :: Nil
     } else Nil
 
-  def notOnJdk8[T](values: Seq[T]): Seq[T] = if (isJdk8) Seq.empty[T] else values
-
   def targetJdkScalacOptions(
       targetSystemJdk: Boolean,
       jdk8home: Option[File],
@@ -66,7 +60,6 @@ object JdkOptions extends AutoPlugin {
       targetSystemJdk,
       jdk8home,
       fullJavaHomes,
-      Seq(if (scalaVersion.startsWith("3.")) "-Xtarget:8" else "release:8"),
       (java8home: File) => Seq("-release", "8"))
   def targetJdkJavacOptions(
       targetSystemJdk: Boolean,
@@ -76,7 +69,6 @@ object JdkOptions extends AutoPlugin {
       targetSystemJdk,
       jdk8home,
       fullJavaHomes,
-      Nil,
       // '-release 8' would be a neater option here, but is currently not an
       // option because it doesn't provide access to `sun.misc.Unsafe` https://github.com/akka/akka/issues/27079
       (java8home: File) => Seq("-source", "8", "-target", "8", "-bootclasspath", java8home + "/jre/lib/rt.jar"))
@@ -85,12 +77,9 @@ object JdkOptions extends AutoPlugin {
       targetSystemJdk: Boolean,
       jdk8home: Option[File],
       fullJavaHomes: Map[String, File],
-      jdk8options: Seq[String],
       jdk11options: File => Seq[String]): Seq[String] =
     if (targetSystemJdk)
       Nil
-    else if (isJdk8)
-      jdk8options
     else
       jdk8home.orElse(fullJavaHomes.get("8")) match {
         case Some(java8home) =>
