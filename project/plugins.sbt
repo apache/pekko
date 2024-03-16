@@ -31,6 +31,4 @@ addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 
-resolvers += Resolver.ApacheMavenSnapshotsRepo
-
-addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1-RC1+5-13892678-SNAPSHOT")
+addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")

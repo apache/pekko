@@ -12,7 +12,6 @@
 * [../additional/ide](../additional/ide.md)
 * [immutable](immutable.md)
 * [../additional/osgi](../additional/osgi.md)
-* [migration-guides](migration-guides.md)
 * [rolling-update](rolling-update.md)
 * [issue-tracking](issue-tracking.md)
 * [licenses](licenses.md)
