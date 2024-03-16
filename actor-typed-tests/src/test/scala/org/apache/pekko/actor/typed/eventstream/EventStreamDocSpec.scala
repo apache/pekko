@@ -92,12 +92,11 @@ object EventStreamDocSpec {
 
 class EventStreamDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogCapturing {
   import EventStreamDocSpec._
-  import org.apache.pekko.actor.typed.scaladsl.AskPattern._
 
   "listen to dead letters" in {
     // #listen-to-dead-letters
 
-    ActorSystem(Behaviors.setup[Nothing] { context =>
+    ActorSystem(Behaviors.setup[Void] { context =>
         context.spawn(DeadLetterListener(), "DeadLetterListener")
         Behaviors.empty
       }, "DeadLetterListenerSystem")
@@ -107,7 +106,7 @@ class EventStreamDocSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike 
   "listen to all dead letters" in {
     // #listen-to-super-class
 
-    ActorSystem(Behaviors.setup[Nothing] { context =>
+    ActorSystem(Behaviors.setup[Void] { context =>
         context.spawn(AllDeadLetterListener(), "AllDeadLetterListener")
         Behaviors.empty
       }, "AllDeadLetterListenerSystem")

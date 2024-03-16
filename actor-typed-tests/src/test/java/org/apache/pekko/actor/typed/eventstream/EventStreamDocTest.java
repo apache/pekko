@@ -37,7 +37,7 @@ public class EventStreamDocTest extends JUnitSuite {
     public void listenToDeadLetters() {
         // #subscribe-to-dead-letters
         ActorSystem<Command> system = ActorSystem.create(DeadLetterListenerBehavior.create(), "DeadLetterListener");
-        system.eventStream().tell(new EventStream.Subscribe<>(DeadLetter.class, system));
+        system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
         // #subscribe-to-dead-letters
         ActorTestKit.shutdown(system);
     }

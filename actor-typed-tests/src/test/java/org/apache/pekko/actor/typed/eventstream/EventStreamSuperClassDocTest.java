@@ -41,7 +41,7 @@ public class EventStreamSuperClassDocTest extends JUnitSuite {
     public void listenToDeadLetters() {
         // #subscribe-to-super-class
         ActorSystem<Command> system = ActorSystem.create(AllDeadLettersListenerBehavior.create(), "AllDeadLettersListener");
-        system.eventStream().tell(new EventStream.Subscribe<>(AllDeadLetters.class, system));
+        system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
         // #subscribe-to-super-class
         ActorTestKit.shutdown(system);
     }
