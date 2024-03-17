@@ -714,7 +714,7 @@ class FlowFlatMapPrefixSpec extends StreamSpec("pekko.loglevel = debug") {
         }
     }
     def withAttr[A] = Flow.fromGraph(new WithAttr[A])
-    "baseline behaviour" in {
+    "baseline behavior" in {
       Source
         .single("1")
         .via(withAttr)
