@@ -636,7 +636,12 @@ import pekko.util.ccompat.JavaConverters._
               else substreamSource.push(elem)
             }
           } catch {
-            case NonFatal(ex) => onUpstreamFailure(ex)
+            case NonFatal(ex) =>
+              decider(ex) match {
+                case Supervision.Resume  => pull(in)
+                case Supervision.Stop    => onUpstreamFailure(ex)
+                case Supervision.Restart => onUpstreamFailure(ex) // TODO implement restart?
+              }
           }
         }
 

@@ -327,9 +327,6 @@ class FlowSplitWhenSpec extends StreamSpec("""
     }
 
     "resume stream when splitWhen function throws" in {
-      info("Supervision is not supported fully by GraphStages yet")
-      pending
-
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
       val publisher = Source

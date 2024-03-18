@@ -211,8 +211,6 @@ class FlowSplitAfterSpec extends StreamSpec("""
     }
 
     "resume stream when splitAfter function throws" in {
-      info("Supervision is not supported fully by GraphStages yet")
-      pending
       val publisherProbeProbe = TestPublisher.manualProbe[Int]()
       val exc = TE("test")
       val publisher = Source
@@ -250,10 +248,10 @@ class FlowSplitAfterSpec extends StreamSpec("""
       upstreamSubscription.sendNext(6)
       substreamPuppet1.expectNext(6)
       substreamPuppet1.expectComplete()
+      upstreamSubscription.sendNext(7)
       val substream2 = subscriber.expectNext()
       val substreamPuppet2 = StreamPuppet(substream2.runWith(Sink.asPublisher(false)))
       substreamPuppet2.request(10)
-      upstreamSubscription.sendNext(7)
       substreamPuppet2.expectNext(7)
 
       upstreamSubscription.sendComplete()
