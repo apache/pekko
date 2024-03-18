@@ -40,7 +40,7 @@ object Protobuf {
     // this keeps intellij happy for files that use the shaded protobuf
     Compile / unmanagedJars += (LocalProject("protobuf-v3") / Compile / packageBin).value,
     protoc := "protoc",
-    protocVersion := "3.20.3",
+    protocVersion := "3.25.3",
     generate := {
       val sourceDirs = paths.value
       val targetDirs = outputPaths.value
