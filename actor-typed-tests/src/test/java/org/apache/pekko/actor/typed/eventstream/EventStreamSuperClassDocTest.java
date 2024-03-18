@@ -18,6 +18,7 @@
 package org.apache.pekko.actor.typed.eventstream;
 
 import org.apache.pekko.actor.testkit.typed.javadsl.ActorTestKit;
+import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.actor.typed.Behavior;
 import org.apache.pekko.actor.typed.javadsl.AbstractBehavior;
@@ -42,7 +43,6 @@ public class EventStreamSuperClassDocTest extends JUnitSuite {
     // #subscribe-to-super-class
     ActorSystem<Command> system =
         ActorSystem.create(AllDeadLettersListenerBehavior.create(), "AllDeadLettersListener");
-    system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
     // #subscribe-to-super-class
     ActorTestKit.shutdown(system);
   }
@@ -70,6 +70,13 @@ public class EventStreamSuperClassDocTest extends JUnitSuite {
 
     public AllDeadLettersListenerBehavior(ActorContext<Command> context) {
       super(context);
+      ActorRef<AllDeadLetters> messageAdapter =
+          context.messageAdapter(
+              AllDeadLetters.class, EventStreamSuperClassDocTest.AllDeadLettersWrapper::new);
+      context
+          .getSystem()
+          .eventStream()
+          .tell(new EventStream.Subscribe<>(AllDeadLetters.class, messageAdapter));
     }
 
     @Override
@@ -78,7 +85,7 @@ public class EventStreamSuperClassDocTest extends JUnitSuite {
           .onMessage(
               AllDeadLettersWrapper.class,
               msg -> {
-                final AllDeadLetters allDeadLetters = msg.allDeadLetters;
+                final AllDeadLetters allDeadLetters = msg.getAllDeadLetters();
                 final Class<? extends AllDeadLetters> klass = msg.allDeadLetters.getClass();
                 if (klass.isAssignableFrom(DeadLetter.class)) {
                   final DeadLetter deadLetter = (DeadLetter) allDeadLetters;
