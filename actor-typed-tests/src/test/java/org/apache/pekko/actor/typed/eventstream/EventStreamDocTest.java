@@ -33,53 +33,65 @@ import org.apache.pekko.actor.typed.ActorSystem;
 
 public class EventStreamDocTest extends JUnitSuite {
 
-    @Test
-    public void listenToDeadLetters() {
-        // #subscribe-to-dead-letters
-        ActorSystem<Command> system = ActorSystem.create(DeadLetterListenerBehavior.create(), "DeadLetterListener");
-        system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
-        // #subscribe-to-dead-letters
-        ActorTestKit.shutdown(system);
+  @Test
+  public void listenToDeadLetters() {
+    // #subscribe-to-dead-letters
+    ActorSystem<Command> system =
+        ActorSystem.create(DeadLetterListenerBehavior.create(), "DeadLetterListener");
+    system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
+    // #subscribe-to-dead-letters
+    ActorTestKit.shutdown(system);
+  }
+
+  // #listen-to-dead-letters
+  interface Command {}
+
+  static final class DeadLetterWrapper implements Command {
+    private final DeadLetter deadLetter;
+
+    public DeadLetterWrapper(DeadLetter deadLetter) {
+      this.deadLetter = deadLetter;
     }
 
-    // #listen-to-dead-letters
-    interface Command {}
+    public DeadLetter getDeadLetter() {
+      return deadLetter;
+    }
+  }
 
-    static final class DeadLetterWrapper implements Command {
-        private final DeadLetter deadLetter;
+  static class DeadLetterListenerBehavior extends AbstractBehavior<Command> {
 
-        public DeadLetterWrapper(DeadLetter deadLetter) {
-            this.deadLetter = deadLetter;
-        }
-
-        public DeadLetter getDeadLetter() {
-            return deadLetter;
-        }
+    public static Behavior<Command> create() {
+      return Behaviors.setup(DeadLetterListenerBehavior::new);
     }
 
-    static class DeadLetterListenerBehavior extends AbstractBehavior<Command> {
+    public DeadLetterListenerBehavior(ActorContext<Command> context) {
+      super(context);
+      ActorRef<DeadLetter> messageAdapter =
+          context.messageAdapter(DeadLetter.class, DeadLetterWrapper::new);
+      context
+          .getSystem()
+          .eventStream()
+          .tell(new EventStream.Subscribe<>(DeadLetter.class, messageAdapter));
+    }
 
-        public static Behavior<Command> create() {
-            return Behaviors.setup(DeadLetterListenerBehavior::new);
-        }
-
-        public DeadLetterListenerBehavior(ActorContext<Command> context) {
-            super(context);
-            ActorRef<DeadLetter> messageAdapter = context.messageAdapter(DeadLetter.class, DeadLetterWrapper::new);
-            context.getSystem().eventStream().tell(new EventStream.Subscribe<>(DeadLetter.class, messageAdapter));
-        }
-
-        @Override
-        public Receive<Command> createReceive() {
-            return newReceiveBuilder().onMessage(DeadLetterWrapper.class, msg -> {
+    @Override
+    public Receive<Command> createReceive() {
+      return newReceiveBuilder()
+          .onMessage(
+              DeadLetterWrapper.class,
+              msg -> {
                 final DeadLetter deadLetter = msg.getDeadLetter();
-                getContext().getLog().info("Dead letter received from sender ({}) to recipient ({}) with message: {}",
+                getContext()
+                    .getLog()
+                    .info(
+                        "Dead letter received from sender ({}) to recipient ({}) with message: {}",
                         deadLetter.sender().path().name(),
                         deadLetter.recipient().path().name(),
                         deadLetter.message().toString());
                 return Behaviors.same();
-            }).build();
-        }
+              })
+          .build();
     }
-    // #listen-to-dead-letters
+  }
+  // #listen-to-dead-letters
 }

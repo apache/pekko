@@ -37,67 +37,92 @@ import org.apache.pekko.actor.UnhandledMessage;
 
 public class EventStreamSuperClassDocTest extends JUnitSuite {
 
-    @Test
-    public void listenToDeadLetters() {
-        // #subscribe-to-super-class
-        ActorSystem<Command> system = ActorSystem.create(AllDeadLettersListenerBehavior.create(), "AllDeadLettersListener");
-        system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
-        // #subscribe-to-super-class
-        ActorTestKit.shutdown(system);
+  @Test
+  public void listenToDeadLetters() {
+    // #subscribe-to-super-class
+    ActorSystem<Command> system =
+        ActorSystem.create(AllDeadLettersListenerBehavior.create(), "AllDeadLettersListener");
+    system.eventStream().tell(new EventStream.Subscribe<>(Command.class, system));
+    // #subscribe-to-super-class
+    ActorTestKit.shutdown(system);
+  }
+
+  // #listen-to-super-class
+  interface Command {}
+
+  static final class AllDeadLettersWrapper implements Command {
+    private final AllDeadLetters allDeadLetters;
+
+    public AllDeadLettersWrapper(AllDeadLetters deadLetter) {
+      this.allDeadLetters = deadLetter;
     }
 
-    // #listen-to-super-class
-    interface Command {}
+    public AllDeadLetters getAllDeadLetters() {
+      return allDeadLetters;
+    }
+  }
 
-    static final class AllDeadLettersWrapper implements Command {
-        private final AllDeadLetters allDeadLetters;
+  static class AllDeadLettersListenerBehavior extends AbstractBehavior<Command> {
 
-        public AllDeadLettersWrapper(AllDeadLetters deadLetter) {
-            this.allDeadLetters = deadLetter;
-        }
-
-        public AllDeadLetters getAllDeadLetters() {
-            return allDeadLetters;
-        }
+    public static Behavior<Command> create() {
+      return Behaviors.setup(AllDeadLettersListenerBehavior::new);
     }
 
-    static class AllDeadLettersListenerBehavior extends AbstractBehavior<Command> {
+    public AllDeadLettersListenerBehavior(ActorContext<Command> context) {
+      super(context);
+    }
 
-        public static Behavior<Command> create() {
-            return Behaviors.setup(AllDeadLettersListenerBehavior::new);
-        }
-
-        public AllDeadLettersListenerBehavior(ActorContext<Command> context) {
-            super(context);
-        }
-
-        @Override
-        public Receive<Command> createReceive() {
-            return newReceiveBuilder().onMessage(AllDeadLettersWrapper.class, msg -> {
+    @Override
+    public Receive<Command> createReceive() {
+      return newReceiveBuilder()
+          .onMessage(
+              AllDeadLettersWrapper.class,
+              msg -> {
                 final AllDeadLetters allDeadLetters = msg.allDeadLetters;
                 final Class<? extends AllDeadLetters> klass = msg.allDeadLetters.getClass();
                 if (klass.isAssignableFrom(DeadLetter.class)) {
-                    final DeadLetter deadLetter = (DeadLetter) allDeadLetters;
-                    getContext().getLog().info("DeadLetter: sender ({}) to recipient ({}) with message: {}",
-                            deadLetter.sender().path().name(), deadLetter.recipient().path().name(), deadLetter.message());
+                  final DeadLetter deadLetter = (DeadLetter) allDeadLetters;
+                  getContext()
+                      .getLog()
+                      .info(
+                          "DeadLetter: sender ({}) to recipient ({}) with message: {}",
+                          deadLetter.sender().path().name(),
+                          deadLetter.recipient().path().name(),
+                          deadLetter.message());
                 } else if (klass.isAssignableFrom(Dropped.class)) {
-                    final Dropped dropped = (Dropped) allDeadLetters;
-                    getContext().getLog().info("Dropped: sender ({}) to recipient ({}) with message: {}, reason: {}",
-                            dropped.sender().path().name(), dropped.recipient().path().name(), dropped.message(), dropped.reason());
+                  final Dropped dropped = (Dropped) allDeadLetters;
+                  getContext()
+                      .getLog()
+                      .info(
+                          "Dropped: sender ({}) to recipient ({}) with message: {}, reason: {}",
+                          dropped.sender().path().name(),
+                          dropped.recipient().path().name(),
+                          dropped.message(),
+                          dropped.reason());
                 } else if (klass.isAssignableFrom(SuppressedDeadLetter.class)) {
-                    final SuppressedDeadLetter suppressedDeadLetter = (SuppressedDeadLetter) allDeadLetters;
-                    getContext().getLog().trace("SuppressedDeadLetter: sender ({}) to recipient ({}) with message: {}",
-                            suppressedDeadLetter.sender().path().name(), suppressedDeadLetter.recipient().path().name(),
-                            suppressedDeadLetter.message());
+                  final SuppressedDeadLetter suppressedDeadLetter =
+                      (SuppressedDeadLetter) allDeadLetters;
+                  getContext()
+                      .getLog()
+                      .trace(
+                          "SuppressedDeadLetter: sender ({}) to recipient ({}) with message: {}",
+                          suppressedDeadLetter.sender().path().name(),
+                          suppressedDeadLetter.recipient().path().name(),
+                          suppressedDeadLetter.message());
                 } else if (klass.isAssignableFrom(UnhandledMessage.class)) {
-                    final UnhandledMessage unhandledMessage = (UnhandledMessage) allDeadLetters;
-                    getContext().getLog().info("UnhandledMessage: sender ({}) to recipient ({}) with message: {}",
-                            unhandledMessage.sender().path().name(), unhandledMessage.recipient().path().name(),
-                            unhandledMessage.message());
+                  final UnhandledMessage unhandledMessage = (UnhandledMessage) allDeadLetters;
+                  getContext()
+                      .getLog()
+                      .info(
+                          "UnhandledMessage: sender ({}) to recipient ({}) with message: {}",
+                          unhandledMessage.sender().path().name(),
+                          unhandledMessage.recipient().path().name(),
+                          unhandledMessage.message());
                 }
                 return Behaviors.same();
-            }).build();
-        }
+              })
+          .build();
     }
-    // #listen-to-super-class
+  }
+  // #listen-to-super-class
 }
