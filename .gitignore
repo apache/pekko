@@ -25,6 +25,8 @@
 .eprj
 .history
 .idea
+!.idea/icon.png
+!.idea/vcs.xml
 .manager
 .metals/
 .multi-jvm
