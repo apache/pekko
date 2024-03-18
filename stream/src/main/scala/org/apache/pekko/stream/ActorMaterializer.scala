@@ -268,13 +268,19 @@ abstract class ActorMaterializer extends Materializer with MaterializerLoggingPr
 class MaterializationException(msg: String, cause: Throwable = null) extends RuntimeException(msg, cause)
 
 /**
+ * A base exception for abrupt stream termination.
+ */
+sealed class AbruptStreamTerminationException(msg: String, cause: Throwable = null)
+    extends RuntimeException(msg, cause)
+    with NoStackTrace
+
+/**
  * This exception signals that an actor implementing a Reactive Streams Subscriber, Publisher or Processor
  * has been terminated without being notified by an onError, onComplete or cancel signal. This usually happens
  * when an ActorSystem is shut down while stream processing actors are still running.
  */
 final case class AbruptTerminationException(actor: ActorRef)
-    extends RuntimeException(s"Processor actor [$actor] terminated abruptly")
-    with NoStackTrace
+    extends AbruptStreamTerminationException(s"Processor actor [$actor] terminated abruptly")
 
 /**
  * Signal that the operator was abruptly terminated, usually seen as a call to `postStop` of the `GraphStageLogic` without
@@ -282,9 +288,8 @@ final case class AbruptTerminationException(actor: ActorRef)
  * the actor running the graph is killed, which happens when the materializer or actor system is terminated.
  */
 final class AbruptStageTerminationException(logic: GraphStageLogic)
-    extends RuntimeException(
+    extends AbruptStreamTerminationException(
       s"GraphStage [$logic] terminated abruptly, caused by for example materializer or actor system termination.")
-    with NoStackTrace
 
 object ActorMaterializerSettings {
 
