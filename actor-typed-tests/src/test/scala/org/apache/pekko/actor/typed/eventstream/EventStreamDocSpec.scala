@@ -37,7 +37,7 @@ object EventStreamDocSpec {
     def apply(): Behavior[Command] = {
       Behaviors.setup[Command] {
         context =>
-          val adapter = context.messageAdapter[DeadLetter](DeadLetterWrapper)
+          val adapter = context.messageAdapter[DeadLetter](DeadLetterWrapper.apply)
           context.system.eventStream ! Subscribe(adapter)
 
           Behaviors.receiveMessage {
@@ -59,7 +59,7 @@ object EventStreamDocSpec {
     def apply(): Behavior[Command] = {
       Behaviors.setup[Command] {
         context =>
-          val adapter = context.messageAdapter[AllDeadLetters](AllDeadLettersWrapper)
+          val adapter = context.messageAdapter[AllDeadLetters](AllDeadLettersWrapper.apply)
           context.system.eventStream ! Subscribe(adapter)
 
           Behaviors.receiveMessage {
