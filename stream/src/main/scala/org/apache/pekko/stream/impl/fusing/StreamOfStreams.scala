@@ -364,11 +364,12 @@ import pekko.util.ccompat.JavaConverters._
               nextElementValue = elem
             }
           } else {
-            if (activeSubstreamsMap.size + closedSubstreams.size == maxSubstreams)
-              throw tooManySubstreamsOpenException
-            else if (closedSubstreams.contains(key) && !hasBeenPulled(in))
+            if (closedSubstreams.contains(key)) {
+              // If the sub stream is already closed, we just skip the current element and pull the next element.
               pull(in)
-            else runSubstream(key, elem)
+            } else if (activeSubstreamsMap.size + closedSubstreams.size == maxSubstreams) {
+              throw tooManySubstreamsOpenException
+            } else runSubstream(key, elem)
           }
         } catch {
           case NonFatal(ex) =>

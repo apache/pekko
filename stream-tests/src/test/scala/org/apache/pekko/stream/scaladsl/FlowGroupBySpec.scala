@@ -694,6 +694,19 @@ class FlowGroupBySpec extends StreamSpec("""
       queue.complete()
     }
 
+    "should not fail when one sub stream completed" in {
+      Source(1 to 10)
+        .groupBy(2, _ % 2, allowClosedSubstreamRecreation = false)
+        .take(2)
+        .mergeSubstreams
+        .fold(Set.empty[Int])((set, elem) => set + elem)
+        .runWith(TestSink())
+        .ensureSubscription()
+        .request(10)
+        .expectNext(Set(1, 2, 3, 4))
+        .expectComplete()
+    }
+
   }
 
 }
