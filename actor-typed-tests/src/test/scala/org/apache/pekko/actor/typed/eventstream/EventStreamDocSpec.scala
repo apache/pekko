@@ -67,11 +67,11 @@ object EventStreamDocSpec {
               allDeadLetters match {
                 case DeadLetter(message, sender, recipient) =>
                   context.log.info("DeadLetter received from sender ({}) to recipient ({}) with message: {}",
-                    sender.path.name, recipient.path.name, message)
+                    sender.path.name, recipient.path.name, message.toString)
 
                 case Dropped(message, reason, sender, recipient) =>
                   context.log.info("Dropped: sender ({}) to recipient ({}) with message: {}, reason: {}",
-                    sender.path.name, recipient.path.name, reason, message)
+                    sender.path.name, recipient.path.name, message.toString, reason)
 
                 case SuppressedDeadLetter(message, sender, recipient) =>
                   // use trace otherwise logs will be flooded
@@ -80,7 +80,7 @@ object EventStreamDocSpec {
 
                 case UnhandledMessage(message, sender, recipient) =>
                   context.log.info("UnhandledMessage received from sender ({}) to recipient ({}) with message: {}",
-                    sender.path.name, recipient.path.name, message)
+                    sender.path.name, recipient.path.name, message.toString)
               }
               Behaviors.same
           }
