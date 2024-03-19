@@ -18,6 +18,11 @@ import scala.language.implicitConversions
 object Dependencies {
   import DependencyHelpers._
 
+  object Protobuf {
+    val protobufJavaVersion = "3.25.3"
+    val protocVersion = protobufJavaVersion
+  }
+
   lazy val java8CompatVersion = settingKey[String]("The version of scala-java8-compat to use.")
     .withRank(KeyRanks.Invisible) // avoid 'unused key' warning
 
@@ -30,7 +35,6 @@ object Dependencies {
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.19.2"
   val nettyVersion = "4.1.107.Final"
-  val protobufJavaVersion = "3.25.3"
   val logbackVersion = "1.3.14"
 
   val jacksonCoreVersion = "2.16.2"
@@ -172,7 +176,7 @@ object Dependencies {
       val reactiveStreamsTck = ("org.reactivestreams" % "reactive-streams-tck" % reactiveStreamsVersion % Test)
         .exclude("org.testng", "testng")
 
-      val protobufRuntime = "com.google.protobuf" % "protobuf-java" % protobufJavaVersion % Test
+      val protobufRuntime = "com.google.protobuf" % "protobuf-java" % Protobuf.protobufJavaVersion % Test
 
       // YCSB (Yahoo Cloud Serving Benchmark https://ycsb.site)
       val ycsb = "site.ycsb" % "core" % "0.17.0" % Test
@@ -195,7 +199,7 @@ object Dependencies {
 
       val logback = Compile.logback % "optional;provided;test"
 
-      val protobufRuntime = "com.google.protobuf" % "protobuf-java" % protobufJavaVersion % "optional;provided"
+      val protobufRuntime = "com.google.protobuf" % "protobuf-java" % Protobuf.protobufJavaVersion % "optional;provided"
 
     }
 
