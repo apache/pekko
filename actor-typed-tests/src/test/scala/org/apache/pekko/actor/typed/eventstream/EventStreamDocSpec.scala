@@ -43,7 +43,7 @@ object EventStreamDocSpec {
           Behaviors.receiveMessage {
             case DeadLetterWrapper(DeadLetter(message, sender, recipient)) =>
               context.log.info("Dead letter received from sender ({}) to recipient ({}) with message: {}",
-                sender.path.name, recipient.path.name, message)
+                sender.path.name, recipient.path.name, message.toString)
               Behaviors.same
           }
       }
