@@ -1242,8 +1242,7 @@ public class SourceTest extends StreamTest {
             .mergeAll(Arrays.asList(sourceB, sourceC), false)
             .runWith(TestSink.probe(system), system);
     sub.expectSubscription().request(9);
-    sub.expectNextUnorderedN(Util.immutableSeq(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)))
-        .expectComplete();
+    sub.expectNextUnorderedN(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9)).expectComplete();
   }
 
   @Test

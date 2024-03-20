@@ -30,7 +30,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import scala.concurrent.Await;
 import scala.concurrent.Promise;
-import scala.concurrent.duration.FiniteDuration;
 
 import java.time.Duration;
 import java.util.concurrent.TimeoutException;
@@ -235,7 +234,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
         Thread.sleep(500);
         assertEquals(BackpressureTimeoutException.class, probe.expectError().getClass());
         probe.request(1); // send demand
-        probe.expectNoMessage(FiniteDuration.create(200, "milliseconds")); // but no more restart
+        probe.expectNoMessage(Duration.ofMillis(200)); // but no more restart
       }
     };
   }
