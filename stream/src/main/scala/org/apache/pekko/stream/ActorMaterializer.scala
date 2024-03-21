@@ -270,7 +270,7 @@ class MaterializationException(msg: String, cause: Throwable = null) extends Run
 /**
  * A base exception for abrupt stream termination.
  */
-sealed class AbruptStreamTerminationException(msg: String, cause: Throwable = null)
+sealed class AbruptStreamTerminationException(msg: String, cause: Throwable)
     extends RuntimeException(msg, cause)
     with NoStackTrace
 
@@ -280,7 +280,7 @@ sealed class AbruptStreamTerminationException(msg: String, cause: Throwable = nu
  * when an ActorSystem is shut down while stream processing actors are still running.
  */
 final case class AbruptTerminationException(actor: ActorRef)
-    extends AbruptStreamTerminationException(s"Processor actor [$actor] terminated abruptly")
+    extends AbruptStreamTerminationException(s"Processor actor [$actor] terminated abruptly", cause = null)
 
 /**
  * Signal that the operator was abruptly terminated, usually seen as a call to `postStop` of the `GraphStageLogic` without
@@ -289,7 +289,8 @@ final case class AbruptTerminationException(actor: ActorRef)
  */
 final class AbruptStageTerminationException(logic: GraphStageLogic)
     extends AbruptStreamTerminationException(
-      s"GraphStage [$logic] terminated abruptly, caused by for example materializer or actor system termination.")
+      s"GraphStage [$logic] terminated abruptly, caused by for example materializer or actor system termination.",
+      cause = null)
 
 object ActorMaterializerSettings {
 
