@@ -253,8 +253,8 @@ An example is provided to illustrate an approach to migrate from the deprecated 
 with minimal changes to your existing code. The example is intended to be copied and adjusted to your needs.
 It will not be provided as a published artifact.
 
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
-* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-java](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
+* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-scala](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-scala) implemented in Scala
+* [pekko-samples/pekko-sample-cluster-cluster-client-grpc-java](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-client-grpc-java) implemented in Java
 
 The example is still using an actor on the client-side to have an API that is very close
 to the original Cluster Client. The messages this actor can handle correspond to the

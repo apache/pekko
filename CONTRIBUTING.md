@@ -24,20 +24,20 @@ Pekko uses tags to categorise issues into groups or mark their phase in developm
 In general *all issues are open for anyone working on them*. However, if you're new to the project and looking for an issue
 that will be accepted and likely is a nice one to get started you should check out the following tags:
 
-- [good first issue](https://github.com/apache/incubator-pekko/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - which identifies simple entry-level tickets, such as improvements of documentation or tests. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
-- [help wanted](https://github.com/apache/incubator-pekko/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
-- [nice-to-have (low-priority)](https://github.com/apache/incubator-pekko/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
+- [good first issue](https://github.com/apache/pekko/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) - which identifies simple entry-level tickets, such as improvements of documentation or tests. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
+- [help wanted](https://github.com/apache/pekko/labels/help%20wanted) - identifies issues that the core team will likely not have time to work on or that are nice entry-level tickets. If you're not sure how to solve a ticket but would like to work on it, feel free to ask in the issue about clarification or tips.
+- [nice-to-have (low-priority)](https://github.com/apache/pekko/labels/nice-to-have%20%28low-prio%29) - are tasks which make sense but are not a very high priority (in the face of other very high priority issues). If you see something interesting in this list, a contribution would be really wonderful!
 
 If you see an issue that you would like to work on, comment on the issue so that others will know that someone is having a look.
 
 These special tags indicates specific states a ticket is in:
 
-- [bug](https://github.com/apache/incubator-pekko/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
-- [failed](https://github.com/apache/incubator-pekko/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
+- [bug](https://github.com/apache/pekko/labels/bug) indicates potential production issues. Bugs take priority in being fixed above features. The core team dedicates some days to work on bugs in each sprint. Bugs which have reproducers are also great for community contributions as they're well-isolated. Sometimes we're not as lucky to have reproducers, though, then a bugfix should also include a test reproducing the original error along with the fix.
+- [failed](https://github.com/apache/pekko/labels/failed) indicates a CI failure (for example, from a nightly build). These tickets usually include a stacktrace + link to the failed job, and we'll add a comment when we see the same problem again. Since these tickets can either indicate tests with incorrect assumptions, or legitimate issues in the production code, we look at them periodically. When the same problem isn't seen again over a period of 6 months we assume it to be a rare flaky test or a problem that might have since been fixed, so we close the issue until it pops up again.
 
 ## Pekko contributing guidelines
 
-These guidelines apply to all Apache Pekko projects, by which we currently mean both the `apache/incubator-pekko` repository, as well as any plugins or additional repositories.
+These guidelines apply to all Apache Pekko projects, by which we currently mean both the `apache/pekko` repository, as well as any plugins or additional repositories.
 
 These guidelines are meant to be a living document that should be changed and adapted as needed.
 We encourage changes that make it easier to achieve our goals efficiently.
@@ -47,15 +47,15 @@ We encourage changes that make it easier to achieve our goals efficiently.
 The steps below describe how to get a patch into the main development branch (`main`).
 The steps are exactly the same for everyone involved in the project, including the core team and first-time contributors.
 
-1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/incubator-pekko/issues) and [existing pull requests](https://github.com/apache/incubator-pekko/pulls) for existing work.
-   - If there is no ticket yet, feel free to [create one](https://github.com/apache/incubator-pekko/issues/new/choose) to discuss the problem and the approach you want to take to solve it.
-1. [Fork the project](https://github.com/apache/incubator-pekko/fork) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Pekko.
+1. To avoid duplicated effort, it might be good to check the [issue tracker](https://github.com/apache/pekko/issues) and [existing pull requests](https://github.com/apache/pekko/pulls) for existing work.
+   - If there is no ticket yet, feel free to [create one](https://github.com/apache/pekko/issues/new/choose) to discuss the problem and the approach you want to take to solve it.
+1. [Fork the project](https://github.com/apache/pekko/fork) on GitHub. You'll need to create a feature-branch for your work on your fork, as this way you'll be able to submit a pull request against the mainline Pekko.
 1. Create a branch on your fork and work on the feature. For example: `git checkout -b custom-headers-pekko-http`
    - Please make sure to follow the general quality guidelines (specified below) when developing your patch.
    - Please write additional tests covering your feature and adjust existing ones if needed before submitting your pull request. The `validatePullRequest` sbt task ([explained below](#the-validatepullrequest-task)) may come in handy to verify your changes are correct.
    - Use the `checkCodeStyle` sbt task to ensure your code is properly formatted and includes the proper copyright headers.
 1. Once your feature is complete, prepare the commit following our guide [Creating Commits And Writing Commit Messages](#creating-commits-and-writing-commit-messages). For example, a good commit message would be: `Adding compression support for Manifests #22222` (note the reference to the ticket it aimed to resolve).
-1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/incubator-pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
+1. If it's a new feature or a change of behavior, document it on the [docs](https://github.com/apache/pekko/tree/main/docs). When the feature touches Scala and Java DSL, document both the Scala and Java APIs.
 1. Now it's finally time to [submit the pull request](https://help.github.com/articles/using-pull-requests)!
    - Please make sure to include a reference to the issue you're solving *in the comment* for the Pull Request, as this will cause the PR to be linked properly with the issue. Examples of good phrases for this are: "Resolves #1234" or "Refs #1234".
 1. If you are a first time contributor, a core member must approve the CI to run for your pull request.
@@ -78,7 +78,7 @@ The TL;DR; of the above very precise workflow version is:
 6. Keep polishing it until getting the required number of approvals
 7. Profit!
 
-> **Note:** Github Actions runs all the workflows for the forked project. We have filters to ensure that each action effectively runs only for the `apache/incubator-pekko` repository, but you may also want to [disable Github Actions](https://docs.github.com/en/github/administering-a-repository/managing-repository-settings/disabling-or-limiting-github-actions-for-a-repository) entirely in your fork.
+> **Note:** Github Actions runs all the workflows for the forked project. We have filters to ensure that each action effectively runs only for the `apache/pekko` repository, but you may also want to [disable Github Actions](https://docs.github.com/en/github/administering-a-repository/managing-repository-settings/disabling-or-limiting-github-actions-for-a-repository) entirely in your fork.
 
 #### Backporting
 
@@ -272,7 +272,7 @@ run `protobufGenerate`. The generated files are put in each project's `src/main/
 The generated files are automatically transformed to use the shaded version of protobuf.
 
 Generation depends on protoc `3.11.4` being on the path. See [protobuf project](https://github.com/protocolbuffers/protobuf#protocol-compiler-installation) for installation instructions, and
-[Protobuf.scala](https://github.com/apache/incubator-pekko/blob/main/project/Protobuf.scala) for details of how to override
+[Protobuf.scala](https://github.com/apache/pekko/blob/main/project/Protobuf.scala) for details of how to override
 the settings for generation.
 
 ### Pull request requirements
@@ -488,7 +488,7 @@ There are a number of ways timeouts can be defined in Pekko tests. The following
 
 Special care should be given to `expectNoMessage` calls, which indeed will wait for the entire timeout before continuing. Therefore a shorter timeout should be used in those, for example `200.millis` or `300.millis`. Prefer the method without timeout parameter, which will use the configured `expect-no-message-default` timeout.
 
-You can read up on `remaining` and friends in [TestKit.scala](https://github.com/apache/incubator-pekko/blob/main/testkit/src/main/scala/org/apache/pekko/testkit/TestKit.scala).
+You can read up on `remaining` and friends in [TestKit.scala](https://github.com/apache/pekko/blob/main/testkit/src/main/scala/org/apache/pekko/testkit/TestKit.scala).
 
 ### Contributing modules
 
@@ -605,5 +605,5 @@ Anyone can propose new changes to our CI workflows, and we will gladly review th
 
 ### Related links
 
-* [Pekko Issue Tracker](https://github.com/apache/incubator-pekko/issues)
+* [Pekko Issue Tracker](https://github.com/apache/pekko/issues)
 * [Scalafmt](https://scalameta.org/scalafmt/)

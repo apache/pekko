@@ -182,7 +182,7 @@ object Helpers {
      * This includes redacting environment variable values and the username associated with the running process.
      *
      * @return redacted version of the configuration text
-     * @see https://github.com/apache/incubator-pekko/pull/771
+     * @see https://github.com/apache/pekko/pull/771
      * @since 1.0.2
      */
     def renderWithRedactions(): String = {

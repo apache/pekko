@@ -16,7 +16,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     strategy:
       matrix:
         command:
