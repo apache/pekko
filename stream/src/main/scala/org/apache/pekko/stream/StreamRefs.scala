@@ -100,7 +100,7 @@ trait SourceRef[T] {
 final case class TargetRefNotInitializedYetException()
     extends IllegalStateException(
       "Internal remote target actor ref not yet resolved, yet attempted to send messages to it. " +
-      "This should not happen due to proper flow-control, please open a ticket on the issue tracker: https://github.com/apache/incubator-pekko")
+      "This should not happen due to proper flow-control, please open a ticket on the issue tracker: https://github.com/apache/pekko")
 
 final case class StreamRefSubscriptionTimeoutException(msg: String) extends IllegalStateException(msg)
 

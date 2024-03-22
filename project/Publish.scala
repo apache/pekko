@@ -28,7 +28,7 @@ object Publish extends AutoPlugin {
         "pekko-contributors",
         "Apache Pekko Contributors",
         "dev@pekko.apache.org",
-        url("https://github.com/apache/incubator-pekko/graphs/contributors"))))
+        url("https://github.com/apache/pekko/graphs/contributors"))))
 
   override lazy val buildSettings = Seq(
     dynverSonatypeSnapshots := true)

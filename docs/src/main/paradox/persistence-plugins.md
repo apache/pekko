@@ -7,7 +7,7 @@ Plugins maintained within the Pekko organization are:
 * [pekko-persistence-cassandra]($pekko.doc.dns$/docs/pekko-persistence-cassandra/current/) (no Durable State support)
 * [pekko-persistence-jdbc]($pekko.doc.dns$/docs/pekko-persistence-jdbc/current/) (Durable State only supported with Postgres and H2)
 * [pekko-persistence-r2dbc]($pekko.doc.dns$/docs/pekko-persistence-r2dbc/current/)
-* [pekko-persistence-dynamodb](https://github.com/apache/incubator-pekko-persistence-dynamodb)
+* [pekko-persistence-dynamodb](https://github.com/apache/pekko-persistence-dynamodb)
 
 Plugins can be selected either by "default" for all persistent actors,
 or "individually", when a persistent actor defines its own set of plugins.

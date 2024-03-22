@@ -1,7 +1,7 @@
 # Apache Pekko
 
-[![Nightly Builds](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds.yml/badge.svg)](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds.yml)
-[![Nightly Aeron Tests](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds-aeron.yml/badge.svg?branch=main)](https://github.com/apache/incubator-pekko/actions/workflows/nightly-builds-aeron.yml)
+[![Nightly Builds](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml/badge.svg)](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml)
+[![Nightly Aeron Tests](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml/badge.svg?branch=main)](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml)
 
 Apache Pekko is an open-source framework for building applications that are concurrent, distributed, resilient and elastic.
 Pekko uses the Actor Model to provide more intuitive high-level abstractions for concurrency.
@@ -23,7 +23,7 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 
 ### Running the Build
 - Open a command window and change directory to your preferred base directory
-- Use git to clone the [repo](https://github.com/apache/incubator-pekko) or download a source release from https://pekko.apache.org (and unzip or untar it, as appropriate)
+- Use git to clone the [repo](https://github.com/apache/pekko) or download a source release from https://pekko.apache.org (and unzip or untar it, as appropriate)
 - Change directory to the directory where you installed the source (you should have a file called `build.sbt` in this directory)
 - `sbt compile` compiles the main source for project default version of Scala (2.13)
     - `sbt +compile` will compile for all supported versions of Scala
@@ -52,16 +52,16 @@ See https://pekko.apache.org for the documentation including the API docs. The d
 
 There are several ways to interact with the Pekko community:
 
-- [GitHub discussions](https://github.com/apache/incubator-pekko/discussions): for questions and general discussion.
+- [GitHub discussions](https://github.com/apache/pekko/discussions): for questions and general discussion.
 - [Pekko dev mailing list](https://lists.apache.org/list.html?dev@pekko.apache.org): for Pekko development discussions.
 - [Pekko users mailing list](https://lists.apache.org/list.html?users@pekko.apache.org): for Pekko user discussions.
-- [GitHub issues](https://github.com/apache/incubator-pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
+- [GitHub issues](https://github.com/apache/pekko/issues): for bug reports and feature requests. Please search the existing issues before creating new ones. If you are unsure whether you have found a bug, consider asking in GitHub discussions or the mailing list first.
 
 ## Contributing
 
 Contributions are very welcome. If you have an idea on how to improve Pekko, don't hesitate to create an issue or submit a pull request.
 
-See [CONTRIBUTING.md](https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md) for details on the development workflow and how to create your pull request.
+See [CONTRIBUTING.md](https://github.com/apache/pekko/blob/main/CONTRIBUTING.md) for details on the development workflow and how to create your pull request.
 
 ## Code of Conduct
 
@@ -69,4 +69,4 @@ Apache Pekko is governed by the [Apache code of conduct](https://www.apache.org/
 
 ## License
 
-Apache Pekko is available under the Apache License, version 2.0. See [LICENSE](https://github.com/apache/incubator-pekko/blob/main/LICENSE) file for details.
+Apache Pekko is available under the Apache License, version 2.0. See [LICENSE](https://github.com/apache/pekko/blob/main/LICENSE) file for details.
