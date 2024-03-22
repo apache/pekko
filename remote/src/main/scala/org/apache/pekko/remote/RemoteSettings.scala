@@ -199,6 +199,31 @@ final class RemoteSettings(val config: Config) {
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val Adapters: Map[String, String] = configToMap(getConfig("pekko.remote.classic.adapters"))
 
+  private val AllowableProtocolNames = Set("pekko", "akka")
+
+  val ProtocolName: String = {
+    val setting = getString("pekko.remote.protocol-name")
+    if (!AllowableProtocolNames.contains(setting)) {
+      throw new ConfigurationException("The only allowed values for pekko.remote.protocol-name " +
+        "are \"pekko\" and \"akka\".")
+    }
+    setting
+  }
+
+  val AcceptProtocolNames: Set[String] = {
+    val set = immutableSeq(getStringList("pekko.remote.accept-protocol-names")).toSet
+    if (set.isEmpty) {
+      throw new ConfigurationException("pekko.remote.accept-protocol-names setting must not be empty. " +
+        "The setting is an array and the only acceptable values are \"pekko\" and \"akka\".")
+    }
+    val filteredSet = set.filterNot(AllowableProtocolNames.contains)
+    if (filteredSet.nonEmpty) {
+      throw new ConfigurationException("pekko.remote.accept-protocol-names is an array setting " +
+        "that only accepts the values \"pekko\" and \"akka\".")
+    }
+    set
+  }
+
   private def transportNames: immutable.Seq[String] =
     immutableSeq(getStringList("pekko.remote.classic.enabled-transports"))
 
