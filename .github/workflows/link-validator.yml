@@ -11,7 +11,7 @@ on:
 jobs:
   validate-links:
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
         uses: actions/checkout@v4

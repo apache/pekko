@@ -31,7 +31,7 @@ efficiently.
 ## How to get started
 
 If this is your first experience with Pekko, we recommend that you start by
-running a simple Hello World project. See the @scala[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-scala.g8)] @java[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-java.g8)] for
+running a simple Hello World project. See the @scala[[Quickstart Guide](https://github.com/apache/pekko-quickstart-scala.g8)] @java[[Quickstart Guide](https://github.com/apache/pekko-quickstart-java.g8)] for
 instructions on downloading and running the Hello World example. The *Quickstart* guide walks you through example code that introduces how to define actor systems, actors, and messages as well as how to use the test module and logging. Within 30 minutes, you should be able to run the Hello World example and learn how it is constructed.
 
 This *Getting Started* guide provides the next level of information. It covers why the actor model fits the needs of modern distributed systems and includes a tutorial that will help further your knowledge of Pekko. Topics include:

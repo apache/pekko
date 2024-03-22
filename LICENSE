@@ -320,7 +320,7 @@ Copyright 2015 Ben Manes. All Rights Reserved.
 pekko-cluster contains VectorClock.scala which is derived from code written
 by Coda Hale <https://github.com/codahale/vlock>.
 He has agreed to allow us to use this code under an Apache 2.0 license
-<https://github.com/apache/incubator-pekko/issues/232#issuecomment-1465281263>.
+<https://github.com/apache/pekko/issues/232#issuecomment-1465281263>.
 
 ---------------
 

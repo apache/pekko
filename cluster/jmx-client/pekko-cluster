@@ -62,7 +62,7 @@ function downloadJmxshR5IfNecessary() {
     fi
 }
 
-echo "This jmx-client/pekko-cluster tool is deprecated; use curl and https://github.com/apache/incubator-pekko-management instead." >&2
+echo "This jmx-client/pekko-cluster tool is deprecated; use curl and https://github.com/apache/pekko-management instead." >&2
 
 # switch on command
 while [ $# -gt 0 ];

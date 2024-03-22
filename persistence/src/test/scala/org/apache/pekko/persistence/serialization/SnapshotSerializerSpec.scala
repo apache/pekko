@@ -31,7 +31,7 @@ class SnapshotSerializerSpec extends PekkoSpec {
     "deserialize akka snapshots" in {
       val system = ActorSystem()
       val serialization = SerializationExtension(system)
-      // https://github.com/apache/incubator-pekko/pull/837#issuecomment-1847320309
+      // https://github.com/apache/pekko/pull/837#issuecomment-1847320309
       val data =
         "PAAAAAcAAABha2thLnBlcnNpc3RlbmNlLmZzbS5QZXJzaXN0ZW50RlNNJFBlcnNpc3RlbnRGU01TbmFwc2hvdAoPdGVzdC1pZGVudGlmaWVyEg0IFBIJdGVzdC1kYXRh"
       val bytes = Base64.getDecoder.decode(data)

@@ -39,6 +39,6 @@ These migration notes are designed for users migrating from Akka 2.6 to Pekko 1.
 
 ## Miscellaneous Notes
 
-Data persisted with "akka-persistence" is usable with "pekko-persistence" and vice versa (@ref:[Persistence](../persistence.md)). There is one [issue](https://github.com/apache/incubator-pekko/pull/837) that is fixed in v1.0.3-M1 (related to persisted snapshots - for which there is a [workaround](https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850)).
+Data persisted with "akka-persistence" is usable with "pekko-persistence" and vice versa (@ref:[Persistence](../persistence.md)). There is one [issue](https://github.com/apache/pekko/pull/837) that is fixed in v1.0.3-M1 (related to persisted snapshots - for which there is a [workaround](https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850)).
 
 Early releases of Apache Pekko could not be used to allow Akka and Pekko nodes to combine to form a @ref:[cluster](../cluster-usage.md). The v1.0.3-M1 @ref:[release](../release-notes/index.md) has experimental support that we would appreciate users to try out in test environments ([wiki page](https://cwiki.apache.org/confluence/display/PEKKO/Pekko+Akka+Compatibility)).

@@ -182,9 +182,9 @@ object PekkoBuild {
     description := "Apache Pekko is a toolkit for building highly concurrent, distributed, and resilient message-driven applications for Java and Scala.",
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/apache/incubator-pekko"),
-        "scm:git:https://github.com/apache/incubator-pekko.git",
-        "scm:git:git@github.com:apache/incubator-pekko.git")),
+        url("https://github.com/apache/pekko"),
+        "scm:git:https://github.com/apache/pekko.git",
+        "scm:git:git@github.com:apache/pekko.git")),
     apiURL := Some(url(s"https://pekko.apache.org/api/pekko/${version.value}")),
     initialCommands :=
       """|import language.postfixOps
@@ -312,7 +312,7 @@ object PekkoBuild {
         UsefulTask("docs/paradoxBrowse",
           "Browse the generated documentation (license report will be generate on CI or Publish)"),
         UsefulTask("tips:", "prefix commands with `+` to run against cross Scala versions."),
-        UsefulTask("Contributing guide:", "https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md")).map(
+        UsefulTask("Contributing guide:", "https://github.com/apache/pekko/blob/main/CONTRIBUTING.md")).map(
         _.noAlias))
   }
 

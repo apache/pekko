@@ -5,7 +5,7 @@ when starting to build a Pekko system. You might wonder: Which should be the fir
 Fortunately &#8212; unlike with prose &#8212; established best practices can guide us through these initial steps. In the remainder of this guide, we examine the core logic of a simple Pekko application to introduce you to actors and show you how to formulate solutions with them. The example demonstrates common patterns that will help you kickstart your Pekko projects.
 
 ## Prerequisites
-You should have already followed the instructions in the @scala[[Pekko Quickstart with Scala guide](https://github.com/apache/incubator-pekko-quickstart-scala.g8)] @java[[Pekko Quickstart with Java guide](https://github.com/apache/incubator-pekko-quickstart-java.g8)] to download and run the Hello World example. You will use this as a seed project and add the functionality described in this tutorial.
+You should have already followed the instructions in the @scala[[Pekko Quickstart with Scala guide](https://github.com/apache/pekko-quickstart-scala.g8)] @java[[Pekko Quickstart with Java guide](https://github.com/apache/pekko-quickstart-java.g8)] to download and run the Hello World example. You will use this as a seed project and add the functionality described in this tutorial.
 
 @@@ note
 Both the Java and Scala DSLs of Pekko modules bundled in the same JAR. For a smooth development experience,
