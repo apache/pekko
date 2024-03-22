@@ -2,7 +2,7 @@
 
 ## Source Code
 
-Pekko uses Git and is hosted at [Github apache/incubator-pekko](https://github.com/apache/incubator-pekko).
+Pekko uses Git and is hosted at [Github apache/pekko](https://github.com/apache/pekko).
 
 ## Releases Repository
 

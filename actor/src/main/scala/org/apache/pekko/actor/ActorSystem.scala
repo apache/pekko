@@ -1036,7 +1036,7 @@ private[pekko] class ActorSystemImpl(
       throw new IllegalStateException(
         "The calling code expected that the ActorSystem was initialized but it wasn't yet. " +
         "This is probably a bug in the ActorSystem initialization sequence often related to initialization of extensions. " +
-        "Please report at https://github.com/apache/incubator-pekko/issues.")
+        "Please report at https://github.com/apache/pekko/issues.")
   private lazy val _start: this.type =
     try {
 

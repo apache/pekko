@@ -671,7 +671,7 @@ reference documentation of the chosen plugin.
 is an example project that can be downloaded, and with instructions of how to run.
 This project contains a Shopping Cart sample illustrating how to use Pekko Persistence.
 
-@java[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-java)]
-@scala[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-scala)]
+@java[[Multi-DC Persistence example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-persistence-dc-java)]
+@scala[[Multi-DC Persistence example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-persistence-dc-scala)]
 illustrates how to use @ref:[Replicated Event Sourcing](replicated-eventsourcing.md) that supports
 active-active persistent entities across data centers.

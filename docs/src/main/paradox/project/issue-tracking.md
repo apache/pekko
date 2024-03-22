@@ -6,7 +6,7 @@ Apache Pekko is using GitHub Issues as its issue tracking system.
 
 ### Tickets
 
-Before filing a ticket, please check the existing [Apache Pekko tickets](https://github.com/apache/incubator-pekko/issues) for earlier reports of the same
+Before filing a ticket, please check the existing [Apache Pekko tickets](https://github.com/apache/pekko/issues) for earlier reports of the same
 problem. You are very welcome to comment on existing tickets, especially if you
 have reproducible test cases that you can share.
 
@@ -14,7 +14,7 @@ have reproducible test cases that you can share.
 
 *Please include the versions of Scala and Apache Pekko and relevant configuration files.*
 
-You can create a [new ticket](https://github.com/apache/incubator-pekko/issues/new) if you
+You can create a [new ticket](https://github.com/apache/pekko/issues/new) if you
 have registered a GitHub user account.
 
 Thanks a lot for reporting bugs and suggesting features!
@@ -28,5 +28,5 @@ Thanks a lot for reporting bugs and suggesting features!
 @@@
 
 Pull Requests fixing issues or adding functionality are very welcome.
-Please read [CONTRIBUTING.md](https://github.com/apache/incubator-pekko/blob/main/CONTRIBUTING.md) for
+Please read [CONTRIBUTING.md](https://github.com/apache/pekko/blob/main/CONTRIBUTING.md) for
 more information about contributing to Apache Pekko.

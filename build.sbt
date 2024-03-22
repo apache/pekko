@@ -15,7 +15,7 @@ scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
 sourceDistName := "apache-pekko"
-sourceDistIncubating := true
+sourceDistIncubating := false
 
 ThisBuild / reproducibleBuildsCheckResolver := Resolver.ApacheMavenStagingRepo
 

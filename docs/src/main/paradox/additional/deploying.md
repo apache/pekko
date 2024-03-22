@@ -14,8 +14,8 @@ To take advantage of running inside Kubernetes while forming a cluster,
 with the Kubernetes API or Kubernetes via DNS.  
 
 You can look at the
-@java[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
-@scala[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-scala)]
+@java[[Cluster with Kubernetes example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
+@scala[[Cluster with Kubernetes example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-kubernetes-scala)]
 to see what this looks like in practice.
  
 ### Resource limits
@@ -29,8 +29,8 @@ that you will need to take special care with the network configuration when usin
 described here: @ref:[Pekko behind NAT or in a Docker container](../remoting-artery.md#remote-configuration-nat-artery)
 
 You can look at the
-@java[[Cluster with docker-compse example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
-@scala[[Cluster with docker-compose example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
+@java[[Cluster with docker-compse example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
+@scala[[Cluster with docker-compose example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
 to see what this looks like in practice.
 
 For the JVM to run well in a Docker container, there are some general (not Pekko specific) parameters that might need tuning:

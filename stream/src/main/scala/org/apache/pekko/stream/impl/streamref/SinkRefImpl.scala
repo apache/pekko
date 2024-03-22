@@ -123,7 +123,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
             observeAndValidateSender(
               ref,
               "Illegal initialPartnerRef! This may be a bug, please report your " +
-              "usage and complete stack trace on the issue tracker: https://github.com/apache/incubator-pekko")
+              "usage and complete stack trace on the issue tracker: https://github.com/apache/pekko")
             tryPull()
           case _ =>
             log.debug(

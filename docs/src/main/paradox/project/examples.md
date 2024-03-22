@@ -5,8 +5,8 @@ of how to run.
 
 ## Quickstart
 
-@scala[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-scala.g8)]
-@java[[Quickstart Guide](https://github.com/apache/incubator-pekko-quickstart-java.g8)]
+@scala[[Quickstart Guide](https://github.com/apache/pekko-quickstart-scala.g8)]
+@java[[Quickstart Guide](https://github.com/apache/pekko-quickstart-java.g8)]
  
 The *Quickstart* guide walks you through example code that introduces how to define actor systems, actors, and
 messages as well as how to use the test module and logging.
@@ -52,23 +52,23 @@ This project contains a Shopping Cart sample illustrating how to use Pekko Persi
 
 ## Replicated Event Sourcing
 
-@java[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-java)]
-@scala[[Multi-DC Persistence example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-persistence-dc-scala)]
+@java[[Multi-DC Persistence example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-persistence-dc-java)]
+@scala[[Multi-DC Persistence example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-persistence-dc-scala)]
 
 Illustrates how to use @ref:[Replicated Event Sourcing](../typed/replicated-eventsourcing.md) that supports
 active-active persistent entities across data centers.
 
 ## Cluster with Docker
 
-@java[[Cluster with docker-compose example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
-@scala[[Cluster with docker-compose example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
+@java[[Cluster with docker-compose example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-java)]
+@scala[[Cluster with docker-compose example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-docker-compose-scala)]
 
 Illustrates how to use Pekko Cluster with Docker compose.
 
 ## Cluster with Kubernetes
 
-@java[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
-@scala[[Cluster with Kubernetes example project](https://github.com/apache/incubator-pekko-samples/tree/main/pekko-sample-cluster-kubernetes-scala)]
+@java[[Cluster with Kubernetes example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-kubernetes-java)]
+@scala[[Cluster with Kubernetes example project](https://github.com/apache/pekko-samples/tree/main/pekko-sample-cluster-kubernetes-scala)]
 
 This sample illustrates how to form a Pekko Cluster with Pekko Bootstrap when running in Kubernetes.
 

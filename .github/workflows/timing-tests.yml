@@ -12,7 +12,7 @@ jobs:
   pekko-timing-sensitive-tests:
     name: Pekko Tests taggedAs TimingTest
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     steps:
 
       - name: Checkout

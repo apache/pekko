@@ -12,7 +12,7 @@ jobs:
   pekko-artery-aeron-tests:
     name: Pekko Artery Aeron Tests
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
       matrix:

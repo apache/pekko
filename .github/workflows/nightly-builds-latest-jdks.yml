@@ -9,7 +9,7 @@ jobs:
   pekko-cluster-metrics-sigar:
     name: Pekko Cluster Metrics Test with Sigar
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -59,7 +59,7 @@ jobs:
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
       matrix:
@@ -103,7 +103,7 @@ jobs:
   jdk-nightly-build:
     name: JDK ${{ matrix.javaVersion }} / Scala ${{ matrix.scalaVersion }}
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
       matrix:

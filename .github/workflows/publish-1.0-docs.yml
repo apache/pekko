@@ -29,7 +29,7 @@ jobs:
   publish:
     name: Publish 1.0 docs
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/incubator-pekko'
+    if: github.repository == 'apache/pekko'
     steps:
       # TODO we will need to change to use a release tag in future
       - name: Checkout

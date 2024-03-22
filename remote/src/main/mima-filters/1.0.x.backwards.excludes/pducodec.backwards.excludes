@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# rename PekkoPduProtobufCodec$ - https://github.com/apache/incubator-pekko/issues/491
+# rename PekkoPduProtobufCodec$ - https://github.com/apache/pekko/issues/491
 ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.decodeMessage")
 ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.decodePdu")
 ProblemFilters.exclude[StaticVirtualMemberProblem]("org.apache.pekko.remote.transport.PekkoPduProtobufCodec.constructHeartbeat")

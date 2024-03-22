@@ -29,8 +29,7 @@ object AddMetaInfLicenseFiles extends AutoPlugin {
 
   override lazy val projectSettings = Seq(
     apacheSonatypeLicenseFile := baseDir.value / "legal" / "StandardLicense.txt",
-    apacheSonatypeNoticeFile := baseDir.value / "legal" / "PekkoNotice.txt",
-    apacheSonatypeDisclaimerFile := Some(baseDir.value / "DISCLAIMER"))
+    apacheSonatypeNoticeFile := baseDir.value / "legal" / "PekkoNotice.txt")
 
   /**
    * Settings specific for Pekko actor subproject which requires a different license file.
