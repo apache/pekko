@@ -13,7 +13,6 @@
 
 package docs.actor
 
-import org.apache.pekko.actor.Kill
 import jdocs.actor.ImmutableMessage
 
 import language.postfixOps
@@ -27,12 +26,16 @@ import pekko.event.Logging
 //#imports1
 
 import scala.concurrent.Future
-import pekko.actor.{ ActorLogging, ActorRef, ActorSystem, PoisonPill, Terminated }
+// #watch
+// #identify
+import pekko.actor.{ ActorIdentity, ActorLogging, ActorRef, ActorSystem, Identify, Kill, PoisonPill, Terminated }
+
+// #watch
+// #identify
 import pekko.testkit._
 import pekko.util._
 import scala.concurrent.duration._
 import scala.concurrent.Await
-import pekko.Done
 import pekko.actor.CoordinatedShutdown
 
 //#my-actor
@@ -45,6 +48,51 @@ class MyActor extends Actor {
   }
 }
 //#my-actor
+
+// #import-context
+class ContextActor extends Actor {
+  import context._
+  val myActor = actorOf(Props[MyActor](), name = "myactor")
+  def receive: Receive = {
+    case x => myActor ! x
+  }
+}
+// #import-context
+
+// #watch
+class WatchActor extends Actor {
+  val child = context.actorOf(Props.empty, "child")
+  context.watch(child) // <-- this is the only call needed for registration
+  var lastSender = context.system.deadLetters
+
+  def receive: Receive = {
+    case "kill" =>
+      context.stop(child)
+      lastSender = sender()
+    case Terminated(`child`) =>
+      lastSender ! "finished"
+  }
+}
+// #watch
+
+// #identify
+class Follower extends Actor {
+  val identifyId = 1
+  context.actorSelection("/user/another") ! Identify(identifyId)
+
+  def receive = {
+    case ActorIdentity(`identifyId`, Some(ref)) =>
+      context.watch(ref)
+      context.become(active(ref))
+    case ActorIdentity(`identifyId`, None) => context.stop(self)
+
+  }
+
+  def active(another: ActorRef): Actor.Receive = {
+    case Terminated(`another`) => context.stop(self)
+  }
+}
+// #identify
 
 final case class DoIt(msg: ImmutableMessage)
 final case class Message(s: String)
@@ -334,20 +382,8 @@ class ActorDocSpec extends PekkoSpec("""
   """) {
 
   "import context" in {
-    new AnyRef {
-      // #import-context
-      class FirstActor extends Actor {
-        import context._
-        val myActor = actorOf(Props[MyActor](), name = "myactor")
-        def receive = {
-          case x => myActor ! x
-        }
-      }
-      // #import-context
-
-      val first = system.actorOf(Props(classOf[FirstActor], this), name = "first")
-      system.stop(first)
-    }
+    val first = system.actorOf(Props(classOf[ContextActor]), name = "first")
+    system.stop(first)
   }
 
   "creating actor with system.actorOf" in {
@@ -580,29 +616,9 @@ class ActorDocSpec extends PekkoSpec("""
   }
 
   "using watch" in {
-    new AnyRef {
-      // #watch
-      import org.apache.pekko.actor.{ Actor, Props, Terminated }
-
-      class WatchActor extends Actor {
-        val child = context.actorOf(Props.empty, "child")
-        context.watch(child) // <-- this is the only call needed for registration
-        var lastSender = context.system.deadLetters
-
-        def receive = {
-          case "kill" =>
-            context.stop(child)
-            lastSender = sender()
-          case Terminated(`child`) =>
-            lastSender ! "finished"
-        }
-      }
-      // #watch
-
-      val victim = system.actorOf(Props(classOf[WatchActor], this))
-      victim.tell("kill", testActor)
-      expectMsg("finished")
-    }
+    val victim = system.actorOf(Props(classOf[WatchActor]))
+    victim.tell("kill", testActor)
+    expectMsg("finished")
   }
 
   "using Kill" in {
@@ -641,34 +657,11 @@ class ActorDocSpec extends PekkoSpec("""
   }
 
   "using Identify" in {
-    new AnyRef {
-      // #identify
-      import org.apache.pekko.actor.{ Actor, ActorIdentity, Identify, Props, Terminated }
-
-      class Follower extends Actor {
-        val identifyId = 1
-        context.actorSelection("/user/another") ! Identify(identifyId)
-
-        def receive = {
-          case ActorIdentity(`identifyId`, Some(ref)) =>
-            context.watch(ref)
-            context.become(active(ref))
-          case ActorIdentity(`identifyId`, None) => context.stop(self)
-
-        }
-
-        def active(another: ActorRef): Actor.Receive = {
-          case Terminated(`another`) => context.stop(self)
-        }
-      }
-      // #identify
-
-      val a = system.actorOf(Props.empty)
-      val b = system.actorOf(Props(classOf[Follower], this))
-      watch(b)
-      system.stop(a)
-      expectMsgType[pekko.actor.Terminated].actor should be(b)
-    }
+    val a = system.actorOf(Props.empty)
+    val b = system.actorOf(Props(classOf[Follower]))
+    watch(b)
+    system.stop(a)
+    expectMsgType[pekko.actor.Terminated].actor should be(b)
   }
 
   "using pattern gracefulStop" in {
