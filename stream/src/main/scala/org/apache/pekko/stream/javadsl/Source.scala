@@ -276,6 +276,27 @@ object Source {
     new Source(scaladsl.Source.fromGraph(new UnfoldAsyncJava[S, E](s, f)))
 
   /**
+   * Creates a sequential `Source` by iterating with the given predicate and function,
+   * starting with the given `seed` value. If the predicate returns `false` for the seed,
+   * the `Source` completes with empty.
+   *
+   * @see [[unfold]]
+   * @since 1.1.0
+   */
+  def iterate[T](seed: T, p: function.Predicate[T], f: function.Function[T, T]): Source[T, NotUsed] =
+    new Source(scaladsl.Source.iterate(seed)(elem => p.test(elem), elem => f(elem)))
+
+  /**
+   * Creates an infinite sequential `Source` by iterating with the given function,
+   * starting with the given `seed` value.
+   *
+   * @see [[unfold]]
+   * @since 1.1.0
+   */
+  def iterate[T](seed: T, f: function.Function[T, T]): Source[T, NotUsed] =
+    new Source(scaladsl.Source.iterate(seed)(ConstantFun.anyToTrue, elem => f(elem)))
+
+  /**
    * Create a `Source` that immediately ends the stream with the `cause` failure to every connected `Sink`.
    */
   def failed[T](cause: Throwable): Source[T, NotUsed] =

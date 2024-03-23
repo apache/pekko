@@ -116,6 +116,7 @@ import pekko.stream.Attributes._
 
     val publisherSource = name("publisherSource")
     val iterableSource = name("iterableSource")
+    val iterateSource = name("iterateSource")
     val cycledSource = name("cycledSource")
     val futureSource = name("futureSource")
     val lazyFutureSource = name("lazyFutureSource")

@@ -17,16 +17,16 @@
 
 package org.apache.pekko.stream.impl.fusing
 
+import scala.annotation.nowarn
+import scala.util.control.NonFatal
+
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.stream._
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, InHandler, OutHandler }
-import pekko.stream._
-
-import scala.annotation.nowarn
-import scala.util.control.NonFatal
 
 /**
  * INTERNAL API

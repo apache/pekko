@@ -296,6 +296,18 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
     }
   }
 
+  "Iteratee Source" must {
+    "be able to iterate properly" in {
+      Source.iterate[Int](0)(_ => true, _ + 1)
+        .take(10)
+        .runWith(Sink.seq).futureValue should ===(immutable.Seq(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    }
+
+    "be able to generate an empty sequence" in {
+      Source.iterate[Int](0)(_ => false, _ + 1).runWith(Sink.seq).futureValue should ===(immutable.Seq())
+    }
+  }
+
   "Iterator Source" must {
     "properly iterate" in {
       Source.fromIterator(() => Iterator.iterate(false)(!_)).grouped(10).runWith(Sink.head).futureValue should ===(
