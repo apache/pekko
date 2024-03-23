@@ -13,7 +13,6 @@
 
 package docs.actor
 
-import org.apache.pekko.actor.{ ActorIdentity, Identify, Kill }
 import jdocs.actor.ImmutableMessage
 
 import language.postfixOps
@@ -29,7 +28,8 @@ import pekko.event.Logging
 import scala.concurrent.Future
 // #watch
 // #identify
-import pekko.actor.{ ActorLogging, ActorRef, ActorSystem, PoisonPill, Terminated }
+import pekko.actor.{ ActorIdentity, ActorLogging, ActorRef, ActorSystem, Identify, Kill, PoisonPill, Terminated }
+
 // #watch
 // #identify
 import pekko.testkit._
