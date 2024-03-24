@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl;
 
+import org.apache.pekko.Done;
 import org.apache.pekko.NotUsed;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
@@ -28,10 +29,7 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class GraphDslTest extends StreamTest {
   public GraphDslTest() {
@@ -185,6 +183,94 @@ public class GraphDslTest extends StreamTest {
                 }));
 
     // #graph-dsl-matvalue-cycle
+  }
+
+  @Test
+  public void beAbleToUseMergeSortedWithGraphDSL() throws Exception {
+    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 3, 5, 7, 9));
+    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(2, 4, 6, 8, 10));
+
+    final Source<Integer, NotUsed> source =
+        Source.fromGraph(
+            GraphDSL.create(
+                sourceA,
+                sourceB,
+                Keep.none(),
+                (builder, a, b) -> {
+                  final FanInShape2<Integer, Integer, Integer> mergeSorted =
+                      builder.add(MergeSorted.create());
+                  builder.from(a).toInlet(mergeSorted.in0());
+                  builder.from(b).toInlet(mergeSorted.in1());
+                  return SourceShape.of(mergeSorted.out());
+                }));
+    final List<Integer> result =
+        source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10), result);
+  }
+
+  @Test
+  public void beAbleToUseOrElseWithGraphDSL() throws Exception {
+    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 3, 5, 7, 9));
+    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(2, 4, 6, 8, 10));
+    final Source<Integer, NotUsed> source =
+        Source.fromGraph(
+            GraphDSL.create(
+                sourceA,
+                sourceB,
+                Keep.none(),
+                (builder, a, b) -> {
+                  final UniformFanInShape<Integer, Integer> orElse = builder.add(OrElse.create());
+                  builder.from(a).toInlet(orElse.in(0));
+                  builder.from(b).toInlet(orElse.in(1));
+                  return SourceShape.of(orElse.out());
+                }));
+    final List<Integer> result =
+        source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(1, 3, 5, 7, 9), result);
+  }
+
+  @Test
+  public void beAbleToUseWireTapWithGraphDSL() throws Exception {
+    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4, 5));
+    final Sink<Integer, CompletionStage<Done>> sink = Sink.ignore();
+    final Source<Integer, NotUsed> source =
+        Source.fromGraph(
+            GraphDSL.create(
+                sourceA,
+                sink,
+                Keep.none(),
+                (builder, sourceShape, sinkShape) -> {
+                  final FanOutShape2<Integer, Integer, Integer> wireTap =
+                      builder.add(WireTap.create());
+                  builder.from(sourceShape).toInlet(wireTap.in());
+                  builder.from(wireTap.out1()).to(sinkShape);
+                  return SourceShape.of(wireTap.out0());
+                }));
+    final List<Integer> result =
+        source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(1, 2, 3, 4, 5), result);
+  }
+
+  @Test
+  public void beAbleToUseInterleaveWithGraphDSL() throws Exception {
+    final Source<Integer, NotUsed> sourceA = Source.from(Arrays.asList(1, 2, 3, 4));
+    final Source<Integer, NotUsed> sourceB = Source.from(Arrays.asList(10, 20, 30, 40));
+    final Source<Integer, NotUsed> source =
+        Source.fromGraph(
+            GraphDSL.create(
+                sourceA,
+                sourceB,
+                Keep.none(),
+                (builder, a, b) -> {
+                  final UniformFanInShape<Integer, Integer> interleave =
+                      builder.add(Interleave.create(2, 2));
+                  builder.from(a).toInlet(interleave.in(0));
+                  builder.from(b).toInlet(interleave.in(1));
+                  return SourceShape.of(interleave.out());
+                }));
+    final List<Integer> result =
+        source.runWith(Sink.seq(), system).toCompletableFuture().get(3, TimeUnit.SECONDS);
+    assertEquals(Arrays.asList(1, 2, 10, 20, 3, 4, 30, 40), result);
   }
 
   @Test
