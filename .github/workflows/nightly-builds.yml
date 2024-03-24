@@ -172,7 +172,7 @@ jobs:
           sudo apt-get install graphviz
           # genjavadoc does not support Scala 3.x
           sbt \
-            -Dpekko.genjavadoc.enabled={{ matrix.scalaVersion != '3.3' }} \
+            -Dpekko.genjavadoc.enabled=${{ matrix.scalaVersion != '3.3' }} \
             "+~ ${{ matrix.scalaVersion }} doc"
 
       - name: Publish
