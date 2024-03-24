@@ -111,5 +111,6 @@ object Paradox {
     sourceGeneratorSettings ++
     Seq(
       Compile / paradox / name := "Pekko",
-      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko")
+      ApidocPlugin.autoImport.apidocRootPackage := "org.apache.pekko",
+      Global / pekkoParadoxIncubatorNotice := None)
 }
