@@ -3500,7 +3500,7 @@ trait FlowOps[+Out, +Mat] {
   protected def mergeSortedGraph[U >: Out, M](that: Graph[SourceShape[U], M])(
       implicit ord: Ordering[U]): Graph[FlowShape[Out @uncheckedVariance, U], M] =
     GraphDSL.createGraph(that) { implicit b => r =>
-      val merge = b.add(new MergeSorted[U])
+      val merge = b.add(MergeSorted[U]())
       r ~> merge.in1
       FlowShape(merge.in0, merge.out)
     }

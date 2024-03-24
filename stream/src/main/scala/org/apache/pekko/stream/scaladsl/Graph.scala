@@ -532,6 +532,14 @@ final class Interleave[T](val inputPorts: Int, val segmentSize: Int, val eagerCl
   override def toString = "Interleave"
 }
 
+object MergeSorted {
+
+  /**
+   * Create a new `MergeSorted`, @see [[MergeSorted]]
+   */
+  def apply[T: Ordering](): MergeSorted[T] = new MergeSorted[T]()
+}
+
 /**
  * Merge two pre-sorted streams such that the resulting stream is sorted.
  *
@@ -1368,7 +1376,7 @@ object OrElse {
   /**
    * @see [[OrElse]]
    */
-  def apply[T]() = singleton.asInstanceOf[OrElse[T]]
+  def apply[T](): OrElse[T] = singleton.asInstanceOf[OrElse[T]]
 }
 
 /**

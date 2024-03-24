@@ -14,6 +14,7 @@
 package org.apache.pekko.stream.javadsl
 
 import java.util
+import java.util.Comparator
 
 import scala.annotation.unchecked.uncheckedVariance
 
@@ -219,6 +220,82 @@ object Broadcast {
   def create[T](@unused clazz: Class[T], outputCount: Int): Graph[UniformFanOutShape[T, T], NotUsed] =
     create(outputCount)
 
+}
+
+/**
+ * Merge two pre-sorted streams such that the resulting stream is sorted.
+ *
+ * '''Emits when''' both inputs have an element available
+ *
+ * '''Backpressures when''' downstream backpressures
+ *
+ * '''Completes when''' all upstreams complete
+ *
+ * '''Cancels when''' downstream cancels
+ */
+object MergeSorted {
+
+  /**
+   * Create a new `MergeSorted` operator with the specified input type.
+   */
+  def create[T <: Comparable[T]](): Graph[FanInShape2[T, T, T], NotUsed] = scaladsl.MergeSorted[T]()
+
+  /**
+   * Create a new `MergeSorted` operator with the specified input type.
+   */
+  def create[T](comparator: Comparator[T]): Graph[FanInShape2[T, T, T], NotUsed] = {
+    implicit val ord: Ordering[T] = Ordering.comparatorToOrdering(comparator)
+    scaladsl.MergeSorted[T]()
+  }
+
+}
+
+/**
+ * Takes two streams and passes the first through, the secondary stream is only passed
+ * through if the primary stream completes without passing any elements through. When
+ * the first element is passed through from the primary the secondary is cancelled.
+ * Both incoming streams are materialized when the operator is materialized.
+ *
+ * On errors the operator is failed regardless of source of the error.
+ *
+ * '''Emits when''' element is available from primary stream or the primary stream closed without emitting any elements and an element
+ *                  is available from the secondary stream
+ *
+ * '''Backpressures when''' downstream backpressures
+ *
+ * '''Completes when''' the primary stream completes after emitting at least one element, when the primary stream completes
+ *                      without emitting and the secondary stream already has completed or when the secondary stream completes
+ *
+ * '''Cancels when''' downstream cancels
+ */
+object OrElse {
+
+  /**
+   * Create a new `OrElse` operator with the specified input type.
+   */
+  def create[T](): Graph[UniformFanInShape[T, T], NotUsed] = scaladsl.OrElse[T]()
+}
+
+/**
+ * Fan-out the stream to two output streams - a 'main' and a 'tap' one. Each incoming element is emitted
+ * to the 'main' output; elements are also emitted to the 'tap' output if there is demand;
+ * otherwise they are dropped.
+ *
+ * '''Emits when''' element is available and demand exists from the 'main' output; the element will
+ * also be sent to the 'tap' output if there is demand.
+ *
+ * '''Backpressures when''' the 'main' output backpressures
+ *
+ * '''Completes when''' upstream completes
+ *
+ * '''Cancels when''' the 'main' output cancels
+ */
+object WireTap {
+
+  /**
+   * Create a new `WireTap` operator with the specified output type.
+   */
+  def create[T](): Graph[FanOutShape2[T, T, T], NotUsed] = scaladsl.WireTap[T]()
 }
 
 /**
@@ -601,6 +678,31 @@ object MergeSequence {
       extractSequence: function.Function[T, Long]): Graph[UniformFanInShape[T, T], NotUsed] =
     create(inputCount, extractSequence)
 
+}
+
+object Interleave {
+
+  /**
+   * Create a new `Interleave` with the specified number of input ports and given size of elements
+   * to take from each input.
+   *
+   * @param inputPorts number of input ports
+   * @param segmentSize number of elements to send downstream before switching to next input port
+   * @param eagerClose if true, interleave completes upstream if any of its upstream completes.
+   */
+  def create[T](
+      inputPorts: Int, segmentSize: Int, eagerClose: Boolean): Graph[UniformFanInShape[T, T], NotUsed] =
+    scaladsl.Interleave(inputPorts, segmentSize, eagerClose)
+
+  /**
+   * Create a new `Interleave` with the specified number of input ports and given size of elements
+   * to take from each input, with `eagerClose` set to false.
+   *
+   * @param inputPorts number of input ports
+   * @param segmentSize number of elements to send downstream before switching to next input port
+   */
+  def create[T](inputPorts: Int, segmentSize: Int): Graph[UniformFanInShape[T, T], NotUsed] =
+    create(inputPorts, segmentSize, eagerClose = false)
 }
 
 object GraphDSL extends GraphCreate {
