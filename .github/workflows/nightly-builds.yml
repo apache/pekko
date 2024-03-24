@@ -167,11 +167,12 @@ jobs:
 
       - name: Docs
         # Docs generation requires JDK 11.
-        if: ${{ matrix.javaVersion == 11 && matrix.scalaVersion != '3.3'}}
+        if: ${{ matrix.javaVersion == 11 }}
         run: |-
           sudo apt-get install graphviz
+          # genjavadoc does not support Scala 3.x
           sbt \
-            -Dpekko.genjavadoc.enabled=true \
+            -Dpekko.genjavadoc.enabled={{ matrix.scalaVersion != '3.3' }} \
             "+~ ${{ matrix.scalaVersion }} doc"
 
       - name: Publish
