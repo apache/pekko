@@ -167,7 +167,7 @@ jobs:
 
       - name: Docs
         # Docs generation requires JDK 11.
-        if: ${{ matrix.javaVersion == 11 }}
+        if: ${{ matrix.javaVersion == 11 && matrix.scalaVersion != '3.3'}}
         run: |-
           sudo apt-get install graphviz
           sbt \
