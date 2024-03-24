@@ -271,7 +271,7 @@ object DispatcherDocSpec {
   // #control-aware-mailbox-messages
 
   class MyActor extends Actor {
-    def receive = {
+    def receive: Receive = {
       case x =>
     }
   }
@@ -294,6 +294,42 @@ object DispatcherDocSpec {
     // ...
   }
   // #require-mailbox-on-actor
+
+  // #prio-dispatcher
+  class Logger extends Actor {
+    private val log: LoggingAdapter = Logging(context.system, this)
+
+    self ! "lowpriority"
+    self ! "lowpriority"
+    self ! "highpriority"
+    self ! "pigdog"
+    self ! "pigdog2"
+    self ! "pigdog3"
+    self ! "highpriority"
+
+    self ! PoisonPill
+
+    def receive: Receive = {
+      case x => log.info(x.toString)
+    }
+  }
+  // #prio-dispatcher
+
+  // #control-aware-dispatcher
+  class MyLogger extends Actor {
+    val log: LoggingAdapter = Logging(context.system, this)
+
+    self ! "foo"
+    self ! "bar"
+    self ! MyControlMessage
+    self ! PoisonPill
+
+    def receive: Receive = {
+      case x => log.info(x.toString)
+    }
+  }
+  // #control-aware-dispatcher
+
 }
 
 class DispatcherDocSpec extends PekkoSpec(DispatcherDocSpec.config) {
@@ -374,76 +410,46 @@ class DispatcherDocSpec extends PekkoSpec(DispatcherDocSpec.config) {
   }
 
   "defining priority dispatcher" in {
-    new AnyRef {
-      // #prio-dispatcher
+    // #prio-dispatcher
 
-      // We create a new Actor that just prints out what it processes
-      class Logger extends Actor {
-        val log: LoggingAdapter = Logging(context.system, this)
+    // We create a new Actor that just prints out what it processes
+    val a = system.actorOf(Props(classOf[Logger])
+      .withDispatcher("prio-dispatcher"))
 
-        self ! "lowpriority"
-        self ! "lowpriority"
-        self ! "highpriority"
-        self ! "pigdog"
-        self ! "pigdog2"
-        self ! "pigdog3"
-        self ! "highpriority"
+    /*
+     * Logs:
+     * highpriority
+     * highpriority
+     * pigdog
+     * pigdog2
+     * pigdog3
+     * lowpriority
+     * lowpriority
+     */
+    // #prio-dispatcher
 
-        self ! PoisonPill
-
-        def receive = {
-          case x => log.info(x.toString)
-        }
-      }
-      val a = system.actorOf(Props(classOf[Logger], this).withDispatcher("prio-dispatcher"))
-
-      /*
-       * Logs:
-       * highpriority
-       * highpriority
-       * pigdog
-       * pigdog2
-       * pigdog3
-       * lowpriority
-       * lowpriority
-       */
-      // #prio-dispatcher
-
-      watch(a)
-      expectMsgPF() { case Terminated(`a`) => () }
-    }
+    watch(a)
+    expectMsgPF() { case Terminated(`a`) => () }
   }
 
   "defining control aware dispatcher" in {
-    new AnyRef {
-      // #control-aware-dispatcher
+    // #control-aware-dispatcher
 
-      // We create a new Actor that just prints out what it processes
-      class Logger extends Actor {
-        val log: LoggingAdapter = Logging(context.system, this)
+    // We create a new Actor that just prints out what it processes
 
-        self ! "foo"
-        self ! "bar"
-        self ! MyControlMessage
-        self ! PoisonPill
+    val a = system.actorOf(Props(classOf[MyLogger])
+      .withDispatcher("control-aware-dispatcher"))
 
-        def receive = {
-          case x => log.info(x.toString)
-        }
-      }
-      val a = system.actorOf(Props(classOf[Logger], this).withDispatcher("control-aware-dispatcher"))
+    /*
+     * Logs:
+     * MyControlMessage
+     * foo
+     * bar
+     */
+    // #control-aware-dispatcher
 
-      /*
-       * Logs:
-       * MyControlMessage
-       * foo
-       * bar
-       */
-      // #control-aware-dispatcher
-
-      watch(a)
-      expectMsgPF() { case Terminated(`a`) => () }
-    }
+    watch(a)
+    expectMsgPF() { case Terminated(`a`) => () }
   }
 
   "require custom mailbox on dispatcher" in {
