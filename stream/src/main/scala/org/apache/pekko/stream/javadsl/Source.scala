@@ -34,7 +34,7 @@ import pekko.event.{ LogMarker, LoggingAdapter, MarkerLoggingAdapter }
 import pekko.japi.{ function, JavaPartialFunction, Pair, Util }
 import pekko.japi.function.Creator
 import pekko.stream._
-import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava }
+import pekko.stream.impl.{ LinearTraversalBuilder, UnfoldAsyncJava, UnfoldJava }
 import pekko.util.{ unused, _ }
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
@@ -267,7 +267,7 @@ object Source {
    * a pair of the next state `S` and output elements of type `E`.
    */
   def unfold[S, E](s: S, f: function.Function[S, Optional[Pair[S, E]]]): Source[E, NotUsed] =
-    new Source(scaladsl.Source.unfold(s)((s: S) => f.apply(s).toScala.map(_.toScala)))
+    new Source(scaladsl.Source.fromGraph(new UnfoldJava(s, f)))
 
   /**
    * Same as [[unfold]], but uses an async function to generate the next state-element tuple.
