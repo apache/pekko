@@ -23,6 +23,7 @@ import org.apache.pekko
 import pekko.annotation.InternalApi
 import pekko.japi.{ function, Pair }
 import pekko.stream._
+import pekko.stream.Attributes.SourceLocation
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
@@ -32,7 +33,7 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 @InternalApi private[pekko] final class Unfold[S, E](s: S, f: S => Option[(S, E)]) extends GraphStage[SourceShape[E]] {
   val out: Outlet[E] = Outlet("Unfold.out")
   override val shape: SourceShape[E] = SourceShape(out)
-  override def initialAttributes: Attributes = DefaultAttributes.unfold
+  override def initialAttributes: Attributes = DefaultAttributes.unfold and SourceLocation.forLambda(f)
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogic(shape) with OutHandler {
       private[this] var state = s
@@ -47,6 +48,37 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
       setHandler(out, this)
     }
+
+  override def toString: String = "Unfold"
+}
+
+/**
+ * INTERNAL API
+ */
+@InternalApi
+private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Optional[Pair[S, E]]])
+    extends GraphStage[SourceShape[E]] {
+  private val out: Outlet[E] = Outlet("Unfold.out")
+  override val shape: SourceShape[E] = SourceShape(out)
+  override def initialAttributes: Attributes = DefaultAttributes.unfold and SourceLocation.forLambda(f)
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+    new GraphStageLogic(shape) with OutHandler {
+      private var state = s
+
+      def onPull(): Unit = {
+        val maybeValue = f(state)
+        if (maybeValue.isPresent) {
+          val pair = maybeValue.get()
+          push(out, pair.second)
+          state = pair.first
+        } else {
+          complete(out)
+        }
+      }
+
+      setHandler(out, this)
+    }
+  override def toString: String = "Unfold"
 }
 
 /**
@@ -85,6 +117,8 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
       setHandler(out, this)
     }
+
+  override def toString: String = "UnfoldAsync"
 }
 
 /**
@@ -140,4 +174,6 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
       }
       setHandler(out, this)
     }
+
+  override def toString: String = "UnfoldAsync"
 }
