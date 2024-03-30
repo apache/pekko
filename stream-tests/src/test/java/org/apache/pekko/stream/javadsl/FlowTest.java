@@ -239,7 +239,7 @@ public class FlowTest extends StreamTest {
   }
 
   @Test
-  public void mustBeAbleToUseMapWithAutoCloseableResource() {
+  public void mustBeAbleToUseMapWithAutoCloseableResource() throws Exception {
     final TestKit probe = new TestKit(system);
     final AtomicInteger closed = new AtomicInteger();
     Source.from(Arrays.asList("1", "2", "3"))
@@ -247,7 +247,9 @@ public class FlowTest extends StreamTest {
             Flow.of(String.class)
                 .mapWithResource(
                     () -> (AutoCloseable) closed::incrementAndGet, (resource, elem) -> elem))
-        .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system);
+        .runWith(Sink.foreach(elem -> probe.getRef().tell(elem, ActorRef.noSender())), system)
+        .toCompletableFuture()
+        .get(3, TimeUnit.SECONDS);
 
     probe.expectMsgAllOf("1", "2", "3");
     Assert.assertEquals(closed.get(), 1);
