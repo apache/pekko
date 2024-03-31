@@ -118,7 +118,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
 
     def createExecutorService: ExecutorService = pekkoJdk9ForkJoinPoolHandleOpt match {
       case Some(handle) =>
-        handle.invokeExact(parallelism, threadFactory, maxPoolSize,
+        handle.invoke(parallelism, threadFactory, maxPoolSize,
           MonitorableThreadFactory.doNothing, asyncMode).asInstanceOf[ExecutorService]
       case _ =>
         new PekkoForkJoinPool(parallelism, threadFactory, MonitorableThreadFactory.doNothing, asyncMode)
