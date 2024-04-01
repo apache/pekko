@@ -13,6 +13,7 @@
 
 package org.apache.pekko.cluster.sharding.external
 
+import scala.annotation.varargs
 import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -43,6 +44,21 @@ import pekko.util.Timeout
 object ExternalShardAllocationStrategy {
 
   type ShardRegion = ActorRef
+
+  /**
+   * Scala API: Create an [[ExternalShardAllocationStrategy]]
+   */
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String)(
+      implicit timeout: Timeout = 5.seconds): ExternalShardAllocationStrategy =
+    new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
+
+  /**
+   * Java API: Create an [[ExternalShardAllocationStrategy]]
+   */
+  @varargs
+  def create(systemProvider: ClassicActorSystemProvider, typeName: String, duration: java.time.Duration)
+      : ExternalShardAllocationStrategy =
+    this.apply(systemProvider, typeName)(Timeout.create(duration))
 
   // local only messages
   private[pekko] final case class GetShardLocation(shard: ShardId)

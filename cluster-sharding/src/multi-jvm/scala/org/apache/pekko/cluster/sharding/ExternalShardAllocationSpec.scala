@@ -105,7 +105,7 @@ abstract class ExternalShardAllocationSpec
       entityProps = Props[GiveMeYourHome](),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId,
-      allocationStrategy = new ExternalShardAllocationStrategy(system, typeName))
+      allocationStrategy = ExternalShardAllocationStrategy(system, typeName))
 
     "start cluster sharding" in {
       shardRegion
