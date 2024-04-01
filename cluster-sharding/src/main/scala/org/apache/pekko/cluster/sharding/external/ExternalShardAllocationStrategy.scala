@@ -48,23 +48,24 @@ object ExternalShardAllocationStrategy {
   /**
    * Create an [[ExternalShardAllocationStrategy]]
    */
-  def apply(
-      systemProvider: ClassicActorSystemProvider, typeName: String, timeout: Timeout): ExternalShardAllocationStrategy =
-    new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String): ExternalShardAllocationStrategy = {
+    implicit val timeout: Timeout = 5.seconds
+    new ExternalShardAllocationStrategy(systemProvider, typeName)
+  }
 
   /**
-   * Scala API: Create an [[ExternalShardAllocationStrategy]] with default timeout value.
+   * Scala API: Create an [[ExternalShardAllocationStrategy]]
    */
-  def apply(systemProvider: ClassicActorSystemProvider, typeName: String)(implicit timeout: Timeout =
-        Timeout(5.seconds)): ExternalShardAllocationStrategy =
-    new ExternalShardAllocationStrategy(systemProvider, typeName)
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: FiniteDuration): ExternalShardAllocationStrategy = {
+    new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
+  }
 
   /**
    * Java API: Create an [[ExternalShardAllocationStrategy]]
    */
-  def create(systemProvider: ClassicActorSystemProvider, typeName: String, duration: java.time.Duration)
+  def create(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: java.time.Duration)
       : ExternalShardAllocationStrategy =
-    this.apply(systemProvider, typeName)(duration.asScala)
+    this.apply(systemProvider, typeName, timeout.asScala)
 
   // local only messages
   private[pekko] final case class GetShardLocation(shard: ShardId)
@@ -117,7 +118,7 @@ object ExternalShardAllocationStrategy {
 
 class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider, typeName: String)(
     // local only ask
-    implicit val timeout: Timeout = Timeout(5.seconds))
+    implicit val timeout: Timeout)
     extends ShardCoordinator.StartableAllocationStrategy {
 
   private val system = systemProvider.classicSystem
