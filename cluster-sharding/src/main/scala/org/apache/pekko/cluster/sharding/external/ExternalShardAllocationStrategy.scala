@@ -119,7 +119,7 @@ object ExternalShardAllocationStrategy {
 
 class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider, typeName: String)(
     // local only ask
-    implicit val timeout: Timeout)
+    implicit val timeout: Timeout = Timeout(5.seconds))
     extends ShardCoordinator.StartableAllocationStrategy {
 
   private val system = systemProvider.classicSystem
