@@ -56,7 +56,8 @@ object ExternalShardAllocationStrategy {
   /**
    * Scala API: Create an [[ExternalShardAllocationStrategy]]
    */
-  def apply(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: FiniteDuration): ExternalShardAllocationStrategy = {
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: FiniteDuration)
+      : ExternalShardAllocationStrategy = {
     new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
   }
 
