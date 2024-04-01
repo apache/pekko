@@ -102,7 +102,7 @@ object Source {
    * Source.from(() -> data.iterator());
    * }}}
    *
-   * Start a new `Source` from the given Iterator. The produced stream of elements
+   * Start a new `Source` from the given function that produces an Iterator. The produced stream of elements
    * will continue until the iterator runs empty or fails during evaluation of
    * the `next()` method. Elements are pulled out of the iterator
    * in accordance with the demand coming from the downstream transformation
