@@ -18,12 +18,14 @@ import org.apache.pekko.actor.Address;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.ActorSystem;
 import org.apache.pekko.cluster.sharding.external.ExternalShardAllocation;
+import org.apache.pekko.cluster.sharding.external.ExternalShardAllocationStrategy;
 import org.apache.pekko.cluster.sharding.external.javadsl.ExternalShardAllocationClient;
 import org.apache.pekko.cluster.sharding.typed.ShardingEnvelope;
 import org.apache.pekko.cluster.sharding.typed.javadsl.ClusterSharding;
 import org.apache.pekko.cluster.sharding.typed.javadsl.Entity;
 import org.apache.pekko.cluster.sharding.typed.javadsl.EntityTypeKey;
 
+import java.time.Duration;
 import java.util.concurrent.CompletionStage;
 
 import static jdocs.org.apache.pekko.cluster.sharding.typed.ShardingCompileOnlyTest.Counter;
@@ -39,7 +41,11 @@ public class ExternalShardAllocationCompileOnlyTest {
     EntityTypeKey<Counter.Command> typeKey = EntityTypeKey.create(Counter.Command.class, "Counter");
 
     ActorRef<ShardingEnvelope<Counter.Command>> shardRegion =
-        sharding.init(Entity.of(typeKey, ctx -> Counter.create(ctx.getEntityId())));
+        sharding.init(
+            Entity.of(typeKey, ctx -> Counter.create(ctx.getEntityId()))
+                .withAllocationStrategy(
+                    ExternalShardAllocationStrategy.create(
+                        system, typeKey.name(), Duration.ofSeconds(5))));
     // #entity
 
     // #client

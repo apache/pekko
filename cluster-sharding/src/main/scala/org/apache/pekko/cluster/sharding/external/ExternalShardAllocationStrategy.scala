@@ -39,10 +39,34 @@ import pekko.cluster.sharding.ShardRegion.ShardId
 import pekko.event.Logging
 import pekko.pattern.AskTimeoutException
 import pekko.util.Timeout
+import pekko.util.JavaDurationConverters._
 
 object ExternalShardAllocationStrategy {
 
   type ShardRegion = ActorRef
+
+  /**
+   * Create an [[ExternalShardAllocationStrategy]]
+   */
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String): ExternalShardAllocationStrategy = {
+    implicit val timeout: Timeout = 5.seconds
+    new ExternalShardAllocationStrategy(systemProvider, typeName)
+  }
+
+  /**
+   * Scala API: Create an [[ExternalShardAllocationStrategy]]
+   */
+  def apply(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: FiniteDuration)
+      : ExternalShardAllocationStrategy = {
+    new ExternalShardAllocationStrategy(systemProvider, typeName)(timeout)
+  }
+
+  /**
+   * Java API: Create an [[ExternalShardAllocationStrategy]]
+   */
+  def create(systemProvider: ClassicActorSystemProvider, typeName: String, timeout: java.time.Duration)
+      : ExternalShardAllocationStrategy =
+    this.apply(systemProvider, typeName, timeout.asScala)
 
   // local only messages
   private[pekko] final case class GetShardLocation(shard: ShardId)
