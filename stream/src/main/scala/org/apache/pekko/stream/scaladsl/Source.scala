@@ -17,7 +17,7 @@ import java.util.concurrent.CompletionStage
 
 import scala.annotation.{ nowarn, tailrec }
 import scala.annotation.unchecked.uncheckedVariance
-import scala.collection.immutable
+import scala.collection.{ immutable, AbstractIterator }
 import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration.FiniteDuration
 
@@ -25,8 +25,8 @@ import org.apache.pekko
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable }
 import pekko.annotation.InternalApi
-import pekko.stream.{ Outlet, SourceShape, _ }
-import pekko.stream.impl.{ PublisherSource, _ }
+import pekko.stream._
+import pekko.stream.impl._
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.impl.fusing.{ GraphStages, IterableSource, LazyFutureSource, LazySingleSource }
 import pekko.stream.impl.fusing.GraphStages._
@@ -455,6 +455,30 @@ object Source {
    */
   def unfoldAsync[S, E](s: S)(f: S => Future[Option[(S, E)]]): Source[E, NotUsed] =
     Source.fromGraph(new UnfoldAsync(s, f))
+
+  /**
+   * Creates a sequential `Source` by iterating with the given predicate and function,
+   * starting with the given `seed` value. If the predicate returns `false` for the seed,
+   * the `Source` completes with empty.
+   *
+   * @see [[unfold]]
+   * @since 1.1.0
+   */
+  def iterate[T](seed: T)(p: T => Boolean, f: T => T): Source[T, NotUsed] =
+    fromIterator(() =>
+      new AbstractIterator[T] {
+        private var first = true
+        private var acc = seed
+        override def hasNext: Boolean = p(acc)
+        override def next(): T = {
+          if (first) {
+            first = false
+          } else {
+            acc = f(acc)
+          }
+          acc
+        }
+      }).withAttributes(DefaultAttributes.iterableSource)
 
   /**
    * A `Source` with no elements, i.e. an empty stream that is completed immediately for every connected `Sink`.

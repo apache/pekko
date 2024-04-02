@@ -25,6 +25,7 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="fromsourcecompletionstage"></a>@ref[fromSourceCompletionStage](Source/fromSourceCompletionStage.md)|Deprecated by @ref[`Source.completionStageSource`](Source/completionStageSource.md).|
 |Source|<a name="future"></a>@ref[future](Source/future.md)|Send the single value of the `Future` when it completes and there is demand.|
 |Source|<a name="futuresource"></a>@ref[futureSource](Source/futureSource.md)|Streams the elements of the given future source once it successfully completes.|
+|Source|<a name="iterate"></a>@ref[iterate](Source/iterate.md)|Creates a sequential `Source` by iterating with the given predicate, function and seed.|
 |Source|<a name="lazily"></a>@ref[lazily](Source/lazily.md)|Deprecated by @ref[`Source.lazySource`](Source/lazySource.md).|
 |Source|<a name="lazilyasync"></a>@ref[lazilyAsync](Source/lazilyAsync.md)|Deprecated by @ref[`Source.lazyFutureSource`](Source/lazyFutureSource.md).|
 |Source|<a name="lazycompletionstage"></a>@ref[lazyCompletionStage](Source/lazyCompletionStage.md)|Defers creation of a future of a single element source until there is demand.|
@@ -505,6 +506,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [interleave](Source-or-Flow/interleave.md)
 * [interleaveAll](Source-or-Flow/interleaveAll.md)
 * [intersperse](Source-or-Flow/intersperse.md)
+* [iterate](Source/iterate.md)
 * [javaCollector](StreamConverters/javaCollector.md)
 * [javaCollectorParallelUnordered](StreamConverters/javaCollectorParallelUnordered.md)
 * [keepAlive](Source-or-Flow/keepAlive.md)

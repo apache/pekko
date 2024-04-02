@@ -19,7 +19,6 @@ import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.Cancellable;
 import org.apache.pekko.actor.Status;
 import org.apache.pekko.japi.Pair;
-import org.apache.pekko.japi.Util;
 import org.apache.pekko.japi.function.*;
 import org.apache.pekko.japi.pf.PFBuilder;
 // #imports
@@ -1439,6 +1438,24 @@ public class SourceTest extends StreamTest {
             6765, 10946, 17711, 28657, 46368, 75025, 121393, 196418, 317811, 514229, 832040,
             1346269, 2178309, 3524578, 5702887, 9227465),
         resultList);
+  }
+
+  @Test
+  public void iterateTest() throws Exception {
+    final List<Integer> resultList =
+        Source.iterate(0, i -> i + 1)
+            .take(10)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+    assertEquals(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9), resultList);
+    final List<Integer> emptyList =
+        Source.iterate(0, i -> i < 0, i -> i + 1)
+            .take(10)
+            .runWith(Sink.seq(), system)
+            .toCompletableFuture()
+            .join();
+    assertTrue(emptyList.isEmpty());
   }
 
   @Test
