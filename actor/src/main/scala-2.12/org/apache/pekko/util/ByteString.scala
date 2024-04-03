@@ -246,7 +246,7 @@ object ByteString {
       }
     }
 
-    override def indexOfByte(elem: Byte, from: Int): Int = {
+    override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
         var found = -1
@@ -446,7 +446,7 @@ object ByteString {
       }
     }
 
-    override def indexOfByte(elem: Byte, from: Int): Int = {
+    override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
         var found = -1
@@ -719,7 +719,7 @@ object ByteString {
       }
     }
 
-    override def indexOfByte(elem: Byte, from: Int): Int = {
+    override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
         val byteStringsSize = bytestrings.size
@@ -733,7 +733,7 @@ object ByteString {
             if (bs.length <= relativeIndex) {
               find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
             } else {
-              val subIndexOf = bs.indexOfByte(elem, relativeIndex)
+              val subIndexOf = bs.indexOf(elem, relativeIndex)
               if (subIndexOf < 0) {
                 val nextString = bsIdx + 1
                 find(nextString, relativeIndex - bs.length, bytesPassed + bs.length)
@@ -854,7 +854,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
    *           to `elem`, or `-1`, if none exists.
    */
-  def indexOfByte(elem: Byte, from: Int): Int = indexOf(elem, from)
+  def indexOf(elem: Byte, from: Int): Int = indexOf(elem, from)
 
   /**
    * Finds index of first occurrence of some byte in this ByteString.
@@ -865,7 +865,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
    *           to `elem`, or `-1`, if none exists.
    */
-  def indexOfByte(elem: Byte): Int = indexOfByte(elem, 0)
+  def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {

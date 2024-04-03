@@ -260,7 +260,7 @@ object Framing {
         @tailrec
         private def searchIndices(): Unit = {
           // Next possible position for the delimiter
-          val possibleMatchPos = buffer.indexOfByte(firstSeparatorByte, from = nextPossibleMatch)
+          val possibleMatchPos = buffer.indexOf(firstSeparatorByte, from = nextPossibleMatch)
 
           // Retrive previous position
           val previous = indices.lastOption match {
