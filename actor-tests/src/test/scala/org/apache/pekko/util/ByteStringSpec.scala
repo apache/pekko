@@ -717,6 +717,82 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g', 5) should ===(5)
       compact.indexOf('g', 6) should ===(-1)
     }
+    "indexOfByte" in {
+      ByteString.empty.indexOfByte(5.toByte) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOfByte('a'.toByte) should ===(0)
+      byteString1.indexOfByte('b'.toByte) should ===(1)
+      byteString1.indexOfByte('c'.toByte) should ===(2)
+      byteString1.indexOfByte('d'.toByte) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOfByte('a'.toByte) should ===(0)
+      byteStrings.indexOfByte('c'.toByte) should ===(2)
+      byteStrings.indexOfByte('d'.toByte) should ===(-1)
+      byteStrings.indexOfByte('e'.toByte) should ===(3)
+      byteStrings.indexOfByte('f'.toByte) should ===(4)
+      byteStrings.indexOfByte('g'.toByte) should ===(5)
+
+      val compact = byteStrings.compact
+      compact.indexOfByte('a'.toByte) should ===(0)
+      compact.indexOfByte('c'.toByte) should ===(2)
+      compact.indexOfByte('d'.toByte) should ===(-1)
+      compact.indexOfByte('e'.toByte) should ===(3)
+      compact.indexOfByte('f'.toByte) should ===(4)
+      compact.indexOfByte('g'.toByte) should ===(5)
+
+    }
+    "indexOfByte from offset" in {
+      ByteString.empty.indexOfByte(5.toByte, -1) should ===(-1)
+      ByteString.empty.indexOfByte(5.toByte, 0) should ===(-1)
+      ByteString.empty.indexOfByte(5.toByte, 1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOfByte('d'.toByte, -1) should ===(-1)
+      byteString1.indexOfByte('d'.toByte, 0) should ===(-1)
+      byteString1.indexOfByte('d'.toByte, 1) should ===(-1)
+      byteString1.indexOfByte('d'.toByte, 4) should ===(-1)
+      byteString1.indexOfByte('a'.toByte, -1) should ===(0)
+      byteString1.indexOfByte('a'.toByte, 0) should ===(0)
+      byteString1.indexOfByte('a'.toByte, 1) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOfByte('c'.toByte, -1) should ===(2)
+      byteStrings.indexOfByte('c'.toByte, 0) should ===(2)
+      byteStrings.indexOfByte('c'.toByte, 2) should ===(2)
+      byteStrings.indexOfByte('c'.toByte, 3) should ===(-1)
+
+      byteStrings.indexOfByte('e'.toByte, -1) should ===(3)
+      byteStrings.indexOfByte('e'.toByte, 0) should ===(3)
+      byteStrings.indexOfByte('e'.toByte, 1) should ===(3)
+      byteStrings.indexOfByte('e'.toByte, 4) should ===(-1)
+      byteStrings.indexOfByte('e'.toByte, 6) should ===(-1)
+
+      byteStrings.indexOfByte('g'.toByte, -1) should ===(5)
+      byteStrings.indexOfByte('g'.toByte, 0) should ===(5)
+      byteStrings.indexOfByte('g'.toByte, 1) should ===(5)
+      byteStrings.indexOfByte('g'.toByte, 4) should ===(5)
+      byteStrings.indexOfByte('g'.toByte, 5) should ===(5)
+      byteStrings.indexOfByte('g'.toByte, 6) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.indexOfByte('c'.toByte, -1) should ===(2)
+      compact.indexOfByte('c'.toByte, 0) should ===(2)
+      compact.indexOfByte('c'.toByte, 2) should ===(2)
+      compact.indexOfByte('c'.toByte, 3) should ===(-1)
+
+      compact.indexOfByte('e'.toByte, -1) should ===(3)
+      compact.indexOfByte('e'.toByte, 0) should ===(3)
+      compact.indexOfByte('e'.toByte, 1) should ===(3)
+      compact.indexOfByte('e'.toByte, 4) should ===(-1)
+      compact.indexOfByte('e'.toByte, 6) should ===(-1)
+
+      compact.indexOfByte('g'.toByte, -1) should ===(5)
+      compact.indexOfByte('g'.toByte, 0) should ===(5)
+      compact.indexOfByte('g'.toByte, 1) should ===(5)
+      compact.indexOfByte('g'.toByte, 4) should ===(5)
+      compact.indexOfByte('g'.toByte, 5) should ===(5)
+      compact.indexOfByte('g'.toByte, 6) should ===(-1)
+    }
     "copyToArray" in {
       val byteString = ByteString(1, 2) ++ ByteString(3) ++ ByteString(4)
 
