@@ -853,6 +853,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    *  @param   from   the start index
    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
    *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
    */
   def indexOf(elem: Byte, from: Int): Int = indexOf(elem, from)
 
@@ -864,6 +865,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    *  @param   elem   the element value to search for.
    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
    *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
    */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
 

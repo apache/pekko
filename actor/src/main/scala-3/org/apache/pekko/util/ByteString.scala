@@ -879,25 +879,29 @@ sealed abstract class ByteString
   override def indexOf[B >: Byte](elem: B, from: Int): Int = indexOf(elem, from)
 
   // optimized version of indexOf for bytes, optimized in subclasses
-  /** Finds index of first occurrence of some byte in this ByteString after or at some start index.
-    *
-    * Similar to indexOf, but it avoids boxing if the value is already a byte.
-    *
-    *  @param   elem   the element value to search for.
-    *  @param   from   the start index
-    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
-    *           to `elem`, or `-1`, if none exists.
-    */
+  /**
+   * Finds index of first occurrence of some byte in this ByteString after or at some start index.
+   *
+   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @param   from   the start index
+   *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
+   */
   def indexOf(elem: Byte, from: Int): Int = indexOf(elem, from)
 
-  /** Finds index of first occurrence of some byte in this ByteString.
-    *
-    * Similar to indexOf, but it avoids boxing if the value is already a byte.
-    *
-    *  @param   elem   the element value to search for.
-    *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
-    *           to `elem`, or `-1`, if none exists.
-    */
+  /**
+   * Finds index of first occurrence of some byte in this ByteString.
+   *
+   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
+   */
   def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
   override def grouped(size: Int): Iterator[ByteString] = {
