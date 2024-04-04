@@ -26,6 +26,7 @@ import scala.concurrent.duration.FiniteDuration
 import scala.reflect.ClassTag
 
 import org.apache.pekko
+import org.apache.pekko.stream.impl.fusing.ArraySource
 import pekko.{ Done, NotUsed }
 import pekko.actor.{ ActorRef, Cancellable, ClassicActorSystemProvider }
 import pekko.annotation.ApiMayChange
@@ -165,6 +166,15 @@ object Source {
     }
     new Source(scaladsl.Source(scalaIterable))
   }
+
+  /**
+   * Creates a `Source` from an array, if the array is empty, the stream is completed immediately,
+   * otherwise, every element of the array will be emitted sequentially.
+   *
+   * @since 1.1.0
+   */
+  def fromArray[T](array: Array[T]): javadsl.Source[T, NotUsed] = new Source(scaladsl.Source.fromGraph(
+    new ArraySource[T](array)))
 
   /**
    * Creates [[Source]] that represents integer values in range ''[start;end]'', step equals to 1.

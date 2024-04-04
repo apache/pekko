@@ -106,6 +106,26 @@ public class SourceTest extends StreamTest {
   }
 
   @Test
+  public void mustBeAbleToCompleteWhenArrayIsEmpty() {
+    Source.fromArray(new String[] {})
+        .runWith(TestSink.probe(system), system)
+        .ensureSubscription()
+        .expectComplete();
+  }
+
+  @Test
+  public void mustBeAbleToEmitEveryArrayElementSequentially() {
+    Source.fromArray(new String[] {"a", "b", "c"})
+        .runWith(TestSink.probe(system), system)
+        .ensureSubscription()
+        .request(3)
+        .expectNext("a")
+        .expectNext("b")
+        .expectNext("c")
+        .expectComplete();
+  }
+
+  @Test
   public void mustBeAbleToUseVoidTypeInForeach() {
     final TestKit probe = new TestKit(system);
     final java.lang.Iterable<String> input = Arrays.asList("a", "b", "c");

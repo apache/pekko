@@ -60,6 +60,14 @@ public class SourceDocExamples {
     // #source-from-example
   }
 
+  private static void fromArrayExample() {
+    final ActorSystem system = null;
+    // #source-from-array
+    Source<String, NotUsed> words = Source.fromArray("Hello world".split("\\s"));
+    words.runForeach(System.out::println, system);
+    // #source-from-array
+  }
+
   static void rangeExample() {
 
     final ActorSystem system = ActorSystem.create("Source");

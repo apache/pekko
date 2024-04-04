@@ -21,12 +21,14 @@ import scala.collection.immutable
 import scala.util.control.NonFatal
 
 import org.apache.pekko
+import pekko.annotation.InternalApi
 import pekko.stream.{ Attributes, Outlet, SourceShape, Supervision }
 import pekko.stream.ActorAttributes.SupervisionStrategy
 import pekko.stream.impl.ReactiveStreamsCompliance
 import pekko.stream.impl.Stages.DefaultAttributes
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
+@InternalApi
 private[pekko] final class IterableSource[T](val elements: immutable.Iterable[T]) extends GraphStage[SourceShape[T]] {
   ReactiveStreamsCompliance.requireNonNullElement(elements)
 
