@@ -18,6 +18,9 @@ import pekko.annotation.InternalApi
 import pekko.stream._
 import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
+import java.util.Spliterator
+import java.util.function.Consumer
+
 /** INTERNAL API */
 @InternalApi private[stream] final class JavaStreamSource[T, S <: java.util.stream.BaseStream[T, S]](
     open: () => java.util.stream.BaseStream[T, S])
@@ -27,28 +30,31 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
   override val shape: SourceShape[T] = SourceShape(out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
-    new GraphStageLogic(shape) with OutHandler {
-      private[this] var stream: java.util.stream.BaseStream[T, S] = _
-      private[this] var iter: java.util.Iterator[T] = _
+    new GraphStageLogic(shape) with OutHandler with Consumer[T] {
+      private var stream: java.util.stream.BaseStream[T, S] = _
+      private var splitIterator: Spliterator[T] = _
 
-      setHandler(out, this)
-
-      override def preStart(): Unit = {
+      final override def preStart(): Unit = {
         stream = open()
-        iter = stream.iterator()
-      }
-
-      override def postStop(): Unit = {
-        if (stream ne null)
-          stream.close()
-      }
-
-      override def onPull(): Unit = {
-        if (iter.hasNext) {
-          push(out, iter.next())
-        } else {
+        splitIterator = stream.spliterator()
+        if (splitIterator.hasCharacteristics(Spliterator.SIZED) && splitIterator.estimateSize() == 0) {
           complete(out)
         }
       }
+
+      final override def accept(elem: T): Unit = push(out, elem)
+
+      final override def postStop(): Unit =
+        if (stream ne null) {
+          stream.close()
+        }
+
+      final override def onPull(): Unit = if (!splitIterator.tryAdvance(this)) {
+        complete(out)
+      }
+
+      setHandler(out, this)
     }
+
+  override def toString: String = "JavaStreamSource"
 }
