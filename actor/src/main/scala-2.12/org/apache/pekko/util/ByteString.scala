@@ -246,6 +246,7 @@ object ByteString {
       }
     }
 
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
@@ -446,6 +447,7 @@ object ByteString {
       }
     }
 
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
@@ -719,6 +721,7 @@ object ByteString {
       }
     }
 
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
     override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
