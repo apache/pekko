@@ -30,7 +30,7 @@ object Dependencies {
   val junit5Version = "5.10.2"
   val slf4jVersion = "2.0.12"
   // check agrona version when updating this
-  val aeronVersion = "1.43.0"
+  val aeronVersion = "1.44.0"
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.20.0"
@@ -118,9 +118,9 @@ object Dependencies {
     }
 
     object TestDependencies {
-      val commonsIo = "commons-io" % "commons-io" % "2.15.1" % Test
+      val commonsIo = "commons-io" % "commons-io" % "2.16.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.0" % Test
+      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
       val guava = "com.google.guava" % "guava" % "33.1.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
