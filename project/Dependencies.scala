@@ -121,7 +121,7 @@ object Dependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.16.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
-      val guava = "com.google.guava" % "guava" % "33.0.0-jre" % Test
+      val guava = "com.google.guava" % "guava" % "33.1.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
