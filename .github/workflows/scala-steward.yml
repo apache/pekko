@@ -9,7 +9,11 @@ jobs:
   scala-steward:
     runs-on: ubuntu-22.04
     name: Launch Scala Steward
+    if: github.repository == 'apache/pekko'
     steps:
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
       - name: Launch Scala Steward
         uses: scala-steward-org/scala-steward-action@v2
         with:
@@ -17,3 +21,4 @@ jobs:
           github-app-installation-id: ${{ secrets.SCALA_STEWARD_INSTALLATION_ID }}
           github-app-key: ${{ secrets.SCALA_STEWARD_PRIVATE_KEY }}
           github-app-auth-only: true
+          ignore-opts-files: false
