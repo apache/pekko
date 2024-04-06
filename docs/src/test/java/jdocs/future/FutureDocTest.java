@@ -85,4 +85,17 @@ public class FutureDocTest extends AbstractJavaTest {
 
     retriedFuture.toCompletableFuture().get(2, SECONDS);
   }
+
+  @Test
+  public void useRetryWithPredicate() throws Exception {
+    // #retry
+    Callable<CompletionStage<String>> attempt = () -> CompletableFuture.completedFuture("test");
+
+    CompletionStage<String> retriedFuture =
+        Patterns.retry(
+            attempt, (notUsed, e) -> e != null, 3, java.time.Duration.ofMillis(200), system);
+    // #retry
+
+    retriedFuture.toCompletableFuture().get(2, SECONDS);
+  }
 }

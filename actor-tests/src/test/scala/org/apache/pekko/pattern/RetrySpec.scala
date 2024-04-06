@@ -22,6 +22,8 @@ import org.apache.pekko
 import pekko.actor.Scheduler
 import pekko.testkit.PekkoSpec
 
+import java.util.concurrent.atomic.AtomicInteger
+
 class RetrySpec extends PekkoSpec with RetrySupport {
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   implicit val scheduler: Scheduler = system.scheduler
@@ -152,6 +154,38 @@ class RetrySpec extends PekkoSpec with RetrySupport {
         Await.result(retried, remaining) should ===(5)
       }
     }
+
+    "be able to retry with predicate for value" in {
+      val counter = new AtomicInteger(0)
+      def attempt(): Future[Int] = {
+        Future.successful(counter.incrementAndGet())
+      }
+
+      val retried = retry(() => attempt(), (t: Int, _) => t < 5, 10, 100 milliseconds)
+
+      within(3 seconds) {
+        Await.result(retried, remaining) should ===(5)
+      }
+    }
+
+    "be able to skip retry with predicate for exception" in {
+      val counter = new AtomicInteger(0)
+
+      def attempt(): Future[Int] = {
+        counter.incrementAndGet()
+        // should not retry on this exception
+        Future.failed(new IllegalArgumentException())
+      }
+
+      val retried =
+        retry(() => attempt(), (_: Int, e) => !e.isInstanceOf[IllegalArgumentException], 10, 100 milliseconds)
+
+      within(3 seconds) {
+        retried.failed.futureValue shouldBe an[IllegalArgumentException]
+        counter.get() should ===(1)
+      }
+    }
+
   }
 
 }
