@@ -718,8 +718,7 @@ object ByteString {
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
               if (subIndexOf < 0) {
-                val nextString = bsIdx + 1
-                find(nextString, relativeIndex - bs.length, bytesPassed + bs.length)
+                find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
           }
@@ -745,8 +744,7 @@ object ByteString {
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
               if (subIndexOf < 0) {
-                val nextString = bsIdx + 1
-                find(nextString, relativeIndex - bs.length, bytesPassed + bs.length)
+                find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
           }
