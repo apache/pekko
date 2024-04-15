@@ -844,7 +844,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
   // optimized in subclasses
   override def indexOf[B >: Byte](elem: B): Int = indexOf(elem, 0)
 
-  // optimized version of indexOf for bytes, optimized in subclasses
+  // optimized version of indexOf for bytes, implemented in subclasses
   /**
    * Finds index of first occurrence of some byte in this ByteString after or at some start index.
    *
@@ -856,7 +856,7 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
    *           to `elem`, or `-1`, if none exists.
    *  @since 1.1.0
    */
-  def indexOf(elem: Byte, from: Int): Int = indexOf(elem, from)
+  def indexOf(elem: Byte, from: Int): Int = indexWhere(elem == _, from)
 
   /**
    * Finds index of first occurrence of some byte in this ByteString.
