@@ -470,7 +470,7 @@ abstract class ByteIterator extends BufferedIterator[Byte] {
   override def indexWhere(p: Byte => Boolean): Int = indexWhere(p, 0)
   override def indexWhere(p: Byte => Boolean, from: Int): Int = {
     var index = 0
-    while (index < from) {
+    while (index < from && hasNext) {
       next()
       index += 1
     }
