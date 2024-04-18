@@ -20,12 +20,12 @@ import pekko.persistence.typed.PersistenceId
 
 /**
  * INTERNAL API
+ *
+ * Used for store failures. Private to pekko as only internal supervision strategies should use it.
  */
 @InternalApi
 final private[pekko] class DurableStateStoreException(msg: String, cause: Throwable)
     extends DurableStateException(msg, cause) {
   def this(persistenceId: PersistenceId, sequenceNr: Long, cause: Throwable) =
     this(s"Failed to persist state with sequence number [$sequenceNr] for persistenceId [${persistenceId.id}]", cause)
-
-  def this(msg: String) = this(msg, null)
 }
