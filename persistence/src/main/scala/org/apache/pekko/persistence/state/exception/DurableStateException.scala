@@ -15,12 +15,21 @@
  * limitations under the License.
  */
 
-package org.apache.pekko.persistence.typed.state.exception
+package org.apache.pekko.persistence.state.exception
 
 import scala.util.control.NoStackTrace
 
-import org.apache.pekko
-import pekko.persistence.typed.state.internal.DurableStateStoreException
+/**
+ * Exception thrown when Durable State cannot be updated or deleted.
+ *
+ * @param msg the exception message
+ * @param cause the exception cause
+ * @since 1.1.0
+ */
+abstract class DurableStateException(msg: String, cause: Throwable)
+    extends RuntimeException(msg, cause) {
+  def this(msg: String) = this(msg, null)
+}
 
 /**
  * Exception thrown when Durable State cannot be deleted because the revision
@@ -30,7 +39,7 @@ import pekko.persistence.typed.state.internal.DurableStateStoreException
  * @since 1.1.0
  */
 final class OutOfDateRevisionException(msg: String)
-    extends DurableStateStoreException(msg) with NoStackTrace
+    extends DurableStateException(msg) with NoStackTrace
 
 /**
  * Exception thrown when Durable State cannot be deleted because the revision
@@ -41,4 +50,4 @@ final class OutOfDateRevisionException(msg: String)
  * @since 1.1.0
  */
 final class UnknownRevisionException(msg: String)
-    extends DurableStateStoreException(msg) with NoStackTrace
+    extends DurableStateException(msg) with NoStackTrace

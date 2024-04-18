@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.apache.pekko.persistence.typed.state.exception
+package org.apache.pekko.persistence.state.exception
 
 import java.lang.invoke.{ MethodHandles, MethodType }
 
@@ -26,21 +26,21 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatest.matchers.should.Matchers
 
 /**
- * Tests for [[DurableStateStoreException]]s.
+ * Tests for [[DurableStateException]]s.
  * <p>
  *   To avoid making Pekko persistence implementations dependent on
  *   Pekko v1.1, these exceptions will be created using MethodHandles.
  * </p>
  */
-class DurableStateStoreExceptionsSpec extends AnyWordSpecLike
+class DurableStateExceptionsSpec extends AnyWordSpecLike
     with Matchers {
 
   private val methodHandleLookup = MethodHandles.publicLookup()
 
-  "DurableStateStoreException support" must {
+  "DurableStateException support" must {
     "allow creating OutOfDateRevisionException using MethodHandle" in {
       val outOfDateRevisionExceptionClassOpt: Option[Class[_]] = Try(Class.forName(
-        "org.apache.pekko.persistence.typed.state.exception.OutOfDateRevisionException")).toOption
+        "org.apache.pekko.persistence.state.exception.OutOfDateRevisionException")).toOption
       outOfDateRevisionExceptionClassOpt should not be empty
       val constructorOpt = outOfDateRevisionExceptionClassOpt.map { clz =>
         val mt = MethodType.methodType(classOf[Unit], classOf[String])
@@ -55,7 +55,7 @@ class DurableStateStoreExceptionsSpec extends AnyWordSpecLike
     }
     "allow creating UnknownRevisionException using MethodHandle" in {
       val exceptionClassOpt: Option[Class[_]] = Try(Class.forName(
-        "org.apache.pekko.persistence.typed.state.exception.UnknownRevisionException")).toOption
+        "org.apache.pekko.persistence.state.exception.UnknownRevisionException")).toOption
       exceptionClassOpt should not be empty
       val constructorOpt = exceptionClassOpt.map { clz =>
         val mt = MethodType.methodType(classOf[Unit], classOf[String])

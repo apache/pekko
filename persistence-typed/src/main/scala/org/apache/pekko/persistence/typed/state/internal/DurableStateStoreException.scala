@@ -15,17 +15,15 @@ package org.apache.pekko.persistence.typed.state.internal
 
 import org.apache.pekko
 import pekko.annotation.InternalApi
+import pekko.persistence.state.exception.DurableStateException
 import pekko.persistence.typed.PersistenceId
 
 /**
  * INTERNAL API
- *
- * Base class for exceptions thrown by the Durable State implementations.
- * Extensible since v1.1.0.
  */
 @InternalApi
-private[pekko] class DurableStateStoreException(msg: String, cause: Throwable)
-    extends RuntimeException(msg, cause) {
+final private[pekko] class DurableStateStoreException(msg: String, cause: Throwable)
+    extends DurableStateException(msg, cause) {
   def this(persistenceId: PersistenceId, sequenceNr: Long, cause: Throwable) =
     this(s"Failed to persist state with sequence number [$sequenceNr] for persistenceId [${persistenceId.id}]", cause)
 
