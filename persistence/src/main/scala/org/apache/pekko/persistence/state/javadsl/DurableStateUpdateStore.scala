@@ -26,12 +26,39 @@ import pekko.Done
 trait DurableStateUpdateStore[A] extends DurableStateStore[A] {
 
   /**
-   * @param seqNr sequence number for optimistic locking. starts at 1.
+   * Upsert the object with the given `persistenceId` and `revision`.
+   *
+   * @param persistenceId the persistenceId of the object to upsert
+   * @param revision the revision of the object to upsert
+   * @param value the value to upsert
+   * @param tag a tag to associate with the object
+   * @return a CompletionStage that completes when the object has been upserted
    */
   def upsertObject(persistenceId: String, revision: Long, value: A, tag: String): CompletionStage[Done]
 
+  /**
+   * Delete the object with the given `persistenceId`. This deprecated
+   * function ignores whether the object is deleted or not.
+   *
+   * @param persistenceId the persistenceId of the object to delete
+   * @param revision the revision of the object to delete
+   * @return a CompletionStage that completes when the object has been deleted
+   */
   @deprecated(message = "Use the deleteObject overload with revision instead.", since = "Akka 2.6.20")
   def deleteObject(persistenceId: String): CompletionStage[Done]
 
+  /**
+   * Delete the object with the given `persistenceId` and `revision`.
+   *
+   * <p>
+   * Since Pekko v1.1, if the revision does not match the current revision
+   * of the object, the delete operation will fail. The returned CompletionStage
+   * will complete with a failed result wrapping the exception.
+   * </p>
+   *
+   * @param persistenceId the persistenceId of the object to delete
+   * @param revision the revision of the object to delete
+   * @return a CompletionStage that completes when the object has been deleted
+   */
   def deleteObject(persistenceId: String, revision: Long): CompletionStage[Done]
 }
