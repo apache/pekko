@@ -32,22 +32,11 @@ abstract class DurableStateException(msg: String, cause: Throwable)
 }
 
 /**
- * Exception thrown when Durable State cannot be deleted because the revision
- * is out of date (i.e. the state has a newer revision set).
+ * Exception thrown when Durable State revision cannot be deleted.
+ * The revision could be out of date.
  *
  * @param msg the exception message
  * @since 1.1.0
  */
-final class OutOfDateRevisionException(msg: String)
-    extends DurableStateException(msg) with NoStackTrace
-
-/**
- * Exception thrown when Durable State cannot be deleted because the revision
- * is unknown (i.e. the current revision is lower than the revision that we
- * attempted to delete).
- *
- * @param msg the exception message
- * @since 1.1.0
- */
-final class UnknownRevisionException(msg: String)
+final class DeleteRevisionException(msg: String)
     extends DurableStateException(msg) with NoStackTrace

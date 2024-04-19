@@ -38,24 +38,9 @@ class DurableStateExceptionsSpec extends AnyWordSpecLike
   private val methodHandleLookup = MethodHandles.publicLookup()
 
   "DurableStateException support" must {
-    "allow creating OutOfDateRevisionException using MethodHandle" in {
-      val outOfDateRevisionExceptionClassOpt: Option[Class[_]] = Try(Class.forName(
-        "org.apache.pekko.persistence.state.exception.OutOfDateRevisionException")).toOption
-      outOfDateRevisionExceptionClassOpt should not be empty
-      val constructorOpt = outOfDateRevisionExceptionClassOpt.map { clz =>
-        val mt = MethodType.methodType(classOf[Unit], classOf[String])
-        methodHandleLookup.findConstructor(clz, mt)
-      }
-      constructorOpt should not be empty
-      val constructor = constructorOpt.get
-      val ex = constructor.invoke("message").asInstanceOf[Exception]
-      ex shouldBe an[OutOfDateRevisionException]
-      ex shouldBe an[NoStackTrace]
-      ex.getMessage shouldEqual "message"
-    }
-    "allow creating UnknownRevisionException using MethodHandle" in {
+    "allow creating DeleteRevisionException using MethodHandle" in {
       val exceptionClassOpt: Option[Class[_]] = Try(Class.forName(
-        "org.apache.pekko.persistence.state.exception.UnknownRevisionException")).toOption
+        "org.apache.pekko.persistence.state.exception.DeleteRevisionException")).toOption
       exceptionClassOpt should not be empty
       val constructorOpt = exceptionClassOpt.map { clz =>
         val mt = MethodType.methodType(classOf[Unit], classOf[String])
@@ -63,10 +48,10 @@ class DurableStateExceptionsSpec extends AnyWordSpecLike
       }
       constructorOpt should not be empty
       val constructor = constructorOpt.get
-      val ex = constructor.invoke("message").asInstanceOf[Exception]
-      ex shouldBe an[UnknownRevisionException]
+      val ex = constructor.invoke("delete failed").asInstanceOf[Exception]
+      ex shouldBe an[DeleteRevisionException]
       ex shouldBe an[NoStackTrace]
-      ex.getMessage shouldEqual "message"
+      ex.getMessage shouldEqual "delete failed"
     }
   }
 }
