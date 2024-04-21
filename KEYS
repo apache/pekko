@@ -19,12 +19,12 @@ https://www.apache.org/dev/release-signing#keys-policy
 https://people.apache.org/keys/
 
 
-sec   rsa2048 2018-05-02 [SC] [expires: 2026-05-11]
+pub   rsa2048 2018-05-02 [SC] [expires: 2026-05-11]
       6BA4DA8B1C88A49428A29C3D0C69C1EF41181E13
 uid           [ unknown] PJ Fanning (http://www.apache.org/) <fanningpj@apache.org>
 uid           [ unknown] PJ Fanning (GitHub noreply address) <pjfanning@users.noreply.github.com>
 uid           [ unknown] PJ Fanning <fanningpj@yahoo.com>
-ssb   rsa2048 2018-05-02 [E] [expires: 2026-05-11]
+sub   rsa2048 2018-05-02 [E] [expires: 2026-05-11]
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 
