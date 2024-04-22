@@ -30,6 +30,7 @@ import pekko.actor.typed.scaladsl.Behaviors
 import pekko.annotation._
 import pekko.persistence.RecoveryPermitter
 import pekko.persistence.typed.state.scaladsl._
+import pekko.persistence.state.exception.DurableStateException
 import pekko.persistence.state.scaladsl.GetObjectResult
 import pekko.persistence.typed.PersistenceId
 import pekko.persistence.typed.SnapshotAdapter
@@ -153,7 +154,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
         }
 
       }
-      .onFailure[DurableStateStoreException](supervisionStrategy)
+      .onFailure[DurableStateException](supervisionStrategy)
   }
 
   @InternalStableApi
