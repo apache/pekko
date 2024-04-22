@@ -884,7 +884,7 @@ sealed abstract class ByteString
    *           to `elem`, or `-1`, if none exists.
    *  @since 1.1.0
    */
-  def indexOf(elem: Byte, from: Int): Int
+  def indexOf(elem: Byte, from: Int): Int = indexOf[Byte](elem, from)
 
   /**
    * Finds index of first occurrence of some byte in this ByteString.
