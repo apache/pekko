@@ -15,6 +15,7 @@ package org.apache.pekko.pattern
 
 import java.util.Optional
 import java.util.concurrent.{ Callable, CompletionStage, TimeUnit }
+import java.util.function.BiPredicate
 
 import scala.concurrent.ExecutionContext
 
@@ -491,11 +492,40 @@ object Patterns {
    *
    * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
-   * and therefore must be thread safe (not touch unsafe mutable state).
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   def retry[T](attempt: Callable[CompletionStage[T]], attempts: Int, ec: ExecutionContext): CompletionStage[T] = {
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(() => attempt.call().asScala, attempts)(ec).asJava
+  }
+
+  /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param ec       the execution context
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      ec: ExecutionContext): CompletionStage[T] = {
+    require(attempt != null, "Parameter attempt should not be null.")
+    scalaRetry(() => attempt.call().asScala, (t, e) => shouldRetry.test(t, e), attempts)(ec).asJava
   }
 
   /**
@@ -505,7 +535,7 @@ object Patterns {
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
-   * therefore must be thread safe (not touch unsafe mutable state).
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param minBackoff   minimum (initial) duration until the child actor will
    *                     started again, if it is terminated
@@ -531,13 +561,57 @@ object Patterns {
       system.classicSystem.dispatcher)
 
   /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries and
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param minBackoff   minimum (initial) duration until the child actor will
+   *                     started again, if it is terminated
+   * @param maxBackoff   the exponential back-off is capped to this duration
+   * @param randomFactor after calculation of the exponential back-off an additional
+   *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
+   *                     In order to skip this additional delay pass in `0`.
+   * @param system      the actor system
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      minBackoff: java.time.Duration,
+      maxBackoff: java.time.Duration,
+      randomFactor: Double,
+      system: ClassicActorSystemProvider): CompletionStage[T] =
+    retry(
+      attempt,
+      shouldRetry,
+      attempts,
+      minBackoff,
+      maxBackoff,
+      randomFactor,
+      system.classicSystem.scheduler,
+      system.classicSystem.dispatcher)
+
+  /**
    * Returns an internally retrying [[java.util.concurrent.CompletionStage]]
    * The first attempt will be made immediately, each subsequent attempt will be made with a backoff time,
    * if the previous attempt failed.
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
-   * therefore must be thread safe (not touch unsafe mutable state).
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
    *
    * @param minBackoff   minimum (initial) duration until the child actor will
    *                     started again, if it is terminated
@@ -563,13 +637,60 @@ object Patterns {
   }
 
   /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries and
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param minBackoff   minimum (initial) duration until the child actor will
+   *                     started again, if it is terminated
+   * @param maxBackoff   the exponential back-off is capped to this duration
+   * @param randomFactor after calculation of the exponential back-off an additional
+   *                     random delay based on this factor is added, e.g. `0.2` adds up to `20%` delay.
+   *                     In order to skip this additional delay pass in `0`.
+   * @param scheduler     the scheduler for scheduling a delay
+   * @param ec       the execution context
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      minBackoff: java.time.Duration,
+      maxBackoff: java.time.Duration,
+      randomFactor: Double,
+      scheduler: Scheduler,
+      ec: ExecutionContext): CompletionStage[T] = {
+    require(attempt != null, "Parameter attempt should not be null.")
+    require(minBackoff != null, "Parameter minBackoff should not be null.")
+    require(maxBackoff != null, "Parameter minBackoff should not be null.")
+    scalaRetry(
+      () => attempt.call().asScala,
+      (t, e) => shouldRetry.test(t, e),
+      attempts, minBackoff.asScala, maxBackoff.asScala, randomFactor)(
+      ec,
+      scheduler).asJava
+  }
+
+  /**
    * Returns an internally retrying [[scala.concurrent.Future]]
    * The first attempt will be made immediately, and each subsequent attempt will be made after 'delay'.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
-   * therefore must be thread safe (not touch unsafe mutable state).
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   def retry[T](
       attempt: Callable[Future[T]],
@@ -588,7 +709,7 @@ object Patterns {
    *
    * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
-   * and therefore must be thread safe (not touch unsafe mutable state).
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
@@ -598,13 +719,42 @@ object Patterns {
     retry(attempt, attempts, delay, system.classicSystem.scheduler, system.classicSystem.dispatcher)
 
   /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param delay         the delay between each attempt
+   * @param system        the actor system
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      delay: java.time.Duration,
+      system: ClassicActorSystemProvider): CompletionStage[T] =
+    retry(attempt, shouldRetry, attempts, delay, system.classicSystem.scheduler, system.classicSystem.dispatcher)
+
+  /**
    * Returns an internally retrying [[java.util.concurrent.CompletionStage]]
    * The first attempt will be made immediately, and each subsequent attempt will be made after 'delay'.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    *
    * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
-   * and therefore must be thread safe (not touch unsafe mutable state).
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
@@ -618,8 +768,42 @@ object Patterns {
 
   /**
    * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param delay         the delay between each attempt
+   * @param scheduler     the scheduler for scheduling a delay
+   * @param ec            the execution context
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried   *
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      delay: java.time.Duration,
+      scheduler: Scheduler,
+      ec: ExecutionContext): CompletionStage[T] = {
+    require(attempt != null, "Parameter attempt should not be null.")
+    scalaRetry(() => attempt.call().asScala, (t, e) => shouldRetry.test(t, e), attempts, delay.asScala)(ec,
+      scheduler).asJava
+  }
+
+  /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
    * The first attempt will be made immediately, each subsequent attempt will be made after
-   * the 'delay' return by `delayFunction`(the input next attempt count start from 1).
+   * the 'delay' return by `delayFunction` (the input next attempt count start from 1).
    * Return an empty [[Optional]] instance for no delay.
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
    * You could provide a function to generate the next delay duration after first attempt,
@@ -627,7 +811,7 @@ object Patterns {
    *
    * If attempts are exhausted the returned future is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries and
-   * therefore must be thread safe (not touch unsafe mutable state).
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   def retry[T](
       attempt: Callable[CompletionStage[T]],
@@ -639,6 +823,48 @@ object Patterns {
     require(attempt != null, "Parameter attempt should not be null.")
     scalaRetry(
       () => attempt.call().asScala,
+      attempts,
+      attempted => delayFunction.apply(attempted).toScala.map(_.asScala))(context, scheduler).asJava
+  }
+
+  /**
+   * Returns an internally retrying [[java.util.concurrent.CompletionStage]].
+   *
+   * When the future is completed, the `shouldRetry` predicate is always been invoked with the result (or `null` if none)
+   * and the exception (or `null` if none). If the `shouldRetry` predicate returns true, then a new attempt is made,
+   * each subsequent attempt will be made after the 'delay' return by `delayFunction` (the input next attempt count start from 1).
+   * Return an empty [[Optional]] instance for no delay.
+   *
+   * A scheduler (eg context.system.scheduler) must be provided to delay each retry.
+   * You could provide a function to generate the next delay duration after first attempt,
+   * this function should never return `null`, otherwise an [[java.lang.IllegalArgumentException]] will be through.
+   *
+   * If attempts are exhausted the returned future is simply the result of invoking attempt.
+   * Note that the attempt function will be invoked on the given execution context for subsequent tries and
+   * therefore must be thread safe (i.e. not touch unsafe mutable state).
+   *
+   * @param attempt       the function to be attempted
+   * @param shouldRetry   the predicate to determine if the attempt should be retried
+   * @param attempts      the maximum number of attempts
+   * @param delayFunction the function to generate the next delay duration, `None` for no delay
+   * @param scheduler     the scheduler for scheduling a delay
+   * @param context       the execution context
+   * @return the result [[java.util.concurrent.CompletionStage]] which maybe retried
+   *
+   * @since 1.1.0
+   */
+  def retry[T](
+      attempt: Callable[CompletionStage[T]],
+      shouldRetry: BiPredicate[T, Throwable],
+      attempts: Int,
+      delayFunction: java.util.function.IntFunction[Optional[java.time.Duration]],
+      scheduler: Scheduler,
+      context: ExecutionContext): CompletionStage[T] = {
+    import pekko.util.OptionConverters._
+    require(attempt != null, "Parameter attempt should not be null.")
+    scalaRetry(
+      () => attempt.call().asScala,
+      (t, e) => shouldRetry.test(t, e),
       attempts,
       attempted => delayFunction.apply(attempted).toScala.map(_.asScala))(context, scheduler).asJava
   }
@@ -1077,7 +1303,7 @@ object PatternsCS {
    * A scheduler (eg context.system.scheduler) must be provided to delay each retry
    * If attempts are exhausted the returned completion operator is simply the result of invoking attempt.
    * Note that the attempt function will be invoked on the given execution context for subsequent tries
-   * and therefore must be thread safe (not touch unsafe mutable state).
+   * and therefore must be thread safe (i.e. not touch unsafe mutable state).
    */
   @deprecated("Use Patterns.retry instead.", since = "Akka 2.5.19")
   def retry[T](
