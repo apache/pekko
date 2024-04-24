@@ -54,6 +54,8 @@ jobs:
 
       # TODO come up with a better way to control the version, possibly based on git tags
       - name: Build Documentation
+        env:
+          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
         run: |-
           sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true "set ThisBuild / version := \"1.0.2\"; docs/paradox; unidoc"
 

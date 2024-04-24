@@ -50,6 +50,8 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: Compile on Scala 3
+        env:
+          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
         run: |
           sbt \
           "+~ 3 ${{ matrix.command }}"
