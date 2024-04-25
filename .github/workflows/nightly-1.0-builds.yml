@@ -34,7 +34,7 @@ jobs:
 
       - name: sbt cluster-metrics/test
         env:
-          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         run: |-
           sbt \
             -Djava.security.egd=file:/dev/./urandom \
@@ -85,7 +85,7 @@ jobs:
 
       - name: sbt ${{ matrix.command }}
         env:
-          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
@@ -132,7 +132,7 @@ jobs:
 
       - name: Compile and Test
         env:
-          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
