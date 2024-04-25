@@ -36,7 +36,7 @@ object PekkoDevelocityPlugin extends AutoPlugin {
 
   override lazy val buildSettings: Seq[Setting[_]] = Def.settings(
     develocityConfiguration := {
-      val isInsideCi = insideCI.value
+      val isInsideCI = insideCI.value
 
       val original = develocityConfiguration.value
       val apacheDevelocityConfiguration =
@@ -49,11 +49,11 @@ object PekkoDevelocityPlugin extends AutoPlugin {
           .withBuildScan(
             original.buildScan
               .withPublishing(Publishing.onlyIf(_.authenticated))
-              .withBackgroundUpload(!isInsideCi)
+              .withBackgroundUpload(!isInsideCI)
               .withObfuscation(
                 original.buildScan.obfuscation
                   .withIpAddresses(_.map(_ => ObfuscatedIPv4Address))))
-      if (isInsideCi) {
+      if (isInsideCI) {
         apacheDevelocityConfiguration
           .withTestRetryConfiguration(
             original.testRetryConfiguration
