@@ -1,4 +1,4 @@
--J-Xmx3072M
--J-Xms1024M
+-J-Xmx4G
+-J-Xms1G
 -Dmultinode.XX:MetaspaceSize=128M
 -J-XX:+AlwaysActAsServerClassMachine
