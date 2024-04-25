@@ -32,3 +32,5 @@ addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
 
 addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
+
+addSbtPlugin("com.gradle" % "sbt-develocity" % "1.0.1")

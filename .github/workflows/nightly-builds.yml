@@ -32,6 +32,8 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: sbt cluster-metrics/test
+        env:
+          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
         run: |-
           sbt \
             -Djava.security.egd=file:/dev/./urandom \
@@ -90,6 +92,8 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: sbt ${{ matrix.command }}
+        env:
+          DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
         # note that this is not running any multi-jvm tests because multi-in-test=false
         run: |-
           sbt \
@@ -114,6 +118,8 @@ jobs:
         # full version from it.
         scalaVersion: ["2.12", "2.13", "3.3"]
         javaVersion: [8, 11, 17, 21]
+    env:
+      DEVELOCITY_ACCESS_TOKEN: ${{ secrets.GE_ACCESS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
