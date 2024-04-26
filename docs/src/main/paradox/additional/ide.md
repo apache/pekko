@@ -9,3 +9,9 @@ In IntelliJ, the auto-importer settings are under "Editor" / "General" / "Auto I
 ![idetip-auto-importer-solution.png](../images/idetip-auto-importer-solution.png)
 
 Eclipse users can configure this aspect of the IDE by going to "Window" / "Preferences" / "Java" / "Appearance" / "Type Filters".   
+
+## Configure the code-style of import in IntelliJ
+
+For a smooth development experience, you can disable fully qualified imports and enable merged imports to obtain a more concise import style.
+
+![idetip-not-fully-qualified-import.png](../images/idetip-not-fully-qualified-import.png)
