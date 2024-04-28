@@ -119,7 +119,7 @@ object Dependencies {
 
     object TestDependencies {
       val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
-      val commonsCodec = "commons-codec" % "commons-codec" % "1.16.1" % Test
+      val commonsCodec = "commons-codec" % "commons-codec" % "1.17.0" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
       val guava = "com.google.guava" % "guava" % "33.1.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
