@@ -404,7 +404,7 @@ object LogSource {
 }
 
 /**
- * Main entry point for Akka logging: log levels and message types (aka
+ * Main entry point for Pekko logging: log levels and message types (aka
  * channels) defined for the main transport medium, the main event bus. The
  * recommended use is to obtain an implementation of the Logging trait with
  * suitable and efficient methods for generating log events:
