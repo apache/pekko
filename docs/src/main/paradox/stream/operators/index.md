@@ -16,6 +16,7 @@ These built-in sources are available from @scala[`org.apache.pekko.stream.scalad
 |Source|<a name="empty"></a>@ref[empty](Source/empty.md)|Complete right away without ever emitting any elements.|
 |Source|<a name="failed"></a>@ref[failed](Source/failed.md)|Fail directly with a user specified exception.|
 |Source|<a name="from"></a>@ref[@scala[apply]@java[from]](Source/from.md)|Stream the values of an @scala[`immutable.Seq`]@java[`Iterable`].|
+|Source|<a name="fromarray"></a>@ref[fromArray](Source/fromArray.md)|Stream the values of an `array`.|
 |Source|<a name="fromcompletionstage"></a>@ref[fromCompletionStage](Source/fromCompletionStage.md)|Deprecated by @ref[`Source.completionStage`](Source/completionStage.md).|
 |Source|<a name="fromfuture"></a>@ref[fromFuture](Source/fromFuture.md)|Deprecated by @ref[`Source.future`](Source/future.md).|
 |Source|<a name="fromfuturesource"></a>@ref[fromFutureSource](Source/fromFutureSource.md)|Deprecated by @ref[`Source.futureSource`](Source/futureSource.md).|
@@ -468,6 +469,7 @@ For more background see the @ref[Error Handling in Streams](../stream-error.md) 
 * [foreachAsync](Sink/foreachAsync.md)
 * [foreachParallel](Sink/foreachParallel.md)
 * [from](Source/from.md)
+* [fromArray](Source/fromArray.md)
 * [fromCompletionStage](Source/fromCompletionStage.md)
 * [fromFile](FileIO/fromFile.md)
 * [fromFuture](Source/fromFuture.md)
