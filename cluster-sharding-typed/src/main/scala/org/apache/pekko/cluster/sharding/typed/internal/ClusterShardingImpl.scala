@@ -29,7 +29,6 @@ import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
 import pekko.actor.typed.Props
-import pekko.actor.typed.TypedActorContext
 import pekko.actor.typed.internal.InternalRecipientRef
 import pekko.actor.typed.internal.PoisonPill
 import pekko.actor.typed.internal.PoisonPillInterceptor
@@ -430,22 +429,26 @@ import pekko.util.JavaDurationConverters._
  * INTERNAL API
  */
 @InternalApi private[pekko] object ShardCommandActor {
+  import pekko.actor
   import pekko.actor.typed.scaladsl.adapter._
   import pekko.cluster.sharding.ShardRegion.{ Passivate => ClassicPassivate }
 
   def behavior(stopMessage: Any): Behavior[scaladsl.ClusterSharding.ShardCommand] = {
-    def sendClassicPassivate(entity: ActorRef[_], ctx: TypedActorContext[_]): Unit = {
-      val pathToShard = entity.toClassic.path.elements.take(4).mkString("/")
-      ctx.asScala.system.toClassic.actorSelection(pathToShard).tell(ClassicPassivate(stopMessage), entity.toClassic)
+    def sendClassicPassivate(entity: ActorRef[_], classicSystem: actor.ActorSystem): Unit = {
+      val classicRef = entity.toClassic
+      val pathToShard = classicRef.path.elements.take(4).mkString("/")
+      classicSystem.actorSelection(pathToShard).tell(ClassicPassivate(stopMessage), classicRef)
     }
 
     Behaviors.receive { (ctx, msg) =>
+      val classicSystem = ctx.asScala.system.toClassic
+
       msg match {
         case scaladsl.ClusterSharding.Passivate(entity) =>
-          sendClassicPassivate(entity, ctx)
+          sendClassicPassivate(entity, classicSystem)
           Behaviors.same
         case javadsl.ClusterSharding.Passivate(entity) =>
-          sendClassicPassivate(entity, ctx)
+          sendClassicPassivate(entity, classicSystem)
           Behaviors.same
         case _ =>
           Behaviors.unhandled
