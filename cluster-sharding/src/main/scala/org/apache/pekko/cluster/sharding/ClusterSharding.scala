@@ -425,15 +425,19 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       allocationStrategy: ShardAllocationStrategy,
       handOffStopMessage: Any): ActorRef = {
 
+    val extractEntityId: ShardRegion.ExtractEntityId = { msg =>
+      messageExtractor.entityId(msg) match {
+        case eid => (eid, messageExtractor.entityMessage(msg))
+      }
+    }
+    val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
+
     internalStart(
       typeName,
       _ => entityProps,
       settings,
-      extractEntityId = {
-        case msg if messageExtractor.entityId(msg) ne null =>
-          (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
-      },
-      extractShardId = msg => messageExtractor.shardId(msg),
+      extractEntityId = extractEntityId,
+      extractShardId = extractShardId,
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage)
   }
@@ -612,11 +616,19 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       dataCenter: Optional[String],
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    startProxy(typeName, Option(role.orElse(null)), Option(dataCenter.orElse(null)),
-      extractEntityId = {
-        case msg if messageExtractor.entityId(msg) ne null =>
-          (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
-      }, extractShardId = msg => messageExtractor.shardId(msg))
+    val extractEntityId: ShardRegion.ExtractEntityId = { msg =>
+      messageExtractor.entityId(msg) match {
+        case eid => (eid, messageExtractor.entityMessage(msg))
+      }
+    }
+    val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
+
+    startProxy(
+      typeName,
+      Option(role.orElse(null)),
+      Option(dataCenter.orElse(null)),
+      extractEntityId,
+      extractShardId)
 
   }
 

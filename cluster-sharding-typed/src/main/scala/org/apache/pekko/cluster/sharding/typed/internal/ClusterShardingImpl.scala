@@ -173,10 +173,10 @@ import pekko.util.JavaDurationConverters._
       allocationStrategy: Option[ShardAllocationStrategy]): ActorRef[E] = {
 
     val extractorAdapter = new ExtractorAdapter(extractor)
-    val extractEntityId: ShardRegion.ExtractEntityId = {
-      // TODO is it possible to avoid the double evaluation of entityId
-      case message if extractorAdapter.entityId(message) != null =>
-        (extractorAdapter.entityId(message), extractorAdapter.unwrapMessage(message))
+    val extractEntityId: ShardRegion.ExtractEntityId = { message =>
+      extractorAdapter.entityId(message) match {
+        case eid => (eid, extractorAdapter.unwrapMessage(message))
+      }
     }
     val extractShardId: ShardRegion.ExtractShardId = { message =>
       extractorAdapter.entityId(message) match {
