@@ -194,12 +194,9 @@ import pekko.util.JavaDurationConverters._
             typeKey.name,
             new java.util.function.Function[String, ActorRef[scaladsl.ClusterSharding.ShardCommand]] {
               override def apply(t: String): ActorRef[scaladsl.ClusterSharding.ShardCommand] = {
-                // using classic.systemActorOf to avoid the Future[ActorRef]
-                system.toClassic
-                  .asInstanceOf[ExtendedActorSystem]
-                  .systemActorOf(
-                    PropsAdapter(ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill))),
-                    URLEncoder.encode(typeKey.name, ByteString.UTF_8) + "ShardCommandDelegator")
+                system.systemActorOf(
+                  ShardCommandActor.behavior(stopMessage.getOrElse(PoisonPill)),
+                  URLEncoder.encode(typeKey.name, ByteString.UTF_8) + "ShardCommandDelegator")
               }
             })
 
@@ -307,11 +304,8 @@ import pekko.util.JavaDurationConverters._
     }
   }
 
-  override lazy val shardState: ActorRef[ClusterShardingQuery] = {
-    import pekko.actor.typed.scaladsl.adapter._
-    val behavior = ShardingState.behavior(classicSharding)
-    classicSystem.systemActorOf(PropsAdapter(behavior), "typedShardState")
-  }
+  override lazy val shardState: ActorRef[ClusterShardingQuery] =
+    system.systemActorOf(ShardingState.behavior(classicSharding), "typedShardState")
 
 }
 
