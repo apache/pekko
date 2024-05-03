@@ -311,8 +311,8 @@ private[pekko] class Deployer(val settings: ActorSystem.Settings, val dynamicAcc
             dynamicAccess
               .createInstanceFor[RouterConfig](fqn, args2)
               .recover {
-                case e @ (_: IllegalArgumentException | _: ConfigException) => throw e
-                case _                                                      => throwCannotInstantiateRouter(args2, e)
+                case innerException @ (_: IllegalArgumentException | _: ConfigException) => throw innerException
+                case _                                                                   => throwCannotInstantiateRouter(args2, e)
               }
               .get
           case e => throwCannotInstantiateRouter(args2, e)
