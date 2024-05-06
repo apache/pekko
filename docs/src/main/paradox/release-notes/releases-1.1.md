@@ -14,11 +14,12 @@ Apache Pekko 1.1.0-M1 contains all of the changes that have been released in the
 * in TlsActor, flush data to user only after handshake has finished ([PR1128](https://github.com/apache/pekko/pull/1128))
 * proper path when promise actor terminated quickly ([PR1156](https://github.com/apache/pekko/pull/1156))
 * TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1183](https://github.com/apache/pekko/pull/1183))
-
+* Fix ByteIterator indexWhere method ([PR1282](https://github.com/apache/pekko/pull/1282))
 
 ### Additional APIs
 
 * Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
+* Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
 * Add create method to PFBuilder ([PR947](https://github.com/apache/pekko/pull/947))
 
 The Stream API has been updated to add some extra functions. 
@@ -35,6 +36,8 @@ The Stream API has been updated to add some extra functions.
 * add support for `for` comprehensions ([PR935](https://github.com/apache/pekko/pull/935))
 * add Sink.exists operator ([PR990](https://github.com/apache/pekko/pull/990))
 * add Sink.forall operator ([PR989](https://github.com/apache/pekko/pull/989))
+* add Source.iterate operator ([PR1244](https://github.com/apache/pekko/pull/1244))
+* added extra retry operators that allow users to provide a predicate to decide whether to retry based on the exception ([PR1269](https://github.com/apache/pekko/pull/1269))
 
 The Stream Testkit Java DSL has some extra functions.
 
@@ -59,8 +62,9 @@ The Stream Testkit Java DSL has some extra functions.
 * Make SingleConsumerMultiProducer the default mailbox for stream. ([PR917](https://github.com/apache/pekko/pull/917))
 * Rework PhiAccrualFailureDetector to enable monitoring of interval. ([PR1137](https://github.com/apache/pekko/pull/1137))
 * Remove the deprecation of statefulMapConcat operator. ([PR1147](https://github.com/apache/pekko/pull/1147))
-* add AbruptStreamTerminationException as super class of some related exceptions ([PR1201](https://github.com/apache/pekko/pull/1201))
-* Some performance changes in the Stream code ([PR48](https://github.com/apache/pekko/pull/48), [PR49](https://github.com/apache/pekko/pull/49), [PR278](https://github.com/apache/pekko/pull/278), [PR363](https://github.com/apache/pekko/pull/363), [PR408](https://github.com/apache/pekko/pull/408), [PR872](https://github.com/apache/pekko/pull/872), [PR923](https://github.com/apache/pekko/pull/923), [PR983](https://github.com/apache/pekko/pull/983), [PR1001](https://github.com/apache/pekko/pull/1001)), [PR1027](https://github.com/apache/pekko/pull/1027))
+* Add AbruptStreamTerminationException as super class of some related exceptions. ([PR1201](https://github.com/apache/pekko/pull/1201))
+* For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision. ([PR1271](https://github.com/apache/pekko/pull/1271))
+* Some performance changes in the Stream code ([PR48](https://github.com/apache/pekko/pull/48), [PR49](https://github.com/apache/pekko/pull/49), [PR278](https://github.com/apache/pekko/pull/278), [PR363](https://github.com/apache/pekko/pull/363), [PR408](https://github.com/apache/pekko/pull/408), [PR872](https://github.com/apache/pekko/pull/872), [PR923](https://github.com/apache/pekko/pull/923), [PR983](https://github.com/apache/pekko/pull/983), [PR1001](https://github.com/apache/pekko/pull/1001)), [PR1027](https://github.com/apache/pekko/pull/1027)), [PR1249](https://github.com/apache/pekko/pull/1249)), [PR1250](https://github.com/apache/pekko/pull/1250))
 
 ### Dependency Changes
 
