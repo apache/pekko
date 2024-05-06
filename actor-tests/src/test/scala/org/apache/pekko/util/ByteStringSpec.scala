@@ -717,6 +717,82 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       compact.indexOf('g', 5) should ===(5)
       compact.indexOf('g', 6) should ===(-1)
     }
+    "indexOf (specialized)" in {
+      ByteString.empty.indexOf(5.toByte) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOf('a'.toByte) should ===(0)
+      byteString1.indexOf('b'.toByte) should ===(1)
+      byteString1.indexOf('c'.toByte) should ===(2)
+      byteString1.indexOf('d'.toByte) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOf('a'.toByte) should ===(0)
+      byteStrings.indexOf('c'.toByte) should ===(2)
+      byteStrings.indexOf('d'.toByte) should ===(-1)
+      byteStrings.indexOf('e'.toByte) should ===(3)
+      byteStrings.indexOf('f'.toByte) should ===(4)
+      byteStrings.indexOf('g'.toByte) should ===(5)
+
+      val compact = byteStrings.compact
+      compact.indexOf('a'.toByte) should ===(0)
+      compact.indexOf('c'.toByte) should ===(2)
+      compact.indexOf('d'.toByte) should ===(-1)
+      compact.indexOf('e'.toByte) should ===(3)
+      compact.indexOf('f'.toByte) should ===(4)
+      compact.indexOf('g'.toByte) should ===(5)
+
+    }
+    "indexOf (specialized) from offset" in {
+      ByteString.empty.indexOf(5.toByte, -1) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 0) should ===(-1)
+      ByteString.empty.indexOf(5.toByte, 1) should ===(-1)
+      val byteString1 = ByteString1.fromString("abc")
+      byteString1.indexOf('d'.toByte, -1) should ===(-1)
+      byteString1.indexOf('d'.toByte, 0) should ===(-1)
+      byteString1.indexOf('d'.toByte, 1) should ===(-1)
+      byteString1.indexOf('d'.toByte, 4) should ===(-1)
+      byteString1.indexOf('a'.toByte, -1) should ===(0)
+      byteString1.indexOf('a'.toByte, 0) should ===(0)
+      byteString1.indexOf('a'.toByte, 1) should ===(-1)
+
+      val byteStrings = ByteStrings(ByteString1.fromString("abc"), ByteString1.fromString("efg"))
+      byteStrings.indexOf('c'.toByte, -1) should ===(2)
+      byteStrings.indexOf('c'.toByte, 0) should ===(2)
+      byteStrings.indexOf('c'.toByte, 2) should ===(2)
+      byteStrings.indexOf('c'.toByte, 3) should ===(-1)
+
+      byteStrings.indexOf('e'.toByte, -1) should ===(3)
+      byteStrings.indexOf('e'.toByte, 0) should ===(3)
+      byteStrings.indexOf('e'.toByte, 1) should ===(3)
+      byteStrings.indexOf('e'.toByte, 4) should ===(-1)
+      byteStrings.indexOf('e'.toByte, 6) should ===(-1)
+
+      byteStrings.indexOf('g'.toByte, -1) should ===(5)
+      byteStrings.indexOf('g'.toByte, 0) should ===(5)
+      byteStrings.indexOf('g'.toByte, 1) should ===(5)
+      byteStrings.indexOf('g'.toByte, 4) should ===(5)
+      byteStrings.indexOf('g'.toByte, 5) should ===(5)
+      byteStrings.indexOf('g'.toByte, 6) should ===(-1)
+
+      val compact = byteStrings.compact
+      compact.indexOf('c'.toByte, -1) should ===(2)
+      compact.indexOf('c'.toByte, 0) should ===(2)
+      compact.indexOf('c'.toByte, 2) should ===(2)
+      compact.indexOf('c'.toByte, 3) should ===(-1)
+
+      compact.indexOf('e'.toByte, -1) should ===(3)
+      compact.indexOf('e'.toByte, 0) should ===(3)
+      compact.indexOf('e'.toByte, 1) should ===(3)
+      compact.indexOf('e'.toByte, 4) should ===(-1)
+      compact.indexOf('e'.toByte, 6) should ===(-1)
+
+      compact.indexOf('g'.toByte, -1) should ===(5)
+      compact.indexOf('g'.toByte, 0) should ===(5)
+      compact.indexOf('g'.toByte, 1) should ===(5)
+      compact.indexOf('g'.toByte, 4) should ===(5)
+      compact.indexOf('g'.toByte, 5) should ===(5)
+      compact.indexOf('g'.toByte, 6) should ===(-1)
+    }
     "copyToArray" in {
       val byteString = ByteString(1, 2) ++ ByteString(3) ++ ByteString(4)
 

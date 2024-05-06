@@ -246,6 +246,20 @@ object ByteString {
       }
     }
 
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
+    override def indexOf(elem: Byte, from: Int): Int = {
+      if (from >= length) -1
+      else {
+        var found = -1
+        var i = math.max(from, 0)
+        while (i < length && found == -1) {
+          if (bytes(i) == elem) found = i
+          i += 1
+        }
+        found
+      }
+    }
+
     override def slice(from: Int, until: Int): ByteString =
       if (from <= 0 && until >= length) this
       else if (from >= length || until <= 0 || from >= until) ByteString.empty
@@ -421,6 +435,20 @@ object ByteString {
 
     override def indexOf[B >: Byte](elem: B): Int = indexOf(elem, 0)
     override def indexOf[B >: Byte](elem: B, from: Int): Int = {
+      if (from >= length) -1
+      else {
+        var found = -1
+        var i = math.max(from, 0)
+        while (i < length && found == -1) {
+          if (bytes(startIndex + i) == elem) found = i
+          i += 1
+        }
+        found
+      }
+    }
+
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
+    override def indexOf(elem: Byte, from: Int): Int = {
       if (from >= length) -1
       else {
         var found = -1
@@ -682,8 +710,34 @@ object ByteString {
             } else {
               val subIndexOf = bs.indexOf(elem, relativeIndex)
               if (subIndexOf < 0) {
-                val nextString = bsIdx + 1
-                find(nextString, relativeIndex - bs.length, bytesPassed + bs.length)
+                find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
+              } else subIndexOf + bytesPassed
+            }
+          }
+        }
+
+        find(0, math.max(from, 0), 0)
+      }
+    }
+
+    override def indexOf(elem: Byte): Int = indexOf(elem, 0)
+    override def indexOf(elem: Byte, from: Int): Int = {
+      if (from >= length) -1
+      else {
+        val byteStringsSize = bytestrings.size
+
+        @tailrec
+        def find(bsIdx: Int, relativeIndex: Int, bytesPassed: Int): Int = {
+          if (bsIdx >= byteStringsSize) -1
+          else {
+            val bs = bytestrings(bsIdx)
+
+            if (bs.length <= relativeIndex) {
+              find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
+            } else {
+              val subIndexOf = bs.indexOf(elem, relativeIndex)
+              if (subIndexOf < 0) {
+                find(bsIdx + 1, relativeIndex - bs.length, bytesPassed + bs.length)
               } else subIndexOf + bytesPassed
             }
           }
@@ -788,7 +842,33 @@ sealed abstract class ByteString extends IndexedSeq[Byte] with IndexedSeqOptimiz
   override def indexWhere(p: Byte => Boolean): Int = iterator.indexWhere(p)
 
   // optimized in subclasses
-  override def indexOf[B >: Byte](elem: B): Int = indexOf(elem, 0)
+  override def indexOf[B >: Byte](elem: B): Int = indexOf[B](elem, 0)
+
+  // optimized version of indexOf for bytes, implemented in subclasses
+  /**
+   * Finds index of first occurrence of some byte in this ByteString after or at some start index.
+   *
+   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @param   from   the start index
+   *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
+   */
+  def indexOf(elem: Byte, from: Int): Int = indexOf[Byte](elem, from)
+
+  /**
+   * Finds index of first occurrence of some byte in this ByteString.
+   *
+   * Similar to indexOf, but it avoids boxing if the value is already a byte.
+   *
+   *  @param   elem   the element value to search for.
+   *  @return  the index `>= from` of the first element of this ByteString that is equal (as determined by `==`)
+   *           to `elem`, or `-1`, if none exists.
+   *  @since 1.1.0
+   */
+  def indexOf(elem: Byte): Int = indexOf(elem, 0)
 
   override def grouped(size: Int): Iterator[ByteString] = {
     if (size <= 0) {
