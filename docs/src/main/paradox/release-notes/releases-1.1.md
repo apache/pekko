@@ -72,5 +72,5 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 
 * The protobuf-java code that is shaded and released as pekko-protobuf-v3 has been upgraded to protobuf-java 3.25.3
 * slf4j was updated to v2 ([PR748](https://github.com/apache/pekko/pull/748))
-* upgrade from netty 3 to netty 4 (pekko-remote and pekko-multi-node-testkit0
+* upgrade from netty 3 to netty 4 (pekko-remote and pekko-multi-node-testkit)
 * Jackson 2.16.2
