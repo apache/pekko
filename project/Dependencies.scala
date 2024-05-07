@@ -147,6 +147,7 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
+      // the extra dependency overrides for bcprov, commonsCompress and guava should be reviewed - https://github.com/apache/pekko/issues/1317
       val dockerClientVersion = "3.3.6"
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
