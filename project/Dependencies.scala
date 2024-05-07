@@ -118,6 +118,7 @@ object Dependencies {
     }
 
     object TestDependencies {
+      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % "1.78.1" % Test
       val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.0" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
@@ -146,10 +147,12 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
+      // the extra dependency overrides for bcprov, commonsCompress and guava should be reviewed - https://github.com/apache/pekko/issues/1317
       val dockerClientVersion = "3.3.6"
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
         "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
+        TestDependencies.bcprov,
         TestDependencies.commonsCompress,
         TestDependencies.guava)
 
