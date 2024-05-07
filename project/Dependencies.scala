@@ -165,7 +165,7 @@ object Dependencies {
       val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.25" % Test
       val metricsJvm = "io.dropwizard.metrics" % "metrics-jvm" % "4.2.25" % Test
       val latencyUtils = "org.latencyutils" % "LatencyUtils" % "2.0.3" % Test
-      val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.1.12" % Test
+      val hdrHistogram = "org.hdrhistogram" % "HdrHistogram" % "2.2.1" % Test
       val metricsAll = Seq(metrics, metricsJvm, latencyUtils, hdrHistogram)
 
       // sigar logging
