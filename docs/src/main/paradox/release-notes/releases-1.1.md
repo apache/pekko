@@ -14,6 +14,8 @@ Apache Pekko 1.1.0-M1 contains all of the changes that have been released in the
 * in TlsActor, flush data to user only after handshake has finished ([PR1128](https://github.com/apache/pekko/pull/1128))
 * proper path when promise actor terminated quickly ([PR1156](https://github.com/apache/pekko/pull/1156))
 * TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1183](https://github.com/apache/pekko/pull/1183))
+* Fix uncaught decider exception in Split with Supervision.resumingDecider ([PR1207](https://github.com/apache/pekko/pull/1207))
+* Pull instead of throw exception in groupBy operator ([PR1210](https://github.com/apache/pekko/pull/1210))
 * Fix ByteIterator indexWhere method ([PR1282](https://github.com/apache/pekko/pull/1282))
 
 ### Additional APIs
@@ -21,6 +23,7 @@ Apache Pekko 1.1.0-M1 contains all of the changes that have been released in the
 * Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
 * Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
 * Add create method to PFBuilder ([PR947](https://github.com/apache/pekko/pull/947))
+* Add missing create method to javadsl Graph ([PR1230](https://github.com/apache/pekko/pull/1230))
 
 The Stream API has been updated to add some extra functions. 
 
@@ -41,6 +44,7 @@ The Stream API has been updated to add some extra functions.
 
 The Stream Testkit Java DSL has some extra functions.
 
+* Add more Java DSL functions to StreamTestKit to better match the Scala DSL ([PR1186](https://github.com/apache/pekko/pull/1186)
 * Add expectNextN to StreamTestKit for javadsl ([PR962](https://github.com/apache/pekko/pull/962))
 
 ### Removed
@@ -50,6 +54,7 @@ The Stream Testkit Java DSL has some extra functions.
 ### Other Changes
 
 * Scala 2 inline optimizer has been enabled
+* Support `fork-join-executor.maximum-pool-size` config ([PR485](https://github.com/apache/pekko/pull/485))
 * Classic Remoting was updated to use Netty 4 instead of Netty 3 ([PR643](https://github.com/apache/pekko/pull/643))
 * Replace SubstreamCancelStrategy with SupervisionDecider for Split ([PR252](https://github.com/apache/pekko/pull/252))
 * Support Jackson StreamReadConstraints and StreamWriteConstraints ([PR564](https://github.com/apache/pekko/pull/564))
@@ -73,4 +78,4 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 * The protobuf-java code that is shaded and released as pekko-protobuf-v3 has been upgraded to protobuf-java 3.25.3
 * slf4j was updated to v2 ([PR748](https://github.com/apache/pekko/pull/748))
 * upgrade from netty 3 to netty 4 (pekko-remote and pekko-multi-node-testkit)
-* Jackson 2.16.2
+* Jackson 2.17.1
