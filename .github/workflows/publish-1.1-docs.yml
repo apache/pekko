@@ -1,0 +1,98 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Based on Apache Arrow's java-nightly workflow
+# https://github.com/apache/arrow/blob/master/.github/workflows/java_nightly.yml
+name: Publish 1.1 documentation
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish 1.1 docs
+    runs-on: ubuntu-20.04
+    if: github.repository == 'apache/pekko'
+    steps:
+      # TODO we will need to change to use a release tag in future
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Cache Coursier cache
+        uses: coursier/cache-action@v6
+
+      - name: Install Graphviz
+        run: |-
+          sudo apt-get install graphviz
+
+      # TODO come up with a better way to control the version, possibly based on git tags
+      - name: Build Documentation
+        env:
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+        run: |-
+          sbt -Dpekko.genjavadoc.enabled=true -Dpekko.genlicensereport.enabled=true "set ThisBuild / version := \"1.1.0-M1\"; docs/paradox; unidoc"
+
+      # Create directory structure upfront since rsync does not create intermediate directories otherwise
+      - name: Create directory structure
+        run: |-
+          mkdir -p target/nightly-docs/docs/pekko/1.1.0-M1/
+          mkdir -p target/nightly-docs/docs/pekko/1.1/
+          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.1.0-M1/docs
+          cp -r docs/target/paradox/site/main/ target/nightly-docs/docs/pekko/1.1/docs
+          rm -r docs/target/paradox/site/main/
+          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.1.0-M1/api
+          cp -r target/scala-2.13/unidoc target/nightly-docs/docs/pekko/1.1/api
+          rm -r target/scala-2.13/unidoc
+          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.1.0-M1/japi
+          cp -r target/javaunidoc target/nightly-docs/docs/pekko/1.1/japi
+          rm -r target/javaunidoc
+
+      - name: Upload docs patch version
+        uses: ./.github/actions/sync-nightlies
+        with:
+          upload: true
+          switches: --archive --compress --update --delete --progress --relative
+          local_path: target/nightly-docs/./docs/pekko/1.1.0-M1 # The intermediate dot is to show `--relative` which paths to operate on
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
+
+      - name: Upload docs api version
+        uses: ./.github/actions/sync-nightlies
+        with:
+          upload: true
+          switches: --archive --compress --update --delete --progress --relative
+          local_path: target/nightly-docs/./docs/pekko/1.1 # The intermediate dot is to show `--relative` which paths to operate on
+          remote_path: ${{ secrets.NIGHTLIES_RSYNC_PATH }}/pekko
+          remote_host: ${{ secrets.NIGHTLIES_RSYNC_HOST }}
+          remote_port: ${{ secrets.NIGHTLIES_RSYNC_PORT }}
+          remote_user: ${{ secrets.NIGHTLIES_RSYNC_USER }}
+          remote_key: ${{ secrets.NIGHTLIES_RSYNC_KEY }}
