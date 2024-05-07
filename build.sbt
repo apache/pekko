@@ -9,8 +9,6 @@
 
 import net.bzzt.reproduciblebuilds.ReproducibleBuildsPlugin.reproducibleBuildsCheckResolver
 
-ThisBuild / scalafixScalaBinaryVersion := scalaBinaryVersion.value
-
 scalaVersion := Dependencies.allScalaVersions.head
 
 ThisBuild / versionScheme := Some(VersionScheme.SemVerSpec)
