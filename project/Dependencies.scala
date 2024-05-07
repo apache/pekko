@@ -118,6 +118,7 @@ object Dependencies {
     }
 
     object TestDependencies {
+      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % "1.78.1" % Test
       val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.0" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
@@ -150,6 +151,7 @@ object Dependencies {
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
         "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
+        TestDependencies.bcprov,
         TestDependencies.commonsCompress,
         TestDependencies.guava)
 
