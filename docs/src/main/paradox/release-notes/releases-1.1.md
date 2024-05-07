@@ -44,7 +44,7 @@ The Stream API has been updated to add some extra functions.
 
 The Stream Testkit Java DSL has some extra functions.
 
-* Add more Java DSL functions to StreamTestKit to better match the Scala DSL ([PR1186](https://github.com/apache/pekko/pull/1186)
+* Add more Java DSL functions to StreamTestKit to better match the Scala DSL ([PR1186](https://github.com/apache/pekko/pull/1186))
 * Add expectNextN to StreamTestKit for javadsl ([PR962](https://github.com/apache/pekko/pull/962))
 
 ### Removed
@@ -69,7 +69,7 @@ The Stream Testkit Java DSL has some extra functions.
 * Remove the deprecation of statefulMapConcat operator. ([PR1147](https://github.com/apache/pekko/pull/1147))
 * Add AbruptStreamTerminationException as super class of some related exceptions. ([PR1201](https://github.com/apache/pekko/pull/1201))
 * For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision. ([PR1271](https://github.com/apache/pekko/pull/1271))
-* Some performance changes in the Stream code ([PR48](https://github.com/apache/pekko/pull/48), [PR49](https://github.com/apache/pekko/pull/49), [PR278](https://github.com/apache/pekko/pull/278), [PR363](https://github.com/apache/pekko/pull/363), [PR408](https://github.com/apache/pekko/pull/408), [PR872](https://github.com/apache/pekko/pull/872), [PR923](https://github.com/apache/pekko/pull/923), [PR983](https://github.com/apache/pekko/pull/983), [PR1001](https://github.com/apache/pekko/pull/1001)), [PR1027](https://github.com/apache/pekko/pull/1027)), [PR1249](https://github.com/apache/pekko/pull/1249)), [PR1250](https://github.com/apache/pekko/pull/1250))
+* Some performance changes in the Stream code ([PR48](https://github.com/apache/pekko/pull/48), [PR49](https://github.com/apache/pekko/pull/49), [PR278](https://github.com/apache/pekko/pull/278), [PR363](https://github.com/apache/pekko/pull/363), [PR408](https://github.com/apache/pekko/pull/408), [PR872](https://github.com/apache/pekko/pull/872), [PR923](https://github.com/apache/pekko/pull/923), [PR983](https://github.com/apache/pekko/pull/983), [PR1001](https://github.com/apache/pekko/pull/1001), [PR1027](https://github.com/apache/pekko/pull/1027), [PR1249](https://github.com/apache/pekko/pull/1249), [PR1250](https://github.com/apache/pekko/pull/1250))
 
 ### Dependency Changes
 
