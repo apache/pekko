@@ -14,10 +14,9 @@
 package org.apache.pekko.io.dns.internal
 
 import java.net.InetSocketAddress
-
 import org.apache.pekko
 import pekko.PekkoException
-import pekko.actor.{ Actor, ActorLogging, ActorRef, Stash }
+import pekko.actor.{ Actor, ActorLogging, ActorRef, Stash, Terminated }
 import pekko.annotation.InternalApi
 import pekko.io.Tcp
 import pekko.io.dns.internal.DnsClient.Answer
@@ -49,6 +48,7 @@ import pekko.util.ByteString
       log.debug("Connected to TCP address [{}]", ns)
       val connection = sender()
       context.become(ready(connection))
+      context.watch(connection)
       connection ! Tcp.Register(self)
       unstashAll()
     case _: Message =>
@@ -80,7 +80,10 @@ import pekko.util.ByteString
         }
       }
     case Tcp.PeerClosed =>
+      context.unwatch(connection)
       context.become(idle)
+    case Terminated(`connection`) =>
+      throwFailure("TCP connection terminated without closing (register timeout?)", None)
   }
 
   private def parseResponse(data: ByteString) = {
