@@ -20,17 +20,17 @@ jobs:
     strategy:
       matrix:
         command:
-          - testkit/test actor-tests/test
-          - actor-testkit-typed/test actor-typed-tests/test
-          - bench-jmh/test
-          - cluster/test cluster-tools/test cluster-typed/test distributed-data/test cluster-metrics/test cluster-sharding/test cluster-sharding-typed/test
-          - discovery/test coordination/test
-          - persistence/test persistence-shared/test persistence-query/test persistence-typed/test persistence-testkit/test persistence-tck/test persistence-typed-tests/test
-          - pki/test slf4j/test
-          - serialization-jackson/test
-          - stream/test stream-testkit/test stream-tests/test stream-typed/test stream-typed-tests/test
-          - stream-tests-tck/test
-          - remote/test remote-tests/test protobuf-v3/test
+          - ;testkit/test;actor-tests/test
+          - ;actor-testkit-typed/test;actor-typed-tests/test
+          - ;bench-jmh/test
+          - ;cluster/test;cluster-tools/test;cluster-typed/test;distributed-data/test;cluster-metrics/test;cluster-sharding/test;cluster-sharding-typed/test
+          - ;discovery/test;coordination/test
+          - ;persistence/test;persistence-shared/test;persistence-query/test;persistence-typed/test;persistence-testkit/test;persistence-tck/test;persistence-typed-tests/test
+          - ;pki/test;slf4j/test
+          - ;serialization-jackson/test
+          - ;stream/test;stream-testkit/test;stream-tests/test;stream-typed/test;stream-typed-tests/test
+          - ;stream-tests-tck/test
+          - ;remote/test;remote-tests/test;protobuf-v3/test
       fail-fast: true
     steps:
       - name: Checkout

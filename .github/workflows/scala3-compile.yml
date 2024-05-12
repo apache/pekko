@@ -18,17 +18,17 @@ jobs:
     strategy:
       matrix:
         command:
-          - testkit/Test/compile actor-tests/Test/compile
-          - actor-testkit-typed/Test/compile actor-typed-tests/Test/compile
-          - bench-jmh/Test/compile
-          - cluster/Test/compile cluster-tools/Test/compile cluster-typed/Test/compile distributed-data/Test/compile cluster-metrics/Test/compile cluster-sharding/Test/compile cluster-sharding-typed/Test/compile
-          - discovery/Test/compile coordination/Test/compile
-          - persistence/Test/compile persistence-shared/Test/compile persistence-query/Test/compile persistence-typed/Test/compile persistence-testkit/Test/compile persistence-tck/Test/compile persistence-typed-tests/Test/compile
-          - pki/Test/compile slf4j/Test/compile
-          - serialization-jackson/Test/compile
-          - stream/Test/compile stream-testkit/Test/compile stream-tests/Test/compile stream-typed/Test/compile
-          - stream-tests-tck/Test/compile
-          - remote/Test/compile remote-tests/Test/compile protobuf-v3/Test/compile
+          - ;testkit/Test/compile;actor-tests/Test/compile
+          - ;actor-testkit-typed/Test/compile;actor-typed-tests/Test/compile
+          - ;bench-jmh/Test/compile
+          - ;cluster/Test/compile;cluster-tools/Test/compile;cluster-typed/Test/compile;distributed-data/Test/compile;cluster-metrics/Test/compile;cluster-sharding/Test/compile;cluster-sharding-typed/Test/compile
+          - ;discovery/Test/compile;coordination/Test/compile
+          - ;persistence/Test/compile;persistence-shared/Test/compile;persistence-query/Test/compile;persistence-typed/Test/compile;persistence-testkit/Test/compile;persistence-tck/Test/compile;persistence-typed-tests/Test/compile
+          - ;pki/Test/compile;slf4j/Test/compile
+          - ;serialization-jackson/Test/compile
+          - ;stream/Test/compile;stream-testkit/Test/compile;stream-tests/Test/compile;stream-typed/Test/compile
+          - ;stream-tests-tck/Test/compile
+          - ;remote/Test/compile;remote-tests/Test/compile;protobuf-v3/Test/compile
       fail-fast: true
     steps:
       - name: Checkout
