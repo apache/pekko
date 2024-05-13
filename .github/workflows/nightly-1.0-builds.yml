@@ -108,7 +108,7 @@ jobs:
         # No need to specify the full Scala version. Only the Scala
         # binary version is required and Pekko build will set the right
         # full version from it.
-        scalaVersion: ["2.12", "2.13", "3.3"]
+        scalaVersion: ["2.12.x", "2.13.x", "3.3.x"]
         javaVersion: [8, 11, 17, 21]
     steps:
       - name: Checkout
@@ -142,4 +142,4 @@ jobs:
             -Dpekko.actor.testkit.typed.timefactor=2 \
             -Dpekko.test.tags.exclude=gh-exclude,timing \
             -Dpekko.test.multi-in-test=false \
-            clean "+~ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
+            clean "++ ${{ matrix.scalaVersion }} test" checkTestsHaveRun
