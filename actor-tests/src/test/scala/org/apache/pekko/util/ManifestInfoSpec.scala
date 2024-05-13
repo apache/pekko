@@ -19,27 +19,27 @@ class ManifestInfoSpec extends PekkoSpec {
   "ManifestInfo" should {
     "produce a clear message" in {
       val versions = Map(
-        "pekko-actor" -> new ManifestInfo.Version("2.6.4"),
-        "pekko-persistence" -> new ManifestInfo.Version("2.5.3"),
-        "pekko-cluster" -> new ManifestInfo.Version("2.5.3"),
-        "unrelated" -> new ManifestInfo.Version("2.5.3"))
+        "pekko-actor" -> new ManifestInfo.Version("1.0.2"),
+        "pekko-persistence" -> new ManifestInfo.Version("1.0.1"),
+        "pekko-cluster" -> new ManifestInfo.Version("1.0.1"),
+        "unrelated" -> new ManifestInfo.Version("1.0.1"))
       val allModules = List("pekko-actor", "pekko-persistence", "pekko-cluster")
       ManifestInfo.checkSameVersion("Pekko", allModules, versions) shouldBe Some(
-        "You are using version 2.6.4 of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
-        "You can solve this by adding an explicit dependency on version 2.6.4 of the [pekko-persistence, pekko-cluster] artifacts to your project. " +
-        "Here's a complete collection of detected artifacts: (2.5.3, [pekko-cluster, pekko-persistence]), (2.6.4, [pekko-actor]). " +
+        "You are using version 1.0.2 of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
+        "You can solve this by adding an explicit dependency on version 1.0.2 of the [pekko-persistence, pekko-cluster] artifacts to your project. " +
+        "Here's a complete collection of detected artifacts: (1.0.1, [pekko-cluster, pekko-persistence]), (1.0.2, [pekko-actor]). " +
         "See also: https://pekko.apache.org/docs/pekko/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
     }
 
     "support dynver" in {
       val versions = Map(
-        "pekko-actor" -> new ManifestInfo.Version("2.6.4"),
-        "pekko-persistence" -> new ManifestInfo.Version("2.6.4+10-abababef"))
+        "pekko-actor" -> new ManifestInfo.Version("1.0.2"),
+        "pekko-persistence" -> new ManifestInfo.Version("1.0.2+10-abababef"))
       val allModules = List("pekko-actor", "pekko-persistence")
       ManifestInfo.checkSameVersion("Pekko", allModules, versions) shouldBe Some(
-        "You are using version 2.6.4+10-abababef of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
-        "You can solve this by adding an explicit dependency on version 2.6.4+10-abababef of the [pekko-actor] artifacts to your project. " +
-        "Here's a complete collection of detected artifacts: (2.6.4, [pekko-actor]), (2.6.4+10-abababef, [pekko-persistence]). " +
+        "You are using version 1.0.2+10-abababef of Pekko, but it appears you (perhaps indirectly) also depend on older versions of related artifacts. " +
+        "You can solve this by adding an explicit dependency on version 1.0.2+10-abababef of the [pekko-actor] artifacts to your project. " +
+        "Here's a complete collection of detected artifacts: (1.0.2, [pekko-actor]), (1.0.2+10-abababef, [pekko-persistence]). " +
         "See also: https://pekko.apache.org/docs/pekko/current/common/binary-compatibility-rules.html#mixed-versioning-is-not-allowed")
     }
   }
