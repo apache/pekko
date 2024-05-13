@@ -426,14 +426,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       allocationStrategy: ShardAllocationStrategy,
       handOffStopMessage: Any): ActorRef = {
 
-    val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
-
     internalStart(
       typeName,
       _ => entityProps,
       settings,
       extractEntityId = extractEntityIdFromExtractor(messageExtractor),
-      extractShardId = extractShardId,
+      extractShardId = msg => messageExtractor.shardId(msg),
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage)
   }
@@ -626,14 +624,12 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       dataCenter: Optional[String],
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
-
     startProxy(
       typeName,
       Option(role.orElse(null)),
       Option(dataCenter.orElse(null)),
       extractEntityId = extractEntityIdFromExtractor(messageExtractor),
-      extractShardId)
+      msg => messageExtractor.shardId(msg))
 
   }
 
