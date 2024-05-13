@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.immutable
 import scala.concurrent.Await
+import scala.runtime.AbstractPartialFunction
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -425,22 +426,31 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       allocationStrategy: ShardAllocationStrategy,
       handOffStopMessage: Any): ActorRef = {
 
-    val extractEntityId: ShardRegion.ExtractEntityId = { msg =>
-      messageExtractor.entityId(msg) match {
-        case eid => (eid, messageExtractor.entityMessage(msg))
-      }
-    }
     val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
 
     internalStart(
       typeName,
       _ => entityProps,
       settings,
-      extractEntityId = extractEntityId,
+      extractEntityId = extractEntityIdFromExtractor(messageExtractor),
       extractShardId = extractShardId,
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage)
   }
+
+  // !!!important is only applicable if you know that isDefinedAt(x) is always called before apply(x) (with the same x)
+  private def extractEntityIdFromExtractor(
+      messageExtractor: ShardRegion.MessageExtractor): ShardRegion.ExtractEntityId =
+    new AbstractPartialFunction[Any, (String, Any)] {
+      var cache: String = _
+
+      override def isDefinedAt(msg: Any): Boolean = {
+        cache = messageExtractor.entityId(msg)
+        cache != null
+      }
+
+      override def apply(x: Any): (DataCenter, Any) = (cache, messageExtractor.entityMessage(x))
+    }
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
@@ -616,18 +626,13 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       dataCenter: Optional[String],
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    val extractEntityId: ShardRegion.ExtractEntityId = { msg =>
-      messageExtractor.entityId(msg) match {
-        case eid => (eid, messageExtractor.entityMessage(msg))
-      }
-    }
     val extractShardId: ShardRegion.ExtractShardId = msg => messageExtractor.shardId(msg)
 
     startProxy(
       typeName,
       Option(role.orElse(null)),
       Option(dataCenter.orElse(null)),
-      extractEntityId,
+      extractEntityId = extractEntityIdFromExtractor(messageExtractor),
       extractShardId)
 
   }
