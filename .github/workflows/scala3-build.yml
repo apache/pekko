@@ -66,7 +66,7 @@ jobs:
           -Dmultinode.Xms256M \
           -Dmultinode.Xmx256M \
           -Dmultinode.XX:+AlwaysActAsServerClassMachine \
-          "+~ 3 ${{ matrix.command }}"
+          "++ 3.x ${{ matrix.command }}"
 
       # comment out email actions until we have an email address to use (and we need to get INFRA to whitelist dawidd6/action-send-mail)
       #- name: Email on failure

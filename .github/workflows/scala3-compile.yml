@@ -54,4 +54,4 @@ jobs:
           DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
         run: |
           sbt \
-          "+~ 3 ${{ matrix.command }}"
+          "++ 3.x ${{ matrix.command }}"
