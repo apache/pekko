@@ -179,7 +179,7 @@ jobs:
           # genjavadoc does not support Scala 3.x
           sbt \
             -Dpekko.genjavadoc.enabled=${{ matrix.scalaVersion != '3.3' }} \
-            "+~ ${{ matrix.scalaVersion }} doc"
+            "++ ${{ matrix.scalaVersion }} doc"
 
       - name: Publish
         # Publish (osgi bundle) not working with JDK 17, issue #31132
@@ -188,7 +188,7 @@ jobs:
           sudo apt-get install graphviz
           sbt \
             -Dpekko.build.scalaVersion=${{ matrix.scalaVersion }} \
-            "+~ ${{ matrix.scalaVersion }} publishLocal publishM2"
+            "++ ${{ matrix.scalaVersion }} publishLocal publishM2"
 
       - name: Install scala-cli
         if: ${{ matrix.javaVersion == 11 }}
