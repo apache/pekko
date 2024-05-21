@@ -1844,6 +1844,8 @@ trait FlowOps[+Out, +Mat] {
    * '''Cancels when''' downstream cancels
    *
    * See also [[FlowOps.fold]]
+   *
+   * @since 1.1.0
    */
   def foldWhile[T](zero: T)(p: T => Boolean)(f: (T, Out) => T): Repr[T] = via(
     Fold[Out, T](zero, p, f).withAttributes(DefaultAttributes.foldWhile))

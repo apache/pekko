@@ -424,6 +424,8 @@ object Sink {
    * if there is a failure signaled in the stream.
    *
    * @see [[#fold]]
+   *
+   * @since 1.1.0
    */
   def foldWhile[U, T](zero: U)(p: U => Boolean)(f: (U, T) => U): Sink[T, Future[U]] =
     Flow[T].foldWhile(zero)(p)(f).toMat(Sink.head)(Keep.right).named("foldWhileSink")
