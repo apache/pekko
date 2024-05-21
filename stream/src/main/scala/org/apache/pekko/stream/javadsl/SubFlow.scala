@@ -817,6 +817,8 @@ class SubFlow[In, Out, Mat](
    * '''Cancels when''' downstream cancels
    *
    * See also [[FlowOps.fold]]
+   *
+   * @since 1.1.0
    */
   def foldWhile[T](zero: T, p: function.Predicate[T], f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldWhile(zero)(p.test)(f.apply))

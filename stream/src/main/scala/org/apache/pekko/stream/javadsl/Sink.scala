@@ -57,6 +57,8 @@ object Sink {
    * The returned [[java.util.concurrent.CompletionStage]] will be completed with value of the final
    * function evaluation when the input stream ends, predicate `p` returns false, or completed with `Failure`
    * if there is a failure is signaled in the stream.
+   *
+   * @since 1.1.0
    */
   def foldWhile[U, In](
       zero: U, p: function.Predicate[U], f: function.Function2[U, In, U]): javadsl.Sink[In, CompletionStage[U]] =
