@@ -59,6 +59,7 @@ object EventSourcedStashOverflowSpec {
            stash-overflow-strategy = "drop"
          }
        }
+       pekko.jvm-exit-on-fatal-error = off
    """))
 }
 
