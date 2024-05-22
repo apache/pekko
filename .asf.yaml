@@ -64,3 +64,4 @@ notifications:
   issues:               notifications@pekko.apache.org
   pullrequests:         notifications@pekko.apache.org
   discussions:          notifications@pekko.apache.org
+  jobs:                 notifications@pekko.apache.org
