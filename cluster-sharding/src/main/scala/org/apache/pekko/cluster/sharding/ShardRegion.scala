@@ -1004,7 +1004,8 @@ private[pekko] class ShardRegion(
       shards = shards - shardId
       startingShards -= shardId
       if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy && !gracefulShutdownInProgress) {
-        shards.values.foreach(_ ! ShardsUpdated(shards.size))
+        val update = ShardsUpdated(shards.size)
+        shards.values.foreach(_ ! update)
       }
       if (handingOff.contains(ref)) {
         handingOff = handingOff - ref
@@ -1348,7 +1349,8 @@ private[pekko] class ShardRegion(
             shards = shards.updated(id, shard)
             startingShards += id
             if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy) {
-              shards.values.foreach(_ ! ShardsUpdated(shards.size))
+              val update = ShardsUpdated(shards.size)
+              shards.values.foreach(_ ! update)
             }
             None
           case Some(_) =>
