@@ -1003,7 +1003,7 @@ private[pekko] class ShardRegion(
       shardsByRef = shardsByRef - ref
       shards = shards - shardId
       startingShards -= shardId
-      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy) {
+      if (settings.passivationStrategy != ClusterShardingSettings.NoPassivationStrategy && !gracefulShutdownInProgress) {
         shards.values.foreach(_ ! ShardsUpdated(shards.size))
       }
       if (handingOff.contains(ref)) {
