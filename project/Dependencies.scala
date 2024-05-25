@@ -34,6 +34,7 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.21.1"
+  vak bouncyCastleVersion = "1.78.1"
   val nettyVersion = "4.1.110.Final"
   val logbackVersion = "1.3.14"
 
@@ -118,7 +119,9 @@ object Dependencies {
     }
 
     object TestDependencies {
-      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % "1.78.1" % Test
+      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % bouncyCastleVersion % Test
+      val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % bouncyCastleVersion % Test
+      val bcutil = "org.bouncycastle" % "bcutil-jdk18on" % bouncyCastleVersion % Test
       val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.0" % Test
       val commonsCompress = "org.apache.commons" % "commons-compress" % "1.26.1" % Test
