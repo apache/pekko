@@ -156,16 +156,18 @@ object Dependencies {
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
         "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
         TestDependencies.bcprov,
+        TestDependencies.bcpkix,
+        TestDependencies.bcutil,
         TestDependencies.commonsCompress,
         TestDependencies.guava)
 
       val jackson = Seq(
-        (jacksonCore % Test).force(),
-        (jacksonAnnotations % Test).force(),
-        (jacksonDatabind % Test).force(),
-        ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonCoreVersion % Test).force(),
-        ("com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonCoreVersion % Test).force(),
-        ("com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test).force())
+        jacksonCore % Test,
+        jacksonAnnotations % Test,
+        jacksonDatabind % Test,
+        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-base" % jacksonCoreVersion % Test,
+        "com.fasterxml.jackson.jaxrs" % "jackson-jaxrs-json-provider" % jacksonCoreVersion % Test,
+        "com.fasterxml.jackson.datatype" % "jackson-datatype-guava" % jacksonCoreVersion % Test)
 
       // metrics, measurements, perf testing
       val metrics = "io.dropwizard.metrics" % "metrics-core" % "4.2.25" % Test
