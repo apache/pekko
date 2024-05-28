@@ -41,8 +41,8 @@ Scala
 Java
 :   @@snip [Throttle.java](/docs/src/test/java/jdocs/stream/operators/sourceorflow/Throttle.java) { #throttle-with-burst }
 
-The extra argument to set the `ThrottleMode` to `shaping` tells `throttle` to make pauses to avoid exceeding 
-the maximum rate. Alternatively we could set the throttling mode to `enforcing` cause a stream failure when upstream is faster
+The extra argument to set the `ThrottleMode` to `shaping` tells throttle to make pauses to avoid exceeding 
+the maximum rate. Alternatively we could set the `ThrottleMode` to `enforcing` cause a stream failure when upstream is faster
 than the throttle rate.   
 
 The examples above don't cover all the parameters supported by `throttle` (e.g. `cost`-based throttling). See the 
