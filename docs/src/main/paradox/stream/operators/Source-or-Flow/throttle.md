@@ -21,7 +21,7 @@ See also @ref:[Buffers and working with rate](../../stream-rate.md) for related 
 ## Example
 
 Imagine the server end of a streaming platform. When a client connects and request a video content, the server 
-should return the content. Instead of serving a complete video as fast as bandwith allows, `throttle` can be used
+should return the content. Instead of serving a complete video as fast as bandwidth allows, `throttle` can be used
 to limit the network usage to 24 frames per second (let's imagine this streaming platform stores frames, not bytes).
 
 Scala
@@ -41,8 +41,8 @@ Scala
 Java
 :   @@snip [Throttle.java](/docs/src/test/java/jdocs/stream/operators/sourceorflow/Throttle.java) { #throttle-with-burst }
 
-The extra argument to set the `ThrottleMode` to `shaping` tells `throttle` to make pauses to avoid exceeding 
-the maximum rate. Alternatively we could set the throttling mode to cause a stream failure when upstream is faster
+The extra argument to set the `ThrottleMode` to `shaping` tells throttle to make pauses to avoid exceeding 
+the maximum rate. Alternatively we could set the `ThrottleMode` to `enforcing` to cause a stream failure when upstream is faster
 than the throttle rate.   
 
 The examples above don't cover all the parameters supported by `throttle` (e.g. `cost`-based throttling). See the 
