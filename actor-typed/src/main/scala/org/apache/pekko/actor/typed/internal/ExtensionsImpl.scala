@@ -38,43 +38,42 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
    * Hook for ActorSystem to load extensions on startup
    */
   def loadExtensions(): Unit = {
-
-    /*
-     * @param throwOnLoadFail Throw exception when an extension fails to load (needed for backwards compatibility)
-     */
-    def loadExtensionsFor(key: String, throwOnLoadFail: Boolean): Unit = {
-
-      settings.config.getStringList(key).asScala.foreach { extensionIdFQCN =>
-        // it is either a Scala object or it is a Java class with a static singleton accessor
-        val idTry = dynamicAccess.getObjectFor[AnyRef](extensionIdFQCN).recoverWith {
-          case _ => idFromJavaSingletonAccessor(extensionIdFQCN)
-        }
-
-        idTry match {
-          case Success(id: ExtensionId[_]) => registerExtension(id)
-          case Success(_) =>
-            if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionId', skipping...", extensionIdFQCN)
-            else throw new RuntimeException(s"[$extensionIdFQCN] is not an 'ExtensionId'")
-          case Failure(problem) =>
-            if (!throwOnLoadFail)
-              log.error(s"While trying to load extension $extensionIdFQCN, skipping...", problem)
-            else throw new RuntimeException(s"While trying to load extension [$extensionIdFQCN]", problem)
-        }
-      }
-    }
-
-    def idFromJavaSingletonAccessor(extensionIdFQCN: String): Try[ExtensionId[Extension]] =
-      dynamicAccess.getClassFor[ExtensionId[Extension]](extensionIdFQCN).flatMap[ExtensionId[Extension]] {
-        (clazz: Class[_]) =>
-          Try {
-            val singletonAccessor = clazz.getDeclaredMethod("getInstance")
-            singletonAccessor.invoke(null).asInstanceOf[ExtensionId[Extension]]
-          }
-      }
-
     loadExtensionsFor("pekko.actor.typed.library-extensions", throwOnLoadFail = true)
     loadExtensionsFor("pekko.actor.typed.extensions", throwOnLoadFail = false)
   }
+
+  /*
+   * @param throwOnLoadFail Throw exception when an extension fails to load (needed for backwards compatibility)
+   */
+  private def loadExtensionsFor(key: String, throwOnLoadFail: Boolean): Unit = {
+
+    settings.config.getStringList(key).asScala.foreach { extensionIdFQCN =>
+      // it is either a Scala object or it is a Java class with a static singleton accessor
+      val idTry = dynamicAccess.getObjectFor[AnyRef](extensionIdFQCN).recoverWith {
+        case _ => idFromJavaSingletonAccessor(extensionIdFQCN)
+      }
+
+      idTry match {
+        case Success(id: ExtensionId[_]) => registerExtension(id)
+        case Success(_) =>
+          if (!throwOnLoadFail) log.error("[{}] is not an 'ExtensionId', skipping...", extensionIdFQCN)
+          else throw new RuntimeException(s"[$extensionIdFQCN] is not an 'ExtensionId'")
+        case Failure(problem) =>
+          if (!throwOnLoadFail)
+            log.error(s"While trying to load extension $extensionIdFQCN, skipping...", problem)
+          else throw new RuntimeException(s"While trying to load extension [$extensionIdFQCN]", problem)
+      }
+    }
+  }
+
+  private def idFromJavaSingletonAccessor(extensionIdFQCN: String): Try[ExtensionId[Extension]] =
+    dynamicAccess.getClassFor[ExtensionId[Extension]](extensionIdFQCN).flatMap[ExtensionId[Extension]] {
+      (clazz: Class[_]) =>
+        Try {
+          val singletonAccessor = clazz.getDeclaredMethod("getInstance")
+          singletonAccessor.invoke(null).asInstanceOf[ExtensionId[Extension]]
+        }
+    }
 
   final override def hasExtension(ext: ExtensionId[_ <: Extension]): Boolean = findExtension(ext) != null
 
