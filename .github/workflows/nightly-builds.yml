@@ -148,6 +148,7 @@ jobs:
         run: cp .jvmopts-ci .jvmopts
 
       - name: Check if the dependency task in the built correctly
+        if: ${{ matrix.pekkoVersion != '1.0.x' }}
         run: sbt dependWalkerCheck
 
       - name: Compile and Test
