@@ -183,7 +183,7 @@ import pekko.util.JavaDurationConverters._
         cache != null
       }
 
-      override def apply(x: Any): (DataCenter, Any) = (cache, extractorAdapter.unwrapMessage(x))
+      override def apply(x: Any): (String, Any) = (cache, extractorAdapter.unwrapMessage(x))
     }
     val extractShardId: ShardRegion.ExtractShardId = { message =>
       extractorAdapter.entityId(message) match {

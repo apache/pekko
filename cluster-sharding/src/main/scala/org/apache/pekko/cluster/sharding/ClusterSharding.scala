@@ -447,7 +447,7 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
         cache != null
       }
 
-      override def apply(x: Any): (DataCenter, Any) = (cache, messageExtractor.entityMessage(x))
+      override def apply(x: Any): (String, Any) = (cache, messageExtractor.entityMessage(x))
     }
 
   /**
