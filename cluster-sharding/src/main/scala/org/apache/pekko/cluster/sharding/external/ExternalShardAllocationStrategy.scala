@@ -204,7 +204,7 @@ class ExternalShardAllocationStrategy(systemProvider: ClassicActorSystemProvider
 
     val currentAllocationByAddress: Map[Address, immutable.IndexedSeq[ShardId]] = currentShardAllocations.map {
       case (ref: ActorRefScope, value) if ref.isLocal =>
-        (cluster.selfAddress, value) // so it can be compared to a address with host and port
+        (cluster.selfAddress, value) // so it can be compared to an address with host and port
       case (key, value) => (key.path.address, value)
     }
 

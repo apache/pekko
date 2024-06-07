@@ -248,7 +248,7 @@ object Sink {
   }
 
   /**
-   * A `Sink` that materializes into a a `Future` of `immutable.Seq[T]` containing the last `n` collected elements.
+   * A `Sink` that materializes into a `Future` of `immutable.Seq[T]` containing the last `n` collected elements.
    *
    * If the stream completes before signaling at least n elements, the `Future` will complete with all elements seen so far.
    * If the stream never completes, the `Future` will never complete.

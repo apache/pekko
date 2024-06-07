@@ -35,7 +35,7 @@ In fact, before your first actor is started, Pekko has already created two actor
  
 The easiest way to see the actor hierarchy in action is to print @apidoc[actor.typed.ActorRef] instances. In this small experiment, we create an actor, print its reference, create a child of this actor, and print the child's reference. 
 
-In a new project, create a `com.example` package and with a @scala[a new Scala file called `ActorHierarchyExperiments.scala` here. Copy and paste the code from the snippet below to this new source file]@java[a Java file for each of the classes in the snippet below and copy the respective contents]. Save your @scala[file and run `sbt "runMain com.example.ActorHierarchyExperiments"`]@java[files and run `com.example.ActorHierarchyExperiments` from your build tool or IDE] to observe the output.
+In a new project, create a `com.example` package and with a @scala[new Scala file called `ActorHierarchyExperiments.scala` here. Copy and paste the code from the snippet below to this new source file]@java[Java file for each of the classes in the snippet below and copy the respective contents]. Save your @scala[file and run `sbt "runMain com.example.ActorHierarchyExperiments"`]@java[files and run `com.example.ActorHierarchyExperiments` from your build tool or IDE] to observe the output.
 
 Scala
 :   @@snip [ActorHierarchyExperiments.scala](/docs/src/test/scala/typed/tutorial_1/ActorHierarchyExperiments.scala) { #print-refs }

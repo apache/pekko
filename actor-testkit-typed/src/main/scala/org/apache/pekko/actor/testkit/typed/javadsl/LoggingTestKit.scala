@@ -173,7 +173,7 @@ object LoggingTestKit {
     messageContains(messageIncludes).withLogLevel(Level.WARN)
 
   /**
-   * Create a filter for WARN level events with a an included
+   * Create a filter for WARN level events with an included
    * `throwable` that is a class or subclass of the given
    * * `Throwable` class.
    *
@@ -192,7 +192,7 @@ object LoggingTestKit {
     messageContains(messageIncludes).withLogLevel(Level.ERROR)
 
   /**
-   * Create a filter for ERROR level events with a an included
+   * Create a filter for ERROR level events with an included
    * `throwable` that is a class or subclass of the given
    * * `Throwable` class.
    *

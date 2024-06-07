@@ -47,7 +47,7 @@ class ActorRefIgnoreSpec extends ScalaTestWithActorTestKit() with AnyWordSpecLik
   }
 
   /**
-   * This actor sends a ask to 'askMeRef' at bootstrap and forward the answer to the probe.
+   * This actor sends an ask to 'askMeRef' at bootstrap and forward the answer to the probe.
    * We will use it through out this test.
    */
   def behavior(askMeRef: ActorRef[Request], probe: TestProbe[Int]) = Behaviors.setup[Int] { context =>

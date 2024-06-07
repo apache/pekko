@@ -278,7 +278,7 @@ object Sink {
     new Sink(scaladsl.Sink.lastOption[In].mapMaterializedValue(_.map(_.toJava)(ExecutionContexts.parasitic).asJava))
 
   /**
-   * A `Sink` that materializes into a a `CompletionStage` of `List<In>` containing the last `n` collected elements.
+   * A `Sink` that materializes into a `CompletionStage` of `List<In>` containing the last `n` collected elements.
    *
    * If the stream completes before signaling at least n elements, the `CompletionStage` will complete with all elements seen so far.
    * If the stream never completes the `CompletionStage` will never complete.
