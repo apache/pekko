@@ -36,7 +36,7 @@ private[persistence] trait LeveldbIdMapping extends Actor { this: LeveldbStore =
    * Get the mapped numeric id for the specified persistent actor `id`. Creates and
    * stores a new mapping if necessary.
    *
-   * This method is thread safe and it is allowed to call it from a another
+   * This method is thread safe and it is allowed to call it from another
    * thread than the actor's thread. That is necessary for Future composition,
    * e.g. `asyncReadHighestSequenceNr` followed by `asyncReplayMessages`.
    */
