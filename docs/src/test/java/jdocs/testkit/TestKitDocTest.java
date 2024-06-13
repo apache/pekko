@@ -40,6 +40,7 @@ import org.apache.pekko.actor.PoisonPill;
 import org.apache.pekko.actor.Props;
 import org.apache.pekko.actor.Terminated;
 import org.apache.pekko.actor.AbstractActor;
+import org.apache.pekko.actor.UntypedAbstractActorWithTimers;
 import org.apache.pekko.testkit.TestActor.AutoPilot;
 
 import java.util.List;
@@ -92,7 +93,7 @@ public class TestKitDocTest extends AbstractJavaTest {
 
   // #timer
   static class TestTimerActor extends AbstractActorWithTimers {
-    private static Object SCHED_KEY = "SchedKey";
+    private static String SCHED_KEY = "SchedKey";
 
     static final class TriggerScheduling {}
 
@@ -101,6 +102,27 @@ public class TestKitDocTest extends AbstractJavaTest {
     @Override
     public Receive createReceive() {
       return receiveBuilder().match(TriggerScheduling.class, msg -> triggerScheduling()).build();
+    }
+
+    void triggerScheduling() {
+      getTimers().startSingleTimer(SCHED_KEY, new ScheduledMessage(), Duration.ofMillis(500));
+    }
+  }
+
+  static class TestTimerUntypedActor extends UntypedAbstractActorWithTimers {
+    private static String SCHED_KEY = "SchedKey";
+
+    static final class TriggerScheduling {}
+
+    static final class ScheduledMessage {}
+
+    @Override
+    public void onReceive(Object message) throws Throwable {
+      if (message instanceof TriggerScheduling) {
+        triggerScheduling();
+      } else {
+        unhandled(message);
+      }
     }
 
     void triggerScheduling() {
