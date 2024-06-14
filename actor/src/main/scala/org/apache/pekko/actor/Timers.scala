@@ -84,6 +84,20 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
 }
 
 /**
+ * Java API: Support for scheduled `self` messages via [[TimerScheduler]].
+ *
+ * Timers are bound to the lifecycle of the actor that owns it,
+ * and thus are cancelled automatically when it is restarted or stopped.
+ */
+abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with Timers {
+
+  /**
+   * Start and cancel timers via the enclosed `TimerScheduler`.
+   */
+  final def getTimers: TimerScheduler = timers
+}
+
+/**
  * Support for scheduled `self` messages in an actor.
  * It is used by mixing in trait `Timers` in Scala or extending `AbstractActorWithTimers`
  * in Java.
