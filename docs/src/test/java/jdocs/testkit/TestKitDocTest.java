@@ -93,7 +93,7 @@ public class TestKitDocTest extends AbstractJavaTest {
 
   // #timer
   static class TestTimerActor extends AbstractActorWithTimers {
-    private static String SCHED_KEY = "SchedKey";
+    private static final String SCHED_KEY = "SchedKey";
 
     static final class TriggerScheduling {}
 
@@ -110,7 +110,7 @@ public class TestKitDocTest extends AbstractJavaTest {
   }
 
   static class TestTimerUntypedActor extends UntypedAbstractActorWithTimers {
-    private static String SCHED_KEY = "SchedKey";
+    private static final String SCHED_KEY = "SchedKey";
 
     static final class TriggerScheduling {}
 
