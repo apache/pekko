@@ -2,6 +2,7 @@
 
 [![Nightly Builds](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml/badge.svg)](https://github.com/apache/pekko/actions/workflows/nightly-builds.yml)
 [![Nightly Aeron Tests](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml/badge.svg?branch=main)](https://github.com/apache/pekko/actions/workflows/nightly-builds-aeron.yml)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9032/badge)](https://www.bestpractices.dev/projects/9032)
 
 Apache Pekko is an open-source framework for building applications that are concurrent, distributed, resilient and elastic.
 Pekko uses the Actor Model to provide more intuitive high-level abstractions for concurrency.
