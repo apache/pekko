@@ -50,6 +50,7 @@ class ConfigSpec extends PekkoSpec(ConfigFactory.defaultReference(ActorSystem.fi
 
         getInt("pekko.scheduler.ticks-per-wheel") should ===(512)
         getDuration("pekko.scheduler.tick-duration", TimeUnit.MILLISECONDS) should ===(10L)
+        getBoolean("pekko.scheduler.error-on-tick-duration-verification-failed") should ===(true)
         getString("pekko.scheduler.implementation") should ===("org.apache.pekko.actor.LightArrayRevolverScheduler")
 
         getBoolean("pekko.daemonic") should ===(false)
