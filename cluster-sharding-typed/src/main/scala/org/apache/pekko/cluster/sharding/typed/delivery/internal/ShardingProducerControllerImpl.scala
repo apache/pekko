@@ -504,7 +504,8 @@ private class ShardingProducerControllerImpl[A: ClassTag](
         s.out.flatMap {
           case (outKey: OutKey, outState) =>
             val idleDurationMillis = (now - outState.usedNanoTime) / 1000 / 1000
-            if (outState.unconfirmed.isEmpty && outState.buffered.isEmpty && idleDurationMillis >= settings.cleanupUnusedAfter.toMillis) {
+            if (outState.unconfirmed.isEmpty && outState.buffered.isEmpty && idleDurationMillis >= settings
+                .cleanupUnusedAfter.toMillis) {
               context.log.debug("Cleanup unused [{}], because it was idle for [{} ms]", outKey, idleDurationMillis)
               context.stop(outState.producerController)
               Some(outKey)

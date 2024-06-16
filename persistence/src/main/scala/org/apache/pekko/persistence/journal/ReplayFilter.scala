@@ -138,7 +138,8 @@ private[pekko] class ReplayFilter(
             if (msg.persistent.sequenceNr >= seqNo) {
               val errMsg =
                 s"Invalid replayed event [sequenceNr=${r.persistent.sequenceNr}, writerUUID=${r.persistent.writerUuid}] from a new writer. " +
-                s"An older writer already sent an event [sequenceNr=${msg.persistent.sequenceNr}, writerUUID=${msg.persistent.writerUuid}] whose sequence number was equal or greater for the same persistenceId [${r.persistent.persistenceId}]. " +
+                s"An older writer already sent an event [sequenceNr=${msg.persistent.sequenceNr}, writerUUID=${msg.persistent
+                    .writerUuid}] whose sequence number was equal or greater for the same persistenceId [${r.persistent.persistenceId}]. " +
                 "Perhaps, the new writer journaled the event out of sequence, or duplicate persistenceId for different entities?"
               logIssue(errMsg)
               mode match {

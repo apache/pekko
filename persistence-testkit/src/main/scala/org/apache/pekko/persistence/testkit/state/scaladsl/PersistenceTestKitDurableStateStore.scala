@@ -122,7 +122,8 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
   override def currentChanges(tag: String, offset: Offset): Source[DurableStateChange[A], pekko.NotUsed] =
     this.synchronized {
       val currentGlobalOffset = lastGlobalOffset.get()
-      changes(tag, offset).takeWhile(_.offset match {
+      changes(tag, offset).takeWhile(
+        _.offset match {
           case Sequence(fromOffset) =>
             fromOffset < currentGlobalOffset
           case offset =>
@@ -137,7 +138,8 @@ class PersistenceTestKitDurableStateStore[A](val system: ExtendedActorSystem)
       offset: Offset): Source[DurableStateChange[A], NotUsed] =
     this.synchronized {
       val currentGlobalOffset = lastGlobalOffset.get()
-      changesBySlices(entityType, minSlice, maxSlice, offset).takeWhile(_.offset match {
+      changesBySlices(entityType, minSlice, maxSlice, offset).takeWhile(
+        _.offset match {
           case Sequence(fromOffset) =>
             fromOffset < currentGlobalOffset
           case offset =>

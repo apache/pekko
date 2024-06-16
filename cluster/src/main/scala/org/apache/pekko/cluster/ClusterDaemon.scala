@@ -882,7 +882,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef, joinConfigCompatCh
   def leaving(address: Address): Unit = {
     // only try to update if the node is available (in the member ring)
     latestGossip.members.find(_.address == address).foreach { existingMember =>
-      if (existingMember.status == Joining || existingMember.status == WeaklyUp || existingMember.status == Up || existingMember.status == PreparingForShutdown || existingMember.status == ReadyForShutdown) {
+      if (existingMember.status == Joining || existingMember.status == WeaklyUp || existingMember
+          .status == Up || existingMember.status == PreparingForShutdown || existingMember.status == ReadyForShutdown) {
         // mark node as LEAVING
         val newMembers = latestGossip.members - existingMember + existingMember.copy(status = Leaving)
         val newGossip = latestGossip.copy(members = newMembers)

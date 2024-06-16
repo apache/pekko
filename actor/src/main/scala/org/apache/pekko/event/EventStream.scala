@@ -103,7 +103,8 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
                 Logging.Debug(
                   simpleName(this),
                   this.getClass,
-                  "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
+                  "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers
+                    .size + " initial subscribers with it"))
             subscribers.foreach(registerWithUnsubscriber)
             true
           } else {

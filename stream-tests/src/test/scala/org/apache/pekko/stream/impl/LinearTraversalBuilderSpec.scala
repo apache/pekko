@@ -817,8 +817,7 @@ class LinearTraversalBuilderSpec extends PekkoSpec {
 
       mat.islandAssignments should ===(
         List(
-          (sink, Attributes.none, TestDefaultIsland),
-          (flow2, Attributes.none, TestDefaultIsland),
+          (sink, Attributes.none, TestDefaultIsland), (flow2, Attributes.none, TestDefaultIsland),
           (flow1, Attributes.name("island2"), TestIsland2),
           (source, Attributes.name("island2") and Attributes.name("island1"), TestIsland1)))
     }

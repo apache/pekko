@@ -273,12 +273,9 @@ class BackoffSupervisorSpec extends PekkoSpec with ImplicitSender with Eventuall
       val delayTable =
         Table(
           ("restartCount", "minBackoff", "maxBackoff", "randomFactor", "expectedResult"),
-          (0, 0.minutes, 0.minutes, 0d, 0.minutes),
-          (0, 5.minutes, 7.minutes, 0d, 5.minutes),
-          (2, 5.seconds, 7.seconds, 0d, 7.seconds),
-          (2, 5.seconds, 7.days, 0d, 20.seconds),
-          (29, 5.minutes, 10.minutes, 0d, 10.minutes),
-          (29, 10000.days, 10000.days, 0d, 10000.days),
+          (0, 0.minutes, 0.minutes, 0d, 0.minutes), (0, 5.minutes, 7.minutes, 0d, 5.minutes),
+          (2, 5.seconds, 7.seconds, 0d, 7.seconds), (2, 5.seconds, 7.days, 0d, 20.seconds),
+          (29, 5.minutes, 10.minutes, 0d, 10.minutes), (29, 10000.days, 10000.days, 0d, 10000.days),
           (Int.MaxValue, 10000.days, 10000.days, 0d, 10000.days))
       forAll(delayTable) {
         (

@@ -248,7 +248,8 @@ object MultiJvmPlugin extends AutoPlugin {
       .foreach(classpathFile =>
         IO.copyFile(classpathFile, new File(multiRunCopiedClassDir, classpathFile.getName), true))
     val cp =
-      directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File.separator + "*"
+      directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File
+        .separator + "*"
     (testClass: String) => { Seq("-cp", cp, runner, "-s", testClass) ++ options }
   }
 
