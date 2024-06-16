@@ -73,3 +73,6 @@ bed11ccbb1bd6b31592e490c36d68cb428296b46
 
 #sort imports of stream modules
 c44c0b7cbdab11d85176cfe062288fdcba16c56a
+
+# Scala Steward: Reformat with scalafmt 3.8.2
+38b03829b4e38e983521f3efd7e589d315658f18
