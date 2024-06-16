@@ -710,7 +710,8 @@ object Source {
    */
   @deprecated("Use variant accepting completion and failure matchers instead", "Akka 2.6.0")
   def actorRef[T](bufferSize: Int, overflowStrategy: OverflowStrategy): Source[T, ActorRef] =
-    actorRef({
+    actorRef(
+      {
         case pekko.actor.Status.Success(s: CompletionStrategy) => s
         case pekko.actor.Status.Success(_)                     => CompletionStrategy.Draining
         case pekko.actor.Status.Success                        => CompletionStrategy.Draining

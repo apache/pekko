@@ -1651,7 +1651,8 @@ private[pekko] class DDataShardCoordinator(
       updateStateRetries += 1
 
       val template =
-        s"$typeName: The ShardCoordinator was unable to update a distributed state within 'updating-state-timeout': ${stateWriteConsistency.timeout.toMillis} millis (${if (terminating) "terminating"
+        s"$typeName: The ShardCoordinator was unable to update a distributed state within 'updating-state-timeout': ${stateWriteConsistency
+            .timeout.toMillis} millis (${if (terminating) "terminating"
           else "retrying"}). Attempt $updateStateRetries. " +
         s"Perhaps the ShardRegion has not started on all active nodes yet? event=$evt"
 

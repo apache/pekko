@@ -58,7 +58,8 @@ import pekko.util.Timeout
 
       def withState(
           subscribeAdapters: Map[
-            ActorRef[JReplicator.SubscribeResponse[ReplicatedData]], ActorRef[dd.Replicator.SubscribeResponse[
+            ActorRef[JReplicator.SubscribeResponse[ReplicatedData]],
+            ActorRef[dd.Replicator.SubscribeResponse[
               ReplicatedData]]]): Behavior[SReplicator.Command] = {
 
         def stopSubscribeAdapter(

@@ -32,7 +32,8 @@ class CircuitBreakerMTSpec extends PekkoSpec {
     def openBreaker(breaker: CircuitBreaker): Unit = {
       // returns true if the breaker is open
       def failingCall(): Boolean =
-        Await.result(breaker.withCircuitBreaker(Future.failed(new RuntimeException("FAIL"))).recover {
+        Await.result(
+          breaker.withCircuitBreaker(Future.failed(new RuntimeException("FAIL"))).recover {
             case _: CircuitBreakerOpenException => true
             case _                              => false
           }, remainingOrDefault)

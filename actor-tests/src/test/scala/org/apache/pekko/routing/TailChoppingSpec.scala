@@ -26,7 +26,8 @@ import pekko.testkit._
 
 object TailChoppingSpec {
   def newActor(id: Int, sleepTime: Duration)(implicit system: ActorSystem) =
-    system.actorOf(Props(new Actor {
+    system.actorOf(
+      Props(new Actor {
         var times: Int = _
 
         def receive = {

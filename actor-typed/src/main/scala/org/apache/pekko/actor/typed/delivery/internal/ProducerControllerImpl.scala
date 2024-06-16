@@ -711,7 +711,8 @@ private class ProducerControllerImpl[A: ClassTag](
     }
 
     def receiveSendChunk(): Behavior[InternalCommand] = {
-      if (s.remainingChunks.nonEmpty && s.remainingChunks.head.seqNr <= s.requestedSeqNr && s.storeMessageSentInProgress == 0) {
+      if (s.remainingChunks.nonEmpty && s.remainingChunks.head.seqNr <= s.requestedSeqNr && s
+          .storeMessageSentInProgress == 0) {
         if (traceEnabled)
           context.log.trace("Send next chunk seqNr [{}].", s.remainingChunks.head.seqNr)
         if (durableQueue.isEmpty) {

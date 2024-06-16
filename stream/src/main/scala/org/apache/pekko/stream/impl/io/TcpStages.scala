@@ -50,7 +50,8 @@ import pekko.util.ByteString
     val halfClose: Boolean,
     val idleTimeout: Duration,
     val bindShutdownTimeout: FiniteDuration)
-    extends GraphStageWithMaterializedValue[SourceShape[StreamTcp.IncomingConnection], Future[
+    extends GraphStageWithMaterializedValue[SourceShape[StreamTcp.IncomingConnection],
+      Future[
         StreamTcp.ServerBinding]] {
   import ConnectionSourceStage._
 

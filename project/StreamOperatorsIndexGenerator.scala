@@ -187,12 +187,8 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
           .map(_.replaceAll("Mat$", ""))
           .map(method => (element, method))
       } ++ List(
-        (noElement, "Partition"),
-        (noElement, "MergeSequence"),
-        (noElement, "Broadcast"),
-        (noElement, "Balance"),
-        (noElement, "Unzip"),
-        (noElement, "UnzipWith"))
+        (noElement, "Partition"), (noElement, "MergeSequence"), (noElement, "Broadcast"), (noElement, "Balance"),
+        (noElement, "Unzip"), (noElement, "UnzipWith"))
 
     val sourceAndFlow =
       defs.collect { case ("Source", method) => method }.intersect(defs.collect { case ("Flow", method) => method })

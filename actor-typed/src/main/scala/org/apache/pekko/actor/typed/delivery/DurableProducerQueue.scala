@@ -174,7 +174,8 @@ object DurableProducerQueue {
     override def equals(obj: Any): Boolean = {
       obj match {
         case other: MessageSent[_] =>
-          seqNr == other.seqNr && message == other.message && ack == other.ack && confirmationQualifier == other.confirmationQualifier && timestampMillis == other.timestampMillis
+          seqNr == other.seqNr && message == other.message && ack == other.ack && confirmationQualifier == other
+            .confirmationQualifier && timestampMillis == other.timestampMillis
         case _ => false
       }
     }

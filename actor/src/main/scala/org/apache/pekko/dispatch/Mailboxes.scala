@@ -194,7 +194,8 @@ private[pekko] class Mailboxes(
 
     if (deploy.mailbox != Deploy.NoMailboxGiven) {
       verifyRequirements(lookup(deploy.mailbox))
-    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && deploy.dispatcher != Deploy.DispatcherSameAsParent && hasMailboxType) {
+    } else if (deploy.dispatcher != Deploy.NoDispatcherGiven && deploy.dispatcher != Deploy
+        .DispatcherSameAsParent && hasMailboxType) {
       verifyRequirements(lookup(dispatcherConfig.getString("id")))
     } else if (hasRequiredType(actorClass)) {
       try verifyRequirements(lookupByQueueType(getRequiredType(actorClass)))
