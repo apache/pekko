@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main # default branch of the project
+
+permissions: {}
+
 jobs:
   dependency-graph:
     name: Update Dependency Graph
@@ -10,3 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: scalacenter/sbt-dependency-submission@v2
+        permissions:
+          # The API requires write permission on the repository
+          # to submit dependencies
+          contents: write
