@@ -22,7 +22,7 @@ import com.gradle.develocity.agent.sbt.DevelocityPlugin.autoImport.{
   ProjectId,
   Publishing
 }
-import sbt.{ url, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
+import sbt.{ inConfig, url, AutoPlugin, Def, PluginTrigger, Plugins, Setting }
 import sbt.Keys.insideCI
 
 object PekkoDevelocityPlugin extends AutoPlugin {
@@ -62,4 +62,16 @@ object PekkoDevelocityPlugin extends AutoPlugin {
           )
       } else apacheDevelocityConfiguration
     })
+}
+
+/**
+ * An AutoPlugin to add Develocity test configuration to the TestJdk9 configuration.
+ */
+object PekkoDevelocityJdk9TestSettingsPlugin extends AutoPlugin {
+  override lazy val trigger: PluginTrigger = allRequirements
+  override lazy val requires: Plugins = DevelocityPlugin && Jdk9
+
+  // See https://docs.gradle.com/develocity/sbt-plugin/#capturing_test_data_in_a_custom_configuration
+  override lazy val projectSettings =
+    inConfig(Jdk9.TestJdk9)(DevelocityPlugin.testSettings)
 }
