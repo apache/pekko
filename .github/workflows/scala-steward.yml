@@ -5,6 +5,10 @@ on:
 
 name: Launch Scala Steward
 
+# The GitHub Action doesn't need permissions: it only reads already-public
+# data and creates PRs through the scala-steward-asf bot:
+permissions: {}
+
 jobs:
   scala-steward:
     runs-on: ubuntu-22.04
