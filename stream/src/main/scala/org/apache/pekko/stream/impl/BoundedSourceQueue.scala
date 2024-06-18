@@ -114,7 +114,7 @@ import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, Ou
     }
 
     object Mat extends BoundedSourceQueue[T] {
-      override def offer(elem: T): QueueOfferResult = state.get() match {
+      final override def offer(elem: T): QueueOfferResult = state.get() match {
         case Running | NeedsActivation =>
           if (queue.add(elem)) {
             // need to query state again because stage might have switched from Running -> NeedsActivation only after
@@ -130,21 +130,23 @@ import pekko.stream.stage.{ GraphStageLogic, GraphStageWithMaterializedValue, Ou
         case Done(result) => result
       }
 
-      override def complete(): Unit = {
+      final override def complete(): Unit = {
         if (state.get().isInstanceOf[Done])
           throw new IllegalStateException("The queue has already been completed.")
         if (setDone(Done(QueueOfferResult.QueueClosed)))
           Logic.callback.invoke(()) // if this thread won the completion race also schedule an async callback
       }
 
-      override def fail(ex: Throwable): Unit = {
+      final override def isCompleted: Boolean = state.get().isInstanceOf[Done]
+
+      final override def fail(ex: Throwable): Unit = {
         if (state.get().isInstanceOf[Done])
           throw new IllegalStateException("The queue has already been completed.")
         if (setDone(Done(QueueOfferResult.Failure(ex))))
           Logic.callback.invoke(()) // if this thread won the completion race also schedule an async callback
       }
 
-      override def size(): Int = queue.size()
+      final override def size(): Int = queue.size()
     }
 
     // some state transition helpers

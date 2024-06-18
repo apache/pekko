@@ -45,6 +45,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       }
 
       queue.complete()
+      queue.isCompleted shouldBe true
 
       val subIt = Iterator.continually(sub.requestNext())
       subIt.zip(elements.iterator).foreach {
@@ -81,6 +82,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       val queue =
         Source.queue[Int](1).toMat(Sink.fromSubscriber(sub))(Keep.left).run()
       queue.complete()
+      queue.isCompleted shouldBe true
       assertThrows[IllegalStateException](queue.complete())
     }
 
@@ -89,6 +91,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       val queue =
         Source.queue[Int](1).toMat(Sink.fromSubscriber(sub))(Keep.left).run()
       queue.fail(ex)
+      queue.isCompleted shouldBe true
       assertThrows[IllegalStateException](queue.fail(ex))
     }
 
@@ -98,6 +101,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
         Source.queue[Int](10).toMat(Sink.fromSubscriber(sub))(Keep.left).run()
 
       queue.complete()
+      queue.isCompleted shouldBe true
       queue.offer(1) should be(QueueOfferResult.QueueClosed)
       sub.expectSubscriptionAndComplete()
     }
@@ -108,6 +112,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
         Source.queue[Int](10).toMat(Sink.fromSubscriber(sub))(Keep.left).run()
 
       queue.fail(ex)
+      queue.isCompleted shouldBe true
       queue.offer(1) should be(QueueOfferResult.Failure(ex))
       sub.request(1)
       sub.expectError(ex)
@@ -180,6 +185,7 @@ class BoundedSourceQueueSpec extends StreamSpec("""pekko.loglevel = debug
       // where enqueueing an element concurrently with Done reaching the stage can lead to Enqueued being returned
       // but the element dropped (no guarantee of entering stream as documented in BoundedSourceQueue.offer
       queue.complete()
+      queue.isCompleted shouldBe true
 
       result.futureValue should be(counter.get())
     }
