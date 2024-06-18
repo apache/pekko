@@ -39,6 +39,13 @@ trait BoundedSourceQueue[T] {
   def complete(): Unit
 
   /**
+   * Returns true if the stream has been completed, either normally or with failure.
+   *
+   * @since 1.1.0
+   */
+  def isCompleted: Boolean
+
+  /**
    * Completes the stream with a failure.
    */
   def fail(ex: Throwable): Unit
