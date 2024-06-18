@@ -54,18 +54,39 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
   import Helpers.ConfigOps
   import Helpers.Requiring
 
-  val WheelSize =
+  val WheelSize: Int =
     config
       .getInt("pekko.scheduler.ticks-per-wheel")
       .requiring(ticks => (ticks & (ticks - 1)) == 0, "ticks-per-wheel must be a power of 2")
-  val TickDuration =
-    config
-      .getMillisDuration("pekko.scheduler.tick-duration")
-      .requiring(
-        _ >= 10.millis || !Helpers.isWindows,
-        "minimum supported pekko.scheduler.tick-duration on Windows is 10ms")
-      .requiring(_ >= 1.millis, "minimum supported pekko.scheduler.tick-duration is 1ms")
-  val ShutdownTimeout = config.getMillisDuration("pekko.scheduler.shutdown-timeout")
+
+  val TickDuration: FiniteDuration = {
+    val durationFromConfig = config.getMillisDuration("pekko.scheduler.tick-duration")
+    val errorOnVerificationFailed = config.getBoolean("pekko.scheduler.error-on-tick-duration-verification-failed")
+
+    if (durationFromConfig < 10.millis) {
+      if (Helpers.isWindows) {
+        if (errorOnVerificationFailed) {
+          throw new IllegalArgumentException(
+            "requirement failed: minimum supported pekko.scheduler.tick-duration on Windows is 10ms")
+        } else {
+          log.warning(
+            "requirement failed: minimum supported pekko.scheduler.tick-duration on Windows is 10ms, adjusted to 10ms now.")
+          10.millis
+        }
+      } else if (durationFromConfig < 1.millis) {
+        if (errorOnVerificationFailed) {
+          throw new IllegalArgumentException(
+            "requirement failed: minimum supported pekko.scheduler.tick-duration is 1ms")
+        } else {
+          log.warning(
+            "requirement failed: minimum supported pekko.scheduler.tick-duration is 1ms, adjusted to 1ms now.")
+          1.millis
+        }
+      } else durationFromConfig
+    } else durationFromConfig
+  }
+
+  val ShutdownTimeout: FiniteDuration = config.getMillisDuration("pekko.scheduler.shutdown-timeout")
 
   import LightArrayRevolverScheduler._
 

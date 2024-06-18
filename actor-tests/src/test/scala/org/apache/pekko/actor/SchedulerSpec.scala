@@ -26,18 +26,26 @@ import scala.util.control.NonFatal
 import atomic.{ AtomicInteger, AtomicReference }
 import scala.annotation.nowarn
 import com.typesafe.config.{ Config, ConfigFactory }
+
 import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
-
 import org.apache.pekko
 import pekko.pattern.ask
 import pekko.testkit._
+import pekko.util.Helpers
 
 object SchedulerSpec {
   val testConfRevolver =
     ConfigFactory.parseString("""
     pekko.scheduler.implementation = org.apache.pekko.actor.LightArrayRevolverScheduler
     pekko.scheduler.ticks-per-wheel = 32
+  """).withFallback(PekkoSpec.testConf)
+
+  val testConfAdjustment =
+    ConfigFactory.parseString("""
+    pekko.scheduler.implementation = org.apache.pekko.actor.LightArrayRevolverScheduler
+    pekko.scheduler.tick-duration = 1ns
+    pekko.scheduler.error-on-tick-duration-verification-failed = off
   """).withFallback(PekkoSpec.testConf)
 
 }
@@ -818,4 +826,20 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
     sched.close()
   }
 
+}
+
+class LightArrayRevolverSchedulerAdjustConfigSpec extends PekkoSpec(SchedulerSpec.testConfAdjustment)
+    with SchedulerSpec {
+  override def collectCancellable(c: Cancellable): Cancellable = c
+  private val tickDuration = system.scheduler.asInstanceOf[LightArrayRevolverScheduler].TickDuration
+
+  "A LightArrayRevolverScheduler" must {
+    "be able to adjust the config" in {
+      if (Helpers.isWindows) {
+        tickDuration should ===(10.millis)
+      } else {
+        tickDuration should ===(1.millis)
+      }
+    }
+  }
 }
