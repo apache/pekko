@@ -198,7 +198,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
   private val queue = new TaskQueue
 
   private def schedule(ec: ExecutionContext, r: Runnable, delay: FiniteDuration): TimerTask =
-    if (delay.length <= 0L) { // use simple comparision instead of Ordering for performance
+    if (delay.length <= 0L) { // use simple comparison instead of Ordering for performance
       if (stopped.get != null) throw SchedulerException("cannot enqueue after timer shutdown")
       ec.execute(r)
       NotCancellable
