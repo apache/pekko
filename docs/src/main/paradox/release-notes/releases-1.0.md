@@ -1,5 +1,19 @@
 # Release Notes (1.0.x)
 
+## 1.0.3
+
+Contains all the changes in 1.0.3-M1 but this release is safe to be used in production. There are a few additional changes.
+
+### Bug Fixes
+
+* TcpDnsClient cannot recover if registration on TcpConnection times out ([PR1182](https://github.com/apache/pekko/pull/1182))
+* Fix `ByteIterator#indexWhere` ([PR1282](https://github.com/apache/pekko/pull/1282))
+* Avoid unnecessary shard updates while shutting down ([PR1342](https://github.com/apache/pekko/pull/1342))
+
+### Other Changes
+
+* Remove the deprecation of statefulMapConcat operator ([PR1161](https://github.com/apache/pekko/pull/1161))
+
 ## 1.0.3-M1
 This is milestone release and is aimed at testing some new support for users who want to add Pekko nodes to an existing Akka cluster. This support is experimental. This release should not be used in production.
 
