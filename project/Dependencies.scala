@@ -50,9 +50,9 @@ object Dependencies {
 
   val sslConfigVersion = "0.6.1"
 
-  val scalaTestVersion = "3.2.18"
-  val scalaTestScalaCheckVersion = "1-17"
-  val scalaCheckVersion = "1.17.0"
+  val scalaTestVersion = "3.2.19"
+  val scalaTestScalaCheckVersion = "1-18"
+  val scalaCheckVersion = "1.18.0"
 
   val Versions =
     Seq(crossScalaVersions := allScalaVersions, scalaVersion := allScalaVersions.head,
