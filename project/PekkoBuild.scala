@@ -20,6 +20,7 @@ import sbt.Keys._
 import sbt._
 import sbtassembly.AssemblyPlugin.autoImport._
 import sbtwelcome.WelcomePlugin.autoImport._
+import _root_.io.github.siculo.sbtbom.BomSbtPlugin.autoImport.makeBom
 
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -267,6 +268,10 @@ object PekkoBuild {
     mavenLocalResolverSettings,
     docLintingSettings,
     JdkOptions.targetJdkSettings,
+    // needed until https://github.com/siculo/sbt-bom/pull/57 has been merged
+    packagedArtifacts += {
+      Artifact(artifact.value.name, "cyclonedx", "xml") -> makeBom.value
+    },
     // a workaround for https://github.com/akka/akka/issues/27661
     // see also project/Protobuf.scala that introduces /../ to make "intellij happy"
     MultiJvm / assembly / fullClasspath := {

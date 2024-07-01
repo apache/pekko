@@ -30,6 +30,7 @@ addSbtPlugin("com.github.pjfanning" % "sbt-pekko-build" % "0.3.3")
 addSbtPlugin("com.github.reibitto" % "sbt-welcome" % "0.4.0")
 addSbtPlugin("com.github.sbt" % "sbt-license-report" % "1.6.1")
 addSbtPlugin("io.github.roiocam" % "sbt-depend-walker" % "0.1.1")
+addSbtPlugin("io.github.siculo" % "sbt-bom" % "0.3.0")
 
 addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
 
