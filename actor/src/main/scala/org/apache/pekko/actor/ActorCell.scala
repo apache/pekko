@@ -661,7 +661,8 @@ private[pekko] class ActorCell(
         Thread.currentThread().interrupt()
         throw ActorInitializationException(self, "interruption during creation", e)
       case NonFatal(e) =>
-        setFailed(actor.self)
+        if (actor == null) setFailed(system.deadLetters)
+        else setFailed(actor.self)
         failActor()
         e match {
           case i: InstantiationException =>
