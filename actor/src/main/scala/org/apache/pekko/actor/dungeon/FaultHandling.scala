@@ -71,6 +71,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
    */
   private var _failed: FailedInfo = NoFailedInfo
   private def isFailedFatally: Boolean = _failed eq FailedFatally
+  private def isFailed: Boolean = _failed.isInstanceOf[FailedRef]
   private def perpetrator: ActorRef = _failed match {
     case FailedRef(ref) => ref
     case _              => null
@@ -217,8 +218,9 @@ private[pekko] trait FaultHandling { this: ActorCell =>
       suspendNonRecursive()
       // suspend children
       val skip: Set[ActorRef] = currentMessage match {
-        case Envelope(Failed(_, _, _), child) => setFailed(child); Set(child)
-        case _                                => setFailed(self); Set.empty
+        case Envelope(Failed(_, _, _), child) if !isFailed => setFailed(child); Set(child)
+        case _ if !isFailed                                => setFailed(self); Set.empty
+        case _                                             => Set.empty
       }
       suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
       t match {
