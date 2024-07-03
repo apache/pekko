@@ -643,6 +643,7 @@ private[pekko] class ActorCell(
     def failActor(): Unit =
       if (_actor != null) {
         clearActorFields(actor, recreate = false)
+        setFailedFatally()
         _actor = null // ensure that we know that we failed during creation
       }
 
@@ -657,7 +658,6 @@ private[pekko] class ActorCell(
     } catch {
       case e: InterruptedException =>
         failActor()
-        setFailedFatally()
         Thread.currentThread().interrupt()
         throw ActorInitializationException(self, "interruption during creation", e)
       case NonFatal(e) =>
@@ -717,8 +717,6 @@ private[pekko] class ActorCell(
   final protected def clearActorFields(actorInstance: Actor, recreate: Boolean): Unit = {
     currentMessage = null
     behaviorStack = emptyBehaviorStack
-    if (recreate) setFailed(actorInstance.self)
-    else setFailed(system.deadLetters)
   }
   final protected def clearFieldsForTermination(): Unit = {
     unstashAll()

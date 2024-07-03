@@ -76,7 +76,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
     case FailedRef(ref) => ref
     case _              => null
   }
-  protected def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
+  private def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
     case FailedFatally => FailedFatally
     case _             => FailedRef(perpetrator)
   }
@@ -296,8 +296,8 @@ private[pekko] trait FaultHandling { this: ActorCell =>
             publish(Error(e, self.path.toString, clazz(freshActor), "restarting " + child))
           })
     } catch handleNonFatalOrInterruptedException { e =>
-        clearActorFields(actor, recreate = false) // in order to prevent preRestart() from happening again
         setFailedFatally()
+        clearActorFields(actor, recreate = false) // in order to prevent preRestart() from happening again
         handleInvokeFailure(survivors, PostRestartException(self, e, cause))
       }
   }

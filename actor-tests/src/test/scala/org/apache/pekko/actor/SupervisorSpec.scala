@@ -20,7 +20,6 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-
 import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
@@ -101,7 +100,10 @@ object SupervisorSpec {
       if (cnt == 0) throw new RuntimeException("deliberate test failure")
     }
 
-    def receive = PartialFunction.empty
+    def receive = {
+      case PingMessage =>
+        sender() ! PongMessage
+    }
   }
 
   def creator(target: ActorRef, fail: Boolean = false) = {
@@ -556,11 +558,9 @@ class SupervisorSpec
             childRef = context.actorOf(Props(new Child(cnt.getAndIncrement())), "child")
           }
 
-          def childAlive(): Boolean = childRef != null && !childRef.isTerminated
-
           def receive = {
-            case msg if msg == PingMessage && childAlive() =>
-              sender() ! PongMessage
+            case msg if msg == PingMessage && childRef != null =>
+              childRef.tell(PingMessage, sender())
           }
         }), "parent")
 
