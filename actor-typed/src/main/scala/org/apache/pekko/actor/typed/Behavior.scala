@@ -19,11 +19,9 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.InvalidMessageException
-import pekko.actor.typed.internal.BehaviorImpl
+import pekko.actor.typed.internal.{ BehaviorImpl, BehaviorTags, InterceptorImpl, Supervisor }
 import pekko.actor.typed.internal.BehaviorImpl.DeferredBehavior
 import pekko.actor.typed.internal.BehaviorImpl.StoppedBehavior
-import pekko.actor.typed.internal.BehaviorTags
-import pekko.actor.typed.internal.InterceptorImpl
 import pekko.annotation.DoNotInherit
 import pekko.annotation.InternalApi
 
@@ -69,6 +67,23 @@ abstract class Behavior[T](private[pekko] val _tag: Int) { behavior =>
    */
   @InternalApi private[pekko] final def unsafeCast[U]: Behavior[U] = this.asInstanceOf[Behavior[U]]
 
+}
+
+/**
+ * TODO scala doc
+ */
+final class SuperviseBehavior[T] private[pekko] (
+    val wrapped: Behavior[T]) extends Behavior[T](BehaviorTags.SuperviseBehavior) {
+  private final val ThrowableClassTag = ClassTag(classOf[Throwable])
+
+  /** Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws. */
+  def onFailure[Thr <: Throwable](strategy: SupervisorStrategy)(
+      implicit tag: ClassTag[Thr] = ThrowableClassTag): SuperviseBehavior[T] = {
+    val effectiveTag = if (tag == ClassTag.Nothing) ThrowableClassTag else tag
+    new SuperviseBehavior[T](Supervisor(Behavior.validateAsInitial(wrapped), strategy)(effectiveTag))
+  }
+
+  private[pekko] def unwrap: Behavior[T] = wrapped
 }
 
 /**
@@ -180,7 +195,8 @@ object Behavior {
         val startedInner = start(wrapped.nestedBehavior, ctx.asInstanceOf[TypedActorContext[Any]])
         if (startedInner eq wrapped.nestedBehavior) wrapped
         else wrapped.replaceNested(startedInner)
-      case _ => behavior
+      case supervise: SuperviseBehavior[T] => start(supervise.unwrap, ctx)
+      case _                               => behavior
     }
   }
 
@@ -266,6 +282,8 @@ object Behavior {
         throw new IllegalArgumentException(s"cannot execute with [$behavior] as behavior")
       case BehaviorTags.DeferredBehavior =>
         throw new IllegalArgumentException(s"deferred [$behavior] should not be passed to interpreter")
+      case BehaviorTags.SuperviseBehavior =>
+        throw new IllegalArgumentException(s"supervise [$behavior] should not be passed to interpreter")
       case BehaviorTags.IgnoreBehavior =>
         BehaviorImpl.same[T]
       case BehaviorTags.StoppedBehavior =>
