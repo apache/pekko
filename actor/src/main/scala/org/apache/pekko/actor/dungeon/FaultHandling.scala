@@ -296,8 +296,8 @@ private[pekko] trait FaultHandling { this: ActorCell =>
             publish(Error(e, self.path.toString, clazz(freshActor), "restarting " + child))
           })
     } catch handleNonFatalOrInterruptedException { e =>
-        setFailedFatally()
         clearActorFields(actor, recreate = false) // in order to prevent preRestart() from happening again
+        setFailedFatally()
         handleInvokeFailure(survivors, PostRestartException(self, e, cause))
       }
   }

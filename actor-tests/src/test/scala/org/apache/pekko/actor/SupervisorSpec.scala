@@ -20,6 +20,7 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+
 import language.postfixOps
 import org.scalatest.BeforeAndAfterEach
 
@@ -543,25 +544,25 @@ class SupervisorSpec
 
     "supervise exceptions on child actor initialize" in {
       val parent = system.actorOf(Props(new Actor {
-        val cnt: AtomicInteger = new AtomicInteger(0)
-        var childRef: ActorRef = _
+          val cnt: AtomicInteger = new AtomicInteger(0)
+          var childRef: ActorRef = _
 
-        override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
-          case _: ActorInitializationException => SupervisorStrategy.Restart
-          case _                               => SupervisorStrategy.Stop
-        }
+          override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
+            case _: ActorInitializationException => SupervisorStrategy.Restart
+            case _                               => SupervisorStrategy.Stop
+          }
 
-        override def preStart(): Unit = {
-          childRef = context.actorOf(Props(new Child(cnt.getAndIncrement())))
-        }
+          override def preStart(): Unit = {
+            childRef = context.actorOf(Props(new Child(cnt.getAndIncrement())), "child")
+          }
 
-        def childAlive(): Boolean = childRef != null && !childRef.isTerminated
+          def childAlive(): Boolean = childRef != null && !childRef.isTerminated
 
-        def receive = {
-          case msg if msg == PingMessage && childAlive() =>
-            sender() ! PongMessage
-        }
-      }))
+          def receive = {
+            case msg if msg == PingMessage && childAlive() =>
+              sender() ! PongMessage
+          }
+        }), "parent")
 
       val probe = TestProbe()
       probe.send(parent, PingMessage)
