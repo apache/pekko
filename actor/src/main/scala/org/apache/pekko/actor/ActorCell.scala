@@ -643,7 +643,6 @@ private[pekko] class ActorCell(
     def failActor(): Unit =
       if (_actor != null) {
         clearActorFields(actor, recreate = false)
-        setFailedFatally()
         _actor = null // ensure that we know that we failed during creation
       }
 
@@ -657,10 +656,12 @@ private[pekko] class ActorCell(
         publish(Debug(self.path.toString, clazz(created), "started (" + created + ")"))
     } catch {
       case e: InterruptedException =>
+        setFailedFatally()
         failActor()
         Thread.currentThread().interrupt()
         throw ActorInitializationException(self, "interruption during creation", e)
       case NonFatal(e) =>
+        setFailed(actor.self)
         failActor()
         e match {
           case i: InstantiationException =>
