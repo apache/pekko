@@ -70,8 +70,8 @@ private[pekko] trait FaultHandling { this: ActorCell =>
    * might well be replaced by ref to a Cancellable in the future (see #2299)
    */
   private var _failed: FailedInfo = NoFailedInfo
-  private def isFailedFatally: Boolean = _failed eq FailedFatally
   private def isFailed: Boolean = _failed.isInstanceOf[FailedRef]
+  private def isFailedFatally: Boolean = _failed eq FailedFatally
   private def perpetrator: ActorRef = _failed match {
     case FailedRef(ref) => ref
     case _              => null
