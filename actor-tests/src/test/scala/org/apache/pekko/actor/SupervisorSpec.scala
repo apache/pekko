@@ -95,6 +95,14 @@ object SupervisorSpec {
     }
   }
 
+  class Child(cnt: Int) extends Actor {
+    override def preStart(): Unit = {
+      if (cnt == 0) throw new RuntimeException("deliberate test failure")
+    }
+
+    def receive = PartialFunction.empty
+  }
+
   def creator(target: ActorRef, fail: Boolean = false) = {
     val p = Props(new Creator(target))
     if (fail) p.withMailbox("error-mailbox") else p
@@ -531,6 +539,30 @@ class SupervisorSpec
         }
       }
 
+    }
+
+    "supervise exceptions on child actor initialize" in {
+      val parent = system.actorOf(Props(new Actor {
+        val cnt: AtomicInteger = new AtomicInteger(0)
+
+        override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
+          case _: ActorInitializationException => SupervisorStrategy.Restart
+          case _                               => SupervisorStrategy.Stop
+        }
+
+        override def preStart(): Unit = {
+          context.actorOf(Props(new Child(cnt.getAndIncrement())))
+        }
+
+        def receive = {
+          case PingMessage => sender() ! PongMessage
+          case _           => sender() ! "unhandled"
+        }
+      }))
+
+      val probe = TestProbe()
+      probe.send(parent, PingMessage)
+      probe.expectMsg(PongMessage)
     }
   }
 
