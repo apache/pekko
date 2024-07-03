@@ -83,6 +83,26 @@ final class SuperviseBehavior[T] private[pekko] (
     new SuperviseBehavior[T](Supervisor(Behavior.validateAsInitial(wrapped), strategy)(effectiveTag))
   }
 
+  /**
+   * Java API:
+   * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
+   *
+   * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
+   */
+  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+    onFailure(strategy)(ClassTag(clazz))
+  }
+
+  /**
+   * Java API:
+   * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
+   *
+   * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
+   */
+  def onNotFatalFailure[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+    onFailure(classOf[Exception], strategy)
+  }
+
   private[pekko] def unwrap: Behavior[T] = wrapped
 }
 
