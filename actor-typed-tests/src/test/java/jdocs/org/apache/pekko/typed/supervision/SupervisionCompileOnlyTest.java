@@ -135,7 +135,7 @@ public class SupervisionCompileOnlyTest {
                         child2.tell(parts[1]);
                         return Behaviors.same();
                       }))
-              .onFailure(SupervisorStrategy.restart().withStopChildren(false));
+              .onNotFatalFailure(SupervisorStrategy.restart().withStopChildren(false));
         });
   }
   // #restart-keep-children
