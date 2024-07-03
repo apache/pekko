@@ -643,7 +643,7 @@ private[pekko] class ActorCell(
     def failActor(): Unit =
       if (_actor != null) {
         clearActorFields(actor, recreate = false)
-        setFailedFatally()
+        setFailed(actor.self)
         _actor = null // ensure that we know that we failed during creation
       }
 

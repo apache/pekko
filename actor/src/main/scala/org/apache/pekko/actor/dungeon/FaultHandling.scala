@@ -76,7 +76,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
     case FailedRef(ref) => ref
     case _              => null
   }
-  private def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
+  protected def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
     case FailedFatally => FailedFatally
     case _             => FailedRef(perpetrator)
   }
