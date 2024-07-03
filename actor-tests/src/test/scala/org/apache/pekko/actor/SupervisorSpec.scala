@@ -544,6 +544,7 @@ class SupervisorSpec
     "supervise exceptions on child actor initialize" in {
       val parent = system.actorOf(Props(new Actor {
         val cnt: AtomicInteger = new AtomicInteger(0)
+        var childRef: ActorRef = _
 
         override def supervisorStrategy: SupervisorStrategy = OneForOneStrategy() {
           case _: ActorInitializationException => SupervisorStrategy.Restart
@@ -551,12 +552,14 @@ class SupervisorSpec
         }
 
         override def preStart(): Unit = {
-          context.actorOf(Props(new Child(cnt.getAndIncrement())))
+          childRef = context.actorOf(Props(new Child(cnt.getAndIncrement())))
         }
 
+        def childAlive(): Boolean = childRef != null && !childRef.isTerminated
+
         def receive = {
-          case PingMessage => sender() ! PongMessage
-          case _           => sender() ! "unhandled"
+          case msg if msg == PingMessage && childAlive() =>
+            sender() ! PongMessage
         }
       }))
 
