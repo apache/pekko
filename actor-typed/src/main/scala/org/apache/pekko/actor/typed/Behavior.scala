@@ -99,7 +99,7 @@ final class SuperviseBehavior[T] private[pekko] (
    *
    * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
    */
-  def onNotFatalFailure[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+  def onException[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
     onFailure(classOf[Exception], strategy)
   }
 

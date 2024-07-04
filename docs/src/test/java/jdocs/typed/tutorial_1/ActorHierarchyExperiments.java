@@ -120,7 +120,7 @@ class SupervisingActor extends AbstractBehavior<String> {
     super(context);
     child =
         context.spawn(
-            Behaviors.supervise(SupervisedActor.create()).onNotFatalFailure(SupervisorStrategy.restart()),
+            Behaviors.supervise(SupervisedActor.create()).onException(SupervisorStrategy.restart()),
             "supervised-actor");
   }
 

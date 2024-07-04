@@ -20,13 +20,7 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.typed._
-import pekko.actor.typed.internal.{
-  BehaviorImpl,
-  StashBufferImpl,
-  Supervisor,
-  TimerSchedulerImpl,
-  WithMdcBehaviorInterceptor
-}
+import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
 import pekko.japi.function.{ Effect, Function2 => JapiFunction2 }
 import pekko.japi.pf.PFBuilder
 import pekko.util.ccompat.JavaConverters._
