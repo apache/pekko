@@ -70,8 +70,10 @@ abstract class Behavior[T](private[pekko] val _tag: Int) { behavior =>
 }
 
 /**
- * TODO scala doc
+ * INTERNAL API
+ * A behavior type that could be supervised, Not for user extension.
  */
+@InternalApi
 final class SuperviseBehavior[T] private[pekko] (
     val wrapped: Behavior[T]) extends Behavior[T](BehaviorTags.SuperviseBehavior) {
   private final val ThrowableClassTag = ClassTag(classOf[Throwable])
@@ -99,7 +101,7 @@ final class SuperviseBehavior[T] private[pekko] (
    *
    * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
    */
-  def onException[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+  def onAnyFailure[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
     onFailure(classOf[Exception], strategy)
   }
 

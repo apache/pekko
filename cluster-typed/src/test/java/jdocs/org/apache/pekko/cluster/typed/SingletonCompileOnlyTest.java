@@ -120,7 +120,7 @@ public interface SingletonCompileOnlyTest {
         singleton.init(
             SingletonActor.of(
                 Behaviors.supervise(Counter.create())
-                    .onException(
+                    .onAnyFailure(
                         SupervisorStrategy.restartWithBackoff(
                             Duration.ofSeconds(1), Duration.ofSeconds(10), 0.2)),
                 "GlobalCounter"));
