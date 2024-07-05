@@ -1,0 +1,5 @@
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.typed.scaladsl.Behaviors$Supervise$")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.typed.scaladsl.Behaviors$Supervise")
+ProblemFilters.exclude[MissingClassProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors$Supervise")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.actor.typed.scaladsl.Behaviors.supervise")
+ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.pekko.actor.typed.javadsl.Behaviors.supervise")
