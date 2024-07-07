@@ -38,7 +38,7 @@ object Dependencies {
   val nettyVersion = "4.1.111.Final"
   val logbackVersion = "1.3.14"
 
-  val jacksonCoreVersion = "2.17.1"
+  val jacksonCoreVersion = "2.17.2"
   val jacksonDatabindVersion = jacksonCoreVersion
 
   val scala212Version = "2.12.19"
