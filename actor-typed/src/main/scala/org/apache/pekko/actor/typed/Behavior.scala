@@ -74,7 +74,7 @@ abstract class Behavior[T](private[pekko] val _tag: Int) { behavior =>
  * A behavior type that could be supervised, Not for user extension.
  */
 @InternalApi
-final class SuperviseBehavior[T] private[pekko] (
+class SuperviseBehavior[T] private[pekko] (
     val wrapped: Behavior[T]) extends Behavior[T](BehaviorTags.SuperviseBehavior) {
   private final val ThrowableClassTag = ClassTag(classOf[Throwable])
 
@@ -86,24 +86,12 @@ final class SuperviseBehavior[T] private[pekko] (
   }
 
   /**
-   * Java API:
    * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
    *
    * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
    */
-  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] = {
+  def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): SuperviseBehavior[T] =
     onFailure(strategy)(ClassTag(clazz))
-  }
-
-  /**
-   * Java API:
-   * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
-   *
-   * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
-   */
-  def onAnyFailure[Thr <: Throwable](strategy: SupervisorStrategy): SuperviseBehavior[T] = {
-    onFailure(classOf[Exception], strategy)
-  }
 
   private[pekko] def unwrap: Behavior[T] = wrapped
 }
