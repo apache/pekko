@@ -54,6 +54,7 @@ to
 ```java
 source
     .splitAfter(somePredicate)
+    .concatSubstreams()
     .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider));
 ```
 @@@
@@ -62,11 +63,16 @@ source
 ```scala
 source
   .splitAfter(_ == somePredicate)
+  .concatSubstreams
   .withAttributes(ActorAttributes.supervisionStrategy(Supervision.resumingDecider))
 ```
 @@@
 
+Note that the `.withAttributes` needs to be placed after the substreams are combined with
+`.concatSubstreams` method, this is due to how attribute propagation currently behaves
+when dealing with `SubFlow`'s.
+
 If you already happen to have already explicitly defined a `SubstreamCancelStrategy` in the
 `splitWhen`/`splitAfter` operators then there won't be any behavior change albeit you
-will get deprecation warnings on compilation so its recommended to migrate your code to use
+will get deprecation warnings on compilation so it's recommended to migrate your code to use
 the equivalent `SupervisionStrategy` as described earlier.
