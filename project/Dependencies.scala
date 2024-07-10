@@ -34,7 +34,6 @@ object Dependencies {
   // needs to be inline with the aeron version, check
   // https://github.com/real-logic/aeron/blob/1.x.y/build.gradle
   val agronaVersion = "1.22.0"
-  val bouncyCastleVersion = "1.79"
   val nettyVersion = "4.1.116.Final"
   val logbackVersion = "1.3.14"
 
@@ -120,13 +119,8 @@ object Dependencies {
     }
 
     object TestDependencies {
-      val bcprov = "org.bouncycastle" % "bcprov-jdk18on" % bouncyCastleVersion % Test
-      val bcpkix = "org.bouncycastle" % "bcpkix-jdk18on" % bouncyCastleVersion % Test
-      val bcutil = "org.bouncycastle" % "bcutil-jdk18on" % bouncyCastleVersion % Test
       val commonsIo = "commons-io" % "commons-io" % "2.18.0" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.1" % Test
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.27.1" % Test
-      val guava = "com.google.guava" % "guava" % "33.4.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
       val httpClient = "org.apache.httpcomponents" % "httpclient" % "4.5.14" % Test
@@ -155,16 +149,10 @@ object Dependencies {
       // in-memory filesystem for file related tests
       val jimfs = "com.google.jimfs" % "jimfs" % "1.3.0" % Test
 
-      // the extra dependency overrides for bcprov, commonsCompress and guava should be reviewed - https://github.com/apache/pekko/issues/1317
       val dockerClientVersion = "3.4.1"
       val dockerClient = Seq(
         "com.github.docker-java" % "docker-java-core" % dockerClientVersion % Test,
-        "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test,
-        TestDependencies.bcprov,
-        TestDependencies.bcpkix,
-        TestDependencies.bcutil,
-        TestDependencies.commonsCompress,
-        TestDependencies.guava)
+        "com.github.docker-java" % "docker-java-transport-httpclient5" % dockerClientVersion % Test)
 
       val jackson = Seq(
         jacksonCore % Test,
