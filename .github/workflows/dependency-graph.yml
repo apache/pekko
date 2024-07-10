@@ -16,4 +16,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: scalacenter/sbt-dependency-submission@v2
+      - uses: scalacenter/sbt-dependency-submission@v3
+        with:
+          configs-ignore: test
