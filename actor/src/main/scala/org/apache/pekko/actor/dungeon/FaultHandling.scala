@@ -76,7 +76,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
     case FailedRef(ref) => ref
     case _              => null
   }
-  private def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
+  protected def setFailed(perpetrator: ActorRef): Unit = _failed = _failed match {
     case FailedFatally => FailedFatally
     case _             => FailedRef(perpetrator)
   }
@@ -214,34 +214,34 @@ private[pekko] trait FaultHandling { this: ActorCell =>
   @InternalStableApi
   final def handleInvokeFailure(childrenNotToSuspend: immutable.Iterable[ActorRef], t: Throwable): Unit = {
     // prevent any further messages to be processed until the actor has been restarted
-    if (!isFailed)
-      try {
-        suspendNonRecursive()
-        // suspend children
-        val skip: Set[ActorRef] = currentMessage match {
-          case Envelope(Failed(_, _, _), child) => setFailed(child); Set(child)
-          case _                                => setFailed(self); Set.empty
-        }
-        suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
-        t match {
-          // tell supervisor
-          case _: InterruptedException =>
-            // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-            parent.sendSystemMessage(Failed(self, new ActorInterruptedException(t), uid))
-          case _ =>
-            // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
-            parent.sendSystemMessage(Failed(self, t, uid))
-        }
-      } catch handleNonFatalOrInterruptedException { e =>
-          publish(
-            Error(
-              e,
-              self.path.toString,
-              clazz(actor),
-              "emergency stop: exception in failure handling for " + t.getClass + Logging.stackTraceFor(t)))
-          try children.foreach(stop)
-          finally finishTerminate()
-        }
+    try {
+      suspendNonRecursive()
+      // suspend children
+      val skip: Set[ActorRef] = currentMessage match {
+        case Envelope(Failed(_, _, _), child) if !isFailed => setFailed(child); Set(child)
+        case _ if !isFailed                                => setFailed(self); Set.empty
+        case _                                             => Set.empty
+      }
+      suspendChildren(exceptFor = skip ++ childrenNotToSuspend)
+      t match {
+        // tell supervisor
+        case _: InterruptedException =>
+          // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          parent.sendSystemMessage(Failed(self, new ActorInterruptedException(t), uid))
+        case _ =>
+          // ➡➡➡ NEVER SEND THE SAME SYSTEM MESSAGE OBJECT TO TWO ACTORS ⬅⬅⬅
+          parent.sendSystemMessage(Failed(self, t, uid))
+      }
+    } catch handleNonFatalOrInterruptedException { e =>
+        publish(
+          Error(
+            e,
+            self.path.toString,
+            clazz(actor),
+            "emergency stop: exception in failure handling for " + t.getClass + Logging.stackTraceFor(t)))
+        try children.foreach(stop)
+        finally finishTerminate()
+      }
   }
 
   private def finishTerminate(): Unit = {

@@ -160,6 +160,33 @@ class ActorLifeCycleSpec extends PekkoSpec with BeforeAndAfterEach with Implicit
       a ! "hello"
       expectMsg(42)
     }
+
+    "not break supervisor strategy due to unhandled exception in preStart" in {
+      val id = newUuid.toString
+      val gen = new AtomicInteger(0)
+      val maxRetryNum = 3
+
+      val childProps = Props(new LifeCycleTestActor(testActor, id, gen) {
+        override def preStart(): Unit = {
+          report("preStart")
+          throw new Exception("test exception")
+        }
+      }).withDeploy(Deploy.local)
+
+      val supervisorStrategy: SupervisorStrategy =
+        OneForOneStrategy(maxNrOfRetries = maxRetryNum, timeout.duration) {
+          case _: ActorInitializationException => SupervisorStrategy.Restart
+          case _                               => SupervisorStrategy.Escalate
+        }
+      val supervisor = system.actorOf(Props(classOf[Supervisor], supervisorStrategy))
+      Await.result((supervisor ? childProps).mapTo[ActorRef], timeout.duration)
+
+      (0 to maxRetryNum).foreach(i => {
+        expectMsg(("preStart", id, i))
+      })
+      expectNoMessage()
+      system.stop(supervisor)
+    }
   }
 
   "have a non null context after termination" in {
