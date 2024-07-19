@@ -79,3 +79,10 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 * slf4j was updated to v2 ([PR748](https://github.com/apache/pekko/pull/748))
 * upgrade from netty 3 to netty 4 (pekko-remote and pekko-multi-node-testkit)
 * Jackson 2.17.1
+
+### Known Issues
+
+* For Scala 2.12 users, we have run into an issue with stream-testkit function `expectNextWithTimeoutPF` ((#1393)[https://github.com/apache/pekko/issues/1393]).
+    * For now, the consensus is not to change this as it appears to be more of a Scala 2.12 compiler issue.
+    * Affected Scala 2.12 users can stick with Pekko 1.0 or change their code to get it to compile. The most reliable code change is to move the PartialFunction code and declare it as a `val`.
+    * If you feel strongly that Apache Pekko should try to fix this, please get in touch. 
