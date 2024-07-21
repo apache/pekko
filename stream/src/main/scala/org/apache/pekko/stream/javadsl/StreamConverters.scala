@@ -267,7 +267,7 @@ object StreamConverters {
    * Note that a flow can be materialized multiple times, so the function producing the ``Collector`` must be able
    * to handle multiple invocations.
    */
-  def javaCollectorParallelUnordered[T, R](parallelism: Int)(
+  def javaCollectorParallelUnordered[T, R](parallelism: Int,
       collector: function.Creator[Collector[T, _ <: Any, R]]): Sink[T, CompletionStage[R]] =
     new Sink(
       scaladsl.StreamConverters

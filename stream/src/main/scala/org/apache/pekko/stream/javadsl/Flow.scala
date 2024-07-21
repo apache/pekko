@@ -1254,7 +1254,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long)(
+  def groupedWeighted(minWeight: Long,
       costFn: java.util.function.Function[Out, java.lang.Long]): javadsl.Flow[In, java.util.List[Out], Mat] =
     new Flow(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
@@ -1311,7 +1311,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long)(costFn: function.Function[Out, java.lang.Long]): javadsl.Flow[In, Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.Flow[In, Out, Mat] = {
     new Flow(delegate.limitWeighted(n)(costFn.apply))
   }
 
@@ -1355,7 +1355,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def scan[T](zero: T)(f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
+  def scan[T](zero: T, f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.scan(zero)(f.apply))
 
   /**
@@ -1386,7 +1386,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.scanAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -1412,7 +1412,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def fold[T](zero: T)(f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
+  def fold[T](zero: T, f: function.Function2[T, Out, T]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.fold(zero)(f.apply))
 
   /**
@@ -1464,7 +1464,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.foldAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -2636,7 +2636,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   @deprecated(
     "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
     since = "1.1.0")
-  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy)(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def splitWhen(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitWhen(substreamCancelStrategy)(p.test))
 
   /**
@@ -2697,7 +2697,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
   @deprecated(
     "Use .withAttributes(ActorAttributes.supervisionStrategy(equivalentDecider)) rather than a SubstreamCancelStrategy",
     since = "1.1.0")
-  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy)(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
+  def splitAfter(substreamCancelStrategy: SubstreamCancelStrategy, p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.splitAfter(substreamCancelStrategy)(p.test))
 
   /**
@@ -3497,7 +3497,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    *
    * '''Cancels when''' downstream cancels
    */
-  def zipAllMat[U, Mat2, Mat3, A >: Out](that: Graph[SourceShape[U], Mat2], thisElem: A, thatElem: U)(
+  def zipAllMat[U, Mat2, Mat3, A >: Out](that: Graph[SourceShape[U], Mat2], thisElem: A, thatElem: U,
       matF: (Mat, Mat2) => Mat3): Flow[In, Pair[A, U], Mat3] =
     new Flow(delegate.zipAllMat(that, thisElem, thatElem)(matF).map { case (a, u) => Pair.create(a, u) })
 
@@ -4169,7 +4169,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * from downstream. It fails with the same error when received error message from
    * downstream.
    */
-  def watchTermination[M]()(matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Flow[In, Out, M] =
+  def watchTermination[M](matF: function.Function2[Mat, CompletionStage[Done], M]): javadsl.Flow[In, Out, M] =
     new Flow(delegate.watchTermination()((left, right) => matF(left, right.asJava)))
 
   /**
@@ -4180,7 +4180,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * The `combine` function is used to combine the `FlowMonitor` with this flow's materialized value.
    */
   @deprecated("Use monitor() or monitorMat(combine) instead", "Akka 2.5.17")
-  def monitor[M]()(combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
+  def monitor[M](combine: function.Function2[Mat, FlowMonitor[Out], M]): javadsl.Flow[In, Out, M] =
     new Flow(delegate.monitorMat(combinerToScala(combine)))
 
   /**
@@ -4504,7 +4504,7 @@ final class Flow[In, Out, Mat](delegate: scaladsl.Flow[In, Out, Mat]) extends Gr
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @ApiMayChange
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg])(
+  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration]): javadsl.Flow[In, Emit, Mat] =
