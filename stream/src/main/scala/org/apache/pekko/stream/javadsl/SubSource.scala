@@ -441,7 +441,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long)(
+  def groupedWeighted(minWeight: Long,
       costFn: function.Function[Out, java.lang.Long]): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
     new SubSource(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
@@ -509,7 +509,7 @@ class SubSource[Out, Mat](
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long)(costFn: function.Function[Out, java.lang.Long]): javadsl.SubSource[Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubSource[Out, Mat] = {
     new SubSource(delegate.limitWeighted(n)(costFn.apply))
   }
 
@@ -538,7 +538,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def scan[T](zero: T)(f: function.Function2[T, Out, T]): SubSource[T, Mat] =
+  def scan[T](zero: T, f: function.Function2[T, Out, T]): SubSource[T, Mat] =
     new SubSource(delegate.scan(zero)(f.apply))
 
   /**
@@ -569,7 +569,7 @@ class SubSource[Out, Mat](
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubSource[T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubSource[T, Mat] =
     new SubSource(delegate.scanAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -595,7 +595,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def fold[T](zero: T)(f: function.Function2[T, Out, T]): SubSource[T, Mat] =
+  def fold[T](zero: T, f: function.Function2[T, Out, T]): SubSource[T, Mat] =
     new SubSource(delegate.fold(zero)(f.apply))
 
   /**
@@ -617,7 +617,7 @@ class SubSource[Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubSource[T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubSource[T, Mat] =
     new SubSource(delegate.foldAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -2734,7 +2734,7 @@ class SubSource[Out, Mat](
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @ApiMayChange
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg])(
+  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration]): javadsl.SubSource[Emit, Mat] =
