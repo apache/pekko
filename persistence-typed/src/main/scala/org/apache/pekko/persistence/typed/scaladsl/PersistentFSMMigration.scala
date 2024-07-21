@@ -35,11 +35,10 @@ object PersistentFSMMigration {
   def snapshotAdapter[State](adapt: (String, Any, Option[FiniteDuration]) => State): SnapshotAdapter[State] =
     new SnapshotAdapter[State] {
       override def toJournal(state: State): Any = state
-      override def fromJournal(from: Any): State = {
+      override def fromJournal(from: Any): State =
         from match {
           case PersistentFSMSnapshot(stateIdentifier, data, timeout) => adapt(stateIdentifier, data, timeout)
           case data                                                  => data.asInstanceOf[State]
         }
-      }
     }
 }

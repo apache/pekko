@@ -28,9 +28,7 @@ object CopyrightHeaderForJdk9 extends AutoPlugin {
     } yield file
   }
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = {
-
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(Compile / headerSources ++= additionalFiles.value,
       Test / headerSources ++= additionalFiles.value)
-  }
 }

@@ -27,7 +27,7 @@ import pekko.actor.typed.scaladsl.adapter._
 import pekko.testkit.TestProbe
 
 object ProbedBehavior {
-  def behavior(probe: u.ActorRef): Behavior[String] = {
+  def behavior(probe: u.ActorRef): Behavior[String] =
     Behaviors
       .receiveMessagePartial[String] {
         case "throw" => throw TestException("oh dear")
@@ -37,7 +37,6 @@ object ProbedBehavior {
           probe ! s
           Behaviors.same
       }
-  }
 }
 
 object ClassicSupervisingTypedSpec {

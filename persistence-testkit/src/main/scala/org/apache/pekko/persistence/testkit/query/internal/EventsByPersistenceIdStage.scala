@@ -34,7 +34,7 @@ final private[pekko] class EventsByPersistenceIdStage(
   val out: Outlet[EventEnvelope] = Outlet("EventsByPersistenceIdSource")
   override def shape: SourceShape[EventEnvelope] = SourceShape(out)
 
-  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = {
+  override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
     new GraphStageLogicWithLogging(shape) with OutHandler {
       private var currentSequenceNr = math.max(fromSequenceNr, 1)
       private var stageActorRef: ActorRef = null
@@ -54,7 +54,7 @@ final private[pekko] class EventsByPersistenceIdStage(
         }
       }
 
-      private def tryPush(): Unit = {
+      private def tryPush(): Unit =
         if (isAvailable(out)) {
           val event = storage.tryRead(persistenceId, currentSequenceNr, currentSequenceNr, 1)
           log.debug("tryPush available. Query for {} {} result {}", currentSequenceNr, currentSequenceNr, event)
@@ -76,15 +76,11 @@ final private[pekko] class EventsByPersistenceIdStage(
         } else {
           log.debug("tryPush, no demand")
         }
-      }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         tryPush()
-      }
 
       setHandler(out, this)
     }
-
-  }
 
 }

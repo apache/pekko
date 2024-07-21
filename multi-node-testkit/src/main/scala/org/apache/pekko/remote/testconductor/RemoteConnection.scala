@@ -41,13 +41,12 @@ import pekko.util.Helpers
  */
 private[pekko] class ProtobufEncoder extends MessageToMessageEncoder[Message] {
 
-  override def encode(ctx: ChannelHandlerContext, msg: Message, out: java.util.List[AnyRef]): Unit = {
+  override def encode(ctx: ChannelHandlerContext, msg: Message, out: java.util.List[AnyRef]): Unit =
     msg match {
       case message: Message =>
         val bytes = message.toByteArray
         out.add(ctx.alloc().buffer(bytes.length).writeBytes(bytes))
     }
-  }
 }
 
 /**
@@ -119,7 +118,7 @@ private[pekko] object RemoteConnection {
       role: Role,
       sockaddr: InetSocketAddress,
       poolSize: Int,
-      handler: ChannelInboundHandler): RemoteConnection = {
+      handler: ChannelInboundHandler): RemoteConnection =
     role match {
       case Client =>
         val bootstrap = new Bootstrap()
@@ -136,14 +135,13 @@ private[pekko] object RemoteConnection {
         new RemoteConnection {
           override def channelFuture: ChannelFuture = cf
 
-          override def shutdown(): Unit = {
+          override def shutdown(): Unit =
             try {
               channelFuture.channel().close().sync()
               eventLoopGroup.shutdownGracefully(0L, 0L, TimeUnit.SECONDS)
             } catch {
               case NonFatal(_) => // silence this one to not make tests look like they failed, it's not really critical
             }
-          }
         }
 
       case Server =>
@@ -163,7 +161,7 @@ private[pekko] object RemoteConnection {
         new RemoteConnection {
           override def channelFuture: ChannelFuture = cf
 
-          override def shutdown(): Unit = {
+          override def shutdown(): Unit =
             try {
               channelFuture.channel().close().sync()
               parentEventLoopGroup.shutdownGracefully(0L, 0L, TimeUnit.SECONDS)
@@ -171,10 +169,8 @@ private[pekko] object RemoteConnection {
             } catch {
               case NonFatal(_) => // silence this one to not make tests look like they failed, it's not really critical
             }
-          }
         }
     }
-  }
 
   def getAddrString(channel: Channel): String = channel.remoteAddress() match {
     case i: InetSocketAddress => i.toString

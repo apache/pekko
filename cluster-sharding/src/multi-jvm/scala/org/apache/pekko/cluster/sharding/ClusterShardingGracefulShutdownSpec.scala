@@ -112,9 +112,9 @@ abstract class ClusterShardingGracefulShutdownSpec(multiNodeConfig: ClusterShard
         // Make sure the 'cluster-sharding-shutdown-region' phase takes at least 40 seconds,
         // to validate region shutdown completion is propagated immediately and not postponed
         // until when the cluster member leaves
-        CoordinatedShutdown(system).addTask("cluster-sharding-shutdown-region", "postpone-actual-stop")(() => {
+        CoordinatedShutdown(system).addTask("cluster-sharding-shutdown-region", "postpone-actual-stop") { () =>
           pekko.pattern.after(40.seconds)(Future.successful(Done))
-        })
+        }
         CoordinatedShutdown(system).run(CoordinatedShutdown.unknownReason)
       }
 

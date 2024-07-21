@@ -50,36 +50,31 @@ object FSMActorSpec {
     startWith(Locked, CodeState("", code))
 
     when(Locked) {
-      case Event(digit: Char, CodeState(soFar, code)) => {
+      case Event(digit: Char, CodeState(soFar, code)) =>
         soFar + digit match {
           case incomplete if incomplete.length < code.length =>
             stay().using(CodeState(incomplete, code))
-          case codeTry if codeTry == code => {
+          case codeTry if codeTry == code =>
             doUnlock()
             goto(Open).using(CodeState("", code)).forMax(timeout)
-          }
-          case _ => {
+          case _ =>
             stay().using(CodeState("", code))
-          }
         }
-      }
       case Event("hello", _) => stay().replying("world")
       case Event("bye", _)   => stop(FSM.Shutdown)
     }
 
     when(Open) {
-      case Event(StateTimeout, _) => {
+      case Event(StateTimeout, _) =>
         doLock()
         goto(Locked)
-      }
     }
 
     whenUnhandled {
-      case Event(msg, _) => {
+      case Event(msg, _) =>
         log.warning("unhandled event " + msg + " in state " + stateName + " with data " + stateData)
         unhandledLatch.open()
         stay()
-      }
     }
 
     onTransition {
@@ -193,9 +188,9 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
        * It is necessary here because of the path-dependent type fsm.StopEvent.
        */
       lazy val fsm = new Actor with FSM[Int, Null] {
-        override def preStart() = { started.countDown() }
+        override def preStart() = started.countDown()
         startWith(1, null)
-        when(1) { FSM.NullFunction }
+        when(1)(FSM.NullFunction)
         onTermination {
           case x => testActor ! x
         }
@@ -238,10 +233,9 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
             for (timerName <- timerNames) startSingleTimer(timerName, (), 10 seconds)
         }
         onTermination {
-          case _ => {
+          case _ =>
             checkTimersActive(false)
             testActor ! "stopped"
-          }
         }
       })
 
@@ -266,7 +260,7 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
         .parseMap(Map("pekko.loglevel" -> "DEBUG", "pekko.actor.debug.fsm" -> true).asJava)
         .withFallback(system.settings.config)
       val fsmEventSystem = ActorSystem("fsmEvent", config)
-      try {
+      try
         new TestKit(fsmEventSystem) {
           EventFilter.debug(occurrences = 5).intercept {
             val fsm = TestActorRef(new Actor with LoggingFSM[Int, Null] {
@@ -307,9 +301,8 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
             system.eventStream.unsubscribe(testActor)
           }
         }
-      } finally {
+      finally
         TestKit.shutdownActorSystem(fsmEventSystem)
-      }
     }
 
     "fill rolling event log and hand it out" in {
@@ -380,9 +373,8 @@ class FSMActorSpec extends PekkoSpec(Map("pekko.actor.debug.fsm" -> true)) with 
         fsm ! OverrideTimeoutToInf
         p.expectMsg(OverrideTimeoutToInf)
         p.expectNoMessage(1.seconds)
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(sys)
-      }
     }
 
   }

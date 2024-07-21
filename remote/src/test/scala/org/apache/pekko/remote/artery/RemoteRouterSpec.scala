@@ -93,18 +93,16 @@ class RemoteRouterSpec
 
   val masterSystem = ActorSystem("Master" + sysName, conf)
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     shutdown(masterSystem)
-  }
 
-  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] = {
+  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] =
     for (i <- 1 to n) yield {
       val msg = i.toString
       router.tell(msg, probe.ref)
       probe.expectMsg(msg)
       probe.lastSender.path
     }
-  }
 
   "A Remote Router" must {
 

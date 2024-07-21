@@ -57,7 +57,7 @@ import pekko.stream.stage.OutHandler
     setHandler(in, delegateToSubOutlet(() => grab(in), subOutlet))
     setHandler(out, delegateToSubInlet(subInlet))
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       try {
         val flow = factory(materializer, attributes)
 
@@ -70,7 +70,6 @@ import pekko.stream.stage.OutHandler
           matPromise.failure(ex)
           throw ex
       }
-    }
   }
 }
 
@@ -95,7 +94,7 @@ import pekko.stream.stage.OutHandler
     subInlet.setHandler(delegateToOutlet(push(out, _: T), () => complete(out), fail(out, _), subInlet))
     setHandler(out, delegateToSubInlet(subInlet))
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       try {
         val source = factory(materializer, attributes)
 
@@ -106,7 +105,6 @@ import pekko.stream.stage.OutHandler
           matPromise.failure(ex)
           throw ex
       }
-    }
   }
 }
 

@@ -107,11 +107,10 @@ class PersistencePluginDocSpec extends AnyWordSpec {
       ConfigFactory
         .parseString(providerConfig)
         .withFallback(ConfigFactory.parseString(PersistencePluginDocSpec.config)))
-    try {
+    try
       Persistence(system)
-    } finally {
+    finally
       TestKit.shutdownActorSystem(system, 10.seconds, false)
-    }
   }
 }
 
@@ -137,9 +136,8 @@ object SharedLeveldbPluginDocSpec {
 
   // #shared-store-usage
   trait SharedStoreUsage extends Actor {
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       context.actorSelection("pekko://example@127.0.0.1:7355/user/store") ! Identify(1)
-    }
 
     def receive = {
       case ActorIdentity(1, Some(store)) =>

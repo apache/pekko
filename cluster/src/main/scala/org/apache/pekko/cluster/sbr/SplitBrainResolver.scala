@@ -82,7 +82,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     def isEmpty: Boolean =
       changeCount == 0
 
-    override def toString: String = {
+    override def toString: String =
       if (isEmpty)
         "reachability unchanged"
       else {
@@ -90,7 +90,6 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
         s"reachability changed $changeCount times since ${(now - firstChangeTimestamp).nanos.toMillis} ms ago, " +
         s"latest change was ${(now - latestChangeTimestamp).nanos.toMillis} ms ago"
       }
-    }
   }
 
 }
@@ -191,9 +190,8 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
   // overridden in tests
   protected def newStableDeadline(): Deadline = Deadline.now + stableAfter
   var stableDeadline: Deadline = _
-  def resetStableDeadline(): Unit = {
+  def resetStableDeadline(): Unit =
     stableDeadline = newStableDeadline()
-  }
 
   resetStableDeadline()
 
@@ -205,12 +203,11 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     reachabilityChangedStats = ReachabilityChangedStats(now, now, 0)
   }
 
-  private def resetReachabilityChangedStatsIfAllUnreachableDowned(): Unit = {
+  private def resetReachabilityChangedStatsIfAllUnreachableDowned(): Unit =
     if (!reachabilityChangedStats.isEmpty && strategy.isAllUnreachableDownOrExiting) {
       log.debug("SBR resetting reachability stats, after all unreachable healed, downed or removed")
       resetReachabilityChangedStats()
     }
-  }
 
   private var releaseLeaseCondition: ReleaseLeaseCondition = NoLease
 
@@ -299,11 +296,10 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     case _: ClusterDomainEvent                      => // not interested in other events
   }
 
-  private def leaderChanged(leaderOption: Option[Address]): Unit = {
+  private def leaderChanged(leaderOption: Option[Address]): Unit =
     mutateResponsibilityInfo { () =>
       leader = leaderOption.contains(selfUniqueAddress.address)
     }
-  }
 
   private def tick(): Unit = {
     // note the DownAll due to instability is running on all nodes to make that decision as quickly and
@@ -425,7 +421,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
       stash()
   }
 
-  private def releaseLeaseResult(released: Boolean): Unit = {
+  private def releaseLeaseResult(released: Boolean): Unit =
     releaseLeaseCondition match {
       case ReleaseLeaseCondition.WhenTimeElapsed(deadline) =>
         if (released && deadline.isOverdue()) {
@@ -435,16 +431,15 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
       case _ =>
       // no lease or first waiting for downed nodes to be removed
     }
-  }
 
   /**
    * @return the nodes that were downed
    */
   def actOnDecision(decision: Decision): Set[UniqueAddress] = {
     val nodesToDown =
-      try {
+      try
         strategy.nodesToDown(decision)
-      } catch {
+      catch {
         case e: IllegalStateException =>
           log.warning(e.getMessage)
           strategy.nodesToDown(DownAll)
@@ -494,7 +489,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
 
   def isResponsible: Boolean = leader && selfMemberAdded
 
-  def unreachableMember(m: Member): Unit = {
+  def unreachableMember(m: Member): Unit =
     if (m.uniqueAddress != selfUniqueAddress && m.dataCenter == selfDc) {
       log.debug("SBR unreachableMember [{}]", m)
       mutateMemberInfo(resetStable = true) { () =>
@@ -505,9 +500,8 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
           log.debug("SBR noticed {}", reachabilityChangedStats)
       }
     }
-  }
 
-  def reachableMember(m: Member): Unit = {
+  def reachableMember(m: Member): Unit =
     if (m.uniqueAddress != selfUniqueAddress && m.dataCenter == selfDc) {
       log.debug("SBR reachableMember [{}]", m)
       mutateMemberInfo(resetStable = true) { () =>
@@ -518,11 +512,9 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
           log.debug("SBR noticed {}", reachabilityChangedStats)
       }
     }
-  }
 
-  private[sbr] def reachabilityChanged(r: Reachability): Unit = {
+  private[sbr] def reachabilityChanged(r: Reachability): Unit =
     strategy.setReachability(r)
-  }
 
   private def updateReachabilityChangedStats(): Unit = {
     val now = System.nanoTime()
@@ -548,11 +540,10 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     log.info("Data center [{}] observed as reachable again", dc)
   }
 
-  def seenChanged(seenBy: Set[Address]): Unit = {
+  def seenChanged(seenBy: Set[Address]): Unit =
     strategy.setSeenBy(seenBy)
-  }
 
-  def addUp(m: Member): Unit = {
+  def addUp(m: Member): Unit =
     if (selfDc == m.dataCenter) {
       log.debug("SBR add Up [{}]", m)
       mutateMemberInfo(resetStable = true) { () =>
@@ -574,32 +565,28 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
         case _ => // ok
       }
     }
-  }
 
-  def leaving(m: Member): Unit = {
+  def leaving(m: Member): Unit =
     if (selfDc == m.dataCenter) {
       log.debug("SBR leaving [{}]", m)
       mutateMemberInfo(resetStable = false) { () =>
         strategy.add(m)
       }
     }
-  }
 
-  def exited(m: Member): Unit = {
+  def exited(m: Member): Unit =
     if (selfDc == m.dataCenter) {
       log.debug("SBR exited [{}]", m)
       mutateMemberInfo(resetStable = true) { () =>
         strategy.add(m)
       }
     }
-  }
 
-  def addJoining(m: Member): Unit = {
+  def addJoining(m: Member): Unit =
     if (selfDc == m.dataCenter) {
       log.debug("SBR add Joining/WeaklyUp [{}]", m)
       strategy.add(m)
     }
-  }
 
   def addWeaklyUp(m: Member): Unit = {
     if (m.uniqueAddress == selfUniqueAddress) mutateResponsibilityInfo { () =>
@@ -609,7 +596,7 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
     addJoining(m)
   }
 
-  def remove(m: Member): Unit = {
+  def remove(m: Member): Unit =
     if (selfDc == m.dataCenter) {
       if (m.uniqueAddress == selfUniqueAddress)
         context.stop(self)
@@ -633,7 +620,6 @@ import pekko.remote.artery.ThisActorSystemQuarantinedEvent
           }
         }
     }
-  }
 
   private def releaseLease(): Unit = {
     implicit val ec: ExecutionContext = internalDispatcher

@@ -58,9 +58,8 @@ final class LeaseProvider(system: ExtendedActorSystem) extends Extension {
    * @param configPath the path of configuration for the lease
    * @param ownerName the owner that will `acquire` the lease, e.g. hostname and port of the ActorSystem
    */
-  def getLease(leaseName: String, configPath: String, ownerName: String): Lease = {
+  def getLease(leaseName: String, configPath: String, ownerName: String): Lease =
     internalGetLease(leaseName, configPath, ownerName)
-  }
 
   private[pekko] def internalGetLease(leaseName: String, configPath: String, ownerName: String): Lease = {
     val leaseKey = LeaseKey(leaseName, configPath, ownerName)

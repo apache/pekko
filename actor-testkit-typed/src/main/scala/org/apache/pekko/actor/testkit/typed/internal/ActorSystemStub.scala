@@ -117,9 +117,8 @@ import pekko.util.FutureConverters._
 
   override def printTree: String = "no tree for ActorSystemStub"
 
-  override def systemActorOf[U](behavior: Behavior[U], name: String, props: Props): ActorRef[U] = {
+  override def systemActorOf[U](behavior: Behavior[U], name: String, props: Props): ActorRef[U] =
     throw new UnsupportedOperationException("ActorSystemStub cannot create system actors")
-  }
 
   override def registerExtension[T <: Extension](ext: ExtensionId[T]): T =
     throw new UnsupportedOperationException("ActorSystemStub cannot register extensions")

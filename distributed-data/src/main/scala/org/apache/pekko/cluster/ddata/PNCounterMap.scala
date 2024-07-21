@@ -146,9 +146,8 @@ final class PNCounterMap[A] private[pekko] (private[pekko] val underlying: ORMap
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def decrement(node: UniqueAddress, key: A, delta: Long): PNCounterMap[A] = {
+  @InternalApi private[pekko] def decrement(node: UniqueAddress, key: A, delta: Long): PNCounterMap[A] =
     new PNCounterMap(underlying.updated(node, key, PNCounter())(_.decrement(node, delta)))
-  }
 
   /**
    * Removes an entry from the map.

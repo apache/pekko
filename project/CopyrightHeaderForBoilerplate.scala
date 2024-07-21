@@ -21,7 +21,7 @@ object CopyrightHeaderForBoilerplate extends AutoPlugin {
   override lazy val requires: Plugins = BoilerplatePlugin && CopyrightHeader
   override lazy val trigger: PluginTrigger = allRequirements
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
@@ -30,5 +30,4 @@ object CopyrightHeaderForBoilerplate extends AutoPlugin {
           headerMappings := headerMappings.value ++ Map(HeaderFileType("template") -> cStyleComment))
       }
     }
-  }
 }

@@ -200,9 +200,8 @@ class NettyTransportSettings(config: Config) {
 private[netty] trait CommonHandlers extends NettyHelpers {
   protected val transport: NettyTransport
 
-  override protected def onOpen(ctx: ChannelHandlerContext): Unit = {
+  override protected def onOpen(ctx: ChannelHandlerContext): Unit =
     transport.channelGroup.add(ctx.channel())
-  }
 
   protected def createHandle(channel: Channel, localAddress: Address, remoteAddress: Address): AssociationHandle
 
@@ -277,9 +276,8 @@ private[netty] abstract class ClientHandler(protected final val transport: Netty
   final protected val statusPromise = Promise[AssociationHandle]()
   def statusFuture: Future[AssociationHandle] = statusPromise.future
 
-  final protected def initOutbound(channel: Channel, remoteSocketAddress: SocketAddress): Unit = {
+  final protected def initOutbound(channel: Channel, remoteSocketAddress: SocketAddress): Unit =
     init(channel, remoteSocketAddress, remoteAddress)(statusPromise.success)
-  }
 
 }
 
@@ -293,8 +291,8 @@ private[transport] object NettyTransport {
     @nowarn("msg=deprecated")
     def always(c: ChannelFuture): Future[Channel] = NettyFutureBridge(c).recover { case _ => c.channel() }
     for {
-      _ <- always { channel.writeAndFlush(Unpooled.EMPTY_BUFFER) } // Force flush by waiting on a final dummy write
-      _ <- always { channel.disconnect() }
+      _ <- always(channel.writeAndFlush(Unpooled.EMPTY_BUFFER)) // Force flush by waiting on a final dummy write
+      _ <- always(channel.disconnect())
     } channel.close()
   }
 
@@ -400,15 +398,13 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
         .get)
     } else OptionVal.None
 
-  private def sslHandler(isClient: Boolean): SslHandler = {
+  private def sslHandler(isClient: Boolean): SslHandler =
     sslEngineProvider match {
       case OptionVal.Some(sslProvider) =>
         NettySSLSupport(sslProvider, isClient)
       case _ =>
         throw new IllegalStateException("Expected enable-ssl=on")
     }
-
-  }
 
   private val serverPipelineInitializer: ChannelInitializer[SocketChannel] = (ch: SocketChannel) => {
     val pipeline = newPipeline(ch)
@@ -529,9 +525,9 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
       } catch {
         case NonFatal(e) =>
           log.error("failed to bind to host:{} port:{}, shutting down Netty transport", settings.BindHostname, bindPort)
-          try {
+          try
             shutdown()
-          } catch {
+          catch {
             case NonFatal(_) =>
           } // ignore possible exception during shutdown
           throw e;
@@ -547,7 +543,7 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
     case _                                     => throw new IllegalArgumentException(s"Address [$addr] must contain both host and port information.")
   }
 
-  override def associate(remoteAddress: Address): Future[AssociationHandle] = {
+  override def associate(remoteAddress: Address): Future[AssociationHandle] =
     if (!serverChannel.isActive) Future.failed(new NettyTransportException("Transport is not bound"))
     else {
       val bootstrap: ClientBootstrap = outboundBootstrap(remoteAddress)
@@ -572,7 +568,6 @@ class NettyTransport(val settings: NettyTransportSettings, val system: ExtendedA
           throw new NettyTransportExceptionNoStack(s"${t.getClass.getName}: $msg", t.getCause)
       }
     }
-  }
 
   override def shutdown(): Future[Boolean] = {
     def always(c: ChannelGroupFuture): Future[Boolean] = NettyFutureBridge(c).map(_ => true).recover { case _ => false }

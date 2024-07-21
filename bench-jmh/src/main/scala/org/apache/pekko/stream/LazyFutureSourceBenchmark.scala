@@ -53,9 +53,8 @@ class LazyFutureSourceBenchmark {
   implicit val system: ActorSystem = ActorSystem("LazyFutureSourceBenchmark", config)
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   private val newLazyFutureSource = Source.lazyFuture(() => Future.successful("")).toMat(Sink.ignore)(Keep.right)
 

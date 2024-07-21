@@ -82,9 +82,9 @@ private[io] final class AsyncDnsManager(
   private val resolver = {
     val props: Props = FromConfig.props(
       Props(provider.actorClass, settings, cache,
-        (factory: ActorRefFactory, dns: List[InetSocketAddress]) => {
+        (factory: ActorRefFactory, dns: List[InetSocketAddress]) =>
           dns.map(ns => factory.actorOf(Props(new DnsClient(ns))))
-        }).withDeploy(Deploy.local).withDispatcher(dispatcher))
+      ).withDeploy(Deploy.local).withDispatcher(dispatcher))
     context.actorOf(props, name)
   }
 
@@ -93,13 +93,12 @@ private[io] final class AsyncDnsManager(
     case _                             => None
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     cacheCleanup.foreach { _ =>
       val interval =
         Duration(resolverConfig.getDuration("cache-cleanup-interval", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
       timers.startTimerWithFixedDelay(CacheCleanup, CacheCleanup, interval)
     }
-  }
 
   // still support deprecated DNS API
   @nowarn("msg=deprecated")

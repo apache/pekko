@@ -48,21 +48,19 @@ object AsyncSerializeSpec {
 
   class TestAsyncSerializer(system: ExtendedActorSystem) extends AsyncSerializerWithStringManifest(system) {
 
-    override def toBinaryAsync(o: AnyRef): Future[Array[Byte]] = {
+    override def toBinaryAsync(o: AnyRef): Future[Array[Byte]] =
       o match {
         case Message1(msg) => Future.successful(msg.getBytes)
         case Message2(msg) => Future.successful(msg.getBytes)
         case _             => throw new IllegalArgumentException(s"Unknown type $o")
       }
-    }
 
-    override def fromBinaryAsync(bytes: Array[Byte], manifest: String): Future[AnyRef] = {
+    override def fromBinaryAsync(bytes: Array[Byte], manifest: String): Future[AnyRef] =
       manifest match {
         case "1" => Future.successful(Message1(new String(bytes)))
         case "2" => Future.successful(Message2(new String(bytes)))
         case _   => throw new IllegalArgumentException(s"Unknown manifest $manifest")
       }
-    }
 
     override def identifier: Int = 9000
 
@@ -75,21 +73,19 @@ object AsyncSerializeSpec {
 
   class TestAsyncSerializerCS(system: ExtendedActorSystem) extends AsyncSerializerWithStringManifestCS(system) {
 
-    override def toBinaryAsyncCS(o: AnyRef): CompletionStage[Array[Byte]] = {
+    override def toBinaryAsyncCS(o: AnyRef): CompletionStage[Array[Byte]] =
       o match {
         case Message3(msg) => CompletableFuture.completedFuture(msg.getBytes)
         case Message4(msg) => CompletableFuture.completedFuture(msg.getBytes)
         case _             => throw new IllegalArgumentException(s"Unknown type $o")
       }
-    }
 
-    override def fromBinaryAsyncCS(bytes: Array[Byte], manifest: String): CompletionStage[AnyRef] = {
+    override def fromBinaryAsyncCS(bytes: Array[Byte], manifest: String): CompletionStage[AnyRef] =
       manifest match {
         case "1" => CompletableFuture.completedFuture(Message3(new String(bytes)))
         case "2" => CompletableFuture.completedFuture(Message4(new String(bytes)))
         case _   => throw new IllegalArgumentException(s"Unknown manifest $manifest")
       }
-    }
 
     override def identifier: Int = 9001
 

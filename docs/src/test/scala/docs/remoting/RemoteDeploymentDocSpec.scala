@@ -42,7 +42,7 @@ class RemoteDeploymentDocSpec extends PekkoSpec("""
   val address =
     other.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address("pekko", "s", "host", 1)).get
 
-  override def afterTermination(): Unit = { shutdown(other) }
+  override def afterTermination(): Unit = shutdown(other)
 
   "demonstrate programmatic deployment" in {
     // #deploy

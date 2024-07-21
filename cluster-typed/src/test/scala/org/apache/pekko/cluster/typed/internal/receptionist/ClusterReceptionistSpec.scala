@@ -212,10 +212,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
           clusterNode1.manager ! Leave(clusterNode2.selfMember.address)
         }
 
-        regProbe1.awaitAssert({
-            // we will also potentially get an update that the service was unreachable before the expected one
-            regProbe1.expectMessage(10.seconds, Listing(PingKey, Set(service1)))
-          }, 10.seconds)
+        regProbe1.awaitAssert(
+          // we will also potentially get an update that the service was unreachable before the expected one
+          regProbe1.expectMessage(10.seconds, Listing(PingKey, Set(service1))), 10.seconds)
 
         // register another after removal
         val service1b = testKit1.spawn(pingPongBehavior)
@@ -267,10 +266,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
         clusterNode2.manager ! Down(clusterNode1.selfMember.address)
         // service1 removed
-        regProbe2.awaitAssert({
-            // we will also potentially get an update that the service was unreachable before the expected one
-            regProbe2.expectMessage(10.seconds, Listing(PingKey, Set(service2)))
-          }, 10.seconds)
+        regProbe2.awaitAssert(
+          // we will also potentially get an update that the service was unreachable before the expected one
+          regProbe2.expectMessage(10.seconds, Listing(PingKey, Set(service2))), 10.seconds)
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -325,11 +323,9 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         system2.terminate()
         Await.ready(system2.whenTerminated, 10.seconds)
         clusterNode1.manager ! Down(clusterNode2.selfMember.address)
-        regProbe1.awaitAssert({
-
-            // we will also potentially get an update that the service was unreachable before the expected one
-            regProbe1.expectMessage(10.seconds, Listing(PingKey, Set.empty[ActorRef[PingProtocol]]))
-          }, 10.seconds)
+        regProbe1.awaitAssert(
+          // we will also potentially get an update that the service was unreachable before the expected one
+          regProbe1.expectMessage(10.seconds, Listing(PingKey, Set.empty[ActorRef[PingProtocol]])), 10.seconds)
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -399,12 +395,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
           // make sure it joined fine and node1 has upped it
           regProbe1.awaitAssert(
-            {
-              clusterNode1.state.members.exists(m =>
-                m.uniqueAddress == clusterNode3.selfMember.uniqueAddress &&
-                m.status == MemberStatus.Up &&
-                !clusterNode1.state.unreachable(m)) should ===(true)
-            },
+            clusterNode1.state.members.exists(m =>
+              m.uniqueAddress == clusterNode3.selfMember.uniqueAddress &&
+              m.status == MemberStatus.Up &&
+              !clusterNode1.state.unreachable(m)) should ===(true),
             10.seconds)
 
           // we should get either empty message and then updated with the new incarnation actor
@@ -426,9 +420,8 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
           ref ! Ping(regProbe1.ref)
           regProbe1.expectMessage(Pong)
 
-        } finally {
+        } finally
           testKit3.shutdownTestKit()
-        }
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -533,9 +526,8 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
           system1.receptionist ! Find(PingKey, reply1.ref)
           (reply1.receiveMessage().serviceInstances(PingKey) should contain).allOf(service1, service1b, service1c)
 
-        } finally {
+        } finally
           testKit3.shutdownTestKit()
-        }
       } finally {
         testKit1.shutdownTestKit()
         testKit2.shutdownTestKit()
@@ -615,11 +607,10 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
 
     "not conflict with the ClusterClient receptionist default name".taggedAs(LongRunningTest, GHExcludeAeronTest) in {
       val testKit = ActorTestKit(s"ClusterReceptionistSpec-test-9", ClusterReceptionistSpec.config)
-      try {
+      try
         testKit.system.systemActorOf(Behaviors.ignore, "receptionist")
-      } finally {
+      finally
         testKit.shutdownTestKit()
-      }
     }
 
     "handle unregistration and re-registration of services".taggedAs(LongRunningTest, GHExcludeAeronTest) in {
@@ -875,9 +866,8 @@ class ClusterReceptionistSpec extends AnyWordSpec with Matchers with LogCapturin
         val durableStorePath = replicatorPath / "durableStore"
         classicSystem.actorSelection(durableStorePath).resolveOne(testKit.timeout.duration).failed.futureValue
 
-      } finally {
+      } finally
         testKit.shutdownTestKit()
-      }
     }
   }
 }

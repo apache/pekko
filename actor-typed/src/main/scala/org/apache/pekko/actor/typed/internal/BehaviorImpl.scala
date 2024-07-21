@@ -104,12 +104,11 @@ private[pekko] object BehaviorTags {
   private[pekko] final class StoppedBehavior[T](val postStop: OptionVal[TypedActorContext[T] => Unit])
       extends Behavior[T](BehaviorTags.StoppedBehavior) {
 
-    def onPostStop(ctx: TypedActorContext[T]): Unit = {
+    def onPostStop(ctx: TypedActorContext[T]): Unit =
       postStop match {
         case OptionVal.Some(callback) => callback(ctx)
         case _                        =>
       }
-    }
 
     override def toString = "Stopped" + {
       postStop match {
@@ -137,11 +136,10 @@ private[pekko] object BehaviorTags {
         BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
       extends ExtensibleBehavior[T] {
 
-    override def receiveSignal(ctx: AC[T], msg: Signal): Behavior[T] = {
+    override def receiveSignal(ctx: AC[T], msg: Signal): Behavior[T] =
       onSignal.applyOrElse(
         (ctx.asScala, msg),
         BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
-    }
 
     override def receive(ctx: AC[T], msg: T) = onMessage(ctx.asScala, msg)
 
@@ -161,11 +159,10 @@ private[pekko] object BehaviorTags {
 
     override def receive(ctx: AC[T], msg: T) = onMessage(msg)
 
-    override def receiveSignal(ctx: AC[T], msg: Signal): Behavior[T] = {
+    override def receiveSignal(ctx: AC[T], msg: Signal): Behavior[T] =
       onSignal.applyOrElse(
         (ctx.asScala, msg),
         BehaviorImpl.unhandledSignal.asInstanceOf[PartialFunction[(SAC[T], Signal), Behavior[T]]])
-    }
 
     override def toString = s"ReceiveMessage(${LineNumbers(onMessage)})"
   }

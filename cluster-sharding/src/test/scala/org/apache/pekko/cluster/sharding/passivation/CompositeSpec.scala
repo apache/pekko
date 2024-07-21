@@ -177,9 +177,8 @@ class AdmissionWindowAndFilterSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 41, message = "F")
       expectReceived(id = 41, message = "F")
-      for (id <- List(25, 26, 17, 18, 19, 20, 5, 6, 7, 8)) {
+      for (id <- List(25, 26, 17, 18, 19, 20, 5, 6, 7, 8))
         expectReceived(id = id, message = Stop)
-      }
 
       // shard 1: window: 27-28, main level 0: 9-10, level 1: 11-16
       // shard 2: window: 41, main level 0: empty, level 1: empty
@@ -244,9 +243,8 @@ class AdmissionFilterNoWindowSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "D")
       expectReceived(id = 21, message = "D")
-      for (id <- 11 to 15) {
+      for (id <- 11 to 15)
         expectReceived(id = id, message = Stop)
-      }
 
       // shard 1: 16-20, shard 2: 21
       expectState(region)(1 -> (16 to 20), 2 -> Set(21))
@@ -336,11 +334,10 @@ class AdaptiveAdmissionWindowSpec
         region ! Envelope(shard = 1, id = id, message = s"E$i")
         expectReceived(id = id, message = s"E$i")
         val previousWindow = IndexedSeq(30, 5, 6, 21, 22, 23, 24, 7)
-        val passivated = {
+        val passivated =
           if (i == 1 && id <= 38) previousWindow(id - 31)
           else if (id <= 38) id + 2
           else id - 8 // window size
-        }
         expectReceived(id = passivated, message = Stop)
       }
 
@@ -446,17 +443,15 @@ class CompositeLimitAdjustmentSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 41, message = "B")
       expectReceived(id = 41, message = "B")
-      for (id <- List(37, 38) ++ (1 to 8)) {
+      for (id <- List(37, 38) ++ (1 to 8))
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> ((9 to 16) ++ (39 to 40)), 2 -> Set(41))
 
       // reduce the per-region limit from 20 to 10, per-shard limit becomes 5
       region ! ShardRegion.SetActiveEntityLimit(10)
-      for (id <- 39 +: (9 to 12)) { // passivate entities over new limit
+      for (id <- 39 +: (9 to 12)) // passivate entities over new limit
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> ((13 to 16) ++ Set(40)), 2 -> Set(41))
 

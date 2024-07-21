@@ -52,12 +52,11 @@ class OsgiActorSystemFactory(
    * ensuring that the default/reference configuration is loaded from the pekko-actor bundle.
    * Configuration files found in pekko-actor bundle
    */
-  def actorSystemConfig(@unused context: BundleContext): Config = {
+  def actorSystemConfig(@unused context: BundleContext): Config =
     config.withFallback(
       ConfigFactory
         .load(classloader)
         .withFallback(ConfigFactory.defaultReference(OsgiActorSystemFactory.pekkoActorClassLoader)))
-  }
 
   /**
    * Determine the name for the [[pekko.actor.ActorSystem]]

@@ -187,7 +187,7 @@ object ActorFlow {
       parallelism: Int,
       ref: ActorRef[Q],
       timeout: java.time.Duration,
-      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] = {
+      makeMessage: BiFunction[I, ActorRef[A], Q]): Flow[Pair[I, Ctx], Pair[A, Ctx], NotUsed] =
     org.apache.pekko.stream.scaladsl
       .Flow[Pair[I, Ctx]]
       .map(_.toScala)
@@ -197,5 +197,4 @@ object ActorFlow {
             JavaDurationConverters.asFiniteDuration(timeout))
           .map { case (a, ctx) => Pair(a, ctx) })
       .asJava
-  }
 }

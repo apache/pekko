@@ -104,13 +104,12 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
     }
 
     @deprecated("Use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
-    def apply(newProtocol: DnsProtocol.Resolved): Resolved = {
+    def apply(newProtocol: DnsProtocol.Resolved): Resolved =
       Resolved(newProtocol.name,
         newProtocol.records.collect {
           case r: ARecord    => r.ip
           case r: AAAARecord => r.ip
         })
-    }
   }
 
   /**
@@ -118,9 +117,8 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
    * the pekko.actor.io.dns.resolver that is configured.
    */
   @deprecated("use cached(DnsProtocol.Resolve)", "Akka 2.6.0")
-  def cached(name: String)(system: ActorSystem): Option[Resolved] = {
+  def cached(name: String)(system: ActorSystem): Option[Resolved] =
     Dns(system).cache.cached(name)
-  }
 
   /**
    * If an entry is cached return it immediately. If it is not then
@@ -128,25 +126,22 @@ object Dns extends ExtensionId[DnsExt] with ExtensionIdProvider {
    */
   @deprecated("use resolve(DnsProtocol.Resolve)", "Akka 2.6.0")
   @nowarn("msg=deprecated")
-  def resolve(name: String)(system: ActorSystem, sender: ActorRef): Option[Resolved] = {
+  def resolve(name: String)(system: ActorSystem, sender: ActorRef): Option[Resolved] =
     Dns(system).cache.resolve(name)(system, sender)
-  }
 
   /**
    * Lookup if a DNS resolved is cached. The exact behavior of caching will depend on
    * the pekko.actor.io.dns.resolver that is configured.
    */
-  def cached(name: DnsProtocol.Resolve)(system: ActorSystem): Option[DnsProtocol.Resolved] = {
+  def cached(name: DnsProtocol.Resolve)(system: ActorSystem): Option[DnsProtocol.Resolved] =
     Dns(system).cache.cached(name)
-  }
 
   /**
    * If an entry is cached return it immediately. If it is not then
    * trigger a resolve and return None.
    */
-  def resolve(name: DnsProtocol.Resolve, system: ActorSystem, sender: ActorRef): Option[DnsProtocol.Resolved] = {
+  def resolve(name: DnsProtocol.Resolve, system: ActorSystem, sender: ActorRef): Option[DnsProtocol.Resolved] =
     Dns(system).cache.resolve(name, system, sender)
-  }
 
   override def lookup = Dns
 
@@ -175,7 +170,7 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
    */
   @InternalApi
   @nowarn("msg=deprecated")
-  private[pekko] def loadAsyncDns(managerName: String): ActorRef = {
+  private[pekko] def loadAsyncDns(managerName: String): ActorRef =
     // This can't pass in `this` as then AsyncDns would pick up the system settings
     asyncDns.computeIfAbsent(
       managerName,
@@ -199,7 +194,6 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
             name = managerName)
         }
       })
-  }
 
   /**
    * INTERNAL API
@@ -239,11 +233,10 @@ class DnsExt private[pekko] (val system: ExtendedActorSystem, resolverName: Stri
   val cache: Dns = provider.cache
 
   // System DNS manager
-  val manager: ActorRef = {
+  val manager: ActorRef =
     system.systemActorOf(
       props = Props(provider.managerClass, this).withDeploy(Deploy.local).withDispatcher(Settings.Dispatcher),
       name = managerName)
-  }
 
   // System DNS manager
   def getResolver: ActorRef = manager

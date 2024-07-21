@@ -31,9 +31,8 @@ trait FutureTimeoutSupport {
    * after the specified duration.
    */
   def after[T](duration: FiniteDuration)(value: => Future[T])(
-      implicit system: ClassicActorSystemProvider): Future[T] = {
+      implicit system: ClassicActorSystemProvider): Future[T] =
     after(duration, using = system.classicSystem.scheduler)(value)(system.classicSystem.dispatcher)
-  }
 
   /**
    * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with the success or failure of the provided value
@@ -77,10 +76,10 @@ trait FutureTimeoutSupport {
       using.scheduleOnce(duration) {
         try {
           val future = value
-          future.handle[Unit]((t: T, ex: Throwable) => {
+          future.handle[Unit] { (t: T, ex: Throwable) =>
             if (t != null) p.complete(t)
             if (ex != null) p.completeExceptionally(ex)
-          })
+          }
         } catch {
           case NonFatal(ex) => p.completeExceptionally(ex)
         }

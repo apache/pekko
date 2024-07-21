@@ -100,11 +100,10 @@ class ClusterShardingPreparingForShutdownSpec
       runOn(second) {
         cluster.manager ! PrepareForFullClusterShutdown
       }
-      awaitAssert({
-          withClue("members: " + cluster.state.members) {
-            cluster.selfMember.status shouldEqual MemberStatus.ReadyForShutdown
-            cluster.state.members.unsorted.map(_.status) shouldEqual Set(MemberStatus.ReadyForShutdown)
-          }
+      awaitAssert(
+        withClue("members: " + cluster.state.members) {
+          cluster.selfMember.status shouldEqual MemberStatus.ReadyForShutdown
+          cluster.state.members.unsorted.map(_.status) shouldEqual Set(MemberStatus.ReadyForShutdown)
         }, 10.seconds)
       enterBarrier("preparation-complete")
 
@@ -142,10 +141,9 @@ class ClusterShardingPreparingForShutdownSpec
         cluster.manager ! Leave(address(first))
         cluster.manager ! Leave(address(third))
       }
-      awaitAssert({
-          withClue("self member: " + cluster.selfMember) {
-            cluster.selfMember.status shouldEqual Removed
-          }
+      awaitAssert(
+        withClue("self member: " + cluster.selfMember) {
+          cluster.selfMember.status shouldEqual Removed
         }, 15.seconds)
       enterBarrier("done")
     }

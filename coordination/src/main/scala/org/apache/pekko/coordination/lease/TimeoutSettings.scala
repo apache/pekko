@@ -56,40 +56,33 @@ final class TimeoutSettings(
   /**
    * Java API
    */
-  def withHeartbeatInterval(heartbeatInterval: java.time.Duration): TimeoutSettings = {
+  def withHeartbeatInterval(heartbeatInterval: java.time.Duration): TimeoutSettings =
     copy(heartbeatInterval = heartbeatInterval.asScala)
-  }
 
   /**
    * Java API
    */
-  def withHeartbeatTimeout(heartbeatTimeout: java.time.Duration): TimeoutSettings = {
+  def withHeartbeatTimeout(heartbeatTimeout: java.time.Duration): TimeoutSettings =
     copy(heartbeatTimeout = heartbeatTimeout.asScala)
-  }
 
   /**
    * Java API
    */
-  def withOperationTimeout(operationTimeout: java.time.Duration): TimeoutSettings = {
+  def withOperationTimeout(operationTimeout: java.time.Duration): TimeoutSettings =
     copy(operationTimeout = operationTimeout.asScala)
-  }
 
-  def withHeartbeatInterval(heartbeatInterval: FiniteDuration): TimeoutSettings = {
+  def withHeartbeatInterval(heartbeatInterval: FiniteDuration): TimeoutSettings =
     copy(heartbeatInterval = heartbeatInterval)
-  }
-  def withHeartbeatTimeout(heartbeatTimeout: FiniteDuration): TimeoutSettings = {
+  def withHeartbeatTimeout(heartbeatTimeout: FiniteDuration): TimeoutSettings =
     copy(heartbeatTimeout = heartbeatTimeout)
-  }
-  def withOperationTimeout(operationTimeout: FiniteDuration): TimeoutSettings = {
+  def withOperationTimeout(operationTimeout: FiniteDuration): TimeoutSettings =
     copy(operationTimeout = operationTimeout)
-  }
 
   private def copy(
       heartbeatInterval: FiniteDuration = heartbeatInterval,
       heartbeatTimeout: FiniteDuration = heartbeatTimeout,
-      operationTimeout: FiniteDuration = operationTimeout): TimeoutSettings = {
+      operationTimeout: FiniteDuration = operationTimeout): TimeoutSettings =
     new TimeoutSettings(heartbeatInterval, heartbeatTimeout, operationTimeout)
-  }
 
   override def toString = s"TimeoutSettings($heartbeatInterval, $heartbeatTimeout, $operationTimeout)"
 }

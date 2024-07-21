@@ -148,11 +148,10 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       .parseString("pekko.remote.classic.netty.ssl.port = " + cipherConfig.remotePort)
       .withFallback(system.settings.config))
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     if (cipherConfig.runTest) {
       shutdown(other)
     }
-  }
 
   def preCondition: Boolean = true
 

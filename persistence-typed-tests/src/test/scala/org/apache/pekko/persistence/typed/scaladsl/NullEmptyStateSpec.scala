@@ -42,12 +42,11 @@ class NullEmptyStateSpec
     EventSourcedBehavior[String, String, String](
       persistenceId,
       emptyState = null,
-      commandHandler = (_, command) => {
+      commandHandler = (_, command) =>
         if (command == "stop")
           Effect.stop()
         else
-          Effect.persist(command)
-      },
+          Effect.persist(command),
       eventHandler = (state, event) => {
         probe.tell("eventHandler:" + state + ":" + event)
         if (state == null) event else state + event

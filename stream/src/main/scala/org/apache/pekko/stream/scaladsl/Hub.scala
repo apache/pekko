@@ -131,9 +131,8 @@ object MergeHub {
  */
 @InternalApi
 private[pekko] final class MergeHubDrainingControlImpl(drainAction: () => Unit) extends MergeHub.DrainingControl {
-  override def drainAndComplete(): Unit = {
+  override def drainAndComplete(): Unit =
     drainAction()
-  }
 }
 
 private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Boolean = false)
@@ -187,7 +186,7 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
       // We are only allowed to dequeue if we are not backpressured. See comment in tryProcessNext() for details.
       if (isAvailable(out)) tryProcessNext(firstAttempt = true))
 
-    private[MergeHub] val drainingCallback: Option[AsyncCallback[NotUsed]] = {
+    private[MergeHub] val drainingCallback: Option[AsyncCallback[NotUsed]] =
       // Only create an async callback if the draining support is enabled in order to avoid book-keeping costs.
       if (drainingEnabled) {
         Some(getAsyncCallback[NotUsed] { _ =>
@@ -195,7 +194,6 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
           tryCompleteOnDraining()
         })
       } else None
-    }
 
     setHandler(out, this)
 
@@ -214,11 +212,10 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
         true
     }
 
-    private def tryCompleteOnDraining(): Unit = {
+    private def tryCompleteOnDraining(): Unit =
       if (demands.isEmpty && (queue.peek() eq null)) {
         completeStage()
       }
-    }
 
     override def onPull(): Unit = tryProcessNext(firstAttempt = true)
 
@@ -300,9 +297,8 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
 
       // Kill everyone else
       val states = demands.valuesIterator
-      while (states.hasNext) {
+      while (states.hasNext)
         states.next().close()
-      }
     }
   }
 
@@ -323,7 +319,7 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
           private[this] var demand: Long = perProducerBufferSize
           private[this] val id = idCounter.getAndIncrement()
 
-          override def preStart(): Unit = {
+          override def preStart(): Unit =
             if (!logic.isDraining && !logic.isShuttingDown) {
               logic.enqueue(Register(id, getAsyncCallback(onDemand)))
 
@@ -338,11 +334,9 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
             } else {
               completeStage()
             }
-          }
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             // Unlike in the case of preStart, we don't care about the Hub no longer looking at the queue.
             if (!logic.isShuttingDown) logic.enqueue(Deregister(id))
-          }
 
           override def onPush(): Unit = {
             logic.enqueue(Element(id, grab(in)))
@@ -355,20 +349,18 @@ private[pekko] class MergeHub[T](perProducerBufferSize: Int, drainingEnabled: Bo
           }
 
           // Make some noise
-          override def onUpstreamFailure(ex: Throwable): Unit = {
+          override def onUpstreamFailure(ex: Throwable): Unit =
             throw new MergeHub.ProducerFailed(
               "Upstream producer failed with exception, " +
               "removing from MergeHub now",
               ex)
-          }
 
-          private def onDemand(moreDemand: Long): Unit = {
+          private def onDemand(moreDemand: Long): Unit =
             if (moreDemand == MergeHub.Cancel) completeStage()
             else {
               demand += moreDemand
               if (!hasBeenPulled(in)) pullWithDemand()
             }
-          }
 
           setHandler(in, this)
         }
@@ -555,13 +547,12 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
       if (!isFull) pull(in)
     }
 
-    private def tryPull(): Unit = {
+    private def tryPull(): Unit =
       if (initialized && !isClosed(in) && !hasBeenPulled(in) && !isFull) {
         pull(in)
       }
-    }
 
-    private def onEvent(ev: HubEvent): Unit = {
+    private def onEvent(ev: HubEvent): Unit =
       ev match {
         case Advance(id, previousOffset) =>
           val newOffset = previousOffset + DemandThreshold
@@ -615,7 +606,6 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
           } else checkUnblock(previousOffset)
 
       }
-    }
 
     // Producer API
     // We are full if the distance between the slowest (known) consumer and the fastest (known) consumer is
@@ -665,12 +655,11 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
      * After removing a Consumer from a wheel slot (because it cancelled, or we moved it because it advanced)
      * we need to check if it was blocking us from advancing (being the slowest).
      */
-    private def checkUnblock(offsetOfConsumerRemoved: Int): Unit = {
+    private def checkUnblock(offsetOfConsumerRemoved: Int): Unit =
       if (unblockIfPossible(offsetOfConsumerRemoved)) {
         if (isClosed(in)) complete()
         else tryPull()
       }
-    }
 
     private def unblockIfPossible(offsetOfConsumerRemoved: Int): Boolean = {
       var unblocked = false
@@ -739,10 +728,9 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
     }
 
     // Consumer API
-    def poll(offset: Int): AnyRef = {
+    def poll(offset: Int): AnyRef =
       if (offset == tail) null
       else queue(offset & Mask)
-    }
 
     setHandler(in, this)
 
@@ -792,7 +780,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
                 failStage(ex)
             }
 
-            @tailrec def register(): Unit = {
+            @tailrec def register(): Unit =
               logic.state.get() match {
                 case Closed(Some(ex)) => failStage(ex)
                 case Closed(None)     => completeStage()
@@ -802,7 +790,6 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
                     callbackFuture.onComplete(getAsyncCallback(onHubReady).invoke)(materializer.executionContext)
                   } else register()
               }
-            }
 
             /*
              * Note that there is a potential race here. First we add ourselves to the pending registrations, then
@@ -815,7 +802,7 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
 
           }
 
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (offsetInitialized && (hubCallback ne null)) {
               val elem = logic.poll(offset)
 
@@ -838,12 +825,10 @@ private[pekko] class BroadcastHub[T](startAfterNrOfConsumers: Int, bufferSize: I
                   }
               }
             }
-          }
 
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             if (hubCallback ne null)
               hubCallback.invoke(UnRegister(id, previousPublishedOffset, offset))
-          }
 
           private def onCommand(cmd: ConsumerEvent): Unit = cmd match {
             case HubCompleted(Some(ex)) => failStage(ex)
@@ -1051,12 +1036,11 @@ object PartitionHub {
       private val queues2 = new ConcurrentHashMap[Long, ConsumerQueue]
       private val _totalSize = new AtomicInteger
 
-      override def init(id: Long): Unit = {
+      override def init(id: Long): Unit =
         if (id < FixedQueues)
           queues1.set(id.toInt, ConsumerQueue.empty)
         else
           queues2.put(id, ConsumerQueue.empty)
-      }
 
       override def totalSize: Int = _totalSize.get
 
@@ -1130,13 +1114,12 @@ object PartitionHub {
         if (id < FixedQueues) poll1() else poll2()
       }
 
-      override def remove(id: Long): Unit = {
+      override def remove(id: Long): Unit =
         (if (id < FixedQueues) queues1.getAndSet(id.toInt, null)
          else queues2.remove(id)) match {
           case null  =>
           case queue => _totalSize.addAndGet(-queue.size)
         }
-      }
 
     }
   }
@@ -1214,11 +1197,10 @@ object PartitionHub {
       if (!isFull) pull(in)
     }
 
-    private def isFull: Boolean = {
+    private def isFull: Boolean =
       (queue.totalSize + pending.size) >= bufferSize
-    }
 
-    private def publish(elem: T): Unit = {
+    private def publish(elem: T): Unit =
       if (!initialized || consumerInfo.consumers.isEmpty) {
         // will be published when first consumers are registered
         pending :+= elem
@@ -1229,34 +1211,30 @@ object PartitionHub {
           wakeup(id)
         }
       }
-    }
 
-    private def wakeup(id: Long): Unit = {
+    private def wakeup(id: Long): Unit =
       needWakeup.get(id) match {
         case None => // ignore
         case Some(consumer) =>
           needWakeup -= id
           consumer.callback.invoke(Wakeup)
       }
-    }
 
-    override def onUpstreamFinish(): Unit = {
+    override def onUpstreamFinish(): Unit =
       if (consumerInfo.consumers.isEmpty)
         completeStage()
       else {
         consumerInfo.consumers.foreach(c => complete(c.id))
       }
-    }
 
     private def complete(id: Long): Unit = {
       queue.offer(id, Completed)
       wakeup(id)
     }
 
-    private def tryPull(): Unit = {
+    private def tryPull(): Unit =
       if (initialized && !isClosed(in) && !hasBeenPulled(in) && !isFull)
         pull(in)
-    }
 
     private def onEvent(ev: HubEvent): Unit = {
       callbackCount += 1
@@ -1377,7 +1355,7 @@ object PartitionHub {
                 failStage(ex)
             }
 
-            @tailrec def register(): Unit = {
+            @tailrec def register(): Unit =
               logic.state.get() match {
                 case Closed(Some(ex)) => failStage(ex)
                 case Closed(None)     => completeStage()
@@ -1387,13 +1365,12 @@ object PartitionHub {
                     callbackFuture.onComplete(getAsyncCallback(onHubReady).invoke)(materializer.executionContext)
                   } else register()
               }
-            }
 
             register()
 
           }
 
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (hubCallback ne null) {
               val elem = logic.poll(id, hubCallback)
 
@@ -1406,12 +1383,10 @@ object PartitionHub {
                   push(out, elem.asInstanceOf[T])
               }
             }
-          }
 
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             if (hubCallback ne null)
               hubCallback.invoke(UnRegister(id))
-          }
 
           private def onCommand(cmd: ConsumerEvent): Unit = {
             callbackCount += 1

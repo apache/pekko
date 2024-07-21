@@ -52,7 +52,7 @@ class QueueSinkSpec extends StreamSpec {
       val sub = probe.expectSubscription()
       val future = queue.pull()
       val future2 = queue.pull()
-      an[IllegalStateException] shouldBe thrownBy { Await.result(future2, remainingOrDefault) }
+      an[IllegalStateException] shouldBe thrownBy(Await.result(future2, remainingOrDefault))
 
       sub.sendNext(1)
       future.pipeTo(testActor)
@@ -70,7 +70,7 @@ class QueueSinkSpec extends StreamSpec {
       val future1 = queue.pull()
       val future2 = queue.pull()
       val future3 = queue.pull()
-      an[IllegalStateException] shouldBe thrownBy { Await.result(future3, remainingOrDefault) }
+      an[IllegalStateException] shouldBe thrownBy(Await.result(future3, remainingOrDefault))
 
       sub.sendNext(1)
       future1.pipeTo(testActor)

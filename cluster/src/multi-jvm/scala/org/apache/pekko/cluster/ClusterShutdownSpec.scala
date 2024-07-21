@@ -51,10 +51,9 @@ abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownS
       }
 
       runOn(first, second, third) {
-        awaitAssert({
-            withClue("members: " + Cluster(system).readView.members) {
-              Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
-            }
+        awaitAssert(
+          withClue("members: " + Cluster(system).readView.members) {
+            Cluster(system).selfMember.status shouldEqual MemberStatus.ReadyForShutdown
           }, 10.seconds)
       }
     }
@@ -83,14 +82,12 @@ abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownS
         Cluster(system).leave(address(first))
       }
       awaitAssert(
-        {
-          withClue("members: " + Cluster(system).readView.members) {
-            runOn(second, third) {
-              Cluster(system).readView.members.size shouldEqual 2
-            }
-            runOn(first) {
-              Cluster(system).selfMember.status shouldEqual Removed
-            }
+        withClue("members: " + Cluster(system).readView.members) {
+          runOn(second, third) {
+            Cluster(system).readView.members.size shouldEqual 2
+          }
+          runOn(first) {
+            Cluster(system).selfMember.status shouldEqual Removed
           }
         }, 10.seconds)
       enterBarrier("first-gone")
@@ -98,10 +95,9 @@ abstract class ClusterShutdownSpec extends MultiNodeClusterSpec(ClusterShutdownS
         Cluster(system).leave(address(second))
         Cluster(system).leave(address(third))
       }
-      awaitAssert({
-          withClue("self member: " + Cluster(system).selfMember) {
-            Cluster(system).selfMember.status shouldEqual Removed
-          }
+      awaitAssert(
+        withClue("self member: " + Cluster(system).selfMember) {
+          Cluster(system).selfMember.status shouldEqual Removed
         }, 10.seconds)
       enterBarrier("all-gone")
     }

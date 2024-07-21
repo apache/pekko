@@ -71,22 +71,22 @@ class RemoteDeployNotAllowedSpec
         msg match {
           case SpawnChild(name) =>
             // this should throw
-            try {
+            try
               ctx.spawn(Behaviors.setup[AnyRef] { _ =>
                   Behaviors.empty
                 }, name)
-            } catch {
+            catch {
               case ex: Exception => probe.ref ! ex
             }
             Behaviors.same
 
           case SpawnAnonymous =>
             // this should throw
-            try {
+            try
               ctx.spawnAnonymous(Behaviors.setup[AnyRef] { _ =>
                 Behaviors.empty
               })
-            } catch {
+            catch {
               case ex: Exception => probe.ref ! ex
             }
             Behaviors.same
@@ -110,9 +110,8 @@ class RemoteDeployNotAllowedSpec
 
         system2 ! SpawnAnonymous
         probe.expectMessageType[Exception].getMessage should ===("Remote deployment not allowed for typed actors")
-      } finally {
+      } finally
         ActorTestKit.shutdown(system2)
-      }
     }
   }
 

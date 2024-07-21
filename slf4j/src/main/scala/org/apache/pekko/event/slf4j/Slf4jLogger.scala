@@ -137,9 +137,8 @@ class Slf4jLogger extends Actor with SLF4JLogging with RequiresMessageQueue[Logg
     logEvent.mdc.foreach { case (k, v) => MDC.put(k, String.valueOf(v)) }
 
     try logStatement
-    finally {
+    finally
       MDC.clear()
-    }
   }
 
   private final def markerIfPresent(event: LogEvent): Marker =

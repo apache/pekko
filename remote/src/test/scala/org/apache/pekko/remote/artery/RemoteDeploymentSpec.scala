@@ -36,13 +36,11 @@ object RemoteDeploymentSpec {
     }
 
     override def preStart(): Unit = {}
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       target ! "preRestart"
-    }
     override def postRestart(cause: Throwable): Unit = {}
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       target ! "postStop"
-    }
   }
 
   def parentProps(probe: ActorRef): Props =
@@ -163,9 +161,8 @@ class RemoteDeploymentSpec
 
       val probes = Vector.fill(numParents, numChildren)(TestProbe()(masterSystem))
       val childProps = Props[Echo1]()
-      for (p <- 0 until numParents; c <- 0 until numChildren) {
+      for (p <- 0 until numParents; c <- 0 until numChildren)
         parents(p).tell((childProps, numMessages), probes(p)(c).ref)
-      }
 
       for (p <- 0 until numParents; c <- 0 until numChildren) {
         val probe = probes(p)(c)

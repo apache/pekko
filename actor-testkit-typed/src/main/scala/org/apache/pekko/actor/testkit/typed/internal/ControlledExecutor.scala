@@ -32,11 +32,9 @@ private[pekko] final class ControlledExecutor extends ExecutionContextExecutor {
 
   def runAll(): Unit = while (!tasks.isEmpty()) runOne()
 
-  def execute(task: Runnable): Unit = {
+  def execute(task: Runnable): Unit =
     tasks.add(task)
-  }
 
-  def reportFailure(cause: Throwable): Unit = {
+  def reportFailure(cause: Throwable): Unit =
     cause.printStackTrace()
-  }
 }

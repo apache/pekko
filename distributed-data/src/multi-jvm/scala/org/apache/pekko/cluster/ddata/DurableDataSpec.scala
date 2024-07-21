@@ -241,7 +241,7 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
       system.stop(r)
       expectTerminated(r)
 
-      val r2 = awaitAssert { newReplicator() } // try until name is free
+      val r2 = awaitAssert(newReplicator()) // try until name is free
       awaitAssert {
         r2 ! GetKeyIds
         expectMsgType[GetKeyIdsResult].keyIds should !==(Set.empty[String])
@@ -288,9 +288,8 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           system.stop(r)
           expectTerminated(r)
         }
-      } finally {
+      } finally
         Await.ready(sys1.terminate(), 10.seconds)
-      }
 
       val sys2 = ActorSystem(
         "AdditionalSys",
@@ -319,9 +318,8 @@ abstract class DurableDataSpec(multiNodeConfig: DurableDataSpecConfig)
           r2 ! Get(KeyB, ReadLocal)
           expectMsgType[GetSuccess[GCounter]].dataValue.value.toInt should be(2)
         }
-      } finally {
+      } finally
         Await.ready(sys1.terminate(), 10.seconds)
-      }
 
     }
     system.log.info("Setup complete")

@@ -28,11 +28,10 @@ import pekko.stream.testkit.Utils.TE
 
 class FusingSpec extends StreamSpec {
 
-  def actorRunningStage = {
+  def actorRunningStage =
     GraphInterpreter.currentInterpreter.context
-  }
 
-  val snitchFlow = Flow[Int].map(x => { testActor ! actorRunningStage; x }).async
+  val snitchFlow = Flow[Int].map { x => testActor ! actorRunningStage; x }.async
 
   "SubFusingActorMaterializer" must {
 
@@ -48,7 +47,7 @@ class FusingSpec extends StreamSpec {
     }
 
     "use multiple actors when there are asynchronous boundaries in the subflows (manual)" in {
-      val async = Flow[Int].map(x => { testActor ! actorRunningStage; x }).async
+      val async = Flow[Int].map { x => testActor ! actorRunningStage; x }.async
       Source(0 to 9)
         .via(snitchFlow.async)
         .flatMapMerge(5, i => Source.single(i).via(async))

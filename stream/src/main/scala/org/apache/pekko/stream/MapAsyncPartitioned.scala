@@ -40,7 +40,7 @@ private[stream] object MapAsyncPartitioned {
           Try[Out] => Unit) {
     private var cachedSupervisionDirective: OptionVal[Supervision.Directive] = OptionVal.None
 
-    def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive = {
+    def supervisionDirectiveFor(decider: Supervision.Decider, ex: Throwable): Supervision.Directive =
       cachedSupervisionDirective match {
         case OptionVal.Some(d) => d
         case _ =>
@@ -48,7 +48,6 @@ private[stream] object MapAsyncPartitioned {
           cachedSupervisionDirective = OptionVal.Some(d)
           d
       }
-    }
 
     def setOut(t: Try[Out]): Unit =
       out = t
@@ -250,7 +249,7 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
           drainQueue()
         }
 
-      private def drainQueue(): Unit = {
+      private def drainQueue(): Unit =
         if (buffer.nonEmpty) {
           buffer.foreach {
             case (partition, wrappedInput) =>
@@ -260,7 +259,6 @@ private[stream] final class MapAsyncPartitioned[In, Out, Partition](
               }
           }
         }
-      }
 
       private def pullIfNeeded(): Unit =
         if (isClosed(in) && idle()) completeStage()

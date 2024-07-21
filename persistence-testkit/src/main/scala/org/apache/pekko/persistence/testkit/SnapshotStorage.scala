@@ -37,7 +37,7 @@ private[testkit] trait SnapshotStorage
 
   override protected val DefaultPolicy = SnapshotPolicies.PassAll
 
-  def tryAdd(meta: SnapshotMetadata, payload: Any): Unit = {
+  def tryAdd(meta: SnapshotMetadata, payload: Any): Unit =
     currentPolicy.tryProcess(meta.persistenceId,
       WriteSnapshot(SnapshotMeta(meta.sequenceNr, meta.timestamp), payload)) match {
       case ProcessingSuccess =>
@@ -46,7 +46,6 @@ private[testkit] trait SnapshotStorage
       case f: ProcessingFailure => throw f.error
 
     }
-  }
 
   def tryRead(persistenceId: String, criteria: SnapshotSelectionCriteria): Option[SelectedSnapshot] = {
     val selectedSnapshot =
@@ -58,22 +57,20 @@ private[testkit] trait SnapshotStorage
     }
   }
 
-  def tryDelete(persistenceId: String, selectionCriteria: SnapshotSelectionCriteria): Unit = {
+  def tryDelete(persistenceId: String, selectionCriteria: SnapshotSelectionCriteria): Unit =
     currentPolicy.tryProcess(persistenceId, DeleteSnapshotsByCriteria(selectionCriteria)) match {
       case ProcessingSuccess =>
         delete(persistenceId, v => selectionCriteria.matches(v._1))
       case f: ProcessingFailure => throw f.error
     }
-  }
 
-  def tryDelete(meta: SnapshotMetadata): Unit = {
+  def tryDelete(meta: SnapshotMetadata): Unit =
     currentPolicy.tryProcess(meta.persistenceId,
       DeleteSnapshotByMeta(SnapshotMeta(meta.sequenceNr, meta.timestamp))) match {
       case ProcessingSuccess =>
         delete(meta.persistenceId, _._1.sequenceNr == meta.sequenceNr)
       case f: ProcessingFailure => throw f.error
     }
-  }
 
 }
 

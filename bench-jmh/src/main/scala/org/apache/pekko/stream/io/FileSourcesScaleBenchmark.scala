@@ -50,7 +50,7 @@ class FileSourcesScaleBenchmark {
   val FILES_NUMBER = 40
   val files: Seq[Path] = {
     val line = ByteString("x" * 2048 + "\n")
-    (1 to FILES_NUMBER).map(i => {
+    (1 to FILES_NUMBER).map { i =>
       val f = Files.createTempFile(getClass.getName, s"$i.bench.tmp")
 
       val ft = Source
@@ -59,7 +59,7 @@ class FileSourcesScaleBenchmark {
         .runWith(FileIO.toPath(f))
       Await.result(ft, 300.seconds)
       f
-    })
+    }
   }
 
   @Param(Array("2048"))
@@ -68,19 +68,16 @@ class FileSourcesScaleBenchmark {
   var fileChannelSource: Seq[Source[ByteString, Future[IOResult]]] = _
 
   @Setup
-  def setup(): Unit = {
+  def setup(): Unit =
     fileChannelSource = files.map(FileIO.fromPath(_, bufSize))
-  }
 
   @TearDown
-  def teardown(): Unit = {
+  def teardown(): Unit =
     files.foreach(Files.delete)
-  }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), Duration.Inf)
-  }
 
   @Benchmark
   def flatMapMerge(): Unit = {

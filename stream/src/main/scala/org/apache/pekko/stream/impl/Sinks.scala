@@ -231,9 +231,8 @@ import org.reactivestreams.Subscriber
           failStage(ex)
         }
 
-        override def postStop(): Unit = {
+        override def postStop(): Unit =
           if (!p.isCompleted) p.failure(new AbruptStageTerminationException(this))
-        }
 
         setHandler(in, this)
       }, p.future)
@@ -278,9 +277,8 @@ import org.reactivestreams.Subscriber
         failStage(ex)
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!p.isCompleted) p.failure(new AbruptStageTerminationException(this))
-      }
 
       setHandler(in, this)
     }
@@ -388,9 +386,8 @@ import org.reactivestreams.Subscriber
           }(pekko.dispatch.ExecutionContexts.parasitic)
         p.future
       }
-      override def cancel(): Unit = {
+      override def cancel(): Unit =
         callback.invoke(QueueSink.Cancel)
-      }
     }
 
     (stageLogic, stageLogic)
@@ -459,10 +456,9 @@ import org.reactivestreams.Subscriber
     this
   }
 
-  override def finish(): R = {
+  override def finish(): R =
     // only called if completed without elements
     collector.finisher().apply(_accumulated)
-  }
 }
 
 /**
@@ -560,16 +556,16 @@ import org.reactivestreams.Subscriber
               promise.failure(e)
               failStage(e)
           }
-        try {
+        try
           sinkFactory(element).onComplete(cb.invoke)(ExecutionContexts.parasitic)
-        } catch {
+        catch {
           case NonFatal(e) =>
             promise.failure(e)
             failStage(e)
         }
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         // ignore onUpstreamFinish while the stage is switching but setKeepGoing
         //
         if (switching) {
@@ -579,7 +575,6 @@ import org.reactivestreams.Subscriber
           promise.failure(new NeverMaterializedException)
           super.onUpstreamFinish()
         }
-      }
 
       override def onUpstreamFailure(ex: Throwable): Unit = {
         promise.failure(ex)
@@ -597,11 +592,10 @@ import org.reactivestreams.Subscriber
         val matVal = interpreter.subFusingMaterializer
           .materialize(Source.fromGraph(subOutlet.source).toMat(sink)(Keep.right), inheritedAttributes)
 
-        def maybeCompleteStage(): Unit = {
+        def maybeCompleteStage(): Unit =
           if (isClosed(in) && subOutlet.isClosed) {
             completeStage()
           }
-        }
 
         // The stage must not be shut down automatically; it is completed when maybeCompleteStage decides
         setKeepGoing(true)
@@ -609,15 +603,13 @@ import org.reactivestreams.Subscriber
         setHandler(
           in,
           new InHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               subOutlet.push(grab(in))
-            }
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               if (firstElementPushed) {
                 subOutlet.complete()
                 maybeCompleteStage()
               }
-            }
             override def onUpstreamFailure(ex: Throwable): Unit = {
               // propagate exception irrespective if the cached element has been pushed or not
               subOutlet.fail(ex)
@@ -630,7 +622,7 @@ import org.reactivestreams.Subscriber
           })
 
         subOutlet.setHandler(new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             if (firstElementPushed) {
               pull(in)
             } else {
@@ -644,7 +636,6 @@ import org.reactivestreams.Subscriber
                 maybeCompleteStage()
               }
             }
-          }
 
           override def onDownstreamFinish(cause: Throwable): Unit = {
             if (!isClosed(in)) cancel(in, cause)

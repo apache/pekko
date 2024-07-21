@@ -32,7 +32,7 @@ import pekko.util.unused
 
 class StubbedServiceDiscovery(@unused system: ExtendedActorSystem) extends ServiceDiscovery {
 
-  override def lookup(query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
+  override def lookup(query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] =
     if (query.serviceName == "stubbed") {
       Future.successful(
         Resolved(
@@ -43,7 +43,6 @@ class StubbedServiceDiscovery(@unused system: ExtendedActorSystem) extends Servi
     } else {
       Future.successful(Resolved(query.serviceName, immutable.Seq.empty))
     }
-  }
 }
 
 object AggregateServiceDiscoverySpec {
@@ -94,9 +93,8 @@ class AggregateServiceDiscoverySpec
     with BeforeAndAfterAll
     with ScalaFutures {
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
   val discovery: ServiceDiscovery = Discovery(system).discovery
 

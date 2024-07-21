@@ -90,7 +90,7 @@ class ExplicitlyTriggeredScheduler(@unused config: Config, log: LoggingAdapter, 
       .sortBy(_._2)
 
   @tailrec
-  private[testkit] final def executeTasks(runTo: Long): Unit = {
+  private[testkit] final def executeTasks(runTo: Long): Unit =
     scheduledTasks(runTo).headOption match {
       case Some((task, time)) =>
         currentTime.set(time)
@@ -104,7 +104,6 @@ class ExplicitlyTriggeredScheduler(@unused config: Config, log: LoggingAdapter, 
         executeTasks(runTo)
       case _ => // Done
     }
-  }
 
   private def schedule(
       initialDelay: FiniteDuration,

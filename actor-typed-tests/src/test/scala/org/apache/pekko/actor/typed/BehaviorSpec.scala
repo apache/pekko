@@ -140,24 +140,21 @@ object BehaviorSpec {
   trait Siphon extends Common {
     override type Aux = TestInbox[Command]
 
-    override def checkAux(command: Command, aux: Aux): Unit = {
+    override def checkAux(command: Command, aux: Aux): Unit =
       aux.receiveAll() should ===(command :: Nil)
-    }
   }
 
   trait SignalSiphon extends Common {
     override type Aux = TestInbox[Either[Signal, Command]]
 
-    override def checkAux(command: Command, aux: Aux): Unit = {
+    override def checkAux(command: Command, aux: Aux): Unit =
       aux.receiveAll() should ===(Right(command) :: Nil)
-    }
 
-    override def checkAux(signal: Signal, aux: Aux): Unit = {
+    override def checkAux(signal: Signal, aux: Aux): Unit =
       aux.receiveAll() should ===(Left(signal) :: Nil)
-    }
   }
 
-  def mkFull(monitor: ActorRef[Event], state: State = StateA): Behavior[Command] = {
+  def mkFull(monitor: ActorRef[Event], state: State = StateA): Behavior[Command] =
     SBehaviors
       .receive[Command] {
         case (context, GetSelf) =>
@@ -186,7 +183,6 @@ object BehaviorSpec {
           monitor ! ReceivedSignal(signal)
           SBehaviors.same
       }
-  }
   /*
    * function converters for Java, to ease the pain on Scala 2.11
    */
@@ -346,7 +342,7 @@ class FullBehaviorSpec extends ScalaTestWithActorTestKit with Messages with Beco
 
 class ReceiveBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppable {
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = behv(monitor, StateA) -> null
-  private def behv(monitor: ActorRef[Event], state: State): Behavior[Command] = {
+  private def behv(monitor: ActorRef[Event], state: State): Behavior[Command] =
     SBehaviors
       .receive[Command] {
         case (context, GetSelf) =>
@@ -375,7 +371,6 @@ class ReceiveBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppab
           monitor ! ReceivedSignal(signal)
           SBehaviors.same
       }
-  }
 }
 
 class ImmutableWithSignalScalaBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppable {
@@ -455,7 +450,7 @@ class MutableScalaBehaviorSpec extends Messages with Become with Stoppable {
       new SAbstractBehavior[Command](context) {
         private var state: State = StateA
 
-        override def onMessage(message: Command): Behavior[Command] = {
+        override def onMessage(message: Command): Behavior[Command] =
           message match {
             case GetSelf =>
               monitor ! Self(this.context.self)
@@ -479,7 +474,6 @@ class MutableScalaBehaviorSpec extends Messages with Become with Stoppable {
             case Stop       => SBehaviors.stopped
             case _: AuxPing => SBehaviors.unhandled
           }
-        }
       }
     }
 }
@@ -497,10 +491,10 @@ class DeferredScalaBehaviorSpec extends ImmutableWithSignalScalaBehaviorSpec {
 
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Done]("deferredListener")
-    (SBehaviors.setup(_ => {
+    (SBehaviors.setup { _ =>
         inbox.ref ! Done
         super.behavior(monitor)._1
-      }), inbox)
+      }, inbox)
   }
 
   override def checkAux(signal: Signal, aux: Aux): Unit =
@@ -534,9 +528,8 @@ class InterceptScalaBehaviorSpec extends ImmutableWithSignalScalaBehaviorSpec wi
 }
 
 class RestarterScalaBehaviorSpec extends ImmutableWithSignalScalaBehaviorSpec with Reuse {
-  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
+  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) =
     SBehaviors.supervise(super.behavior(monitor)._1).onFailure(SupervisorStrategy.restart) -> null
-  }
 }
 
 class ImmutableWithSignalJavaBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppable {
@@ -606,10 +599,10 @@ class TransformMessagesJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorS
     val inbox = TestInbox[Command]("transformMessagesListener")
     JBehaviors.transformMessages(classOf[Command], super.behavior(monitor)._1,
       pf(_.`match`(classOf[Command],
-        fi(x => {
+        fi { x =>
           inbox.ref ! x
           x
-        })))) -> inbox
+        }))) -> inbox
   }
 }
 
@@ -618,10 +611,10 @@ class DeferredJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec {
 
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
     val inbox = TestInbox[Done]("deferredListener")
-    (JBehaviors.setup(_ => {
+    (JBehaviors.setup { _ =>
         inbox.ref ! Done
         super.behavior(monitor)._1
-      }), inbox)
+      }, inbox)
   }
 
   override def checkAux(signal: Signal, aux: Aux): Unit =
@@ -655,7 +648,6 @@ class TapJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec with Reuse
 }
 
 class RestarterJavaBehaviorSpec extends ImmutableWithSignalJavaBehaviorSpec with Reuse {
-  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = {
+  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) =
     JBehaviors.supervise(super.behavior(monitor)._1).onFailure(classOf[Exception], SupervisorStrategy.restart) -> null
-  }
 }

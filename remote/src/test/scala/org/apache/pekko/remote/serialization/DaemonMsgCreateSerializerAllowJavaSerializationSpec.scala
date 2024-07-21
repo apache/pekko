@@ -52,11 +52,10 @@ private[pekko] trait SerializationVerification { self: PekkoSpec =>
 
   def ser: Serialization
 
-  def verifySerialization(msg: DaemonMsgCreate): Unit = {
+  def verifySerialization(msg: DaemonMsgCreate): Unit =
     assertDaemonMsgCreate(
       msg,
       ser.deserialize(ser.serialize(msg).get, classOf[DaemonMsgCreate]).get.asInstanceOf[DaemonMsgCreate])
-  }
 
   def assertDaemonMsgCreate(expected: DaemonMsgCreate, got: DaemonMsgCreate): Unit = {
     // can't compare props.creator when function

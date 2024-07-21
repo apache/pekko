@@ -80,9 +80,8 @@ class SimpleDnsCache extends Dns with PeriodicCacheCleanup with NoSerializationV
    * INTERNAL API
    */
   @InternalApi
-  private[pekko] final def get(key: (String, RequestType)): Option[Resolved] = {
+  private[pekko] final def get(key: (String, RequestType)): Option[Resolved] =
     cacheRef.get().get(key)
-  }
 
   @tailrec
   private[io] final def put(key: (String, RequestType), records: Resolved, ttl: CachePolicy): Unit = {
@@ -109,12 +108,11 @@ object SimpleDnsCache {
       queue: immutable.SortedSet[ExpiryEntry[K]],
       cache: immutable.Map[K, CacheEntry[V]],
       clock: () => Long) {
-    def get(name: K): Option[V] = {
+    def get(name: K): Option[V] =
       for {
         e <- cache.get(name)
         if e.isValid(clock())
       } yield e.answer
-    }
 
     def put(name: K, answer: V, ttl: CachePolicy): Cache[K, V] = {
       val until = ttl match {
@@ -159,8 +157,7 @@ object SimpleDnsCache {
    */
   @InternalApi
   private[io] def expiryEntryOrdering[K]() = new Ordering[ExpiryEntry[K]] {
-    override def compare(x: ExpiryEntry[K], y: ExpiryEntry[K]): Int = {
+    override def compare(x: ExpiryEntry[K], y: ExpiryEntry[K]): Int =
       x.until.compareTo(y.until)
-    }
   }
 }

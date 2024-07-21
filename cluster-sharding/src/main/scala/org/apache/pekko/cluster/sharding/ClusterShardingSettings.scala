@@ -65,12 +65,11 @@ object ClusterShardingSettings {
    */
   def apply(config: Config): ClusterShardingSettings = {
 
-    def configMajorityPlus(p: String): Int = {
+    def configMajorityPlus(p: String): Int =
       toRootLowerCase(config.getString(p)) match {
         case "all" => Int.MaxValue
         case _     => config.getInt(p)
       }
-    }
 
     val tuningParameters = new TuningParameters(
       coordinatorFailureBackoff = config.getDuration("coordinator-failure-backoff", MILLISECONDS).millis,
@@ -313,12 +312,11 @@ object ClusterShardingSettings {
           new SegmentedSettings(levels, proportions)
         }
 
-        def optional(config: Config): Option[SegmentedSettings] = {
+        def optional(config: Config): Option[SegmentedSettings] =
           toRootLowerCase(config.getString("levels")) match {
             case "off" | "none" => None
             case _              => Some(SegmentedSettings(config))
           }
-        }
       }
 
       final class SegmentedSettings(val levels: Int, val proportions: immutable.Seq[Double]) {
@@ -576,7 +574,7 @@ object ClusterShardingSettings {
      * testing and feedback.
      */
     @ApiMayChange
-    def apply(config: Config): PassivationStrategySettings = {
+    def apply(config: Config): PassivationStrategySettings =
       toRootLowerCase(config.getString("strategy")) match {
         case "off" | "none" => PassivationStrategySettings.disabled
         case strategyName =>
@@ -595,9 +593,8 @@ object ClusterShardingSettings {
             replacementPolicySettings,
             admissionSettings)
       }
-    }
 
-    def fromSharding(shardingConfig: Config): PassivationStrategySettings = {
+    def fromSharding(shardingConfig: Config): PassivationStrategySettings =
       // default to old setting if it exists (defined in application.conf), overriding the new settings
       if (shardingConfig.hasPath("passivate-idle-entity-after")) {
         val timeout =
@@ -607,7 +604,6 @@ object ClusterShardingSettings {
       } else {
         PassivationStrategySettings(shardingConfig.getConfig("passivation"))
       }
-    }
 
     private[pekko] def oldDefault(idleTimeout: FiniteDuration): PassivationStrategySettings =
       defaults.withOldIdleStrategy(idleTimeout)
@@ -649,7 +645,7 @@ object ClusterShardingSettings {
     def apply(
         settings: PassivationStrategySettings.LeastRecentlyUsedSettings,
         limit: Int,
-        idle: Option[IdlePassivationStrategy]): LeastRecentlyUsedPassivationStrategy = {
+        idle: Option[IdlePassivationStrategy]): LeastRecentlyUsedPassivationStrategy =
       settings.segmentedSettings match {
         case Some(segmented) =>
           val proportions =
@@ -659,7 +655,6 @@ object ClusterShardingSettings {
           LeastRecentlyUsedPassivationStrategy(limit, proportions, idle)
         case _ => LeastRecentlyUsedPassivationStrategy(limit, Nil, idle)
       }
-    }
   }
 
   /**
@@ -1048,7 +1043,7 @@ object ClusterShardingSettings {
         updatingStateTimeout: FiniteDuration,
         entityRecoveryStrategy: String,
         entityRecoveryConstantRateStrategyFrequency: FiniteDuration,
-        entityRecoveryConstantRateStrategyNumberOfEntities: Int) = {
+        entityRecoveryConstantRateStrategyNumberOfEntities: Int) =
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -1067,7 +1062,6 @@ object ClusterShardingSettings {
         entityRecoveryStrategy,
         entityRecoveryConstantRateStrategyFrequency,
         entityRecoveryConstantRateStrategyNumberOfEntities)
-    }
 
     // included for binary compatibility
     @deprecated("Use the ClusterShardingSettings factory methods or the full constructor instead", since = "Akka 2.6.5")
@@ -1084,7 +1078,7 @@ object ClusterShardingSettings {
         leastShardAllocationRebalanceThreshold: Int,
         leastShardAllocationMaxSimultaneousRebalance: Int,
         waitingForStateTimeout: FiniteDuration,
-        updatingStateTimeout: FiniteDuration) = {
+        updatingStateTimeout: FiniteDuration) =
       this(
         coordinatorFailureBackoff,
         retryInterval,
@@ -1102,7 +1096,6 @@ object ClusterShardingSettings {
         "all",
         100.milliseconds,
         5)
-    }
   }
 }
 

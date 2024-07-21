@@ -50,7 +50,7 @@ import scala.collection.immutable.TreeMap
       if (aSize == bSize) {
         val aIter = aByteString.iterator
         val bIter = bByteString.iterator
-        @tailrec def findDiff(): Int = {
+        @tailrec def findDiff(): Int =
           if (aIter.hasNext) {
             val aByte = aIter.nextByte()
             val bByte = bIter.nextByte()
@@ -58,7 +58,6 @@ import scala.collection.immutable.TreeMap
             else if (aByte > bByte) 1
             else findDiff()
           } else 0
-        }
         findDiff()
       } else if (aSize < bSize) -1
       else 1
@@ -274,7 +273,7 @@ import scala.collection.immutable.TreeMap
     b.build()
   }
 
-  def replicatedEventMetadataToProto(rem: ReplicatedEventMetadata): ReplicatedEventSourcing.ReplicatedEventMetadata = {
+  def replicatedEventMetadataToProto(rem: ReplicatedEventMetadata): ReplicatedEventSourcing.ReplicatedEventMetadata =
     ReplicatedEventSourcing.ReplicatedEventMetadata
       .newBuilder()
       .setOriginSequenceNr(rem.originSequenceNr)
@@ -282,24 +281,21 @@ import scala.collection.immutable.TreeMap
       .setOriginReplica(rem.originReplica.id)
       .setVersionVector(versionVectorToProto(rem.version))
       .build()
-  }
 
-  def replicatedSnapshotMetadataToByteArray(rsm: ReplicatedSnapshotMetadata): Array[Byte] = {
+  def replicatedSnapshotMetadataToByteArray(rsm: ReplicatedSnapshotMetadata): Array[Byte] =
     ReplicatedEventSourcing.ReplicatedSnapshotMetadata
       .newBuilder()
       .setVersion(versionVectorToProto(rsm.version))
       .addAllSeenPerReplica(rsm.seenPerReplica.map(seenToProto).asJava)
       .build()
       .toByteArray
-  }
 
-  def seenToProto(t: (ReplicaId, Long)): ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen = {
+  def seenToProto(t: (ReplicaId, Long)): ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen =
     ReplicatedEventSourcing.ReplicatedSnapshotMetadata.Seen
       .newBuilder()
       .setReplicaId(t._1.id)
       .setSequenceNr(t._2)
       .build()
-  }
 
   def orsetFromBinary(bytes: Array[Byte]): ORSet[Any] =
     orsetFromProto(ReplicatedEventSourcing.ORSet.parseFrom(bytes))
@@ -314,9 +310,8 @@ import scala.collection.immutable.TreeMap
     new ORSet.FullStateDeltaOp(orsetFromProto(ReplicatedEventSourcing.ORSet.parseFrom(bytes)))
 
   private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[_]): ReplicatedEventSourcing.ORSetDeltaGroup = {
-    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[_]) = {
+    def createEntry(opType: ReplicatedEventSourcing.ORSetDeltaOp, u: ORSet[_]) =
       ReplicatedEventSourcing.ORSetDeltaGroup.Entry.newBuilder().setOperation(opType).setUnderlying(orsetToProto(u))
-    }
 
     val b = ReplicatedEventSourcing.ORSetDeltaGroup.newBuilder()
     deltaGroup.ops.foreach {
@@ -391,13 +386,12 @@ import scala.collection.immutable.TreeMap
     metadataFromProto(parsed)
   }
 
-  private def metadataFromProto(parsed: ReplicatedEventSourcing.ReplicatedEventMetadata): ReplicatedEventMetadata = {
+  private def metadataFromProto(parsed: ReplicatedEventSourcing.ReplicatedEventMetadata): ReplicatedEventMetadata =
     ReplicatedEventMetadata(
       ReplicaId(parsed.getOriginReplica),
       parsed.getOriginSequenceNr,
       versionVectorFromProto(parsed.getVersionVector),
       parsed.getConcurrent)
-  }
 
   def replicatedSnapshotMetadataFromBinary(bytes: Array[Byte]): ReplicatedSnapshotMetadata = {
     val parsed: ReplicatedEventSourcing.ReplicatedSnapshotMetadata =

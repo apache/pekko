@@ -138,13 +138,12 @@ class ThrottlerTransportAdapterSpec extends PekkoSpec(configA) with ImplicitSend
       // after we remove the Blackhole we can't be certain of the state
       // of the connection, repeat until success
       here ! Lost("Blackhole 3")
-      awaitCond({
-          if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
-            true
-          else {
-            here ! Lost("Blackhole 3")
-            false
-          }
+      awaitCond(
+        if (receiveOne(Duration.Zero) == Lost("Blackhole 3"))
+          true
+        else {
+          here ! Lost("Blackhole 3")
+          false
         }, 15.seconds)
 
       here ! "Cleanup"

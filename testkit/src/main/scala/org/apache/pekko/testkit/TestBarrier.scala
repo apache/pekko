@@ -39,15 +39,14 @@ class TestBarrier(count: Int) {
 
   def await()(implicit system: ActorSystem): Unit = await(TestBarrier.DefaultTimeout)
 
-  def await(timeout: FiniteDuration)(implicit system: ActorSystem): Unit = {
-    try {
+  def await(timeout: FiniteDuration)(implicit system: ActorSystem): Unit =
+    try
       barrier.await(timeout.dilated.toNanos, TimeUnit.NANOSECONDS)
-    } catch {
+    catch {
       case _: TimeoutException =>
         throw new TestBarrierTimeoutException(
           "Timeout of %s and time factor of %s".format(timeout.toString, TestKitExtension(system).TestTimeFactor))
     }
-  }
 
   def reset(): Unit = barrier.reset()
 }

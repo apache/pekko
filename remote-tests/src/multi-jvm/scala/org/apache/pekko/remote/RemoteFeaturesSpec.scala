@@ -294,9 +294,8 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
         val actor = system.actorOf(FromConfig.props(), "service-hello3")
         actor.isInstanceOf[RoutedActorRef] should ===(true)
 
-        for (_ <- 0 until iterationCount; _ <- 0 until workerInstances) {
+        for (_ <- 0 until iterationCount; _ <- 0 until workerInstances)
           actor ! "hit"
-        }
 
         val replies: Map[Address, Int] = receiveWhile(5.seconds, messages = workerInstances * iterationCount) {
           case ref: ActorRef => ref.path.address
@@ -326,9 +325,8 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
         val actor = system.actorOf(RoundRobinPool(nrOfInstances = 0).props(Props[SomeActor]()), "service-hello")
         actor.isInstanceOf[RoutedActorRef] should ===(true)
 
-        for (_ <- 0 until iterationCount; _ <- 0 until workerInstances) {
+        for (_ <- 0 until iterationCount; _ <- 0 until workerInstances)
           actor ! "hit"
-        }
 
         val replies = receiveWhile(5.seconds, messages = workerInstances * iterationCount) {
           case ref: ActorRef => ref.path.address
@@ -344,7 +342,7 @@ abstract class RemotingFeaturesSpec(val multiNodeConfig: RemotingFeaturesConfig)
           actor ! Broadcast(PoisonPill)
 
           enterBarrier("end")
-          replies.values.foreach { _ should ===(iterationCount) }
+          replies.values.foreach(_ should ===(iterationCount))
         } else {
           enterBarrier("broadcast-end")
           actor ! Broadcast(PoisonPill)

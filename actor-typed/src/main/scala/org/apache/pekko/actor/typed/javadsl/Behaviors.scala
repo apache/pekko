@@ -60,9 +60,9 @@ object Behaviors {
    * Support for stashing messages to unstash at a later time.
    */
   def withStash[T](capacity: Int, factory: java.util.function.Function[StashBuffer[T], Behavior[T]]): Behavior[T] =
-    setup(ctx => {
+    setup { ctx =>
       factory(StashBufferImpl[T](ctx.asScala, capacity))
-    })
+    }
 
   /**
    * Return this behavior from message processing in order to advise the
@@ -163,12 +163,11 @@ object Behaviors {
    */
   def receive[T](
       onMessage: JapiFunction2[ActorContext[T], T, Behavior[T]],
-      onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+      onSignal: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] =
     new BehaviorImpl.ReceiveBehavior((ctx, msg) => onMessage.apply(ctx.asJava, msg),
       {
         case (ctx, sig) => onSignal.apply(ctx.asJava, sig)
       })
-  }
 
   /**
    * Constructs an actor behavior builder that can build a behavior that can react to both
@@ -187,9 +186,8 @@ object Behaviors {
   /**
    * Construct an actor behavior that can react to lifecycle signals only.
    */
-  def receiveSignal[T](handler: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] = {
+  def receiveSignal[T](handler: JapiFunction2[ActorContext[T], Signal, Behavior[T]]): Behavior[T] =
     receive(two2same, handler)
-  }
 
   /**
    * Intercept messages and signals for a `behavior` by first passing them to a [[pekko.actor.typed.BehaviorInterceptor]]
@@ -385,10 +383,9 @@ object Behaviors {
       mdcForMessage: pekko.japi.function.Function[T, java.util.Map[String, String]],
       behavior: Behavior[T]): Behavior[T] = {
 
-    def asScalaMap(m: java.util.Map[String, String]): Map[String, String] = {
+    def asScalaMap(m: java.util.Map[String, String]): Map[String, String] =
       if (m == null || m.isEmpty) Map.empty[String, String]
       else m.asScala.toMap
-    }
 
     val mdcForMessageFun: T => Map[String, String] =
       if (mdcForMessage == null) _ => Map.empty

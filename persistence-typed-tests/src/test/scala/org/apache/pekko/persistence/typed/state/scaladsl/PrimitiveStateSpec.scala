@@ -40,12 +40,12 @@ class PrimitiveStateSpec
     DurableStateBehavior[Int, Int](
       persistenceId,
       emptyState = 0,
-      commandHandler = (state, command) => {
+      commandHandler = (state, command) =>
         if (command < 0)
           Effect.stop()
         else
           Effect.persist(state + command).thenReply(probe)(newState => newState.toString)
-      })
+    )
 
   "A typed persistent actor with primitive state" must {
     "persist primitive state and update" in {

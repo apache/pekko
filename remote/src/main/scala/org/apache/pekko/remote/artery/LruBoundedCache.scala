@@ -92,7 +92,7 @@ private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef
       val h = hash(k)
       epoch += 1
 
-      @tailrec def findOrCalculate(position: Int, probeDistance: Int): V = {
+      @tailrec def findOrCalculate(position: Int, probeDistance: Int): V =
         if (values(position) eq null) {
           val value = compute(k)
           if (isCacheable(value)) {
@@ -119,7 +119,6 @@ private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef
             findOrCalculate((position + 1) & Mask, probeDistance + 1)
           }
         }
-      }
 
       findOrCalculate(position = h & Mask, probeDistance = 0)
     }
@@ -147,7 +146,7 @@ private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef
   // Protected for exposing it to unit tests
   protected def probeDistanceOf(idealSlot: Int, actualSlot: Int) = ((actualSlot - idealSlot) + capacity) & Mask
 
-  @tailrec private def move(position: Int, k: K, h: Int, value: V, elemEpoch: Int, probeDistance: Int): Unit = {
+  @tailrec private def move(position: Int, k: K, h: Int, value: V, elemEpoch: Int, probeDistance: Int): Unit =
     if (values(position) eq null) {
       // Found an empty place, done.
       keys(position) = k
@@ -187,8 +186,6 @@ private[pekko] abstract class LruBoundedCache[K <: AnyRef: ClassTag, V <: AnyRef
 
       }
     }
-
-  }
 
   protected def compute(k: K): V
 

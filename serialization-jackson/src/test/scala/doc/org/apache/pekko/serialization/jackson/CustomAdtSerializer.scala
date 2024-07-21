@@ -53,14 +53,13 @@ object CustomAdtSerializer {
   class DirectionJsonDeserializer extends StdDeserializer[Direction](classOf[Direction]) {
     import Direction._
 
-    override def deserialize(p: JsonParser, ctxt: DeserializationContext): Direction = {
+    override def deserialize(p: JsonParser, ctxt: DeserializationContext): Direction =
       p.getText match {
         case "N" => North
         case "E" => East
         case "S" => South
         case "W" => West
       }
-    }
   }
 
   final case class Compass(currentDirection: Direction) extends MySerializable

@@ -178,10 +178,10 @@ private[io] class UdpConnection(
       }
     }
 
-  private def reportConnectFailure(thunk: => Unit): Unit = {
-    try {
+  private def reportConnectFailure(thunk: => Unit): Unit =
+    try
       thunk
-    } catch {
+    catch {
       case NonFatal(e) =>
         log.debug(
           "Failure while connecting UDP channel to remote address [{}] local address [{}]: {}",
@@ -191,5 +191,4 @@ private[io] class UdpConnection(
         commander ! CommandFailed(connect)
         context.stop(self)
     }
-  }
 }

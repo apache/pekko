@@ -691,9 +691,8 @@ class SubFlow[In, Out, Mat](
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] =
     new SubFlow(delegate.limitWeighted(n)(costFn.apply))
-  }
 
   /**
    * Apply a sliding window over the stream and return the windows as groups of elements, with the last group

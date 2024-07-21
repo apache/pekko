@@ -39,12 +39,11 @@ class PrimitiveStateSpec
     EventSourcedBehavior[Int, Int, Int](
       persistenceId,
       emptyState = 0,
-      commandHandler = (_, command) => {
+      commandHandler = (_, command) =>
         if (command < 0)
           Effect.stop()
         else
-          Effect.persist(command)
-      },
+          Effect.persist(command),
       eventHandler = (state, event) => {
         probe.tell("eventHandler:" + state + ":" + event)
         state + event

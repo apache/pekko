@@ -35,13 +35,11 @@ object RemoteDeploymentAllowListSpec {
     }
 
     override def preStart(): Unit = {}
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       target ! "preRestart"
-    }
     override def postRestart(cause: Throwable): Unit = {}
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       target ! "postStop"
-    }
   }
 
   class EchoNotAllowed extends Actor {
@@ -53,13 +51,11 @@ object RemoteDeploymentAllowListSpec {
     }
 
     override def preStart(): Unit = {}
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       target ! "preRestart"
-    }
     override def postRestart(cause: Throwable): Unit = {}
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       target ! "postStop"
-    }
   }
 
   val cfg: Config = ConfigFactory.parseString(s"""
@@ -105,13 +101,12 @@ object RemoteDeploymentAllowListSpec {
     pekko.actor.warn-about-java-serializer-usage = off
   """)
 
-  def muteSystem(system: ActorSystem): Unit = {
+  def muteSystem(system: ActorSystem): Unit =
     system.eventStream.publish(
       TestEvent.Mute(
         EventFilter.error(start = "AssociationError"),
         EventFilter.warning(start = "AssociationError"),
         EventFilter.warning(pattern = "received dead letter.*")))
-  }
 }
 
 @nowarn("msg=deprecated")

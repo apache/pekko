@@ -30,7 +30,7 @@ class ShardingSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecL
 
     val serialization = SerializationExtension(ActorSystemAdapter.toClassic(system))
 
-    def checkSerialization(obj: AnyRef): Unit = {
+    def checkSerialization(obj: AnyRef): Unit =
       serialization.findSerializerFor(obj) match {
         case serializer: ShardingSerializer =>
           val blob = serializer.toBinary(obj)
@@ -48,7 +48,6 @@ class ShardingSerializerSpec extends ScalaTestWithActorTestKit with AnyWordSpecL
         case s =>
           throw new IllegalStateException(s"Wrong serializer ${s.getClass} for ${obj.getClass}")
       }
-    }
 
     "must serialize and deserialize ShardingEnvelope" in {
       checkSerialization(ShardingEnvelope("abc", 42))

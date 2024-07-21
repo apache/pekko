@@ -93,13 +93,12 @@ object ORSet {
       case DeltaGroup(ops)     => DeltaGroup(this +: ops)
     }
 
-    private def concatElementsMap(thatMap: Map[A, Dot]): Map[A, Dot] = {
+    private def concatElementsMap(thatMap: Map[A, Dot]): Map[A, Dot] =
       if (thatMap.size == 1) {
         val head = thatMap.head
         underlying.elementsMap.updated(head._1, head._2)
       } else
         underlying.elementsMap ++ thatMap
-    }
   }
 
   /** INTERNAL API */
@@ -195,7 +194,7 @@ object ORSet {
       rhs: ORSet[A]): Map[A, ORSet.Dot] =
     mergeCommonKeys(commonKeys.iterator, lhs, rhs)
 
-  private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] = {
+  private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] =
     commonKeys.foldLeft(Map.empty[A, ORSet.Dot]) {
       case (acc, k) =>
         val lhsDots = lhs.elementsMap(k)
@@ -255,7 +254,6 @@ object ORSet {
             else acc.updated(k, merged)
         }
     }
-  }
 
   /**
    * INTERNAL API
@@ -272,7 +270,7 @@ object ORSet {
       keys: Iterator[A],
       elementsMap: Map[A, ORSet.Dot],
       vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] = {
+      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] =
     keys.foldLeft(accumulator) {
       case (acc, k) =>
         val dots = elementsMap(k)
@@ -284,7 +282,6 @@ object ORSet {
           acc.updated(k, newDots)
         }
     }
-  }
 }
 
 /**
@@ -451,11 +448,10 @@ final class ORSet[A] private[pekko] (
    * and the other Set version vector dominates those dots, then we need to drop those dots.
    * Keep only common dots, and dots that are not dominated by the other sides version vector
    */
-  override def merge(that: ORSet[A]): ORSet[A] = {
+  override def merge(that: ORSet[A]): ORSet[A] =
     if ((this eq that) || that.isAncestorOf(this)) this.clearAncestor()
     else if (this.isAncestorOf(that)) that.clearAncestor()
     else dryMerge(that, addDeltaOp = false)
-  }
 
   // share merge impl between full state merge and AddDeltaOp merge
   private def dryMerge(that: ORSet[A], addDeltaOp: Boolean): ORSet[A] = {
@@ -480,7 +476,7 @@ final class ORSet[A] private[pekko] (
     new ORSet(entries, mergedVvector)
   }
 
-  override def mergeDelta(thatDelta: ORSet.DeltaOp): ORSet[A] = {
+  override def mergeDelta(thatDelta: ORSet.DeltaOp): ORSet[A] =
     thatDelta match {
       case d: ORSet.AddDeltaOp[_]    => dryMerge(d.asInstanceOf[ORSet.AddDeltaOp[A]].underlying, addDeltaOp = true)
       case d: ORSet.RemoveDeltaOp[_] => mergeRemoveDelta(d.asInstanceOf[ORSet.RemoveDeltaOp[A]])
@@ -497,7 +493,6 @@ final class ORSet[A] private[pekko] (
             throw new IllegalArgumentException("ORSet.DeltaGroup should not be nested")
         }
     }
-  }
 
   private def mergeRemoveDelta(thatDelta: ORSet.RemoveDeltaOp[A]): ORSet[A] = {
     val that = thatDelta.underlying

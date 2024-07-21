@@ -68,9 +68,8 @@ object PromiseRef {
   /**
    * Wraps an ActorRef and a Promise into a PromiseRef.
    */
-  private[pekko] def wrap[T](actorRef: ActorRef, promise: Promise[T]): PromiseRef[T] = {
+  private[pekko] def wrap[T](actorRef: ActorRef, promise: Promise[T]): PromiseRef[T] =
     new PromiseRefImpl(actorRef, promise)
-  }
 
   /**
    * Constructs a new PromiseRef which will be completed with the first message sent to it.
@@ -102,9 +101,8 @@ object PromiseRef {
    * promiseRef.future.onComplete(println)  // prints "message"
    * }}}
    */
-  def apply(timeout: Timeout)(implicit system: ActorSystem): PromiseRef[Any] = {
+  def apply(timeout: Timeout)(implicit system: ActorSystem): PromiseRef[Any] =
     PromiseRef(system, timeout)
-  }
 }
 
 object FutureRef {
@@ -112,9 +110,8 @@ object FutureRef {
   /**
    * Wraps an ActorRef and a Future into a FutureRef.
    */
-  private[pekko] def wrap[T](actorRef: ActorRef, future: Future[T]): FutureRef[T] = {
+  private[pekko] def wrap[T](actorRef: ActorRef, future: Future[T]): FutureRef[T] =
     new FutureRefImpl(actorRef, future)
-  }
 
   /**
    * Constructs a new FutureRef which will be completed with the first message sent to it.
@@ -128,9 +125,8 @@ object FutureRef {
    * futureRef.onComplete(println)  // prints "message"
    * }}}
    */
-  def apply(system: ActorSystem, timeout: Timeout): FutureRef[Any] = {
+  def apply(system: ActorSystem, timeout: Timeout): FutureRef[Any] =
     PromiseRef(system, timeout).toFutureRef
-  }
 
   /**
    * Constructs a new PromiseRef which will be completed with the first message sent to it.
@@ -145,9 +141,8 @@ object FutureRef {
    * futureRef.onComplete(println)  // prints "message"
    * }}}
    */
-  def apply(timeout: Timeout)(implicit system: ActorSystem): FutureRef[Any] = {
+  def apply(timeout: Timeout)(implicit system: ActorSystem): FutureRef[Any] =
     FutureRef(system, timeout)
-  }
 }
 
 private[pekko] class PromiseRefImpl[T](val ref: ActorRef, val promise: Promise[T])
@@ -162,7 +157,7 @@ private[pekko] final class AskPromiseRef private (promiseActorRef: PromiseActorR
     extends PromiseRefImpl[Any](promiseActorRef, promiseActorRef.result)
 
 private[pekko] object AskPromiseRef {
-  def apply(provider: ActorRefProvider, timeout: Timeout): AskPromiseRef = {
+  def apply(provider: ActorRefProvider, timeout: Timeout): AskPromiseRef =
     if (timeout.duration.length > 0) {
       val promiseActorRef =
         PromiseActorRef(provider, timeout, "unknown", "unknown", "deadLetters", provider.deadLetters)
@@ -170,5 +165,4 @@ private[pekko] object AskPromiseRef {
     } else {
       throw new IllegalArgumentException(s"Timeout length must not be negative, was: $timeout")
     }
-  }
 }

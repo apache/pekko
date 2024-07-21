@@ -36,7 +36,7 @@ object TestExtras {
       lazy val testTagsOnly = systemPropertyAsSeq("pekko.test.tags.only").toSet
     }
 
-    lazy val settings = {
+    lazy val settings =
       Seq(
         excludeTestNames := Params.testNamesExclude,
         excludeTestTags := {
@@ -74,11 +74,9 @@ object TestExtras {
 
           testsToCheck.foreach((shouldExist _).tupled)
         })
-    }
 
-    def containsOrNotExcludesTag(tag: String) = {
+    def containsOrNotExcludesTag(tag: String) =
       Params.testTagsOnly.contains(tag) || !Params.testTagsExlcude(tag)
-    }
 
     def systemPropertyAsSeq(name: String): Seq[String] = {
       val prop = sys.props.get(name).getOrElse("")

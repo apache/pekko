@@ -38,7 +38,7 @@ private[pekko] object Collections {
         private[this] var _hasNext = false
 
         override final def hasNext: Boolean = {
-          @tailrec def tailrecHasNext(): Boolean = {
+          @tailrec def tailrecHasNext(): Boolean =
             if (!_hasNext && superIterator.hasNext) { // If we need and are able to look for the next value
               val potentiallyNext = superIterator.next()
               if (isDefinedAt(potentiallyNext)) {
@@ -47,7 +47,6 @@ private[pekko] object Collections {
                 true
               } else tailrecHasNext() // Attempt to find the next
             } else _hasNext // Return if we found one
-          }
 
           tailrecHasNext()
         }

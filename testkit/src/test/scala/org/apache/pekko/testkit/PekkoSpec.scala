@@ -72,9 +72,8 @@ object PekkoSpec {
   /**
    * Get path's normalized path, which works on Windows too.
    */
-  def normalizedPath(path: Path): String = {
+  def normalizedPath(path: Path): String =
     path.toAbsolutePath.normalize().toString.replace('\\', '/')
-  }
 }
 
 abstract class PekkoSpec(_system: ActorSystem)

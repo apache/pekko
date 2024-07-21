@@ -62,7 +62,7 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
 
   import settings._
 
-  private lazy val sslContext: SSLContext = {
+  private lazy val sslContext: SSLContext =
     try {
       val rng = createSecureRandom()
       val ctx = SSLContext.getInstance(SSLProtocol)
@@ -80,7 +80,6 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
           "Server SSL connection could not be established because SSL context could not be constructed",
           e)
     }
-  }
 
   /**
    * Subclass may override to customize loading of `KeyStore`
@@ -120,9 +119,8 @@ class ConfigSSLEngineProvider(protected val log: MarkerLoggingAdapter, private v
   override def createClientSSLEngine(): SSLEngine =
     createSSLEngine(pekko.stream.Client)
 
-  private def createSSLEngine(role: TLSRole): SSLEngine = {
+  private def createSSLEngine(role: TLSRole): SSLEngine =
     createSSLEngine(sslContext, role)
-  }
 
   private def createSSLEngine(sslContext: SSLContext, role: TLSRole): SSLEngine = {
 

@@ -192,8 +192,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     CurrentRegionsManifest -> { bytes =>
       currentRegionsFromBinary(bytes)
     },
-    StartEntityManifest -> { startEntityFromBinary },
-    StartEntityAckManifest -> { startEntityAckFromBinary },
+    StartEntityManifest -> startEntityFromBinary,
+    StartEntityAckManifest -> startEntityAckFromBinary,
     GetCurrentShardStateManifest -> { _ =>
       GetCurrentShardState
     },
@@ -360,7 +360,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     state.regionProxies.foreach { ref =>
       builder.addRegionProxies(Serialization.serializedActorPath(ref))
     }
-    state.unallocatedShards.foreach { builder.addUnallocatedShards }
+    state.unallocatedShards.foreach(builder.addUnallocatedShards)
 
     builder.build()
   }
@@ -381,7 +381,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
         case (acc, (shardId, regionRef)) => acc.updated(regionRef, acc(regionRef) :+ shardId)
       }
 
-    val proxies: Set[ActorRef] = state.getRegionProxiesList.asScala.iterator.map { resolveActorRef }.to(immutable.Set)
+    val proxies: Set[ActorRef] = state.getRegionProxiesList.asScala.iterator.map(resolveActorRef).to(immutable.Set)
     val unallocatedShards: Set[String] = state.getUnallocatedShardsList.asScala.toSet
 
     State(shards, regions, proxies, unallocatedShards)
@@ -419,7 +419,7 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     ShardHome(m.getShard, resolveActorRef(m.getRegion))
   }
 
-  private def shardHomesToProto(sh: ShardHomes): sm.ShardHomes = {
+  private def shardHomesToProto(sh: ShardHomes): sm.ShardHomes =
     sm.ShardHomes
       .newBuilder()
       .addAllHomes(sh.homes.map {
@@ -431,7 +431,6 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
             .build()
       }.asJava)
       .build()
-  }
 
   private def shardHomesFromBinary(bytes: Array[Byte]): ShardHomes = {
     val sh = sm.ShardHomes.parseFrom(bytes)
@@ -521,9 +520,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     ClusterShardingStats(stats)
   }
 
-  private def getClusterShardingStatsToProto(evt: GetClusterShardingStats): sm.GetClusterShardingStats = {
+  private def getClusterShardingStatsToProto(evt: GetClusterShardingStats): sm.GetClusterShardingStats =
     sm.GetClusterShardingStats.newBuilder().setTimeoutNanos(evt.timeout.toNanos).build()
-  }
 
   private def getClusterShardingStatsFromBinary(bytes: Array[Byte]): GetClusterShardingStats = {
     val parsed = sm.GetClusterShardingStats.parseFrom(bytes)
@@ -567,22 +565,19 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
     StartEntityAck(sea.getEntityId, sea.getShardId)
   }
 
-  private def shardStateToProto(evt: ShardState): sm.ShardState = {
+  private def shardStateToProto(evt: ShardState): sm.ShardState =
     sm.ShardState.newBuilder().setShardId(evt.shardId).addAllEntityIds(evt.entityIds.asJava).build()
-  }
 
-  private def currentShardStateToProto(evt: CurrentShardState): sm.CurrentShardState = {
+  private def currentShardStateToProto(evt: CurrentShardState): sm.CurrentShardState =
     sm.CurrentShardState.newBuilder().setShardId(evt.shardId).addAllEntityIds(evt.entityIds.asJava).build()
-  }
 
   private def currentShardStateFromBinary(bytes: Array[Byte]): CurrentShardState = {
     val parsed = sm.CurrentShardState.parseFrom(bytes)
     CurrentShardState(parsed.getShardId, parsed.getEntityIdsList.asScala.toSet)
   }
 
-  private def shardStateFromProto(parsed: ClusterShardingMessages.ShardState): ShardState = {
+  private def shardStateFromProto(parsed: ClusterShardingMessages.ShardState): ShardState =
     ShardState(parsed.getShardId, parsed.getEntityIdsList.asScala.toSet)
-  }
 
   private def shardStateFromBinary(bytes: Array[Byte]): ShardState = {
     val parsed = sm.ShardState.parseFrom(bytes)
@@ -612,9 +607,8 @@ private[pekko] class ClusterShardingMessageSerializer(val system: ExtendedActorS
   def deserializeAddress(address: sm.Address): Address =
     Address(address.getProtocol, address.getSystem, address.getHostname, address.getPort)
 
-  private def resolveActorRef(path: String): ActorRef = {
+  private def resolveActorRef(path: String): ActorRef =
     system.provider.resolveActorRef(path)
-  }
 
   private def compress(msg: MessageLite): Array[Byte] = {
     val bos = new ByteArrayOutputStream(BufferSize)

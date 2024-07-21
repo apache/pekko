@@ -78,8 +78,7 @@ object ActorMaterializer {
     "Use the system wide materializer with stream attributes or configuration settings to change defaults",
     "Akka 2.6.0")
   def apply(materializerSettings: ActorMaterializerSettings, namePrefix: String)(
-      implicit context: ActorRefFactory): ActorMaterializer = {
-
+      implicit context: ActorRefFactory): ActorMaterializer =
     context match {
       case system: ActorSystem =>
         // system level materializer, defer to the system materializer extension
@@ -94,7 +93,6 @@ object ActorMaterializer {
       case other =>
         throw new IllegalArgumentException(s"Unexpected type of context: $other")
     }
-  }
 
   /**
    * Scala API: Creates an ActorMaterializer that can materialize stream blueprints as running streams.
@@ -588,7 +586,7 @@ final class ActorMaterializerSettings @InternalApi private (
       syncProcessingLimit: Int = this.syncProcessingLimit,
       ioSettings: IOSettings = this.ioSettings,
       streamRefSettings: StreamRefSettings = this.streamRefSettings,
-      blockingIoDispatcher: String = this.blockingIoDispatcher) = {
+      blockingIoDispatcher: String = this.blockingIoDispatcher) =
     new ActorMaterializerSettings(
       initialInputBufferSize,
       maxInputBufferSize,
@@ -604,7 +602,6 @@ final class ActorMaterializerSettings @InternalApi private (
       ioSettings,
       streamRefSettings,
       blockingIoDispatcher)
-  }
 
   /**
    * Each asynchronous piece of a materialized stream topology is executed by one Actor
@@ -617,10 +614,9 @@ final class ActorMaterializerSettings @InternalApi private (
    *        document and or fix if it should not be like that. Search for get[Attributes.InputBuffer] to see how it is used
    */
   @deprecated("Use attribute 'Attributes.InputBuffer' to change setting value", "Akka 2.6.0")
-  def withInputBuffer(initialSize: Int, maxSize: Int): ActorMaterializerSettings = {
+  def withInputBuffer(initialSize: Int, maxSize: Int): ActorMaterializerSettings =
     if (initialSize == this.initialInputBufferSize && maxSize == this.maxInputBufferSize) this
     else copy(initialInputBufferSize = initialSize, maxInputBufferSize = maxSize)
-  }
 
   /**
    * This setting configures the default dispatcher to be used by streams materialized
@@ -628,10 +624,9 @@ final class ActorMaterializerSettings @InternalApi private (
    * stream topology by using [[pekko.stream.Attributes#dispatcher]].
    */
   @deprecated("Use attribute 'ActorAttributes.Dispatcher' to change setting value", "Akka 2.6.0")
-  def withDispatcher(dispatcher: String): ActorMaterializerSettings = {
+  def withDispatcher(dispatcher: String): ActorMaterializerSettings =
     if (this.dispatcher == dispatcher) this
     else copy(dispatcher = dispatcher)
-  }
 
   /**
    * Scala API: Decides how exceptions from application code are to be handled, unless
@@ -642,10 +637,9 @@ final class ActorMaterializerSettings @InternalApi private (
    * by every operator.
    */
   @deprecated("Use attribute 'ActorAttributes.supervisionStrategy' to change setting value", "Akka 2.6.0")
-  def withSupervisionStrategy(decider: Supervision.Decider): ActorMaterializerSettings = {
+  def withSupervisionStrategy(decider: Supervision.Decider): ActorMaterializerSettings =
     if (decider eq this.supervisionDecider) this
     else copy(supervisionDecider = decider)
-  }
 
   /**
    * Java API: Decides how exceptions from application code are to be handled, unless

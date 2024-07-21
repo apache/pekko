@@ -64,11 +64,10 @@ object PubSub {
    * @tparam T the type of the messages that can be published
    */
   @ApiMayChange
-  def sink[T](topicActor: ActorRef[Topic.Command[T]]): Sink[T, NotUsed] = {
+  def sink[T](topicActor: ActorRef[Topic.Command[T]]): Sink[T, NotUsed] =
     Sink
       .foreach[T] { message =>
         topicActor ! Topic.Publish(message)
       }
       .mapMaterializedValue(_ => NotUsed)
-  }
 }

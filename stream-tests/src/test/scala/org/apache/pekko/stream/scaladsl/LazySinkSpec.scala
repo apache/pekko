@@ -64,16 +64,16 @@ class LazySinkSpec extends StreamSpec("""
       sourceSub.sendNext(0)
       sourceSub.expectRequest(1)
       sourceProbe.expectNoMessage(200.millis)
-      a[TimeoutException] shouldBe thrownBy { Await.result(futureProbe, remainingOrDefault) }
+      a[TimeoutException] shouldBe thrownBy(Await.result(futureProbe, remainingOrDefault))
 
       p.success(TestSink.probe[Int])
       val probe = Await.result(futureProbe, remainingOrDefault).get
       probe.request(100)
       probe.expectNext(0)
-      (1 to 10).foreach(i => {
+      (1 to 10).foreach { i =>
         sourceSub.sendNext(i)
         probe.expectNext(i)
-      })
+      }
       sourceSub.sendComplete()
     }
 
@@ -97,7 +97,7 @@ class LazySinkSpec extends StreamSpec("""
       sourceSub.expectRequest(1)
       sourceSub.sendNext(0)
       sourceSub.expectCancellation()
-      a[RuntimeException] shouldBe thrownBy { Await.result(futureProbe, remainingOrDefault) }
+      a[RuntimeException] shouldBe thrownBy(Await.result(futureProbe, remainingOrDefault))
     }
 
     "fail gracefully when upstream failed" in {
@@ -121,7 +121,7 @@ class LazySinkSpec extends StreamSpec("""
       val sourceSub = sourceProbe.expectSubscription()
       sourceSub.expectRequest(1)
       sourceSub.sendNext(0)
-      a[TE] shouldBe thrownBy { Await.result(futureProbe, remainingOrDefault) }
+      a[TE] shouldBe thrownBy(Await.result(futureProbe, remainingOrDefault))
     }
 
     "cancel upstream when internal sink is cancelled" in {
@@ -150,9 +150,9 @@ class LazySinkSpec extends StreamSpec("""
         }
       }
 
-      val result = Source(List("whatever")).runWith(Sink.lazyInitAsync[String, NotUsed](() => {
+      val result = Source(List("whatever")).runWith(Sink.lazyInitAsync[String, NotUsed] { () =>
         Future.successful(Sink.fromGraph(FailingInnerMat))
-      }))
+      })
 
       result.failed.futureValue should ===(matFail)
     }

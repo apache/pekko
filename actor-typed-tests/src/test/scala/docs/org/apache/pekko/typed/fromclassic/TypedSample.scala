@@ -52,7 +52,7 @@ object TypedSample {
     private case class ChildTerminated(name: String) extends Command
 
     def apply(): Behavior[Command] = {
-      def updated(children: Map[String, ActorRef[Child.Command]]): Behavior[Command] = {
+      def updated(children: Map[String, ActorRef[Child.Command]]): Behavior[Command] =
         Behaviors.receive { (context, command) =>
           command match {
             case DelegateToChild(name, childCommand) =>
@@ -71,7 +71,6 @@ object TypedSample {
               updated(children - name)
           }
         }
-      }
 
       updated(Map.empty)
     }

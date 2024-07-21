@@ -123,7 +123,7 @@ private[pekko] final class RememberEntityStarter(
     entityIds.foreach(entityId => region ! ShardRegion.StartEntity(entityId))
   }
 
-  private def retryUnacked(): Unit = {
+  private def retryUnacked(): Unit =
     if (waitingForAck.nonEmpty) {
       log.debug("Found [{}] remembered entities waiting for StartEntityAck, retrying", waitingForAck.size)
       waitingForAck.foreach { id =>
@@ -132,6 +132,5 @@ private[pekko] final class RememberEntityStarter(
         region ! ShardRegion.StartEntity(id)
       }
     }
-  }
 
 }

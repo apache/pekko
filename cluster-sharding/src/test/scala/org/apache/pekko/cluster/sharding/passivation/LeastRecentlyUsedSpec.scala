@@ -94,9 +94,8 @@ class LeastRecentlyUsedSpec extends AbstractEntityPassivationSpec(LeastRecentlyU
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "B")
       expectReceived(id = 21, message = "B")
-      for (id <- 11 to 15) {
+      for (id <- 11 to 15)
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (16 to 20), 2 -> Set(21))
 
@@ -121,9 +120,8 @@ class LeastRecentlyUsedSpec extends AbstractEntityPassivationSpec(LeastRecentlyU
       // activating a third shard will divide the per-shard limit in three, passivating entities over the new limits
       region ! Envelope(shard = 3, id = 31, message = "E")
       expectReceived(id = 31, message = "E")
-      for (id <- Seq(16, 17, 21)) {
+      for (id <- Seq(16, 17, 21))
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> Set(18, 19, 20), 2 -> Set(22, 23, 24), 3 -> Set(31))
 
@@ -227,9 +225,8 @@ class SegmentedLeastRecentlyUsedSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "D")
       expectReceived(id = 21, message = "D")
-      for (id <- List(4, 5, 13, 14, 15)) {
+      for (id <- List(4, 5, 13, 14, 15))
         expectReceived(id = id, message = Stop)
-      }
 
       // shard 1: level 0: 16, level 1: 17-20
       // shard 2: level 0: 21, level 1: empty
@@ -317,17 +314,15 @@ class LeastRecentlyUsedLimitAdjustmentSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "B")
       expectReceived(id = 21, message = "B")
-      for (id <- 11 to 15) {
+      for (id <- 11 to 15)
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (16 to 20), 2 -> Set(21))
 
       // reduce the per-region limit from 10 to 6, per-shard limit becomes 3
       region ! ShardRegion.SetActiveEntityLimit(6)
-      for (id <- 16 to 17) { // passivate entities over new limit
+      for (id <- 16 to 17) // passivate entities over new limit
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (18 to 20), 2 -> Set(21))
 
@@ -378,17 +373,15 @@ class SegmentedLeastRecentlyUsedLimitAdjustmentSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 31, message = "B")
       expectReceived(id = 31, message = "B")
-      for (id <- 11 to 20) {
+      for (id <- 11 to 20)
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (21 to 30), 2 -> Set(31))
 
       // reduce the per-region limit from 20 to 10, per-shard limit becomes 5
       region ! ShardRegion.SetActiveEntityLimit(10)
-      for (id <- 21 to 25) { // passivate entities over new limit
+      for (id <- 21 to 25) // passivate entities over new limit
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (26 to 30), 2 -> Set(31))
 

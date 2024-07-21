@@ -133,10 +133,9 @@ import pekko.util.ByteString
       setHandler(
         out,
         new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             // Ignore if still binding
             if (listener ne null) listener ! ResumeAccepting(1)
-          }
 
           override def onDownstreamFinish(cause: Throwable): Unit = {
             if (log.isDebugEnabled) {
@@ -180,13 +179,12 @@ import pekko.util.ByteString
         StreamTcp.IncomingConnection(connected.localAddress, connected.remoteAddress, handler)
       }
 
-      private def tryUnbind(): Unit = {
+      private def tryUnbind(): Unit =
         if ((listener ne null) && !unbindStarted) {
           unbindStarted = true
           setKeepGoing(true)
           listener ! Unbind
         }
-      }
 
       private def unbindCompleted(): Unit = {
         stageActor.unwatch(listener)
@@ -393,7 +391,7 @@ private[stream] object ConnectionSourceStage {
       }
     }
 
-    private def closeConnectionUpstreamFinished(): Unit = {
+    private def closeConnectionUpstreamFinished(): Unit =
       if (isClosed(bytesOut) || !role.halfClose) {
         // Reading has stopped before, either because of cancel, or PeerClosed, so just Close now
         // (or half-close is turned off)
@@ -408,12 +406,11 @@ private[stream] object ConnectionSourceStage {
         else
           connection ! ConfirmedClose
       }
-      // Otherwise, this is an outbound connection with half-close enabled for which upstream finished
-      // before the connection was even established.
-      // In that case we half-close the connection as soon as it's connected
-    }
+    // Otherwise, this is an outbound connection with half-close enabled for which upstream finished
+    // before the connection was even established.
+    // In that case we half-close the connection as soon as it's connected
 
-    private def closeConnectionDownstreamFinished(): Unit = {
+    private def closeConnectionDownstreamFinished(): Unit =
       if (connection == null) {
         // This is an outbound connection for which downstream finished
         // before the connection was even established.
@@ -428,14 +425,12 @@ private[stream] object ConnectionSourceStage {
           connection ! Close
         }
       }
-    }
 
     val readHandler = new OutHandler {
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         connection ! ResumeReading
-      }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         cause match {
           case _: SubscriptionWithCancelException.NonFailureCancellation =>
             log.debug(
@@ -452,7 +447,6 @@ private[stream] object ConnectionSourceStage {
             connection ! Abort
             failStage(cause)
         }
-      }
     }
 
     setHandler(
@@ -478,7 +472,7 @@ private[stream] object ConnectionSourceStage {
         override def onUpstreamFinish(): Unit =
           closeConnectionUpstreamFinished()
 
-        override def onUpstreamFailure(ex: Throwable): Unit = {
+        override def onUpstreamFailure(ex: Throwable): Unit =
           if (connection != null) {
             if (interpreter.log.isDebugEnabled) {
               val msg = "Aborting tcp connection to {} because of upstream failure: {}"
@@ -488,7 +482,6 @@ private[stream] object ConnectionSourceStage {
             }
             connection ! Abort
           } else fail(ex)
-        }
       })
 
     /** Fail stage and report to localAddressPromise if still possible */

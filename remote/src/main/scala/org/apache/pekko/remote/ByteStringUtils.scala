@@ -26,7 +26,7 @@ import pekko.util.ByteString.ByteString1C
  */
 @InternalApi
 private[pekko] object ByteStringUtils {
-  def toProtoByteStringUnsafe(bytes: ByteString): ProtoByteString = {
+  def toProtoByteStringUnsafe(bytes: ByteString): ProtoByteString =
     if (bytes.isEmpty)
       ProtoByteString.EMPTY
     else if (bytes.isInstanceOf[ByteString1C] || (bytes.isInstanceOf[ByteString1] && bytes.isCompact)) {
@@ -37,13 +37,11 @@ private[pekko] object ByteStringUtils {
         acc.concat(UnsafeByteOperations.unsafeWrap(byteBuffer))
       }
     }
-  }
 
-  def toProtoByteStringUnsafe(bytes: Array[Byte]): ProtoByteString = {
+  def toProtoByteStringUnsafe(bytes: Array[Byte]): ProtoByteString =
     if (bytes.isEmpty)
       ProtoByteString.EMPTY
     else {
       UnsafeByteOperations.unsafeWrap(bytes)
     }
-  }
 }

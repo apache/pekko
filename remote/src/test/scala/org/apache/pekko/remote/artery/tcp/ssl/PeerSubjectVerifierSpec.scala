@@ -47,7 +47,7 @@ class PeerSubjectVerifierSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  def inMemSession(peerCert: X509Certificate): SSLSession = {
+  def inMemSession(peerCert: X509Certificate): SSLSession =
     new SSLSession {
       override def getPeerCertificates: Array[Certificate] = Array(peerCert)
       override def getId: Array[Byte] = throw new UnsupportedOperationException()
@@ -71,5 +71,4 @@ class PeerSubjectVerifierSpec extends AnyWordSpec with Matchers {
       override def getPacketBufferSize: Int = throw new UnsupportedOperationException()
       override def getApplicationBufferSize: Int = throw new UnsupportedOperationException()
     }
-  }
 }

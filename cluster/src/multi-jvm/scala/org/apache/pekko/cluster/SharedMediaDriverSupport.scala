@@ -50,15 +50,14 @@ object SharedMediaDriverSupport {
       // Check if the media driver is already started by another multi-node jvm.
       // It checks more than one time with a sleep in-between. The number of checks
       // depends on the multi-node index (i).
-      @tailrec def isDriverInactive(i: Int): Boolean = {
+      @tailrec def isDriverInactive(i: Int): Boolean =
         if (i < 0) true
         else {
           val active =
             try CommonContext.isDriverActive(new File(aeronDir), 5000,
                 new Consumer[String] {
-                  override def accept(msg: String): Unit = {
+                  override def accept(msg: String): Unit =
                     println(msg)
-                  }
                 })
             catch {
               case NonFatal(e) =>
@@ -71,9 +70,8 @@ object SharedMediaDriverSupport {
             isDriverInactive(i - 1)
           }
         }
-      }
 
-      try {
+      try
         if (isDriverInactive(MultiNodeSpec.selfIndex)) {
           val driverContext = new MediaDriver.Context
           driverContext.aeronDirectoryName(aeronDir)
@@ -92,7 +90,7 @@ object SharedMediaDriverSupport {
             throw new IllegalStateException("media driver started more than once")
           }
         }
-      } catch {
+      catch {
         case NonFatal(e) =>
           println(s"Failed to start media driver in [$aeronDir]: ${e.getMessage}")
       }
@@ -111,11 +109,11 @@ object SharedMediaDriverSupport {
 
       driver.close()
 
-      try {
+      try
         if (arterySettings.Advanced.Aeron.DeleteAeronDirectory) {
           IoUtil.delete(new File(driver.aeronDirectoryName), false)
         }
-      } catch {
+      catch {
         case NonFatal(e) =>
           println(
             s"Couldn't delete Aeron embedded media driver files in [${driver.aeronDirectoryName}] " +

@@ -182,14 +182,13 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
         val unreachable = clusterView.reachability.observersGroupedByUnreachable.toSeq
           .sortBy(_._1)
           .map {
-            case (subject, observers) => {
+            case (subject, observers) =>
               val observerAddresses = observers.toSeq.sorted.map("\"" + _.address + "\"")
               s"""{
               |      "node": "${subject.address}",
               |      "observed-by": [${if (observerAddresses.isEmpty) ""
                 else observerAddresses.mkString("\n        ", ",\n        ", "\n      ")}]
               |    }""".stripMargin
-            }
 
           }
           .mkString(",\n    ")
@@ -228,7 +227,7 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
       mBeanServer.registerMBean(mbean, clusterMBeanName)
       logInfo("Registered cluster JMX MBean [{}]", clusterMBeanName)
     } catch {
-      case e: InstanceAlreadyExistsException => {
+      case e: InstanceAlreadyExistsException =>
         if (cluster.settings.JmxMultiMbeansInSameEnabled) {
           log.error(e, s"Failed to register Cluster JMX MBean with name=$clusterMBeanName")
         } else {
@@ -236,18 +235,17 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
             s"Could not register Cluster JMX MBean with name=$clusterMBeanName as it is already registered. " +
             "If you are running multiple clusters in the same JVM, set 'pekko.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
         }
-      }
     }
   }
 
   /**
    * Unregisters the cluster JMX MBean from MBean server.
    */
-  def unregisterMBean(): Unit = {
-    try {
+  def unregisterMBean(): Unit =
+    try
       mBeanServer.unregisterMBean(clusterMBeanName)
-    } catch {
-      case e: InstanceNotFoundException => {
+    catch {
+      case e: InstanceNotFoundException =>
         if (cluster.settings.JmxMultiMbeansInSameEnabled) {
           log.error(e, s"Failed to unregister Cluster JMX MBean with name=$clusterMBeanName")
         } else {
@@ -255,8 +253,6 @@ private[pekko] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
             s"Could not unregister Cluster JMX MBean with name=$clusterMBeanName as it was not found. " +
             "If you are running multiple clusters in the same JVM, set 'pekko.cluster.jmx.multi-mbeans-in-same-jvm = on' in config")
         }
-      }
     }
-  }
 
 }

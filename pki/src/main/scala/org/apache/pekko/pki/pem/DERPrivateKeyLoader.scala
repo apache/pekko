@@ -43,7 +43,7 @@ object DERPrivateKeyLoader {
    */
   @ApiMayChange
   @throws[PEMLoadingException]("when the `derData` is for an unsupported format")
-  def load(derData: DERData): PrivateKey = {
+  def load(derData: DERData): PrivateKey =
     derData.label match {
       case "RSA PRIVATE KEY" =>
         loadPkcs1PrivateKey(derData.bytes)
@@ -52,18 +52,15 @@ object DERPrivateKeyLoader {
       case unknown =>
         throw new PEMLoadingException(s"Don't know how to read a private key from PEM data with label [$unknown]")
     }
-  }
 
   private def loadPkcs1PrivateKey(bytes: Array[Byte]) = {
     val derInputStream = new ASN1InputStream(new DERDecoder, bytes)
     // Here's the specification: https://tools.ietf.org/html/rfc3447#appendix-A.1.2
-    val sequence = {
-      try {
+    val sequence =
+      try
         derInputStream.readObject[ASN1Sequence]()
-      } finally {
+      finally
         derInputStream.close()
-      }
-    }
     val version = getInteger(sequence, 0, "version").intValueExact()
     if (version < 0 || version > 1) {
       throw new IllegalArgumentException(s"Unsupported PKCS1 version: $version")
@@ -115,21 +112,19 @@ object DERPrivateKeyLoader {
     keyFactory.generatePrivate(keySpec)
   }
 
-  private def getInteger(sequence: ASN1Sequence, index: Int, name: String): BigInteger = {
+  private def getInteger(sequence: ASN1Sequence, index: Int, name: String): BigInteger =
     sequence.get(index) match {
       case integer: ASN1Integer => integer.getValue
       case other =>
         throw new IllegalArgumentException(s"Expected integer tag for $name at index $index, but got: ${other.getTag}")
     }
-  }
 
-  private def getSequence(sequence: ASN1Sequence, index: Int, name: String): ASN1Sequence = {
+  private def getSequence(sequence: ASN1Sequence, index: Int, name: String): ASN1Sequence =
     sequence.get(index) match {
       case seq: ASN1Sequence => seq
       case other =>
         throw new IllegalArgumentException(s"Expected sequence tag for $name at index $index, but got: ${other.getTag}")
     }
-  }
 
   private def loadPkcs8PrivateKey(bytes: Array[Byte]) = {
     val keySpec = new PKCS8EncodedKeySpec(bytes)

@@ -47,9 +47,9 @@ class DefaultOSGiLogger extends DefaultLogger {
      * @param logService OSGi LogService that has been registered,
      */
     def setLogService(logService: LogService): Unit = {
-      messagesToLog.foreach(x => {
+      messagesToLog.foreach { x =>
         logMessage(logService, x)
-      })
+      }
       context.become(initialisedReceive(logService))
     }
 
@@ -80,7 +80,7 @@ class DefaultOSGiLogger extends DefaultLogger {
    * @param logService  OSGi LogService registered and used for logging
    * @param event akka LogEvent that is logged using the LogService
    */
-  def logMessage(logService: LogService, event: LogEvent): Unit = {
+  def logMessage(logService: LogService, event: LogEvent): Unit =
     event match {
       case error: Logging.Error if error.cause != NoCause =>
         logService.log(
@@ -92,7 +92,6 @@ class DefaultOSGiLogger extends DefaultLogger {
           event.level.asInt,
           messageFormat.format(timestamp(event), event.thread.getName, event.logSource, event.message))
     }
-  }
 
 }
 

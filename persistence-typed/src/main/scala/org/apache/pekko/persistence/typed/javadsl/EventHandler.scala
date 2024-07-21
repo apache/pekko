@@ -204,14 +204,13 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
 
   private var cases: List[EventHandlerCase[State, Event]] = Nil
 
-  private def addCase(eventPredicate: Event => Boolean, handler: BiFunction[State, Event, State]): Unit = {
+  private def addCase(eventPredicate: Event => Boolean, handler: BiFunction[State, Event, State]): Unit =
     cases = EventHandlerCase[State, Event](
       statePredicate = state =>
         if (state == null) statePredicate.test(state.asInstanceOf[S])
         else statePredicate.test(state.asInstanceOf[S]) && stateClass.isAssignableFrom(state.getClass),
       eventPredicate = eventPredicate,
       handler) :: cases
-  }
 
   /**
    * Match any event which is an instance of `E` or a subtype of `E`.
@@ -239,12 +238,11 @@ final class EventHandlerBuilderByState[S <: State, State, Event](
    */
   def onEvent[E <: Event](
       eventClass: Class[E],
-      handler: JFunction[E, State]): EventHandlerBuilderByState[S, State, Event] = {
+      handler: JFunction[E, State]): EventHandlerBuilderByState[S, State, Event] =
     onEvent[E](eventClass,
       new BiFunction[S, E, State] {
         override def apply(state: S, event: E): State = handler(event)
       })
-  }
 
   /**
    * Match any event which is an instance of `E` or a subtype of `E`.

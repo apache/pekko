@@ -96,7 +96,7 @@ object ShoppingCartBehavior {
   class PersistentFsmEventAdapter extends EventAdapter[DomainEvent, Any] {
     override def toJournal(e: DomainEvent): Any = e
     override def manifest(event: DomainEvent): String = ""
-    override def fromJournal(journalEvent: Any, manifest: String): EventSeq[DomainEvent] = {
+    override def fromJournal(journalEvent: Any, manifest: String): EventSeq[DomainEvent] =
       journalEvent match {
         case _: StateChangeEvent =>
           // In this example the state transitions can be inferred from the events
@@ -109,7 +109,6 @@ object ShoppingCartBehavior {
           EventSeq.single(other.asInstanceOf[DomainEvent])
       }
 
-    }
   }
   // #event-adapter
 
@@ -165,7 +164,7 @@ object ShoppingCartBehavior {
   // #command-handler
 
   // #event-handler
-  def eventHandler(state: State, event: DomainEvent): State = {
+  def eventHandler(state: State, event: DomainEvent): State =
     state match {
       case la @ LookingAround(cart) =>
         event match {
@@ -187,7 +186,6 @@ object ShoppingCartBehavior {
         }
       case Paid(_) => state // no events after paid
     }
-  }
   // #event-handler
 
   private def behavior(pid: PersistenceId): Behavior[Command] =
@@ -238,9 +236,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         classicProbe.watch(fsmRef)
         fsmRef ! PoisonPill
         classicProbe.expectTerminated(fsmRef)
-      } finally {
+      } finally
         classicActorSystem.terminate().futureValue
-      }
 
       val typedTestKit = ActorTestKit("System", PersistentFsmToTypedMigrationSpec.config)
       try {
@@ -253,9 +250,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         typedReplacement ! ShoppingCartBehavior.Buy
         typedReplacement ! ShoppingCartBehavior.Leave
         typedProbe.expectTerminated(typedReplacement)
-      } finally {
+      } finally
         typedTestKit.shutdownTestKit()
-      }
 
     }
 
@@ -276,9 +272,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         fsmRef ! Buy
         fsmRef.tell(GetCurrentCart, classicProbe.ref)
         classicProbe.expectMsg(NonEmptyShoppingCart(Seq(shirt)))
-      } finally {
+      } finally
         classicActorSystem.terminate().futureValue
-      }
 
       val typedTestKit = ActorTestKit("TypedSystem", PersistentFsmToTypedMigrationSpec.config)
       try {
@@ -287,9 +282,8 @@ class PersistentFsmToTypedMigrationSpec extends AnyWordSpec with ScalaFutures wi
         val typedReplacement = spawn(ShoppingCartBehavior(PersistenceId.ofUniqueId(pid)))
         typedReplacement ! ShoppingCartBehavior.GetCurrentCart(typedProbe.ref)
         typedProbe.expectMessage(NonEmptyShoppingCart(Seq(shirt)))
-      } finally {
+      } finally
         typedTestKit.shutdownTestKit()
-      }
     }
   }
 

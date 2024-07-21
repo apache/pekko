@@ -37,18 +37,16 @@ class ClusterDocSpec extends PekkoSpec(ClusterDocSpec.config) with CompileOnlySp
   }
 
   "demonstrate data center" in compileOnlySpec {
-    {
-      // #dcAccess
-      val cluster = Cluster(system)
-      // this node's data center
-      val dc = cluster.selfDataCenter
-      // all known data centers
-      val allDc = cluster.state.allDataCenters
-      // a specific member's data center
-      val aMember = cluster.state.members.head
-      val aDc = aMember.dataCenter
-      // #dcAccess
-    }
+    // #dcAccess
+    val cluster = Cluster(system)
+    // this node's data center
+    val dc = cluster.selfDataCenter
+    // all known data centers
+    val allDc = cluster.state.allDataCenters
+    // a specific member's data center
+    val aMember = cluster.state.members.head
+    val aDc = aMember.dataCenter
+    // #dcAccess
   }
 
   "demonstrate programmatic joining to seed nodes" in compileOnlySpec {

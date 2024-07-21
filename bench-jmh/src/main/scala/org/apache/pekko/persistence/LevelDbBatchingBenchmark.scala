@@ -52,10 +52,10 @@ class LevelDbBatchingBenchmark {
   var probe: TestProbe = _
   var store: ActorRef = _
 
-  val batch_1 = List.fill(1) { AtomicWrite(PersistentRepr("data", 12, "pa")) }
-  val batch_10 = List.fill(10) { AtomicWrite(PersistentRepr("data", 12, "pa")) }
-  val batch_100 = List.fill(100) { AtomicWrite(PersistentRepr("data", 12, "pa")) }
-  val batch_200 = List.fill(200) { AtomicWrite(PersistentRepr("data", 12, "pa")) }
+  val batch_1 = List.fill(1)(AtomicWrite(PersistentRepr("data", 12, "pa")))
+  val batch_10 = List.fill(10)(AtomicWrite(PersistentRepr("data", 12, "pa")))
+  val batch_100 = List.fill(100)(AtomicWrite(PersistentRepr("data", 12, "pa")))
+  val batch_200 = List.fill(200)(AtomicWrite(PersistentRepr("data", 12, "pa")))
 
   @Setup(Level.Trial)
   @nowarn("msg=deprecated")

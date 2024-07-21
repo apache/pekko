@@ -58,9 +58,8 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
 
   muteMarkingAsUnreachable()
 
-  def allBut(role: RoleName, roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] = {
+  def allBut(role: RoleName, roles: immutable.Seq[RoleName] = roles): immutable.Seq[RoleName] =
     roles.filterNot(_ == role)
-  }
 
   lazy val master = second
   lazy val victim = fourth
@@ -203,9 +202,8 @@ abstract class UnreachableNodeJoinsAgainSpec extends MultiNodeClusterSpec(Unreac
           endActor ! EndActor.SendEnd
           endProbe.expectMsg(EndActor.EndAck)
 
-        } finally {
+        } finally
           shutdown(freshSystem)
-        }
         // no barrier here, because it is not part of testConductor roles any more
       }
 

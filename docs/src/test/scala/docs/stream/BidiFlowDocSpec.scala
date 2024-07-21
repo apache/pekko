@@ -89,10 +89,9 @@ object BidiFlowDocSpec {
 
         setHandler(out,
           new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               if (isClosed(in)) run()
               else pull(in)
-            }
           })
         setHandler(in,
           new InHandler {
@@ -102,17 +101,16 @@ object BidiFlowDocSpec {
               run()
             }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               // either we are done
               if (stash.isEmpty) completeStage()
               // or we still have bytes to emit
               // wait with completion and let run() complete when the
               // rest of the stash has been sent downstream
               else if (isAvailable(out)) run()
-            }
           })
 
-        private def run(): Unit = {
+        private def run(): Unit =
           if (needed == -1) {
             // are we at a boundary? then figure out next length
             if (stash.length < 4) {
@@ -135,7 +133,6 @@ object BidiFlowDocSpec {
             needed = -1
             push(out, emit)
           }
-        }
       }
     }
 

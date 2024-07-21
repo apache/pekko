@@ -87,13 +87,12 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
   def identify(path: String): Option[ActorRef] = identify(system.actorSelection(path))
   def identify(path: ActorPath): Option[ActorRef] = identify(system.actorSelection(path))
 
-  def askNode(node: ActorRef, query: Query): Option[ActorRef] = {
+  def askNode(node: ActorRef, query: Query): Option[ActorRef] =
     Await.result(node ? query, timeout.duration) match {
       case ref: ActorRef             => Some(ref)
       case selection: ActorSelection => identify(selection)
       case _                         => throw new RuntimeException()
     }
-  }
 
   "An ActorSystem" must {
 
@@ -195,9 +194,8 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
     val all = Seq(c1, c2, c21)
 
     "select actors by their path" in {
-      def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef): Unit = {
+      def check(looker: ActorRef, pathOf: ActorRef, result: ActorRef): Unit =
         askNode(looker, SelectPath(pathOf.path)) should ===(Some(result))
-      }
       for {
         looker <- all
         target <- all
@@ -262,7 +260,7 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
         val lookup = askNode(looker, query)
         lookup should ===(result)
       }
-      def check(looker: ActorRef): Unit = {
+      def check(looker: ActorRef): Unit =
         for ((l, r) <- Seq(
             SelectString("a/b/c") -> None,
             SelectString("pekko://all-systems/Nobody") -> None,
@@ -270,7 +268,6 @@ class ActorSelectionSpec extends PekkoSpec with DefaultTimeout {
             SelectPath(looker.path.child("hallo")) -> None, // test Java API
             SelectPath(looker.path.descendant(Seq("a", "b").asJava)) -> None) // test Java API
         ) checkOne(looker, l, r)
-      }
       for (looker <- all) check(looker)
     }
 

@@ -73,9 +73,8 @@ class EventSourcedBehaviorInterceptorSpec
         override def aroundReceive(
             ctx: TypedActorContext[String],
             msg: String,
-            target: BehaviorInterceptor.ReceiveTarget[String]): Behavior[String] = {
+            target: BehaviorInterceptor.ReceiveTarget[String]): Behavior[String] =
           target(ctx, msg.toUpperCase())
-        }
 
       }
 

@@ -75,7 +75,7 @@ private[pekko] final class AggregateServiceDiscovery(system: ExtendedActorSystem
   override def lookup(lookup: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] =
     resolve(methods, lookup, resolveTimeout)
 
-  private def resolve(sds: Methods, query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] = {
+  private def resolve(sds: Methods, query: Lookup, resolveTimeout: FiniteDuration): Future[Resolved] =
     sds match {
       case (method, next) :: Nil =>
         log.debug("Looking up [{}] with [{}]", query, method)
@@ -101,5 +101,4 @@ private[pekko] final class AggregateServiceDiscovery(system: ExtendedActorSystem
         // this is checked in `discoveryMethods`, but silence compiler warning
         throw new IllegalStateException("At least one discovery method should be specified")
     }
-  }
 }

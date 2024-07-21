@@ -44,9 +44,8 @@ import pekko.annotation.InternalApi
  * INTERNAL API
  */
 @InternalApi private[pekko] class AddressSerializer extends StdScalarSerializer[Address](classOf[Address]) {
-  override def serialize(value: Address, jgen: JsonGenerator, provider: SerializerProvider): Unit = {
+  override def serialize(value: Address, jgen: JsonGenerator, provider: SerializerProvider): Unit =
     jgen.writeString(value.toString)
-  }
 }
 
 /**
@@ -61,11 +60,10 @@ import pekko.annotation.InternalApi
  */
 @InternalApi private[pekko] class AddressDeserializer extends StdScalarDeserializer[Address](classOf[Address]) {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): Address = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): Address =
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
       val serializedAddress = jp.getText()
       AddressFromURIString(serializedAddress)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[Address]
-  }
 }

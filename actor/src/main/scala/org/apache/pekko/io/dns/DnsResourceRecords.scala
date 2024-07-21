@@ -83,9 +83,8 @@ private[dns] object CNameRecord {
    * INTERNAL API
    */
   @InternalApi
-  def parseBody(name: String, ttl: Ttl, @unused length: Short, it: ByteIterator, msg: ByteString): CNameRecord = {
+  def parseBody(name: String, ttl: Ttl, @unused length: Short, it: ByteIterator, msg: ByteString): CNameRecord =
     CNameRecord(name, ttl, DomainName.parse(it, msg))
-  }
 }
 
 final case class SRVRecord(

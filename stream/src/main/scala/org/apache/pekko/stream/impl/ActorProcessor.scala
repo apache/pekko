@@ -107,13 +107,12 @@ import org.reactivestreams.{ Processor, Subscriber, Subscription }
     pump.pump()
   }
 
-  override def cancel(): Unit = {
+  override def cancel(): Unit =
     if (!upstreamCompleted) {
       upstreamCompleted = true
       if (upstream ne null) upstream.cancel()
       clear()
     }
-  }
   override def isClosed: Boolean = upstreamCompleted
 
   private def clear(): Unit = {
@@ -165,9 +164,8 @@ import org.reactivestreams.{ Processor, Subscriber, Subscription }
     case OnSubscribe(_) => throw new IllegalStateException("onSubscribe called after onError or onComplete")
   }
 
-  protected def inputOnError(@unused e: Throwable): Unit = {
+  protected def inputOnError(@unused e: Throwable): Unit =
     clear()
-  }
 
 }
 
@@ -197,28 +195,25 @@ import org.reactivestreams.{ Processor, Subscriber, Subscription }
     tryOnNext(subscriber, elem)
   }
 
-  override def complete(): Unit = {
+  override def complete(): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(None)
       if (subscriber ne null) tryOnComplete(subscriber)
     }
-  }
 
-  override def cancel(): Unit = {
+  override def cancel(): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(None)
     }
-  }
 
-  override def error(e: Throwable): Unit = {
+  override def error(e: Throwable): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
       if ((subscriber ne null) && !e.isInstanceOf[SpecViolation]) tryOnError(subscriber, e)
     }
-  }
 
   override def isClosed: Boolean = downstreamCompleted && (subscriber ne null)
 

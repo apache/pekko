@@ -38,9 +38,8 @@ object StreamRefSettings {
   @deprecated(
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     since = "Akka 2.6.0")
-  def apply(system: ActorSystem): StreamRefSettings = {
+  def apply(system: ActorSystem): StreamRefSettings =
     apply(system.settings.config.getConfig("pekko.stream.materializer.stream-ref"))
-  }
 
   /** Java API */
   @deprecated(
@@ -52,13 +51,12 @@ object StreamRefSettings {
   @deprecated(
     "Use attributes on the Runnable graph or change the defaults in configuration, see migration guide for details https://doc.akka.io/docs/akka/2.6/project/migration-guide-2.5.x-2.6.x.html",
     since = "Akka 2.6.0")
-  def apply(c: Config): StreamRefSettings = {
+  def apply(c: Config): StreamRefSettings =
     StreamRefSettingsImpl(
       bufferCapacity = c.getInt("buffer-capacity"),
       demandRedeliveryInterval = c.getDuration("demand-redelivery-interval", TimeUnit.MILLISECONDS).millis,
       subscriptionTimeout = c.getDuration("subscription-timeout", TimeUnit.MILLISECONDS).millis,
       finalTerminationSignalDeadline = c.getDuration("final-termination-signal-deadline", TimeUnit.MILLISECONDS).millis)
-  }
 }
 
 /**

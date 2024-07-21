@@ -129,7 +129,7 @@ import pekko.util.ccompat._
   /**
    * @return Up to `crossDcConnections` oldest members for each DC
    */
-  lazy val ageSortedTopOldestMembersPerDc: Map[DataCenter, immutable.SortedSet[Member]] = {
+  lazy val ageSortedTopOldestMembersPerDc: Map[DataCenter, immutable.SortedSet[Member]] =
     latestGossip.members.foldLeft(Map.empty[DataCenter, immutable.SortedSet[Member]]) { (acc, member) =>
       acc.get(member.dataCenter) match {
         case Some(set) =>
@@ -146,7 +146,6 @@ import pekko.util.ccompat._
           acc + (member.dataCenter -> (immutable.SortedSet.empty(Member.ageOrdering) + member))
       }
     }
-  }
 
   /**
    * @return true if toAddress should be reachable from the fromDc in general, within a data center
@@ -215,7 +214,7 @@ import pekko.util.ccompat._
   /**
    * The Exiting change is gossiped to the two oldest nodes for quick dissemination to potential Singleton nodes
    */
-  def gossipTargetsForExitingMembers(exitingMembers: Set[Member]): Set[Member] = {
+  def gossipTargetsForExitingMembers(exitingMembers: Set[Member]): Set[Member] =
     if (exitingMembers.nonEmpty) {
       val roles = exitingMembers.flatten(_.roles).filterNot(_.startsWith(ClusterSettings.DcRolePrefix))
       val membersSortedByAge = latestGossip.members.toList.filter(_.dataCenter == selfDc).sorted(Member.ageOrdering)
@@ -236,7 +235,6 @@ import pekko.util.ccompat._
       targets
     } else
       Set.empty
-  }
 
 }
 
@@ -247,9 +245,8 @@ import pekko.util.ccompat._
     reduceGossipDifferentViewProbability: Double,
     crossDcGossipProbability: Double) {
 
-  final def gossipTarget(state: MembershipState): Option[UniqueAddress] = {
+  final def gossipTarget(state: MembershipState): Option[UniqueAddress] =
     selectRandomNode(gossipTargets(state))
-  }
 
   final def gossipTargets(state: MembershipState): Vector[UniqueAddress] =
     if (state.latestGossip.isMultiDc) multiDcGossipTargets(state)
@@ -327,7 +324,7 @@ import pekko.util.ccompat._
   /**
    * Choose cross-dc nodes if this one of the N oldest nodes, and if not fall back to gossip locally in the dc
    */
-  protected def multiDcGossipTargets(state: MembershipState): Vector[UniqueAddress] = {
+  protected def multiDcGossipTargets(state: MembershipState): Vector[UniqueAddress] =
     // only a fraction of the time across data centers
     if (selectDcLocalNodes(state))
       localDcGossipTargets(state)
@@ -362,7 +359,6 @@ import pekko.util.ccompat._
         else localDcGossipTargets(state)
       }
     }
-  }
 
   /**
    * For large clusters we should avoid shooting down individual

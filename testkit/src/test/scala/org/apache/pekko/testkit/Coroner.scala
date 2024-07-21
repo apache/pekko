@@ -53,9 +53,8 @@ object Coroner {
     val startedLatch = new CountDownLatch(1)
     val finishedLatch = new CountDownLatch(1)
 
-    def waitForStart(): Unit = {
+    def waitForStart(): Unit =
       startedLatch.await(startAndStopDuration.length, startAndStopDuration.unit)
-    }
 
     def started(): Unit = startedLatch.countDown()
 
@@ -74,9 +73,9 @@ object Coroner {
     }
 
     override def result(atMost: Duration)(implicit permit: CanAwait): Boolean =
-      try {
+      try
         Await.result(cancelPromise.future, atMost)
-      } catch { case _: TimeoutException => false }
+      catch { case _: TimeoutException => false }
 
   }
 
@@ -106,19 +105,18 @@ object Coroner {
         out.println(s"Coroner Thread Count starts at $startThreads in $reportTitle")
       }
       watchedHandle.started()
-      try {
+      try
         if (!Await.result(watchedHandle, duration)) {
           watchedHandle.expired()
           out.println(s"Coroner not cancelled after ${duration.toMillis}ms. Looking for signs of foul play...")
           try printReport(reportTitle, out)
           catch {
-            case NonFatal(ex) => {
+            case NonFatal(ex) =>
               out.println("Error displaying Coroner's Report")
               ex.printStackTrace(out)
-            }
           }
         }
-      } finally {
+      finally {
         if (displayThreadCounts) {
           val endThreads = threadMx.getThreadCount
           out.println(
@@ -175,13 +173,12 @@ object Coroner {
       }
     }
 
-    def printThreadInfos(threadInfos: Seq[ThreadInfo]) = {
+    def printThreadInfos(threadInfos: Seq[ThreadInfo]) =
       if (threadInfos.isEmpty) {
         println("None")
       } else {
-        for (ti <- threadInfos.sortBy(_.getThreadName)) { println(threadInfoToString(ti)) }
+        for (ti <- threadInfos.sortBy(_.getThreadName)) println(threadInfoToString(ti))
       }
-    }
 
     def threadInfoToString(ti: ThreadInfo): String = {
       val sb = new java.lang.StringBuilder
@@ -270,14 +267,13 @@ trait WatchedByCoroner {
 
   @volatile private var coronerWatch: Coroner.WatchHandle = _
 
-  final def startCoroner(): Unit = {
+  final def startCoroner(): Unit =
     coronerWatch = Coroner.watch(
       expectedTestDuration.dilated,
       getClass.getName,
       System.err,
       startAndStopDuration.dilated,
       displayThreadCounts)
-  }
 
   final def stopCoroner(): Unit = {
     coronerWatch.cancel()

@@ -240,7 +240,7 @@ object Entity {
    */
   def of[M](
       typeKey: EntityTypeKey[M],
-      createBehavior: JFunction[EntityContext[M], Behavior[M]]): Entity[M, ShardingEnvelope[M]] = {
+      createBehavior: JFunction[EntityContext[M], Behavior[M]]): Entity[M, ShardingEnvelope[M]] =
     new Entity(
       createBehavior,
       typeKey,
@@ -251,7 +251,6 @@ object Entity {
       Optional.empty(),
       Optional.empty(),
       Optional.empty())
-  }
 
 }
 
@@ -338,7 +337,7 @@ final class Entity[M, E] private (
       settings: Optional[ClusterShardingSettings] = settings,
       allocationStrategy: Optional[ShardAllocationStrategy] = allocationStrategy,
       role: Optional[String] = role,
-      dataCenter: Optional[String] = dataCenter): Entity[M, E] = {
+      dataCenter: Optional[String] = dataCenter): Entity[M, E] =
     new Entity(
       createBehavior,
       typeKey,
@@ -349,7 +348,6 @@ final class Entity[M, E] private (
       allocationStrategy,
       role,
       dataCenter)
-  }
 
   /**
    * INTERNAL API

@@ -93,9 +93,8 @@ object TlsSpec {
         new OutHandler {
           override def onPull(): Unit = pull(in)
         })
-      override def onTimer(x: Any): Unit = {
+      override def onTimer(x: Any): Unit =
         failStage(new TimeoutException(s"timeout expired, last element was $last"))
-      }
     }
   }
 
@@ -113,10 +112,10 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
   import system.dispatcher
 
   "SslTls" must {
-    "work for TLSv1.2" must { workFor("TLSv1.2", TLS12Ciphers) }
+    "work for TLSv1.2" must workFor("TLSv1.2", TLS12Ciphers)
 
     if (JavaVersion.majorVersion >= 11)
-      "work for TLSv1.3" must { workFor("TLSv1.3", TLS13Ciphers) }
+      "work for TLSv1.3" must workFor("TLSv1.3", TLS13Ciphers)
 
     def workFor(protocol: String, ciphers: Set[String]): Unit = {
       val sslContext = initSslContext(protocol)
@@ -415,7 +414,7 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
       for {
         commPattern <- communicationPatterns
         scenario <- scenarios
-      } {
+      }
         s"work in mode ${commPattern.name} while sending ${scenario.name}" in {
           val onRHS = debug.via(scenario.flow)
           val output =
@@ -447,7 +446,6 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
 
           commPattern.cleanup()
         }
-      }
 
       "emit an error if the TLS handshake fails certificate checks" in {
         val getError = Flow[SslTlsInbound]
@@ -551,10 +549,10 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
           Source(scenario.inputs)
             .via(outFlow)
             .via(inFlow)
-            .map(result => {
+            .map { result =>
               ks.shutdown()
               result
-            })
+            }
             .runWith(Sink.last)
         Await.result(f, 8.second.dilated).utf8String should be(scenario.output.utf8String)
       }
@@ -588,13 +586,12 @@ class TlsSpec extends StreamSpec(TlsSpec.configOverrides) with WithLogCapturing 
     }
   }
 
-  def rootCauseOf(e: Throwable): Throwable = {
+  def rootCauseOf(e: Throwable): Throwable =
     if (JavaVersion.majorVersion >= 11) e
     // Wrapped in extra 'General SSLEngine problem' (sometimes multiple)
     // on 1.8.0-265 and before, but not 1.8.0-272 and later...
     else if (e.isInstanceOf[SSLHandshakeException]) rootCauseOf(e.getCause)
     else e
-  }
 
   "A SslTlsPlacebo" must {
 

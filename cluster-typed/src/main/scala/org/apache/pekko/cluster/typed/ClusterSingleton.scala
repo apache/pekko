@@ -124,19 +124,17 @@ final class ClusterSingletonSettings(
    * INTERNAL API:
    */
   @InternalApi
-  private[pekko] def toProxySettings(singletonName: String): ClusterSingletonProxySettings = {
+  private[pekko] def toProxySettings(singletonName: String): ClusterSingletonProxySettings =
     new ClusterSingletonProxySettings(singletonName, role, singletonIdentificationInterval, bufferSize)
       .withDataCenter(dataCenter)
-  }
 
   /**
    * INTERNAL API:
    */
   @InternalApi
-  private[pekko] def shouldRunManager(cluster: Cluster): Boolean = {
+  private[pekko] def shouldRunManager(cluster: Cluster): Boolean =
     (role.isEmpty || cluster.selfMember.roles(role.get)) &&
     (dataCenter.isEmpty || dataCenter.contains(cluster.selfMember.dataCenter))
-  }
 
   override def toString =
     s"ClusterSingletonSettings($role, $dataCenter, $singletonIdentificationInterval, $removalMargin, $handOverRetryInterval, $bufferSize, $leaseSettings)"

@@ -64,7 +64,7 @@ class JoinConfigCompatCheckerClusterShardingSpec
   private def configured(system: ActorSystem[_]): Int =
     system.settings.config.getInt(Key)
 
-  private def join(sys: ActorSystem[_]): ClassicCluster = {
+  private def join(sys: ActorSystem[_]): ClassicCluster =
     if (sys eq system) {
       configured(system) should ===(Shards)
       val seedNode = ClassicCluster(system)
@@ -77,7 +77,6 @@ class JoinConfigCompatCheckerClusterShardingSpec
       joiningNode.joinSeedNodes(im.Seq(ClassicCluster(system).selfAddress))
       joiningNode
     }
-  }
 
   "A Joining Node" must {
 

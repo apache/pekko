@@ -723,9 +723,9 @@ class RestartSpec
                   case other   => other
                 }
                 .watchTermination()((_, term) =>
-                  term.foreach(_ => {
+                  term.foreach { _ =>
                     flowInProbe.ref ! "out complete"
-                  })))
+                  }))
           })(Keep.left)
         .toMat(TestSink.probe[String])(Keep.both)
         .run()
@@ -983,10 +983,10 @@ class RestartSpec
       val restartOnFailures =
         RestartFlow
           .onFailuresWithBackoff(
-            RestartSettings(1.second, 2.seconds, 0.2).withMaxRestarts(2, 1.second).withLogSettings(logSettings))(() => {
+            RestartSettings(1.second, 2.seconds, 0.2).withMaxRestarts(2, 1.second).withLogSettings(logSettings)) { () =>
             flowCreations.incrementAndGet()
             failsSomeTimes
-          })
+          }
           .addAttributes(Attributes(Delay(100.millis)))
 
       val elements = Source(1 to 7).via(restartOnFailures).runWith(Sink.seq).futureValue

@@ -38,7 +38,7 @@ object TestProducerWithAsk {
   def apply(
       delay: FiniteDuration,
       replyProbe: ActorRef[Long],
-      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] =
     Behaviors.setup { context =>
       context.setLoggerName("TestProducerWithConfirmation")
       val requestNextAdapter: ActorRef[ProducerController.RequestNext[TestConsumer.Job]] =
@@ -50,9 +50,8 @@ object TestProducerWithAsk {
         idle(0, replyProbe)
       }
     }
-  }
 
-  private def idle(n: Int, replyProbe: ActorRef[Long]): Behavior[Command] = {
+  private def idle(n: Int, replyProbe: ActorRef[Long]): Behavior[Command] =
     Behaviors.receivePartial {
       case (_, Tick)                => Behaviors.same
       case (_, RequestNext(sendTo)) => active(n + 1, replyProbe, sendTo)
@@ -63,12 +62,11 @@ object TestProducerWithAsk {
         ctx.log.warn("Timeout")
         Behaviors.same
     }
-  }
 
   private def active(
       n: Int,
       replyProbe: ActorRef[Long],
-      sendTo: ActorRef[ProducerController.MessageWithConfirmation[TestConsumer.Job]]): Behavior[Command] = {
+      sendTo: ActorRef[ProducerController.MessageWithConfirmation[TestConsumer.Job]]): Behavior[Command] =
     Behaviors.receivePartial {
       case (ctx, Tick) =>
         val msg = s"msg-$n"
@@ -94,7 +92,5 @@ object TestProducerWithAsk {
         ctx.log.warn("Timeout")
         Behaviors.same
     }
-
-  }
 
 }

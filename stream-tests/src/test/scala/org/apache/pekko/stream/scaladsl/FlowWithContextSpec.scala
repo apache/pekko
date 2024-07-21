@@ -83,7 +83,7 @@ class FlowWithContextSpec extends StreamSpec {
       val baseFlow = Flow[(String, Int)]
         .asFlowWithContext[String, Int, Int](collapseContext = Tuple2.apply)(extractContext = _._2)
         .map(_._1)
-        .unsafeDataVia(Flow.fromFunction[String, Int] { _.toInt })
+        .unsafeDataVia(Flow.fromFunction[String, Int](_.toInt))
 
       SourceWithContext
         .fromTuples(Source(data))

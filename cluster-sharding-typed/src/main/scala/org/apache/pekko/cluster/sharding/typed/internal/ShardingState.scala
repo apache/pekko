@@ -31,16 +31,16 @@ import pekko.cluster.sharding.typed.GetShardRegionState
  */
 @InternalApi private[pekko] object ShardingState {
 
-  def behavior(classicSharding: ClusterSharding): Behavior[ClusterShardingQuery] = {
+  def behavior(classicSharding: ClusterSharding): Behavior[ClusterShardingQuery] =
     Behaviors
       .supervise[ClusterShardingQuery] {
         Behaviors.setup { context =>
           Behaviors.receiveMessage {
             case GetShardRegionState(key, replyTo) =>
               if (classicSharding.getShardTypeNames.contains(key.name)) {
-                try {
+                try
                   classicSharding.shardRegion(key.name).tell(ShardRegion.GetShardRegionState, replyTo.toClassic)
-                } catch {
+                catch {
                   case e: IllegalStateException =>
                     // classicSharding.shardRegion may throw if not initialized
                     context.log.warn(e.getMessage)
@@ -53,11 +53,11 @@ import pekko.cluster.sharding.typed.GetShardRegionState
 
             case GetClusterShardingStats(key, timeout, replyTo) =>
               if (classicSharding.getShardTypeNames.contains(key.name)) {
-                try {
+                try
                   classicSharding
                     .shardRegion(key.name)
                     .tell(ShardRegion.GetClusterShardingStats(timeout), replyTo.toClassic)
-                } catch {
+                catch {
                   case e: IllegalStateException =>
                     // classicSharding.shardRegion may throw if not initialized
                     context.log.warn(e.getMessage)
@@ -71,6 +71,5 @@ import pekko.cluster.sharding.typed.GetShardRegionState
         }
       }
       .onFailure(SupervisorStrategy.restart)
-  }
 
 }

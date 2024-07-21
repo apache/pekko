@@ -69,9 +69,8 @@ object JoinConfigCompatChecker {
    * @param toCheck - the Config instance to be checked
    * @param actualConfig - the Config instance containing the expected values
    */
-  def fullMatch(requiredKeys: im.Seq[String], toCheck: Config, actualConfig: Config): ConfigValidation = {
+  def fullMatch(requiredKeys: im.Seq[String], toCheck: Config, actualConfig: Config): ConfigValidation =
     exists(requiredKeys, toCheck) ++ checkEquality(requiredKeys, toCheck, actualConfig)
-  }
 
   /**
    * INTERNAL API
@@ -81,9 +80,8 @@ object JoinConfigCompatChecker {
       toCheck: Config,
       actualConfig: Config): ConfigValidation = {
 
-    def checkCompat(key: String, value: ConfigValue) = {
+    def checkCompat(key: String, value: ConfigValue) =
       actualConfig.hasPath(key) && actualConfig.getValue(key) == value
-    }
 
     // retrieve all incompatible keys
     // NOTE: we only check the key if effectively required
@@ -125,11 +123,10 @@ object JoinConfigCompatChecker {
   @InternalApi
   private[cluster] def removeSensitiveKeys(
       requiredKeys: im.Seq[String],
-      clusterSettings: ClusterSettings): im.Seq[String] = {
+      clusterSettings: ClusterSettings): im.Seq[String] =
     requiredKeys.filter { key =>
       !clusterSettings.SensitiveConfigPaths.exists(s => key.startsWith(s))
     }
-  }
 
   /**
    * INTERNAL API
@@ -160,10 +157,9 @@ object JoinConfigCompatChecker {
 
     // composite checker
     new JoinConfigCompatChecker {
-      override val requiredKeys: im.Seq[String] = {
+      override val requiredKeys: im.Seq[String] =
         // Always include pekko.version (used in join logging)
         "pekko.version" +: checkers.flatMap(_.requiredKeys).to(im.Seq)
-      }
       override def check(toValidate: Config, clusterConfig: Config): ConfigValidation =
         checkers.foldLeft(Valid: ConfigValidation) { (acc, checker) =>
           acc ++ checker.check(toValidate, clusterConfig)
@@ -177,14 +173,13 @@ sealed trait ConfigValidation {
 
   def ++(that: ConfigValidation) = concat(that)
 
-  def concat(that: ConfigValidation) = {
+  def concat(that: ConfigValidation) =
     (this, that) match {
       case (Invalid(a), Invalid(b)) => Invalid(a ++ b)
       case (_, i @ Invalid(_))      => i
       case (i @ Invalid(_), _)      => i
       case _                        => Valid
     }
-  }
 }
 
 case object Valid extends ConfigValidation {

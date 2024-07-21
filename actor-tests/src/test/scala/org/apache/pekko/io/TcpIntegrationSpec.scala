@@ -195,9 +195,9 @@ class TcpIntegrationSpec extends PekkoSpec("""
       val connectionActor = connectCommander.lastSender
       connectCommander.send(connectionActor, PoisonPill)
       failAfter(3 seconds) {
-        try {
+        try
           accept.getInputStream.read() should ===(-1)
-        } catch {
+        catch {
           case _: IOException => // this is also fine
         }
       }

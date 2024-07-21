@@ -19,9 +19,8 @@ import org.apache.pekko.stream.scaladsl.Flow
 
 class MapTest extends PekkoIdentityProcessorVerification[Int] {
 
-  override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] = {
+  override def createIdentityProcessor(maxBufferSize: Int): Processor[Int, Int] =
     Flow[Int].map(elem => elem).named("identity").toProcessor.run()
-  }
 
   override def createElement(element: Int): Int = element
 

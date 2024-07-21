@@ -59,7 +59,7 @@ private[pekko] final class MapConcat[In, Out](f: In => IterableOnce[Out])
         } catch handleException
 
       private def tryPushAndPull(): Unit =
-        try {
+        try
           if (hasNext) {
             push(out, currentIterator.next())
             if (!hasNext && isClosed(in)) {
@@ -67,7 +67,7 @@ private[pekko] final class MapConcat[In, Out](f: In => IterableOnce[Out])
             }
           } else if (isClosed(in)) completeStage()
           else pull(in)
-        } catch handleException
+        catch handleException
 
       private def handleException: Catcher[Unit] = {
         case NonFatal(ex) =>

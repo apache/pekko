@@ -98,11 +98,10 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
       subscriptions: SubscriptionRegistry) {
 
     /** tombstone all services actor is registered for */
-    def addTombstone(actor: ActorRef[_], deadline: Deadline): State = {
+    def addTombstone(actor: ActorRef[_], deadline: Deadline): State =
       servicesPerActor.getOrElse(actor, Set.empty).foldLeft(this) { (state, key) =>
         state.addTombstone(actor.asInstanceOf[ActorRef[key.Protocol]], key.asServiceKey, deadline)
       }
-    }
 
     /** tombstone specific service actor is registered for */
     def addTombstone[T](actor: ActorRef[T], serviceKey: ServiceKey[T], deadline: Deadline): State = {
@@ -113,7 +112,7 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
     def hasTombstone[T](serviceKey: ServiceKey[T])(actorRef: ActorRef[T]): Boolean =
       tombstones.nonEmpty && tombstones.getOrElse(actorRef, Set.empty).exists { case (key, _) => key == serviceKey }
 
-    def pruneTombstones(): State = {
+    def pruneTombstones(): State =
       if (tombstones.isEmpty) this
       else {
         val newTombstones: Map[ActorRef[_], Set[(AbstractServiceKey, Deadline)]] =
@@ -129,7 +128,6 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
         if (newTombstones eq tombstones) this
         else copy(tombstones = newTombstones)
       }
-    }
 
     /**
      * @return (reachable-nodes, all)
@@ -273,9 +271,8 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
     Behaviors.setup { ctx =>
       import setup._
 
-      def isLeader = {
+      def isLeader =
         cluster.state.leader.contains(cluster.selfAddress)
-      }
 
       def nodesRemoved(addresses: Set[UniqueAddress], onlyRemoveOldEntries: Boolean): Unit = {
         // ok to update from several nodes but more efficient to try to do it from one node
@@ -286,7 +283,7 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
         // it possible that an entry is added before MemberJoined is visible and such entries should not be removed
         def isOld(entry: Entry): Boolean = (now - entry.createdTimestamp) >= settings.pruneRemovedOlderThan.toMillis
 
-        val removals = {
+        val removals =
           state.registry.allServices.foldLeft(Map.empty[AbstractServiceKey, Set[Entry]]) {
             case (acc, (key, entries)) =>
               val removedEntries =
@@ -295,7 +292,6 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
               if (removedEntries.isEmpty) acc // no change
               else acc + (key -> removedEntries)
           }
-        }
 
         if (removals.nonEmpty) {
           if (ctx.log.isDebugEnabled)
@@ -322,14 +318,13 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
         }
       }
 
-      def reachabilityChanged(keysForNode: Set[AbstractServiceKey], newState: State): Unit = {
+      def reachabilityChanged(keysForNode: Set[AbstractServiceKey], newState: State): Unit =
         notifySubscribers(keysForNode, servicesWereAddedOrRemoved = false, newState)
-      }
 
       def notifySubscribers(
           changedKeys: Set[AbstractServiceKey],
           servicesWereAddedOrRemoved: Boolean,
-          newState: State): Unit = {
+          newState: State): Unit =
         changedKeys.foreach { changedKey =>
           val serviceKey = changedKey.asServiceKey
 
@@ -341,7 +336,6 @@ private[typed] object ClusterReceptionist extends ReceptionistBehaviorProvider {
             subscribers.foreach(_ ! listing)
           }
         }
-      }
 
       def onCommand(cmd: Command): Behavior[Command] = cmd match {
         case ReceptionistMessages.Register(key, serviceInstance, maybeReplyTo) =>

@@ -243,7 +243,7 @@ object GraphStageLogic {
     private[this] var behavior = initialReceive
 
     /** INTERNAL API */
-    private[pekko] def internalReceive(pack: (ActorRef, Any)): Unit = {
+    private[pekko] def internalReceive(pack: (ActorRef, Any)): Unit =
       pack._2 match {
         case Terminated(ref) =>
           if (functionRef.isWatching(ref)) {
@@ -252,19 +252,16 @@ object GraphStageLogic {
           }
         case _ => behavior(pack)
       }
-    }
 
     /**
      * Special `become` allowing to swap the behavior of this StageActorRef.
      * Unbecome is not available.
      */
-    def become(receive: StageActorRef.Receive): Unit = {
+    def become(receive: StageActorRef.Receive): Unit =
       behavior = receive
-    }
 
-    def stop(): Unit = {
+    def stop(): Unit =
       cell.removeFunctionRef(functionRef)
-    }
 
     def watch(actorRef: ActorRef): Unit = functionRef.watch(actorRef)
 
@@ -469,9 +466,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Retrieves the current callback for the events on the given [[Inlet]]
    */
-  final protected def getHandler(in: Inlet[_]): InHandler = {
+  final protected def getHandler(in: Inlet[_]): InHandler =
     handlers(in.id).asInstanceOf[InHandler]
-  }
 
   /**
    * Assigns callbacks for the events for an [[Outlet]]
@@ -487,9 +483,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
   /**
    * Retrieves the current callback for the events on the given [[Outlet]]
    */
-  final protected def getHandler(out: Outlet[_]): OutHandler = {
+  final protected def getHandler(out: Outlet[_]): OutHandler =
     handlers(out.id + inCount).asInstanceOf[OutHandler]
-  }
 
   private def getNonEmittingHandler(out: Outlet[_]): OutHandler =
     getHandler(out) match {
@@ -843,7 +838,7 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * for the given inlet if suspension is needed and reinstalls the current
    * handler upon receiving the `onPush()` signal (before invoking the `andThen` function).
    */
-  final protected def read[T](in: Inlet[T])(andThen: T => Unit, onClose: () => Unit): Unit = {
+  final protected def read[T](in: Inlet[T])(andThen: T => Unit, onClose: () => Unit): Unit =
     if (isAvailable(in)) {
       val elem = grab(in)
       andThen(elem)
@@ -854,7 +849,6 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       if (!hasBeenPulled(in)) pull(in)
       setHandler(in, new Reading(in, 1, getHandler(in))(andThen, onClose))
     }
-  }
 
   /**
    * Java API: Read an element from the given inlet and continue with the given function,
@@ -862,9 +856,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    * for the given inlet if suspension is needed and reinstalls the current
    * handler upon receiving the `onPush()` signal (before invoking the `andThen` function).
    */
-  final protected def read[T](in: Inlet[T], andThen: Procedure[T], onClose: Effect): Unit = {
+  final protected def read[T](in: Inlet[T], andThen: Procedure[T], onClose: Effect): Unit =
     read(in)(andThen.apply, onClose.apply _)
-  }
 
   /**
    * Abort outstanding (suspended) reading for the given inlet, if there is any.
@@ -1010,9 +1003,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
    */
   final protected def emit[T](out: Outlet[T], elem: T): Unit = emit(out, elem, DoNothing)
 
-  final protected def emit[T](out: Outlet[T], elem: T, andThen: Effect): Unit = {
+  final protected def emit[T](out: Outlet[T], elem: T, andThen: Effect): Unit =
     emit(out, elem, andThen.apply _)
-  }
 
   /**
    * Abort outstanding (suspended) emissions for the given outlet, if there are any.
@@ -1472,9 +1464,8 @@ abstract class GraphStageLogic private[stream] (val inCount: Int, val outCount: 
       _sink.pullSubstream()
     }
 
-    def cancel(): Unit = {
+    def cancel(): Unit =
       cancel(SubscriptionWithCancelException.NoMoreElementsNeeded)
-    }
     def cancel(cause: Throwable): Unit = {
       closed = true
       _sink.cancelSubstream(cause)

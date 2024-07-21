@@ -78,7 +78,7 @@ object ReplicatedShardingSpec extends MultiNodeConfig {
 
     case class State(all: List[String]) extends CborSerializable
 
-    def apply(id: ReplicationId, ctx: ActorContext[Command]): EventSourcedBehavior[Command, String, State] = {
+    def apply(id: ReplicationId, ctx: ActorContext[Command]): EventSourcedBehavior[Command, String, State] =
       // Relies on direct replication as there is no proxy query journal
       ReplicatedEventSourcing.commonJournalConfig(id, AllReplicas, PersistenceTestKitReadJournal.Identifier) {
         replicationContext =>
@@ -104,9 +104,8 @@ object ReplicatedShardingSpec extends MultiNodeConfig {
               state.copy(all = event :: state.all)
             }).withEventPublishing(true)
       }
-    }
 
-    def provider(): ReplicatedEntityProvider[Command] = {
+    def provider(): ReplicatedEntityProvider[Command] =
       ReplicatedEntityProvider[Command]("TestRES", AllReplicas) { (entityTypeKey, replicaId) =>
         ReplicatedEntity(replicaId,
           Entity(entityTypeKey) { entityContext =>
@@ -115,7 +114,6 @@ object ReplicatedShardingSpec extends MultiNodeConfig {
             }
           })
       }.withDirectReplication(true) // this is required as we don't have a shared read journal
-    }
   }
 }
 

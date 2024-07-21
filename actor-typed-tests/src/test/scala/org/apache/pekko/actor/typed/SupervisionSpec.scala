@@ -310,7 +310,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
         throw TestException("simulated exc from constructor")
       }
 
-      override def onMessage(message: Command): Behavior[Command] = {
+      override def onMessage(message: Command): Behavior[Command] =
         message match {
           case Ping(i) =>
             monitor ! Pong(i)
@@ -318,7 +318,6 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
           // ignore others.
           case _ => Behaviors.same
         }
-      }
     }
 
     def testMessageRetentionWhenStartException(strategy: SupervisorStrategy): Unit = {
@@ -397,10 +396,10 @@ class SupervisionSpec extends ScalaTestWithActorTestKit("""
 
     "stop when strategy is stop - exception in setup" in {
       val probe = TestProbe[Event]("evt")
-      val failedSetup = Behaviors.setup[Command](_ => {
+      val failedSetup = Behaviors.setup[Command] { _ =>
         throw new Exc3()
         targetBehavior(probe.ref)
-      })
+      }
       val behv = Behaviors.supervise(failedSetup).onFailure[Throwable](SupervisorStrategy.stop)
       LoggingTestKit.error[Exc3].expect {
         spawn(behv)

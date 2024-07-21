@@ -55,13 +55,12 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * as it will then always return true because of the defaults from the ActorMaterializerSettings
    * INTERNAL API
    */
-  private[stream] def isAsync: Boolean = {
+  private[stream] def isAsync: Boolean =
     attributeList.nonEmpty && attributeList.exists {
       case AsyncBoundary                 => true
       case ActorAttributes.Dispatcher(_) => true
       case _                             => false
     }
-  }
 
   /**
    * Java API: Get the most specific attribute value for a given Attribute type or subclass thereof.
@@ -150,12 +149,11 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * Adds given attributes. Added attributes are considered more specific than
    * already existing attributes of the same type.
    */
-  def and(other: Attributes): Attributes = {
+  def and(other: Attributes): Attributes =
     if (attributeList.isEmpty) other
     else if (other.attributeList.isEmpty) this
     else if (other.attributeList.tail.isEmpty) Attributes(other.attributeList.head :: attributeList)
     else Attributes(other.attributeList ::: attributeList)
-  }
 
   /**
    * Adds given attribute. Added attribute is considered more specific than
@@ -197,13 +195,11 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
     find(attributeList)
   }
 
-  @InternalApi def nameOrDefault(default: String = "unnamed"): String = {
+  @InternalApi def nameOrDefault(default: String = "unnamed"): String =
     getName().getOrElse(default)
-  }
 
-  @InternalApi private[pekko] def nameForActorRef(default: String = "unnamed"): String = {
+  @InternalApi private[pekko] def nameForActorRef(default: String = "unnamed"): String =
     getName().map(name => URLEncoder.encode(name, ByteString.UTF_8)).getOrElse(default)
-  }
 
   /**
    * Test whether the given attribute is contained within this attributes list.
@@ -282,12 +278,11 @@ final case class Attributes(attributeList: List[Attributes.Attribute] = Nil) {
    * If no such attribute exists the `default` value is returned.
    */
   @deprecated("Attributes should always be most specific, use get[T]", "Akka 2.5.7")
-  def getFirst[T <: Attribute: ClassTag](default: T): T = {
+  def getFirst[T <: Attribute: ClassTag](default: T): T =
     getFirst[T] match {
       case Some(a) => a
       case None    => default
     }
-  }
 
   /**
    * Scala API: Get the least specific attribute (added first) of a given type parameter T `Class` or subclass thereof.
@@ -720,9 +715,8 @@ object Attributes {
    * Compute a name by concatenating all Name attributes that the given module
    * has, returning the given default value if none are found.
    */
-  def extractName(builder: TraversalBuilder, default: String): String = {
+  def extractName(builder: TraversalBuilder, default: String): String =
     builder.attributes.nameOrDefault(default)
-  }
 }
 
 /**

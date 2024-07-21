@@ -143,17 +143,15 @@ class RememberEntitiesShardIdExtractorChangeSpec
       try {
         val region = ClusterSharding(system).start(TypeName, Props(new PA()), extractEntityId, extractShardId)
         f(system, region)
-      } finally {
+      } finally
         Await.ready(system.terminate(), 20.seconds)
-      }
     }
 
-    def assertRegionRegistrationComplete(region: ActorRef): Unit = {
+    def assertRegionRegistrationComplete(region: ActorRef): Unit =
       awaitAssert {
         region ! ShardRegion.GetCurrentRegions
         expectMsgType[CurrentRegions].regions should have size 1
       }
-    }
   }
 
 }

@@ -155,10 +155,9 @@ class MetricsGossipSpec
    * sometimes Sigar will not be able to return a valid value (NaN and such) so must ensure they
    * have the same Metric types
    */
-  def newSample(previousSample: Set[Metric]): Set[Metric] = {
+  def newSample(previousSample: Set[Metric]): Set[Metric] =
     // Metric.equals is based on name equality
     collector.sample().metrics.filter(previousSample.contains) ++ previousSample
-  }
 
   "A MetricsGossip" must {
     "add new NodeMetrics" in {
@@ -257,7 +256,7 @@ class MetricValuesSpec extends PekkoSpec(MetricsConfig.defaultEnabled) with Metr
   val node1 = NodeMetrics(Address("pekko", "sys", "a", 7357), 1, collector.sample().metrics)
   val node2 = NodeMetrics(Address("pekko", "sys", "a", 7358), 1, collector.sample().metrics)
 
-  val nodes: Seq[NodeMetrics] = {
+  val nodes: Seq[NodeMetrics] =
     (1 to 100).foldLeft(List(node1, node2)) { (nodes, _) =>
       nodes.map { n =>
         n.copy(
@@ -270,7 +269,6 @@ class MetricValuesSpec extends PekkoSpec(MetricsConfig.defaultEnabled) with Metr
               }))
       }
     }
-  }
 
   "NodeMetrics.MetricValues" must {
     "extract expected metrics for load balancing" in {

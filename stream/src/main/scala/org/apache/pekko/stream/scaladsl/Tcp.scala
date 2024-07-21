@@ -188,13 +188,12 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       @nowarn // Traversable deprecated in 2.13
       options: immutable.Traversable[SocketOption] = Nil,
       halfClose: Boolean = false,
-      idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] = {
+      idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] =
     bind(interface, port, backlog, options, halfClose, idleTimeout)
       .to(Sink.foreach { (conn: IncomingConnection) =>
         conn.flow.join(handler).run()
       })
       .run()
-  }
 
   /**
    * Creates an [[Tcp.OutgoingConnection]] instance representing a prospective TCP client connection to the given endpoint.
@@ -477,13 +476,12 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       options: immutable.Seq[SocketOption],
       idleTimeout: Duration,
       verifySession: SSLSession => Try[Unit],
-      closing: TLSClosing)(implicit m: Materializer): Future[ServerBinding] = {
+      closing: TLSClosing)(implicit m: Materializer): Future[ServerBinding] =
     bindWithTls(interface, port, createSSLEngine, backlog, options, idleTimeout, verifySession, closing)
       .to(Sink.foreach { (conn: IncomingConnection) =>
         conn.handleWith(handler)
       })
       .run()
-  }
 
   /**
    * Creates a [[Tcp.ServerBinding]] instance which represents a prospective TCP server binding on the given `endpoint`
@@ -508,13 +506,12 @@ final class Tcp(system: ExtendedActorSystem) extends pekko.actor.Extension {
       backlog: Int = defaultBacklog,
       @nowarn // Traversable deprecated in 2.13
       options: immutable.Traversable[SocketOption] = Nil,
-      idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] = {
+      idleTimeout: Duration = Duration.Inf)(implicit m: Materializer): Future[ServerBinding] =
     bindTls(interface, port, sslContext, negotiateNewSession, backlog, options, idleTimeout)
       .to(Sink.foreach { (conn: IncomingConnection) =>
         conn.handleWith(handler)
       })
       .run()
-  }
 
 }
 

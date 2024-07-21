@@ -132,13 +132,12 @@ object TLS {
     }
     def verifySession: (ActorSystem, SSLSession) => Try[Unit] =
       hostInfo match {
-        case Some((hostname, _)) => { (system, session) =>
-          val config = theSslConfig(system)
-          if (config.useJvmHostnameVerification || config.hostnameVerifier.verify(hostname, session))
-            Success(())
-          else
-            Failure(new ConnectionException(s"Hostname verification failed! Expected session to be for $hostname"))
-        }
+        case Some((hostname, _)) => (system, session) =>
+            val config = theSslConfig(system)
+            if (config.useJvmHostnameVerification || config.hostnameVerifier.verify(hostname, session))
+              Success(())
+            else
+              Failure(new ConnectionException(s"Hostname verification failed! Expected session to be for $hostname"))
         case None => (_, _) => Success(())
       }
 

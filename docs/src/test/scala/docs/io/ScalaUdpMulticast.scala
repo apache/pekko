@@ -62,10 +62,9 @@ class Sender(iface: String, group: String, port: Int, msg: String) extends Actor
   IO(Udp) ! Udp.SimpleSender(List(Inet6ProtocolFamily()))
 
   def receive = {
-    case Udp.SimpleSenderReady => {
+    case Udp.SimpleSenderReady =>
       val remote = new InetSocketAddress(s"$group%$iface", port)
       log.info("Sending message to {}", remote)
       sender() ! Udp.Send(ByteString(msg), remote)
-    }
   }
 }

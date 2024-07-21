@@ -516,7 +516,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffUnreachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[UnreachableDataCenter] = {
+      newState: MembershipState): immutable.Seq[UnreachableDataCenter] =
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -527,7 +527,6 @@ object ClusterEvent {
 
       currentUnreachableDcs.diff(oldUnreachableDcs).iterator.map(UnreachableDataCenter.apply).to(immutable.IndexedSeq)
     }
-  }
 
   /**
    * INTERNAL API
@@ -535,7 +534,7 @@ object ClusterEvent {
   @InternalApi
   private[cluster] def diffReachableDataCenter(
       oldState: MembershipState,
-      newState: MembershipState): immutable.Seq[ReachableDataCenter] = {
+      newState: MembershipState): immutable.Seq[ReachableDataCenter] =
     if (newState eq oldState) Nil
     else {
       val otherDcs = (oldState.latestGossip.allDataCenters
@@ -546,7 +545,6 @@ object ClusterEvent {
 
       oldUnreachableDcs.diff(currentUnreachableDcs).iterator.map(ReachableDataCenter.apply).to(immutable.IndexedSeq)
     }
-  }
 
   /**
    * INTERNAL API.
@@ -600,13 +598,12 @@ object ClusterEvent {
    * INTERNAL API
    */
   @InternalApi
-  private[cluster] def diffRolesLeader(oldState: MembershipState, newState: MembershipState): Set[RoleLeaderChanged] = {
+  private[cluster] def diffRolesLeader(oldState: MembershipState, newState: MembershipState): Set[RoleLeaderChanged] =
     for {
       role <- oldState.latestGossip.allRoles.union(newState.latestGossip.allRoles)
       newLeader = newState.roleLeader(role)
       if newLeader != oldState.roleLeader(role)
     } yield RoleLeaderChanged(role, newLeader.map(_.address))
-  }
 
   /**
    * INTERNAL API
@@ -734,16 +731,15 @@ private[cluster] final class ClusterDomainEventPublisher
   def subscribe(subscriber: ActorRef, initMode: SubscriptionInitialStateMode, to: Set[Class[_]]): Unit = {
     initMode match {
       case InitialStateAsEvents =>
-        def pub(event: AnyRef): Unit = {
+        def pub(event: AnyRef): Unit =
           if (to.exists(_.isAssignableFrom(event.getClass)))
             subscriber ! event
-        }
         publishDiff(emptyMembershipState, membershipState, pub)
       case InitialStateAsSnapshot =>
         sendCurrentClusterState(subscriber)
     }
 
-    to.foreach { eventStream.subscribe(subscriber, _) }
+    to.foreach(eventStream.subscribe(subscriber, _))
   }
 
   def unsubscribe(subscriber: ActorRef, to: Option[Class[_]]): Unit = to match {
@@ -762,7 +758,6 @@ private[cluster] final class ClusterDomainEventPublisher
 
   def publish(event: AnyRef): Unit = eventStream.publish(event)
 
-  def clearState(): Unit = {
+  def clearState(): Unit =
     membershipState = emptyMembershipState
-  }
 }

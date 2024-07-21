@@ -99,7 +99,7 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
     private def pekkoJdk9ForkJoinPoolClassOpt: Option[Class[_]] =
       Try(Class.forName("org.apache.pekko.dispatch.PekkoJdk9ForkJoinPool")).toOption
 
-    private lazy val pekkoJdk9ForkJoinPoolHandleOpt: Option[MethodHandle] = {
+    private lazy val pekkoJdk9ForkJoinPoolHandleOpt: Option[MethodHandle] =
       if (JavaVersion.majorVersion == 8) {
         None
       } else {
@@ -111,7 +111,6 @@ class ForkJoinExecutorConfigurator(config: Config, prerequisites: DispatcherPrer
           methodHandleLookup.findConstructor(clz, mt)
         }
       }
-    }
 
     def this(threadFactory: ForkJoinPool.ForkJoinWorkerThreadFactory, parallelism: Int) =
       this(threadFactory, parallelism, asyncMode = true)

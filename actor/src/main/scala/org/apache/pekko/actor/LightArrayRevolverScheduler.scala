@@ -140,7 +140,7 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
         schedule(
           executor,
           new AtomicLong(clock() + initialDelay.toNanos) with Runnable {
-            override def run(): Unit = {
+            override def run(): Unit =
               try {
                 runnable.run()
                 val driftNanos = clock() - getAndAdd(delay.toNanos)
@@ -149,7 +149,6 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
               } catch {
                 case _: SchedulerException => // ignore failure to enqueue or terminated target actor
               }
-            }
           },
           roundUp(initialDelay))
     }
@@ -164,14 +163,13 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
 
   override def close(): Unit = {
 
-    def runTask(task: Runnable): Unit = {
+    def runTask(task: Runnable): Unit =
       try task.run()
       catch {
         case e: InterruptedException => throw e
         case _: SchedulerException   => // ignore terminated actors
         case NonFatal(e)             => log.error(e, "exception while executing timer task")
       }
-    }
 
     Await.result(stop(), getShutdownTimeout).foreach {
       case task: Scheduler.TaskRunOnClose =>
@@ -249,12 +247,11 @@ class LightArrayRevolverScheduler(config: Config, log: LoggingAdapter, threadFac
     var spareTaskQueue = new TaskQueue
 
     private def clearAll(): immutable.Seq[TimerTask] = {
-      @tailrec def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] = {
+      @tailrec def collect(q: TaskQueue, acc: Vector[TimerTask]): Vector[TimerTask] =
         q.poll() match {
           case null => acc
           case x    => collect(q, acc :+ x)
         }
-      }
       (0 until WheelSize).flatMap(i => collect(wheel(i), Vector.empty)) ++ collect(queue, Vector.empty)
     }
 

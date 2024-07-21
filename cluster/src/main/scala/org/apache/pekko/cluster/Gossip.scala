@@ -128,32 +128,28 @@ private[cluster] final case class Gossip(
   /**
    * Adds a member to the member node ring.
    */
-  def :+(member: Member): Gossip = {
+  def :+(member: Member): Gossip =
     if (members contains member) this
     else this.copy(members = members + member)
-  }
 
   /**
    * Marks the gossip as seen by this node (address) by updating the address entry in the 'gossip.overview.seen'
    */
-  def seen(node: UniqueAddress): Gossip = {
+  def seen(node: UniqueAddress): Gossip =
     if (seenByNode(node)) this
     else this.copy(overview = overview.copy(seen = overview.seen + node))
-  }
 
   /**
    * Marks the gossip as seen by only this node (address) by replacing the 'gossip.overview.seen'
    */
-  def onlySeen(node: UniqueAddress): Gossip = {
+  def onlySeen(node: UniqueAddress): Gossip =
     this.copy(overview = overview.copy(seen = Set(node)))
-  }
 
   /**
    * Remove all seen entries
    */
-  def clearSeen(): Gossip = {
+  def clearSeen(): Gossip =
     this.copy(overview = overview.copy(seen = Set.empty))
-  }
 
   /**
    * The nodes that have seen the current version of the Gossip.
@@ -220,19 +216,16 @@ private[cluster] final case class Gossip(
       overview.reachability.isReachable(fromAddress, toAddress)
     }
 
-  def member(node: UniqueAddress): Member = {
+  def member(node: UniqueAddress): Member =
     membersMap.getOrElse(node, Member.removed(node)) // placeholder for removed member
-  }
 
   def hasMember(node: UniqueAddress): Boolean = membersMap.contains(node)
 
-  def removeAll(nodes: Iterable[UniqueAddress], removalTimestamp: Long): Gossip = {
+  def removeAll(nodes: Iterable[UniqueAddress], removalTimestamp: Long): Gossip =
     nodes.foldLeft(this)((gossip, node) => gossip.remove(node, removalTimestamp))
-  }
 
-  def update(updatedMembers: immutable.SortedSet[Member]): Gossip = {
+  def update(updatedMembers: immutable.SortedSet[Member]): Gossip =
     copy(members = updatedMembers.union(members.diff(updatedMembers)))
-  }
 
   /**
    * Remove the given member from the set of members and mark it's removal with a tombstone to avoid having it
@@ -333,7 +326,7 @@ private[cluster] class GossipEnvelope private (
     g
   }
 
-  private def deserialize(): Unit = {
+  private def deserialize(): Unit =
     if ((g eq null) && (ser ne null)) {
       if (serDeadline.hasTimeLeft())
         g = ser()
@@ -341,7 +334,6 @@ private[cluster] class GossipEnvelope private (
         g = Gossip.empty
       ser = null
     }
-  }
 }
 
 /**
@@ -354,13 +346,12 @@ private[cluster] class GossipEnvelope private (
 @SerialVersionUID(1L)
 private[cluster] final case class GossipStatus(from: UniqueAddress, version: VectorClock, seenDigest: Array[Byte])
     extends ClusterMessage {
-  override def equals(obj: Any): Boolean = {
+  override def equals(obj: Any): Boolean =
     obj match {
       case other: GossipStatus =>
         from == other.from && version == other.version && java.util.Arrays.equals(seenDigest, other.seenDigest)
       case _ => false
     }
-  }
 
   override def toString: DataCenter =
     f"GossipStatus($from,$version,${seenDigest.map(byte => f"$byte%02x").mkString("")})"

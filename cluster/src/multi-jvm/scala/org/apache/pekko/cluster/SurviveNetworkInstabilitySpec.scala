@@ -110,13 +110,11 @@ abstract class SurviveNetworkInstabilitySpec
       classOf[pekko.remote.QuarantinedEvent]
 
   @nowarn
-  def quarantinedEventFrom(event: Any): Address = {
+  def quarantinedEventFrom(event: Any): Address =
     event match {
       case QuarantinedEvent(uniqueAddress)           => uniqueAddress.address
       case pekko.remote.QuarantinedEvent(address, _) => address
     }
-
-  }
 
   @nowarn
   def sysMsgBufferSize: Int =
@@ -168,8 +166,8 @@ abstract class SurviveNetworkInstabilitySpec
       }
       enterBarrier("blackhole-2")
 
-      runOn(first) { assertUnreachable(second) }
-      runOn(second) { assertUnreachable(first) }
+      runOn(first)(assertUnreachable(second))
+      runOn(second)(assertUnreachable(first))
       runOn(third, fourth, fifth) {
         assertUnreachable(first, second)
       }
@@ -193,13 +191,12 @@ abstract class SurviveNetworkInstabilitySpec
     "heal after one isolated node" taggedAs LongRunningTest in within(45.seconds) {
       val others = Vector(second, third, fourth, fifth)
       runOn(first) {
-        for (other <- others) {
+        for (other <- others)
           testConductor.blackhole(first, other, Direction.Both).await
-        }
       }
       enterBarrier("blackhole-3")
 
-      runOn(first) { assertUnreachable(others: _*) }
+      runOn(first)(assertUnreachable(others: _*))
       runOn(others: _*) {
         assertUnreachable(first)
       }
@@ -207,9 +204,8 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("unreachable-3")
 
       runOn(first) {
-        for (other <- others) {
+        for (other <- others)
           testConductor.passThrough(first, other, Direction.Both).await
-        }
       }
       enterBarrier("repair-3")
       assertCanTalk((others :+ first): _*)
@@ -220,9 +216,8 @@ abstract class SurviveNetworkInstabilitySpec
       val island2 = Vector(third, fourth, fifth)
       runOn(first) {
         // split the cluster in two parts (first, second) / (third, fourth, fifth)
-        for (role1 <- island1; role2 <- island2) {
+        for (role1 <- island1; role2 <- island2)
           testConductor.blackhole(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("blackhole-4")
 
@@ -236,9 +231,8 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("unreachable-4")
 
       runOn(first) {
-        for (role1 <- island1; role2 <- island2) {
+        for (role1 <- island1; role2 <- island2)
           testConductor.passThrough(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("repair-4")
       assertCanTalk((island1 ++ island2): _*)
@@ -248,14 +242,13 @@ abstract class SurviveNetworkInstabilitySpec
       val joining = Vector(sixth, seventh)
       val others = Vector(second, third, fourth, fifth)
       runOn(first) {
-        for (role1 <- joining :+ first; role2 <- others) {
+        for (role1 <- joining :+ first; role2 <- others)
           testConductor.blackhole(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("blackhole-5")
 
-      runOn(first) { assertUnreachable(others: _*) }
-      runOn(others: _*) { assertUnreachable(first) }
+      runOn(first)(assertUnreachable(others: _*))
+      runOn(others: _*)(assertUnreachable(first))
 
       enterBarrier("unreachable-5")
 
@@ -268,16 +261,15 @@ abstract class SurviveNetworkInstabilitySpec
 
       enterBarrier("joined-5")
 
-      runOn((joining :+ first): _*) { assertUnreachable(others: _*) }
+      runOn((joining :+ first): _*)(assertUnreachable(others: _*))
       // others doesn't know about the joining nodes yet, no gossip passed through
-      runOn(others: _*) { assertUnreachable(first) }
+      runOn(others: _*)(assertUnreachable(first))
 
       enterBarrier("more-unreachable-5")
 
       runOn(first) {
-        for (role1 <- joining :+ first; role2 <- others) {
+        for (role1 <- joining :+ first; role2 <- others)
           testConductor.passThrough(role1, role2, Direction.Both).await
-        }
       }
 
       enterBarrier("repair-5")
@@ -361,14 +353,13 @@ abstract class SurviveNetworkInstabilitySpec
       val side1AfterJoin = side1 :+ eighth
       val side2 = Vector(fifth, sixth, seventh)
       runOn(first) {
-        for (role1 <- side1AfterJoin; role2 <- side2) {
+        for (role1 <- side1AfterJoin; role2 <- side2)
           testConductor.blackhole(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("blackhole-7")
 
-      runOn(side1: _*) { assertUnreachable(side2: _*) }
-      runOn(side2: _*) { assertUnreachable(side1: _*) }
+      runOn(side1: _*)(assertUnreachable(side2: _*))
+      runOn(side2: _*)(assertUnreachable(side1: _*))
 
       enterBarrier("unreachable-7")
 
@@ -376,9 +367,8 @@ abstract class SurviveNetworkInstabilitySpec
         cluster.join(third)
       }
       runOn(fourth) {
-        for (role2 <- side2) {
+        for (role2 <- side2)
           cluster.down(role2)
-        }
       }
 
       enterBarrier("downed-7")
@@ -390,9 +380,8 @@ abstract class SurviveNetworkInstabilitySpec
           // repeat the downing in case it was not successful, which may
           // happen if the removal was reverted due to gossip merge, see issue #18767
           runOn(fourth) {
-            for (role2 <- side2) {
+            for (role2 <- side2)
               cluster.down(role2)
-            }
           }
 
           clusterView.members.map(_.address) should ===(expected)
@@ -404,9 +393,8 @@ abstract class SurviveNetworkInstabilitySpec
       enterBarrier("side2-removed")
 
       runOn(first) {
-        for (role1 <- side1AfterJoin; role2 <- side2) {
+        for (role1 <- side1AfterJoin; role2 <- side2)
           testConductor.passThrough(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("repair-7")
 

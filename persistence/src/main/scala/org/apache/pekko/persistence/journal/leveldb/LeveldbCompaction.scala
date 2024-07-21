@@ -36,7 +36,7 @@ private[persistence] trait LeveldbCompaction extends Actor with ActorLogging wit
       tryCompactOnDelete(persistenceId, toSeqNr)
   }
 
-  private def tryCompactOnDelete(persistenceId: String, toSeqNr: Long): Unit = {
+  private def tryCompactOnDelete(persistenceId: String, toSeqNr: Long): Unit =
     if (mustCompact(persistenceId, toSeqNr)) {
       val limit = compactionLimit(persistenceId, toSeqNr)
       log.info("Starting compaction for persistence id [{}] up to sequence number [{}]", persistenceId, limit)
@@ -48,7 +48,6 @@ private[persistence] trait LeveldbCompaction extends Actor with ActorLogging wit
     } else {
       log.debug("No compaction required yet for persistence id [{}] up to sequence number [{}]", persistenceId, toSeqNr)
     }
-  }
 }
 
 /**
@@ -75,9 +74,8 @@ private[persistence] trait CompactionSegmentManagement {
 
   def compactionIntervals: Map[String, Long]
 
-  def updateCompactionSegment(persistenceId: String, compactionSegment: Long): Unit = {
+  def updateCompactionSegment(persistenceId: String, compactionSegment: Long): Unit =
     latestCompactionSegments += persistenceId -> compactionSegment
-  }
 
   def compactionLimit(persistenceId: String, toSeqNr: Long): Long = {
     val interval = compactionInterval(persistenceId)

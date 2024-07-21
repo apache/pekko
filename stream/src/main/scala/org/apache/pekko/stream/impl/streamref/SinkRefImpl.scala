@@ -110,7 +110,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       // Complete/Fail message does, which can happen on transports such as Artery which use a dedicated lane for system messages (Terminated)
       private[this] var finishedWithAwaitingPartnerTermination: OptionVal[Try[Done]] = OptionVal.None
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         initialPartnerRef match {
           case OptionVal.Some(ref) =>
             log.debug(
@@ -134,8 +134,6 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
             // has not been provided with a valid initialPartnerRef)
             scheduleOnce(SubscriptionTimeoutTimerKey, subscriptionTimeout.timeout)
         }
-
-      }
 
       def initialReceive: ((ActorRef, Any)) => Unit = {
         case (_, Terminated(ref)) =>
@@ -259,7 +257,7 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
       }
 
       @throws[InvalidPartnerActorException]
-      def observeAndValidateSender(partner: ActorRef, failureMsg: String): Unit = {
+      def observeAndValidateSender(partner: ActorRef, failureMsg: String): Unit =
         if (partnerRef.isEmpty) {
           partnerRef = OptionVal(partner)
           partner ! StreamRefsProtocol.OnSubscribeHandshake(self.ref)
@@ -290,7 +288,6 @@ private[stream] final class SinkRefStageImpl[In] private[pekko] (val initialPart
               } // else { ref is valid }
           }
         }
-      }
 
       setHandler(in, this)
     }

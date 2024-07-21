@@ -39,8 +39,7 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () => FailureDetector) 
     case _       => false
   }
 
-  final override def heartbeat(resource: A): Unit = {
-
+  final override def heartbeat(resource: A): Unit =
     resourceToFailureDetector.get.get(resource) match {
       case Some(failureDetector) => failureDetector.heartbeat()
       case None                  =>
@@ -67,7 +66,6 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () => FailureDetector) 
           }
         } finally failureDetectorCreationLock.unlock()
     }
-  }
 
   @tailrec final override def remove(resource: A): Unit = {
 

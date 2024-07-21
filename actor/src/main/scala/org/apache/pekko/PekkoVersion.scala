@@ -29,15 +29,14 @@ object PekkoVersion {
    * @param libraryName The name of the library or component requiring the Pekko version, used in the error message.
    * @param requiredVersion Minimal version that this library works with
    */
-  def require(libraryName: String, requiredVersion: String): Unit = {
+  def require(libraryName: String, requiredVersion: String): Unit =
     require(libraryName, requiredVersion, Version.current)
-  }
 
   /**
    * Internal API:
    */
   @InternalApi
-  private[pekko] def require(libraryName: String, requiredVersion: String, currentVersion: String): Unit = {
+  private[pekko] def require(libraryName: String, requiredVersion: String, currentVersion: String): Unit =
     if (requiredVersion != currentVersion) {
       val VersionPattern = """(\d+)\.(\d+)\.(\d+)(-(?:M|RC)\d+)?""".r
       currentVersion match {
@@ -59,6 +58,5 @@ object PekkoVersion {
         case _ => // SNAPSHOT or unknown - you're on your own
       }
     }
-  }
 
 }

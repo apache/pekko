@@ -447,10 +447,9 @@ object Sink {
       first: Sink[U, M1],
       second: Sink[U, M2],
       fanOutStrategy: function.Function[java.lang.Integer, Graph[UniformFanOutShape[T, U], NotUsed]],
-      matF: function.Function2[M1, M2, M]): Sink[T, M] = {
+      matF: function.Function2[M1, M2, M]): Sink[T, M] =
     new Sink(
       scaladsl.Sink.combineMat(first.asScala, second.asScala)(size => fanOutStrategy(size))(combinerToScala(matF)))
-  }
 
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.

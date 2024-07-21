@@ -79,10 +79,9 @@ abstract class NodeChurnSpec
   }
 
   Runtime.getRuntime.addShutdownHook(new Thread {
-    override def run(): Unit = {
+    override def run(): Unit =
       if (SharedMediaDriverSupport.isMediaDriverRunningByThisNode)
         println("Abrupt exit of JVM without closing media driver. This should not happen and may cause test failure.")
-    }
   })
 
   val rounds = 5

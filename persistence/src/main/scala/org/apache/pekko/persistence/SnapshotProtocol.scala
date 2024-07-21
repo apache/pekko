@@ -31,13 +31,11 @@ final class SnapshotMetadata(
     extends Product3[String, Long, Long]
     with Serializable {
 
-  def this(persistenceId: String, sequenceNr: Long, timestamp: Long) = {
+  def this(persistenceId: String, sequenceNr: Long, timestamp: Long) =
     this(persistenceId, sequenceNr, timestamp, None)
-  }
 
-  private[pekko] def this(persistenceId: String, sequenceNr: Long, meta: Option[Any]) = {
+  private[pekko] def this(persistenceId: String, sequenceNr: Long, meta: Option[Any]) =
     this(persistenceId, sequenceNr, 0L, meta)
-  }
 
   def withMetadata(metadata: Any): SnapshotMetadata =
     new SnapshotMetadata(persistenceId, sequenceNr, timestamp, Some(metadata))

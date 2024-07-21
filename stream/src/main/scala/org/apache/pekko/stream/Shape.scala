@@ -166,12 +166,11 @@ final class Outlet[T] private (val s: String) extends OutPort {
    * `inlets` and `outlets` can be `Vector` or `List` so this method
    * checks the size of 1 in an optimized way.
    */
-  def hasOnePort(ports: immutable.Seq[_]): Boolean = {
+  def hasOnePort(ports: immutable.Seq[_]): Boolean =
     ports.nonEmpty && (ports match {
       case l: List[_] => l.tail.isEmpty // assuming List is most common
       case _          => ports.size == 1 // e.g. Vector
     })
-  }
 }
 
 /**

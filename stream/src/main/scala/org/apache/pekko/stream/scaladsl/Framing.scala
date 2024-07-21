@@ -138,11 +138,10 @@ object Framing {
    *                             included in this limit.
    */
   def simpleFramingProtocol(
-      maximumMessageLength: Int): BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] = {
+      maximumMessageLength: Int): BidiFlow[ByteString, ByteString, ByteString, ByteString, NotUsed] =
     BidiFlow.fromFlowsMat(
       simpleFramingProtocolEncoder(maximumMessageLength),
       simpleFramingProtocolDecoder(maximumMessageLength))(Keep.left)
-  }
 
   /**
    * Protocol decoder that is used by [[Framing#simpleFramingProtocol]]
@@ -239,15 +238,14 @@ object Framing {
 
         override def onPull(): Unit = searchIndices()
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           if (buffer.isEmpty) {
             completeStage()
           } else if (isAvailable(out)) {
             searchIndices()
           } // else swallow the termination and wait for pull
-        }
 
-        private def tryPull(): Unit = {
+        private def tryPull(): Unit =
           if (isClosed(in)) {
             if (allowTruncation) {
               push(out, buffer)
@@ -255,7 +253,6 @@ object Framing {
             } else
               failStage(new FramingException("Stream finished but there was a truncated final frame in the buffer"))
           } else pull(in)
-        }
 
         @tailrec
         private def searchIndices(): Unit = {
@@ -442,11 +439,10 @@ object Framing {
           } else tryPull()
         }
 
-        private def tryPull() = {
+        private def tryPull() =
           if (isClosed(in)) {
             failStage(new FramingException("Stream finished but there was a truncated final frame in the buffer"))
           } else pull(in)
-        }
 
         override def onPush(): Unit = {
           buffer ++= grab(in)
@@ -455,13 +451,12 @@ object Framing {
 
         override def onPull() = tryPushFrame()
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           if (buffer.isEmpty) {
             completeStage()
           } else if (isAvailable(out)) {
             tryPushFrame()
           } // else swallow the termination and wait for pull
-        }
 
         setHandlers(in, out, this)
       }

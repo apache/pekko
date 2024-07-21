@@ -389,7 +389,7 @@ class ReferenceSerializationSpec extends PekkoSpec(SerializationTests.mostlyRefe
     }
 
     "not support serialization for other classes" in {
-      intercept[NotSerializableException] { ser.serializerFor(classOf[Object]) }
+      intercept[NotSerializableException](ser.serializerFor(classOf[Object]))
     }
 
     "not allow serialize function" in {
@@ -432,7 +432,7 @@ class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaS
     }
 
     "not support serialization for other classes" in {
-      intercept[NotSerializableException] { ser.serializerFor(classOf[Object]) }
+      intercept[NotSerializableException](ser.serializerFor(classOf[Object]))
     }
 
     "serialize function with JavaSerializer" in {
@@ -503,9 +503,8 @@ class AllowJavaSerializationSpec extends PekkoSpec(SerializationTests.allowJavaS
           val deadLetters = in.readObject().asInstanceOf[DeadLetterActorRef]
           (deadLetters eq a.deadLetters) should ===(true)
         }
-      } finally {
+      } finally
         shutdown(a)
-      }
     }
 
   }
@@ -592,9 +591,8 @@ protected[pekko] class NoopSerializer extends Serializer {
 
   def identifier = 9999
 
-  def toBinary(o: AnyRef): Array[Byte] = {
+  def toBinary(o: AnyRef): Array[Byte] =
     Array.empty[Byte]
-  }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }
@@ -604,9 +602,8 @@ protected[pekko] class NoopSerializer2 extends Serializer {
 
   def identifier = 10000
 
-  def toBinary(o: AnyRef): Array[Byte] = {
+  def toBinary(o: AnyRef): Array[Byte] =
     Array.empty[Byte]
-  }
 
   def fromBinary(bytes: Array[Byte], clazz: Option[Class[_]]): AnyRef = null
 }

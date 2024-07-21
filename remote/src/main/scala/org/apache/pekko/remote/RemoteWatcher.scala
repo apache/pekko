@@ -209,22 +209,20 @@ private[pekko] class RemoteWatcher(
     AddressTerminatedTopic(context.system).publish(AddressTerminated(address))
   }
 
-  def quarantine(address: Address, uid: Option[Long], reason: String, harmless: Boolean): Unit = {
+  def quarantine(address: Address, uid: Option[Long], reason: String, harmless: Boolean): Unit =
     remoteProvider.transport match {
       case t: ArteryTransport if harmless => t.quarantine(address, uid, reason, harmless)
       case _                              => remoteProvider.quarantine(address, uid, reason)
     }
-  }
 
   /**
    * Returns true if either has cluster or `pekko.remote.use-unsafe-remote-features-outside-cluster`
    * is enabled. Can be overridden when using RemoteWatcher as a superclass.
    */
-  protected def shouldWatch(@unused watchee: InternalActorRef): Boolean = {
+  protected def shouldWatch(@unused watchee: InternalActorRef): Boolean =
     // In this it is unnecessary if only created by RARP, but cluster needs it.
     // Cleaner than overriding Cluster watcher addWatch/removeWatch just for one boolean test
     remoteProvider.remoteSettings.UseUnsafeRemoteFeaturesWithoutCluster
-  }
 
   def addWatch(watchee: InternalActorRef, watcher: InternalActorRef): Unit = {
     assert(watcher != self)

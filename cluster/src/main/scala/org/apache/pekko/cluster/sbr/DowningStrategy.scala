@@ -154,10 +154,9 @@ import pekko.coordination.lease.scaladsl.Lease
 
   def unreachableMembers(
       includingPossiblyUp: Boolean,
-      excludingPossiblyExiting: Boolean): immutable.SortedSet[Member] = {
+      excludingPossiblyExiting: Boolean): immutable.SortedSet[Member] =
     if (unreachable.isEmpty) immutable.SortedSet.empty
     else members(includingPossiblyUp, excludingPossiblyExiting).filter(unreachable)
-  }
 
   def unreachableMembersWithRole: immutable.SortedSet[Member] =
     unreachableMembersWithRole(includingPossiblyUp = false, excludingPossiblyExiting = false)
@@ -198,7 +197,7 @@ import pekko.coordination.lease.scaladsl.Lease
     _unreachable -= m.uniqueAddress
   }
 
-  private def removeFromAllMembers(m: Member): Unit = {
+  private def removeFromAllMembers(m: Member): Unit =
     if (ordering eq Member.ordering) {
       _allMembers -= m
     } else {
@@ -206,22 +205,19 @@ import pekko.coordination.lease.scaladsl.Lease
       // ageOrdering is using upNumber and that will change when Joining -> Up
       _allMembers = _allMembers.filterNot(_.uniqueAddress == m.uniqueAddress)
     }
-  }
 
   @InternalStableApi
   def reachability: Reachability =
     _reachability
 
-  private def isInSelfDc(node: UniqueAddress): Boolean = {
+  private def isInSelfDc(node: UniqueAddress): Boolean =
     _allMembers.exists(m => m.uniqueAddress == node && m.dataCenter == selfDc)
-  }
 
-  private[sbr] def setReachability(r: Reachability): Unit = {
+  private[sbr] def setReachability(r: Reachability): Unit =
     // skip records with Reachability.Reachable, and skip records related to other DC
     _reachability = r.filterRecords(record =>
       (record.status == Reachability.Unreachable || record.status == Reachability.Terminated) &&
       isInSelfDc(record.observer) && isInSelfDc(record.subject))
-  }
 
   def seenBy: Set[Address] =
     _seenBy
@@ -241,9 +237,8 @@ import pekko.coordination.lease.scaladsl.Lease
    *
    * Those cases will not happen for clean splits and crashed nodes.
    */
-  def indirectlyConnected: Set[UniqueAddress] = {
+  def indirectlyConnected: Set[UniqueAddress] =
     indirectlyConnectedFromIntersectionOfObserversAndSubjects.union(indirectlyConnectedFromSeenCurrentGossip)
-  }
 
   private def indirectlyConnectedFromIntersectionOfObserversAndSubjects: Set[UniqueAddress] = {
     // cycle in unreachability graph
@@ -251,12 +246,11 @@ import pekko.coordination.lease.scaladsl.Lease
     observers.intersect(reachability.allUnreachableOrTerminated)
   }
 
-  private def indirectlyConnectedFromSeenCurrentGossip: Set[UniqueAddress] = {
+  private def indirectlyConnectedFromSeenCurrentGossip: Set[UniqueAddress] =
     reachability.records.flatMap { r =>
       if (seenBy(r.subject.address)) r.observer :: r.subject :: Nil
       else Nil
     }.toSet
-  }
 
   def hasIndirectlyConnected: Boolean = indirectlyConnected.nonEmpty
 
@@ -290,7 +284,7 @@ import pekko.coordination.lease.scaladsl.Lease
     }
   }
 
-  private def additionalNodesToDownWhenIndirectlyConnected(downable: Set[UniqueAddress]): Set[UniqueAddress] = {
+  private def additionalNodesToDownWhenIndirectlyConnected(downable: Set[UniqueAddress]): Set[UniqueAddress] =
     if (unreachableButNotIndirectlyConnected.isEmpty)
       Set.empty
     else {
@@ -324,19 +318,16 @@ import pekko.coordination.lease.scaladsl.Lease
         _reachability = originalReachability
       }
     }
-  }
 
-  def isAllUnreachableDownOrExiting: Boolean = {
+  def isAllUnreachableDownOrExiting: Boolean =
     _unreachable.isEmpty ||
     unreachableMembers.forall(m => m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
-  }
 
-  def reverseDecision(decision: AcquireLeaseDecision): Decision = {
+  def reverseDecision(decision: AcquireLeaseDecision): Decision =
     decision match {
       case AcquireLeaseAndDownUnreachable(_)         => DownReachable
       case AcquireLeaseAndDownIndirectlyConnected(_) => ReverseDownIndirectlyConnected
     }
-  }
 
   def decide(): Decision
 
@@ -372,7 +363,7 @@ import pekko.coordination.lease.scaladsl.Lease
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 
-  override def decide(): Decision = {
+  override def decide(): Decision =
     if (isTooManyMembers)
       DownAll
     else if (hasIndirectlyConnected)
@@ -381,7 +372,6 @@ import pekko.coordination.lease.scaladsl.Lease
       DownUnreachable
     else
       DownReachable
-  }
 
   def isTooManyMembers: Boolean =
     membersWithRole.size > (quorumSize * 2 - 1)
@@ -408,7 +398,7 @@ import pekko.coordination.lease.scaladsl.Lease
     extends DowningStrategy(selfDc, selfUniqueAddress) {
   import DowningStrategy._
 
-  override def decide(): Decision = {
+  override def decide(): Decision =
     if (hasIndirectlyConnected)
       DownIndirectlyConnected
     else {
@@ -430,9 +420,8 @@ import pekko.coordination.lease.scaladsl.Lease
 
       }
     }
-  }
 
-  private def majorityDecision(thisSide: Int, otherSide: Int, lowest: Member): Decision = {
+  private def majorityDecision(thisSide: Int, otherSide: Int, lowest: Member): Decision =
     if (thisSide == otherSide) {
       // equal size, keep the side with the lowest address (first in members)
       if (unreachable(lowest)) DownReachable else DownUnreachable
@@ -443,7 +432,6 @@ import pekko.coordination.lease.scaladsl.Lease
       // we are in minority
       DownReachable
     }
-  }
 
   /**
    * Check for edge case when membership change happens at the same time as partition.
@@ -501,7 +489,7 @@ import pekko.coordination.lease.scaladsl.Lease
   // sort by age, oldest first
   override def ordering: Ordering[Member] = Member.ageOrdering
 
-  override def decide(): Decision = {
+  override def decide(): Decision =
     if (hasIndirectlyConnected)
       DownIndirectlyConnected
     else {
@@ -525,9 +513,8 @@ import pekko.coordination.lease.scaladsl.Lease
 
       }
     }
-  }
 
-  private def oldestDecision(oldestIsOnThisSide: Boolean, thisSide: Int, otherSide: Int): Decision = {
+  private def oldestDecision(oldestIsOnThisSide: Boolean, thisSide: Int, otherSide: Int): Decision =
     if (oldestIsOnThisSide) {
       // if there are only 2 nodes in the cluster it is better to keep the oldest, even though it is alone
       // E.g. 2 nodes: thisSide=1, otherSide=1 => DownUnreachable, i.e. keep the oldest
@@ -540,7 +527,6 @@ import pekko.coordination.lease.scaladsl.Lease
       if (downIfAlone && otherSide == 1 && thisSide >= 2) DownUnreachable
       else DownReachable
     }
-  }
 
   /**
    * Check for edge case when membership change happens at the same time as partition.
@@ -605,12 +591,11 @@ import pekko.coordination.lease.scaladsl.Lease
 
   override val lease: Option[Lease] = Some(_lease)
 
-  override def decide(): Decision = {
+  override def decide(): Decision =
     if (hasIndirectlyConnected)
       AcquireLeaseAndDownIndirectlyConnected(Duration.Zero)
     else
       AcquireLeaseAndDownUnreachable(acquireLeaseDelay)
-  }
 
   private def acquireLeaseDelay: FiniteDuration =
     if (isInMinority) acquireLeaseDelayForMinority else Duration.Zero

@@ -81,9 +81,8 @@ class AskBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
@@ -95,11 +94,10 @@ class AskBenchmark {
     awaitLatch(latch)
   }
 
-  private def awaitLatch(latch: CountDownLatch): Unit = {
+  private def awaitLatch(latch: CountDownLatch): Unit =
     if (!latch.await(30, TimeUnit.SECONDS)) {
       StreamTestKit.printDebugDump(SystemMaterializer(system).materializer.supervisor)
       throw new RuntimeException("Latch didn't complete in time")
     }
-  }
 
 }

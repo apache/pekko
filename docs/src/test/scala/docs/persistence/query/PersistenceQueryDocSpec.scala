@@ -89,29 +89,25 @@ object PersistenceQueryDocSpec {
     override def eventsByPersistenceId(
         persistenceId: String,
         fromSequenceNr: Long,
-        toSequenceNr: Long): Source[EventEnvelope, NotUsed] = {
+        toSequenceNr: Long): Source[EventEnvelope, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
-    override def persistenceIds(): Source[String, NotUsed] = {
+    override def persistenceIds(): Source[String, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
-    override def currentPersistenceIds(): Source[String, NotUsed] = {
+    override def currentPersistenceIds(): Source[String, NotUsed] =
       // implement in a similar way as eventsByTag
       ???
-    }
 
     // possibility to add more plugin specific queries
 
     // #advanced-journal-query-definition
-    def byTagsWithMeta(tags: Set[String]): Source[RichEvent, QueryMetadata] = {
+    def byTagsWithMeta(tags: Set[String]): Source[RichEvent, QueryMetadata] =
       // #advanced-journal-query-definition
       // implement in a similar way as eventsByTag
       ???
-    }
 
   }
 

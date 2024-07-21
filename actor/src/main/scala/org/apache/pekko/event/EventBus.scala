@@ -196,7 +196,7 @@ trait SubchannelClassification { this: EventBus =>
   private[pekko] def hasSubscriptions(subscriber: Subscriber): Boolean =
     // FIXME binary incompatible, but I think it is safe to filter out this problem,
     //       since it is only called from new functionality in EventStreamUnsubscriber
-    cache.values.exists { _ contains subscriber }
+    cache.values.exists(_ contains subscriber)
 
   private def removeFromCache(changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
     cache = changes.foldLeft(cache) {
@@ -361,11 +361,10 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier =>
       }
     }
 
-    try {
+    try
       dissociateAsMonitored(actor)
-    } finally {
+    finally
       dissociateAsMonitor(actor)
-    }
   }
 
   @tailrec
@@ -397,12 +396,11 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier =>
    */
   protected def mapSize: Int
 
-  def publish(event: Event): Unit = {
+  def publish(event: Event): Unit =
     mappings.get.backing.get(classify(event)) match {
       case None       => ()
-      case Some(refs) => refs.foreach { _ ! event }
+      case Some(refs) => refs.foreach(_ ! event)
     }
-  }
 
   def subscribe(subscriber: Subscriber, to: Classifier): Boolean =
     if (subscriber eq null) throw new IllegalArgumentException("Subscriber is null")

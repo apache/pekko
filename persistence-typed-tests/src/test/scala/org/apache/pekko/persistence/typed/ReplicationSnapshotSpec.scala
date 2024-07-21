@@ -44,14 +44,13 @@ object ReplicationSnapshotSpec {
   def behaviorWithSnapshotting(
       entityId: String,
       replicaId: ReplicaId,
-      probe: Option[ActorRef[EventAndContext]]): Behavior[Command] = {
+      probe: Option[ActorRef[EventAndContext]]): Behavior[Command] =
     ReplicatedEventSourcing.commonJournalConfig(
       ReplicationId(EntityType, entityId, replicaId),
       AllReplicas,
       PersistenceTestKitReadJournal.Identifier)(replicationContext =>
       eventSourcedBehavior(replicationContext, probe).snapshotWhen((_, _, sequenceNr) => sequenceNr % 2 == 0))
 
-  }
 }
 
 class ReplicationSnapshotSpec

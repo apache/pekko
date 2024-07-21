@@ -69,13 +69,12 @@ import org.reactivestreams.Subscriber
 
   override def cancel(): Unit = complete()
 
-  override def error(e: Throwable): Unit = {
+  override def error(e: Throwable): Unit =
     if (!downstreamCompleted) {
       downstreamCompleted = true
       abortDownstream(e)
       if (exposedPublisher ne null) exposedPublisher.shutdown(Some(e))
     }
-  }
 
   def isClosed: Boolean = downstreamCompleted
 
@@ -94,9 +93,8 @@ import org.reactivestreams.Subscriber
     afterShutdown()
   }
 
-  override protected def cancelUpstream(): Unit = {
+  override protected def cancelUpstream(): Unit =
     downstreamCompleted = true
-  }
 
   protected def waitingExposedPublisher: Actor.Receive = {
     case ExposedPublisher(publisher) =>

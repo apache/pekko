@@ -32,7 +32,7 @@ private[pekko] trait PerfFlamesSupport { self: MultiNodeSpec =>
    *
    * Options are currently to be passed in via `export PERF_MAP_OPTIONS` etc.
    */
-  def runPerfFlames(nodes: RoleName*)(delay: FiniteDuration): Unit = {
+  def runPerfFlames(nodes: RoleName*)(delay: FiniteDuration): Unit =
     if (isPerfJavaFlamesAvailable && isNode(nodes: _*)) {
       import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -53,7 +53,6 @@ private[pekko] trait PerfFlamesSupport { self: MultiNodeSpec =>
         })
       }
     }
-  }
 
   def perfJavaFlamesPath: String =
     "/home/ubuntu/perf-java-flames"

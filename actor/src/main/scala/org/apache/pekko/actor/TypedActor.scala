@@ -158,13 +158,13 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
      * Throws the underlying exception if there's an InvocationTargetException thrown on the invocation.
      */
     def apply(instance: AnyRef): AnyRef =
-      try {
+      try
         parameters match {
           case null                     => method.invoke(instance)
           case args if args.length == 0 => method.invoke(instance)
           case args                     => method.invoke(instance, args: _*)
         }
-      } catch { case i: InvocationTargetException => throw i.getTargetException }
+      catch { case i: InvocationTargetException => throw i.getTargetException }
 
     @throws(classOf[ObjectStreamException]) private def writeReplace(): AnyRef = parameters match {
       case null => SerializedMethodCall(method.getDeclaringClass, method.getName, method.getParameterTypes, null)
@@ -299,21 +299,20 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
 
     @nowarn("msg=deprecated")
     override def postStop(): Unit =
-      try {
+      try
         withContext {
           me match {
             case l: PostStop => l.postStop()
             case _           => super.postStop()
           }
         }
-      } finally {
+      finally
         pekko.actor.TypedActor(self.context.system).invocationHandlerFor(proxyVar.get) match {
           case null =>
           case some =>
             some.actorVar.set(self.context.system.deadLetters) // Point it to the DLQ
             proxyVar.set(null.asInstanceOf[R])
         }
-      }
 
     override def preRestart(reason: Throwable, message: Option[Any]): Unit = withContext {
       me match {
@@ -482,9 +481,9 @@ object TypedActor extends ExtensionId[TypedActorExtension] with ExtensionIdProvi
             }
           case m if m.returnsJOption || m.returnsOption =>
             val f = ask(actor, m)(timeout)
-            (try {
+            (try
               Await.ready(f, timeout.duration).value
-            } catch { case _: TimeoutException => None }) match {
+            catch { case _: TimeoutException => None }) match {
               case None | Some(Success(NullResponse)) | Some(Failure(_: AskTimeoutException)) =>
                 if (m.returnsJOption) JOption.none[Any] else None
               case Some(t: Try[_]) =>

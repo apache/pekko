@@ -73,10 +73,9 @@ final private[pekko] class ActorRefSinkStage[T](
         failStage(ex)
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!completionSignalled) {
           ref ! onFailureMessage(new AbruptStageTerminationException(this))
         }
-      }
     }
 }

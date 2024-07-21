@@ -515,7 +515,7 @@ private[pekko] class ActorCell(
       val rest = messages.tail
       val message = messages.head
       message.unlink()
-      try {
+      try
         message match {
           case message: SystemMessage if shouldStash(message, currentState) => stash(message)
           case f: Failed                                                    => handleFailure(f)
@@ -530,7 +530,7 @@ private[pekko] class ActorCell(
           case Supervise(child, async)                                      => supervise(child, async)
           case NoMessage                                                    => // only here to suppress warning
         }
-      } catch handleNonFatalOrInterruptedException { e =>
+      catch handleNonFatalOrInterruptedException { e =>
           handleInvokeFailure(Nil, e)
         }
       val newState = calculateState
@@ -646,7 +646,7 @@ private[pekko] class ActorCell(
         _actor = null // ensure that we know that we failed during creation
       }
 
-    failure.foreach { throw _ }
+    failure.foreach(throw _)
 
     try {
       val created = newActor()
@@ -683,12 +683,11 @@ private[pekko] class ActorCell(
   }
 
   @tailrec
-  private def rootCauseOf(throwable: Throwable): Throwable = {
+  private def rootCauseOf(throwable: Throwable): Throwable =
     if (throwable.getCause != null && throwable.getCause != throwable)
       rootCauseOf(throwable.getCause)
     else
       throwable
-  }
 
   private def supervise(child: ActorRef, async: Boolean): Unit =
     if (!isTerminating) {

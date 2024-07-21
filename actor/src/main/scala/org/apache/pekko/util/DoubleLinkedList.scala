@@ -48,23 +48,21 @@ private[pekko] final class DoubleLinkedList[Node](
     setPrevious(node, OptionVal.none)
   }
 
-  def moveToFront(node: Node): Node = {
+  def moveToFront(node: Node): Node =
     if (first.contains(node)) {
       node
     } else {
       unlink(node)
       prepend(node)
     }
-  }
 
-  def moveToBack(node: Node): Node = {
+  def moveToBack(node: Node): Node =
     if (last.contains(node)) {
       node
     } else {
       unlink(node)
       append(node)
     }
-  }
 
   def getFirstOrElsePrepend(check: Node => Boolean, newNode: => Node): Node = first match {
     case OptionVal.Some(first) if check(first) => first

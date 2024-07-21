@@ -102,9 +102,8 @@ object ActorCreationPerfSpec {
       case IsAlive =>
         sender() ! Alive
       case Create(number, propsCreator) =>
-        for (_ <- 1 to number) {
+        for (_ <- 1 to number)
           context.actorOf(propsCreator.apply())
-        }
         sender() ! Created
       case WaitForChildren =>
         context.children.foreach(_ ! IsAlive)
@@ -204,9 +203,8 @@ class ActorCreationPerfSpec
     s"measure synchronous blocked time for $name" taggedAs PerformanceTest in {
       // note: measuring per-actor-memory-use in this scenario is skewed as the Actor contains references to counters etc!
       //       for measuring actor size use refer to the `runWithoutCounter` method
-      for (i <- 1 to nrOfRepeats) {
+      for (i <- 1 to nrOfRepeats)
         runWithCounterInside(name, s"${scenarioName}_driver_inside_$i", nrOfActors, propsCreator)
-      }
 
       reportAndClearMetrics()
     }
@@ -234,20 +232,20 @@ class ActorCreationPerfSpec
     val props1 = Props[EmptyActor]()
     registerTests("Props[EmptyActor] with same Props", () => props1)
 
-    registerTests("Props(new EmptyActor) new", () => { Props(new EmptyActor) })
+    registerTests("Props(new EmptyActor) new", () => Props(new EmptyActor))
 
     val props2 = Props(new EmptyActor)
-    registerTests("Props(new EmptyActor) same", () => { props2 })
+    registerTests("Props(new EmptyActor) same", () => props2)
 
-    registerTests("Props(classOf[EmptyArgsActor], ...) new", () => { Props(classOf[EmptyArgsActor], 4711, 1729) })
+    registerTests("Props(classOf[EmptyArgsActor], ...) new", () => Props(classOf[EmptyArgsActor], 4711, 1729))
 
     val props3 = Props(classOf[EmptyArgsActor], 4711, 1729)
-    registerTests("Props(classOf[EmptyArgsActor], ...) same", () => { props3 })
+    registerTests("Props(classOf[EmptyArgsActor], ...) same", () => props3)
 
-    registerTests("Props(new EmptyArgsActor(...)) new", () => { Props(new EmptyArgsActor(4711, 1729)) })
+    registerTests("Props(new EmptyArgsActor(...)) new", () => Props(new EmptyArgsActor(4711, 1729)))
 
     val props4 = Props(new EmptyArgsActor(4711, 1729))
-    registerTests("Props(new EmptyArgsActor(...)) same", () => { props4 })
+    registerTests("Props(new EmptyArgsActor(...)) same", () => props4)
   }
 
   override def afterTermination() = shutdownMetrics()

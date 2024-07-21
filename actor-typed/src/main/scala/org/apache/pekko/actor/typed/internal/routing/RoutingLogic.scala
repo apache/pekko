@@ -73,9 +73,8 @@ private[pekko] object RoutingLogics {
           var idx = 0
           while (idx < currentRoutees.length &&
             idx < sortedNewRoutees.length &&
-            currentRoutees(idx) == sortedNewRoutees(idx)) {
+            currentRoutees(idx) == sortedNewRoutees(idx))
             idx += 1
-          }
           idx
         }
         if (nextIdx > firstDiffIndex) nextIdx -= 1
@@ -93,9 +92,8 @@ private[pekko] object RoutingLogics {
       currentRoutees(selectedIdx)
     }
 
-    override def routeesUpdated(newRoutees: Set[ActorRef[T]]): Unit = {
+    override def routeesUpdated(newRoutees: Set[ActorRef[T]]): Unit =
       currentRoutees = newRoutees.toArray
-    }
   }
 
   final class ConsistentHashingLogic[T](virtualNodesFactor: Int, mapping: T => String, baseAddress: Address)

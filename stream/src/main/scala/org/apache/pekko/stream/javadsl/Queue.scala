@@ -89,7 +89,7 @@ object SourceQueueWithComplete {
   /**
    * Converts the queue into a `scaladsl.SourceQueueWithComplete`
    */
-  def asScala[T](queue: SourceQueueWithComplete[T]): pekko.stream.scaladsl.SourceQueueWithComplete[T] = {
+  def asScala[T](queue: SourceQueueWithComplete[T]): pekko.stream.scaladsl.SourceQueueWithComplete[T] =
     // would have been better to add `asScala` in SourceQueueWithComplete trait, but not doing
     // that for backwards compatibility reasons
     new pekko.stream.scaladsl.SourceQueueWithComplete[T] {
@@ -101,7 +101,6 @@ object SourceQueueWithComplete {
 
       def fail(ex: Throwable): Unit = queue.fail(ex)
     }
-  }
 }
 
 /**
@@ -135,7 +134,7 @@ object SinkQueueWithCancel {
   /**
    * Converts the queue into a `scaladsl.SinkQueueWithCancel`
    */
-  def asScala[T](queue: SinkQueueWithCancel[T]): pekko.stream.scaladsl.SinkQueueWithCancel[T] = {
+  def asScala[T](queue: SinkQueueWithCancel[T]): pekko.stream.scaladsl.SinkQueueWithCancel[T] =
     // would have been better to add `asScala` in SinkQueueWithCancel trait, but not doing
     // that for backwards compatibility reasons
     new pekko.stream.scaladsl.SinkQueueWithCancel[T] {
@@ -145,5 +144,4 @@ object SinkQueueWithCancel {
 
       override def cancel(): Unit = queue.cancel()
     }
-  }
 }

@@ -55,13 +55,11 @@ object AsyncTestingExampleSpec {
 
   class Producer(publisher: ActorRef[Message])(implicit scheduler: Scheduler) {
 
-    def produce(messages: Int)(implicit timeout: Timeout): Unit = {
+    def produce(messages: Int)(implicit timeout: Timeout): Unit =
       (0 until messages).foreach(publish)
-    }
 
-    private def publish(i: Int)(implicit timeout: Timeout): Future[Try[Int]] = {
+    private def publish(i: Int)(implicit timeout: Timeout): Future[Try[Int]] =
       publisher.ask(ref => Message(i, ref))
-    }
 
   }
   // #under-test-2

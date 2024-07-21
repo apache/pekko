@@ -34,12 +34,11 @@ import pekko.util.LineNumbers
 @InternalApi
 private[pekko] object InterceptorImpl {
 
-  def apply[O, I](interceptor: () => BehaviorInterceptor[O, I], nestedBehavior: Behavior[I]): Behavior[O] = {
+  def apply[O, I](interceptor: () => BehaviorInterceptor[O, I], nestedBehavior: Behavior[I]): Behavior[O] =
     BehaviorImpl.DeferredBehavior[O] { ctx =>
       val interceptorBehavior = new InterceptorImpl[O, I](interceptor(), nestedBehavior)
       interceptorBehavior.preStart(ctx)
     }
-  }
 }
 
 /**
@@ -56,9 +55,8 @@ private[pekko] final class InterceptorImpl[O, I](
   import BehaviorInterceptor._
 
   private val preStartTarget: PreStartTarget[I] = new PreStartTarget[I] {
-    override def start(ctx: TypedActorContext[_]): Behavior[I] = {
+    override def start(ctx: TypedActorContext[_]): Behavior[I] =
       Behavior.start[I](nestedBehavior, ctx.asInstanceOf[TypedActorContext[I]])
-    }
     override def toString: String = s"PreStartTarget($nestedBehavior)"
   }
 
@@ -152,9 +150,8 @@ private[pekko] final case class MonitorInterceptor[T: ClassTag](actorRef: ActorR
  * INTERNAL API
  */
 @InternalApi private[pekko] object LogMessagesInterceptor {
-  def apply[T](opts: LogOptions): BehaviorInterceptor[T, T] = {
+  def apply[T](opts: LogOptions): BehaviorInterceptor[T, T] =
     new LogMessagesInterceptor(opts).asInstanceOf[BehaviorInterceptor[T, T]]
-  }
 
   private val LogMessageTemplate = "actor [{}] received message: {}"
   private val LogSignalTemplate = "actor [{}] received signal: {}"
@@ -183,7 +180,7 @@ private[pekko] final class LogMessagesInterceptor(val opts: LogOptions) extends 
     target(ctx, signal)
   }
 
-  private def log(template: String, messageOrSignal: Any, context: TypedActorContext[Any]): Unit = {
+  private def log(template: String, messageOrSignal: Any, context: TypedActorContext[Any]): Unit =
     if (opts.enabled) {
       val selfPath = context.asScala.self.path
       opts.level match {
@@ -194,7 +191,6 @@ private[pekko] final class LogMessagesInterceptor(val opts: LogOptions) extends 
         case Level.TRACE => logger.trace(template, selfPath, messageOrSignal)
       }
     }
-  }
 
   // only once in the same behavior stack
   override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean = other match {
@@ -235,12 +231,11 @@ private[pekko] final case class TransformMessagesInterceptor[O: ClassTag, I](mat
     case _ => false
   }
 
-  def aroundReceive(ctx: TypedActorContext[O], msg: O, target: ReceiveTarget[I]): Behavior[I] = {
+  def aroundReceive(ctx: TypedActorContext[O], msg: O, target: ReceiveTarget[I]): Behavior[I] =
     matcher.applyOrElse(msg, any2NotMatchIndicator) match {
       case result if _notMatchIndicator == result => Behaviors.unhandled
       case transformed                            => target(ctx, transformed)
     }
-  }
 
   override def toString: String = s"TransformMessages(${LineNumbers(matcher)})"
 }

@@ -68,7 +68,7 @@ object ReplicatorDocSpec {
           replicatorAdapter.subscribe(key, InternalSubscribeResponse.apply)
           // #subscribe
 
-          def updated(cachedValue: Int): Behavior[Command] = {
+          def updated(cachedValue: Int): Behavior[Command] =
             Behaviors.receiveMessage[Command] {
               case Increment =>
                 replicatorAdapter.askUpdate(
@@ -115,7 +115,6 @@ object ReplicatorDocSpec {
 
                 }
             }
-          }
 
           updated(cachedValue = 0)
         }

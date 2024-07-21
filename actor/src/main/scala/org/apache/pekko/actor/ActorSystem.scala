@@ -51,9 +51,8 @@ object BootstrapSetup {
    * same as not passing any [[BootstrapSetup]] at all. You can use the returned instance to derive
    * one that has other values than defaults using the various `with`-methods.
    */
-  def apply(): BootstrapSetup = {
+  def apply(): BootstrapSetup =
     new BootstrapSetup()
-  }
 
   /**
    * Scala API: Create bootstrap settings needed for starting the actor system
@@ -92,9 +91,8 @@ object BootstrapSetup {
    * same as not passing any [[BootstrapSetup]] at all. You can use the returned instance to derive
    * one that has other values than defaults using the various `with`-methods.
    */
-  def create(): BootstrapSetup = {
+  def create(): BootstrapSetup =
     new BootstrapSetup()
-  }
 
 }
 
@@ -837,7 +835,7 @@ private[pekko] class ActorSystemImpl(
 
   protected def uncaughtExceptionHandler: Thread.UncaughtExceptionHandler =
     new Thread.UncaughtExceptionHandler() {
-      def uncaughtException(thread: Thread, cause: Throwable): Unit = {
+      def uncaughtException(thread: Thread, cause: Throwable): Unit =
         cause match {
           case NonFatal(_) | _: InterruptedException | _: NotImplementedError | _: ControlThrowable =>
             log.error(cause, "Uncaught error from thread [{}]", thread.getName)
@@ -858,7 +856,6 @@ private[pekko] class ActorSystemImpl(
               try logFatalError("shutting down", cause, thread)
               finally terminate()
         }
-      }
 
       private def logFatalError(message: String, cause: Throwable, thread: Thread): Unit = {
         // First log to stderr as this has the best chance to get through in an 'emergency panic' situation:
@@ -1061,8 +1058,8 @@ private[pekko] class ActorSystemImpl(
     }
 
   def start(): this.type = _start
-  def registerOnTermination[T](code: => T): Unit = { registerOnTermination(new Runnable { def run() = code }) }
-  def registerOnTermination(code: Runnable): Unit = { terminationCallbacks.add(code) }
+  def registerOnTermination[T](code: => T): Unit = registerOnTermination(new Runnable { def run() = code })
+  def registerOnTermination(code: Runnable): Unit = terminationCallbacks.add(code)
 
   @volatile private var terminating = false
 
@@ -1090,9 +1087,8 @@ private[pekko] class ActorSystemImpl(
     guardian.stop()
   }
 
-  override private[pekko] def isTerminating(): Boolean = {
+  override private[pekko] def isTerminating(): Boolean =
     terminating || aborting || CoordinatedShutdown(this).shutdownReason().isDefined
-  }
 
   @volatile var aborting = false
 
@@ -1166,13 +1162,13 @@ private[pekko] class ActorSystemImpl(
   }
 
   @tailrec
-  final def registerExtension[T <: Extension](ext: ExtensionId[T]): T = {
+  final def registerExtension[T <: Extension](ext: ExtensionId[T]): T =
     findExtension(ext) match {
       case null => // Doesn't already exist, commence registration
         val inProcessOfRegistration = new CountDownLatch(1)
         extensions.putIfAbsent(ext, inProcessOfRegistration) match { // Signal that registration is in process
           case null =>
-            try { // Signal was successfully sent
+            try // Signal was successfully sent
               ext.createExtension(this) match { // Create and initialize the extension
                 case null =>
                   throw new IllegalStateException(s"Extension instance created as 'null' for extension [$ext]")
@@ -1180,19 +1176,17 @@ private[pekko] class ActorSystemImpl(
                   extensions.replace(ext, inProcessOfRegistration, instance) // Replace our in process signal with the initialized extension
                   instance // Profit!
               }
-            } catch {
+            catch {
               case t: Throwable =>
                 extensions.replace(ext, inProcessOfRegistration, t) // In case shit hits the fan, remove the inProcess signal
                 throw t // Escalate to caller
-            } finally {
+            } finally
               inProcessOfRegistration.countDown() // Always notify listeners of the inProcess signal
-            }
           case _ =>
             registerExtension(ext) // Someone else is in process of registering an extension for this Extension, retry
         }
       case existing => existing.asInstanceOf[T]
     }
-  }
 
   def extension[T <: Extension](ext: ExtensionId[T]): T = findExtension(ext) match {
     case null => throw new IllegalArgumentException(s"Trying to get non-registered extension [$ext]")
@@ -1208,8 +1202,7 @@ private[pekko] class ActorSystemImpl(
      *  Throw exception when an extension fails to load (needed for backwards compatibility.
      *    when the extension cannot be found at all we throw regardless of this setting)
      */
-    def loadExtensions(key: String, throwOnLoadFail: Boolean): Unit = {
-
+    def loadExtensions(key: String, throwOnLoadFail: Boolean): Unit =
       immutableSeq(settings.config.getStringList(key)).foreach { fqcn =>
         dynamicAccess.getObjectFor[AnyRef](fqcn).recoverWith {
           case firstProblem =>
@@ -1227,7 +1220,6 @@ private[pekko] class ActorSystemImpl(
             else throw new RuntimeException(s"While trying to load extension [$fqcn]", problem)
         }
       }
-    }
 
     loadExtensions("pekko.library-extensions", throwOnLoadFail = true)
     loadExtensions("pekko.extensions", throwOnLoadFail = false)
@@ -1236,7 +1228,7 @@ private[pekko] class ActorSystemImpl(
   override def toString: String = lookupRoot.path.root.address.toString
 
   override def printTree: String = {
-    def printNode(node: ActorRef, indent: String): String = {
+    def printNode(node: ActorRef, indent: String): String =
       node match {
         case wc: ActorRefWithCell =>
           val cell = wc.underlying
@@ -1270,7 +1262,6 @@ private[pekko] class ActorSystemImpl(
         case _ =>
           indent + node.path.name + " " + Logging.simpleName(node)
       }
-    }
     printNode(lookupRoot, "")
   }
 

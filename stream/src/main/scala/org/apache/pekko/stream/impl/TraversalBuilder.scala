@@ -52,9 +52,8 @@ import pekko.util.unused
   /**
    * Concatenates two traversals building a new Traversal which traverses both.
    */
-  def concat(that: Traversal): Traversal = {
+  def concat(that: Traversal): Traversal =
     Concat.normalizeConcat(this, that)
-  }
 
   def rewireFirstTo(@unused relativeOffset: Int): Traversal = null
 }
@@ -70,7 +69,7 @@ import pekko.util.unused
    * and require less stack-space when traversing. This is only a single rotation, otherwise this implementation
    * would be O(N^2).
    */
-  def normalizeConcat(first: Traversal, second: Traversal): Traversal = {
+  def normalizeConcat(first: Traversal, second: Traversal): Traversal =
     if (second eq EmptyTraversal) first
     else if (first eq PushNotUsed) {
       // No need to push NotUsed and Pop it immediately
@@ -90,7 +89,6 @@ import pekko.util.unused
         case _ => Concat(first, second)
       }
     }
-  }
 
 }
 
@@ -173,12 +171,11 @@ import pekko.util.unused
  */
 @InternalApi private[pekko] final case class Compose(composer: AnyFunction2, reverse: Boolean = false)
     extends MaterializedValueOp {
-  def apply(arg1: Any, arg2: Any): Any = {
+  def apply(arg1: Any, arg2: Any): Any =
     if (reverse)
       composer.asInstanceOf[(Any, Any) => Any](arg2, arg1)
     else
       composer.asInstanceOf[(Any, Any) => Any](arg1, arg2)
-  }
 }
 
 /**
@@ -252,10 +249,9 @@ import pekko.util.unused
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def empty(attributes: Attributes = Attributes.none): TraversalBuilder = {
+  @InternalApi private[pekko] def empty(attributes: Attributes = Attributes.none): TraversalBuilder =
     if (attributes eq Attributes.none) cachedEmptyCompleted
     else CompletedTraversalBuilder(PushNotUsed, 0, Map.empty, attributes)
-  }
 
   /**
    * INTERNAL API
@@ -353,7 +349,7 @@ import pekko.util.unused
    * Try to find `SingleSource` or wrapped such. This is used as a
    * performance optimization in FlattenMerge and possibly other places.
    */
-  def getSingleSource[A >: Null](graph: Graph[SourceShape[A], _]): OptionVal[SingleSource[A]] = {
+  def getSingleSource[A >: Null](graph: Graph[SourceShape[A], _]): OptionVal[SingleSource[A]] =
     graph match {
       case single: SingleSource[A] @unchecked => OptionVal.Some(single)
       case _ =>
@@ -378,7 +374,6 @@ import pekko.util.unused
           case _ => OptionVal.None
         }
     }
-  }
 
   /**
    * Test if a Graph is an empty Source.
@@ -422,10 +417,9 @@ import pekko.util.unused
 
   protected def internalSetAttributes(attributes: Attributes): TraversalBuilder
 
-  def setAttributes(attributes: Attributes): TraversalBuilder = {
+  def setAttributes(attributes: Attributes): TraversalBuilder =
     if (attributes.isAsync) this.makeIsland(GraphStageTag).internalSetAttributes(attributes)
     else internalSetAttributes(attributes)
-  }
 
   def attributes: Attributes
 
@@ -579,13 +573,12 @@ import pekko.util.unused
     attributes: Attributes)
     extends TraversalBuilder {
 
-  override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
+  override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder =
     // TODO: Use automatically a linear builder if applicable
     // Create a composite, add ourselves, then the other.
     CompositeTraversalBuilder(attributes = attributes)
       .add(this, module.shape, Keep.right)
       .add(submodule, shape, combineMat)
-  }
 
   override def transformMat(f: AnyFunction1): TraversalBuilder =
     TraversalBuilder.empty().add(this, module.shape, Keep.right).transformMat(f)
@@ -598,9 +591,8 @@ import pekko.util.unused
   override def isUnwired(out: OutPort): Boolean = true
   override def isUnwired(in: InPort): Boolean = true
 
-  override def wire(out: OutPort, in: InPort): TraversalBuilder = {
+  override def wire(out: OutPort, in: InPort): TraversalBuilder =
     assign(out, offsetOf(in) - offsetOfModule(out))
-  }
 
   override def assign(out: OutPort, relativeSlot: Int): TraversalBuilder = {
     // Create a new array, with the output port assigned to its relative slot
@@ -682,7 +674,7 @@ import pekko.util.unused
       attributes)
   }
 
-  def addMatCompose(t: Traversal, matCompose: AnyFunction2): Traversal = {
+  def addMatCompose(t: Traversal, matCompose: AnyFunction2): Traversal =
     if (matCompose eq Keep.left)
       Pop.concat(t)
     else if (matCompose eq Keep.right)
@@ -691,12 +683,11 @@ import pekko.util.unused
       t.concat(Pop).concat(Pop).concat(PushNotUsed)
     else
       t.concat(Compose(matCompose, reverse = true))
-  }
 
   def fromBuilder(
       traversalBuilder: TraversalBuilder,
       shape: Shape,
-      combine: AnyFunction2 = Keep.right): LinearTraversalBuilder = {
+      combine: AnyFunction2 = Keep.right): LinearTraversalBuilder =
     traversalBuilder match {
       case linear: LinearTraversalBuilder =>
         if (combine eq Keep.right) linear
@@ -737,7 +728,6 @@ import pekko.util.unused
           beforeBuilder = EmptyTraversal)
 
     }
-  }
 }
 
 /**
@@ -765,11 +755,10 @@ import pekko.util.unused
 
   protected def isEmpty: Boolean = inSlots == 0 && outPort.isEmpty
 
-  override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder = {
+  override def add(submodule: TraversalBuilder, shape: Shape, combineMat: AnyFunction2): TraversalBuilder =
     throw new UnsupportedOperationException(
       "LinearTraversal does not support free-form addition. Add it into a" +
       "composite builder instead and add the second module to that.")
-  }
 
   /**
    * This builder can always return a traversal.
@@ -783,10 +772,9 @@ import pekko.util.unused
   override def internalSetAttributes(attributes: Attributes): LinearTraversalBuilder =
     copy(attributes = attributes)
 
-  override def setAttributes(attributes: Attributes): LinearTraversalBuilder = {
+  override def setAttributes(attributes: Attributes): LinearTraversalBuilder =
     if (attributes.isAsync) this.makeIsland(GraphStageTag).internalSetAttributes(attributes)
     else internalSetAttributes(attributes)
-  }
 
   private def applyIslandAndAttributes(t: Traversal): Traversal = {
     val withIslandTag = islandTag match {
@@ -804,17 +792,16 @@ import pekko.util.unused
    * last. This method tears down the traversal until it finds that [[MaterializeAtomic]], changes the mapping,
    * then rebuilds the Traversal.
    */
-  private def rewireLastOutTo(traversal: Traversal, relativeOffset: Int): Traversal = {
+  private def rewireLastOutTo(traversal: Traversal, relativeOffset: Int): Traversal =
     // If, by luck, the offset is the same as it would be in the normal case, no transformation is needed
     if (relativeOffset == -1) traversal
     else traversal.rewireFirstTo(relativeOffset)
-  }
 
   /**
    * Since this is a linear traversal, this should not be called in most of the cases. The only notable
    * exception is when a Flow is wired to itself.
    */
-  override def wire(out: OutPort, in: InPort): TraversalBuilder = {
+  override def wire(out: OutPort, in: InPort): TraversalBuilder =
     if (outPort.contains(out) && inPort.contains(in)) {
       pendingBuilder match {
         case OptionVal.Some(composite) =>
@@ -835,9 +822,8 @@ import pekko.util.unused
       }
     } else
       throw new IllegalArgumentException(s"The ports $in and $out cannot be accessed in this builder.")
-  }
 
-  override def offsetOfModule(out: OutPort): Int = {
+  override def offsetOfModule(out: OutPort): Int =
     if (outPort.contains(out)) {
       pendingBuilder match {
         case OptionVal.Some(composite) => composite.offsetOfModule(out)
@@ -845,18 +831,16 @@ import pekko.util.unused
       }
     } else
       throw new IllegalArgumentException(s"Port $out cannot be accessed in this builder")
-  }
 
   override def isUnwired(out: OutPort): Boolean = outPort.contains(out)
   override def isUnwired(in: InPort): Boolean = inPort.contains(in)
 
-  override def offsetOf(in: InPort): Int = {
+  override def offsetOf(in: InPort): Int =
     if (inPort.contains(in)) inOffset
     else
       throw new IllegalArgumentException(s"Port $in cannot be accessed in this builder")
-  }
 
-  override def assign(out: OutPort, relativeSlot: Int): TraversalBuilder = {
+  override def assign(out: OutPort, relativeSlot: Int): TraversalBuilder =
     if (outPort.contains(out)) {
       pendingBuilder match {
         case OptionVal.Some(composite) =>
@@ -871,7 +855,6 @@ import pekko.util.unused
       }
     } else
       throw new IllegalArgumentException(s"Port $out cannot be assigned in this builder")
-  }
 
   override def isTraversalComplete: Boolean = outPort.isEmpty
 
@@ -1019,10 +1002,9 @@ import pekko.util.unused
         /*
          * We have almost finished the traversal for _this_ builder, we only need to apply attributes and islands.
          */
-        val finalTraversalForThis = {
+        val finalTraversalForThis =
           // Now add the island tags, attributes, and the opcodes that will compose the materialized values with toAppend
           LinearTraversalBuilder.addMatCompose(applyIslandAndAttributes(assembledTraversalForThis), matCompose)
-        }
 
         /*
          * We have finished "this" builder, now we need to construct the new builder as the result of appending.
@@ -1108,9 +1090,8 @@ import pekko.util.unused
 
   }
 
-  override def transformMat(f: AnyFunction1): LinearTraversalBuilder = {
+  override def transformMat(f: AnyFunction1): LinearTraversalBuilder =
     copy(traversalSoFar = traversalSoFar.concat(Transform(f)))
-  }
 
   /**
    * Wraps the builder in an island that can be materialized differently, using async boundaries to bridge
@@ -1210,7 +1191,7 @@ import pekko.util.unused
   /**
    * Convert this builder to a [[CompletedTraversalBuilder]] if there are no more unwired outputs.
    */
-  def completeIfPossible: TraversalBuilder = {
+  def completeIfPossible: TraversalBuilder =
     if (unwiredOuts == 0) {
       var traversal: Traversal = finalSteps
       var remaining = reverseBuildSteps
@@ -1234,7 +1215,6 @@ import pekko.util.unused
       // to be embedded in a larger graph, making partial graph reuse much more efficient.
       CompletedTraversalBuilder(traversalSoFar = finalTraversal, inSlots, inOffsets, attributes)
     } else this
-  }
 
   /**
    * Assign an output port a relative slot (relative to the base input slot of its module, see [[MaterializeAtomic]])
@@ -1354,19 +1334,16 @@ import pekko.util.unused
     added.completeIfPossible
   }
 
-  def wire(out: OutPort, in: InPort): TraversalBuilder = {
+  def wire(out: OutPort, in: InPort): TraversalBuilder =
     copy(inOffsets = inOffsets - in).assign(out, offsetOf(in) - offsetOfModule(out))
-  }
 
-  override def transformMat(f: AnyFunction1): TraversalBuilder = {
+  override def transformMat(f: AnyFunction1): TraversalBuilder =
     copy(finalSteps = finalSteps.concat(Transform(f)))
-  }
 
-  override def makeIsland(islandTag: IslandTag): TraversalBuilder = {
+  override def makeIsland(islandTag: IslandTag): TraversalBuilder =
     this.islandTag match {
       case OptionVal.None => copy(islandTag = OptionVal(islandTag))
       case _ =>
         this // Wrapping with an island, then immediately re-wrapping makes the second island empty, so can be omitted
     }
-  }
 }

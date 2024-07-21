@@ -254,18 +254,16 @@ object ProducerController {
 
   def apply[A: ClassTag](
       producerId: String,
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     Behaviors.setup { context =>
       ProducerControllerImpl(producerId, durableQueueBehavior, ProducerController.Settings(context.system))
     }
-  }
 
   def apply[A: ClassTag](
       producerId: String,
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     ProducerControllerImpl(producerId, durableQueueBehavior, settings)
-  }
 
   /**
    * INTERNAL API
@@ -283,9 +281,8 @@ object ProducerController {
       producerId: String,
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
       settings: Settings,
-      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] = {
+      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] =
     ProducerControllerImpl(producerId, durableQueueBehavior, settings, send)
-  }
 
   /**
    * Java API
@@ -293,9 +290,8 @@ object ProducerController {
   def create[A](
       messageClass: Class[A],
       producerId: String,
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     apply(producerId, durableQueueBehavior.toScala)(ClassTag(messageClass))
-  }
 
   /**
    * Java API
@@ -304,8 +300,7 @@ object ProducerController {
       messageClass: Class[A],
       producerId: String,
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     apply(producerId, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
-  }
 
 }

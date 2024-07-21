@@ -21,7 +21,7 @@ object CopyrightHeaderForProtobuf extends AutoPlugin {
   override lazy val requires = CopyrightHeader
   override lazy val trigger = allRequirements
 
-  override lazy val projectSettings: Seq[Def.Setting[_]] = {
+  override lazy val projectSettings: Seq[Def.Setting[_]] =
     Seq(Compile, Test).flatMap { config =>
       inConfig(config) {
         Seq(
@@ -30,5 +30,4 @@ object CopyrightHeaderForProtobuf extends AutoPlugin {
           headerMappings := headerMappings.value ++ Map(HeaderFileType("proto") -> cStyleComment))
       }
     }
-  }
 }

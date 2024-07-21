@@ -70,9 +70,8 @@ class LruBoundedCacheBench {
   }
 
   @Benchmark
-  def addOne_lruCache(): String = {
+  def addOne_lruCache(): String =
     lruCache.getOrCompute(toAdd)
-  }
 
   @Benchmark
   def addOne_hashMap(): String = {

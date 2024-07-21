@@ -51,9 +51,8 @@ class ActorConfigurationVerificationSpec
     with BeforeAndAfterEach {
   import ActorConfigurationVerificationSpec._
 
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     system.eventStream.publish(Mute(EventFilter[ConfigurationException]("")))
-  }
 
   "An Actor configured with a BalancingDispatcher" must {
     "fail verification with a ConfigurationException if also configured with a RoundRobinPool" in {

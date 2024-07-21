@@ -94,9 +94,8 @@ object DeprecatedTlsSpec {
         new OutHandler {
           override def onPull(): Unit = pull(in)
         })
-      override def onTimer(x: Any): Unit = {
+      override def onTimer(x: Any): Unit =
         failStage(new TimeoutException(s"timeout expired, last element was $last"))
-      }
     }
   }
 
@@ -378,7 +377,7 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
     for {
       commPattern <- communicationPatterns
       scenario <- scenarios
-    } {
+    }
       s"work in mode ${commPattern.name} while sending ${scenario.name}" in {
         val onRHS = debug.via(scenario.flow)
         val output =
@@ -411,7 +410,6 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
 
         commPattern.cleanup()
       }
-    }
 
     "emit an error if the TLS handshake fails certificate checks" in {
       val getError = Flow[SslTlsInbound]
@@ -507,9 +505,9 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
         Source(scenario.inputs)
           .via(outFlow)
           .via(inFlow)
-          .map(result => {
+          .map { result =>
             ks.shutdown(); result
-          })
+          }
           .runWith(Sink.last)
 
       Await.result(f, 8.second).utf8String should be(scenario.output.utf8String)
@@ -538,13 +536,12 @@ class DeprecatedTlsSpec extends StreamSpec(DeprecatedTlsSpec.configOverrides) wi
     }
   }
 
-  def rootCauseOf(e: Throwable): Throwable = {
+  def rootCauseOf(e: Throwable): Throwable =
     if (JavaVersion.majorVersion >= 11) e
     // Wrapped in extra 'General SSLEngine problem' (sometimes multiple)
     // on 1.8.0-265 and before, but not 1.8.0-272 and later...
     else if (e.isInstanceOf[SSLHandshakeException]) rootCauseOf(e.getCause)
     else e
-  }
 
   "A SslTlsPlacebo" must {
 

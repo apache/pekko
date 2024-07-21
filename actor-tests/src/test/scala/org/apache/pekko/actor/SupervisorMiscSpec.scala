@@ -52,7 +52,7 @@ class SupervisorMiscSpec extends PekkoSpec(SupervisorMiscSpec.config) with Defau
           new Supervisor(OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = 5 seconds)(List(classOf[Exception])))))
 
         val workerProps = Props(new Actor {
-          override def postRestart(cause: Throwable): Unit = { countDownLatch.countDown() }
+          override def postRestart(cause: Throwable): Unit = countDownLatch.countDown()
           def receive = {
             case "status" => this.sender() ! "OK"
             case _        => this.context.stop(self)

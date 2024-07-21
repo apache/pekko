@@ -365,7 +365,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   implicit final def total2pf(transitionHandler: (S, S) => Unit): TransitionHandler =
     new TransitionHandler {
       def isDefinedAt(in: (S, S)) = true
-      def apply(in: (S, S)): Unit = { transitionHandler(in._1, in._2) }
+      def apply(in: (S, S)): Unit = transitionHandler(in._1, in._2)
     }
 
   /**
@@ -452,7 +452,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   private val stateFunctions = mutable.Map[S, StateFunction]()
   private val stateTimeouts = mutable.Map[S, Timeout]()
 
-  private def register(name: S, function: StateFunction, timeout: Timeout): Unit = {
+  private def register(name: S, function: StateFunction, timeout: Timeout): Unit =
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name).orElse(function)
       stateTimeouts(name) = timeout.orElse(stateTimeouts(name))
@@ -460,7 +460,6 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
       stateFunctions(name) = function
       stateTimeouts(name) = timeout
     }
-  }
 
   /*
    * unhandled event handler
@@ -483,7 +482,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S): Unit = {
     val tuple = (prev, next)
-    for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te <- transitionEvent) if (te.isDefinedAt(tuple)) te(tuple)
   }
 
   /*
@@ -547,7 +546,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
     applyState(nextState)
   }
 
-  private[pekko] def applyState(nextState: State): Unit = {
+  private[pekko] def applyState(nextState: State): Unit =
     nextState.stopReason match {
       case None => makeTransition(nextState)
       case _ =>
@@ -557,9 +556,8 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
         terminate(nextState)
         context.stop(self)
     }
-  }
 
-  private[pekko] def makeTransition(nextState: State): Unit = {
+  private[pekko] def makeTransition(nextState: State): Unit =
     if (!stateFunctions.contains(nextState.stateName)) {
       terminate(stay().withStopReason(Failure("Next state %s does not exist".format(nextState.stateName))))
     } else {
@@ -588,7 +586,6 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
         }
       }
     }
-  }
 
   /**
    * Call `onTermination` hook; if you want to retain this behavior when
@@ -608,7 +605,7 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
     super.postStop()
   }
 
-  private def terminate(nextState: State): Unit = {
+  private def terminate(nextState: State): Unit =
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
@@ -620,7 +617,6 @@ trait PersistentFSMBase[S, D, E] extends Actor with Listeners with ActorLogging 
       if (terminateEvent.isDefinedAt(stopEvent))
         terminateEvent(stopEvent)
     }
-  }
 
   /**
    * By default [[PersistentFSM.Failure]] is logged at error level and other reason

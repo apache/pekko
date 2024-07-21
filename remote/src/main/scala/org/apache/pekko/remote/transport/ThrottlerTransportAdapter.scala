@@ -129,7 +129,7 @@ object ThrottlerTransportAdapter {
         true // Allow messages larger than capacity through, it will be recorded as negative tokens
       } else min(availableTokens + tokensGenerated(nanoTimeOfSend), capacity) >= tokens
 
-    override def tryConsumeTokens(nanoTimeOfSend: Long, tokens: Int): (ThrottleMode, Boolean) = {
+    override def tryConsumeTokens(nanoTimeOfSend: Long, tokens: Int): (ThrottleMode, Boolean) =
       if (isAvailable(nanoTimeOfSend, tokens))
         (
           this.copy(
@@ -137,7 +137,6 @@ object ThrottlerTransportAdapter {
             availableTokens = min(availableTokens - tokens + tokensGenerated(nanoTimeOfSend), capacity)),
           true)
       else (this, false)
-    }
 
     override def timeToAvailable(currentNanoTime: Long, tokens: Int): FiniteDuration = {
       val needed = (if (tokens > capacity) 1 else tokens) - tokensGenerated(currentNanoTime)
@@ -304,7 +303,7 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
       val naked = nakedAddress(handle.remoteAddress)
       val inMode = getInboundMode(naked)
       wrappedHandle.outboundThrottleMode.set(getOutboundMode(naked))
-      wrappedHandle.readHandlerPromise.future.map { ListenerAndMode(_, inMode) }.pipeTo(wrappedHandle.throttlerActor)
+      wrappedHandle.readHandlerPromise.future.map(ListenerAndMode(_, inMode)).pipeTo(wrappedHandle.throttlerActor)
       handleTable ::= naked -> wrappedHandle
       statusPromise.success(wrappedHandle)
     case SetThrottle(address, direction, mode) =>
@@ -340,26 +339,23 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
 
   }
 
-  private def getInboundMode(nakedAddress: Address): ThrottleMode = {
+  private def getInboundMode(nakedAddress: Address): ThrottleMode =
     throttlingModes.get(nakedAddress) match {
       case Some((mode, direction)) if direction.includes(Direction.Receive) => mode
       case _                                                                => Unthrottled
     }
-  }
 
-  private def getOutboundMode(nakedAddress: Address): ThrottleMode = {
+  private def getOutboundMode(nakedAddress: Address): ThrottleMode =
     throttlingModes.get(nakedAddress) match {
       case Some((mode, direction)) if direction.includes(Direction.Send) => mode
       case _                                                             => Unthrottled
     }
-  }
 
-  private def setMode(nakedAddress: Address, handle: ThrottlerHandle): Future[SetThrottleAck.type] = {
+  private def setMode(nakedAddress: Address, handle: ThrottlerHandle): Future[SetThrottleAck.type] =
     throttlingModes.get(nakedAddress) match {
       case Some((mode, direction)) => setMode(handle, mode, direction)
       case None                    => setMode(handle, Unthrottled, Direction.Both)
     }
-  }
 
   private def setMode(
       handle: ThrottlerHandle,
@@ -376,7 +372,7 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
   // silent because of use of isTerminated
   @nowarn("msg=deprecated")
   private def askModeWithDeathCompletion(target: ActorRef, mode: ThrottleMode)(
-      implicit timeout: Timeout): Future[SetThrottleAck.type] = {
+      implicit timeout: Timeout): Future[SetThrottleAck.type] =
     if (target.isTerminated) Future.successful(SetThrottleAck)
     else {
       val internalTarget = target.asInstanceOf[InternalActorRef]
@@ -384,7 +380,8 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
         PromiseActorRef(internalTarget.provider, timeout, target, mode.getClass.getName, internalTarget.path.name)
       internalTarget.sendSystemMessage(Watch(internalTarget, ref))
       target.tell(mode, ref)
-      ref.result.future.transform({
+      ref.result.future.transform(
+        {
           case Terminated(t) if t.path == target.path =>
             SetThrottleAck
           case SetThrottleAck =>
@@ -394,7 +391,6 @@ private[transport] class ThrottlerManager(wrappedTransport: Transport)
             throw new IllegalArgumentException() // won't happen, compiler exhaustiveness check pleaser
         }, t => { internalTarget.sendSystemMessage(Unwatch(target, ref)); t })(ExecutionContexts.parasitic)
     }
-  }
 
   private def wrapHandle(
       originalHandle: AssociationHandle,
@@ -572,20 +568,19 @@ private[transport] class ThrottledAssociation(
   }
 
   // This method captures ASSOCIATE packets and extracts the origin address
-  private def peekOrigin(b: ByteString): Option[Address] = {
-    try {
+  private def peekOrigin(b: ByteString): Option[Address] =
+    try
       PekkoPduProtobufCodec.decodePdu(b) match {
         case Associate(info) => Some(info.origin)
         case _               => None
       }
-    } catch {
+    catch {
       // This layer should not care about malformed packets. Also, this also useful for testing, because
       // arbitrary payload could be passed in
       case NonFatal(_) => None
     }
-  }
 
-  def forwardOrDelay(payload: ByteString): Unit = {
+  def forwardOrDelay(payload: ByteString): Unit =
     if (inboundThrottleMode == Blackhole) {
       // Do nothing
     } else {
@@ -603,7 +598,6 @@ private[transport] class ThrottledAssociation(
         throttledMessages = throttledMessages :+ payload
       }
     }
-  }
 
   def scheduleDequeue(delay: FiniteDuration): Unit = inboundThrottleMode match {
     case Blackhole                   => // Do nothing
@@ -648,8 +642,7 @@ private[transport] final case class ThrottlerHandle(_wrappedHandle: AssociationH
 
   override def disassociate(): Unit = throttlerActor ! PoisonPill
 
-  def disassociateWithFailure(reason: DisassociateInfo): Unit = {
+  def disassociateWithFailure(reason: DisassociateInfo): Unit =
     throttlerActor ! ThrottledAssociation.FailWith(reason)
-  }
 
 }

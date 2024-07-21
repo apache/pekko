@@ -140,9 +140,8 @@ import pekko.remote.ByteStringUtils
     b.build().toByteArray()
   }
 
-  private def durableQueueMessageSentToBinary(m: DurableProducerQueue.MessageSent[_]): Array[Byte] = {
+  private def durableQueueMessageSentToBinary(m: DurableProducerQueue.MessageSent[_]): Array[Byte] =
     durableQueueMessageSentToProto(m).toByteArray()
-  }
 
   private def durableQueueMessageSentToProto(m: DurableProducerQueue.MessageSent[_]): ReliableDelivery.MessageSent = {
     val b = ReliableDelivery.MessageSent.newBuilder()
@@ -163,9 +162,8 @@ import pekko.remote.ByteStringUtils
     b.build()
   }
 
-  private def durableQueueConfirmedToBinary(m: DurableProducerQueue.Confirmed): _root_.scala.Array[Byte] = {
+  private def durableQueueConfirmedToBinary(m: DurableProducerQueue.Confirmed): _root_.scala.Array[Byte] =
     durableQueueConfirmedToProto(m.confirmationQualifier, m.seqNr, m.timestampMillis).toByteArray()
-  }
 
   private def durableQueueConfirmedToProto(
       qualifier: String,

@@ -144,12 +144,11 @@ private[pekko] class RoutedActorCell(
   /**
    * Route the message via the router to the selected destination.
    */
-  override def sendMessage(envelope: Envelope): Unit = {
+  override def sendMessage(envelope: Envelope): Unit =
     if (routerConfig.isManagementMessage(envelope.message))
       super.sendMessage(envelope)
     else
       router.route(envelope.message, envelope.sender)
-  }
 
 }
 

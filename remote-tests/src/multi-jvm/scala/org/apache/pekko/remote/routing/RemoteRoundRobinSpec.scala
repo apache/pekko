@@ -107,9 +107,8 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
         val connectionCount = 3
         val iterationCount = 10
 
-        for (_ <- 0 until iterationCount; _ <- 0 until connectionCount) {
+        for (_ <- 0 until iterationCount; _ <- 0 until connectionCount)
           actor ! "hit"
-        }
 
         val replies: Map[Address, Int] = receiveWhile(5 seconds, messages = connectionCount * iterationCount) {
           case ref: ActorRef =>
@@ -123,7 +122,7 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
         actor ! Broadcast(PoisonPill)
 
         enterBarrier("end")
-        replies.values.foreach { _ should ===(iterationCount) }
+        replies.values.foreach(_ should ===(iterationCount))
         replies.get(node(fourth).address) should ===(None)
 
         // shut down the actor before we let the other node(s) shut down so we don't try to send
@@ -195,9 +194,8 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
         val connectionCount = 3
         val iterationCount = 10
 
-        for (_ <- 0 until iterationCount; _ <- 0 until connectionCount) {
+        for (_ <- 0 until iterationCount; _ <- 0 until connectionCount)
           actor ! "hit"
-        }
 
         val replies: Map[Address, Int] = receiveWhile(5 seconds, messages = connectionCount * iterationCount) {
           case ref: ActorRef => ref.path.address
@@ -206,7 +204,7 @@ class RemoteRoundRobinSpec(multiNodeConfig: RemoteRoundRobinConfig)
         }
 
         enterBarrier("end")
-        replies.values.foreach { _ should ===(iterationCount) }
+        replies.values.foreach(_ should ===(iterationCount))
         replies.get(node(fourth).address) should ===(None)
       }
 

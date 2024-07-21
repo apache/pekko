@@ -158,9 +158,8 @@ class TcpSpec extends StreamSpec("""
           .runFold(ByteString.empty)((acc, in) => acc ++ in)
       val serverConnection = server.waitAccept()
 
-      for (in <- testInput) {
+      for (in <- testInput)
         serverConnection.write(in)
-      }
 
       serverConnection.confirmedClose()
       Await.result(resultFuture, 3.seconds) should be(expectedOutput)
@@ -581,9 +580,9 @@ class TcpSpec extends StreamSpec("""
 
         // Some more verbose info when #21839 happens again
         system2.actorSelection(path).tell(Identify(()), probe.ref)
-        try {
+        try
           probe.expectMsgType[ActorIdentity].ref.get
-        } catch {
+        catch {
           case _: AssertionError | _: NoSuchElementException =>
             val tree = system2.asInstanceOf[ExtendedActorSystem].printTree
             fail(s"No TCP selector actor running at [$path], actor tree: $tree")
@@ -593,9 +592,8 @@ class TcpSpec extends StreamSpec("""
         result.failed.futureValue shouldBe a[StreamTcpException]
 
         binding.unbind()
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system2)
-      }
     }
 
     "provide full exceptions when connection attempt fails because name cannot be resolved" in {
@@ -617,16 +615,15 @@ class TcpSpec extends StreamSpec("""
 
         test.getCause shouldBe a[UnknownHostException]
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(systemWithBrokenDns)
-      }
     }
   }
 
   "TCP listen stream" must {
 
     // Reusing handler
-    val echoHandler = Sink.foreach[Tcp.IncomingConnection] { _.flow.join(Flow[ByteString]).run() }
+    val echoHandler = Sink.foreach[Tcp.IncomingConnection](_.flow.join(Flow[ByteString]).run())
 
     "be able to implement echo" in {
       val serverAddress = temporaryServerAddress()

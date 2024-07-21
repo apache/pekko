@@ -31,13 +31,12 @@ object DeviceGroupQuery {
       deviceIdToActor: Map[String, ActorRef[Device.Command]],
       requestId: Long,
       requester: ActorRef[DeviceManager.RespondAllTemperatures],
-      timeout: FiniteDuration): Behavior[Command] = {
+      timeout: FiniteDuration): Behavior[Command] =
     Behaviors.setup { context =>
       Behaviors.withTimers { timers =>
         new DeviceGroupQuery(deviceIdToActor, requestId, requester, timeout, context, timers)
       }
     }
-  }
 
   trait Command
 
@@ -121,14 +120,13 @@ class DeviceGroupQuery(
   // #query-state
 
   // #query-collect-reply
-  private def respondWhenAllCollected(): Behavior[Command] = {
+  private def respondWhenAllCollected(): Behavior[Command] =
     if (stillWaiting.isEmpty) {
       requester ! RespondAllTemperatures(requestId, repliesSoFar)
       Behaviors.stopped
     } else {
       this
     }
-  }
   // #query-collect-reply
   // #query-outline
 }

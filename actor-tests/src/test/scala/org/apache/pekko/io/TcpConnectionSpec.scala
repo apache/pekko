@@ -257,9 +257,8 @@ class TcpConnectionSpec extends PekkoSpec("""
         val writer = Files.newBufferedWriter(tmpFile)
         val oneKByteOfF = Array.fill[Char](1000)('F')
         // 10 mb of f:s in a file
-        for (_ <- 0 to 10000) {
+        for (_ <- 0 to 10000)
           writer.write(oneKByteOfF)
-        }
         writer.flush()
         writer.close()
         try {
@@ -268,9 +267,8 @@ class TcpConnectionSpec extends PekkoSpec("""
           writer.send(connectionActor, WritePath(tmpFile, 0, size, Ack))
           pullFromServerSide(size, 1000000)
           writer.expectMsg(Ack)
-        } finally {
+        } finally
           fs.close()
-        }
       }
     }
 
@@ -859,7 +857,7 @@ class TcpConnectionSpec extends PekkoSpec("""
         connectionActor ! PoisonPill
         watch(connectionActor)
         expectTerminated(connectionActor)
-        an[IOException] should be thrownBy { socket.getInputStream.read() }
+        an[IOException] should be thrownBy socket.getInputStream.read()
       } catch {
         case e: SocketTimeoutException =>
           // thrown by serverSocket.accept, this may happen if network is offline
@@ -893,19 +891,17 @@ class TcpConnectionSpec extends PekkoSpec("""
     var registerCallReceiver = TestProbe()
     var interestCallReceiver = TestProbe()
 
-    def ignoreWindowsWorkaroundForTicket15766(): Unit = {
+    def ignoreWindowsWorkaroundForTicket15766(): Unit =
       // Due to the Windows workaround of #15766 we need to set an OP_CONNECT to reliably detect connection resets
       if (Helpers.isWindows) interestCallReceiver.expectMsg(OP_CONNECT)
-    }
 
-    def run(body: => Unit): Unit = {
+    def run(body: => Unit): Unit =
       try {
         setServerSocketOptions()
         localServerChannel.socket.bind(serverAddress)
         localServerChannel.configureBlocking(false)
         body
       } finally localServerChannel.close()
-    }
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit channelActor: ActorRef): Unit =
       registerCallReceiver.ref.tell(Registration(channel, initialOps), channelActor)
@@ -977,13 +973,12 @@ class TcpConnectionSpec extends PekkoSpec("""
     lazy val serverSelectionKey = registerChannel(serverSideChannel, "server")
     lazy val defaultbuffer = ByteBuffer.allocate(TestSize)
 
-    def windowsWorkaroundToDetectAbort(): Unit = {
+    def windowsWorkaroundToDetectAbort(): Unit =
       // Due to a Windows quirk we need to set an OP_CONNECT to reliably detect connection resets, see #1576
       if (Helpers.isWindows) {
         serverSelectionKey.interestOps(OP_CONNECT)
         nioSelector.select(10)
       }
-    }
 
     override def ignoreWindowsWorkaroundForTicket15766(): Unit = {
       super.ignoreWindowsWorkaroundForTicket15766()

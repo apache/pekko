@@ -44,8 +44,8 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
   }
   private val eventStream = context.system.eventStream
 
-  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] = {
-    Future.fromTry(Try(messages.map(aw => {
+  override def asyncWriteMessages(messages: immutable.Seq[AtomicWrite]): Future[immutable.Seq[Try[Unit]]] =
+    Future.fromTry(Try(messages.map { aw =>
       val timestamp = CurrentTime.now()
       val data = aw.payload.map(pl =>
         pl.payload match {
@@ -59,8 +59,7 @@ class PersistenceTestKitPlugin(@unused cfg: Config, cfgPath: String) extends Asy
         }
       }
       result
-    })))
-  }
+    }))
 
   override def asyncDeleteMessagesTo(persistenceId: String, toSequenceNr: Long): Future[Unit] =
     Future.fromTry(Try(storage.tryDelete(persistenceId, toSequenceNr)))

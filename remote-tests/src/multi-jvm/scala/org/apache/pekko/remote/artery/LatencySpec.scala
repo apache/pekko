@@ -136,9 +136,9 @@ object LatencySpec extends MultiNodeConfig {
       reporter.onMessage(1, size)
       count += 1
       val d = System.nanoTime() - sendTimes.get(count - 1)
-      try {
+      try
         histogram.recordValue(d)
-      } catch {
+      catch {
         case e: ArrayIndexOutOfBoundsException =>
           // Report it only once instead of flooding the console
           if (!reportedArrayOOB) {
@@ -358,9 +358,8 @@ abstract class LatencySpec extends RemotingMultiNodeSpec(LatencySpec) {
       enterBarrier("echo-started")
     }
 
-    for (s <- scenarios) {
+    for (s <- scenarios)
       s"be low for ${s.testName}, at ${s.messageRate} msg/s, payloadSize = ${s.payloadSize}" in test(s, reporter)
-    }
 
     // TODO add more tests
 

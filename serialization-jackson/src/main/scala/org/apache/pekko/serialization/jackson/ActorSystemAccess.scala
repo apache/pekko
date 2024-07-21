@@ -22,14 +22,13 @@ import pekko.serialization.Serialization
  * INTERNAL API
  */
 @InternalApi private[pekko] trait ActorSystemAccess {
-  def currentSystem(): ExtendedActorSystem = {
+  def currentSystem(): ExtendedActorSystem =
     Serialization.currentTransportInformation.value match {
       case null =>
         throw new IllegalStateException(
           "Can't access current ActorSystem, Serialization.currentTransportInformation was not set.")
       case Serialization.Information(_, system) => system.asInstanceOf[ExtendedActorSystem]
     }
-  }
 }
 
 /**

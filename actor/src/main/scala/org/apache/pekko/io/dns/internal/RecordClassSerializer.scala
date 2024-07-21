@@ -24,7 +24,7 @@ import pekko.util.{ ByteIterator, ByteStringBuilder }
 @InternalApi
 private[pekko] object RecordClassSerializer {
 
-  def parse(it: ByteIterator): RecordClass = {
+  def parse(it: ByteIterator): RecordClass =
     it.getShort match {
       case 1       => RecordClass.IN
       case 2       => RecordClass.CS
@@ -32,9 +32,7 @@ private[pekko] object RecordClassSerializer {
       case 255     => RecordClass.WILDCARD
       case unknown => throw new RuntimeException(s"Unexpected record class $unknown")
     }
-  }
 
-  def write(out: ByteStringBuilder, c: RecordClass): Unit = {
+  def write(out: ByteStringBuilder, c: RecordClass): Unit =
     out.putShort(c.code)
-  }
 }

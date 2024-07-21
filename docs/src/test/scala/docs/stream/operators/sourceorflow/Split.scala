@@ -35,7 +35,7 @@ object Split {
     Source(1 to 100)
       .throttle(1, 100.millis)
       .map(elem => (elem, Instant.now()))
-      .statefulMapConcat(() => {
+      .statefulMapConcat { () =>
         // stateful decision in statefulMapConcat
         // keep track of time bucket (one per second)
         var currentTimeBucket = LocalDateTime.ofInstant(Instant.ofEpochMilli(0), ZoneOffset.UTC)
@@ -49,7 +49,7 @@ object Split {
               currentTimeBucket = bucket
             List((elem, newBucket))
         }
-      })
+      }
       .splitWhen(_._2) // split when time bucket changes
       .map(_._1)
       .fold(0)((acc, _) => acc + 1) // sum

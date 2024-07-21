@@ -40,17 +40,15 @@ object Jdk9 extends AutoPlugin {
   lazy val additionalTestSourceDirectories =
     getAdditionalSourceDirectories(Test, ScalaTestSourceDirectories ++ JavaTestSourceDirectories)
 
-  private def getAdditionalSourceDirectoryNames(language: String, isTest: Boolean = false): Seq[String] = {
+  private def getAdditionalSourceDirectoryNames(language: String, isTest: Boolean = false): Seq[String] =
     for {
       version <- supportedJavaLTSVersions if version.toInt <= majorVersion
-    } yield {
+    } yield
       if (isTest) {
         s"$language-jdk$version-only"
       } else {
         s"$language-jdk-$version"
       }
-    }
-  }
 
   private def getAdditionalSourceDirectories(task: Configuration, sourceDirectoryNames: Seq[String]) = Def.setting {
     for (sourceDirectoryName <- sourceDirectoryNames)

@@ -31,19 +31,18 @@ final class TestKitJUnit5Extension() extends AfterAllCallback with BeforeTestExe
   override def beforeTestExecution(context: ExtensionContext): Unit = {
     val testInstance: Option[AnyRef] =
       if (context.getTestInstance.isPresent) Some(context.getTestInstance.get()) else None
-    testInstance.map(instance => {
+    testInstance.map { instance =>
       val annotations = AnnotationSupport.findAnnotatedFieldValues(instance, classOf[JUnit5TestKit])
       val fieldValue = annotations.stream().findFirst().orElseThrow(() =>
         throw new IllegalArgumentException("Could not find field annotated with @JUnit5TestKit"))
       testKit = Some(fieldValue.asInstanceOf[ActorTestKit])
-    })
+    }
   }
 
   /**
    * Shutdown testKit
    */
-  override def afterAll(context: ExtensionContext): Unit = {
+  override def afterAll(context: ExtensionContext): Unit =
     testKit.get.shutdownTestKit()
-  }
 
 }

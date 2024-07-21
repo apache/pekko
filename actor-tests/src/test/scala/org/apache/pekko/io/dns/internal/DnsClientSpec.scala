@@ -279,7 +279,7 @@ package internal {
       msg.answerRecs.foreach(write(_, ret))
     }
 
-    def write(msg: ResourceRecord, ret: ByteStringBuilder): Unit = {
+    def write(msg: ResourceRecord, ret: ByteStringBuilder): Unit =
       msg match {
         case ARecord(name, ttl, ip) =>
           DomainName.write(ret, name)
@@ -291,6 +291,5 @@ package internal {
         case _ =>
           throw new IllegalStateException(s"Tests cannot write messages of type ${msg.getClass}")
       }
-    }
   }
 }

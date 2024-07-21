@@ -64,9 +64,8 @@ private[pekko] object ShardedDaemonProcessImpl {
           context.messageAdapter[SelfUp](_ => StartTick),
           classOf[SelfUp])
         Behaviors.withTimers { timers =>
-          def triggerStartAll(): Unit = {
+          def triggerStartAll(): Unit =
             identities.foreach(id => shardingRef ! StartEntity(id))
-          }
           Behaviors.receiveMessage {
             case StartTick =>
               triggerStartAll()

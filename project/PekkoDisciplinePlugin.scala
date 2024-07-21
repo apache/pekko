@@ -91,9 +91,8 @@ object PekkoDisciplinePlugin extends AutoPlugin {
     Compile / doc / scalacOptions := Seq())
 
   // ignore Scala compile warnings for Java 20+
-  lazy val jvmIgnoreWarnings = {
+  lazy val jvmIgnoreWarnings =
     System.getProperty("java.version").startsWith("2")
-  }
 
   /**
    * We are a little less strict in docs

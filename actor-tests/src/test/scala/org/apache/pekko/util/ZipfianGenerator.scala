@@ -28,9 +28,8 @@ object ZipfianGenerator {
 
   private def zeta(n: Int, theta: Double): Double = {
     var sum = 0.0
-    for (i <- 1 to n) {
+    for (i <- 1 to n)
       sum += 1 / Math.pow(i, theta)
-    }
     sum
   }
 }

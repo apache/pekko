@@ -86,13 +86,12 @@ object SplitBrainResolverSpec {
 
     var downed = Set.empty[Address]
 
-    override def down(node: UniqueAddress, decision: DowningStrategy.Decision): Unit = {
+    override def down(node: UniqueAddress, decision: DowningStrategy.Decision): Unit =
       if (leader && !downed(node.address)) {
         downed += node.address
         probe ! DownCalled(node.address)
       } else if (!leader)
         probe ! "down must only be done by leader"
-    }
 
     override def receive: Receive =
       ({
@@ -128,7 +127,7 @@ class SplitBrainResolverSpec
   private val testLeaseSettings =
     new LeaseSettings("pekko-sbr", "test", new TimeoutSettings(1.second, 2.minutes, 3.seconds), ConfigFactory.empty)
 
-  def createReachability(unreachability: Seq[(Member, Member)]): Reachability = {
+  def createReachability(unreachability: Seq[(Member, Member)]): Reachability =
     Reachability(
       unreachability.map {
         case (from, to) => Reachability.Record(from.uniqueAddress, to.uniqueAddress, Reachability.Unreachable, 1)
@@ -136,7 +135,6 @@ class SplitBrainResolverSpec
       unreachability.map {
         case (from, _) => from.uniqueAddress -> 1L
       }.toMap)
-  }
 
   def extSystem: ExtendedActorSystem = system.asInstanceOf[ExtendedActorSystem]
 
@@ -165,10 +163,9 @@ class SplitBrainResolverSpec
       assertDowningSide(side3, members)
     }
 
-    def assertDowningSide(side: Set[Member], members: Set[Member]): Unit = {
+    def assertDowningSide(side: Set[Member], members: Set[Member]): Unit =
       if (side.nonEmpty)
         strategy(side).nodesToDown() should be(members.map(_.uniqueAddress))
-    }
 
     def strategy(side: Set[Member]): DowningStrategy = {
       val others = side1 ++ side2 ++ side3 -- side

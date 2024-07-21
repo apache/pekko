@@ -74,7 +74,7 @@ object SupervisionCompileOnly {
   def child(size: Long): Behavior[String] =
     Behaviors.receiveMessage(msg => child(size + msg.length))
 
-  def parent: Behavior[String] = {
+  def parent: Behavior[String] =
     Behaviors
       .supervise[String] {
         Behaviors.setup { ctx =>
@@ -91,11 +91,10 @@ object SupervisionCompileOnly {
         }
       }
       .onFailure(SupervisorStrategy.restart)
-  }
   // #restart-stop-children
 
   // #restart-keep-children
-  def parent2: Behavior[String] = {
+  def parent2: Behavior[String] =
     Behaviors.setup { ctx =>
       val child1 = ctx.spawn(child(0), "child1")
       val child2 = ctx.spawn(child(0), "child2")
@@ -113,7 +112,6 @@ object SupervisionCompileOnly {
         }
         .onFailure(SupervisorStrategy.restart.withStopChildren(false))
     }
-  }
   // #restart-keep-children
 
   trait Resource {
@@ -124,7 +122,7 @@ object SupervisionCompileOnly {
 
   @nowarn("msg=never used")
   // #restart-PreRestart-signal
-  def withPreRestart: Behavior[String] = {
+  def withPreRestart: Behavior[String] =
     Behaviors
       .supervise[String] {
         Behaviors.setup { ctx =>
@@ -146,7 +144,6 @@ object SupervisionCompileOnly {
         }
       }
       .onFailure[Exception](SupervisorStrategy.restart)
-  }
 
   // #restart-PreRestart-signal
 }

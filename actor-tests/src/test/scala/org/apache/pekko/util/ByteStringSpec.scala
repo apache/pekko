@@ -100,9 +100,8 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     is.readObject
   }
 
-  def testSer(obj: AnyRef) = {
+  def testSer(obj: AnyRef) =
     deserialize(serialize(obj)) == obj
-  }
 
   def hexFromSer(obj: AnyRef) = {
     val os = new ByteArrayOutputStream
@@ -819,19 +818,19 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
   "A ByteString" must {
     "have correct size" when {
-      "concatenating" in { check((a: ByteString, b: ByteString) => (a ++ b).size == a.size + b.size) }
-      "dropping" in { check((a: ByteString, b: ByteString) => (a ++ b).drop(b.size).size == a.size) }
-      "taking" in { check((a: ByteString, b: ByteString) => (a ++ b).take(a.size) == a) }
-      "takingRight" in { check((a: ByteString, b: ByteString) => (a ++ b).takeRight(b.size) == b) }
+      "concatenating" in check((a: ByteString, b: ByteString) => (a ++ b).size == a.size + b.size)
+      "dropping" in check((a: ByteString, b: ByteString) => (a ++ b).drop(b.size).size == a.size)
+      "taking" in check((a: ByteString, b: ByteString) => (a ++ b).take(a.size) == a)
+      "takingRight" in check((a: ByteString, b: ByteString) => (a ++ b).takeRight(b.size) == b)
       "dropping then taking" in {
         check((a: ByteString, b: ByteString) => (b ++ a ++ b).drop(b.size).take(a.size) == a)
       }
-      "droppingRight" in { check((a: ByteString, b: ByteString) => (b ++ a ++ b).drop(b.size).dropRight(b.size) == a) }
+      "droppingRight" in check((a: ByteString, b: ByteString) => (b ++ a ++ b).drop(b.size).dropRight(b.size) == a)
     }
 
     "be sequential" when {
-      "taking" in { check((a: ByteString, b: ByteString) => (a ++ b).take(a.size) == a) }
-      "dropping" in { check((a: ByteString, b: ByteString) => (a ++ b).drop(a.size) == b) }
+      "taking" in check((a: ByteString, b: ByteString) => (a ++ b).take(a.size) == a)
+      "dropping" in check((a: ByteString, b: ByteString) => (a ++ b).drop(a.size) == b)
     }
 
     "be equal to the original" when {
@@ -937,7 +936,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
     "behave like a Vector" when {
       "concatenating" in {
         check { (a: ByteString, b: ByteString) =>
-          likeVectors(a, b) { _ ++ _ }
+          likeVectors(a, b)(_ ++ _)
         }
       }
 
@@ -954,84 +953,84 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
       "calling head" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVector(a) { _.head }
+          a.isEmpty || likeVector(a)(_.head)
         }
       }
       "calling tail" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVector(a) { _.tail }
+          a.isEmpty || likeVector(a)(_.tail)
         }
       }
       "calling last" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVector(a) { _.last }
+          a.isEmpty || likeVector(a)(_.last)
         }
       }
       "calling init" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVector(a) { _.init }
+          a.isEmpty || likeVector(a)(_.init)
         }
       }
       "calling length" in {
         check { (a: ByteString) =>
-          likeVector(a) { _.length }
+          likeVector(a)(_.length)
         }
       }
 
       "calling span" in {
         check { (a: ByteString, b: Byte) =>
-          likeVector(a) { _.span(_ != b) match { case (a, b) => (a, b) } }
+          likeVector(a)(_.span(_ != b) match { case (a, b) => (a, b) })
         }
       }
 
       "calling takeWhile" in {
         check { (a: ByteString, b: Byte) =>
-          likeVector(a) { _.takeWhile(_ != b) }
+          likeVector(a)(_.takeWhile(_ != b))
         }
       }
       "calling dropWhile" in {
         check { (a: ByteString, b: Byte) =>
-          likeVector(a) { _.dropWhile(_ != b) }
+          likeVector(a)(_.dropWhile(_ != b))
         }
       }
       "calling indexWhere" in {
         check { (a: ByteString, b: Byte) =>
-          likeVector(a) { _.indexWhere(_ == b) }
+          likeVector(a)(_.indexWhere(_ == b))
         }
       }
       "calling indexWhere(p, idx)" in {
         check { (a: ByteString, b: Byte, idx: Int) =>
-          likeVector(a) { _.indexWhere(_ == b, math.max(0, idx)) }
+          likeVector(a)(_.indexWhere(_ == b, math.max(0, idx)))
         }
       }
       "calling indexOf" in {
         check { (a: ByteString, b: Byte) =>
-          likeVector(a) { _.indexOf(b) }
+          likeVector(a)(_.indexOf(b))
         }
       }
       // this actually behave weird for Vector and negative indexes - SI9936, fixed in Scala 2.12
       // so let's just skip negative indexes (doesn't make much sense anyway)
       "calling indexOf(elem, idx)" in {
         check { (a: ByteString, b: Byte, idx: Int) =>
-          likeVector(a) { _.indexOf(b, math.max(0, idx)) }
+          likeVector(a)(_.indexOf(b, math.max(0, idx)))
         }
       }
 
       "calling foreach" in {
         check { (a: ByteString) =>
           likeVector(a) { it =>
-            var acc = 0; it.foreach { acc += _ }; acc
+            var acc = 0; it.foreach(acc += _); acc
           }
         }
       }
       "calling foldLeft" in {
         check { (a: ByteString) =>
-          likeVector(a) { _.foldLeft(0) { _ + _ } }
+          likeVector(a)(_.foldLeft(0)(_ + _))
         }
       }
       "calling toArray" in {
         check { (a: ByteString) =>
-          likeVector(a) { _.toArray.toSeq }
+          likeVector(a)(_.toArray.toSeq)
         }
       }
 
@@ -1132,17 +1131,17 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
 
       "calling head" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVecIt(a) { _.head }
+          a.isEmpty || likeVecIt(a)(_.head)
         }
       }
       "calling next" in {
         check { (a: ByteString) =>
-          a.isEmpty || likeVecIt(a) { _.next() }
+          a.isEmpty || likeVecIt(a)(_.next())
         }
       }
       "calling hasNext" in {
         check { (a: ByteString) =>
-          likeVecIt(a) { _.hasNext }
+          likeVecIt(a)(_.hasNext)
         }
       }
       "calling length" in {
@@ -1152,7 +1151,7 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       }
       "calling duplicate" in {
         check { (a: ByteString) =>
-          likeVecIt(a)({ _.duplicate match { case (a, b) => (a.toSeq, b.toSeq) } }, strict = false)
+          likeVecIt(a)(_.duplicate match { case (a, b) => (a.toSeq, b.toSeq) }, strict = false)
         }
       }
 
@@ -1161,50 +1160,50 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
       // scala.collection default Iterator (see Scala issue SI-5838).
       "calling span" in {
         check { (a: ByteString, b: Byte) =>
-          likeVecIt(a)({ _.span(_ != b) match { case (a, b) => (a.toList, b.toList) } }, strict = false)
+          likeVecIt(a)(_.span(_ != b) match { case (a, b) => (a.toList, b.toList) }, strict = false)
         }
       }
 
       "calling takeWhile" in {
         check { (a: ByteString, b: Byte) =>
-          likeVecIt(a)({ _.takeWhile(_ != b).toSeq }, strict = false)
+          likeVecIt(a)(_.takeWhile(_ != b).toSeq, strict = false)
         }
       }
       "calling dropWhile" in {
         check { (a: ByteString, b: Byte) =>
-          likeVecIt(a) { _.dropWhile(_ != b).toSeq }
+          likeVecIt(a)(_.dropWhile(_ != b).toSeq)
         }
       }
       "calling indexWhere" in {
         check { (a: ByteString, b: Byte) =>
-          likeVecIt(a) { _.indexWhere(_ == b) }
+          likeVecIt(a)(_.indexWhere(_ == b))
         }
       }
       "calling indexOf" in {
         check { (a: ByteString, b: Byte) =>
-          likeVecIt(a) { _.indexOf(b) }
+          likeVecIt(a)(_.indexOf(b))
         }
       }
       "calling toSeq" in {
         check { (a: ByteString) =>
-          likeVecIt(a) { _.toSeq }
+          likeVecIt(a)(_.toSeq)
         }
       }
       "calling foreach" in {
         check { (a: ByteString) =>
           likeVecIt(a) { it =>
-            var acc = 0; it.foreach { acc += _ }; acc
+            var acc = 0; it.foreach(acc += _); acc
           }
         }
       }
       "calling foldLeft" in {
         check { (a: ByteString) =>
-          likeVecIt(a) { _.foldLeft(0) { _ + _ } }
+          likeVecIt(a)(_.foldLeft(0)(_ + _))
         }
       }
       "calling toArray" in {
         check { (a: ByteString) =>
-          likeVecIt(a) { _.toArray.toSeq }
+          likeVecIt(a)(_.toArray.toSeq)
         }
       }
 
@@ -1212,9 +1211,8 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         check { (slice: ByteStringSlice) =>
           slice match {
             case (xs, from, until) =>
-              likeVecIt(xs)({
-                  _.slice(from, until).toSeq
-                }, strict = false)
+              likeVecIt(xs)(
+                _.slice(from, until).toSeq, strict = false)
           }
         }
       }
@@ -1223,9 +1221,8 @@ class ByteStringSpec extends AnyWordSpec with Matchers with Checkers {
         check { (slice: ByteStringSlice) =>
           slice match {
             case (xs, from, until) =>
-              likeVecIt(xs)({
-                  _.drop(from).take(until - from).toSeq
-                }, strict = false)
+              likeVecIt(xs)(
+                _.drop(from).take(until - from).toSeq, strict = false)
           }
         }
       }

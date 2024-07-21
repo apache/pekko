@@ -115,7 +115,7 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
       }
       expectMsg(UpdateSuccess(KeyC, None))
 
-      replicator ! Update(KeyD, ORMultiMap.empty[String, String], WriteAll(timeout)) { _ :+ ("a" -> Set("A")) }
+      replicator ! Update(KeyD, ORMultiMap.empty[String, String], WriteAll(timeout))(_ :+ ("a" -> Set("A")))
       expectMsg(UpdateSuccess(KeyD, None))
 
       replicator ! Update(KeyE, ORMap.empty[String, GSet[String]], WriteAll(timeout)) {
@@ -150,7 +150,7 @@ class ReplicatorPruningSpec extends MultiNodeSpec(ReplicatorPruningSpec) with ST
       enterBarrier("get-old")
 
       runOn(third) {
-        replicator ! Update(KeyE, ORMap.empty[String, GSet[String]], WriteLocal) { _.remove("a") }
+        replicator ! Update(KeyE, ORMap.empty[String, GSet[String]], WriteLocal)(_.remove("a"))
         expectMsg(UpdateSuccess(KeyE, None))
       }
 

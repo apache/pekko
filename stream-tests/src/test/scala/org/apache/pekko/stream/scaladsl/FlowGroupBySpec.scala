@@ -669,7 +669,7 @@ class FlowGroupBySpec extends StreamSpec("""
         .queue[Elem](3)
         .groupBy(2, _.substream)
         .buffer(2, OverflowStrategy.backpressure)
-        .map { _.f() }
+        .map(_.f())
         .async
         .to(Sink.ignore)
         .run()

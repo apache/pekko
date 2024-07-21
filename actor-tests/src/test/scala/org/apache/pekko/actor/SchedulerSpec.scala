@@ -169,11 +169,10 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
         val barrier = TestLatch()
         import system.dispatcher
         val job = system.scheduler.scheduleOnce(timeout)(barrier.countDown())
-        try {
+        try
           Await.ready(barrier, 5000.millis)
-        } finally {
+        finally
           job.cancel()
-        }
       }
 
       "survive being stressed without cancellation" taggedAs TimingTest in {
@@ -195,9 +194,8 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
             }
         }
         val histogram = latencies.groupBy(_ / 100000000L)
-        for (k <- histogram.keys.toSeq.sorted) {
+        for (k <- histogram.keys.toSeq.sorted)
           system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
-        }
       }
     }
 
@@ -308,9 +306,9 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           val initialDelay = 200.millis.dilated
           val delay = 10.millis.dilated
           val timeout = collectCancellable(scheduleAdapter.schedule(initialDelay, delay,
-            () => {
+            () =>
               ticks.incrementAndGet()
-            }))
+          ))
           Thread.sleep(10.millis.dilated.toMillis)
           timeout.cancel()
           Thread.sleep((initialDelay + 100.millis.dilated).toMillis)
@@ -324,9 +322,9 @@ trait SchedulerSpec extends BeforeAndAfterEach with DefaultTimeout with Implicit
           val initialDelay = 90.millis.dilated
           val delay = 500.millis.dilated
           val timeout = collectCancellable(scheduleAdapter.schedule(initialDelay, delay,
-            () => {
+            () =>
               ticks.incrementAndGet()
-            }))
+          ))
           Thread.sleep((initialDelay + 200.millis.dilated).toMillis)
           timeout.cancel()
           Thread.sleep((delay + 100.millis.dilated).toMillis)
@@ -483,9 +481,8 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
             }
         }
         val histogram = latencies.groupBy(_ / 100000000L)
-        for (k <- histogram.keys.toSeq.sorted) {
+        for (k <- histogram.keys.toSeq.sorted)
           system.log.info(f"${k * 100}%3d: ${histogram(k).size}")
-        }
         expectNoMessage(1.second)
       }
 
@@ -757,15 +754,15 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
   trait Driver {
     def wakeUp(d: FiniteDuration): Unit
     def expectWait(): FiniteDuration
-    def expectWait(d: FiniteDuration): Unit = { expectWait() should ===(d) }
+    def expectWait(d: FiniteDuration): Unit = expectWait() should ===(d)
     def probe: TestProbe
     def step: FiniteDuration
     def close(): Unit
   }
 
   val localEC = new ExecutionContext {
-    def execute(runnable: Runnable): Unit = { runnable.run() }
-    def reportFailure(t: Throwable): Unit = { t.printStackTrace() }
+    def execute(runnable: Runnable): Unit = runnable.run()
+    def reportFailure(t: Throwable): Unit = t.printStackTrace()
   }
 
   @nowarn
@@ -777,10 +774,9 @@ class LightArrayRevolverSchedulerSpec extends PekkoSpec(SchedulerSpec.testConfRe
 
     @volatile var time: Long = start
     val sched = new LightArrayRevolverScheduler(config.withFallback(system.settings.config), log, tf) {
-      override protected def clock(): Long = {
+      override protected def clock(): Long =
         // println(s"clock=$time")
         time
-      }
 
       override protected def getShutdownTimeout: FiniteDuration = (10 seconds).dilated
 

@@ -49,7 +49,7 @@ private[pekko] object AdapterClusterImpl {
       // important to not eagerly refer to it or we get a cycle here
       lazy val cluster = Cluster(ctx.system)
 
-      def onSelfMemberEvent(event: MemberEvent): Unit = {
+      def onSelfMemberEvent(event: MemberEvent): Unit =
         event match {
           case ClusterEvent.MemberUp(_) =>
             seenState = Up
@@ -65,7 +65,6 @@ private[pekko] object AdapterClusterImpl {
 
           case _ => // This is fine.
         }
-      }
 
       Behaviors
         .receiveMessage[AnyRef] {
@@ -124,7 +123,7 @@ private[pekko] object AdapterClusterImpl {
         .narrow[ClusterStateSubscription]
     }
 
-  private def managerBehavior(adaptedCluster: pekko.cluster.Cluster): Behavior[ClusterCommand] = {
+  private def managerBehavior(adaptedCluster: pekko.cluster.Cluster): Behavior[ClusterCommand] =
     Behaviors.receiveMessage {
       case Join(address) =>
         adaptedCluster.join(address)
@@ -147,7 +146,6 @@ private[pekko] object AdapterClusterImpl {
         Behaviors.same
 
     }
-  }
 
 }
 

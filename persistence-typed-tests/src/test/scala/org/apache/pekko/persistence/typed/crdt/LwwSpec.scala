@@ -44,7 +44,7 @@ object LwwSpec {
 
   object LwwRegistry {
 
-    def apply(entityId: String, replica: ReplicaId): Behavior[Command] = {
+    def apply(entityId: String, replica: ReplicaId): Behavior[Command] =
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("LwwRegistrySpec", entityId, replica),
         AllReplicas,
@@ -76,7 +76,6 @@ object LwwSpec {
                 else state
             })
       }
-    }
 
   }
 }

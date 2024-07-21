@@ -47,9 +47,8 @@ class RemotingFailedToBindSpec extends AnyWordSpec with Matchers {
           ActorSystem("BindTest2", config)
         }
         ex.getMessage should startWith("Address already in use")
-      } finally {
+      } finally
         as.terminate()
-      }
     }
   }
 }

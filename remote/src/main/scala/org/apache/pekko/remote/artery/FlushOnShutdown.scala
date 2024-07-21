@@ -48,7 +48,7 @@ private[remote] class FlushOnShutdown(done: Promise[Done], timeout: FiniteDurati
   private val timeoutTask =
     context.system.scheduler.scheduleOnce(timeout, self, FlushOnShutdown.Timeout)(context.dispatcher)
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     try {
       associations.foreach { a =>
         val acksExpected = a.sendTerminationHint(self)
@@ -67,7 +67,6 @@ private[remote] class FlushOnShutdown(done: Promise[Done], timeout: FiniteDurati
         done.tryFailure(e)
         throw e
     }
-  }
 
   override def postStop(): Unit = {
     timeoutTask.cancel()

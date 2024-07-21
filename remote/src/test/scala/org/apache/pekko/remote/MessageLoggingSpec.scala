@@ -103,7 +103,6 @@ abstract class MessageLoggingSpec(config: Config) extends PekkoSpec(config) with
     }
   }
 
-  override protected def afterTermination(): Unit = {
+  override protected def afterTermination(): Unit =
     TestKit.shutdownActorSystem(remoteSystem)
-  }
 }

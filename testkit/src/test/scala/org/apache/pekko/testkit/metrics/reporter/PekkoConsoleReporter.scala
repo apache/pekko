@@ -59,7 +59,7 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
     output.flush()
   }
 
-  def printMetrics[T <: Metric](metrics: Iterable[(String, T)], printer: T => Unit): Unit = {
+  def printMetrics[T <: Metric](metrics: Iterable[(String, T)], printer: T => Unit): Unit =
     if (metrics.nonEmpty) {
       printWithBanner(s"-- ${simpleName(metrics.head._2.getClass)}", '-')
       for ((key, metric) <- metrics) {
@@ -68,7 +68,6 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
       }
       output.println()
     }
-  }
 
   private def printMeter(meter: Meter): Unit = {
     output.print("             count = %d%n".format(meter.getCount))
@@ -78,13 +77,11 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
     output.print("    15-minute rate = %2.2f events/%s%n".format(convertRate(meter.getFifteenMinuteRate), getRateUnit))
   }
 
-  private def printCounter(entry: Counter): Unit = {
+  private def printCounter(entry: Counter): Unit =
     output.print("             count = %d%n".format(entry.getCount))
-  }
 
-  private def printGauge(entry: Gauge[_]): Unit = {
+  private def printGauge(entry: Gauge[_]): Unit =
     output.print("             value = %s%n".format(entry.getValue))
-  }
 
   private def printHistogram(histogram: Histogram): Unit = {
     val snapshot = histogram.getSnapshot
@@ -152,9 +149,8 @@ class PekkoConsoleReporter(registry: PekkoMetricRegistry, verbose: Boolean, outp
       data.outputPercentileDistribution(output, 1)
   }
 
-  private def printAveragingGauge(gauge: AveragingGauge): Unit = {
+  private def printAveragingGauge(gauge: AveragingGauge): Unit =
     output.print("                avg = %2.2f%n".format(gauge.getValue()))
-  }
 
   private def printWithBanner(s: String, c: Char): Unit = {
     output.print(s)

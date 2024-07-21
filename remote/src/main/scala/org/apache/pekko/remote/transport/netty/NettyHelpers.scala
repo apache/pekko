@@ -55,23 +55,20 @@ private[netty] trait NettyHelpers {
  */
 private[netty] abstract class NettyChannelHandlerAdapter extends SimpleChannelInboundHandler[ByteBuf]
     with NettyHelpers {
-  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit = {
+  final override def channelRead0(ctx: ChannelHandlerContext, msg: ByteBuf): Unit =
     onMessage(ctx, msg)
-  }
 
   @nowarn("msg=deprecated")
-  final override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit = {
+  final override def exceptionCaught(ctx: ChannelHandlerContext, cause: Throwable): Unit =
     transformException(ctx, cause)
-  }
 
   final override def channelActive(ctx: ChannelHandlerContext): Unit = {
     onOpen(ctx)
     onConnect(ctx)
   }
 
-  final override def channelInactive(ctx: ChannelHandlerContext): Unit = {
+  final override def channelInactive(ctx: ChannelHandlerContext): Unit =
     onDisconnect(ctx)
-  }
 }
 
 /**

@@ -57,13 +57,13 @@ final class InMemStorageExtension(system: ExtendedActorSystem) extends Extension
 
   def storageFor(key: String): EventStorage =
     stores.computeIfAbsent(key,
-      _ => {
+      _ =>
         // we don't really care about the key here, we just want separate instances
         if (PersistenceTestKit.Settings(system).serialize) {
           new SerializedEventStorageImpl(system)
         } else {
           new SimpleEventStorageImpl
         }
-      })
+    )
 
 }

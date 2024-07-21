@@ -119,9 +119,8 @@ private[remote] class Encoder(
 
       private var debugLogSendEnabled = false
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         debugLogSendEnabled = debugLogSend && log.isDebugEnabled
-      }
 
       override def onPush(): Unit = {
         val outboundEnvelope = grab(in)
@@ -563,7 +562,7 @@ private[remote] class Decoder(
             pull(in)
         }
 
-      private def resolveRecipient(path: String): OptionVal[InternalActorRef] = {
+      private def resolveRecipient(path: String): OptionVal[InternalActorRef] =
         actorRefResolver.getOrCompute(path) match {
           case empty: EmptyLocalActorRef =>
             val pathElements = empty.path.elements
@@ -571,11 +570,10 @@ private[remote] class Decoder(
             else OptionVal(empty)
           case ref => OptionVal(ref)
         }
-      }
 
       override def onPull(): Unit = pull(in)
 
-      override protected def onTimer(timerKey: Any): Unit = {
+      override protected def onTimer(timerKey: Any): Unit =
         timerKey match {
           case Tick =>
             val now = System.nanoTime()
@@ -629,7 +627,6 @@ private[remote] class Decoder(
 
           case unknown => throw new IllegalArgumentException(s"Unknown timer key: $unknown")
         }
-      }
 
       setHandlers(in, out, this)
     }
@@ -747,7 +744,7 @@ private[remote] class DuplicateHandshakeReq(
         lazyInitOfSerializer()
         _manifest
       }
-      def lazyInitOfSerializer(): Unit = {
+      def lazyInitOfSerializer(): Unit =
         if (_serializerId == -1) {
           val serialization = SerializationExtension(system)
           val ser = serialization.serializerFor(classOf[HandshakeReq])
@@ -755,7 +752,6 @@ private[remote] class DuplicateHandshakeReq(
             Serializers.manifestFor(ser, HandshakeReq(inboundContext.localAddress, inboundContext.localAddress.address))
           _serializerId = ser.identifier
         }
-      }
 
       var currentIterator: Iterator[InboundEnvelope] = Iterator.empty
 
@@ -777,14 +773,13 @@ private[remote] class DuplicateHandshakeReq(
           push(out, envelope)
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (currentIterator.isEmpty)
           pull(in)
         else {
           push(out, currentIterator.next())
           if (currentIterator.isEmpty) currentIterator = Iterator.empty // GC friendly
         }
-      }
 
       setHandlers(in, out, this)
     }
@@ -815,14 +810,13 @@ private[remote] class DuplicateFlush(numberOfLanes: Int, system: ExtendedActorSy
         lazyInitOfSerializer()
         _manifest
       }
-      def lazyInitOfSerializer(): Unit = {
+      def lazyInitOfSerializer(): Unit =
         if (_serializerId == -1) {
           val serialization = SerializationExtension(system)
           val ser = serialization.serializerFor(Flush.getClass)
           _manifest = Serializers.manifestFor(ser, Flush)
           _serializerId = ser.identifier
         }
-      }
 
       var currentIterator: Iterator[InboundEnvelope] = Iterator.empty
 
@@ -843,14 +837,13 @@ private[remote] class DuplicateFlush(numberOfLanes: Int, system: ExtendedActorSy
           push(out, envelope)
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (currentIterator.isEmpty)
           pull(in)
         else {
           push(out, currentIterator.next())
           if (currentIterator.isEmpty) currentIterator = Iterator.empty // GC friendly
         }
-      }
 
       setHandlers(in, out, this)
     }

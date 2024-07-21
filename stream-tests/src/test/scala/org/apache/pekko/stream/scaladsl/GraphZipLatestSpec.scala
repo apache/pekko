@@ -280,14 +280,13 @@ class GraphZipLatestSpec extends StreamSpec with ScalaCheckPropertyChecks with S
       } yield (firstDigit, secondDigit)
 
       allNumbers.groupBy(_._1).toList.sortBy(_._1).foreach {
-        case (firstDigit, pairs) => {
+        case (firstDigit, pairs) =>
           firstDigits.sendNext(firstDigit)
           pairs.map { case (_, digits) => digits }.foreach { secondDigit =>
             secondDigits.sendNext(secondDigit)
             probe.request(1)
             probe.expectNext((firstDigit, secondDigit))
           }
-        }
       }
 
       probe.cancel()

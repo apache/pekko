@@ -185,13 +185,12 @@ class ClusterClientSpec extends MultiNodeSpec(ClusterClientSpec) with STMultiNod
 
   def createReceptionist(): Unit = ClusterClientReceptionist(system)
 
-  def awaitCount(expected: Int): Unit = {
+  def awaitCount(expected: Int): Unit =
     awaitAssert {
       DistributedPubSub(system).mediator ! DistributedPubSubMediator.Count
       val actual = expectMsgType[Int]
       actual should ===(expected)
     }
-  }
 
   var remainingServerRoleNames = Set(first, second, third, fourth)
 

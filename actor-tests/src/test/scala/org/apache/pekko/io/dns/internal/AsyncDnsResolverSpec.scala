@@ -304,8 +304,7 @@ class AsyncDnsResolverSpec extends PekkoSpec("""
   def resolver(clients: List[ActorRef], config: Config): ActorRef = {
     val settings = new DnsSettings(system.asInstanceOf[ExtendedActorSystem], config)
     system.actorOf(Props(new AsyncDnsResolver(settings, new SimpleDnsCache(),
-      (_, _) => {
-        clients
-      }, IdGenerator())))
+      (_, _) =>
+        clients, IdGenerator())))
   }
 }

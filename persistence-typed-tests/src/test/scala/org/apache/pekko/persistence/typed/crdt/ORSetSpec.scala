@@ -36,8 +36,7 @@ object ORSetSpec {
     final case class AddAll(elems: Set[String]) extends Command
     final case class Remove(elem: String) extends Command
 
-    def apply(entityId: String, replica: ReplicaId): Behavior[ORSetEntity.Command] = {
-
+    def apply(entityId: String, replica: ReplicaId): Behavior[ORSetEntity.Command] =
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("ORSetSpec", entityId, replica),
         AllReplicas,
@@ -59,7 +58,6 @@ object ORSetSpec {
             },
           (state, operation) => state.applyOperation(operation))
       }
-    }
   }
 
 }
@@ -73,20 +71,18 @@ class ORSetSpec extends ReplicationBaseSpec {
     val r1GetProbe = createTestProbe[Set[String]]()
     val r2GetProbe = createTestProbe[Set[String]]()
 
-    def assertForAllReplicas(state: Set[String]): Unit = {
+    def assertForAllReplicas(state: Set[String]): Unit =
       eventually {
         r1 ! Get(r1GetProbe.ref)
         r1GetProbe.expectMessage(state)
         r2 ! Get(r2GetProbe.ref)
         r2GetProbe.expectMessage(state)
       }
-    }
   }
 
-  def randomDelay(): Unit = {
+  def randomDelay(): Unit =
     // exercise different timing scenarios
     Thread.sleep(Random.nextInt(200).toLong)
-  }
 
   "ORSet Replicated Entity" should {
 

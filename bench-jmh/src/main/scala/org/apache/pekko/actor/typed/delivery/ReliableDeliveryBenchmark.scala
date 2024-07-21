@@ -46,7 +46,7 @@ object Producer {
   def apply(
       numberOfMessages: Int,
       useAsk: Boolean,
-      producerController: ActorRef[ProducerController.Command[Consumer.Command]]): Behavior[Command] = {
+      producerController: ActorRef[ProducerController.Command[Consumer.Command]]): Behavior[Command] =
     Behaviors.setup { context =>
       val requestNextAdapter =
         context.messageAdapter[ProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
@@ -78,7 +78,6 @@ object Producer {
           Behaviors.same
       }
     }
-  }
 }
 
 object Consumer {
@@ -91,7 +90,7 @@ object Consumer {
   def serviceKey(testName: String): ServiceKey[ConsumerController.Command[Command]] =
     ServiceKey[ConsumerController.Command[Consumer.Command]](testName)
 
-  def apply(consumerController: ActorRef[ConsumerController.Command[Command]]): Behavior[Command] = {
+  def apply(consumerController: ActorRef[ConsumerController.Command[Command]]): Behavior[Command] =
     Behaviors.setup { context =>
       val traceEnabled = context.log.isTraceEnabled
       val deliveryAdapter =
@@ -106,7 +105,6 @@ object Consumer {
           Behaviors.same
       }
     }
-  }
 }
 
 object WorkPullingProducer {
@@ -117,7 +115,7 @@ object WorkPullingProducer {
 
   def apply(
       numberOfMessages: Int,
-      producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]]): Behavior[Command] = {
+      producerController: ActorRef[WorkPullingProducerController.Command[Consumer.Command]]): Behavior[Command] =
     Behaviors.setup { context =>
       val requestNextAdapter =
         context.messageAdapter[WorkPullingProducerController.RequestNext[Consumer.Command]](WrappedRequestNext(_))
@@ -141,7 +139,6 @@ object WorkPullingProducer {
           Behaviors.same
       }
     }
-  }
 }
 
 object Guardian {
@@ -154,7 +151,7 @@ object Guardian {
   final case class ProducerTerminated(consumers: List[ActorRef[Consumer.Command]], replyTo: ActorRef[Done])
       extends Command
 
-  def apply(): Behavior[Command] = {
+  def apply(): Behavior[Command] =
     Behaviors.setup { context =>
       Behaviors.receiveMessage {
         case RunPointToPoint(id, numberOfMessages, useAsk, replyTo) =>
@@ -198,7 +195,6 @@ object Guardian {
           throw new RuntimeException(s"Unexpected message $msg")
       }
     }
-  }
 }
 
 object ReliableDeliveryBenchmark {
@@ -223,7 +219,7 @@ class ReliableDeliveryBenchmark {
   implicit val askTimeout: pekko.util.Timeout = pekko.util.Timeout(timeout)
 
   @Setup(Level.Trial)
-  def setup(): Unit = {
+  def setup(): Unit =
     system = ActorSystem(
       Guardian(),
       "ReliableDeliveryBenchmark",
@@ -233,7 +229,6 @@ class ReliableDeliveryBenchmark {
           consumer-controller.flow-control-window = $window
         }
       """))
-  }
 
   @TearDown(Level.Trial)
   def shutdown(): Unit = {
@@ -243,36 +238,32 @@ class ReliableDeliveryBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(messagesPerOperation)
-  def pointToPoint(): Unit = {
+  def pointToPoint(): Unit =
     Await.result(
       system.ask(
         Guardian.RunPointToPoint(s"point-to-point-${UUID.randomUUID()}", messagesPerOperation, useAsk = false, _)),
       timeout)
-  }
 
   @Benchmark
   @OperationsPerInvocation(messagesPerOperation)
-  def pointToPointAsk(): Unit = {
+  def pointToPointAsk(): Unit =
     Await.result(
       system.ask(
         Guardian.RunPointToPoint(s"point-to-point-${UUID.randomUUID()}", messagesPerOperation, useAsk = true, _)),
       timeout)
-  }
 
   @Benchmark
   @OperationsPerInvocation(messagesPerOperation)
-  def workPulling1(): Unit = {
+  def workPulling1(): Unit =
     Await.result(
       system.ask(Guardian.RunWorkPulling(s"work-pulling-${UUID.randomUUID()}", messagesPerOperation, workers = 1, _)),
       timeout)
-  }
 
   @Benchmark
   @OperationsPerInvocation(messagesPerOperation)
-  def workPulling2(): Unit = {
+  def workPulling2(): Unit =
     Await.result(
       system.ask(Guardian.RunWorkPulling(s"work-pulling-${UUID.randomUUID()}", messagesPerOperation, workers = 2, _)),
       timeout)
-  }
 
 }

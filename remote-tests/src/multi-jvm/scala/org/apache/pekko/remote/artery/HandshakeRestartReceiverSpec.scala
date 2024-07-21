@@ -68,19 +68,17 @@ abstract class HandshakeRestartReceiverSpec
 
   override def initialParticipants = roles.size
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     super.afterAll()
-  }
 
   def identifyWithUid(
       rootPath: ActorPath,
       actorName: String,
-      timeout: FiniteDuration = remainingOrDefault): (Long, ActorRef) = {
+      timeout: FiniteDuration = remainingOrDefault): (Long, ActorRef) =
     within(timeout) {
       system.actorSelection(rootPath / "user" / actorName) ! "identify"
       expectMsgType[(Long, ActorRef)]
     }
-  }
 
   private def futureUniqueRemoteAddress(association: OutboundContext): Future[UniqueAddress] = {
     val p = Promise[UniqueAddress]()

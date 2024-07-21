@@ -113,7 +113,7 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
       "foldAsync",
       "newOnCompleteStage"))
 
-  val ignore = {
+  val ignore =
     Set("equals", "hashCode", "notify", "notifyAll", "wait", "toString", "getClass") ++
     Set("productArity", "canEqual", "productPrefix", "copy", "productIterator", "productElement") ++
     Set(
@@ -128,7 +128,6 @@ object StreamOperatorsIndexGenerator extends AutoPlugin {
       "transformMaterializing") ++
     Set("asScala", "asJava", "deprecatedAndThen", "deprecatedAndThenMat") ++
     Set("++", "onPush", "onPull", "actorRefWithAck")
-  }
 
   def isPending(element: String, opName: String) =
     pendingTestCases.get(element).exists(_.contains(opName))

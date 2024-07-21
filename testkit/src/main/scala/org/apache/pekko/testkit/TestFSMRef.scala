@@ -67,9 +67,8 @@ class TestFSMRef[S, D, T <: Actor](system: ActorSystem, props: Props, supervisor
       stateName: S = fsm.stateName,
       stateData: D = fsm.stateData,
       timeout: FiniteDuration = null,
-      stopReason: Option[FSM.Reason] = None): Unit = {
+      stopReason: Option[FSM.Reason] = None): Unit =
     fsm.applyState(FSM.State(stateName, stateData, Option(timeout), stopReason))
-  }
 
   /**
    * Proxy for [[pekko.actor.FSM#startTimerWithFixedDelay]].
@@ -96,14 +95,13 @@ class TestFSMRef[S, D, T <: Actor](system: ActorSystem, props: Props, supervisor
     "Use startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
     since = "Akka 2.6.0")
-  def setTimer(name: String, msg: Any, timeout: FiniteDuration, repeat: Boolean = false): Unit = {
+  def setTimer(name: String, msg: Any, timeout: FiniteDuration, repeat: Boolean = false): Unit =
     fsm.setTimer(name, msg, timeout, repeat)
-  }
 
   /**
    * Proxy for [[pekko.actor.FSM#cancelTimer]].
    */
-  def cancelTimer(name: String): Unit = { fsm.cancelTimer(name) }
+  def cancelTimer(name: String): Unit = fsm.cancelTimer(name)
 
   /**
    * Proxy for [[pekko.actor.FSM#isStateTimerActive]].

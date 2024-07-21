@@ -38,7 +38,7 @@ private[cluster] object ConfigUtil {
     newConfig.withValue("akka.version", ConfigValueFactory.fromAnyRef(akkaVersion))
   }
 
-  private def adjustPackageNameIfNecessary(cv: ConfigValue): ConfigValue = {
+  private def adjustPackageNameIfNecessary(cv: ConfigValue): ConfigValue =
     if (cv.valueType() == ConfigValueType.STRING) {
       val str = cv.unwrapped().toString
       if (str.startsWith("org.apache.pekko")) {
@@ -49,6 +49,5 @@ private[cluster] object ConfigUtil {
     } else {
       cv
     }
-  }
 
 }

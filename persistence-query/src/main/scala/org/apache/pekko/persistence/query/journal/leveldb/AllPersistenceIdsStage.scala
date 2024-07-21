@@ -48,9 +48,8 @@ final private[pekko] class AllPersistenceIdsStage(liveQuery: Boolean, writeJourn
 
       override protected def logSource: Class[_] = classOf[AllPersistenceIdsStage]
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         journal.tell(LeveldbJournal.SubscribeAllPersistenceIds, getStageActor(journalInteraction).ref)
-      }
 
       private def journalInteraction(in: (ActorRef, Any)): Unit = {
         val (_, msg) = in

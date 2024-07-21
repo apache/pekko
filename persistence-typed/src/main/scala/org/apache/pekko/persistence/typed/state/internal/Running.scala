@@ -60,9 +60,8 @@ private[pekko] object Running {
     def nextRevision(): RunningState[State] =
       copy(revision = revision + 1)
 
-    def applyState[C, E](@unused setup: BehaviorSetup[C, State], updated: State): RunningState[State] = {
+    def applyState[C, E](@unused setup: BehaviorSetup[C, State], updated: State): RunningState[State] =
       copy(state = updated)
-    }
   }
 }
 
@@ -169,9 +168,8 @@ private[pekko] object Running {
       }
     }
 
-    def adaptState(newState: S): Any = {
+    def adaptState(newState: S): Any =
       setup.snapshotAdapter.toJournal(newState)
-    }
 
     setup.setMdcPhase(PersistenceMdc.RunningCmds)
 
@@ -198,7 +196,7 @@ private[pekko] object Running {
       extends AbstractBehavior[InternalProtocol](setup.context)
       with WithRevisionAccessible {
 
-    override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
+    override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] =
       msg match {
         case UpsertSuccess                     => onUpsertSuccess()
         case UpsertFailure(exc)                => onUpsertFailed(exc)
@@ -211,9 +209,8 @@ private[pekko] object Running {
         case DeleteSuccess                     => Behaviors.unhandled
         case DeleteFailure(_)                  => Behaviors.unhandled
       }
-    }
 
-    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] = {
+    def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] =
       if (state.receivedPoisonPill) {
         if (setup.settings.logOnStashing)
           setup.internalLogger.debug("Discarding message [{}], because actor is to be stopped.", cmd)
@@ -221,7 +218,6 @@ private[pekko] object Running {
       } else {
         stashInternal(cmd)
       }
-    }
 
     final def onUpsertSuccess(): Behavior[InternalProtocol] = {
       if (setup.internalLogger.isDebugEnabled) {
@@ -251,9 +247,8 @@ private[pekko] object Running {
         else Behaviors.unhandled
     }
 
-    override def currentRevision: Long = {
+    override def currentRevision: Long =
       _currentRevision
-    }
   }
 
   // ===============================================
@@ -278,7 +273,7 @@ private[pekko] object Running {
   def applySideEffect(
       effect: SideEffect[S],
       state: RunningState[S],
-      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] = {
+      behavior: Behavior[InternalProtocol]): Behavior[InternalProtocol] =
     effect match {
       case _: Stop.type @unchecked =>
         Behaviors.stopped
@@ -291,7 +286,6 @@ private[pekko] object Running {
         callback.sideEffect(state.state)
         behavior
     }
-  }
 
   @InternalStableApi
   private[pekko] def onWriteFailed(@unused ctx: ActorContext[_], @unused reason: Throwable): Unit = ()

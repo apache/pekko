@@ -44,17 +44,15 @@ private[remote] object AeronSource {
       sub: Subscription,
       handler: MessageHandler,
       onMessage: AsyncCallback[EnvelopeBuffer]): () => Boolean = { () =>
-    {
-      handler.reset()
-      sub.poll(handler.fragmentsHandler, 1)
-      val msg = handler.messageReceived
-      handler.reset() // for GC
-      if (msg ne null) {
-        onMessage.invoke(msg)
-        true
-      } else
-        false
-    }
+    handler.reset()
+    sub.poll(handler.fragmentsHandler, 1)
+    val msg = handler.messageReceived
+    handler.reset() // for GC
+    if (msg ne null) {
+      onMessage.invoke(msg)
+      true
+    } else
+      false
   }
 
   class MessageHandler(pool: EnvelopeBufferPool) {
@@ -129,9 +127,8 @@ private[remote] class AeronSource(
 
       override protected def logSource = classOf[AeronSource]
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         flightRecorder.aeronSourceStarted(channel, streamId)
-      }
 
       override def postStop(): Unit = {
         taskRunner.command(Remove(addPollTask.task))
@@ -197,14 +194,13 @@ private[remote] class AeronSource(
 
       private def freeSessionBuffers(): Unit =
         if (!delegatingToTaskRunner) {
-          def loop(remaining: List[Int]): Unit = {
+          def loop(remaining: List[Int]): Unit =
             remaining match {
               case Nil =>
               case sessionId :: tail =>
                 messageHandler.fragmentsHandler.freeSessionBuffer(sessionId)
                 loop(tail)
             }
-          }
 
           loop(pendingUnavailableImages)
           pendingUnavailableImages = Nil
@@ -212,9 +208,9 @@ private[remote] class AeronSource(
 
       // External callback from ResourceLifecycle
       def onUnavailableImage(sessionId: Int): Unit =
-        try {
+        try
           onUnavailableImageCb.invoke(sessionId)
-        } catch {
+        catch {
           case NonFatal(_) => // just in case it's called before stage is initialized, ignore
         }
 

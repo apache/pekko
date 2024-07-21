@@ -93,12 +93,12 @@ class RecipeGlobalRateLimit extends RecipeSpec {
         import org.apache.pekko
         import pekko.pattern.ask
         import pekko.util.Timeout
-        Flow[T].mapAsync(4)((element: T) => {
+        Flow[T].mapAsync(4) { (element: T) =>
           import system.dispatcher
           implicit val triggerTimeout = Timeout(maxAllowedWait)
           val limiterTriggerFuture = limiter ? Limiter.WantToPass
           limiterTriggerFuture.map(_ => element)
-        })
+        }
 
       }
       // #global-limiter-flow

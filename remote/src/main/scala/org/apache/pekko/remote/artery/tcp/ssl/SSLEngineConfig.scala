@@ -31,18 +31,16 @@ private[tcp] class SSLEngineConfig(config: Config) {
   private[tcp] val SSLProtocol: String = config.getString("protocol")
   private[tcp] val SSLEnabledAlgorithms: Set[String] =
     immutableSeq(config.getStringList("enabled-algorithms")).toSet
-  private[tcp] val SSLRequireMutualAuthentication: Boolean = {
+  private[tcp] val SSLRequireMutualAuthentication: Boolean =
     if (config.hasPath("require-mutual-authentication"))
       config.getBoolean("require-mutual-authentication")
     else
       false
-  }
-  private[tcp] val HostnameVerification: Boolean = {
+  private[tcp] val HostnameVerification: Boolean =
     if (config.hasPath("hostname-verification"))
       config.getBoolean("hostname-verification")
     else
       false
-  }
   private[tcp] val SSLContextCacheTime: FiniteDuration =
     if (config.hasPath("ssl-context-cache-ttl"))
       config.getDuration("ssl-context-cache-ttl").toMillis.millis

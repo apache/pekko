@@ -65,7 +65,7 @@ class ChaosJournal extends InmemJournal {
     }
   }
 
-  override def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] = {
+  override def asyncReadHighestSequenceNr(persistenceId: String, fromSequenceNr: Long): Future[Long] =
     if (persistenceId == "fail-recovery-once" && failRecovery) {
       failRecovery = false
       Future.failed(TestException("Nah"))
@@ -74,7 +74,6 @@ class ChaosJournal extends InmemJournal {
     } else {
       super.asyncReadHighestSequenceNr(persistenceId, fromSequenceNr)
     }
-  }
 }
 
 object EventSourcedBehaviorFailureSpec {

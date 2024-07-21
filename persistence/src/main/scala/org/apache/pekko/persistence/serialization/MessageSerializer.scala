@@ -138,7 +138,7 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
   }
 
   @nowarn("msg=deprecated")
-  def stateChange(persistentStateChange: mf.PersistentStateChangeEvent): StateChangeEvent = {
+  def stateChange(persistentStateChange: mf.PersistentStateChangeEvent): StateChangeEvent =
     StateChangeEvent(
       persistentStateChange.getStateIdentifier,
       // timeout field is deprecated, left for backward compatibility. timeoutNanos is used instead.
@@ -147,16 +147,14 @@ class MessageSerializer(val system: ExtendedActorSystem) extends BaseSerializer 
       else if (persistentStateChange.hasTimeout)
         Some(Duration(persistentStateChange.getTimeout).asInstanceOf[duration.FiniteDuration])
       else None)
-  }
 
-  def persistentFSMSnapshot(persistentFSMSnapshot: mf.PersistentFSMSnapshot): PersistentFSMSnapshot[Any] = {
+  def persistentFSMSnapshot(persistentFSMSnapshot: mf.PersistentFSMSnapshot): PersistentFSMSnapshot[Any] =
     PersistentFSMSnapshot(
       persistentFSMSnapshot.getStateIdentifier,
       payload(persistentFSMSnapshot.getData),
       if (persistentFSMSnapshot.hasTimeoutNanos)
         Some(Duration.fromNanos(persistentFSMSnapshot.getTimeoutNanos))
       else None)
-  }
 
   private def atomicWriteBuilder(a: AtomicWrite) = {
     val builder = mf.AtomicWrite.newBuilder

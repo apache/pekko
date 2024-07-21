@@ -139,13 +139,11 @@ class GraphMergePrioritizedNSpec extends StreamSpec {
 
   private def threeSourceMerge[T](
       sourceAndPriorities: immutable.Seq[(Source[T, NotUsed], Int)],
-      probe: ManualProbe[T]) = {
-
+      probe: ManualProbe[T]) =
     Source
       .mergePrioritizedN(sourceAndPriorities, eagerComplete = false)
       .initialDelay(50.millis)
       .to(Sink.fromSubscriber(probe))
-  }
 
   "get Priority from graph" in {
     val elementCount = 10

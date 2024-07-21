@@ -60,11 +60,11 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
 
   private def getPathEntry(path: String): PathEntry = entryMap.get(path) match {
     case null =>
-      val ne = Try { config.hasPath(path) } match {
+      val ne = Try(config.hasPath(path)) match {
         case Failure(_)     => invalidPathEntry
         case Success(false) => nonExistingPathEntry
         case _ =>
-          Try { config.getValue(path) } match {
+          Try(config.getValue(path)) match {
             case Failure(_) =>
               emptyPathEntry
             case Success(v) =>
@@ -83,9 +83,8 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
     case e => e
   }
 
-  def checkValid(reference: Config, restrictToPaths: String*): Unit = {
+  def checkValid(reference: Config, restrictToPaths: String*): Unit =
     config.checkValid(reference, restrictToPaths: _*)
-  }
 
   def root() = config.root()
 
@@ -125,13 +124,12 @@ private[pekko] class CachingConfig(_config: Config) extends Config {
 
   def getDouble(path: String) = config.getDouble(path)
 
-  def getString(path: String) = {
+  def getString(path: String) =
     getPathEntry(path) match {
       case StringPathEntry(_, _, _, string) =>
         string
       case e => e.config.getString("cached")
     }
-  }
 
   def getObject(path: String) = config.getObject(path)
 

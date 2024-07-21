@@ -52,13 +52,11 @@ object SupervisionSpec {
 
   class PassivatingActor extends Actor with ActorLogging {
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       log.info("Starting")
-    }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       log.info("Stopping")
-    }
 
     override def receive: Receive = {
       case "passivate" =>

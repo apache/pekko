@@ -53,9 +53,8 @@ object StreamConverters {
    * @param in a function which creates the InputStream to read from
    * @param chunkSize the size of each read operation, defaults to 8192
    */
-  def fromInputStream(in: () => InputStream, chunkSize: Int = 8192): Source[ByteString, Future[IOResult]] = {
+  def fromInputStream(in: () => InputStream, chunkSize: Int = 8192): Source[ByteString, Future[IOResult]] =
     Source.fromGraph(new InputStreamSource(in, chunkSize))
-  }
 
   /**
    * Creates a Source which when materialized will return an [[OutputStream]] which it is possible
@@ -139,7 +138,7 @@ object StreamConverters {
    * to handle multiple invocations.
    */
   def javaCollectorParallelUnordered[T, R](parallelism: Int)(
-      collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] = {
+      collectorFactory: () => java.util.stream.Collector[T, _ <: Any, R]): Sink[T, Future[R]] =
     if (parallelism == 1) javaCollector[T, R](collectorFactory)
     else {
       Sink
@@ -169,7 +168,6 @@ object StreamConverters {
         })
         .withAttributes(DefaultAttributes.javaCollectorParallelUnordered)
     }
-  }
 
   /**
    * Creates a sink which materializes into Java 8 ``Stream`` that can be run to trigger demand through the sink.
@@ -184,7 +182,7 @@ object StreamConverters {
    * As it is interacting wit blocking API the implementation runs on a separate dispatcher
    * configured through the ``pekko.stream.blocking-io-dispatcher``.
    */
-  def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] = {
+  def asJavaStream[T](): Sink[T, java.util.stream.Stream[T]] =
     // TODO removing the QueueSink name, see issue #22523
     Sink
       .fromGraph(new QueueSink[T](1).withAttributes(Attributes.none))
@@ -211,7 +209,6 @@ object StreamConverters {
             false)
           .onClose(new Runnable { def run = queue.cancel() }))
       .withAttributes(DefaultAttributes.asJavaStream)
-  }
 
   /**
    * Creates a source that wraps a Java 8 ``Stream``. ``Source`` uses a stream iterator to get all its

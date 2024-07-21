@@ -54,9 +54,9 @@ private[remote] class PekkoProtocolSettings(config: Config) {
   val TransportFailureDetectorConfig: Config = getConfig("pekko.remote.classic.transport-failure-detector")
   val TransportFailureDetectorImplementationClass: String =
     TransportFailureDetectorConfig.getString("implementation-class")
-  val TransportHeartBeatInterval: FiniteDuration = {
+  val TransportHeartBeatInterval: FiniteDuration =
     TransportFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  }.requiring(_ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0")
+      .requiring(_ > Duration.Zero, "transport-failure-detector.heartbeat-interval must be > 0")
 
   val HandshakeTimeout: FiniteDuration = {
     val enabledTransports = config.getStringList("pekko.remote.classic.enabled-transports")
@@ -370,7 +370,7 @@ private[remote] class ProtocolStateActor(
       settings: PekkoProtocolSettings,
       codec: PekkoPduCodec,
       failureDetector: FailureDetector,
-      refuseUid: Option[Int]) = {
+      refuseUid: Option[Int]) =
     this(
       OutboundUnassociated(remoteAddress, statusPromise, transport),
       handshakeInfo,
@@ -378,7 +378,6 @@ private[remote] class ProtocolStateActor(
       settings,
       codec,
       failureDetector)
-  }
 
   // Inbound case
   def this(
@@ -387,7 +386,7 @@ private[remote] class ProtocolStateActor(
       associationListener: AssociationEventListener,
       settings: PekkoProtocolSettings,
       codec: PekkoPduCodec,
-      failureDetector: FailureDetector) = {
+      failureDetector: FailureDetector) =
     this(
       InboundUnassociated(associationListener, wrappedHandle),
       handshakeInfo,
@@ -395,7 +394,6 @@ private[remote] class ProtocolStateActor(
       settings,
       codec,
       failureDetector)
-  }
 
   val localAddress = localHandshakeInfo.origin
   val handshakeTimerKey = "handshake-timer"
@@ -600,15 +598,13 @@ private[remote] class ProtocolStateActor(
       stay().using(ListenerReady(listener, wrappedHandle))
   }
 
-  private def initHeartbeatTimer(): Unit = {
+  private def initHeartbeatTimer(): Unit =
     startTimerWithFixedDelay("heartbeat-timer", HeartbeatTimer, settings.TransportHeartBeatInterval)
-  }
 
-  private def initHandshakeTimer(): Unit = {
+  private def initHandshakeTimer(): Unit =
     startSingleTimer(handshakeTimerKey, HandshakeTimer, settings.HandshakeTimeout)
-  }
 
-  private def handleTimers(wrappedHandle: AssociationHandle): State = {
+  private def handleTimers(wrappedHandle: AssociationHandle): State =
     if (failureDetector.isAvailable) {
       sendHeartbeat(wrappedHandle)
       stay()
@@ -625,7 +621,6 @@ private[remote] class ProtocolStateActor(
         FSM.Failure(TimeoutReason(s"No response from remote. " +
           s"Transport failure detector triggered. (internal state was $stateName)")))
     }
-  }
 
   private def safeClassName(obj: AnyRef): String = obj match {
     case null => "null"
@@ -664,7 +659,7 @@ private[remote] class ProtocolStateActor(
         case FSM.Failure(info: DisassociateInfo) => Disassociated(info)
         case _                                   => Disassociated(Unknown)
       }
-      handlerFuture.foreach { _.notify(disassociateNotification) }
+      handlerFuture.foreach(_.notify(disassociateNotification))
       wrappedHandle.disassociate(disassociationReason(reason), log)
 
     case StopEvent(reason, _, ListenerReady(handler, wrappedHandle)) =>
@@ -700,7 +695,7 @@ private[remote] class ProtocolStateActor(
   }
 
   private def listenForListenerRegistration(readHandlerPromise: Promise[HandleEventListener]): Unit =
-    readHandlerPromise.future.map { HandleListenerRegistered(_) }.pipeTo(self)
+    readHandlerPromise.future.map(HandleListenerRegistered(_)).pipeTo(self)
 
   private def notifyOutboundHandler(
       wrappedHandle: AssociationHandle,
@@ -766,9 +761,9 @@ private[remote] class ProtocolStateActor(
     }
 
   private def sendAssociate(wrappedHandle: AssociationHandle, info: HandshakeInfo): Boolean =
-    try {
+    try
       wrappedHandle.write(codec.constructAssociate(info))
-    } catch {
+    catch {
       case NonFatal(e) => throw new PekkoProtocolException("Error writing ASSOCIATE to transport", e)
     }
 

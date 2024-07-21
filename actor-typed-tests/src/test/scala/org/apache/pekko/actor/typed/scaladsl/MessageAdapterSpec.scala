@@ -52,7 +52,7 @@ class MessageAdapterSpec
 
   private val log = LoggerFactory.getLogger(getClass)
 
-  private def assertDeadLetter(deadLetterProbe: TestProbe[DeadLetter], expectedMessage: Any): Unit = {
+  private def assertDeadLetter(deadLetterProbe: TestProbe[DeadLetter], expectedMessage: Any): Unit =
     deadLetterProbe.fishForMessage(deadLetterProbe.remainingOrDefault, s"looking for DeadLetter $expectedMessage") {
       deadLetter =>
         deadLetter.message match {
@@ -68,7 +68,6 @@ class MessageAdapterSpec
             FishingOutcomes.continueAndIgnore
         }
     }
-  }
 
   "Message adapters" must {
 

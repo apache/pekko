@@ -33,19 +33,17 @@ private[pekko] class HdrHistogram(
 
   private val hist = new hdr.Histogram(highestTrackableValue, numberOfSignificantValueDigits)
 
-  def update(value: Long): Unit = {
+  def update(value: Long): Unit =
     try hist.recordValue(value)
     catch {
       case ex: ArrayIndexOutOfBoundsException => throw wrapHistogramOutOfBoundsException(value, ex)
     }
-  }
 
-  def updateWithCount(value: Long, count: Long): Unit = {
+  def updateWithCount(value: Long, count: Long): Unit =
     try hist.recordValueWithCount(value, count)
     catch {
       case ex: ArrayIndexOutOfBoundsException => throw wrapHistogramOutOfBoundsException(value, ex)
     }
-  }
 
   private def wrapHistogramOutOfBoundsException(
       value: Long,

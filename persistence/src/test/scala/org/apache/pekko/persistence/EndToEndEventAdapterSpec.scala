@@ -101,7 +101,7 @@ object EndToEndEventAdapterSpec {
 
     val persistIncoming: Receive = {
       case GetState =>
-        state.reverse.foreach { sender() ! _ }
+        state.reverse.foreach(sender() ! _)
       case in =>
         persist(in) { e =>
           state ::= e
@@ -129,13 +129,11 @@ class EndToEndEventAdapterSpec extends AnyWordSpecLike with Matchers with Before
 
   val storageLocations = List("pekko.persistence.journal.leveldb.dir").map(s => new File(journalConfig.getString(s)))
 
-  override protected def beforeAll(): Unit = {
+  override protected def beforeAll(): Unit =
     storageLocations.foreach(FileUtils.deleteDirectory)
-  }
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     storageLocations.foreach(FileUtils.deleteDirectory)
-  }
 
   val noAdaptersConfig = ConfigFactory.parseString("")
 

@@ -77,9 +77,8 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
                 throw new RuntimeException("simulated failure")
             }
 
-        override def postRestart(reason: Throwable): Unit = {
+        override def postRestart(reason: Throwable): Unit =
           restarts.incrementAndGet()
-        }
       }
 
       val probe = TestProbe()
@@ -91,7 +90,7 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
       }
     }
 
-    def assertFailureMessageContains(expectedHint: String)(block: => Unit): Unit = {
+    def assertFailureMessageContains(expectedHint: String)(block: => Unit): Unit =
       Try {
         block
       } match {
@@ -103,7 +102,6 @@ class TestProbeSpec extends PekkoSpec with DefaultTimeout with Eventually {
         case scala.util.Success(result) =>
           fail(s"expected failure but got: $result")
       }
-    }
 
     "throw AssertionError containing hint in its message if max await time is exceeded" in {
       val probe = TestProbe()

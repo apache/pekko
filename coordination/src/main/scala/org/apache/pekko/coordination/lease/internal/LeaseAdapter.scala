@@ -36,9 +36,8 @@ final private[pekko] class LeaseAdapter(delegate: ScalaLease)(implicit val ec: E
 
   override def acquire(): CompletionStage[java.lang.Boolean] = delegate.acquire().map(Boolean.box).asJava
 
-  override def acquire(leaseLostCallback: Consumer[Optional[Throwable]]): CompletionStage[java.lang.Boolean] = {
+  override def acquire(leaseLostCallback: Consumer[Optional[Throwable]]): CompletionStage[java.lang.Boolean] =
     delegate.acquire(o => leaseLostCallback.accept(o.toJava)).map(Boolean.box).asJava
-  }
 
   override def release(): CompletionStage[java.lang.Boolean] = delegate.release().map(Boolean.box).asJava
   override def checkLease(): Boolean = delegate.checkLease()

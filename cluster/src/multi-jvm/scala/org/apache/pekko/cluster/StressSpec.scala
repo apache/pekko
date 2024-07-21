@@ -179,9 +179,8 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
       numberOfNodesJoinRemove <= totalNumberOfNodes,
       s"nr-of-nodes-join-remove should be <= $totalNumberOfNodes")
 
-    override def toString: String = {
+    override def toString: String =
       testConfig.withFallback(ConfigFactory.parseString(s"nrOfNodes=$totalNumberOfNodes")).root.render
-    }
   }
 
   implicit class FormattedDouble(val d: Double) extends AnyVal {
@@ -226,7 +225,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           if (infolog)
             log.info(
               s"[$title] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n\n$formatPhi\n\n$formatStats")
-          reportTo.foreach { _ ! aggregated }
+          reportTo.foreach(_ ! aggregated)
           context.stop(self)
         }
       case _: CurrentClusterState =>
@@ -235,14 +234,14 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
     def maxDuration = results.map(_.duration).max
 
-    def totalGossipStats = results.foldLeft(GossipStats()) { _ :+ _.clusterStats }
+    def totalGossipStats = results.foldLeft(GossipStats())(_ :+ _.clusterStats)
 
     def format(opt: Option[Double]) = opt match {
       case None    => "N/A"
       case Some(x) => x.form
     }
 
-    def formatPhi: String = {
+    def formatPhi: String =
       if (phiValuesObservedByNode.isEmpty) ""
       else {
         val lines =
@@ -253,7 +252,6 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
 
         lines.mkString(formatPhiHeader + "\n", "\n", "")
       }
-    }
 
     def formatPhiHeader: String = "[Monitor]\t[Subject]\t[count]\t[count phi > 1.0]\t[max phi]"
 
@@ -344,7 +342,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
           }
         }
         val phiSet = immutable.SortedSet.empty[PhiValue] ++ phiByNode.values
-        reportTo.foreach { _ ! PhiResult(cluster.selfAddress, phiSet) }
+        reportTo.foreach(_ ! PhiResult(cluster.selfAddress, phiSet))
       case state: CurrentClusterState => nodes = state.members.map(_.address)
       case memberEvent: MemberEvent   => nodes += memberEvent.member.address
       case ReportTo(ref) =>
@@ -376,11 +374,11 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def receive = {
       case CurrentInternalStats(gossipStats, vclockStats) =>
         val diff = startStats match {
-          case None        => { startStats = Some(gossipStats); gossipStats }
+          case None        => startStats = Some(gossipStats); gossipStats
           case Some(start) => gossipStats :- start
         }
         val res = StatsResult(cluster.selfAddress, CurrentInternalStats(diff, vclockStats))
-        reportTo.foreach { _ ! res }
+        reportTo.foreach(_ ! res)
       case ReportTo(ref) =>
         reportTo.foreach(context.unwatch)
         reportTo = ref
@@ -455,7 +453,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
   var step = 0
   var nbrUsedRoles = 0
 
-  override def beforeEach(): Unit = { step += 1 }
+  override def beforeEach(): Unit = step += 1
 
   override def expectedTestDuration: FiniteDuration = settings.expectedTestDuration
 
@@ -475,10 +473,9 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
   }
 
   Runtime.getRuntime.addShutdownHook(new Thread {
-    override def run(): Unit = {
+    override def run(): Unit =
       if (SharedMediaDriverSupport.isMediaDriverRunningByThisNode)
         println("Abrupt exit of JVM without closing media driver. This should not happen and may cause test failure.")
-    }
   })
 
   def isArteryEnabled: Boolean = RARP(system).provider.remoteSettings.Artery.Enabled
@@ -540,9 +537,8 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
 
   def latestGossipStats = cluster.readView.latestStats.gossipStats
 
-  override def cluster: Cluster = {
+  override def cluster: Cluster =
     super.cluster
-  }
 
   def createResultAggregator(title: String, expectedResults: Int, includeInHistory: Boolean): Unit = {
     runOn(roles.head) {
@@ -587,13 +583,12 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     enterBarrier("cluster-result-done-" + step)
   }
 
-  def joinOneByOne(numberOfNodes: Int): Unit = {
+  def joinOneByOne(numberOfNodes: Int): Unit =
     (0 until numberOfNodes).foreach { _ =>
       joinOne()
       nbrUsedRoles += 1
       step += 1
     }
-  }
 
   def convergenceWithin(base: FiniteDuration, nodes: Int): FiniteDuration =
     (base.toMillis * convergenceWithinFactor * nodes).millis
@@ -636,13 +631,12 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       enterBarrier("join-several-" + step)
     }
 
-  def removeOneByOne(numberOfNodes: Int, shutdown: Boolean): Unit = {
+  def removeOneByOne(numberOfNodes: Int, shutdown: Boolean): Unit =
     (0 until numberOfNodes).foreach { _ =>
       removeOne(shutdown)
       nbrUsedRoles -= 1
       step += 1
     }
-  }
 
   def removeOne(shutdown: Boolean): Unit = within(25.seconds + convergenceWithin(3.seconds, nbrUsedRoles - 1)) {
     val currentRoles = roles.take(nbrUsedRoles - 1)
@@ -722,9 +716,8 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
       createResultAggregator(title, expectedResults = currentRoles.size, includeInHistory = true)
 
       runOn(roles.head) {
-        for (x <- currentRoles; y <- removeRoles) {
+        for (x <- currentRoles; y <- removeRoles)
           testConductor.blackhole(x, y, ThrottlerTransportAdapter.Direction.Both).await
-        }
       }
       enterBarrier("partition-several-blackhole")
 
@@ -772,7 +765,7 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
     @tailrec def loop(
         counter: Int,
         previousAS: Option[ActorSystem],
-        allPreviousAddresses: Set[Address]): Option[ActorSystem] = {
+        allPreviousAddresses: Set[Address]): Option[ActorSystem] =
       if (counter > rounds) previousAS
       else {
         val t = title + " round " + counter
@@ -814,7 +807,6 @@ abstract class StressSpec extends MultiNodeClusterSpec(StressMultiJvmSpec) with 
         step += 1
         loop(counter + 1, nextAS, nextAddresses)
       }
-    }
 
     loop(1, None, Set.empty).foreach { as =>
       TestKit.shutdownActorSystem(as)

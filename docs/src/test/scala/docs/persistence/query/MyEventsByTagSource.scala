@@ -40,9 +40,8 @@ class MyEventsByTagSource(tag: String, offset: Long, refreshInterval: FiniteDura
       private var buf = Vector.empty[EventEnvelope]
       private val serialization = SerializationExtension(system)
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         scheduleWithFixedDelay(Continue, refreshInterval, refreshInterval)
-      }
 
       override def onPull(): Unit = {
         query()
@@ -53,23 +52,21 @@ class MyEventsByTagSource(tag: String, offset: Long, refreshInterval: FiniteDura
         // close connection if responsible for doing so
       }
 
-      private def query(): Unit = {
+      private def query(): Unit =
         if (buf.isEmpty) {
-          try {
+          try
             buf = Select.run(tag, currentOffset, Limit)
-          } catch {
+          catch {
             case NonFatal(e) =>
               failStage(e)
           }
         }
-      }
 
-      private def tryPush(): Unit = {
+      private def tryPush(): Unit =
         if (buf.nonEmpty && isAvailable(out)) {
           push(out, buf.head)
           buf = buf.tail
         }
-      }
 
       override protected def onTimer(timerKey: Any): Unit = timerKey match {
         case Continue =>

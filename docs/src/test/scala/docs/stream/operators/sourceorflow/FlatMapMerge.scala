@@ -25,9 +25,8 @@ object FlatMapMerge {
   val source: Source[String, NotUsed] = Source(List("customer-1", "customer-2"))
 
   // e.g. could b a query to a database
-  def lookupCustomerEvents(customerId: String): Source[String, NotUsed] = {
+  def lookupCustomerEvents(customerId: String): Source[String, NotUsed] =
     Source(List(s"$customerId-evt-1", s"$customerId-evt2"))
-  }
 
   source.flatMapMerge(10, customerId => lookupCustomerEvents(customerId)).runForeach(println)
 

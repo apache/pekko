@@ -145,7 +145,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
   override def eventsByPersistenceId(
       persistenceId: String,
       fromSequenceNr: Long = 0L,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] =
     Source
       .fromMaterializer { (mat, _) =>
         Source
@@ -161,7 +161,6 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
           .named("eventsByPersistenceId-" + persistenceId)
       }
       .mapMaterializedValue(_ => NotUsed)
-  }
 
   /**
    * Same type of query as [[#eventsByPersistenceId]] but the event stream
@@ -171,7 +170,7 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
   override def currentEventsByPersistenceId(
       persistenceId: String,
       fromSequenceNr: Long = 0L,
-      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] = {
+      toSequenceNr: Long = Long.MaxValue): Source[EventEnvelope, NotUsed] =
     Source
       .fromMaterializer { (mat, _) =>
         Source
@@ -187,8 +186,6 @@ class LeveldbReadJournal(system: ExtendedActorSystem, config: Config)
           .named("currentEventsByPersistenceId-" + persistenceId)
       }
       .mapMaterializedValue(_ => NotUsed)
-
-  }
 
   /**
    * `eventsByTag` is used for retrieving events that were marked with

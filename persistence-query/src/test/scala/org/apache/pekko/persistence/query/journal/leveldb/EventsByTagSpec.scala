@@ -203,24 +203,22 @@ class EventsByTagSpec extends PekkoSpec(EventsByTagSpec.config) with Cleanup wit
           .expectNoMessage(100.millis)
           .request(10)
           .expectNext(EventEnvelope(Sequence(3L), "d", 2L, "a black night", 0L))
-      } finally {
+      } finally
         probe.cancel()
-      }
     }
 
     "find events from offset (exclusive)" in {
       val greenSrc = queries.eventsByTag(tag = "green", offset = Sequence(2L))
       val probe = greenSrc.runWith(TestSink.probe[Any])
-      try {
+      try
         probe
           .request(10)
           // note that banana is not included, since exclusive offset
           .expectNext(EventEnvelope(Sequence(3L), "b", 2L, "a green leaf", 0L))
           .expectNext(EventEnvelope(Sequence(4L), "c", 1L, "a green cucumber", 0L))
           .expectNoMessage(100.millis)
-      } finally {
+      finally
         probe.cancel()
-      }
     }
 
     "finds events without refresh" in {

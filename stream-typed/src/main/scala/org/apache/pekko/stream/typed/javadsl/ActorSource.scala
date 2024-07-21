@@ -61,7 +61,7 @@ object ActorSource {
       completionMatcher: Predicate[T],
       failureMatcher: pekko.japi.function.Function[T, java.util.Optional[Throwable]],
       bufferSize: Int,
-      overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] = {
+      overflowStrategy: OverflowStrategy): Source[T, ActorRef[T]] =
     pekko.stream.typed.scaladsl.ActorSource
       .actorRef(
         { case m if completionMatcher.test(m) => }: PartialFunction[T, Unit],
@@ -75,7 +75,6 @@ object ActorSource {
         bufferSize,
         overflowStrategy)
       .asJava
-  }
 
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].

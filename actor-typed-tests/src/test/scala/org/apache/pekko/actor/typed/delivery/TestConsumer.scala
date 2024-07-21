@@ -55,10 +55,9 @@ object TestConsumer {
       producerId: String,
       n: Long,
       producerController: ActorRef[ProducerController.Command[TestConsumer.Job]],
-      ack: Boolean = false): SequencedMessage[TestConsumer.Job] = {
+      ack: Boolean = false): SequencedMessage[TestConsumer.Job] =
     ConsumerController.SequencedMessage(producerId, n, TestConsumer.Job(s"msg-$n"), first = n == 1, ack)(
       producerController.unsafeUpcast[ProducerControllerImpl.InternalCommand])
-  }
 
   def consumerEndCondition(seqNr: Long): TestConsumer.SomeAsyncJob => Boolean = {
     case TestConsumer.SomeAsyncJob(_, _, _, nr) => nr >= seqNr
@@ -97,7 +96,7 @@ class TestConsumer(
 
   controller ! ConsumerController.Start(deliverTo)
 
-  private def active(processed: Set[(String, Long)], messageCount: Int): Behavior[Command] = {
+  private def active(processed: Set[(String, Long)], messageCount: Int): Behavior[Command] =
     Behaviors.receive { (ctx, m) =>
       m match {
         case JobDelivery(msg, confirmTo, producerId, seqNr) =>
@@ -129,7 +128,6 @@ class TestConsumer(
             active(cleanProcessed + (producerId -> seqNr), messageCount + 1)
       }
     }
-  }
 
 }
 

@@ -162,12 +162,11 @@ object ShardRegion {
 
     /** INTERNAL API */
     @InternalApi
-    private[sharding] def shardId(id: String, maxNumberOfShards: Int): String = {
+    private[sharding] def shardId(id: String, maxNumberOfShards: Int): String =
       // It would be better to have abs(id.hashCode % maxNumberOfShards), see issue #25034
       // but to avoid getting different values when rolling upgrade we keep the old way,
       // and it doesn't have any serious consequences
       (math.abs(id.hashCode) % maxNumberOfShards).toString
-    }
   }
 
   /**
@@ -719,7 +718,7 @@ private[pekko] class ShardRegion(
    * the likely locations of the coordinator.
    */
   def coordinatorSelection: List[ActorSelection] = {
-    @tailrec def select(result: List[Member], remaining: immutable.SortedSet[Member]): List[Member] = {
+    @tailrec def select(result: List[Member], remaining: immutable.SortedSet[Member]): List[Member] =
       if (remaining.isEmpty)
         result
       else {
@@ -729,7 +728,6 @@ private[pekko] class ShardRegion(
         else
           select(m :: result, remaining.tail)
       }
-    }
 
     select(Nil, membersByAge).map(m => context.actorSelection(RootActorPath(m.address).toString + coordinatorPath))
   }
@@ -768,12 +766,11 @@ private[pekko] class ShardRegion(
       log.warning("{}: Message does not have an extractor defined in shard so it was ignored: {}", typeName, unknownMsg)
   }
 
-  def receiveClusterState(state: CurrentClusterState): Unit = {
+  def receiveClusterState(state: CurrentClusterState): Unit =
     changeMembers(
       immutable.SortedSet
         .empty(ageOrdering)
         .union(state.members.filter(m => memberStatusOfInterest(m.status) && matchingRole(m))))
-  }
 
   def receiveClusterEvent(evt: ClusterDomainEvent): Unit = evt match {
     case MemberUp(m) =>
@@ -805,12 +802,11 @@ private[pekko] class ShardRegion(
     case _              => unhandled(evt)
   }
 
-  private def addMember(m: Member): Unit = {
+  private def addMember(m: Member): Unit =
     if (matchingRole(m) && memberStatusOfInterest(m.status)) {
       // replace, it's possible that the status, or upNumber is changed
       changeMembers(membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress) + m)
     }
-  }
 
   def receiveCoordinatorMessage(msg: CoordinatorMessage): Unit = msg match {
     case HostShard(shard) =>
@@ -978,7 +974,7 @@ private[pekko] class ShardRegion(
     case null => unhandled(query)
   }
 
-  def receiveTerminated(ref: ActorRef): Unit = {
+  def receiveTerminated(ref: ActorRef): Unit =
     if (coordinator.contains(ref)) {
       coordinator = None
       startRegistration()
@@ -1022,7 +1018,6 @@ private[pekko] class ShardRegion(
       // If so, we can try to speed-up the region shutdown. We don't need to wait for the next tick.
       tryCompleteGracefulShutdownIfInProgress()
     }
-  }
 
   def receiveShardHome(shard: ShardId, shardRegionRef: ActorRef): Unit = {
     log.debug("{}: Shard [{}] located at [{}]", typeName, shard, shardRegionRef)
@@ -1045,7 +1040,7 @@ private[pekko] class ShardRegion(
       deliverBufferedMessages(shard, shardRegionRef)
   }
 
-  def replyToRegionStateQuery(ref: ActorRef): Unit = {
+  def replyToRegionStateQuery(ref: ActorRef): Unit =
     queryShards[Shard.CurrentShardState](shards, Shard.GetCurrentShardState)
       .map { qr =>
         CurrentShardRegionState(
@@ -1053,15 +1048,13 @@ private[pekko] class ShardRegion(
           qr.failed)
       }
       .pipeTo(ref)
-  }
 
-  def replyToRegionStatsQuery(ref: ActorRef): Unit = {
+  def replyToRegionStatsQuery(ref: ActorRef): Unit =
     queryShards[ShardStats](shards, Shard.GetShardStats)
       .map { qr =>
         ShardRegionStats(qr.responses.map(stats => (stats.shardId, stats.entityCount)).toMap, qr.failed)
       }
       .pipeTo(ref)
-  }
 
   /**
    * Query all or a subset of shards, e.g. unresponsive shards that initially timed out.
@@ -1103,17 +1096,15 @@ private[pekko] class ShardRegion(
     scheduleNextRegistration()
   }
 
-  def scheduleNextRegistration(): Unit = {
+  def scheduleNextRegistration(): Unit =
     if (nextRegistrationDelay < retryInterval) {
       timers.startSingleTimer(RegisterRetry, RegisterRetry, nextRegistrationDelay)
       // exponentially increasing retry interval until reaching the normal retryInterval
       nextRegistrationDelay *= 2
     }
-  }
 
-  def finishRegistration(): Unit = {
+  def finishRegistration(): Unit =
     timers.cancel(RegisterRetry)
-  }
 
   def register(): Unit = {
     val actorSelections = coordinatorSelection
@@ -1171,7 +1162,7 @@ private[pekko] class ShardRegion(
    * Send GetShardHome for all shards with buffered messages
    * If coordinator is empty, nothing happens
    */
-  def tryRequestShardBufferHomes(): Unit = {
+  def tryRequestShardBufferHomes(): Unit =
     coordinator.foreach { coord =>
       // Have to use vars because MessageBufferMap has no map, only foreach
       var totalBuffered = 0
@@ -1198,7 +1189,6 @@ private[pekko] class ShardRegion(
           totalBuffered)
       }
     }
-  }
 
   def initializeShard(id: ShardId, shard: ActorRef): Unit = {
     log.debug("{}: Shard was initialized [{}]", typeName, id)
@@ -1256,17 +1246,16 @@ private[pekko] class ShardRegion(
     retryCount = 0
   }
 
-  def deliverStartEntity(msg: StartEntity, snd: ActorRef): Unit = {
-    try {
+  def deliverStartEntity(msg: StartEntity, snd: ActorRef): Unit =
+    try
       deliverMessage(msg, snd)
-    } catch {
+    catch {
       case ex: MatchError =>
         log.error(
           ex,
           "{}: When using remember-entities the shard id extractor must handle ShardRegion.StartEntity(id).",
           typeName)
     }
-  }
 
   def deliverToAllShards(msg: Any, snd: ActorRef): Unit =
     shards.values.foreach(_.tell(msg, snd))
@@ -1321,7 +1310,7 @@ private[pekko] class ShardRegion(
         }
     }
 
-  def getShard(id: ShardId): Option[ActorRef] = {
+  def getShard(id: ShardId): Option[ActorRef] =
     if (startingShards.contains(id))
       None
     else {
@@ -1359,13 +1348,11 @@ private[pekko] class ShardRegion(
             throw new IllegalStateException("Shard must not be allocated to a proxy only ShardRegion")
         })
     }
-  }
 
-  def sendGracefulShutdownToCoordinatorIfInProgress(): Unit = {
+  def sendGracefulShutdownToCoordinatorIfInProgress(): Unit =
     if (gracefulShutdownInProgress) {
       val actorSelections = coordinatorSelection
       log.debug("{}: Sending graceful shutdown to {}", typeName, actorSelections)
       actorSelections.foreach(_ ! GracefulShutdownReq(self))
     }
-  }
 }

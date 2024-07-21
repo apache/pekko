@@ -68,13 +68,12 @@ class TestKit(system: ActorSystem) {
 
   def getSystem: ActorSystem = tp.system
 
-  def duration(s: String): FiniteDuration = {
+  def duration(s: String): FiniteDuration =
     Duration.apply(s) match {
       case fd: FiniteDuration => fd
       case _ =>
         throw new IllegalArgumentException("duration() is only for finite durations, use Duration.Inf() and friends")
     }
-  }
 
   /**
    * Scale timeouts (durations) during tests with the configured
@@ -128,12 +127,11 @@ class TestKit(system: ActorSystem) {
    * Ignore all messages in the test actor for which the given partial
    * function returns true.
    */
-  def ignoreMsg(pf: JFunction[Any, Boolean]): Unit = {
+  def ignoreMsg(pf: JFunction[Any, Boolean]): Unit =
     tp.ignoreMsg(new CachingPartialFunction[Any, Boolean] {
       @throws(classOf[Exception])
       override def `match`(x: Any): Boolean = pf.apply(x)
     })
-  }
 
   /**
    * Stop ignoring messages in the test actor.
@@ -498,12 +496,11 @@ class TestKit(system: ActorSystem) {
    * Use this variant to implement more complicated or conditional
    * processing.
    */
-  def expectMsgPF[T](hint: String, f: JFunction[Any, T]): T = {
+  def expectMsgPF[T](hint: String, f: JFunction[Any, T]): T =
     tp.expectMsgPF(hint = hint)(new CachingPartialFunction[Any, T] {
       @throws(classOf[Exception])
       override def `match`(x: Any): T = f.apply(x)
     })
-  }
 
   /**
    * Receive one message from the test actor and assert that the given
@@ -514,12 +511,11 @@ class TestKit(system: ActorSystem) {
    * processing.
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.6.0")
-  def expectMsgPF[T](max: Duration, hint: String, f: JFunction[Any, T]): T = {
+  def expectMsgPF[T](max: Duration, hint: String, f: JFunction[Any, T]): T =
     tp.expectMsgPF(max, hint)(new CachingPartialFunction[Any, T] {
       @throws(classOf[Exception])
       override def `match`(x: Any): T = f.apply(x)
     })
-  }
 
   /**
    * Receive one message from the test actor and assert that the given
@@ -726,12 +722,11 @@ class TestKit(system: ActorSystem) {
    * Same as `fishForMessage`, but gets a different partial function and returns properly typed message.
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.6.0")
-  def fishForSpecificMessage[T](max: Duration, hint: String, f: JFunction[Any, T]): T = {
+  def fishForSpecificMessage[T](max: Duration, hint: String, f: JFunction[Any, T]): T =
     tp.fishForSpecificMessage(max, hint)(new CachingPartialFunction[Any, T] {
       @throws(classOf[Exception])
       override def `match`(x: Any): T = f.apply(x)
     })
-  }
 
   /**
    * Same as `fishForMessage`, but gets a different partial function and returns properly typed message.
@@ -788,13 +783,12 @@ class TestKit(system: ActorSystem) {
    * certain characteristics are generated at a certain rate:
    */
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
-  def receiveWhile[T](max: Duration, idle: Duration, messages: Int, f: JFunction[AnyRef, T]): JList[T] = {
+  def receiveWhile[T](max: Duration, idle: Duration, messages: Int, f: JFunction[AnyRef, T]): JList[T] =
     tp.receiveWhile(max, idle, messages)(new CachingPartialFunction[AnyRef, T] {
       @throws(classOf[Exception])
       override def `match`(x: AnyRef): T = f.apply(x)
     })
       .asJava
-  }
 
   /**
    * Receive a series of messages until one does not match the given partial
@@ -811,30 +805,27 @@ class TestKit(system: ActorSystem) {
       max: java.time.Duration,
       idle: java.time.Duration,
       messages: Int,
-      f: JFunction[AnyRef, T]): JList[T] = {
+      f: JFunction[AnyRef, T]): JList[T] =
     tp.receiveWhile(max.asScala, idle.asScala, messages)(new CachingPartialFunction[AnyRef, T] {
       @throws(classOf[Exception])
       override def `match`(x: AnyRef): T = f.apply(x)
     })
       .asJava
-  }
 
   @deprecated("Use the overloaded one which accepts java.time.Duration instead.", since = "Akka 2.5.13")
-  def receiveWhile[T](max: Duration, f: JFunction[AnyRef, T]): JList[T] = {
+  def receiveWhile[T](max: Duration, f: JFunction[AnyRef, T]): JList[T] =
     tp.receiveWhile(max = max)(new CachingPartialFunction[AnyRef, T] {
       @throws(classOf[Exception])
       override def `match`(x: AnyRef): T = f.apply(x)
     })
       .asJava
-  }
 
-  def receiveWhile[T](max: java.time.Duration, f: JFunction[AnyRef, T]): JList[T] = {
+  def receiveWhile[T](max: java.time.Duration, f: JFunction[AnyRef, T]): JList[T] =
     tp.receiveWhile(max = max.asScala)(new CachingPartialFunction[AnyRef, T] {
       @throws(classOf[Exception])
       override def `match`(x: AnyRef): T = f.apply(x)
     })
       .asJava
-  }
 
   /**
    * Spawns an actor as a child of this test actor, and returns the child's ActorRef.
@@ -868,26 +859,22 @@ object TestKit {
    *
    * If verifySystemShutdown is true, then an exception will be thrown on failure.
    */
-  def shutdownActorSystem(actorSystem: ActorSystem, duration: Duration, verifySystemShutdown: Boolean): Unit = {
-
+  def shutdownActorSystem(actorSystem: ActorSystem, duration: Duration, verifySystemShutdown: Boolean): Unit =
     pekko.testkit.TestKit.shutdownActorSystem(actorSystem, duration, verifySystemShutdown)
-  }
 
   /**
    * Shut down an actor system and wait for termination.
    * On failure debug output will be logged about the remaining actors in the system.
    */
-  def shutdownActorSystem(actorSystem: ActorSystem): Unit = {
+  def shutdownActorSystem(actorSystem: ActorSystem): Unit =
     shutdownActorSystem(actorSystem, 10.seconds, false)
-  }
 
   /**
    * Shut down an actor system and wait for termination.
    * On failure debug output will be logged about the remaining actors in the system.
    */
-  def shutdownActorSystem(actorSystem: ActorSystem, duration: Duration): Unit = {
+  def shutdownActorSystem(actorSystem: ActorSystem, duration: Duration): Unit =
     shutdownActorSystem(actorSystem, duration, false)
-  }
 
   /**
    * Shut down an actor system and wait for termination.
@@ -895,9 +882,8 @@ object TestKit {
    *
    * If verifySystemShutdown is true, then an exception will be thrown on failure.
    */
-  def shutdownActorSystem(actorSystem: ActorSystem, verifySystemShutdown: Boolean): Unit = {
+  def shutdownActorSystem(actorSystem: ActorSystem, verifySystemShutdown: Boolean): Unit =
     shutdownActorSystem(actorSystem, 10.seconds, verifySystemShutdown)
-  }
 
 }
 

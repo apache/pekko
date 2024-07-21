@@ -226,9 +226,8 @@ object ActorSystem {
       guardianBehavior: Behavior[T],
       name: String,
       setup: ActorSystemSetup,
-      guardianProps: Props = Props.empty): ActorSystem[T] = {
+      guardianProps: Props = Props.empty): ActorSystem[T] =
     createInternal(name, guardianBehavior, guardianProps, setup)
-  }
 
   /**
    * Scala API: Shortcut for creating an actor system with custom bootstrap settings.

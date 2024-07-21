@@ -69,7 +69,7 @@ class ActorRefBackpressureSourceSpec extends StreamSpec {
       sub.request(1)
 
       @scala.annotation.tailrec
-      def verifyNext(n: Int): Unit = {
+      def verifyNext(n: Int): Unit =
         if (n > 10)
           s.expectComplete()
         else
@@ -81,7 +81,6 @@ class ActorRefBackpressureSourceSpec extends StreamSpec {
             case Left(e) =>
               fail(s"Expected IllegalStateException, got ${e.getClass}", e)
           }
-      }
       verifyNext(1)
     }
 

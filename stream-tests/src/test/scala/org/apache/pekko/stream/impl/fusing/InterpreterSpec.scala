@@ -565,14 +565,13 @@ class InterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
          * Called when the output port has received a pull, and therefore ready to emit an element, i.e. [[GraphStageLogic.push]]
          * is now allowed to be called on this port.
          */
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (oneMore) {
             push(out, latest)
             oneMore = false
           } else {
             pull(in)
           }
-        }
 
         setHandlers(in, out, this)
       }
@@ -592,13 +591,12 @@ class InterpreterSpec extends StreamSpec with GraphInterpreterSpecKit {
         }
 
         // note that the default value of lastElem will be always pushed if the upstream closed at the very beginning without a pulling
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (isClosed(in)) {
             push(out, lastElem)
           } else {
             pull(in)
           }
-        }
 
         override def onUpstreamFinish(): Unit = {}
 

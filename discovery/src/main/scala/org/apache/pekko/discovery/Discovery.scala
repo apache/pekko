@@ -55,9 +55,8 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
    * The `ServiceDiscovery` instance for a given `method` will be created
    * once and subsequent requests for the same `method` will return the same instance.
    */
-  def loadServiceDiscovery(method: String): ServiceDiscovery = {
+  def loadServiceDiscovery(method: String): ServiceDiscovery =
     implementations.computeIfAbsent(method, factory)
-  }
 
   /**
    * INTERNAL API
@@ -67,15 +66,14 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
     val config = system.settings.config
     val dynamic = system.dynamicAccess
 
-    def classNameFromConfig(path: String): String = {
+    def classNameFromConfig(path: String): String =
       if (config.hasPath(path))
         config.getString(path)
       else
         throw new IllegalArgumentException(
           s"$path must point to a FQN of a `org.apache.pekko.discovery.ServiceDiscovery` implementation")
-    }
 
-    def create(clazzName: String): Try[ServiceDiscovery] = {
+    def create(clazzName: String): Try[ServiceDiscovery] =
       dynamic
         .createInstanceFor[ServiceDiscovery](clazzName, (classOf[ExtendedActorSystem] -> system) :: Nil)
         .recoverWith {
@@ -86,7 +84,6 @@ final class Discovery(implicit system: ExtendedActorSystem) extends Extension {
           case _: ClassNotFoundException | _: NoSuchMethodException =>
             dynamic.createInstanceFor[ServiceDiscovery](clazzName, Nil)
         }
-    }
 
     val configName = s"pekko.discovery.$method.class"
     val instanceTry = create(classNameFromConfig(configName))

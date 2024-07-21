@@ -50,14 +50,13 @@ object ReliableDeliveryRandomSpec {
     override def aroundReceive(
         ctx: TypedActorContext[Any],
         msg: Any,
-        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] = {
+        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] =
       if (rnd.nextDouble() < dropProbability(msg)) {
         ctx.asScala.log.info("dropped {}", msg)
         Behaviors.same
       } else {
         target(ctx, msg)
       }
-    }
 
   }
 }

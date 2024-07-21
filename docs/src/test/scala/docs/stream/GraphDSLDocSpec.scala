@@ -127,8 +127,7 @@ class GraphDSLDocSpec extends PekkoSpec {
     object PriorityWorkerPool {
       def apply[In, Out](
           worker: Flow[In, Out, Any],
-          workerCount: Int): Graph[PriorityWorkerPoolShape[In, Out], NotUsed] = {
-
+          workerCount: Int): Graph[PriorityWorkerPoolShape[In, Out], NotUsed] =
         GraphDSL.create() { implicit b =>
           import GraphDSL.Implicits._
 
@@ -152,8 +151,6 @@ class GraphDSLDocSpec extends PekkoSpec {
             priorityJobsIn = priorityMerge.preferred,
             resultsOut = resultsMerge.out)
         }
-
-      }
 
     }
     // #graph-dsl-components-create

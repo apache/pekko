@@ -48,7 +48,7 @@ object FSMTransitionSpec {
       case Event("reply", _) => stay().replying("reply")
     }
     initialize()
-    override def preRestart(reason: Throwable, msg: Option[Any]): Unit = { target ! "restarted" }
+    override def preRestart(reason: Throwable, msg: Option[Any]): Unit = target ! "restarted"
   }
 
   class OtherFSM(target: ActorRef) extends Actor with FSM[Int, Int] {
@@ -165,9 +165,9 @@ class FSMTransitionSpec extends PekkoSpec with ImplicitSender {
         }
         when(1) {
           case Event("test", _) =>
-            try {
+            try
               sender() ! s"failed: $nextStateData"
-            } catch {
+            catch {
               case _: IllegalStateException => sender() ! "ok"
             }
             stay()

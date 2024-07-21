@@ -37,7 +37,7 @@ object ReplicationIllegalAccessSpec {
 
   case class State(all: List[String]) extends CborSerializable
 
-  def apply(entityId: String, replica: ReplicaId): Behavior[Command] = {
+  def apply(entityId: String, replica: ReplicaId): Behavior[Command] =
     ReplicatedEventSourcing.commonJournalConfig(
       ReplicationId("IllegalAccessSpec", entityId, replica),
       AllReplicas,
@@ -72,7 +72,6 @@ object ReplicationIllegalAccessSpec {
               }
           },
         (state, event) => state.copy(all = event :: state.all)))
-  }
 
 }
 

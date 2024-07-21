@@ -147,7 +147,7 @@ private[remote] class InboundControlJunction
       }
 
       // InHandler
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         grab(in) match {
           case env: InboundEnvelope if env.message.isInstanceOf[ControlMessage] =>
             observers.foreach(_.notify(env))
@@ -155,7 +155,6 @@ private[remote] class InboundControlJunction
           case env =>
             push(out, env)
         }
-      }
 
       // OutHandler
       override def onPull(): Unit = pull(in)
@@ -216,22 +215,20 @@ private[remote] class OutboundControlJunction(
       private val buffer = new ArrayDeque[OutboundEnvelope]
 
       // InHandler
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         if (buffer.isEmpty && isAvailable(out))
           push(out, grab(in))
         else
           buffer.offer(grab(in))
-      }
 
       // OutHandler
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (buffer.isEmpty && !hasBeenPulled(in))
           pull(in)
         else if (!buffer.isEmpty)
           push(out, buffer.poll())
-      }
 
-      private def internalSendControlMessage(message: ControlMessage): Unit = {
+      private def internalSendControlMessage(message: ControlMessage): Unit =
         if (buffer.isEmpty && isAvailable(out))
           push(out, wrap(message))
         else if (buffer.size < maxControlMessageBufferSize)
@@ -240,7 +237,6 @@ private[remote] class OutboundControlJunction(
           // it's alright to drop control messages
           log.debug("Dropping control message [{}] due to full buffer.", Logging.messageClassName(message))
         }
-      }
 
       private def wrap(message: ControlMessage): OutboundEnvelope =
         outboundEnvelopePool.acquire().init(recipient = OptionVal.None, message = message, sender = OptionVal.None)

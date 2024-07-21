@@ -154,18 +154,16 @@ object JournalCompactionSpec {
 
   class SpecComponentBuilder(val specId: String, val compactionInterval: Long) {
 
-    def config: Config = {
+    def config: Config =
       PersistenceSpec.config(
         "leveldb",
         specId,
         extraConfig = Some(s"""
            | pekko.persistence.journal.leveldb.compaction-intervals.$specId = $compactionInterval
         """.stripMargin))
-    }
 
-    def createLogger(system: ActorSystem, watcher: ActorRef): ActorRef = {
+    def createLogger(system: ActorSystem, watcher: ActorRef): ActorRef =
       system.actorOf(EventLogger.props(specId, watcher), "logger")
-    }
 
   }
 
@@ -173,9 +171,8 @@ object JournalCompactionSpec {
 
     def apply(specId: String): SpecComponentBuilder = apply(specId, 0)
 
-    def apply(specId: String, compactionInterval: Long): SpecComponentBuilder = {
+    def apply(specId: String, compactionInterval: Long): SpecComponentBuilder =
       new SpecComponentBuilder(specId, compactionInterval)
-    }
   }
 
   object EventLogger {
@@ -211,9 +208,8 @@ object JournalCompactionSpec {
 
     override def persistenceId: String = specId
 
-    private def onEventPersisted(evt: Event): Unit = {
+    private def onEventPersisted(evt: Event): Unit =
       watcher ! Generated(evt.seqNr)
-    }
 
     private def randomText(): String = Random.nextString(1024)
   }

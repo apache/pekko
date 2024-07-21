@@ -33,8 +33,7 @@ final case class RemoteScope(node: Address) extends Scope {
  */
 private[pekko] class RemoteDeployer(_settings: ActorSystem.Settings, _pm: DynamicAccess)
     extends Deployer(_settings, _pm) {
-  override def parseConfig(path: String, config: Config): Option[Deploy] = {
-
+  override def parseConfig(path: String, config: Config): Option[Deploy] =
     super.parseConfig(path, config) match {
       case d @ Some(deploy) =>
         deploy.config.getString("remote") match {
@@ -51,5 +50,4 @@ private[pekko] class RemoteDeployer(_settings: ActorSystem.Settings, _pm: Dynami
         }
       case None => None
     }
-  }
 }

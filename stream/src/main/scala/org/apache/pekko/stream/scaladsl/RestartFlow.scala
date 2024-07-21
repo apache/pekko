@@ -284,7 +284,7 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
     sinkIn.setHandler(new InHandler {
       override def onPush() = push(out, sinkIn.grab())
 
-      override def onUpstreamFinish() = {
+      override def onUpstreamFinish() =
         if (finishing || maxRestartsReached() || onlyOnFailures) {
           complete(out)
         } else {
@@ -294,19 +294,17 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
             minLogLevel = Logging.InfoLevel)
           scheduleRestartTimer()
         }
-      }
 
       /*
        * Upstream in this context is the wrapped stage.
        */
-      override def onUpstreamFailure(ex: Throwable) = {
+      override def onUpstreamFailure(ex: Throwable) =
         if (finishing || maxRestartsReached() || !settings.restartOn(ex)) {
           fail(out, ex)
         } else {
           logIt(s"Restarting stream due to failure [${restartCount + 1}]: $ex", OptionVal.Some(ex))
           scheduleRestartTimer()
         }
-      }
     })
 
     setHandler(out,
@@ -329,7 +327,7 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
   private def logIt(
       message: String,
       exc: OptionVal[Throwable],
-      minLogLevel: Logging.LogLevel = Logging.ErrorLevel): Unit = {
+      minLogLevel: Logging.LogLevel = Logging.ErrorLevel): Unit =
     if (loggingEnabled) {
       logLevel(minLogLevel) match {
         case Logging.ErrorLevel =>
@@ -351,7 +349,6 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
         case _                  => // off
       }
     }
-  }
 
   /**
    * @param in The permanent inlet for this operator
@@ -376,13 +373,12 @@ private abstract class RestartWithBackoffLogic[S <: Shape](
        * Can either be a failure or a cancel in the wrapped state.
        * onlyOnFailures is thus racy so a delay to cancellation is added in the case of a flow.
        */
-      override def onDownstreamFinish(cause: Throwable) = {
+      override def onDownstreamFinish(cause: Throwable) =
         if (finishing || maxRestartsReached() || onlyOnFailures || !settings.restartOn(cause)) {
           cancel(in, cause)
         } else {
           scheduleRestartTimer()
         }
-      }
     })
 
     setHandler(

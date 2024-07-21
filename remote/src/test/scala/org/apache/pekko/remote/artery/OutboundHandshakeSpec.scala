@@ -43,9 +43,7 @@ class OutboundHandshakeSpec extends PekkoSpec("""
       timeout: FiniteDuration = 5.seconds,
       retryInterval: FiniteDuration = 10.seconds,
       injectHandshakeInterval: FiniteDuration = 10.seconds,
-      livenessProbeInterval: Duration = Duration.Undefined)
-      : (TestPublisher.Probe[String], TestSubscriber.Probe[Any]) = {
-
+      livenessProbeInterval: Duration = Duration.Undefined): (TestPublisher.Probe[String], TestSubscriber.Probe[Any]) =
     TestSource
       .probe[String]
       .map(msg => outboundEnvelopePool.acquire().init(OptionVal.None, msg, OptionVal.None))
@@ -61,7 +59,6 @@ class OutboundHandshakeSpec extends PekkoSpec("""
       .map(env => env.message)
       .toMat(TestSink.probe[Any])(Keep.both)
       .run()
-  }
 
   "OutboundHandshake stage" must {
     "send HandshakeReq when first pulled" in {

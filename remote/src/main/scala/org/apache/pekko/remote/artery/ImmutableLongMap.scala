@@ -53,16 +53,15 @@ private[pekko] class ImmutableLongMap[A >: Null] private (private val keys: Arra
   /**
    * Worst case `O(log n)`, allocation free.
    */
-  def contains(key: Long): Boolean = {
+  def contains(key: Long): Boolean =
     Arrays.binarySearch(keys, key) >= 0
-  }
 
   /**
    * Worst case `O(log n)`, creates new `ImmutableLongMap`
    * with copies of the internal arrays for the keys and
    * values.
    */
-  def updated(key: Long, value: A): ImmutableLongMap[A] = {
+  def updated(key: Long, value: A): ImmutableLongMap[A] =
     if (size == 0)
       new ImmutableLongMap(Array(key), Array(value))
     else {
@@ -89,7 +88,6 @@ private[pekko] class ImmutableLongMap[A >: Null] private (private val keys: Arra
         new ImmutableLongMap(newKeys, newValues)
       }
     }
-  }
 
   def remove(key: Long): ImmutableLongMap[A] = {
     val i = Arrays.binarySearch(keys, key)
@@ -133,12 +131,11 @@ private[pekko] class ImmutableLongMap[A >: Null] private (private val keys: Arra
       else if (size != other.size) false
       else if (size == 0 && other.size == 0) true
       else {
-        @tailrec def check(i: Int): Boolean = {
+        @tailrec def check(i: Int): Boolean =
           if (i == size) true
           else if (keys(i) == other.keys(i) && values(i) == other.values(i))
             check(i + 1) // recur, next elem
           else false
-        }
         check(0)
       }
     case _ => false

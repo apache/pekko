@@ -82,7 +82,7 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
   private var lastGC = 0L
 
   // we have to forget about long-gone threads sometime
-  private def gc(): Unit = {
+  private def gc(): Unit =
     queues = queues
       .foldLeft(Map.newBuilder[CallingThreadMailbox, Set[WeakReference[MessageQueue]]]) {
         case (m, (k, v)) =>
@@ -90,7 +90,6 @@ private[testkit] class CallingThreadDispatcherQueues extends Extension {
           if (nv.isEmpty) m else m += (k -> nv)
       }
       .result()
-  }
 
   protected[pekko] def registerQueue(mbox: CallingThreadMailbox, q: MessageQueue): Unit = synchronized {
     if (queues contains mbox) {
@@ -200,14 +199,13 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
     mbox.foreach(CallingThreadDispatcherQueues(actor.system).unregisterQueues)
   }
 
-  protected[pekko] override def suspend(actor: ActorCell): Unit = {
+  protected[pekko] override def suspend(actor: ActorCell): Unit =
     actor.mailbox match {
-      case m: CallingThreadMailbox => { m.suspendSwitch.switchOn; m.suspend() }
+      case m: CallingThreadMailbox => m.suspendSwitch.switchOn; m.suspend()
       case m                       => m.systemEnqueue(actor.self, Suspend())
     }
-  }
 
-  protected[pekko] override def resume(actor: ActorCell): Unit = {
+  protected[pekko] override def resume(actor: ActorCell): Unit =
     actor.mailbox match {
       case mbox: CallingThreadMailbox =>
         val queue = mbox.queue
@@ -219,18 +217,16 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
           runQueue(mbox, queue)
       case m => m.systemEnqueue(actor.self, Resume(causedByFailure = null))
     }
-  }
 
-  protected[pekko] override def systemDispatch(receiver: ActorCell, message: SystemMessage): Unit = {
+  protected[pekko] override def systemDispatch(receiver: ActorCell, message: SystemMessage): Unit =
     receiver.mailbox match {
       case mbox: CallingThreadMailbox =>
         mbox.systemEnqueue(receiver.self, message)
         runQueue(mbox, mbox.queue)
       case m => m.systemEnqueue(receiver.self, message)
     }
-  }
 
-  protected[pekko] override def dispatch(receiver: ActorCell, handle: Envelope): Unit = {
+  protected[pekko] override def dispatch(receiver: ActorCell, handle: Envelope): Unit =
     receiver.mailbox match {
       case mbox: CallingThreadMailbox =>
         val queue = mbox.queue
@@ -244,9 +240,8 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
         if (execute) runQueue(mbox, queue)
       case m => m.enqueue(receiver.self, handle)
     }
-  }
 
-  protected[pekko] override def executeTask(invocation: TaskInvocation): Unit = { invocation.run() }
+  protected[pekko] override def executeTask(invocation: TaskInvocation): Unit = invocation.run()
 
   /**
    * This method must be called with this thread's queue.
@@ -260,13 +255,12 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
       mbox: CallingThreadMailbox,
       queue: MessageQueue,
       interruptedEx: InterruptedException = null): Unit = {
-    def checkThreadInterruption(intEx: InterruptedException): InterruptedException = {
+    def checkThreadInterruption(intEx: InterruptedException): InterruptedException =
       if (Thread.interrupted()) { // clear interrupted flag before we continue, exception will be thrown later
         val ie = new InterruptedException("Interrupted during message processing")
         log.error(ie, "Interrupted during message processing")
         ie
       } else intEx
-    }
 
     def throwInterruptionIfExistsOrSet(intEx: InterruptedException): Unit = {
       val ie = checkThreadInterruption(intEx)
@@ -311,9 +305,9 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
     if (!mbox.ctdLock.isHeldByCurrentThread) {
       var intex = interruptedEx
       val gotLock =
-        try {
+        try
           mbox.ctdLock.tryLock(50, TimeUnit.MILLISECONDS)
-        } catch {
+        catch {
           case ie: InterruptedException =>
             Thread.interrupted() // clear interrupted flag before we continue, exception will be thrown later
             intex = ie
@@ -321,11 +315,10 @@ class CallingThreadDispatcher(_configurator: MessageDispatcherConfigurator) exte
         }
       if (gotLock) {
         val ie =
-          try {
+          try
             process(intex)
-          } finally {
+          finally
             mbox.ctdLock.unlock
-          }
         throwInterruptionIfExistsOrSet(ie)
       } else {
         // if we didn't get the lock and our mailbox still has messages, then we need to try again
@@ -379,7 +372,7 @@ class CallingThreadMailbox(_receiver: pekko.actor.Cell, val mailboxType: Mailbox
   val ctdLock = new ReentrantLock
   val suspendSwitch = new Switch
 
-  override def cleanUp(): Unit = {
+  override def cleanUp(): Unit =
     /*
      * This is called from dispatcher.unregister, i.e. under this.lock. If
      * another thread obtained a reference to this mailbox and enqueues after
@@ -392,5 +385,4 @@ class CallingThreadMailbox(_receiver: pekko.actor.Cell, val mailboxType: Mailbox
       qq.cleanUp(actor.self, actor.dispatcher.mailboxes.deadLetterMailbox.messageQueue)
       q.remove()
     }
-  }
 }

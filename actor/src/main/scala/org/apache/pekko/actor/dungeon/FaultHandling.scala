@@ -99,16 +99,15 @@ private[pekko] trait FaultHandling { this: ActorCell =>
       if (system.settings.DebugLifecycle) publish(Debug(self.path.toString, clazz(failedActor), "restarting"))
       if (failedActor ne null) {
         val optionalMessage = if (currentMessage ne null) Some(currentMessage.message) else None
-        try {
+        try
           // if the actor fails in preRestart, we can do nothing but log it: it’s best-effort
           if (!isFailedFatally) failedActor.aroundPreRestart(cause, optionalMessage)
-        } catch handleNonFatalOrInterruptedException { e =>
+        catch handleNonFatalOrInterruptedException { e =>
             val ex = PreRestartException(self, e, cause, optionalMessage)
             publish(Error(ex, self.path.toString, clazz(failedActor), e.getMessage))
           }
-        finally {
+        finally
           clearActorFields(failedActor, recreate = true)
-        }
       }
       assert(mailbox.isSuspended, "mailbox must be suspended during restart, status=" + mailbox.currentStatus)
       if (!setChildrenTerminationReason(ChildrenContainer.Recreation(cause))) finishRecreate(cause)
@@ -133,7 +132,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
    * @param causedByFailure signifies if it was our own failure which
    *        prompted this action.
    */
-  protected def faultResume(causedByFailure: Throwable): Unit = {
+  protected def faultResume(causedByFailure: Throwable): Unit =
     if (actor == null) {
       system.eventStream.publish(
         Error(self.path.toString, clazz(actor), "changing Resume into Create after " + causedByFailure))
@@ -150,7 +149,6 @@ private[pekko] trait FaultHandling { this: ActorCell =>
       finally if (causedByFailure != null) clearFailed()
       resumeChildren(causedByFailure, perp)
     }
-  }
 
   /**
    * Do create the actor in response to a failure.
@@ -212,7 +210,7 @@ private[pekko] trait FaultHandling { this: ActorCell =>
   }
 
   @InternalStableApi
-  final def handleInvokeFailure(childrenNotToSuspend: immutable.Iterable[ActorRef], t: Throwable): Unit = {
+  final def handleInvokeFailure(childrenNotToSuspend: immutable.Iterable[ActorRef], t: Throwable): Unit =
     // prevent any further messages to be processed until the actor has been restarted
     try {
       suspendNonRecursive()
@@ -242,7 +240,6 @@ private[pekko] trait FaultHandling { this: ActorCell =>
         try children.foreach(stop)
         finally finishTerminate()
       }
-  }
 
   private def finishTerminate(): Unit = {
     val a = actor

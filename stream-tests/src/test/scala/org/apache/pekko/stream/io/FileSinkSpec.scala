@@ -183,9 +183,8 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
             fileSink.get
           }
           assertDispatcher(ref, ActorAttributes.IODispatcher.dispatcher)
-        } finally {
+        } finally
           forever.complete(Success(None))
-        }
       }
     }
 
@@ -202,9 +201,8 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
             .tell(StreamSupervisor.GetChildren, testActor)
           val ref = expectMsgType[Children].children.find(_.path.toString contains "fileSink").get
           assertDispatcher(ref, "pekko.actor.default-dispatcher")
-        } finally {
+        } finally
           forever.complete(Success(None))
-        }
       }
     }
 
@@ -235,7 +233,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
           }
           .runWith(FileIO.toPath(f))
 
-        val ex = intercept[IOOperationIncompleteException] { Await.result(completion, 3.seconds) }
+        val ex = intercept[IOOperationIncompleteException](Await.result(completion, 3.seconds))
         ex.count should equal(1001)
         ex.getCause should equal(te)
         checkFileContents(f, TestLines.takeWhile(!_.contains('b')).mkString(""))
@@ -262,8 +260,7 @@ class FileSinkSpec extends StreamSpec(UnboundedMailboxConfig) with ScalaFutures 
     new String(out) should ===(contents)
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     fs.close()
-  }
 
 }

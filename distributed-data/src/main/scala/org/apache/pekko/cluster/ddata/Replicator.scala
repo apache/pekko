@@ -93,10 +93,9 @@ object ReplicatorSettings {
       case _               => config.getDuration("pruning-interval", MILLISECONDS).millis
     }
 
-    val logDataSizeExceeding: Option[Int] = {
+    val logDataSizeExceeding: Option[Int] =
       if (toRootLowerCase(config.getString("log-data-size-exceeding")) == "off") None
       else Some(config.getBytes("log-data-size-exceeding").toInt)
-    }
 
     import pekko.util.ccompat.JavaConverters._
     new ReplicatorSettings(
@@ -997,13 +996,12 @@ object Replicator {
           case _                     => false
         }
 
-      def initRemovedNodePruning(removed: UniqueAddress, owner: UniqueAddress): DataEnvelope = {
+      def initRemovedNodePruning(removed: UniqueAddress, owner: UniqueAddress): DataEnvelope =
         copy(
           pruning = pruning.updated(removed, PruningInitialized(owner, Set.empty)),
           deltaVersions = cleanedDeltaVersions(removed))
-      }
 
-      def prune(from: UniqueAddress, pruningPerformed: PruningPerformed): DataEnvelope = {
+      def prune(from: UniqueAddress, pruningPerformed: PruningPerformed): DataEnvelope =
         data match {
           case dataWithRemovedNodePruning: RemovedNodePruning =>
             require(pruning.contains(from))
@@ -1020,7 +1018,6 @@ object Replicator {
 
           case _ => this
         }
-      }
 
       def merge(other: DataEnvelope): DataEnvelope =
         if (other.data == DeletedData) DeletedEnvelope
@@ -1035,7 +1032,7 @@ object Replicator {
                     acc.updated(key, thisValue.merge(thatValue))
                 }
             }
-          val filteredMergedPruning = {
+          val filteredMergedPruning =
             if (mergedPruning.isEmpty) mergedPruning
             else {
               val currentTime = System.currentTimeMillis()
@@ -1044,7 +1041,6 @@ object Replicator {
                 case _                        => true
               }
             }
-          }
 
           // cleanup and merge deltaVersions
           val removedNodes = filteredMergedPruning.keys
@@ -1063,7 +1059,7 @@ object Replicator {
             pruning = filteredMergedPruning).merge(other.data)
         }
 
-      def merge(otherData: ReplicatedData): DataEnvelope = {
+      def merge(otherData: ReplicatedData): DataEnvelope =
         if (otherData == DeletedData) DeletedEnvelope
         else {
           val mergedData =
@@ -1080,7 +1076,6 @@ object Replicator {
               s"Wrong type, existing type [${data.getClass.getName}], got [${mergedData.getClass.getName}]")
           copy(data = mergedData)
         }
-      }
 
       private def cleaned(c: ReplicatedData, p: Map[UniqueAddress, PruningState]): ReplicatedData = p.foldLeft(c) {
         case (c: RemovedNodePruning, (removed, _: PruningPerformed)) =>
@@ -1100,9 +1095,8 @@ object Replicator {
         else this
       }
 
-      def estimatedSizeWithoutData: Int = {
+      def estimatedSizeWithoutData: Int =
         deltaVersions.estimatedSize + pruning.valuesIterator.map(_.estimatedSize + EstimatedSize.UniqueAddress).sum
-      }
     }
 
     val DeletedEnvelope = DataEnvelope(DeletedData)
@@ -1425,14 +1419,13 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   val deltaPropagationSelector = new DeltaPropagationSelector {
     override val gossipIntervalDivisor = 5
-    override def allNodes: Vector[UniqueAddress] = {
+    override def allNodes: Vector[UniqueAddress] =
       // Replicator.allNodes is sorted
       Replicator.this.allNodes.diff(unreachable).toVector
-    }
 
     override def maxDeltaSize: Int = settings.maxDeltaSize
 
-    override def createDeltaPropagation(deltas: Map[KeyId, (ReplicatedData, Long, Long)]): DeltaPropagation = {
+    override def createDeltaPropagation(deltas: Map[KeyId, (ReplicatedData, Long, Long)]): DeltaPropagation =
       // Important to include the pruning state in the deltas. For example if the delta is based
       // on an entry that has been pruned but that has not yet been performed on the target node.
       DeltaPropagation(
@@ -1445,7 +1438,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
               case None           => key -> Delta(DataEnvelope(d), fromSeqNr, toSeqNr)
             }
         }.toMap)
-    }
   }
   val deltaPropagationTask: Option[Cancellable] =
     if (deltaCrdtEnabled) {
@@ -1515,7 +1507,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   // messages after loading durable data.
   var replyTo: ActorRef = null
 
-  private def nodesForReadWrite(excludeExiting: Boolean): Vector[UniqueAddress] = {
+  private def nodesForReadWrite(excludeExiting: Boolean): Vector[UniqueAddress] =
     if (excludeExiting && exitingNodes.nonEmpty) {
       if (settings.preferOldest) membersByAge.iterator.collect {
         case m if !exitingNodes.contains(m.uniqueAddress) => m.uniqueAddress
@@ -1525,15 +1517,13 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       if (settings.preferOldest) membersByAge.iterator.map(_.uniqueAddress).toVector
       else nodes.toVector
     }
-  }
 
   override protected[pekko] def aroundReceive(rcv: Actor.Receive, msg: Any): Unit = {
     replyTo = sender()
-    try {
+    try
       super.aroundReceive(rcv, msg)
-    } finally {
+    finally
       replyTo = null
-    }
   }
 
   override def preStart(): Unit = {
@@ -1730,9 +1720,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       case _                            => false
     }
 
-  def receiveRead(key: KeyId): Unit = {
+  def receiveRead(key: KeyId): Unit =
     replyTo ! ReadResult(getData(key))
-  }
 
   def isLocalSender(): Boolean = !replyTo.path.address.hasGlobalScope
 
@@ -1743,12 +1732,11 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       req: Option[Any]): Unit = {
     val localValue = getData(key.id)
 
-    def deltaOrPlaceholder(d: DeltaReplicatedData): Option[ReplicatedDelta] = {
+    def deltaOrPlaceholder(d: DeltaReplicatedData): Option[ReplicatedDelta] =
       d.delta match {
         case s @ Some(_) => s
         case None        => Some(NoDeltaPlaceholder)
       }
-    }
 
     Try {
       localValue match {
@@ -1853,7 +1841,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   def receiveWrite(key: KeyId, envelope: DataEnvelope): Unit =
     writeAndStore(key, envelope, reply = true)
 
-  def writeAndStore(key: KeyId, writeEnvelope: DataEnvelope, reply: Boolean): Unit = {
+  def writeAndStore(key: KeyId, writeEnvelope: DataEnvelope, reply: Boolean): Unit =
     write(key, writeEnvelope) match {
       case Some(newEnvelope) =>
         if (isDurable(key)) {
@@ -1865,9 +1853,8 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         if (reply)
           replyTo ! WriteNack
     }
-  }
 
-  def write(key: KeyId, writeEnvelope: DataEnvelope): Option[DataEnvelope] = {
+  def write(key: KeyId, writeEnvelope: DataEnvelope): Option[DataEnvelope] =
     getData(key) match {
       case someEnvelope @ Some(envelope) if envelope eq writeEnvelope => someEnvelope
       case Some(DataEnvelope(DeletedData, _, _))                      => Some(DeletedEnvelope) // already deleted
@@ -1895,7 +1882,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         val writeEnvelope3 = writeEnvelope2.addSeen(selfAddress)
         Some(setData(key, writeEnvelope3))
     }
-  }
 
   def receiveReadRepair(key: KeyId, writeEnvelope: DataEnvelope): Unit = {
     writeAndStore(key, writeEnvelope, reply = false)
@@ -1911,7 +1897,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     replyTo ! GetKeyIdsResult(keys)
   }
 
-  def receiveDelete(key: KeyR, consistency: WriteConsistency, req: Option[Any]): Unit = {
+  def receiveDelete(key: KeyR, consistency: WriteConsistency, req: Option[Any]): Unit =
     getData(key.id) match {
       case Some(DataEnvelope(DeletedData, _, _)) =>
         // already deleted
@@ -1957,10 +1943,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
           }
         }
     }
-  }
 
   def setData(key: KeyId, envelope: DataEnvelope): DataEnvelope = {
-    val newEnvelope = {
+    val newEnvelope =
       if (deltaCrdtEnabled) {
         val deltaVersions = envelope.deltaVersions
         val currVersion = deltaPropagationSelector.currentVersion(key)
@@ -1969,7 +1954,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         else
           envelope.copy(deltaVersions = deltaVersions.merge(VersionVector(selfUniqueAddress, currVersion)))
       } else envelope
-    }
 
     val dig =
       if (subscribers.contains(key) && !changed.contains(key)) {
@@ -1988,7 +1972,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     newEnvelope
   }
 
-  def getDigest(key: KeyId): Digest = {
+  def getDigest(key: KeyId): Digest =
     dataEntries.get(key) match {
       case Some((envelope, LazyDigest)) =>
         val (d, size) = digest(envelope)
@@ -1998,7 +1982,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       case Some((_, digest)) => digest
       case None              => NotFoundDigest
     }
-  }
 
   /**
    * @return SHA-1 digest of the serialized data, and the size of the serialized data
@@ -2019,13 +2002,12 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       case None                                         => 0L
     }
 
-  def isNodeRemoved(node: UniqueAddress, keys: Iterable[KeyId]): Boolean = {
+  def isNodeRemoved(node: UniqueAddress, keys: Iterable[KeyId]): Boolean =
     removedNodes.contains(node) || (keys.exists(key =>
       dataEntries.get(key) match {
         case Some((DataEnvelope(_, pruning, _), _)) => pruning.contains(node)
         case None                                   => false
       }))
-  }
 
   def receiveFlushChanges(): Unit = {
     def notify(keyId: KeyId, subs: mutable.Set[ActorRef]): Unit = {
@@ -2033,7 +2015,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       getData(keyId) match {
         case Some(envelope) =>
           val msg = if (envelope.data == DeletedData) Deleted(key) else Changed(key)(envelope.data)
-          subs.foreach { _ ! msg }
+          subs.foreach(_ ! msg)
         case None =>
       }
     }
@@ -2048,7 +2030,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     if (newSubscribers.nonEmpty) {
       for ((key, subs) <- newSubscribers) {
         notify(key, subs)
-        subs.foreach { subscribers.addBinding(key, _) }
+        subs.foreach(subscribers.addBinding(key, _))
       }
       newSubscribers.clear()
     }
@@ -2132,10 +2114,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       if (reply) replyTo ! DeltaNack
     }
 
-  def receiveGossipTick(): Unit = {
+  def receiveGossipTick(): Unit =
     if (fullStateGossipEnabled)
       selectRandomNode(allNodes.toVector).foreach(gossipTo)
-  }
 
   def gossipTo(address: UniqueAddress): Unit = {
     val to = replica(address)
@@ -2311,7 +2292,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     subscribers.exists { case (_, s) => s.contains(subscriber) } ||
     newSubscribers.exists { case (_, s) => s.contains(subscriber) }
 
-  def receiveTerminated(ref: ActorRef): Unit = {
+  def receiveTerminated(ref: ActorRef): Unit =
     if (ref == durableStore) {
       log.error("Stopping distributed-data Replicator because durable store terminated")
       context.stop(self)
@@ -2330,7 +2311,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
           subscriptionKeys -= key
       }
     }
-  }
 
   def receiveMemberJoining(m: Member): Unit =
     if (matchingRole(m) && m.address != selfAddress)
@@ -2358,7 +2338,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     if (matchingRole(m) && m.address != selfAddress)
       exitingNodes += m.uniqueAddress
 
-  def receiveMemberRemoved(m: Member): Unit = {
+  def receiveMemberRemoved(m: Member): Unit =
     if (m.address == selfAddress)
       context.stop(self)
     else if (matchingRole(m)) {
@@ -2375,7 +2355,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
         membersByAge -= m
       deltaPropagationSelector.cleanupRemovedNode(m.uniqueAddress)
     }
-  }
 
   def receiveOtherMemberEvent(m: Member): Unit =
     if (matchingRole(m)) {
@@ -2397,7 +2376,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
     previousClockTime = now
   }
 
-  def receiveRemovedNodePruningTick(): Unit = {
+  def receiveRemovedNodePruningTick(): Unit =
     // See 'CRDT Garbage' section in Replicator Scaladoc for description of the process
     if (unreachable.isEmpty) {
       if (isLeader) {
@@ -2407,7 +2386,6 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       performRemovedNodePruning()
       deleteObsoletePruningPerformed()
     }
-  }
 
   def collectRemovedNodes(): Unit = {
     val knownNodes = allNodes.union(removedNodes.keySet)
@@ -2498,10 +2476,9 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
 
   }
 
-  def receiveGetReplicaCount(): Unit = {
+  def receiveGetReplicaCount(): Unit =
     // selfAddress is not included in the set
     replyTo ! ReplicaCount(nodes.size + 1)
-  }
 
 }
 
@@ -2657,7 +2634,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       case Some(d) => d
       case None    => writeMsg
     }
-    primaryNodes.foreach { replica(_) ! msg }
+    primaryNodes.foreach(replica(_) ! msg)
 
     if (isDone) reply(isTimeout = false)
   }
@@ -2693,7 +2670,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
             replica(to) ! writeMsg
         }
       }
-      secondaryNodes.foreach { replica(_) ! writeMsg }
+      secondaryNodes.foreach(replica(_) ! writeMsg)
     case ReceiveTimeout =>
       reply(isTimeout = true)
   }
@@ -2792,7 +2769,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
   private val (primaryNodes, secondaryNodes) = primaryAndSecondaryNodes()
 
   override def preStart(): Unit = {
-    primaryNodes.foreach { replica(_) ! readMsg }
+    primaryNodes.foreach(replica(_) ! readMsg)
 
     if (remaining.size == doneWhenRemainingSize)
       reply(ok = true)
@@ -2812,7 +2789,7 @@ final class Replicator(settings: ReplicatorSettings) extends Actor with ActorLog
       if (remaining.size == doneWhenRemainingSize)
         reply(ok = true)
     case SendToSecondary =>
-      secondaryNodes.foreach { replica(_) ! readMsg }
+      secondaryNodes.foreach(replica(_) ! readMsg)
     case ReceiveTimeout => reply(ok = false)
   }
 

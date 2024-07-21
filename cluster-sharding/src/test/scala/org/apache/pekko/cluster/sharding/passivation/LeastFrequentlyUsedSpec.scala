@@ -93,9 +93,8 @@ class LeastFrequentlyUsedSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "B")
       expectReceived(id = 21, message = "B")
-      for (id <- Seq(3, 7, 11, 15, 19)) {
+      for (id <- Seq(3, 7, 11, 15, 19))
         expectReceived(id = id, message = Stop)
-      }
 
       // shard 1: frequency 4 = (4, 8, 12, 16, 20)
       // shard 2: frequency 1 = (21)
@@ -130,9 +129,8 @@ class LeastFrequentlyUsedSpec
       // activating a third shard will divide the per-shard limit in three, passivating entities over the new limits
       region ! Envelope(shard = 3, id = 31, message = "E")
       expectReceived(id = 31, message = "E")
-      for (id <- Seq(4, 8, 22)) {
+      for (id <- Seq(4, 8, 22))
         expectReceived(id = id, message = Stop)
-      }
 
       // shard 1: frequency 4 = (12, 16, 20)
       // shard 2: frequency 1 = (23, 24), frequency 2 = (21)
@@ -227,19 +225,17 @@ class LeastFrequentlyUsedWithDynamicAgingSpec
 
       // only one active shard at first
       // ids 1 and 2 are quite popular initially
-      for (id <- 1 to 2) {
+      for (id <- 1 to 2)
         for (x <- 1 to 5) {
           region ! Envelope(shard = 1, id = id, message = s"A$x")
           expectReceived(id = id, message = s"A$x")
         }
-      }
       // ids 3, 4, and 5 are very popular initially
-      for (id <- 3 to 5) {
+      for (id <- 3 to 5)
         for (x <- 1 to 10) {
           region ! Envelope(shard = 1, id = id, message = s"A$x")
           expectReceived(id = id, message = s"A$x")
         }
-      }
 
       // shard 1: age = 0, @5 (5 + 0) = (1, 2), @10 (10 + 0) = (3, 4, 5)
       expectState(region)(1 -> Set(1, 2, 3, 4, 5))
@@ -357,17 +353,15 @@ class LeastFrequentlyUsedLimitAdjustmentSpec
       // activating a second shard will divide the per-shard limit in two, passivating half of the first shard
       region ! Envelope(shard = 2, id = 21, message = "B")
       expectReceived(id = 21, message = "B")
-      for (id <- 11 to 15) {
+      for (id <- 11 to 15)
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (16 to 20), 2 -> Set(21))
 
       // reduce the per-region limit from 10 to 6, per-shard limit becomes 3
       region ! ShardRegion.SetActiveEntityLimit(6)
-      for (id <- 16 to 17) { // passivate entities over new limit
+      for (id <- 16 to 17) // passivate entities over new limit
         expectReceived(id = id, message = Stop)
-      }
 
       expectState(region)(1 -> (18 to 20), 2 -> Set(21))
 

@@ -182,14 +182,13 @@ object ShardingProducerController {
      * Scala API: Factory method from Config corresponding to
      * `pekko.reliable-delivery.sharding.producer-controller`.
      */
-    def apply(config: Config): Settings = {
+    def apply(config: Config): Settings =
       new Settings(
         bufferSize = config.getInt("buffer-size"),
         config.getDuration("internal-ask-timeout").asScala,
         config.getDuration("cleanup-unused-after").asScala,
         config.getDuration("resend-first-unconfirmed-idle-timeout").asScala,
         ProducerController.Settings(config))
-    }
 
     /**
      * Java API: Factory method from config `pekko.reliable-delivery.sharding.producer-controller`
@@ -274,19 +273,17 @@ object ShardingProducerController {
   def apply[A: ClassTag](
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     Behaviors.setup { context =>
       ShardingProducerControllerImpl(producerId, region, durableQueueBehavior, Settings(context.system))
     }
-  }
 
   def apply[A: ClassTag](
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     ShardingProducerControllerImpl(producerId, region, durableQueueBehavior, settings)
-  }
 
   /**
    * Java API
@@ -295,9 +292,8 @@ object ShardingProducerController {
       messageClass: Class[A],
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     apply(producerId, region, durableQueueBehavior.toScala)(ClassTag(messageClass))
-  }
 
   /**
    * Java API
@@ -307,9 +303,8 @@ object ShardingProducerController {
       producerId: String,
       region: ActorRef[ShardingEnvelope[ConsumerController.SequencedMessage[A]]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     apply(producerId, region, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
-  }
 
   // TODO maybe there is a need for variant taking message extractor instead of ShardingEnvelope
 }

@@ -348,9 +348,8 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
         doCloseConnection(info.handler, closeCommander, closedEvent)
     }
 
-  def doCloseConnection(handler: ActorRef, closeCommander: Option[ActorRef], closedEvent: ConnectionClosed): Unit = {
+  def doCloseConnection(handler: ActorRef, closeCommander: Option[ActorRef], closedEvent: ConnectionClosed): Unit =
     stopWith(CloseInformation(Set(handler) ++ closeCommander, closedEvent))
-  }
 
   def handleError(handler: ActorRef, exception: IOException): Unit = {
     log.debug("Closing connection due to IO error {}", exception)
@@ -374,7 +373,7 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
       }
     }
 
-  def prepareAbort(): Unit = {
+  def prepareAbort(): Unit =
     try channel.socket.setSoLinger(true, 0) // causes the following close() to send TCP RST
     catch {
       case NonFatal(e) =>
@@ -382,13 +381,12 @@ private[io] abstract class TcpConnection(val tcp: TcpExt, val channel: SocketCha
         // (also affected: OS/X Java 1.6.0_37)
         if (TraceLogging) log.debug("setSoLinger(true, 0) failed with [{}]", e)
     }
-    // Actual channel closing is done in stopWith or postStop by calling registration.cancelAndClose()
-    // which makes sure the channel is flushed from the selector as well.
+  // Actual channel closing is done in stopWith or postStop by calling registration.cancelAndClose()
+  // which makes sure the channel is flushed from the selector as well.
 
-    // This is necessary because on Windows (and all platforms starting with JDK 11) the connection is merely added
-    // to the `cancelledKeys` of the `java.nio.channels.spi.AbstractSelector`,
-    // and `sun.nio.ch.SelectorImpl` will kill those from `processDeregisterQueue` after the select poll has returned.
-  }
+  // This is necessary because on Windows (and all platforms starting with JDK 11) the connection is merely added
+  // to the `cancelledKeys` of the `java.nio.channels.spi.AbstractSelector`,
+  // and `sun.nio.ch.SelectorImpl` will kill those from `processDeregisterQueue` after the select poll has returned.
 
   def stopWith(closeInfo: CloseInformation, shouldAbort: Boolean = false): Unit = {
     closedMessage = Some(closeInfo)

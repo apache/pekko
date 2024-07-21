@@ -48,12 +48,10 @@ object ClusterSingletonManagerLeaveSpec extends MultiNodeConfig {
    * The singleton actor
    */
   class Echo(testActor: ActorRef) extends Actor {
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       testActor ! "preStart"
-    }
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       testActor ! "postStop"
-    }
 
     def receive = {
       case "stop" =>
@@ -79,31 +77,28 @@ class ClusterSingletonManagerLeaveSpec
 
   lazy val cluster = Cluster(system)
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     runOn(from) {
       cluster.join(node(to).address)
       createSingleton()
     }
-  }
 
-  def createSingleton(): ActorRef = {
+  def createSingleton(): ActorRef =
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = Props(classOf[Echo], testActor),
         terminationMessage = "stop",
         settings = ClusterSingletonManagerSettings(system)),
       name = "echo")
-  }
 
   val echoProxyTerminatedProbe = TestProbe()
 
-  lazy val echoProxy: ActorRef = {
+  lazy val echoProxy: ActorRef =
     echoProxyTerminatedProbe.watch(
       system.actorOf(
         ClusterSingletonProxy
           .props(singletonManagerPath = "/user/echo", settings = ClusterSingletonProxySettings(system)),
         name = "echoProxy"))
-  }
 
   "Leaving ClusterSingletonManager" must {
 

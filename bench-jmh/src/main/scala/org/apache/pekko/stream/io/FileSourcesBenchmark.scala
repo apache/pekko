@@ -74,14 +74,12 @@ class FileSourcesBenchmark {
   }
 
   @TearDown
-  def teardown(): Unit = {
+  def teardown(): Unit =
     Files.delete(file)
-  }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), Duration.Inf)
-  }
 
   @Benchmark
   def fileChannel(): Unit = {

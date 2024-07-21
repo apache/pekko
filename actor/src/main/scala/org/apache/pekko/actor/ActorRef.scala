@@ -172,10 +172,9 @@ abstract class ActorRef extends java.lang.Comparable[ActorRef] with Serializable
   @InternalApi
   private[pekko] def isTerminated: Boolean
 
-  final override def hashCode: Int = {
+  final override def hashCode: Int =
     if (path.uid == ActorCell.undefinedUid) path.hashCode
     else path.uid
-  }
 
   /**
    * Equals takes path and the unique id of the actor cell into account.
@@ -471,9 +470,8 @@ private[pekko] class LocalActorRef private[pekko] (
 private[pekko] final case class SerializedActorRef private (path: String) {
   import pekko.serialization.JavaSerializer.currentSystem
 
-  def this(actorRef: ActorRef) = {
+  def this(actorRef: ActorRef) =
     this(Serialization.serializedActorPath(actorRef))
-  }
 
   @throws(classOf[java.io.ObjectStreamException])
   def readResolve(): AnyRef = currentSystem.value match {
@@ -490,9 +488,8 @@ private[pekko] final case class SerializedActorRef private (path: String) {
  * INTERNAL API
  */
 private[pekko] object SerializedActorRef {
-  def apply(actorRef: ActorRef): SerializedActorRef = {
+  def apply(actorRef: ActorRef): SerializedActorRef =
     new SerializedActorRef(actorRef)
-  }
 }
 
 /**
@@ -635,13 +632,12 @@ object WrappedMessage {
   /**
    * Unwrap [[WrappedMessage]] recursively.
    */
-  @tailrec def unwrap(message: Any): Any = {
+  @tailrec def unwrap(message: Any): Any =
     message match {
       case w: WrappedMessage => unwrap(w.message)
       case _                 => message
 
     }
-  }
 }
 
 /**
@@ -719,9 +715,8 @@ private[pekko] class EmptyLocalActorRef(
     case _ => false
   }
 
-  private def publishSupressedDeadLetter(msg: DeadLetterSuppression, sender: ActorRef): Unit = {
+  private def publishSupressedDeadLetter(msg: DeadLetterSuppression, sender: ActorRef): Unit =
     eventStream.publish(SuppressedDeadLetter(msg, if (sender eq Actor.noSender) provider.deadLetters else sender, this))
-  }
 }
 
 /**
@@ -774,7 +769,7 @@ private[pekko] class VirtualPathContainer(
    * are supported, otherwise messages are sent to [[EmptyLocalActorRef]].
    */
   override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = message match {
-    case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) => {
+    case sel @ ActorSelectionMessage(msg, elements, wildcardFanOut) =>
       require(elements.nonEmpty)
 
       def emptyRef =
@@ -800,11 +795,10 @@ private[pekko] class VirtualPathContainer(
           if (!wildcardFanOut)
             emptyRef.tell(msg, sender)
       }
-    }
     case _ => super.!(message)
   }
 
-  def addChild(name: String, ref: InternalActorRef): Unit = {
+  def addChild(name: String, ref: InternalActorRef): Unit =
     children.put(name, ref) match {
       case null => // okay
       case old  =>
@@ -813,7 +807,6 @@ private[pekko] class VirtualPathContainer(
         log.debug("{} replacing child {} ({} -> {})", path, name, old, ref)
         old.stop()
     }
-  }
 
   def removeChild(name: String): Unit =
     if (children.remove(name) eq null) log.warning("{} trying to remove non-child {}", path, name)
@@ -832,7 +825,7 @@ private[pekko] class VirtualPathContainer(
 
   def getChild(name: String): InternalActorRef = children.get(name)
 
-  override def getChild(name: Iterator[String]): InternalActorRef = {
+  override def getChild(name: Iterator[String]): InternalActorRef =
     if (name.isEmpty) this
     else {
       val n = name.next()
@@ -845,7 +838,6 @@ private[pekko] class VirtualPathContainer(
             else some.getChild(name)
         }
     }
-  }
 
   def hasChildren: Boolean = !children.isEmpty
 
@@ -893,14 +885,13 @@ private[pekko] class VirtualPathContainer(
   // var because it's replaced in `stop`
   private var messageHandler: (ActorRef, Any) => Unit = f
 
-  override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = {
+  override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit =
     message match {
       case AddressTerminated(address) => addressTerminated(address)
       case _                          => messageHandler(sender, message)
     }
-  }
 
-  override def sendSystemMessage(message: SystemMessage): Unit = {
+  override def sendSystemMessage(message: SystemMessage): Unit =
     message match {
       case w: Watch   => addWatcher(w.watchee, w.watcher)
       case u: Unwatch => remWatcher(u.watchee, u.watcher)
@@ -908,7 +899,6 @@ private[pekko] class VirtualPathContainer(
         this.!(Terminated(actorRef)(existenceConfirmed = true, addressTerminated = false))(actorRef)
       case _ => // ignore all other messages
     }
-  }
 
   // watching, _watchedBy and maintainAddressTerminatedSubscription requires synchronized access because
   // AddressTerminatedTopic must be updated together with the variables here.
@@ -978,9 +968,8 @@ private[pekko] class VirtualPathContainer(
 
     // outside of synchronized block
     // send DeathWatchNotification to self for all matching subjects
-    for (a <- toNotify; if a.path.address == address) {
+    for (a <- toNotify; if a.path.address == address)
       this.sendSystemMessage(DeathWatchNotification(a, existenceConfirmed = false, addressTerminated = true))
-    }
   }
 
   override def stop(): Unit = {

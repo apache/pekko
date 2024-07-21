@@ -59,7 +59,7 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
 
     // CAS on the commit status field, if fails jump to start of loop
     case object TryMarkDirty extends Instruction {
-      override def apply(simulator: Simulator): String = {
+      override def apply(simulator: Simulator): String =
         if (simulator.simulatedBuffer(slot) == Dirty) {
           instructionPtr = 0 // Retry loop
           s"$letterCode sees dirty record at $seenHeader, retries"
@@ -68,7 +68,6 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
           advance()
           s"$letterCode sees committed record at $seenHeader, proceeds"
         }
-      }
     }
 
     // This step is just to be able to do consistency checks. Simply writes the ID of the writer as the first
@@ -114,9 +113,8 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
       Array.fill(EntrySize - 2)(WriteByte) :+
       Commit
 
-    def step(simulator: Simulator): String = {
+    def step(simulator: Simulator): String =
       instructions(instructionPtr)(simulator)
-    }
 
     private def advance(): Unit = {
       instructionPtr += 1
@@ -145,7 +143,7 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
     }
 
     def run(): Unit = {
-      try {
+      try
         while (activeWriters > 0) {
           val writer = chooseWriter
           val event = writer.step(this)
@@ -153,7 +151,7 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
           if (writer.isFinished) activeWriters -= 1
           consistencyChecks()
         }
-      } catch {
+      catch {
         case NonFatal(e) =>
           println(log.reverse.mkString("\n"))
           println("----------- BUFFER CONTENT -------------")
@@ -169,13 +167,12 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
     }
 
     // No Committed records should contain bytes from two different writes (Dirty records might, though).
-    def checkNoPartialWrites(): Unit = {
+    def checkNoPartialWrites(): Unit =
       for (entry <- 0 until entryCount if simulatedBuffer(entry * EntrySize) == Committed) {
         val ofs = entry * EntrySize
         if (simulatedBuffer(ofs + 2) != simulatedBuffer(ofs + 3))
           fail(s"Entry $entry is corrupted, partial writes are visible")
       }
-    }
 
     // All writes for a given ID must:
     // - contain the last write, or no writes at all
@@ -188,7 +185,7 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
     // bad examples
     // [2, 3]
     // [2, 4]
-    def checkGaplessWrites(): Unit = {
+    def checkGaplessWrites(): Unit =
       for (id <- 0 until writerCount) {
         val writeCount = writers(id).writeCount
         val lastWrittenSlot = (headPointer - EntrySize) % EntrySize
@@ -205,14 +202,11 @@ class RollingEventLogSimulationSpec extends PekkoSpec {
           }
         }
       }
-    }
 
-    def allRecordsCommitted(): Unit = {
-      for (entry <- 0 until entryCount) {
+    def allRecordsCommitted(): Unit =
+      for (entry <- 0 until entryCount)
         if (simulatedBuffer(entry * EntrySize) != Committed)
           fail(s"Entry $entry is not Committed")
-      }
-    }
   }
 
   "RollingEventLog algorithm" must {

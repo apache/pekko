@@ -37,7 +37,7 @@ private[pekko] object GuardianStartupBehavior {
   def apply[T](guardianBehavior: Behavior[T]): Behavior[Any] =
     waitingForStart(guardianBehavior, Vector.empty)
 
-  private def waitingForStart[T](guardianBehavior: Behavior[T], tempStash: Vector[Any]): Behavior[Any] = {
+  private def waitingForStart[T](guardianBehavior: Behavior[T], tempStash: Vector[Any]): Behavior[Any] =
     Behaviors.receiveMessage {
       case Start =>
         // ctx is not available initially so we cannot use it until here
@@ -51,7 +51,6 @@ private[pekko] object GuardianStartupBehavior {
         }
         waitingForStart(guardianBehavior, tempStash :+ other)
     }
-  }
 }
 
 /**
@@ -78,7 +77,7 @@ private[pekko] object GuardianStartupBehavior {
     interceptStopped(ctx, next)
   }
 
-  private def interceptStopped(ctx: TypedActorContext[Any], next: Behavior[Any]): Behavior[Any] = {
+  private def interceptStopped(ctx: TypedActorContext[Any], next: Behavior[Any]): Behavior[Any] =
     if (Behavior.isAlive(next))
       next
     else {
@@ -86,5 +85,4 @@ private[pekko] object GuardianStartupBehavior {
       // return next so that the adapter can call post stop on the previous behavior
       next
     }
-  }
 }

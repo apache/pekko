@@ -81,14 +81,13 @@ class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], v
 
   // converts the result of Arrays.binarySearch into a index in the nodeRing array
   // see documentation of Arrays.binarySearch for what it returns
-  private def idx(i: Int): Int = {
+  private def idx(i: Int): Int =
     if (i >= 0) i // exact match
     else {
       val j = math.abs(i + 1)
       if (j >= nodeHashRing.length) 0 // after last, use first
       else j // next node clockwise
     }
-  }
 
   /**
    * Get the node responsible for the data key.
@@ -120,7 +119,7 @@ class ConsistentHash[T: ClassTag] private (nodes: immutable.SortedMap[Int, T], v
 }
 
 object ConsistentHash {
-  def apply[T: ClassTag](nodes: Iterable[T], virtualNodesFactor: Int): ConsistentHash[T] = {
+  def apply[T: ClassTag](nodes: Iterable[T], virtualNodesFactor: Int): ConsistentHash[T] =
     new ConsistentHash(
       immutable.SortedMap.empty[Int, T] ++
       (for {
@@ -129,7 +128,6 @@ object ConsistentHash {
         vnode <- 1 to virtualNodesFactor
       } yield concatenateNodeHash(nodeHash, vnode) -> node),
       virtualNodesFactor)
-  }
 
   /**
    * Java API: Factory method to create a ConsistentHash
