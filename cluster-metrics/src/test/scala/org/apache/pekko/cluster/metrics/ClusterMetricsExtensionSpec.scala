@@ -67,7 +67,7 @@ class ClusterMetricsExtensionSpec
 
     "verify sigar mock data matches expected ewma data" in {
 
-      val history = metricsView.metricsHistory.reverse.map { _.head }
+      val history = metricsView.metricsHistory.reverse.map(_.head)
 
       val expected = List(
         (0.700, 0.000, 0.000), (0.700, 0.018, 0.007), (0.700, 0.051, 0.020), (0.700, 0.096, 0.038),

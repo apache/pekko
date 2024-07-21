@@ -45,15 +45,13 @@ class SendQueueBenchmark {
   implicit val system: ActorSystem = ActorSystem("SendQueueBenchmark", config)
 
   @Setup
-  def setup(): Unit = {
+  def setup(): Unit =
     // eager init of materializer
     SystemMaterializer(system).materializer
-  }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   @OperationsPerInvocation(100000)

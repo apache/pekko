@@ -131,7 +131,7 @@ private[pekko] trait BatchingExecutor extends Executor {
 
   protected def resubmitOnBlock: Boolean
 
-  override def execute(runnable: Runnable): Unit = {
+  override def execute(runnable: Runnable): Unit =
     if (batchable(runnable)) { // If we can batch the runnable
       _tasksLocal.get match {
         case null =>
@@ -141,7 +141,6 @@ private[pekko] trait BatchingExecutor extends Executor {
         case batch => batch.add(runnable) // If we are already in batching mode, add to batch
       }
     } else unbatchedExecute(runnable) // If not batchable, just delegate to underlying
-  }
 
   /** Override this to define which runnables will be batched. */
   def batchable(runnable: Runnable): Boolean = pekko.dispatch.internal.ScalaBatchable.isBatchable(runnable)

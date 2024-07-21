@@ -51,7 +51,7 @@ object ShardingCompileOnlySpec {
       final case class GetValue(replyTo: ActorRef[Int]) extends Command
 
       def apply(entityId: String): Behavior[Command] = {
-        def updated(value: Int): Behavior[Command] = {
+        def updated(value: Int): Behavior[Command] =
           Behaviors.receiveMessage[Command] {
             case Increment =>
               updated(value + 1)
@@ -59,7 +59,6 @@ object ShardingCompileOnlySpec {
               replyTo ! value
               Behaviors.same
           }
-        }
 
         updated(0)
 
@@ -111,7 +110,7 @@ object ShardingCompileOnlySpec {
       private case object Idle extends Command
       case object GoodByeCounter extends Command
 
-      def apply(shard: ActorRef[ClusterSharding.ShardCommand], entityId: String): Behavior[Command] = {
+      def apply(shard: ActorRef[ClusterSharding.ShardCommand], entityId: String): Behavior[Command] =
         Behaviors.setup { ctx =>
           def updated(value: Int): Behavior[Command] =
             Behaviors.receiveMessage[Command] {
@@ -132,7 +131,6 @@ object ShardingCompileOnlySpec {
           ctx.setReceiveTimeout(30.seconds, Idle)
           updated(0)
         }
-      }
     }
     // #counter-passivate
 

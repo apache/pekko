@@ -34,9 +34,8 @@ import com.typesafe.config.Config
 
 final case class Envelope private (message: Any, sender: ActorRef) {
 
-  def copy(message: Any = message, sender: ActorRef = sender) = {
+  def copy(message: Any = message, sender: ActorRef = sender) =
     Envelope(message, sender)
-  }
 }
 
 object Envelope {
@@ -172,9 +171,9 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   final override protected def unbatchedExecute(r: Runnable): Unit = {
     val invocation = TaskInvocation(eventStream, r, taskCleanup)
     addInhabitants(+1)
-    try {
+    try
       executeTask(invocation)
-    } catch {
+    catch {
       case t: Throwable =>
         addInhabitants(-1)
         throw t
@@ -187,7 +186,7 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
   }
 
   @tailrec
-  private final def ifSensibleToDoSoThenScheduleShutdown(): Unit = {
+  private final def ifSensibleToDoSoThenScheduleShutdown(): Unit =
     if (inhabitants <= 0) shutdownSchedule match {
       case UNSCHEDULED =>
         if (updateShutdownSchedule(UNSCHEDULED, SCHEDULED)) scheduleShutdownAction()
@@ -199,9 +198,8 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
       case unexpected =>
         throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
     }
-  }
 
-  private def scheduleShutdownAction(): Unit = {
+  private def scheduleShutdownAction(): Unit =
     // IllegalStateException is thrown if scheduler has been shutdown
     try prerequisites.scheduler.scheduleOnce(shutdownTimeout, shutdownAction)(new ExecutionContext {
         override def execute(runnable: Runnable): Unit = runnable.run()
@@ -216,7 +214,6 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
         // (as per ifSensibleToDoSoThenScheduleShutdown above)
         updateShutdownSchedule(SCHEDULED, UNSCHEDULED)
     }
-  }
 
   private final val taskCleanup: () => Unit = () => if (addInhabitants(-1) == 0) ifSensibleToDoSoThenScheduleShutdown()
 
@@ -245,14 +242,13 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
 
   private val shutdownAction = new Scheduler.TaskRunOnClose {
     @tailrec
-    final def run(): Unit = {
+    final def run(): Unit =
       shutdownSchedule match {
         case SCHEDULED =>
-          try {
+          try
             if (inhabitants == 0) shutdown() // Warning, racy
-          } finally {
+          finally
             while (!updateShutdownSchedule(shutdownSchedule, UNSCHEDULED)) {}
-          }
         case RESCHEDULED =>
           if (updateShutdownSchedule(RESCHEDULED, SCHEDULED)) scheduleShutdownAction()
           else run()
@@ -260,7 +256,6 @@ abstract class MessageDispatcher(val configurator: MessageDispatcherConfigurator
         case unexpected =>
           throw new IllegalArgumentException(s"Unexpected actor class marker: $unexpected") // will not happen, for exhaustiveness check
       }
-    }
   }
 
   /**

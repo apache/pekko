@@ -59,7 +59,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
 
   import DnsSettings._
 
-  val NameServers: List[InetSocketAddress] = {
+  val NameServers: List[InetSocketAddress] =
     c.getValue("nameservers").valueType() match {
       case ConfigValueType.STRING =>
         c.getString("nameservers") match {
@@ -77,14 +77,13 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
         userAddresses.toList
       case _ => throw new IllegalArgumentException("Invalid type for nameservers. Must be a string or string list")
     }
-  }
 
   val ResolveTimeout: FiniteDuration = c.getDuration("resolve-timeout").asScala
 
   val PositiveCachePolicy: CachePolicy = getTtl("positive-ttl")
   val NegativeCachePolicy: CachePolicy = getTtl("negative-ttl")
 
-  lazy val IdGeneratorPolicy: IdGenerator.Policy = {
+  lazy val IdGeneratorPolicy: IdGenerator.Policy =
     c.getString("id-generator-policy") match {
       case "thread-local-random"                               => Policy.ThreadLocalRandom
       case "secure-random"                                     => Policy.SecureRandom
@@ -94,7 +93,6 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
           "Invalid value for id-generator-policy, id-generator-policy must be 'thread-local-random', 'secure-random' or" +
           s"`enhanced-double-hash-random`")
     }
-  }
 
   private def getTtl(path: String): CachePolicy =
     c.getString(path) match {
@@ -126,7 +124,7 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
     } else None
   }
 
-  val SearchDomains: List[String] = {
+  val SearchDomains: List[String] =
     c.getValue("search-domains").valueType() match {
       case ConfigValueType.STRING =>
         c.getString("search-domains") match {
@@ -137,9 +135,8 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
         c.getStringList("search-domains").asScala.toList
       case _ => throw new IllegalArgumentException("Invalid type for search-domains. Must be a string or string list.")
     }
-  }
 
-  val NDots: Int = {
+  val NDots: Int =
     c.getValue("ndots").valueType() match {
       case ConfigValueType.STRING =>
         c.getString("ndots") match {
@@ -156,7 +153,6 @@ private[dns] final class DnsSettings(system: ExtendedActorSystem, c: Config) {
       case _ =>
         throw new IllegalArgumentException("Invalid value for ndots. Must be the string 'default' or an integer.")
     }
-  }
 
   // -------------------------
 
@@ -193,7 +189,7 @@ object DnsSettings {
    * Based on: https://github.com/netty/netty/blob/4.1/resolver-dns/src/main/java/io/netty/resolver/dns/DefaultDnsServerAddressStreamProvider.java#L58-L146
    */
   private[pekko] def getDefaultNameServers(system: ExtendedActorSystem): Try[List[InetSocketAddress]] = {
-    def asInetSocketAddress(server: String): Try[InetSocketAddress] = {
+    def asInetSocketAddress(server: String): Try[InetSocketAddress] =
       Try {
         val uri = new URI(server)
         val host = uri.getHost
@@ -203,7 +199,6 @@ object DnsSettings {
         }
         new InetSocketAddress(host, port)
       }
-    }
 
     def getNameserversUsingJNDI: Try[List[InetSocketAddress]] = {
       import java.util
@@ -233,7 +228,7 @@ object DnsSettings {
 
     // this method is used as a fallback in case JNDI results in an empty list
     // this method will not work when running modularised of course since it needs access to internal sun classes
-    def getNameserversUsingReflection: Try[List[InetSocketAddress]] = {
+    def getNameserversUsingReflection: Try[List[InetSocketAddress]] =
       system.dynamicAccess.getClassFor[Any]("sun.net.dns.ResolverConfiguration").flatMap { c =>
         Try {
           val open = c.getMethod("open")
@@ -247,7 +242,6 @@ object DnsSettings {
           res.flatMap(s => asInetSocketAddress(s).toOption)
         }
       }
-    }
 
     getNameserversUsingJNDI.orElse(getNameserversUsingReflection)
   }

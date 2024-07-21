@@ -34,9 +34,8 @@ object ProtobufSerializer {
    * Helper to serialize an [[pekko.actor.ActorRef]] to Pekko's
    * protobuf representation.
    */
-  def serializeActorRef(ref: ActorRef): ActorRefData = {
+  def serializeActorRef(ref: ActorRef): ActorRefData =
     ActorRefData.newBuilder.setPath(Serialization.serializedActorPath(ref)).build
-  }
 
   /**
    * Helper to materialize (lookup) an [[pekko.actor.ActorRef]]
@@ -71,7 +70,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
   override def includeManifest: Boolean = true
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     manifest match {
       case Some(clazz) =>
         @tailrec
@@ -97,7 +96,6 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       case None =>
         throw new IllegalArgumentException("Need a protobuf message class to be able to serialize bytes using protobuf")
     }
-  }
 
   override def toBinary(obj: AnyRef): Array[Byte] = {
     val clazz = obj.getClass
@@ -121,7 +119,7 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     toByteArrayMethod().invoke(obj).asInstanceOf[Array[Byte]]
   }
 
-  private def checkAllowedClass(clazz: Class[_]): Unit = {
+  private def checkAllowedClass(clazz: Class[_]): Unit =
     if (!isInAllowList(clazz)) {
       val warnMsg = s"Can't deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         "Only classes that are on the allow list are allowed for security reasons. " +
@@ -130,7 +128,6 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }
-  }
 
   /**
    * Using the `serialization-bindings` as source for the allowed classes.
@@ -147,22 +144,19 @@ class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer
    * That is also possible when changing a binding from a ProtobufSerializer to another serializer (e.g. Jackson)
    * and still bind with the same class (interface).
    */
-  private def isInAllowList(clazz: Class[_]): Boolean = {
+  private def isInAllowList(clazz: Class[_]): Boolean =
     isBoundToProtobufSerializer(clazz) || isInAllowListClassName(clazz)
-  }
 
-  private def isBoundToProtobufSerializer(clazz: Class[_]): Boolean = {
+  private def isBoundToProtobufSerializer(clazz: Class[_]): Boolean =
     try {
       val boundSerializer = serialization.serializerFor(clazz)
       boundSerializer.isInstanceOf[ProtobufSerializer]
     } catch {
       case NonFatal(_) => false // not bound
     }
-  }
 
-  private def isInAllowListClassName(clazz: Class[_]): Boolean = {
+  private def isInAllowListClassName(clazz: Class[_]): Boolean =
     allowedClassNames(clazz.getName) ||
     allowedClassNames(clazz.getSuperclass.getName) ||
     clazz.getInterfaces.exists(c => allowedClassNames(c.getName))
-  }
 }

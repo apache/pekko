@@ -66,14 +66,12 @@ import pekko.util.Timeout
     StatusReply.flattenStatusFuture(ask(f))
 
   // impl InternalRecipientRef
-  override def provider: ActorRefProvider = {
+  override def provider: ActorRefProvider =
     probe.asInstanceOf[InternalRecipientRef[_]].provider
-  }
 
   // impl InternalRecipientRef
-  def isTerminated: Boolean = {
+  def isTerminated: Boolean =
     probe.asInstanceOf[InternalRecipientRef[_]].isTerminated
-  }
 
   override def toString: String = s"TestEntityRef($entityId)"
 

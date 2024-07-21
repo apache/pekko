@@ -409,9 +409,8 @@ private[pekko] final class TestProbeImpl[M](name: String, system: ActorSystem[_]
 
   private def assertFail(msg: String): Nothing = throw new AssertionError(msg)
 
-  override def stop(): Unit = {
+  override def stop(): Unit =
     testActor.asInstanceOf[ActorRef[AnyRef]] ! Stop
-  }
 
   def tell(m: M) = testActor.tell(m)
 

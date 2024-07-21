@@ -30,10 +30,9 @@ private[pekko] final class JoinConfigCompatCheckerClusterSharding extends JoinCo
   override def requiredKeys: im.Seq[String] =
     im.Seq("pekko.cluster.sharding.number-of-shards")
 
-  override def check(toCheck: Config, actualConfig: Config): ConfigValidation = {
+  override def check(toCheck: Config, actualConfig: Config): ConfigValidation =
     if (toCheck.hasPath(requiredKeys.head))
       JoinConfigCompatChecker.fullMatch(requiredKeys, toCheck, actualConfig)
     else
       Valid // support for rolling update, property doesn't exist in previous versions
-  }
 }

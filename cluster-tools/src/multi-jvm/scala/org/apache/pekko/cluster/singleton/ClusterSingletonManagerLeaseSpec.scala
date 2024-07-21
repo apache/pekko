@@ -64,12 +64,10 @@ object ClusterSingletonManagerLeaseSpec extends MultiNodeConfig {
 
   class ImportantSingleton extends Actor with ActorLogging {
     val selfAddress = Cluster(context.system).selfAddress
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       log.info("Singleton starting")
-    }
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       log.info("Singleton stopping")
-    }
     override def receive: Receive = {
       case msg =>
         sender() ! Response(msg, selfAddress)
@@ -186,9 +184,8 @@ class ClusterSingletonManagerLeaseSpec
       cluster.state.members.size shouldEqual 5
       runOn(controller) {
         cluster.down(address(first))
-        awaitAssert({
-            cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
-          }, 20.seconds)
+        awaitAssert(
+          cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up), 20.seconds)
         val requests = awaitAssert({
             TestLeaseActorClientExt(system).getLeaseActor() ! GetRequests
             val msg = expectMsgType[LeaseRequests]
@@ -202,9 +199,8 @@ class ClusterSingletonManagerLeaseSpec
         requests.requests should contain(Acquire(address(second).hostPort))
       }
       runOn(second, third, fourth) {
-        awaitAssert({
-            cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up)
-          }, 20.seconds)
+        awaitAssert(
+          cluster.state.members.toList.map(_.status) shouldEqual List(Up, Up, Up, Up), 20.seconds)
       }
       enterBarrier("first node downed")
       val proxy = system.actorOf(

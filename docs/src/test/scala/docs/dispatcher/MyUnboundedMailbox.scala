@@ -37,11 +37,9 @@ object MyUnboundedMailbox {
     def dequeue(): Envelope = queue.poll()
     def numberOfMessages: Int = queue.size
     def hasMessages: Boolean = !queue.isEmpty
-    def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
-      while (hasMessages) {
+    def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit =
+      while (hasMessages)
         deadLetters.enqueue(owner, dequeue())
-      }
-    }
   }
 }
 
@@ -51,10 +49,9 @@ class MyUnboundedMailbox extends MailboxType with ProducesMessageQueue[MyUnbound
   import MyUnboundedMailbox._
 
   // This constructor signature must exist, it will be called by Pekko
-  def this(settings: ActorSystem.Settings, config: Config) = {
+  def this(settings: ActorSystem.Settings, config: Config) =
     // put your initialization code here
     this()
-  }
 
   // The create method is called to create the MessageQueue
   final override def create(owner: Option[ActorRef], system: Option[ActorSystem]): MessageQueue =

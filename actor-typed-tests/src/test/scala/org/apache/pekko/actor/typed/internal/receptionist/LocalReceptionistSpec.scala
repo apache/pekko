@@ -208,9 +208,8 @@ class LocalReceptionistSpec extends ScalaTestWithActorTestKit with AnyWordSpecLi
 class LocalReceptionistBehaviorSpec extends AnyWordSpec with Matchers with LogCapturing {
   import LocalReceptionistSpec._
 
-  def assertEmpty(inboxes: TestInbox[_]*): Unit = {
+  def assertEmpty(inboxes: TestInbox[_]*): Unit =
     inboxes.foreach(i => withClue(s"inbox $i had messages")(i.hasMessages should be(false)))
-  }
 
   "A local receptionist behavior" must {
 

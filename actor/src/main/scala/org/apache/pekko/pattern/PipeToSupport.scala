@@ -28,18 +28,16 @@ import pekko.util.unused
 trait PipeToSupport {
 
   final class PipeableFuture[T](val future: Future[T])(implicit executionContext: ExecutionContext) {
-    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): Future[T] = {
+    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): Future[T] =
       future.andThen {
         case Success(r) => recipient ! r
         case Failure(f) => recipient ! Status.Failure(f)
       }
-    }
-    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): Future[T] = {
+    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): Future[T] =
       future.andThen {
         case Success(r) => recipient ! r
         case Failure(f) => recipient ! Status.Failure(f)
       }
-    }
     def to(recipient: ActorRef): PipeableFuture[T] = to(recipient, Actor.noSender)
     def to(recipient: ActorRef, sender: ActorRef): PipeableFuture[T] = {
       pipeTo(recipient)(sender)
@@ -54,18 +52,16 @@ trait PipeToSupport {
 
   final class PipeableCompletionStage[T](val future: CompletionStage[T])(
       implicit @unused executionContext: ExecutionContext) {
-    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete((t: T, ex: Throwable) => {
+    def pipeTo(recipient: ActorRef)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] =
+      future.whenComplete { (t: T, ex: Throwable) =>
         if (t != null) recipient ! t
         if (ex != null) recipient ! Status.Failure(ex)
-      })
-    }
-    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] = {
-      future.whenComplete((t: T, ex: Throwable) => {
+      }
+    def pipeToSelection(recipient: ActorSelection)(implicit sender: ActorRef = Actor.noSender): CompletionStage[T] =
+      future.whenComplete { (t: T, ex: Throwable) =>
         if (t != null) recipient ! t
         if (ex != null) recipient ! Status.Failure(ex)
-      })
-    }
+      }
     def to(recipient: ActorRef): PipeableCompletionStage[T] = to(recipient, Actor.noSender)
     def to(recipient: ActorRef, sender: ActorRef): PipeableCompletionStage[T] = {
       pipeTo(recipient)(sender)

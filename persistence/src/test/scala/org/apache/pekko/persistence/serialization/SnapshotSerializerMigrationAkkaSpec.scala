@@ -63,9 +63,8 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
         intercept[NotSerializableException] {
           pekkoOnlySerialization.deserialize(bytes, classOf[Snapshot]).get
         }
-      } finally {
+      } finally
         pekkoOnlySystem.terminate()
-      }
     }
   }
 }

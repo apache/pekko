@@ -59,7 +59,7 @@ abstract class MultiNodeConfig {
    */
   def nodeConfig(roles: RoleName*)(configs: Config*): Unit = {
     val c = configs.reduceLeft(_.withFallback(_))
-    _nodeConf ++= roles.map { _ -> c }
+    _nodeConf ++= roles.map(_ -> c)
   }
 
   /**
@@ -331,9 +331,9 @@ abstract class MultiNodeSpec(
     this(config, {
         val name = TestKitUtils.testNameFromCallStack(classOf[MultiNodeSpec], "".r)
         config =>
-          try {
+          try
             ActorSystem(name, config)
-          } catch {
+          catch {
             // Retry creating the system once as when using port = 0 two systems may try and use the same one.
             // RTE is for aeron, CE for netty
             case _: RemoteTransportException => ActorSystem(name, config)
@@ -352,19 +352,18 @@ abstract class MultiNodeSpec(
     def await: T = Await.result(w, remainingOr(testConductor.Settings.QueryTimeout.duration))
   }
 
-  final override def multiNodeSpecBeforeAll(): Unit = {
+  final override def multiNodeSpecBeforeAll(): Unit =
     atStartup()
-  }
 
   final override def multiNodeSpecAfterAll(): Unit = {
     // wait for all nodes to remove themselves before we shut the conductor down
     if (selfIndex == 0) {
       testConductor.removeNode(myself)
       within(testConductor.Settings.BarrierTimeout.duration) {
-        awaitCond({
-            // Await.result(testConductor.getNodes, remaining).filterNot(_ == myself).isEmpty
-            testConductor.getNodes.await.forall(_ == myself)
-          }, message = s"Nodes not shutdown: ${testConductor.getNodes.await}")
+        awaitCond(
+          // Await.result(testConductor.getNodes, remaining).filterNot(_ == myself).isEmpty
+          testConductor.getNodes.await.forall(_ == myself),
+          message = s"Nodes not shutdown: ${testConductor.getNodes.await}")
       }
     }
     shutdown(system, duration = shutdownTimeout)
@@ -424,11 +423,10 @@ abstract class MultiNodeSpec(
    * Execute the given block of code only on the given nodes (names according
    * to the `roleMap`).
    */
-  def runOn(nodes: RoleName*)(thunk: => Unit): Unit = {
+  def runOn(nodes: RoleName*)(thunk: => Unit): Unit =
     if (isNode(nodes: _*)) {
       thunk
     }
-  }
 
   /**
    * Verify that the running node matches one of the given nodes

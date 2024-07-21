@@ -32,12 +32,11 @@ object MovieWatchList {
   final case class MovieRemoved(movieId: String) extends Event
 
   final case class MovieList(movieIds: Set[String]) {
-    def applyEvent(event: Event): MovieList = {
+    def applyEvent(event: Event): MovieList =
       event match {
         case MovieAdded(movieId)   => copy(movieIds = movieIds + movieId)
         case MovieRemoved(movieId) => copy(movieIds = movieIds + movieId)
       }
-    }
   }
 
   private val commandHandler: CommandHandler[Command, Event, MovieList] = { (state, cmd) =>
@@ -52,12 +51,11 @@ object MovieWatchList {
     }
   }
 
-  def behavior(userId: String): Behavior[Command] = {
+  def behavior(userId: String): Behavior[Command] =
     EventSourcedBehavior[Command, Event, MovieList](
       persistenceId = PersistenceId("movies", userId),
       emptyState = MovieList(Set.empty),
       commandHandler,
       eventHandler = (state, event) => state.applyEvent(event))
-  }
 
 }

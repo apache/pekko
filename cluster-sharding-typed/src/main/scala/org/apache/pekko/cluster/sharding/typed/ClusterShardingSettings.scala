@@ -50,7 +50,7 @@ object ClusterShardingSettings {
   /** INTERNAL API: Intended only for internal use, it is not recommended to keep converting between the setting types */
   private[pekko] def fromClassicSettings(
       numberOfShards: Int,
-      classicSettings: ClassicShardingSettings): ClusterShardingSettings = {
+      classicSettings: ClassicShardingSettings): ClusterShardingSettings =
     new ClusterShardingSettings(
       numberOfShards,
       role = classicSettings.role,
@@ -71,10 +71,9 @@ object ClusterShardingSettings {
         classicSettings.coordinatorSingletonSettings.handOverRetryInterval,
         classicSettings.coordinatorSingletonSettings.leaseSettings),
       leaseSettings = classicSettings.leaseSettings)
-  }
 
   /** INTERNAL API: Intended only for internal use, it is not recommended to keep converting between the setting types */
-  private[pekko] def toClassicSettings(settings: ClusterShardingSettings): ClassicShardingSettings = {
+  private[pekko] def toClassicSettings(settings: ClusterShardingSettings): ClassicShardingSettings =
     new ClassicShardingSettings(
       role = settings.role,
       rememberEntities = settings.rememberEntities,
@@ -117,8 +116,6 @@ object ClusterShardingSettings {
         settings.coordinatorSingletonSettings.handOverRetryInterval,
         settings.coordinatorSingletonSettings.leaseSettings),
       leaseSettings = settings.leaseSettings)
-
-  }
 
   private def option(role: String): Option[String] =
     if (role == "" || role == null) None else Option(role)

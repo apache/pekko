@@ -106,9 +106,8 @@ private[stream] object InputStreamSinkStage {
         failStage(ex)
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!completionSignalled) dataQueue.add(Failed(new AbruptStageTerminationException(this)))
-      }
 
       setHandler(in, this)
 
@@ -167,7 +166,7 @@ private[stream] object InputStreamSinkStage {
         if (isStageAlive) {
           detachedChunk match {
             case None =>
-              try {
+              try
                 sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
                   case Data(data) =>
                     detachedChunk = Some(data)
@@ -181,7 +180,7 @@ private[stream] object InputStreamSinkStage {
                   case null        => throw new IOException("Timeout on waiting for new data")
                   case Initialized => throw new IllegalStateException("message 'Initialized' must come first")
                 }
-              } catch {
+              catch {
                 case ex: InterruptedException => throw new IOException(ex)
               }
             case Some(_) =>
@@ -199,15 +198,14 @@ private[stream] object InputStreamSinkStage {
   }
 
   @scala.throws(classOf[IOException])
-  override def close(): Unit = {
+  override def close(): Unit =
     if (isActive.getAndSet(false)) {
       // at this point Subscriber may be already terminated
       if (isStageAlive) sendToStage(Close)
     }
-  }
 
   @tailrec
-  private[this] def getData(arr: Array[Byte], begin: Int, length: Int, gotBytes: Int): Int = {
+  private[this] def getData(arr: Array[Byte], begin: Int, length: Int, gotBytes: Int): Int =
     grabDataChunk() match {
       case Some(data) =>
         val size = data.size
@@ -225,9 +223,8 @@ private[stream] object InputStreamSinkStage {
         }
       case None => gotBytes
     }
-  }
 
-  private[this] def waitIfNotInitialized(): Unit = {
+  private[this] def waitIfNotInitialized(): Unit =
     if (!isInitialized) {
       sharedBuffer.poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
         case Initialized => isInitialized = true
@@ -235,9 +232,8 @@ private[stream] object InputStreamSinkStage {
         case entry       => require(false, s"First message must be Initialized notification, got $entry")
       }
     }
-  }
 
-  private[this] def grabDataChunk(): Option[ByteString] = {
+  private[this] def grabDataChunk(): Option[ByteString] =
     detachedChunk match {
       case None =>
         sharedBuffer.poll() match {
@@ -252,5 +248,4 @@ private[stream] object InputStreamSinkStage {
         }
       case Some(_) => detachedChunk
     }
-  }
 }

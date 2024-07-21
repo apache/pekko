@@ -90,9 +90,8 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
 
   private[pekko] def onDeleteInitiated(@unused ctx: ActorContext[_], @unused cmd: Any): Unit = ()
 
-  protected def requestRecoveryPermit(): Unit = {
+  protected def requestRecoveryPermit(): Unit =
     setup.persistence.recoveryPermitter.tell(RecoveryPermitter.RequestRecoveryPermit, setup.selfClassic)
-  }
 
   /** Intended to be used in .onSignal(returnPermitOnStop) by behaviors */
   protected def returnPermitOnStop
@@ -106,12 +105,11 @@ private[pekko] trait DurableStateStoreInteractions[C, S] {
   }
 
   /** Mutates setup, by setting the `holdingRecoveryPermit` to false */
-  protected def tryReturnRecoveryPermit(reason: String): Unit = {
+  protected def tryReturnRecoveryPermit(reason: String): Unit =
     if (setup.holdingRecoveryPermit) {
       setup.internalLogger.debug("Returning recovery permit, reason: {}", reason)
       setup.persistence.recoveryPermitter.tell(RecoveryPermitter.ReturnRecoveryPermit, setup.selfClassic)
       setup.holdingRecoveryPermit = false
     } // else, no need to return the permit
-  }
 
 }

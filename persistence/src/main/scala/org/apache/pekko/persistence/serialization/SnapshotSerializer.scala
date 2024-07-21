@@ -108,7 +108,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
   // when writing the data, we want to allow the serialized data to
   // support Akka and Pekko serializers as required by configuration
-  private def migrateManifestIfNecessary(manifest: String): String = {
+  private def migrateManifestIfNecessary(manifest: String): String =
     migrationStrategy match {
       case NoMigration => manifest
       case Pekko =>
@@ -124,10 +124,9 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
           manifest
         }
     }
-  }
 
   // when reading the data, we want to force use of the Pekko serializer
-  private def migrateManifestToPekkoIfNecessary(manifest: String): String = {
+  private def migrateManifestToPekkoIfNecessary(manifest: String): String =
     migrationStrategy match {
       case NoMigration => manifest
       case _ =>
@@ -137,7 +136,6 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
           manifest
         }
     }
-  }
 
   private def snapshotToBinary(snapshot: AnyRef): Array[Byte] = {
     def serialize() = {

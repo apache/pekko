@@ -39,7 +39,7 @@ object GracefulStopDocSpec {
     final case class SpawnJob(name: String) extends Command
     case object GracefulShutdown extends Command
 
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors
         .receive[Command] { (context, message) =>
           message match {
@@ -59,7 +59,6 @@ object GracefulStopDocSpec {
             context.log.info("Master Control Program stopped")
             Behaviors.same
         }
-    }
   }
   // #master-actor
 
@@ -68,13 +67,12 @@ object GracefulStopDocSpec {
   object Job {
     sealed trait Command
 
-    def apply(name: String): Behavior[Command] = {
+    def apply(name: String): Behavior[Command] =
       Behaviors.receiveSignal[Command] {
         case (context, PostStop) =>
           context.log.info("Worker {} stopped", name)
           Behaviors.same
       }
-    }
   }
   // #worker-actor
 
@@ -85,7 +83,7 @@ object GracefulStopDocSpec {
       sealed trait Command
       final case class SpawnJob(name: String) extends Command
 
-      def apply(): Behavior[Command] = {
+      def apply(): Behavior[Command] =
         Behaviors
           .receive[Command] { (context, message) =>
             message match {
@@ -101,7 +99,6 @@ object GracefulStopDocSpec {
               context.log.info("Job stopped: {}", ref.path.name)
               Behaviors.same
           }
-      }
     }
     // #master-actor-watch
   }
@@ -115,7 +112,7 @@ object GracefulStopDocSpec {
       final case class JobDone(name: String)
       private final case class JobTerminated(name: String, replyToWhenDone: ActorRef[JobDone]) extends Command
 
-      def apply(): Behavior[Command] = {
+      def apply(): Behavior[Command] =
         Behaviors.receive { (context, message) =>
           message match {
             case SpawnJob(jobName, replyToWhenDone) =>
@@ -129,7 +126,6 @@ object GracefulStopDocSpec {
               Behaviors.same
           }
         }
-      }
     }
     // #master-actor-watchWith
   }

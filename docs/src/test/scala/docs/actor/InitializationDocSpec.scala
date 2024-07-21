@@ -35,10 +35,9 @@ object InitializationDocSpec {
     // The default implementation of preRestart() stops all the children
     // of the actor. To opt-out from stopping the children, we
     // have to override preRestart()
-    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       // Keep the call to postStop(), but no stopping of children
       postStop()
-    }
     // #preStartInit
   }
 
@@ -54,7 +53,7 @@ object InitializationDocSpec {
     }
 
     def initialized: Receive = {
-      case "U OK?" => initializeMe.foreach { sender() ! _ }
+      case "U OK?" => initializeMe.foreach(sender() ! _)
     }
     // #messageInit
 

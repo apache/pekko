@@ -97,9 +97,9 @@ object Protobuf {
 
   private def checkProtocVersion(protoc: String, protocVersion: String, log: Logger): Unit = {
     val res = callProtoc(protoc, Seq("--version"), log,
-      { (p, l) =>
+      (p, l) =>
         p !! l
-      })
+    )
     val version = res.split(" ").last.trim
     if (version != protocVersion) {
       sys.error("Wrong protoc version! Expected %s but got %s".format(protocVersion, version))
@@ -129,9 +129,9 @@ object Protobuf {
           Seq("-I" + srcDir.absolutePath, "--java_out=%s".format(targetDir.absolutePath)) ++
           protoPathArg ++ protoFiles.map(_.absolutePath),
           log,
-          { (p, l) =>
+          (p, l) =>
             p ! l
-          })
+        )
         if (exitCode != 0)
           sys.error("protoc returned exit code: %d".format(exitCode))
       }
@@ -152,9 +152,8 @@ object Protobuf {
         val map = Path.rebase(sourceDir, targetDir)
         if (in.removed.nonEmpty || in.modified.nonEmpty) {
           log.info("Preprocessing directory %s...".format(sourceDir))
-          for (source <- in.removed; target <- map(source)) {
+          for (source <- in.removed; target <- map(source))
             IO.delete(target)
-          }
           val updated = for (source <- in.modified; target <- map(source)) yield {
             if (source.isFile) {
               if (transformable(source)) transform(source, target)
@@ -174,7 +173,7 @@ object Protobuf {
   /**
    * Transform a file, line by line.
    */
-  def transformFile(transform: String => String)(source: File, target: File): Unit = {
+  def transformFile(transform: String => String)(source: File, target: File): Unit =
     IO.reader(source) { reader =>
       IO.writer(target, "", IO.defaultCharset) { writer =>
         val pw = new PrintWriter(writer)
@@ -183,6 +182,5 @@ object Protobuf {
         }
       }
     }
-  }
 
 }

@@ -88,45 +88,40 @@ object ReplicatorMapDeltaSpec extends MultiNodeConfig {
   def generateOperations(onNode: RoleName): Vector[Op] = {
     val rnd = ThreadLocalRandom.current()
 
-    def consistency(): WriteConsistency = {
+    def consistency(): WriteConsistency =
       rnd.nextInt(100) match {
         case n if n < 90  => WriteLocal
         case n if n < 95  => writeTwo
         case n if n < 100 => writeMajority
       }
-    }
 
-    def rndPnCounterkey(): (PNCounterMapKey[String], String) = {
+    def rndPnCounterkey(): (PNCounterMapKey[String], String) =
       rnd.nextInt(3) match {
         case 0 => KeyA
         case 1 => KeyB
         case 2 => KeyC
       }
-    }
 
-    def rndOrSetkeyVD(): (ORMultiMapKey[String, String], String) = {
+    def rndOrSetkeyVD(): (ORMultiMapKey[String, String], String) =
       rnd.nextInt(3) match {
         case 0 => KeyD
         case 1 => KeyE
         case 2 => KeyF
       }
-    }
 
-    def rndOrSetkeyNoVD(): (ORMultiMapKey[String, String], String) = {
+    def rndOrSetkeyNoVD(): (ORMultiMapKey[String, String], String) =
       rnd.nextInt(3) match {
         case 0 => KeyG
         case 1 => KeyH
         case 2 => KeyI
       }
-    }
 
-    def rndOrSetkeyOM(): (ORMapKey[String, ORSet[String]], String) = {
+    def rndOrSetkeyOM(): (ORMapKey[String, ORSet[String]], String) =
       rnd.nextInt(3) match {
         case 0 => KeyJ
         case 1 => KeyK
         case 2 => KeyL
       }
-    }
 
     var availableForRemove = Set.empty[String]
 
@@ -137,12 +132,11 @@ object ReplicatorMapDeltaSpec extends MultiNodeConfig {
       s
     }
 
-    def rndRemoveElement(): String = {
+    def rndRemoveElement(): String =
       if (availableForRemove.isEmpty)
         "a"
       else
         availableForRemove.toVector(rnd.nextInt(availableForRemove.size))
-    }
 
     (0 to (50 + rnd.nextInt(10))).map { _ =>
       rnd.nextInt(6) match {
@@ -320,9 +314,8 @@ class ReplicatorMapDeltaSpec extends MultiNodeSpec(ReplicatorMapDeltaSpec) with 
       val errorLogProbe = TestProbe()
       system.eventStream.subscribe(errorLogProbe.ref, classOf[Error])
       runOn(first) {
-        for (_ <- 1 to N; key <- List(KeyA, KeyB)) {
+        for (_ <- 1 to N; key <- List(KeyA, KeyB))
           ordinaryReplicator ! Update(key._1, PNCounterMap.empty[String], WriteLocal)(_.incrementBy(key._2, 1))
-        }
       }
       enterBarrier("updated-2")
 

@@ -61,9 +61,9 @@ import pekko.util.OptionVal
             case Supervision.Stop =>
               failStage(ex)
             case Supervision.Restart =>
-              try {
+              try
                 restartResource()
-              } catch {
+              catch {
                 case NonFatal(ex) => failStage(ex)
               }
             case Supervision.Resume => onPull()
@@ -129,7 +129,7 @@ import pekko.util.OptionVal
         case _ => createResource()
       }
 
-      private def createResource(): Unit = {
+      private def createResource(): Unit =
         create().onComplete { resource =>
           createdCallback(resource).failed.foreach {
             case _: StreamDetachedException =>
@@ -144,7 +144,6 @@ import pekko.util.OptionVal
             case _ => // we don't care here
           }
         }(parasitic)
-      }
 
       setHandler(out, this)
     }

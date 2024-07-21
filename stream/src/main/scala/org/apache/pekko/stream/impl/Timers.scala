@@ -210,10 +210,9 @@ import pekko.stream.stage._
 
         setHandlers(in, out, this)
 
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           if (delay == Duration.Zero) open = true
           else scheduleOnce(GraphStageLogicTimer, delay)
-        }
 
         override def onPush(): Unit = push(out, grab(in))
 
@@ -259,18 +258,16 @@ import pekko.stream.stage._
           }
         }
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           if (!isAvailable(in)) completeStage()
-        }
 
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (isAvailable(in)) {
             contextPropagation.resumeContext()
             push(out, grab(in))
             if (isClosed(in)) completeStage()
             else pull(in)
           } else emitInjectedElementOrReschedule(onTimer = false)
-        }
 
         private def emitInjectedElementOrReschedule(onTimer: Boolean): Unit = {
           val now = System.nanoTime()

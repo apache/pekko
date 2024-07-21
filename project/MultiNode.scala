@@ -91,8 +91,8 @@ object MultiNode extends AutoPlugin {
         val logger = streams.value.log
         (name: String) =>
           new Logger {
-            def trace(t: => Throwable): Unit = { logger.trace(t) }
-            def success(message: => String): Unit = { logger.success(message) }
+            def trace(t: => Throwable): Unit = logger.trace(t)
+            def success(message: => String): Unit = logger.success(message)
             def log(level: Level.Value, message: => String): Unit =
               logger.log(level, s"[${scala.Console.BLUE}$name${scala.Console.RESET}] $message")
           }

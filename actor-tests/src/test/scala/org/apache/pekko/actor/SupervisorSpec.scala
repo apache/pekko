@@ -65,9 +65,8 @@ object SupervisorSpec {
         throw e
     }
 
-    override def postRestart(reason: Throwable): Unit = {
+    override def postRestart(reason: Throwable): Unit =
       sendTo ! reason.getMessage
-    }
   }
 
   class Master(sendTo: ActorRef) extends Actor {
@@ -96,9 +95,8 @@ object SupervisorSpec {
   }
 
   class Child(cnt: Int) extends Actor {
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       if (cnt == 0) throw new RuntimeException("deliberate test failure")
-    }
 
     def receive = {
       case PingMessage =>
@@ -205,9 +203,8 @@ class SupervisorSpec
     (pingpong1, pingpong2, pingpong3, topSupervisor)
   }
 
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     system.eventStream.publish(Mute(EventFilter[RuntimeException](ExceptionMessage)))
-  }
 
   override def beforeEach() = {}
 
@@ -219,13 +216,13 @@ class SupervisorSpec
   def kill(pingPongActor: ActorRef) = {
     val result = pingPongActor.?(DieReply)(DilatedTimeout)
     expectMsg(Timeout, ExceptionMessage) // this is sent from PingPongActor's postRestart()
-    intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
+    intercept[RuntimeException](Await.result(result, DilatedTimeout))
   }
 
   def killExpectNoRestart(pingPongActor: ActorRef) = {
     val result = pingPongActor.?(DieReply)(DilatedTimeout)
     expectNoMessage(500 milliseconds)
-    intercept[RuntimeException] { Await.result(result, DilatedTimeout) }
+    intercept[RuntimeException](Await.result(result, DilatedTimeout))
   }
 
   "A supervisor" must {
@@ -254,7 +251,7 @@ class SupervisorSpec
         override def preStart(): Unit = { preStarts += 1; testActor ! ("preStart" + preStarts) }
         override def postStop(): Unit = { postStops += 1; testActor ! ("postStop" + postStops) }
         def receive = {
-          case "crash" => { testActor ! "crashed"; throw new RuntimeException("Expected") }
+          case "crash" => testActor ! "crashed"; throw new RuntimeException("Expected")
           case "ping"  => sender() ! "pong"
         }
       }
@@ -293,7 +290,7 @@ class SupervisorSpec
     "not restart temporary actor" in {
       val (temporaryActor, _) = temporaryActorAllForOne
 
-      intercept[RuntimeException] { Await.result(temporaryActor.?(DieReply)(DilatedTimeout), DilatedTimeout) }
+      intercept[RuntimeException](Await.result(temporaryActor.?(DieReply)(DilatedTimeout), DilatedTimeout))
 
       expectNoMessage(1 second)
     }
@@ -426,9 +423,8 @@ class SupervisorSpec
         val init = inits.getAndIncrement()
         if (init % 3 == 1) throw new IllegalStateException("Don't wanna!")
 
-        override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+        override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
           if (init % 3 == 0) throw new IllegalStateException("Don't wanna!")
-        }
 
         def receive = {
           case Ping => sender() ! PongMessage
@@ -467,7 +463,7 @@ class SupervisorSpec
         val child = context.watch(context.actorOf(Props(new Actor {
             override def postRestart(reason: Throwable): Unit = testActor ! "child restarted"
             def receive = {
-              case l: TestLatch => { Await.ready(l, 5 seconds); throw new IllegalStateException("OHNOES") }
+              case l: TestLatch => Await.ready(l, 5 seconds); throw new IllegalStateException("OHNOES")
               case "test"       => sender() ! "child green"
             }
           }), "child"))
@@ -554,9 +550,8 @@ class SupervisorSpec
             case _                               => SupervisorStrategy.Stop
           }
 
-          override def preStart(): Unit = {
+          override def preStart(): Unit =
             childRef = context.actorOf(Props(new Child(cnt.getAndIncrement())), "child")
-          }
 
           def receive = {
             case msg if msg == PingMessage && childRef != null =>

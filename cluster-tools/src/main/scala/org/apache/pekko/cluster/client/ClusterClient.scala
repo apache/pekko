@@ -415,7 +415,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
   var buffer = MessageBuffer.empty
 
   def scheduleRefreshContactsTick(interval: FiniteDuration): Unit = {
-    refreshContactsTask.foreach { _.cancel() }
+    refreshContactsTask.foreach(_.cancel())
     refreshContactsTask = Some(
       context.system.scheduler.scheduleWithFixedDelay(interval, interval, self, RefreshContactsTick))
   }
@@ -423,7 +423,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
   override def postStop(): Unit = {
     super.postStop()
     heartbeatTask.cancel()
-    refreshContactsTask.foreach { _.cancel() }
+    refreshContactsTask.foreach(_.cancel())
   }
 
   def receive = establishing.orElse(contactPointMessages)
@@ -438,7 +438,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
         if (contactPoints.nonEmpty) {
           contactPaths = contactPoints.map(ActorPath.fromString).to(HashSet)
           contacts = contactPaths.map(context.actorSelection)
-          contacts.foreach { _ ! Identify(Array.emptyByteArray) }
+          contacts.foreach(_ ! Identify(Array.emptyByteArray))
         }
         publishContactPoints()
       case ActorIdentity(_, Some(receptionist)) =>
@@ -522,7 +522,7 @@ final class ClusterClient(settings: ClusterClientSettings) extends Actor with Ac
       else contacts
     if (log.isDebugEnabled)
       log.debug(s"""Sending GetContacts to [${sendTo.mkString(",")}]""")
-    sendTo.foreach { _ ! GetContacts }
+    sendTo.foreach(_ ! GetContacts)
   }
 
   def buffer(msg: Any): Unit =
@@ -638,7 +638,7 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem) extends Exten
   /**
    * The [[ClusterReceptionist]] actor
    */
-  private val receptionist: ActorRef = {
+  private val receptionist: ActorRef =
     if (isTerminated)
       system.deadLetters
     else {
@@ -650,7 +650,6 @@ final class ClusterClientReceptionist(system: ExtendedActorSystem) extends Exten
         ClusterReceptionist.props(mediator, ClusterReceptionistSettings(config)).withDispatcher(dispatcher),
         name)
     }
-  }
 
   /**
    * Returns the underlying receptionist actor, particularly so that its

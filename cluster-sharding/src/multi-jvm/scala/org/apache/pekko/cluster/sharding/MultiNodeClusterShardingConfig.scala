@@ -26,13 +26,12 @@ object MultiNodeClusterShardingConfig {
 
   private[sharding] def testNameFromCallStack(classToStartFrom: Class[_]): String = {
 
-    def isAbstractClass(className: String): Boolean = {
-      try {
+    def isAbstractClass(className: String): Boolean =
+      try
         Modifier.isAbstract(Class.forName(className).getModifiers)
-      } catch {
+      catch {
         case _: Throwable => false // yes catch everything, best effort check
       }
-    }
 
     val startFrom = classToStartFrom.getName
     val filteredStack = Thread.currentThread.getStackTrace.iterator
@@ -59,12 +58,11 @@ object MultiNodeClusterShardingConfig {
    * replacing invalid characters. `name` may for example be a fully qualified
    * class name and then the short class name will be used.
    */
-  def scrubActorSystemName(name: String): String = {
+  def scrubActorSystemName(name: String): String =
     name
       .replaceFirst("""^.*\.""", "") // drop package name
       .replaceAll("""\$\$?\w+""", "") // drop scala anonymous functions/classes
       .replaceAll("[^a-zA-Z_0-9]", "_")
-  }
 
   def persistenceConfig(targetDir: String): Config =
     ConfigFactory.parseString(s"""

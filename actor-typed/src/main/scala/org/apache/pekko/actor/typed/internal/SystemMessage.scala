@@ -31,14 +31,13 @@ private[typed] object SystemMessageList {
     if (head eq null) acc else sizeInner(head.next, acc + 1)
 
   @tailrec
-  private[internal] def reverseInner(head: SystemMessage, acc: SystemMessage): SystemMessage = {
+  private[internal] def reverseInner(head: SystemMessage, acc: SystemMessage): SystemMessage =
     if (head eq null) acc
     else {
       val next = head.next
       head.next = acc
       reverseInner(next, head)
     }
-  }
 }
 
 /**

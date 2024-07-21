@@ -33,12 +33,11 @@ private[pekko] final class OldCoordinatorStateMigrationEventAdapter extends Even
   override def toJournal(event: Any): Any =
     event
 
-  override def fromJournal(event: Any, manifest: String): EventSeq = {
+  override def fromJournal(event: Any, manifest: String): EventSeq =
     event match {
       case ShardHomeAllocated(shardId, _) =>
         EventSeq.single(shardId)
       case _ => EventSeq.empty
     }
 
-  }
 }

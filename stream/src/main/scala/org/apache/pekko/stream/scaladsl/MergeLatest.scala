@@ -74,12 +74,11 @@ final class MergeLatest[T, M](val inputPorts: Int, val eagerClose: Boolean)(buil
                 tryPull(input)
               }
 
-              override def onUpstreamFinish(): Unit = {
+              override def onUpstreamFinish(): Unit =
                 if (!eagerClose) {
                   runningUpstreams -= 1
                   if (upstreamsClosed) completeStage()
                 } else completeStage()
-              }
             })
       }
 

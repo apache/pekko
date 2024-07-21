@@ -38,7 +38,7 @@ object PointToPointDocExample {
     private case class WrappedRequestNext(r: ProducerController.RequestNext[FibonacciConsumer.Command]) extends Command
 
     def apply(
-        producerController: ActorRef[ProducerController.Command[FibonacciConsumer.Command]]): Behavior[Command] = {
+        producerController: ActorRef[ProducerController.Command[FibonacciConsumer.Command]]): Behavior[Command] =
       Behaviors.setup { context =>
         val requestNextAdapter =
           context.messageAdapter[ProducerController.RequestNext[FibonacciConsumer.Command]](WrappedRequestNext(_))
@@ -46,9 +46,8 @@ object PointToPointDocExample {
 
         fibonacci(0, 1, 0)
       }
-    }
 
-    private def fibonacci(n: Long, b: BigInt, a: BigInt): Behavior[Command] = {
+    private def fibonacci(n: Long, b: BigInt, a: BigInt): Behavior[Command] =
       Behaviors.receive {
         case (context, WrappedRequestNext(next)) =>
           context.log.info("Generated fibonacci {}: {}", n, a)
@@ -59,7 +58,6 @@ object PointToPointDocExample {
           else
             fibonacci(n + 1, a + b, b)
       }
-    }
   }
   // #producer
 
@@ -74,7 +72,7 @@ object PointToPointDocExample {
     private case class WrappedDelivery(d: ConsumerController.Delivery[Command]) extends Command
 
     def apply(
-        consumerController: ActorRef[ConsumerController.Command[FibonacciConsumer.Command]]): Behavior[Command] = {
+        consumerController: ActorRef[ConsumerController.Command[FibonacciConsumer.Command]]): Behavior[Command] =
       Behaviors.setup { context =>
         val deliveryAdapter =
           context.messageAdapter[ConsumerController.Delivery[FibonacciConsumer.Command]](WrappedDelivery(_))
@@ -87,12 +85,11 @@ object PointToPointDocExample {
             Behaviors.same
         }
       }
-    }
   }
   // #consumer
 
   object Guardian {
-    def apply(): Behavior[Nothing] = {
+    def apply(): Behavior[Nothing] =
       Behaviors.setup[Nothing] { context =>
         // #connect
         val consumerController = context.spawn(ConsumerController[FibonacciConsumer.Command](), "consumerController")
@@ -109,10 +106,8 @@ object PointToPointDocExample {
 
         Behaviors.empty
       }
-    }
   }
 
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     ActorSystem[Nothing](Guardian(), "FibonacciExample")
-  }
 }

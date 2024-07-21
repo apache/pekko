@@ -48,9 +48,8 @@ final class ExternalShardAllocation(system: ExtendedActorSystem) extends Extensi
    */
   def getClient(typeName: String): javadsl.ExternalShardAllocationClient = client(typeName)
 
-  private def client(typeName: String): ExternalShardAllocationClientImpl = {
+  private def client(typeName: String): ExternalShardAllocationClientImpl =
     clients.computeIfAbsent(typeName, factory)
-  }
 }
 
 object ExternalShardAllocation extends ExtensionId[ExternalShardAllocation] with ExtensionIdProvider {

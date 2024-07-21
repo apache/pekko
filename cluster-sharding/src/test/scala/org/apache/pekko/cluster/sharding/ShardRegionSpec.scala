@@ -126,17 +126,14 @@ class ShardRegionSpec extends PekkoSpec(ShardRegionSpec.config) with WithLogCapt
   private val region1 = startShard(sysA)
   private val region2 = startShard(sysB)
 
-  override protected def atStartup(): Unit = {
+  override protected def atStartup(): Unit =
     storageLocation.foreach(dir => if (dir.exists) FileUtils.deleteQuietly(dir))
-  }
 
-  override def beforeTermination(): Unit = {
+  override def beforeTermination(): Unit =
     shutdown(sysB)
-  }
 
-  override protected def afterTermination(): Unit = {
+  override protected def afterTermination(): Unit =
     storageLocation.foreach(dir => if (dir.exists) FileUtils.deleteQuietly(dir))
-  }
 
   def startShard(sys: ActorSystem): ActorRef =
     ClusterSharding(sys).start(

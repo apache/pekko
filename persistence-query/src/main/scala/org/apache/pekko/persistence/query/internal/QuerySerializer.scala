@@ -124,7 +124,7 @@ import pekko.serialization.Serializers
    * Deserialize an offset from a stored string representation and manifest.
    * The offset is converted from its string representation to its real type.
    */
-  private def fromStorageRepresentation(offsetStr: String, manifest: String): Offset = {
+  private def fromStorageRepresentation(offsetStr: String, manifest: String): Offset =
     manifest match {
       case TimestampOffsetManifest     => timestampOffsetFromStorageRepresentation(offsetStr)
       case SequenceOffsetManifest      => Offset.sequence(offsetStr.toLong)
@@ -148,13 +148,12 @@ import pekko.serialization.Serializers
               s"in [${getClass.getName}]. [$manifest] doesn't contain two parts.")
         }
     }
-  }
 
   /**
    * Convert the offset to a tuple (String, String) where the first element is
    * the String representation of the offset and the second element is its manifest.
    */
-  private def toStorageRepresentation(offset: Offset): (String, String) = {
+  private def toStorageRepresentation(offset: Offset): (String, String) =
     offset match {
       case t: TimestampOffset => (timestampOffsetToStorageRepresentation(t), TimestampOffsetManifest)
       case seq: Sequence      => (seq.value.toString, SequenceOffsetManifest)
@@ -173,10 +172,9 @@ import pekko.serialization.Serializers
             s"offset [${offset.getClass.getName}] must not contain [$manifestSeparator] character.")
         (offsetStr, s"$serializerId$manifestSeparator$serializerManifest")
     }
-  }
 
-  private def timestampOffsetFromStorageRepresentation(str: String): TimestampOffset = {
-    try {
+  private def timestampOffsetFromStorageRepresentation(str: String): TimestampOffset =
+    try
       str.split(timestampOffsetSeparator) match {
         case Array(timestamp, readTimestamp, pid, seqNr) =>
           // optimized for the normal case
@@ -198,11 +196,10 @@ import pekko.serialization.Serializers
             .toMap
           TimestampOffset(Instant.parse(parts(0)), Instant.parse(parts(1)), seen)
       }
-    } catch {
+    catch {
       case NonFatal(e) =>
         throw new IllegalArgumentException(s"Unexpected serialized TimestampOffset format [$str].", e)
     }
-  }
 
   private def timestampOffsetToStorageRepresentation(offset: TimestampOffset): String = {
     def checkSeparator(pid: String): Unit =

@@ -55,7 +55,7 @@ object ReliableDeliveryShardingSpec {
 
     private case object Tick extends Command
 
-    def apply(producerController: ActorRef[ShardingProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+    def apply(producerController: ActorRef[ShardingProducerController.Start[TestConsumer.Job]]): Behavior[Command] =
       Behaviors.setup { context =>
         context.setLoggerName("TestShardingProducer")
         val requestNextAdapter: ActorRef[ShardingProducerController.RequestNext[TestConsumer.Job]] =
@@ -68,16 +68,14 @@ object ReliableDeliveryShardingSpec {
           idle(0)
         }
       }
-    }
 
-    private def idle(n: Int): Behavior[Command] = {
+    private def idle(n: Int): Behavior[Command] =
       Behaviors.receiveMessage {
         case Tick                => Behaviors.same
         case RequestNext(sendTo) => active(n + 1, sendTo)
       }
-    }
 
-    private def active(n: Int, sendTo: ActorRef[ShardingEnvelope[TestConsumer.Job]]): Behavior[Command] = {
+    private def active(n: Int, sendTo: ActorRef[ShardingEnvelope[TestConsumer.Job]]): Behavior[Command] =
       Behaviors.receive { (ctx, msg) =>
         msg match {
           case Tick =>
@@ -92,7 +90,6 @@ object ReliableDeliveryShardingSpec {
             Behaviors.same
         }
       }
-    }
 
   }
 

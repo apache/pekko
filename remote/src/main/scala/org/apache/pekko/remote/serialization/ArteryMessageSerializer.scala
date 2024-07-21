@@ -298,7 +298,7 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
   def serializeFlushAck(expectedAcks: Int): ArteryControlFormats.FlushAck =
     ArteryControlFormats.FlushAck.newBuilder().setExpectedAcks(expectedAcks).build()
 
-  def deserializeFlushAck(bytes: Array[Byte]): FlushAck = {
+  def deserializeFlushAck(bytes: Array[Byte]): FlushAck =
     if (bytes.isEmpty)
       FlushAck(1) // for wire compatibility with Akka 2.6.16 or earlier, which didn't include the expectedAcks
     else {
@@ -306,5 +306,4 @@ private[pekko] final class ArteryMessageSerializer(val system: ExtendedActorSyst
       val expectedAcks = if (msg.hasExpectedAcks) msg.getExpectedAcks else 1
       FlushAck(expectedAcks)
     }
-  }
 }

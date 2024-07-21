@@ -51,9 +51,8 @@ class JavaLoggerSpec extends PekkoSpec(JavaLoggerSpec.config) {
   val logger = logging.Logger.getLogger(classOf[JavaLoggerSpec.LogProducer].getName)
   logger.setUseParentHandlers(false) // turn off output of test LogRecords
   logger.addHandler(new logging.Handler {
-    def publish(record: logging.LogRecord): Unit = {
+    def publish(record: logging.LogRecord): Unit =
       testActor ! record
-    }
 
     def flush(): Unit = {}
     def close(): Unit = {}

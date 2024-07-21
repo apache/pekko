@@ -63,7 +63,7 @@ import pekko.util.Timeout
               ReplicatedData]]]): Behavior[SReplicator.Command] = {
 
         def stopSubscribeAdapter(
-            subscriber: ActorRef[JReplicator.SubscribeResponse[ReplicatedData]]): Behavior[SReplicator.Command] = {
+            subscriber: ActorRef[JReplicator.SubscribeResponse[ReplicatedData]]): Behavior[SReplicator.Command] =
           subscribeAdapters.get(subscriber) match {
             case Some(adapter) =>
               // will be unsubscribed from classicReplicator via Terminated
@@ -72,7 +72,6 @@ import pekko.util.Timeout
             case None => // already unsubscribed or terminated
               Behaviors.same
           }
-        }
 
         Behaviors
           .receive[SReplicator.Command] { (ctx, msg) =>
@@ -100,7 +99,7 @@ import pekko.util.Timeout
                     .recover {
                       case _ => JReplicator.GetFailure(cmd.key)
                     }
-                reply.foreach { cmd.replyTo ! _ }
+                reply.foreach(cmd.replyTo ! _)
                 Behaviors.same
 
               case cmd: SReplicator.Update[_] =>
@@ -129,7 +128,7 @@ import pekko.util.Timeout
                     .recover {
                       case _ => JReplicator.UpdateTimeout(cmd.key)
                     }
-                reply.foreach { cmd.replyTo ! _ }
+                reply.foreach(cmd.replyTo ! _)
                 Behaviors.same
 
               case cmd: SReplicator.Subscribe[_] =>
@@ -195,7 +194,7 @@ import pekko.util.Timeout
                     .recover {
                       case _ => JReplicator.DeleteFailure(cmd.key)
                     }
-                reply.foreach { cmd.replyTo ! _ }
+                reply.foreach(cmd.replyTo ! _)
                 Behaviors.same
 
               case SReplicator.GetReplicaCount(replyTo) =>
@@ -209,7 +208,7 @@ import pekko.util.Timeout
                   (classicReplicator ? dd.Replicator.GetReplicaCount)
                     .mapTo[dd.Replicator.ReplicaCount]
                     .map(rsp => JReplicator.ReplicaCount(rsp.n))
-                reply.foreach { replyTo ! _ }
+                reply.foreach(replyTo ! _)
                 Behaviors.same
 
               case SReplicator.FlushChanges | JReplicator.FlushChanges =>

@@ -163,10 +163,9 @@ abstract class BehaviorSignalInterceptor[Inner] extends BehaviorInterceptor[Inne
   final override def aroundReceive(
       ctx: TypedActorContext[Inner],
       msg: Inner,
-      target: ReceiveTarget[Inner]): Behavior[Inner] = {
+      target: ReceiveTarget[Inner]): Behavior[Inner] =
     // by using `null` as interceptMessageClass of `BehaviorInterceptor` no messages will pass here
     throw new IllegalStateException(s"Unexpected message in ${getClass.getName}, it should only intercept signals.")
-  }
 
   /**
    * Intercept a signal sent to the running actor. Pass the signal on to the next behavior

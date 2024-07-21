@@ -33,9 +33,8 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
 
       override def onPull(): Unit = ()
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         failStage(failure)
-      }
       setHandler(out, this)
     }
 

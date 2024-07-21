@@ -93,7 +93,7 @@ private[pekko] abstract class RemoteTransport(val system: ExtendedActorSystem, v
    * @param cmd Command message to send to the transports.
    * @return A Future that indicates when the message was successfully handled or dropped.
    */
-  def managementCommand(@unused cmd: Any): Future[Boolean] = { Future.successful(false) }
+  def managementCommand(@unused cmd: Any): Future[Boolean] = Future.successful(false)
 
   /**
    * A Logger that can be used to log issues that may occur

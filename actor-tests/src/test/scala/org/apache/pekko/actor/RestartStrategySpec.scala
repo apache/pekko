@@ -32,9 +32,8 @@ import pekko.testkit.TestLatch
 @nowarn
 class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
 
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     system.eventStream.publish(Mute(EventFilter[Exception]("Crashing...")))
-  }
 
   object Ping
   object Crash
@@ -58,16 +57,14 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
           case Crash => throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen)
             restartLatch.open()
           else
             secondRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val employee = Await.result((boss ? employeeProps).mapTo[ActorRef], timeout.duration)
 
@@ -100,9 +97,8 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
           case Crash => throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           countDownLatch.countDown()
-        }
       })
       val employee = Await.result((boss ? employeeProps).mapTo[ActorRef], timeout.duration)
 
@@ -130,20 +126,18 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
             if (!pingLatch.isOpen) pingLatch.open() else secondPingLatch.open()
           case Crash => throw new Exception("Crashing...")
         }
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen)
             restartLatch.open()
           else if (!secondRestartLatch.isOpen)
             secondRestartLatch.open()
           else
             thirdRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           if (restartLatch.isOpen) {
             secondRestartLatch.open()
           }
-        }
       })
       val employee = Await.result((boss ? employeeProps).mapTo[ActorRef], timeout.duration)
 
@@ -185,16 +179,14 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
           case Ping  => countDownLatch.countDown()
           case Crash => throw new Exception("Crashing...")
         }
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           if (!restartLatch.isOpen)
             restartLatch.open()
           else
             secondRestartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val employee = Await.result((boss ? employeeProps).mapTo[ActorRef], timeout.duration)
 
@@ -241,13 +233,11 @@ class RestartStrategySpec extends PekkoSpec with DefaultTimeout {
           case Crash => throw new Exception("Crashing...")
         }
 
-        override def postRestart(reason: Throwable) = {
+        override def postRestart(reason: Throwable) =
           restartLatch.open()
-        }
 
-        override def postStop() = {
+        override def postStop() =
           stopLatch.open()
-        }
       })
       val employee = Await.result((boss ? employeeProps).mapTo[ActorRef], timeout.duration)
 

@@ -134,7 +134,7 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
   def removeBinding[T](key: ServiceKey[T], value: Entry)(implicit node: SelfUniqueAddress): ServiceRegistry =
     copy(entries = entries.removeBinding(node, key, value))
 
-  def removeAll(entries: Map[AbstractServiceKey, Set[Entry]])(implicit node: SelfUniqueAddress): ServiceRegistry = {
+  def removeAll(entries: Map[AbstractServiceKey, Set[Entry]])(implicit node: SelfUniqueAddress): ServiceRegistry =
     entries.foldLeft(this) {
       case (acc, (key, entries)) =>
         entries.foldLeft(acc) {
@@ -142,7 +142,6 @@ import pekko.cluster.typed.internal.receptionist.ClusterReceptionist.{ DDataKey,
             innerAcc.removeBinding[key.Protocol](key.asServiceKey, entry)
         }
     }
-  }
 
   def toORMultiMap: ORMultiMap[ServiceKey[_], Entry] = entries
 

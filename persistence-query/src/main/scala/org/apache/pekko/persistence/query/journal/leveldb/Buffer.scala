@@ -30,17 +30,14 @@ private[leveldb] abstract trait Buffer[T] { self: GraphStageLogic =>
   def doPush(out: Outlet[T], elem: T): Unit
 
   private val buf: java.util.LinkedList[T] = new util.LinkedList[T]()
-  def buffer(element: T): Unit = {
+  def buffer(element: T): Unit =
     buf.add(element)
-  }
-  def buffer(all: Set[T]): Unit = {
+  def buffer(all: Set[T]): Unit =
     buf.addAll(all.asJava)
-  }
-  def deliverBuf(out: Outlet[T]): Unit = {
+  def deliverBuf(out: Outlet[T]): Unit =
     if (!buf.isEmpty && isAvailable(out)) {
       doPush(out, buf.remove())
     }
-  }
   def bufferSize: Int = buf.size
   def bufferEmpty: Boolean = buf.isEmpty
 }

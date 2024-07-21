@@ -34,7 +34,7 @@ object EventStreamDocSpec {
     sealed trait Command
     final case class DeadLetterWrapper(deadLetter: DeadLetter) extends Command
 
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors.setup[Command] {
         context =>
           val adapter = context.messageAdapter[DeadLetter](DeadLetterWrapper.apply)
@@ -47,7 +47,6 @@ object EventStreamDocSpec {
               Behaviors.same
           }
       }
-    }
   }
   // #listen-to-dead-letters
 
@@ -56,7 +55,7 @@ object EventStreamDocSpec {
     sealed trait Command
     final case class AllDeadLettersWrapper(allDeadLetters: AllDeadLetters) extends Command
 
-    def apply(): Behavior[Command] = {
+    def apply(): Behavior[Command] =
       Behaviors.setup[Command] {
         context =>
           val adapter = context.messageAdapter[AllDeadLetters](AllDeadLettersWrapper.apply)
@@ -85,7 +84,6 @@ object EventStreamDocSpec {
               Behaviors.same
           }
       }
-    }
   }
   // #listen-to-super-class
 }

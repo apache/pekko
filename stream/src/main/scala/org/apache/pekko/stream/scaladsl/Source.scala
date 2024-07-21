@@ -59,7 +59,7 @@ final class Source[+Out, +Mat](
   override def via[T, Mat2](flow: Graph[FlowShape[Out, T], Mat2]): Repr[T] = viaMat(flow)(Keep.left)
 
   override def viaMat[T, Mat2, Mat3](flow: Graph[FlowShape[Out, T], Mat2])(
-      combine: (Mat, Mat2) => Mat3): Source[T, Mat3] = {
+      combine: (Mat, Mat2) => Mat3): Source[T, Mat3] =
     if (flow.traversalBuilder eq Flow.identityTraversalBuilder)
       if (combine == Keep.left)
         // optimization by returning this
@@ -77,7 +77,6 @@ final class Source[+Out, +Mat](
       new Source[T, Mat3](
         traversalBuilder.append(flow.traversalBuilder, flow.shape, combine),
         SourceShape(flow.shape.out))
-  }
 
   /**
    * Connect this [[pekko.stream.scaladsl.Source]] to a [[pekko.stream.scaladsl.Sink]],
@@ -89,9 +88,8 @@ final class Source[+Out, +Mat](
    * Connect this [[pekko.stream.scaladsl.Source]] to a [[pekko.stream.scaladsl.Sink]],
    * concatenating the processing steps of both.
    */
-  def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(combine: (Mat, Mat2) => Mat3): RunnableGraph[Mat3] = {
+  def toMat[Mat2, Mat3](sink: Graph[SinkShape[Out], Mat2])(combine: (Mat, Mat2) => Mat3): RunnableGraph[Mat3] =
     RunnableGraph(traversalBuilder.append(sink.traversalBuilder, sink.shape, combine))
-  }
 
   /**
    * Transform only the materialized value of this Source, leaving all other properties as they were.
@@ -467,9 +465,8 @@ object Source {
   /**
    * Create a `Source` that will continually emit the given element.
    */
-  def repeat[T](element: T): Source[T, NotUsed] = {
+  def repeat[T](element: T): Source[T, NotUsed] =
     fromIterator(() => Iterator.continually(element)).withAttributes(DefaultAttributes.repeat)
-  }
 
   /**
    * Create a `Source` that will unfold a value of type `S` into
@@ -773,9 +770,8 @@ object Source {
       ackTo: Option[ActorRef],
       ackMessage: Any,
       completionMatcher: PartialFunction[Any, CompletionStrategy],
-      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
+      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] =
     Source.fromGraph(new ActorRefBackpressureSource(ackTo, ackMessage, completionMatcher, failureMatcher))
-  }
 
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
@@ -794,9 +790,8 @@ object Source {
   def actorRefWithBackpressure[T](
       ackMessage: Any,
       completionMatcher: PartialFunction[Any, CompletionStrategy],
-      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] = {
+      failureMatcher: PartialFunction[Any, Throwable]): Source[T, ActorRef] =
     Source.fromGraph(new ActorRefBackpressureSource(None, ackMessage, completionMatcher, failureMatcher))
-  }
 
   /**
    * Creates a `Source` that is materialized as an [[pekko.actor.ActorRef]].
@@ -861,9 +856,8 @@ object Source {
         Source.fromGraph(GraphDSL.create(sources) { implicit b => shapes =>
           import GraphDSL.Implicits._
           val c = b.add(fanInStrategy(sources.size))
-          for ((shape, i) <- shapes.zipWithIndex) {
+          for ((shape, i) <- shapes.zipWithIndex)
             shape ~> c.in(i)
-          }
           SourceShape(c.out)
         })
     }
@@ -1079,7 +1073,7 @@ object Source {
    */
   def mergePrioritizedN[T](
       sourcesAndPriorities: immutable.Seq[(Source[T, _], Int)],
-      eagerComplete: Boolean): Source[T, NotUsed] = {
+      eagerComplete: Boolean): Source[T, NotUsed] =
     sourcesAndPriorities match {
       case immutable.Seq()            => Source.empty
       case immutable.Seq((source, _)) => source.mapMaterializedValue(_ => NotUsed)
@@ -1087,5 +1081,4 @@ object Source {
         val (sources, priorities) = sourcesAndPriorities.unzip
         combine(sources.head, sources(1), sources.drop(2): _*)(_ => MergePrioritized(priorities, eagerComplete))
     }
-  }
 }

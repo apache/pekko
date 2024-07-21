@@ -46,7 +46,7 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
 
       override protected def logSource: Class[_] = classOf[OutputStreamGraphStage]
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         try {
           outputStream = factory()
           pull(in)
@@ -55,7 +55,6 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
             mat.tryFailure(new IOOperationIncompleteException(bytesWritten, t))
             failStage(t)
         }
-      }
 
       override def onPush(): Unit = {
         val next = grab(in)
@@ -72,20 +71,18 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
         }
       }
 
-      override def onUpstreamFailure(ex: Throwable): Unit = {
+      override def onUpstreamFailure(ex: Throwable): Unit =
         mat.tryFailure(new IOOperationIncompleteException(bytesWritten, ex))
-      }
 
-      override def onUpstreamFinish(): Unit = {
-        try {
+      override def onUpstreamFinish(): Unit =
+        try
           outputStream.flush()
-        } catch {
+        catch {
           case NonFatal(t) =>
             mat.tryFailure(new IOOperationIncompleteException(bytesWritten, t))
         }
-      }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         try {
           if (outputStream != null) {
             outputStream.flush()
@@ -96,7 +93,6 @@ private[pekko] final class OutputStreamGraphStage(factory: () => OutputStream, a
           case NonFatal(t) =>
             mat.tryFailure(new IOOperationIncompleteException(bytesWritten, t))
         }
-      }
 
       setHandler(in, this)
     }

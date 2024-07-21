@@ -63,9 +63,8 @@ class AccrualFailureDetectorSpec extends PekkoSpec("pekko.loglevel = INFO") {
       cdf(fd.phi(35L, 0, 10)) should ===(0.99977 +- 0.001)
       cdf(fd.phi(40L, 0, 10)) should ===(0.99997 +- 0.0001)
 
-      for (case x :: y :: Nil <- (0 to 40).toList.sliding(2)) {
+      for (case x :: y :: Nil <- (0 to 40).toList.sliding(2))
         fd.phi(x, 0, 10) should be < fd.phi(y, 0, 10)
-      }
 
       cdf(fd.phi(22, 20.0, 3)) should ===(0.7475 +- 0.001)
     }
@@ -79,9 +78,8 @@ class AccrualFailureDetectorSpec extends PekkoSpec("pekko.loglevel = INFO") {
     "return realistic phi values" in {
       val fd = createFailureDetector()
       val test = TreeMap(0 -> 0.0, 500 -> 0.1, 1000 -> 0.3, 1200 -> 1.6, 1400 -> 4.7, 1600 -> 10.8, 1700 -> 15.3)
-      for ((timeDiff, expectedPhi) <- test) {
+      for ((timeDiff, expectedPhi) <- test)
         fd.phi(timeDiff = timeDiff, mean = 1000.0, stdDeviation = 100.0) should ===(expectedPhi +- 0.1)
-      }
 
       // larger stdDeviation results => lower phi
       fd.phi(timeDiff = 1100, mean = 1000.0, stdDeviation = 500.0) should be < (fd

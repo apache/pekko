@@ -45,9 +45,7 @@ final class LogCapturingExtension extends InvocationInterceptor {
           s"<-- [${Console.BLUE}${testClassName}: ${testMethodName}${Console.RESET}] " +
           s"End of log messages of test that failed with ${e.getMessage}")
         throw e
-    } finally {
-
+    } finally
       capturingAppender.clear()
-    }
   }
 }

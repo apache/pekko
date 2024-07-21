@@ -48,9 +48,8 @@ trait Snapshotter extends Actor {
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the success or failure of this
    * via an [[pekko.persistence.SaveSnapshotSuccess SaveSnapshotSuccess]] or [[pekko.persistence.SaveSnapshotFailure SaveSnapshotFailure]] message.
    */
-  def saveSnapshot(snapshot: Any): Unit = {
+  def saveSnapshot(snapshot: Any): Unit =
     snapshotStore ! SaveSnapshot(SnapshotMetadata(snapshotterId, snapshotSequenceNr), snapshot)
-  }
 
   /**
    * Deletes the snapshot identified by `sequenceNr`.
@@ -58,9 +57,8 @@ trait Snapshotter extends Actor {
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the status of the deletion
    * via an [[pekko.persistence.DeleteSnapshotSuccess DeleteSnapshotSuccess]] or [[pekko.persistence.DeleteSnapshotFailure DeleteSnapshotFailure]] message.
    */
-  def deleteSnapshot(sequenceNr: Long): Unit = {
+  def deleteSnapshot(sequenceNr: Long): Unit =
     snapshotStore ! DeleteSnapshot(SnapshotMetadata(snapshotterId, sequenceNr))
-  }
 
   /**
    * Deletes all snapshots matching `criteria`.
@@ -68,8 +66,7 @@ trait Snapshotter extends Actor {
    * The [[pekko.persistence.PersistentActor PersistentActor]] will be notified about the status of the deletion
    * via an [[pekko.persistence.DeleteSnapshotsSuccess DeleteSnapshotsSuccess]] or [[pekko.persistence.DeleteSnapshotsFailure DeleteSnapshotsFailure]] message.
    */
-  def deleteSnapshots(criteria: SnapshotSelectionCriteria): Unit = {
+  def deleteSnapshots(criteria: SnapshotSelectionCriteria): Unit =
     snapshotStore ! DeleteSnapshots(snapshotterId, criteria)
-  }
 
 }

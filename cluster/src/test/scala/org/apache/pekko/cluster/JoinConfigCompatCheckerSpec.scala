@@ -67,11 +67,10 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
       val joiningNode = clusterTestUtil.newActorSystem(configWithChecker)
       clusterTestUtil.formCluster()
 
-      try {
+      try
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -99,16 +98,14 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
-
+      try
         // node will shutdown after unsuccessful join attempt
         within(5.seconds) {
           awaitCond(clusterTestUtil.isTerminated(joiningNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -141,15 +138,14 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // node will shutdown after unsuccessful join attempt
         within(5.seconds) {
           awaitCond(clusterTestUtil.isTerminated(joiningNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -178,15 +174,14 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // node will shutdown after unsuccessful join attempt
         within(5.seconds) {
           awaitCond(clusterTestUtil.isTerminated(joiningNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -219,12 +214,11 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // join with compatible node
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -254,12 +248,11 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // join with compatible node
         awaitCond(clusterTestUtil.isMemberUp(joiningNode), message = "awaiting joining node to be 'Up'")
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
     }
 
     /** This test verifies the built-in JoinConfigCompatCheckerPekkoCluster */
@@ -286,15 +279,14 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // node will shutdown after unsuccessful join attempt
         within(5.seconds) {
           awaitCond(clusterTestUtil.isTerminated(joiningNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -312,7 +304,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // we must wait second node to join the cluster before shutting down the first node
           awaitCond(clusterTestUtil.isMemberUp(secondNode), message = "awaiting second node to be 'Up'")
@@ -323,9 +315,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           awaitCond(clusterTestUtil.isMemberUp(restartedNode), message = "awaiting restarted first node to be 'Up'")
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -354,7 +345,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // we must wait second node to join the cluster before shutting down the first node
           awaitCond(clusterTestUtil.isMemberUp(secondNode), message = "awaiting second node to be 'Up'")
@@ -366,9 +357,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           awaitCond(clusterTestUtil.isTerminated(restartedNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -402,7 +392,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // we must wait second node to join the cluster before shutting down the first node
           awaitCond(clusterTestUtil.isMemberUp(secondNode), message = "awaiting second node to be 'Up'")
@@ -414,9 +404,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           awaitCond(clusterTestUtil.isTerminated(restartedNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -446,7 +435,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // we must wait second node to join the cluster before shutting down the first node
           awaitCond(clusterTestUtil.isMemberUp(secondNode), message = "awaiting second node to be 'Up'")
@@ -458,9 +447,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           awaitCond(clusterTestUtil.isTerminated(restartedNode))
         }
 
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -494,7 +482,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // join with compatible node
           // we must wait second node to join the cluster before shutting down the first node
@@ -506,9 +494,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           // node will will have joined the cluster
           awaitCond(clusterTestUtil.isMemberUp(restartedNode), message = "awaiting restarted node to be 'Up'")
         }
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
 
     }
 
@@ -539,7 +526,7 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         within(25.seconds) {
           // join with compatible node
           // we must wait second node to join the cluster before shutting down the first node
@@ -551,9 +538,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
           // node will will have joined the cluster
           awaitCond(clusterTestUtil.isMemberUp(restartedNode), message = "awaiting restarted node to be 'Up'")
         }
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
     }
 
   }
@@ -599,14 +585,13 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
 
       clusterTestUtil.formCluster()
 
-      try {
+      try
         // node will shutdown after unsuccessful join attempt
         within(5.seconds) {
           awaitCond(clusterTestUtil.isTerminated(joiningNode))
         }
-      } finally {
+      finally
         clusterTestUtil.shutdownAll()
-      }
     }
 
     "be allowed to disable a check" taggedAs LongRunningTest in {
@@ -631,9 +616,8 @@ class JoinConfigCompatCheckerSpec extends PekkoSpec with ClusterTestKit {
       try {
         val sys = clusterTestUtil.newActorSystem(joinNodeConfig.withFallback(configWithChecker))
         Cluster(sys).settings.ConfigCompatCheckers should ===(Set.empty[String])
-      } finally {
+      } finally
         clusterTestUtil.shutdownAll()
-      }
     }
   }
 }

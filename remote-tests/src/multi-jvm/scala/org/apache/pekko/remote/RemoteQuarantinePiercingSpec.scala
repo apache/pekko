@@ -68,12 +68,11 @@ abstract class RemoteQuarantinePiercingSpec(multiNodeConfig: RemoteQuarantinePie
   def identifyWithUid(
       role: RoleName,
       actorName: String,
-      timeout: FiniteDuration = remainingOrDefault): (Long, ActorRef) = {
+      timeout: FiniteDuration = remainingOrDefault): (Long, ActorRef) =
     within(timeout) {
       system.actorSelection(node(role) / "user" / actorName) ! "identify"
       expectMsgType[(Long, ActorRef)]
     }
-  }
 
   "RemoteNodeShutdownAndComesBack" must {
 

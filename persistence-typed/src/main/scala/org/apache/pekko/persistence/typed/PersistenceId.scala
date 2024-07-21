@@ -120,7 +120,7 @@ object PersistenceId {
    * Extract the `entityTypeHint` from a persistence id String with the default separator `|`.
    * If the separator `|` is not found it return the empty String (`""`).
    */
-  def extractEntityType(id: String): String = {
+  def extractEntityType(id: String): String =
     if (ReplicationId.isReplicationId(id))
       ReplicationId.fromString(id).typeName
     else {
@@ -128,13 +128,12 @@ object PersistenceId {
       if (i == -1) ""
       else id.substring(0, i)
     }
-  }
 
   /**
    * Extract the `entityId` from a persistence id String with the default separator `|`.
    * If the separator `|` is not found it return the `id`.
    */
-  def extractEntityId(id: String): String = {
+  def extractEntityId(id: String): String =
     if (ReplicationId.isReplicationId(id))
       ReplicationId.fromString(id).entityId
     else {
@@ -142,7 +141,6 @@ object PersistenceId {
       if (i == -1) id
       else id.substring(i + 1)
     }
-  }
 
   def unapply(persistenceId: PersistenceId): Option[(String, String)] =
     Some((persistenceId.entityTypeHint, persistenceId.entityId))

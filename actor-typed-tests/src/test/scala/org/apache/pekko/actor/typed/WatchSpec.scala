@@ -133,9 +133,9 @@ class WatchSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with LogC
       val behavior = Behaviors.setup[Any] { context =>
         val child = context.spawn(
           Behaviors
-            .supervise(Behaviors.receive[Any]((_, _) => {
+            .supervise(Behaviors.receive[Any] { (_, _) =>
               throw ex
-            }))
+            })
             .onFailure[Throwable](SupervisorStrategy.stop),
           "child")
         context.watch(child)

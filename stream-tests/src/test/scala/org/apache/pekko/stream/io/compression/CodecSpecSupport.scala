@@ -25,7 +25,7 @@ import org.scalatest.matchers.should.Matchers
 trait CodecSpecSupport extends Matchers with BeforeAndAfterAll { self: Suite =>
 
   def readAs(string: String, charset: String = "UTF8") =
-    equal(string).matcher[String].compose { (_: ByteString).decodeString(charset) }
+    equal(string).matcher[String].compose((_: ByteString).decodeString(charset))
   def hexDump(bytes: ByteString) = bytes.map("%02x".format(_)).mkString
   def fromHexDump(dump: String) = dump.grouped(2).toArray.map(chars => Integer.parseInt(new String(chars), 16).toByte)
 

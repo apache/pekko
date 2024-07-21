@@ -79,7 +79,7 @@ object EventSourcedBehaviorTestKitSpec {
     private def counter(
         ctx: ActorContext[Command],
         persistenceId: PersistenceId,
-        emptyState: State): EventSourcedBehavior[Command, Event, State] = {
+        emptyState: State): EventSourcedBehavior[Command, Event, State] =
       EventSourcedBehavior.withEnforcedReplies[Command, Event, State](
         persistenceId,
         emptyState,
@@ -135,7 +135,6 @@ object EventSourcedBehaviorTestKitSpec {
           case (null, _)        => NullState()
           case (NullState(), _) => NullState()
         })
-    }
   }
 }
 
@@ -149,15 +148,13 @@ class EventSourcedBehaviorTestKitSpec
   private val persistenceId = PersistenceId.ofUniqueId("test")
   private val behavior = TestCounter(persistenceId)
 
-  private def createTestKitNull() = {
+  private def createTestKitNull() =
     EventSourcedBehaviorTestKit[TestCounter.Command, TestCounter.Event, TestCounter.State](
       system,
       TestCounter(persistenceId, null))
-  }
 
-  private def createTestKit() = {
+  private def createTestKit() =
     EventSourcedBehaviorTestKit[TestCounter.Command, TestCounter.Event, TestCounter.State](system, behavior)
-  }
 
   "EventSourcedBehaviorTestKit" must {
 

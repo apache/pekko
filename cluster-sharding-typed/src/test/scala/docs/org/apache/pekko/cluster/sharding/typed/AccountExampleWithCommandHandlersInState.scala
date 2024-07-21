@@ -115,9 +115,8 @@ object AccountExampleWithCommandHandlersInState {
           case AccountCreated    => throw new IllegalStateException(s"unexpected event [$event] in state [OpenedAccount]")
         }
 
-      def canWithdraw(amount: BigDecimal): Boolean = {
+      def canWithdraw(amount: BigDecimal): Boolean =
         balance - amount >= Zero
-      }
 
     }
     case object ClosedAccount extends Account {
@@ -146,13 +145,12 @@ object AccountExampleWithCommandHandlersInState {
     val TypeKey: EntityTypeKey[Command] =
       EntityTypeKey[Command]("Account")
 
-    def apply(persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(persistenceId: PersistenceId): Behavior[Command] =
       EventSourcedBehavior.withEnforcedReplies[Command, Event, Account](
         persistenceId,
         EmptyAccount,
         (state, cmd) => state.applyCommand(cmd),
         (state, event) => state.applyEvent(event))
-    }
 
   }
   // #account-entity

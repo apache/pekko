@@ -29,29 +29,27 @@ import pekko.util.ErrorMessages
       context: pekko.actor.ActorRefFactory,
       behavior: Behavior[T],
       props: Props,
-      rethrowTypedFailure: Boolean): ActorRef[T] = {
-    try {
+      rethrowTypedFailure: Boolean): ActorRef[T] =
+    try
       ActorRefAdapter(context.actorOf(internal.adapter.PropsAdapter(() => behavior, props, rethrowTypedFailure)))
-    } catch {
+    catch {
       case ex: ConfigurationException if ex.getMessage.startsWith(ErrorMessages.RemoteDeploymentConfigErrorPrefix) =>
         throw new ConfigurationException(remoteDeploymentNotAllowed, ex)
     }
-  }
 
   def spawn[T](
       actorRefFactory: pekko.actor.ActorRefFactory,
       behavior: Behavior[T],
       name: String,
       props: Props,
-      rethrowTypedFailure: Boolean): ActorRef[T] = {
-    try {
+      rethrowTypedFailure: Boolean): ActorRef[T] =
+    try
       ActorRefAdapter(
         actorRefFactory.actorOf(
           internal.adapter.PropsAdapter(() => Behavior.validateAsInitial(behavior), props, rethrowTypedFailure),
           name))
-    } catch {
+    catch {
       case ex: ConfigurationException if ex.getMessage.startsWith(ErrorMessages.RemoteDeploymentConfigErrorPrefix) =>
         throw new ConfigurationException(remoteDeploymentNotAllowed, ex)
     }
-  }
 }

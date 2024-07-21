@@ -37,7 +37,7 @@ object ReplicatedMovieWatchListExampleSpec {
     final case class GetMovieList(replyTo: ActorRef[MovieList]) extends Command
     final case class MovieList(movieIds: Set[String])
 
-    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] = {
+    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] =
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("movies", entityId, replicaId),
         allReplicaIds,
@@ -48,9 +48,8 @@ object ReplicatedMovieWatchListExampleSpec {
           (state, cmd) => commandHandler(state, cmd),
           (state, event) => eventHandler(state, event))
       }
-    }
 
-    private def commandHandler(state: ORSet[String], cmd: Command): Effect[ORSet.DeltaOp, ORSet[String]] = {
+    private def commandHandler(state: ORSet[String], cmd: Command): Effect[ORSet.DeltaOp, ORSet[String]] =
       cmd match {
         case AddMovie(movieId) =>
           Effect.persist(state + movieId)
@@ -60,11 +59,9 @@ object ReplicatedMovieWatchListExampleSpec {
           replyTo ! MovieList(state.elements)
           Effect.none
       }
-    }
 
-    private def eventHandler(state: ORSet[String], event: ORSet.DeltaOp): ORSet[String] = {
+    private def eventHandler(state: ORSet[String], event: ORSet.DeltaOp): ORSet[String] =
       state.applyOperation(event)
-    }
 
   }
   // #movie-entity

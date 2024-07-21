@@ -159,7 +159,7 @@ private[remote] class ArteryTcpTransport(
     def connectionFlowWithRestart: Flow[ByteString, ByteString, NotUsed] = {
       val restartCount = new AtomicInteger(0)
 
-      def logConnect(): Unit = {
+      def logConnect(): Unit =
         if (log.isDebugEnabled)
           log.debug(
             RemoteLogMarker.connect(
@@ -167,9 +167,8 @@ private[remote] class ArteryTcpTransport(
               outboundContext.associationState.uniqueRemoteAddress().map(_.uid)),
             "Outbound connection opened to [{}]",
             outboundContext.remoteAddress)
-      }
 
-      def logDisconnected(): Unit = {
+      def logDisconnected(): Unit =
         if (log.isDebugEnabled)
           log.debug(
             RemoteLogMarker.disconnected(
@@ -177,14 +176,13 @@ private[remote] class ArteryTcpTransport(
               outboundContext.associationState.uniqueRemoteAddress().map(_.uid)),
             "Outbound connection closed to [{}]",
             outboundContext.remoteAddress)
-      }
 
       val flowFactory = () => {
         val onFailureLogLevel = if (restartCount.incrementAndGet() == 1) Logging.WarningLevel else Logging.DebugLevel
 
         def flow(controlIdleKillSwitch: OptionVal[SharedKillSwitch]) =
           Flow[ByteString]
-            .via(Flow.lazyFlow(() => {
+            .via(Flow.lazyFlow { () =>
               // only open the actual connection if any new messages are sent
               logConnect()
               flightRecorder.tcpOutboundConnected(outboundContext.remoteAddress, streamName(streamId))
@@ -192,7 +190,7 @@ private[remote] class ArteryTcpTransport(
                 outboundContext.asInstanceOf[Association].setControlIdleKillSwitch(controlIdleKillSwitch)
 
               Flow[ByteString].prepend(Source.single(TcpFraming.encodeConnectionHeader(streamId))).via(connectionFlow)
-            }))
+            })
             .mapError {
               case ArteryTransport.ShutdownSignal => ArteryTransport.ShutdownSignal
               case e =>
@@ -317,7 +315,7 @@ private[remote] class ArteryTcpTransport(
     // are attached to these via a MergeHub.
     val (controlStream, controlStreamCompleted) = runInboundControlStream()
     val (ordinaryMessagesStream, ordinaryMessagesStreamCompleted) = runInboundOrdinaryMessagesStream()
-    val (largeMessagesStream, largeMessagesStreamCompleted) = {
+    val (largeMessagesStream, largeMessagesStreamCompleted) =
       if (largeMessageChannelEnabled)
         runInboundLargeMessagesStream()
       else
@@ -326,7 +324,6 @@ private[remote] class ArteryTcpTransport(
             .map(_ => log.warning("Dropping large message, missing large-message-destinations configuration."))
             .to(Sink.ignore),
           Promise[Done]().future) // never completed, not enabled
-    }
 
     // An inbound connection will only use one of the control, ordinary or large streams, but we have to
     // attach it to all and select via Partition and the streamId in the frame header. Conceptually it
@@ -337,14 +334,14 @@ private[remote] class ArteryTcpTransport(
     val inboundStream = Sink.fromGraph(GraphDSL.create() { implicit b =>
       import GraphDSL.Implicits._
       val partition = b.add(Partition[EnvelopeBuffer](3,
-        env => {
+        env =>
           env.streamId match {
             case OrdinaryStreamId => 1
             case ControlStreamId  => 0
             case LargeStreamId    => 2
             case other            => throw new IllegalArgumentException(s"Unexpected streamId [$other]")
           }
-        }))
+      ))
       partition.out(0) ~> controlStream
       partition.out(1) ~> ordinaryMessagesStream
       partition.out(2) ~> largeMessagesStream
@@ -353,7 +350,7 @@ private[remote] class ArteryTcpTransport(
 
     // If something in the inboundConnectionFlow fails, e.g. framing, the connection will be teared down,
     // but other parts of the inbound streams don't have to restarted.
-    val newInboundConnectionFlow = {
+    val newInboundConnectionFlow =
       Flow[ByteString]
         .via(inboundKillSwitch.flow)
         // must create new FlightRecorder event sink for each connection because they can't be shared
@@ -361,7 +358,6 @@ private[remote] class ArteryTcpTransport(
         .alsoTo(inboundStream)
         .filter(_ => false) // don't send back anything in this TCP socket
         .map(_ => ByteString.empty) // make it a Flow[ByteString] again
-    }
     firstConnectionFlow.trySuccess(newInboundConnectionFlow)
     inboundConnectionFlow = Future.successful(newInboundConnectionFlow)
 
@@ -503,7 +499,7 @@ private[remote] class ArteryTcpTransport(
     }
   }
 
-  private def unbind(): Future[Done] = {
+  private def unbind(): Future[Done] =
     serverBinding match {
       case Some(binding) =>
         implicit val ec = system.dispatchers.internalDispatcher
@@ -516,6 +512,5 @@ private[remote] class ArteryTcpTransport(
       case None =>
         Future.successful(Done)
     }
-  }
 
 }

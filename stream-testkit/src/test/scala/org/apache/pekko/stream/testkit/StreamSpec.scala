@@ -43,7 +43,7 @@ abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
 
   def this() = this(ActorSystem(TestKitUtils.testNameFromCallStack(classOf[StreamSpec], "".r), PekkoSpec.testConf))
 
-  override def withFixture(test: NoArgTest) = {
+  override def withFixture(test: NoArgTest) =
     super.withFixture(test) match {
       case failed: Failed =>
         implicit val ec = system.dispatcher
@@ -78,5 +78,4 @@ abstract class StreamSpec(_system: ActorSystem) extends PekkoSpec(_system) {
           case _ => other
         }
     }
-  }
 }

@@ -454,13 +454,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     gsetFromProto(rd.GSet.parseFrom(bytes))
 
   def gsetFromProto(gset: rd.GSet): GSet[Any] = {
-    val elements: Iterator[Any] = {
+    val elements: Iterator[Any] =
       gset.getStringElementsList.iterator.asScala ++
       gset.getIntElementsList.iterator.asScala ++
       gset.getLongElementsList.iterator.asScala ++
       gset.getOtherElementsList.iterator.asScala.map(otherMessageFromProto) ++
       gset.getActorRefElementsList.iterator.asScala.map(resolveActorRef)
-    }
     GSet(elements.toSet)
   }
 
@@ -523,9 +522,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     if (!actorRefElements.isEmpty) {
       Collections.sort(actorRefElements)
       val iter = actorRefElements.iterator
-      while (iter.hasNext) {
+      while (iter.hasNext)
         b.addActorRefElements(Serialization.serializedActorPath(iter.next()))
-      }
       addDots(actorRefElements)
     }
 
@@ -545,9 +543,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     new ORSet.FullStateDeltaOp(orsetFromProto(rd.ORSet.parseFrom(bytes)))
 
   private def orsetDeltaGroupToProto(deltaGroup: ORSet.DeltaGroup[_]): rd.ORSetDeltaGroup = {
-    def createEntry(opType: rd.ORSetDeltaOp, u: ORSet[_]) = {
+    def createEntry(opType: rd.ORSetDeltaOp, u: ORSet[_]) =
       rd.ORSetDeltaGroup.Entry.newBuilder().setOperation(opType).setUnderlying(orsetToProto(u))
-    }
 
     val b = rd.ORSetDeltaGroup.newBuilder()
     deltaGroup.ops.foreach {
@@ -582,13 +579,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   }
 
   def orsetFromProto(orset: rd.ORSet): ORSet[Any] = {
-    val elements: Iterator[Any] = {
+    val elements: Iterator[Any] =
       orset.getStringElementsList.iterator.asScala ++
       orset.getIntElementsList.iterator.asScala ++
       orset.getLongElementsList.iterator.asScala ++
       orset.getOtherElementsList.iterator.asScala.map(otherMessageFromProto) ++
       orset.getActorRefElementsList.iterator.asScala.map(resolveActorRef)
-    }
 
     val dots = orset.getDotsList.asScala.map(versionVectorFromProto).iterator
     val elementsMap = elements.zip(dots).toMap
@@ -638,12 +634,11 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def gcounterFromBinary(bytes: Array[Byte]): GCounter =
     gcounterFromProto(rd.GCounter.parseFrom(bytes))
 
-  def gcounterFromProto(gcounter: rd.GCounter): GCounter = {
+  def gcounterFromProto(gcounter: rd.GCounter): GCounter =
     new GCounter(
       state = gcounter.getEntriesList.asScala.iterator
         .map(entry => uniqueAddressFromProto(entry.getNode) -> BigInt(entry.getValue.toByteArray))
         .toMap)
-  }
 
   def pncounterToProto(pncounter: PNCounter): rd.PNCounter =
     rd.PNCounter
@@ -655,11 +650,10 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
   def pncounterFromBinary(bytes: Array[Byte]): PNCounter =
     pncounterFromProto(rd.PNCounter.parseFrom(bytes))
 
-  def pncounterFromProto(pncounter: rd.PNCounter): PNCounter = {
+  def pncounterFromProto(pncounter: rd.PNCounter): PNCounter =
     new PNCounter(
       increments = gcounterFromProto(pncounter.getIncrements),
       decrements = gcounterFromProto(pncounter.getDecrements))
-  }
 
   /**
    * Convert a Map[A, B] to an Iterable[Entry] where Entry is the protobuf map entry.
@@ -696,7 +690,7 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def mapTypeFromProto[PEntry <: GeneratedMessageV3, A <: GeneratedMessageV3, B <: ReplicatedData](
       input: util.List[PEntry],
-      valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] = {
+      valueCreator: A => B)(implicit eh: ProtoMapEntryReader[PEntry, A]): Map[Any, B] =
     input.asScala.map { entry =>
       if (eh.hasStringKey(entry)) eh.getStringKey(entry) -> valueCreator(eh.getValue(entry))
       else if (eh.hasIntKey(entry)) eh.getIntKey(entry) -> valueCreator(eh.getValue(entry))
@@ -706,7 +700,6 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
         throw new IllegalArgumentException(
           s"Can't deserialize ${entry.getClass} because it does not have any key in the serialized message.")
     }.toMap
-  }
 
   def ormapFromProto(ormap: rd.ORMap): ORMap[Any, ReplicatedData] = {
     val entries = mapTypeFromProto(
@@ -784,9 +777,8 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     case _                                             => throw new IllegalArgumentException("Invalid ZeroTag code")
   }
 
-  private def ormapDeltaGroupFromBinary(bytes: Array[Byte]): ORMap.DeltaGroup[Any, ReplicatedData] = {
+  private def ormapDeltaGroupFromBinary(bytes: Array[Byte]): ORMap.DeltaGroup[Any, ReplicatedData] =
     ORMap.DeltaGroup(ormapDeltaGroupOpsFromBinary(bytes))
-  }
 
   private def ormapDeltaGroupOpsFromBinary(bytes: Array[Byte]): scala.collection.immutable.IndexedSeq[ORMap.DeltaOp] = {
     val deltaGroup = rd.ORMapDeltaGroup.parseFrom(bytes)
@@ -827,28 +819,23 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
     ops
   }
 
-  private def ormapPutToProto(deltaOp: ORMap.PutDeltaOp[_, _]): rd.ORMapDeltaGroup = {
+  private def ormapPutToProto(deltaOp: ORMap.PutDeltaOp[_, _]): rd.ORMapDeltaGroup =
     ormapDeltaGroupOpsToProto(immutable.IndexedSeq(deltaOp.asInstanceOf[ORMap.DeltaOp]))
-  }
 
-  private def ormapRemoveToProto(deltaOp: ORMap.RemoveDeltaOp[_, _]): rd.ORMapDeltaGroup = {
+  private def ormapRemoveToProto(deltaOp: ORMap.RemoveDeltaOp[_, _]): rd.ORMapDeltaGroup =
     ormapDeltaGroupOpsToProto(immutable.IndexedSeq(deltaOp.asInstanceOf[ORMap.DeltaOp]))
-  }
 
-  private def ormapRemoveKeyToProto(deltaOp: ORMap.RemoveKeyDeltaOp[_, _]): rd.ORMapDeltaGroup = {
+  private def ormapRemoveKeyToProto(deltaOp: ORMap.RemoveKeyDeltaOp[_, _]): rd.ORMapDeltaGroup =
     ormapDeltaGroupOpsToProto(immutable.IndexedSeq(deltaOp.asInstanceOf[ORMap.DeltaOp]))
-  }
 
-  private def ormapUpdateToProto(deltaOp: ORMap.UpdateDeltaOp[_, _]): rd.ORMapDeltaGroup = {
+  private def ormapUpdateToProto(deltaOp: ORMap.UpdateDeltaOp[_, _]): rd.ORMapDeltaGroup =
     ormapDeltaGroupOpsToProto(immutable.IndexedSeq(deltaOp.asInstanceOf[ORMap.DeltaOp]))
-  }
 
-  private def ormapDeltaGroupToProto(deltaGroup: ORMap.DeltaGroup[_, _]): rd.ORMapDeltaGroup = {
+  private def ormapDeltaGroupToProto(deltaGroup: ORMap.DeltaGroup[_, _]): rd.ORMapDeltaGroup =
     ormapDeltaGroupOpsToProto(deltaGroup.ops)
-  }
 
   private def ormapDeltaGroupOpsToProto(deltaGroupOps: immutable.IndexedSeq[ORMap.DeltaOp]): rd.ORMapDeltaGroup = {
-    def createEntry(opType: rd.ORMapDeltaOp, u: ORSet[_], m: Map[_, _], zt: Int) = {
+    def createEntry(opType: rd.ORMapDeltaOp, u: ORSet[_], m: Map[_, _], zt: Int) =
       if (m.size > 1 && opType != rd.ORMapDeltaOp.ORMapUpdate)
         throw new IllegalArgumentException("Invalid size of ORMap delta map")
       else {
@@ -874,7 +861,6 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
         }
         builder
       }
-    }
 
     def createEntryWithKey(opType: rd.ORMapDeltaOp, u: ORSet[_], k: Any, zt: Int) = {
       val entryDataBuilder = rd.ORMapDeltaGroup.MapEntry.newBuilder()
@@ -995,7 +981,7 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
     if (aSize == bSize) {
       val aIter = aByteString.iterator
       val bIter = bByteString.iterator
-      @tailrec def findDiff(): Int = {
+      @tailrec def findDiff(): Int =
         if (aIter.hasNext) {
           val aByte = aIter.nextByte()
           val bByte = bIter.nextByte()
@@ -1003,7 +989,6 @@ object OtherMessageComparator extends Comparator[dm.OtherMessage] {
           else if (aByte > bByte) 1
           else findDiff()
         } else 0
-      }
       findDiff()
     } else if (aSize < bSize) -1
     else 1

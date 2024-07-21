@@ -72,14 +72,13 @@ object BasicPersistentBehaviorCompileOnly {
     // #command-handler
 
     // #effects
-    def onCommand(subscriber: ActorRef[State], state: State, command: Command): Effect[Event, State] = {
+    def onCommand(subscriber: ActorRef[State], state: State, command: Command): Effect[Event, State] =
       command match {
         case Add(data) =>
           Effect.persist(Added(data)).thenRun(newState => subscriber ! newState)
         case Clear =>
           Effect.persist(Cleared).thenRun((newState: State) => subscriber ! newState).thenStop()
       }
-    }
     // #effects
 
     // #event-handler
@@ -172,14 +171,13 @@ object BasicPersistentBehaviorCompileOnly {
       }
     }
 
-    def apply(entityId: String): Behavior[Command] = {
+    def apply(entityId: String): Behavior[Command] =
       EventSourcedBehavior[Command, Event, State](
         persistenceId = PersistenceId("ShoppingCart", entityId),
         emptyState = State(),
         commandHandler = (state, cmd) => throw new NotImplementedError("TODO: process the command & return an Effect"),
         eventHandler = (state, evt) => throw new NotImplementedError("TODO: process the event return the next state"))
         .withTagger(event => tagEvent(entityId, event))
-    }
     // #tagging-query
   }
 
@@ -193,10 +191,10 @@ object BasicPersistentBehaviorCompileOnly {
           commandHandler =
             (state, cmd) => throw new NotImplementedError("TODO: process the command & return an Effect"),
           eventHandler = (state, evt) => throw new NotImplementedError("TODO: process the event return the next state"))
-          .snapshotWhen((state, _, _) => {
+          .snapshotWhen { (state, _, _) =>
             context.log.info2("Snapshot actor {} => state: {}", context.self.path.name, state)
             true
-          })
+          }
       }
     // #wrapPersistentBehavior
   }

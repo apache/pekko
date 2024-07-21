@@ -49,14 +49,12 @@ private[pekko] final class BehaviorTestKitImpl[T](
   private[pekko] def as[U]: BehaviorTestKitImpl[U] = this.asInstanceOf[BehaviorTestKitImpl[U]]
 
   private var currentUncanonical = _initialBehavior
-  private var current = {
+  private var current =
     try {
       context.setCurrentActorThread()
       Behavior.validateAsInitial(Behavior.start(_initialBehavior, context))
-    } finally {
+    } finally
       context.clearCurrentActorThread()
-    }
-  }
 
   // execute any future tasks scheduled in Actor's constructor
   runAllTasks()
@@ -92,14 +90,13 @@ private[pekko] final class BehaviorTestKitImpl[T](
 
   def getAllEffects(): util.List[Effect] = retrieveAllEffects().asJava
 
-  override def expectEffect(expectedEffect: Effect): Unit = {
+  override def expectEffect(expectedEffect: Effect): Unit =
     context.effectQueue.poll() match {
       case null   => assert(expectedEffect == NoEffects, s"expected: $expectedEffect but no effects were recorded")
       case effect => assert(expectedEffect == effect, s"expected: $expectedEffect but found $effect")
     }
-  }
 
-  def expectEffectClass[E <: Effect](effectClass: Class[E]): E = {
+  def expectEffectClass[E <: Effect](effectClass: Class[E]): E =
     context.effectQueue.poll() match {
       case null if effectClass.isAssignableFrom(NoEffects.getClass) => effectClass.cast(NoEffects)
       case null =>
@@ -107,9 +104,8 @@ private[pekko] final class BehaviorTestKitImpl[T](
       case effect if effectClass.isAssignableFrom(effect.getClass) => effect.asInstanceOf[E]
       case other                                                   => throw new AssertionError(s"expected: effect class ${effectClass.getName} but found $other")
     }
-  }
 
-  def expectEffectPF[R](f: PartialFunction[Effect, R]): R = {
+  def expectEffectPF[R](f: PartialFunction[Effect, R]): R =
     context.effectQueue.poll() match {
       case null if f.isDefinedAt(NoEffects) =>
         f.apply(NoEffects)
@@ -118,7 +114,6 @@ private[pekko] final class BehaviorTestKitImpl[T](
       case other =>
         throw new AssertionError(s"expected matching effect but got: $other")
     }
-  }
 
   def expectEffectType[E <: Effect](implicit classTag: ClassTag[E]): E =
     expectEffectClass(classTag.runtimeClass.asInstanceOf[Class[E]])
@@ -136,14 +131,13 @@ private[pekko] final class BehaviorTestKitImpl[T](
       throw e
   }
 
-  private def runAllTasks(): Unit = {
+  private def runAllTasks(): Unit =
     context.executionContext match {
       case controlled: ControlledExecutor => controlled.runAll()
       case _                              =>
     }
-  }
 
-  override def run(message: T): Unit = {
+  override def run(message: T): Unit =
     try {
       context.setCurrentActorThread()
       try {
@@ -153,25 +147,21 @@ private[pekko] final class BehaviorTestKitImpl[T](
         // notice we pass current and not intercepted, this way Behaviors.same will be resolved to current which will be intercepted again on the next message
         // otherwise we would have risked intercepting an already intercepted behavior (or would have had to explicitly check if the current behavior is already intercepted by us)
         current = Behavior.canonicalize(currentUncanonical, current, context)
-      } finally {
+      } finally
         context.clearCurrentActorThread()
-      }
       runAllTasks()
     } catch handleException
-  }
 
   override def runOne(): Unit = run(selfInbox().receiveMessage())
 
-  override def signal(signal: Signal): Unit = {
+  override def signal(signal: Signal): Unit =
     try {
       context.setCurrentActorThread()
       currentUncanonical = Behavior.interpretSignal(current, context, signal)
       current = Behavior.canonicalize(currentUncanonical, current, context)
     } catch handleException
-    finally {
+    finally
       context.clearCurrentActorThread()
-    }
-  }
 
   override def hasEffects(): Boolean = !context.effectQueue.isEmpty
 
@@ -191,7 +181,7 @@ private[pekko] object BehaviorTestKitImpl {
     override def aroundReceive(
         ctx: TypedActorContext[Any],
         msg: Any,
-        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] = {
+        target: BehaviorInterceptor.ReceiveTarget[Any]): Behavior[Any] =
       msg match {
         case AdaptWithRegisteredMessageAdapter(msgToAdapt) =>
           val fn = ctx
@@ -206,7 +196,6 @@ private[pekko] object BehaviorTestKitImpl {
           target.apply(ctx, adaptedMsg)
         case t => target.apply(ctx, t)
       }
-    }
 
     def inteceptBehaviour[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
       Behavior

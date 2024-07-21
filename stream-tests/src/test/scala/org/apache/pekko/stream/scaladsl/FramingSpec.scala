@@ -47,7 +47,7 @@ class FramingSpec extends StreamSpec {
 
         private var rechunkBuffer = ByteString.empty
 
-        private def rechunk() = {
+        private def rechunk() =
           if (!isClosed(in) && ThreadLocalRandom.current().nextBoolean()) pull(in)
           else {
             val nextChunkSize =
@@ -60,22 +60,19 @@ class FramingSpec extends StreamSpec {
               completeStage()
             } else push(out, newChunk)
           }
-        }
 
         override def onPush(): Unit = {
           rechunkBuffer ++= grab(in)
           rechunk()
         }
 
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           rechunk()
-        }
 
-        override def onUpstreamFinish(): Unit = {
+        override def onUpstreamFinish(): Unit =
           if (rechunkBuffer.isEmpty) completeStage()
           else if (isAvailable(out))
             onPull()
-        }
 
         setHandlers(in, out, this)
       }
@@ -183,9 +180,8 @@ class FramingSpec extends StreamSpec {
     val fieldLengths = List(1, 2, 3, 4)
     val fieldOffsets = List(0, 1, 2, 3, 15, 16, 31, 32, 44, 107)
 
-    def encode(payload: ByteString, fieldOffset: Int, fieldLength: Int, byteOrder: ByteOrder): ByteString = {
+    def encode(payload: ByteString, fieldOffset: Int, fieldLength: Int, byteOrder: ByteOrder): ByteString =
       encodeComplexFrame(payload, fieldLength, byteOrder, ByteString(new Array[Byte](fieldOffset)), ByteString.empty)
-    }
 
     def encodeComplexFrame(
         payload: ByteString,

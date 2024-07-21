@@ -51,7 +51,7 @@ class FailureDetectorRegistrySpec extends PekkoSpec("pekko.loglevel = INFO") {
       minStdDeviation: FiniteDuration = 10.millis,
       acceptableLostDuration: FiniteDuration = Duration.Zero,
       firstHeartbeatEstimate: FiniteDuration = 1.second,
-      clock: Clock = FailureDetector.defaultClock): FailureDetectorRegistry[String] = {
+      clock: Clock = FailureDetector.defaultClock): FailureDetectorRegistry[String] =
     new DefaultFailureDetectorRegistry[String](() =>
       createFailureDetector(
         threshold,
@@ -60,7 +60,6 @@ class FailureDetectorRegistrySpec extends PekkoSpec("pekko.loglevel = INFO") {
         acceptableLostDuration,
         firstHeartbeatEstimate,
         clock))
-  }
 
   "mark node as available after a series of successful heartbeats" in {
     val timeInterval = List[Long](0, 1000, 100, 100)

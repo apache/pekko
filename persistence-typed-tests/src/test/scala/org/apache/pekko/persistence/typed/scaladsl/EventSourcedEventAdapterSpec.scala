@@ -47,10 +47,9 @@ object EventSourcedEventAdapterSpec {
   class FilterEventAdapter extends EventAdapter[String, String] {
     override def toJournal(e: String): String = e.toUpperCase()
 
-    override def fromJournal(p: String, manifest: String): EventSeq[String] = {
+    override def fromJournal(p: String, manifest: String): EventSeq[String] =
       if (p == "B") EventSeq.empty
       else EventSeq.single(p)
-    }
 
     override def manifest(event: String): String = ""
   }
@@ -58,9 +57,8 @@ object EventSourcedEventAdapterSpec {
   class SplitEventAdapter extends EventAdapter[String, String] {
     override def toJournal(e: String): String = e.toUpperCase()
 
-    override def fromJournal(p: String, manifest: String): EventSeq[String] = {
+    override def fromJournal(p: String, manifest: String): EventSeq[String] =
       EventSeq(p.map("<" + _.toString + ">"))
-    }
 
     override def manifest(event: String): String = ""
   }
@@ -68,9 +66,8 @@ object EventSourcedEventAdapterSpec {
   class EventAdapterWithManifest extends EventAdapter[String, String] {
     override def toJournal(e: String): String = e.toUpperCase()
 
-    override def fromJournal(p: String, manifest: String): EventSeq[String] = {
+    override def fromJournal(p: String, manifest: String): EventSeq[String] =
       EventSeq.single(p + manifest)
-    }
 
     override def manifest(event: String): String = event.length.toString
   }

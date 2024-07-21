@@ -48,9 +48,8 @@ private[pekko] trait Dispatch { this: ActorCell =>
 
   @nowarn @volatile private var _mailboxDoNotCallMeDirectly: Mailbox = _ // This must be volatile since it isn't protected by the mailbox status
 
-  @nowarn private def _preventPrivateUnusedErasure = {
+  @nowarn private def _preventPrivateUnusedErasure =
     _mailboxDoNotCallMeDirectly
-  }
 
   final def mailbox: Mailbox =
     Unsafe.instance.getObjectVolatile(this, AbstractActorCell.mailboxOffset).asInstanceOf[Mailbox]
@@ -187,9 +186,9 @@ private[pekko] trait Dispatch { this: ActorCell =>
           envelope
         else {
           val deserializedMsg =
-            try {
+            try
               serializeAndDeserializePayload(msg)
-            } catch {
+            catch {
               case NonFatal(e) => throw SerializationCheckFailedException(msg, e)
             }
           envelope.message match {

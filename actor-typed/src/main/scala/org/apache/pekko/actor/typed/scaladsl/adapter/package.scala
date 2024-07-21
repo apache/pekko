@@ -54,13 +54,12 @@ package object adapter {
      *  Typed actors default supervision strategy is to stop. Can be overridden with
      *  `Behaviors.supervise`.
      */
-    def spawnAnonymous[T](behavior: Behavior[T], props: Props = Props.empty): ActorRef[T] = {
+    def spawnAnonymous[T](behavior: Behavior[T], props: Props = Props.empty): ActorRef[T] =
       ActorRefFactoryAdapter.spawnAnonymous(
         sys,
         Behaviors.supervise(behavior).onFailure(SupervisorStrategy.stop),
         props,
         rethrowTypedFailure = false)
-    }
 
     /**
      *  Spawn the given behavior as a child of the user actor in a classic ActorSystem.
@@ -68,14 +67,13 @@ package object adapter {
      *  Typed actors default supervision strategy is to stop. Can be overridden with
      *  `Behaviors.supervise`.
      */
-    def spawn[T](behavior: Behavior[T], name: String, props: Props = Props.empty): ActorRef[T] = {
+    def spawn[T](behavior: Behavior[T], name: String, props: Props = Props.empty): ActorRef[T] =
       ActorRefFactoryAdapter.spawn(
         sys,
         Behaviors.supervise(behavior).onFailure(SupervisorStrategy.stop),
         name,
         props,
         rethrowTypedFailure = false)
-    }
 
     def toTyped: ActorSystem[Nothing] = AdapterExtension(sys).adapter
   }
@@ -92,9 +90,8 @@ package object adapter {
     @InternalApi private[pekko] def internalSystemActorOf[U](
         behavior: Behavior[U],
         name: String,
-        props: Props): ActorRef[U] = {
+        props: Props): ActorRef[U] =
       toClassic.asInstanceOf[ExtendedActorSystem].systemActorOf(PropsAdapter(behavior, props), name)
-    }
   }
 
   /**

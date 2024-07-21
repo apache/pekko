@@ -232,7 +232,6 @@ final case class Props(deploy: Deploy, clazz: Class[_], args: immutable.Seq[Any]
    * actor creation by the ActorSystem, i.e. for user-level code it can only be
    * used within the implementation of [[IndirectActorProducer#produce]].
    */
-  private[pekko] def newActor(): Actor = {
+  private[pekko] def newActor(): Actor =
     producer.produce()
-  }
 }

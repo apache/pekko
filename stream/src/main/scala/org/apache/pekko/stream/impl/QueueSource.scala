@@ -75,7 +75,7 @@ import pekko.stream.stage._
         offer.promise.success(QueueOfferResult.Enqueued)
       }
 
-      private def bufferElem(offer: Offer[T]): Unit = {
+      private def bufferElem(offer: Offer[T]): Unit =
         if (!buffer.isFull) {
           enqueueAndSuccess(offer)
         } else
@@ -125,7 +125,6 @@ import pekko.stream.stage._
                     "You have to wait for one previous future to be resolved to send another request"))
               else pendingOffers.enqueue(offer)
           }
-      }
 
       private val callback = getAsyncCallback[Input[T]] {
         case Offer(_, promise) if terminating =>
@@ -197,7 +196,7 @@ import pekko.stream.stage._
         completeStage()
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (maxBuffer == 0) {
           if (pendingOffers.nonEmpty) {
             val offer = pendingOffers.dequeue()
@@ -216,7 +215,6 @@ import pekko.stream.stage._
             completeStage()
           }
         }
-      }
 
       override def watchCompletion() = completion.future
       override def offer(element: T): Future[QueueOfferResult] = {

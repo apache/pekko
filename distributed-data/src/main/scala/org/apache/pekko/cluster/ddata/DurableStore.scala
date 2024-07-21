@@ -230,15 +230,13 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
             if (log.isDebugEnabled)
               log.debug("load all of [{}] entries took [{} ms]", n, TimeUnit.NANOSECONDS.toMillis(System.nanoTime - t0))
             context.become(active)
-          } finally {
+          } finally
             Try(iter.close())
-          }
         } catch {
           case NonFatal(e) =>
             throw new LoadFailed("failed to load durable distributed-data", e)
-        } finally {
+        } finally
           Try(tx.close())
-        }
       } else {
         // no files to load
         sender() ! LoadAllCompleted
@@ -276,7 +274,7 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
       writeBehind()
   }
 
-  def dbPut(tx: OptionVal[Txn[ByteBuffer]], key: KeyId, data: DurableDataEnvelope): Unit = {
+  def dbPut(tx: OptionVal[Txn[ByteBuffer]], key: KeyId, data: DurableDataEnvelope): Unit =
     try {
       val value = serializer.toBinary(data)
       ensureValueBufferSize(value.length)
@@ -292,9 +290,8 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
       l.keyBuffer.clear()
       l.valueBuffer.clear()
     }
-  }
 
-  def writeBehind(): Unit = {
+  def writeBehind(): Unit =
     if (!pending.isEmpty()) {
       val t0 = System.nanoTime()
       val tx = lmdb().env.txnWrite()
@@ -315,10 +312,8 @@ final class LmdbDurableStore(config: Config) extends Actor with ActorLogging {
           import pekko.util.ccompat.JavaConverters._
           log.error(e, "failed to store [{}]", pending.keySet.asScala.mkString(","))
           tx.abort()
-      } finally {
+      } finally
         pending.clear()
-      }
     }
-  }
 
 }

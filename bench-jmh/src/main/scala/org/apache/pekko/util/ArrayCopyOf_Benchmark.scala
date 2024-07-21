@@ -35,9 +35,8 @@ class ArrayCopyOf_Benchmark {
    */
 
   @Setup
-  def setup(): Unit = {
+  def setup(): Unit =
     bs = Array.fill[Byte](1024 * kb)(1)
-  }
 
   @Benchmark
   def systemArrayCopy(): Unit = {

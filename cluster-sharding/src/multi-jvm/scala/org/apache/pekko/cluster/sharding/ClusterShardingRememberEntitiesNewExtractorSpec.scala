@@ -124,7 +124,7 @@ abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
 
   val typeName = "Entity"
 
-  def startShardingWithExtractor1(): Unit = {
+  def startShardingWithExtractor1(): Unit =
     startSharding(
       system,
       typeName = typeName,
@@ -132,9 +132,8 @@ abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
       settings = settings.withRole("sharding"),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId1)
-  }
 
-  def startShardingWithExtractor2(sys: ActorSystem, probe: ActorRef): Unit = {
+  def startShardingWithExtractor2(sys: ActorSystem, probe: ActorRef): Unit =
     startSharding(
       sys,
       typeName = typeName,
@@ -142,7 +141,6 @@ abstract class ClusterShardingRememberEntitiesNewExtractorSpec(
       settings = ClusterShardingSettings(sys).withRememberEntities(config.rememberEntities).withRole("sharding"),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId2)
-  }
 
   def region(sys: ActorSystem = system) = ClusterSharding(sys).shardRegion(typeName)
 

@@ -28,7 +28,7 @@ object TestProducerWorkPulling {
 
   def apply(
       delay: FiniteDuration,
-      producerController: ActorRef[WorkPullingProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+      producerController: ActorRef[WorkPullingProducerController.Start[TestConsumer.Job]]): Behavior[Command] =
     Behaviors.setup { context =>
       context.setLoggerName("TestProducerWorkPulling")
       val requestNextAdapter: ActorRef[WorkPullingProducerController.RequestNext[TestConsumer.Job]] =
@@ -40,16 +40,14 @@ object TestProducerWorkPulling {
         idle(0)
       }
     }
-  }
 
-  private def idle(n: Int): Behavior[Command] = {
+  private def idle(n: Int): Behavior[Command] =
     Behaviors.receiveMessagePartial {
       case Tick                => Behaviors.same
       case RequestNext(sendTo) => active(n + 1, sendTo)
     }
-  }
 
-  private def active(n: Int, sendTo: ActorRef[TestConsumer.Job]): Behavior[Command] = {
+  private def active(n: Int, sendTo: ActorRef[TestConsumer.Job]): Behavior[Command] =
     Behaviors.receivePartial {
       case (ctx, Tick) =>
         val msg = s"msg-$n"
@@ -60,6 +58,5 @@ object TestProducerWorkPulling {
       case (_, RequestNext(_)) =>
         throw new IllegalStateException("Unexpected RequestNext, already got one.")
     }
-  }
 
 }

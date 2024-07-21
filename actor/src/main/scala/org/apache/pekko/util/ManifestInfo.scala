@@ -143,9 +143,8 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
             && knownVendors(vendor)) {
             manifests = manifests.updated(title, new Version(version))
           }
-        } finally {
+        } finally
           ios.close()
-        }
       }
     } catch {
       case ioe: IOException =>
@@ -162,9 +161,8 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
    *
    * @return `true` if versions are the same
    */
-  def checkSameVersion(productName: String, dependencies: immutable.Seq[String], logWarning: Boolean): Boolean = {
+  def checkSameVersion(productName: String, dependencies: immutable.Seq[String], logWarning: Boolean): Boolean =
     checkSameVersion(productName, dependencies, logWarning, throwException = system.settings.FailMixedVersions)
-  }
 
   /**
    * Verify that the version is the same for all given artifacts.
@@ -178,7 +176,7 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
       productName: String,
       dependencies: immutable.Seq[String],
       logWarning: Boolean,
-      throwException: Boolean): Boolean = {
+      throwException: Boolean): Boolean =
     ManifestInfo.checkSameVersion(productName, dependencies, versions) match {
       case Some(message) =>
         if (logWarning)
@@ -190,5 +188,4 @@ final class ManifestInfo(val system: ExtendedActorSystem) extends Extension {
           false
       case None => true
     }
-  }
 }

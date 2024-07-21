@@ -81,7 +81,7 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
   /** INTERNAL API */
   @InternalApi
   private[ssl] def getSSLContext() = getContext().context
-  private def getContext(): ConfiguredContext = {
+  private def getContext(): ConfiguredContext =
     cachedContext match {
       case Some(CachedContext(_, expired)) if expired.isOverdue() =>
         // Multiple connection requests arriving when the cache is overdue will
@@ -98,7 +98,6 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
         cachedContext = Some(CachedContext(context, SSLContextCacheTime.fromNow))
         context
     }
-  }
 
   // Construct the cached instance
   private def constructContext(): ConfiguredContext = {
@@ -122,7 +121,7 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
     }
   }
 
-  private def readFiles(): (PrivateKey, X509Certificate, Certificate) = {
+  private def readFiles(): (PrivateKey, X509Certificate, Certificate) =
     try {
       val cacert: Certificate = PemManagersProvider.loadCertificate(SSLCACertFile)
       val cert: X509Certificate = PemManagersProvider.loadCertificate(SSLCertFile).asInstanceOf[X509Certificate]
@@ -136,7 +135,6 @@ final class RotatingKeysSSLEngineProvider(val config: Config, protected val log:
       case e: IOException =>
         throw new SslTransportException("Server SSL connection could not be established because: " + e.getMessage, e)
     }
-  }
 
   // Implement the SSLEngine create methods from the trait
   override def createServerSSLEngine(hostname: String, port: Int): SSLEngine =

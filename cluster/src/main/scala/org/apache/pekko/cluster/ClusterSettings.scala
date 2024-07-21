@@ -52,24 +52,24 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val LogInfo: Boolean = LogInfoVerbose || cc.getBoolean("log-info")
   val FailureDetectorConfig: Config = cc.getConfig("failure-detector")
   val FailureDetectorImplementationClass: String = FailureDetectorConfig.getString("implementation-class")
-  val HeartbeatInterval: FiniteDuration = {
+  val HeartbeatInterval: FiniteDuration =
     FailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  }.requiring(_ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0")
-  val HeartbeatExpectedResponseAfter: FiniteDuration = {
+      .requiring(_ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0")
+  val HeartbeatExpectedResponseAfter: FiniteDuration =
     FailureDetectorConfig.getMillisDuration("expected-response-after")
-  }.requiring(_ > Duration.Zero, "failure-detector.expected-response-after > 0")
-  val MonitoredByNrOfMembers: Int = {
+      .requiring(_ > Duration.Zero, "failure-detector.expected-response-after > 0")
+  val MonitoredByNrOfMembers: Int =
     FailureDetectorConfig.getInt("monitored-by-nr-of-members")
-  }.requiring(_ > 0, "failure-detector.monitored-by-nr-of-members must be > 0")
+      .requiring(_ > 0, "failure-detector.monitored-by-nr-of-members must be > 0")
 
   final class CrossDcFailureDetectorSettings(val config: Config) {
     val ImplementationClass: String = config.getString("implementation-class")
-    val HeartbeatInterval: FiniteDuration = {
+    val HeartbeatInterval: FiniteDuration =
       config.getMillisDuration("heartbeat-interval")
-    }.requiring(_ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0")
-    val HeartbeatExpectedResponseAfter: FiniteDuration = {
+        .requiring(_ > Duration.Zero, "failure-detector.heartbeat-interval must be > 0")
+    val HeartbeatExpectedResponseAfter: FiniteDuration =
       config.getMillisDuration("expected-response-after")
-    }.requiring(_ > Duration.Zero, "failure-detector.expected-response-after > 0")
+        .requiring(_ > Duration.Zero, "failure-detector.expected-response-after > 0")
     def NrOfMonitoringActors: Int = MultiDataCenter.CrossDcConnections
   }
 
@@ -108,9 +108,9 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   }
   val PeriodicTasksInitialDelay: FiniteDuration = cc.getMillisDuration("periodic-tasks-initial-delay")
   val GossipInterval: FiniteDuration = cc.getMillisDuration("gossip-interval")
-  val GossipTimeToLive: FiniteDuration = {
+  val GossipTimeToLive: FiniteDuration =
     cc.getMillisDuration("gossip-time-to-live")
-  }.requiring(_ > Duration.Zero, "gossip-time-to-live must be > 0")
+      .requiring(_ > Duration.Zero, "gossip-time-to-live must be > 0")
   val LeaderActionsInterval: FiniteDuration = cc.getMillisDuration("leader-actions-interval")
   val UnreachableNodesReaperInterval: FiniteDuration = cc.getMillisDuration("unreachable-nodes-reaper-interval")
   val PublishStatsInterval: Duration = {
@@ -171,9 +171,9 @@ final class ClusterSettings(val config: Config, val systemName: String) {
   val AppVersion: Version =
     Version(cc.getString("app-version"))
 
-  val MinNrOfMembers: Int = {
+  val MinNrOfMembers: Int =
     cc.getInt("min-nr-of-members")
-  }.requiring(_ > 0, "min-nr-of-members must be > 0")
+      .requiring(_ > 0, "min-nr-of-members must be > 0")
   val MinNrOfMembersOfRole: Map[String, Int] = {
     import pekko.util.ccompat.JavaConverters._
     cc.getConfig("role")

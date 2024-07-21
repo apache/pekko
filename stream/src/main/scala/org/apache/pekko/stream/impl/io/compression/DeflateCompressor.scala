@@ -60,7 +60,7 @@ import pekko.util.{ ByteString, ByteStringBuilder }
 
   def close(): Unit = deflater.end()
 
-  private def newTempBuffer(size: Int = 65536): Array[Byte] = {
+  private def newTempBuffer(size: Int = 65536): Array[Byte] =
     // The default size is somewhat arbitrary, we'd like to guess a better value but Deflater/zlib
     // is buffering in an unpredictable manner.
     // `compress` will only return any data if the buffered compressed data has some size in
@@ -71,7 +71,6 @@ import pekko.util.{ ByteString, ByteStringBuilder }
     // We also make sure that buffer size stays within a reasonable range, to avoid
     // draining deflator with too small buffer.
     new Array[Byte](math.max(size, MinBufferSize))
-  }
 }
 
 /** INTERNAL API */

@@ -48,12 +48,11 @@ import pekko.annotation.InternalApi
     override def findSerializer(
         config: SerializationConfig,
         javaType: JavaType,
-        beanDesc: BeanDescription): JsonSerializer[_] = {
+        beanDesc: BeanDescription): JsonSerializer[_] =
       if (clazz.isAssignableFrom(javaType.getRawClass))
         deserializer()
       else
         super.findSerializer(config, javaType, beanDesc)
-    }
 
   }
 
@@ -62,12 +61,11 @@ import pekko.annotation.InternalApi
     override def findBeanDeserializer(
         javaType: JavaType,
         config: DeserializationConfig,
-        beanDesc: BeanDescription): JsonDeserializer[_] = {
+        beanDesc: BeanDescription): JsonDeserializer[_] =
       if (clazz.isAssignableFrom(javaType.getRawClass))
         serializer()
       else
         super.findBeanDeserializer(javaType, config, beanDesc)
-    }
 
   }
 }
@@ -89,19 +87,17 @@ import pekko.annotation.InternalApi
 
   def version: Version = JacksonModule.version
 
-  def setupModule(context: SetupContext): Unit = {
+  def setupModule(context: SetupContext): Unit =
     initializers.result().foreach(_.apply(context))
-  }
 
   def addSerializer(
       clazz: Class[_],
       serializer: () => JsonSerializer[_],
-      deserializer: () => JsonDeserializer[_]): this.type = {
+      deserializer: () => JsonDeserializer[_]): this.type =
     this += { ctx =>
       ctx.addSerializers(new SerializerResolverByClass(clazz, serializer))
       ctx.addDeserializers(new DeserializerResolverByClass(clazz, deserializer))
     }
-  }
 
   protected def +=(init: SetupContext => Unit): this.type = { initializers += init; this }
   protected def +=(ser: Serializers): this.type = this += (_.addSerializers(ser))

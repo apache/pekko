@@ -91,10 +91,9 @@ class SubInletOutletSpec extends StreamSpec {
 
         setHandler(out,
           new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               if (!subIn.hasBeenPulled)
                 subIn.pull()
-            }
           })
       }
     }

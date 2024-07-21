@@ -112,13 +112,12 @@ class CoupledTerminationFlowSpec extends StreamSpec("""
       val probe = TestProbe()
       val f = Flow.fromSinkAndSourceCoupledMat(Sink.cancelled,
         Source.fromPublisher(new Publisher[String] {
-          override def subscribe(subscriber: Subscriber[_ >: String]): Unit = {
+          override def subscribe(subscriber: Subscriber[_ >: String]): Unit =
             subscriber.onSubscribe(new Subscription {
               override def cancel(): Unit = probe.ref ! "cancelled"
 
               override def request(l: Long): Unit = () // do nothing
             })
-          }
         }))(Keep.none) // completes right away, should complete the sink as well
 
       f.runWith(Source.maybe, Sink.ignore) // these do nothing.
@@ -251,10 +250,10 @@ class CoupledTerminationFlowSpec extends StreamSpec("""
 
     val catchEffect = Source
       .maybe[String]
-      .mapMaterializedValue(p => {
+      .mapMaterializedValue { p =>
         p.future.onComplete(t => probe.ref ! t)
         NotUsed
-      })
+      }
     val assertCancel = () => {
       val m = probe.expectMsgType[Try[Option[String]]]
       m.isFailure should ===(false)

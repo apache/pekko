@@ -125,10 +125,9 @@ private[pekko] final class EventSourcedRememberEntitiesCoordinatorStore(
       log.warning("Snapshots matching [{}] deletion failure: [{}]", m, reason.getMessage)
   }
 
-  def saveSnapshotWhenNeeded(): Unit = {
+  def saveSnapshotWhenNeeded(): Unit =
     if (lastSequenceNr % settings.tuningParameters.snapshotAfter == 0 && lastSequenceNr != 0) {
       log.debug("Saving snapshot, sequence number [{}]", snapshotSequenceNr)
       saveSnapshot(State(shards.toSet, writtenMarker))
     }
-  }
 }

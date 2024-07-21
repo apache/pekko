@@ -55,7 +55,7 @@ class PatternSpec extends PekkoSpec {
       val target = system.actorOf(Props[TargetActor]())
       val latch = TestLatch()
       target ! ((latch, remainingOrDefault))
-      intercept[AskTimeoutException] { Await.result(gracefulStop(target, 500 millis), remainingOrDefault) }
+      intercept[AskTimeoutException](Await.result(gracefulStop(target, 500 millis), remainingOrDefault))
       latch.open()
     }
   }
@@ -75,7 +75,7 @@ class PatternSpec extends PekkoSpec {
         pekko.pattern.after(1 second, using = system.scheduler)(Future.failed(new IllegalStateException("Mexico")))
 
       val r = Future.firstCompletedOf(Seq(Promise[Int]().future, f))
-      intercept[IllegalStateException] { Await.result(r, remainingOrDefault) }.getMessage should ===("Mexico")
+      intercept[IllegalStateException](Await.result(r, remainingOrDefault)).getMessage should ===("Mexico")
     }
   }
 }

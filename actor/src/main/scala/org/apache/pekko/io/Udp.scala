@@ -233,11 +233,10 @@ class UdpExt(system: ExtendedActorSystem) extends IO.Extension {
 
   val settings: UdpSettings = new UdpSettings(system.settings.config.getConfig("pekko.io.udp"))
 
-  val manager: ActorRef = {
+  val manager: ActorRef =
     system.systemActorOf(
       props = Props(classOf[UdpManager], this).withDispatcher(settings.ManagementDispatcher).withDeploy(Deploy.local),
       name = "IO-UDP-FF")
-  }
 
   /**
    * Java API: retrieve the UDP manager actor’s reference.

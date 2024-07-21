@@ -36,9 +36,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * @param persistenceId stable unique identifier for the event sourced behavior
    */
-  def this(persistenceId: PersistenceId) = {
+  def this(persistenceId: PersistenceId) =
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
-  }
 
   /**
    * If using onPersistFailure the supervision is only around the event sourced behavior not any outer setup/withTimers
@@ -48,9 +47,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
    * @param persistenceId stable unique identifier for the event sourced behavior
    * @param onPersistFailure BackoffSupervisionStrategy for persist failures
    */
-  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) =
     this(persistenceId, Optional.ofNullable(onPersistFailure))
-  }
 
   /**
    * Factory of effects.
@@ -110,9 +108,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * @return A new, mutable, command handler builder
    */
-  protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, Event, State] = {
+  protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, Event, State] =
     CommandHandlerBuilder.builder[Command, Event, State]()
-  }
 
   /**
    * @return A new, mutable, event handler builder
@@ -240,9 +237,8 @@ abstract class EventSourcedBehavior[Command, Event, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of an `EventSourcedBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[_]): Long =
     scaladsl.EventSourcedBehavior.lastSequenceNumber(ctx.asScala)
-  }
 
 }
 
@@ -256,13 +252,11 @@ abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State](
     backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
     extends EventSourcedBehavior[Command, Event, State](persistenceId, backoffSupervisorStrategy) {
 
-  def this(persistenceId: PersistenceId) = {
+  def this(persistenceId: PersistenceId) =
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
-  }
 
-  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) =
     this(persistenceId, Optional.ofNullable(backoffSupervisorStrategy))
-  }
 
   /**
    * Implement by handling incoming commands and return an `Effect()` to persist or signal other effects
@@ -279,9 +273,8 @@ abstract class EventSourcedBehaviorWithEnforcedReplies[Command, Event, State](
   /**
    * @return A new, mutable, command handler builder
    */
-  protected def newCommandHandlerWithReplyBuilder(): CommandHandlerWithReplyBuilder[Command, Event, State] = {
+  protected def newCommandHandlerWithReplyBuilder(): CommandHandlerWithReplyBuilder[Command, Event, State] =
     CommandHandlerWithReplyBuilder.builder[Command, Event, State]()
-  }
 
   /**
    * Use [[EventSourcedBehaviorWithEnforcedReplies#newCommandHandlerWithReplyBuilder]] instead, or

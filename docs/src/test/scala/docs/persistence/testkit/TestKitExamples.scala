@@ -46,9 +46,8 @@ class PersistenceTestKitSampleSpec
 
   val persistenceTestKit = PersistenceTestKit(system)
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     persistenceTestKit.clearAll()
-  }
 
   "Persistent actor" should {
 

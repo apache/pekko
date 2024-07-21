@@ -159,8 +159,7 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
       extractEntityId: ShardRegion.ExtractEntityId = intExtractEntityId,
       extractShardId: ShardRegion.ExtractShardId = intExtractShardId,
       allocationStrategy: ShardAllocationStrategy = defaultShardAllocationStrategy,
-      handOffStopMessage: Any = PoisonPill): ActorRef = {
-
+      handOffStopMessage: Any = PoisonPill): ActorRef =
     ClusterSharding(sys).start(
       typeName,
       entityProps,
@@ -169,16 +168,14 @@ abstract class MultiNodeClusterShardingSpec(val config: MultiNodeClusterSharding
       extractShardId,
       allocationStrategy,
       handOffStopMessage)
-  }
 
   protected def startProxy(
       sys: ActorSystem,
       typeName: String,
       role: Option[String],
       extractEntityId: ShardRegion.ExtractEntityId,
-      extractShardId: ShardRegion.ExtractShardId): ActorRef = {
+      extractShardId: ShardRegion.ExtractShardId): ActorRef =
     ClusterSharding(sys).startProxy(typeName, role, extractEntityId, extractShardId)
-  }
 
   protected def isDdataMode = mode == ClusterShardingSettings.StateStoreModeDData
   protected def persistenceIsNeeded: Boolean =

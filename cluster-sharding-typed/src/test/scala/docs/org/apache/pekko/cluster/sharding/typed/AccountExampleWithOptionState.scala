@@ -99,9 +99,8 @@ object AccountExampleWithOptionState {
           case AccountCreated    => throw new IllegalStateException(s"unexpected event [$event] in state [OpenedAccount]")
         }
 
-      def canWithdraw(amount: BigDecimal): Boolean = {
+      def canWithdraw(amount: BigDecimal): Boolean =
         balance - amount >= Zero
-      }
 
     }
     case object ClosedAccount extends Account {
@@ -130,7 +129,7 @@ object AccountExampleWithOptionState {
     val TypeKey: EntityTypeKey[Command] =
       EntityTypeKey[Command]("Account")
 
-    def apply(persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(persistenceId: PersistenceId): Behavior[Command] =
       EventSourcedBehavior.withEnforcedReplies[Command, Event, Option[Account]](
         persistenceId,
         None,
@@ -144,9 +143,8 @@ object AccountExampleWithOptionState {
             case None          => Some(onFirstEvent(event))
             case Some(account) => Some(account.applyEvent(event))
           })
-    }
 
-    def onFirstCommand(cmd: Command): ReplyEffect = {
+    def onFirstCommand(cmd: Command): ReplyEffect =
       cmd match {
         case CreateAccount(replyTo) =>
           Effect.persist(AccountCreated).thenReply(replyTo)(_ => StatusReply.Ack)
@@ -154,14 +152,12 @@ object AccountExampleWithOptionState {
           // CreateAccount before handling any other commands
           Effect.unhandled.thenNoReply()
       }
-    }
 
-    def onFirstEvent(event: Event): Account = {
+    def onFirstEvent(event: Event): Account =
       event match {
         case AccountCreated => OpenedAccount(Zero)
         case _              => throw new IllegalStateException(s"unexpected event [$event] in state [EmptyAccount]")
       }
-    }
 
   }
   // #account-entity

@@ -49,7 +49,7 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
   private def isArteryTcp: Boolean =
     RARP(system).provider.transport.asInstanceOf[ArteryTransport].settings.Transport == ArterySettings.Tcp
 
-  private def assertStreamActive(association: Association, queueIndex: Int, expected: Boolean): Unit = {
+  private def assertStreamActive(association: Association, queueIndex: Int, expected: Boolean): Unit =
     if (queueIndex == Association.ControlQueueIndex) {
       // the control stream is not stopped, but for TCP the connection is closed
       if (expected)
@@ -60,8 +60,6 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
     } else {
       association.isStreamActive(queueIndex) shouldBe expected
     }
-
-  }
 
   private def futureUniqueRemoteAddress(association: Association): Future[UniqueAddress] = {
     val p = Promise[UniqueAddress]()
@@ -186,9 +184,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
           eventually {
             localArtery.inboundCompressionAccess.get.currentCompressionOriginUids.futureValue should not contain remoteUid
           }
-        } finally {
+        } finally
           shutdown(remoteSystem2)
-        }
     }
 
     /**
@@ -215,9 +212,8 @@ class OutboundIdleShutdownSpec extends ArteryMultiNodeSpec(s"""
 
         test(remoteSystem, remoteAddress, echoRef, artery, localProbe)
 
-      } finally {
+      } finally
         shutdown(remoteSystem)
-      }
     }
   }
 }

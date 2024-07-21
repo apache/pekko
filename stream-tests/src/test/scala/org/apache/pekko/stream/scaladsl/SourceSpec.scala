@@ -450,7 +450,7 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
 
       Source.optionalVia(
         Source(data),
-        Flow.fromFunction { (string: String) => string.toInt }
+        Flow.fromFunction((string: String) => string.toInt)
       )(Keep.none)
         .runWith(TestSink.probe[Option[Int]])
         .request(4)

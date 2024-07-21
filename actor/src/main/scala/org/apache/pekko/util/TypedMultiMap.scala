@@ -84,7 +84,7 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (private val map: Map[T, Set
   /**
    * Return a map that has the given mapping from the given key removed.
    */
-  def removed(key: T)(value: K[key.type]): TypedMultiMap[T, K] = {
+  def removed(key: T)(value: K[key.type]): TypedMultiMap[T, K] =
     map.get(key) match {
       case None => this
       case Some(set) =>
@@ -94,7 +94,6 @@ class TypedMultiMap[T <: AnyRef, K[_ <: T]] private (private val map: Map[T, Set
           new TypedMultiMap[T, K](newmap)
         } else this
     }
-  }
 
   def setAll(key: T)(values: Set[K[key.type]]): TypedMultiMap[T, K] =
     new TypedMultiMap[T, K](map.updated(key, values.asInstanceOf[Set[Any]]))

@@ -74,11 +74,10 @@ class ConsistencySpec extends PekkoSpec(ConsistencySpec.config) {
       val props = Props[ConsistencyCheckingActor]().withDispatcher("consistency-dispatcher")
       val actors = Vector.fill(noOfActors)(system.actorOf(props))
 
-      for (i <- 0L until 10000L) {
+      for (i <- 0L until 10000L)
         actors.foreach(_.tell(i, testActor))
-      }
 
-      for (a <- actors) { a.tell("done", testActor) }
+      for (a <- actors) a.tell("done", testActor)
 
       for (_ <- actors) expectMsg(5 minutes, "done")
     }

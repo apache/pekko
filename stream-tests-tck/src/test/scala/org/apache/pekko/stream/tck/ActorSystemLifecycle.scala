@@ -48,10 +48,10 @@ trait ActorSystemLifecycle {
   }
 
   @AfterClass
-  def shutdownActorSystem(): Unit = {
-    try {
+  def shutdownActorSystem(): Unit =
+    try
       Await.ready(system.terminate(), shutdownTimeout)
-    } catch {
+    catch {
       case _: TimeoutException =>
         val msg = "Failed to stop [%s] within [%s] \n%s".format(
           system.name,
@@ -59,6 +59,5 @@ trait ActorSystemLifecycle {
           system.asInstanceOf[ActorSystemImpl].printTree)
         throw new RuntimeException(msg)
     }
-  }
 
 }

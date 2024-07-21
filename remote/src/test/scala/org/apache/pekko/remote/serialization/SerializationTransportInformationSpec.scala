@@ -66,7 +66,7 @@ object SerializationTransportInformationSpec {
       }
     }
 
-    private def verifyTransportInfo(): Unit = {
+    private def verifyTransportInfo(): Unit =
       Serialization.currentTransportInformation.value match {
         case null =>
           throw new IllegalStateException("currentTransportInformation was not set")
@@ -77,7 +77,6 @@ object SerializationTransportInformationSpec {
             throw new IllegalStateException(
               s"wrong address in currentTransportInformation, ${t.address} != ${system.provider.getDefaultAddress}")
       }
-    }
   }
 }
 
@@ -135,9 +134,8 @@ abstract class AbstractSerializationTransportInformationSpec(config: Config)
     }
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     shutdown(system2)
-  }
 }
 
 class SerializationTransportInformationSpec

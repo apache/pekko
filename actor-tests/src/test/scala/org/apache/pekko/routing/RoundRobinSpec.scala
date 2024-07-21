@@ -44,9 +44,8 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
             case "hello" => helloLatch.countDown()
           }
 
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             stopLatch.countDown()
-          }
         })), "round-robin-shutdown")
 
       actor ! "hello"
@@ -86,7 +85,7 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! pekko.routing.Broadcast("end")
       Await.ready(doneLatch, 5 seconds)
 
-      replies.values.foreach { _ should ===(iterationCount) }
+      replies.values.foreach(_ should ===(iterationCount))
     }
 
     "deliver a broadcast message using the !" in {
@@ -98,9 +97,8 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
             case "hello" => helloLatch.countDown()
           }
 
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             stopLatch.countDown()
-          }
         })), "round-robin-broadcast")
 
       actor ! pekko.routing.Broadcast("hello")
@@ -158,7 +156,7 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! pekko.routing.Broadcast("end")
       Await.ready(doneLatch, 5 seconds)
 
-      replies.values.foreach { _ should ===(iterationCount) }
+      replies.values.foreach(_ should ===(iterationCount))
     }
   }
 
@@ -207,7 +205,7 @@ class RoundRobinSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       actor ! pekko.routing.Broadcast("end")
       expectTerminated(actor)
 
-      replies.values.foreach { _ should ===(iterationCount) }
+      replies.values.foreach(_ should ===(iterationCount))
     }
   }
 

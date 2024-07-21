@@ -36,12 +36,12 @@ object AsSubscriber {
   // #example
   val rowSource: Source[Row, NotUsed] =
     JavaFlowSupport.Source.asSubscriber
-      .mapMaterializedValue((subscriber: Subscriber[Row]) => {
+      .mapMaterializedValue { (subscriber: Subscriber[Row]) =>
         // For each materialization, fetch the rows from the database:
         val rows: Publisher[Row] = databaseClient.fetchRows()
         rows.subscribe(subscriber)
         NotUsed
-      });
+      };
 
   val names: Source[String, NotUsed] =
     // rowSource can be re-used, since it will start a new

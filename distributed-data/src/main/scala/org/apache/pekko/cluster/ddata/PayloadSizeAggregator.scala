@@ -30,12 +30,12 @@ import pekko.event.LoggingAdapter
   private val warnSizeExceeding = maxFrameSize * 3 / 4
   private var maxPayloadBytes: Map[String, Int] = Map.empty
 
-  def updatePayloadSize(key: KeyId, size: Int): Unit = {
+  def updatePayloadSize(key: KeyId, size: Int): Unit =
     if (size > 0) { // deleted has size 0
       // 10% threshold until next log
       def newMax = (size * 1.1).toInt
 
-      def logSize(): Unit = {
+      def logSize(): Unit =
         if (size >= warnSizeExceeding)
           log.warning(
             "Distributed data size for [{}] is [{}] bytes. Close to max remote message payload size.",
@@ -43,7 +43,6 @@ import pekko.event.LoggingAdapter
             size)
         else
           log.info("Distributed data size for [{}] is [{}] bytes.", key, size)
-      }
 
       maxPayloadBytes.get(key) match {
         case Some(max) =>
@@ -58,11 +57,9 @@ import pekko.event.LoggingAdapter
             logSize()
       }
     }
-  }
 
-  def getMaxSize(key: KeyId): Int = {
+  def getMaxSize(key: KeyId): Int =
     maxPayloadBytes.getOrElse(key, 0)
-  }
 
   def remove(key: KeyId): Unit =
     maxPayloadBytes -= key

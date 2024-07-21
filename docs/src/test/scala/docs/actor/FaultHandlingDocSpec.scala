@@ -132,9 +132,8 @@ class FaultHandlingDocSpec(_system: ActorSystem)
       }
       """)))
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
   "A supervisor" must {
     "apply the chosen strategy for its child" in {

@@ -77,7 +77,7 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
       .map(toRepr)
   }
 
-  def add(key: K, p: R): Unit = {
+  def add(key: K, p: R): Unit =
     lock.synchronized {
       if (!expectNextQueue.contains(key)) {
         expectNextQueue = expectNextQueue + (key -> Vector.empty)
@@ -89,7 +89,6 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
       }
       add(key, Vector(p))
     }
-  }
 
   /**
    * Adds elements ordered by seqnum, sets new seqnum as max(old, max(newElemsSeqNums)))
@@ -159,9 +158,9 @@ sealed trait InMemStorage[K, R] extends InternalReprSupport[R] {
 
   def deleteToSeqNumber(key: K, toSeqNumberInclusive: Long): Unit =
     updateOrSetNew(key,
-      value => {
+      value =>
         value.dropWhile(reprToSeqNum(_) <= toSeqNumberInclusive)
-      })
+    )
 
   def clearAllPreservingSeqNumbers(): Unit = lock.synchronized {
     eventsMap.keys.foreach(removePreservingSeqNumber)

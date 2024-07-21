@@ -42,7 +42,7 @@ object ClusterShardingCustomShardAllocationSpec {
         useRegion = Some(region)
         sender() ! UseRegionAck
       case AllocateReq =>
-        useRegion.foreach { sender() ! _ }
+        useRegion.foreach(sender() ! _)
       case RebalanceShards(shards) =>
         rebalance = shards
         sender() ! RebalanceShardsAck
@@ -57,15 +57,13 @@ object ClusterShardingCustomShardAllocationSpec {
     override def allocateShard(
         requester: ActorRef,
         shardId: ShardRegion.ShardId,
-        currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardRegion.ShardId]]): Future[ActorRef] = {
+        currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardRegion.ShardId]]): Future[ActorRef] =
       (ref ? AllocateReq).mapTo[ActorRef]
-    }
 
     override def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardRegion.ShardId]],
-        rebalanceInProgress: Set[ShardRegion.ShardId]): Future[Set[ShardRegion.ShardId]] = {
+        rebalanceInProgress: Set[ShardRegion.ShardId]): Future[Set[ShardRegion.ShardId]] =
       (ref ? RebalanceReq).mapTo[Set[String]]
-    }
   }
 
 }
@@ -108,7 +106,7 @@ abstract class ClusterShardingCustomShardAllocationSpec(multiNodeConfig: Cluster
   import ClusterShardingCustomShardAllocationSpec._
   import multiNodeConfig._
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     join(
       from,
       to,
@@ -119,7 +117,6 @@ abstract class ClusterShardingCustomShardAllocationSpec(multiNodeConfig: Cluster
         extractEntityId = MultiNodeClusterShardingSpec.intExtractEntityId,
         extractShardId = MultiNodeClusterShardingSpec.intExtractShardId,
         allocationStrategy = TestAllocationStrategy(allocator)))
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

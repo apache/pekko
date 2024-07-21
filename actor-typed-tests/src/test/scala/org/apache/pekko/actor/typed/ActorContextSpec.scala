@@ -190,7 +190,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
         }
         .decorate
 
-      val parent: Behavior[Command] = Behaviors.setup[Command](context => {
+      val parent: Behavior[Command] = Behaviors.setup[Command] { context =>
         val childRef = context.spawnAnonymous(Behaviors.supervise(child).onFailure(SupervisorStrategy.restart))
         context.watch(childRef)
         probe.ref ! ChildMade(childRef)
@@ -207,7 +207,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
               Behaviors.stopped
           }
           .decorate
-      })
+      }
 
       val parentRef = spawn(parent)
       val childRef = probe.expectMessageType[ChildMade].ref
@@ -226,7 +226,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
 
       val child: Behavior[Command] = Behaviors.empty[Command].decorate
       val parent: Behavior[Command] = Behaviors
-        .setup[Command](context => {
+        .setup[Command] { context =>
           val childRef = context.spawnAnonymous(child)
           context.watch(childRef)
           probe.ref ! ChildMade(childRef)
@@ -241,7 +241,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                 probe.ref ! ReceivedSignal(signal)
                 Behaviors.stopped
             }
-        })
+        }
         .decorate
       val parentRef = spawn(parent)
       val childRef = probe.expectMessageType[ChildMade].ref
@@ -252,7 +252,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
     "reset behavior upon restart" in {
       val probe = TestProbe[Int]()
       val internal = Behaviors
-        .setup[Command](_ => {
+        .setup[Command] { _ =>
           var counter = 0
           Behaviors.receivePartial[Command] {
             case (_, Ping) =>
@@ -262,7 +262,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
             case (_, Fail) =>
               throw new TestException("Boom")
           }
-        })
+        }
         .decorate
       val behavior = Behaviors.supervise(internal).onFailure(SupervisorStrategy.restart)
       val actor = spawn(behavior)
@@ -278,7 +278,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
     "not reset behavior upon resume" in {
       val probe = TestProbe[Int]()
       val internal = Behaviors
-        .setup[Command](_ => {
+        .setup[Command] { _ =>
           var counter = 0
           Behaviors.receivePartial[Command] {
             case (_, Ping) =>
@@ -288,7 +288,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
             case (_, Fail) =>
               throw new TestException("Boom")
           }
-        })
+        }
         .decorate
       val behavior = Behaviors.supervise(internal).onFailure(SupervisorStrategy.resume)
       val actor = spawn(behavior)
@@ -379,7 +379,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
         .decorate
       spawn(
         Behaviors
-          .setup[Command](context => {
+          .setup[Command] { context =>
             val childRef = context.spawn(child, "A")
             context.watch(childRef)
             probe.ref ! ChildMade(childRef)
@@ -394,7 +394,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                   probe.ref ! ReceivedSignal(signal)
                   Behaviors.same
               }
-          })
+          }
           .decorate)
       val childRef = probe.expectMessageType[ChildMade].ref
       childRef ! Stop
@@ -411,7 +411,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
         .decorate
       val actor = spawn(
         Behaviors
-          .setup[Command](context => {
+          .setup[Command] { context =>
             val childRef = context.spawn(child, "A")
             probe.ref ! ChildMade(childRef)
             Behaviors
@@ -426,7 +426,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                   probe.ref ! ReceivedSignal(signal)
                   Behaviors.same
               }
-          })
+          }
           .decorate)
       val childRef = probe.expectMessageType[ChildMade].ref
       actor ! Watch(childRef)
@@ -447,7 +447,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
         .decorate
       val actor = spawn(
         Behaviors
-          .setup[Command](context => {
+          .setup[Command] { context =>
             val childRef = context.spawn(child, "A")
             probe.ref ! ChildMade(childRef)
             Behaviors
@@ -466,7 +466,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                   probe.ref ! ReceivedSignal(signal)
                   Behaviors.same
               }
-          })
+          }
           .decorate)
       val childRef = probe.expectMessageType[ChildMade].ref
       actor ! Watch(childRef)
@@ -492,7 +492,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
         .decorate
       val actor = spawn(
         Behaviors
-          .setup[Command](context => {
+          .setup[Command] { context =>
             val childRef = context.spawn(child, "A")
             context.watch(childRef)
             probe.ref ! ChildMade(childRef)
@@ -516,7 +516,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
                   probe.ref ! ReceivedSignal(signal)
                   Behaviors.same
               }
-          })
+          }
           .decorate)
       val childRef = probe.expectMessageType[ChildMade].ref
       actor ! Inert
@@ -666,7 +666,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
 
     "not have problems stopping already stopped child" in {
       val probe = TestProbe[Event]()
-      val actor = spawn(Behaviors.setup[Command](context => {
+      val actor = spawn(Behaviors.setup[Command] { context =>
         val child = context.spawnAnonymous(Behaviors.empty[Command])
         probe.ref ! ChildMade(child)
         Behaviors.receivePartial[Command] {
@@ -675,7 +675,7 @@ abstract class ActorContextSpec extends ScalaTestWithActorTestKit with AnyWordSp
             probe.ref ! Pong
             Behaviors.same
         }
-      }))
+      })
       val child = probe.expectMessageType[ChildMade].ref
       actor ! StopRef(child)
       probe.expectMessage(Pong)

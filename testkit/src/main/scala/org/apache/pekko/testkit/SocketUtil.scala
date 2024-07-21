@@ -28,14 +28,13 @@ object SocketUtil {
 
   val RANDOM_LOOPBACK_ADDRESS = "RANDOM_LOOPBACK_ADDRESS"
 
-  private val canBindOnAlternativeLoopbackAddresses = {
+  private val canBindOnAlternativeLoopbackAddresses =
     try {
       SocketUtil.temporaryServerAddress(address = "127.20.0.0")
       true
     } catch {
       case NonFatal(_) => false
     }
-  }
 
   sealed trait Protocol
   case object Tcp extends Protocol
@@ -61,9 +60,8 @@ object SocketUtil {
         tcpPort
       } catch {
         case NonFatal(_) => findBoth(tries - 1)
-      } finally {
+      } finally
         ds.close()
-      }
     }
 
     protocol match {
@@ -84,7 +82,7 @@ object SocketUtil {
   def temporaryServerAddresses(
       numberOfAddresses: Int,
       hostname: String = RANDOM_LOOPBACK_ADDRESS,
-      udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] = {
+      udp: Boolean = false): immutable.IndexedSeq[InetSocketAddress] =
     Vector
       .fill(numberOfAddresses) {
 
@@ -114,7 +112,6 @@ object SocketUtil {
         }
       }
       .collect { case (socket, address) => socket.close(); address }
-  }
 
   def temporaryServerHostnameAndPort(interface: String = RANDOM_LOOPBACK_ADDRESS): (String, Int) = {
     val socketAddress = temporaryServerAddress(interface)

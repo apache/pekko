@@ -25,10 +25,9 @@ import pekko.util.unused
  */
 @InternalApi private[pekko] object PruningState {
   final case class PruningInitialized(owner: UniqueAddress, seen: Set[Address]) extends PruningState {
-    override def addSeen(node: Address): PruningState = {
+    override def addSeen(node: Address): PruningState =
       if (seen(node) || owner.address == node) this
       else copy(seen = seen + node)
-    }
     def estimatedSize: Int = EstimatedSize.UniqueAddress + EstimatedSize.Address * seen.size
   }
   final case class PruningPerformed(obsoleteTime: Long) extends PruningState {

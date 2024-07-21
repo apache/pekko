@@ -231,12 +231,11 @@ object Sink {
    *
    * See also [[lastOption]], [[takeLast]].
    */
-  def last[T]: Sink[T, Future[T]] = {
+  def last[T]: Sink[T, Future[T]] =
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastSink).mapMaterializedValue { e =>
       e.map(_.headOption.getOrElse(throw new NoSuchElementException("last of empty stream")))(
         ExecutionContexts.parasitic)
     }
-  }
 
   /**
    * A `Sink` that materializes into a `Future` of the optional last value received.
@@ -245,11 +244,10 @@ object Sink {
    *
    * See also [[last]], [[takeLast]].
    */
-  def lastOption[T]: Sink[T, Future[Option[T]]] = {
+  def lastOption[T]: Sink[T, Future[Option[T]]] =
     Sink.fromGraph(new TakeLastStage[T](1)).withAttributes(DefaultAttributes.lastOptionSink).mapMaterializedValue { e =>
       e.map(_.headOption)(ExecutionContexts.parasitic)
     }
-  }
 
   /**
    * A `Sink` that materializes into a `Future` of `immutable.Seq[T]` containing the last `n` collected elements.
@@ -359,7 +357,7 @@ object Sink {
    * @since 1.1.0
    */
   def combineMat[T, U, M1, M2, M](first: Sink[U, M1], second: Sink[U, M2])(
-      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed])(matF: (M1, M2) => M): Sink[T, M] = {
+      fanOutStrategy: Int => Graph[UniformFanOutShape[T, U], NotUsed])(matF: (M1, M2) => M): Sink[T, M] =
     Sink.fromGraph(GraphDSL.createGraph(first, second)(matF) { implicit b => (shape1, shape2) =>
       import GraphDSL.Implicits._
       val d = b.add(fanOutStrategy(2))
@@ -367,7 +365,6 @@ object Sink {
       d.out(1) ~> shape2
       new SinkShape[T](d.in)
     })
-  }
 
   /**
    * Combine several sinks with fan-out strategy like `Broadcast` or `Balance` and returns `Sink`.
@@ -518,7 +515,7 @@ object Sink {
    */
   def onComplete[T](callback: Try[Done] => Unit): Sink[T, NotUsed] = {
 
-    def newOnCompleteStage(): GraphStage[FlowShape[T, NotUsed]] = {
+    def newOnCompleteStage(): GraphStage[FlowShape[T, NotUsed]] =
       new GraphStage[FlowShape[T, NotUsed]] {
 
         val in = Inlet[T]("in")
@@ -546,15 +543,13 @@ object Sink {
               completeStage()
             }
 
-            override def postStop(): Unit = {
+            override def postStop(): Unit =
               if (!completionSignalled) callback(Failure(new AbruptStageTerminationException(this)))
-            }
 
             setHandlers(in, out, this)
 
           }
       }
-    }
     Flow[T].via(newOnCompleteStage()).to(Sink.ignore).named("onCompleteSink")
   }
 

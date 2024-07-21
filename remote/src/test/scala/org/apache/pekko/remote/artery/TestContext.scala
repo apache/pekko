@@ -41,10 +41,9 @@ private[remote] class TestInboundContext(
   private val associationsByAddress = new ConcurrentHashMap[Address, OutboundContext]()
   private val associationsByUid = new ConcurrentHashMap[Long, OutboundContext]()
 
-  override def sendControl(to: Address, message: ControlMessage) = {
+  override def sendControl(to: Address, message: ControlMessage) =
     if (ThreadLocalRandom.current().nextDouble() >= replyDropRate)
       association(to).sendControl(message)
-  }
 
   override def association(remoteAddress: Address): OutboundContext =
     associationsByAddress.get(remoteAddress) match {
@@ -128,9 +127,8 @@ private[remote] class TestControlMessageSubject extends ControlMessageSubject {
     Future.successful(Done)
   }
 
-  override def detach(observer: ControlMessageObserver): Unit = {
+  override def detach(observer: ControlMessageObserver): Unit =
     observers.remove(observer)
-  }
 
   def sendControl(env: InboundEnvelope): Unit = {
     val iter = observers.iterator()

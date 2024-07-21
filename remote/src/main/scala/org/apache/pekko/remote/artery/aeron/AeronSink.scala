@@ -147,7 +147,7 @@ private[remote] class AeronSink(
         flightRecorder.aeronSinkStarted(channel, streamId)
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         try {
           taskRunner.command(Remove(addOfferTask.task))
           flightRecorder.aeronSinkTaskRunnerRemoved(channel, streamId)
@@ -157,7 +157,6 @@ private[remote] class AeronSink(
           flightRecorder.aeronSinkStopped(channel, streamId)
           completed.complete(completedValue)
         }
-      }
 
       // InHandler
       override def onPush(): Unit = {
@@ -237,11 +236,10 @@ private[remote] class AeronSink(
         failStage(cause)
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         // flush outstanding offer before completing stage
         if (!offerTaskInProgress)
           super.onUpstreamFinish()
-      }
 
       override def onUpstreamFailure(cause: Throwable): Unit = {
         completedValue = Failure(cause)

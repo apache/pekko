@@ -45,13 +45,12 @@ object StashDocSpec {
     private case object SaveSuccess extends Command
     private final case class DBError(cause: Throwable) extends Command
 
-    def apply(id: String, db: DB): Behavior[Command] = {
+    def apply(id: String, db: DB): Behavior[Command] =
       Behaviors.withStash(100) { buffer =>
         Behaviors.setup[Command] { context =>
           new DataAccess(context, buffer, id, db).start()
         }
       }
-    }
   }
 
   class DataAccess(
@@ -80,7 +79,7 @@ object StashDocSpec {
       }
     }
 
-    private def active(state: String): Behavior[Command] = {
+    private def active(state: String): Behavior[Command] =
       Behaviors.receiveMessagePartial {
         case Get(replyTo) =>
           replyTo ! state
@@ -92,9 +91,8 @@ object StashDocSpec {
           }
           saving(value, replyTo)
       }
-    }
 
-    private def saving(state: String, replyTo: ActorRef[Done]): Behavior[Command] = {
+    private def saving(state: String, replyTo: ActorRef[Done]): Behavior[Command] =
       Behaviors.receiveMessage {
         case SaveSuccess =>
           replyTo ! Done
@@ -105,7 +103,6 @@ object StashDocSpec {
           buffer.stash(other)
           Behaviors.same
       }
-    }
 
   }
   // #stashing

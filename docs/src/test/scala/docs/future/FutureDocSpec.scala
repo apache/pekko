@@ -423,8 +423,8 @@ class FutureDocSpec extends PekkoSpec {
   }
 
   "demonstrate usage of zip" in {
-    val future1 = Future { "foo" }
-    val future2 = Future { "bar" }
+    val future1 = Future("foo")
+    val future2 = Future("bar")
     // #zip
     val future3 = future1.zip(future2).map { case (a, b) => a + " " + b }
     future3.foreach(println)
@@ -438,7 +438,7 @@ class FutureDocSpec extends PekkoSpec {
     def log(cause: Throwable) = ()
     def watchSomeTV(): Unit = ()
     // #and-then
-    val result = Future { loadPage(url) }
+    val result = Future(loadPage(url))
       .andThen {
         case Failure(exception) => log(exception)
       }
@@ -451,9 +451,9 @@ class FutureDocSpec extends PekkoSpec {
   }
 
   "demonstrate usage of fallbackTo" in {
-    val future1 = Future { "foo" }
-    val future2 = Future { "bar" }
-    val future3 = Future { "pigdog" }
+    val future1 = Future("foo")
+    val future2 = Future("bar")
+    val future3 = Future("pigdog")
     // #fallback-to
     val future4 = future1.fallbackTo(future2).fallbackTo(future3)
     future4.foreach(println)
@@ -462,7 +462,7 @@ class FutureDocSpec extends PekkoSpec {
   }
 
   "demonstrate usage of onComplete" in {
-    val future = Future { "foo" }
+    val future = Future("foo")
     def doSomethingOnSuccess(r: String) = ()
     def doSomethingOnFailure(t: Throwable) = ()
     // #onComplete
@@ -487,7 +487,7 @@ class FutureDocSpec extends PekkoSpec {
     promise.success("hello")
     // #promise
     Await.result(future, 3 seconds) should be("Yay!")
-    intercept[IllegalArgumentException] { Await.result(otherFuture, 3 seconds) }
+    intercept[IllegalArgumentException](Await.result(otherFuture, 3 seconds))
     Await.result(theFuture, 3 seconds) should be("hello")
   }
 
@@ -501,7 +501,7 @@ class FutureDocSpec extends PekkoSpec {
     val future = Future { Thread.sleep(1000); "foo" }
     val result = Future.firstCompletedOf(Seq(future, delayed))
     // #after
-    intercept[IllegalStateException] { Await.result(result, 2 second) }
+    intercept[IllegalStateException](Await.result(result, 2 second))
   }
 
   "demonstrate pattern.retry" in {
@@ -515,12 +515,11 @@ class FutureDocSpec extends PekkoSpec {
 
     // Given some future that will succeed eventually
     @volatile var failCount = 0
-    def futureToAttempt() = {
+    def futureToAttempt() =
       if (failCount < 5) {
         failCount += 1
         Future.failed(new IllegalStateException(failCount.toString))
       } else Future.successful(5)
-    }
 
     // Return a new future that will retry up to 10 times
     val retried: Future[Int] = pekko.pattern.retry(() => futureToAttempt(), attempts = 10, 100 milliseconds)

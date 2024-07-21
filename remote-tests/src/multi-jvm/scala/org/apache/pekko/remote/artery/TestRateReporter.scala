@@ -22,7 +22,7 @@ class TestRateReporter(name: String)
             messagesPerSec: Double,
             bytesPerSec: Double,
             totalMessages: Long,
-            totalBytes: Long): Unit = {
+            totalBytes: Long): Unit =
           if (totalBytes > 0) {
             println(
               name +
@@ -34,5 +34,4 @@ class TestRateReporter(name: String)
               f": $messagesPerSec%,.0f msgs/sec " +
               f"total $totalMessages%,d messages")
           }
-        }
       }) {}

@@ -331,7 +331,7 @@ final class Entity[M, E] private[pekko] (
       settings: Option[ClusterShardingSettings] = settings,
       allocationStrategy: Option[ShardAllocationStrategy] = allocationStrategy,
       role: Option[String] = role,
-      dataCenter: Option[DataCenter] = dataCenter): Entity[M, E] = {
+      dataCenter: Option[DataCenter] = dataCenter): Entity[M, E] =
     new Entity(
       createBehavior,
       typeKey,
@@ -342,7 +342,6 @@ final class Entity[M, E] private[pekko] (
       allocationStrategy,
       role,
       dataCenter)
-  }
 
 }
 
@@ -382,10 +381,9 @@ object StartEntity {
    * Returns [[ShardingEnvelope]] which can be sent via Cluster Sharding in order to wake up the
    * specified (by `entityId`) Sharded Entity, ''without'' delivering a real message to it.
    */
-  def apply[M](entityId: String): ShardingEnvelope[M] = {
+  def apply[M](entityId: String): ShardingEnvelope[M] =
     // StartEntity isn't really of type M, but erased and StartEntity is only handled internally, not delivered to the entity
     new ShardingEnvelope[M](entityId, ClassicStartEntity(entityId).asInstanceOf[M])
-  }
 }
 
 /**

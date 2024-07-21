@@ -54,9 +54,8 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
       override def onPull(): Unit = {
         val subOut = new SubSourceOutlet[Int]("subOut")
         subOut.setHandler(new OutHandler {
-          override def onPull(): Unit = {
+          override def onPull(): Unit =
             ()
-          }
         })
         subOut.push(1)
         subOut.push(2) // expecting this to fail!
@@ -262,7 +261,7 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
         }
       }
 
-      val ex = intercept[IllegalStateException] { Source.fromGraph(source).runWith(Sink.ignore) }
+      val ex = intercept[IllegalStateException](Source.fromGraph(source).runWith(Sink.ignore))
       ex.getMessage should startWith("not yet initialized: only setHandler is allowed in GraphStageLogic constructor")
     }
 
@@ -275,7 +274,7 @@ class GraphStageLogicSpec extends StreamSpec with GraphInterpreterSpecKit with S
         }
       }
 
-      val ex = intercept[IllegalStateException] { Source.single(1).runWith(sink) }
+      val ex = intercept[IllegalStateException](Source.single(1).runWith(sink))
       ex.getMessage should startWith("not yet initialized: only setHandler is allowed in GraphStageLogic constructor")
     }
 

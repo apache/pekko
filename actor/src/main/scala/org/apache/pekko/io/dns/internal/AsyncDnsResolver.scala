@@ -152,7 +152,7 @@ private[io] final class AsyncDnsResolver(
       }
     }
 
-  private def sendQuestion(resolver: ActorRef, message: DnsQuestion): Future[Answer] = {
+  private def sendQuestion(resolver: ActorRef, message: DnsQuestion): Future[Answer] =
     (resolver ? message).transformWith {
       case Success(result: Answer) =>
         Future.successful(result)
@@ -166,12 +166,11 @@ private[io] final class AsyncDnsResolver(
         Future.failed(
           new IllegalArgumentException("Unexpected response " + a.toString + " of type " + a.getClass.toString))
     }
-  }
 
   private def resolveWithSearch(
       name: String,
       requestType: RequestType,
-      resolver: ActorRef): Future[DnsProtocol.Resolved] = {
+      resolver: ActorRef): Future[DnsProtocol.Resolved] =
     if (settings.SearchDomains.nonEmpty) {
       val nameWithSearch = settings.SearchDomains.map(sd => name + "." + sd)
       // ndots is a heuristic used to try and work out whether the name passed in is a fully qualified domain name,
@@ -191,12 +190,11 @@ private[io] final class AsyncDnsResolver(
     } else {
       resolve(name, requestType, resolver)
     }
-  }
 
   private def resolveFirst(
       searchNames: List[String],
       requestType: RequestType,
-      resolver: ActorRef): Future[DnsProtocol.Resolved] = {
+      resolver: ActorRef): Future[DnsProtocol.Resolved] =
     searchNames match {
       case searchName :: Nil =>
         resolve(searchName, requestType, resolver)
@@ -209,7 +207,6 @@ private[io] final class AsyncDnsResolver(
         // This can't happen
         Future.failed(new IllegalStateException("Failed to 'resolveFirst': 'searchNames' must not be empty"))
     }
-  }
 
   private def resolve(name: String, requestType: RequestType, resolver: ActorRef): Future[DnsProtocol.Resolved] = {
     log.debug("Attempting to resolve {} with {}", name, resolver)
@@ -234,9 +231,9 @@ private[io] final class AsyncDnsResolver(
         } yield DnsProtocol.Resolved(name, ipv4.rrs ++ ipv6.rrs, ipv4.additionalRecs ++ ipv6.additionalRecs)
 
       case Srv =>
-        sendQuestion(resolver, SrvQuestion(idGenerator.nextId(), caseFoldedName)).map(answer => {
+        sendQuestion(resolver, SrvQuestion(idGenerator.nextId(), caseFoldedName)).map { answer =>
           DnsProtocol.Resolved(name, answer.rrs, answer.additionalRecs)
-        })
+        }
     }
   }
 

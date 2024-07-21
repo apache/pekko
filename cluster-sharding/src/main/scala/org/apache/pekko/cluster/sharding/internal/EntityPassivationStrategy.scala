@@ -36,7 +36,7 @@ private[pekko] object EntityPassivationStrategy {
     val none: PassivateEntities = immutable.Seq.empty[EntityId]
   }
 
-  def apply(settings: ClusterShardingSettings): EntityPassivationStrategy = {
+  def apply(settings: ClusterShardingSettings): EntityPassivationStrategy =
     settings.passivationStrategy match {
       case ClusterShardingSettings.IdlePassivationStrategy(timeout, interval) =>
         new IdleEntityPassivationStrategy(new IdleCheck(timeout, interval))
@@ -77,7 +77,6 @@ private[pekko] object EntityPassivationStrategy {
         }
       case _ => DisabledEntityPassivationStrategy
     }
-  }
 }
 
 /**
@@ -708,7 +707,7 @@ private[pekko] final class CompositeEntityPassivationStrategy(
     window.removeIdle(idle.timeout) ++ main.removeIdle(idle.timeout)
   }
 
-  private def maybeAdmitToMain(candidates: PassivateEntities): PassivateEntities = {
+  private def maybeAdmitToMain(candidates: PassivateEntities): PassivateEntities =
     if (candidates.nonEmpty) {
       var passivated: PassivateEntities = PassivateEntities.none
       candidates.foreach { candidate =>
@@ -724,7 +723,6 @@ private[pekko] final class CompositeEntityPassivationStrategy(
       }
       passivated
     } else PassivateEntities.none
-  }
 
   private def adaptWindow(): Unit = {
     val adjustment = windowOptimizer.calculateAdjustment()
@@ -838,7 +836,7 @@ private[pekko] final class HillClimbingAdmissionOptimizer(
   override def updateLimit(newLimit: Int): Unit =
     adjustSize = adjustMultiplier * newLimit
 
-  override def calculateAdjustment(): Double = {
+  override def calculateAdjustment(): Double =
     if (accesses >= adjustSize) {
       val activeRate = activeAccesses.toDouble / accesses
       val delta = activeRate - previousActiveRate
@@ -851,7 +849,6 @@ private[pekko] final class HillClimbingAdmissionOptimizer(
       activeAccesses = 0
       adjustment
     } else 0.0
-  }
 }
 
 /**
@@ -925,12 +922,11 @@ private[pekko] object FrequencySketchAdmissionFilter {
       widthMultiplier: Int,
       resetMultiplier: Double,
       depth: Int,
-      counterBits: Int): AdmissionFilter = {
+      counterBits: Int): AdmissionFilter =
     if (depth == 4 && counterBits == 4)
       new FastFrequencySketchAdmissionFilter(initialCapacity, widthMultiplier, resetMultiplier)
     else
       new FrequencySketchAdmissionFilter(initialCapacity, widthMultiplier, resetMultiplier, depth, counterBits)
-  }
 }
 
 /**

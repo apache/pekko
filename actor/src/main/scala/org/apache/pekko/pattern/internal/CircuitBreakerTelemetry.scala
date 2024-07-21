@@ -107,13 +107,12 @@ trait CircuitBreakerTelemetry {
     }
   }
 
-  def create(breakerId: String, system: ExtendedActorSystem, fqcn: String): CircuitBreakerTelemetry = {
+  def create(breakerId: String, system: ExtendedActorSystem, fqcn: String): CircuitBreakerTelemetry =
     system.dynamicAccess
       .createInstanceFor[CircuitBreakerTelemetry](
         fqcn,
         List(classOf[String] -> breakerId, classOf[ExtendedActorSystem] -> system))
       .get
-  }
 }
 
 /**

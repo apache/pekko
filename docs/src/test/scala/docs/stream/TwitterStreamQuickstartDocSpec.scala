@@ -189,7 +189,7 @@ class TwitterStreamQuickstartDocSpec extends PekkoSpec {
 
       // #backpressure-by-readline
       val completion: Future[Done] =
-        Source(1 to 10).map(i => { println(s"map => $i"); i }).runForeach { i =>
+        Source(1 to 10).map { i => println(s"map => $i"); i }.runForeach { i =>
           readLine(s"Element = $i; continue reading? [press enter]\n")
         }
 

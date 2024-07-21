@@ -61,8 +61,7 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
       persistenceId: PersistenceId,
       probe: Option[ActorRef[(State, Event)]] = None,
       snapshotSignalProbe: Option[ActorRef[WrappedSignal]] = None,
-      eventSignalProbe: Option[ActorRef[Try[EventSourcedSignal]]] = None)
-      : EventSourcedBehavior[Command, Event, State] = {
+      eventSignalProbe: Option[ActorRef[Try[EventSourcedSignal]]] = None): EventSourcedBehavior[Command, Event, State] =
     EventSourcedBehavior[Command, Event, State](
       persistenceId,
       emptyState = State(0, Vector.empty),
@@ -100,7 +99,6 @@ object EventSourcedBehaviorRetentionSpec extends Matchers {
       case (_, e: EventSourcedSignal) =>
         eventSignalProbe.foreach(_ ! Success(e))
     }
-  }
 
   implicit class WrappedSignalProbeAssert(probe: TestProbe[WrappedSignal]) {
     def expectSnapshotCompleted(sequenceNumber: Int): SnapshotCompleted = {

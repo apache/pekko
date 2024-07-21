@@ -67,12 +67,11 @@ object BlogPostEntity {
   // #commands
 
   // #behavior
-  def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] = {
+  def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] =
     Behaviors.setup { context =>
       context.log.info("Starting BlogPostEntity {}", entityId)
       EventSourcedBehavior[Command, Event, State](persistenceId, emptyState = BlankState, commandHandler, eventHandler)
     }
-  }
   // #behavior
 
   // #command-handler
@@ -121,12 +120,11 @@ object BlogPostEntity {
     }
   }
 
-  private def publish(state: DraftState, replyTo: ActorRef[Done]): Effect[Event, State] = {
+  private def publish(state: DraftState, replyTo: ActorRef[Done]): Effect[Event, State] =
     Effect.persist(Published(state.postId)).thenRun { _ =>
       println(s"Blog post ${state.postId} was published")
       replyTo ! Done
     }
-  }
 
   private def getPost(state: DraftState, replyTo: ActorRef[PostContent]): Effect[Event, State] = {
     replyTo ! state.content

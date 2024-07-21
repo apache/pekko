@@ -28,9 +28,8 @@ object Greeter {
 
 object GreeterBot {
 
-  def apply(max: Int): Behavior[Greeter.Greeted] = {
+  def apply(max: Int): Behavior[Greeter.Greeted] =
     bot(0, max)
-  }
 
   private def bot(greetingCounter: Int, max: Int): Behavior[Greeter.Greeted] =
     Behaviors.receive { (context, message) =>

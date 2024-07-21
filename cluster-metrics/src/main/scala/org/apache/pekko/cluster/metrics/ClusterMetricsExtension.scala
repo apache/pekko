@@ -80,17 +80,15 @@ class ClusterMetricsExtension(system: ExtendedActorSystem) extends Extension {
    * Subscribe user metrics listener actor unto [[ClusterMetricsEvent]]
    * events published by extension on the system event bus.
    */
-  def subscribe(metricsListener: ActorRef): Unit = {
+  def subscribe(metricsListener: ActorRef): Unit =
     system.eventStream.subscribe(metricsListener, classOf[ClusterMetricsEvent])
-  }
 
   /**
    * Unsubscribe user metrics listener actor from [[ClusterMetricsEvent]]
    * events published by extension on the system event bus.
    */
-  def unsubscribe(metricsListenter: ActorRef): Unit = {
+  def unsubscribe(metricsListenter: ActorRef): Unit =
     system.eventStream.unsubscribe(metricsListenter, classOf[ClusterMetricsEvent])
-  }
 
 }
 

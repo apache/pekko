@@ -68,10 +68,9 @@ class SendQueueSpec extends PekkoSpec("""
   def sendToDeadLetters[T](pending: Vector[T]): Unit =
     pending.foreach(system.deadLetters ! _)
 
-  def createQueue[E](capacity: Int): Queue[E] = {
+  def createQueue[E](capacity: Int): Queue[E] =
     // new java.util.concurrent.LinkedBlockingQueue[E](capacity)
     new ManyToOneConcurrentArrayQueue[E](capacity)
-  }
 
   "SendQueue" must {
 
@@ -125,10 +124,9 @@ class SendQueueSpec extends PekkoSpec("""
       sendQueue.inject(queue)
 
       for (round <- 1 to 100000) {
-        for (n <- 1 to burstSize) {
+        for (n <- 1 to burstSize)
           if (!sendQueue.offer(round * 1000 + n))
             fail(s"offer failed at round $round message $n")
-        }
         downstream.expectNext((1 to burstSize).map(_ + round * 1000).toList)
         downstream.request(1)
       }
@@ -170,8 +168,7 @@ class SendQueueSpec extends PekkoSpec("""
 
     "deliver first message" in {
 
-      def test(f: (Queue[String], SendQueue.QueueValue[String], TestSubscriber.Probe[String]) => Unit): Unit = {
-
+      def test(f: (Queue[String], SendQueue.QueueValue[String], TestSubscriber.Probe[String]) => Unit): Unit =
         (1 to 100).foreach { _ =>
           val queue = createQueue[String](16)
           val (sendQueue, downstream) =
@@ -188,7 +185,6 @@ class SendQueueSpec extends PekkoSpec("""
           downstream.expectNext("d")
           downstream.cancel()
         }
-      }
 
       test { (queue, sendQueue, downstream) =>
         queue.offer("a")

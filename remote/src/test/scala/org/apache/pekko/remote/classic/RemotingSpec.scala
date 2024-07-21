@@ -49,13 +49,11 @@ object RemotingSpec {
     }
 
     override def preStart(): Unit = {}
-    override def preRestart(cause: Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(cause: Throwable, msg: Option[Any]): Unit =
       target ! "preRestart"
-    }
     override def postRestart(cause: Throwable): Unit = {}
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       target ! "postStop"
-    }
   }
 
   class Echo2 extends Actor {
@@ -135,13 +133,12 @@ object RemotingSpec {
     }
   """)
 
-  def muteSystem(system: ActorSystem): Unit = {
+  def muteSystem(system: ActorSystem): Unit =
     system.eventStream.publish(
       TestEvent.Mute(
         EventFilter.error(start = "AssociationError"),
         EventFilter.warning(start = "AssociationError"),
         EventFilter.warning(pattern = "received dead letter.*")))
-  }
 }
 
 @nowarn
@@ -164,9 +161,8 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
   def getOtherAddress(sys: ActorSystem, proto: String) =
     sys.asInstanceOf[ExtendedActorSystem].provider.getExternalAddressFor(Address(s"pekko.$proto", "", "", 0)).get
   def port(sys: ActorSystem, proto: String) = getOtherAddress(sys, proto).port.get
-  def deploy(sys: ActorSystem, d: Deploy): Unit = {
+  def deploy(sys: ActorSystem, d: Deploy): Unit =
     sys.asInstanceOf[ExtendedActorSystem].provider.asInstanceOf[RemoteActorRefProvider].deployer.deploy(d)
-  }
 
   val remote = remoteSystem.actorOf(Props[Echo2](), "echo")
 
@@ -544,9 +540,8 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
             proxySsl ! otherGuy
             expectMsg(3.seconds, ("pong", otherGuyRemoteTest))
           }(otherSystem)
-      } finally {
+      } finally
         shutdown(otherSystem)
-      }
     }
 
     "should not publish AddressTerminated even on InvalidAssociationExceptions" in {
@@ -786,9 +781,9 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
         thisSystem.actorSelection(s"pekko.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
       otherSelection.tell("ping", probe.ref)
       probe.expectNoMessage(200.millis)
-      try {
+      try
         (ActorSystem("other-system", otherConfig), otherSelection)
-      } catch {
+      catch {
         case NonFatal(ex) if ex.getMessage.contains("Failed to bind") && retries > 0 =>
           selectionAndBind(config, thisSystem, probe, retries = retries - 1)
         case other =>
@@ -817,12 +812,10 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
               assert(probe.expectMsgType[(String, ActorRef)](500.millis)._1 == "pong")
             }
           }
-        } finally {
+        } finally
           shutdown(otherSystem)
-        }
-      } finally {
+      } finally
         shutdown(thisSystem)
-      }
     }
 
     "allow other system to connect even if it's not there at first" in {
@@ -859,12 +852,10 @@ class RemotingSpec extends PekkoSpec(RemotingSpec.cfg) with ImplicitSender with 
               assert(otherProbe.expectMsgType[(String, ActorRef)](500.millis)._1 == "pong")
             }
           }
-        } finally {
+        } finally
           shutdown(otherSystem)
-        }
-      } finally {
+      } finally
         shutdown(thisSystem)
-      }
     }
   }
 }

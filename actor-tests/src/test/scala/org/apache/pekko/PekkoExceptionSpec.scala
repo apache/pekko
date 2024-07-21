@@ -36,7 +36,6 @@ class PekkoExceptionSpec extends AnyWordSpec with Matchers {
     }
   }
 
-  def verify(clazz: java.lang.Class[_]): Unit = {
+  def verify(clazz: java.lang.Class[_]): Unit =
     clazz.getConstructor(Array(classOf[String]): _*)
-  }
 }

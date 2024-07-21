@@ -27,9 +27,8 @@ import pekko.persistence.RecoveryCompleted
  */
 @InternalApi private[pekko] object PersistenceInitImpl {
 
-  def props(journalPluginId: String, snapshotPluginId: String, persistenceId: String): Props = {
+  def props(journalPluginId: String, snapshotPluginId: String, persistenceId: String): Props =
     Props(new PersistenceInitImpl(journalPluginId, snapshotPluginId, persistenceId))
-  }
 }
 
 /**

@@ -74,14 +74,13 @@ import pekko.util.OptionVal
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def actorOf(props: Props, name: String): ActorRef = {
+  @InternalApi private[pekko] def actorOf(props: Props, name: String): ActorRef =
     supervisor match {
       case ref: LocalActorRef =>
         ref.underlying.attachChild(props, name, systemService = false)
       case unknown =>
         throw new IllegalStateException(s"Stream supervisor must be a local actor, was [${unknown.getClass.getName}]")
     }
-  }
 
   /**
    * INTERNAL API
@@ -110,10 +109,9 @@ private[pekko] class SubFusingActorMaterializerImpl(
         settings: ActorMaterializerSettings,
         attributes: Attributes,
         materializer: PhasedFusingActorMaterializer,
-        islandName: String): PhaseIsland[Any] = {
+        islandName: String): PhaseIsland[Any] =
       new GraphStageIsland(attributes, materializer, islandName, OptionVal(registerShell))
         .asInstanceOf[PhaseIsland[Any]]
-    }
   }
 
   override def executionContext: ExecutionContextExecutor = delegate.executionContext
@@ -197,12 +195,11 @@ private[pekko] class SubFusingActorMaterializerImpl(
  * INTERNAL API
  */
 @InternalApi private[pekko] object StreamSupervisor {
-  def props(attributes: Attributes, haveShutDown: AtomicBoolean): Props = {
+  def props(attributes: Attributes, haveShutDown: AtomicBoolean): Props =
     Props(new StreamSupervisor(haveShutDown))
       .withDeploy(Deploy.local)
       .withDispatcher(attributes.mandatoryAttribute[ActorAttributes.Dispatcher].dispatcher)
       .withMailbox(PhasedFusingActorMaterializer.MailboxConfigName)
-  }
 
   private[stream] val baseName = "StreamSupervisor"
   private val actorName = SeqActorName(baseName)
@@ -307,10 +304,9 @@ private[pekko] final class SnapshotCollector(streamActors: Set[ActorRef], timeou
       context.stop(self)
   }
 
-  def completeIfDone(): Unit = {
+  def completeIfDone(): Unit =
     if (leftToRespond.isEmpty) {
       replyTo ! StatusReply.Success(StreamSupervisor.ChildrenSnapshots(collected))
       context.stop(self)
     }
-  }
 }

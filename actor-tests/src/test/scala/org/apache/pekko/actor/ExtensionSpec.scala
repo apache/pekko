@@ -42,9 +42,8 @@ object FailingTestExtension extends ExtensionId[FailingTestExtension] with Exten
 
 object InstanceCountingExtension extends ExtensionId[InstanceCountingExtension] with ExtensionIdProvider {
   val createCount = new AtomicInteger(0)
-  override def createExtension(system: ExtendedActorSystem): InstanceCountingExtension = {
+  override def createExtension(system: ExtendedActorSystem): InstanceCountingExtension =
     new InstanceCountingExtension
-  }
   override def lookup: ExtensionId[_ <: Extension] = this
 }
 

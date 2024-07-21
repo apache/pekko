@@ -43,14 +43,14 @@ case class ClusterMetricsSettings(config: Config) {
   val CollectorEnabled: Boolean = cc.getBoolean("collector.enabled")
   val CollectorProvider: String = cc.getString("collector.provider")
   val CollectorFallback: Boolean = cc.getBoolean("collector.fallback")
-  val CollectorSampleInterval: FiniteDuration = {
+  val CollectorSampleInterval: FiniteDuration =
     cc.getMillisDuration("collector.sample-interval")
-  }.requiring(_ > Duration.Zero, "collector.sample-interval must be > 0")
-  val CollectorGossipInterval: FiniteDuration = {
+      .requiring(_ > Duration.Zero, "collector.sample-interval must be > 0")
+  val CollectorGossipInterval: FiniteDuration =
     cc.getMillisDuration("collector.gossip-interval")
-  }.requiring(_ > Duration.Zero, "collector.gossip-interval must be > 0")
-  val CollectorMovingAverageHalfLife: FiniteDuration = {
+      .requiring(_ > Duration.Zero, "collector.gossip-interval must be > 0")
+  val CollectorMovingAverageHalfLife: FiniteDuration =
     cc.getMillisDuration("collector.moving-average-half-life")
-  }.requiring(_ > Duration.Zero, "collector.moving-average-half-life must be > 0")
+      .requiring(_ > Duration.Zero, "collector.moving-average-half-life must be > 0")
 
 }

@@ -185,7 +185,7 @@ abstract class AeronStreamMaxThroughputSpec
           pool.release(envelope)
         }
         .failed
-        .foreach { _.printStackTrace }
+        .foreach(_.printStackTrace)
 
       enterBarrier(receiverName + "-started")
       Await.ready(done, barrierTimeout)
@@ -231,9 +231,8 @@ abstract class AeronStreamMaxThroughputSpec
       enterBarrier("udp-port-started")
     }
 
-    for (s <- scenarios) {
+    for (s <- scenarios)
       s"be great for ${s.testName}, payloadSize = ${s.payloadSize}" in test(s)
-    }
 
   }
 }

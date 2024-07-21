@@ -131,12 +131,11 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
         outboundContext.controlSubject.detach(this)
       }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         if (unacknowledged.isEmpty)
           super.onUpstreamFinish()
         else
           stopping = true
-      }
 
       override protected def onTimer(timerKey: Any): Unit =
         timerKey match {
@@ -154,21 +153,19 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
         }
 
       // ControlMessageObserver, external call
-      override def notify(inboundEnvelope: InboundEnvelope): Unit = {
+      override def notify(inboundEnvelope: InboundEnvelope): Unit =
         inboundEnvelope.message match {
           case ack: Ack   => if (ack.from.address == remoteAddress) ackCallback.invoke(ack)
           case nack: Nack => if (nack.from.address == remoteAddress) nackCallback.invoke(nack)
           case _          => // not interested
         }
-      }
 
       // ControlMessageObserver, external call but on graph logic machinery thread (getAsyncCallback safe)
-      override def controlSubjectCompleted(signal: Try[Done]): Unit = {
+      override def controlSubjectCompleted(signal: Try[Done]): Unit =
         getAsyncCallback[Try[Done]] {
           case Success(_)     => completeStage()
           case Failure(cause) => failStage(cause)
         }.invoke(signal)
-      }
 
       private val ackCallback = getAsyncCallback[Ack] { reply =>
         ack(reply.seqNo)
@@ -192,7 +189,7 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
           clearUnacknowledged(n)
       }
 
-      @tailrec private def clearUnacknowledged(ackedSeqNo: Long): Unit = {
+      @tailrec private def clearUnacknowledged(ackedSeqNo: Long): Unit =
         if (!unacknowledged.isEmpty &&
           unacknowledged.peek().message.asInstanceOf[SystemMessageEnvelope].seqNo <= ackedSeqNo) {
           unacknowledged.removeFirst()
@@ -204,9 +201,8 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
           else
             clearUnacknowledged(ackedSeqNo)
         }
-      }
 
-      private def tryResend(): Unit = {
+      private def tryResend(): Unit =
         if (isAvailable(out) && !resending.isEmpty) {
           val env = resending.poll()
 
@@ -226,12 +222,10 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
 
           pushCopy(env)
         }
-      }
 
       // important to not send the buffered instance, since it's mutable
-      private def pushCopy(outboundEnvelope: OutboundEnvelope): Unit = {
+      private def pushCopy(outboundEnvelope: OutboundEnvelope): Unit =
         push(out, outboundEnvelope.copy())
-      }
 
       // InHandler
       override def onPush(): Unit = {
@@ -286,12 +280,11 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
         }
       }
 
-      private def checkGiveUp(): Unit = {
+      private def checkGiveUp(): Unit =
         if (!unacknowledged.isEmpty && (System.nanoTime() - ackTimestamp > giveUpAfterNanos))
           throw new GaveUpSystemMessageException(
             s"Gave up sending system message to [${outboundContext.remoteAddress}] after " +
             s"${outboundContext.settings.Advanced.GiveUpSystemMessageAfter.pretty}.")
-      }
 
       private def clear(): Unit = {
         sendUnacknowledgedToDeadLetters()
@@ -304,20 +297,18 @@ import pekko.util.PrettyDuration.PrettyPrintableDuration
 
       private def sendUnacknowledgedToDeadLetters(): Unit = {
         val iter = unacknowledged.iterator
-        while (iter.hasNext()) {
+        while (iter.hasNext())
           deadLetters ! iter.next()
-        }
       }
 
       // OutHandler
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (replyObserverAttached) { // otherwise it will be pulled after attached
           if (resending.isEmpty && !hasBeenPulled(in) && !stopping)
             pull(in)
           else
             tryResend()
         }
-      }
 
       setHandlers(in, out, this)
     }

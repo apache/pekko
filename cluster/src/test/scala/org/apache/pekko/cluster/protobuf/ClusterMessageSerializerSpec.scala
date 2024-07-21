@@ -38,7 +38,7 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
     serializer.fromBinary(blob, manifest).asInstanceOf[T]
   }
 
-  def checkSerialization(obj: AnyRef): Unit = {
+  def checkSerialization(obj: AnyRef): Unit =
     (obj, roundtrip(obj)) match {
       case (env: GossipEnvelope, env2: GossipEnvelope) =>
         env2.from should ===(env.from)
@@ -47,14 +47,13 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       case (_, ref) =>
         ref should ===(obj)
     }
-  }
 
   private def roundtripWithManifest[T <: AnyRef](obj: T, manifest: String): T = {
     val blob = serializer.toBinary(obj)
     serializer.fromBinary(blob, manifest).asInstanceOf[T]
   }
 
-  private def checkDeserializationWithManifest(obj: AnyRef, deserializationManifest: String): Unit = {
+  private def checkDeserializationWithManifest(obj: AnyRef, deserializationManifest: String): Unit =
     (obj, roundtripWithManifest(obj, deserializationManifest)) match {
       case (env: GossipEnvelope, env2: GossipEnvelope) =>
         env2.from should ===(env.from)
@@ -67,7 +66,6 @@ class ClusterMessageSerializerSpec extends PekkoSpec("pekko.actor.provider = clu
       case (_, ref) =>
         ref should ===(obj)
     }
-  }
 
   private def checkSameMember(m1: Member, m2: Member): Unit = {
     m1.uniqueAddress should ===(m2.uniqueAddress)

@@ -33,14 +33,13 @@ class RemoteInstrumentsSerializationSpec extends PekkoSpec("pekko.loglevel = DEB
     new RemoteInstruments(system.asInstanceOf[ExtendedActorSystem], system.log, vec)
   }
 
-  def ensureDebugLog[T](messages: String*)(f: => T): T = {
+  def ensureDebugLog[T](messages: String*)(f: => T): T =
     if (messages.isEmpty)
       f
     else
       EventFilter.debug(message = messages.head, occurrences = 1).intercept {
         ensureDebugLog(messages.tail: _*)(f)
       }
-  }
 
   "RemoteInstruments" should {
     "not write anything in the buffer if not deserializing" in {
@@ -151,7 +150,7 @@ object RemoteInstrumentsSerializationSpec {
       id: Int,
       metadata: String,
       sentThrowable: Throwable = null,
-      receiveThrowable: Throwable = null): RemoteInstrument = {
+      receiveThrowable: Throwable = null): RemoteInstrument =
     new RemoteInstrument {
       private val charset = StandardCharsets.UTF_8
       private val encoder = charset.newEncoder()
@@ -200,7 +199,6 @@ object RemoteInstrumentsSerializationSpec {
           size: Int,
           time: Long): Unit = ()
     }
-  }
 
   def serialize(ri: RemoteInstruments, buffer: ByteBuffer): Unit = {
     val mockOutbound = new ReusableOutboundEnvelope()

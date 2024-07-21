@@ -62,9 +62,8 @@ class ArteryFailedToBindSpec extends AnyWordSpec with Matchers {
             ex.getMessage should startWith("Failed to bind TCP")
         }
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(as)
-      }
     }
   }
 }

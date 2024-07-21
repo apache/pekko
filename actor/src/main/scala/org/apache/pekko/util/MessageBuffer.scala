@@ -160,9 +160,8 @@ final class MessageBuffer private (private var _head: MessageBuffer.Node, privat
 
 object MessageBuffer {
   private final class Node(var next: Node, val message: Any, val ref: ActorRef) {
-    def apply(f: (Any, ActorRef) => Unit): Unit = {
+    def apply(f: (Any, ActorRef) => Unit): Unit =
       f(message, ref)
-    }
 
     override def toString: String = s"Node($message,$ref)"
   }
@@ -214,9 +213,8 @@ final class MessageBufferMap[I] {
   def totalSize: Int = {
     var s: Int = 0
     val values = bufferMap.values().iterator()
-    while (values.hasNext) {
+    while (values.hasNext)
       s += values.next().size
-    }
     s
   }
 
@@ -232,9 +230,8 @@ final class MessageBufferMap[I] {
   /**
    * Add an id to the buffer map
    */
-  def add(id: I): Unit = {
+  def add(id: I): Unit =
     getOrAddBuffer(id)
-  }
 
   /**
    * Append an element to the buffer for an id.
@@ -253,9 +250,8 @@ final class MessageBufferMap[I] {
    *
    * @param id the id to remove the buffer for
    */
-  def remove(id: I): Unit = {
+  def remove(id: I): Unit =
     bufferMap.remove(id)
-  }
 
   /**
    * Remove the buffer for an id, but publish a [[pekko.actor.Dropped]] for each dropped buffered message
@@ -276,9 +272,8 @@ final class MessageBufferMap[I] {
    * @param id the id to check for
    * @return if the buffer contains the given id
    */
-  def contains(id: I): Boolean = {
+  def contains(id: I): Boolean =
     bufferMap.containsKey(id)
-  }
 
   /**
    * Get the message buffer for an id, or an empty buffer if the id doesn't exist in the map.

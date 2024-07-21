@@ -821,7 +821,7 @@ trait QueueSetupHelper {
 
     @volatile private var waiting: Option[Manual] = None
 
-    def advanceTime(timespan: Span): Unit = {
+    def advanceTime(timespan: Span): Unit =
       waiting match {
         case Some(manual) =>
           val newWaitTime = manual.waitTime - timespan.toNanos
@@ -835,14 +835,13 @@ trait QueueSetupHelper {
         case None =>
           sys.error("Called advance time but hasn't enabled manualTimeControl")
       }
-    }
 
     def manualTimeControl(@unused on: Boolean): Unit =
       waiting = Some(Manual())
 
     override def signalAll(): Unit = condition.signalAll()
 
-    override def awaitNanos(nanosTimeout: Long): Long = {
+    override def awaitNanos(nanosTimeout: Long): Long =
       if (waiting.isEmpty) {
         events += awaitEvent
         condition.awaitNanos(nanosTimeout)
@@ -851,14 +850,13 @@ trait QueueSetupHelper {
         val waitingThread = Some(Thread.currentThread())
         waiting = Some(Manual(waitTime, waitingThread))
 
-        try {
+        try
           this.await()
-        } catch {
+        catch {
           case _: InterruptedException =>
         }
         waitTime
       }
-    }
 
     override def awaitUninterruptibly(): Unit = condition.awaitUninterruptibly()
 

@@ -157,14 +157,12 @@ object ActorFlow {
    * failed.
    */
   def askWithStatus[I, Q, A](parallelism: Int)(ref: ActorRef[Q])(makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(
-      implicit timeout: Timeout): Flow[I, A, NotUsed] = {
+      implicit timeout: Timeout): Flow[I, A, NotUsed] =
     ActorFlow.ask(parallelism)(ref)(makeMessage).map {
       case StatusReply.Success(a) => a.asInstanceOf[A]
       case StatusReply.Error(err) => throw err
       case _                      => throw new RuntimeException() // compiler exhaustiveness check pleaser
     }
-
-  }
 
   /**
    * Use the `ask` pattern to send a request-reply message to the target `ref` actor without including the context.
@@ -199,7 +197,7 @@ object ActorFlow {
    * failed.
    */
   def askWithStatusAndContext[I, Q, A, Ctx](parallelism: Int)(ref: ActorRef[Q])(
-      makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(implicit timeout: Timeout): Flow[(I, Ctx), (A, Ctx), NotUsed] = {
+      makeMessage: (I, ActorRef[StatusReply[A]]) => Q)(implicit timeout: Timeout): Flow[(I, Ctx), (A, Ctx), NotUsed] =
     askImpl[(I, Ctx), Q, StatusReply[A], (StatusReply[A], Ctx)](parallelism)(ref)(
       (in, r) => makeMessage(in._1, r),
       (in, o: Future[StatusReply[A]]) => o.map(a => a -> in._2)(ExecutionContexts.parasitic)).map {
@@ -207,7 +205,5 @@ object ActorFlow {
       case (StatusReply.Error(err), _)   => throw err
       case _                             => throw new RuntimeException() // compiler exhaustiveness check pleaser
     }
-
-  }
 
 }

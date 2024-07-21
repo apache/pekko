@@ -93,12 +93,11 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
 
   // -----
 
-  private def serializeCumulativeDemand(d: StreamRefsProtocol.CumulativeDemand): StreamRefMessages.CumulativeDemand = {
+  private def serializeCumulativeDemand(d: StreamRefsProtocol.CumulativeDemand): StreamRefMessages.CumulativeDemand =
     StreamRefMessages.CumulativeDemand.newBuilder().setSeqNr(d.seqNr).build()
-  }
 
   private def serializeRemoteSinkFailure(
-      d: StreamRefsProtocol.RemoteStreamFailure): StreamRefMessages.RemoteStreamFailure = {
+      d: StreamRefsProtocol.RemoteStreamFailure): StreamRefMessages.RemoteStreamFailure =
     StreamRefMessages.RemoteStreamFailure
       .newBuilder()
       .setCause {
@@ -106,20 +105,17 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
         UnsafeByteOperations.unsafeWrap(msg.getBytes(StandardCharsets.UTF_8))
       }
       .build()
-  }
 
   private def serializeRemoteSinkCompleted(
-      d: StreamRefsProtocol.RemoteStreamCompleted): StreamRefMessages.RemoteStreamCompleted = {
+      d: StreamRefsProtocol.RemoteStreamCompleted): StreamRefMessages.RemoteStreamCompleted =
     StreamRefMessages.RemoteStreamCompleted.newBuilder().setSeqNr(d.seqNr).build()
-  }
 
   private def serializeOnSubscribeHandshake(
-      o: StreamRefsProtocol.OnSubscribeHandshake): StreamRefMessages.OnSubscribeHandshake = {
+      o: StreamRefsProtocol.OnSubscribeHandshake): StreamRefMessages.OnSubscribeHandshake =
     StreamRefMessages.OnSubscribeHandshake
       .newBuilder()
       .setTargetRef(StreamRefMessages.ActorRef.newBuilder().setPath(Serialization.serializedActorPath(o.targetRef)))
       .build()
-  }
 
   private def serializeSequencedOnNext(o: StreamRefsProtocol.SequencedOnNext[_]) = {
     val p = o.payload.asInstanceOf[AnyRef]
@@ -136,21 +132,19 @@ private[pekko] final class StreamRefSerializer(val system: ExtendedActorSystem)
     StreamRefMessages.SequencedOnNext.newBuilder().setSeqNr(o.seqNr).setPayload(payloadBuilder.build()).build()
   }
 
-  private def serializeSinkRef(sink: SinkRefImpl[_]): StreamRefMessages.SinkRef = {
+  private def serializeSinkRef(sink: SinkRefImpl[_]): StreamRefMessages.SinkRef =
     StreamRefMessages.SinkRef
       .newBuilder()
       .setTargetRef(
         StreamRefMessages.ActorRef.newBuilder().setPath(Serialization.serializedActorPath(sink.initialPartnerRef)))
       .build()
-  }
 
-  private def serializeSourceRef(source: SourceRefImpl[_]): StreamRefMessages.SourceRef = {
+  private def serializeSourceRef(source: SourceRefImpl[_]): StreamRefMessages.SourceRef =
     StreamRefMessages.SourceRef
       .newBuilder()
       .setOriginRef(
         StreamRefMessages.ActorRef.newBuilder().setPath(Serialization.serializedActorPath(source.initialPartnerRef)))
       .build()
-  }
 
   // ----------
 

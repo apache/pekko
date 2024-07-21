@@ -101,10 +101,9 @@ class SplitBrainResolverIntegrationSpec
 
   override def initialParticipants = roles.size
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     if (disposableSys ne null)
       disposableSys.shutdownSys()
-  }
 
   // counter for unique naming for each test
   var c = 0
@@ -163,9 +162,8 @@ class SplitBrainResolverIntegrationSpec
 
     lazy val region = ClusterSharding(sys).shardRegion(s"Entity-$c")
 
-    def shutdownSys(): Unit = {
+    def shutdownSys(): Unit =
       TestKit.shutdownActorSystem(sys, 10.seconds, verifySystemShutdown = true)
-    }
 
     def gremlinControllerProxy(at: RoleName): ActorRef = {
       system.actorSelection(node(at) / "user" / s"gremlinControllerProxy-$c") ! Identify(None)
@@ -220,23 +218,21 @@ class SplitBrainResolverIntegrationSpec
       }
     }
 
-    def createSingleton(): ActorRef = {
+    def createSingleton(): ActorRef =
       sys.actorOf(
         ClusterSingletonManager.props(
           singletonProps = SingletonActor.props(singletonRegistry),
           terminationMessage = PoisonPill,
           settings = ClusterSingletonManagerSettings(system)),
         name = "singletonRegistry")
-    }
 
-    def startSharding(): Unit = {
+    def startSharding(): Unit =
       ClusterSharding(sys).start(
         typeName = s"Entity-$c",
         entityProps = SingletonActor.props(shardingRegistry),
         settings = ClusterShardingSettings(system),
         extractEntityId = SingletonActor.extractEntityId,
         extractShardId = SingletonActor.extractShardId)
-    }
 
     def verify(): Unit = {
       val side1 = roles.take(scenario.side1Size)
@@ -436,10 +432,9 @@ class SplitBrainResolverIntegrationSpec
 
     val activeStrategy: String = cfg.getString("pekko.cluster.split-brain-resolver.active-strategy")
 
-    override def toString: String = {
+    override def toString: String =
       s"$expected when using $activeStrategy and side1=$side1Size and side2=$side2Size" +
       (if (dcDecider ne defaultDcDecider) "with multi-DC" else "")
-    }
 
     def usingLease: Boolean = activeStrategy.contains("lease")
   }
@@ -467,7 +462,7 @@ class SplitBrainResolverIntegrationSpec
 
   "Cluster SplitBrainResolver" must {
 
-    for (scenario <- scenarios) {
+    for (scenario <- scenarios)
       scenario.toString taggedAs LongRunningTest in {
         // temporarily disabled for aeron-udp in multi-node: https://github.com/akka/akka/pull/30706/
         val arteryConfig = system.settings.config.getConfig("pekko.remote.artery")
@@ -477,7 +472,6 @@ class SplitBrainResolverIntegrationSpec
         }
         DisposableSys(scenario).verify()
       }
-    }
   }
 
 }

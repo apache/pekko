@@ -48,11 +48,11 @@ class FlowStatefulMapSpec extends StreamSpec {
   class BeenCalledTimesGate(nTimes: Int) {
     private val beenCalled = new AtomicInteger(0)
 
-    def mark(): Unit = beenCalled.updateAndGet(current => {
+    def mark(): Unit = beenCalled.updateAndGet { current =>
       if (current == nTimes) {
         throw new IllegalStateException(s"Has been called:[$nTimes] times, should not be called anymore.")
       } else current + 1
-    })
+    }
 
     def ensure(): Unit = if (beenCalled.get() != nTimes) {
       throw new IllegalStateException(s"Expected to be called:[$nTimes], but only be called:[$beenCalled]")
@@ -63,9 +63,8 @@ class FlowStatefulMapSpec extends StreamSpec {
     "work in the happy case" in {
       val gate = BeenCalledTimesGate()
       val sinkProb = Source(List(1, 2, 3, 4, 5))
-        .statefulMap(() => 0)((agg, elem) => {
-            (agg + elem, (agg, elem))
-          },
+        .statefulMap(() => 0)((agg, elem) =>
+            (agg + elem, (agg, elem)),
           _ => {
             gate.mark()
             None
@@ -108,12 +107,11 @@ class FlowStatefulMapSpec extends StreamSpec {
     "be able to resume" in {
       val gate = BeenCalledTimesGate()
       val testSink = Source(List(1, 2, 3, 4, 5))
-        .statefulMap(() => 0)((agg, elem) => {
+        .statefulMap(() => 0)((agg, elem) =>
             if (elem % 2 == 0)
               throw ex
             else
-              (agg + elem, (agg, elem))
-          },
+              (agg + elem, (agg, elem)),
           _ => {
             gate.mark()
             None
@@ -129,12 +127,11 @@ class FlowStatefulMapSpec extends StreamSpec {
     "be able to restart" in {
       val gate = BeenCalledTimesGate(2)
       val testSink = Source(List(1, 2, 3, 4, 5))
-        .statefulMap(() => 0)((agg, elem) => {
+        .statefulMap(() => 0)((agg, elem) =>
             if (elem % 3 == 0)
               throw ex
             else
-              (agg + elem, (agg, elem))
-          },
+              (agg + elem, (agg, elem)),
           _ => {
             gate.mark()
             None
@@ -150,12 +147,11 @@ class FlowStatefulMapSpec extends StreamSpec {
     "be able to stop" in {
       val gate = BeenCalledTimesGate()
       val testSink = Source(List(1, 2, 3, 4, 5))
-        .statefulMap(() => 0)((agg, elem) => {
+        .statefulMap(() => 0)((agg, elem) =>
             if (elem % 3 == 0)
               throw ex
             else
-              (agg + elem, (agg, elem))
-          },
+              (agg + elem, (agg, elem)),
           _ => {
             gate.mark()
             None
@@ -172,9 +168,8 @@ class FlowStatefulMapSpec extends StreamSpec {
       val gate = BeenCalledTimesGate()
       val (testSource, testSink) = TestSource
         .probe[Int]
-        .statefulMap(() => 0)((agg, elem) => {
-            (agg + elem, (agg, elem))
-          },
+        .statefulMap(() => 0)((agg, elem) =>
+            (agg + elem, (agg, elem)),
           _ => {
             gate.mark()
             None
@@ -200,9 +195,8 @@ class FlowStatefulMapSpec extends StreamSpec {
       val gate = BeenCalledTimesGate()
       val (testSource, testSink) = TestSource
         .probe[Int]
-        .statefulMap(() => 0)((agg, elem) => {
-            (agg + elem, (agg, elem))
-          },
+        .statefulMap(() => 0)((agg, elem) =>
+            (agg + elem, (agg, elem)),
           (state: Int) => {
             gate.mark()
             Some((state, -1))
@@ -230,9 +224,8 @@ class FlowStatefulMapSpec extends StreamSpec {
       val promise = Promise[Done]()
       val testSource = TestSource
         .probe[Int]
-        .statefulMap(() => 100)((agg, elem) => {
-            (agg + elem, (agg, elem))
-          },
+        .statefulMap(() => 100)((agg, elem) =>
+            (agg + elem, (agg, elem)),
           (state: Int) => {
             gate.mark()
             promise.complete(Success(Done))
@@ -251,9 +244,8 @@ class FlowStatefulMapSpec extends StreamSpec {
       val testProb = TestSubscriber.probe[(Int, Int)]()
       val testSource = TestSource
         .probe[Int]
-        .statefulMap(() => 100)((agg, elem) => {
-            (agg + elem, (agg, elem))
-          },
+        .statefulMap(() => 100)((agg, elem) =>
+            (agg + elem, (agg, elem)),
           (state: Int) => {
             gate.mark()
             promise.complete(Success(Done))

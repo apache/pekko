@@ -69,7 +69,7 @@ trait MultiNodeTypedClusterSpec extends Suite with STMultiNodeSpec with WatchedB
    * and then restarting a role (jvm) with another address is not
    * supported.
    */
-  implicit def address(role: RoleName): Address = {
+  implicit def address(role: RoleName): Address =
     cachedAddresses.get(role) match {
       case null =>
         val address = node(role).address
@@ -77,7 +77,6 @@ trait MultiNodeTypedClusterSpec extends Suite with STMultiNodeSpec with WatchedB
         address
       case address => address
     }
-  }
 
   def formCluster(first: RoleName, rest: RoleName*): Unit = {
     runOn(first) {

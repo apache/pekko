@@ -204,7 +204,7 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
         case "hello" => throw new IllegalArgumentException("boom")
       }
     })
-    intercept[IllegalArgumentException] { actorRef.receive("hello") }
+    intercept[IllegalArgumentException](actorRef.receive("hello"))
     // #test-expecting-exceptions
   }
 
@@ -343,9 +343,8 @@ class TestKitDocSpec extends PekkoSpec with DefaultTimeout with ImplicitSender {
       EventFilter[ActorKilledException](occurrences = 1).intercept {
         actor ! Kill
       }
-    } finally {
+    } finally
       shutdown(system)
-    }
     // #event-filter
   }
 

@@ -231,7 +231,7 @@ trait ExecutorServiceDelegate extends ExecutorService {
 
   def execute(command: Runnable) = executor.execute(command)
 
-  def shutdown(): Unit = { executor.shutdown() }
+  def shutdown(): Unit = executor.shutdown()
 
   def shutdownNow() = executor.shutdownNow()
 
@@ -264,8 +264,7 @@ trait ExecutorServiceDelegate extends ExecutorService {
  * (CallerRunsPolicy silently discards the runnable in this case, which is arguably broken)
  */
 class SaneRejectedExecutionHandler extends RejectedExecutionHandler {
-  def rejectedExecution(runnable: Runnable, threadPoolExecutor: ThreadPoolExecutor): Unit = {
+  def rejectedExecution(runnable: Runnable, threadPoolExecutor: ThreadPoolExecutor): Unit =
     if (threadPoolExecutor.isShutdown) throw new RejectedExecutionException("Shutdown")
     else runnable.run()
-  }
 }

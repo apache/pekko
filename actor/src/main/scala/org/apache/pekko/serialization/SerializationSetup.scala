@@ -26,9 +26,8 @@ object SerializationSetup {
    * Scala API: Programmatic definition of serializers
    * @param createSerializers create pairs of serializer and the set of classes it should be used for
    */
-  def apply(createSerializers: ExtendedActorSystem => immutable.Seq[SerializerDetails]): SerializationSetup = {
+  def apply(createSerializers: ExtendedActorSystem => immutable.Seq[SerializerDetails]): SerializationSetup =
     new SerializationSetup(createSerializers)
-  }
 
   /**
    * Java API: Programmatic definition of serializers

@@ -33,9 +33,8 @@ object CrossDcHeartbeatSenderSpec {
     // disable register for cluster events
     override def preStart(): Unit = {}
 
-    override def heartbeatReceiver(address: Address): ActorSelection = {
+    override def heartbeatReceiver(address: Address): ActorSelection =
       context.actorSelection(heartbeatProbe.ref.path)
-    }
   }
 }
 

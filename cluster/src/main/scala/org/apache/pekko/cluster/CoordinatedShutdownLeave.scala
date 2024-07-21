@@ -38,9 +38,8 @@ private[pekko] class CoordinatedShutdownLeave extends Actor {
 
   val cluster = Cluster(context.system)
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     cluster.unsubscribe(self)
-  }
 
   def receive = {
     case LeaveReq =>

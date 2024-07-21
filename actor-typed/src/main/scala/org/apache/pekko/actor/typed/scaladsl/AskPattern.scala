@@ -81,9 +81,8 @@ object AskPattern {
      *
      * @tparam Res The response protocol, what the other actor sends back
      */
-    def ?[Res](replyTo: ActorRef[Res] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] = {
+    def ?[Res](replyTo: ActorRef[Res] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] =
       ask(replyTo)(timeout, scheduler)
-    }
 
     /**
      * The ask-pattern implements the initiator side of a request–reply protocol.
@@ -114,7 +113,7 @@ object AskPattern {
      * @tparam Res The response protocol, what the other actor sends back
      */
     @nowarn("msg=never used")
-    def ask[Res](replyTo: ActorRef[Res] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] = {
+    def ask[Res](replyTo: ActorRef[Res] => Req)(implicit timeout: Timeout, scheduler: Scheduler): Future[Res] =
       // We do not currently use the implicit scheduler, but want to require it
       // because it might be needed when we move to a 'native' typed runtime, see #24219
       ref match {
@@ -124,7 +123,6 @@ object AskPattern {
             "Only expect references to be RecipientRef, ActorRefAdapter or ActorSystemAdapter until " +
             "native system is implemented: " + a.getClass)
       }
-    }
 
     /**
      * The same as [[ask]] but only for requests that result in a response of type [[pekko.pattern.StatusReply]].

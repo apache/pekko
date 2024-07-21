@@ -45,7 +45,7 @@ object EventSourcedBehaviorReplySpec {
 
   def counter(
       ctx: ActorContext[Command[_]],
-      persistenceId: PersistenceId): EventSourcedBehavior[Command[_], Event, State] = {
+      persistenceId: PersistenceId): EventSourcedBehavior[Command[_], Event, State] =
     EventSourcedBehavior.withEnforcedReplies[Command[_], Event, State](
       persistenceId,
       emptyState = State(0, Vector.empty),
@@ -70,7 +70,6 @@ object EventSourcedBehaviorReplySpec {
           case Incremented(delta) =>
             State(state.value + delta, state.history :+ state.value)
         })
-  }
 }
 
 class EventSourcedBehaviorReplySpec

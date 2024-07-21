@@ -45,8 +45,7 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
   /*
    * @param throwOnLoadFail Throw exception when an extension fails to load (needed for backwards compatibility)
    */
-  private def loadExtensionsFor(key: String, throwOnLoadFail: Boolean): Unit = {
-
+  private def loadExtensionsFor(key: String, throwOnLoadFail: Boolean): Unit =
     settings.config.getStringList(key).asScala.foreach { extensionIdFQCN =>
       // it is either a Scala object or it is a Java class with a static singleton accessor
       val idTry = dynamicAccess.getObjectFor[AnyRef](extensionIdFQCN).recoverWith {
@@ -64,7 +63,6 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
           else throw new RuntimeException(s"While trying to load extension [$extensionIdFQCN]", problem)
       }
     }
-  }
 
   private def idFromJavaSingletonAccessor(extensionIdFQCN: String): Try[ExtensionId[Extension]] =
     dynamicAccess.getClassFor[ExtensionId[Extension]](extensionIdFQCN).flatMap[ExtensionId[Extension]] {
@@ -112,10 +110,9 @@ private[pekko] trait ExtensionsImpl extends Extensions { self: ActorSystem[_] wi
             // In case shit hits the fan, remove the inProcess signal and escalate to caller
             extensions.replace(ext, inProcessOfRegistration, t)
             throw t
-        } finally {
+        } finally
           // Always notify listeners of the inProcess signal
           inProcessOfRegistration.countDown()
-        }
       case _ =>
         // Someone else is in process of registering an extension for this Extension, retry
         registerExtension(ext)

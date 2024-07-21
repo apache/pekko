@@ -47,7 +47,7 @@ object StashingExample {
         eventHandler = (state, event) => applyEvent(state, event))
         .onPersistFailure(SupervisorStrategy.restartWithBackoff(1.second, 30.seconds, 0.2))
 
-    private def onCommand(state: State, command: Command): Effect[Event, State] = {
+    private def onCommand(state: State, command: Command): Effect[Event, State] =
       state.taskIdInProgress match {
         case None =>
           command match {
@@ -81,15 +81,13 @@ object StashingExample {
                 Effect.stash()
           }
       }
-    }
 
-    private def applyEvent(state: State, event: Event): State = {
+    private def applyEvent(state: State, event: Event): State =
       event match {
         case TaskStarted(taskId) => State(Option(taskId))
         case TaskStep(_, _)      => state
         case TaskCompleted(_)    => State(None)
       }
-    }
   }
   // #stashing
 }

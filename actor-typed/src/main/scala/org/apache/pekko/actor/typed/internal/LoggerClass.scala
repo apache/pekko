@@ -35,7 +35,7 @@ private[pekko] object LoggerClass {
   /**
    * Try to extract a logger class from the call stack, if not possible the provided default is used
    */
-  def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] = {
+  def detectLoggerClassFromStack(default: Class[_], additionalPrefixesToSkip: List[String] = Nil): Class[_] =
     // TODO use stack walker API when we no longer need to support Java 8
     try {
       def skip(name: String): Boolean = {
@@ -62,6 +62,5 @@ private[pekko] object LoggerClass {
     } catch {
       case NonFatal(_) => default
     }
-  }
 
 }

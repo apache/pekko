@@ -21,13 +21,12 @@ import pekko.testkit.{ EventFilter, ImplicitSender, TestActors, TestEvent, TestP
 
 class RemoteConnectionSpec extends ArteryMultiNodeSpec("pekko.remote.retry-gate-closed-for = 5s") with ImplicitSender {
 
-  def muteSystem(system: ActorSystem): Unit = {
+  def muteSystem(system: ActorSystem): Unit =
     system.eventStream.publish(
       TestEvent.Mute(
         EventFilter.error(start = "AssociationError"),
         EventFilter.warning(start = "AssociationError"),
         EventFilter.warning(pattern = "received dead letter.*")))
-  }
 
   "Remoting between systems" should {
 

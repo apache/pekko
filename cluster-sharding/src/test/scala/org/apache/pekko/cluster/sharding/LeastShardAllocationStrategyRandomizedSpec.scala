@@ -39,12 +39,11 @@ class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglev
 
   @volatile var clusterMembers: SortedSet[Member] = SortedSet.empty
 
-  def createAllocations(countPerRegion: Map[ActorRef, Int]): Map[ActorRef, immutable.IndexedSeq[ShardId]] = {
+  def createAllocations(countPerRegion: Map[ActorRef, Int]): Map[ActorRef, immutable.IndexedSeq[ShardId]] =
     countPerRegion.map {
       case (region, count) =>
         region -> (1 to count).map(n => ("00" + n.toString).takeRight(3)).map(n => s"${region.path.name}-$n").toVector
     }
-  }
 
   private val strategyWithoutLimits = strategyWithFakeCluster()
 
@@ -68,7 +67,7 @@ class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglev
       allocationStrategy: ShardAllocationStrategy,
       maxRegions: Int,
       maxShardsPerRegion: Int,
-      expectedMaxSteps: Int): Unit = {
+      expectedMaxSteps: Int): Unit =
     (1 to iterationsPerTest).foreach { _ =>
       iteration += 1
       val numberOfRegions = rnd.nextInt(maxRegions) + 1
@@ -84,7 +83,6 @@ class LeastShardAllocationStrategyRandomizedSpec extends PekkoSpec("pekko.loglev
       }
       regions.foreach(system.stop)
     }
-  }
 
   @tailrec private def testRebalance(
       allocationStrategy: ShardAllocationStrategy,

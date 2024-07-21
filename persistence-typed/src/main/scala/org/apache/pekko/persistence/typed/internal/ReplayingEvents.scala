@@ -104,7 +104,7 @@ private[pekko] final class ReplayingEvents[C, E, S](
   def onRecoveryFailed(@unused context: ActorContext[_], @unused reason: Throwable, @unused event: Option[Any]): Unit =
     ()
 
-  override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] = {
+  override def onMessage(msg: InternalProtocol): Behavior[InternalProtocol] =
     msg match {
       case JournalResponse(r)                         => onJournalResponse(r)
       case SnapshotterResponse(r)                     => onSnapshotterResponse(r)
@@ -116,7 +116,6 @@ private[pekko] final class ReplayingEvents[C, E, S](
       case get: GetSeenSequenceNr                     => stashInternal(get)
       case RecoveryPermitGranted                      => Behaviors.unhandled // should not happen, we already have the permit
     }
-  }
 
   override def onSignal: PartialFunction[Signal, Behavior[InternalProtocol]] = {
     case PoisonPill =>
@@ -127,8 +126,8 @@ private[pekko] final class ReplayingEvents[C, E, S](
       else Behaviors.unhandled
   }
 
-  private def onJournalResponse(response: JournalProtocol.Response): Behavior[InternalProtocol] = {
-    try {
+  private def onJournalResponse(response: JournalProtocol.Response): Behavior[InternalProtocol] =
+    try
       response match {
         case ReplayedMessage(repr) =>
           var eventForErrorReporting: OptionVal[Any] = OptionVal.None
@@ -203,16 +202,15 @@ private[pekko] final class ReplayingEvents[C, E, S](
         case _ =>
           Behaviors.unhandled
       }
-    } catch {
+    catch {
       case ex: UnstashException[_] =>
         // let supervisor handle it, don't treat it as recovery failure
         throw ex
       case NonFatal(cause) =>
         onRecoveryFailure(cause, None)
     }
-  }
 
-  private def onInternalCommand(cmd: InternalProtocol): Behavior[InternalProtocol] = {
+  private def onInternalCommand(cmd: InternalProtocol): Behavior[InternalProtocol] =
     // during recovery, stash all incoming commands
     if (state.receivedPoisonPill) {
       if (setup.settings.logOnStashing)
@@ -221,7 +219,6 @@ private[pekko] final class ReplayingEvents[C, E, S](
     } else {
       stashInternal(cmd)
     }
-  }
 
   protected def onRecoveryTick(snapshot: Boolean): Behavior[InternalProtocol] =
     if (!snapshot) {
@@ -314,9 +311,8 @@ private[pekko] final class ReplayingEvents[C, E, S](
             tryUnstashOne(new running.HandlingCommands(initialRunningState))
         }
       }
-    } finally {
+    } finally
       setup.cancelRecoveryTimer()
-    }
 
   override def currentSequenceNumber: Long =
     state.seqNr

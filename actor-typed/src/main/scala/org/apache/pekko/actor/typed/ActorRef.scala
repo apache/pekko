@@ -82,9 +82,8 @@ object ActorRef {
  * INTERNAL API
  */
 private[pekko] object SerializedActorRef {
-  def apply[T](actorRef: ActorRef[T]): SerializedActorRef[T] = {
+  def apply[T](actorRef: ActorRef[T]): SerializedActorRef[T] =
     new SerializedActorRef(actorRef)
-  }
 
   def toAddress[T](actorRef: ActorRef[T]) = {
     import pekko.actor.typed.scaladsl.adapter._

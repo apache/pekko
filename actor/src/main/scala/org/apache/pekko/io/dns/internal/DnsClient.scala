@@ -33,13 +33,12 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
   sealed trait DnsQuestion {
     def id: Short
     def name: String
-    def withId(newId: Short): DnsQuestion = {
+    def withId(newId: Short): DnsQuestion =
       this match {
         case SrvQuestion(_, name) => SrvQuestion(newId, name)
         case Question4(_, name)   => Question4(newId, name)
         case Question6(_, name)   => Question6(newId, name)
       }
-    }
   }
   final case class SrvQuestion(id: Short, name: String) extends DnsQuestion
   final case class Question4(id: Short, name: String) extends DnsQuestion
@@ -66,9 +65,8 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
 
   lazy val tcpDnsClient: ActorRef = createTcpClient()
 
-  override def preStart() = {
+  override def preStart() =
     udp ! Udp.Bind(self, new InetSocketAddress(InetAddress.getByAddress(Array.ofDim(4)), 0))
-  }
 
   def receive: Receive = {
     case Udp.Bound(local) =>
@@ -83,9 +81,8 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       stash()
   }
 
-  private def message(name: String, id: Short, recordType: RecordType): Message = {
+  private def message(name: String, id: Short, recordType: RecordType): Message =
     Message(id, MessageFlags(), im.Seq(Question(name, recordType, RecordClass.IN)))
-  }
 
   /**
    * Silent to allow map update syntax
@@ -194,7 +191,7 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
     case Udp.Unbound => context.stop(self)
   }
 
-  private def newInflightRequests(msg: Message, theSender: ActorRef)(func: => Unit): Unit = {
+  private def newInflightRequests(msg: Message, theSender: ActorRef)(func: => Unit): Unit =
     if (!inflightRequests.contains(msg.id)) {
       inflightRequests += (msg.id -> (theSender -> msg))
       func
@@ -202,22 +199,20 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
       log.warning("Received duplicate message [{}] with id [{}]", msg, msg.id)
       theSender ! DuplicateId(msg.id)
     }
-  }
 
   private def isSameQuestion(q1s: Seq[Question], q2s: Seq[Question]): Boolean = {
     @tailrec
-    def impl(q1s: List[Question], q2s: List[Question]): Boolean = {
+    def impl(q1s: List[Question], q2s: List[Question]): Boolean =
       (q1s, q2s) match {
         case (Nil, Nil)           => true
         case (h1 :: t1, h2 :: t2) => h1.isSame(h2) && impl(t1, t2)
         case _                    => false
       }
-    }
 
     impl(q1s.sortBy(_.name).toList, q2s.sortBy(_.name).toList)
   }
 
-  def createTcpClient() = {
+  def createTcpClient() =
     context.actorOf(
       BackoffSupervisor.props(
         BackoffOpts.onFailure(
@@ -227,5 +222,4 @@ import pekko.pattern.{ BackoffOpts, BackoffSupervisor }
           maxBackoff = 20.seconds,
           randomFactor = 0.1)),
       "tcpDnsClientSupervisor")
-  }
 }

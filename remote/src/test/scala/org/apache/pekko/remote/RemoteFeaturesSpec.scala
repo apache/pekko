@@ -68,12 +68,11 @@ abstract class RemoteFeaturesSpec(c: Config) extends ArteryMultiNodeSpec(c) with
   protected val remoteSystem1 = newRemoteSystem(name = Some("RS1"), extraConfig = Some(common(useUnsafe)))
 
   @nowarn("msg=deprecated")
-  private def mute(): Unit = {
+  private def mute(): Unit =
     Seq(system, remoteSystem1).foreach(
       muteDeadLetters(
         pekko.remote.transport.AssociationHandle.Disassociated.getClass,
         pekko.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(_))
-  }
   mute()
 
   import pekko.remote.artery.RemoteWatcherSpec.TestRemoteWatcher

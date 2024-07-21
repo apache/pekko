@@ -36,13 +36,11 @@ private[pekko] object FileSource {
 
   val completionHandler = new CompletionHandler[Integer, Try[Int] => Unit] {
 
-    override def completed(result: Integer, attachment: Try[Int] => Unit): Unit = {
+    override def completed(result: Integer, attachment: Try[Int] => Unit): Unit =
       attachment(Success(result))
-    }
 
-    override def failed(ex: Throwable, attachment: Try[Int] => Unit): Unit = {
+    override def failed(ex: Throwable, attachment: Try[Int] => Unit): Unit =
       attachment(Failure(ex))
-    }
   }
 }
 
@@ -72,7 +70,7 @@ private[pekko] final class FileSource(path: Path, chunkSize: Int, startPosition:
 
       setHandler(out, this)
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         try {
           // this is a bit weird but required to keep existing semantics
           if (!Files.exists(path)) throw new NoSuchFileException(path.toString)
@@ -87,7 +85,6 @@ private[pekko] final class FileSource(path: Path, chunkSize: Int, startPosition:
             ioResultPromise.trySuccess(IOResult(position, Failure(ex)))
             throw ex
         }
-      }
 
       override def onPull(): Unit = {
         if (availableChunks.size < maxReadAhead && !eofEncountered)
@@ -132,7 +129,7 @@ private[pekko] final class FileSource(path: Path, chunkSize: Int, startPosition:
           }
         } else chunks
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         cause match {
           case _: SubscriptionWithCancelException.NonFailureCancellation =>
             success()
@@ -141,7 +138,6 @@ private[pekko] final class FileSource(path: Path, chunkSize: Int, startPosition:
               new IOOperationIncompleteException("Downstream failed before reaching file end", position, ex))
             completeStage()
         }
-      }
 
       override def postStop(): Unit = {
         ioResultPromise.trySuccess(IOResult(position, Success(Done)))

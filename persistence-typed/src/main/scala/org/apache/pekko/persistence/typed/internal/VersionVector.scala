@@ -208,9 +208,8 @@ private[pekko] sealed abstract class VersionVector {
    *   4. Version 1 is CONCURRENT (<>) to Version 2 otherwise.
    * }}}
    */
-  def compareTo(that: VersionVector): Ordering = {
+  def compareTo(that: VersionVector): Ordering =
     compareOnlyTo(that, FullOrder)
-  }
 
   def merge(that: VersionVector): VersionVector
 
@@ -234,10 +233,9 @@ private[pekko] sealed abstract class VersionVector {
     else ManyVersionVector(TreeMap(key -> version, k -> v))
   }
 
-  override def updated(k: String, v: Long): VersionVector = {
+  override def updated(k: String, v: Long): VersionVector =
     if (k == key) copy(version = v)
     else ManyVersionVector(TreeMap(key -> version, k -> v))
-  }
 
   override def versionAt(k: String): Long =
     if (k == key) version
@@ -251,7 +249,7 @@ private[pekko] sealed abstract class VersionVector {
   @InternalApi private[pekko] override def versionsIterator: Iterator[(String, Long)] =
     Iterator.single((key, version))
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     that match {
       case OneVersionVector(n2, v2) =>
         if (key == n2) if (version >= v2) this else OneVersionVector(n2, v2)
@@ -263,7 +261,6 @@ private[pekko] sealed abstract class VersionVector {
           else vs2.updated(key, version)
         VersionVector(mergedVersions)
     }
-  }
   override def toString: String =
     s"VersionVector($key -> $version)"
 
@@ -304,7 +301,7 @@ private[pekko] sealed abstract class VersionVector {
   @InternalApi private[pekko] override def versionsIterator: Iterator[(String, Long)] =
     versions.iterator
 
-  override def merge(that: VersionVector): VersionVector = {
+  override def merge(that: VersionVector): VersionVector =
     if (that.isEmpty) this
     else if (this.isEmpty) that
     else
@@ -324,7 +321,6 @@ private[pekko] sealed abstract class VersionVector {
             else versions.updated(n2, v2)
           VersionVector(mergedVersions)
       }
-  }
 
   override def toString: String =
     versions.map { case (k, v) => k + " -> " + v }.mkString("VersionVector(", ", ", ")")

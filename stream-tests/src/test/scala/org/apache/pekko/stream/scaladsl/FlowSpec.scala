@@ -64,19 +64,17 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
   def toFanoutPublisher[In, Out](elasticity: Int): (Source[Out, _], Materializer) => Publisher[Out] =
     (f, m) => f.runWith(Sink.asPublisher(true).withAttributes(Attributes.inputBuffer(elasticity, elasticity)))(m)
 
-  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) = {
+  def materializeIntoSubscriberAndPublisher[In, Out](flow: Flow[In, Out, _]): (Subscriber[In], Publisher[Out]) =
     flow.runWith(Source.asSubscriber[In], Sink.asPublisher[Out](false))
-  }
 
   "A Flow" must {
 
-    for ((name, op) <- List("identity" -> identity, "identity2" -> identity2); n <- List(1, 2, 4)) {
+    for ((name, op) <- List("identity" -> identity, "identity2" -> identity2); n <- List(1, 2, 4))
       s"request initial elements from upstream ($name, $n)" in {
         new ChainSetup(op, settings.withInputBuffer(initialSize = n, maxSize = n), toPublisher) {
           upstream.expectRequest(upstreamSubscription, this.settings.maxInputBufferSize)
         }
       }
-    }
 
     "request more elements from upstream when downstream requests more elements" in {
       new ChainSetup(identity, settings, toPublisher) {
@@ -227,7 +225,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     }
 
     "perform transformation operation" in {
-      val flow = Flow[Int].map(i => { testActor ! i.toString; i.toString })
+      val flow = Flow[Int].map { i => testActor ! i.toString; i.toString }
 
       val publisher = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
       Source.fromPublisher(publisher).via(flow).to(Sink.ignore).run()
@@ -557,7 +555,7 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
       Source(data).via(
         Flow.optionalVia(
           flow,
-          Flow.fromFunction { (string: String) => string.toInt }
+          Flow.fromFunction((string: String) => string.toInt)
         )(Keep.none)
       ).runWith(TestSink.probe[Option[Int]])
         .request(4)

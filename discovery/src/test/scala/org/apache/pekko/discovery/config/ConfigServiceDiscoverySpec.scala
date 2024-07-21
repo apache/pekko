@@ -65,9 +65,8 @@ class ConfigServiceDiscoverySpec
     with BeforeAndAfterAll
     with ScalaFutures {
 
-  override protected def afterAll(): Unit = {
+  override protected def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
   val discovery = Discovery(system).discovery
 

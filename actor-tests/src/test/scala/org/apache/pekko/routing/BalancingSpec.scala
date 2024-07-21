@@ -92,18 +92,16 @@ class BalancingSpec extends PekkoSpec("""
 
   val poolSize = 5 // must be less than fork-join parallelism-min, which is 8 in PekkoSpec
 
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     counter.set(1)
-  }
 
   def test(pool: ActorRef, startOthers: Promise[Unit], latch: TestLatch): Unit = {
     val probe = TestProbe()
     try {
       val iterationCount = 100
 
-      for (i <- 1 to iterationCount) {
+      for (i <- 1 to iterationCount)
         pool.tell(i, probe.ref)
-      }
 
       // all but one worker are blocked
       val replies1 = probe.receiveN(iterationCount - poolSize + 1)

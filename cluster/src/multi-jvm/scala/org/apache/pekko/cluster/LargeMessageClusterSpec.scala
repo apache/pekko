@@ -85,9 +85,8 @@ object LargeMessageClusterMultiJvmSpec extends MultiNodeConfig {
         payload
       case _ => throw new NotSerializableException()
     }
-    override def fromBinary(bytes: Array[Byte], manifest: String) = {
+    override def fromBinary(bytes: Array[Byte], manifest: String) =
       Slow(bytes)
-    }
   }
 
 }
@@ -147,9 +146,8 @@ abstract class LargeMessageClusterSpec
         val repeat = 15
         for (n <- 1 to repeat) {
           val startTime = System.nanoTime()
-          for (_ <- 1 to largeMsgBurst) {
+          for (_ <- 1 to largeMsgBurst)
             largeEcho3.tell(largeMsg, largeEchoProbe.ref)
-          }
 
           val ordinaryProbe = TestProbe()
           echo3.tell(("0" * 1000).getBytes(StandardCharsets.UTF_8), ordinaryProbe.ref)

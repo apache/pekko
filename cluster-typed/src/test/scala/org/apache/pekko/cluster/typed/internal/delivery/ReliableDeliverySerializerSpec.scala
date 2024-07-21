@@ -88,8 +88,7 @@ class ReliableDeliverySerializerSpec extends ScalaTestWithActorTestKit with AnyW
     }
   }
 
-  def verifySerialization(msg: AnyRef): Unit = {
+  def verifySerialization(msg: AnyRef): Unit =
     serializer.fromBinary(serializer.toBinary(msg), serializer.manifest(msg)) should be(msg)
-  }
 
 }

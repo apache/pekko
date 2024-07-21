@@ -48,7 +48,7 @@ abstract class ClusterShardingSingleShardPerEntitySpec
   import ClusterShardingSingleShardPerEntitySpecConfig._
   import MultiNodeClusterShardingSpec.ShardedEntity
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     join(
       from,
       to,
@@ -58,7 +58,6 @@ abstract class ClusterShardingSingleShardPerEntitySpec
         entityProps = Props[ShardedEntity](),
         extractEntityId = MultiNodeClusterShardingSpec.intExtractEntityId,
         extractShardId = MultiNodeClusterShardingSpec.intExtractShardId))
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

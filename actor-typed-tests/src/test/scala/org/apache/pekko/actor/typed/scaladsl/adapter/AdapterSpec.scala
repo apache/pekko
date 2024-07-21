@@ -210,18 +210,18 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
     "not crash if guardian is stopped" in {
       for { _ <- 0 to 10 } {
         var systemN: pekko.actor.typed.ActorSystem[NotUsed] = null
-        try {
+        try
           systemN = ActorSystem.create(
             Behaviors.setup[NotUsed](_ => Behaviors.stopped[NotUsed]),
             "AdapterSpec-stopping-guardian")
-        } finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
+        finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
       }
     }
 
     "not crash if guardian is stopped very quickly" in {
       for { _ <- 0 to 10 } {
         var systemN: pekko.actor.typed.ActorSystem[Done] = null
-        try {
+        try
           systemN = ActorSystem.create(Behaviors.receive[Done] { (context, message) =>
               context.self ! Done
               message match {
@@ -230,7 +230,7 @@ class AdapterSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
 
             }, "AdapterSpec-stopping-guardian-2")
 
-        } finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
+        finally if (system != null) TestKit.shutdownActorSystem(systemN.toClassic)
       }
     }
 

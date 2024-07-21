@@ -72,9 +72,9 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
       val ref = spawn(Behaviors.receive[CountDownLatch] {
         case (context, latch) =>
           Future {
-            try {
+            try
               context.children
-            } catch {
+            catch {
               case e: UnsupportedOperationException =>
                 probe.ref ! e
             }
@@ -87,9 +87,8 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
       try {
         ref ! l
         probe.receiveMessage().getMessage should include("Unsupported access to ActorContext")
-      } finally {
+      } finally
         l.countDown()
-      }
     }
 
     "detect illegal access to ActorContext from other thread after processing message" in {
@@ -114,9 +113,8 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
       try {
         ref ! l
         probe.expectTerminated(ref)
-      } finally {
+      } finally
         l.countDown()
-      }
       probe.receiveMessage().getMessage should include("Unsupported access to ActorContext")
     }
 
@@ -127,9 +125,9 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
         case (context, _) =>
           // really bad idea to define a child actor like this
           context.spawnAnonymous(Behaviors.setup[String] { _ =>
-            try {
+            try
               context.children
-            } catch {
+            catch {
               case e: UnsupportedOperationException =>
                 probe.ref ! e
             }
@@ -222,16 +220,15 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
           Behaviors.setup[String](_ =>
             // wrongly using parent's context
             new AbstractBehavior[String](context) {
-              try {
+              try
                 this.context.children
-              } catch {
+              catch {
                 case e: UnsupportedOperationException =>
                   probe.ref ! e
               }
 
-              override def onMessage(msg: String): Behavior[String] = {
+              override def onMessage(msg: String): Behavior[String] =
                 Behaviors.same
-              }
             }))
 
         Behaviors.empty
@@ -271,9 +268,8 @@ class ActorThreadSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike wit
           .expect {
             ref2 ! new CountDownLatch(0)
           }
-      } finally {
+      } finally
         latch1.countDown()
-      }
     }
 
   }

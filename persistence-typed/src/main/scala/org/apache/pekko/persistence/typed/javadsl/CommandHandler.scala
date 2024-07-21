@@ -205,7 +205,7 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
 
   private var cases: List[CommandHandlerCase[Command, Event, State]] = Nil
 
-  private def addCase(predicate: Command => Boolean, handler: BiFunction[S, Command, Effect[Event, State]]): Unit = {
+  private def addCase(predicate: Command => Boolean, handler: BiFunction[S, Command, Effect[Event, State]]): Unit =
     cases = CommandHandlerCase[Command, Event, State](
       commandPredicate = predicate,
       statePredicate = state =>
@@ -213,7 +213,6 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
         else
           statePredicate.test(state.asInstanceOf[S]) && stateClass.isAssignableFrom(state.getClass),
       handler.asInstanceOf[BiFunction[State, Command, Effect[Event, State]]]) :: cases
-  }
 
   /**
    * Matches any command which the given `predicate` returns true for.
@@ -277,12 +276,11 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: JFunction[C, Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] = {
+      handler: JFunction[C, Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] =
     onCommand[C](commandClass,
       new BiFunction[S, C, Effect[Event, State]] {
         override def apply(state: S, cmd: C): Effect[Event, State] = handler(cmd)
       })
-  }
 
   /**
    * Matches commands that are of the given `commandClass` or subclass thereof.
@@ -295,12 +293,11 @@ final class CommandHandlerBuilderByState[Command, Event, S <: State, State] @Int
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: Supplier[Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] = {
+      handler: Supplier[Effect[Event, State]]): CommandHandlerBuilderByState[Command, Event, S, State] =
     onCommand[C](commandClass,
       new BiFunction[S, C, Effect[Event, State]] {
         override def apply(state: S, cmd: C): Effect[Event, State] = handler.get()
       })
-  }
 
   /**
    * Matches any command.

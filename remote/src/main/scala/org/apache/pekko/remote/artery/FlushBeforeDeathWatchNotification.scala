@@ -33,9 +33,8 @@ import pekko.annotation.InternalApi
 private[remote] object FlushBeforeDeathWatchNotification {
   private val nameCounter = new AtomicLong(0L)
 
-  def props(done: Promise[Done], timeout: FiniteDuration, association: Association): Props = {
+  def props(done: Promise[Done], timeout: FiniteDuration, association: Association): Props =
     Props(new FlushBeforeDeathWatchNotification(done, timeout, association))
-  }
 
   def nextName(): String = s"flush-${nameCounter.incrementAndGet()}"
 
@@ -60,7 +59,7 @@ private[remote] class FlushBeforeDeathWatchNotification(
   private val timeoutTask =
     context.system.scheduler.scheduleOnce(timeout, self, Timeout)(context.dispatcher)
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     try {
       sent = association.sendFlush(self, excludeControlQueue = true)
       if (sent == 0) {
@@ -74,7 +73,6 @@ private[remote] class FlushBeforeDeathWatchNotification(
         // will log and stop
         throw e
     }
-  }
 
   override def postStop(): Unit = {
     timeoutTask.cancel()

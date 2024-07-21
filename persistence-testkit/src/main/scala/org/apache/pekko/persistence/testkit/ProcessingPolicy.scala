@@ -95,13 +95,12 @@ object ProcessingPolicy {
         cond: (String, U) => Boolean)
         extends PolicyType {
 
-      override def tryProcess(persistenceId: String, processingUnit: U): ProcessingResult = {
+      override def tryProcess(persistenceId: String, processingUnit: U): ProcessingResult =
         if (cond(persistenceId, processingUnit)) {
           returnOnTrigger
         } else {
           returnNonTrigger
         }
-      }
 
     }
 

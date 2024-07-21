@@ -484,14 +484,14 @@ class JsonFramingSpec extends PekkoSpec {
         "fail if it's broken from the start" in {
           val buffer = new JsonObjectParser()
           buffer.offer(ByteString("""THIS IS NOT VALID { "name": "john"}"""))
-          a[FramingException] shouldBe thrownBy { buffer.poll() }
+          a[FramingException] shouldBe thrownBy(buffer.poll())
         }
 
         "fail if it's broken at the end" in {
           val buffer = new JsonObjectParser()
           buffer.offer(ByteString("""{ "name": "john"} THIS IS NOT VALID"""))
           buffer.poll() // first emitting the valid element
-          a[FramingException] shouldBe thrownBy { buffer.poll() }
+          a[FramingException] shouldBe thrownBy(buffer.poll())
         }
       }
       "maximumObjectLength is near Int.MaxValue" in {

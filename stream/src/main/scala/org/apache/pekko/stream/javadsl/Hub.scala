@@ -63,9 +63,8 @@ object MergeHub {
    * @param clazz Type of elements this hub emits and consumes
    * @param perProducerBufferSize Buffer space used per producer.
    */
-  def of[T](@unused clazz: Class[T], perProducerBufferSize: Int): Source[T, Sink[T, NotUsed]] = {
+  def of[T](@unused clazz: Class[T], perProducerBufferSize: Int): Source[T, Sink[T, NotUsed]] =
     pekko.stream.scaladsl.MergeHub.source[T](perProducerBufferSize).mapMaterializedValue(_.asJava[T]).asJava
-  }
 
   /**
    * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
@@ -86,7 +85,7 @@ object MergeHub {
    */
   def withDraining[T](
       @unused clazz: Class[T],
-      perProducerBufferSize: Int): Source[T, pekko.japi.Pair[Sink[T, NotUsed], DrainingControl]] = {
+      perProducerBufferSize: Int): Source[T, pekko.japi.Pair[Sink[T, NotUsed], DrainingControl]] =
     pekko.stream.scaladsl.MergeHub
       .sourceWithDraining[T](perProducerBufferSize)
       .mapMaterializedValue {
@@ -94,7 +93,6 @@ object MergeHub {
           pekko.japi.Pair(sink.asJava[T], new DrainingControlImpl(draining): DrainingControl)
       }
       .asJava
-  }
 
   /**
    * Creates a [[Source]] that emits elements merged from a dynamic set of producers. After the [[Source]] returned
@@ -161,9 +159,8 @@ object BroadcastHub {
    *                   concurrent consumers can be in terms of element. If the buffer is full, the producer
    *                   is backpressured. Must be a power of two and less than 4096.
    */
-  def of[T](@unused clazz: Class[T], bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
+  def of[T](@unused clazz: Class[T], bufferSize: Int): Sink[T, Source[T, NotUsed]] =
     pekko.stream.scaladsl.BroadcastHub.sink[T](bufferSize).mapMaterializedValue(_.asJava).asJava
-  }
 
   /**
    * Creates a [[Sink]] that receives elements from its upstream producer and broadcasts them to a dynamic set
@@ -189,10 +186,9 @@ object BroadcastHub {
    *                                is backpressured. Must be a power of two and less than 4096.
    * @since 1.1.0
    */
-  def of[T](@unused clazz: Class[T], startAfterNrOfConsumers: Int, bufferSize: Int): Sink[T, Source[T, NotUsed]] = {
+  def of[T](@unused clazz: Class[T], startAfterNrOfConsumers: Int, bufferSize: Int): Sink[T, Source[T, NotUsed]] =
     pekko.stream.scaladsl.BroadcastHub.sink[T](startAfterNrOfConsumers, bufferSize).mapMaterializedValue(
       _.asJava).asJava
-  }
 
   /**
    * Creates a [[Sink]] with default buffer size 256 that receives elements from its upstream producer and broadcasts them to a dynamic set

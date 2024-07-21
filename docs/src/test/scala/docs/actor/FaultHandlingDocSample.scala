@@ -159,9 +159,8 @@ class CounterService extends Actor {
 
   import context.dispatcher // Use this Actors' Dispatcher as ExecutionContext
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     initStorage()
-  }
 
   /**
    * The child storage is restarted in case of failure, but after 3 restarts,
@@ -172,7 +171,7 @@ class CounterService extends Actor {
   def initStorage(): Unit = {
     storage = Some(context.watch(context.actorOf(Props[Storage](), name = "storage")))
     // Tell the counter, if any, to use the new storage
-    counter.foreach { _ ! UseStorage(storage) }
+    counter.foreach(_ ! UseStorage(storage))
     // We need the initial value to be able to operate
     storage.get ! Get(key)
   }
@@ -198,7 +197,7 @@ class CounterService extends Actor {
       // We receive Terminated because we watch the child, see initStorage.
       storage = None
       // Tell the counter that there is no storage for the moment
-      counter.foreach { _ ! UseStorage(None) }
+      counter.foreach(_ ! UseStorage(None))
       // Try to re-establish storage after while
       context.system.scheduler.scheduleOnce(10 seconds, self, Reconnect)
 
@@ -207,7 +206,7 @@ class CounterService extends Actor {
       initStorage()
   }
 
-  def forwardOrPlaceInBacklog(msg: Any): Unit = {
+  def forwardOrPlaceInBacklog(msg: Any): Unit =
     // We need the initial value from storage before we can start delegate to
     // the counter. Before that we place the messages in a backlog, to be sent
     // to the counter when it is initialized.
@@ -218,7 +217,6 @@ class CounterService extends Actor {
           throw new ServiceUnavailable("CounterService not available, lack of initial value")
         backlog :+= (sender() -> msg)
     }
-  }
 
 }
 
@@ -255,11 +253,10 @@ class Counter(key: String, initialValue: Long) extends Actor {
 
   }
 
-  def storeCount(): Unit = {
+  def storeCount(): Unit =
     // Delegate dangerous work, to protect our valuable state.
     // We can continue without storage.
-    storage.foreach { _ ! Store(Entry(key, count)) }
-  }
+    storage.foreach(_ ! Store(Entry(key, count)))
 
 }
 

@@ -86,25 +86,23 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
         Never
     }
 
-  private def parsePolicy(n: Int): CachePolicy = {
+  private def parsePolicy(n: Int): CachePolicy =
     n match {
       case 0          => Never
       case x if x < 0 => Forever
       case x          => Ttl.fromPositive(x.seconds)
     }
-  }
 
   private def getTtl(path: String, positive: Boolean): CachePolicy =
     config.getString(path) match {
       case "default" => if (positive) defaultCachePolicy else defaultNegativeCachePolicy
       case "forever" => Forever
       case "never"   => Never
-      case _ => {
+      case _ =>
         val finiteTtl = config
           .getDuration(path, TimeUnit.SECONDS)
           .requiring(_ > 0, s"pekko.io.dns.$path must be 'default', 'forever', 'never' or positive duration")
         Ttl.fromPositive(finiteTtl.seconds)
-      }
     }
 
   val positiveCachePolicy: CachePolicy = getTtl("positive-ttl", positive = true)
@@ -114,13 +112,12 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
   @deprecated("Use negativeCacheDuration instead", "Akka 2.5.17")
   val negativeTtl: Long = toLongTtl(negativeCachePolicy)
 
-  private def toLongTtl(cp: CachePolicy): Long = {
+  private def toLongTtl(cp: CachePolicy): Long =
     cp match {
       case Forever  => Long.MaxValue
       case Never    => 0
       case ttl: Ttl => ttl.value.toMillis
     }
-  }
 
   override def receive: Receive = {
     case DnsProtocol.Resolve(_, Srv) =>
@@ -178,11 +175,10 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config) extends Acto
       name: String,
       addresses: immutable.Seq[InetAddress],
       ipv4: Boolean,
-      ipv6: Boolean): immutable.Seq[ResourceRecord] = {
+      ipv6: Boolean): immutable.Seq[ResourceRecord] =
     addresses.collect {
       case a: Inet4Address if ipv4 => ARecord(name, Ttl.toTll(positiveCachePolicy), a)
       case a: Inet6Address if ipv6 => AAAARecord(name, Ttl.toTll(positiveCachePolicy), a)
     }
-  }
 
 }

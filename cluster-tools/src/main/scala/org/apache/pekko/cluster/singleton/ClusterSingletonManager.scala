@@ -354,30 +354,27 @@ object ClusterSingletonManager {
         changes :+= initial
       }
 
-      def add(m: Member): Unit = {
+      def add(m: Member): Unit =
         if (matchingRole(m))
           trackChange { () =>
             // replace, it's possible that the upNumber is changed
             membersByAge = membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress)
             membersByAge += m
           }
-      }
 
-      def remove(m: Member): Unit = {
+      def remove(m: Member): Unit =
         if (matchingRole(m))
           trackChange { () =>
             membersByAge = membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress)
           }
-      }
 
-      def sendFirstChange(): Unit = {
+      def sendFirstChange(): Unit =
         // don't send cluster change events if this node is shutting its self down, just wait for SelfExiting
         if (!cluster.isTerminated) {
           val event = changes.head
           changes = changes.tail
           context.parent ! event
         }
-      }
 
       def receive = {
         case state: CurrentClusterState => handleInitial(state)
@@ -415,19 +412,17 @@ object ClusterSingletonManager {
           sender() ! Done // reply to ask
       }
 
-      def deliverChanges(): Unit = {
+      def deliverChanges(): Unit =
         if (changes.nonEmpty) {
           sendFirstChange()
           context.unbecome()
         }
-      }
 
-      override def unhandled(msg: Any): Unit = {
+      override def unhandled(msg: Any): Unit =
         msg match {
           case _: MemberEvent => // ok, silence
           case _              => super.unhandled(msg)
         }
-      }
     }
   }
 }
@@ -543,9 +538,8 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   def addRemoved(node: UniqueAddress): Unit =
     removed += node -> (Deadline.now + 15.minutes)
 
-  def cleanupOverdueNotMemberAnyMore(): Unit = {
+  def cleanupOverdueNotMemberAnyMore(): Unit =
     removed = removed.filter { case (_, deadline) => deadline.hasTimeLeft() }
-  }
 
   // for CoordinatedShutdown
   val coordShutdown = CoordinatedShutdown(context.system)
@@ -649,7 +643,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       handleMemberEvent(event)
   }
 
-  def handleMemberEvent(event: MemberEvent): State = {
+  def handleMemberEvent(event: MemberEvent): State =
     event match {
       case _: MemberRemoved if event.member.uniqueAddress == cluster.selfUniqueAddress =>
         logInfo("Self removed, stopping ClusterSingletonManager")
@@ -666,7 +660,6 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       case _ =>
         stay()
     }
-  }
 
   when(Younger) {
     case Event(OldestChanged(oldestOption), YoungerData(previousOldest)) =>
@@ -818,13 +811,12 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
           s"Becoming singleton oldest was stuck because previous oldest [${previousOldest.headOption}] is unresponsive")
   }
 
-  def scheduleDelayedMemberRemoved(m: Member): Unit = {
+  def scheduleDelayedMemberRemoved(m: Member): Unit =
     if (removalMargin > Duration.Zero) {
       log.debug("Schedule DelayedMemberRemoved for [{}]", m.address)
       context.system.scheduler.scheduleOnce(removalMargin, self, DelayedMemberRemoved(m))(context.dispatcher)
     } else
       self ! DelayedMemberRemoved(m)
-  }
 
   def tryAcquireLease() = {
     import context.dispatcher
@@ -838,7 +830,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   }
 
   // Try and go to oldest, taking the lease if needed
-  def tryGotoOldest(): State = {
+  def tryGotoOldest(): State =
     // check if lease
     lease match {
       case None =>
@@ -847,7 +839,6 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
         logInfo("Trying to acquire lease before starting singleton")
         tryAcquireLease()
     }
-  }
 
   when(AcquiringLease) {
     case Event(AcquireLeaseResult(result), _) =>
@@ -893,7 +884,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
   }
 
   @InternalStableApi
-  def gotoOldest(): State = {
+  def gotoOldest(): State =
     if (preparingForFullShutdown) {
       logInfo(
         ClusterLogMarker.singletonStarted,
@@ -908,8 +899,6 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       val singleton = context.watch(context.actorOf(singletonProps, singletonName))
       goto(Oldest).using(OldestData(Some(singleton)))
     }
-
-  }
 
   def handleOldestChanged(singleton: Option[ActorRef], oldestOption: Option[UniqueAddress]) = {
     oldestChangedReceived = true
@@ -1046,17 +1035,16 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
 
   }
 
-  def gotoHandingOver(singleton: Option[ActorRef], handOverTo: Option[ActorRef]): State = {
+  def gotoHandingOver(singleton: Option[ActorRef], handOverTo: Option[ActorRef]): State =
     singleton match {
       case None =>
         handOverDone(handOverTo)
       case Some(s) =>
-        handOverTo.foreach { _ ! HandOverInProgress }
+        handOverTo.foreach(_ ! HandOverInProgress)
         logInfo("Singleton manager stopping singleton actor [{}]", s.path)
         s ! terminationMessage
         goto(HandingOver).using(HandingOverData(s, handOverTo))
     }
-  }
 
   when(HandingOver) {
     case Event(Terminated(ref), HandingOverData(singleton, handOverTo)) if ref == singleton =>
@@ -1092,7 +1080,7 @@ class ClusterSingletonManager(singletonProps: Props, terminationMessage: Any, se
       "Singleton terminated, hand-over done [{} -> {}]",
       cluster.selfAddress,
       newOldest)
-    handOverTo.foreach { _ ! HandOverDone }
+    handOverTo.foreach(_ ! HandOverDone)
     memberExitingProgress.trySuccess(Done)
     if (removed.contains(cluster.selfUniqueAddress)) {
       logInfo("Self removed, stopping ClusterSingletonManager")

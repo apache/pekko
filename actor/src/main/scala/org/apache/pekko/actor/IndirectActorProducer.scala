@@ -53,7 +53,7 @@ private[pekko] object IndirectActorProducer {
   val CreatorConsumerClass = classOf[CreatorConsumer]
   val TypedCreatorFunctionConsumerClass = classOf[TypedCreatorFunctionConsumer]
   @nowarn
-  def apply(clazz: Class[_], args: immutable.Seq[Any]): IndirectActorProducer = {
+  def apply(clazz: Class[_], args: immutable.Seq[Any]): IndirectActorProducer =
     if (classOf[IndirectActorProducer].isAssignableFrom(clazz)) {
       def get1stArg[T]: T = args.head.asInstanceOf[T]
       def get2ndArg[T]: T = args.tail.head.asInstanceOf[T]
@@ -73,7 +73,6 @@ private[pekko] object IndirectActorProducer {
       if (args.isEmpty) new NoArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]])
       else new ArgsReflectConstructor(clazz.asInstanceOf[Class[_ <: Actor]], args)
     } else throw new IllegalArgumentException(s"unknown actor creator [$clazz]")
-  }
 }
 
 /**

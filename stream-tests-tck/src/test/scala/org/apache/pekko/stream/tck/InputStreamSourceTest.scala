@@ -24,7 +24,7 @@ import pekko.util.ByteString
 
 class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
 
-  def createPublisher(elements: Long): Publisher[ByteString] = {
+  def createPublisher(elements: Long): Publisher[ByteString] =
     StreamConverters
       .fromInputStream(() =>
         new InputStream {
@@ -37,5 +37,4 @@ class InputStreamSourceTest extends PekkoPublisherVerification[ByteString] {
       .withAttributes(ActorAttributes.dispatcher("pekko.test.stream-dispatcher"))
       .take(elements)
       .runWith(Sink.asPublisher(false))
-  }
 }

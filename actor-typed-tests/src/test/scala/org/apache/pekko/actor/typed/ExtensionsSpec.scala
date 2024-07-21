@@ -49,9 +49,8 @@ object SlowExtension extends ExtensionId[SlowExtension] {
 
 class FailingToLoadExtension extends Extension
 object FailingToLoadExtension extends ExtensionId[FailingToLoadExtension] {
-  def createExtension(system: ActorSystem[_]) = {
+  def createExtension(system: ActorSystem[_]) =
     throw new RuntimeException("I cannot be trusted!")
-  }
 }
 
 class MultiExtension(val n: Int) extends Extension
@@ -134,14 +133,13 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
     }
 
     "handle extensions that fail to initialize" in {
-      def create(): Unit = {
+      def create(): Unit =
         ActorSystem[Any](
           Behaviors.empty[Any],
           "ExtensionsSpec04",
           ConfigFactory.parseString("""
           pekko.actor.typed.extensions = ["org.apache.pekko.actor.typed.FailingToLoadExtension$"]
         """))
-      }
 
       intercept[RuntimeException] {
         create()
@@ -214,9 +212,8 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         // as a typed library-extension in the config
         before shouldEqual beforeCreation + 1
         after shouldEqual before
-      } finally {
+      } finally
         classicSystem.terminate().futureValue
-      }
     }
 
     "not create an extension multiple times when using the ActorSystemAdapter" in {
@@ -228,9 +225,8 @@ class ExtensionsSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
 
         (ext1 should be).theSameInstanceAs(ext2)
 
-      } finally {
+      } finally
         classicSystem.terminate().futureValue
-      }
     }
 
     "override extensions via ActorSystemSetup" in

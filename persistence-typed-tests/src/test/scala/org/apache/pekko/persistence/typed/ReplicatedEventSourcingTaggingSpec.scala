@@ -50,7 +50,7 @@ object ReplicatedEventSourcingTaggingSpec {
     def apply(
         entityId: String,
         replica: ReplicaId,
-        allReplicas: Set[ReplicaId]): EventSourcedBehavior[Command, String, State] = {
+        allReplicas: Set[ReplicaId]): EventSourcedBehavior[Command, String, State] =
       // #tagging
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("TaggingSpec", entityId, replica),
@@ -76,8 +76,7 @@ object ReplicatedEventSourcingTaggingSpec {
             if (replicationContext.origin != replicationContext.replicaId) Set.empty
             else if (event.length > 10) Set("long-strings", "strings")
             else Set("strings")))
-      // #tagging
-    }
+    // #tagging
   }
 
 }
@@ -103,13 +102,12 @@ class ReplicatedEventSourcingTaggingSpec
       probe.receiveMessages(1)
 
       val allEvents = Set("from r1", "from r2", "a very long string from r1")
-      for (replica <- r1 :: r2 :: Nil) {
+      for (replica <- r1 :: r2 :: Nil)
         eventually {
           val probe = testKit.createTestProbe[Set[String]]()
           replica ! ReplicatedStringSet.GetStrings(probe.ref)
           probe.receiveMessage() should ===(allEvents)
         }
-      }
 
       val query =
         PersistenceQuery(system).readJournalFor[CurrentEventsByTagQuery](PersistenceTestKitReadJournal.Identifier)

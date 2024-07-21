@@ -75,9 +75,8 @@ private[pekko] final class ReplicationContextImpl(
 
   override def persistenceId: PersistenceId = replicationId.persistenceId
 
-  override def currentTimeMillis(): Long = {
+  override def currentTimeMillis(): Long =
     WallClock.AlwaysIncreasingClock.currentTimeMillis()
-  }
   override def recoveryRunning: Boolean = {
     checkAccess("recoveryRunning")
     _recoveryRunning

@@ -140,10 +140,9 @@ object ClusterSingletonManagerSpec extends MultiNodeConfig {
 
     override def preStart(): Unit = queue ! RegisterConsumer
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       if (stoppedBeforeUnregistration)
         log.warning("Stopped before unregistration")
-    }
 
     def receive = {
       case n: Int if n <= current =>
@@ -206,7 +205,7 @@ class ClusterSingletonManagerSpec
     identifyProbe.expectMsgType[ActorIdentity].ref.get
   }
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     runOn(from) {
       Cluster(system).join(node(to).address)
       if (Cluster(system).selfRoles.contains("worker")) {
@@ -214,7 +213,6 @@ class ClusterSingletonManagerSpec
         createSingletonProxy()
       }
     }
-  }
 
   def awaitMemberUp(memberProbe: TestProbe, nodes: RoleName*): Unit = {
     runOn(nodes.filterNot(_ == nodes.head): _*) {
@@ -227,7 +225,7 @@ class ClusterSingletonManagerSpec
     enterBarrier(nodes.head.name + "-up")
   }
 
-  def createSingleton(): ActorRef = {
+  def createSingleton(): ActorRef =
     // #create-singleton-manager
     system.actorOf(
       ClusterSingletonManager.props(
@@ -235,8 +233,7 @@ class ClusterSingletonManagerSpec
         terminationMessage = End,
         settings = ClusterSingletonManagerSettings(system).withRole("worker")),
       name = "consumer")
-    // #create-singleton-manager
-  }
+  // #create-singleton-manager
 
   def createSingletonProxy(): ActorRef = {
     // #create-singleton-proxy
@@ -324,7 +321,7 @@ class ClusterSingletonManagerSpec
     enterBarrier("after-" + msg + "-verified")
   }
 
-  def crash(roles: RoleName*): Unit = {
+  def crash(roles: RoleName*): Unit =
     runOn(controller) {
       queue ! Reset
       expectMsg(ResetOk)
@@ -333,7 +330,6 @@ class ClusterSingletonManagerSpec
         testConductor.exit(r, 0).await
       }
     }
-  }
 
   "A ClusterSingletonManager" must {
 

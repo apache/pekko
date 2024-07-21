@@ -58,11 +58,10 @@ object ShardingDocExample {
     def apply(
         id: String,
         db: DB,
-        consumerController: ActorRef[ConsumerController.Start[Command]]): Behavior[Command] = {
+        consumerController: ActorRef[ConsumerController.Start[Command]]): Behavior[Command] =
       Behaviors.setup[Command] { context =>
         new TodoList(context, id, db).start(consumerController)
       }
-    }
 
   }
 
@@ -87,7 +86,7 @@ object ShardingDocExample {
       }
     }
 
-    private def active(state: State): Behavior[Command] = {
+    private def active(state: State): Behavior[Command] =
       Behaviors.receiveMessagePartial {
         case CommandDelivery(AddTask(item), confirmTo) =>
           val newState = state.copy(tasks = state.tasks :+ item)
@@ -103,14 +102,12 @@ object ShardingDocExample {
         case DBError(cause) =>
           throw cause
       }
-    }
 
-    private def save(newState: State, confirmTo: ActorRef[ConsumerController.Confirmed]): Unit = {
+    private def save(newState: State, confirmTo: ActorRef[ConsumerController.Confirmed]): Unit =
       context.pipeToSelf(db.save(id, newState)) {
         case Success(_)     => SaveSuccess(confirmTo)
         case Failure(cause) => DBError(cause)
       }
-    }
   }
   // #consumer
 
@@ -133,11 +130,10 @@ object ShardingDocExample {
     private final case class Confirmed(originalReplyTo: ActorRef[Response]) extends Command
     private final case class TimedOut(originalReplyTo: ActorRef[Response]) extends Command
 
-    def apply(producerController: ActorRef[ShardingProducerController.Command[TodoList.Command]]): Behavior[Command] = {
+    def apply(producerController: ActorRef[ShardingProducerController.Command[TodoList.Command]]): Behavior[Command] =
       Behaviors.setup { context =>
         new TodoService(context).start(producerController)
       }
-    }
 
   }
 
@@ -162,7 +158,7 @@ object ShardingDocExample {
       }
     }
 
-    private def active(requestNext: ShardingProducerController.RequestNext[TodoList.Command]): Behavior[Command] = {
+    private def active(requestNext: ShardingProducerController.RequestNext[TodoList.Command]): Behavior[Command] =
       Behaviors.receiveMessage {
         case WrappedRequestNext(next) =>
           active(next)
@@ -189,12 +185,11 @@ object ShardingDocExample {
           originalReplyTo ! MaybeAccepted
           Behaviors.same
       }
-    }
 
   }
   // #producer
 
-  def illustrateInit(): Unit = {
+  def illustrateInit(): Unit =
     Behaviors.setup[Nothing] { context =>
       // #init
       import org.apache.pekko
@@ -223,6 +218,5 @@ object ShardingDocExample {
 
       Behaviors.empty
     }
-  }
 
 }

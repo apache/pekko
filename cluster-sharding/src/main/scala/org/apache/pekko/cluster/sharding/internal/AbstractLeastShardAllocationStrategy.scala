@@ -101,15 +101,14 @@ private[pekko] abstract class AbstractLeastShardAllocationStrategy extends Actor
     }
   }
 
-  final protected def isAGoodTimeToRebalance(regionEntries: Iterable[RegionEntry]): Boolean = {
+  final protected def isAGoodTimeToRebalance(regionEntries: Iterable[RegionEntry]): Boolean =
     // Avoid rebalance when rolling update is in progress
     // (This will ignore versions on members with no shard regions, because of sharding role or not yet completed joining)
     regionEntries.headOption match {
       case None => false // empty list of regions, probably not a good time to rebalance...
       case Some(firstRegion) =>
-        def allNodesSameVersion = {
+        def allNodesSameVersion =
           regionEntries.forall(_.member.appVersion == firstRegion.member.appVersion)
-        }
         // Rebalance requires ack from regions and proxies - no need to rebalance if it cannot be completed
         // FIXME #29589, we currently only look at same dc but proxies in other dcs may delay complete as well right now
         def neededMembersReachable =
@@ -120,7 +119,6 @@ private[pekko] abstract class AbstractLeastShardAllocationStrategy extends Actor
 
         allNodesSameVersion && neededMembersReachable && !membersInProgressOfJoining
     }
-  }
 
   final protected def mostSuitableRegion(
       regionEntries: Iterable[RegionEntry]): (ActorRef, immutable.IndexedSeq[ShardId]) = {
@@ -132,10 +130,9 @@ private[pekko] abstract class AbstractLeastShardAllocationStrategy extends Actor
     val addressToMember: Map[Address, Member] = clusterState.members.iterator.map(m => m.address -> m).toMap
     currentShardAllocations.flatMap {
       case (region, shardIds) =>
-        val regionAddress = {
+        val regionAddress =
           if (region.path.address.hasLocalScope) selfMember.address
           else region.path.address
-        }
 
         val memberForRegion = addressToMember.get(regionAddress)
         // if the member is unknown (very unlikely but not impossible) because of view not updated yet

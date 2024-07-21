@@ -72,9 +72,8 @@ class ActorSystemSetupSpec extends AnyWordSpec with Matchers {
 
         (system.settings.setup.get[DummySetup]: Option[Setup]) should ===(Some(setup))
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
   }
 

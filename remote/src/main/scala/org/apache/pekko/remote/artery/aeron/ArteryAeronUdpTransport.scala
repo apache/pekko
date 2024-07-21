@@ -93,7 +93,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     flightRecorder.transportTaskRunnerStarted()
   }
 
-  private def startMediaDriver(): Unit = {
+  private def startMediaDriver(): Unit =
     if (settings.Advanced.Aeron.EmbeddedMediaDriver) {
       val driverContext = new MediaDriver.Context
       if (settings.Advanced.Aeron.AeronDirectoryName.nonEmpty) {
@@ -147,7 +147,6 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
         throw new IllegalStateException("media driver started more than once")
       }
     }
-  }
 
   private def aeronDir: String = mediaDriver.get match {
     case Some(driver) => driver.aeronDirectoryName
@@ -167,12 +166,12 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
           log.warning("Couldn't close Aeron embedded media driver due to [{}]", e)
       }
 
-      try {
+      try
         if (settings.Advanced.Aeron.DeleteAeronDirectory) {
           IoUtil.delete(new File(driver.aeronDirectoryName), false)
           flightRecorder.transportMediaFileDeleted()
         }
-      } catch {
+      catch {
         case NonFatal(e) =>
           log.warning(
             "Couldn't delete Aeron embedded media driver files in [{}] due to [{}]",
@@ -190,10 +189,9 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     ctx.threadFactory(system.threadFactory)
 
     ctx.availableImageHandler(new AvailableImageHandler {
-      override def onAvailableImage(img: Image): Unit = {
+      override def onAvailableImage(img: Image): Unit =
         if (log.isDebugEnabled)
           log.debug(s"onAvailableImage from ${img.sourceIdentity} session ${img.sessionId}")
-      }
     })
     ctx.unavailableImageHandler(new UnavailableImageHandler {
       override def onUnavailableImage(img: Image): Unit = {
@@ -211,7 +209,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
     ctx.errorHandler(new ErrorHandler {
       private val fatalErrorOccured = new AtomicBoolean
 
-      override def onError(cause: Throwable): Unit = {
+      override def onError(cause: Throwable): Unit =
         cause match {
           case e: ConductorServiceTimeoutException => handleFatalError(e)
           case e: DriverTimeoutException           => handleFatalError(e)
@@ -219,9 +217,8 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
           case _ =>
             log.error(cause, s"Aeron error, $cause")
         }
-      }
 
-      private def handleFatalError(cause: Throwable): Unit = {
+      private def handleFatalError(cause: Throwable): Unit =
         if (fatalErrorOccured.compareAndSet(false, true)) {
           if (!isShutdown) {
             log.error(
@@ -240,7 +237,6 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
           }
         } else
           throw new AeronTerminated(cause)
-      }
     })
 
     ctx.aeronDirectoryName(aeronDir)
@@ -334,7 +330,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
       settings.Advanced.Aeron.IdleCpuLevel < 5) 0 // also don't spin for small IdleCpuLevels
     else 50 * settings.Advanced.Aeron.IdleCpuLevel - 240
 
-  override protected def bindInboundStreams(): (Int, Int) = {
+  override protected def bindInboundStreams(): (Int, Int) =
     (settings.Canonical.Port, settings.Bind.Port) match {
       case (0, 0) =>
         val p = autoSelectPort(settings.Bind.Hostname)
@@ -346,7 +342,6 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
       case _ =>
         (settings.Canonical.Port, settings.Bind.Port)
     }
-  }
 
   override protected def runInboundStreams(port: Int, bindPort: Int): Unit = {
     val inboundChannel = s"aeron:udp?endpoint=${settings.Bind.Hostname}:$bindPort"
@@ -462,7 +457,7 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
         }))
   }
 
-  override protected def shutdownTransport(): Future[Done] = {
+  override protected def shutdownTransport(): Future[Done] =
     taskRunner
       .stop()
       .map { _ =>
@@ -477,7 +472,6 @@ private[remote] class ArteryAeronUdpTransport(_system: ExtendedActorSystem, _pro
 
         Done
       }(system.dispatchers.internalDispatcher)
-  }
 
   def autoSelectPort(hostname: String): Int = {
     import java.net.InetSocketAddress

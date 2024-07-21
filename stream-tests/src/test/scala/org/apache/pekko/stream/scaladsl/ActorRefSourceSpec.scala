@@ -167,7 +167,7 @@ class ActorRefSourceSpec extends StreamSpec {
 
       s.request(10)
 
-      def verifyNext(n: Int): Unit = {
+      def verifyNext(n: Int): Unit =
         if (n > 10)
           s.expectComplete()
         else
@@ -176,7 +176,6 @@ class ActorRefSourceSpec extends StreamSpec {
             case Right(x)   => fail(s"expected $n, got $x")
             case Left(_)    => // ok, completed
           }
-      }
       verifyNext(1)
     }
 
@@ -200,12 +199,11 @@ class ActorRefSourceSpec extends StreamSpec {
     }
 
     "complete and materialize the stream after receiving completion message" in {
-      val (ref, done) = {
+      val (ref, done) =
         Source
           .actorRef({ case "ok" => CompletionStrategy.draining }, PartialFunction.empty, 3, OverflowStrategy.dropBuffer)
           .toMat(Sink.ignore)(Keep.both)
           .run()
-      }
       ref ! "ok"
       done.futureValue should be(Done)
     }

@@ -138,7 +138,7 @@ object StreamTestKit {
     builder.toString()
   }
 
-  private def appendInterpreterSnapshot(builder: StringBuilder, snapshot: RunningInterpreterImpl): Unit = {
+  private def appendInterpreterSnapshot(builder: StringBuilder, snapshot: RunningInterpreterImpl): Unit =
     try {
       builder.append("\ndot format graph for deadlock analysis:\n")
       builder.append("================================================================\n")
@@ -173,6 +173,5 @@ object StreamTestKit {
     } catch {
       case _: NoSuchElementException => builder.append("Not all logics has a stage listed, cannot create graph")
     }
-  }
 
 }

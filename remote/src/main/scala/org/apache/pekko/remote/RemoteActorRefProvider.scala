@@ -278,14 +278,13 @@ private[pekko] class RemoteActorRefProvider(
     remoteDeploymentWatcher = createOrNone[ActorRef](createRemoteDeploymentWatcher(system))
   }
 
-  private def checkNettyOnClassPath(system: ActorSystemImpl): Unit = {
+  private def checkNettyOnClassPath(system: ActorSystemImpl): Unit =
     checkClassOrThrow(
       system,
       "io.netty.channel.Channel",
       "Classic",
       "Netty",
       "https://pekko.apache.org/docs/pekko/current/remoting.html")
-  }
 
   private def checkAeronOnClassPath(system: ActorSystemImpl): Unit = {
     val arteryLink = "https://pekko.apache.org/docs/pekko/current/remoting-artery.html"
@@ -299,14 +298,13 @@ private[pekko] class RemoteActorRefProvider(
       className: String,
       remoting: String,
       libraryMissing: String,
-      link: String): Unit = {
+      link: String): Unit =
     system.dynamicAccess.getClassFor[Any](className) match {
       case Failure(_: ClassNotFoundException | _: NoClassDefFoundError) =>
         throw new IllegalStateException(
           s"$remoting remoting is enabled but $libraryMissing is not on the classpath, it must be added explicitly. See $link")
       case _ =>
     }
-  }
 
   /** Will call the provided `func` if using Cluster or explicitly enabled unsafe remote features. */
   private def createOrNone[T](func: => T): Option[T] = if (hasClusterOrUseUnsafe) Some(func) else None
@@ -334,13 +332,12 @@ private[pekko] class RemoteActorRefProvider(
       "remote-deployment-watcher")
 
   /** Can be overridden when using RemoteActorRefProvider as a superclass rather than directly */
-  protected def warnIfDirectUse(): Unit = {
+  protected def warnIfDirectUse(): Unit =
     if (remoteSettings.WarnAboutDirectUse) {
       log.warning(
         "Using the 'remote' ActorRefProvider directly, which is a low-level layer. " +
         "For most use cases, the 'cluster' abstraction on top of remoting is more suitable instead.")
     }
-  }
 
   // Log on `init` similar to `warnIfDirectUse`.
   private[pekko] def warnIfUseUnsafeWithoutCluster(): Unit =
@@ -414,14 +411,13 @@ private[pekko] class RemoteActorRefProvider(
        */
 
       @scala.annotation.tailrec
-      def lookupRemotes(p: Iterable[String]): Option[Deploy] = {
+      def lookupRemotes(p: Iterable[String]): Option[Deploy] =
         p.headOption match {
           case None           => None
           case Some("remote") => lookupRemotes(p.drop(3))
           case Some("user")   => deployer.lookup(p.drop(1))
           case Some(_)        => None
         }
-      }
 
       val elems = path.elements
       val lookup =
@@ -433,12 +429,11 @@ private[pekko] class RemoteActorRefProvider(
           }
         else None
 
-      val deployment = {
+      val deployment =
         deploy.toList ::: lookup.toList match {
           case Nil => Nil
           case l   => List(l.reduce((a, b) => b.withFallback(a)))
         }
-      }
 
       (Iterator(props.deploy) ++ deployment.iterator).reduce((a, b) => b.withFallback(a)) match {
         case d @ Deploy(_, _, _, RemoteScope(address), _, _) =>
@@ -448,7 +443,7 @@ private[pekko] class RemoteActorRefProvider(
             throw new ConfigurationException(
               s"${ErrorMessages.RemoteDeploymentConfigErrorPrefix} for local-only Props at [$path]")
           } else
-            try {
+            try
               if (hasClusterOrUseUnsafe && shouldCreateRemoteActorRef(system, address)) {
                 try {
                   // for consistency we check configuration of dispatcher and mailbox locally
@@ -471,7 +466,7 @@ private[pekko] class RemoteActorRefProvider(
                 local.actorOf(system, props, supervisor, path, systemService, deployment.headOption, false, async)
               }
 
-            } catch {
+            catch {
               case NonFatal(e) => throw new IllegalArgumentException(s"remote deployment failed for [$path]", e)
             }
         case _ =>
@@ -479,10 +474,10 @@ private[pekko] class RemoteActorRefProvider(
       }
     }
 
-  def rootGuardianAt(address: Address): ActorRef = {
+  def rootGuardianAt(address: Address): ActorRef =
     if (hasAddress(address)) rootGuardian
     else
-      try {
+      try
         new RemoteActorRef(
           transport,
           transport.localAddressForRemote(address),
@@ -491,24 +486,23 @@ private[pekko] class RemoteActorRefProvider(
           props = None,
           deploy = None,
           acceptProtocolNames = remoteSettings.AcceptProtocolNames)
-      } catch {
+      catch {
         case NonFatal(e) =>
           log.error(e, "No root guardian at [{}]", address)
           new EmptyLocalActorRef(this, RootActorPath(address), eventStream)
       }
-  }
 
   /**
    * INTERNAL API
    * Called in deserialization of incoming remote messages where the correct local address is known.
    */
-  private[pekko] def resolveActorRefWithLocalAddress(path: String, localAddress: Address): InternalActorRef = {
+  private[pekko] def resolveActorRefWithLocalAddress(path: String, localAddress: Address): InternalActorRef =
     path match {
       case ActorPathExtractor(address, elems) =>
         if (hasAddress(address))
           local.resolveActorRef(rootGuardian, elems)
         else
-          try {
+          try
             new RemoteActorRef(
               transport,
               localAddress,
@@ -517,7 +511,7 @@ private[pekko] class RemoteActorRefProvider(
               props = None,
               deploy = None,
               acceptProtocolNames = remoteSettings.AcceptProtocolNames)
-          } catch {
+          catch {
             case NonFatal(e) =>
               log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
               new EmptyLocalActorRef(this, RootActorPath(address) / elems, eventStream)
@@ -526,9 +520,8 @@ private[pekko] class RemoteActorRefProvider(
         log.debug("Resolve (deserialization) of unknown (invalid) path [{}], using deadLetters.", path)
         deadLetters
     }
-  }
 
-  def resolveActorRef(path: String): ActorRef = {
+  def resolveActorRef(path: String): ActorRef =
     // using thread local LRU cache, which will call internalResolveActorRef
     // if the value is not cached
     actorRefResolveThreadLocalCache match {
@@ -537,7 +530,6 @@ private[pekko] class RemoteActorRefProvider(
       case c =>
         c.threadLocalCache(this).resolve(path)
     }
-  }
 
   /**
    * INTERNAL API: This is used by the `ActorRefResolveCache` via the
@@ -551,7 +543,7 @@ private[pekko] class RemoteActorRefProvider(
       if (hasAddress(address)) local.resolveActorRef(rootGuardian, elems)
       else {
         val rootPath = RootActorPath(address) / elems
-        try {
+        try
           new RemoteActorRef(
             transport,
             transport.localAddressForRemote(address),
@@ -560,7 +552,7 @@ private[pekko] class RemoteActorRefProvider(
             props = None,
             deploy = None,
             acceptProtocolNames = remoteSettings.AcceptProtocolNames)
-        } catch {
+        catch {
           case NonFatal(e) =>
             log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
             new EmptyLocalActorRef(this, rootPath, eventStream)
@@ -572,10 +564,10 @@ private[pekko] class RemoteActorRefProvider(
       deadLetters
   }
 
-  def resolveActorRef(path: ActorPath): ActorRef = {
+  def resolveActorRef(path: ActorPath): ActorRef =
     if (hasAddress(path.address)) local.resolveActorRef(rootGuardian, path.elements)
     else
-      try {
+      try
         new RemoteActorRef(
           transport,
           transport.localAddressForRemote(path.address),
@@ -584,12 +576,11 @@ private[pekko] class RemoteActorRefProvider(
           props = None,
           deploy = None,
           acceptProtocolNames = remoteSettings.AcceptProtocolNames)
-      } catch {
+      catch {
         case NonFatal(e) =>
           log.warning("Error while resolving ActorRef [{}] due to [{}]", path, e.getMessage)
           new EmptyLocalActorRef(this, path, eventStream)
       }
-  }
 
   /**
    * Using (checking out) actor on a specific node.
@@ -609,7 +600,7 @@ private[pekko] class RemoteActorRefProvider(
       case None => warnIfUseUnsafeWithoutCluster()
     }
 
-  def getExternalAddressFor(addr: Address): Option[Address] = {
+  def getExternalAddressFor(addr: Address): Option[Address] =
     addr match {
       case _ if hasAddress(addr) => Some(local.rootPath.address)
       case Address(_, _, Some(_), Some(_)) =>
@@ -617,7 +608,6 @@ private[pekko] class RemoteActorRefProvider(
         catch { case NonFatal(_) => None }
       case _ => None
     }
-  }
 
   def getDefaultAddress: Address = transport.defaultAddress
 
@@ -652,14 +642,13 @@ private[pekko] class RemoteActorRefProvider(
   // lazily initialized with fallback since it can depend on transport which is not initialized up front
   // worth caching since if it is used once in a system it will very likely be used many times
   @volatile private var _addressString: OptionVal[String] = OptionVal.None
-  override private[pekko] def addressString: String = {
+  override private[pekko] def addressString: String =
     _addressString match {
       case OptionVal.Some(addr) => addr
       case _                    =>
         // not initialized yet, fallback
         local.addressString
     }
-  }
 }
 
 private[pekko] trait RemoteRef extends ActorRefScope {
@@ -731,14 +720,13 @@ private[pekko] class RemoteActorRef private[pekko] (
   /**
    * Determine if a watch/unwatch message must be handled by the remoteWatcher actor, or sent to this remote ref
    */
-  def isWatchIntercepted(watchee: ActorRef, watcher: ActorRef): Boolean = {
+  def isWatchIntercepted(watchee: ActorRef, watcher: ActorRef): Boolean =
     // If watchee != this then watcher should == this. This is a reverse watch, and it is not intercepted
     // If watchee == this, only the watches from remoteWatcher are sent on the wire, on behalf of other watchers
     provider.remoteWatcher.exists(remoteWatcher => watcher != remoteWatcher) && watchee == this
-  }
 
   def sendSystemMessage(message: SystemMessage): Unit =
-    try {
+    try
       // send to remote, unless watch message is intercepted by the remoteWatcher
       message match {
         case Watch(watchee, watcher) =>
@@ -759,7 +747,7 @@ private[pekko] class RemoteActorRef private[pekko] (
         case _ =>
           remote.send(message, OptionVal.None, this)
       }
-    } catch handleException(message, Actor.noSender)
+    catch handleException(message, Actor.noSender)
 
   override def !(message: Any)(implicit sender: ActorRef = Actor.noSender): Unit = {
     if (message == null) throw InvalidMessageException("Message is null")

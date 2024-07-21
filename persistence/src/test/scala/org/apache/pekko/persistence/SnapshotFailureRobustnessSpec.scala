@@ -86,13 +86,12 @@ object SnapshotFailureRobustnessSpec {
   }
 
   class FailingLocalSnapshotStore(config: Config) extends LocalSnapshotStore(config) {
-    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit = {
+    override def save(metadata: SnapshotMetadata, snapshot: Any): Unit =
       if (metadata.sequenceNr == 2 || snapshot.toString.startsWith("boom")) {
         val bytes = "b0rkb0rk".getBytes(StandardCharsets.UTF_8) // length >= 8 to prevent EOF exception
         val tmpFile = withOutputStream(metadata)(_.write(bytes))
         tmpFile.renameTo(snapshotFileForWrite(metadata))
       } else super.save(metadata, snapshot)
-    }
   }
 
   class DeleteFailingLocalSnapshotStore(config: Config) extends LocalSnapshotStore(config) {
@@ -253,9 +252,8 @@ class SnapshotIsOptionalSpec
         expectMsg("boom2-2") // from event replay
         expectMsg(RecoveryCompleted)
         expectNoMessage()
-      } finally {
+      } finally
         system.eventStream.publish(TestEvent.UnMute(EventFilter.error(start = "Error loading snapshot [")))
-      }
     }
 
   }

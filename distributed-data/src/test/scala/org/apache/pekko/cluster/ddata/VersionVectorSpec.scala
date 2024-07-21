@@ -34,9 +34,8 @@ class VersionVectorSpec
   val node3 = UniqueAddress(node1.address.copy(port = Some(7356)), 3L)
   val node4 = UniqueAddress(node1.address.copy(port = Some(7357)), 4L)
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown()
-  }
 
   "A VersionVector" must {
 

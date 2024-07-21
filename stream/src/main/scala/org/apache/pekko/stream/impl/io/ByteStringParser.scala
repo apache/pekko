@@ -137,7 +137,7 @@ import pekko.util.ByteString
       doParse()
     }
 
-    override def onUpstreamFinish(): Unit = {
+    override def onUpstreamFinish(): Unit =
       // If we have no a pending pull from downstream, attempt to invoke the parser again. This will handle
       // truncation if necessary, or complete the stage (and maybe a final emit).
       if (isAvailable(objOut)) doParse()
@@ -146,7 +146,6 @@ import pekko.util.ByteString
         if (acceptUpstreamFinish) completeStage()
         else current.onTruncation()
       }
-    }
 
     setHandlers(bytesIn, objOut, this)
   }

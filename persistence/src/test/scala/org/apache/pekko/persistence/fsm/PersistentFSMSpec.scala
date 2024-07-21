@@ -555,14 +555,13 @@ object PersistentFSMSpec {
      * @param cartBeforeEvent state data of the previous state
      */
     // #customer-apply-event
-    override def applyEvent(event: DomainEvent, cartBeforeEvent: ShoppingCart): ShoppingCart = {
+    override def applyEvent(event: DomainEvent, cartBeforeEvent: ShoppingCart): ShoppingCart =
       event match {
         case ItemAdded(item)  => cartBeforeEvent.addItem(item)
         case OrderExecuted    => cartBeforeEvent
         case OrderDiscarded   => cartBeforeEvent.empty()
         case CustomerInactive => cartBeforeEvent
       }
-    }
     // #customer-apply-event
   }
 

@@ -35,11 +35,10 @@ object ActorRefSpec {
     var replyTo: ActorRef = null
 
     def receive = {
-      case "complexRequest" => {
+      case "complexRequest" =>
         replyTo = sender()
         val worker = context.actorOf(Props[WorkerActor]())
         worker ! "work"
-      }
       case "complexRequest2" =>
         val worker = context.actorOf(Props[WorkerActor]())
         worker ! ReplyTo(sender())
@@ -51,15 +50,13 @@ object ActorRefSpec {
   class WorkerActor() extends Actor {
     import context.system
     def receive = {
-      case "work" => {
+      case "work" =>
         work()
         sender() ! "workDone"
         context.stop(self)
-      }
-      case ReplyTo(replyTo) => {
+      case ReplyTo(replyTo) =>
         work()
         replyTo ! "complexReply"
-      }
     }
 
     private def work(): Unit = Thread.sleep(1.second.dilated.toMillis)
@@ -71,12 +68,10 @@ object ActorRefSpec {
       case "complex"  => replyActor ! "complexRequest"
       case "complex2" => replyActor ! "complexRequest2"
       case "simple"   => replyActor ! "simpleRequest"
-      case "complexReply" => {
+      case "complexReply" =>
         latch.countDown()
-      }
-      case "simpleReply" => {
+      case "simpleReply" =>
         latch.countDown()
-      }
     }
   }
 

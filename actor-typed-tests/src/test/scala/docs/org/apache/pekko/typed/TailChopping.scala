@@ -34,12 +34,12 @@ object TailChopping {
       nextRequestAfter: FiniteDuration,
       replyTo: ActorRef[Reply],
       finalTimeout: FiniteDuration,
-      timeoutReply: Reply): Behavior[Command] = {
+      timeoutReply: Reply): Behavior[Command] =
     Behaviors.setup { context =>
       Behaviors.withTimers { timers =>
         val replyAdapter = context.messageAdapter[Reply](WrappedReply(_))
 
-        def waiting(requestCount: Int): Behavior[Command] = {
+        def waiting(requestCount: Int): Behavior[Command] =
           Behaviors.receiveMessage {
             case WrappedReply(reply) =>
               replyTo ! reply.asInstanceOf[Reply]
@@ -52,7 +52,6 @@ object TailChopping {
               replyTo ! timeoutReply
               Behaviors.stopped
           }
-        }
 
         def sendNextRequest(requestCount: Int): Behavior[Command] = {
           if (sendRequest(requestCount, replyAdapter)) {
@@ -66,7 +65,6 @@ object TailChopping {
         sendNextRequest(1)
       }
     }
-  }
 
 }
 //#behavior

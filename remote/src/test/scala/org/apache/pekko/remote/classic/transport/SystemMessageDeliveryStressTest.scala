@@ -75,12 +75,11 @@ object SystemMessageDeliveryStressTest {
 
     override def getParent = provider.tempContainer
 
-    override def sendSystemMessage(message: SystemMessage): Unit = {
+    override def sendSystemMessage(message: SystemMessage): Unit =
       message match {
         case Failed(_, _, seq) => testActor ! seq
         case _                 =>
       }
-    }
   }
 
   class SystemMessageSender(val msgCount: Int, val burstSize: Int, val burstDelay: FiniteDuration, val target: ActorRef)

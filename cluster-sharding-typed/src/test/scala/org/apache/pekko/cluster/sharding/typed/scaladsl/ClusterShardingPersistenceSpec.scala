@@ -81,7 +81,7 @@ object ClusterShardingPersistenceSpec {
   // Promise completed by the actor when it's started.
   val entityActorRefs = new ConcurrentHashMap[String, Promise[ActorRef[Any]]]
 
-  def persistentEntity(entityId: String, shard: ActorRef[ShardCommand]): Behavior[Command] = {
+  def persistentEntity(entityId: String, shard: ActorRef[ShardCommand]): Behavior[Command] =
     Behaviors.setup { ctx =>
       entityActorRefs.get(entityId) match {
         case null    =>
@@ -150,7 +150,6 @@ object ClusterShardingPersistenceSpec {
           }
       }
     }
-  }
 
 }
 

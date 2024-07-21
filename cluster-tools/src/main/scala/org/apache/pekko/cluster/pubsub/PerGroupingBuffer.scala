@@ -21,10 +21,9 @@ private[pubsub] trait PerGroupingBuffer {
 
   private val buffers: MessageBufferMap[String] = new MessageBufferMap()
 
-  def bufferOr(grouping: String, message: Any, originalSender: ActorRef)(action: => Unit): Unit = {
+  def bufferOr(grouping: String, message: Any, originalSender: ActorRef)(action: => Unit): Unit =
     if (!buffers.contains(grouping)) action
     else buffers.append(grouping, message, originalSender)
-  }
 
   def recreateAndForwardMessagesIfNeeded(grouping: String, recipient: => ActorRef): Unit = {
     val buffer = buffers.getOrEmpty(grouping)
@@ -39,11 +38,10 @@ private[pubsub] trait PerGroupingBuffer {
     buffers.remove(grouping)
   }
 
-  private def forwardMessages(messages: MessageBuffer, recipient: ActorRef): Unit = {
+  private def forwardMessages(messages: MessageBuffer, recipient: ActorRef): Unit =
     messages.foreach {
       case (message, originalSender) => recipient.tell(message, originalSender)
     }
-  }
 
   def initializeGrouping(grouping: String): Unit = buffers.add(grouping)
 }

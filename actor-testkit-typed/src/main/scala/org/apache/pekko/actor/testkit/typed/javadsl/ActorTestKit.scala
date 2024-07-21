@@ -122,9 +122,8 @@ object ActorTestKit {
    *                             an error is printed to stdout when the system did not shutdown but
    *                             no exception is thrown.
    */
-  def shutdown(system: ActorSystem[_], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit = {
+  def shutdown(system: ActorSystem[_], duration: Duration, throwIfShutdownTimesOut: Boolean): Unit =
     TestKitUtils.shutdown(system, duration.asScala, throwIfShutdownTimesOut)
-  }
 
   /**
    * Shutdown the given [[pekko.actor.typed.ActorSystem]] and block until it shuts down,

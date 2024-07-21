@@ -457,9 +457,8 @@ object Simulator {
 
     private def passivateExcessEntities(): immutable.Seq[EntityId] = {
       val passivated = mutable.ListBuffer.empty[EntityId]
-      while (nextAccess.size > perShardLimit) {
+      while (nextAccess.size > perShardLimit)
         nextAccess.remove(nextAccess.lastKey).foreach(passivated.+=)
-      }
       passivated.result()
     }
   }

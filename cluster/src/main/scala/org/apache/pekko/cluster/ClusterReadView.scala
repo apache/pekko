@@ -66,15 +66,14 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
   val selfAddress: Address = cluster.selfAddress
 
   // create actor that subscribes to the cluster eventBus to update current read view state
-  private val eventBusListener: ActorRef = {
+  private val eventBusListener: ActorRef =
     cluster.system
       .systemActorOf(Props(new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
           override def preStart(): Unit = cluster.subscribe(this.self, classOf[ClusterDomainEvent])
 
           // make sure that final state has member status Removed
-          override def postStop(): Unit = {
+          override def postStop(): Unit =
             selfRemoved() // make sure it ends as Removed even though MemberRemoved message didn't make it
-          }
 
           private def selfRemoved(): Unit = {
             val oldState = _state.get()
@@ -159,7 +158,6 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
               _state.set(oldState.copy(clusterState = s, selfMember = newSelfMember))
           }
         }).withDispatcher(cluster.settings.UseDispatcher).withDeploy(Deploy.local), name = "clusterEventBusListener")
-  }
 
   def state: CurrentClusterState = _state.get().clusterState
 
@@ -228,7 +226,7 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
    */
   private[cluster] def latestStats: CurrentInternalStats = _state.get().latestStats
 
-  private def logInfoVerbose(event: ClusterDomainEvent): Unit = {
+  private def logInfoVerbose(event: ClusterDomainEvent): Unit =
     if (cluster.settings.LogInfoVerbose) {
       event match {
         case _: SeenChanged | _: CurrentInternalStats => // ignore
@@ -250,14 +248,12 @@ import pekko.dispatch.UnboundedMessageQueueSemantics
           logInfo("event {}", event)
       }
     }
-  }
 
   /**
    * Unsubscribe to cluster events.
    */
-  def close(): Unit = {
+  def close(): Unit =
     if (!eventBusListener.isTerminated)
       eventBusListener ! PoisonPill
-  }
 
 }

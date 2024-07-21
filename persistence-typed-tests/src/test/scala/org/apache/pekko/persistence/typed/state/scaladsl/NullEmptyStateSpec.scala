@@ -43,14 +43,14 @@ class NullEmptyStateSpec
     DurableStateBehavior[String, String](
       persistenceId,
       emptyState = null,
-      commandHandler = (state, command) => {
+      commandHandler = (state, command) =>
         if (command == "stop")
           Effect.stop()
         else if (state == null)
           Effect.persist(command).thenReply(probe)(newState => newState)
         else
           Effect.persist(s"$state:$command").thenReply(probe)(newState => newState)
-      })
+    )
 
   "A typed persistent actor with null empty state" must {
     "persist and update state" in {

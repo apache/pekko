@@ -148,7 +148,7 @@ abstract class AeronStreamConsistencySpec
             pool.release(envelope)
           }
           .failed
-          .foreach { _.printStackTrace }
+          .foreach(_.printStackTrace)
 
         within(10.seconds) {
           Source(1 to 100)

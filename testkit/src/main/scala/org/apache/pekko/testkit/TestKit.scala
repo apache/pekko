@@ -88,9 +88,8 @@ object TestActor {
 
     override def decider = defaultDecider // not actually invoked
 
-    override def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit = {
+    override def handleChildTerminated(context: ActorContext, child: ActorRef, children: Iterable[ActorRef]): Unit =
       delegates -= child
-    }
 
     override def processFailure(
         context: ActorContext,
@@ -98,18 +97,16 @@ object TestActor {
         child: ActorRef,
         cause: Throwable,
         stats: ChildRestartStats,
-        children: Iterable[ChildRestartStats]): Unit = {
+        children: Iterable[ChildRestartStats]): Unit =
       delegate(child).processFailure(context, restart, child, cause, stats, children)
-    }
 
     override def handleFailure(
         context: ActorContext,
         child: ActorRef,
         cause: Throwable,
         stats: ChildRestartStats,
-        children: Iterable[ChildRestartStats]): Boolean = {
+        children: Iterable[ChildRestartStats]): Boolean =
       delegate(child).handleFailure(context, child, cause, stats, children)
-    }
   }
 
   // make creator serializable, for VerifySerializabilitySpec
@@ -211,12 +208,12 @@ trait TestKitBase {
    * Ignore all messages in the test actor for which the given partial
    * function returns true.
    */
-  def ignoreMsg(f: PartialFunction[Any, Boolean]): Unit = { testActor ! TestActor.SetIgnore(Some(f)) }
+  def ignoreMsg(f: PartialFunction[Any, Boolean]): Unit = testActor ! TestActor.SetIgnore(Some(f))
 
   /**
    * Stop ignoring messages in the test actor.
    */
-  def ignoreNoMsg(): Unit = { testActor ! TestActor.SetIgnore(None) }
+  def ignoreNoMsg(): Unit = testActor ! TestActor.SetIgnore(None)
 
   /**
    * Have the testActor watch someone (i.e. `context.watch(...)`).
@@ -305,13 +302,12 @@ trait TestKitBase {
     val stop = now + _max
 
     @tailrec
-    def poll(t: Duration): Unit = {
+    def poll(t: Duration): Unit =
       if (!p) {
         assert(now < stop, s"timeout ${_max} expired: $message")
         Thread.sleep(t.toMillis)
         poll((stop - now) min interval)
       }
-    }
 
     poll(_max min interval)
   }
@@ -380,9 +376,9 @@ trait TestKitBase {
       // because Java API and not wanting to return a value will be "return null"
       val instantNow = now
       val result =
-        try {
+        try
           a
-        } catch {
+        catch {
           case e: Throwable => throw e
         }
 
@@ -651,12 +647,11 @@ trait TestKitBase {
       missing: Seq[Any],
       unexpected: Seq[Any],
       missingMessage: String,
-      unexpectedMessage: String): Unit = {
+      unexpectedMessage: String): Unit =
     assert(
       missing.isEmpty && unexpected.isEmpty,
       (if (missing.isEmpty) "" else missing.mkString(missingMessage + " [", ", ", "] ")) +
       (if (unexpected.isEmpty) "" else unexpected.mkString(unexpectedMessage + " [", ", ", "]")))
-  }
 
   private def expectMsgAllOf_internal[T](max: FiniteDuration, obj: T*): immutable.Seq[T] = {
     val recv = receiveN_internal(obj.size, max)
@@ -732,17 +727,15 @@ trait TestKitBase {
    * NOTE! Supplied value is always dilated.
    */
   @deprecated(message = "Use expectNoMessage instead", since = "Akka 2.5.5")
-  def expectNoMsg(max: FiniteDuration): Unit = {
+  def expectNoMsg(max: FiniteDuration): Unit =
     expectNoMsg_internal(max.dilated)
-  }
 
   /**
    * Assert that no message is received for the specified time.
    * Supplied value is not dilated.
    */
-  def expectNoMessage(max: FiniteDuration) = {
+  def expectNoMessage(max: FiniteDuration) =
     expectNoMsg_internal(max)
-  }
 
   /**
    * Assert that no message is received. Waits for the default period configured as
@@ -808,7 +801,7 @@ trait TestKitBase {
     var msg: Message = NullMessage
 
     @tailrec
-    def doit(acc: List[T], count: Int): List[T] = {
+    def doit(acc: List[T], count: Int): List[T] =
       if (count >= messages) acc.reverse
       else {
         receiveOne((stop - now) min idle)
@@ -826,7 +819,6 @@ trait TestKitBase {
           case unexpected => throw new RuntimeException(s"Unexpected: $unexpected") // exhaustiveness check
         }
       }
-    }
 
     val ret = doit(Nil, 0)
     lastWasNoMsg = true
@@ -890,9 +882,8 @@ trait TestKitBase {
   def shutdown(
       actorSystem: ActorSystem = system,
       duration: Duration = Duration.Undefined,
-      verifySystemShutdown: Boolean = false): Unit = {
+      verifySystemShutdown: Boolean = false): Unit =
     TestKit.shutdownActorSystem(actorSystem, duration, verifySystemShutdown)
-  }
 
   /**
    * Spawns an actor as a child of this test actor, and returns the child's ActorRef.
@@ -999,7 +990,7 @@ object TestKit {
     val stop = now + max
 
     @tailrec
-    def poll(): Boolean = {
+    def poll(): Boolean =
       if (!p) {
         val toSleep = stop - now
         if (toSleep <= Duration.Zero) {
@@ -1010,7 +1001,6 @@ object TestKit {
           poll()
         }
       } else true
-    }
 
     poll()
   }

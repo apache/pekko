@@ -73,7 +73,7 @@ class MailboxSelectorSpec(config: Config)
   case class WhatsYourMailbox(replyTo: ActorRef[MessageQueue]) extends Command
   case class WhatsYourDispatcher(replyTo: ActorRef[String]) extends Command
 
-  private def extract[R](context: ActorContext[_], f: ActorCell => R): R = {
+  private def extract[R](context: ActorContext[_], f: ActorCell => R): R =
     context match {
       case adapter: ActorContextAdapter[_] =>
         adapter.classicActorContext match {
@@ -82,7 +82,6 @@ class MailboxSelectorSpec(config: Config)
         }
       case unexpected => throw new RuntimeException(s"Unexpected: $unexpected")
     }
-  }
 
   private def behavior: Behavior[Command] =
     Behaviors.setup { context =>

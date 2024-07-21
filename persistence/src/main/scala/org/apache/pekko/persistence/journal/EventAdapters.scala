@@ -43,7 +43,7 @@ class EventAdapters(
    *
    * Falls back to [[IdentityEventAdapter]] if no adapter was defined for the given class.
    */
-  def get(clazz: Class[_]): EventAdapter = {
+  def get(clazz: Class[_]): EventAdapter =
     map.get(clazz) match {
       case null => // bindings are ordered from most specific to least specific
         val value = bindings.filter {
@@ -60,7 +60,6 @@ class EventAdapters(
         }
       case value => value
     }
-  }
 
   override def toString =
     s"${getClass.getName}($map, $bindings)"

@@ -48,7 +48,7 @@ trait Timers extends Actor {
     super.aroundPostStop()
   }
 
-  override protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit = {
+  override protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit =
     msg match {
       case timerMsg: TimerSchedulerImpl.TimerMsg =>
         _timers.interceptTimerMsg(timerMsg) match {
@@ -65,7 +65,6 @@ trait Timers extends Actor {
       case _ =>
         super.aroundReceive(receive, msg)
     }
-  }
 
 }
 

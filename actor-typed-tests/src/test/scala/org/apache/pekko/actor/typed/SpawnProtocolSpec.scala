@@ -78,9 +78,8 @@ class SpawnProtocolSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike w
         sys ! SpawnProtocol.Spawn(target, "child2", Props.empty, guardianReply.ref)
         val child2 = guardianReply.receiveMessage()
         child2.path.elements.mkString("/", "/", "") should ===("/user/child2")
-      } finally {
+      } finally
         ActorTestKit.shutdown(sys)
-      }
     }
 
     "spawn with unique name when given name is taken" in {

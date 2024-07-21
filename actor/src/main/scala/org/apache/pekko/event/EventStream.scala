@@ -48,10 +48,9 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
 
   protected def classify(event: Any): Class[_] = event.getClass
 
-  protected def publish(event: Any, subscriber: ActorRef) = {
+  protected def publish(event: Any, subscriber: ActorRef) =
     if (sys == null && subscriber.isTerminated) unsubscribe(subscriber)
     else subscriber ! event
-  }
 
   override def subscribe(subscriber: ActorRef, channel: Class[_]): Boolean = {
     if (subscriber eq null) throw new IllegalArgumentException("subscriber is null")
@@ -91,7 +90,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
    * INTERNAL API
    */
   @tailrec
-  final private[pekko] def initUnsubscriber(unsubscriber: ActorRef): Boolean = {
+  final private[pekko] def initUnsubscriber(unsubscriber: ActorRef): Boolean =
     // sys may be null for backwards compatibility reasons
     if (sys eq null) false
     else
@@ -122,13 +121,12 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
                 s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
           false
       }
-  }
 
   /**
    * INTERNAL API
    */
   @tailrec
-  private def registerWithUnsubscriber(subscriber: ActorRef): Unit = {
+  private def registerWithUnsubscriber(subscriber: ActorRef): Unit =
     // sys may be null for backwards compatibility reasons
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) =>
@@ -138,7 +136,6 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
       case Right(unsubscriber) =>
         unsubscriber ! EventStreamUnsubscriber.Register(subscriber)
     }
-  }
 
   /**
    * INTERNAL API
@@ -148,7 +145,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
    * catch up and perform the appropriate operation.
    */
   @tailrec
-  private def unregisterIfNoMoreSubscribedChannels(subscriber: ActorRef): Unit = {
+  private def unregisterIfNoMoreSubscribedChannels(subscriber: ActorRef): Unit =
     // sys may be null for backwards compatibility reasons
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) =>
@@ -158,6 +155,5 @@ class EventStream(sys: ActorSystem, private val debug: Boolean) extends LoggingB
       case Right(unsubscriber) =>
         unsubscriber ! EventStreamUnsubscriber.UnregisterIfNoMoreSubscribedChannels(subscriber)
     }
-  }
 
 }

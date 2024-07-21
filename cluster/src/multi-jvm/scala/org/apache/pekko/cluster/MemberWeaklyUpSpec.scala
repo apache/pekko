@@ -66,9 +66,8 @@ abstract class MemberWeaklyUpSpec extends MultiNodeClusterSpec(MemberWeaklyUpSpe
       20 seconds) {
       runOn(first) {
         // split the cluster in two parts (first, second) / (third, fourth, fifth)
-        for (role1 <- side1; role2 <- side2) {
+        for (role1 <- side1; role2 <- side2)
           testConductor.blackhole(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("after-split")
 
@@ -115,9 +114,8 @@ abstract class MemberWeaklyUpSpec extends MultiNodeClusterSpec(MemberWeaklyUpSpe
 
     "change status to Up after healed network partition" taggedAs LongRunningTest in within(20 seconds) {
       runOn(first) {
-        for (role1 <- side1; role2 <- side2) {
+        for (role1 <- side1; role2 <- side2)
           testConductor.passThrough(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("after-passThrough")
 

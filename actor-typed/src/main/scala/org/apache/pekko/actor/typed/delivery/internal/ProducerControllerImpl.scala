@@ -143,7 +143,7 @@ object ProducerControllerImpl {
   def apply[A: ClassTag](
       producerId: String,
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings): Behavior[Command[A]] = {
+      settings: ProducerController.Settings): Behavior[Command[A]] =
     Behaviors
       .setup[InternalCommand] { context =>
         ActorFlightRecorder(context.system).delivery.producerCreated(producerId, context.self.path)
@@ -167,7 +167,6 @@ object ProducerControllerImpl {
         }
       }
       .narrow
-  }
 
   /**
    * For custom `send` function. For example used with Sharding where the message must be wrapped in
@@ -177,7 +176,7 @@ object ProducerControllerImpl {
       producerId: String,
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
       settings: ProducerController.Settings,
-      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] = {
+      send: ConsumerController.SequencedMessage[A] => Unit): Behavior[Command[A]] =
     Behaviors
       .setup[InternalCommand] { context =>
         ActorFlightRecorder(context.system).delivery.producerCreated(producerId, context.self.path)
@@ -201,20 +200,17 @@ object ProducerControllerImpl {
         }
       }
       .narrow
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: ProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] = {
-
+      settings: ProducerController.Settings): Option[ActorRef[DurableProducerQueue.Command[A]]] =
     durableQueueBehavior.map { b =>
       val ref = context.spawn(b, "durable", DispatcherSelector.sameAsParent())
       context.watchWith(ref, DurableQueueTerminated)
       askLoadState(context, Some(ref), settings, attempt = 1)
       ref
     }
-  }
 
   private def askLoadState[A](
       context: ActorContext[InternalCommand],
@@ -232,9 +228,8 @@ object ProducerControllerImpl {
     }
   }
 
-  private def createInitialState[A](hasDurableQueue: Boolean) = {
+  private def createInitialState[A](hasDurableQueue: Boolean) =
     if (hasDurableQueue) None else Some(DurableProducerQueue.State.empty[A])
-  }
 
   private def createState[A](
       self: ActorRef[InternalCommand],
@@ -269,7 +264,7 @@ object ProducerControllerImpl {
       initialState: Option[DurableProducerQueue.State[A]])(
       thenBecomeActive: (
           ActorRef[RequestNext[A]], ActorRef[ConsumerController.Command[A]],
-          DurableProducerQueue.State[A]) => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+          DurableProducerQueue.State[A]) => Behavior[InternalCommand]): Behavior[InternalCommand] =
     Behaviors.receiveMessagePartial[InternalCommand] {
       case RegisterConsumer(c: ActorRef[ConsumerController.Command[A]] @unchecked) =>
         (producer, initialState) match {
@@ -313,14 +308,12 @@ object ProducerControllerImpl {
       case DurableQueueTerminated =>
         throw new IllegalStateException("DurableQueue was unexpectedly terminated.")
     }
-  }
 
   private def becomeActive[A: ClassTag](
       producerId: String,
       durableQueue: Option[ActorRef[DurableProducerQueue.Command[A]]],
       settings: ProducerController.Settings,
-      state: State[A]): Behavior[InternalCommand] = {
-
+      state: State[A]): Behavior[InternalCommand] =
     Behaviors.setup { context =>
       val flightRecorder = ActorFlightRecorder(context.system).delivery
       flightRecorder.producerStarted(producerId, context.self.path)
@@ -340,12 +333,10 @@ object ProducerControllerImpl {
           .active(state.copy(requested = requested))
       }
     }
-  }
 
-  def enforceLocalProducer(ref: ActorRef[_]): Unit = {
+  def enforceLocalProducer(ref: ActorRef[_]): Unit =
     if (ref.path.address.hasGlobalScope)
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
-  }
 
   def createChunks[A](m: A, chunkSize: Int, serialization: Serialization): immutable.Seq[ChunkedMessage] = {
     val mAnyRef = m.asInstanceOf[AnyRef]
@@ -445,19 +436,17 @@ private class ProducerControllerImpl[A: ClassTag](
           storeMessageSentInProgress = 0))
     }
 
-    def checkOnMsgRequestedState(): Unit = {
+    def checkOnMsgRequestedState(): Unit =
       if (!s.requested || s.currentSeqNr > s.requestedSeqNr) {
         throw new IllegalStateException(
           s"Unexpected Msg when no demand, requested ${s.requested}, " +
           s"requestedSeqNr ${s.requestedSeqNr}, currentSeqNr ${s.currentSeqNr}")
       }
-    }
 
-    def checkReceiveMessageRemainingChunksState(): Unit = {
+    def checkReceiveMessageRemainingChunksState(): Unit =
       if (s.remainingChunks.nonEmpty)
         throw new IllegalStateException(
           s"Received unexpected message before sending remaining [${s.remainingChunks.size}] chunks.")
-    }
 
     def receiveRequest(
         newConfirmedSeqNr: SeqNr,
@@ -558,7 +547,7 @@ private class ProducerControllerImpl[A: ClassTag](
       s.copy(confirmedSeqNr = newMaxConfirmedSeqNr, replyAfterStore = newReplyAfterStore, unconfirmed = newUnconfirmed)
     }
 
-    def receiveStoreMessageSentCompleted(seqNr: SeqNr): Behavior[InternalCommand] = {
+    def receiveStoreMessageSentCompleted(seqNr: SeqNr): Behavior[InternalCommand] =
       if (seqNr == s.storeMessageSentInProgress) {
         if (seqNr != s.currentSeqNr)
           throw new IllegalStateException(s"currentSeqNr [${s.currentSeqNr}] not matching stored seqNr [$seqNr]")
@@ -582,9 +571,8 @@ private class ProducerControllerImpl[A: ClassTag](
           s.storeMessageSentInProgress)
         Behaviors.same
       }
-    }
 
-    def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] = {
+    def receiveStoreMessageSentFailed(f: StoreMessageSentFailed[A]): Behavior[InternalCommand] =
       if (f.messageSent.seqNr == s.storeMessageSentInProgress) {
         if (f.attempt >= settings.durableQueueRetryAttempts) {
           val errorMessage =
@@ -639,7 +627,6 @@ private class ProducerControllerImpl[A: ClassTag](
       } else {
         Behaviors.same
       }
-    }
 
     def receiveResend(fromSeqNr: SeqNr): Behavior[InternalCommand] = {
       flightRecorder.producerReceivedResend(producerId, fromSeqNr)
@@ -651,7 +638,7 @@ private class ProducerControllerImpl[A: ClassTag](
         Behaviors.same
     }
 
-    def resendUnconfirmed(newUnconfirmed: Vector[SequencedMessage[A]]): Unit = {
+    def resendUnconfirmed(newUnconfirmed: Vector[SequencedMessage[A]]): Unit =
       if (newUnconfirmed.nonEmpty) {
         val fromSeqNr = newUnconfirmed.head.seqNr
         val toSeqNr = newUnconfirmed.last.seqNr
@@ -659,7 +646,6 @@ private class ProducerControllerImpl[A: ClassTag](
         context.log.debug("Resending [{} - {}].", fromSeqNr, toSeqNr)
         newUnconfirmed.foreach(s.send)
       }
-    }
 
     def receiveResendFirstUnconfirmed(): Behavior[InternalCommand] = {
       if (s.unconfirmed.nonEmpty) {
@@ -710,7 +696,7 @@ private class ProducerControllerImpl[A: ClassTag](
       active(s.copy(firstSeqNr = newFirstSeqNr, send = newSend))
     }
 
-    def receiveSendChunk(): Behavior[InternalCommand] = {
+    def receiveSendChunk(): Behavior[InternalCommand] =
       if (s.remainingChunks.nonEmpty && s.remainingChunks.head.seqNr <= s.requestedSeqNr && s
           .storeMessageSentInProgress == 0) {
         if (traceEnabled)
@@ -728,7 +714,6 @@ private class ProducerControllerImpl[A: ClassTag](
       } else {
         Behaviors.same
       }
-    }
 
     def chunk(m: A, ack: Boolean): immutable.Seq[SequencedMessage[A]] = {
       val chunkSize = settings.chunkLargeMessagesBytes
@@ -842,12 +827,11 @@ private class ProducerControllerImpl[A: ClassTag](
     }
   }
 
-  private def storeMessageSent(messageSent: MessageSent[A], attempt: Int): Unit = {
+  private def storeMessageSent(messageSent: MessageSent[A], attempt: Int): Unit =
     context.ask[StoreMessageSent[A], StoreMessageSentAck](
       durableQueue.get,
       askReplyTo => StoreMessageSent(messageSent, askReplyTo)) {
       case Success(_) => StoreMessageSentCompleted(messageSent)
       case Failure(_) => StoreMessageSentFailed(messageSent, attempt) // timeout
     }
-  }
 }

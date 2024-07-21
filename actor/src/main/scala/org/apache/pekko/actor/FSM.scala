@@ -193,9 +193,8 @@ object FSM {
         stateData: D = stateData,
         timeout: Option[FiniteDuration] = timeout,
         stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+        replies: List[Any] = replies): State[S, D] =
       new SilentState(stateName, stateData, timeout, stopReason, replies)
-    }
 
   }
 
@@ -210,13 +209,11 @@ object FSM {
         stateData: D,
         timeout: Option[FiniteDuration] = None,
         stopReason: Option[Reason] = None,
-        replies: List[Any] = Nil) = {
+        replies: List[Any] = Nil) =
       new State(stateName, stateData, timeout, stopReason, replies)
-    }
 
-    def unapply[S, D](state: State[S, D]): Option[(S, D, Option[FiniteDuration], Option[Reason], List[Any])] = {
+    def unapply[S, D](state: State[S, D]): Option[(S, D, Option[FiniteDuration], Option[Reason], List[Any])] =
       Some((state.stateName, state.stateData, state.timeout, state.stopReason, state.replies))
-    }
   }
   class State[S, D](
       val stateName: S,
@@ -227,12 +224,11 @@ object FSM {
       extends Product
       with Serializable {
 
-    def canEqual(that: Any): Boolean = {
+    def canEqual(that: Any): Boolean =
       that match {
         case _: State[_, _] => true
         case _              => false
       }
-    }
 
     override def equals(that: Any) = that match {
       case other: State[_, _] =>
@@ -268,9 +264,8 @@ object FSM {
         stateData: D = stateData,
         timeout: Option[FiniteDuration] = timeout,
         stopReason: Option[Reason] = stopReason,
-        replies: List[Any] = replies): State[S, D] = {
+        replies: List[Any] = replies): State[S, D] =
       new State(stateName, stateData, timeout, stopReason, replies)
-    }
 
     /**
      * Modify state transition descriptor to include a state timeout for the
@@ -303,35 +298,31 @@ object FSM {
      *
      * @return this state transition descriptor
      */
-    def replying(replyValue: Any): State[S, D] = {
+    def replying(replyValue: Any): State[S, D] =
       copy(replies = replyValue :: replies)
-    }
 
     /**
      * Modify state transition descriptor with new state data. The data will be
      * set when transitioning to the new state.
      */
     @nowarn("msg=deprecated")
-    def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D] = {
+    def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D] =
       copy(stateData = nextStateData)
-    }
 
     /**
      * INTERNAL API.
      */
-    private[pekko] def withStopReason(reason: Reason): State[S, D] = {
+    private[pekko] def withStopReason(reason: Reason): State[S, D] =
       copy(stopReason = Some(reason))
-    }
 
     /**
      * INTERNAL API.
      */
-    private[pekko] def withNotification(notifies: Boolean): State[S, D] = {
+    private[pekko] def withNotification(notifies: Boolean): State[S, D] =
       if (notifies)
         State(stateName, stateData, timeout, stopReason, replies)
       else
         new SilentState(stateName, stateData, timeout, stopReason, replies)
-    }
   }
 
   /**
@@ -688,7 +679,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   implicit final def total2pf(transitionHandler: (S, S) => Unit): TransitionHandler =
     new TransitionHandler {
       def isDefinedAt(in: (S, S)) = true
-      def apply(in: (S, S)): Unit = { transitionHandler(in._1, in._2) }
+      def apply(in: (S, S)): Unit = transitionHandler(in._1, in._2)
     }
 
   /**
@@ -723,10 +714,9 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   /**
    * Return current state name (i.e. object of type S)
    */
-  final def stateName: S = {
+  final def stateName: S =
     if (currentState != null) currentState.stateName
     else throw new IllegalStateException("You must call `startWith` before using `stateName`")
-  }
 
   /**
    * Return current state data (i.e. object of type D)
@@ -771,7 +761,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private val stateFunctions = mutable.Map[S, StateFunction]()
   private val stateTimeouts = mutable.Map[S, Timeout]()
 
-  private def register(name: S, function: StateFunction, timeout: Timeout): Unit = {
+  private def register(name: S, function: StateFunction, timeout: Timeout): Unit =
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name).orElse(function)
       stateTimeouts(name) = timeout.orElse(stateTimeouts(name))
@@ -779,7 +769,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
       stateFunctions(name) = function
       stateTimeouts(name) = timeout
     }
-  }
 
   /*
    * unhandled event handler
@@ -802,7 +791,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private var transitionEvent: List[TransitionHandler] = Nil
   private def handleTransition(prev: S, next: S): Unit = {
     val tuple = (prev, next)
-    for (te <- transitionEvent) { if (te.isDefinedAt(tuple)) te(tuple) }
+    for (te <- transitionEvent) if (te.isDefinedAt(tuple)) te(tuple)
   }
 
   /*
@@ -866,7 +855,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     applyState(nextState)
   }
 
-  private[pekko] def applyState(nextState: State): Unit = {
+  private[pekko] def applyState(nextState: State): Unit =
     nextState.stopReason match {
       case None => makeTransition(nextState)
       case _ =>
@@ -876,9 +865,8 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
         terminate(nextState)
         context.stop(self)
     }
-  }
 
-  private[pekko] def makeTransition(nextState: State): Unit = {
+  private[pekko] def makeTransition(nextState: State): Unit =
     if (!stateFunctions.contains(nextState.stateName)) {
       terminate(stay().withStopReason(Failure("Next state %s does not exist".format(nextState.stateName))))
     } else {
@@ -906,7 +894,6 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
           if (timeout.isDefined) timeoutFuture = scheduleTimeout(timeout.get)
       }
     }
-  }
 
   /**
    * Call `onTermination` hook; if you want to retain this behavior when
@@ -925,20 +912,19 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     super.postStop()
   }
 
-  private def terminate(nextState: State): Unit = {
+  private def terminate(nextState: State): Unit =
     if (currentState.stopReason.isEmpty) {
       val reason = nextState.stopReason.get
       logTermination(reason)
       for (timer <- timers.values) timer.cancel()
       timers.clear()
-      timeoutFuture.foreach { _.cancel() }
+      timeoutFuture.foreach(_.cancel())
       currentState = nextState
 
       val stopEvent = StopEvent(reason, currentState.stateName, currentState.stateData)
       if (terminateEvent.isDefinedAt(stopEvent))
         terminateEvent(stopEvent)
     }
-  }
 
   /**
    * By default [[pekko.actor.FSM.Failure]] is logged at error level and other reason

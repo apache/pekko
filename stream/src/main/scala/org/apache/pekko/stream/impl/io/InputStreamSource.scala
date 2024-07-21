@@ -58,18 +58,17 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
 
       override protected def logSource: Class[_] = classOf[InputStreamSource]
 
-      override def preStart(): Unit = {
-        try {
+      override def preStart(): Unit =
+        try
           inputStream = factory()
-        } catch {
+        catch {
           case NonFatal(t) =>
             mat.failure(new IOOperationIncompleteException(0, t))
             failStage(t)
         }
-      }
 
       override def onPull(): Unit =
-        try {
+        try
           inputStream.read(buffer) match {
             case -1 =>
               closeStage()
@@ -77,13 +76,13 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
               readBytesTotal += readBytes
               push(out, ByteString.fromArray(buffer, 0, readBytes))
           }
-        } catch {
+        catch {
           case NonFatal(t) =>
             failStream(t)
             failStage(t)
         }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         if (!isClosed) {
           closeInputStream()
           cause match {
@@ -97,13 +96,11 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
                   ex))
           }
         }
-      }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!isClosed) {
           mat.tryFailure(new AbruptStageTerminationException(this))
         }
-      }
 
       private def closeStage(): Unit = {
         closeInputStream()
@@ -116,16 +113,15 @@ private[pekko] final class InputStreamSource(factory: () => InputStream, chunkSi
         mat.tryFailure(new IOOperationIncompleteException(readBytesTotal, reason))
       }
 
-      private def closeInputStream(): Unit = {
-        try {
+      private def closeInputStream(): Unit =
+        try
           if (inputStream != null)
             inputStream.close()
-        } catch {
+        catch {
           case NonFatal(ex) =>
             mat.tryFailure(new IOOperationIncompleteException(readBytesTotal, ex))
             failStage(ex)
         }
-      }
 
       setHandler(out, this)
     }

@@ -44,9 +44,8 @@ object RememberEntitiesBatchedUpdatesSpec {
       case "ping" =>
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       probe ! Stopped(self.path.name.toInt)
-    }
   }
 
   def config = ConfigFactory.parseString("""

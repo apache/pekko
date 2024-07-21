@@ -61,12 +61,11 @@ object DurableStatePersistentBehaviorCompileOnly {
     // #command-handler
 
     // #behavior
-    def counter(id: String): DurableStateBehavior[Command[_], State] = {
+    def counter(id: String): DurableStateBehavior[Command[_], State] =
       DurableStateBehavior.apply[Command[_], State](
         persistenceId = PersistenceId.ofUniqueId(id),
         emptyState = State(0),
         commandHandler = commandHandler)
-    }
     // #behavior
   }
 
@@ -76,13 +75,12 @@ object DurableStatePersistentBehaviorCompileOnly {
 
     final case class State(value: Int) extends CborSerializable
 
-    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
+    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] =
       DurableStateBehavior.apply[Command[_], State](
         persistenceId,
         emptyState = State(0),
         commandHandler =
           (state, command) => throw new NotImplementedError("TODO: process the command & return an Effect"))
-    }
   }
   // #structure
 
@@ -97,7 +95,7 @@ object DurableStatePersistentBehaviorCompileOnly {
 
     final case class State(value: Int) extends CborSerializable
 
-    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
+    def counter(persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] =
       DurableStateBehavior.withEnforcedReplies[Command[_], State](
         persistenceId,
         emptyState = State(0),
@@ -110,7 +108,6 @@ object DurableStatePersistentBehaviorCompileOnly {
             case GetValue(replyTo) =>
               Effect.reply(replyTo)(state)
           })
-    }
     // #effects
   }
 

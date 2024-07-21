@@ -37,10 +37,9 @@ class FactorialBackend extends Actor with ActorLogging {
   }
 
   def factorial(n: Int): BigInt = {
-    @tailrec def factorialAcc(acc: BigInt, n: Int): BigInt = {
+    @tailrec def factorialAcc(acc: BigInt, n: Int): BigInt =
       if (n <= 1) acc
       else factorialAcc(acc * n, n - 1)
-    }
     factorialAcc(BigInt(1), n)
   }
 

@@ -30,9 +30,8 @@ class Ticket669Spec extends PekkoSpec with BeforeAndAfterAll with ImplicitSender
   import Ticket669Spec._
 
   // TODO: does this really make sense?
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     Thread.interrupted() // remove interrupted status.
-  }
 
   "A supervised actor with lifecycle PERMANENT" should {
     "be able to reply on failure during preRestart" in {
@@ -67,12 +66,10 @@ object Ticket669Spec {
       case _ => throw new Exception("test")
     }
 
-    override def preRestart(reason: scala.Throwable, msg: Option[Any]): Unit = {
+    override def preRestart(reason: scala.Throwable, msg: Option[Any]): Unit =
       sender() ! "failure1"
-    }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       sender() ! "failure2"
-    }
   }
 }

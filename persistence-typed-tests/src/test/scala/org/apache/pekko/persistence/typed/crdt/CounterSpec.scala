@@ -91,13 +91,11 @@ class CounterSpec extends ReplicationBaseSpec {
         r2Probe.expectMessage(2L)
       }
 
-      for (n <- 1 to 10) {
+      for (n <- 1 to 10)
         if (n % 2 == 0) r1 ! Increment
         else r1 ! Decrement
-      }
-      for (_ <- 1 to 10) {
+      for (_ <- 1 to 10)
         r2 ! Increment
-      }
 
       eventually {
         r1 ! Get(r1Probe.ref)

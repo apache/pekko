@@ -83,9 +83,8 @@ trait ExtensionId[T <: Extension] {
   /**
    * Returns an instance of the extension identified by this ExtensionId instance.
    */
-  def apply(system: ActorSystem): T = {
+  def apply(system: ActorSystem): T =
     java.util.Objects.requireNonNull(system, "system must not be null!").registerExtension(this)
-  }
 
   /**
    * Returns an instance of the extension identified by this ExtensionId instance.

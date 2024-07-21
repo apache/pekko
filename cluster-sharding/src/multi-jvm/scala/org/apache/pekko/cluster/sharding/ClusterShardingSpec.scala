@@ -294,9 +294,8 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
   import ClusterShardingSpec._
   import multiNodeConfig._
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     join(from, to, createCoordinator())
-  }
 
   lazy val replicator = system.actorOf(
     Replicator.props(ReplicatorSettings(system).withGossipInterval(1.second).withMaxDeltaElements(10)),
@@ -307,9 +306,8 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
     new DDataRememberEntitiesProvider(typeName, settings, majorityMinCap, replicator)
   }
 
-  def eventSourcedRememberEntitiesProvider(typeName: String, settings: ClusterShardingSettings) = {
+  def eventSourcedRememberEntitiesProvider(typeName: String, settings: ClusterShardingSettings) =
     new EventSourcedRememberEntitiesProvider(typeName, settings)
-  }
 
   def createCoordinator(): Unit = {
 
@@ -995,9 +993,8 @@ abstract class ClusterShardingSpec(multiNodeConfig: ClusterShardingSpecConfig)
 
     "ensure rebalance restarts shards" in within(50.seconds) {
       runOn(fourth) {
-        for (i <- 2 to 12) {
+        for (i <- 2 to 12)
           rebalancingPersistentRegion ! EntityEnvelope(i, Increment)
-        }
 
         for (i <- 2 to 12) {
           rebalancingPersistentRegion ! Get(i)

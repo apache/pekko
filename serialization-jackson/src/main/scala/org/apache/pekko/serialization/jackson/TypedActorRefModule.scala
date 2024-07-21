@@ -67,11 +67,10 @@ import pekko.annotation.InternalApi
     extends StdScalarDeserializer[ActorRef[_]](classOf[ActorRef[_]])
     with ActorSystemAccess {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): ActorRef[_] = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): ActorRef[_] =
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
       val serializedActorRef = jp.getText()
       ActorRefResolver(currentSystem().toTyped).resolveActorRef(serializedActorRef)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[ActorRef[_]]
-  }
 }

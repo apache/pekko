@@ -87,9 +87,8 @@ private[pekko] class MsgEncoder extends MessageToMessageEncoder[AnyRef] {
     case Direction.Both    => TCP.Direction.Both
   }
 
-  override def encode(ctx: ChannelHandlerContext, msg: AnyRef, out: java.util.List[AnyRef]): Unit = {
+  override def encode(ctx: ChannelHandlerContext, msg: AnyRef, out: java.util.List[AnyRef]): Unit =
     out.add(encode0(msg))
-  }
 
   private def encode0(msg: AnyRef): AnyRef = msg match {
     case x: NetworkOp =>
@@ -148,9 +147,8 @@ private[pekko] class MsgDecoder extends MessageToMessageDecoder[AnyRef] {
     case TCP.Direction.Both    => Direction.Both
   }
 
-  override def decode(ctx: ChannelHandlerContext, msg: AnyRef, out: java.util.List[AnyRef]): Unit = {
+  override def decode(ctx: ChannelHandlerContext, msg: AnyRef, out: java.util.List[AnyRef]): Unit =
     out.add(decode0(msg))
-  }
 
   private def decode0(msg: AnyRef): AnyRef = msg match {
     case w: TCP.Wrapper if w.getAllFields.size == 1 =>

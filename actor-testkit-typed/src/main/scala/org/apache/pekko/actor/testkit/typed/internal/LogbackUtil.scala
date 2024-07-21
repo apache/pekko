@@ -30,7 +30,7 @@ import scala.annotation.tailrec
     getLogbackLoggerInternal(loggerName, 50)
 
   @tailrec
-  private def getLogbackLoggerInternal(loggerName: String, count: Int): ch.qos.logback.classic.Logger = {
+  private def getLogbackLoggerInternal(loggerName: String, count: Int): ch.qos.logback.classic.Logger =
     LoggerFactory.getLogger(loggerNameOrRoot(loggerName)) match {
       case logger: ch.qos.logback.classic.Logger              => logger
       case _: org.slf4j.helpers.SubstituteLogger if count > 0 =>
@@ -43,9 +43,8 @@ import scala.annotation.tailrec
         throw new IllegalArgumentException(
           s"Requires Logback logger for [$loggerName], it was a [${other.getClass.getName}]")
     }
-  }
 
-  def convertLevel(level: ch.qos.logback.classic.Level): Level = {
+  def convertLevel(level: ch.qos.logback.classic.Level): Level =
     level.levelInt match {
       case ch.qos.logback.classic.Level.TRACE_INT => Level.TRACE
       case ch.qos.logback.classic.Level.DEBUG_INT => Level.DEBUG
@@ -55,5 +54,4 @@ import scala.annotation.tailrec
       case _ =>
         throw new IllegalArgumentException("Level " + level.levelStr + ", " + level.levelInt + " is unknown.")
     }
-  }
 }

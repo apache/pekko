@@ -47,10 +47,9 @@ private[pekko] final class AlwaysIncreasingClock() extends AtomicLong with WallC
     val currentSystemTime = System.currentTimeMillis()
     updateAndGet {
       new LongUnaryOperator {
-        override def applyAsLong(time: Long): Long = {
+        override def applyAsLong(time: Long): Long =
           if (currentSystemTime <= time) time + 1
           else currentSystemTime
-        }
       }
     }
   }

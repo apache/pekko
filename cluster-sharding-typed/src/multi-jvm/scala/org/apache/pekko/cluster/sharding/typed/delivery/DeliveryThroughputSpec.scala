@@ -94,7 +94,7 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
 
     private case class WrappedDelivery(d: ConsumerController.Delivery[Command]) extends Command
 
-    def apply(consumerController: ActorRef[ConsumerController.Start[Command]]): Behavior[Command] = {
+    def apply(consumerController: ActorRef[ConsumerController.Start[Command]]): Behavior[Command] =
       Behaviors.setup { context =>
         val traceEnabled = context.log.isTraceEnabled
         val deliveryAdapter =
@@ -128,7 +128,6 @@ object DeliveryThroughputSpec extends MultiNodeConfig {
 
       }
 
-    }
   }
 
   object Producer {

@@ -86,27 +86,25 @@ class Dispatcher(
   /**
    * INTERNAL API
    */
-  protected[pekko] def executeTask(invocation: TaskInvocation): Unit = {
-    try {
+  protected[pekko] def executeTask(invocation: TaskInvocation): Unit =
+    try
       executorService.execute(invocation)
-    } catch {
+    catch {
       case e: RejectedExecutionException =>
-        try {
+        try
           executorService.execute(invocation)
-        } catch {
+        catch {
           case e2: RejectedExecutionException =>
             eventStream.publish(Error(e, getClass.getName, getClass, "executeTask was rejected twice!"))
             throw e2
         }
     }
-  }
 
   /**
    * INTERNAL API
    */
-  protected[pekko] def createMailbox(actor: pekko.actor.Cell, mailboxType: MailboxType): Mailbox = {
+  protected[pekko] def createMailbox(actor: pekko.actor.Cell, mailboxType: MailboxType): Mailbox =
     new Mailbox(mailboxType.create(Some(actor.self), Some(actor.system))) with DefaultSystemMessageQueue
-  }
 
   private val esUpdater = AtomicReferenceFieldUpdater.newUpdater(
     classOf[Dispatcher],
@@ -130,7 +128,7 @@ class Dispatcher(
   protected[pekko] override def registerForExecution(
       mbox: Mailbox,
       hasMessageHint: Boolean,
-      hasSystemMessageHint: Boolean): Boolean = {
+      hasSystemMessageHint: Boolean): Boolean =
     if (mbox.canBeScheduledForExecution(hasMessageHint, hasSystemMessageHint)) { // This needs to be here to ensure thread safety and no races
       if (mbox.setAsScheduled()) {
         try {
@@ -150,7 +148,6 @@ class Dispatcher(
         }
       } else false
     } else false
-  }
 
   override val toString: String = Logging.simpleName(this) + "[" + id + "]"
 }

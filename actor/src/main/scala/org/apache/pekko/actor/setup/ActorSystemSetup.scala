@@ -66,9 +66,8 @@ final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val set
   /**
    * Java API: Extract a concrete [[pekko.actor.setup.Setup]] of type `T` if it is defined in the settings.
    */
-  def get[T <: Setup](clazz: Class[T]): Optional[T] = {
+  def get[T <: Setup](clazz: Class[T]): Optional[T] =
     setups.get(clazz).map(_.asInstanceOf[T]).toJava
-  }
 
   /**
    * Scala API: Extract a concrete [[pekko.actor.setup.Setup]] of type `T` if it is defined in the settings.
@@ -82,9 +81,8 @@ final class ActorSystemSetup private[pekko] (@InternalApi private[pekko] val set
    * Add a concrete [[pekko.actor.setup.Setup]]. If a setting of the same concrete [[pekko.actor.setup.Setup]] already is
    * present it will be replaced.
    */
-  def withSetup[T <: Setup](t: T): ActorSystemSetup = {
+  def withSetup[T <: Setup](t: T): ActorSystemSetup =
     new ActorSystemSetup(setups + (t.getClass -> t))
-  }
 
   /**
    * alias for `withSetup` allowing for fluent combination of settings: `a and b and c`, where `a`, `b` and `c` are

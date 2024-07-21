@@ -300,11 +300,10 @@ object AskableActorRef {
   @InternalApi private[pekko] def negativeTimeoutException(
       recipient: Any,
       message: Any,
-      sender: ActorRef): IllegalArgumentException = {
+      sender: ActorRef): IllegalArgumentException =
     new IllegalArgumentException(
       s"Timeout length must be positive, question not sent to [$recipient]. " +
       messagePartOfException(message, sender))
-  }
 
   /**
    * INTERNAL API
@@ -312,11 +311,10 @@ object AskableActorRef {
   @InternalApi private[pekko] def recipientTerminatedException(
       recipient: Any,
       message: Any,
-      sender: ActorRef): AskTimeoutException = {
+      sender: ActorRef): AskTimeoutException =
     new AskTimeoutException(
       s"Recipient [$recipient] had already been terminated. " +
       messagePartOfException(message, sender))
-  }
 
   /**
    * INTERNAL API
@@ -324,11 +322,10 @@ object AskableActorRef {
   @InternalApi private[pekko] def unsupportedRecipientType(
       recipient: Any,
       message: Any,
-      sender: ActorRef): IllegalArgumentException = {
+      sender: ActorRef): IllegalArgumentException =
     new IllegalArgumentException(
       s"Unsupported recipient type, question not sent to [$recipient]. " +
       messagePartOfException(message, sender))
-  }
 }
 
 /*
@@ -596,9 +593,8 @@ private[pekko] final class PromiseActorRef(
           p = provider.tempPath(refPathPrefix)
           provider.registerTempActor(this, p)
           p
-        } finally {
+        } finally
           setState(p)
-        }
       } else path
     case p: ActorPath       => p
     case StoppedWithPath(p) => p

@@ -86,7 +86,7 @@ trait Scheduler {
       scheduleOnce(
         initialDelay,
         new Runnable {
-          override def run(): Unit = {
+          override def run(): Unit =
             try {
               runnable.run()
               if (get != null)
@@ -96,7 +96,6 @@ trait Scheduler {
               case _: SchedulerException                                                                         =>
               case e: IllegalStateException if e.getCause != null && e.getCause.isInstanceOf[SchedulerException] =>
             }
-          }
         })
   }
 
@@ -153,7 +152,7 @@ trait Scheduler {
       message: Any)(
       implicit
       executor: ExecutionContext,
-      sender: ActorRef = Actor.noSender): Cancellable = {
+      sender: ActorRef = Actor.noSender): Cancellable =
     scheduleWithFixedDelay(initialDelay, delay)(new Runnable {
       def run(): Unit = {
         receiver ! message
@@ -161,7 +160,6 @@ trait Scheduler {
           throw SchedulerException("timer active for terminated actor")
       }
     })
-  }
 
   /**
    * Java API: Schedules a message to be sent repeatedly with an initial delay and
@@ -555,32 +553,30 @@ object Scheduler {
       extends AtomicReference[Cancellable](initialValue)
       with Cancellable {
 
-    try {
+    try
       compareAndSet(initialValue, scheduledFirst())
-    } catch {
+    catch {
       case cause @ SchedulerException(msg) => throw new IllegalStateException(msg, cause)
     }
 
     protected def scheduledFirst(): Cancellable
 
-    @tailrec final protected def swap(c: Cancellable): Unit = {
+    @tailrec final protected def swap(c: Cancellable): Unit =
       get match {
         case null => if (c != null) c.cancel()
         case old =>
           if (!compareAndSet(old, c))
             swap(c)
       }
-    }
 
     final def cancel(): Boolean = {
-      @tailrec def tailrecCancel(): Boolean = {
+      @tailrec def tailrecCancel(): Boolean =
         get match {
           case null => false
           case c =>
             if (c.cancel()) compareAndSet(c, null)
             else compareAndSet(c, null) || tailrecCancel()
         }
-      }
 
       tailrecCancel()
     }

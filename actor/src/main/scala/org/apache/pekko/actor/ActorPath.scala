@@ -384,7 +384,7 @@ final class ChildActorPath private[pekko] (val parent: ActorPath, val name: Stri
     case c: ChildActorPath => c.toStringLength + 1
   }
 
-  override def toStringWithAddress(addr: Address): String = {
+  override def toStringWithAddress(addr: Address): String =
     if (IgnoreActorRef.isIgnoreRefPath(this)) {
       // we never change address for IgnoreActorRef
       this.toString
@@ -393,9 +393,8 @@ final class ChildActorPath private[pekko] (val parent: ActorPath, val name: Stri
       val length = toStringLength + diff
       buildToString(new JStringBuilder(length), length, diff, _.toStringWithAddress(addr)).toString
     }
-  }
 
-  override def toSerializationFormatWithAddress(addr: Address): String = {
+  override def toSerializationFormatWithAddress(addr: Address): String =
     if (IgnoreActorRef.isIgnoreRefPath(this)) {
       // we never change address for IgnoreActorRef
       this.toString
@@ -405,7 +404,6 @@ final class ChildActorPath private[pekko] (val parent: ActorPath, val name: Stri
       val sb = buildToString(new JStringBuilder(length + 12), length, diff, _.toStringWithAddress(addr))
       appendUidFragment(sb).toString
     }
-  }
 
   private def addressStringLengthDiff(address: Address): Int = {
     val r = root
@@ -446,10 +444,9 @@ final class ChildActorPath private[pekko] (val parent: ActorPath, val name: Stri
     rec(this)
   }
 
-  private def appendUidFragment(sb: JStringBuilder): JStringBuilder = {
+  private def appendUidFragment(sb: JStringBuilder): JStringBuilder =
     if (uid == ActorCell.undefinedUid) sb
     else sb.append("#").append(uid)
-  }
 
   override def equals(other: Any): Boolean = {
     @tailrec

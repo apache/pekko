@@ -58,11 +58,10 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
   appAuto.eventStream.publish(filter)
   appLifecycle.eventStream.publish(filter)
 
-  def ignoreMute(t: TestKit): Unit = {
+  def ignoreMute(t: TestKit): Unit =
     t.ignoreMsg {
       case (_: TestEvent.Mute | _: TestEvent.UnMute) => true
     }
-  }
 
   override def afterAll(): Unit = {
     TestKit.shutdownActorSystem(appLogging)
@@ -294,7 +293,7 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
 
         def expectMsgAllPF(messages: Int)(matchers: PartialFunction[AnyRef, Int]): Set[Int] = {
           val max = remainingOrDefault
-          @tailrec def receiveNMatching(gotMatching: Set[Int], unknown: Vector[Any]): Set[Int] = {
+          @tailrec def receiveNMatching(gotMatching: Set[Int], unknown: Vector[Any]): Set[Int] =
             if (unknown.size >= 20)
               throw new IllegalStateException(s"Got too many unknown messages: [${unknown.mkString(", ")}]")
             else if (gotMatching.size == messages) gotMatching
@@ -307,7 +306,6 @@ class LoggingReceiveSpec extends AnyWordSpec with BeforeAndAfterAll {
               if (matchers.isDefinedAt(msg)) receiveNMatching(gotMatching + matchers(msg), Vector.empty)
               else receiveNMatching(gotMatching, unknown :+ msg) // unknown message, just ignore
             }
-          }
           val set = receiveNMatching(Set.empty, Vector.empty)
           assert(set == (0 until messages).toSet)
           set

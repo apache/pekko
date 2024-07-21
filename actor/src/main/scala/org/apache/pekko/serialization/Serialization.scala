@@ -130,14 +130,13 @@ object Serialization {
    *
    * @throws java.lang.IllegalStateException if the information was not set
    */
-  def getCurrentTransportInformation(): Information = {
+  def getCurrentTransportInformation(): Information =
     Serialization.currentTransportInformation.value match {
       case null =>
         throw new IllegalStateException(
           "currentTransportInformation is not set, use Serialization.withTransportInformation")
       case t => t
     }
-  }
 
 }
 
@@ -172,11 +171,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Serializes the given AnyRef/java.lang.Object according to the Serialization configuration
    * to either an Array of Bytes or an Exception if one was thrown.
    */
-  def serialize(o: AnyRef): Try[Array[Byte]] = {
+  def serialize(o: AnyRef): Try[Array[Byte]] =
     withTransportInformation { () =>
       Try(findSerializerFor(o).toBinary(o))
     }
-  }
 
   /**
    * Deserializes the given array of bytes using the specified serializer id,
@@ -220,10 +218,9 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
 
   private def deserializeByteArray(bytes: Array[Byte], serializer: Serializer, manifest: String): AnyRef = {
 
-    @tailrec def updateCache(cache: Map[String, Option[Class[_]]], key: String, value: Option[Class[_]]): Boolean = {
+    @tailrec def updateCache(cache: Map[String, Option[Class[_]]], key: String, value: Option[Class[_]]): Boolean =
       manifestCache.compareAndSet(cache, cache.updated(key, value)) ||
       updateCache(manifestCache.get, key, value) // recursive, try again
-    }
 
     withTransportInformation { () =>
       serializer match {
@@ -289,11 +286,10 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Deserializes the given array of bytes using the specified type to look up what Serializer should be used.
    * Returns either the resulting object or an Exception if one was thrown.
    */
-  def deserialize[T](bytes: Array[Byte], clazz: Class[T]): Try[T] = {
+  def deserialize[T](bytes: Array[Byte], clazz: Class[T]): Try[T] =
     withTransportInformation { () =>
       Try(serializerFor(clazz).fromBinary(bytes, Some(clazz)).asInstanceOf[T])
     }
-  }
 
   /**
    * Returns the Serializer configured for the given object, returns the NullSerializer if it's null.
@@ -322,7 +318,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
           (possibilities.forall(_._1.isAssignableFrom(possibilities(0)._1))) ||
           (possibilities.forall(_._2 == possibilities(0)._2))
 
-        val ser = {
+        val ser =
           bindings.filter {
             case (c, _) => c.isAssignableFrom(clazz)
           } match {
@@ -356,7 +352,6 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
               }
 
           }
-        }
 
         serializerMap.putIfAbsent(clazz, ser) match {
           case null =>
@@ -382,9 +377,8 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
    * Tries to load the specified Serializer by the fully-qualified name; the actual
    * loading is performed by the system’s [[pekko.actor.DynamicAccess]].
    */
-  def serializerOf(serializerFQN: String): Try[Serializer] = {
+  def serializerOf(serializerFQN: String): Try[Serializer] =
     serializerOf(bindingName = "", serializerFQN) // for backwards compatibility since it's a public method
-  }
 
   /**
    * Tries to load the specified Serializer by the fully-qualified name; the actual
@@ -460,13 +454,12 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
     result
   }
 
-  private def ensureOnlyAllowedSerializers(iter: Iterator[Serializer]): Unit = {
+  private def ensureOnlyAllowedSerializers(iter: Iterator[Serializer]): Unit =
     if (!system.settings.AllowJavaSerialization) {
       require(iter.forall(!isDisallowedJavaSerializer(_)), "Disallowed JavaSerializer binding.")
     }
-  }
 
-  private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean = {
+  private def warnUnexpectedNonPekkoSerializer(clazz: Class[_], ser: Serializer): Boolean =
     if (clazz.getName.startsWith("org.apache.pekko.") && !ser.getClass.getName.startsWith("org.apache.pekko.")) {
       log.warning(
         "Using serializer [{}] for message [{}]. Note that this serializer " +
@@ -476,7 +469,6 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
         clazz.getName)
       true
     } else false
-  }
 
   // com.google.protobuf serialization binding is only used if the class can be loaded,
   // i.e. com.google.protobuf dependency has been added in the application project.
@@ -543,7 +535,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   /**
    * @throws java.util.NoSuchElementException if no serializer with given `id`
    */
-  private def getSerializerById(id: Int): Serializer = {
+  private def getSerializerById(id: Int): Serializer =
     if (0 <= id && id < quickSerializerByIdentity.length) {
       quickSerializerByIdentity(id) match {
         case null => throw new NoSuchElementException(s"key not found: $id")
@@ -551,26 +543,23 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
       }
     } else
       serializerByIdentity(id)
-  }
 
   private val isJavaSerializationWarningEnabled =
     settings.config.getBoolean("pekko.actor.warn-about-java-serializer-usage")
   private val isWarningOnNoVerificationEnabled =
     settings.config.getBoolean("pekko.actor.warn-on-no-serialization-verification")
 
-  private def isDisallowedJavaSerializer(serializer: Serializer): Boolean = {
+  private def isDisallowedJavaSerializer(serializer: Serializer): Boolean =
     serializer.isInstanceOf[JavaSerializer] && !system.settings.AllowJavaSerialization
-  }
 
   /**
    * INTERNAL API
    */
   @InternalApi private[pekko] def shouldWarnAboutJavaSerializer(serializedClass: Class[_], serializer: Serializer) = {
 
-    def suppressWarningOnNonSerializationVerification(serializedClass: Class[_]) = {
+    def suppressWarningOnNonSerializationVerification(serializedClass: Class[_]) =
       // suppressed, only when warn-on-no-serialization-verification = off, and extending NoSerializationVerificationNeeded
       !isWarningOnNoVerificationEnabled && classOf[NoSerializationVerificationNeeded].isAssignableFrom(serializedClass)
-    }
 
     isJavaSerializationWarningEnabled &&
     (serializer.isInstanceOf[JavaSerializer] || serializer.isInstanceOf[DisabledJavaSerializer]) &&

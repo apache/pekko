@@ -69,9 +69,8 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
 
         ecProbe.expectMsg(1.second, "called")
         probe.expectMsg(1.second, "pong")
-      } finally {
+      } finally
         shutdown(system2)
-      }
     }
 
     "not use passed in ExecutionContext if executor is configured" in {
@@ -92,9 +91,8 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
 
         ecProbe.expectNoMessage()
         probe.expectMsg(1.second, "ping")
-      } finally {
+      } finally
         shutdown(system2)
-      }
     }
 
     def userGuardianDispatcher(system: ActorSystem): String = {
@@ -108,14 +106,13 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
         ConfigFactory.parseString("""
              pekko.actor.internal-dispatcher = pekko.actor.default-dispatcher
            """))
-      try {
+      try
         // that the user guardian runs on the overridden dispatcher instead of internal
         // isn't really a guarantee any internal actor has been made running on the right one
         // but it's better than no test coverage at all
         userGuardianDispatcher(sys) should ===("pekko.actor.default-dispatcher")
-      } finally {
+      finally
         shutdown(sys)
-      }
     }
 
     "provide internal execution context instance through BootstrapSetup" in {
@@ -144,9 +141,8 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
 
         ecProbe.expectMsg(1.second, "called")
         probe.expectMsg(1.second, "pong")
-      } finally {
+      } finally
         shutdown(system2)
-      }
     }
 
     "use an internal dispatcher for the guardian by default" in {
@@ -162,9 +158,9 @@ class ActorSystemDispatchersSpec extends PekkoSpec(ConfigFactory.parseString("""
         Some(Props.empty),
         ActorSystemSetup.empty)
       sys.start()
-      try {
+      try
         userGuardianDispatcher(sys) should ===("pekko.actor.default-dispatcher")
-      } finally shutdown(sys)
+      finally shutdown(sys)
     }
 
     "provide a good error on an dispatcher alias loop in the config" in {

@@ -76,14 +76,14 @@ final private[pekko] class EventsByPersistenceIdStage(
 
       override def preStart(): Unit = {
         stageActorRef = getStageActor(journalInteraction).ref
-        refreshInterval.foreach(fd => {
+        refreshInterval.foreach { fd =>
           scheduleWithFixedDelay(Continue, fd, fd)
           journal.tell(LeveldbJournal.SubscribePersistenceId(persistenceId), stageActorRef)
-        })
+        }
         requestMore()
       }
 
-      private def requestMore(): Unit = {
+      private def requestMore(): Unit =
         if (!replayInProgress) {
           val limit = maxBufSize - bufferSize
           if (limit > 0 && nextSequenceNr <= toSequenceNr) {
@@ -95,7 +95,6 @@ final private[pekko] class EventsByPersistenceIdStage(
         } else {
           outstandingReplay = true
         }
-      }
 
       override protected def onTimer(timerKey: Any): Unit = {
         requestMore()
@@ -152,11 +151,10 @@ final private[pekko] class EventsByPersistenceIdStage(
 
       private def isCurrentQuery(): Boolean = refreshInterval.isEmpty
 
-      private def maybeCompleteStage(): Unit = {
+      private def maybeCompleteStage(): Unit =
         if (bufferEmpty && nextSequenceNr > toSequenceNr) {
           completeStage()
         }
-      }
 
       override def onPull(): Unit = {
         requestMore()

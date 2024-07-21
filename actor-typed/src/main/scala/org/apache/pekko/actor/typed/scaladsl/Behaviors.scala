@@ -43,10 +43,10 @@ object Behaviors {
    * Support for stashing messages to unstash at a later time.
    */
   def withStash[T](capacity: Int)(factory: StashBuffer[T] => Behavior[T]): Behavior[T] =
-    setup(ctx => {
+    setup { ctx =>
       val stash = StashBuffer[T](ctx, capacity)
       factory(stash)
-    })
+    }
 
   /**
    * Return this behavior from message processing in order to advise the
@@ -150,9 +150,8 @@ object Behaviors {
    *
    * @since 1.1.0
    */
-  def receiveMessageWithSame[T](onMessage: T => Unit): Receive[T] = {
+  def receiveMessageWithSame[T](onMessage: T => Unit): Receive[T] =
     new ReceiveMessageImpl(onMessage.andThen(_ => same))
-  }
 
   /**
    * Construct an actor `Behavior` from a partial message handler which treats undefined messages as unhandled.
@@ -254,9 +253,8 @@ object Behaviors {
 
     /** Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws. */
     def onFailure[Thr <: Throwable](strategy: SupervisorStrategy)(
-        implicit tag: ClassTag[Thr] = ThrowableClassTag): SuperviseBehavior[T] = {
+        implicit tag: ClassTag[Thr] = ThrowableClassTag): SuperviseBehavior[T] =
       new SuperviseBehavior[T](wrapped).onFailure(strategy)(tag)
-    }
   }
 
   /**

@@ -60,9 +60,8 @@ private[pekko] final class DDataRememberEntitiesCoordinatorStore(
   private var coordinatorWaitingForShards: Option[ActorRef] = None
 
   // eager load of remembered shard ids
-  def getAllShards(): Unit = {
+  def getAllShards(): Unit =
     replicator ! Replicator.Get(AllShardsKey, readMajority)
-  }
   getAllShards()
 
   override def receive: Receive = {
@@ -115,7 +114,7 @@ private[pekko] final class DDataRememberEntitiesCoordinatorStore(
       replyTo ! RememberEntitiesCoordinatorStore.UpdateFailed(shardId)
   }
 
-  def onGotAllShards(shardIds: Set[ShardId]): Unit = {
+  def onGotAllShards(shardIds: Set[ShardId]): Unit =
     coordinatorWaitingForShards match {
       case Some(coordinator) =>
         coordinator ! RememberEntitiesCoordinatorStore.RememberedShards(shardIds)
@@ -126,6 +125,5 @@ private[pekko] final class DDataRememberEntitiesCoordinatorStore(
         // wait for coordinator to ask
         allShards = Some(shardIds)
     }
-  }
 
 }

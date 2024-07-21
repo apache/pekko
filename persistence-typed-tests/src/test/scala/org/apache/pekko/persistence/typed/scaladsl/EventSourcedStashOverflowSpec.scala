@@ -38,17 +38,16 @@ object EventSourcedStashOverflowSpec {
       EventSourcedBehavior[Command, String, List[String]](
         persistenceId,
         Nil,
-        { (_, command) =>
+        (_, command) =>
           command match {
             case DoNothing(replyTo) =>
               Effect.persist(List.empty[String]).thenRun(_ => replyTo ! Done)
-          }
-        },
-        { (state, event) =>
+          },
+        (state, event) =>
           // original reproducer slept 2 seconds here but a pure application of an event seems unlikely to take that long
           // so instead we delay recovery using a special journal
           event :: state
-        })
+      )
   }
 
   def conf =
@@ -82,9 +81,8 @@ class EventSourcedStashOverflowSpec
       val droppedMessageProbe = testKit.createDroppedMessageProbe()
       val stashCapacity = testKit.config.getInt("pekko.persistence.typed.stash-capacity")
 
-      for (_ <- 0 to (stashCapacity * 2)) {
+      for (_ <- 0 to (stashCapacity * 2))
         es.tell(EventSourcedStringList.DoNothing(probe.ref))
-      }
       // capacity + 1 should mean that we get a dropped last message when all stash is filled
       // while the actor is stuck in replay because journal isn't responding
       droppedMessageProbe.receiveMessage()

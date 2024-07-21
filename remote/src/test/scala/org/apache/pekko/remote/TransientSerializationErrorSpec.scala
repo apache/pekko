@@ -47,13 +47,12 @@ object TransientSerializationErrorSpec {
       case ToBinaryIllegal         => throw new IllegalArgumentException()
       case _                       => Array.emptyByteArray
     }
-    def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
+    def fromBinary(bytes: Array[Byte], manifest: String): AnyRef =
       manifest match {
         case "ND"  => throw new NotSerializableException() // Not sure this applies here
         case "IOD" => throw new IllegalArgumentException()
         case _     => throw new NotSerializableException()
       }
-    }
   }
 }
 
@@ -118,9 +117,8 @@ abstract class AbstractTransientSerializationErrorSpec(config: Config)
     }
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     TestKit.shutdownActorSystem(system2)
-  }
 }
 
 class TransientSerializationErrorSpec

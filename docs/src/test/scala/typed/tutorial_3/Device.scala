@@ -48,7 +48,7 @@ class Device(context: ActorContext[Device.Command], groupId: String, deviceId: S
 
   context.log.info2("Device actor {}-{} started", groupId, deviceId)
 
-  override def onMessage(msg: Command): Behavior[Command] = {
+  override def onMessage(msg: Command): Behavior[Command] =
     msg match {
       case RecordTemperature(id, value, replyTo) =>
         context.log.info2("Recorded temperature reading {} with {}", value, id)
@@ -60,7 +60,6 @@ class Device(context: ActorContext[Device.Command], groupId: String, deviceId: S
         replyTo ! RespondTemperature(id, lastTemperatureReading)
         this
     }
-  }
 
   override def onSignal: PartialFunction[Signal, Behavior[Command]] = {
     case PostStop =>

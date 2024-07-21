@@ -49,7 +49,7 @@ import pekko.annotation.InternalApi
   override def aroundSignal(
       ctx: TypedActorContext[M],
       signal: Signal,
-      target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] = {
+      target: BehaviorInterceptor.SignalTarget[M]): Behavior[M] =
     signal match {
       case p: PoisonPill =>
         val next = target(ctx, p)
@@ -57,7 +57,6 @@ import pekko.annotation.InternalApi
         else next
       case _ => target(ctx, signal)
     }
-  }
 
   override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
     // only one interceptor per behavior stack is needed

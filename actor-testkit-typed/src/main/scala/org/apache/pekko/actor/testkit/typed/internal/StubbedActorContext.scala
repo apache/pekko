@@ -74,13 +74,11 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     currentBehaviorProvider: () => Behavior[T])
     extends ActorContextImpl[T] {
 
-  def this(system: ActorSystemStub, name: String, currentBehaviorProvider: () => Behavior[T]) = {
+  def this(system: ActorSystemStub, name: String, currentBehaviorProvider: () => Behavior[T]) =
     this(system, (system.path / name).withUid(rnd().nextInt()), currentBehaviorProvider)
-  }
 
-  def this(name: String, currentBehaviorProvider: () => Behavior[T]) = {
+  def this(name: String, currentBehaviorProvider: () => Behavior[T]) =
     this(new ActorSystemStub("StubbedActorContext"), name, currentBehaviorProvider)
-  }
 
   /**
    * INTERNAL API
@@ -141,21 +139,16 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
       _children -= child.path.name
     }
   }
-  override def watch[U](other: ActorRef[U]): Unit = {
+  override def watch[U](other: ActorRef[U]): Unit =
     checkCurrentActorThread()
-  }
-  override def watchWith[U](other: ActorRef[U], message: T): Unit = {
+  override def watchWith[U](other: ActorRef[U], message: T): Unit =
     checkCurrentActorThread()
-  }
-  override def unwatch[U](other: ActorRef[U]): Unit = {
+  override def unwatch[U](other: ActorRef[U]): Unit =
     checkCurrentActorThread()
-  }
-  override def setReceiveTimeout(d: FiniteDuration, message: T): Unit = {
+  override def setReceiveTimeout(d: FiniteDuration, message: T): Unit =
     checkCurrentActorThread()
-  }
-  override def cancelReceiveTimeout(): Unit = {
+  override def cancelReceiveTimeout(): Unit =
     checkCurrentActorThread()
-  }
 
   override def scheduleOnce[U](delay: FiniteDuration, target: ActorRef[U], message: U): classic.Cancellable =
     new classic.Cancellable {
@@ -223,15 +216,13 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
     logger
   }
 
-  override def setLoggerName(name: String): Unit = {
+  override def setLoggerName(name: String): Unit =
     // nop as we don't track logger
     checkCurrentActorThread()
-  }
 
-  override def setLoggerName(clazz: Class[_]): Unit = {
+  override def setLoggerName(clazz: Class[_]): Unit =
     // nop as we don't track logger
     checkCurrentActorThread()
-  }
 
   /**
    * The log entries logged through context.log.{debug, info, warn, error} are captured and can be inspected through
@@ -243,15 +234,13 @@ private[pekko] final class FunctionRef[-T](override val path: ActorPath, send: (
       .iterator()
       .asScala
       .map { evt =>
-        {
-          val marker: Option[Marker] = Option(evt.getMarkers).flatMap(_.asScala.headOption)
-          CapturedLogEvent(
-            level = evt.getLevel,
-            message = MessageFormatter.arrayFormat(evt.getMessage, evt.getArgumentArray).getMessage,
-            cause = Option(evt.getThrowable),
-            marker = marker)
+        val marker: Option[Marker] = Option(evt.getMarkers).flatMap(_.asScala.headOption)
+        CapturedLogEvent(
+          level = evt.getLevel,
+          message = MessageFormatter.arrayFormat(evt.getMessage, evt.getArgumentArray).getMessage,
+          cause = Option(evt.getThrowable),
+          marker = marker)
 
-        }
       }
       .toList
   }

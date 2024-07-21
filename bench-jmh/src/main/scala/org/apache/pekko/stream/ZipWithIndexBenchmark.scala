@@ -55,9 +55,8 @@ class ZipWithIndexBenchmark {
   private implicit val system: ActorSystem = ActorSystem("ZipWithIndexBenchmark", config)
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   private val newZipWithIndex = Source.repeat(1)
     .take(OperationsPerInvocation)

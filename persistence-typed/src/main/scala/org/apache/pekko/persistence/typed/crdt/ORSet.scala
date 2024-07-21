@@ -67,13 +67,12 @@ object ORSet {
       case DeltaGroup(ops)                => DeltaGroup(this +: ops)
     }
 
-    private def concatElementsMap(thatMap: Map[A, Dot]): Map[A, Dot] = {
+    private def concatElementsMap(thatMap: Map[A, Dot]): Map[A, Dot] =
       if (thatMap.size == 1) {
         val head = thatMap.head
         underlying.elementsMap.updated(head._1, head._2)
       } else
         underlying.elementsMap ++ thatMap
-    }
   }
 
   /** INTERNAL API */
@@ -162,7 +161,7 @@ object ORSet {
       rhs: ORSet[A]): Map[A, ORSet.Dot] =
     mergeCommonKeys(commonKeys.iterator, lhs, rhs)
 
-  private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] = {
+  private def mergeCommonKeys[A](commonKeys: Iterator[A], lhs: ORSet[A], rhs: ORSet[A]): Map[A, ORSet.Dot] =
     commonKeys.foldLeft(Map.empty[A, ORSet.Dot]) {
       case (acc, k) =>
         val lhsDots = lhs.elementsMap(k)
@@ -222,7 +221,6 @@ object ORSet {
             else acc.updated(k, merged)
         }
     }
-  }
 
   /**
    * INTERNAL API
@@ -239,7 +237,7 @@ object ORSet {
       keys: Iterator[A],
       elementsMap: Map[A, ORSet.Dot],
       vvector: VersionVector,
-      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] = {
+      accumulator: Map[A, ORSet.Dot]): Map[A, ORSet.Dot] =
     keys.foldLeft(accumulator) {
       case (acc, k) =>
         val dots = elementsMap(k)
@@ -251,7 +249,6 @@ object ORSet {
           acc.updated(k, newDots)
         }
     }
-  }
 }
 
 /**
@@ -338,7 +335,7 @@ final class ORSet[A] private[pekko] (
    * Scala API: Add several elements to the set.
    * `elems` must not be empty.
    */
-  def addAll(elems: Set[A]): ORSet.DeltaOp = {
+  def addAll(elems: Set[A]): ORSet.DeltaOp =
     if (elems.size == 0) throw new IllegalArgumentException("addAll elems must not be empty")
     else if (elems.size == 1) add(elems.head)
     else {
@@ -352,7 +349,6 @@ final class ORSet[A] private[pekko] (
       }
       mergedOps
     }
-  }
 
   /**
    * Removes an element from the set.
@@ -380,7 +376,7 @@ final class ORSet[A] private[pekko] (
    * Scala API: Remove several elements from the set.
    * `elems` must not be empty.
    */
-  def removeAll(elems: Set[A]): ORSet.DeltaOp = {
+  def removeAll(elems: Set[A]): ORSet.DeltaOp =
     if (elems.size == 0) throw new IllegalArgumentException("removeAll elems must not be empty")
     else if (elems.size == 1) remove(elems.head)
     else {
@@ -394,7 +390,6 @@ final class ORSet[A] private[pekko] (
       }
       mergedOps
     }
-  }
 
   /**
    * Removes all elements from the set, but keeps the history.
@@ -419,7 +414,7 @@ final class ORSet[A] private[pekko] (
    * and the other Set version vector dominates those dots, then we need to drop those dots.
    * Keep only common dots, and dots that are not dominated by the other sides version vector
    */
-  private def merge(that: ORSet[A], addDeltaOp: Boolean): ORSet[A] = {
+  private def merge(that: ORSet[A], addDeltaOp: Boolean): ORSet[A] =
     if (this eq that) this
     else {
       val commonKeys =
@@ -441,9 +436,8 @@ final class ORSet[A] private[pekko] (
 
       new ORSet(originReplica, entries, mergedVvector)
     }
-  }
 
-  override def applyOperation(thatDelta: ORSet.DeltaOp): ORSet[A] = {
+  override def applyOperation(thatDelta: ORSet.DeltaOp): ORSet[A] =
     thatDelta match {
       case d: ORSet.AddDeltaOp[A @unchecked]       => merge(d.underlying, addDeltaOp = true)
       case d: ORSet.RemoveDeltaOp[A @unchecked]    => mergeRemoveDelta(d)
@@ -457,7 +451,6 @@ final class ORSet[A] private[pekko] (
             throw new IllegalArgumentException("ORSet.DeltaGroup should not be nested")
         }
     }
-  }
 
   private def mergeRemoveDelta(thatDelta: ORSet.RemoveDeltaOp[A]): ORSet[A] = {
     val that = thatDelta.underlying

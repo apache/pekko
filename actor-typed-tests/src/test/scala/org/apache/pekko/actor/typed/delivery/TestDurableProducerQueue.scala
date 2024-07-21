@@ -46,9 +46,8 @@ object TestDurableProducerQueue {
       .onFailure(SupervisorStrategy.restartWithBackoff(delay, delay, 0.0))
   }
 
-  def apply[A](delay: FiniteDuration, state: State[A]): Behavior[Command[A]] = {
+  def apply[A](delay: FiniteDuration, state: State[A]): Behavior[Command[A]] =
     apply(delay, new AtomicReference(state), _ => false)
-  }
 
   // using a fixed timestamp to simplify tests, not using the timestamps in the commands
   val TestTimestamp: DurableProducerQueue.TimestampMillis = Long.MaxValue
@@ -103,9 +102,8 @@ class TestDurableProducerQueue[A](
     }
   }
 
-  private def maybeFail(cmd: Command[A]): Unit = {
+  private def maybeFail(cmd: Command[A]): Unit =
     if (failWhen(cmd))
       throw TestException(s"TestDurableProducerQueue failed at [$cmd]")
-  }
 
 }

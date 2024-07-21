@@ -39,10 +39,9 @@ import pekko.stream.stage.{ GraphStage, GraphStageLogic, OutHandler }
       private[this] var state = s
 
       def onPull(): Unit = f(state) match {
-        case Some((newState, v)) => {
+        case Some((newState, v)) =>
           push(out, v)
           state = newState
-        }
         case None => complete(out)
       }
 
@@ -94,9 +93,8 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
       private[this] var state = s
       private[this] var asyncHandler: Try[Option[(S, E)]] => Unit = _
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         asyncHandler = getAsyncCallback[Try[Option[(S, E)]]](handle).invoke
-      }
 
       private def handle(result: Try[Option[(S, E)]]): Unit = result match {
         case Success(Some((newS, elem))) =>
@@ -138,16 +136,15 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
       private[this] var state = s
       private[this] var asyncHandler: Try[Optional[Pair[S, E]]] => Unit = _
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         asyncHandler = getAsyncCallback[Try[Optional[Pair[S, E]]]](handle).invoke
-      }
 
       private def handle(result: Try[Optional[Pair[S, E]]]): Unit = result match {
         case Success(maybeValue) => handle(maybeValue)
         case Failure(ex)         => fail(out, ex)
       }
 
-      private def handle(maybeValue: Optional[Pair[S, E]]): Unit = {
+      private def handle(maybeValue: Optional[Pair[S, E]]): Unit =
         if (maybeValue.isPresent) {
           val pair = maybeValue.get()
           push(out, pair.second)
@@ -155,21 +152,20 @@ private[pekko] final class UnfoldJava[S, E](s: S, f: function.Function[S, Option
         } else {
           complete(out)
         }
-      }
 
       def onPull(): Unit = {
         val future = f.apply(state).toCompletableFuture
         if (future.isDone && !future.isCompletedExceptionally) {
           handle(future.getNow(null))
         } else {
-          future.handle((r, ex) => {
+          future.handle { (r, ex) =>
             if (ex != null) {
               asyncHandler(Failure(ex))
             } else {
               asyncHandler(Success(r))
             }
             null
-          })
+          }
         }
       }
       setHandler(out, this)

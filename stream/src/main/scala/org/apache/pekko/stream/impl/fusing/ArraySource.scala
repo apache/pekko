@@ -36,7 +36,7 @@ private[pekko] final class ArraySource[T](elements: Array[T]) extends GraphStage
 
       override def preStart(): Unit = if (elements.isEmpty) completeStage()
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (index < elements.length) {
           push(out, elements(index))
           index += 1
@@ -46,7 +46,6 @@ private[pekko] final class ArraySource[T](elements: Array[T]) extends GraphStage
         } else {
           complete(out)
         }
-      }
 
       setHandler(out, this)
     }

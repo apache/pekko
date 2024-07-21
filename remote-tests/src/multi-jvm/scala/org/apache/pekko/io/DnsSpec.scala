@@ -47,16 +47,14 @@ class DnsSpec extends RemotingMultiNodeSpec(DnsSpec) {
 
   var temporaryValue: Option[String] = None
 
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     temporaryValue = sys.props.get("java.net.preferIPv6Addresses")
-  }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     temporaryValue match {
       case Some(value) => sys.props.put("java.net.preferIPv6Addresses", value)
       case _           => sys.props.remove("java.net.preferIPv6Addresses")
     }
-  }
 
   "Dns" must {
 

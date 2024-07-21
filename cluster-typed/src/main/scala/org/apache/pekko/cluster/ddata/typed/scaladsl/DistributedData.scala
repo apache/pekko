@@ -56,14 +56,13 @@ object DistributedData extends ExtensionId[DistributedData] {
    * @tparam B Type of the [[ReplicatedData]].
    */
   def withReplicatorMessageAdapter[A, B <: ReplicatedData](
-      factory: ReplicatorMessageAdapter[A, B] => Behavior[A]): Behavior[A] = {
+      factory: ReplicatorMessageAdapter[A, B] => Behavior[A]): Behavior[A] =
     Behaviors.setup[A] { context =>
       val distributedData = DistributedData(context.system)
       val replicatorAdapter =
         new ReplicatorMessageAdapter[A, B](context, distributedData.replicator, distributedData.unexpectedAskTimeout)
       factory(replicatorAdapter)
     }
-  }
 
 }
 

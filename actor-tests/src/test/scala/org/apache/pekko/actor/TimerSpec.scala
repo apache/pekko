@@ -52,23 +52,20 @@ object TimerSpec {
     else
       timers.startSingleTimer("T", Tick(bumpCount), interval)
 
-    override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    override def preRestart(reason: Throwable, message: Option[Any]): Unit =
       monitor ! GotPreRestart(timers.isTimerActive("T"))
-      // don't call super.preRestart to avoid postStop
-    }
+    // don't call super.preRestart to avoid postStop
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       monitor ! GotPostStop(timers.isTimerActive("T"))
-    }
 
     def bump(): Unit = {
       bumpCount += 1
       timers.startTimerWithFixedDelay("T", Tick(bumpCount), interval)
     }
 
-    def autoReceive(): Unit = {
+    def autoReceive(): Unit =
       timers.startSingleTimer("A", PoisonPill, interval)
-    }
 
     override def receive = {
       case Tick(n) =>

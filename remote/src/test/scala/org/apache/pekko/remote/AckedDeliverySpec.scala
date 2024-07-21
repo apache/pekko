@@ -315,12 +315,11 @@ class AckedDeliverySpec extends PekkoSpec {
         }
       }
 
-      def receiverStep(p: Double) = {
+      def receiverStep(p: Double) =
         if (happened(p)) {
           sndBuf = sndBuf.acknowledge(lastAck)
           dbgLog(s"$sndBuf <-- $lastAck -- $rcvBuf")
         } else dbgLog(s"$sndBuf X-- $lastAck -- $rcvBuf")
-      }
 
       // Dropping phase
       info(s"Starting unreliable delivery for $MsgCount messages, with delivery probability P = $DeliveryProbability")

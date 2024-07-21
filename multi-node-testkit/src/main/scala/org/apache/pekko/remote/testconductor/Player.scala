@@ -310,9 +310,9 @@ private[pekko] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress
 
   onTermination {
     case StopEvent(_, _, Data(Some(channel), _)) =>
-      try {
+      try
         channel.close()
-      } catch {
+      catch {
         case NonFatal(ex) =>
           // silence this one to not make tests look like they failed, it's not really critical
           log.debug(s"Failed closing channel with ${ex.getClass.getName} ${ex.getMessage}")
@@ -357,7 +357,7 @@ private[pekko] class PlayerHandler(
     }
   }
 
-  private def tryConnectToController(): Unit = {
+  private def tryConnectToController(): Unit =
     Try(reconnect()) match {
       case Success(r) => connectionRef.set(r)
       case Failure(ex) =>
@@ -365,11 +365,9 @@ private[pekko] class PlayerHandler(
           server, nextAttempt.timeLeft, ex.getMessage)
         scheduleReconnect()
     }
-  }
 
-  private def scheduleReconnect(): Unit = {
+  private def scheduleReconnect(): Unit =
     scheduler.scheduleOnce(nextAttempt.timeLeft)(tryConnectToController())
-  }
 
   private def reconnect(): RemoteConnection = {
     nextAttempt = Deadline.now + backoff

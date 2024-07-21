@@ -192,14 +192,13 @@ private[persistence] trait Eventsourced
    * @param event the event that was to be persisted
    */
   @InternalStableApi
-  protected def onPersistFailure(cause: Throwable, event: Any, seqNr: Long): Unit = {
+  protected def onPersistFailure(cause: Throwable, event: Any, seqNr: Long): Unit =
     log.error(
       cause,
       "Failed to persist event type [{}] with sequence number [{}] for persistenceId [{}].",
       event.getClass.getName,
       seqNr,
       persistenceId)
-  }
 
   /**
    * Called when the journal rejected `persist` of an event. The event was not
@@ -210,7 +209,7 @@ private[persistence] trait Eventsourced
    * @param event the event that was to be persisted
    */
   @InternalStableApi
-  protected def onPersistRejected(cause: Throwable, event: Any, seqNr: Long): Unit = {
+  protected def onPersistRejected(cause: Throwable, event: Any, seqNr: Long): Unit =
     log.error(
       cause,
       "Rejected to persist event type [{}] with sequence number [{}] for persistenceId [{}] due to [{}].",
@@ -218,7 +217,6 @@ private[persistence] trait Eventsourced
       seqNr,
       persistenceId,
       cause.getMessage)
-  }
 
   private def stashInternally(currMsg: Any): Unit =
     try internalStash.stash()
@@ -273,11 +271,11 @@ private[persistence] trait Eventsourced
   }
 
   /** INTERNAL API. */
-  override protected[pekko] def aroundPreRestart(reason: Throwable, message: Option[Any]): Unit = {
+  override protected[pekko] def aroundPreRestart(reason: Throwable, message: Option[Any]): Unit =
     try {
       internalStash.unstashAll()
       unstashAll(unstashFilterPredicate)
-    } finally {
+    } finally
       message match {
         case Some(WriteMessageSuccess(m, _)) =>
           flushJournalBatch()
@@ -292,8 +290,6 @@ private[persistence] trait Eventsourced
           flushJournalBatch()
           super.aroundPreRestart(reason, mo)
       }
-    }
-  }
 
   /** INTERNAL API. */
   override protected[pekko] def aroundPostRestart(reason: Throwable): Unit = {
@@ -308,7 +304,7 @@ private[persistence] trait Eventsourced
       unstashAll(unstashFilterPredicate)
     } finally super.aroundPostStop()
 
-  override def unhandled(message: Any): Unit = {
+  override def unhandled(message: Any): Unit =
     message match {
       case RecoveryCompleted => // mute
       case SaveSnapshotFailure(m, e) =>
@@ -338,11 +334,9 @@ private[persistence] trait Eventsourced
           e.getMessage)
       case m => super.unhandled(m)
     }
-  }
 
-  private def changeState(state: State): Unit = {
+  private def changeState(state: State): Unit =
     currentState = state
-  }
 
   private def updateLastSequenceNr(persistent: PersistentRepr): Unit =
     if (persistent.sequenceNr > _lastSequenceNr) _lastSequenceNr = persistent.sequenceNr
@@ -363,9 +357,8 @@ private[persistence] trait Eventsourced
     }
 
   @InternalStableApi
-  private def sendBatchedEventsToJournal(journalBatch: Vector[PersistentEnvelope]): Unit = {
+  private def sendBatchedEventsToJournal(journalBatch: Vector[PersistentEnvelope]): Unit =
     journal ! WriteMessages(journalBatch, self, instanceId)
-  }
 
   private def log: LoggingAdapter = Logging(context.system, this)
 
@@ -438,9 +431,8 @@ private[persistence] trait Eventsourced
   }
 
   @InternalStableApi
-  private def batchAtomicWrite(atomicWrite: AtomicWrite): Unit = {
+  private def batchAtomicWrite(atomicWrite: AtomicWrite): Unit =
     eventBatch ::= atomicWrite
-  }
 
   /**
    * Internal API
@@ -529,7 +521,7 @@ private[persistence] trait Eventsourced
    *
    * @param toSequenceNr upper sequence number (inclusive) bound of persistent messages to be deleted.
    */
-  def deleteMessages(toSequenceNr: Long): Unit = {
+  def deleteMessages(toSequenceNr: Long): Unit =
     if (toSequenceNr == Long.MaxValue || toSequenceNr <= lastSequenceNr)
       journal ! DeleteMessagesTo(persistenceId, toSequenceNr, self)
     else
@@ -537,7 +529,6 @@ private[persistence] trait Eventsourced
         new RuntimeException(
           s"toSequenceNr [$toSequenceNr] must be less than or equal to lastSequenceNr [$lastSequenceNr]"),
         toSequenceNr)
-  }
 
   /**
    * INTERNAL API.
@@ -565,30 +556,27 @@ private[persistence] trait Eventsourced
   /**
    * Returns `true` if this persistent actor is currently recovering.
    */
-  def recoveryRunning: Boolean = {
+  def recoveryRunning: Boolean =
     // currentState is null if this is called from constructor
     if (currentState == null) true else currentState.recoveryRunning
-  }
 
   /**
    * Returns `true` if this persistent actor has successfully finished recovery.
    */
   def recoveryFinished: Boolean = !recoveryRunning
 
-  override def stash(): Unit = {
+  override def stash(): Unit =
     context.asInstanceOf[ActorCell].currentMessage match {
       case Envelope(_: JournalProtocol.Response, _) =>
         throw new IllegalStateException("Do not call stash inside of persist callback or during recovery.")
       case _ => super.stash()
     }
-  }
 
-  override def unstashAll(): Unit = {
+  override def unstashAll(): Unit =
     // Internally, all messages are processed by unstashing them from
     // the internal stash one-by-one. Hence, an unstashAll() from the
     // user stash must be prepended to the internal stash.
     internalStash.prepend(clearStash())
-  }
 
   private trait State {
     def stateReceive(receive: Receive, message: Any): Unit
@@ -686,15 +674,14 @@ private[persistence] trait Eventsourced
         journal ! ReplayMessages(lastSequenceNr + 1L, toSnr, replayMax, persistenceId, self)
       }
 
-      def isSnapshotOptional: Boolean = {
-        try {
+      def isSnapshotOptional: Boolean =
+        try
           Persistence(context.system).configFor(snapshotStore).getBoolean("snapshot-is-optional")
-        } catch {
+        catch {
           case NonFatal(exc) =>
             log.error(exc, "Invalid snapshot-is-optional configuration.")
             false // fail recovery
         }
-      }
 
       try message match {
           case LoadSnapshotResult(snapshot, toSnr) =>
@@ -840,19 +827,16 @@ private[persistence] trait Eventsourced
     finally flushBatch()
 
   @InternalStableApi
-  private def writeEventSucceeded(p: PersistentRepr): Unit = {
+  private def writeEventSucceeded(p: PersistentRepr): Unit =
     peekApplyHandler(p.payload)
-  }
 
   @InternalStableApi
-  private def writeEventRejected(p: PersistentRepr, cause: Throwable): Unit = {
+  private def writeEventRejected(p: PersistentRepr, cause: Throwable): Unit =
     onPersistRejected(cause, p.payload, p.sequenceNr)
-  }
 
   @InternalStableApi
-  private def writeEventFailed(p: PersistentRepr, cause: Throwable): Unit = {
+  private def writeEventFailed(p: PersistentRepr, cause: Throwable): Unit =
     onPersistFailure(cause, p.payload, p.sequenceNr)
-  }
 
   /**
    * Common receive handler for processingCommands and persistingEvents

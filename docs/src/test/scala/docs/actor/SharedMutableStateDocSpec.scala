@@ -42,15 +42,13 @@ class SharedMutableStateDocSpec {
     var state = ""
     val mySet = mutable.Set[String]()
 
-    def expensiveCalculation(actorRef: ActorRef): String = {
+    def expensiveCalculation(actorRef: ActorRef): String =
       // this is a very costly operation
       "Meaning of life is 42"
-    }
 
-    def expensiveCalculation(): String = {
+    def expensiveCalculation(): String =
       // this is a very costly operation
       "Meaning of life is 42"
-    }
 
     def receive = {
       case _ =>
@@ -72,17 +70,17 @@ class SharedMutableStateDocSpec {
 
         // Very bad: "sender" changes for every message,
         // shared mutable state bug
-        Future { expensiveCalculation(sender()) }
+        Future(expensiveCalculation(sender()))
 
         // Example of correct approach
         // Completely safe: "self" is OK to close over
         // and it's an ActorRef, which is thread-safe
-        Future { expensiveCalculation() }.foreach { self ! _ }
+        Future(expensiveCalculation()).foreach(self ! _)
 
         // Completely safe: we close over a fixed value
         // and it's an ActorRef, which is thread-safe
         val currentSender = sender()
-        Future { expensiveCalculation(currentSender) }
+        Future(expensiveCalculation(currentSender))
     }
   }
   // #mutable-state

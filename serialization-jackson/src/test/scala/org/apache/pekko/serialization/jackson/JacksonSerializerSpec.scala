@@ -484,7 +484,7 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
       }
 
       val customJacksonObjectMapperFactory = new JacksonObjectMapperFactory {
-        override def newObjectMapper(bindingName: String, jsonFactory: JsonFactory): ObjectMapper = {
+        override def newObjectMapper(bindingName: String, jsonFactory: JsonFactory): ObjectMapper =
           if (bindingName == "jackson-json") {
             val mapper: ObjectMapper = JsonMapper.builder(jsonFactory).build()
             // some customer configuration of the mapper
@@ -492,17 +492,15 @@ class JacksonJsonSerializerSpec extends JacksonSerializerSpec("jackson-json") {
             mapper
           } else
             super.newObjectMapper(bindingName, jsonFactory)
-        }
 
         override def overrideConfiguredSerializationFeatures(
             bindingName: String,
             configuredFeatures: immutable.Seq[(SerializationFeature, Boolean)])
-            : immutable.Seq[(SerializationFeature, Boolean)] = {
+            : immutable.Seq[(SerializationFeature, Boolean)] =
           if (bindingName == "jackson-json")
             configuredFeatures :+ (SerializationFeature.INDENT_OUTPUT -> true)
           else
             super.overrideConfiguredSerializationFeatures(bindingName, configuredFeatures)
-        }
 
         override def overrideConfiguredModules(
             bindingName: String,
@@ -743,29 +741,27 @@ abstract class JacksonSerializerSpec(serializerName: String)
 
   def serialization(sys: ActorSystem = system): Serialization = SerializationExtension(sys)
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown()
-  }
 
   def withSystem[T](config: String)(block: ActorSystem => T): T = {
     val sys = ActorSystem(system.name, ConfigFactory.parseString(config).withFallback(system.settings.config))
-    try {
+    try
       block(sys)
-    } finally shutdown(sys)
+    finally shutdown(sys)
   }
 
   def withSystem[T](setup: ActorSystemSetup)(block: ActorSystem => T): T = {
     val sys = ActorSystem(system.name, setup)
-    try {
+    try
       block(sys)
-    } finally shutdown(sys)
+    finally shutdown(sys)
   }
 
-  def withTransportInformation[T](sys: ActorSystem = system)(block: () => T): T = {
+  def withTransportInformation[T](sys: ActorSystem = system)(block: () => T): T =
     Serialization.withTransportInformation(sys.asInstanceOf[ExtendedActorSystem]) { () =>
       block()
     }
-  }
 
   def checkSerialization(obj: AnyRef, sys: ActorSystem = system): Unit = {
     val serializer = serializerFor(obj, sys)
@@ -797,10 +793,9 @@ abstract class JacksonSerializerSpec(serializerName: String)
       blob: Array[Byte],
       serializerId: Int,
       manifest: String,
-      sys: ActorSystem = system): AnyRef = {
+      sys: ActorSystem = system): AnyRef =
     // TransportInformation added by serialization.deserialize
     serialization(sys).deserialize(blob, serializerId, manifest).get
-  }
 
   def serializerFor(obj: AnyRef, sys: ActorSystem = system): JacksonSerializer =
     serialization(sys).findSerializerFor(obj) match {
@@ -1219,11 +1214,11 @@ abstract class JacksonSerializerSpec(serializerName: String)
     "not allow serialization of deny listed class" in {
       val serializer = serializerFor(SimpleCommand("ok"))
       val fileHandler = new FileHandler(s"target/tmp-${this.getClass.getName}")
-      try {
+      try
         intercept[IllegalArgumentException] {
           serializer.manifest(fileHandler)
         }.getMessage.toLowerCase should include("deny list")
-      } finally fileHandler.close()
+      finally fileHandler.close()
     }
 
     "not allow deserialization of deny list class" in {
@@ -1270,9 +1265,9 @@ abstract class JacksonSerializerSpec(serializerName: String)
                 "org.apache.pekko.serialization.jackson.ScalaTestMessages$$TestMessage" = $serializerName
               }
               """).withFallback(system.settings.config))
-            try {
+            try
               SerializationExtension(sys).serialize(SimpleCommand("hi")).get
-            } finally shutdown(sys)
+            finally shutdown(sys)
           }
         }
       }

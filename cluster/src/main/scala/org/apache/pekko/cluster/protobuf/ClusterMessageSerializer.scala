@@ -181,7 +181,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     out.toByteArray
   }
 
-  private def heartbeatToProtoByteArray(hb: ClusterHeartbeatSender.Heartbeat): Array[Byte] = {
+  private def heartbeatToProtoByteArray(hb: ClusterHeartbeatSender.Heartbeat): Array[Byte] =
     cm.Heartbeat
       .newBuilder()
       .setFrom(addressToProto(hb.from))
@@ -189,9 +189,8 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       .setCreationTime(hb.creationTimeNanos)
       .build
       .toByteArray
-  }
 
-  private def heartbeatRspToProtoByteArray(hbr: ClusterHeartbeatSender.HeartbeatRsp): Array[Byte] = {
+  private def heartbeatRspToProtoByteArray(hbr: ClusterHeartbeatSender.HeartbeatRsp): Array[Byte] =
     cm.HeartBeatResponse
       .newBuilder()
       .setFrom(uniqueAddressToProto(hbr.from))
@@ -199,7 +198,6 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       .setCreationTime(hbr.creationTimeNanos)
       .build
       .toByteArray
-  }
 
   private def addressFromBinary(bytes: Array[Byte]): Address =
     addressFromProto(cm.Address.parseFrom(bytes))
@@ -215,13 +213,12 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private[pekko] def addressToProtoByteArray(address: Address): Array[Byte] = addressToProto(address).build.toByteArray
 
-  private[pekko] def uniqueAddressToProto(uniqueAddress: UniqueAddress): cm.UniqueAddress.Builder = {
+  private[pekko] def uniqueAddressToProto(uniqueAddress: UniqueAddress): cm.UniqueAddress.Builder =
     cm.UniqueAddress
       .newBuilder()
       .setAddress(addressToProto(uniqueAddress.address))
       .setUid(uniqueAddress.longUid.toInt)
       .setUid2((uniqueAddress.longUid >> 32).toInt)
-  }
 
   private def uniqueAddressToProtoByteArray(uniqueAddress: UniqueAddress): Array[Byte] =
     uniqueAddressToProto(uniqueAddress).build.toByteArray
@@ -302,13 +299,11 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     InternalClusterAction.Welcome(uniqueAddressFromProto(m.getFrom), gossipFromProto(m.getGossip))
   }
 
-  private def deserializeLeave(bytes: Array[Byte]): ClusterUserAction.Leave = {
+  private def deserializeLeave(bytes: Array[Byte]): ClusterUserAction.Leave =
     ClusterUserAction.Leave(addressFromBinary(bytes))
-  }
 
-  private def deserializeDown(bytes: Array[Byte]): ClusterUserAction.Down = {
+  private def deserializeDown(bytes: Array[Byte]): ClusterUserAction.Down =
     ClusterUserAction.Down(addressFromBinary(bytes))
-  }
 
   private def deserializeInitJoin(bytes: Array[Byte]): InternalClusterAction.InitJoin = {
     val m = cm.InitJoin.parseFrom(bytes)
@@ -318,7 +313,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       InternalClusterAction.InitJoin(ConfigFactory.empty)
   }
 
-  private def deserializeInitJoinAck(bytes: Array[Byte]): InternalClusterAction.InitJoinAck = {
+  private def deserializeInitJoinAck(bytes: Array[Byte]): InternalClusterAction.InitJoinAck =
     try {
       val i = cm.InitJoinAck.parseFrom(bytes)
       val configCheck =
@@ -335,19 +330,15 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
         // nodes previous to 2.5.9 sends just an address
         InternalClusterAction.InitJoinAck(addressFromBinary(bytes), UncheckedConfig)
     }
-  }
 
-  private def deserializeExitingConfirmed(bytes: Array[Byte]): InternalClusterAction.ExitingConfirmed = {
+  private def deserializeExitingConfirmed(bytes: Array[Byte]): InternalClusterAction.ExitingConfirmed =
     InternalClusterAction.ExitingConfirmed(uniqueAddressFromBinary(bytes))
-  }
 
-  private def deserializeHeartBeatRspAsUniqueAddress(bytes: Array[Byte]): ClusterHeartbeatSender.HeartbeatRsp = {
+  private def deserializeHeartBeatRspAsUniqueAddress(bytes: Array[Byte]): ClusterHeartbeatSender.HeartbeatRsp =
     ClusterHeartbeatSender.HeartbeatRsp(uniqueAddressFromBinary(bytes), -1, -1)
-  }
 
-  private def deserializeHeartBeatAsAddress(bytes: Array[Byte]): ClusterHeartbeatSender.Heartbeat = {
+  private def deserializeHeartBeatAsAddress(bytes: Array[Byte]): ClusterHeartbeatSender.Heartbeat =
     ClusterHeartbeatSender.Heartbeat(addressFromBinary(bytes), -1, -1)
-  }
 
   def deserializeHeartBeat(bytes: Array[Byte]): ClusterHeartbeatSender.Heartbeat = {
     val hb = cm.Heartbeat.parseFrom(bytes)
@@ -359,15 +350,13 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     ClusterHeartbeatSender.HeartbeatRsp(uniqueAddressFromProto(hbr.getFrom), hbr.getSequenceNr, hbr.getCreationTime)
   }
 
-  private def deserializeInitJoinNack(bytes: Array[Byte]): InternalClusterAction.InitJoinNack = {
+  private def deserializeInitJoinNack(bytes: Array[Byte]): InternalClusterAction.InitJoinNack =
     InternalClusterAction.InitJoinNack(addressFromBinary(bytes))
-  }
 
   private def addressFromProto(address: cm.Address): Address =
     Address(getProtocol(address), getSystem(address), address.getHostname, address.getPort)
 
-  private def uniqueAddressFromProto(uniqueAddress: cm.UniqueAddress): UniqueAddress = {
-
+  private def uniqueAddressFromProto(uniqueAddress: cm.UniqueAddress): UniqueAddress =
     UniqueAddress(addressFromProto(uniqueAddress.getAddress),
       if (uniqueAddress.hasUid2) {
         // new remote node join the two parts of the long uid back
@@ -376,7 +365,6 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
         // old remote node
         uniqueAddress.getUid.toLong
       })
-  }
 
   private val memberStatusToInt = scala.collection.immutable.HashMap[MemberStatus, Int](
     MemberStatus.Joining -> cm.MemberStatus.Joining_VALUE,
@@ -411,16 +399,14 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       .setAppVersion(appVersion.version)
       .build()
 
-  private def initJoinToProto(currentConfig: Config): cm.InitJoin = {
+  private def initJoinToProto(currentConfig: Config): cm.InitJoin =
     cm.InitJoin.newBuilder().setCurrentConfig(currentConfig.root.render(ConfigRenderOptions.concise)).build()
-  }
 
-  private def initJoinAckToByteArray(address: Address, configCheck: ConfigCheck): Array[Byte] = {
+  private def initJoinAckToByteArray(address: Address, configCheck: ConfigCheck): Array[Byte] =
     if (configCheck == ConfigCheckUnsupportedByJoiningNode)
       addressToProtoByteArray(address) // plain Address in Akka 2.5.9 or earlier
     else
       initJoinAckToProto(address, configCheck).toByteArray
-  }
 
   private def initJoinAckToProto(address: Address, configCheck: ConfigCheck): cm.InitJoinAck = {
 
@@ -475,7 +461,7 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
         .addAllRolesIndexes(member.roles.map(mapRole).asJava)
         .setAppVersionIndex(mapAppVersion(member.appVersion))
 
-    def reachabilityToProto(reachability: Reachability): Iterable[cm.ObserverReachability.Builder] = {
+    def reachabilityToProto(reachability: Reachability): Iterable[cm.ObserverReachability.Builder] =
       reachability.versions.map {
         case (observer, version) =>
           val subjectReachability = reachability
@@ -492,7 +478,6 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
             .setVersion(version)
             .addAllSubjectReachability(subjectReachability.map(_.build).asJava)
       }
-    }
 
     def tombstoneToProto(t: (UniqueAddress, Long)): cm.Tombstone =
       cm.Tombstone.newBuilder().setAddressIndex(mapUniqueAddress(t._1)).setTimestamp(t._2).build()
@@ -614,10 +599,9 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     Gossip(members, overview, vectorClockFromProto(gossip.getVersion, hashMapping), tombstones)
   }
 
-  private def vectorClockFromProto(version: cm.VectorClock, hashMapping: immutable.Seq[String]) = {
+  private def vectorClockFromProto(version: cm.VectorClock, hashMapping: immutable.Seq[String]) =
     VectorClock(scala.collection.immutable.TreeMap.from(version.getVersionsList.asScala.iterator.map(v =>
       (VectorClock.Node.fromHash(hashMapping(v.getHashIndex)), v.getTimestamp))))
-  }
 
   private def gossipEnvelopeFromProto(envelope: cm.GossipEnvelope): GossipEnvelope = {
     val serializedGossip = envelope.getSerializedGossip
@@ -644,11 +628,10 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
     ClusterRouterPool(poolFromProto(crp.getPool), clusterRouterPoolSettingsFromProto(crp.getSettings))
   }
 
-  private def poolFromProto(pool: cm.Pool): Pool = {
+  private def poolFromProto(pool: cm.Pool): Pool =
     serialization.deserialize(pool.getData.toByteArray, pool.getSerializerId, pool.getManifest).get.asInstanceOf[Pool]
-  }
 
-  private def clusterRouterPoolSettingsFromProto(crps: cm.ClusterRouterPoolSettings): ClusterRouterPoolSettings = {
+  private def clusterRouterPoolSettingsFromProto(crps: cm.ClusterRouterPoolSettings): ClusterRouterPoolSettings =
     // For backwards compatibility, useRoles is the combination of getUseRole and getUseRolesList
     ClusterRouterPoolSettings(
       totalInstances = crps.getTotalInstances,
@@ -659,6 +642,5 @@ final class ClusterMessageSerializer(val system: ExtendedActorSystem)
       } else {
         crps.getUseRolesList.asScala.toSet
       })
-  }
 
 }

@@ -51,25 +51,24 @@ private[pekko] final class AdaptedClusterSingletonImpl(system: ActorSystem[_]) e
       case None    => ClusterSingletonSettings(system)
       case Some(s) => s
     }
-    def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] = {
+    def poisonPillInterceptor(behv: Behavior[M]): Behavior[M] =
       singleton.stopMessage match {
         case Some(_) => behv
         case None    => Behaviors.intercept(() => new PoisonPillInterceptor[M])(behv)
       }
-    }
 
     if (settings.shouldRunManager(cluster)) {
       val managerName = managerNameFor(singleton.name)
       // start singleton on this node
       val classicProps = PropsAdapter(poisonPillInterceptor(singleton.behavior), singleton.props)
-      try {
+      try
         classicSystem.systemActorOf(
           OldSingletonManager.props(
             classicProps,
             singleton.stopMessage.getOrElse(PoisonPill),
             settings.toManagerSettings(singleton.name)),
           managerName)
-      } catch {
+      catch {
         case ex: InvalidActorNameException if ex.getMessage.endsWith("is not unique!") =>
         // This is fine. We just wanted to make sure it is running and it already is
       }

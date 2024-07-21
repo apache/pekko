@@ -106,7 +106,7 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
   import ClusterShardingRememberEntitiesPerfSpec._
   import ClusterShardingRememberEntitiesPerfSpecConfig._
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     (1 to NrRegions).foreach { n =>
       startSharding(
         system,
@@ -115,8 +115,6 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
         extractEntityId = LatencyEntity.extractEntityId,
         extractShardId = LatencyEntity.extractShardId)
     }
-
-  }
 
   var latencyRegions = Vector.empty[ActorRef]
 
@@ -193,9 +191,8 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
         (1 to numberOfMessages).foreach { n =>
           region ! In(iteration * 100000 + n)
         }
-        for (_ <- 1 to numberOfMessages) {
+        for (_ <- 1 to numberOfMessages)
           histogram.recordValue(expectMsgType[Out].latency)
-        }
         numberOfMessages
       }
     }
@@ -203,12 +200,10 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
     "test latency when starting new entity and sending a few messages" in {
       val numberOfMessages = 800 * NrOfMessagesFactor
       runBench("start, few messages") { (iteration, region, histogram) =>
-        for (n <- 1 to numberOfMessages / 5; _ <- 1 to 5) {
+        for (n <- 1 to numberOfMessages / 5; _ <- 1 to 5)
           region ! In(iteration * 100000 + n)
-        }
-        for (_ <- 1 to numberOfMessages) {
+        for (_ <- 1 to numberOfMessages)
           histogram.recordValue(expectMsgType[Out].latency)
-        }
         numberOfMessages
       }
     }
@@ -225,15 +220,14 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
             region ! Stop(id)
           }
         }
-        for (_ <- 1 to numberOfMessages) {
-          try {
+        for (_ <- 1 to numberOfMessages)
+          try
             histogram.recordValue(expectMsgType[Out].latency)
-          } catch {
+          catch {
             case e: AssertionError =>
               log.error(s"Received ${histogram.getTotalCount} out of $numberOfMessages")
               throw e
           }
-        }
 
         awaitAssert({
             val probe = TestProbe()
@@ -257,15 +251,14 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
             region ! Stop(id)
           }
         }
-        for (_ <- 1 to numberOfMessages) {
-          try {
+        for (_ <- 1 to numberOfMessages)
+          try
             histogram.recordValue(expectMsgType[Out].latency)
-          } catch {
+          catch {
             case e: AssertionError =>
               log.error(s"Received ${histogram.getTotalCount} out of $numberOfMessages")
               throw e
           }
-        }
         numberOfMessages
       }
     }
@@ -282,14 +275,12 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
           region ! In(msg)
 
           if (n == 10) {
-            for (_ <- 1 to 10) {
+            for (_ <- 1 to 10)
               histogram.recordValue(expectMsgType[Out].latency)
-            }
           }
         }
-        for (_ <- 1 to numberOfMessages - 10) {
+        for (_ <- 1 to numberOfMessages - 10)
           histogram.recordValue(expectMsgType[Out].latency)
-        }
         numberOfMessages
       }
     }
@@ -301,14 +292,12 @@ abstract class ClusterShardingRememberEntitiesPerfSpec
           region ! In(iteration * 100000 + (n % 10)) // these will go to same 10 started entities
 
           if (n == 10) {
-            for (_ <- 1 to 10) {
+            for (_ <- 1 to 10)
               histogram.recordValue(expectMsgType[Out].latency)
-            }
           }
         }
-        for (_ <- 1 to numberOfMessages - 10) {
+        for (_ <- 1 to numberOfMessages - 10)
           histogram.recordValue(expectMsgType[Out].latency)
-        }
         numberOfMessages
       }
     }

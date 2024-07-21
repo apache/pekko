@@ -52,9 +52,9 @@ import pekko.stream.stage._
 
       override def onPull(): Unit = {
         val source =
-          try {
+          try
             sourceFactory()
-          } catch {
+          catch {
             case NonFatal(ex) =>
               matPromise.tryFailure(ex)
               throw ex
@@ -64,9 +64,8 @@ import pekko.stream.stage._
 
         setHandler(out,
           new OutHandler {
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               subSink.pull()
-            }
 
             override def onDownstreamFinish(cause: Throwable): Unit = {
               subSink.cancel(cause)
@@ -75,9 +74,8 @@ import pekko.stream.stage._
           })
 
         subSink.setHandler(new InHandler {
-          override def onPush(): Unit = {
+          override def onPush(): Unit =
             push(out, subSink.grab())
-          }
         })
 
         try {
@@ -93,9 +91,8 @@ import pekko.stream.stage._
 
       setHandler(out, this)
 
-      override def postStop() = {
+      override def postStop() =
         if (!matPromise.isCompleted) matPromise.tryFailure(new AbruptStageTerminationException(this))
-      }
     }
 
     (logic, matPromise.future)

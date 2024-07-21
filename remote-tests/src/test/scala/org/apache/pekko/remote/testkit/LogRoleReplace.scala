@@ -72,18 +72,17 @@ object LogRoleReplace extends ClipboardOwner {
 
     } else if (args.length == 1) {
       val inputFile = new BufferedReader(new FileReader(args(0)))
-      try {
+      try
         replacer.process(inputFile, new PrintWriter(new OutputStreamWriter(System.out)))
-      } finally {
+      finally
         inputFile.close()
-      }
 
     } else if (args.length == 2) {
       val outputFile = new PrintWriter(new FileWriter(args(1)))
       val inputFile = new BufferedReader(new FileReader(args(0)))
-      try {
+      try
         replacer.process(inputFile, outputFile)
-      } finally {
+      finally {
         outputFile.close()
         inputFile.close()
       }
@@ -144,9 +143,8 @@ class LogRoleReplace {
 
   private def replaceLine(line: String): String = {
     var result = line
-    for ((from, to) <- replacements) {
+    for ((from, to) <- replacements)
       result = result.replaceAll(from, to)
-    }
     result
   }
 

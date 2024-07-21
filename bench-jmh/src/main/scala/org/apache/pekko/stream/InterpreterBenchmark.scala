@@ -38,7 +38,7 @@ class InterpreterBenchmark {
 
   @Benchmark
   @OperationsPerInvocation(100000)
-  def graph_interpreter_100k_elements(): Unit = {
+  def graph_interpreter_100k_elements(): Unit =
     new GraphInterpreterSpecKit {
       new TestSetup {
         val identities = Vector.fill(numberOfIds)(GraphStages.identity[Int])
@@ -48,16 +48,14 @@ class InterpreterBenchmark {
         val b = builder(identities: _*).connect(source, identities.head.in).connect(identities.last.out, sink)
 
         // FIXME: This should not be here, this is pure setup overhead
-        for (i <- 0 until identities.size - 1) {
+        for (i <- 0 until identities.size - 1)
           b.connect(identities(i).out, identities(i + 1).in)
-        }
 
         b.init()
         sink.requestOne()
         interpreter.execute(Int.MaxValue)
       }
     }
-  }
 }
 
 object InterpreterBenchmark {
@@ -70,14 +68,13 @@ object InterpreterBenchmark {
     setHandler(
       out,
       new OutHandler {
-        override def onPull(): Unit = {
+        override def onPull(): Unit =
           if (idx < data.size) {
             push(out, data(idx))
             idx += 1
           } else {
             completeStage()
           }
-        }
         override def onDownstreamFinish(cause: Throwable): Unit = cancelStage(cause)
       })
   }

@@ -42,14 +42,13 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
 
   private val fs = Jimfs.newFileSystem("UnfoldResourceSourceSpec", Configuration.unix())
 
-  private val manyLines = {
+  private val manyLines =
     ("a" * 100 + "\n") * 10 +
     ("b" * 100 + "\n") * 10 +
     ("c" * 100 + "\n") * 10 +
     ("d" * 100 + "\n") * 10 +
     ("e" * 100 + "\n") * 10 +
     ("f" * 100 + "\n") * 10
-  }
   private val manyLinesArray = manyLines.split("\n")
 
   private val manyLinesPath = {
@@ -101,10 +100,10 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 49).foreach(i => {
+      (0 to 49).foreach { i =>
         sub.request(1)
         c.expectNext() should ===(if (i < 10) manyLinesArray(i) else manyLinesArray(i + 10))
-      })
+      }
       sub.request(1)
       c.expectComplete()
     }
@@ -123,10 +122,10 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 19).foreach(_ => {
+      (0 to 19).foreach { _ =>
         sub.request(1)
         c.expectNext() should ===(manyLinesArray(0))
-      })
+      }
       sub.cancel()
     }
 
@@ -152,10 +151,10 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 121).foreach(_ => {
+      (0 to 121).foreach { _ =>
         sub.request(1)
         c.expectNext().utf8String should ===(nextChunk().toString)
-      })
+      }
       sub.request(1)
       c.expectComplete()
     }
@@ -246,7 +245,6 @@ class UnfoldResourceSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
   }
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     fs.close()
-  }
 }

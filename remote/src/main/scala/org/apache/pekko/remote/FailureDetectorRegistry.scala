@@ -75,7 +75,7 @@ private[pekko] object FailureDetectorLoader {
    * @param system ActorSystem to be used for loading the implementation
    * @return A configured instance of the given [[FailureDetector]] implementation
    */
-  def load(fqcn: String, config: Config, system: ActorSystem): FailureDetector = {
+  def load(fqcn: String, config: Config, system: ActorSystem): FailureDetector =
     system
       .asInstanceOf[ExtendedActorSystem]
       .dynamicAccess
@@ -87,7 +87,6 @@ private[pekko] object FailureDetectorLoader {
           throw new ConfigurationException(s"Could not create custom failure detector [$fqcn] due to: ${e.toString}", e)
       }
       .get
-  }
 
   /**
    * Loads and instantiates a given [[FailureDetector]] implementation. The class to be loaded must have a constructor
