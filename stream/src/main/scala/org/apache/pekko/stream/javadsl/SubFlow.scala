@@ -638,7 +638,7 @@ class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def groupedWeighted(minWeight: Long)(
+  def groupedWeighted(minWeight: Long,
       costFn: function.Function[Out, java.lang.Long]): SubFlow[In, java.util.List[Out @uncheckedVariance], Mat] =
     new SubFlow(delegate.groupedWeighted(minWeight)(costFn.apply).map(_.asJava)) // TODO optimize to one step
 
@@ -691,7 +691,7 @@ class SubFlow[In, Out, Mat](
    *
    * See also [[Flow.take]], [[Flow.takeWithin]], [[Flow.takeWhile]]
    */
-  def limitWeighted(n: Long)(costFn: function.Function[Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] = {
+  def limitWeighted(n: Long, costFn: function.Function[Out, java.lang.Long]): javadsl.SubFlow[In, Out, Mat] = {
     new SubFlow(delegate.limitWeighted(n)(costFn.apply))
   }
 
@@ -735,7 +735,7 @@ class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def scan[T](zero: T)(f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
+  def scan[T](zero: T, f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.scan(zero)(f.apply))
 
   /**
@@ -766,7 +766,7 @@ class SubFlow[In, Out, Mat](
    *
    * See also [[#scan]]
    */
-  def scanAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def scanAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.scanAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -792,7 +792,7 @@ class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def fold[T](zero: T)(f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
+  def fold[T](zero: T, f: function.Function2[T, Out, T]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.fold(zero)(f.apply))
 
   /**
@@ -844,7 +844,7 @@ class SubFlow[In, Out, Mat](
    *
    * '''Cancels when''' downstream cancels
    */
-  def foldAsync[T](zero: T)(f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
+  def foldAsync[T](zero: T, f: function.Function2[T, Out, CompletionStage[T]]): SubFlow[In, T, Mat] =
     new SubFlow(delegate.foldAsync(zero) { (out, in) =>
       f(out, in).asScala
     })
@@ -3031,7 +3031,7 @@ class SubFlow[In, Out, Mat](
    * @param emitOnTimer decide whether the current aggregated elements can be emitted, the custom function is invoked on every interval
    */
   @ApiMayChange
-  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg])(
+  def aggregateWithBoundary[Agg, Emit](allocate: java.util.function.Supplier[Agg],
       aggregate: function.Function2[Agg, Out, Pair[Agg, Boolean]],
       harvest: function.Function[Agg, Emit],
       emitOnTimer: Pair[java.util.function.Predicate[Agg], java.time.Duration]): javadsl.SubFlow[In, Emit, Mat] =

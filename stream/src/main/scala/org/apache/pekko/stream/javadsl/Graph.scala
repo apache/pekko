@@ -742,7 +742,7 @@ object GraphDSL extends GraphCreate {
     new GenericGraph(s, gbuilder.delegate.result(s))
   }
 
-  final class Builder[+Mat]()(private[stream] implicit val delegate: scaladsl.GraphDSL.Builder[Mat]) { self =>
+  final class Builder[+Mat](private[stream] implicit val delegate: scaladsl.GraphDSL.Builder[Mat]) { self =>
     import pekko.stream.scaladsl.GraphDSL.Implicits._
 
     /**
