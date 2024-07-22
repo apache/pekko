@@ -19,9 +19,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.LogCapturing
-import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
-import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
+import pekko.actor.testkit.typed.scaladsl.{LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe}
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.Behaviors
 
@@ -49,19 +47,28 @@ class ClusterActorLoggingSpec
 
       def addressString = system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString
 
+      val probe = TestProbe[String]("pong")
+
       val behavior =
         Behaviors.setup[String] { context =>
-          context.log.info("Starting")
-          Behaviors.empty
+          Behaviors.receiveMessage {
+            case "ping" =>
+              context.log.info("Starting")
+              probe.ref ! "pong"
+              Behaviors.same
+          }
         }
 
       LoggingTestKit
         .info("Starting")
         .withCustom { event =>
-          event.mdc(ActorMdc.PekkoAddressKey) == addressString
+          event.mdc.contains(ActorMdc.PekkoAddressKey) && event.mdc(ActorMdc.PekkoAddressKey) == addressString
         }
+        .withLoggerName("org.apache.pekko.cluster.typed.ClusterActorLoggingSpec")
         .expect {
-          spawn(behavior)
+          val actorRef = spawn(behavior)
+          actorRef ! "ping"
+          probe.expectMessage("pong")
         }
     }
   }
