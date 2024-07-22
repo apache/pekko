@@ -16,15 +16,14 @@ package org.apache.pekko.cluster.typed
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.slf4j.MDC
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
+import pekko.actor.testkit.typed.scaladsl.LogCapturing
+import pekko.actor.testkit.typed.scaladsl.LoggingTestKit
+import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.Behaviors
-
-import java.util.concurrent.CountDownLatch
 
 object ClusterActorLoggingSpec {
   def config = ConfigFactory.parseString("""
@@ -49,19 +48,11 @@ class ClusterActorLoggingSpec
 
       def addressString = system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString
 
-      val cnt = new CountDownLatch(1)
-
       val behavior =
         Behaviors.setup[String] { context =>
-          Behaviors.receiveMessage {
-            case "ping" =>
-              val map = MDC.getCopyOfContextMap
-              if (map != null && map.containsKey(ActorMdc.PekkoAddressKey)) {
-                context.log.info("Starting")
-                cnt.countDown()
-              }
-              Behaviors.same
-          }
+          println(s"roiocam: current context: ${context.getClass.getName}")
+          context.log.info("Starting")
+          Behaviors.empty
         }
 
       LoggingTestKit
@@ -71,10 +62,7 @@ class ClusterActorLoggingSpec
         }
         .withLoggerName("org.apache.pekko.cluster.typed.ClusterActorLoggingSpec")
         .expect {
-          val ref = spawn(behavior)
-          do {
-            ref ! "ping"
-          } while (cnt.await(100, java.util.concurrent.TimeUnit.MILLISECONDS))
+          spawn(behavior)
         }
     }
   }
