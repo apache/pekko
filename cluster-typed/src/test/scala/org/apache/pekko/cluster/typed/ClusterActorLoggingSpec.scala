@@ -16,22 +16,21 @@ package org.apache.pekko.cluster.typed
 import com.typesafe.config.ConfigFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import org.slf4j.MDC
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.{LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit}
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit }
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.Behaviors
+
+import java.util.concurrent.CountDownLatch
 
 object ClusterActorLoggingSpec {
   def config = ConfigFactory.parseString("""
     pekko.actor.provider = cluster
-    pekko.remote.classic.netty.tcp.port = 0
     pekko.remote.artery.canonical.port = 0
     pekko.remote.artery.canonical.hostname = 127.0.0.1
-    # generous timeout for cluster forming probes
-    pekko.actor.testkit.typed.default-timeout = 10s
-    pekko.actor.testkit.typed.filter-leeway = 10s
     """)
 }
 
@@ -47,11 +46,18 @@ class ClusterActorLoggingSpec
 
       def addressString = system.classicSystem.asInstanceOf[ExtendedActorSystem].provider.addressString
 
+      val cnt = new CountDownLatch(1)
+
       val behavior =
         Behaviors.setup[String] { context =>
-          context.setLoggerName("org.apache.pekko.cluster.typed.ClusterActorLoggingSpec")
-          context.log.info("Starting")
-          Behaviors.empty
+          Behaviors.receiveMessage {
+            case "ping" =>
+              if (MDC.getCopyOfContextMap.containsKey(ActorMdc.PekkoAddressKey)) {
+                context.log.info("Starting")
+                cnt.countDown()
+              }
+              Behaviors.same
+          }
         }
 
       LoggingTestKit
@@ -61,7 +67,10 @@ class ClusterActorLoggingSpec
         }
         .withLoggerName("org.apache.pekko.cluster.typed.ClusterActorLoggingSpec")
         .expect {
-          spawn(behavior)
+          val ref = spawn(behavior)
+          do {
+            ref ! "ping"
+          } while (cnt.await(100, java.util.concurrent.TimeUnit.MILLISECONDS))
         }
     }
   }
