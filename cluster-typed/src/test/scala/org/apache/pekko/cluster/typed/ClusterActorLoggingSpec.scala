@@ -19,7 +19,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import org.apache.pekko
 import pekko.actor.ExtendedActorSystem
-import pekko.actor.testkit.typed.scaladsl.{LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe}
+import pekko.actor.testkit.typed.scaladsl.{ LogCapturing, LoggingTestKit, ScalaTestWithActorTestKit, TestProbe }
 import pekko.actor.typed.internal.ActorMdc
 import pekko.actor.typed.scaladsl.Behaviors
 
