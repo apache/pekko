@@ -21,6 +21,8 @@ import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.annotation.InternalApi
 
+import java.util.Collections
+
 /**
  * INTERNAL API
  *
@@ -89,10 +91,12 @@ import pekko.annotation.InternalApi
     }
 
     val marker: Option[Marker] = Option(event.getMarkerList).flatMap(_.asScala.headOption)
-    var mdc: Map[String, String] = event.getMDCPropertyMap.asScala.toMap
-    if (mdc == null || mdc.isEmpty) {
-      mdc = MDC.getMDCAdapter.getCopyOfContextMap.asScala.toMap
-    }
+    val mdc: Map[String, String] = Option(event.getMDCPropertyMap)
+      .filterNot(_.isEmpty)
+      .orElse(Option(MDC.getMDCAdapter.getCopyOfContextMap))
+      .getOrElse(Collections.emptyMap())
+      .asScala.toMap
+
     val loggingEvent = LoggingEvent(
       level = convertLevel(event.getLevel),
       message = event.getFormattedMessage,
