@@ -63,7 +63,6 @@ jobs:
   pekko-classic-remoting-tests:
     name: Pekko Classic Remoting Tests
     runs-on: ubuntu-20.04
-    if: github.repository == 'apache/pekko'
     strategy:
       fail-fast: false
       matrix:
@@ -104,6 +103,7 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.cluster.assert=on \
+          -Dslf4j.provider=ch.qos.logback.classic.spi.LogbackServiceProvider \
           clean ${{ matrix.command }}
 
   jdk-nightly-build:

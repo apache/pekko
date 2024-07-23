@@ -28,7 +28,6 @@ import pekko.actor.typed.scaladsl.Behaviors
 object ClusterActorLoggingSpec {
   def config = ConfigFactory.parseString("""
     pekko.actor.provider = cluster
-    pekko.remote.classic.netty.tcp.port = 0
     pekko.remote.artery.canonical.port = 0
     pekko.remote.artery.canonical.hostname = 127.0.0.1
     # generous timeout for cluster forming probes
@@ -58,8 +57,10 @@ class ClusterActorLoggingSpec
       LoggingTestKit
         .info("Starting")
         .withCustom { event =>
+          event.mdc.contains(ActorMdc.PekkoAddressKey) &&
           event.mdc(ActorMdc.PekkoAddressKey) == addressString
         }
+        .withLoggerName("org.apache.pekko.cluster.typed.ClusterActorLoggingSpec")
         .expect {
           spawn(behavior)
         }
