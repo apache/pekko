@@ -20,13 +20,7 @@ import scala.reflect.ClassTag
 
 import org.apache.pekko
 import pekko.actor.typed._
-import pekko.actor.typed.internal.{
-  BehaviorImpl,
-  StashBufferImpl,
-  Supervisor,
-  TimerSchedulerImpl,
-  WithMdcBehaviorInterceptor
-}
+import pekko.actor.typed.internal.{ BehaviorImpl, StashBufferImpl, TimerSchedulerImpl, WithMdcBehaviorInterceptor }
 import pekko.japi.function.{ Effect, Function2 => JapiFunction2 }
 import pekko.japi.pf.PFBuilder
 import pekko.util.ccompat.JavaConverters._
@@ -261,27 +255,8 @@ object Behaviors {
    *      .onFailure[IndexOutOfBoundsException](SupervisorStrategy.resume) // resume for IndexOutOfBoundsException exceptions
    * }}}
    */
-  def supervise[T](wrapped: Behavior[T]): Supervise[T] =
-    new Supervise[T](wrapped)
-
-  final class Supervise[T] private[pekko] (wrapped: Behavior[T]) {
-
-    /**
-     * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
-     *
-     * Only exceptions of the given type (and their subclasses) will be handled by this supervision behavior.
-     */
-    def onFailure[Thr <: Throwable](clazz: Class[Thr], strategy: SupervisorStrategy): Behavior[T] =
-      Supervisor(Behavior.validateAsInitial(wrapped), strategy)(ClassTag(clazz))
-
-    /**
-     * Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws.
-     *
-     * All non-fatal (see [[scala.util.control.NonFatal]]) exceptions types will be handled using the given strategy.
-     */
-    def onFailure(strategy: SupervisorStrategy): Behavior[T] =
-      onFailure(classOf[Exception], strategy)
-  }
+  def supervise[T](wrapped: Behavior[T]): SuperviseBehavior[T] =
+    scaladsl.Behaviors.supervise(wrapped)
 
   /**
    * Transform the incoming messages by placing a funnel in front of the wrapped `Behavior`: the supplied

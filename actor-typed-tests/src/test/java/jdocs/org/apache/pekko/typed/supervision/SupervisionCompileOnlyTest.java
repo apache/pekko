@@ -43,7 +43,7 @@ public class SupervisionCompileOnlyTest {
 
     // #top-level
     public static Behavior<Command> create() {
-      return Behaviors.supervise(counter(1)).onFailure(SupervisorStrategy.restart());
+      return Behaviors.supervise(counter(1)).onException(SupervisorStrategy.restart());
     }
     // #top-level
 
@@ -86,9 +86,8 @@ public class SupervisionCompileOnlyTest {
     // #restart-limit
 
     // #multiple
-    Behaviors.supervise(
-            Behaviors.supervise(behavior)
-                .onFailure(IllegalStateException.class, SupervisorStrategy.restart()))
+    Behaviors.supervise(behavior)
+        .onFailure(IllegalStateException.class, SupervisorStrategy.restart())
         .onFailure(IllegalArgumentException.class, SupervisorStrategy.stop());
     // #multiple
 
@@ -115,7 +114,7 @@ public class SupervisionCompileOnlyTest {
                         return Behaviors.same();
                       });
                 }))
-        .onFailure(SupervisorStrategy.restart());
+        .onException(SupervisorStrategy.restart());
   }
   // #restart-stop-children
 
@@ -136,7 +135,7 @@ public class SupervisionCompileOnlyTest {
                         child2.tell(parts[1]);
                         return Behaviors.same();
                       }))
-              .onFailure(SupervisorStrategy.restart().withStopChildren(false));
+              .onException(SupervisorStrategy.restart().withStopChildren(false));
         });
   }
   // #restart-keep-children
