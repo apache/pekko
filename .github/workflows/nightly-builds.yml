@@ -103,7 +103,6 @@ jobs:
           -Dpekko.test.tags.exclude=gh-exclude,timing \
           -Dpekko.test.multi-in-test=false \
           -Dpekko.cluster.assert=on \
-          -Dslf4j.provider=ch.qos.logback.classic.spi.LogbackServiceProvider \
           clean ${{ matrix.command }}
 
   jdk-nightly-build:

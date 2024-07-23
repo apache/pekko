@@ -30,9 +30,6 @@ object ClusterActorLoggingSpec {
     pekko.actor.provider = cluster
     pekko.remote.artery.canonical.port = 0
     pekko.remote.artery.canonical.hostname = 127.0.0.1
-    # generous timeout for cluster forming probes
-    pekko.actor.testkit.typed.default-timeout = 10s
-    pekko.actor.testkit.typed.filter-leeway = 10s
     """)
 }
 

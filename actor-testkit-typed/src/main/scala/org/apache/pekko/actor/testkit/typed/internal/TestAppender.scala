@@ -16,8 +16,7 @@ package org.apache.pekko.actor.testkit.typed.internal
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.classic.spi.ThrowableProxy
 import ch.qos.logback.core.AppenderBase
-import org.slf4j.Marker
-
+import org.slf4j.{ MDC, Marker }
 import org.apache.pekko
 import pekko.actor.testkit.typed.LoggingEvent
 import pekko.annotation.InternalApi
@@ -90,6 +89,10 @@ import pekko.annotation.InternalApi
     }
 
     val marker: Option[Marker] = Option(event.getMarkerList).flatMap(_.asScala.headOption)
+    var mdc: Map[String, String] = event.getMDCPropertyMap.asScala.toMap
+    if (mdc == null || mdc.isEmpty) {
+      mdc = MDC.getMDCAdapter.getCopyOfContextMap.asScala.toMap
+    }
     val loggingEvent = LoggingEvent(
       level = convertLevel(event.getLevel),
       message = event.getFormattedMessage,
@@ -98,7 +101,7 @@ import pekko.annotation.InternalApi
       timeStamp = event.getTimeStamp,
       marker = marker,
       throwable = throwable,
-      mdc = event.getMDCPropertyMap.asScala.toMap)
+      mdc = mdc)
 
     filter(loggingEvent)
   }
