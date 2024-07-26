@@ -18,6 +18,7 @@ import com.typesafe.config.ConfigFactory
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
 import pekko.testkit.{ ImplicitSender, PekkoSpec }
+import pekko.util.JavaVersion
 
 object ForkJoinPoolStarvationSpec {
   val config = ConfigFactory.parseString("""
@@ -62,7 +63,7 @@ class ForkJoinPoolStarvationSpec extends PekkoSpec(ForkJoinPoolStarvationSpec.co
 
     "not starve tasks arriving from external dispatchers under high internal traffic" in {
       // TODO issue #31117: starvation with JDK 17 FJP
-      if (System.getProperty("java.specification.version") == "17")
+      if (JavaVersion.majorVersion >= 17)
         pending
 
       // Two busy actors that will occupy the threads of the dispatcher
