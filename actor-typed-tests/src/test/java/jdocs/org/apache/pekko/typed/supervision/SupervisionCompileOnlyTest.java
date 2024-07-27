@@ -86,9 +86,8 @@ public class SupervisionCompileOnlyTest {
     // #restart-limit
 
     // #multiple
-    Behaviors.supervise(
-            Behaviors.supervise(behavior)
-                .onFailure(IllegalStateException.class, SupervisorStrategy.restart()))
+    Behaviors.supervise(behavior)
+        .onFailure(IllegalStateException.class, SupervisorStrategy.restart())
         .onFailure(IllegalArgumentException.class, SupervisorStrategy.stop());
     // #multiple
 

@@ -15,8 +15,8 @@ package org.apache.pekko.actor.typed
 package scaladsl
 
 import scala.reflect.ClassTag
-
 import org.apache.pekko
+import org.apache.pekko.actor.typed.SuperviseBehavior
 import pekko.actor.typed.internal._
 import pekko.annotation.{ DoNotInherit, InternalApi }
 
@@ -233,9 +233,8 @@ object Behaviors {
 
     /** Specify the [[SupervisorStrategy]] to be invoked when the wrapped behavior throws. */
     def onFailure[Thr <: Throwable](strategy: SupervisorStrategy)(
-        implicit tag: ClassTag[Thr] = ThrowableClassTag): Behavior[T] = {
-      val effectiveTag = if (tag == ClassTag.Nothing) ThrowableClassTag else tag
-      Supervisor(Behavior.validateAsInitial(wrapped), strategy)(effectiveTag)
+        implicit tag: ClassTag[Thr] = ThrowableClassTag): SuperviseBehavior[T] = {
+      new SuperviseBehavior[T](wrapped).onFailure(strategy)(tag)
     }
   }
 
