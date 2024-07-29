@@ -15,11 +15,12 @@ package jdocs.future;
 
 // #context-dispatcher
 import org.apache.pekko.actor.AbstractActor;
-import org.apache.pekko.dispatch.Futures;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ActorWithFuture extends AbstractActor {
   ActorWithFuture() {
-    Futures.future(() -> "hello", getContext().dispatcher());
+    CompletableFuture.supplyAsync(() -> "hello", getContext().dispatcher());
   }
 
   @Override

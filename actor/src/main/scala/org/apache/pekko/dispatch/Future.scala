@@ -130,6 +130,7 @@ object Futures {
    * @param executor the execution context on which the future is run
    * @return         the `Future` holding the result of the computation
    */
+  @deprecated("Use CompletionStage / CompletableFuture-based APIs instead", "1.1.0")
   def future[T](body: Callable[T], executor: ExecutionContext): Future[T] = Future(body.call)(executor)
 
   /**
@@ -137,20 +138,25 @@ object Futures {
    *
    * @return         the newly created `Promise` object
    */
+  @deprecated("Use CompletableFuture instead", "1.1.0")
   def promise[T](): Promise[T] = Promise[T]()
 
   /**
    * creates an already completed Promise with the specified exception
    */
+  @deprecated("Use CompletionStage / CompletableFuture-based APIs instead", "1.1.0")
   def failed[T](exception: Throwable): Future[T] = Future.failed(exception)
 
   /**
    * Creates an already completed Promise with the specified result
    */
+  @deprecated("Use CompletionStage / CompletableFuture-based APIs instead", "1.1.0")
   def successful[T](result: T): Future[T] = Future.successful(result)
 
   /**
    * Creates an already completed CompletionStage with the specified exception
+   *
+   * Note: prefer CompletableFuture.failedStage(ex) from Java 9 onwards
    */
   def failedCompletionStage[T](ex: Throwable): CompletionStage[T] = {
     val f = CompletableFuture.completedFuture[T](null.asInstanceOf[T])
@@ -172,6 +178,7 @@ object Futures {
   /**
    * Returns a Future to the result of the first future in the list that is completed
    */
+  @deprecated("Use CompletableFuture.anyOf instead", "1.1.0")
   def firstCompletedOf[T <: AnyRef](futures: JIterable[Future[T]], executor: ExecutionContext): Future[T] =
     Future.firstCompletedOf(futures.asScala)(executor)
 

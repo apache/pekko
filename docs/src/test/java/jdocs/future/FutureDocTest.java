@@ -14,27 +14,18 @@
 package jdocs.future;
 
 import org.apache.pekko.actor.typed.ActorSystem;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.pattern.Patterns;
 import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.testkit.PekkoSpec;
 import org.apache.pekko.util.Timeout;
-import org.apache.pekko.util.FutureConverters;
 import jdocs.AbstractJavaTest;
 import org.junit.ClassRule;
 import org.junit.Test;
-import scala.concurrent.Await;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.Future;
 
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.*;
 
 import static org.apache.pekko.actor.typed.javadsl.Adapter.toTyped;
-import static org.apache.pekko.dispatch.Futures.future;
 // #imports
 
 // #imports
@@ -48,9 +39,9 @@ public class FutureDocTest extends AbstractJavaTest {
 
   private final ActorSystem<Void> system = toTyped(actorSystemResource.getSystem());
 
-  @Test(expected = java.util.concurrent.CompletionException.class)
-  public void useAfter() throws Exception {
-    final ExecutionContext ec = system.executionContext();
+  @Test(expected = IllegalStateException.class)
+  public void useAfter() throws Throwable {
+    final Executor ex = system.executionContext();
     // #after
     CompletionStage<String> failWithException =
         CompletableFuture.supplyAsync(
@@ -60,18 +51,25 @@ public class FutureDocTest extends AbstractJavaTest {
     CompletionStage<String> delayed =
         Patterns.after(Duration.ofMillis(200), system, () -> failWithException);
     // #after
-    Future<String> future =
-        future(
+    CompletionStage<String> completionStage =
+        CompletableFuture.supplyAsync(
             () -> {
-              Thread.sleep(1000);
+              try {
+                Thread.sleep(1000);
+              } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+              }
               return "foo";
             },
-            ec);
-    Future<String> result =
-        Futures.firstCompletedOf(
-            Arrays.<Future<String>>asList(future, FutureConverters.asScala(delayed)), ec);
-    Timeout timeout = Timeout.create(Duration.ofSeconds(2));
-    Await.result(result, timeout.duration());
+            ex);
+    CompletableFuture<Object> result =
+        CompletableFuture.anyOf(
+            completionStage.toCompletableFuture(), delayed.toCompletableFuture());
+    try {
+      result.toCompletableFuture().get(2, SECONDS);
+    } catch (ExecutionException e) {
+      throw e.getCause();
+    }
   }
 
   @Test
