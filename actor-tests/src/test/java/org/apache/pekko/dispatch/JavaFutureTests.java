@@ -32,6 +32,7 @@ import static org.apache.pekko.japi.Util.classTag;
 
 import org.apache.pekko.testkit.PekkoSpec;
 
+@SuppressWarnings("deprecation")
 public class JavaFutureTests extends JUnitSuite {
 
   @ClassRule
