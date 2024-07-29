@@ -137,8 +137,8 @@ object Futures {
    *
    * @return         the newly created `Promise` object
    */
-   @deprecated("Use the Scala Promise API directly", "1.1.0")
-   def promise[T](): Promise[T] = Promise[T]()
+  @deprecated("Use the Scala Promise API directly", "1.1.0")
+  def promise[T](): Promise[T] = Promise[T]()
 
   /**
    * creates an already completed Promise with the specified exception

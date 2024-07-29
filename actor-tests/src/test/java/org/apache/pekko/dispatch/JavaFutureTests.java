@@ -127,7 +127,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToForeachAFuture() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = new Promise<String>()g>();
+    Promise<String> cf = new Promise<String>();
     Future<String> f = cf.future();
     f.foreach(
         new Foreach<String>() {
