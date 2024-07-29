@@ -14,7 +14,6 @@
 package jdocs.persistence;
 
 // #plugin-imports
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.persistence.*;
 import org.apache.pekko.persistence.journal.japi.*;
 import org.apache.pekko.persistence.snapshot.japi.*;
@@ -93,12 +92,12 @@ public class LambdaPersistencePluginDocTest {
 
     @Override
     public Future<Void> doDeleteAsync(SnapshotMetadata metadata) {
-      return Futures.successful(null);
+      return Future.successful(null);
     }
 
     @Override
     public Future<Void> doDeleteAsync(String persistenceId, SnapshotSelectionCriteria criteria) {
-      return Futures.successful(null);
+      return Future.successful(null);
     }
   }
 
@@ -111,9 +110,9 @@ public class LambdaPersistencePluginDocTest {
         Iterable<Optional<Exception>> result = new ArrayList<Optional<Exception>>();
         // blocking call here...
         // result.add(..)
-        return Futures.successful(result);
+        return Future.successful(result);
       } catch (Exception e) {
-        return Futures.failed(e);
+        return Future.failed(e);
       }
     }
     // #sync-journal-plugin-api

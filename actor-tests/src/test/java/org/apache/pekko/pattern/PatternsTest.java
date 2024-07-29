@@ -219,7 +219,7 @@ public class PatternsTest extends JUnitSuite {
   @Test
   public void usePipe() throws Exception {
     TestProbe probe = new TestProbe(system);
-    pipe(Futures.successful("ho!"), system.dispatcher()).to(probe.ref());
+    pipe(Future.successful("ho!"), system.dispatcher()).to(probe.ref());
     probe.expectMsg("ho!");
   }
 
@@ -227,7 +227,7 @@ public class PatternsTest extends JUnitSuite {
   public void usePipeWithActorSelection() throws Exception {
     TestProbe probe = new TestProbe(system);
     ActorSelection selection = system.actorSelection(probe.ref().path());
-    pipe(Futures.successful("hi!"), system.dispatcher()).to(selection);
+    pipe(Future.successful("hi!"), system.dispatcher()).to(selection);
     probe.expectMsg("hi!");
   }
 
@@ -293,7 +293,7 @@ public class PatternsTest extends JUnitSuite {
 
     Future<String> retriedFuture =
         Patterns.retry(
-            () -> Futures.successful(expected),
+            () -> Future.successful(expected),
             3,
             scala.concurrent.duration.Duration.apply(200, "millis"),
             system.scheduler(),
@@ -319,7 +319,7 @@ public class PatternsTest extends JUnitSuite {
   @Test(expected = IllegalStateException.class)
   public void testAfterFailedCallable() throws Exception {
     Callable<Future<String>> failedCallable =
-        () -> Futures.failed(new IllegalStateException("Illegal!"));
+        () -> Future.failed(new IllegalStateException("Illegal!"));
 
     Future<String> delayedFuture =
         Patterns.after(
@@ -340,7 +340,7 @@ public class PatternsTest extends JUnitSuite {
             scala.concurrent.duration.Duration.create(200, "millis"),
             system.scheduler(),
             ec,
-            () -> Futures.failed(new IllegalStateException("Illegal!")));
+            () -> Future.failed(new IllegalStateException("Illegal!")));
 
     Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
     Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
@@ -355,7 +355,7 @@ public class PatternsTest extends JUnitSuite {
             scala.concurrent.duration.Duration.create(200, "millis"),
             system.scheduler(),
             ec,
-            () -> Futures.successful(expected));
+            () -> Future.successful(expected));
 
     Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
     final String actual = Await.result(resultFuture, FiniteDuration.apply(3, SECONDS));
@@ -372,7 +372,7 @@ public class PatternsTest extends JUnitSuite {
             scala.concurrent.duration.Duration.create(200, "millis"),
             system.scheduler(),
             ec,
-            () -> Futures.successful(expected));
+            () -> Future.successful(expected));
 
     Future<String> resultFuture = Futures.firstCompletedOf(Arrays.asList(delayedFuture), ec);
 
@@ -389,7 +389,7 @@ public class PatternsTest extends JUnitSuite {
             scala.concurrent.duration.Duration.create(200, "millis"),
             system.scheduler(),
             ec,
-            () -> Futures.successful("world"));
+            () -> Future.successful("world"));
 
     Future<String> immediateFuture = Futures.future(() -> expected, ec);
 

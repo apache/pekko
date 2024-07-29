@@ -13,10 +13,12 @@
 
 package org.apache.pekko.dispatch;
 
-import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
 import org.apache.pekko.actor.ActorSystem;
-
 import org.apache.pekko.japi.*;
+import org.apache.pekko.testkit.PekkoJUnitActorSystemResource;
+import org.apache.pekko.testkit.PekkoSpec;
+import static org.apache.pekko.japi.Util.classTag;
+
 import org.junit.ClassRule;
 import org.scalatestplus.junit.JUnitSuite;
 import scala.concurrent.Await;
@@ -32,9 +34,6 @@ import java.util.LinkedList;
 import java.lang.Iterable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import static org.apache.pekko.japi.Util.classTag;
-
-import org.apache.pekko.testkit.PekkoSpec;
 
 public class JavaFutureTests extends JUnitSuite {
 
@@ -72,7 +71,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToExecuteAnOnResultCallback() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>();
     Future<String> f = cf.future();
     f.onComplete(
         new OnComplete<String>() {
@@ -90,7 +89,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToExecuteAnOnExceptionCallback() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>();
     Future<String> f = cf.future();
     f.onComplete(
         new OnComplete<String>() {
@@ -110,7 +109,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToExecuteAnOnCompleteCallback() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>();
     Future<String> f = cf.future();
     f.onComplete(
         new OnComplete<String>() {
@@ -128,7 +127,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToForeachAFuture() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>()g>();
     Future<String> f = cf.future();
     f.foreach(
         new Foreach<String>() {
@@ -146,7 +145,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToFlatMapAFuture() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>();
     cf.success("1000");
     Future<String> f = cf.future();
     Future<Integer> r =
@@ -155,7 +154,7 @@ public class JavaFutureTests extends JUnitSuite {
               public Future<Integer> checkedApply(String r) throws Throwable {
                 if (false) throw new IOException("Just here to make sure this compiles.");
                 latch.countDown();
-                Promise<Integer> cf = Futures.promise();
+                Promise<Integer> cf = new Promise<Integer>();
                 cf.success(Integer.parseInt(r));
                 return cf.future();
               }
@@ -170,7 +169,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void mustBeAbleToFilterAFuture() throws Throwable {
     final CountDownLatch latch = new CountDownLatch(1);
-    Promise<String> cf = Futures.promise();
+    Promise<String> cf = new Promise<String>();
     Future<String> f = cf.future();
     Future<String> r =
         f.filter(
@@ -333,7 +332,7 @@ public class JavaFutureTests extends JUnitSuite {
 
   @Test
   public void blockMustBeCallable() throws Exception {
-    Promise<String> p = Futures.promise();
+    Promise<String> p = new Promise<String>();
     Duration d = Duration.create(1, TimeUnit.SECONDS);
     p.success("foo");
     Await.ready(p.future(), d);
@@ -342,7 +341,7 @@ public class JavaFutureTests extends JUnitSuite {
 
   @Test
   public void mapToMustBeCallable() throws Exception {
-    Promise<Object> p = Futures.promise();
+    Promise<Object> p = new Promise<Object>();
     Future<String> f = p.future().mapTo(classTag(String.class));
     Duration d = Duration.create(1, TimeUnit.SECONDS);
     p.success("foo");
@@ -353,7 +352,7 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void recoverToMustBeCallable() throws Exception {
     final IllegalStateException fail = new IllegalStateException("OHNOES");
-    Promise<Object> p = Futures.promise();
+    Promise<Object> p = new Promise<Object>();
     Future<Object> f =
         p.future()
             .recover(
@@ -372,13 +371,13 @@ public class JavaFutureTests extends JUnitSuite {
   @Test
   public void recoverWithToMustBeCallable() throws Exception {
     final IllegalStateException fail = new IllegalStateException("OHNOES");
-    Promise<Object> p = Futures.promise();
+    Promise<Object> p = new Promise<Object>();
     Future<Object> f =
         p.future()
             .recoverWith(
                 new Recover<Future<Object>>() {
                   public Future<Object> recover(Throwable t) throws Throwable {
-                    if (t == fail) return Futures.successful("foo");
+                    if (t == fail) return Future.successful("foo");
                     else throw t;
                   }
                 },

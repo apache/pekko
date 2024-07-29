@@ -19,7 +19,6 @@ import org.apache.pekko.actor.AbstractActor;
 import org.apache.pekko.actor.ActorRef;
 import org.apache.pekko.actor.ActorSystem;
 import org.apache.pekko.actor.Cancellable;
-import org.apache.pekko.dispatch.Futures;
 import org.apache.pekko.japi.Pair;
 import org.apache.pekko.stream.*;
 import org.apache.pekko.stream.javadsl.*;
@@ -159,7 +158,7 @@ public class FlowDocTest extends AbstractJavaTest {
     Source.from(list);
 
     // Create a source form a Future
-    Source.future(Futures.successful("Hello Streams!"));
+    Source.future(Future.successful("Hello Streams!"));
 
     // Create a source from a single element
     Source.single("only one element");

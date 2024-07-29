@@ -137,16 +137,19 @@ object Futures {
    *
    * @return         the newly created `Promise` object
    */
-  def promise[T](): Promise[T] = Promise[T]()
+   @deprecated("Use the Scala Promise API directly", "1.1.0")
+   def promise[T](): Promise[T] = Promise[T]()
 
   /**
    * creates an already completed Promise with the specified exception
    */
+  @deprecated("Use the Scala Future.failed API directly", "1.1.0")
   def failed[T](exception: Throwable): Future[T] = Future.failed(exception)
 
   /**
    * Creates an already completed Promise with the specified result
    */
+  @deprecated("Use the Scala Future.successful APIs directly", "1.1.0")
   def successful[T](result: T): Future[T] = Future.successful(result)
 
   /**

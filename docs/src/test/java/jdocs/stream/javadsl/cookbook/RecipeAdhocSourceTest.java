@@ -111,7 +111,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void shutdownStream() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        Promise<Done> shutdown = new Promise<Done>();
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     Source.repeat("a")
@@ -134,7 +134,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void notShutDownStream() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        Promise<Done> shutdown = new Promise<Done>();
         TestSubscriber.Probe<String> probe =
             adhocSource(
                     Source.repeat("a")
@@ -166,7 +166,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void restartUponDemand() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        Promise<Done> shutdown = new Promise<Done>();
         AtomicInteger startedCount = new AtomicInteger(0);
 
         Source<String, ?> source =
@@ -196,7 +196,7 @@ public class RecipeAdhocSourceTest extends RecipeTest {
   public void restartUptoMaxRetries() throws Exception {
     new TestKit(system) {
       {
-        Promise<Done> shutdown = Futures.promise();
+        Promise<Done> shutdown = new Promise<Done>();
         AtomicInteger startedCount = new AtomicInteger(0);
 
         Source<String, ?> source =
