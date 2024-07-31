@@ -154,3 +154,12 @@ manual exception overrides may be put in place if the change happened to be in a
 
 Scala does not maintain serialization compatibility across major versions. This means that if Java serialization is used
 there is no guarantee objects can be cleanly deserialized if serialized with a different version of Scala.
+
+## Binary Compatibility of dependencies
+
+The above rules apply to Pekko modules themselves. They do not necessarily
+apply to dependencies: within a major Pekko component version, we may upgrade a
+major version of a dependency. For example, between Pekko Connectors 1.0 and
+1.1, we updated from `javax.jms` 1.1 to `javax.jms` 2.0.1 in the JMS component.
+This means when you update this component, you may also need to update any
+other components that were still built against `javax.jms` 1.1.
