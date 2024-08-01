@@ -43,9 +43,8 @@ trait RetrySupport {
    * val withRetry: Future[Something] = retry(attempt = possiblyFailing, attempts = 10)
    * }}}
    */
-  def retry[T](attempt: () => Future[T], attempts: Int)(implicit ec: ExecutionContext): Future[T] = {
+  def retry[T](attempt: () => Future[T], attempts: Int)(implicit ec: ExecutionContext): Future[T] =
     RetrySupport.retry(attempt, attempts, attempted = 0)
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -77,9 +76,8 @@ trait RetrySupport {
    */
   def retry[T](attempt: () => Future[T],
       shouldRetry: (T, Throwable) => Boolean,
-      attempts: Int)(implicit ec: ExecutionContext): Future[T] = {
+      attempts: Int)(implicit ec: ExecutionContext): Future[T] =
     RetrySupport.retry(attempt, shouldRetry, attempts, ConstantFun.scalaAnyToNone, attempted = 0)(ec, null)
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -115,7 +113,7 @@ trait RetrySupport {
       attempts: Int,
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
-      randomFactor: Double)(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] = {
+      randomFactor: Double)(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] =
     retry(
       attempt,
       RetrySupport.retryOnException,
@@ -123,7 +121,6 @@ trait RetrySupport {
       minBackoff,
       maxBackoff,
       randomFactor)
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -208,9 +205,8 @@ trait RetrySupport {
    */
   def retry[T](attempt: () => Future[T], attempts: Int, delay: FiniteDuration)(
       implicit ec: ExecutionContext,
-      scheduler: Scheduler): Future[T] = {
+      scheduler: Scheduler): Future[T] =
     retry(attempt, attempts, _ => Some(delay))
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -252,9 +248,8 @@ trait RetrySupport {
       attempts: Int,
       delay: FiniteDuration)(
       implicit ec: ExecutionContext,
-      scheduler: Scheduler): Future[T] = {
+      scheduler: Scheduler): Future[T] =
     retry(attempt, shouldRetry, attempts, _ => Some(delay))
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -285,9 +280,8 @@ trait RetrySupport {
   def retry[T](attempt: () => Future[T], attempts: Int, delayFunction: Int => Option[FiniteDuration])(
       implicit
       ec: ExecutionContext,
-      scheduler: Scheduler): Future[T] = {
+      scheduler: Scheduler): Future[T] =
     RetrySupport.retry(attempt, RetrySupport.retryOnException, attempts, delayFunction, attempted = 0)
-  }
 
   /**
    * Given a function from Unit to Future, returns an internally retrying Future.
@@ -332,9 +326,8 @@ trait RetrySupport {
   def retry[T](attempt: () => Future[T],
       shouldRetry: (T, Throwable) => Boolean,
       attempts: Int,
-      delayFunction: Int => Option[FiniteDuration])(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] = {
+      delayFunction: Int => Option[FiniteDuration])(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] =
     RetrySupport.retry(attempt, shouldRetry, attempts, delayFunction, attempted = 0)
-  }
 }
 
 object RetrySupport extends RetrySupport {
@@ -350,13 +343,12 @@ object RetrySupport extends RetrySupport {
       maxAttempts: Int,
       delayFunction: Int => Option[FiniteDuration],
       attempted: Int)(implicit ec: ExecutionContext, scheduler: Scheduler): Future[T] = {
-    def tryAttempt(): Future[T] = {
-      try {
+    def tryAttempt(): Future[T] =
+      try
         attempt()
-      } catch {
+      catch {
         case NonFatal(exc) => Future.failed(exc) // in case the `attempt` function throws
       }
-    }
 
     def doRetry(nextAttempt: Int): Future[T] = delayFunction(nextAttempt) match {
       case Some(delay) =>

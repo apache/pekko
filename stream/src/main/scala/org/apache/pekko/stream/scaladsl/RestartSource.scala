@@ -209,9 +209,8 @@ private final class RestartWithBackoffSource[T](
         }
       }
 
-      override protected def backoff() = {
+      override protected def backoff() =
         setHandler(out, GraphStageLogic.EagerTerminateOutput)
-      }
 
       backoff()
     }

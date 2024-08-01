@@ -18,9 +18,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class ResolvConfParserSpec extends AnyWordSpec with Matchers {
 
-  private def parse(str: String): ResolvConf = {
+  private def parse(str: String): ResolvConf =
     ResolvConfParser.parseLines(str.linesIterator)
-  }
 
   "The ResolvConfParser" should {
 

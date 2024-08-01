@@ -220,9 +220,8 @@ object PersistentActorSpec {
         this.events = events
     }
 
-    private def handleCmd(cmd: Cmd): Unit = {
+    private def handleCmd(cmd: Cmd): Unit =
       persistAll(Seq(Evt(s"${cmd.data}-41"), Evt(s"${cmd.data}-42")))(updateState)
-    }
 
     def receiveCommand: Receive = commonBehavior.orElse {
       case c: Cmd                 => handleCmd(c)
@@ -492,10 +491,10 @@ object PersistentActorSpec {
   abstract class DeferringWithPersistActor(name: String) extends ExamplePersistentActor(name) with DeferActor {
     val receiveCommand: Receive = {
       case Cmd(data) =>
-        doDefer("d-1") { sender() ! _ }
-        persist(s"$data-2") { sender() ! _ }
-        doDefer("d-3") { sender() ! _ }
-        doDefer("d-4") { sender() ! _ }
+        doDefer("d-1")(sender() ! _)
+        persist(s"$data-2")(sender() ! _)
+        doDefer("d-3")(sender() ! _)
+        doDefer("d-4")(sender() ! _)
     }
   }
   class DeferringAsyncWithPersistActor(name: String) extends DeferringWithPersistActor(name) with DeferAsync
@@ -510,10 +509,10 @@ object PersistentActorSpec {
   abstract class DeferringWithAsyncPersistActor(name: String) extends ExamplePersistentActor(name) with DeferActor {
     val receiveCommand: Receive = {
       case Cmd(data) =>
-        doDefer(s"d-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        doDefer(s"d-$data-3") { sender() ! _ }
-        doDefer(s"d-$data-4") { sender() ! _ }
+        doDefer(s"d-$data-1")(sender() ! _)
+        persistAsync(s"pa-$data-2")(sender() ! _)
+        doDefer(s"d-$data-3")(sender() ! _)
+        doDefer(s"d-$data-4")(sender() ! _)
     }
   }
   class DeferringAsyncWithAsyncPersistActor(name: String) extends DeferringWithAsyncPersistActor(name) with DeferAsync
@@ -530,12 +529,12 @@ object PersistentActorSpec {
       with DeferActor {
     val receiveCommand: Receive = {
       case Cmd(data) =>
-        persist(s"p-$data-1") { sender() ! _ }
-        persistAsync(s"pa-$data-2") { sender() ! _ }
-        doDefer(s"d-$data-3") { sender() ! _ }
-        doDefer(s"d-$data-4") { sender() ! _ }
-        persistAsync(s"pa-$data-5") { sender() ! _ }
-        doDefer(s"d-$data-6") { sender() ! _ }
+        persist(s"p-$data-1")(sender() ! _)
+        persistAsync(s"pa-$data-2")(sender() ! _)
+        doDefer(s"d-$data-3")(sender() ! _)
+        doDefer(s"d-$data-4")(sender() ! _)
+        persistAsync(s"pa-$data-5")(sender() ! _)
+        doDefer(s"d-$data-6")(sender() ! _)
     }
   }
   class DeferringAsyncMixedCallsPPADDPADPersistActor(name: String)
@@ -560,9 +559,9 @@ object PersistentActorSpec {
       with DeferActor {
     val receiveCommand: Receive = {
       case Cmd(_) =>
-        doDefer("d-1") { sender() ! _ }
-        doDefer("d-2") { sender() ! _ }
-        doDefer("d-3") { sender() ! _ }
+        doDefer("d-1")(sender() ! _)
+        doDefer("d-2")(sender() ! _)
+        doDefer("d-3")(sender() ! _)
     }
   }
   class DeferringAsyncWithNoPersistCallsPersistActor(name: String)
@@ -1669,7 +1668,7 @@ class InmemPersistentActorSpec extends PersistentActorSpec(PersistenceSpec.confi
 class InmemPersistentActorWithRuntimePluginConfigSpec
     extends PersistentActorSpec(PersistenceSpec.config("inmem", "InmemPersistentActorWithRuntimePluginConfigSpec")) {
 
-  val providedActorConfig: Config = {
+  val providedActorConfig: Config =
     ConfigFactory
       .parseString(s"""
          | custom.persistence.snapshot-store.local.dir = target/snapshots-InmemPersistentActorWithRuntimePluginConfigSpec/
@@ -1680,7 +1679,6 @@ class InmemPersistentActorWithRuntimePluginConfigSpec
       .withValue(
         "custom.persistence.snapshot-store.local",
         system.settings.config.getValue("pekko.persistence.snapshot-store.local"))
-  }
 
   override protected def behavior1PersistentActor: ActorRef =
     namedPersistentActorWithProvidedConfig[Behavior1PersistentActorWithInmemRuntimePluginConfig](providedActorConfig)

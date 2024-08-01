@@ -181,17 +181,15 @@ class ActorWithMessagesWrapper {
 class Hook extends Actor {
   var child: ActorRef = _
   // #preStart
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     child = context.actorOf(Props[MyActor](), "child")
-  }
   // #preStart
   def receive = Actor.emptyBehavior
   // #postStop
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     // #clean-up-some-resources
     ()
-    // #clean-up-some-resources
-  }
+  // #clean-up-some-resources
   // #postStop
 }
 
@@ -210,7 +208,7 @@ class ReplyException extends Actor {
     // #reply-exception
   }
 
-  def operation(): String = { "Hi" }
+  def operation(): String = "Hi"
 
 }
 
@@ -732,17 +730,16 @@ class ActorDocSpec extends PekkoSpec("""
 
   "using CoordinatedShutdown" in {
     // other snippets moved to docs.actor.typed.CoordinatedActorShutdownSpec
-    { // https://github.com/akka/akka/issues/29056
-      val someActor = system.actorOf(Props(classOf[Replier], this))
-      someActor ! PoisonPill
-      // #coordinated-shutdown-addActorTerminationTask
-      CoordinatedShutdown(system).addActorTerminationTask(
-        CoordinatedShutdown.PhaseBeforeServiceUnbind,
-        "someTaskName",
-        someActor,
-        Some("stop"))
-      // #coordinated-shutdown-addActorTerminationTask
-    }
+    // https://github.com/akka/akka/issues/29056
+    val someActor = system.actorOf(Props(classOf[Replier], this))
+    someActor ! PoisonPill
+    // #coordinated-shutdown-addActorTerminationTask
+    CoordinatedShutdown(system).addActorTerminationTask(
+      CoordinatedShutdown.PhaseBeforeServiceUnbind,
+      "someTaskName",
+      someActor,
+      Some("stop"))
+    // #coordinated-shutdown-addActorTerminationTask
   }
 
 }

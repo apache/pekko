@@ -241,9 +241,8 @@ class RememberEntitiesFailureSpec
           }
 
           system.stop(sharding)
-        } finally {
+        } finally
           failShardGetEntities = Map.empty
-        }
       }
 
       s"recover when shard storing a start event fails $wayToFail" in {

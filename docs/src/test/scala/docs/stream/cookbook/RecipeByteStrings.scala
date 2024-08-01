@@ -41,9 +41,8 @@ class RecipeByteStrings extends RecipeSpec {
 
           setHandler(out,
             new OutHandler {
-              override def onPull(): Unit = {
+              override def onPull(): Unit =
                 emitChunk()
-              }
             })
           setHandler(
             in,
@@ -54,7 +53,7 @@ class RecipeByteStrings extends RecipeSpec {
                 emitChunk()
               }
 
-              override def onUpstreamFinish(): Unit = {
+              override def onUpstreamFinish(): Unit =
                 if (buffer.isEmpty) completeStage()
                 else {
                   // There are elements left in buffer, so
@@ -65,10 +64,9 @@ class RecipeByteStrings extends RecipeSpec {
                   // In that case we need to emit from the buffer.
                   if (isAvailable(out)) emitChunk()
                 }
-              }
             })
 
-          private def emitChunk(): Unit = {
+          private def emitChunk(): Unit =
             if (buffer.isEmpty) {
               if (isClosed(in)) completeStage()
               else pull(in)
@@ -77,7 +75,6 @@ class RecipeByteStrings extends RecipeSpec {
               buffer = nextBuffer
               push(out, chunk)
             }
-          }
         }
       }
 
@@ -107,9 +104,8 @@ class RecipeByteStrings extends RecipeSpec {
           setHandlers(in, out,
             new InHandler with OutHandler {
 
-              override def onPull(): Unit = {
+              override def onPull(): Unit =
                 pull(in)
-              }
 
               override def onPush(): Unit = {
                 val chunk = grab(in)

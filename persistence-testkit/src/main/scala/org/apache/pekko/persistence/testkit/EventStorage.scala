@@ -127,23 +127,21 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
     }
   }
 
-  def tryReadSeqNumber(persistenceId: String): Long = {
+  def tryReadSeqNumber(persistenceId: String): Long =
     currentPolicy.tryProcess(persistenceId, ReadSeqNum) match {
       case ProcessingSuccess  => getHighestSeqNumber(persistenceId)
       case Reject(ex)         => throw ex
       case StorageFailure(ex) => throw ex
     }
-  }
 
-  def tryDelete(persistenceId: String, toSeqNumber: Long): Unit = {
+  def tryDelete(persistenceId: String, toSeqNumber: Long): Unit =
     currentPolicy.tryProcess(persistenceId, DeleteEvents(toSeqNumber)) match {
       case ProcessingSuccess  => deleteToSeqNumber(persistenceId, toSeqNumber)
       case Reject(ex)         => throw ex
       case StorageFailure(ex) => throw ex
     }
-  }
 
-  def currentPersistenceIds(afterId: Option[String], limit: Long): Source[String, NotUsed] = {
+  def currentPersistenceIds(afterId: Option[String], limit: Long): Source[String, NotUsed] =
     afterId match {
       case Some(id) =>
         keys().sorted.dropWhile(_ != id) match {
@@ -153,8 +151,6 @@ private[testkit] trait EventStorage extends TestKitStorage[JournalOperation, Per
       case None =>
         Source(keys().sorted).take(limit)
     }
-
-  }
 
   private def mapAny(key: String, elems: immutable.Seq[Any]): immutable.Seq[PersistentRepr] = {
     val sn = getHighestSeqNumber(key) + 1

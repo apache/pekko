@@ -192,7 +192,7 @@ object ReplicatedAuctionExampleSpec {
     // #setup
 
     // #command-handler
-    def commandHandler(state: AuctionState, command: Command): Effect[Event, AuctionState] = {
+    def commandHandler(state: AuctionState, command: Command): Effect[Event, AuctionState] =
       state.phase match {
         case Closing(_) | Closed =>
           command match {
@@ -238,7 +238,6 @@ object ReplicatedAuctionExampleSpec {
               Effect.none
           }
       }
-    }
     // #command-handler
 
     // #event-handler
@@ -256,7 +255,7 @@ object ReplicatedAuctionExampleSpec {
     // #event-handler
 
     // #event-triggers
-    private def eventTriggers(event: Event, newState: AuctionState): Unit = {
+    private def eventTriggers(event: Event, newState: AuctionState): Unit =
       event match {
         case finished: AuctionFinished =>
           newState.phase match {
@@ -276,9 +275,8 @@ object ReplicatedAuctionExampleSpec {
           }
         case _ => // no trigger for this event
       }
-    }
 
-    private def shouldClose(state: AuctionState): Boolean = {
+    private def shouldClose(state: AuctionState): Boolean =
       responsibleForClosing && (state.phase match {
         case Closing(alreadyFinishedAtDc) =>
           val allDone = allReplicas.diff(alreadyFinishedAtDc).isEmpty
@@ -292,7 +290,6 @@ object ReplicatedAuctionExampleSpec {
         case _ =>
           false
       })
-    }
     // #event-triggers
 
     // #setup

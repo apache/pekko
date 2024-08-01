@@ -50,9 +50,9 @@ final class LogCapturing extends TestRule {
 
   private val myLogger = LoggerFactory.getLogger(classOf[LogCapturing])
 
-  override def apply(base: Statement, description: Description): Statement = {
+  override def apply(base: Statement, description: Description): Statement =
     new Statement {
-      override def evaluate(): Unit = {
+      override def evaluate(): Unit =
         try {
           myLogger.info(s"Logging started for test [${description.getClassName}: ${description.getMethodName}]")
           base.evaluate()
@@ -68,10 +68,7 @@ final class LogCapturing extends TestRule {
               s"<-- [${Console.BLUE}${description.getClassName}: ${description.getMethodName}${Console.RESET}] " +
               s"End of log messages of test that failed with ${e.getMessage}")
             throw e
-        } finally {
+        } finally
           capturingAppender.clear()
-        }
-      }
     }
-  }
 }

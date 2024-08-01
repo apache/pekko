@@ -97,9 +97,8 @@ class SystemMessageSerializer(val system: ExtendedActorSystem) extends BaseSeria
     builder.build().toByteArray
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     deserializeSystemMessage(SystemMessageFormats.SystemMessage.parseFrom(bytes))
-  }
 
   private def deserializeSystemMessage(sysmsg: SystemMessageFormats.SystemMessage): SystemMessage =
     sysmsg.getType match {
@@ -152,20 +151,16 @@ class SystemMessageSerializer(val system: ExtendedActorSystem) extends BaseSeria
           sysmsg.getDwNotificationData.getAddressTerminated)
     }
 
-  private def serializeThrowable(throwable: Throwable): ContainerFormats.Payload.Builder = {
+  private def serializeThrowable(throwable: Throwable): ContainerFormats.Payload.Builder =
     payloadSupport.payloadBuilder(throwable)
-  }
 
-  private def getCauseThrowable(msg: SystemMessageFormats.SystemMessage): Throwable = {
+  private def getCauseThrowable(msg: SystemMessageFormats.SystemMessage): Throwable =
     payloadSupport.deserializePayload(msg.getCauseData).asInstanceOf[Throwable]
-  }
 
-  private def serializeActorRef(actorRef: ActorRef): ContainerFormats.ActorRef.Builder = {
+  private def serializeActorRef(actorRef: ActorRef): ContainerFormats.ActorRef.Builder =
     ContainerFormats.ActorRef.newBuilder().setPath(Serialization.serializedActorPath(actorRef))
-  }
 
-  private def deserializeActorRef(serializedRef: ContainerFormats.ActorRef): ActorRef = {
+  private def deserializeActorRef(serializedRef: ContainerFormats.ActorRef): ActorRef =
     serialization.system.provider.resolveActorRef(serializedRef.getPath)
-  }
 
 }

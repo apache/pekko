@@ -25,13 +25,13 @@ class MigrationsScala extends PekkoSpec {
         Flow[Int].expand(Iterator.continually(_))
         // #expand-continually
         // #expand-state
-        Flow[Int].expand(i => {
+        Flow[Int].expand { i =>
           var state = 0
           Iterator.continually {
             state += 1
             (i, state)
           }
-        })
+        }
         // #expand-state
 
         // #async

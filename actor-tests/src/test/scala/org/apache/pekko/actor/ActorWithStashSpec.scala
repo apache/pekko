@@ -111,9 +111,8 @@ object ActorWithStashSpec {
 class ActorWithStashSpec extends PekkoSpec with DefaultTimeout with BeforeAndAfterEach {
   import ActorWithStashSpec._
 
-  override def atStartup(): Unit = {
+  override def atStartup(): Unit =
     system.eventStream.publish(Mute(EventFilter[Exception]("Crashing...")))
-  }
 
   override def beforeEach() = state.finished.reset()
 

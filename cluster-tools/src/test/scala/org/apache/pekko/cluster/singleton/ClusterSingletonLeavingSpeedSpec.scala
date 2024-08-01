@@ -40,9 +40,8 @@ object ClusterSingletonLeavingSpeedSpec {
   class TheSingleton(probe: ActorRef) extends Actor {
     probe ! "started"
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       probe ! "stopped"
-    }
 
     override def receive: Receive = {
       case msg => sender() ! msg
@@ -155,7 +154,6 @@ class ClusterSingletonLeavingSpeedSpec
     }
   }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     systems.foreach(shutdown(_))
-  }
 }

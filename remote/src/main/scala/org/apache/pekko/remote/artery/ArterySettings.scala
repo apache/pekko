@@ -84,10 +84,9 @@ private[pekko] final class ArterySettings private (config: Config) {
   val LogReceive: Boolean = getBoolean("log-received-messages")
   val LogSend: Boolean = getBoolean("log-sent-messages")
 
-  val LogFrameSizeExceeding: Option[Int] = {
+  val LogFrameSizeExceeding: Option[Int] =
     if (toRootLowerCase(getString("log-frame-size-exceeding")) == "off") None
     else Some(getBytes("log-frame-size-exceeding").toInt)
-  }
 
   val Transport: Transport = toRootLowerCase(getString("transport")) match {
     case AeronUpd.configName => AeronUpd
@@ -169,7 +168,7 @@ private[pekko] final class ArterySettings private (config: Config) {
       config
         .getMillisDuration("shutdown-flush-timeout")
         .requiring(timeout => timeout > Duration.Zero, "shutdown-flush-timeout must be more than zero")
-    val DeathWatchNotificationFlushTimeout: FiniteDuration = {
+    val DeathWatchNotificationFlushTimeout: FiniteDuration =
       toRootLowerCase(config.getString("death-watch-notification-flush-timeout")) match {
         case "off" => Duration.Zero
         case _ =>
@@ -179,7 +178,6 @@ private[pekko] final class ArterySettings private (config: Config) {
               interval => interval > Duration.Zero,
               "death-watch-notification-flush-timeout must be more than zero, or off")
       }
-    }
     val InboundRestartTimeout: FiniteDuration =
       config
         .getMillisDuration("inbound-restart-timeout")
@@ -251,12 +249,11 @@ private[pekko] final class ArterySettings private (config: Config) {
       val ConnectionTimeout: FiniteDuration = config
         .getMillisDuration("connection-timeout")
         .requiring(interval => interval > Duration.Zero, "connection-timeout must be more than zero")
-      val OutboundClientHostname: Option[String] = {
+      val OutboundClientHostname: Option[String] =
         config.getString("outbound-client-hostname") match {
           case ""       => None
           case hostname => Some(hostname)
         }
-      }
     }
 
   }

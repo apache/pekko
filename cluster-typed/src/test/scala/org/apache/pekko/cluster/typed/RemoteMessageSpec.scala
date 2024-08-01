@@ -86,9 +86,8 @@ class RemoteMessageSpec extends PekkoSpec(RemoteMessageSpec.config) {
         pingPromise.future.futureValue should ===(Done)
         pongPromise.future.futureValue should ===(Done)
 
-      } finally {
+      } finally
         system2.terminate()
-      }
     }
 
   }

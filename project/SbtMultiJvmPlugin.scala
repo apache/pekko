@@ -183,22 +183,20 @@ object MultiJvmPlugin extends AutoPlugin {
     val testFilters = new collection.mutable.ListBuffer[String => Boolean]
     val excludeTestsSet = new collection.mutable.HashSet[String]
 
-    for (option <- testOptions) {
+    for (option <- testOptions)
       option match {
         case Tests.Exclude(excludedTests) => excludeTestsSet ++= excludedTests
         case Tests.Filter(filterTestsIn)  => testFilters += filterTestsIn
         case _                            => // do nothing since the intention is only to filter tests
       }
-    }
 
     if (excludeTestsSet.nonEmpty) {
       log.debug(excludeTestsSet.mkString("Excluding tests: \n\t", "\n\t", ""))
     }
 
-    def includeTest(test: TestDefinition): Boolean = {
+    def includeTest(test: TestDefinition): Boolean =
       !excludeTestsSet.contains(test.name) && testFilters.forall(filter => filter(test.name)) && test.name.contains(
         marker)
-    }
 
     val groupedTests: Map[String, List[TestDefinition]] =
       discovered.filter(includeTest).toList.distinct.groupBy(test => multiName(test.name, marker))
@@ -232,9 +230,8 @@ object MultiJvmPlugin extends AutoPlugin {
     new File(new File(home, "bin"), name)
   }
 
-  def defaultScalatestOptions: Seq[String] = {
+  def defaultScalatestOptions: Seq[String] =
     if (getBoolean("sbt.log.noformat")) Seq("-oW") else Seq("-o")
-  }
 
   def scalaOptionsForScalatest(
       runner: String,
@@ -250,11 +247,11 @@ object MultiJvmPlugin extends AutoPlugin {
     val cp =
       directoryBasedClasspathEntries.absString + File.pathSeparator + multiRunCopiedClassDir.getAbsolutePath + File
         .separator + "*"
-    (testClass: String) => { Seq("-cp", cp, runner, "-s", testClass) ++ options }
+    (testClass: String) => Seq("-cp", cp, runner, "-s", testClass) ++ options
   }
 
   def scalaMultiNodeOptionsForScalatest(runner: String, options: Seq[String]) = { (testClass: String) =>
-    { Seq(runner, "-s", testClass) ++ options }
+    Seq(runner, "-s", testClass) ++ options
   }
 
   def scalaOptionsForApps(classpath: Classpath) = {
@@ -279,7 +276,7 @@ object MultiJvmPlugin extends AutoPlugin {
         case (selection, _extraOptions) =>
           val s = streams.value
           val options = multiTestOptions.value
-          val opts = options.copy(extra = (s: String) => { options.extra(s) ++ _extraOptions })
+          val opts = options.copy(extra = (s: String) => options.extra(s) ++ _extraOptions)
           val filters = selection.map(GlobFilter(_))
           val tests = multiJvmTests.value.filterKeys(name => filters.exists(_.accept(name)))
           Def.task {
@@ -413,7 +410,7 @@ object MultiJvmPlugin extends AutoPlugin {
           val options = multiNodeTestOptions.value
           val (_jarName, (hostsAndUsers, javas), targetDir) = multiNodeWorkAround.value
           val s = streams.value
-          val opts = options.copy(extra = (s: String) => { options.extra(s) ++ _extraOptions })
+          val opts = options.copy(extra = (s: String) => options.extra(s) ++ _extraOptions)
           val tests = selected.flatMap { name =>
             multiJvmTests.value.get(name).map((name, _))
           }
@@ -500,7 +497,7 @@ object MultiJvmPlugin extends AutoPlugin {
     val syncResult = processExitCodes(name, syncProcesses, log)
     if (syncResult._2 == TestResult.Passed) {
       val processes = classesHostsJavas.zipWithIndex.map {
-        case ((testClass, hostAndUser, java), index) => {
+        case ((testClass, hostAndUser, java), index) =>
           val jvmName = "JVM-" + (index + 1)
           val jvmLogger = createLogger(jvmName)
           val className = multiSimpleName(testClass)
@@ -527,7 +524,6 @@ object MultiJvmPlugin extends AutoPlugin {
               jvmLogger,
               connectInput,
               log))
-        }
       }
       processExitCodes(name, processes, log)
     } else {
@@ -556,13 +552,12 @@ object MultiJvmPlugin extends AutoPlugin {
     tuple.zipped.map { case (className: String, hostAndUser: String, _java: String) => (className, hostAndUser, _java) }
   }
 
-  private def getMultiNodeCommandLineOptions(hosts: Seq[String], index: Int, maxNodes: Int): Seq[String] = {
+  private def getMultiNodeCommandLineOptions(hosts: Seq[String], index: Int, maxNodes: Int): Seq[String] =
     Seq(
       "-Dmultinode.max-nodes=" + maxNodes,
       "-Dmultinode.server-host=" + hosts.head.split("@").last,
       "-Dmultinode.host=" + hosts(index).split("@").last,
       "-Dmultinode.index=" + index)
-  }
 
   private def processMultiNodeHosts(
       hosts: Seq[String],

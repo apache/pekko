@@ -45,13 +45,12 @@ class TestTransport(
 
   import TestTransport._
 
-  def this(system: ExtendedActorSystem, conf: Config) = {
+  def this(system: ExtendedActorSystem, conf: Config) =
     this(
       AddressFromURIString(conf.getString("local-address")),
       AssociationRegistry.get(conf.getString("registry-key")),
       conf.getBytes("maximum-payload-bytes").toInt,
       conf.getString("scheme-identifier"))
-  }
 
   override def isResponsibleFor(address: Address): Boolean = true
 
@@ -62,7 +61,7 @@ class TestTransport(
     Future.successful((localAddress, associationListenerPromise))
   }
 
-  private def defaultAssociate(remoteAddress: Address): Future[AssociationHandle] = {
+  private def defaultAssociate(remoteAddress: Address): Future[AssociationHandle] =
     registry.transportFor(remoteAddress) match {
 
       case Some((remoteTransport, remoteListenerFuture)) =>
@@ -94,7 +93,6 @@ class TestTransport(
       case None =>
         Future.failed(new InvalidAssociationException(s"No registered transport: $remoteAddress", null))
     }
-  }
 
   private def createHandlePair(
       remoteTransport: TestTransport,
@@ -134,7 +132,7 @@ class TestTransport(
   override def associate(remoteAddress: Address): Future[AssociationHandle] = associateBehavior(remoteAddress)
   override def shutdown(): Future[Boolean] = shutdownBehavior(())
 
-  private def defaultWrite(params: (TestAssociationHandle, ByteString)): Future[Boolean] = {
+  private def defaultWrite(params: (TestAssociationHandle, ByteString)): Future[Boolean] =
     registry.getRemoteReadHandlerFor(params._1) match {
       case Some(listener) =>
         listener.notify(InboundPayload(params._2))
@@ -142,7 +140,6 @@ class TestTransport(
       case None =>
         Future.failed(new IllegalStateException("No association present"))
     }
-  }
 
   private def defaultDisassociate(handle: TestAssociationHandle): Future[Unit] = {
     registry.deregisterAssociation(handle.key).foreach {
@@ -158,9 +155,8 @@ class TestTransport(
    * is not recommended.
    */
   val writeBehavior = new SwitchableLoggedBehavior[(TestAssociationHandle, ByteString), Boolean](
-    defaultBehavior = {
-      defaultWrite _
-    },
+    defaultBehavior =
+      defaultWrite _,
     logCallback = {
       case (handle, payload) =>
         registry.logActivity(WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
@@ -170,9 +166,8 @@ class TestTransport(
    * The [[pekko.remote.transport.TestTransport.SwitchableLoggedBehavior]] for the disassociate() method on handles. All
    * handle calls pass through this call.
    */
-  val disassociateBehavior = new SwitchableLoggedBehavior[TestAssociationHandle, Unit](defaultBehavior = {
-      defaultDisassociate _
-    },
+  val disassociateBehavior = new SwitchableLoggedBehavior[TestAssociationHandle, Unit](defaultBehavior =
+      defaultDisassociate _,
     logCallback = { handle =>
       registry.logActivity(DisassociateAttempt(handle.localAddress, handle.remoteAddress))
     })
@@ -224,9 +219,8 @@ object TestTransport {
      * @param behavior
      *   Function that takes a parameter type A and returns a Future[B].
      */
-    def push(behavior: Behavior[A, B]): Unit = {
+    def push(behavior: Behavior[A, B]): Unit =
       behaviorStack.add(0, behavior)
-    }
 
     /**
      * Changes the behavior to return a completed future with the given constant value.
@@ -267,11 +261,10 @@ object TestTransport {
     /**
      * Restores the previous behavior.
      */
-    def pop(): Unit = {
+    def pop(): Unit =
       if (behaviorStack.size > 1) {
         behaviorStack.remove(0)
       }
-    }
 
     private def currentBehavior = behaviorStack.get(0)
 
@@ -318,20 +311,18 @@ object TestTransport {
      */
     def remoteListenerRelativeTo(
         handle: TestAssociationHandle,
-        listenerPair: (HandleEventListener, HandleEventListener)): HandleEventListener = {
+        listenerPair: (HandleEventListener, HandleEventListener)): HandleEventListener =
       listenerPair match {
         case (initiator, receiver) => if (handle.inbound) initiator else receiver
       }
-    }
 
     /**
      * Logs a transport activity.
      *
      * @param activity Activity to be logged.
      */
-    def logActivity(activity: Activity): Unit = {
+    def logActivity(activity: Activity): Unit =
       activityLog.add(activity)
-    }
 
     /**
      * Takes a thread-safe snapshot of the current state of the activity log.
@@ -350,9 +341,8 @@ object TestTransport {
     /**
      * Clears the activity log.
      */
-    def clearLog(): Unit = {
+    def clearLog(): Unit =
       activityLog.clear()
-    }
 
     /**
      * Records a mapping between an address and the corresponding (transport, associationEventListener) pair.
@@ -364,9 +354,8 @@ object TestTransport {
      */
     def registerTransport(
         transport: TestTransport,
-        associationEventListenerFuture: Future[AssociationEventListener]): Unit = {
+        associationEventListenerFuture: Future[AssociationEventListener]): Unit =
       transportTable.put(transport.localAddress, (transport, associationEventListenerFuture))
-    }
 
     /**
      * Indicates if all given transports were successfully registered. No associations can be established between
@@ -377,11 +366,10 @@ object TestTransport {
      * @return
      *   True if all transports are successfully registered.
      */
-    def transportsReady(addresses: Address*): Boolean = {
+    def transportsReady(addresses: Address*): Boolean =
       addresses.forall {
         transportTable.containsKey(_)
       }
-    }
 
     /**
      * Registers a Future of two handle event listeners corresponding to the two endpoints of an association.
@@ -392,9 +380,8 @@ object TestTransport {
      *   The future containing the listeners that will be responsible for handling the events of the two endpoints of the
      *   association. Elements in the pair must be in the same order as the addresses in the key parameter.
      */
-    def registerListenerPair(key: (Address, Address), listeners: (HandleEventListener, HandleEventListener)): Unit = {
+    def registerListenerPair(key: (Address, Address), listeners: (HandleEventListener, HandleEventListener)): Unit =
       listenersTable.put(key, listeners)
-    }
 
     /**
      * Removes an association.
@@ -414,9 +401,8 @@ object TestTransport {
      *
      * @return True if there is an association for the given addresses.
      */
-    def existsAssociation(initiatorAddress: Address, remoteAddress: Address): Boolean = {
+    def existsAssociation(initiatorAddress: Address, remoteAddress: Address): Boolean =
       listenersTable.containsKey((initiatorAddress, remoteAddress))
-    }
 
     /**
      * Returns the event handler corresponding to the remote endpoint of the given local handle. In other words
@@ -425,9 +411,8 @@ object TestTransport {
      * @param localHandle The handle
      * @return The option that contains the Future for the listener if exists.
      */
-    def getRemoteReadHandlerFor(localHandle: TestAssociationHandle): Option[HandleEventListener] = {
-      Option(listenersTable.get(localHandle.key)).map { remoteListenerRelativeTo(localHandle, _) }
-    }
+    def getRemoteReadHandlerFor(localHandle: TestAssociationHandle): Option[HandleEventListener] =
+      Option(listenersTable.get(localHandle.key)).map(remoteListenerRelativeTo(localHandle, _))
 
     /**
      * Returns the Transport bound to the given address.
@@ -466,7 +451,7 @@ object AssociationRegistry {
     registries.getOrElseUpdate(key, new AssociationRegistry)
   }
 
-  def clear(): Unit = this.synchronized { registries.clear() }
+  def clear(): Unit = this.synchronized(registries.clear())
 }
 
 @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")

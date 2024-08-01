@@ -63,13 +63,13 @@ abstract class ClusterShardingRegistrationCoordinatedShutdownSpec
 
       val csTaskDone = TestProbe()
       runOn(third) {
-        CoordinatedShutdown(system).addTask(CoordinatedShutdown.PhaseBeforeClusterShutdown, "test")(() => {
+        CoordinatedShutdown(system).addTask(CoordinatedShutdown.PhaseBeforeClusterShutdown, "test") { () =>
           Thread.sleep(200)
           region ! 1
           expectMsg(1)
           csTaskDone.ref ! Done
           Future.successful(Done)
-        })
+        }
 
       }
 

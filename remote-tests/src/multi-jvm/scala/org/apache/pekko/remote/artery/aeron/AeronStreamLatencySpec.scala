@@ -330,9 +330,8 @@ abstract class AeronStreamLatencySpec
       enterBarrier("echo-started")
     }
 
-    for (s <- scenarios) {
+    for (s <- scenarios)
       s"be low for ${s.testName}, at ${s.messageRate} msg/s, payloadSize = ${s.payloadSize}" in test(s)
-    }
 
   }
 }

@@ -142,11 +142,9 @@ class DnsDiscoverySpec extends DockerBindDnsService(DnsDiscoverySpec.config) {
 
   }
 
-  override def afterTermination(): Unit = {
-    try {
+  override def afterTermination(): Unit =
+    try
       TestKit.shutdownActorSystem(systemWithAsyncDnsAsResolver)
-    } finally {
+    finally
       super.afterTermination()
-    }
-  }
 }

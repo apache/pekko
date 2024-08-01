@@ -42,9 +42,8 @@ class QueueSourceSpec extends StreamSpec {
     PatienceConfig(testKitSettings.DefaultTimeout.duration.dilated, Span(5, org.scalatest.time.Millis))
   }
 
-  def assertSuccess(f: Future[QueueOfferResult]): Unit = {
+  def assertSuccess(f: Future[QueueOfferResult]): Unit =
     f.futureValue should ===(QueueOfferResult.Enqueued)
-  }
 
   "A QueueSource" must {
 

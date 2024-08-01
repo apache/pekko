@@ -51,7 +51,7 @@ object ReplicatedEventSourcingSpec {
 
   def eventSourcedBehavior(
       replicationContext: ReplicationContext,
-      probe: Option[ActorRef[EventAndContext]]): EventSourcedBehavior[Command, String, State] = {
+      probe: Option[ActorRef[EventAndContext]]): EventSourcedBehavior[Command, String, State] =
     EventSourcedBehavior[Command, String, State](
       replicationContext.persistenceId,
       State(Nil),
@@ -83,7 +83,6 @@ object ReplicatedEventSourcingSpec {
             replicationContext.concurrent))
         state.copy(all = event :: state.all)
       })
-  }
 
   def testBehavior(
       entityId: String,

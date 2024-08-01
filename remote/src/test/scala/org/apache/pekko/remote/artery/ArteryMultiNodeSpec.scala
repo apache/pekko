@@ -49,14 +49,13 @@ abstract class ArteryMultiNodeSpec(config: Config)
 
   private var remoteSystems: Vector[ActorSystem] = Vector.empty
 
-  override protected def withFixture(test: NoArgTest): Outcome = {
+  override protected def withFixture(test: NoArgTest): Outcome =
     // note that withFixture is also used in FlightRecorderSpecIntegration
     if (!RARP(system).provider.remoteSettings.Artery.Enabled) {
       info(s"${getClass.getName} is only enabled for Artery")
       Pending
     } else
       super.withFixture(test)
-  }
 
   /**
    * @return A new actor system configured with artery enabled. The system will
@@ -99,7 +98,6 @@ object ArteryMultiNodeSpec {
     arterySettings.Transport == ArterySettings.AeronUpd
   }
 
-  def freePort(systemConfig: Config): Int = {
+  def freePort(systemConfig: Config): Int =
     SocketUtil.temporaryLocalPort(ArteryMultiNodeSpec.arteryUdpEnabled(systemConfig))
-  }
 }

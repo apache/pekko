@@ -215,13 +215,12 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       val count = 10
       val latch = TestLatch(count)
 
-      for (i <- 1 to count) {
+      for (i <- 1 to count)
         system2.registerOnTermination {
           Thread.sleep((i % 3).millis.dilated.toMillis)
           result.add(i)
           latch.countDown()
         }
-      }
 
       system2.terminate()
       Await.ready(latch, 5 seconds)
@@ -241,7 +240,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
         callbackWasRun = true
       }
       import system.dispatcher
-      system2.scheduler.scheduleOnce(200.millis.dilated) { system2.terminate() }
+      system2.scheduler.scheduleOnce(200.millis.dilated)(system2.terminate())
 
       Await.ready(system2.whenTerminated, 5 seconds)
       callbackWasRun should ===(true)
@@ -265,7 +264,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
       Await.ready(system2.terminate(), 10 seconds)
 
       intercept[RejectedExecutionException] {
-        system2.registerOnTermination { println("IF YOU SEE THIS THEN THERE'S A BUG HERE") }
+        system2.registerOnTermination(println("IF YOU SEE THIS THEN THERE'S A BUG HERE"))
       }.getMessage should ===("ActorSystem already terminated.")
     }
 
@@ -276,7 +275,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
 
       try {
         system2.terminate()
-        system2.registerOnTermination { count.incrementAndGet() }
+        system2.registerOnTermination(count.incrementAndGet())
       } catch {
         case _: RejectedExecutionException => count.incrementAndGet()
       }
@@ -300,7 +299,7 @@ class ActorSystemSpec extends PekkoSpec(ActorSystemSpec.config) with ImplicitSen
     "reliable deny creation of actors while shutting down" in {
       val system = ActorSystem()
       import system.dispatcher
-      system.scheduler.scheduleOnce(100 millis) { system.terminate() }
+      system.scheduler.scheduleOnce(100 millis)(system.terminate())
       var failing = false
       var created = Vector.empty[ActorRef]
       while (!system.whenTerminated.isCompleted) {

@@ -57,8 +57,7 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
         numberOfMessages: Int,
         large: Boolean,
         delay: FiniteDuration,
-        producerController: ActorRef[ProducerController.Command[Consumer.TheMessage]]): Behavior[Command] = {
-
+        producerController: ActorRef[ProducerController.Command[Consumer.TheMessage]]): Behavior[Command] =
       Behaviors.setup { context =>
         val requestNextAdapter =
           context.messageAdapter[ProducerController.RequestNext[Consumer.TheMessage]](WrappedRequestNext(_))
@@ -111,7 +110,6 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
             }
 
       }
-    }
 
   }
 
@@ -125,7 +123,7 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
     private final case class WrappedDelivery(d: ConsumerController.Delivery[TheMessage]) extends Command
     case object Stop extends Command
 
-    def apply(consumerController: ActorRef[ConsumerController.Start[TheMessage]]): Behavior[Command] = {
+    def apply(consumerController: ActorRef[ConsumerController.Start[TheMessage]]): Behavior[Command] =
       Behaviors.setup { context =>
         val deliveryAdapter =
           context.messageAdapter[ConsumerController.Delivery[TheMessage]](WrappedDelivery(_))
@@ -140,7 +138,6 @@ object ChunkLargeMessageSpec extends MultiNodeConfig {
             Behaviors.stopped
         }
       }
-    }
   }
 
 }

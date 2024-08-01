@@ -69,17 +69,15 @@ private[pekko] trait MetricsKitOps extends MetricKeyDSL {
    *
    * Backed by codahale `ExponentiallyDecayingReservoir`.
    */
-  def histogram(key: MetricKeyType): Histogram = {
+  def histogram(key: MetricKeyType): Histogram =
     registry.histogram((key / "histogram").toString)
-  }
 
   def forceGcEnabled: Boolean = true
 
   /** Yet another delegate to `System.gc()` */
-  def gc(): Unit = {
+  def gc(): Unit =
     if (forceGcEnabled)
       System.gc()
-  }
 
   /**
    * Enable memory measurements - will be logged by `ScheduledReporter`s if enabled.

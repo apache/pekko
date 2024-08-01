@@ -44,9 +44,8 @@ final class BehaviorBuilder[T] private (messageHandlers: List[Case[T, T]], signa
   /**
    * Build a Behavior from the current state of the builder
    */
-  def build(): Behavior[T] = {
+  def build(): Behavior[T] =
     new BuiltBehavior[T](messageHandlers.reverse.toArray, signalHandlers.reverse.toArray)
-  }
 
   /**
    * Add a new case to the message handling.
@@ -157,11 +156,10 @@ final class BehaviorBuilder[T] private (messageHandlers: List[Case[T, T]], signa
   private def withSignal[M <: Signal](
       `type`: Class[M],
       test: OptionVal[Signal => Boolean],
-      handler: JFunction[Signal, Behavior[T]]): BehaviorBuilder[T] = {
+      handler: JFunction[Signal, Behavior[T]]): BehaviorBuilder[T] =
     new BehaviorBuilder[T](
       messageHandlers,
       Case(OptionVal.Some(`type`), test, handler).asInstanceOf[Case[T, Signal]] +: signalHandlers)
-  }
 }
 
 object BehaviorBuilder {
@@ -198,7 +196,7 @@ private final class BuiltBehavior[T](messageHandlers: Array[Case[T, T]], signalH
   override def receiveSignal(ctx: TypedActorContext[T], msg: Signal): Behavior[T] = receive(msg, signalHandlers, 0)
 
   @tailrec
-  private def receive[M](msg: M, handlers: Array[Case[T, M]], idx: Int): Behavior[T] = {
+  private def receive[M](msg: M, handlers: Array[Case[T, M]], idx: Int): Behavior[T] =
     if (handlers.length == 0) {
       Behaviors.unhandled[T]
     } else {
@@ -210,5 +208,4 @@ private final class BuiltBehavior[T](messageHandlers: Array[Case[T, T]], signalH
       else
         receive(msg, handlers, idx + 1)
     }
-  }
 }

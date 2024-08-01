@@ -141,7 +141,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
         def apply(backend: ActorRef[Backend.Request]): Behavior[Command] = // (2)
           Behaviors.setup[CommandAndResponse] { context =>
 
-            def active(inProgress: Map[Int, ActorRef[URI]], count: Int): Behavior[CommandAndResponse] = {
+            def active(inProgress: Map[Int, ActorRef[URI]], count: Int): Behavior[CommandAndResponse] =
               Behaviors.receiveMessage[CommandAndResponse] {
                 case Translate(site, replyTo) =>
                   val taskId = count + 1
@@ -159,7 +159,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
                   inProgress(taskId) ! result
                   active(inProgress - taskId, count)
               }
-            }
 
             active(inProgress = Map.empty, count = 0)
           }.narrow // (5)
@@ -195,9 +194,8 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
       private case object Timeout extends Command
       private case object TimerKey
 
-      def apply(target: ActorRef[Batch], after: FiniteDuration, maxSize: Int): Behavior[Command] = {
+      def apply(target: ActorRef[Batch], after: FiniteDuration, maxSize: Int): Behavior[Command] =
         Behaviors.withTimers(timers => new Buncher(timers, target, after, maxSize).idle())
-      }
     }
 
     class Buncher(
@@ -207,14 +205,13 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
         maxSize: Int) {
       import Buncher._
 
-      private def idle(): Behavior[Command] = {
+      private def idle(): Behavior[Command] =
         Behaviors.receiveMessage[Command] { message =>
           timers.startSingleTimer(TimerKey, Timeout, after)
           active(Vector(message))
         }
-      }
 
-      def active(buffer: Vector[Command]): Behavior[Command] = {
+      def active(buffer: Vector[Command]): Behavior[Command] =
         Behaviors.receiveMessage[Command] {
           case Timeout =>
             target ! Batch(buffer)
@@ -228,7 +225,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
             } else
               active(newBuffer)
         }
-      }
     }
     // #timer
 
@@ -395,7 +391,7 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
       case class LeaveHome(who: String, replyTo: ActorRef[ReadyToLeaveHome]) extends Command
       case class ReadyToLeaveHome(who: String, keys: Keys, wallet: Wallet)
 
-      def apply(): Behavior[Command] = {
+      def apply(): Behavior[Command] =
         Behaviors.setup[Command] { context =>
           val keyCabinet: ActorRef[KeyCabinet.GetKeys] = context.spawn(KeyCabinet(), "key-cabinet")
           val drawer: ActorRef[Drawer.GetWallet] = context.spawn(Drawer(), "drawer")
@@ -406,14 +402,13 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
               Behaviors.same
           }
         }
-      }
 
       // per session actor behavior
       def prepareToLeaveHome(
           whoIsLeaving: String,
           replyTo: ActorRef[ReadyToLeaveHome],
           keyCabinet: ActorRef[KeyCabinet.GetKeys],
-          drawer: ActorRef[Drawer.GetWallet]): Behavior[NotUsed] = {
+          drawer: ActorRef[Drawer.GetWallet]): Behavior[NotUsed] =
         // we don't _really_ care about the actor protocol here as nobody will send us
         // messages except for responses to our queries, so we just accept any kind of message
         // but narrow that to more limited types when we interact
@@ -449,7 +444,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
             }
           }
           .narrow[NotUsed] // we don't let anyone else know we accept anything
-      }
     }
     // #per-session-child
 
@@ -613,11 +607,10 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
 
       private val MaxOperationsInProgress = 10
 
-      def apply(dataAccess: CustomerDataAccess): Behavior[Command] = {
+      def apply(dataAccess: CustomerDataAccess): Behavior[Command] =
         next(dataAccess, operationsInProgress = 0)
-      }
 
-      private def next(dataAccess: CustomerDataAccess, operationsInProgress: Int): Behavior[Command] = {
+      private def next(dataAccess: CustomerDataAccess, operationsInProgress: Int): Behavior[Command] =
         Behaviors.receive { (context, command) =>
           command match {
             case Update(value, replyTo) =>
@@ -642,7 +635,6 @@ class InteractionPatterns3Spec extends ScalaTestWithActorTestKit with AnyWordSpe
               next(dataAccess, operationsInProgress - 1)
           }
         }
-      }
     }
     // #pipeToSelf
 

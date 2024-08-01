@@ -93,7 +93,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     val driftFlow = Flow[Double].map(_ -> 0).extrapolate[(Double, Int)] { case (i, _) => Iterator.from(1).map(i -> _) }
     // #extrapolate-drift
     val latch = TestLatch(2)
-    val realDriftFlow = Flow[Double].map(d => { latch.countDown(); d -> 0; }).extrapolate[(Double, Int)] {
+    val realDriftFlow = Flow[Double].map { d => latch.countDown(); d -> 0; }.extrapolate[(Double, Int)] {
       case (d, _) => latch.countDown(); Iterator.from(1).map(d -> _)
     }
 
@@ -116,7 +116,7 @@ class RateTransformationDocSpec extends PekkoSpec {
     val driftFlow = Flow[Double].expand(i => Iterator.from(0).map(i -> _))
     // #expand-drift
     val latch = TestLatch(2)
-    val realDriftFlow = Flow[Double].expand(d => { latch.countDown(); Iterator.from(0).map(d -> _) })
+    val realDriftFlow = Flow[Double].expand { d => latch.countDown(); Iterator.from(0).map(d -> _) }
 
     val (pub, sub) = TestSource.probe[Double].via(realDriftFlow).toMat(TestSink[(Double, Int)]())(Keep.both).run()
 

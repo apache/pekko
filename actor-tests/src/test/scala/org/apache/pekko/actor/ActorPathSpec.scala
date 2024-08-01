@@ -48,11 +48,11 @@ class ActorPathSpec extends AnyWordSpec with Matchers {
     }
 
     "throw exception upon malformed paths" in {
-      intercept[MalformedURLException] { ActorPath.fromString("") }
-      intercept[MalformedURLException] { ActorPath.fromString("://hallo") }
-      intercept[MalformedURLException] { ActorPath.fromString("s://dd@:12") }
-      intercept[MalformedURLException] { ActorPath.fromString("s://dd@h:hd") }
-      intercept[MalformedURLException] { ActorPath.fromString("a://l:1/b") }
+      intercept[MalformedURLException](ActorPath.fromString(""))
+      intercept[MalformedURLException](ActorPath.fromString("://hallo"))
+      intercept[MalformedURLException](ActorPath.fromString("s://dd@:12"))
+      intercept[MalformedURLException](ActorPath.fromString("s://dd@h:hd"))
+      intercept[MalformedURLException](ActorPath.fromString("a://l:1/b"))
     }
 
     "create correct toString" in {

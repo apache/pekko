@@ -203,14 +203,13 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
   }
 
   // locate reason-specific overrides and merge with defaults.
-  @InternalApi private[pekko] def confWithOverrides(conf: Config, reason: Option[Reason]): Config = {
+  @InternalApi private[pekko] def confWithOverrides(conf: Config, reason: Option[Reason]): Config =
     reason
       .flatMap { r =>
         val basePath = s"""reason-overrides."${r.getClass.getName}""""
         if (conf.hasPath(basePath)) Some(conf.getConfig(basePath).withFallback(conf)) else None
       }
       .getOrElse(conf)
-  }
 
   /** INTERNAL API */
   @InternalApi
@@ -222,14 +221,13 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
     // Catching RejectedExecutionException in case extension is accessed first time when
     // system is already terminated, see #25592. The extension is eagerly loaded when ActorSystem
     // is started but it might be a race between (failing?) startup and shutdown.
-    def cleanupActorSystemJvmHook(): Unit = {
+    def cleanupActorSystemJvmHook(): Unit =
       coord.actorSystemJvmHook match {
         case OptionVal.Some(cancellable) if !runningJvmHook && !cancellable.isCancelled =>
           cancellable.cancel()
           coord.actorSystemJvmHook = OptionVal.None
         case _ =>
       }
-    }
     try system.registerOnTermination(cleanupActorSystemJvmHook())
     catch {
       case _: RejectedExecutionException => cleanupActorSystemJvmHook()
@@ -239,7 +237,7 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
   private def initPhaseActorSystemTerminate(
       system: ExtendedActorSystem,
       conf: Config,
-      coord: CoordinatedShutdown): Unit = {
+      coord: CoordinatedShutdown): Unit =
     coord.addTask(PhaseActorSystemTerminate, "terminate-system") { () =>
       val confForReason = confWithOverrides(conf, coord.shutdownReason())
       val terminateActorSystem = confForReason.getBoolean("terminate-actor-system")
@@ -253,10 +251,9 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
         // since that would have blocked the shutdown of the ActorSystem.
         val timeout = coord.timeout(PhaseActorSystemTerminate)
         val t = new Thread {
-          override def run(): Unit = {
+          override def run(): Unit =
             if (Try(Await.ready(system.whenTerminated, timeout)).isFailure && !runningJvmHook)
               System.exit(exitCode)
-          }
         }
         t.setName("CoordinatedShutdown-exit")
         t.start()
@@ -274,7 +271,6 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
       } else
         Future.successful(Done)
     }
-  }
 
   private def initJvmHook(system: ActorSystem, conf: Config, coord: CoordinatedShutdown): Unit = {
     val runByJvmShutdownHook = system.settings.JvmShutdownHooks && conf.getBoolean("run-by-jvm-shutdown-hook")
@@ -339,9 +335,8 @@ object CoordinatedShutdown extends ExtensionId[CoordinatedShutdown] with Extensi
     var unmarked = phases.keySet ++ phases.values.flatMap(_.dependsOn) // in case phase is not defined as key
     var tempMark = Set.empty[String] // for detecting cycles
 
-    while (unmarked.nonEmpty) {
+    while (unmarked.nonEmpty)
       depthFirstSearch(unmarked.head)
-    }
 
     def depthFirstSearch(u: String): Unit = {
       if (tempMark(u))
@@ -434,13 +429,13 @@ final class CoordinatedShutdown private[pekko] (
               if (log.isDebugEnabled) {
                 log.debug("Performing task [{}] in CoordinatedShutdown phase [{}]", name, phaseName)
               }
-              job.completeWith(try {
+              job.completeWith(try
                 task.apply().recover {
                   case NonFatal(exc) if recoverEnabled =>
                     log.warning("Task [{}] failed in phase [{}]: {}", name, phaseName, exc.getMessage)
                     Done
                 }
-              } catch { // in case task.apply() throws
+              catch { // in case task.apply() throws
                 case NonFatal(exc) if recoverEnabled =>
                   log.warning(
                     "Task [{}] in phase [{}] threw an exception before its future could be constructed: {}",
@@ -482,9 +477,8 @@ final class CoordinatedShutdown private[pekko] (
         }
 
         // must be side-effect free
-        override def isCancelled: Boolean = {
+        override def isCancelled: Boolean =
           taskState.get() == Cancelled
-        }
       }
     }
 
@@ -492,9 +486,8 @@ final class CoordinatedShutdown private[pekko] (
       // This is a case class so that the update methods on ConcurrentHashMap can correctly deal with equality
       override val size: Int = tasks.size
 
-      override def run(recoverEnabled: Boolean)(implicit ec: ExecutionContext): Future[Done] = {
+      override def run(recoverEnabled: Boolean)(implicit ec: ExecutionContext): Future[Done] =
         Future.sequence(tasks.map(_.run(recoverEnabled))).map(_ => Done)(ExecutionContexts.parasitic)
-      }
 
       // This method may be run multiple times during the compare-and-set loop of ConcurrentHashMap, so it must be side-effect-free
       def merge(other: StrictPhaseDefinition): StrictPhaseDefinition = {
@@ -504,9 +497,8 @@ final class CoordinatedShutdown private[pekko] (
     }
 
     private object StrictPhaseDefinition {
-      def single(taskDefinition: TaskDefinition): StrictPhaseDefinition = {
+      def single(taskDefinition: TaskDefinition): StrictPhaseDefinition =
         StrictPhaseDefinition(Set(taskDefinition))
-      }
       val empty: StrictPhaseDefinition = StrictPhaseDefinition(Set.empty)
     }
 
@@ -587,9 +579,8 @@ final class CoordinatedShutdown private[pekko] (
    * shutdown begins, tasks may be added without ever being run. A task may add tasks
    * to a later stage with confidence that they will be run.
    */
-  def addCancellableTask(phase: String, taskName: String, task: Supplier[CompletionStage[Done]]): Cancellable = {
+  def addCancellableTask(phase: String, taskName: String, task: Supplier[CompletionStage[Done]]): Cancellable =
     addCancellableTask(phase, taskName)(() => task.get().asScala)
-  }
 
   /**
    * Scala API: Add a task to a phase. It doesn't remove previously added tasks.
@@ -724,7 +715,7 @@ final class CoordinatedShutdown private[pekko] (
       implicit val ec: ExecutionContext = system.dispatchers.internalDispatcher
       val debugEnabled = log.isDebugEnabled
       log.info("Running CoordinatedShutdown with reason [{}]", reason)
-      def loop(remainingPhases: List[String]): Future[Done] = {
+      def loop(remainingPhases: List[String]): Future[Done] =
         remainingPhases match {
           case Nil => Future.successful(Done)
           case phaseName :: remaining if !phases(phaseName).enabled =>
@@ -746,7 +737,7 @@ final class CoordinatedShutdown private[pekko] (
                 val timeout = phases(phaseName).timeout
                 val deadline = Deadline.now + timeout
                 val timeoutFut =
-                  try {
+                  try
                     after(timeout, system.scheduler) {
                       if (phaseName == CoordinatedShutdown.PhaseActorSystemTerminate && deadline.hasTimeLeft()) {
                         // too early, i.e. triggered by system termination
@@ -760,7 +751,7 @@ final class CoordinatedShutdown private[pekko] (
                         Future.failed(
                           new TimeoutException(s"Coordinated shutdown phase [$phaseName] timed out after $timeout"))
                     }
-                  } catch {
+                  catch {
                     case _: IllegalStateException =>
                       // The call to `after` threw IllegalStateException, triggered by system termination
                       result
@@ -772,7 +763,6 @@ final class CoordinatedShutdown private[pekko] (
             else
               phaseResult.flatMap(_ => loop(remaining))
         }
-      }
 
       val remainingPhases = fromPhase match {
         case None    => orderedPhases // all
@@ -817,9 +807,8 @@ final class CoordinatedShutdown private[pekko] (
   /**
    * Sum of timeouts of all phases that have some task.
    */
-  def totalTimeout(): FiniteDuration = {
+  def totalTimeout(): FiniteDuration =
     tasks.totalDuration()
-  }
 
   /**
    * Scala API: Add a JVM shutdown hook that will be run when the JVM process
@@ -841,24 +830,23 @@ final class CoordinatedShutdown private[pekko] (
    * For shutdown hooks that does not have any requirements on running before the Akka
    * shutdown hooks the standard library JVM shutdown hooks APIs are better suited.
    */
-  @tailrec def addCancellableJvmShutdownHook[T](hook: => T): Cancellable = {
+  @tailrec def addCancellableJvmShutdownHook[T](hook: => T): Cancellable =
     if (runStarted.get.isEmpty) {
       val currentLatch = _jvmHooksLatch.get
       val newLatch = new CountDownLatch(currentLatch.getCount.toInt + 1)
       if (_jvmHooksLatch.compareAndSet(currentLatch, newLatch)) {
         val thread = new Thread {
-          override def run(): Unit = {
+          override def run(): Unit =
             try hook
             finally _jvmHooksLatch.get.countDown()
-          }
         }
         thread.setName(s"${system.name}-shutdown-hook-${newLatch.getCount}")
         try {
           jvmShutdownHooks.addHook(thread)
           new Cancellable {
             @volatile var cancelled = false
-            def cancel(): Boolean = {
-              try {
+            def cancel(): Boolean =
+              try
                 if (jvmShutdownHooks.removeHook(thread)) {
                   cancelled = true
                   _jvmHooksLatch.get.countDown()
@@ -866,12 +854,11 @@ final class CoordinatedShutdown private[pekko] (
                 } else {
                   false
                 }
-              } catch {
+              catch {
                 case _: IllegalStateException =>
                   // shutdown already in progress
                   false
               }
-            }
             def isCancelled: Boolean = cancelled
           }
         } catch {
@@ -886,7 +873,6 @@ final class CoordinatedShutdown private[pekko] (
     } else {
       Cancellable.alreadyCancelled
     }
-  }
 
   /**
    * Java API: Add a JVM shutdown hook that will be run when the JVM process
@@ -956,11 +942,10 @@ private[pekko] class CoordinatedShutdownTerminationWatcher extends Actor with Ti
       for {
         waitingPromises <- waitingForActor.get(actor)
         waitingPromise <- waitingPromises
-      } {
+      }
         if (waitingPromise.trySuccess(Done)) {
           timers.cancel(waitingPromise)
         }
-      }
       waitingForActor = waitingForActor - actor
       alreadySeenTerminated += actor
 

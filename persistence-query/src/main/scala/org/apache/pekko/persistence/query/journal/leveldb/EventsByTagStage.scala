@@ -76,10 +76,10 @@ final private[leveldb] class EventsByTagStage(
 
       override def preStart(): Unit = {
         stageActorRef = getStageActor(journalInteraction).ref
-        refreshInterval.foreach(fd => {
+        refreshInterval.foreach { fd =>
           scheduleWithFixedDelay(Continue, fd, fd)
           journal.tell(LeveldbJournal.SubscribeTag(tag), stageActorRef)
-        })
+        }
         requestMore()
       }
 
@@ -88,7 +88,7 @@ final private[leveldb] class EventsByTagStage(
         deliverBuf(out)
       }
 
-      private def requestMore(): Unit = {
+      private def requestMore(): Unit =
         if (!replayInProgress) {
           val limit = maxBufSize - bufferSize
           if (limit > 0) {
@@ -100,7 +100,6 @@ final private[leveldb] class EventsByTagStage(
         } else {
           outstandingReplay = true
         }
-      }
 
       private def journalInteraction(in: (ActorRef, Any)): Unit = {
         val (_, msg) = in
@@ -151,11 +150,10 @@ final private[leveldb] class EventsByTagStage(
 
       private def isCurrentQuery(): Boolean = refreshInterval.isEmpty
 
-      private def checkComplete(): Unit = {
+      private def checkComplete(): Unit =
         if (bufferEmpty && currOffset >= toOffset) {
           completeStage()
         }
-      }
 
       override def onPull(): Unit = {
         requestMore()

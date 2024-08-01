@@ -101,7 +101,7 @@ private[pekko] class RemoteSystemDaemon(
         else addChildParentNeedsWatch(parent, child)
     }
 
-  @tailrec private def removeChildParentNeedsUnwatch(parent: ActorRef, child: ActorRef): Boolean = {
+  @tailrec private def removeChildParentNeedsUnwatch(parent: ActorRef, child: ActorRef): Boolean =
     parent2children.get(parent) match {
       case null => false // no-op
       case children =>
@@ -114,7 +114,6 @@ private[pekko] class RemoteSystemDaemon(
           else false
         }
     }
-  }
 
   /**
    * Find the longest matching path which we know about and return that ref
@@ -226,7 +225,7 @@ private[pekko] class RemoteSystemDaemon(
         case TerminationHook =>
           terminating.switchOn {
             terminationHookDoneWhenNoChildren()
-            foreachChild { system.stop }
+            foreachChild(system.stop)
           }
 
         case AddressTerminated(address) =>
@@ -242,7 +241,7 @@ private[pekko] class RemoteSystemDaemon(
       case NonFatal(e) => log.error(e, "exception while processing remote command [{}] from [{}]", msg, sender)
     }
 
-  private def doCreateActor(message: DaemonMsg, props: Props, deploy: Deploy, path: String, supervisor: ActorRef) = {
+  private def doCreateActor(message: DaemonMsg, props: Props, deploy: Deploy, path: String, supervisor: ActorRef) =
     path match {
       case ActorPathExtractor(_, elems) if elems.nonEmpty && elems.head == "remote" =>
         // TODO RK currently the extracted “address” is just ignored, is that okay?
@@ -276,7 +275,6 @@ private[pekko] class RemoteSystemDaemon(
       case _ =>
         log.debug("remote path does not match path from message [{}]", message)
     }
-  }
 
   def terminationHookDoneWhenNoChildren(): Unit = terminating.whileOn {
     if (!hasChildren) terminator.tell(TerminationHookDone, this)

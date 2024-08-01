@@ -120,16 +120,14 @@ class SbrTestLeaseActorClient(settings: LeaseSettings, system: ExtendedActorSyst
   def setActorLeaseRef(ref: ActorRef): Unit =
     _leaseRef.set(ref)
 
-  override def acquire(): Future[Boolean] = {
+  override def acquire(): Future[Boolean] =
     (leaseRef ? Acquire(settings.ownerName)).mapTo[Boolean]
-  }
 
   override def acquire(leaseLostCallback: Option[Throwable] => Unit): Future[Boolean] =
     acquire()
 
-  override def release(): Future[Boolean] = {
+  override def release(): Future[Boolean] =
     (leaseRef ? Release(settings.ownerName)).mapTo[Boolean]
-  }
 
   override def checkLease(): Boolean = false
 }

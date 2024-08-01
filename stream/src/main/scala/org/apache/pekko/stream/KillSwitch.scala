@@ -64,7 +64,7 @@ object KillSwitches {
 
   abstract class KillableGraphStageLogic(val terminationSignal: Future[Done], _shape: Shape)
       extends GraphStageLogic(_shape) {
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       terminationSignal.value match {
         case Some(status) => onSwitch(status)
         case _            =>
@@ -72,7 +72,6 @@ object KillSwitches {
           terminationSignal.onComplete(getAsyncCallback[Try[Done]](onSwitch).invoke)(
             pekko.dispatch.ExecutionContexts.parasitic)
       }
-    }
 
     private def onSwitch(mode: Try[Done]): Unit = mode match {
       case Success(_)  => completeStage()
@@ -174,11 +173,10 @@ private[stream] final class TerminationSignal {
   private[this] val _listeners = TrieMap.empty[Listener, NotUsed]
   private[this] val _completedWith: AtomicReference[Option[Try[Done]]] = new AtomicReference(None)
 
-  def tryComplete(result: Try[Done]): Unit = {
+  def tryComplete(result: Try[Done]): Unit =
     if (_completedWith.compareAndSet(None, Some(result))) {
       for ((listener, _) <- _listeners) listener.promise.tryComplete(result)
     }
-  }
 
   def createListener(): Listener = {
     val listener = new Listener
@@ -192,9 +190,8 @@ private[stream] final class TerminationSignal {
     listener
   }
 
-  private def removeListener(listener: Listener): Unit = {
+  private def removeListener(listener: Listener): Unit =
     _listeners -= listener
-  }
 }
 
 /**

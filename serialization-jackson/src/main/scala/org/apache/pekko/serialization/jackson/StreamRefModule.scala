@@ -72,13 +72,12 @@ import pekko.stream.StreamRefResolver
     extends StdScalarDeserializer[SourceRef[_]](classOf[SourceRef[_]])
     with ActorSystemAccess {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): SourceRef[_] = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): SourceRef[_] =
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
       val serializedSourceRef = jp.getText()
       StreamRefResolver(currentSystem()).resolveSourceRef(serializedSourceRef)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[SourceRef[_]]
-  }
 }
 
 /**
@@ -116,11 +115,10 @@ import pekko.stream.StreamRefResolver
     extends StdScalarDeserializer[SinkRef[_]](classOf[SinkRef[_]])
     with ActorSystemAccess {
 
-  def deserialize(jp: JsonParser, ctxt: DeserializationContext): SinkRef[_] = {
+  def deserialize(jp: JsonParser, ctxt: DeserializationContext): SinkRef[_] =
     if (jp.currentTokenId() == JsonTokenId.ID_STRING) {
       val serializedSinkref = jp.getText()
       StreamRefResolver(currentSystem()).resolveSinkRef(serializedSinkref)
     } else
       ctxt.handleUnexpectedToken(handledType(), jp).asInstanceOf[SinkRef[_]]
-  }
 }

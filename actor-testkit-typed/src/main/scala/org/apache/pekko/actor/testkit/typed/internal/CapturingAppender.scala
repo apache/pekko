@@ -84,9 +84,8 @@ import pekko.annotation.InternalApi
     import pekko.util.ccompat.JavaConverters._
     val logbackLogger = getLogbackLogger(classOf[CapturingAppender].getName + "Delegate")
     val appenders = logbackLogger.iteratorForAppenders().asScala.filterNot(_ == this).toList
-    for (event <- buffer; appender <- appenders) {
+    for (event <- buffer; appender <- appenders)
       appender.doAppend(event)
-    }
     clear()
   }
 

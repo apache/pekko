@@ -62,9 +62,8 @@ object ShardingConsumerController {
      * Scala API: Factory method from Config corresponding to
      * `pekko.reliable-delivery.sharding.consumer-controller`.
      */
-    def apply(config: Config): Settings = {
+    def apply(config: Config): Settings =
       new Settings(bufferSize = config.getInt("buffer-size"), ConsumerController.Settings(config))
-    }
 
     /**
      * Java API: Factory method from config `pekko.reliable-delivery.sharding.consumer-controller`
@@ -106,21 +105,19 @@ object ShardingConsumerController {
    * the lifecycle and message delivery to the destination consumer actor.
    */
   def apply[A, B](consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
-      : Behavior[ConsumerController.SequencedMessage[A]] = {
+      : Behavior[ConsumerController.SequencedMessage[A]] =
     Behaviors.setup { context =>
       ShardingConsumerControllerImpl(consumerBehavior, Settings(context.system))
     }
-  }
 
   /**
    * The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage
    * the lifecycle and message delivery to the destination consumer actor.
    */
   def withSettings[A, B](settings: Settings)(consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B])
-      : Behavior[ConsumerController.SequencedMessage[A]] = {
+      : Behavior[ConsumerController.SequencedMessage[A]] =
     // can't overload apply, loosing type inference
     ShardingConsumerControllerImpl(consumerBehavior, settings)
-  }
 
   /**
    * Java API: The `Behavior` of the entity that is to be initialized in `ClusterSharding`. It will manage

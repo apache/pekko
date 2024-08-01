@@ -195,7 +195,7 @@ object Behavior {
    * Starts deferred behavior and nested deferred behaviors until all deferred behaviors in the stack are started
    * and then the resulting behavior is returned.
    */
-  def start[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] = {
+  def start[T](behavior: Behavior[T], ctx: TypedActorContext[T]): Behavior[T] =
     // note that this can't be @tailrec, but normal stack of interceptors and similar shouldn't be
     // that deep, and if they are it's most likely a bug which will be seen as StackOverflowError
     behavior match {
@@ -208,7 +208,6 @@ object Behavior {
       case supervise: SuperviseBehavior[T] => start(supervise.unwrap, ctx)
       case _                               => behavior
     }
-  }
 
   /**
    * Go through the behavior stack and apply a predicate to see if any nested behavior

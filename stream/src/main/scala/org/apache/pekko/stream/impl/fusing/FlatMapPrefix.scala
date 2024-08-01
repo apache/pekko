@@ -61,7 +61,7 @@ import pekko.util.OptionVal
         super.postStop()
       }
 
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         subSource match {
           case OptionVal.Some(s) => s.push(grab(in))
           case _ =>
@@ -73,16 +73,14 @@ import pekko.util.OptionVal
               pull(in)
             }
         }
-      }
 
-      override def onUpstreamFinish(): Unit = {
+      override def onUpstreamFinish(): Unit =
         subSource match {
           case OptionVal.Some(s) => s.complete()
           case _                 => materializeFlow()
         }
-      }
 
-      override def onUpstreamFailure(ex: Throwable): Unit = {
+      override def onUpstreamFailure(ex: Throwable): Unit =
         subSource match {
           case OptionVal.Some(s) => s.fail(ex)
           case _                 =>
@@ -90,9 +88,8 @@ import pekko.util.OptionVal
             matPromise.failure(new NeverMaterializedException(ex))
             super.onUpstreamFailure(ex)
         }
-      }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         subSink match {
           case OptionVal.Some(s) =>
             // delegate to subSink
@@ -106,7 +103,6 @@ import pekko.util.OptionVal
               throw new IllegalStateException(s"Unexpected accumulated size: ${accumulated.size} (n: $n)")
             }
         }
-      }
 
       override def onDownstreamFinish(cause: Throwable): Unit =
         subSink match {
@@ -135,29 +131,24 @@ import pekko.util.OptionVal
           subSink = OptionVal.Some(new SubSinkInlet[Out]("FlatMapPrefix.subSink"))
           val theSubSink = subSink.get
           val handler = new InHandler with OutHandler {
-            override def onPush(): Unit = {
+            override def onPush(): Unit =
               push(out, theSubSink.grab())
-            }
 
-            override def onUpstreamFinish(): Unit = {
+            override def onUpstreamFinish(): Unit =
               complete(out)
-            }
 
-            override def onUpstreamFailure(ex: Throwable): Unit = {
+            override def onUpstreamFailure(ex: Throwable): Unit =
               fail(out, ex)
-            }
 
-            override def onPull(): Unit = {
+            override def onPull(): Unit =
               if (!isClosed(in) && !hasBeenPulled(in)) {
                 pull(in)
               }
-            }
 
-            override def onDownstreamFinish(cause: Throwable): Unit = {
+            override def onDownstreamFinish(cause: Throwable): Unit =
               if (!isClosed(in)) {
                 cancel(in, cause)
               }
-            }
           }
 
           theSubSource.setHandler(handler)

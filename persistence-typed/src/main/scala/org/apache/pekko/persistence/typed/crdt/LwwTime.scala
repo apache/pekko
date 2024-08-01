@@ -34,10 +34,9 @@ final case class LwwTime(timestamp: Long, originReplica: ReplicaId) {
    * equal the `dc` identifiers are compared and the
    * one sorted first in alphanumeric order wins.
    */
-  def isAfter(other: LwwTime): Boolean = {
+  def isAfter(other: LwwTime): Boolean =
     if (timestamp > other.timestamp) true
     else if (timestamp < other.timestamp) false
     else if (other.originReplica.id.compareTo(originReplica.id) > 0) true
     else false
-  }
 }

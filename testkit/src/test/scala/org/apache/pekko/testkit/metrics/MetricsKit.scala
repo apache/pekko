@@ -62,7 +62,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   def initMetricReporters(): Unit = {
     val settings = new MetricsKitSettings(metricsConfig)
 
-    def configureConsoleReporter(): Unit = {
+    def configureConsoleReporter(): Unit =
       if (settings.Reporters.contains("console")) {
         val pekkoConsoleReporter = new PekkoConsoleReporter(registry, settings.ConsoleReporter.Verbose)
 
@@ -71,7 +71,6 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
 
         reporters ::= pekkoConsoleReporter
       }
-    }
 
     configureConsoleReporter()
   }
@@ -79,9 +78,8 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   /**
    * Schedule metric reports execution iterval. Should not be used multiple times
    */
-  def scheduleMetricReports(every: FiniteDuration): Unit = {
-    reporters.foreach { _.start(every.toMillis, TimeUnit.MILLISECONDS) }
-  }
+  def scheduleMetricReports(every: FiniteDuration): Unit =
+    reporters.foreach(_.start(every.toMillis, TimeUnit.MILLISECONDS))
 
   def registeredMetrics = registry.getMetrics.asScala
 
@@ -103,10 +101,9 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
    *
    * HINT: this operation can be costy, run outside of your tested code, or rely on scheduled reporting.
    */
-  def reportMetrics(): Unit = {
+  def reportMetrics(): Unit =
     if (reportMetricsEnabled)
-      reporters.foreach { _.report() }
-  }
+      reporters.foreach(_.report())
 
   /**
    * Causes immediate flush of only memory related metrics, using all registered reporters.
@@ -116,7 +113,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   def reportMemoryMetrics(): Unit = {
     val gauges = registry.getGauges(MemMetricsFilter)
 
-    reporters.foreach { _.report(gauges, empty, empty, empty, empty) }
+    reporters.foreach(_.report(gauges, empty, empty, empty, empty))
   }
 
   /**
@@ -127,7 +124,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   def reportGcMetrics(): Unit = {
     val gauges = registry.getGauges(GcMetricsFilter)
 
-    reporters.foreach { _.report(gauges, empty, empty, empty, empty) }
+    reporters.foreach(_.report(gauges, empty, empty, empty, empty))
   }
 
   /**
@@ -138,7 +135,7 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
   def reportFileDescriptorMetrics(): Unit = {
     val gauges = registry.getGauges(FileDescriptorMetricsFilter)
 
-    reporters.foreach { _.report(gauges, empty, empty, empty, empty) }
+    reporters.foreach(_.report(gauges, empty, empty, empty, empty))
   }
 
   /**
@@ -149,16 +146,14 @@ private[pekko] trait MetricsKit extends MetricsKitOps {
    * Please note that, if you have registered a `timer("thing")` previously, you will need to call `timer("thing")` again,
    * in order to register a new timer.
    */
-  def clearMetrics(matching: MetricFilter = MetricFilter.ALL): Unit = {
+  def clearMetrics(matching: MetricFilter = MetricFilter.ALL): Unit =
     registry.removeMatching(matching)
-  }
 
   /**
    * MUST be called after all tests have finished.
    */
-  def shutdownMetrics(): Unit = {
-    reporters.foreach { _.stop() }
-  }
+  def shutdownMetrics(): Unit =
+    reporters.foreach(_.stop())
 
   private[metrics] def getOrRegister[M <: Metric](key: String, metric: => M)(implicit tag: ClassTag[M]): M = {
     import pekko.util.ccompat.JavaConverters._

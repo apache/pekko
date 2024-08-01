@@ -75,9 +75,8 @@ final class OnSignalSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike 
         try {
           system ! "stop"
           probe.expectMessage(Done)
-        } finally {
+        } finally
           ActorTestKit.shutdown(system)
-        }
       }
     }
   }

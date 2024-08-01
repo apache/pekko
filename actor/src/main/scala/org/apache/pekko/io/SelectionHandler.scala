@@ -174,7 +174,7 @@ private[io] object SelectionHandler {
                 readyOps match {
                   case OP_READ                   => connection ! ChannelReadable
                   case OP_WRITE                  => connection ! ChannelWritable
-                  case OP_READ_AND_WRITE         => { connection ! ChannelWritable; connection ! ChannelReadable }
+                  case OP_READ_AND_WRITE         => connection ! ChannelWritable; connection ! ChannelReadable
                   case x if (x & OP_ACCEPT) > 0  => connection ! ChannelAcceptable
                   case x if (x & OP_CONNECT) > 0 => connection ! ChannelConnectable
                   case x                         => log.warning("Invalid readyOps: [{}]", x)
@@ -299,13 +299,12 @@ private[io] object SelectionHandler {
     // FIXME: Add possibility to signal failure of task to someone
     private abstract class Task extends Runnable {
       def tryRun(): Unit
-      def run(): Unit = {
+      def run(): Unit =
         try tryRun()
         catch {
           case _: CancelledKeyException => // ok, can be triggered while setting interest ops
           case NonFatal(e)              => log.error(e, "Error during selector management task: [{}]", e)
         }
-      }
     }
   }
 }

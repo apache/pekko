@@ -210,9 +210,8 @@ class AskSpec extends ScalaTestWithActorTestKit("""
         implicit val timeout: Timeout = 3.seconds
         val typedLegacy: ActorRef[AnyRef] = legacyActor
         typedLegacy.ask(Ping.apply).failed.futureValue should ===(ex)
-      } finally {
+      } finally
         pekko.testkit.TestKit.shutdownActorSystem(classicSystem)
-      }
     }
 
     "fail asking actor if responder function throws" in {

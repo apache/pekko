@@ -36,7 +36,7 @@ object Tick {
     case class Response(text: String)
   }
 
-  def simple(): Unit = {
+  def simple(): Unit =
     // #simple
     Source
       .tick(
@@ -45,8 +45,7 @@ object Tick {
         "tick" // element emitted each tick
       )
       .runForeach(println)
-    // #simple
-  }
+  // #simple
 
   def pollSomething(): Unit = {
     // #poll-actor

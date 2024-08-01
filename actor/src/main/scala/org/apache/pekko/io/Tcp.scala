@@ -409,8 +409,8 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
         def next(): SimpleWriteCommand =
           current match {
             case null                  => Iterator.empty.next()
-            case CompoundWrite(h, t)   => { current = t; h }
-            case x: SimpleWriteCommand => { current = null; x }
+            case CompoundWrite(h, t)   => current = t; h
+            case x: SimpleWriteCommand => current = null; x
           }
       }
   }
@@ -491,7 +491,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
     @InternalApi
     private[pekko] def causedByString =
       _cause
-        .map(t => {
+        .map { t =>
           val msg =
             if (t.getCause == null)
               t.getMessage
@@ -501,7 +501,7 @@ object Tcp extends ExtensionId[TcpExt] with ExtensionIdProvider {
               s"${t.getMessage}, caused by: ${t.getCause}, caused by: ${t.getCause.getCause}"
 
           s" because of ${t.getClass.getName}: $msg"
-        })
+        }
         .getOrElse("")
 
     override def toString: String = s"CommandFailed($cmd)$causedByString"
@@ -651,11 +651,10 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
 
   /**
    */
-  val manager: ActorRef = {
+  val manager: ActorRef =
     system.systemActorOf(
       props = Props(classOf[TcpManager], this).withDispatcher(Settings.ManagementDispatcher).withDeploy(Deploy.local),
       name = "IO-TCP")
-  }
 
   /**
    * Java API: retrieve a reference to the manager actor.
@@ -927,7 +926,6 @@ object TcpMessage {
    */
   def resumeAccepting(batchSize: Int): Command = ResumeAccepting(batchSize)
 
-  implicit private def fromJava[T](coll: JIterable[T]): immutable.Iterable[T] = {
+  implicit private def fromJava[T](coll: JIterable[T]): immutable.Iterable[T] =
     pekko.japi.Util.immutableSeq(coll)
-  }
 }

@@ -157,9 +157,8 @@ class BackoffOnRestartSupervisorSpec extends PekkoSpec("""
           sender() ! "PONG"
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         latch.await(3, TimeUnit.SECONDS)
-      }
     }
 
     "accept commands while child is terminating" in {

@@ -26,7 +26,7 @@ import pekko.dispatch.MessageDispatcherConfigurator
 object CallingThreadDispatcherModelSpec {
   import ActorModelSpec._
 
-  val config = {
+  val config =
     """
       boss {
         executor = thread-pool-executor
@@ -39,7 +39,6 @@ object CallingThreadDispatcherModelSpec {
         test-calling-thread-%s {
           type = "org.apache.pekko.testkit.CallingThreadDispatcherModelSpec$CallingThreadDispatcherInterceptorConfigurator"
         }""".format(n)).mkString
-  }
 
   class CallingThreadDispatcherInterceptorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
       extends MessageDispatcherConfigurator(config, prerequisites) {
@@ -60,12 +59,11 @@ class CallingThreadDispatcherModelSpec extends ActorModelSpec(CallingThreadDispa
 
   val dispatcherCount = new AtomicInteger()
 
-  override def interceptedDispatcher(): MessageDispatcherInterceptor = {
+  override def interceptedDispatcher(): MessageDispatcherInterceptor =
     // use new id for each test, since the MessageDispatcherInterceptor holds state
     system.dispatchers
       .lookup("test-calling-thread-" + dispatcherCount.incrementAndGet())
       .asInstanceOf[MessageDispatcherInterceptor]
-  }
   override def dispatcherType = "Calling Thread Dispatcher"
 
 }

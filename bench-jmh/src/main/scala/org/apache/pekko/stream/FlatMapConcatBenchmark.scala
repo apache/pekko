@@ -62,9 +62,8 @@ class FlatMapConcatBenchmark {
   }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   @OperationsPerInvocation(OperationsPerInvocation)
@@ -108,12 +107,11 @@ class FlatMapConcatBenchmark {
     awaitLatch(latch)
   }
 
-  private def awaitLatch(latch: CountDownLatch): Unit = {
+  private def awaitLatch(latch: CountDownLatch): Unit =
     if (!latch.await(30, TimeUnit.SECONDS)) {
       implicit val ec = system.dispatcher
       StreamTestKit.printDebugDump(SystemMaterializer(system).materializer.supervisor)
       throw new RuntimeException("Latch didn't complete in time")
     }
-  }
 
 }

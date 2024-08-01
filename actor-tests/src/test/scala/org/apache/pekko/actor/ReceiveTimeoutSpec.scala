@@ -38,18 +38,16 @@ object ReceiveTimeoutSpec {
   }
   class RestartingChild(probe: ActorRef, restarting: AtomicBoolean) extends Actor {
 
-    override def preStart(): Unit = {
+    override def preStart(): Unit =
       if (restarting.get) {
         probe ! "restarting"
         context.setReceiveTimeout(500.millis)
       } else {
         probe ! "starting"
       }
-    }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       probe ! "stopping"
-    }
 
     def receive = {
       case "crash" =>
@@ -70,9 +68,8 @@ object ReceiveTimeoutSpec {
         context.stop(self)
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       probe ! "stopping"
-    }
   }
 }
 
@@ -146,7 +143,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
         }
       }))
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }
+      intercept[TimeoutException](Await.ready(timeoutLatch, 1 second))
       system.stop(timeoutActor)
     }
 
@@ -244,7 +241,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       timeoutActor ! TransparentTick
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, 1 second) }
+      intercept[TimeoutException](Await.ready(timeoutLatch, 1 second))
       system.stop(timeoutActor)
     }
 
@@ -263,7 +260,7 @@ class ReceiveTimeoutSpec extends PekkoSpec() {
 
       timeoutActor ! TransparentTick
 
-      intercept[TimeoutException] { Await.ready(timeoutLatch, initialTimeout * 2) }
+      intercept[TimeoutException](Await.ready(timeoutLatch, initialTimeout * 2))
       system.stop(timeoutActor)
     }
 

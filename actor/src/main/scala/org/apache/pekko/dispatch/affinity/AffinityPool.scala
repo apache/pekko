@@ -79,7 +79,7 @@ private[affinity] object AffinityPool {
 
     def isIdling: Boolean = idling
 
-    def idle(): Unit = {
+    def idle(): Unit =
       (state: @switch) match {
         case Initial =>
           idling = true
@@ -99,7 +99,6 @@ private[affinity] object AffinityPool {
           LockSupport.parkNanos(parkPeriodNs)
           parkPeriodNs = Math.min(parkPeriodNs << 1, maxParkPeriodNs)
       }
-    }
 
     def reset(): Unit = {
       idling = false
@@ -201,11 +200,10 @@ private[pekko] class AffinityPool(
   override def awaitTermination(timeout: Long, unit: TimeUnit): Boolean = {
     // recurse until pool is terminated or time out reached
     @tailrec
-    def awaitTermination(nanos: Long): Boolean = {
+    def awaitTermination(nanos: Long): Boolean =
       if (poolState == Terminated) true
       else if (nanos <= 0) false
       else awaitTermination(terminationCondition.awaitNanos(nanos))
-    }
 
     bookKeepingLock.withGuard {
       // need to hold the lock to avoid monitor exception
@@ -290,9 +288,8 @@ private[pekko] class AffinityPool(
       try {
         runLoop()
         abruptTermination = false // if we have reached here, our termination is not due to an exception
-      } finally {
+      } finally
         onWorkerExit(this, abruptTermination)
-      }
     }
 
     def stop(): Unit = if (!thread.isInterrupted) thread.interrupt()

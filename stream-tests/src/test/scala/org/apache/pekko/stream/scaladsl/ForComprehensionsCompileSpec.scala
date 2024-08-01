@@ -57,9 +57,8 @@ class ForComprehensionsCompileSpec extends StreamSpec {
     "be able to be used in a for comprehension which yield a runnable graph" in {
       val source = Source(1 to 5)
       val list = new CopyOnWriteArrayList[String]()
-      val future = (for (i <- source if i % 2 == 0) {
-        list.add(i.toString)
-      }).run()
+      val future = (for (i <- source if i % 2 == 0)
+        list.add(i.toString)).run()
 
       Await.result(future, 3.seconds) shouldBe Done
       Util.immutableSeq(list) shouldBe List("2", "4")
@@ -107,9 +106,8 @@ class ForComprehensionsCompileSpec extends StreamSpec {
     "be able to be used in a for comprehension which yield a sink" in {
       val source = Source(1 to 5)
       val list = new CopyOnWriteArrayList[String]()
-      val sink = for (i <- Flow[Int] if i % 2 == 0) {
+      val sink = for (i <- Flow[Int] if i % 2 == 0)
         list.add(i.toString)
-      }
       val future = source.runWith(sink)
       Await.result(future, 3.seconds) shouldBe Done
       Util.immutableSeq(list) shouldBe List("2", "4")

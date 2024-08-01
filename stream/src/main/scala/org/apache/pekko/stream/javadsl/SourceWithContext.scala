@@ -35,9 +35,8 @@ object SourceWithContext {
   /**
    * Creates a SourceWithContext from a regular flow that operates on `Pair<data, context>` elements.
    */
-  def fromPairs[Out, CtxOut, Mat](under: Source[Pair[Out, CtxOut], Mat]): SourceWithContext[Out, CtxOut, Mat] = {
+  def fromPairs[Out, CtxOut, Mat](under: Source[Pair[Out, CtxOut], Mat]): SourceWithContext[Out, CtxOut, Mat] =
     new SourceWithContext(scaladsl.SourceWithContext.fromTuples(under.asScala.map(_.toScala)))
-  }
 }
 
 /**
@@ -188,9 +187,8 @@ final class SourceWithContext[+Out, +Ctx, +Mat](delegate: scaladsl.SourceWithCon
   def mapAsyncPartitioned[Out2, P](
       parallelism: Int,
       partitioner: function.Function[Out, P],
-      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] = {
+      f: function.Function2[Out, P, CompletionStage[Out2]]): SourceWithContext[Out2, Ctx, Mat] =
     viaScala(_.mapAsyncPartitioned(parallelism)(partitioner(_))(f(_, _).asScala))
-  }
 
   /**
    * Context-preserving variant of [[pekko.stream.javadsl.Source.mapAsyncPartitionedUnordered]].

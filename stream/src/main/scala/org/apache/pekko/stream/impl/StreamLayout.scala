@@ -136,7 +136,7 @@ import org.reactivestreams.Subscription
   if (VirtualProcessor.Debug) println(s"created: $this")
 
   override def subscribe(s: Subscriber[_ >: T]): Unit = {
-    @tailrec def rec(sub: Subscriber[Any]): Unit = {
+    @tailrec def rec(sub: Subscriber[Any]): Unit =
       get() match {
         case null =>
           if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode(null).subscribe.rec($s) -> sub")
@@ -156,7 +156,6 @@ import org.reactivestreams.Subscription
             println(s"VirtualPublisher#$hashCode($other).subscribe.rec($s): rejectAdditionalSubscriber")
           rejectAdditionalSubscriber(sub, "VirtualProcessor")
       }
-    }
 
     if (s == null) {
       val ex = subscriberMustNotBeNullException
@@ -166,7 +165,7 @@ import org.reactivestreams.Subscription
   }
 
   override def onSubscribe(s: Subscription): Unit = {
-    @tailrec def rec(obj: AnyRef): Unit = {
+    @tailrec def rec(obj: AnyRef): Unit =
       get() match {
         case null =>
           if (VirtualProcessor.Debug)
@@ -195,7 +194,6 @@ import org.reactivestreams.Subscription
           // spec violation
           tryCancel(s, new IllegalStateException(s"VirtualProcessor in wrong state [$state]. Spec violation"))
       }
-    }
 
     if (s == null) {
       val ex = subscriptionMustNotBeNullException
@@ -296,7 +294,7 @@ import org.reactivestreams.Subscription
     if (t == null) throw ex
   }
 
-  @tailrec override def onComplete(): Unit = {
+  @tailrec override def onComplete(): Unit =
     get() match {
       case null =>
         if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode(null).onComplete -> EmptyPublisher")
@@ -320,7 +318,6 @@ import org.reactivestreams.Subscription
         if (VirtualProcessor.Debug) println(s"VirtualPublisher#$hashCode($other).onComplete spec violation")
       // spec violation or cancellation race, but nothing we can do
     }
-  }
 
   override def onNext(t: T): Unit =
     if (t == null) {
@@ -343,7 +340,7 @@ import org.reactivestreams.Subscription
       rec()
       throw ex // must throw NPE, rule 2:13
     } else {
-      @tailrec def rec(): Unit = {
+      @tailrec def rec(): Unit =
         get() match {
           case h: HasActualSubscriber =>
             val s = h.subscriber
@@ -378,7 +375,6 @@ import org.reactivestreams.Subscription
             if (!compareAndSet(other, pub)) rec()
             else throw pub.t
         }
-      }
       rec()
     }
 
@@ -409,7 +405,7 @@ import org.reactivestreams.Subscription
       if (requests > 0) real.request(requests)
     }
 
-    override def request(n: Long): Unit = {
+    override def request(n: Long): Unit =
       if (n < 1) {
         if (VirtualProcessor.Debug)
           println(s"VirtualPublisher#${VirtualProcessor.this.hashCode}.WrappedSubscription($real).request($n)")
@@ -442,7 +438,6 @@ import org.reactivestreams.Subscription
         }
         bufferDemand(n)
       }
-    }
     override def cancel(): Unit = {
       if (VirtualProcessor.Debug)
         println(s"VirtualPublisher#${VirtualProcessor.this.hashCode}WrappedSubscription.cancel() -> Inert")
@@ -477,7 +472,7 @@ import org.reactivestreams.Subscription
   override def subscribe(subscriber: Subscriber[_ >: T]): Unit = {
     requireNonNullSubscriber(subscriber)
     if (VirtualProcessor.Debug) println(s"$this.subscribe: $subscriber")
-    @tailrec def rec(): Unit = {
+    @tailrec def rec(): Unit =
       get() match {
         case null =>
           if (!compareAndSet(null, subscriber)) rec() // retry
@@ -492,7 +487,6 @@ import org.reactivestreams.Subscription
 
         case unexpected => throw new IllegalStateException(s"Unexpected state in VirtualPublisher: $unexpected")
       }
-    }
     rec() // return value is boolean only to make the expressions above compile
   }
 

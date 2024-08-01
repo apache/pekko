@@ -22,7 +22,7 @@ import pekko.stream.Attributes
 //#logWithMarker
 
 object LogWithMarker {
-  def logWithMarkerExample(): Unit = {
+  def logWithMarkerExample(): Unit =
     Flow[String]
       // #logWithMarker
       .logWithMarker(name = "myStream", e => LogMarker(name = "myMarker", properties = Map("element" -> e)))
@@ -31,6 +31,5 @@ object LogWithMarker {
           onElement = Attributes.LogLevels.Off,
           onFinish = Attributes.LogLevels.Info,
           onFailure = Attributes.LogLevels.Error))
-    // #logWithMarker
-  }
+  // #logWithMarker
 }

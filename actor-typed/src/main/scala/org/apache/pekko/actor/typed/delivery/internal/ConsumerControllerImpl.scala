@@ -108,22 +108,20 @@ import pekko.util.ConstantFun.scalaIdentityFunction
     def isProducerChanged(seqMsg: SequencedMessage[A]): Boolean =
       seqMsg.producerController != producerController || receivedSeqNr == 0
 
-    def updatedRegistering(seqMsg: SequencedMessage[A]): Option[ActorRef[ProducerController.Command[A]]] = {
+    def updatedRegistering(seqMsg: SequencedMessage[A]): Option[ActorRef[ProducerController.Command[A]]] =
       registering match {
         case None          => None
         case s @ Some(reg) => if (seqMsg.producerController == reg) None else s
       }
-    }
 
-    def clearCollectedChunks(): State[A] = {
+    def clearCollectedChunks(): State[A] =
       if (collectedChunks == Nil) this
       else copy(collectedChunks = Nil)
-    }
   }
 
   def apply[A](
       serviceKey: Option[ServiceKey[Command[A]]],
-      settings: ConsumerController.Settings): Behavior[Command[A]] = {
+      settings: ConsumerController.Settings): Behavior[Command[A]] =
     Behaviors
       .withStash[InternalCommand](settings.flowControlWindow) { stashBuffer =>
         Behaviors.setup { context =>
@@ -137,7 +135,7 @@ import pekko.util.ConstantFun.scalaIdentityFunction
             Behaviors.withTimers { timers =>
               // wait for the `Start` message from the consumer, SequencedMessage will be stashed
               def waitForStart(registering: Option[ActorRef[ProducerController.Command[A]]], stopping: Boolean)
-                  : Behavior[InternalCommand] = {
+                  : Behavior[InternalCommand] =
                 Behaviors.receiveMessagePartial {
                   case reg: RegisterToProducerController[A] @unchecked =>
                     reg.producerController ! ProducerController.RegisterConsumer(context.self)
@@ -190,8 +188,6 @@ import pekko.util.ConstantFun.scalaIdentityFunction
 
                 }
 
-              }
-
               timers.startTimerWithFixedDelay(Retry, Retry, settings.resendIntervalMin)
               waitForStart(None, stopping = false)
             }
@@ -199,20 +195,18 @@ import pekko.util.ConstantFun.scalaIdentityFunction
         }
       }
       .narrow // expose Command, but not InternalCommand
-  }
 
-  private def mdcForMessage(msg: InternalCommand): Map[String, String] = {
+  private def mdcForMessage(msg: InternalCommand): Map[String, String] =
     msg match {
       case seqMsg: SequencedMessage[_] => Map("producerId" -> seqMsg.producerId)
       case _                           => Map.empty
     }
-  }
 
   private def initialState[A](
       context: ActorContext[InternalCommand],
       start: Start[A],
       registering: Option[ActorRef[ProducerController.Command[A]]],
-      stopping: Boolean): State[A] = {
+      stopping: Boolean): State[A] =
     State(
       producerController = context.system.deadLetters,
       "n/a",
@@ -223,12 +217,10 @@ import pekko.util.ConstantFun.scalaIdentityFunction
       collectedChunks = Nil,
       registering,
       stopping)
-  }
 
-  def enforceLocalConsumer(ref: ActorRef[_]): Unit = {
+  def enforceLocalConsumer(ref: ActorRef[_]): Unit =
     if (ref.path.address.hasGlobalScope)
       throw new IllegalArgumentException(s"Consumer [$ref] should be local.")
-  }
 
   private class RetryTimer(
       timers: TimerScheduler[ConsumerControllerImpl.InternalCommand],
@@ -259,10 +251,9 @@ import pekko.util.ConstantFun.scalaIdentityFunction
       }
     }
 
-    def reset(): Unit = {
+    def reset(): Unit =
       if (_interval ne minBackoff)
         start()
-    }
 
   }
 }
@@ -296,7 +287,7 @@ private class ConsumerControllerImpl[A] private (
 
   // Expecting a SequencedMessage from ProducerController, that will be delivered to the consumer if
   // the seqNr is right.
-  private def active(s: State[A]): Behavior[InternalCommand] = {
+  private def active(s: State[A]): Behavior[InternalCommand] =
     Behaviors
       .receiveMessage[InternalCommand] {
         case seqMsg: SequencedMessage[A @unchecked] =>
@@ -368,7 +359,6 @@ private class ConsumerControllerImpl[A] private (
       .receiveSignal {
         case (_, PostStop) => postStop(s)
       }
-  }
 
   private def receiveChangedProducer(s: State[A], seqMsg: SequencedMessage[A]): Behavior[InternalCommand] = {
     val seqNr = seqMsg.seqNr
@@ -412,7 +402,7 @@ private class ConsumerControllerImpl[A] private (
 
   }
 
-  private def logChangedProducer(s: State[A], seqMsg: SequencedMessage[A]): Unit = {
+  private def logChangedProducer(s: State[A], seqMsg: SequencedMessage[A]): Unit =
     if (s.producerController == context.system.deadLetters) {
       context.log.debugN(
         "Associated with new ProducerController [{}], seqNr [{}].",
@@ -426,7 +416,6 @@ private class ConsumerControllerImpl[A] private (
         seqMsg.producerController,
         seqMsg.seqNr)
     }
-  }
 
   // It has detected a missing seqNr and requested a Resend. Expecting a SequencedMessage from the
   // ProducerController with the missing seqNr. Other SequencedMessage with different seqNr will be
@@ -550,7 +539,7 @@ private class ConsumerControllerImpl[A] private (
 
   // The message has been delivered to the consumer and it is now waiting for Confirmed from
   // the consumer. New SequencedMessage from the ProducerController will be stashed.
-  private def waitingForConfirmation(s: State[A], seqMsg: SequencedMessage[A]): Behavior[InternalCommand] = {
+  private def waitingForConfirmation(s: State[A], seqMsg: SequencedMessage[A]): Behavior[InternalCommand] =
     Behaviors
       .receiveMessage[InternalCommand] {
         case Confirmed =>
@@ -651,7 +640,6 @@ private class ConsumerControllerImpl[A] private (
       .receiveSignal {
         case (_, PostStop) => postStop(s)
       }
-  }
 
   private def receiveRetry(s: State[A], nextBehavior: () => Behavior[InternalCommand]): Behavior[InternalCommand] = {
     retryTimer.scheduleNext()
@@ -683,7 +671,7 @@ private class ConsumerControllerImpl[A] private (
   private def receiveRegisterToProducerController(
       s: State[A],
       reg: RegisterToProducerController[A],
-      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] =
     if (reg.producerController != s.producerController) {
       context.log.debug2(
         "Register to new ProducerController [{}], previous was [{}].",
@@ -695,18 +683,16 @@ private class ConsumerControllerImpl[A] private (
     } else {
       Behaviors.same
     }
-  }
 
   private def receiveDeliverThenStop(
       s: State[A],
-      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] = {
+      nextBehavior: State[A] => Behavior[InternalCommand]): Behavior[InternalCommand] =
     if (stashBuffer.isEmpty && s.receivedSeqNr == s.confirmedSeqNr) {
       context.log.debug("Stopped at seqNr [{}], no buffered messages.", s.confirmedSeqNr)
       Behaviors.stopped
     } else {
       nextBehavior(s.copy(stopping = true))
     }
-  }
 
   private def receiveConsumerTerminated(c: ActorRef[_]): Behavior[InternalCommand] = {
     context.log.debug("Consumer [{}] terminated.", c)
@@ -719,7 +705,7 @@ private class ConsumerControllerImpl[A] private (
   }
 
   // in case the Request or the SequencedMessage triggering the Request is lost
-  private def retryRequest(s: State[A]): State[A] = {
+  private def retryRequest(s: State[A]): State[A] =
     if (s.producerController == context.system.deadLetters) {
       s
     } else {
@@ -732,7 +718,6 @@ private class ConsumerControllerImpl[A] private (
       s.producerController ! Request(s.confirmedSeqNr, newRequestedSeqNr, resendLost, viaTimeout = true)
       s.copy(requestedSeqNr = newRequestedSeqNr)
     }
-  }
 
   private def postStop(s: State[A]): Behavior[InternalCommand] = {
     // best effort to Ack latest confirmed when stopping

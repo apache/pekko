@@ -83,9 +83,8 @@ object AttributesSpec {
     override val shape = SinkShape(in)
     override def createLogicAndMaterializedValue(inheritedAttributes: Attributes): (GraphStageLogic, Attributes) = {
       val logic = new GraphStageLogic(shape) {
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           pull(in)
-        }
         setHandler(in,
           new InHandler {
             override def onPush(): Unit = {
@@ -389,9 +388,8 @@ class AttributesSpec
         val inputBoundary = logics.find(_.label.startsWith("BatchingActorInputBoundary")).get
         inputBoundary.label should include("fill=0/1,") // dodgy but see no other way to inspect from snapshot
 
-      } finally {
+      } finally
         materializer.shutdown()
-      }
     }
   }
 
@@ -473,9 +471,8 @@ class AttributesSpec
 
         sourcePromise.success(None)
         complete.futureValue // block until stream completes
-      } finally {
+      } finally
         materializer.shutdown()
-      }
     }
 
     "get input buffer size from surrounding .addAttributes (wrapping)" in {
@@ -508,9 +505,8 @@ class AttributesSpec
 
         sourcePromise.success(None)
         complete.futureValue // block until stream completes
-      } finally {
+      } finally
         materializer.shutdown()
-      }
     }
 
     "get input buffer size from async(dispatcher, inputBufferSize)" in {
@@ -548,9 +544,8 @@ class AttributesSpec
 
         sourcePromise.success(None)
         complete.futureValue // block until stream completes
-      } finally {
+      } finally
         materializer.shutdown()
-      }
     }
 
   }
@@ -686,9 +681,8 @@ class AttributesSpec
         // should not override stage specific dispatcher
         dispatcher should startWith("AttributesSpec-pekko.actor.default-blocking-io-dispatcher")
 
-      } finally {
+      } finally
         myDispatcherMaterializer.shutdown()
-      }
 
     }
 
@@ -726,9 +720,8 @@ class AttributesSpec
 
         threadName.futureValue should startWith("AttributesSpec-default-dispatcher-override-my-dispatcher-")
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
 
     "use the default-io-dispatcher by default" in {
@@ -754,9 +747,8 @@ class AttributesSpec
 
         threadName.futureValue should startWith("AttributesSpec-io-dispatcher-override-my-io-dispatcher-")
 
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
   }
 

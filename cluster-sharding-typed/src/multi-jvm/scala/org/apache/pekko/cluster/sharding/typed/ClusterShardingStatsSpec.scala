@@ -54,13 +54,12 @@ object Pinger {
   case class Ping(id: Int, ref: ActorRef[Pong]) extends Command
   case class Pong(id: Int) extends CborSerializable
 
-  def apply(): Behavior[Command] = {
+  def apply(): Behavior[Command] =
     Behaviors.receiveMessage[Command] {
       case Ping(id: Int, ref) =>
         ref ! Pong(id)
         Behaviors.same
     }
-  }
 
 }
 

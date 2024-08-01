@@ -68,7 +68,7 @@ object OrElseSpec {
       val pingHandlers: List[Ping => Behavior[Ping]] = ping1 :: ping2 :: ping3 :: Nil
 
       // this could be provided as a general purpose utility
-      @tailrec def handle(command: Ping, handlers: List[Ping => Behavior[Ping]]): Behavior[Ping] = {
+      @tailrec def handle(command: Ping, handlers: List[Ping => Behavior[Ping]]): Behavior[Ping] =
         handlers match {
           case Nil => Behaviors.unhandled
           case head :: tail =>
@@ -76,7 +76,6 @@ object OrElseSpec {
             if (Behavior.isUnhandled(next)) handle(command, tail)
             else next
         }
-      }
 
       Behaviors.receiveMessage(command => handle(command, pingHandlers))
     }
@@ -110,12 +109,11 @@ object OrElseSpec {
       val pingHandlers: List[PartialFunction[Ping, Behavior[Ping]]] = ping1 :: ping2 :: ping3 :: Nil
 
       // this could be provided as a general purpose utility
-      def handle(command: Ping, handlers: List[PartialFunction[Ping, Behavior[Ping]]]): Behavior[Ping] = {
+      def handle(command: Ping, handlers: List[PartialFunction[Ping, Behavior[Ping]]]): Behavior[Ping] =
         handlers match {
           case Nil          => Behaviors.unhandled
           case head :: tail => head.applyOrElse(command, handle(_, tail))
         }
-      }
 
       Behaviors.receiveMessage(command => handle(command, pingHandlers))
     }
@@ -133,7 +131,7 @@ object OrElseSpec {
           msg: Ping,
           target: BehaviorInterceptor.ReceiveTarget[Ping]): Behavior[Ping] = {
 
-        @tailrec def handle(i: Int): Behavior[Ping] = {
+        @tailrec def handle(i: Int): Behavior[Ping] =
           if (i == handlers.size)
             target(ctx, msg)
           else {
@@ -147,17 +145,15 @@ object OrElseSpec {
               Behaviors.same
             }
           }
-        }
 
         handle(0)
       }
 
       // could do same for signals
 
-      override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean = {
+      override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
         other.isInstanceOf[OrElseInterceptor]
 
-      }
     }
 
     def ping1(count: Int): Behavior[Ping] = Behaviors.receiveMessagePartial {

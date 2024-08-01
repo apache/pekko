@@ -162,7 +162,7 @@ private[remote] class InboundTestStage(inboundContext: InboundContext, state: Sh
     new TimerGraphStageLogic(shape) with InHandler with OutHandler with StageLogging {
 
       // InHandler
-      override def onPush(): Unit = {
+      override def onPush(): Unit =
         state.getInboundFailureOnce match {
           case Some(shouldFailEx) =>
             log.info("Fail inbound stream from [{}]: {}", classOf[InboundTestStage].getName, shouldFailEx.getMessage)
@@ -202,7 +202,6 @@ private[remote] class InboundTestStage(inboundContext: InboundContext, state: Sh
                 }
             }
         }
-      }
 
       // OutHandler
       override def onPull(): Unit = pull(in)

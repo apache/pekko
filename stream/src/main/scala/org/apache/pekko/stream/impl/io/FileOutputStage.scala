@@ -53,7 +53,7 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
       private var chan: FileChannel = _
       private var bytesWritten: Long = 0
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         try {
           chan = FileChannel.open(path, openOptions.asJava)
           if (startPosition > 0) {
@@ -65,7 +65,6 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
             closeFile(Some(new IOOperationIncompleteException(bytesWritten, t)))
             failStage(t)
         }
-      }
 
       override def onPush(): Unit = {
         val next = grab(in)
@@ -89,15 +88,14 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
         completeStage()
       }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!mat.isCompleted) {
           val failure = new AbruptStageTerminationException(this)
           closeFile(Some(failure))
           mat.tryFailure(failure)
         }
-      }
 
-      private def closeFile(failed: Option[Throwable]): Unit = {
+      private def closeFile(failed: Option[Throwable]): Unit =
         try {
           if (chan ne null) chan.close()
           failed match {
@@ -108,7 +106,6 @@ private[pekko] final class FileOutputStage(path: Path, startPosition: Long, open
           case NonFatal(t) =>
             mat.tryFailure(failed.getOrElse(t))
         }
-      }
 
       setHandler(in, this)
     }

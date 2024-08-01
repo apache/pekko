@@ -131,12 +131,11 @@ final case class Router(logic: RoutingLogic, routees: immutable.IndexedSeq[Route
       case msg                          => send(logic.select(msg, routees), message, sender)
     }
 
-  private def send(routee: Routee, msg: Any, sender: ActorRef): Unit = {
+  private def send(routee: Routee, msg: Any, sender: ActorRef): Unit =
     if (routee == NoRoutee && sender.isInstanceOf[InternalActorRef])
       sender.asInstanceOf[InternalActorRef].provider.deadLetters.tell(unwrap(msg), sender)
     else
       routee.send(unwrap(msg), sender)
-  }
 
   private def unwrap(msg: Any): Any = msg match {
     case env: RouterEnvelope => env.message

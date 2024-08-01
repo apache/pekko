@@ -52,7 +52,7 @@ class DeadLetterListener extends Actor {
   override def postStop(): Unit =
     eventStream.unsubscribe(self)
 
-  private def incrementCount(): Unit = {
+  private def incrementCount(): Unit =
     // `count` is public API (for unknown reason) so for backwards compatibility reasons we
     // can't change it to Long
     if (count == Int.MaxValue) {
@@ -60,7 +60,6 @@ class DeadLetterListener extends Actor {
       count = 1
     } else
       count += 1
-  }
 
   def receive: Receive =
     if (isAlwaysLoggingDeadLetters) receiveWithAlwaysLogging
@@ -147,15 +146,13 @@ class DeadLetterListener extends Actor {
         ActorLogMarker.deadLetter(messageStr)))
   }
 
-  private def isReal(snd: ActorRef): Boolean = {
+  private def isReal(snd: ActorRef): Boolean =
     (snd ne ActorRef.noSender) && (snd ne context.system.deadLetters) && !snd.isInstanceOf[DeadLetterActorRef]
-  }
 
-  private def isWrappedSuppressed(d: AllDeadLetters): Boolean = {
+  private def isWrappedSuppressed(d: AllDeadLetters): Boolean =
     d.message match {
       case w: WrappedMessage if w.message.isInstanceOf[DeadLetterSuppression] => true
       case _                                                                  => false
     }
-  }
 
 }

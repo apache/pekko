@@ -88,9 +88,8 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
     enterBarrier(s"split-$splits")
 
     runOn(first) {
-      for (dc1Node <- dc1; dc2Node <- dc2) {
+      for (dc1Node <- dc1; dc2Node <- dc2)
         testConductor.blackhole(dc1Node, dc2Node, Direction.Both).await
-      }
     }
 
     enterBarrier(s"after-split-$splits")
@@ -120,9 +119,8 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
     enterBarrier(s"unsplit-$unsplits")
 
     runOn(first) {
-      for (dc1Node <- dc1; dc2Node <- dc2) {
+      for (dc1Node <- dc1; dc2Node <- dc2)
         testConductor.passThrough(dc1Node, dc2Node, Direction.Both).await
-      }
     }
 
     enterBarrier(s"after-unsplit-$unsplits")
@@ -283,9 +281,8 @@ abstract class MultiDcSplitBrainSpec extends MultiNodeClusterSpec(MultiDcSplitBr
       }
 
       runOn(first) {
-        for (dc1Node <- dc1; dc2Node <- dc2) {
+        for (dc1Node <- dc1; dc2Node <- dc2)
           testConductor.passThrough(dc1Node, dc2Node, Direction.Both).await
-        }
         testConductor.shutdown(fifth)
       }
 

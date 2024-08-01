@@ -341,7 +341,7 @@ private[pekko] object LocalActorRefProvider {
         // termination hooks, they will reply with TerminationHookDone
         // and when all are done the systemGuardian is stopped
         context.become(terminating)
-        terminationHooks.foreach { _ ! TerminationHook }
+        terminationHooks.foreach(_ ! TerminationHook)
         stopWhenAllTerminationHooksDone()
       case Terminated(a) =>
         // a registered, and watched termination hook terminated before
@@ -626,7 +626,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
       deadLetters
   }
 
-  def resolveActorRef(path: ActorPath): ActorRef = {
+  def resolveActorRef(path: ActorPath): ActorRef =
     if (path.root == rootPath) resolveActorRef(rootGuardian, path.elements)
     else {
       logDeser.debug(
@@ -635,7 +635,6 @@ private[pekko] class LocalActorRefProvider private[pekko] (
         rootPath)
       deadLetters
     }
-  }
 
   /**
    * INTERNAL API
@@ -664,7 +663,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
       systemService: Boolean,
       deploy: Option[Deploy],
       lookupDeploy: Boolean,
-      async: Boolean): InternalActorRef = {
+      async: Boolean): InternalActorRef =
     props.deploy.routerConfig match {
       case NoRouter =>
         if (settings.DebugRouterMisconfiguration) {
@@ -754,7 +753,6 @@ private[pekko] class LocalActorRefProvider private[pekko] (
               e)
         }
     }
-  }
 
   def getExternalAddressFor(addr: Address): Option[Address] = if (addr == rootPath.address) Some(addr) else None
 
@@ -780,7 +778,7 @@ private[pekko] class LocalActorRefProvider private[pekko] (
   // lazily initialized with fallback since it can depend on transport which is not initialized up front
   // worth caching since if it is used once in a system it will very likely be used many times
   @volatile private var _addressString: OptionVal[String] = OptionVal.None
-  override private[pekko] def addressString: String = {
+  override private[pekko] def addressString: String =
     _addressString match {
       case OptionVal.Some(addr) => addr
       case _ =>
@@ -788,5 +786,4 @@ private[pekko] class LocalActorRefProvider private[pekko] (
         _addressString = OptionVal.Some(addr)
         addr
     }
-  }
 }

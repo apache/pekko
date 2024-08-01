@@ -86,7 +86,7 @@ private[remote] class DefaultMessageDispatcher(
     val sender: ActorRef = senderOption.getOrElse(system.deadLetters)
     val originalReceiver = recipient.path
 
-    def logMessageReceived(messageType: String): Unit = {
+    def logMessageReceived(messageType: String): Unit =
       if (LogReceive && log.isDebugEnabled)
         log.debug(
           s"received $messageType RemoteMessage: [{}] to [{}]<+[{}] from [{}]",
@@ -94,7 +94,6 @@ private[remote] class DefaultMessageDispatcher(
           recipient,
           originalReceiver,
           sender)
-    }
 
     recipient match {
 
@@ -315,7 +314,7 @@ private[remote] class ReliableDeliverySupervisor(
   }
 
   var writer: ActorRef = createWriter()
-  var uid: Option[Int] = handleOrActive.map { _.handshakeInfo.uid }
+  var uid: Option[Int] = handleOrActive.map(_.handshakeInfo.uid)
   var bailoutAt: Option[Deadline] = None
   var maxSilenceTimer: Option[Cancellable] = None
   // Processing of Acks has to be delayed until the UID after a reconnect is discovered. Depending whether the
@@ -349,10 +348,9 @@ private[remote] class ReliableDeliverySupervisor(
     maxSilenceTimer.foreach(_.cancel())
   }
 
-  override def postRestart(reason: Throwable): Unit = {
+  override def postRestart(reason: Throwable): Unit =
     throw new IllegalStateException(
       "BUG: ReliableDeliverySupervisor has been attempted to be restarted. This must not happen.")
-  }
 
   override def receive: Receive = {
     case FlushAndStop =>
@@ -470,10 +468,10 @@ private[remote] class ReliableDeliverySupervisor(
 
   private def goToIdle(): Unit = {
     if (maxSilenceTimer.isEmpty && settings.QuarantineSilentSystemTimeout > Duration.Zero) {
-      try {
+      try
         maxSilenceTimer = Some(
           context.system.scheduler.scheduleOnce(settings.QuarantineSilentSystemTimeout, self, TooLongIdle))
-      } catch {
+      catch {
         case e: IllegalArgumentException =>
           log.warning(
             "Too long quarantine-after-silence configuration value, idle timer is not scheduled. " +
@@ -510,21 +508,21 @@ private[remote] class ReliableDeliverySupervisor(
         writer ! sequencedSend
     } else writer ! send
 
-  private def resendNacked(): Unit = resendBuffer.nacked.foreach { writer ! _ }
+  private def resendNacked(): Unit = resendBuffer.nacked.foreach(writer ! _)
 
   private def resendAll(): Unit = {
     resendNacked()
-    resendBuffer.nonAcked.take(settings.SysResendLimit).foreach { writer ! _ }
+    resendBuffer.nonAcked.take(settings.SysResendLimit).foreach(writer ! _)
   }
 
   private def tryBuffer(s: Send): Unit =
-    try {
+    try
       resendBuffer = resendBuffer.buffer(s)
-    } catch {
+    catch {
       case NonFatal(e) => throw new HopelessAssociation(localAddress, remoteAddress, uid, e)
     }
 
-  private def createWriter(): ActorRef = {
+  private def createWriter(): ActorRef =
     context.watch(
       context.actorOf(
         RARP(context.system)
@@ -540,7 +538,6 @@ private[remote] class ReliableDeliverySupervisor(
             reliableDeliverySupervisor = Some(self)))
           .withDeploy(Deploy.local),
         "endpointWriter"))
-  }
 }
 
 /**
@@ -691,14 +688,13 @@ private[remote] class EndpointWriter(
     context.system.scheduler.scheduleWithFixedDelay(interval, interval, self, AckIdleCheckTimer)
   }
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     handle match {
       case Some(h) =>
         reader = startReadEndpoint(h)
       case None =>
         transport.associate(remoteAddress, refuseUid).map(Handle(_)).pipeTo(self)
     }
-  }
 
   override def postRestart(reason: Throwable): Unit =
     throw new IllegalStateException("EndpointWriter must not be restarted")
@@ -707,7 +703,7 @@ private[remote] class EndpointWriter(
     ackIdleTimer.cancel()
     while (!prioBuffer.isEmpty) extendedSystem.deadLetters ! prioBuffer.poll
     while (!buffer.isEmpty) extendedSystem.deadLetters ! buffer.poll
-    handle.foreach { _.disassociate(stopReason) }
+    handle.foreach(_.disassociate(stopReason))
     eventPublisher.notifyListeners(DisassociatedEvent(localAddress, remoteAddress, inbound))
   }
 
@@ -848,7 +844,7 @@ private[remote] class EndpointWriter(
 
   }
 
-  def scheduleBackoffTimer(): Unit = {
+  def scheduleBackoffTimer(): Unit =
     if (fullBackoff) {
       fullBackoffCount += 1
       fullBackoff = false
@@ -870,7 +866,6 @@ private[remote] class EndpointWriter(
         s.tell(BackoffTimer, ActorRef.noSender)
       }(backoffDispatcher)
     }
-  }
 
   val writing: Receive = {
     case s: Send =>
@@ -889,7 +884,7 @@ private[remote] class EndpointWriter(
   }
 
   def writeSend(s: Send): Boolean =
-    try {
+    try
       handle match {
         case Some(h) =>
           if (provider.remoteSettings.LogSend && log.isDebugEnabled) {
@@ -935,7 +930,7 @@ private[remote] class EndpointWriter(
           throw new EndpointException(
             "Internal error: Endpoint is in state Writing, but no association handle is present.")
       }
-    } catch {
+    catch {
       case e: NotSerializableException =>
         log.error(
           e,
@@ -985,7 +980,7 @@ private[remote] class EndpointWriter(
       }
     case TakeOver(newHandle, replyTo) =>
       // Shutdown old reader
-      handle.foreach { _.disassociate("the association was replaced by a new one", log) }
+      handle.foreach(_.disassociate("the association was replaced by a new one", log))
       handle = Some(newHandle)
       replyTo ! TookOver(self, newHandle)
       context.become(handoff)
@@ -1010,12 +1005,11 @@ private[remote] class EndpointWriter(
   }
 
   private def trySendPureAck(): Unit =
-    for (h <- handle; ack <- lastAck) {
+    for (h <- handle; ack <- lastAck)
       if (h.write(codec.constructPureAck(ack))) {
         ackDeadline = newAckDeadline
         lastAck = None
       }
-    }
 
   private def startReadEndpoint(handle: PekkoProtocolHandle): Some[ActorRef] = {
     val newReader =
@@ -1105,7 +1099,7 @@ private[remote] class EndpointReader(
   val provider = RARP(context.system).provider
   var ackedReceiveBuffer = new AckedReceiveBuffer[Message]
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     receiveBuffers.get(Link(localAddress, remoteAddress)) match {
       case null =>
       case ResendState(`uid`, buffer) =>
@@ -1113,7 +1107,6 @@ private[remote] class EndpointReader(
         deliverAndAck()
       case _ =>
     }
-  }
 
   override def postStop(): Unit = saveState()
 
@@ -1123,7 +1116,7 @@ private[remote] class EndpointReader(
       else currentState
 
     @tailrec
-    def updateSavedState(key: Link, expectedState: ResendState): Unit = {
+    def updateSavedState(key: Link, expectedState: ResendState): Unit =
       if (expectedState eq null) {
         if (receiveBuffers.putIfAbsent(key, ResendState(uid, ackedReceiveBuffer)) ne null)
           updateSavedState(key, receiveBuffers.get(key))
@@ -1132,7 +1125,6 @@ private[remote] class EndpointReader(
           expectedState,
           merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
         updateSavedState(key, receiveBuffers.get(key))
-    }
 
     val key = Link(localAddress, remoteAddress)
     updateSavedState(key, receiveBuffers.get(key))
@@ -1243,9 +1235,9 @@ private[remote] class EndpointReader(
   }
 
   private def tryDecodeMessageAndAck(pdu: ByteString): (Option[Ack], Option[Message]) =
-    try {
+    try
       codec.decodeMessage(pdu, provider, localAddress)
-    } catch {
+    catch {
       case NonFatal(e) => throw new EndpointException("Error while decoding incoming Pekko PDU", e)
     }
 }

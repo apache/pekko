@@ -73,14 +73,13 @@ class TlsTcpWithRotatingKeysSSLEngineSpec extends TlsTcpSpec(ConfigFactory.parse
 
 object TlsTcpSpec {
 
-  lazy val config: Config = {
+  lazy val config: Config =
     ConfigFactory.parseString(s"""
       pekko.remote.artery {
         transport = tls-tcp
         large-message-destinations = [ "/user/large" ]
       }
     """)
-  }
 
 }
 

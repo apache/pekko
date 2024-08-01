@@ -60,9 +60,8 @@ class FlowBatchSpec extends StreamSpec("""
         .run()
       val sub = subscriber.expectSubscription()
 
-      for (i <- 1 to 10) {
+      for (i <- 1 to 10)
         publisher.sendNext(i)
-      }
       subscriber.expectNoMessage(1.second)
       sub.request(1)
       subscriber.expectNext(List(10, 9, 8, 7, 6, 5, 4, 3, 2, 1))

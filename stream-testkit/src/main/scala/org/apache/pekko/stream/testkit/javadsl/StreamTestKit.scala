@@ -38,7 +38,6 @@ object StreamTestKit {
    * Usually this assertion is run after a test-case to check that all of the
    * stages have terminated successfully.
    */
-  def assertAllStagesStopped(system: ClassicActorSystemProvider): Unit = {
+  def assertAllStagesStopped(system: ClassicActorSystemProvider): Unit =
     assertAllStagesStopped(SystemMaterializer(system).materializer)
-  }
 }

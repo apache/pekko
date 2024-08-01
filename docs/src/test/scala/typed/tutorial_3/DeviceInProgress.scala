@@ -67,13 +67,12 @@ object DeviceInProgress2 {
 
     context.log.info2("Device actor {}-{} started", groupId, deviceId)
 
-    override def onMessage(msg: Command): Behavior[Command] = {
+    override def onMessage(msg: Command): Behavior[Command] =
       msg match {
         case ReadTemperature(id, replyTo) =>
           replyTo ! RespondTemperature(id, lastTemperatureReading)
           this
       }
-    }
 
     override def onSignal: PartialFunction[Signal, Behavior[Command]] = {
       case PostStop =>

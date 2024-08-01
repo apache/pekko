@@ -151,9 +151,8 @@ private[cluster] class ClusterHeartbeatSender extends Actor {
   // used for logging warning if actual tick interval is unexpected (e.g. due to starvation)
   private var tickTimestamp = System.nanoTime() + (PeriodicTasksInitialDelay max HeartbeatInterval).toNanos
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     cluster.subscribe(self, classOf[MemberEvent], classOf[ReachabilityEvent])
-  }
 
   override def postStop(): Unit = {
     state.activeReceivers.foreach(a => failureDetector.remove(a.address))

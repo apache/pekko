@@ -32,13 +32,11 @@ import com.typesafe.config.Config
    */
   @InternalApi
   // extracted as a method for testing
-  private[tcp] def rngConfig(config: Config) = {
+  private[tcp] def rngConfig(config: Config) =
     config.getString("random-number-generator")
-  }
 
-  def createSecureRandom(config: Config, log: MarkerLoggingAdapter): SecureRandom = {
+  def createSecureRandom(config: Config, log: MarkerLoggingAdapter): SecureRandom =
     createSecureRandom(rngConfig(config), log)
-  }
 
   def createSecureRandom(randomNumberGenerator: String, log: MarkerLoggingAdapter): SecureRandom = {
     val rng = randomNumberGenerator match {

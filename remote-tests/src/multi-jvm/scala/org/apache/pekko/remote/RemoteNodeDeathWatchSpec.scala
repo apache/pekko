@@ -128,14 +128,13 @@ abstract class RemoteNodeDeathWatchSpec(multiNodeConfig: RemoteNodeDeathWatchCon
     actorIdentity.ref.get
   }
 
-  def assertCleanup(timeout: FiniteDuration = 5.seconds): Unit = {
+  def assertCleanup(timeout: FiniteDuration = 5.seconds): Unit =
     within(timeout) {
       awaitAssert {
         remoteWatcher ! Stats
         expectMsg(Stats.empty)
       }
     }
-  }
 
   "RemoteNodeDeathWatch (" + scenario + ")" must {
 

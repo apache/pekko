@@ -34,12 +34,12 @@ trait JavaDslUtils extends CommonUtils {
       override protected def commandHandler(): CommandHandler[TestCommand, Evt, EmptyState] =
         newCommandHandlerBuilder()
           .forAnyState()
-          .onAnyCommand((command: TestCommand) => {
+          .onAnyCommand { (command: TestCommand) =>
             command match {
               case Cmd(data) => Effect.persist(Evt(data))
               case Passivate => Effect.stop().thenRun((_: EmptyState) => replyOnRecovery.foreach(_ ! Stopped))
             }
-          })
+          }
 
       override protected def eventHandler(): EventHandler[EmptyState, Evt] =
         newEventHandlerBuilder().forAnyState().onAnyEvent(_ => emptyState)
@@ -49,13 +49,12 @@ trait JavaDslUtils extends CommonUtils {
       override def signalHandler(): SignalHandler[EmptyState] =
         newSignalHandlerBuilder().onSignal(RecoveryCompleted, _ => replyOnRecovery.foreach(_ ! Recovered)).build
 
-      override def tagsFor(event: Evt): util.Set[String] = {
+      override def tagsFor(event: Evt): util.Set[String] =
         if (setConstantTag) {
           util.Collections.singleton("tag")
         } else {
           super.tagsFor(event)
         }
-      }
     }
 
 }

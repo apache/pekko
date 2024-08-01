@@ -82,9 +82,8 @@ abstract class SplitBrainSpec(multiNodeConfig: SplitBrainMultiNodeConfig)
 
       runOn(first) {
         // split the cluster in two parts (first, second) / (third, fourth, fifth)
-        for (role1 <- side1; role2 <- side2) {
+        for (role1 <- side1; role2 <- side2)
           testConductor.blackhole(role1, role2, Direction.Both).await
-        }
       }
       enterBarrier("after-split")
 

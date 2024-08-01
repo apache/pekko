@@ -151,7 +151,7 @@ object LoggingDocExamples {
     // #test-logging-criteria
   }
 
-  def tagsExample(): Unit = {
+  def tagsExample(): Unit =
     Behaviors.setup[AnyRef] { context =>
       val myBehavior = Behaviors.empty[AnyRef]
       // #tags
@@ -159,6 +159,5 @@ object LoggingDocExamples {
       // #tags
       Behaviors.stopped
     }
-  }
 
 }

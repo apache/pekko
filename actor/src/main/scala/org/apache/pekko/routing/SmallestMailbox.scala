@@ -66,7 +66,7 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       proposedTarget: Routee = NoRoutee,
       currentScore: Long = Long.MaxValue,
       at: Int = 0,
-      deep: Boolean = false): Routee = {
+      deep: Boolean = false): Routee =
     if (targets.isEmpty)
       NoRoutee
     else if (at >= targets.size) {
@@ -90,7 +90,6 @@ class SmallestMailboxRoutingLogic extends RoutingLogic {
       else if (newScore < 0 || newScore >= currentScore) selectNext(targets, proposedTarget, currentScore, at + 1, deep)
       else selectNext(targets, target, newScore, at + 1, deep)
     }
-  }
 
   // TODO should we rewrite this not to use isTerminated?
   @nowarn("msg=deprecated")

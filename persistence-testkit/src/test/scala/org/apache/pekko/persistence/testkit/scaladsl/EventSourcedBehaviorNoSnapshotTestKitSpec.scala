@@ -30,11 +30,10 @@ class EventSourcedBehaviorNoSnapshotTestKitSpec
     with AnyWordSpecLike
     with LogCapturing {
 
-  private def createTestKit() = {
+  private def createTestKit() =
     EventSourcedBehaviorTestKit[TestCounter.Command, TestCounter.Event, TestCounter.State](
       system,
       TestCounter(PersistenceId.ofUniqueId("test")))
-  }
 
   "EventSourcedBehaviorTestKit" when {
     "snapshots are not enabled" must {

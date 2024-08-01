@@ -65,9 +65,8 @@ object EventSourcedBehaviorSpec {
 
     override def loadAsync(
         persistenceId: String,
-        criteria: ClassicSnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = {
+        criteria: ClassicSnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
       Promise().future // never completed
-    }
 
     override def saveAsync(metadata: ClassicSnapshotMetadata, snapshot: Any): Future[Unit] = {
       state = state.updated(metadata.persistenceId, (snapshot, metadata))
@@ -643,7 +642,7 @@ class EventSourcedBehaviorSpec
     "fail fast if default journal plugin is not defined" in {
       // new ActorSystem without persistence config
       val testkit2 = ActorTestKit(ActorTestKitBase.testNameFromCallStack(), ConfigFactory.parseString(""))
-      try {
+      try
         LoggingTestKit
           .error[ActorInitializationException]
           .withMessageContains("Default journal plugin is not configured")
@@ -652,15 +651,14 @@ class EventSourcedBehaviorSpec
             val probe = testkit2.createTestProbe()
             probe.expectTerminated(ref)
           }(testkit2.system)
-      } finally {
+      finally
         testkit2.shutdownTestKit()
-      }
     }
 
     "fail fast if given journal plugin is not defined" in {
       // new ActorSystem without persistence config
       val testkit2 = ActorTestKit(ActorTestKitBase.testNameFromCallStack(), ConfigFactory.parseString(""))
-      try {
+      try
         LoggingTestKit
           .error[ActorInitializationException]
           .withMessageContains("Journal plugin [missing] configuration doesn't exist")
@@ -669,9 +667,8 @@ class EventSourcedBehaviorSpec
             val probe = testkit2.createTestProbe()
             probe.expectTerminated(ref)
           }(testkit2.system)
-      } finally {
+      finally
         testkit2.shutdownTestKit()
-      }
     }
 
     "warn if default snapshot plugin is not defined" in {
@@ -681,7 +678,7 @@ class EventSourcedBehaviorSpec
         ConfigFactory.parseString(s"""
           pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
           """))
-      try {
+      try
         LoggingTestKit
           .warn("No default snapshot store configured")
           .expect {
@@ -691,9 +688,8 @@ class EventSourcedBehaviorSpec
             ref ! GetValue(probe.ref)
             probe.expectMessage(State(0, Vector.empty))
           }(testkit2.system)
-      } finally {
+      finally
         testkit2.shutdownTestKit()
-      }
     }
 
     "fail fast if given snapshot plugin is not defined" in {
@@ -703,7 +699,7 @@ class EventSourcedBehaviorSpec
         ConfigFactory.parseString(s"""
           pekko.persistence.journal.plugin = "pekko.persistence.journal.inmem"
           """))
-      try {
+      try
         LoggingTestKit
           .error[ActorInitializationException]
           .withMessageContains("Snapshot store plugin [missing] configuration doesn't exist")
@@ -712,9 +708,8 @@ class EventSourcedBehaviorSpec
             val probe = testkit2.createTestProbe()
             probe.expectTerminated(ref)
           }(testkit2.system)
-      } finally {
+      finally
         testkit2.shutdownTestKit()
-      }
     }
 
     "allow enumerating all ids" in {

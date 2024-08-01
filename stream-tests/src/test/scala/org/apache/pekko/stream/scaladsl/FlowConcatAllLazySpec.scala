@@ -82,10 +82,10 @@ class FlowConcatAllLazySpec extends StreamSpec("""
     "lazy materialization other sources" in {
       val materialized = new AtomicBoolean()
       Source(1 to 3)
-        .concatAllLazy(Source.lazySource(() => {
+        .concatAllLazy(Source.lazySource { () =>
           materialized.set(true)
           Source.single(4)
-        }))
+        })
         .runWith(TestSink.probe)
         .request(2)
         .expectNext(1, 2)

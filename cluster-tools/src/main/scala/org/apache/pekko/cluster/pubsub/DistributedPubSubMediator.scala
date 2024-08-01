@@ -404,7 +404,7 @@ object DistributedPubSubMediator {
         case Count =>
           sender() ! subscribers.size
         case msg =>
-          subscribers.foreach { _.forward(msg) }
+          subscribers.foreach(_.forward(msg))
       }
 
       def business: Receive
@@ -913,7 +913,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
   def selectRandomNode(addresses: immutable.IndexedSeq[Address]): Option[Address] =
     if (addresses.isEmpty) None else Some(addresses(ThreadLocalRandom.current.nextInt(addresses.size)))
 
-  def prune(): Unit = {
+  def prune(): Unit =
     registry.foreach {
       case (owner, bucket) =>
         val oldRemoved = bucket.content.collect {
@@ -922,7 +922,6 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
         if (oldRemoved.nonEmpty)
           registry += owner -> bucket.copy(content = bucket.content -- oldRemoved)
     }
-  }
 
   def newTopicActor(encTopic: String): ActorRef = {
     val t = context.actorOf(Props(classOf[Topic], removedTimeToLive, routingLogic), name = encTopic)
@@ -960,7 +959,7 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
   /**
    * The [[DistributedPubSubMediator]]
    */
-  val mediator: ActorRef = {
+  val mediator: ActorRef =
     if (isTerminated)
       system.deadLetters
     else {
@@ -968,5 +967,4 @@ class DistributedPubSub(system: ExtendedActorSystem) extends Extension {
       val dispatcher = system.settings.config.getString("pekko.cluster.pub-sub.use-dispatcher")
       system.systemActorOf(DistributedPubSubMediator.props(settings).withDispatcher(dispatcher), name)
     }
-  }
 }

@@ -35,9 +35,8 @@ import pekko.util.ccompat.JavaConverters._
 private[persistence] object LeveldbStore {
   val emptyConfig = ConfigFactory.empty()
 
-  def toCompactionIntervalMap(obj: ConfigObject): Map[String, Long] = {
+  def toCompactionIntervalMap(obj: ConfigObject): Map[String, Long] =
     obj.unwrapped().asScala.map(entry => (entry._1, java.lang.Long.parseLong(entry._2.toString))).toMap
-  }
 }
 
 /**
@@ -155,9 +154,9 @@ private[persistence] trait LeveldbStore
   def withIterator[R](body: DBIterator => R): R = {
     val ro = leveldbSnapshot()
     val iterator = leveldb.iterator(ro)
-    try {
+    try
       body(iterator)
-    } finally {
+    finally {
       iterator.close()
       ro.snapshot().close()
     }
@@ -169,9 +168,8 @@ private[persistence] trait LeveldbStore
       val r = body(batch)
       leveldb.write(batch, leveldbWriteOptions)
       r
-    } finally {
+    } finally
       batch.close()
-    }
   }
 
   def persistentToBytes(p: PersistentRepr): Array[Byte] = serialization.serialize(p).get
@@ -261,11 +259,10 @@ private[persistence] trait LeveldbStore
       tagSubscribers(tag).foreach(_ ! changed)
     }
 
-  override protected def newPersistenceIdAdded(id: String): Unit = {
+  override protected def newPersistenceIdAdded(id: String): Unit =
     if (hasAllPersistenceIdsSubscribers && !id.startsWith(tagPersistenceIdPrefix)) {
       val added = LeveldbJournal.PersistenceIdAdded(id)
       allPersistenceIdsSubscribers.foreach(_ ! added)
     }
-  }
 
 }

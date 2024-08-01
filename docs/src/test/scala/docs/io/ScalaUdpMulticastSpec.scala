@@ -76,10 +76,9 @@ class ScalaUdpMulticastSpec
               system.log.info("Failed to run test on interface {}", ipv6iface.getDisplayName)
               failures = ex :: failures
 
-          } finally {
+          } finally
             // unbind
             system.stop(listener)
-          }
         }
 
         if (failures.size == ipv6ifaces.size)
@@ -89,8 +88,7 @@ class ScalaUdpMulticastSpec
     }
   }
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
 }

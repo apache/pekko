@@ -41,23 +41,21 @@ object Collect {
     // #collectType
   }
 
-  def collectWhile(): Unit = {
+  def collectWhile(): Unit =
     // #collectWhile
     Flow[Message].collectWhile {
       case Ping(id) if id <= 100 => Pong(id)
     }
-    // #collectWhile
-  }
+  // #collectWhile
 
-  def collectFirst(): Unit = {
+  def collectFirst(): Unit =
     // #collectFirst
     Source(List(1, 3, 5, 7, 8, 9, 10))
       .collectFirst {
         case elem if elem % 2 == 0 => elem
       }
       .runWith(Sink.foreach(println))
-    // expect prints output:
-    // 8
-    // #collectFirst
-  }
+  // expect prints output:
+  // 8
+  // #collectFirst
 }

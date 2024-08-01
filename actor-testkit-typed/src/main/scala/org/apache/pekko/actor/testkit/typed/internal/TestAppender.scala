@@ -110,14 +110,13 @@ import java.util.Collections
     filter(loggingEvent)
   }
 
-  private def filter(event: LoggingEvent): Boolean = {
+  private def filter(event: LoggingEvent): Boolean =
     filters.exists(f =>
-      try {
+      try
         f.apply(event)
-      } catch {
+      catch {
         case _: Exception => false
       })
-  }
 
   def addTestFilter(filter: LoggingTestKitImpl): Unit = synchronized {
     filters ::= filter

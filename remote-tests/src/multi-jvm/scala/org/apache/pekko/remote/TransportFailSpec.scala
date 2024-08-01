@@ -74,14 +74,12 @@ object TransportFailSpec {
   class TestFailureDetector(@unused config: Config, @unused ev: EventStream) extends FailureDetector {
     @volatile private var active = false
 
-    override def heartbeat(): Unit = {
+    override def heartbeat(): Unit =
       active = true
-    }
 
-    override def isAvailable: Boolean = {
+    override def isAvailable: Boolean =
       if (active) fdAvailable.get
       else true
-    }
 
     override def isMonitoring: Boolean = active
   }
@@ -152,10 +150,9 @@ abstract class TransportFailSpec extends RemotingMultiNodeSpec(TransportFailConf
         system.eventStream.subscribe(quarantineProbe.ref, classOf[QuarantinedEvent])
 
         var subject2: ActorRef = null
-        awaitAssert({
-            within(1.second) {
-              subject2 = identify(second, "subject2")
-            }
+        awaitAssert(
+          within(1.second) {
+            subject2 = identify(second, "subject2")
           }, max = 5.seconds)
         watch(subject2)
         quarantineProbe.expectNoMessage(1.seconds)

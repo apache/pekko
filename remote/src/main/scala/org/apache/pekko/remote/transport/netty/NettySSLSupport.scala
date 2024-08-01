@@ -68,11 +68,11 @@ private[pekko] object NettySSLSupport {
       if (isClient) sslEngineProvider.createClientSSLEngine()
       else sslEngineProvider.createServerSSLEngine()
     val handler = new SslHandler(sslEngine)
-    handler.handshakeFuture().addListener((future: Future[Channel]) => {
+    handler.handshakeFuture().addListener { (future: Future[Channel]) =>
       if (!future.isSuccess) {
         handler.closeOutbound().channel().close()
       }
-    })
+    }
     handler
   }
 }

@@ -44,7 +44,7 @@ object SnapshotRecoveryWithEmptyJournalSpec {
     """))
 
   object TestActor {
-    def apply(name: String, probe: ActorRef[Any]): Behavior[String] = {
+    def apply(name: String, probe: ActorRef[Any]): Behavior[String] =
       Behaviors.setup { context =>
         EventSourcedBehavior[String, String, List[String]](
           PersistenceId.ofUniqueId(name),
@@ -59,7 +59,6 @@ object SnapshotRecoveryWithEmptyJournalSpec {
             },
           (state, event) => event :: state)
       }
-    }
   }
 
 }

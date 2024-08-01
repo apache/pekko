@@ -66,13 +66,11 @@ pekko.actor.warn-about-java-serializer-usage = off
         pekko.remote.classic.netty.tcp.port=2666
                               """).withFallback(system.settings.config))
 
-  override def beforeTermination(): Unit = {
+  override def beforeTermination(): Unit =
     system.eventStream.publish(TestEvent.Mute(EventFilter.warning(pattern = "received dead letter.*Disassociate")))
-  }
 
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     shutdown(other)
-  }
 
   override def expectedTestDuration: FiniteDuration = 120.seconds
 

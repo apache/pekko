@@ -174,9 +174,8 @@ class WriteAggregatorSpec extends PekkoSpec(s"""
   /**
    * Create a tuple for each node with the WriteAckAdapter and the TestProbe
    */
-  def probes(): Map[UniqueAddress, TestMock] = {
+  def probes(): Map[UniqueAddress, TestMock] =
     nodes.toSeq.map(_ -> TestMock()).toMap
-  }
 
   "WriteAggregator" must {
     "send to at least N/2+1 replicas when WriteMajority" in {
@@ -223,7 +222,7 @@ class WriteAggregatorSpec extends PekkoSpec(s"""
       val t = timeout / 5 - 50.milliseconds.dilated
       import system.dispatcher
       Future.sequence {
-        Seq(Future { testProbes(nodeC).expectNoMessage(t) }, Future { testProbes(nodeD).expectNoMessage(t) })
+        Seq(Future(testProbes(nodeC).expectNoMessage(t)), Future(testProbes(nodeD).expectNoMessage(t)))
       }.futureValue
       testProbes(nodeC).expectMsgType[Write]
       testProbes(nodeC).lastSender ! WriteAck

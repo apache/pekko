@@ -85,12 +85,11 @@ private[remote] final class SendQueue[T](postStopAction: Vector[T] => Unit)
         }.invoke)
       }
 
-      override def onPull(): Unit = {
+      override def onPull(): Unit =
         if (consumerQueue ne null)
           tryPush()
-      }
 
-      @tailrec private def tryPush(firstAttempt: Boolean = true): Unit = {
+      @tailrec private def tryPush(firstAttempt: Boolean = true): Unit =
         consumerQueue.poll() match {
           case null =>
             needWakeup = true
@@ -102,12 +101,10 @@ private[remote] final class SendQueue[T](postStopAction: Vector[T] => Unit)
             needWakeup = false // there will be another onPull
             push(out, elem)
         }
-      }
 
       // external call
-      override def wakeup(): Unit = {
+      override def wakeup(): Unit =
         wakeupCallback.invoke(())
-      }
 
       override def postStop(): Unit = {
         val pending = Vector.newBuilder[T]

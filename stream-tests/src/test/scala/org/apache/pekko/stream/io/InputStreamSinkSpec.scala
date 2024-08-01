@@ -215,7 +215,7 @@ class InputStreamSinkSpec extends StreamSpec(UnboundedMailboxConfig) {
 
       probe.sendError(ex)
       sinkProbe.expectMsg(GraphStageMessages.Failure(ex))
-      val e = intercept[IOException] { Await.result(Future(inputStream.read()), timeout) }
+      val e = intercept[IOException](Await.result(Future(inputStream.read()), timeout))
       e.getCause should ===(ex)
     }
 

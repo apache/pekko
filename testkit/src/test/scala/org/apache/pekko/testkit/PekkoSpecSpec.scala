@@ -41,9 +41,8 @@ class PekkoSpecSpec extends AnyWordSpec with Matchers {
         EventFilter.warning(start = "unhandled message", occurrences = 1).intercept {
           a ! 42
         }
-      } finally {
+      } finally
         TestKit.shutdownActorSystem(system)
-      }
     }
 
     "terminate all actors" in {

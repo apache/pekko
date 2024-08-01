@@ -220,7 +220,7 @@ private[pekko] class Mailboxes(
       case Some(s) => s
     }
 
-  private def lookupConfigurator(id: String): MailboxType = {
+  private def lookupConfigurator(id: String): MailboxType =
     mailboxTypeConfigurators.get(id) match {
       case null =>
         // It doesn't matter if we create a mailbox type configurator that isn't used due to concurrent lookup.
@@ -276,7 +276,6 @@ private[pekko] class Mailboxes(
 
       case existing => existing
     }
-  }
 
   private val defaultMailboxConfig = settings.config.getConfig(DefaultMailboxId)
 
@@ -301,10 +300,9 @@ private[pekko] class Mailboxes(
    */
   private[pekko] final def stashCapacity(dispatcher: String, mailbox: String): Int = {
 
-    @tailrec def updateCache(cache: Map[String, Int], key: String, value: Int): Boolean = {
+    @tailrec def updateCache(cache: Map[String, Int], key: String, value: Int): Boolean =
       stashCapacityCache.compareAndSet(cache, cache.updated(key, value)) ||
       updateCache(stashCapacityCache.get, key, value) // recursive, try again
-    }
 
     if (dispatcher == Dispatchers.DefaultDispatcherId && mailbox == Mailboxes.DefaultMailboxId)
       defaultStashCapacity

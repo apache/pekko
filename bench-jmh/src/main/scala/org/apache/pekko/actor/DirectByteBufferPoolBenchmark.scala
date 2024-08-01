@@ -36,9 +36,8 @@ class DirectByteBufferPoolBenchmark {
   private[pekko] var arteryPool: DirectByteBufferPool = _
 
   @Setup(Level.Trial)
-  def setup(): Unit = {
+  def setup(): Unit =
     arteryPool = new DirectByteBufferPool(size, MAX_LIVE_BUFFERS)
-  }
 
   @TearDown(Level.Trial)
   def tearDown(): Unit = {

@@ -183,24 +183,21 @@ object Persistence extends ExtensionId[Persistence] with ExtensionIdProvider {
   @InternalApi private[pekko] def verifyPluginConfigExists(
       config: Config,
       pluginId: String,
-      pluginType: String): Unit = {
+      pluginType: String): Unit =
     if (!isEmpty(pluginId) && !config.hasPath(pluginId))
       throw new IllegalArgumentException(s"$pluginType plugin [$pluginId] configuration doesn't exist.")
-  }
 
   /**
    * INTERNAL API
    * @throws java.lang.IllegalArgumentException if `pluginId` is empty (undefined)
    */
-  @InternalApi private[pekko] def verifyPluginConfigIsDefined(pluginId: String, pluginType: String): Unit = {
+  @InternalApi private[pekko] def verifyPluginConfigIsDefined(pluginId: String, pluginType: String): Unit =
     if (isEmpty(pluginId))
       throw new IllegalArgumentException(s"$pluginType plugin is not configured, see 'reference.conf'")
-  }
 
   /** Check for default or missing identity. */
-  private def isEmpty(text: String) = {
+  private def isEmpty(text: String) =
     text == null || text.isEmpty
-  }
 }
 
 /**
@@ -298,9 +295,8 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * If no adapters are registered for a given journal the EventAdapters object will simply return the identity
    * adapter for each class, otherwise the most specific adapter matching a given class will be returned.
    */
-  final def adaptersFor(journalPluginId: String): EventAdapters = {
+  final def adaptersFor(journalPluginId: String): EventAdapters =
     adaptersFor(journalPluginId: String, ConfigFactory.empty)
-  }
 
   /**
    * Returns an [[pekko.persistence.journal.EventAdapters]] object which serves as a per-journal collection of bound event adapters.
@@ -319,14 +315,13 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
    * INTERNAL API
    * Looks up [[pekko.persistence.journal.EventAdapters]] by journal plugin's ActorRef.
    */
-  private[pekko] final def adaptersFor(journalPluginActor: ActorRef): EventAdapters = {
+  private[pekko] final def adaptersFor(journalPluginActor: ActorRef): EventAdapters =
     pluginExtensionId.get().values.collectFirst {
       case ext if ext(system).actor == journalPluginActor => ext(system).adapters
     } match {
       case Some(adapters) => adapters
       case _              => IdentityEventAdapters
     }
-  }
 
   /**
    * INTERNAL API

@@ -103,19 +103,17 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def serializeSome(someValue: Any): Array[Byte] =
     ContainerFormats.Option.newBuilder().setValue(payloadSupport.payloadBuilder(someValue)).build().toByteArray
 
-  private def serializeOptional(opt: Optional[_]): Array[Byte] = {
+  private def serializeOptional(opt: Optional[_]): Array[Byte] =
     if (opt.isPresent)
       ContainerFormats.Option.newBuilder().setValue(payloadSupport.payloadBuilder(opt.get)).build().toByteArray
     else
       ParameterlessSerializedMessage
-  }
 
   private def serializeActorRef(ref: ActorRef): Array[Byte] =
     actorRefBuilder(ref).build().toByteArray
 
-  private def serializeHeartbeatRsp(hbrsp: RemoteWatcher.HeartbeatRsp): Array[Byte] = {
+  private def serializeHeartbeatRsp(hbrsp: RemoteWatcher.HeartbeatRsp): Array[Byte] =
     ContainerFormats.WatcherHeartbeatResponse.newBuilder().setUid(hbrsp.addressUid).build().toByteArray
-  }
 
   private def serializeRemoteScope(rs: RemoteScope): Array[Byte] = {
     val builder = WireFormats.RemoteScope.newBuilder()
@@ -136,7 +134,7 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     // no specific message, serialized id and manifest together with payload is enough (no wrapping overhead)
     payloadSupport.payloadBuilder(r.getValue).build().toByteArray
 
-  def serializeStatusReplyError(r: StatusReply[_]): Array[Byte] = {
+  def serializeStatusReplyError(r: StatusReply[_]): Array[Byte] =
     r.getError match {
       case em: StatusReply.ErrorMessage =>
         // somewhat optimized for the recommended usage, avoiding the additional payload metadata
@@ -146,7 +144,6 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
         // no specific message, serialized id and manifest together with payload is enough (less wrapping overhead)
         payloadSupport.payloadBuilder(ex).build().toByteArray
     }
-  }
 
   private def serializeActorInitializationException(ex: ActorInitializationException): Array[Byte] = {
     val builder = ContainerFormats.ActorInitializationException.newBuilder()
@@ -166,9 +163,8 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     builder.build().toByteArray
   }
 
-  private def serializeConfig(c: Config): Array[Byte] = {
+  private def serializeConfig(c: Config): Array[Byte] =
     c.root.render(ConfigRenderOptions.concise()).getBytes(StandardCharsets.UTF_8)
-  }
 
   private def protoForAddressData(address: Address): AddressData.Builder =
     address match {
@@ -226,21 +222,17 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
       builder.build().toByteArray
     }
 
-  private def serializeBalancingPool(bp: BalancingPool): Array[Byte] = {
+  private def serializeBalancingPool(bp: BalancingPool): Array[Byte] =
     buildGenericRoutingPool(bp.nrOfInstances, bp.routerDispatcher, bp.usePoolDispatcher, bp.resizer).toByteArray
-  }
 
-  private def serializeBroadcastPool(bp: BroadcastPool): Array[Byte] = {
+  private def serializeBroadcastPool(bp: BroadcastPool): Array[Byte] =
     buildGenericRoutingPool(bp.nrOfInstances, bp.routerDispatcher, bp.usePoolDispatcher, bp.resizer).toByteArray
-  }
 
-  private def serializeRandomPool(rp: RandomPool): Array[Byte] = {
+  private def serializeRandomPool(rp: RandomPool): Array[Byte] =
     buildGenericRoutingPool(rp.nrOfInstances, rp.routerDispatcher, rp.usePoolDispatcher, rp.resizer).toByteArray
-  }
 
-  private def serializeRoundRobinPool(rp: RoundRobinPool): Array[Byte] = {
+  private def serializeRoundRobinPool(rp: RoundRobinPool): Array[Byte] =
     buildGenericRoutingPool(rp.nrOfInstances, rp.routerDispatcher, rp.usePoolDispatcher, rp.resizer).toByteArray
-  }
 
   private def serializeScatterGatherFirstCompletedPool(sgp: ScatterGatherFirstCompletedPool): Array[Byte] = {
     val builder = WireFormats.ScatterGatherPool.newBuilder()
@@ -292,9 +284,8 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     case TimeUnit.DAYS         => WireFormats.TimeUnit.DAYS
   }
 
-  private def buildFiniteDuration(duration: FiniteDuration): WireFormats.FiniteDuration = {
+  private def buildFiniteDuration(duration: FiniteDuration): WireFormats.FiniteDuration =
     WireFormats.FiniteDuration.newBuilder().setValue(duration.length).setUnit(timeUnitToWire(duration.unit)).build()
-  }
 
   private def buildAddressData(address: Address): WireFormats.AddressData = {
     val builder = WireFormats.AddressData.newBuilder()
@@ -453,23 +444,21 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def deserializeActorRef(actorRef: ContainerFormats.ActorRef): ActorRef =
     serialization.system.provider.resolveActorRef(actorRef.getPath)
 
-  private def deserializeOption(bytes: Array[Byte]): Option[Any] = {
+  private def deserializeOption(bytes: Array[Byte]): Option[Any] =
     if (bytes.length == 0)
       None
     else {
       val optionProto = ContainerFormats.Option.parseFrom(bytes)
       Some(payloadSupport.deserializePayload(optionProto.getValue))
     }
-  }
 
-  private def deserializeOptional(bytes: Array[Byte]): Optional[Any] = {
+  private def deserializeOptional(bytes: Array[Byte]): Optional[Any] =
     if (bytes.length == 0)
       Optional.empty()
     else {
       val optionProto = ContainerFormats.Option.parseFrom(bytes)
       Optional.of(payloadSupport.deserializePayload(optionProto.getValue))
     }
-  }
 
   private def deserializeStatusSuccess(bytes: Array[Byte]): Status.Success =
     Status.Success(payloadSupport.deserializePayload(ContainerFormats.Payload.parseFrom(bytes)))
@@ -490,31 +479,28 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def deserializeAddressData(bytes: Array[Byte]): Address =
     addressFromDataProto(WireFormats.AddressData.parseFrom(bytes))
 
-  private def addressFromDataProto(a: WireFormats.AddressData): Address = {
+  private def addressFromDataProto(a: WireFormats.AddressData): Address =
     Address(
       a.getProtocol,
       a.getSystem,
       // technically the presence of hostname and port are guaranteed, see our serializeAddressData
       if (a.hasHostname) Some(a.getHostname) else None,
       if (a.hasPort) Some(a.getPort) else None)
-  }
-  private def addressFromProto(a: ArteryControlFormats.Address): Address = {
+  private def addressFromProto(a: ArteryControlFormats.Address): Address =
     Address(
       a.getProtocol,
       a.getSystem,
       // technically the presence of hostname and port are guaranteed, see our serializeAddressData
       if (a.hasHostname) Some(a.getHostname) else None,
       if (a.hasPort) Some(a.getPort) else None)
-  }
 
   private def deserializeUniqueAddress(bytes: Array[Byte]): UniqueAddress = {
     val u = ArteryControlFormats.UniqueAddress.parseFrom(bytes)
     UniqueAddress(addressFromProto(u.getAddress), u.getUid)
   }
 
-  private def deserializeHeartbeatRsp(bytes: Array[Byte]): RemoteWatcher.HeartbeatRsp = {
+  private def deserializeHeartbeatRsp(bytes: Array[Byte]): RemoteWatcher.HeartbeatRsp =
     RemoteWatcher.HeartbeatRsp(ContainerFormats.WatcherHeartbeatResponse.parseFrom(bytes).getUid.toInt)
-  }
 
   private def deserializeActorInitializationException(bytes: Array[Byte]): ActorInitializationException = {
     val serializedEx = ContainerFormats.ActorInitializationException.parseFrom(bytes)
@@ -542,10 +528,9 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
     RemoteScope(deserializeAddressData(rs.getNode))
   }
 
-  private def deserializeConfig(bytes: Array[Byte]): Config = {
+  private def deserializeConfig(bytes: Array[Byte]): Config =
     if (bytes.isEmpty) EmptyConfig
     else ConfigFactory.parseString(new String(bytes, StandardCharsets.UTF_8))
-  }
 
   private def deserializeFromConfig(bytes: Array[Byte]): FromConfig =
     if (bytes.isEmpty) FromConfig
@@ -659,7 +644,6 @@ class MiscMessageSerializer(val system: ExtendedActorSystem) extends SerializerW
   private def deserializeFiniteDuration(duration: WireFormats.FiniteDuration): FiniteDuration =
     FiniteDuration(duration.getValue, deserializeTimeUnit(duration.getUnit))
 
-  private def deserializeAddressData(address: WireFormats.AddressData): Address = {
+  private def deserializeAddressData(address: WireFormats.AddressData): Address =
     Address(address.getProtocol, address.getSystem, address.getHostname, address.getPort)
-  }
 }

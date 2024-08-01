@@ -69,7 +69,7 @@ object RemoveInternalClusterShardingData {
   /**
    * @see [[RemoveInternalClusterShardingData$ RemoveInternalClusterShardingData companion object]]
    */
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     if (args.isEmpty)
       println("Specify the Cluster Sharding type names to remove in program arguments")
     else {
@@ -86,7 +86,6 @@ object RemoveInternalClusterShardingData {
         }
       }
     }
-  }
 
   /**
    * API corresponding to the [[#main]] method as described in the
@@ -223,9 +222,8 @@ class RemoveInternalClusterShardingData(
 
   def persistenceId2dot3(typeName: String): String = s"/user/sharding/${typeName}Coordinator/singleton/coordinator"
 
-  override def preStart(): Unit = {
+  override def preStart(): Unit =
     removeNext()
-  }
 
   def removeNext(): Unit = {
     currentPid = remainingPids.head

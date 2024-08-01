@@ -94,7 +94,7 @@ class DispatcherActorSpec extends PekkoSpec(DispatcherActorSpec.config) with Def
 
       val slowOne = system.actorOf(Props(new Actor {
         def receive = {
-          case "hogexecutor" => { sender() ! "OK"; start.await() }
+          case "hogexecutor" => sender() ! "OK"; start.await()
           case "ping"        => if (works.get) latch.countDown()
         }
       }).withDispatcher(throughputDispatcher))
@@ -128,8 +128,8 @@ class DispatcherActorSpec extends PekkoSpec(DispatcherActorSpec.config) with Def
 
       val slowOne = system.actorOf(Props(new Actor {
         def receive = {
-          case "hogexecutor" => { ready.countDown(); start.await() }
-          case "ping"        => { works.set(false); context.stop(self) }
+          case "hogexecutor" => ready.countDown(); start.await()
+          case "ping"        => works.set(false); context.stop(self)
         }
       }).withDispatcher(throughputDispatcher))
 

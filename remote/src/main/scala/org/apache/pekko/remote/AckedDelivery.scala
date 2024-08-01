@@ -176,11 +176,10 @@ final case class AckedReceiveBuffer[T <: HasSequenceNumber](
    * @param arrivedMsg message to be put into the buffer.
    * @return The updated buffer containing the message.
    */
-  def receive(arrivedMsg: T): AckedReceiveBuffer[T] = {
+  def receive(arrivedMsg: T): AckedReceiveBuffer[T] =
     this.copy(
       cumulativeAck = max(arrivedMsg.seq, cumulativeAck),
       buf = if (arrivedMsg.seq > lastDelivered && !buf.contains(arrivedMsg)) buf + arrivedMsg else buf)
-  }
 
   /**
    * Extract all messages that could be safely delivered, an updated ack to be sent to the sender(), and an updated
@@ -226,8 +225,8 @@ final case class AckedReceiveBuffer[T <: HasSequenceNumber](
     this.copy(
       lastDelivered = mergedLastDelivered,
       cumulativeAck = max(this.cumulativeAck, that.cumulativeAck),
-      buf = this.buf.union(that.buf).filter { _.seq > mergedLastDelivered })
+      buf = this.buf.union(that.buf).filter(_.seq > mergedLastDelivered))
   }
 
-  override def toString = buf.map { _.seq }.mkString("[", ", ", "]")
+  override def toString = buf.map(_.seq).mkString("[", ", ", "]")
 }

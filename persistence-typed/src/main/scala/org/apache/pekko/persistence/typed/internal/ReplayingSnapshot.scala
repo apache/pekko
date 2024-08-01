@@ -65,7 +65,7 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
 
     loadSnapshot(setup.recovery.fromSnapshot, setup.recovery.toSequenceNr)
 
-    def stay(receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
+    def stay(receivedPoisonPill: Boolean): Behavior[InternalProtocol] =
       Behaviors
         .receiveMessage[InternalProtocol] {
           case SnapshotterResponse(r)                     => onSnapshotterResponse(r, receivedPoisonPill)
@@ -91,7 +91,6 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
             if (setup.onSignal(setup.emptyState, signal, catchAndLog = true)) Behaviors.same
             else Behaviors.unhandled
         })
-    }
     stay(receivedPoisonPillInPreviousPhase)
   }
 
@@ -131,18 +130,15 @@ private[pekko] class ReplayingSnapshot[C, E, S](override val setup: BehaviorSetu
       onRecoveryFailure(ex)
     } else Behaviors.same // ignore, since we received the snapshot already
 
-  def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] = {
+  def onCommand(cmd: IncomingCommand[C]): Behavior[InternalProtocol] =
     // during recovery, stash all incoming commands
     stashInternal(cmd)
-  }
 
-  def onReplicatedEvent(evt: InternalProtocol.ReplicatedEventEnvelope[E]): Behavior[InternalProtocol] = {
+  def onReplicatedEvent(evt: InternalProtocol.ReplicatedEventEnvelope[E]): Behavior[InternalProtocol] =
     stashInternal(evt)
-  }
 
-  def onPublishedEvent(event: PublishedEventImpl): Behavior[InternalProtocol] = {
+  def onPublishedEvent(event: PublishedEventImpl): Behavior[InternalProtocol] =
     stashInternal(event)
-  }
 
   def onJournalResponse(response: JournalProtocol.Response): Behavior[InternalProtocol] = {
     setup.internalLogger.debug(

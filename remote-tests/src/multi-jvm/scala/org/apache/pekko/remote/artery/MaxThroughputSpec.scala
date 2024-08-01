@@ -303,7 +303,7 @@ object MaxThroughputSpec extends MultiNodeConfig {
       remaining -= batchSize
     }
 
-    def sendFlowControl(t0: Long): Unit = {
+    def sendFlowControl(t0: Long): Unit =
       if (remaining <= 0) {
         context.become(waitingForEndResult)
         targets.foreach(_.tell(End, self))
@@ -313,7 +313,6 @@ object MaxThroughputSpec extends MultiNodeConfig {
         val flowControlMsg = FlowControl(flowControlId, t0)
         targets.foreach(_.tell(flowControlMsg, self))
       }
-    }
   }
 
   final case class TestSettings(
@@ -498,8 +497,7 @@ abstract class MaxThroughputSpec extends RemotingMultiNodeSpec(MaxThroughputSpec
 
   "Max throughput of Artery" must {
     val reporter = BenchmarkFileReporter("MaxThroughputSpec", system)
-    for (s <- scenarios) {
+    for (s <- scenarios)
       s"be great for ${s.testName}, burstSize = ${s.burstSize}, payloadSize = ${s.payloadSize}" in test(s, reporter)
-    }
   }
 }

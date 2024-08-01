@@ -55,11 +55,10 @@ class TestActorRef[T <: Actor](_system: ActorSystem, _props: Props, _supervisor:
         }
 
         _system.asInstanceOf[ActorSystemImpl]
-      }, {
-        _props.withDispatcher(
-          if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven) CallingThreadDispatcher.Id
-          else _props.dispatcher)
-      }, {
+      },
+      _props.withDispatcher(
+        if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven) CallingThreadDispatcher.Id
+        else _props.dispatcher), {
         val props = _props.withDispatcher(
           if (_props.deploy.dispatcher == Deploy.NoDispatcherGiven) CallingThreadDispatcher.Id
           else _props.dispatcher)
@@ -90,12 +89,11 @@ class TestActorRef[T <: Actor](_system: ActorSystem, _props: Props, _supervisor:
       dispatcher: MessageDispatcher,
       supervisor: InternalActorRef): ActorCell =
     new ActorCell(system, ref, props, dispatcher, supervisor) {
-      override def autoReceiveMessage(msg: Envelope): Unit = {
+      override def autoReceiveMessage(msg: Envelope): Unit =
         msg.message match {
           case InternalGetActor => sender() ! actor
           case _                => super.autoReceiveMessage(msg)
         }
-      }
     }
 
   /**

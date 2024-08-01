@@ -50,7 +50,7 @@ private[pekko] class RequestingRecoveryPermit[C, E, S](override val setup: Behav
     // request a permit, as only once we obtain one we can start replaying
     requestRecoveryPermit()
 
-    def stay(receivedPoisonPill: Boolean): Behavior[InternalProtocol] = {
+    def stay(receivedPoisonPill: Boolean): Behavior[InternalProtocol] =
       Behaviors
         .receiveMessage[InternalProtocol] {
           case InternalProtocol.RecoveryPermitGranted =>
@@ -73,7 +73,6 @@ private[pekko] class RequestingRecoveryPermit[C, E, S](override val setup: Behav
             if (setup.onSignal(setup.emptyState, signal, catchAndLog = true)) Behaviors.same
             else Behaviors.unhandled
         }
-    }
     stay(receivedPoisonPill = false)
   }
 

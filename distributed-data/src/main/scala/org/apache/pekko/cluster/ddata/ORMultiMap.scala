@@ -224,7 +224,7 @@ final class ORMultiMap[A, B] private[pekko] (
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def remove(node: UniqueAddress, key: A): ORMultiMap[A, B] = {
+  @InternalApi private[pekko] def remove(node: UniqueAddress, key: A): ORMultiMap[A, B] =
     if (withValueDeltas) {
       val u = underlying.updated(node, key, ORSet.empty[B], valueDeltas = true) { existing =>
         existing.clear()
@@ -233,7 +233,6 @@ final class ORMultiMap[A, B] private[pekko] (
     } else {
       new ORMultiMap(underlying.remove(node, key), withValueDeltas)
     }
-  }
 
   /**
    * Add an element to a set associated with a key. If there is no existing set then one will be initialised.

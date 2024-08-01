@@ -225,13 +225,12 @@ abstract class RollingUpgradeClusterSpec(config: Config) extends PekkoSpec(confi
 
       val rolling = Random.shuffle(nodes)
 
-      for (restarting <- rolling.tail) {
+      for (restarting <- rolling.tail)
         within(timeout) {
           val restarted = util.quitAndRestart(restarting, config(upgradeConfig))
           util.joinCluster(restarted)
           awaitCond(if (shouldRejoin) util.isMemberUp(restarted) else util.isTerminated(restarted))
         }
-      }
       awaitCond(Cluster(rolling.head).readView.members.size == (if (shouldRejoin) rolling.size else 1), awaitAll)
 
     } finally util.shutdownAll()

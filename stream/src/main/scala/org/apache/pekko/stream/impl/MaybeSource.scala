@@ -42,7 +42,7 @@ import pekko.util.OptionVal
 
       private var arrivedEarly: OptionVal[AnyRef] = OptionVal.None
 
-      override def preStart(): Unit = {
+      override def preStart(): Unit =
         promise.future.value match {
           case Some(value) =>
             // already completed, shortcut
@@ -51,7 +51,6 @@ import pekko.util.OptionVal
             // callback on future completion
             promise.future.onComplete(getAsyncCallback(handleCompletion).invoke)(ExecutionContexts.parasitic)
         }
-      }
 
       override def onPull(): Unit = arrivedEarly match {
         case OptionVal.Some(value) =>
@@ -60,7 +59,7 @@ import pekko.util.OptionVal
         case _ =>
       }
 
-      private def handleCompletion(elem: Try[Option[AnyRef]]): Unit = {
+      private def handleCompletion(elem: Try[Option[AnyRef]]): Unit =
         elem match {
           case ScalaSuccess(None) =>
             completeStage()
@@ -74,16 +73,13 @@ import pekko.util.OptionVal
           case ScalaFailure(ex) =>
             failStage(ex)
         }
-      }
 
-      override def onDownstreamFinish(cause: Throwable): Unit = {
+      override def onDownstreamFinish(cause: Throwable): Unit =
         promise.tryComplete(ScalaSuccess(None))
-      }
 
-      override def postStop(): Unit = {
+      override def postStop(): Unit =
         if (!promise.isCompleted)
           promise.tryFailure(new AbruptStageTerminationException(this))
-      }
 
       setHandler(out, this)
 

@@ -34,12 +34,11 @@ trait ScalaDslUtils extends CommonUtils {
 
   def eventSourcedBehavior(pid: String, replyOnRecovery: Option[ActorRef[Any]] = None) =
     EventSourcedBehavior[TestCommand, Evt, EmptyState](PersistenceId.ofUniqueId(pid), EmptyState(),
-      (_, cmd) => {
+      (_, cmd) =>
         cmd match {
           case Cmd(data) => Effect.persist(Evt(data))
           case Passivate => Effect.stop().thenRun(_ => replyOnRecovery.foreach(_ ! Stopped))
-        }
-      }, (_, _) => EmptyState()).snapshotWhen((_, _, _) => true).receiveSignal {
+        }, (_, _) => EmptyState()).snapshotWhen((_, _, _) => true).receiveSignal {
       case (_, RecoveryCompleted) => replyOnRecovery.foreach(_ ! Recovered)
     }
 
@@ -47,12 +46,11 @@ trait ScalaDslUtils extends CommonUtils {
     EventSourcedBehavior[TestCommand, Evt, NonEmptyState](
       PersistenceId.ofUniqueId(pid),
       NonEmptyState(""),
-      (_, cmd) => {
+      (_, cmd) =>
         cmd match {
           case Cmd(data) => Effect.persist(Evt(data))
           case Passivate => Effect.stop().thenRun(_ => replyOnRecovery.foreach(_ ! Stopped))
-        }
-      },
+        },
       (state: NonEmptyState, event: Evt) => NonEmptyState(s"${state.data}${event.data}")).receiveSignal {
       case (_, RecoveryCompleted) => replyOnRecovery.foreach(_ ! Recovered)
     }

@@ -77,7 +77,7 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
     constructContext()
   }
 
-  private def constructContext(): SSLContext = {
+  private def constructContext(): SSLContext =
     try {
       val rng = createSecureRandom()
       val ctx = SSLContext.getInstance(SSLProtocol)
@@ -95,7 +95,6 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
           "Server SSL connection could not be established because SSL context could not be constructed",
           e)
     }
-  }
 
   /**
    * Subclass may override to customize loading of `KeyStore`
@@ -135,9 +134,8 @@ class ConfigSSLEngineProvider(protected val config: Config, protected val log: M
   override def createClientSSLEngine(hostname: String, port: Int): SSLEngine =
     createSSLEngine(pekko.stream.Client, hostname, port)
 
-  private def createSSLEngine(role: TLSRole, hostname: String, port: Int): SSLEngine = {
+  private def createSSLEngine(role: TLSRole, hostname: String, port: Int): SSLEngine =
     createSSLEngine(sslContext, role, hostname, port)
-  }
 
   private def createSSLEngine(sslContext: SSLContext, role: TLSRole, hostname: String, port: Int): SSLEngine = {
 

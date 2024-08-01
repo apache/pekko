@@ -129,10 +129,9 @@ class RandomizedSplitBrainResolverIntegrationSpec
     }
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     if (disposableSys ne null)
       disposableSys.shutdownSys()
-  }
 
   class DisposableSys(scenario: Scenario) {
 
@@ -169,9 +168,8 @@ class RandomizedSplitBrainResolverIntegrationSpec
 
     lazy val region = ClusterSharding(sys).shardRegion(s"Entity-$c")
 
-    def shutdownSys(): Unit = {
+    def shutdownSys(): Unit =
       TestKit.shutdownActorSystem(sys, 10.seconds, verifySystemShutdown = true)
-    }
 
     def gremlinControllerProxy(at: RoleName): ActorRef = {
       system.actorSelection(node(at) / "user" / s"gremlinControllerProxy-$c") ! Identify(None)
@@ -225,28 +223,26 @@ class RandomizedSplitBrainResolverIntegrationSpec
         }
       }
 
-    def createSingleton(): ActorRef = {
+    def createSingleton(): ActorRef =
       sys.actorOf(
         ClusterSingletonManager.props(
           singletonProps = SingletonActor.props(singletonRegistry),
           terminationMessage = PoisonPill,
           settings = ClusterSingletonManagerSettings(system)),
         name = "singletonRegistry")
-    }
 
-    def startSharding(): Unit = {
+    def startSharding(): Unit =
       ClusterSharding(sys).start(
         typeName = s"Entity-$c",
         entityProps = SingletonActor.props(shardingRegistry),
         settings = ClusterShardingSettings(system),
         extractEntityId = SingletonActor.extractEntityId,
         extractShardId = SingletonActor.extractShardId)
-    }
 
     def verify(): Unit = {
       val nodes = roles.take(scenario.numberOfNodes)
 
-      def sendToSharding(expectReply: Boolean): Unit = {
+      def sendToSharding(expectReply: Boolean): Unit =
         runOn(nodes: _*) {
           if (!Cluster(sys).isTerminated) {
             val probe = TestProbe()(sys)
@@ -257,7 +253,6 @@ class RandomizedSplitBrainResolverIntegrationSpec
             }
           }
         }
-      }
 
       runOn(nodes: _*) {
         log.info("Running {} {} in round {}", myself.name, Cluster(sys).selfUniqueAddress, c)
@@ -413,7 +408,7 @@ class RandomizedSplitBrainResolverIntegrationSpec
 
   "SplitBrainResolver with lease" must {
 
-    for (scenario <- scenarios) {
+    for (scenario <- scenarios)
       scenario.toString taggedAs LongRunningTest in {
         // temporarily disabled for aeron-udp in multi-node: https://github.com/akka/akka/pull/30706/
         val arteryConfig = system.settings.config.getConfig("pekko.remote.artery")
@@ -423,7 +418,6 @@ class RandomizedSplitBrainResolverIntegrationSpec
         }
         DisposableSys(scenario).verify()
       }
-    }
   }
 
 }

@@ -50,7 +50,7 @@ object BackoffSupervisor {
       childName: String,
       minBackoff: FiniteDuration,
       maxBackoff: FiniteDuration,
-      randomFactor: Double): Props = {
+      randomFactor: Double): Props =
     propsWithSupervisorStrategy(
       childProps,
       childName,
@@ -58,7 +58,6 @@ object BackoffSupervisor {
       maxBackoff,
       randomFactor,
       SupervisorStrategy.defaultStrategy)
-  }
 
   /**
    * Props for creating a `BackoffSupervisor` actor.
@@ -118,9 +117,8 @@ object BackoffSupervisor {
       childName: String,
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
-      randomFactor: Double): Props = {
+      randomFactor: Double): Props =
     props(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor)
-  }
 
   /**
    * Props for creating a `BackoffSupervisor` actor.
@@ -149,9 +147,8 @@ object BackoffSupervisor {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      maxNrOfRetries: Int): Props = {
+      maxNrOfRetries: Int): Props =
     props(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor, maxNrOfRetries)
-  }
 
   /**
    * Props for creating a `BackoffSupervisor` actor with a custom
@@ -226,9 +223,8 @@ object BackoffSupervisor {
       minBackoff: java.time.Duration,
       maxBackoff: java.time.Duration,
       randomFactor: Double,
-      strategy: SupervisorStrategy): Props = {
+      strategy: SupervisorStrategy): Props =
     propsWithSupervisorStrategy(childProps, childName, minBackoff.asScala, maxBackoff.asScala, randomFactor, strategy)
-  }
 
   /**
    * Props for creating a `BackoffSupervisor` actor from [[BackoffOptions]].

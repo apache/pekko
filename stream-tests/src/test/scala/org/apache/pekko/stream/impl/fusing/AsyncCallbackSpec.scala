@@ -61,13 +61,11 @@ class AsyncCallbackSpec extends PekkoSpec("""
 
         early.foreach(cb => cb(callback))
 
-        override def preStart(): Unit = {
+        override def preStart(): Unit =
           probe ! Started
-        }
 
-        override def postStop(): Unit = {
+        override def postStop(): Unit =
           probe ! Stopped
-        }
 
         setHandlers(in, out,
           new InHandler with OutHandler {
@@ -77,9 +75,8 @@ class AsyncCallbackSpec extends PekkoSpec("""
               push(out, n)
             }
 
-            def onPull(): Unit = {
+            def onPull(): Unit =
               pull(in)
-            }
           })
       }
 
@@ -278,7 +275,7 @@ class AsyncCallbackSpec extends PekkoSpec("""
         Source.fromGraph(new ManyAsyncCallbacksStage(acbProbe.ref)).toMat(Sink.fromSubscriber(out))(Keep.left).run()
 
       val happyPathFeedbacks =
-        acbs.map(acb => Future { acb.invokeWithFeedback("bö") }.flatMap(identity))
+        acbs.map(acb => Future(acb.invokeWithFeedback("bö")).flatMap(identity))
       Future.sequence(happyPathFeedbacks).futureValue // will throw on fail or timeout on not completed
 
       for (_ <- 0 to 10) acbProbe.expectMsg("bö")

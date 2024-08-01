@@ -296,10 +296,10 @@ class FlowDelaySpec extends StreamSpec {
         .map(start => System.nanoTime() - start)
         .runWith(TestSink.probe)
 
-      elems.foreach(_ => {
+      elems.foreach { _ =>
         val next = probe.request(1).expectNext(fixedDelay + fixedDelay.dilated)
         next should be >= fixedDelay.toNanos
-      })
+      }
 
       probe.expectComplete()
 

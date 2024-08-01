@@ -79,17 +79,15 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
   }
 
   /** Check for default or missing identity. */
-  private def isEmpty(text: String) = {
+  private def isEmpty(text: String) =
     text == null || text.isEmpty
-  }
 
   /**
    * Scala API: Returns the [[pekko.persistence.state.scaladsl.DurableStateStore]] specified by the given
    * configuration entry.
    */
-  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[_]](pluginId: String): T = {
+  final def durableStateStoreFor[T <: scaladsl.DurableStateStore[_]](pluginId: String): T =
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).scaladslPlugin.asInstanceOf[T]
-  }
 
   /**
    * Java API: Returns the [[pekko.persistence.state.javadsl.DurableStateStore]] specified by the given
@@ -97,8 +95,7 @@ class DurableStateStoreRegistry(system: ExtendedActorSystem)
    */
   final def getDurableStateStoreFor[T <: javadsl.DurableStateStore[_]](
       @unused clazz: Class[T], // FIXME generic Class could be problematic in Java
-      pluginId: String): T = {
+      pluginId: String): T =
     pluginFor(pluginIdOrDefault(pluginId), pluginConfig(pluginId)).javadslPlugin.asInstanceOf[T]
-  }
 
 }

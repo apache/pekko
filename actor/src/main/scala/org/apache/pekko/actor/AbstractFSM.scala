@@ -122,9 +122,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
   final def when(
       stateName: S,
       stateTimeout: java.time.Duration,
-      stateFunctionBuilder: FSMStateFunctionBuilder[S, D]): Unit = {
+      stateFunctionBuilder: FSMStateFunctionBuilder[S, D]): Unit =
     when(stateName, stateTimeout.asScala, stateFunctionBuilder)
-  }
 
   /**
    * Set initial state. Call this method from the constructor before the [[initialize]] method.
@@ -158,9 +157,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * @param stateData initial state data
    * @param timeout state timeout for the initial state, overriding the default timeout for that state
    */
-  final def startWith(stateName: S, stateData: D, timeout: java.time.Duration): Unit = {
+  final def startWith(stateName: S, stateData: D, timeout: java.time.Duration): Unit =
     startWith(stateName, stateData, timeout.asScala)
-  }
 
   /**
    * Add a handler which is called upon each state transition, i.e. not when
@@ -524,9 +522,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
    * @param timeout delay of first message delivery and between subsequent messages
    */
   @deprecated("Use startSingleTimer instead.", since = "Akka 2.6.0")
-  final def setTimer(name: String, msg: Any, timeout: java.time.Duration): Unit = {
+  final def setTimer(name: String, msg: Any, timeout: java.time.Duration): Unit =
     setTimer(name, msg, timeout.asScala, false)
-  }
 
   /**
    * Schedule named timer to deliver message after given delay, possibly repeating.
@@ -541,9 +538,8 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     "Use startSingleTimer, startTimerWithFixedDelay or startTimerAtFixedRate instead. This has the same semantics as " +
     "startTimerAtFixedRate, but startTimerWithFixedDelay is often preferred.",
     since = "Akka 2.6.0")
-  final def setTimer(name: String, msg: Any, timeout: java.time.Duration, repeat: Boolean): Unit = {
+  final def setTimer(name: String, msg: Any, timeout: java.time.Duration, repeat: Boolean): Unit =
     setTimer(name, msg, timeout.asScala, repeat)
-  }
 
   /**
    * Default reason if calling `stop()`.

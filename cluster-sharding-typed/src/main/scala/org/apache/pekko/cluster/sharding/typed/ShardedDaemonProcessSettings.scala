@@ -27,9 +27,8 @@ import pekko.util.JavaDurationConverters._
 object ShardedDaemonProcessSettings {
 
   /** Scala API: Create default settings for system */
-  def apply(system: ActorSystem[_]): ShardedDaemonProcessSettings = {
+  def apply(system: ActorSystem[_]): ShardedDaemonProcessSettings =
     fromConfig(system.settings.config.getConfig("pekko.cluster.sharded-daemon-process"))
-  }
 
   /** Java API: Create default settings for system */
   def create(system: ActorSystem[_]): ShardedDaemonProcessSettings =

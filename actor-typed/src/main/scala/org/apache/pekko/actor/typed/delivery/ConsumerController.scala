@@ -182,20 +182,18 @@ object ConsumerController {
       copy(first = true)(producerController)
 
     /** INTERNAL API */
-    @InternalApi private[pekko] def isFirstChunk: Boolean = {
+    @InternalApi private[pekko] def isFirstChunk: Boolean =
       message match {
         case c: ChunkedMessage => c.firstChunk
         case _                 => true
       }
-    }
 
     /** INTERNAL API */
-    @InternalApi private[pekko] def isLastChunk: Boolean = {
+    @InternalApi private[pekko] def isLastChunk: Boolean =
       message match {
         case c: ChunkedMessage => c.lastChunk
         case _                 => true
       }
-    }
   }
 
   object Settings {
@@ -211,13 +209,12 @@ object ConsumerController {
      * Scala API: Factory method from Config corresponding to
      * `pekko.reliable-delivery.consumer-controller`.
      */
-    def apply(config: Config): Settings = {
+    def apply(config: Config): Settings =
       new Settings(
         flowControlWindow = config.getInt("flow-control-window"),
         resendIntervalMin = config.getDuration("resend-interval-min").asScala,
         resendIntervalMax = config.getDuration("resend-interval-max").asScala,
         onlyFlowControl = config.getBoolean("only-flow-control"))
-    }
 
     /**
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller`
@@ -316,9 +313,8 @@ object ConsumerController {
    */
   @InternalApi private[pekko] def apply[A](
       serviceKey: Option[ServiceKey[Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     ConsumerControllerImpl(serviceKey, settings)
-  }
 
   /**
    * Java API

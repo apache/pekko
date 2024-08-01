@@ -36,14 +36,13 @@ class ClusterRemoteFeaturesConfig(artery: Boolean) extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  private val baseConfig = {
+  private val baseConfig =
     ConfigFactory.parseString(s"""
       pekko.remote.log-remote-lifecycle-events = off
       pekko.remote.artery.enabled = $artery
       pekko.remote.artery.canonical.port = ${MultiNodeSpec.selfPort}
       pekko.log-dead-letters-during-shutdown = off
       """).withFallback(MultiNodeClusterSpec.clusterConfig)
-  }
 
   commonConfig(debugConfig(on = false).withFallback(baseConfig))
 

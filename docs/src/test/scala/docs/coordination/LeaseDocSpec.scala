@@ -26,21 +26,17 @@ import org.apache.pekko.testkit.PekkoSpec
 //#lease-example
 class SampleLease(settings: LeaseSettings) extends Lease(settings) {
 
-  override def acquire(): Future[Boolean] = {
+  override def acquire(): Future[Boolean] =
     Future.successful(true)
-  }
 
-  override def acquire(leaseLostCallback: Option[Throwable] => Unit): Future[Boolean] = {
+  override def acquire(leaseLostCallback: Option[Throwable] => Unit): Future[Boolean] =
     Future.successful(true)
-  }
 
-  override def release(): Future[Boolean] = {
+  override def release(): Future[Boolean] =
     Future.successful(true)
-  }
 
-  override def checkLease(): Boolean = {
+  override def checkLease(): Boolean =
     true
-  }
 }
 //#lease-example
 

@@ -43,10 +43,9 @@ abstract class ReplicatedEventSourcedBehavior[Command, Event, State](
   /**
    * INTERNAL API: DeferredBehavior init, not for user extension
    */
-  @InternalApi override def apply(context: TypedActorContext[Command]): Behavior[Command] = {
+  @InternalApi override def apply(context: TypedActorContext[Command]): Behavior[Command] =
     createEventSourcedBehavior()
       // context not user extendable so there should never be any other impls
       .withReplication(replicationContext.asInstanceOf[ReplicationContextImpl])
       .withEventPublishing(withEventPublishing)
-  }
 }

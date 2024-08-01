@@ -91,22 +91,19 @@ object AccountExampleWithCommandHandlersInDurableState {
 
         }
 
-      private def canWithdraw(amount: BigDecimal): Boolean = {
+      private def canWithdraw(amount: BigDecimal): Boolean =
         balance - amount >= Zero
-      }
 
       // #reply
-      private def deposit(cmd: Deposit) = {
+      private def deposit(cmd: Deposit) =
         Effect.persist(copy(balance = balance + cmd.amount)).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
-      }
 
-      private def withdraw(cmd: Withdraw) = {
+      private def withdraw(cmd: Withdraw) =
         if (canWithdraw(cmd.amount))
           Effect.persist(copy(balance = balance - cmd.amount)).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
         else
           Effect.reply(cmd.replyTo)(
             StatusReply.Error(s"Insufficient balance $balance to be able to withdraw ${cmd.amount}"))
-      }
       // #reply
 
     }
@@ -134,10 +131,9 @@ object AccountExampleWithCommandHandlersInDurableState {
       EntityTypeKey[Command]("Account")
 
     // #withEnforcedReplies
-    def apply(persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(persistenceId: PersistenceId): Behavior[Command] =
       DurableStateBehavior
         .withEnforcedReplies[Command, Account](persistenceId, EmptyAccount, (state, cmd) => state.applyCommand(cmd))
-    }
     // #withEnforcedReplies
   }
   // #account-entity

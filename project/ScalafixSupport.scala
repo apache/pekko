@@ -30,7 +30,7 @@ trait ScalafixSupport {
     }
   }
 
-  def addProjectCommandsIfAbsent(alias: String, value: String): Def.Setting[Seq[Command]] = {
+  def addProjectCommandsIfAbsent(alias: String, value: String): Def.Setting[Seq[Command]] =
     commands := {
       val currentCommands = commands.value.flatMap(_.nameOption).toSet
       val isPresent = currentCommands(alias)
@@ -39,13 +39,11 @@ trait ScalafixSupport {
       else
         commands.value :+ BasicCommands.newAlias(name = alias, value = value)
     }
-  }
 
-  def updateProjectCommands(alias: String, value: String): Def.Setting[Seq[Command]] = {
+  def updateProjectCommands(alias: String, value: String): Def.Setting[Seq[Command]] =
     commands := {
       commands.value.filterNot(_.nameOption.contains("alias")) :+ BasicCommands.newAlias(name = alias, value = value)
     }
-  }
 }
 
 object ScalafixSupport {

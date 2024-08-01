@@ -119,16 +119,14 @@ trait PersistentFSM[S <: FSMState, D, E] extends PersistentActor with Persistent
   /**
    * Save the current state as a snapshot
    */
-  final def saveStateSnapshot(): Unit = {
+  final def saveStateSnapshot(): Unit =
     saveSnapshot(PersistentFSMSnapshot(stateName.identifier, stateData, currentStateTimeout))
-  }
 
   /**
    * After recovery events are handled as in usual FSM actor
    */
-  override def receiveCommand: Receive = {
+  override def receiveCommand: Receive =
     super[PersistentFSMBase].receive
-  }
 
   /**
    * Discover the latest recorded state
@@ -406,9 +404,8 @@ object PersistentFSM {
         replies: List[Any] = replies,
         notifies: Boolean = notifies,
         domainEvents: Seq[E] = domainEvents,
-        afterTransitionDo: D => Unit = afterTransitionDo): State[S, D, E] = {
+        afterTransitionDo: D => Unit = afterTransitionDo): State[S, D, E] =
       State(stateName, stateData, timeout, stopReason, replies, domainEvents, afterTransitionDo)(notifies)
-    }
 
     /**
      * Modify state transition descriptor to include a state timeout for the
@@ -439,44 +436,38 @@ object PersistentFSM {
      *
      * @return this state transition descriptor
      */
-    def replying(replyValue: Any): State[S, D, E] = {
+    def replying(replyValue: Any): State[S, D, E] =
       copy0(replies = replyValue :: replies)
-    }
 
     @InternalApi
     @deprecated(
       "Internal API easily to be confused with regular FSM's using. Use regular events (`applying`). Internally, `copy` can be used instead.",
       "Akka 2.5.5")
-    private[pekko] def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D, E] = {
+    private[pekko] def using(@deprecatedName(Symbol("nextStateDate")) nextStateData: D): State[S, D, E] =
       copy0(stateData = nextStateData)
-    }
 
     /**
      * INTERNAL API.
      */
     @InternalApi
-    private[pekko] def withStopReason(reason: Reason): State[S, D, E] = {
+    private[pekko] def withStopReason(reason: Reason): State[S, D, E] =
       copy0(stopReason = Some(reason))
-    }
 
     @InternalApi
-    private[pekko] def withNotification(notifies: Boolean): State[S, D, E] = {
+    private[pekko] def withNotification(notifies: Boolean): State[S, D, E] =
       copy0(notifies = notifies)
-    }
 
     /**
      * Specify domain events to be applied when transitioning to the new state.
      */
-    @varargs def applying(events: E*): State[S, D, E] = {
+    @varargs def applying(events: E*): State[S, D, E] =
       copy0(domainEvents = domainEvents ++ events)
-    }
 
     /**
      * Register a handler to be triggered after the state has been persisted successfully
      */
-    def andThen(handler: D => Unit): State[S, D, E] = {
+    def andThen(handler: D => Unit): State[S, D, E] =
       copy0(afterTransitionDo = handler)
-    }
   }
 
   /**
@@ -530,11 +521,10 @@ abstract class AbstractPersistentFSM[S <: FSMState, D, E]
   override def receive: Receive = super.receive
 
   @throws(classOf[Exception])
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     // Make sure any ambiguity is resolved on the 'scala side' so this doesn't have to
     // happen on the 'java side'
     super.postStop()
-  }
 }
 
 /**

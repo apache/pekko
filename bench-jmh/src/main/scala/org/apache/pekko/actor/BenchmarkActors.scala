@@ -73,7 +73,7 @@ object BenchmarkActors {
         }
     }
 
-    private def sendBatch(): Boolean = {
+    private def sendBatch(): Boolean =
       if (left > 0) {
         var i = 0
         while (i < batchSize) {
@@ -85,7 +85,6 @@ object BenchmarkActors {
         true
       } else
         false
-    }
   }
 
   class Pipe(next: Option[ActorRef]) extends Actor {
@@ -116,14 +115,12 @@ object BenchmarkActors {
     (actors, latch)
   }
 
-  private def initiatePingPongForPairs(refs: Vector[(ActorRef, ActorRef)], inFlight: Int): Unit = {
+  private def initiatePingPongForPairs(refs: Vector[(ActorRef, ActorRef)], inFlight: Int): Unit =
     for {
       (ping, pong) <- refs
       _ <- 1 to inFlight
-    } {
-      ping.tell(Message, pong)
     }
-  }
+      ping.tell(Message, pong)
 
   private def startEchoActorPairs(messagesPerPair: Int, numPairs: Int, dispatcher: String, batchSize: Int)(
       implicit system: ActorSystem): (Vector[ActorRef], CountDownLatch) = {
@@ -136,9 +133,8 @@ object BenchmarkActors {
     (actors, latch)
   }
 
-  private def initiateEchoPairs(refs: Vector[ActorRef]): Unit = {
+  private def initiateEchoPairs(refs: Vector[ActorRef]): Unit =
     refs.foreach(_ ! Message)
-  }
 
   def printProgress(totalMessages: Long, numActors: Int, startNanoTime: Long): Unit = {
     val durationMicros = (System.nanoTime() - startNanoTime) / 1000

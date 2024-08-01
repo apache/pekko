@@ -145,7 +145,7 @@ object AbstractStashSpec {
     private var stashing = false
     private var processed = Vector.empty[String]
 
-    override def onMessage(cmd: Command): Behavior[Command] = {
+    override def onMessage(cmd: Command): Behavior[Command] =
       cmd match {
         case message: Msg =>
           if (stashing)
@@ -189,7 +189,6 @@ object AbstractStashSpec {
         case _: Unstashed =>
           Behaviors.unhandled
       }
-    }
 
   }
 
@@ -276,7 +275,7 @@ class UnstashingSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
 
   private def stashingBehavior(
       probe: ActorRef[String],
-      withSlowStoppingChild: Option[CountDownLatch] = None): Behavior[String] = {
+      withSlowStoppingChild: Option[CountDownLatch] = None): Behavior[String] =
     Behaviors.setup[String] { ctx =>
       withSlowStoppingChild.foreach(latch => ctx.spawnAnonymous(slowStoppingChild(latch)))
 
@@ -324,7 +323,6 @@ class UnstashingSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with
         }
       }
     }
-  }
 
   "Unstashing" must {
 

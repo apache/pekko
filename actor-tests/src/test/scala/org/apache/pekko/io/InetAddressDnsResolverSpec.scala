@@ -113,9 +113,8 @@ class InetAddressDnsResolverSpec extends PekkoSpec("""
     try {
       System.setProperty(property, testValue)
       test
-    } finally {
+    } finally
       oldValue.foreach(v => System.setProperty(property, v))
-    }
   }
 
   private def withNewSecurityProperty[T](property: String, testValue: String)(test: => T): T = {
@@ -123,9 +122,8 @@ class InetAddressDnsResolverSpec extends PekkoSpec("""
     try {
       Security.setProperty(property, testValue)
       test
-    } finally {
+    } finally
       oldValue.foreach(v => Security.setProperty(property, v))
-    }
   }
 
 }

@@ -128,7 +128,7 @@ abstract class ClusterShardingRememberEntitiesSpec(multiNodeConfig: ClusterShard
 
   val dataType = "Entity"
 
-  def startSharding(sys: ActorSystem, probe: ActorRef): ActorRef = {
+  def startSharding(sys: ActorSystem, probe: ActorRef): ActorRef =
     startSharding(
       sys,
       typeName = dataType,
@@ -136,7 +136,6 @@ abstract class ClusterShardingRememberEntitiesSpec(multiNodeConfig: ClusterShard
       settings = ClusterShardingSettings(sys).withRememberEntities(multiNodeConfig.rememberEntities),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion(dataType)
 

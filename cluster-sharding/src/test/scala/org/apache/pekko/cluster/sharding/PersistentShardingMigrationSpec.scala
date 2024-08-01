@@ -182,17 +182,15 @@ class PersistentShardingMigrationSpec extends PekkoSpec(PersistentShardingMigrat
           extractEntityId,
           extractShardId(rememberedEntitiesProbe.ref))
         f(system, region, rememberedEntitiesProbe)
-      } finally {
+      } finally
         Await.ready(system.terminate(), 20.seconds)
-      }
     }
 
-    def assertRegionRegistrationComplete(region: ActorRef): Unit = {
+    def assertRegionRegistrationComplete(region: ActorRef): Unit =
       awaitAssert {
         region ! ShardRegion.GetCurrentRegions
         expectMsgType[CurrentRegions].regions should have size 1
       }
-    }
   }
 
 }

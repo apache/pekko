@@ -220,7 +220,7 @@ object PersistenceDocSpec {
       }
 
       override def receiveCommand: Receive = {
-        case c: String => {
+        case c: String =>
           sender() ! c
           persistAsync(s"evt-$c-1") { e =>
             sender() ! e
@@ -228,7 +228,6 @@ object PersistenceDocSpec {
           persistAsync(s"evt-$c-2") { e =>
             sender() ! e
           }
-        }
       }
     }
 
@@ -259,7 +258,7 @@ object PersistenceDocSpec {
       }
 
       override def receiveCommand: Receive = {
-        case c: String => {
+        case c: String =>
           sender() ! c
           persistAsync(s"evt-$c-1") { e =>
             sender() ! e
@@ -270,7 +269,6 @@ object PersistenceDocSpec {
           deferAsync(s"evt-$c-3") { e =>
             sender() ! e
           }
-        }
       }
     }
     // #defer
@@ -303,7 +301,7 @@ object PersistenceDocSpec {
       }
 
       override def receiveCommand: Receive = {
-        case c: String => {
+        case c: String =>
           sender() ! c
           persist(s"evt-$c-1") { e =>
             sender() ! e
@@ -314,7 +312,6 @@ object PersistenceDocSpec {
           defer(s"evt-$c-3") { e =>
             sender() ! e
           }
-        }
       }
     }
     // #defer-with-persist
@@ -432,7 +429,7 @@ object PersistenceDocSpec {
       override def receiveCommand: Receive = {
         case c: String =>
           println(c)
-          persist(s"handle-$c") { println(_) }
+          persist(s"handle-$c")(println(_))
         case Shutdown =>
           context.stop(self)
       }

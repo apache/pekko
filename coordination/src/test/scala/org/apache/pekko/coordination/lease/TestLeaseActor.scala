@@ -116,13 +116,11 @@ class TestLeaseActorClient(settings: LeaseSettings, system: ExtendedActorSystem)
 
   private implicit val timeout: Timeout = Timeout(100.seconds)
 
-  override def acquire(): Future[Boolean] = {
+  override def acquire(): Future[Boolean] =
     (leaseActor ? Acquire(settings.ownerName)).mapTo[Boolean]
-  }
 
-  override def release(): Future[Boolean] = {
+  override def release(): Future[Boolean] =
     (leaseActor ? Release(settings.ownerName)).mapTo[Boolean]
-  }
 
   override def checkLease(): Boolean = false
 

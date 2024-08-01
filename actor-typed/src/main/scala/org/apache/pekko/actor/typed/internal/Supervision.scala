@@ -75,29 +75,26 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
   protected def isInstanceOfTheThrowableClass(t: Throwable): Boolean =
     throwableClass.isAssignableFrom(UnstashException.unwrap(t).getClass)
 
-  override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean = {
+  override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
     other match {
       case as: AbstractSupervisor[_, _] if throwableClass == as.throwableClass => true
       case _                                                                   => false
     }
-  }
 
-  override def aroundStart(ctx: TypedActorContext[Any], target: PreStartTarget[I]): Behavior[I] = {
-    try {
+  override def aroundStart(ctx: TypedActorContext[Any], target: PreStartTarget[I]): Behavior[I] =
+    try
       target.start(ctx)
-    } catch handleExceptionOnStart(ctx, target)
-  }
+    catch handleExceptionOnStart(ctx, target)
 
-  override def aroundSignal(ctx: TypedActorContext[Any], signal: Signal, target: SignalTarget[I]): Behavior[I] = {
-    try {
+  override def aroundSignal(ctx: TypedActorContext[Any], signal: Signal, target: SignalTarget[I]): Behavior[I] =
+    try
       target(ctx, signal)
-    } catch handleSignalException(ctx, target)
-  }
+    catch handleSignalException(ctx, target)
 
   def log(ctx: TypedActorContext[_], t: Throwable): Unit =
     log(ctx, t, errorCount = -1)
 
-  def log(ctx: TypedActorContext[_], t: Throwable, errorCount: Int): Unit = {
+  def log(ctx: TypedActorContext[_], t: Throwable, errorCount: Int): Unit =
     if (strategy.loggingEnabled) {
       val unwrapped = UnstashException.unwrap(t)
       val errorCountStr = if (errorCount >= 0) s" [$errorCount]" else ""
@@ -115,7 +112,6 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
         case Level.TRACE => logger.trace(logMessage, unwrapped)
       }
     }
-  }
 
   def dropped(ctx: TypedActorContext[_], signalOrMessage: Any): Unit = {
     import pekko.actor.typed.scaladsl.adapter._
@@ -136,11 +132,10 @@ private abstract class AbstractSupervisor[I, Thr <: Throwable](strategy: Supervi
 private abstract class SimpleSupervisor[T, Thr <: Throwable: ClassTag](ss: SupervisorStrategy)
     extends AbstractSupervisor[T, Thr](ss) {
 
-  override def aroundReceive(ctx: TypedActorContext[Any], msg: Any, target: ReceiveTarget[T]): Behavior[T] = {
-    try {
+  override def aroundReceive(ctx: TypedActorContext[Any], msg: Any, target: ReceiveTarget[T]): Behavior[T] =
+    try
       target(ctx, msg.asInstanceOf[T])
-    } catch handleReceiveException(ctx, target)
-  }
+    catch handleReceiveException(ctx, target)
 
   protected def handleException(@unused ctx: TypedActorContext[Any]): Catcher[Behavior[T]] = {
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
@@ -217,7 +212,7 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
     case _                 => true
   }
 
-  override def aroundSignal(ctx: TypedActorContext[Any], signal: Signal, target: SignalTarget[T]): Behavior[T] = {
+  override def aroundSignal(ctx: TypedActorContext[Any], signal: Signal, target: SignalTarget[T]): Behavior[T] =
     signal match {
       case ScheduledRestart(owner) =>
         if (owner eq this) {
@@ -273,7 +268,6 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
             super.aroundSignal(ctx, signal, target)
         }
     }
-  }
 
   override def aroundReceive(ctx: TypedActorContext[Any], msg: Any, target: ReceiveTarget[T]): Behavior[T] = {
     val m = msg.asInstanceOf[T]
@@ -285,9 +279,9 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
           stashBuffer.stash(m)
         Behaviors.same
       case _ =>
-        try {
+        try
           target(ctx, m)
-        } catch handleReceiveException(ctx, target)
+        catch handleReceiveException(ctx, target)
     }
   }
 
@@ -312,22 +306,20 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
 
   override protected def handleSignalException(
       ctx: TypedActorContext[Any],
-      target: SignalTarget[T]): Catcher[Behavior[T]] = {
+      target: SignalTarget[T]): Catcher[Behavior[T]] =
     handleException(ctx,
       signalRestart = {
         case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
         case _                                   => target(ctx, PreRestart)
       })
-  }
   override protected def handleReceiveException(
       ctx: TypedActorContext[Any],
-      target: ReceiveTarget[T]): Catcher[Behavior[T]] = {
+      target: ReceiveTarget[T]): Catcher[Behavior[T]] =
     handleException(ctx,
       signalRestart = {
         case e: UnstashException[Any] @unchecked => Behavior.interpretSignal(e.behavior, ctx, PreRestart)
         case _                                   => target.signalRestart(ctx)
       })
-  }
 
   private def handleException(ctx: TypedActorContext[Any], signalRestart: Throwable => Unit): Catcher[Behavior[T]] = {
     case NonFatal(t) if isInstanceOfTheThrowableClass(t) =>
@@ -418,16 +410,15 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
         })
   }
 
-  private def stopChildren(ctx: TypedActorContext[_], children: Set[ActorRef[Nothing]]): Unit = {
+  private def stopChildren(ctx: TypedActorContext[_], children: Set[ActorRef[Nothing]]): Unit =
     children.foreach { child =>
       // Unwatch in case the actor being restarted used watchWith to watch the child.
       ctx.asScala.unwatch(child)
       ctx.asScala.watch(child)
       ctx.asScala.stop(child)
     }
-  }
 
-  private def updateRestartCount(): Unit = {
+  private def updateRestartCount(): Unit =
     strategy match {
       case restart: Restart =>
         val timeLeft = deadlineHasTimeLeft
@@ -438,6 +429,5 @@ private class RestartSupervisor[T, Thr <: Throwable: ClassTag](initial: Behavior
       case _: Backoff =>
         restartCount += 1
     }
-  }
 
 }

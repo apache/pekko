@@ -47,9 +47,8 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
 
         val jExecutorService: ExecutionContextExecutorService = ExecutionContexts.fromExecutorService(es)
         jExecutorService should not be null
-      } finally {
+      } finally
         es.shutdown
-      }
     }
 
     "be able to use Batching" in {
@@ -97,7 +96,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
         (1 to 100).foreach { _ =>
           batchable {
             val deadlock = TestLatch(1)
-            batchable { deadlock.open() }
+            batchable(deadlock.open())
             Await.ready(deadlock, timeout.duration)
             latch.countDown()
           }
@@ -120,11 +119,11 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
         }
         val r = p.map { _ =>
           // trigger the resubmitUnbatched() call
-          blocking { () }
+          blocking(())
           // make sure that the other task runs to completion before continuing
           Thread.sleep(500)
           // now try again to blockOn()
-          blocking { () }
+          blocking(())
         }
         p.onComplete { _ =>
           ()
@@ -154,13 +153,12 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val ec = pekko.dispatch.ExecutionContexts.parasitic
       var x = 0
       ec.execute(new Runnable {
-        override def run = {
+        override def run =
           ec.execute(new Runnable {
             override def run = blocking {
               x = 1
             }
           })
-        }
       })
       x should be(1)
     }
@@ -214,7 +212,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val counter = new AtomicInteger(0)
       def perform(f: Int => Int) = sec.execute(new Runnable { def run = counter.set(f(counter.get)) })
       perform(_ + 1)
-      perform(x => { sec.suspend(); x * 2 })
+      perform { x => sec.suspend(); x * 2 }
       awaitCond(counter.get == 2)
       perform(_ + 4)
       perform(_ * 2)
@@ -234,7 +232,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val counter = new AtomicInteger(0)
       val underlying = new ExecutionContext {
         override def execute(r: Runnable): Unit = { submissions.incrementAndGet(); ExecutionContext.global.execute(r) }
-        override def reportFailure(t: Throwable): Unit = { ExecutionContext.global.reportFailure(t) }
+        override def reportFailure(t: Throwable): Unit = ExecutionContext.global.reportFailure(t)
       }
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
@@ -270,7 +268,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       val counter = new AtomicInteger(0)
       val underlying = new ExecutionContext {
         override def execute(r: Runnable): Unit = { submissions.incrementAndGet(); ExecutionContext.global.execute(r) }
-        override def reportFailure(t: Throwable): Unit = { ExecutionContext.global.reportFailure(t) }
+        override def reportFailure(t: Throwable): Unit = ExecutionContext.global.reportFailure(t)
       }
       val throughput = 25
       val sec = SerializedSuspendableExecutionContext(throughput)(underlying)
@@ -280,7 +278,7 @@ class ExecutionContextSpec extends PekkoSpec with DefaultTimeout {
       (1 to 10).foreach { _ =>
         perform(identity)
       }
-      perform(x => { sec.suspend(); x * 2 })
+      perform { x => sec.suspend(); x * 2 }
       perform(_ + 8)
       sec.size() should ===(13)
       sec.resume()

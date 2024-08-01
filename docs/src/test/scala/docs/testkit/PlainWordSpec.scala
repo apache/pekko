@@ -30,9 +30,8 @@ class MySpec()
     with BeforeAndAfterAll {
   // #implicit-sender
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     TestKit.shutdownActorSystem(system)
-  }
 
   "An Echo actor" must {
 

@@ -33,9 +33,8 @@ private[pekko] class ThrowableSupport(system: ExtendedActorSystem) {
   private val payloadSupport = new WrappedPayloadSupport(system)
   private val log = Logging(system, classOf[ThrowableSupport])
 
-  def serializeThrowable(t: Throwable): Array[Byte] = {
+  def serializeThrowable(t: Throwable): Array[Byte] =
     toProtobufThrowable(t).build().toByteArray
-  }
 
   def toProtobufThrowable(t: Throwable): ContainerFormats.Throwable.Builder = {
     val b = ContainerFormats.Throwable.newBuilder().setClassName(t.getClass.getName)
@@ -65,9 +64,8 @@ private[pekko] class ThrowableSupport(system: ExtendedActorSystem) {
     if (fileName ne null) builder.setFileName(fileName) else builder.setFileName("")
   }
 
-  def deserializeThrowable(bytes: Array[Byte]): Throwable = {
+  def deserializeThrowable(bytes: Array[Byte]): Throwable =
     fromProtobufThrowable(ContainerFormats.Throwable.parseFrom(bytes))
-  }
 
   def fromProtobufThrowable(protoT: ContainerFormats.Throwable): Throwable = {
     val className = protoT.getClassName

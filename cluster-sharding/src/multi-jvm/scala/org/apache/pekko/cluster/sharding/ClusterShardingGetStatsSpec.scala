@@ -66,7 +66,7 @@ abstract class ClusterShardingGetStatsSpec extends MultiNodeClusterShardingSpec(
   import ClusterShardingGetStatsSpecConfig._
   import MultiNodeClusterShardingSpec.PingPongActor
 
-  def startShard(): ActorRef = {
+  def startShard(): ActorRef =
     startSharding(
       system,
       typeName = shardTypeName,
@@ -74,7 +74,6 @@ abstract class ClusterShardingGetStatsSpec extends MultiNodeClusterShardingSpec(
       settings = settings.withRole("shard"),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion(shardTypeName)
 

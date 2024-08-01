@@ -36,14 +36,13 @@ private[pekko] object MessageSerializer {
   /**
    * Uses Pekko Serialization for the specified ActorSystem to transform the given MessageProtocol to a message
    */
-  def deserialize(system: ExtendedActorSystem, messageProtocol: SerializedMessage): AnyRef = {
+  def deserialize(system: ExtendedActorSystem, messageProtocol: SerializedMessage): AnyRef =
     SerializationExtension(system)
       .deserialize(
         messageProtocol.getMessage.toByteArray,
         messageProtocol.getSerializerId,
         if (messageProtocol.hasMessageManifest) messageProtocol.getMessageManifest.toStringUtf8 else "")
       .get
-  }
 
   /**
    * Uses Pekko Serialization for the specified ActorSystem to transform the given message to a MessageProtocol
@@ -107,7 +106,6 @@ private[pekko] object MessageSerializer {
       serialization: Serialization,
       serializer: Int,
       classManifest: String,
-      envelope: EnvelopeBuffer): AnyRef = {
+      envelope: EnvelopeBuffer): AnyRef =
     serialization.deserializeByteBuffer(envelope.byteBuffer, serializer, classManifest)
-  }
 }

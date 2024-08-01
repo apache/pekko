@@ -66,9 +66,8 @@ class LocalConcurrencySpec(_system: ActorSystem)
       pekko.remote.artery.canonical.port = 0
       """)))
 
-  override def afterAll(): Unit = {
+  override def afterAll(): Unit =
     shutdown(system)
-  }
 
   val replicator = DistributedData(system).replicator
 

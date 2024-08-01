@@ -53,9 +53,8 @@ object UntrustedSpec {
   }
 
   class Child(testActor: ActorRef) extends Actor {
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       testActor ! s"${self.path.name} stopped"
-    }
     def receive = {
       case msg => testActor.forward(msg)
     }
@@ -86,11 +85,9 @@ class UntrustedSpec extends ArteryMultiNodeSpec(UntrustedSpec.config) with Impli
   val receptionist = system.actorOf(Props(classOf[Receptionist], testActor), "receptionist")
 
   lazy val remoteDaemon = {
-    {
-      val p = TestProbe()(client)
-      client.actorSelection(RootActorPath(address) / receptionist.path.elements).tell(IdentifyReq("/remote"), p.ref)
-      p.expectMsgType[ActorIdentity].ref.get
-    }
+    val p = TestProbe()(client)
+    client.actorSelection(RootActorPath(address) / receptionist.path.elements).tell(IdentifyReq("/remote"), p.ref)
+    p.expectMsgType[ActorIdentity].ref.get
   }
 
   lazy val target2 = {

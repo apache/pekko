@@ -43,9 +43,8 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   /**
    * @param persistenceId stable unique identifier for the `DurableStateBehavior`
    */
-  def this(persistenceId: PersistenceId) = {
+  def this(persistenceId: PersistenceId) =
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
-  }
 
   /**
    * If using onPersistFailure the supervision is only around the `DurableStateBehavior` not any outer setup/withTimers
@@ -55,9 +54,8 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
    * @param persistenceId stable unique identifier for the `DurableStateBehavior`
    * @param onPersistFailure BackoffSupervisionStrategy for persist failures
    */
-  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, onPersistFailure: BackoffSupervisorStrategy) =
     this(persistenceId, Optional.ofNullable(onPersistFailure))
-  }
 
   /**
    * Factory of effects.
@@ -104,9 +102,8 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   /**
    * @return A new, mutable, command handler builder
    */
-  protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, State] = {
+  protected def newCommandHandlerBuilder(): CommandHandlerBuilder[Command, State] =
     CommandHandlerBuilder.builder[Command, State]()
-  }
 
   /**
    * Override and define the `DurableStateStore` plugin id that this actor should use instead of the default.
@@ -155,9 +152,8 @@ abstract class DurableStateBehavior[Command, State] private[pekko] (
   /**
    * The last sequence number that was persisted, can only be called from inside the handlers of a `DurableStateBehavior`
    */
-  final def lastSequenceNumber(ctx: ActorContext[_]): Long = {
+  final def lastSequenceNumber(ctx: ActorContext[_]): Long =
     scaladsl.DurableStateBehavior.lastSequenceNumber(ctx.asScala)
-  }
 
 }
 
@@ -171,13 +167,11 @@ abstract class DurableStateBehaviorWithEnforcedReplies[Command, State](
     backoffSupervisorStrategy: Optional[BackoffSupervisorStrategy])
     extends DurableStateBehavior[Command, State](persistenceId, backoffSupervisorStrategy) {
 
-  def this(persistenceId: PersistenceId) = {
+  def this(persistenceId: PersistenceId) =
     this(persistenceId, Optional.empty[BackoffSupervisorStrategy])
-  }
 
-  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) = {
+  def this(persistenceId: PersistenceId, backoffSupervisorStrategy: BackoffSupervisorStrategy) =
     this(persistenceId, Optional.ofNullable(backoffSupervisorStrategy))
-  }
 
   /**
    * Implement by handling incoming commands and return an `Effect()` to persist or signal other effects
@@ -194,9 +188,8 @@ abstract class DurableStateBehaviorWithEnforcedReplies[Command, State](
   /**
    * @return A new, mutable, command handler builder
    */
-  protected def newCommandHandlerWithReplyBuilder(): CommandHandlerWithReplyBuilder[Command, State] = {
+  protected def newCommandHandlerWithReplyBuilder(): CommandHandlerWithReplyBuilder[Command, State] =
     CommandHandlerWithReplyBuilder.builder[Command, State]()
-  }
 
   /**
    * Use [[DurableStateBehaviorWithEnforcedReplies#newCommandHandlerWithReplyBuilder]] instead, or

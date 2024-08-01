@@ -119,14 +119,13 @@ object PekkoBuild {
     }
   }
 
-  private def jvmGCLogOptions(isJdk11OrHigher: Boolean, isJdk8: Boolean): Seq[String] = {
+  private def jvmGCLogOptions(isJdk11OrHigher: Boolean, isJdk8: Boolean): Seq[String] =
     if (isJdk11OrHigher)
       // -Xlog:gc* is equivalent to -XX:+PrintGCDetails. See:
       // https://docs.oracle.com/en/java/javase/11/tools/java.html#GUID-BE93ABDC-999C-4CB5-A88B-1994AAAC74D5
       Seq("-Xlog:gc*")
     else if (isJdk8) Seq("-XX:+PrintGCTimeStamps", "-XX:+PrintGCDetails")
     else Nil
-  }
 
   // -XDignore.symbol.file suppresses sun.misc.Unsafe warnings
   final val DefaultJavacOptions = Seq("-encoding", "UTF-8", "-Xlint:unchecked", "-XDignore.symbol.file")

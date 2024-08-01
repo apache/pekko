@@ -62,9 +62,8 @@ class FlowExtrapolateSpec extends StreamSpec("""
       publisher.sendNext(42)
       subscriber.requestNext(42)
 
-      for (_ <- 1 to 100) {
+      for (_ <- 1 to 100)
         subscriber.requestNext(42 + 1)
-      }
 
       publisher.sendNext(-42)
 

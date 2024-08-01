@@ -26,11 +26,10 @@ class SlowInMemorySnapshotStore extends SnapshotStore {
 
   private var state = Map.empty[String, (Any, ClassicSnapshotMetadata)]
 
-  def loadAsync(persistenceId: String, criteria: ClassicSnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] = {
+  def loadAsync(persistenceId: String, criteria: ClassicSnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
     Future.successful(state.get(persistenceId).map {
       case (snap, meta) => SelectedSnapshot(meta, snap)
     })
-  }
 
   def saveAsync(metadata: ClassicSnapshotMetadata, snapshot: Any): Future[Unit] = {
     val snapshotState = snapshot.asInstanceOf[MutableState]

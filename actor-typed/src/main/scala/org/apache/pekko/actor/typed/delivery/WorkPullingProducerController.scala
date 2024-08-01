@@ -161,12 +161,11 @@ object WorkPullingProducerController {
      * Scala API: Factory method from Config corresponding to
      * `pekko.reliable-delivery.work-pulling.producer-controller`.
      */
-    def apply(config: Config): Settings = {
+    def apply(config: Config): Settings =
       new Settings(
         bufferSize = config.getInt("buffer-size"),
         config.getDuration("internal-ask-timeout").asScala,
         ProducerController.Settings(config))
-    }
 
     /**
      * Java API: Factory method from config `pekko.reliable-delivery.work-pulling.producer-controller`
@@ -219,19 +218,17 @@ object WorkPullingProducerController {
   def apply[A: ClassTag](
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     Behaviors.setup { context =>
       WorkPullingProducerControllerImpl(producerId, workerServiceKey, durableQueueBehavior, Settings(context.system))
     }
-  }
 
   def apply[A: ClassTag](
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Option[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     WorkPullingProducerControllerImpl(producerId, workerServiceKey, durableQueueBehavior, settings)
-  }
 
   /**
    * Java API
@@ -240,9 +237,8 @@ object WorkPullingProducerController {
       messageClass: Class[A],
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
-      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] = {
+      durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]]): Behavior[Command[A]] =
     apply(producerId, workerServiceKey, durableQueueBehavior.toScala)(ClassTag(messageClass))
-  }
 
   /**
    * Java API
@@ -252,7 +248,6 @@ object WorkPullingProducerController {
       producerId: String,
       workerServiceKey: ServiceKey[ConsumerController.Command[A]],
       durableQueueBehavior: Optional[Behavior[DurableProducerQueue.Command[A]]],
-      settings: Settings): Behavior[Command[A]] = {
+      settings: Settings): Behavior[Command[A]] =
     apply(producerId, workerServiceKey, durableQueueBehavior.toScala, settings)(ClassTag(messageClass))
-  }
 }

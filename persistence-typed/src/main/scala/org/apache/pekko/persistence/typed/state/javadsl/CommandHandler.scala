@@ -206,7 +206,7 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
 
   private var cases: List[CommandHandlerCase[Command, State]] = Nil
 
-  private def addCase(predicate: Command => Boolean, handler: BiFunction[S, Command, Effect[State]]): Unit = {
+  private def addCase(predicate: Command => Boolean, handler: BiFunction[S, Command, Effect[State]]): Unit =
     cases = CommandHandlerCase[Command, State](
       commandPredicate = predicate,
       statePredicate = state =>
@@ -214,7 +214,6 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
         else
           statePredicate.test(state.asInstanceOf[S]) && stateClass.isAssignableFrom(state.getClass),
       handler.asInstanceOf[BiFunction[State, Command, Effect[State]]]) :: cases
-  }
 
   /**
    * Matches any command which the given `predicate` returns true for.
@@ -278,12 +277,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: JFunction[C, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+      handler: JFunction[C, Effect[State]]): CommandHandlerBuilderByState[Command, S, State] =
     onCommand[C](commandClass,
       new BiFunction[S, C, Effect[State]] {
         override def apply(state: S, cmd: C): Effect[State] = handler(cmd)
       })
-  }
 
   /**
    * Matches commands that are of the given `commandClass` or subclass thereof.
@@ -296,12 +294,11 @@ final class CommandHandlerBuilderByState[Command, S <: State, State] @InternalAp
    */
   def onCommand[C <: Command](
       commandClass: Class[C],
-      handler: Supplier[Effect[State]]): CommandHandlerBuilderByState[Command, S, State] = {
+      handler: Supplier[Effect[State]]): CommandHandlerBuilderByState[Command, S, State] =
     onCommand[C](commandClass,
       new BiFunction[S, C, Effect[State]] {
         override def apply(state: S, cmd: C): Effect[State] = handler.get()
       })
-  }
 
   /**
    * Matches any command.

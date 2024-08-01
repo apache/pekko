@@ -49,12 +49,11 @@ class RetryFlowSpec extends StreamSpec("""
   }
 
   /** increments the value and the context with every failure */
-  def incrementFailedValues[OutData](in: (Int, Int), out: (Try[OutData], Int)): Option[(Int, Int)] = {
+  def incrementFailedValues[OutData](in: (Int, Int), out: (Try[OutData], Int)): Option[(Int, Int)] =
     (in, out) match {
       case ((in, _), (Failure(_), outCtx)) => Some((in + 1, outCtx + 1))
       case _                               => None
     }
-  }
 
   "RetryFlow.withBackoff" should {
 
@@ -64,12 +63,11 @@ class RetryFlowSpec extends StreamSpec("""
         case i               => Success(i)
       }
 
-    def incrementFailedValues[OutData](in: Int, out: Try[OutData]): Option[Int] = {
+    def incrementFailedValues[OutData](in: Int, out: Try[OutData]): Option[Int] =
       (in, out) match {
         case (in, Failure(_)) => Some(in + 1)
         case _                => None
       }
-    }
 
     "send elements through" in {
       val sink =

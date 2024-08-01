@@ -108,9 +108,8 @@ object Helpers {
   private val formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss.SSS")
   private val timeZone = ZoneId.systemDefault()
 
-  def timestamp(time: Long): String = {
+  def timestamp(time: Long): String =
     formatter.format(LocalDateTime.ofInstant(Instant.ofEpochMilli(time), timeZone))
-  }
 
   final val base64chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+~"
 

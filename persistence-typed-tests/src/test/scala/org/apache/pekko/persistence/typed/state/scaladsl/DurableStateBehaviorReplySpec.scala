@@ -50,7 +50,7 @@ object DurableStateBehaviorReplySpec {
   def counter(persistenceId: PersistenceId): Behavior[Command[_]] =
     Behaviors.setup(ctx => counter(ctx, persistenceId))
 
-  def counter(ctx: ActorContext[Command[_]], persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] = {
+  def counter(ctx: ActorContext[Command[_]], persistenceId: PersistenceId): DurableStateBehavior[Command[_], State] =
     DurableStateBehavior.withEnforcedReplies[Command[_], State](
       persistenceId,
       emptyState = State(0),
@@ -78,7 +78,6 @@ object DurableStateBehaviorReplySpec {
           case _ => ???
 
         })
-  }
 
 }
 

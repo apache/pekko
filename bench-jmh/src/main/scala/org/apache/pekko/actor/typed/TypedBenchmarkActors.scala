@@ -43,7 +43,7 @@ object TypedBenchmarkActors {
       var left = messagesPerPair / 2
       var batch = 0
 
-      def sendBatch(): Boolean = {
+      def sendBatch(): Boolean =
         if (left > 0) {
           var i = 0
           while (i < batchSize) {
@@ -55,7 +55,6 @@ object TypedBenchmarkActors {
           true
         } else
           false
-      }
 
       Behaviors.receiveMessage { _ =>
         batch -= 1
@@ -133,7 +132,7 @@ object TypedBenchmarkActors {
       extends PingPongCommand
   case class PingPongStarted(completedLatch: CountDownLatch, startNanoTime: Long, totalNumMessages: Int)
   case object Stop extends PingPongCommand
-  def benchmarkPingPongSupervisor(): Behavior[PingPongCommand] = {
+  def benchmarkPingPongSupervisor(): Behavior[PingPongCommand] =
     Behaviors.setup { ctx =>
       Behaviors.receiveMessage {
         case StartPingPong(numMessagesPerActorPair, numActors, dispatcher, throughput, _, replyTo) =>
@@ -150,15 +149,13 @@ object TypedBenchmarkActors {
           Behaviors.same
       }
     }
-  }
 
-  private def initiatePingPongForPairs(refs: Vector[(ActorRef[Message], ActorRef[Message])], inFlight: Int): Unit = {
+  private def initiatePingPongForPairs(refs: Vector[(ActorRef[Message], ActorRef[Message])], inFlight: Int): Unit =
     for {
       (ping, pong) <- refs
       message = Message(pong) // just allocate once
       _ <- 1 to inFlight
     } ping ! message
-  }
 
   private def startPingPongActorPairs(
       ctx: ActorContext[_],

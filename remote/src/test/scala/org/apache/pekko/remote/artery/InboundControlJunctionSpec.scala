@@ -64,9 +64,8 @@ class InboundControlJunctionSpec
         .run()
 
       controlSubject.attach(new ControlMessageObserver {
-        override def notify(env: InboundEnvelope) = {
+        override def notify(env: InboundEnvelope) =
           observerProbe.ref ! env.message
-        }
         override def controlSubjectCompleted(signal: Try[Done]): Unit = ()
       })
 

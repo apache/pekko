@@ -92,7 +92,7 @@ object Publisher {
    */
   object RegistrationService {
 
-    def apply(): Behavior[AnyRef] = {
+    def apply(): Behavior[AnyRef] =
       // #publisher
       Behaviors.setup[AnyRef] { context =>
         import pekko.cluster.pubsub.DistributedPubSub
@@ -118,9 +118,8 @@ object Publisher {
               }
           }
 
-        def validate(schema: Schema): Try[Schema] = {
+        def validate(schema: Schema): Try[Schema] =
           Success(schema) // called, stubbed
-        }
 
         Behaviors.receiveMessage {
           case RegisterDataType(key, schema, replyTo, onBehalfOf) =>
@@ -131,9 +130,8 @@ object Publisher {
             Behaviors.unhandled
         }
       }
-      // #publisher
+    // #publisher
 
-    }
   }
 
 }
@@ -141,7 +139,7 @@ object Publisher {
 object Ingestion {
   import Ontology._
 
-  def apply(dt: DataType, mediator: pekko.actor.ActorRef): Behavior[DataEvent] = {
+  def apply(dt: DataType, mediator: pekko.actor.ActorRef): Behavior[DataEvent] =
     // #destination
     Behaviors.setup { context =>
       // register to the path
@@ -150,8 +148,7 @@ object Ingestion {
 
       idle(dt, mediator)
     }
-    // #destination
-  }
+  // #destination
 
   private def idle(dt: DataType, mediator: pekko.actor.ActorRef): Behavior[DataEvent] =
     Behaviors.setup { context =>
@@ -192,8 +189,7 @@ object Ingestion {
 object Subscriber {
   import Ontology._
 
-  def apply(key: DataKey, mediator: pekko.actor.ActorRef): Behavior[DataEvent] = {
-
+  def apply(key: DataKey, mediator: pekko.actor.ActorRef): Behavior[DataEvent] =
     // #subscriber
     Behaviors.setup[DataEvent] { context =>
       import pekko.actor.typed.scaladsl.adapter._
@@ -223,12 +219,10 @@ object Subscriber {
 
       }
     }
-    // #subscriber
-  }
+  // #subscriber
 
-  private def wonderland(): Behavior[DataEvent] = {
+  private def wonderland(): Behavior[DataEvent] =
     Behaviors.same
-  }
 
   private def andThen(key: DataKey, mediator: pekko.actor.ActorRef): Behavior[DataEvent] = {
     // for the example, shutdown
@@ -240,7 +234,7 @@ object Subscriber {
 object DataService {
   import Ontology._
 
-  def apply(mediator: pekko.actor.ActorRef): Behavior[DataApi] = {
+  def apply(mediator: pekko.actor.ActorRef): Behavior[DataApi] =
     Behaviors.setup { context =>
       val registration = context.spawn(Publisher.RegistrationService(), "data-registration")
 
@@ -262,14 +256,13 @@ object DataService {
 
       }
     }
-  }
 
 }
 
 object DataPlatform {
   import Ontology._
 
-  def apply(): Behavior[ProvisionCommand] = {
+  def apply(): Behavior[ProvisionCommand] =
     Behaviors.setup { context =>
       // #mediator
       val mediator = DistributedPubSub(context.system).mediator
@@ -288,7 +281,6 @@ object DataPlatform {
 
       }
     }
-  }
 }
 
 object DistributedPubSubExample {
@@ -313,9 +305,8 @@ object DistributedPubSubExample {
       }
 
     val awaitClusterUp = (nodes: List[ActorSystem[_]], expected: Int) =>
-      while (!clusterUp(nodes, expected)) {
+      while (!clusterUp(nodes, expected))
         Thread.sleep(1000)
-      }
 
     val seed = nodes.head
     val joinTo = Cluster(seed).selfMember.address

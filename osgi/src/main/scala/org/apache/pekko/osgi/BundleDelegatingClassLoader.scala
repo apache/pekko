@@ -51,38 +51,36 @@ class BundleDelegatingClassLoader(bundle: Bundle, fallBackClassLoader: ClassLoad
   private val bundles = findTransitiveBundles(bundle).toList
 
   override def findClass(name: String): Class[_] = {
-    @tailrec def find(remaining: List[Bundle]): Class[_] = {
+    @tailrec def find(remaining: List[Bundle]): Class[_] =
       if (remaining.isEmpty) throw new ClassNotFoundException(name)
       else
-        Try { remaining.head.loadClass(name) } match {
+        Try(remaining.head.loadClass(name)) match {
           case Success(cls) => cls
           case Failure(_)   => find(remaining.tail)
         }
-    }
     find(bundles)
   }
 
   override def findResource(name: String): URL = {
-    @tailrec def find(remaining: List[Bundle]): URL = {
+    @tailrec def find(remaining: List[Bundle]): URL =
       if (remaining.isEmpty) getParent.getResource(name)
       else
-        Option { remaining.head.getResource(name) } match {
+        Option(remaining.head.getResource(name)) match {
           case Some(r) => r
           case None    => find(remaining.tail)
         }
-    }
     find(bundles)
   }
 
   override def findResources(name: String): Enumeration[URL] = {
     val resources = bundles.flatMap { bundle =>
-      Option(bundle.getResources(name)).map { _.asScala.toList }.getOrElse(Nil)
+      Option(bundle.getResources(name)).map(_.asScala.toList).getOrElse(Nil)
     }
     java.util.Collections.enumeration(resources.asJava)
   }
 
   private def findTransitiveBundles(bundle: Bundle): Set[Bundle] = {
-    @tailrec def process(processed: Set[Bundle], remaining: Set[Bundle]): Set[Bundle] = {
+    @tailrec def process(processed: Set[Bundle], remaining: Set[Bundle]): Set[Bundle] =
       if (remaining.isEmpty) {
         processed
       } else {
@@ -97,13 +95,12 @@ class BundleDelegatingClassLoader(bundle: Bundle, fallBackClassLoader: ClassLoad
               val requiredWires: List[BundleWire] =
                 wiring.getRequiredWires(BundleRevision.PACKAGE_NAMESPACE).asScala.toList
               requiredWires.flatMap { wire =>
-                Option(wire.getProviderWiring).map { _.getBundle }
+                Option(wire.getProviderWiring).map(_.getBundle)
               }.toSet
             }
           process(processed + b, rest ++ (direct.diff(processed)))
         }
       }
-    }
     process(Set.empty, Set(bundle))
   }
 }

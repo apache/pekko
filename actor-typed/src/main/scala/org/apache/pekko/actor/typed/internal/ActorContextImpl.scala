@@ -125,10 +125,9 @@ import scala.util.Success
 
   override private[pekko] def hasTimer: Boolean = _timer.isDefined
 
-  override private[pekko] def cancelAllTimers(): Unit = {
+  override private[pekko] def cancelAllTimers(): Unit =
     if (hasTimer)
       timer.cancelAll()
-  }
 
   override def asJava: javadsl.ActorContext[T] = this
 
@@ -157,7 +156,7 @@ import scala.util.Success
   override def getSystem: pekko.actor.typed.ActorSystem[Void] =
     system.asInstanceOf[ActorSystem[Void]]
 
-  private def loggingContext(): LoggingContext = {
+  private def loggingContext(): LoggingContext =
     // lazy init of logging setup
     _logging match {
       case OptionVal.Some(l) => l
@@ -168,7 +167,6 @@ import scala.util.Success
         _logging = OptionVal.Some(l)
         l
     }
-  }
 
   override def log: Logger = {
     checkCurrentActorThread()
@@ -190,7 +188,7 @@ import scala.util.Success
   def hasCustomLoggerName: Boolean = loggingContext().hasCustomName
 
   // MDC is cleared (if used) from aroundReceive in ActorAdapter after processing each message
-  override private[pekko] def clearMdc(): Unit = {
+  override private[pekko] def clearMdc(): Unit =
     // avoid access to MDC ThreadLocal if not needed, see details in LoggingContext
     _logging match {
       case OptionVal.Some(ctx) if ctx.mdcUsed =>
@@ -198,7 +196,6 @@ import scala.util.Success
         ctx.mdcUsed = false
       case _ =>
     }
-  }
 
   override def setReceiveTimeout(duration: java.time.Duration, msg: T): Unit =
     setReceiveTimeout(duration.asScala, msg)
@@ -276,20 +273,18 @@ import scala.util.Success
   }
 
   // Scala API impl
-  def pipeToSelf[Value](future: Future[Value])(mapResult: Try[Value] => T): Unit = {
+  def pipeToSelf[Value](future: Future[Value])(mapResult: Try[Value] => T): Unit =
     future.onComplete(value => self.unsafeUpcast ! AdaptMessage(value, mapResult))(ExecutionContexts.parasitic)
-  }
 
   // Java API impl
   def pipeToSelf[Value](
       future: CompletionStage[Value],
-      applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit = {
+      applyToResult: pekko.japi.function.Function2[Value, Throwable, T]): Unit =
     future.handle[Unit] { (value, ex) =>
       if (ex != null)
         self.unsafeUpcast ! AdaptMessage(ex, applyToResult.apply(null.asInstanceOf[Value], _: Throwable))
       else self.unsafeUpcast ! AdaptMessage(value, applyToResult.apply(_: Value, null))
     }
-  }
 
   private[pekko] override def spawnMessageAdapter[U](f: U => T, name: String): ActorRef[U] =
     internalSpawnMessageAdapter(f, name)
@@ -338,7 +333,7 @@ import scala.util.Success
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def setCurrentActorThread(): Unit = {
+  @InternalApi private[pekko] def setCurrentActorThread(): Unit =
     _currentActorThread match {
       case OptionVal.Some(t) =>
         throw new IllegalStateException(
@@ -347,14 +342,12 @@ import scala.util.Success
       case _ =>
         _currentActorThread = OptionVal.Some(Thread.currentThread())
     }
-  }
 
   /**
    * INTERNAL API
    */
-  @InternalApi private[pekko] def clearCurrentActorThread(): Unit = {
+  @InternalApi private[pekko] def clearCurrentActorThread(): Unit =
     _currentActorThread = OptionVal.None
-  }
 
   /**
    * INTERNAL API

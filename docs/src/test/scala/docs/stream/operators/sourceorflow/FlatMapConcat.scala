@@ -24,9 +24,8 @@ object FlatMapConcat {
   val source: Source[String, NotUsed] = Source(List("customer-1", "customer-2"))
 
   // e.g. could b a query to a database
-  def lookupCustomerEvents(customerId: String): Source[String, NotUsed] = {
+  def lookupCustomerEvents(customerId: String): Source[String, NotUsed] =
     Source(List(s"$customerId-event-1", s"$customerId-event-2"))
-  }
 
   source.flatMapConcat(customerId => lookupCustomerEvents(customerId)).runForeach(println)
 

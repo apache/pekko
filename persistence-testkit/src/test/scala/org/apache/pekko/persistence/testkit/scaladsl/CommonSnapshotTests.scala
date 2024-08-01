@@ -92,7 +92,7 @@ trait CommonSnapshotTests extends ScalaDslUtils {
       val err = new Exception("BOOM!")
 
       val newPolicy = new SnapshotStorage.SnapshotPolicies.PolicyType {
-        override def tryProcess(persistenceId: String, processingUnit: SnapshotOperation): ProcessingResult = {
+        override def tryProcess(persistenceId: String, processingUnit: SnapshotOperation): ProcessingResult =
           processingUnit match {
             case WriteSnapshot(_, msgs) =>
               val ex = msgs match {
@@ -106,7 +106,6 @@ trait CommonSnapshotTests extends ScalaDslUtils {
               }
             case _ => ProcessingSuccess
           }
-        }
       }
 
       withPolicy(newPolicy)

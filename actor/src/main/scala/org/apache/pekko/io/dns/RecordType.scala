@@ -29,10 +29,9 @@ object RecordType {
   private final val lookupTable = Array.ofDim[RecordType](256)
 
   private[pekko] def lookup(code: Int): RecordType = lookupTable(code)
-  def apply(id: Short): OptionVal[RecordType] = {
+  def apply(id: Short): OptionVal[RecordType] =
     if (id < 1 || id > 255) OptionVal.None
     else OptionVal(RecordType.lookup(id))
-  }
 
   private def register(t: RecordType): RecordType = {
     lookupTable(t.code) = t

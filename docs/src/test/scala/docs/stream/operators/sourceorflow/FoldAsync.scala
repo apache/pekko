@@ -29,8 +29,8 @@ object FoldAsync extends App {
   // #foldAsync
   case class Histogram(low: Long = 0, high: Long = 0) {
     def add(i: Int): Future[Histogram] =
-      if (i < 100) Future { copy(low = low + 1) }
-      else Future { copy(high = high + 1) }
+      if (i < 100) Future(copy(low = low + 1))
+      else Future(copy(high = high + 1))
   }
 
   Source(1 to 150).foldAsync(Histogram())((acc, n) => acc.add(n)).runForeach(println)

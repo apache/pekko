@@ -33,7 +33,7 @@ object TestProducer {
 
   def apply(
       delay: FiniteDuration,
-      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] = {
+      producerController: ActorRef[ProducerController.Start[TestConsumer.Job]]): Behavior[Command] =
     Behaviors.setup { context =>
       context.setLoggerName("TestProducer")
       val requestNextAdapter: ActorRef[ProducerController.RequestNext[TestConsumer.Job]] =
@@ -49,16 +49,14 @@ object TestProducer {
         }
       }
     }
-  }
 
-  private def idle(n: Int): Behavior[Command] = {
+  private def idle(n: Int): Behavior[Command] =
     Behaviors.receiveMessage {
       case Tick                => Behaviors.same
       case RequestNext(sendTo) => active(n + 1, sendTo)
     }
-  }
 
-  private def active(n: Int, sendTo: ActorRef[TestConsumer.Job]): Behavior[Command] = {
+  private def active(n: Int, sendTo: ActorRef[TestConsumer.Job]): Behavior[Command] =
     Behaviors.receive { (ctx, msg) =>
       msg match {
         case Tick =>
@@ -69,15 +67,13 @@ object TestProducer {
           throw new IllegalStateException("Unexpected RequestNext, already got one.")
       }
     }
-  }
 
-  private def activeNoDelay(n: Int): Behavior[Command] = {
+  private def activeNoDelay(n: Int): Behavior[Command] =
     Behaviors.receivePartial {
       case (ctx, RequestNext(sendTo)) =>
         sendMessage(n, sendTo, ctx)
         activeNoDelay(n + 1)
     }
-  }
 
   private def sendMessage(n: Int, sendTo: ActorRef[TestConsumer.Job], ctx: ActorContext[Command]): Unit = {
     val msg = s"msg-$n"

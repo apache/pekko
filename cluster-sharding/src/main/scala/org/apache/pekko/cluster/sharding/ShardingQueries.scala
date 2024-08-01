@@ -46,14 +46,13 @@ private[sharding] object ShardingQueries {
      */
     val queried: Int = failed.size + responses.size
 
-    override val toString: String = {
+    override val toString: String =
       if (total == 0)
         s"Shard region had zero shards to gather metadata from."
       else {
         val shardsOf = if (queried < total) s"shards of [$total]:" else "shards:"
         s"Queried [$queried] $shardsOf [${responses.size}] responsive, [${failed.size}] failed after $timeout."
       }
-    }
   }
   object ShardsQueryResult {
 

@@ -123,7 +123,7 @@ abstract class RemoteInstrument {
       message: Object,
       sender: ActorRef,
       size: Int,
-      time: Long): Unit = {
+      time: Long): Unit =
     if (size >= logFrameSizeExceeding) {
       val clazz = message match {
         case x: WrappedMessage => x.message.getClass
@@ -147,7 +147,6 @@ abstract class RemoteInstrument {
       }
       check()
     }
-  }
 
   override def remoteReadMetadata(recipient: ActorRef, message: Object, sender: ActorRef, buffer: ByteBuffer): Unit =
     ()
@@ -192,7 +191,7 @@ private[remote] final class RemoteInstruments(
   // does any of the instruments want serialization timing?
   private val serializationTimingEnabled = instruments.exists(_.serializationTimingEnabled)
 
-  def serialize(outboundEnvelope: OptionVal[OutboundEnvelope], buffer: ByteBuffer): Unit = {
+  def serialize(outboundEnvelope: OptionVal[OutboundEnvelope], buffer: ByteBuffer): Unit =
     if (instruments.nonEmpty && outboundEnvelope.isDefined) {
       val startPos = buffer.position()
       val oe = outboundEnvelope.get
@@ -203,9 +202,9 @@ private[remote] final class RemoteInstruments(
         while (i < instruments.length) {
           val rewindPos = buffer.position()
           val instrument = instruments(i)
-          try {
+          try
             serializeInstrument(instrument, oe, buffer)
-          } catch {
+          catch {
             case NonFatal(t) =>
               log.debug(
                 "Skipping serialization of RemoteInstrument {} since it failed with {}",
@@ -229,7 +228,6 @@ private[remote] final class RemoteInstruments(
           buffer.position(startPos)
       }
     }
-  }
 
   private def serializeInstrument(
       instrument: RemoteInstrument,
@@ -253,18 +251,17 @@ private[remote] final class RemoteInstruments(
     }
   }
 
-  def deserialize(inboundEnvelope: InboundEnvelope): Unit = {
+  def deserialize(inboundEnvelope: InboundEnvelope): Unit =
     if (inboundEnvelope.flag(EnvelopeBuffer.MetadataPresentFlag)) {
       inboundEnvelope.envelopeBuffer.byteBuffer.position(EnvelopeBuffer.MetadataContainerAndLiteralSectionOffset)
       deserializeRaw(inboundEnvelope)
     }
-  }
 
   def deserializeRaw(inboundEnvelope: InboundEnvelope): Unit = {
     val buffer = inboundEnvelope.envelopeBuffer.byteBuffer
     val length = buffer.getInt
     val endPos = buffer.position() + length
-    try {
+    try
       if (instruments.nonEmpty) {
         var i = 0
         while (i < instruments.length && buffer.position() < endPos) {
@@ -277,9 +274,9 @@ private[remote] final class RemoteInstruments(
           var nextPos = dataPos + length
           val identifier = instrument.identifier
           if (key == identifier) {
-            try {
+            try
               deserializeInstrument(instrument, inboundEnvelope, buffer)
-            } catch {
+            catch {
               case NonFatal(t) =>
                 log.debug(
                   "Skipping deserialization of RemoteInstrument {} since it failed with {}",
@@ -304,38 +301,35 @@ private[remote] final class RemoteInstruments(
             "Skipping serialized data in message for RemoteInstrument(s) {} that has no local match",
             remoteInstrumentIdIteratorRaw(buffer, endPos).mkString("[", ", ", "]"))
       }
-    } catch {
+    catch {
       case NonFatal(t) =>
         log.debug("Skipping further deserialization of remaining RemoteInstruments due to unhandled failure {}", t)
-    } finally {
+    } finally
       buffer.position(endPos)
-    }
   }
 
   private def deserializeInstrument(
       instrument: RemoteInstrument,
       inboundEnvelope: InboundEnvelope,
-      buffer: ByteBuffer): Unit = {
+      buffer: ByteBuffer): Unit =
     instrument.remoteReadMetadata(
       inboundEnvelope.recipient.orNull,
       inboundEnvelope.message,
       inboundEnvelope.sender.orNull,
       buffer)
-  }
 
   def messageSent(outboundEnvelope: OutboundEnvelope, size: Int, time: Long): Unit = {
-    @tailrec def messageSent(pos: Int): Unit = {
+    @tailrec def messageSent(pos: Int): Unit =
       if (pos < instruments.length) {
         val instrument = instruments(pos)
-        try {
+        try
           messageSentInstrument(instrument, outboundEnvelope, size, time)
-        } catch {
+        catch {
           case NonFatal(t) =>
             log.debug("Message sent in RemoteInstrument {} failed with {}", instrument.identifier, t.getMessage)
         }
         messageSent(pos + 1)
       }
-    }
     messageSent(0)
   }
 
@@ -343,28 +337,26 @@ private[remote] final class RemoteInstruments(
       instrument: RemoteInstrument,
       outboundEnvelope: OutboundEnvelope,
       size: Int,
-      time: Long): Unit = {
+      time: Long): Unit =
     instrument.remoteMessageSent(
       outboundEnvelope.recipient.orNull,
       outboundEnvelope.message,
       outboundEnvelope.sender.orNull,
       size,
       time)
-  }
 
   def messageReceived(inboundEnvelope: InboundEnvelope, size: Int, time: Long): Unit = {
-    @tailrec def messageRecieved(pos: Int): Unit = {
+    @tailrec def messageRecieved(pos: Int): Unit =
       if (pos < instruments.length) {
         val instrument = instruments(pos)
-        try {
+        try
           messageReceivedInstrument(instrument, inboundEnvelope, size, time)
-        } catch {
+        catch {
           case NonFatal(t) =>
             log.debug("Message received in RemoteInstrument {} failed with {}", instrument.identifier, t.getMessage)
         }
         messageRecieved(pos + 1)
       }
-    }
     messageRecieved(0)
   }
 
@@ -372,16 +364,15 @@ private[remote] final class RemoteInstruments(
       instrument: RemoteInstrument,
       inboundEnvelope: InboundEnvelope,
       size: Int,
-      time: Long): Unit = {
+      time: Long): Unit =
     instrument.remoteMessageReceived(
       inboundEnvelope.recipient.orNull,
       inboundEnvelope.message,
       inboundEnvelope.sender.orNull,
       size,
       time)
-  }
 
-  private def remoteInstrumentIdIteratorRaw(buffer: ByteBuffer, endPos: Int): Iterator[Int] = {
+  private def remoteInstrumentIdIteratorRaw(buffer: ByteBuffer, endPos: Int): Iterator[Int] =
     new Iterator[Int] {
       override def hasNext: Boolean = buffer.position() < endPos
       override def next(): Int = {
@@ -390,7 +381,6 @@ private[remote] final class RemoteInstruments(
         getKey(keyAndLength)
       }
     }
-  }
 
   def isEmpty: Boolean = instruments.isEmpty
   def nonEmpty: Boolean = instruments.nonEmpty

@@ -138,7 +138,7 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
 
     // This method ensures that the MDC is set before we use the internal logger
-    def internalLogger() = {
+    def internalLogger() =
       if (settings.useContextLoggerForInternalLogging) ctx.log
       else {
         // MDC is cleared (if used) from aroundReceive in ActorAdapter after processing each message,
@@ -146,7 +146,6 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
         ctx.log
         loggerForInternal
       }
-    }
 
     val actualSignalHandler: PartialFunction[(State, Signal), Unit] = signalHandler.orElse {
       // default signal handler is always the fallback
@@ -262,9 +261,8 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
   }
 
   override def withSnapshotSelectionCriteria(
-      selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State] = {
+      selection: SnapshotSelectionCriteria): EventSourcedBehavior[Command, Event, State] =
     copy(recovery = Recovery(selection.toClassic))
-  }
 
   override def snapshotWhen(predicate: (State, Event, Long) => Boolean): EventSourcedBehavior[Command, Event, State] =
     copy(snapshotWhen = predicate)
@@ -285,19 +283,16 @@ private[pekko] final case class EventSourcedBehaviorImpl[Command, Event, State](
       backoffStrategy: BackoffSupervisorStrategy): EventSourcedBehavior[Command, Event, State] =
     copy(supervisionStrategy = backoffStrategy)
 
-  override def withRecovery(recovery: TypedRecovery): EventSourcedBehavior[Command, Event, State] = {
+  override def withRecovery(recovery: TypedRecovery): EventSourcedBehavior[Command, Event, State] =
     copy(recovery = recovery.toClassic)
-  }
 
-  override def withEventPublishing(enabled: Boolean): EventSourcedBehavior[Command, Event, State] = {
+  override def withEventPublishing(enabled: Boolean): EventSourcedBehavior[Command, Event, State] =
     copy(publishEvents = enabled)
-  }
 
   override private[pekko] def withReplication(
-      context: ReplicationContextImpl): EventSourcedBehavior[Command, Event, State] = {
+      context: ReplicationContextImpl): EventSourcedBehavior[Command, Event, State] =
     copy(
       replication = Some(ReplicationSetup(context.replicationId.replicaId, context.replicasAndQueryPlugins, context)))
-  }
 }
 
 /** Protocol used internally by the eventsourced behaviors. */

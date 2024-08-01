@@ -97,7 +97,7 @@ private[pekko] final case class WildcardTree[T](
 
   @tailrec def findWithTerminalDoubleWildcard(
       elems: Iterator[String],
-      alt: WildcardTree[T] = WildcardTree[T]()): WildcardTree[T] = {
+      alt: WildcardTree[T] = WildcardTree[T]()): WildcardTree[T] =
     if (!elems.hasNext) this
     else {
       val newAlt = children.getOrElse("**", alt)
@@ -110,5 +110,4 @@ private[pekko] final case class WildcardTree[T](
           }
       }
     }
-  }
 }

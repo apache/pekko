@@ -82,9 +82,8 @@ object AccountExampleWithEventHandlersInState {
           case AccountCreated    => throw new IllegalStateException(s"unexpected event [$event] in state [OpenedAccount]")
         }
 
-      def canWithdraw(amount: BigDecimal): Boolean = {
+      def canWithdraw(amount: BigDecimal): Boolean =
         balance - amount >= Zero
-      }
 
     }
     case object ClosedAccount extends Account {
@@ -101,9 +100,8 @@ object AccountExampleWithEventHandlersInState {
     // to generate the stub with types for the command and event handlers.
 
     // #withEnforcedReplies
-    def apply(accountNumber: String, persistenceId: PersistenceId): Behavior[Command] = {
+    def apply(accountNumber: String, persistenceId: PersistenceId): Behavior[Command] =
       EventSourcedBehavior.withEnforcedReplies(persistenceId, EmptyAccount, commandHandler(accountNumber), eventHandler)
-    }
     // #withEnforcedReplies
 
     private def commandHandler(accountNumber: String): (Account, Command) => ReplyEffect[Event, Account] = {
@@ -143,42 +141,36 @@ object AccountExampleWithEventHandlersInState {
 
     private def replyClosed(
         accountNumber: String,
-        replyTo: ActorRef[StatusReply[Done]]): ReplyEffect[Event, Account] = {
+        replyTo: ActorRef[StatusReply[Done]]): ReplyEffect[Event, Account] =
       Effect.reply(replyTo)(StatusReply.Error(s"Account $accountNumber is closed"))
-    }
 
     private val eventHandler: (Account, Event) => Account = { (state, event) =>
       state.applyEvent(event)
     }
 
-    private def createAccount(cmd: CreateAccount): ReplyEffect[Event, Account] = {
+    private def createAccount(cmd: CreateAccount): ReplyEffect[Event, Account] =
       Effect.persist(AccountCreated).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
-    }
 
-    private def deposit(cmd: Deposit): ReplyEffect[Event, Account] = {
+    private def deposit(cmd: Deposit): ReplyEffect[Event, Account] =
       Effect.persist(Deposited(cmd.amount)).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
-    }
 
     // #reply
-    private def withdraw(acc: OpenedAccount, cmd: Withdraw): ReplyEffect[Event, Account] = {
+    private def withdraw(acc: OpenedAccount, cmd: Withdraw): ReplyEffect[Event, Account] =
       if (acc.canWithdraw(cmd.amount))
         Effect.persist(Withdrawn(cmd.amount)).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
       else
         Effect.reply(cmd.replyTo)(
           StatusReply.Error(s"Insufficient balance ${acc.balance} to be able to withdraw ${cmd.amount}"))
-    }
     // #reply
 
-    private def getBalance(acc: OpenedAccount, cmd: GetBalance): ReplyEffect[Event, Account] = {
+    private def getBalance(acc: OpenedAccount, cmd: GetBalance): ReplyEffect[Event, Account] =
       Effect.reply(cmd.replyTo)(CurrentBalance(acc.balance))
-    }
 
-    private def closeAccount(acc: OpenedAccount, cmd: CloseAccount): ReplyEffect[Event, Account] = {
+    private def closeAccount(acc: OpenedAccount, cmd: CloseAccount): ReplyEffect[Event, Account] =
       if (acc.balance == Zero)
         Effect.persist(AccountClosed).thenReply(cmd.replyTo)(_ => StatusReply.Ack)
       else
         Effect.reply(cmd.replyTo)(StatusReply.Error("Can't close account with non-zero balance"))
-    }
 
   }
   // #account-entity

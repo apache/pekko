@@ -95,8 +95,7 @@ private[remote] object Remoting {
 
   def localAddressForRemote(
       transportMapping: Map[String, Set[(PekkoProtocolTransport, Address)]],
-      remote: Address): Address = {
-
+      remote: Address): Address =
     transportMapping.get(remote.protocol) match {
       case Some(transports) =>
         val responsibleTransports = transports.filter { case (t, _) => t.isResponsibleFor(remote) }
@@ -124,7 +123,6 @@ private[remote] object Remoting {
               .mkString(", ")}]",
           null)
     }
-  }
 
   final case class RegisterTransportActor(props: Props, name: String) extends NoSerializationVerificationNeeded
 
@@ -173,7 +171,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
   private def notifyError(msg: String, cause: Throwable): Unit =
     eventPublisher.notifyListeners(RemotingErrorEvent(new RemoteTransportException(msg, cause)))
 
-  override def shutdown(): Future[Done] = {
+  override def shutdown(): Future[Done] =
     endpointManager match {
       case Some(manager) =>
         implicit val timeout = ShutdownTimeout
@@ -204,10 +202,9 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
         log.warning("Remoting is not running. Ignoring shutdown attempt.")
         Future.successful(Done)
     }
-  }
 
   // Start assumes that it cannot be followed by another start() without having a shutdown() first
-  override def start(): Unit = {
+  override def start(): Unit =
     endpointManager match {
       case None =>
         log.info("Starting remoting")
@@ -232,7 +229,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
             .map { case (k, v) => k -> v.toSet }
 
           defaultAddress = transports.head._2
-          addresses = transports.map { _._2 }.toSet
+          addresses = transports.map(_._2).toSet
 
           log.info("Remoting started; listening on addresses :" + addresses.mkString("[", ", ", "]"))
 
@@ -253,7 +250,6 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
       case Some(_) =>
         log.warning("Remoting was already started. Ignoring start attempt.")
     }
-  }
 
   override def send(message: Any, senderOption: OptionVal[ActorRef], recipient: RemoteActorRef): Unit =
     endpointManager match {
@@ -287,7 +283,7 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
         null)
   }
 
-  private[pekko] def boundAddresses: Map[String, Set[Address]] = {
+  private[pekko] def boundAddresses: Map[String, Set[Address]] =
     transportMapping.map {
       case (scheme, transports) =>
         scheme -> transports.flatMap {
@@ -295,7 +291,6 @@ private[remote] class Remoting(_system: ExtendedActorSystem, _provider: RemoteAc
           case (t, _) => Option(t.boundAddress)
         }
     }
-  }
 }
 
 /**
@@ -378,16 +373,14 @@ private[remote] object EndpointManager {
           endpoint
       }
 
-    def registerWritableEndpointUid(remoteAddress: Address, uid: Int): Unit = {
+    def registerWritableEndpointUid(remoteAddress: Address, uid: Int): Unit =
       addressToWritable.get(remoteAddress) match {
         case Some(Pass(ep, _)) => addressToWritable += remoteAddress -> Pass(ep, Some(uid))
         case _                 =>
       }
-    }
 
-    def registerWritableEndpointRefuseUid(remoteAddress: Address, refuseUid: Int, timeOfRelease: Deadline): Unit = {
+    def registerWritableEndpointRefuseUid(remoteAddress: Address, refuseUid: Int, timeOfRelease: Deadline): Unit =
       addressToRefuseUid = addressToRefuseUid.updated(remoteAddress, (refuseUid, timeOfRelease))
-    }
 
     def registerReadOnlyEndpoint(address: Address, endpoint: ActorRef, uid: Int): ActorRef = {
       addressToReadonly += address -> ((endpoint, uid))
@@ -620,7 +613,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
   def receive = {
     case Listen(addressesPromise) =>
       listens
-        .map { ListensResult(addressesPromise, _) }
+        .map(ListensResult(addressesPromise, _))
         .recover {
           case NonFatal(e) => ListensFailure(addressesPromise, e)
         }
@@ -705,10 +698,9 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         case _ => // nothing to stop
       }
 
-      def matchesQuarantine(handle: PekkoProtocolHandle): Boolean = {
+      def matchesQuarantine(handle: PekkoProtocolHandle): Boolean =
         handle.remoteAddress == address &&
         uidToQuarantineOption.forall(_ == handle.handshakeInfo.uid)
-      }
 
       // Stop all matching pending read handoffs
       pendingReadHandoffs = pendingReadHandoffs.filter {
@@ -736,7 +728,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     case s @ Send(_, _, recipientRef, _) =>
       val recipientAddress = recipientRef.path.address
 
-      def createAndRegisterWritingEndpoint(): ActorRef = {
+      def createAndRegisterWritingEndpoint(): ActorRef =
         endpoints.registerWritableEndpoint(
           recipientAddress,
           uid = None,
@@ -747,7 +739,6 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             settings,
             handleOption = None,
             writing = true))
-      }
 
       endpoints.writableEndpointWithPolicyFor(recipientAddress) match {
         case Some(Pass(endpoint, _)) =>
@@ -794,11 +785,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // Shutdown all endpoints and signal to sender() when ready (and whether all endpoints were shut down gracefully)
 
       @nowarn("msg=deprecated")
-      def shutdownAll[T](resources: IterableOnce[T])(shutdown: T => Future[Boolean]): Future[Boolean] = {
+      def shutdownAll[T](resources: IterableOnce[T])(shutdown: T => Future[Boolean]): Future[Boolean] =
         Future.sequence(resources.toList.map(shutdown)).map(_.forall(identity)).recover {
           case NonFatal(_) => false
         }
-      }
 
       (for {
         // The construction of the future for shutdownStatus has to happen after the flushStatus future has been finished
@@ -924,7 +914,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // The chain at this point:
       //   Adapter <- ... <- Adapter <- Driver
       val wrappedTransport =
-        adapters.map { TransportAdaptersExtension.get(context.system).getAdapterProvider }.foldLeft(driver) {
+        adapters.map(TransportAdaptersExtension.get(context.system).getAdapterProvider).foldLeft(driver) {
           (t: Transport, provider: TransportAdapterProvider) =>
             // The TransportAdapterProvider will wrap the given Transport and returns with a wrapped one
             provider.create(t, context.system.asInstanceOf[ExtendedActorSystem])
@@ -943,7 +933,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
     })
   }
 
-  private def acceptPendingReader(takingOverFrom: ActorRef): Unit = {
+  private def acceptPendingReader(takingOverFrom: ActorRef): Unit =
     if (pendingReadHandoffs.contains(takingOverFrom)) {
       val handle = pendingReadHandoffs(takingOverFrom)
       pendingReadHandoffs -= takingOverFrom
@@ -958,12 +948,10 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         writing = false)
       endpoints.registerReadOnlyEndpoint(handle.remoteAddress, endpoint, handle.handshakeInfo.uid)
     }
-  }
 
-  private def removePendingReader(takingOverFrom: ActorRef, withHandle: PekkoProtocolHandle): Unit = {
+  private def removePendingReader(takingOverFrom: ActorRef, withHandle: PekkoProtocolHandle): Unit =
     if (pendingReadHandoffs.get(takingOverFrom).exists(handle => handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
-  }
 
   private def createEndpoint(
       remoteAddress: Address,

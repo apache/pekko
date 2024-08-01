@@ -52,13 +52,11 @@ class SnapshotDirectoryFailureSpec
 
   val file = new File(inUseSnapshotPath)
 
-  override protected def atStartup(): Unit = {
+  override protected def atStartup(): Unit =
     if (!file.createNewFile()) throw new IOException(s"Failed to create test file [${file.getCanonicalFile}]")
-  }
 
-  override protected def afterTermination(): Unit = {
+  override protected def afterTermination(): Unit =
     if (!file.delete()) throw new IOException(s"Failed to delete test file [${file.getCanonicalFile}]")
-  }
 
   "A local snapshot store configured with an failing directory name " must {
     "throw an exception at startup" in {

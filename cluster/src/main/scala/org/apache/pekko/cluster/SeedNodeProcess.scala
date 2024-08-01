@@ -47,11 +47,10 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
     "Note that disabling it will allow the formation of a cluster with nodes having incompatible configuration settings. " +
     "This node will be shutdown!"
 
-  private lazy val needsAkkaConfig: Boolean = {
+  private lazy val needsAkkaConfig: Boolean =
     context.system.settings.config
       .getStringList("pekko.remote.accept-protocol-names")
       .contains("akka")
-  }
 
   private lazy val akkaVersion: String = {
     val cfg = context.system.settings.config
@@ -102,8 +101,7 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
   final def receiveInitJoinAckIncompatibleConfig(
       joinTo: Address,
       origin: ActorRef,
-      behavior: Option[Actor.Receive]): Unit = {
-
+      behavior: Option[Actor.Receive]): Unit =
     // first InitJoinAck reply, but incompatible
     if (ByPassConfigCompatCheck) {
       logInitJoinAckReceived(origin)
@@ -120,7 +118,6 @@ private[cluster] abstract class SeedNodeProcess(joinConfigCompatChecker: JoinCon
       context.stop(self)
       CoordinatedShutdown(context.system).run(CoordinatedShutdown.IncompatibleConfigurationDetectedReason)
     }
-  }
 
   final def receiveInitJoinAckCompatibleConfig(
       joinTo: Address,

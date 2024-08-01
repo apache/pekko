@@ -88,9 +88,8 @@ class NettyTransportSpec extends AnyWordSpec with Matchers with BindBehavior {
         getInternal() should not contain address.toAkkaAddress("tcp")
 
         Await.result(sys.terminate(), Duration.Inf)
-      } finally {
+      } finally
         openSS.close()
-      }
 
     }
 

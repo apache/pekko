@@ -84,7 +84,7 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
     val stashState = new StashState(ctx.asInstanceOf[ActorContext[InternalProtocol]], settings)
 
     // This method ensures that the MDC is set before we use the internal logger
-    def internalLogger() = {
+    def internalLogger() =
       if (settings.useContextLoggerForInternalLogging) ctx.log
       else {
         // MDC is cleared (if used) from aroundReceive in ActorAdapter after processing each message,
@@ -92,7 +92,6 @@ private[pekko] final case class DurableStateBehaviorImpl[Command, State](
         ctx.log
         loggerForInternal
       }
-    }
 
     val actualSignalHandler: PartialFunction[(State, Signal), Unit] = signalHandler.orElse {
       // default signal handler is always the fallback

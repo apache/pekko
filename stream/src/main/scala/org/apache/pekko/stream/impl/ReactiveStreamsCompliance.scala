@@ -61,11 +61,10 @@ import org.reactivestreams.{ Subscriber, Subscription }
   final def subscriptionMustNotBeNullException: Throwable =
     new NullPointerException(SubscriptionMustNotBeNullMsg)
 
-  final def rejectDuplicateSubscriber[T](subscriber: Subscriber[T]): Unit = {
+  final def rejectDuplicateSubscriber[T](subscriber: Subscriber[T]): Unit =
     // since it is already subscribed it has received the subscription first
     // and we can emit onError immediately
     tryOnError(subscriber, canNotSubscribeTheSameSubscriberMultipleTimesException)
-  }
 
   final def rejectAdditionalSubscriber[T](subscriber: Subscriber[T], rejector: String): Unit = {
     tryOnSubscribe(subscriber, CancelledSubscription)
@@ -113,19 +112,17 @@ import org.reactivestreams.{ Subscriber, Subscription }
     }
   }
 
-  final def tryOnSubscribe[T](subscriber: Subscriber[T], subscription: Subscription): Unit = {
+  final def tryOnSubscribe[T](subscriber: Subscriber[T], subscription: Subscription): Unit =
     try subscriber.onSubscribe(subscription)
     catch {
       case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onSubscribe", t)
     }
-  }
 
-  final def tryOnComplete[T](subscriber: Subscriber[T]): Unit = {
+  final def tryOnComplete[T](subscriber: Subscriber[T]): Unit =
     try subscriber.onComplete()
     catch {
       case NonFatal(t) => throw new SignalThrewException(s"$subscriber.onComplete", t)
     }
-  }
 
   final def tryRequest(subscription: Subscription, demand: Long): Unit = {
     if (subscription eq null)

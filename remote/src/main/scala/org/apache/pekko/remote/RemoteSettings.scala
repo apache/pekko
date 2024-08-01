@@ -46,10 +46,9 @@ final class RemoteSettings(val config: Config) {
   val LogSend: Boolean = getBoolean("pekko.remote.classic.log-sent-messages")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val LogFrameSizeExceeding: Option[Int] = {
+  val LogFrameSizeExceeding: Option[Int] =
     if (config.getString("pekko.remote.classic.log-frame-size-exceeding").toLowerCase == "off") None
     else Some(getBytes("pekko.remote.classic.log-frame-size-exceeding").toInt)
-  }
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val UntrustedMode: Boolean = getBoolean("pekko.remote.classic.untrusted-mode")
@@ -88,32 +87,32 @@ final class RemoteSettings(val config: Config) {
     }
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val ShutdownTimeout: Timeout = {
+  val ShutdownTimeout: Timeout =
     Timeout(config.getMillisDuration("pekko.remote.classic.shutdown-timeout"))
-  }.requiring(_.duration > Duration.Zero, "shutdown-timeout must be > 0")
+      .requiring(_.duration > Duration.Zero, "shutdown-timeout must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val FlushWait: FiniteDuration = {
+  val FlushWait: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.flush-wait-on-shutdown")
-  }.requiring(_ > Duration.Zero, "flush-wait-on-shutdown must be > 0")
+      .requiring(_ > Duration.Zero, "flush-wait-on-shutdown must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val StartupTimeout: Timeout = {
+  val StartupTimeout: Timeout =
     Timeout(config.getMillisDuration("pekko.remote.classic.startup-timeout"))
-  }.requiring(_.duration > Duration.Zero, "startup-timeout must be > 0")
+      .requiring(_.duration > Duration.Zero, "startup-timeout must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val RetryGateClosedFor: FiniteDuration = {
+  val RetryGateClosedFor: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.retry-gate-closed-for")
-  }.requiring(_ >= Duration.Zero, "retry-gate-closed-for must be >= 0")
+      .requiring(_ >= Duration.Zero, "retry-gate-closed-for must be >= 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val UsePassiveConnections: Boolean = getBoolean("pekko.remote.classic.use-passive-connections")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val BackoffPeriod: FiniteDuration = {
+  val BackoffPeriod: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.backoff-interval")
-  }.requiring(_ > Duration.Zero, "backoff-interval must be > 0")
+      .requiring(_ > Duration.Zero, "backoff-interval must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val LogBufferSizeExceeding: Int = {
@@ -125,29 +124,29 @@ final class RemoteSettings(val config: Config) {
   }
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val SysMsgAckTimeout: FiniteDuration = {
+  val SysMsgAckTimeout: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.system-message-ack-piggyback-timeout")
-  }.requiring(_ > Duration.Zero, "system-message-ack-piggyback-timeout must be > 0")
+      .requiring(_ > Duration.Zero, "system-message-ack-piggyback-timeout must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val SysResendTimeout: FiniteDuration = {
+  val SysResendTimeout: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.resend-interval")
-  }.requiring(_ > Duration.Zero, "resend-interval must be > 0")
+      .requiring(_ > Duration.Zero, "resend-interval must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val SysResendLimit: Int = {
+  val SysResendLimit: Int =
     config.getInt("pekko.remote.classic.resend-limit")
-  }.requiring(_ > 0, "resend-limit must be > 0")
+      .requiring(_ > 0, "resend-limit must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val SysMsgBufferSize: Int = {
+  val SysMsgBufferSize: Int =
     getInt("pekko.remote.classic.system-message-buffer-size")
-  }.requiring(_ > 0, "system-message-buffer-size must be > 0")
+      .requiring(_ > 0, "system-message-buffer-size must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val InitialSysMsgDeliveryTimeout: FiniteDuration = {
+  val InitialSysMsgDeliveryTimeout: FiniteDuration =
     config.getMillisDuration("pekko.remote.classic.initial-system-message-delivery-timeout")
-  }.requiring(_ > Duration.Zero, "initial-system-message-delivery-timeout must be > 0")
+      .requiring(_ > Duration.Zero, "initial-system-message-delivery-timeout must be > 0")
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
   val QuarantineSilentSystemTimeout: FiniteDuration = {
@@ -160,16 +159,15 @@ final class RemoteSettings(val config: Config) {
   }
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val QuarantineDuration: FiniteDuration = {
+  val QuarantineDuration: FiniteDuration =
     config
       .getMillisDuration("pekko.remote.classic.prune-quarantine-marker-after")
       .requiring(_ > Duration.Zero, "prune-quarantine-marker-after must be > 0 ms")
-  }
 
   @deprecated("Classic remoting is deprecated, use Artery", "Akka 2.6.0")
-  val CommandAckTimeout: Timeout = {
+  val CommandAckTimeout: Timeout =
     Timeout(config.getMillisDuration("pekko.remote.classic.command-ack-timeout"))
-  }.requiring(_.duration > Duration.Zero, "command-ack-timeout must be > 0")
+      .requiring(_.duration > Duration.Zero, "command-ack-timeout must be > 0")
 
   val UseUnsafeRemoteFeaturesWithoutCluster: Boolean = getBoolean(
     "pekko.remote.use-unsafe-remote-features-outside-cluster")
@@ -178,15 +176,15 @@ final class RemoteSettings(val config: Config) {
 
   val WatchFailureDetectorConfig: Config = getConfig("pekko.remote.watch-failure-detector")
   val WatchFailureDetectorImplementationClass: String = WatchFailureDetectorConfig.getString("implementation-class")
-  val WatchHeartBeatInterval: FiniteDuration = {
+  val WatchHeartBeatInterval: FiniteDuration =
     WatchFailureDetectorConfig.getMillisDuration("heartbeat-interval")
-  }.requiring(_ > Duration.Zero, "watch-failure-detector.heartbeat-interval must be > 0")
-  val WatchUnreachableReaperInterval: FiniteDuration = {
+      .requiring(_ > Duration.Zero, "watch-failure-detector.heartbeat-interval must be > 0")
+  val WatchUnreachableReaperInterval: FiniteDuration =
     WatchFailureDetectorConfig.getMillisDuration("unreachable-nodes-reaper-interval")
-  }.requiring(_ > Duration.Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0")
-  val WatchHeartbeatExpectedResponseAfter: FiniteDuration = {
+      .requiring(_ > Duration.Zero, "watch-failure-detector.unreachable-nodes-reaper-interval must be > 0")
+  val WatchHeartbeatExpectedResponseAfter: FiniteDuration =
     WatchFailureDetectorConfig.getMillisDuration("expected-response-after")
-  }.requiring(_ > Duration.Zero, "watch-failure-detector.expected-response-after > 0")
+      .requiring(_ > Duration.Zero, "watch-failure-detector.expected-response-after > 0")
 
   val Transports: immutable.Seq[(String, immutable.Seq[String], Config)] = transportNames.map { name =>
     val transportConfig = transportConfigFor(name)

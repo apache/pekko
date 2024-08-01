@@ -35,9 +35,8 @@ object BehaviorTestKit {
     val uid = ThreadLocalRandom.current().nextInt()
     new BehaviorTestKitImpl(system, (system.path / name).withUid(uid), initialBehavior)
   }
-  def apply[T](initialBehavior: Behavior[T], name: String): BehaviorTestKit[T] = {
+  def apply[T](initialBehavior: Behavior[T], name: String): BehaviorTestKit[T] =
     apply(initialBehavior, name, ActorSystemStub.config.defaultReference)
-  }
   def apply[T](initialBehavior: Behavior[T]): BehaviorTestKit[T] =
     apply(initialBehavior, "testkit")
 

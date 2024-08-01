@@ -210,7 +210,7 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
   def matchingRole(member: Member): Boolean =
     member.hasRole(targetDcRole) && role.forall(member.hasRole)
 
-  def handleInitial(state: CurrentClusterState): Unit = {
+  def handleInitial(state: CurrentClusterState): Unit =
     trackChange { () =>
       membersByAge = immutable.SortedSet
         .empty(ageOrdering)
@@ -218,7 +218,6 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
           case m if m.status == MemberStatus.Up && matchingRole(m) => m
         })
     }
-  }
 
   /**
    * Discard old singleton ActorRef and send a periodic message to self to identify the singleton.
@@ -250,26 +249,24 @@ final class ClusterSingletonProxy(singletonManagerPath: String, settings: Cluste
    * Adds new member if it has the right role.
    * @param m New cluster member.
    */
-  def add(m: Member): Unit = {
+  def add(m: Member): Unit =
     if (matchingRole(m))
       trackChange { () =>
         // replace, it's possible that the upNumber is changed
         membersByAge = membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress)
         membersByAge += m
       }
-  }
 
   /**
    * Removes a member.
    * @param m Cluster member to remove.
    */
-  def remove(m: Member): Unit = {
+  def remove(m: Member): Unit =
     if (matchingRole(m))
       trackChange { () =>
         // filter, it's possible that the upNumber is changed
         membersByAge = membersByAge.filterNot(_.uniqueAddress == m.uniqueAddress)
       }
-  }
 
   def receive = {
     // cluster logic

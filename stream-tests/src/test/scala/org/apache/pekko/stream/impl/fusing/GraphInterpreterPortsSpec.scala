@@ -33,8 +33,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.pull()
 
@@ -44,9 +44,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
 
@@ -56,8 +56,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.push(0)
 
@@ -67,9 +67,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
 
@@ -79,7 +79,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(true)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         in.grab() should ===(0)
 
@@ -89,8 +89,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         // Cycle completed
       }
@@ -106,7 +106,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
 
         in.pull()
 
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate complete while downstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -125,7 +125,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -135,9 +135,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -148,9 +148,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -161,9 +161,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate complete while upstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -185,7 +185,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -195,9 +195,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -208,9 +208,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -221,9 +221,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
       }
 
@@ -245,7 +245,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -255,9 +255,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -268,9 +268,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -281,9 +281,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate complete while push is in flight (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -308,7 +308,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         step()
 
@@ -318,9 +318,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(true)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
         in.grab() should ===(0)
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         step()
 
@@ -330,9 +330,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -343,9 +343,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate complete while push is in flight and keep ungrabbed element (chasing = $chasing)" in new PortTestSetup(
@@ -392,9 +392,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore pull while completing (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -411,9 +411,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate cancel while downstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -432,8 +432,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
 
@@ -443,9 +443,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -456,9 +456,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -469,9 +469,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate cancel while upstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -493,8 +493,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
 
@@ -504,9 +504,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -517,9 +517,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -530,9 +530,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
       }
 
@@ -554,8 +554,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
 
@@ -565,9 +565,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -578,9 +578,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -591,9 +591,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate cancel while push is in flight (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -618,7 +618,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
 
         stepAll()
 
@@ -628,9 +628,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -641,9 +641,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -654,9 +654,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore push while cancelling (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -677,9 +677,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"clear ungrabbed element even when cancelled (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -699,8 +699,8 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         stepAll()
         lastEvents() should be(Set(Cancel(out, SubscriptionWithCancelException.NoMoreElementsNeeded)))
@@ -709,9 +709,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore any completion if they are concurrent (cancel first) (chasing = $chasing)" in new PortTestSetup(
@@ -727,9 +727,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore any completion if they are concurrent (complete first) (chasing = $chasing)" in new PortTestSetup(
@@ -745,9 +745,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore completion from a push-complete if cancelled while in flight (chasing = $chasing)" in new PortTestSetup(
@@ -768,9 +768,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore completion from a push-complete if cancelled after onPush (chasing = $chasing)" in new PortTestSetup(
@@ -790,7 +790,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(true)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
         in.grab() should ===(0)
 
         in.cancel()
@@ -802,9 +802,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"not allow to grab element before it arrives (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -812,7 +812,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         stepAll()
         out.push(0)
 
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"not allow to grab element if already cancelled (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -824,7 +824,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
 
         stepAll()
 
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate failure while downstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -843,7 +843,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -853,9 +853,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -866,9 +866,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -879,9 +879,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate failure while upstream is active (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -903,7 +903,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -913,9 +913,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -926,9 +926,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -939,9 +939,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
       }
 
@@ -963,7 +963,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         stepAll()
 
@@ -973,9 +973,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         in.cancel() // This should have no effect now
         stepAll()
@@ -986,9 +986,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -999,9 +999,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate failure while push is in flight (chasing = $chasing)" in new PortTestSetup(chasing) {
@@ -1026,7 +1026,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(true)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
 
         step()
 
@@ -1036,9 +1036,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(true)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
         in.grab() should ===(0)
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         step()
 
@@ -1048,9 +1048,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
 
         out.complete() // This should have no effect now
         stepAll()
@@ -1061,9 +1061,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"propagate failure while push is in flight and keep ungrabbed element (chasing = $chasing)" in new PortTestSetup(
@@ -1101,9 +1101,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore any failure completion if they are concurrent (cancel first) (chasing = $chasing)" in new PortTestSetup(
@@ -1119,9 +1119,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore any failure completion if they are concurrent (complete first) (chasing = $chasing)" in new PortTestSetup(
@@ -1137,9 +1137,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore failure from a push-then-fail if cancelled while in flight (chasing = $chasing)" in new PortTestSetup(
@@ -1160,9 +1160,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
 
       s"ignore failure from a push-then-fail if cancelled after onPush (chasing = $chasing)" in new PortTestSetup(
@@ -1182,7 +1182,7 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(true)
         in.hasBeenPulled should be(false)
         in.isClosed should be(false)
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
+        an[IllegalArgumentException] should be thrownBy out.push(0)
         in.grab() should ===(0)
 
         in.cancel()
@@ -1194,9 +1194,9 @@ class GraphInterpreterPortsSpec extends StreamSpec with GraphInterpreterSpecKit 
         in.isAvailable should be(false)
         in.hasBeenPulled should be(false)
         in.isClosed should be(true)
-        an[IllegalArgumentException] should be thrownBy { in.pull() }
-        an[IllegalArgumentException] should be thrownBy { out.push(0) }
-        an[IllegalArgumentException] should be thrownBy { in.grab() }
+        an[IllegalArgumentException] should be thrownBy in.pull()
+        an[IllegalArgumentException] should be thrownBy out.push(0)
+        an[IllegalArgumentException] should be thrownBy in.grab()
       }
     }
 

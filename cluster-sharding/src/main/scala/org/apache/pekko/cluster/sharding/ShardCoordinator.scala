@@ -299,7 +299,7 @@ object ShardCoordinator {
 
     override def rebalance(
         currentShardAllocations: Map[ActorRef, immutable.IndexedSeq[ShardId]],
-        rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
+        rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] =
       if (rebalanceInProgress.size < maxSimultaneousRebalance) {
         val sortedRegionEntries = regionEntriesFor(currentShardAllocations).toVector.sorted(ShardSuitabilityOrdering)
         if (isAGoodTimeToRebalance(sortedRegionEntries)) {
@@ -320,7 +320,6 @@ object ShardCoordinator {
             emptyRebalanceResult
         } else emptyRebalanceResult
       } else emptyRebalanceResult
-    }
   }
 
   /**
@@ -465,12 +464,11 @@ object ShardCoordinator {
 
       override def toString = s"State($shards)"
 
-      def withRememberEntities(enabled: Boolean): State = {
+      def withRememberEntities(enabled: Boolean): State =
         if (enabled)
           copy(rememberEntities = enabled)
         else
           copy(unallocatedShards = Set.empty, rememberEntities = enabled)
-      }
 
       def isEmpty: Boolean =
         shards.isEmpty && regions.isEmpty && regionProxies.isEmpty
@@ -647,9 +645,8 @@ object ShardCoordinator {
       shardRegionFrom: ActorRef,
       handOffTimeout: FiniteDuration,
       regions: Set[ActorRef],
-      isRebalance: Boolean): Props = {
+      isRebalance: Boolean): Props =
     Props(new RebalanceWorker(typeName, shard, shardRegionFrom, handOffTimeout, regions, isRebalance))
-  }
 
 }
 
@@ -949,7 +946,7 @@ abstract class ShardCoordinator(
         terminate()
     }: Receive).orElse[Any, Unit](receiveTerminated)
 
-  private def terminate(): Unit = {
+  private def terminate(): Unit =
     if (aliveRegions.exists(_.path.address.hasLocalScope) || gracefulShutdownInProgress.exists(
         _.path.address.hasLocalScope)) {
       aliveRegions
@@ -978,9 +975,8 @@ abstract class ShardCoordinator(
       }
       context.stop(self)
     }
-  }
 
-  private def clearRebalanceInProgress(shard: String): Unit = {
+  private def clearRebalanceInProgress(shard: String): Unit =
     rebalanceInProgress.get(shard) match {
       case Some(pendingGetShardHome) =>
         val msg = GetShardHome(shard)
@@ -990,7 +986,6 @@ abstract class ShardCoordinator(
         rebalanceInProgress -= shard
       case None =>
     }
-  }
 
   private def deferGetShardHomeRequest(shard: ShardId, from: ActorRef): Unit = {
     log.debug(
@@ -1041,7 +1036,7 @@ abstract class ShardCoordinator(
    * @return `true` if the message could be handled without state update, i.e.
    *         the shard location was known or the request was deferred or ignored
    */
-  def handleGetShardHome(shard: ShardId): Boolean = {
+  def handleGetShardHome(shard: ShardId): Boolean =
     if (rebalanceInProgress.contains(shard)) {
       deferGetShardHomeRequest(shard, sender())
       unstashOneGetShardHomeRequest() // continue unstashing
@@ -1071,7 +1066,6 @@ abstract class ShardCoordinator(
           false // location not known, yet, caller will handle allocation
       }
     }
-  }
 
   def receiveTerminated: Receive = {
     case t @ Terminated(ref) =>
@@ -1130,14 +1124,13 @@ abstract class ShardCoordinator(
     allocateShardHomesForRememberEntities()
   }
 
-  def hasAllRegionsRegistered(): Boolean = {
+  def hasAllRegionsRegistered(): Boolean =
     // the check is only for startup, i.e. once all have registered we don't check more
     if (allRegionsRegistered) true
     else {
       allRegionsRegistered = aliveRegions.size >= minMembers
       allRegionsRegistered
     }
-  }
 
   def regionTerminated(ref: ActorRef): Unit = {
     rebalanceWorkers.foreach(_ ! RebalanceWorker.ShardRegionTerminated(ref))
@@ -1190,12 +1183,11 @@ abstract class ShardCoordinator(
     unAckedHostShards = unAckedHostShards.updated(shard, cancel)
   }
 
-  def allocateShardHomesForRememberEntities(): Unit = {
+  def allocateShardHomesForRememberEntities(): Unit =
     if (settings.rememberEntities && state.unallocatedShards.nonEmpty)
       state.unallocatedShards.foreach { shard =>
         self.tell(GetShardHome(shard), ignoreRef)
       }
-  }
 
   def continueGetShardHome(shard: ShardId, region: ActorRef, getShardHomeSender: ActorRef): Unit =
     if (rebalanceInProgress.contains(shard)) {
@@ -1238,10 +1230,9 @@ abstract class ShardCoordinator(
 
   protected def unstashOneGetShardHomeRequest(): Unit
 
-  private def regionAddress(region: ActorRef): Address = {
+  private def regionAddress(region: ActorRef): Address =
     if (region.path.address.host.isEmpty) cluster.selfAddress
     else region.path.address
-  }
 
   /**
    * Start a RebalanceWorker to manage the shard rebalance.
@@ -1251,7 +1242,7 @@ abstract class ShardCoordinator(
       shard: String,
       from: ActorRef,
       handOffTimeout: FiniteDuration,
-      isRebalance: Boolean): Unit = {
+      isRebalance: Boolean): Unit =
     if (!rebalanceInProgress.contains(shard)) {
       rebalanceInProgress = rebalanceInProgress.updated(shard, Set.empty)
       rebalanceWorkers += context.actorOf(
@@ -1263,7 +1254,6 @@ abstract class ShardCoordinator(
           state.regions.keySet.union(state.regionProxies),
           isRebalance = isRebalance).withDispatcher(context.props.dispatcher))
     }
-  }
 
   def continueRebalance(shards: Set[ShardId]): Unit = {
     if ((log: BusLogging).isInfoEnabled && (shards.nonEmpty || rebalanceInProgress.nonEmpty)) {
@@ -1418,12 +1408,11 @@ class PersistentShardCoordinator(
     persist(evt)(f)
   }
 
-  def saveSnapshotWhenNeeded(): Unit = {
+  def saveSnapshotWhenNeeded(): Unit =
     if (lastSequenceNr % snapshotAfter == 0 && lastSequenceNr != 0) {
       log.debug("{}: Saving snapshot, sequence number [{}]", typeName, snapshotSequenceNr)
       saveSnapshot(state)
     }
-  }
 
   override protected def unstashOneGetShardHomeRequest(): Unit = ()
 }
@@ -1776,7 +1765,7 @@ private[pekko] class DDataShardCoordinator(
     getShardHomeRequests += (sender -> request)
   }
 
-  override protected def unstashOneGetShardHomeRequest(): Unit = {
+  override protected def unstashOneGetShardHomeRequest(): Unit =
     if (getShardHomeRequests.nonEmpty) {
       // unstash one, will continue unstash of next after receive GetShardHome or update completed
       val requestTuple = getShardHomeRequests.head
@@ -1784,7 +1773,6 @@ private[pekko] class DDataShardCoordinator(
       self.tell(request, sender = originalSender)
       getShardHomeRequests -= requestTuple
     }
-  }
 
   def activate(): Unit = {
     context.become(active.orElse(receiveLateRememberedEntities))
@@ -1834,9 +1822,8 @@ private[pekko] class DDataShardCoordinator(
     context.become(waitingReceive, discardOld = false)
   }
 
-  def getCoordinatorState(): Unit = {
+  def getCoordinatorState(): Unit =
     replicator ! Get(CoordinatorStateKey, stateReadConsistency)
-  }
 
   def getAllRememberedShards(): Unit = {
     timers.startSingleTimer(

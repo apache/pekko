@@ -114,12 +114,11 @@ import pekko.util.OptionVal
   override def isTimerActive(key: Any): Boolean =
     timers.contains(key)
 
-  override def cancel(key: Any): Unit = {
+  override def cancel(key: Any): Unit =
     timers.get(key) match {
       case None    => // already removed/canceled
       case Some(t) => cancelTimer(t)
     }
-  }
 
   private def cancelTimer(timer: Timer): Unit = {
     timer.task.cancel()
@@ -133,7 +132,7 @@ import pekko.util.OptionVal
     timers = Map.empty
   }
 
-  def interceptTimerMsg(timerMsg: TimerMsg): OptionVal[AnyRef] = {
+  def interceptTimerMsg(timerMsg: TimerMsg): OptionVal[AnyRef] =
     timers.get(timerMsg.key) match {
       case None =>
         // it was from canceled timer that was already enqueued in mailbox
@@ -159,6 +158,5 @@ import pekko.util.OptionVal
           OptionVal.None // message should be ignored
         }
     }
-  }
 
 }

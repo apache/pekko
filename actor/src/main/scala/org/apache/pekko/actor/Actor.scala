@@ -376,9 +376,8 @@ trait DiagnosticActorLogging extends Actor {
     try {
       log.mdc(mdc(msg))
       super.aroundReceive(receive, msg)
-    } finally {
+    } finally
       log.clearMDC()
-    }
 }
 
 object Actor {
@@ -542,12 +541,11 @@ trait Actor {
    * @param msg current message.
    */
   @InternalApi
-  protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit = {
+  protected[pekko] def aroundReceive(receive: Actor.Receive, msg: Any): Unit =
     // optimization: avoid allocation of lambda
     if (receive.applyOrElse(msg, Actor.notHandledFun).asInstanceOf[AnyRef] eq Actor.NotHandled) {
       unhandled(msg)
     }
-  }
 
   /**
    * INTERNAL API.
@@ -640,9 +638,8 @@ trait Actor {
    */
   @throws(classOf[Exception]) // when changing this you MUST also change ActorDocTest
   // #lifecycle-hooks
-  def postRestart(@unused reason: Throwable): Unit = {
+  def postRestart(@unused reason: Throwable): Unit =
     preStart()
-  }
   // #lifecycle-hooks
 
   /**
@@ -653,10 +650,9 @@ trait Actor {
    * case of an unhandled [[pekko.actor.Terminated]] message) or publishes an [[pekko.actor.UnhandledMessage]]
    * to the actor's system's [[pekko.event.EventStream]]
    */
-  def unhandled(message: Any): Unit = {
+  def unhandled(message: Any): Unit =
     message match {
       case Terminated(dead) => throw DeathPactException(dead)
       case _                => context.system.eventStream.publish(UnhandledMessage(message, sender(), self))
     }
-  }
 }

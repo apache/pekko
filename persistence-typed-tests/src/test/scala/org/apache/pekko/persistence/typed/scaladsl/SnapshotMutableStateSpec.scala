@@ -48,7 +48,7 @@ object SnapshotMutableStateSpec {
 
   def counter(
       persistenceId: PersistenceId,
-      probe: ActorRef[String]): EventSourcedBehavior[Command, Event, MutableState] = {
+      probe: ActorRef[String]): EventSourcedBehavior[Command, Event, MutableState] =
     EventSourcedBehavior[Command, Event, MutableState](
       persistenceId,
       emptyState = new MutableState(0),
@@ -73,7 +73,6 @@ object SnapshotMutableStateSpec {
       case (_, SnapshotFailed(meta, _)) =>
         probe ! s"snapshot-failure-${meta.sequenceNr}"
     }
-  }
 
 }
 

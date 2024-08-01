@@ -51,7 +51,7 @@ private[pekko] object TaskRunner {
 
     def add(e: T): Unit = {
       val size = elements.length
-      @tailrec def tryAdd(i: Int): Unit = {
+      @tailrec def tryAdd(i: Int): Unit =
         if (i == size) {
           doubleCapacity()
           elements(i) = e
@@ -59,20 +59,18 @@ private[pekko] object TaskRunner {
           elements(i) = e
         else
           tryAdd(i + 1) // recursive
-      }
       tryAdd(0)
     }
 
     def remove(e: T): Unit = {
       val size = elements.length
-      @tailrec def tryRemove(i: Int): Unit = {
+      @tailrec def tryRemove(i: Int): Unit =
         if (i == size)
           () // not found
         else if (elements(i) == e)
           elements(i) = null.asInstanceOf[T]
         else
           tryRemove(i + 1) // recursive
-      }
       tryRemove(0)
     }
 
@@ -103,7 +101,7 @@ private[pekko] object TaskRunner {
       elements.filterNot(_ eq null).mkString("[", ",", "]")
   }
 
-  def createIdleStrategy(idleCpuLevel: Int): IdleStrategy = {
+  def createIdleStrategy(idleCpuLevel: Int): IdleStrategy =
     if (idleCpuLevel == 1)
       new SleepingIdleStrategy(MILLISECONDS.toNanos(1))
     else if (idleCpuLevel == 10)
@@ -117,7 +115,6 @@ private[pekko] object TaskRunner {
       val maxParkNanos = MICROSECONDS.toNanos(280 - 30 * idleCpuLevel)
       new BackoffIdleStrategy(spinning, yielding, minParkNanos, maxParkNanos)
     }
-  }
 }
 
 /**
@@ -150,11 +147,10 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
     shutdown.future
   }
 
-  def command(cmd: Command): Unit = {
+  def command(cmd: Command): Unit =
     cmdQueue.add(cmd)
-  }
 
-  override def run(): Unit = {
+  override def run(): Unit =
     try {
       running = true
       while (running) {
@@ -172,7 +168,6 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
       case NonFatal(e) =>
         log.error(e, e.getMessage)
     }
-  }
 
   private def executeTasks(): Unit = {
     val elements = tasks.all
@@ -181,12 +176,12 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
     while (i < size) {
       val task = elements(i)
       if (task ne null)
-        try {
+        try
           if (task()) {
             tasks.remove(task)
             reset = true
           }
-        } catch {
+        catch {
           case NonFatal(e) =>
             log.error(e, "Task failed")
             tasks.remove(task)
@@ -195,7 +190,7 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
     }
   }
 
-  private def processCommand(cmd: Command): Unit = {
+  private def processCommand(cmd: Command): Unit =
     cmd match {
       case null         => // no command
       case Add(task)    => tasks.add(task)
@@ -206,6 +201,5 @@ private[pekko] class TaskRunner(system: ExtendedActorSystem, val idleCpuLevel: I
         while (cmdQueue.poll() != null) () // gc friendly
         shutdown.trySuccess(Done)
     }
-  }
 
 }

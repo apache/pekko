@@ -106,9 +106,8 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
     case _: DeleteSnapshotsFailure     => // ignore
   }
 
-  private def snapshotFiles(metadata: SnapshotMetadata): immutable.Seq[File] = {
+  private def snapshotFiles(metadata: SnapshotMetadata): immutable.Seq[File] =
     snapshotDir().listFiles(new SnapshotSeqNrFilenameFilter(metadata)).toVector
-  }
 
   @scala.annotation.tailrec
   private def load(metadata: immutable.Seq[SnapshotMetadata]): Try[Option[SelectedSnapshot]] =
@@ -136,9 +135,8 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
   protected def deserialize(inputStream: InputStream): Snapshot =
     serializationExtension.deserialize(streamToBytes(inputStream), classOf[Snapshot]).get
 
-  protected def serialize(outputStream: OutputStream, snapshot: Snapshot): Unit = {
+  protected def serialize(outputStream: OutputStream, snapshot: Snapshot): Unit =
     outputStream.write(serializationExtension.serialize(snapshot).get)
-  }
 
   protected def withOutputStream(metadata: SnapshotMetadata)(p: (OutputStream) => Unit): File = {
     val tmpFile = snapshotFileForWrite(metadata, extension = "tmp")
@@ -150,11 +148,10 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
     withStream(new BufferedInputStream(Files.newInputStream(snapshotFileForWrite(metadata).toPath())), p)
 
   private def withStream[A <: Closeable, B](stream: A, p: A => B): B =
-    try {
+    try
       p(stream)
-    } finally {
+    finally
       stream.close()
-    }
 
   /** Only by persistenceId and sequenceNr, timestamp is informational - accommodates for 2.13.x series files */
   protected def snapshotFileForWrite(metadata: SnapshotMetadata, extension: String = ""): File =
@@ -209,10 +206,9 @@ private[persistence] class LocalSnapshotStore(config: Config) extends SnapshotSt
   }
 
   private final class SnapshotSeqNrFilenameFilter(md: SnapshotMetadata) extends FilenameFilter {
-    private final def matches(pid: String, snr: String, tms: String): Boolean = {
+    private final def matches(pid: String, snr: String, tms: String): Boolean =
       pid.equals(URLEncoder.encode(md.persistenceId, defaultSystemEncoding)) &&
       Try(snr.toLong == md.sequenceNr && (md.timestamp == 0L || tms.toLong == md.timestamp)).getOrElse(false)
-    }
 
     def accept(dir: File, name: String): Boolean =
       name match {

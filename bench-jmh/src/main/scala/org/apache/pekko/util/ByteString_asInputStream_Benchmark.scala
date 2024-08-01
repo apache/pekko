@@ -60,30 +60,25 @@ class ByteString_asInputStream_Benchmark {
     val bytes = Array.ofDim[Byte](1024 * kb)
     bs = ByteString(bytes)
     composed = ByteString.empty
-    for (_ <- 0 to 100) {
+    for (_ <- 0 to 100)
       composed = composed ++ bs
-    }
   }
 
   @Benchmark
-  def single_bs_bytes_to_input_stream(blackhole: Blackhole): Unit = {
+  def single_bs_bytes_to_input_stream(blackhole: Blackhole): Unit =
     blackhole.consume(countBytes(new ByteArrayInputStream(bs.toArray)))
-  }
 
   @Benchmark
-  def composed_bs_bytes_to_input_stream(blackhole: Blackhole): Unit = {
+  def composed_bs_bytes_to_input_stream(blackhole: Blackhole): Unit =
     blackhole.consume(countBytes(new ByteArrayInputStream(composed.toArray)))
-  }
 
   @Benchmark
-  def single_bs_as_input_stream(blackhole: Blackhole): Unit = {
+  def single_bs_as_input_stream(blackhole: Blackhole): Unit =
     blackhole.consume(countBytes(bs.asInputStream))
-  }
 
   @Benchmark
-  def composed_bs_as_input_stream(blackhole: Blackhole): Unit = {
+  def composed_bs_as_input_stream(blackhole: Blackhole): Unit =
     blackhole.consume(countBytes(composed.asInputStream))
-  }
 
   private def countBytes(stream: InputStream): Int = {
     val buffer = new Array[Byte](1024)

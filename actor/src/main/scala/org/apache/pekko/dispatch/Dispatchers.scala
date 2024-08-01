@@ -82,7 +82,7 @@ object Dispatchers {
    * Get (possibly aliased) dispatcher config. Returns empty config if not found.
    */
   @tailrec
-  private[pekko] def getConfig(config: Config, id: String, depth: Int = 0): Config = {
+  private[pekko] def getConfig(config: Config, id: String, depth: Int = 0): Config =
     if (depth > MaxDispatcherAliasDepth)
       ConfigFactory.empty(s"Didn't find dispatcher config after $MaxDispatcherAliasDepth aliases")
     else if (config.hasPath(id)) {
@@ -92,7 +92,6 @@ object Dispatchers {
         case unexpected             => ConfigFactory.empty(s"Expected either config or alias at [$id] but found [$unexpected]")
       }
     } else ConfigFactory.empty(s"Dispatcher [$id] not configured")
-  }
 }
 
 /**
@@ -213,9 +212,8 @@ class Dispatchers @InternalApi private[pekko] (
   /**
    * INTERNAL API
    */
-  private[pekko] def config(id: String): Config = {
+  private[pekko] def config(id: String): Config =
     config(id, settings.config.getConfig(id))
-  }
 
   /**
    * INTERNAL API

@@ -52,23 +52,21 @@ import pekko.util.OptionVal
     private val prefixSpring: String = "org.springframework."
     private val prefixC3P0: String = "com.mchange.v2.c3p0."
 
-    def isAllowedClassName(className: String): Boolean = {
+    def isAllowedClassName(className: String): Boolean =
       if (defaultNoDeserClassNames.contains(className))
         false
       else if (className.startsWith(prefixC3P0) && className.endsWith("DataSource"))
         false
       else
         true
-    }
 
-    def isAllowedClass(clazz: Class[_]): Boolean = {
+    def isAllowedClass(clazz: Class[_]): Boolean =
       if (clazz.getName.startsWith(prefixSpring)) {
         isAllowedSpringClass(clazz)
       } else
         true
-    }
 
-    @tailrec private def isAllowedSpringClass(clazz: Class[_]): Boolean = {
+    @tailrec private def isAllowedSpringClass(clazz: Class[_]): Boolean =
       if (clazz == null || clazz.equals(classOf[java.lang.Object]))
         true
       else {
@@ -81,17 +79,15 @@ import pekko.util.OptionVal
         else
           isAllowedSpringClass(clazz.getSuperclass)
       }
-    }
   }
 
   val disallowedSerializationBindings: Set[Class[_]] =
     Set(classOf[java.io.Serializable], classOf[java.io.Serializable], classOf[java.lang.Comparable[_]])
 
-  def isGZipped(bytes: Array[Byte]): Boolean = {
+  def isGZipped(bytes: Array[Byte]): Boolean =
     (bytes != null) && (bytes.length >= 2) &&
     (bytes(0) == GZIPInputStream.GZIP_MAGIC.toByte) &&
     (bytes(1) == (GZIPInputStream.GZIP_MAGIC >> 8).toByte)
-  }
 
   final case class LZ4Meta(offset: Int, length: Int) {
     import LZ4Meta._
@@ -113,11 +109,10 @@ import pekko.util.OptionVal
   object LZ4Meta {
     val LZ4_MAGIC = 0x87D96DF6 // The last 4 bytes of `printf akka | sha512sum`
 
-    def apply(bytes: Array[Byte]): LZ4Meta = {
+    def apply(bytes: Array[Byte]): LZ4Meta =
       LZ4Meta(8, bytes.length)
-    }
 
-    def get(buffer: ByteBuffer): OptionVal[LZ4Meta] = {
+    def get(buffer: ByteBuffer): OptionVal[LZ4Meta] =
       if (buffer.remaining() < 4) {
         OptionVal.None
       } else if (buffer.getInt() != LZ4_MAGIC) {
@@ -125,17 +120,14 @@ import pekko.util.OptionVal
       } else {
         OptionVal.Some(LZ4Meta(8, buffer.getInt()))
       }
-    }
 
-    def get(bytes: Array[Byte]): OptionVal[LZ4Meta] = {
+    def get(bytes: Array[Byte]): OptionVal[LZ4Meta] =
       get(ByteBuffer.wrap(bytes))
-    }
 
   }
 
-  def isLZ4(bytes: Array[Byte]): Boolean = {
+  def isLZ4(bytes: Array[Byte]): Boolean =
     LZ4Meta.get(bytes).isDefined
-  }
 
 }
 
@@ -191,7 +183,7 @@ import pekko.util.OptionVal
   private val conf = JacksonObjectMapperProvider.configForBinding(bindingName, system.settings.config)
   private val isDebugEnabled = conf.getBoolean("verbose-debug-logging") && log.isDebugEnabled
   private final val BufferSize = 1024 * 4
-  private val compressionAlgorithm: Compression.Algoritm = {
+  private val compressionAlgorithm: Compression.Algoritm =
     toRootLowerCase(conf.getString("compression.algorithm")) match {
       case "off" => Compression.Off
       case "gzip" =>
@@ -205,7 +197,6 @@ import pekko.util.OptionVal
           s"Unknown compression algorithm [$other], possible values are " +
           """"off" or "gzip"""")
     }
-  }
   private val migrations: Map[String, JacksonMigration] = {
     import pekko.util.ccompat.JavaConverters._
     conf.getConfig("migrations").root.unwrapped.asScala.toMap.map {
@@ -298,7 +289,7 @@ import pekko.util.OptionVal
     result
   }
 
-  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]) = {
+  private def logToBinaryDuration(obj: AnyRef, startTime: Long, bytes: Array[Byte], result: Array[Byte]) =
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == result.length)
@@ -315,7 +306,6 @@ import pekko.util.OptionVal
           result.length,
           bytes.length)
     }
-  }
 
   override def fromBinary(bytes: Array[Byte], manifest: String): AnyRef = {
     checkAllowedSerializationBindings()
@@ -395,7 +385,7 @@ import pekko.util.OptionVal
       bytes: Array[Byte],
       decompressBytes: Array[Byte],
       startTime: Long,
-      clazz: Class[_ <: AnyRef]) = {
+      clazz: Class[_ <: AnyRef]) =
     if (isDebugEnabled) {
       val durationMicros = (System.nanoTime - startTime) / 1000
       if (bytes.length == decompressBytes.length)
@@ -412,21 +402,19 @@ import pekko.util.OptionVal
           bytes.length,
           decompressBytes.length)
     }
-  }
 
   private def isCaseObject(className: String): Boolean =
     className.length > 0 && className.charAt(className.length - 1) == '$'
 
-  private def checkAllowedClassName(className: String): Unit = {
+  private def checkAllowedClassName(className: String): Unit =
     if (!denyList.isAllowedClassName(className)) {
       val warnMsg = s"Can't serialize/deserialize object of type [$className] in [${getClass.getName}]. " +
         s"Disallowed (on deny list) for security reasons."
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }
-  }
 
-  private def checkAllowedClass(clazz: Class[_]): Unit = {
+  private def checkAllowedClass(clazz: Class[_]): Unit =
     if (!denyList.isAllowedClass(clazz)) {
       val warnMsg = s"Can't serialize/deserialize object of type [${clazz.getName}] in [${getClass.getName}]. " +
         s"Not allowed for security reasons."
@@ -440,7 +428,6 @@ import pekko.util.OptionVal
       log.warning(LogMarker.Security, warnMsg)
       throw new IllegalArgumentException(warnMsg)
     }
-  }
 
   /**
    * Using the `serialization-bindings` as source for the allowed classes.
@@ -457,11 +444,10 @@ import pekko.util.OptionVal
    * That is also possible when changing a binding from a JacksonSerializer to another serializer (e.g. protobuf)
    * and still bind with the same class (interface).
    */
-  private def isInAllowList(clazz: Class[_]): Boolean = {
+  private def isInAllowList(clazz: Class[_]): Boolean =
     isBoundToJacksonSerializer(clazz) || hasAllowedClassPrefix(clazz.getName)
-  }
 
-  private def isBoundToJacksonSerializer(clazz: Class[_]): Boolean = {
+  private def isBoundToJacksonSerializer(clazz: Class[_]): Boolean =
     try {
       // The reason for using isInstanceOf rather than `eq this` is to allow change of
       // serializer within the Jackson family, but we don't trust other serializers
@@ -471,7 +457,6 @@ import pekko.util.OptionVal
     } catch {
       case NonFatal(_) => false // not bound
     }
-  }
 
   private def hasAllowedClassPrefix(className: String): Boolean =
     allowedClassPrefix.exists(className.startsWith)
@@ -483,12 +468,12 @@ import pekko.util.OptionVal
    * This check is run on first access since it can't be run from constructor because SerializationExtension
    * can't be accessed from there.
    */
-  private def checkAllowedSerializationBindings(): Unit = {
+  private def checkAllowedSerializationBindings(): Unit =
     if (!serializationBindingsCheckedOk) {
       def isBindingOk(clazz: Class[_]): Boolean =
-        try {
+        try
           serialization.serializerFor(clazz) ne this
-        } catch {
+        catch {
           case NonFatal(_) => true // not bound
         }
 
@@ -503,7 +488,6 @@ import pekko.util.OptionVal
       }
       serializationBindingsCheckedOk = true
     }
-  }
 
   private def parseManifest(manifest: String) = {
     val i = manifest.lastIndexOf('#')
@@ -512,7 +496,7 @@ import pekko.util.OptionVal
     (fromVersion, manifestClassName)
   }
 
-  def compress(bytes: Array[Byte]): Array[Byte] = {
+  def compress(bytes: Array[Byte]): Array[Byte] =
     compressionAlgorithm match {
       case Compression.Off                                            => bytes
       case Compression.GZip(largerThan) if bytes.length <= largerThan => bytes
@@ -523,15 +507,13 @@ import pekko.util.OptionVal
         finally zip.close()
         bos.toByteArray
       case Compression.LZ4(largerThan) if bytes.length <= largerThan => bytes
-      case Compression.LZ4(_) => {
+      case Compression.LZ4(_) =>
         val meta = LZ4Meta(bytes)
         val compressed = lz4Compressor.compress(bytes)
         meta.prependTo(compressed)
-      }
     }
-  }
 
-  def decompress(bytes: Array[Byte]): Array[Byte] = {
+  def decompress(bytes: Array[Byte]): Array[Byte] =
     if (isGZipped(bytes)) {
       val in = new GZIPInputStream(new ByteArrayInputStream(bytes))
       val out = new ByteArrayOutputStream()
@@ -555,6 +537,5 @@ import pekko.util.OptionVal
         case _ => bytes
       }
     }
-  }
 
 }

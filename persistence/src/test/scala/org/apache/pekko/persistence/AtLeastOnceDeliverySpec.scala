@@ -404,15 +404,12 @@ class AtLeastOnceDeliverySpec
         "C" -> system.actorOf(unreliableProps(3, dstC), "unreliable-c").path)
       val snd = system.actorOf(senderProps(probe.ref, name, 1000.millis, 5, 1000, destinations, async = true), name)
       val N = 100
-      for (n <- 1 to N) {
+      for (n <- 1 to N)
         snd.tell(Req("a-" + n), probe.ref)
-      }
-      for (n <- 1 to N) {
+      for (n <- 1 to N)
         snd.tell(Req("b-" + n), probe.ref)
-      }
-      for (n <- 1 to N) {
+      for (n <- 1 to N)
         snd.tell(Req("c-" + n), probe.ref)
-      }
       val deliverWithin = 20.seconds
       probeA.receiveN(N, deliverWithin).collect { case a: Action => a.payload }.toSet should ===(
         (1 to N).map(n => "a-" + n).toSet)
@@ -431,9 +428,8 @@ class AtLeastOnceDeliverySpec
       val snd = system.actorOf(senderProps(probe.ref, name, 2.seconds, 5, 2, destinations, async = true), name)
 
       val N = 10
-      for (n <- 1 to N) {
+      for (n <- 1 to N)
         snd.tell(Req("a-" + n), probe.ref)
-      }
 
       // initially all odd messages should go through
       for (n <- 1 to N if n % 2 == 1) probeA.expectMsg(Action(n, s"a-$n"))
@@ -442,12 +438,11 @@ class AtLeastOnceDeliverySpec
       // at each redelivery round, 2 (even) messages are sent, the first goes through
       // without throttling, at each round half of the messages would go through
       var toDeliver = (1 to N).filter(_ % 2 == 0).map(_.toLong).toSet
-      for (n <- 1 to N) {
+      for (n <- 1 to N)
         if (n % 2 == 0) {
           toDeliver -= probeA.expectMsgType[Action].id
           probeA.expectNoMessage(100.millis)
         }
-      }
 
       toDeliver should ===(Set.empty[Long])
     }

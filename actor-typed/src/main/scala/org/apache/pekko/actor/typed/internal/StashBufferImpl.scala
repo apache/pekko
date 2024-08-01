@@ -96,9 +96,8 @@ import java.util.function.Predicate
   }
 
   @InternalStableApi
-  private def createNode(message: T, @unused ctx: scaladsl.ActorContext[T]): Node[T] = {
+  private def createNode(message: T, @unused ctx: scaladsl.ActorContext[T]): Node[T] =
     new Node(null, message)
-  }
 
   @InternalStableApi
   private def dropHeadForUnstash(): Node[T] = {
@@ -116,9 +115,8 @@ import java.util.function.Predicate
       behavior: Behavior[T],
       ctx: TypedActorContext[T],
       wrappedMessage: T,
-      @unused node: Node[T]): Behavior[T] = {
+      @unused node: Node[T]): Behavior[T] =
     Behavior.interpretMessage(behavior, ctx, wrappedMessage)
-  }
 
   private def rawHead: Node[T] =
     if (nonEmpty) _first
@@ -159,7 +157,7 @@ import java.util.function.Predicate
     behav
   }
 
-  override def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: T => T): Behavior[T] = {
+  override def unstash(behavior: Behavior[T], numberOfMessages: Int, wrap: T => T): Behavior[T] =
     if (isEmpty)
       behavior // optimization
     else {
@@ -177,12 +175,10 @@ import java.util.function.Predicate
           }
         }.take(math.min(numberOfMessages, size))
         interpretUnstashedMessages(behavior, ctx, iter, wrap)
-      } finally {
+      } finally
         if (!unstashAlreadyInProgress)
           currentBehaviorWhenUnstashInProgress = OptionVal.None
-      }
     }
-  }
 
   private def interpretUnstashedMessages(
       behavior: Behavior[T],
@@ -197,12 +193,12 @@ import java.util.function.Predicate
         val node = messages.next()
         val message = wrap(node.message)
         val interpretResult =
-          try {
+          try
             message match {
               case sig: Signal => Behavior.interpretSignal(b2, ctx, sig)
               case msg         => interpretUnstashedMessage(b2, ctx, msg, node)
             }
-          } catch {
+          catch {
             case NonFatal(e) => throw UnstashException(e, b2)
           }
 

@@ -59,12 +59,11 @@ object BlogPostEntityDurableState {
   // #commands
 
   // #behavior
-  def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] = {
+  def apply(entityId: String, persistenceId: PersistenceId): Behavior[Command] =
     Behaviors.setup { context =>
       context.log.info("Starting BlogPostEntityDurableState {}", entityId)
       DurableStateBehavior[Command, State](persistenceId, emptyState = BlankState, commandHandler)
     }
-  }
   // #behavior
 
   // #command-handler
@@ -96,27 +95,24 @@ object BlogPostEntityDurableState {
     }
   }
 
-  private def addPost(cmd: AddPost): Effect[State] = {
+  private def addPost(cmd: AddPost): Effect[State] =
     // #reply
     Effect.persist(DraftState(cmd.content)).thenRun { _ =>
       // After persist is done additional side effects can be performed
       cmd.replyTo ! StatusReply.Success(AddPostDone(cmd.content.postId))
     }
-    // #reply
-  }
+  // #reply
 
-  private def changeBody(state: DraftState, cmd: ChangeBody): Effect[State] = {
+  private def changeBody(state: DraftState, cmd: ChangeBody): Effect[State] =
     Effect.persist(state.withBody(cmd.newBody)).thenRun { _ =>
       cmd.replyTo ! Done
     }
-  }
 
-  private def publish(state: DraftState, replyTo: ActorRef[Done]): Effect[State] = {
+  private def publish(state: DraftState, replyTo: ActorRef[Done]): Effect[State] =
     Effect.persist(PublishedState(state.content)).thenRun { _ =>
       println(s"Blog post ${state.postId} was published")
       replyTo ! Done
     }
-  }
 
   private def getPost(state: DraftState, replyTo: ActorRef[PostContent]): Effect[State] = {
     replyTo ! state.content

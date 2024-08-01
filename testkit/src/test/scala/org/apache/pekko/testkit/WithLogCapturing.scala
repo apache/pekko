@@ -51,7 +51,7 @@ trait WithLogCapturing extends SuiteMixin { this: TestSuite =>
     if (!(res.isSucceeded || res.isPending)) {
       println(s"--> [${Console.BLUE}${test.name}${Console.RESET}] Start of log messages of test that [$res]")
       val logger = new StdOutLogger {}
-      withPrefixedOut("| ") { events.reverse.foreach(logger.print) }
+      withPrefixedOut("| ")(events.reverse.foreach(logger.print))
       println(s"<-- [${Console.BLUE}${test.name}${Console.RESET}] End of log messages of test that [$res]")
     }
 

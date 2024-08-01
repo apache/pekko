@@ -44,37 +44,35 @@ class EventSourcedSequenceNumberSpec
   private def behavior(pid: PersistenceId, probe: ActorRef[String]): Behavior[String] =
     Behaviors.setup(ctx =>
       EventSourcedBehavior[String, String, String](pid, "",
-        {
-          (state, command) =>
-            state match {
-              case "stashing" =>
-                command match {
-                  case "unstash" =>
-                    probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} unstash"
-                    Effect.persist("normal").thenUnstashAll()
-                  case _ =>
-                    Effect.stash()
-                }
-              case _ =>
-                command match {
-                  case "cmd" =>
-                    probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onCommand"
-                    Effect
-                      .persist("evt")
-                      .thenRun(_ => probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} thenRun")
-                  case "cmd3" =>
-                    probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onCommand"
-                    Effect
-                      .persist("evt1", "evt2", "evt3")
-                      .thenRun(_ => probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} thenRun")
-                  case "stash" =>
-                    probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} stash"
-                    Effect.persist("stashing")
-                  case "snapshot" =>
-                    Effect.persist("snapshot")
-                }
-            }
-        },
+        (state, command) =>
+          state match {
+            case "stashing" =>
+              command match {
+                case "unstash" =>
+                  probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} unstash"
+                  Effect.persist("normal").thenUnstashAll()
+                case _ =>
+                  Effect.stash()
+              }
+            case _ =>
+              command match {
+                case "cmd" =>
+                  probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onCommand"
+                  Effect
+                    .persist("evt")
+                    .thenRun(_ => probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} thenRun")
+                case "cmd3" =>
+                  probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} onCommand"
+                  Effect
+                    .persist("evt1", "evt2", "evt3")
+                    .thenRun(_ => probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} thenRun")
+                case "stash" =>
+                  probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} stash"
+                  Effect.persist("stashing")
+                case "snapshot" =>
+                  Effect.persist("snapshot")
+              }
+          },
         { (_, evt) =>
           probe ! s"${EventSourcedBehavior.lastSequenceNumber(ctx)} eventHandler $evt"
           evt

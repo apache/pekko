@@ -31,9 +31,8 @@ class EmptySourceBenchmark {
   implicit val system: ActorSystem = ActorSystem("EmptySourceBenchmark")
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   val setup = Source.empty[String].toMat(Sink.ignore)(Keep.right)
 

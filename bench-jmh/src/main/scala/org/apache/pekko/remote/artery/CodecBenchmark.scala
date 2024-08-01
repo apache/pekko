@@ -202,9 +202,8 @@ class CodecBenchmark {
   }
 
   @Setup(Level.Iteration)
-  def setupIteration(): Unit = {
+  def setupIteration(): Unit =
     System.gc()
-  }
 
   @TearDown(Level.Iteration)
   def tearDownIteration(): Unit = {}
@@ -321,11 +320,10 @@ object CodecBenchmark {
       val length = Metadata.length
       val metaLength = buffer.getInt
       @tailrec
-      def compare(pos: Int): Boolean = {
+      def compare(pos: Int): Boolean =
         if (pos == length) true
         else if (Metadata(pos) == buffer.get()) compare(pos + 1)
         else false
-      }
       if (metaLength != length || !compare(0))
         throw new IOException(s"DummyInstrument deserialization error. Expected ${Metadata.toString}")
     }

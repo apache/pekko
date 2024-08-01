@@ -102,8 +102,7 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       expectedAfterReplication: Option[Set[Int]] = None,
       oneByOne: Boolean = false)(
       block: (ORSetKey[Int], Int, ActorRef) => Unit,
-      afterEachKey: ORSetKey[Int] => Unit = _ => ()): Unit = {
-
+      afterEachKey: ORSetKey[Int] => Unit = _ => ()): Unit =
     keys.foreach { key =>
       val startTime = System.nanoTime()
       runOn(n1) {
@@ -138,14 +137,13 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       afterEachKey(key)
       enterBarrier("repeat-" + key + "-done")
     }
-  }
 
   def awaitReplicated(keys: Iterable[ORSetKey[Int]], expectedData: Set[Int]): Unit =
     keys.foreach { key =>
       awaitReplicated(key, expectedData)
     }
 
-  def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit = {
+  def awaitReplicated(key: ORSetKey[Int], expectedData: Set[Int]): Unit =
     within(20.seconds) {
       awaitAssert {
         val readProbe = TestProbe()
@@ -154,12 +152,11 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
         result.elements should be(expectedData)
       }
     }
-  }
 
   "Performance" must {
 
     "setup cluster" taggedAs PerformanceTest in {
-      roles.foreach { join(_, n1) }
+      roles.foreach(join(_, n1))
 
       within(10.seconds) {
         awaitAssert {
@@ -175,9 +172,8 @@ class PerformanceSpec extends MultiNodeSpec(PerformanceSpec) with STMultiNodeSpe
       val keys = (1 to repeatCount).map(n => ORSetKey[Int]("A" + n))
       val n = 1000 * factor
       val expectedData = (0 until n).toSet
-      repeat("ORSet Update WriteLocal", keys, n)({ (key, i, replyTo) =>
-          replicator.tell(Update(key, ORSet(), WriteLocal)(_ :+ i), replyTo)
-        }, key => awaitReplicated(key, expectedData))
+      repeat("ORSet Update WriteLocal", keys, n)((key, i, replyTo) =>
+          replicator.tell(Update(key, ORSet(), WriteLocal)(_ :+ i), replyTo), key => awaitReplicated(key, expectedData))
 
       enterBarrier("after-1")
     }

@@ -61,9 +61,8 @@ object PerformanceSpec {
     private var startTime: Long = 0L
     private var stopTime: Long = 0L
 
-    def startMeasure(): Unit = {
+    def startMeasure(): Unit =
       startTime = System.nanoTime
-    }
 
     def stopMeasure(): Double = {
       stopTime = System.nanoTime
@@ -80,7 +79,7 @@ object PerformanceSpec {
     def failureWasDefined: Boolean = failAt != -1L
   }
 
-  def behavior(name: String, probe: TestProbe[Reply])(other: (Command, Parameters) => Effect[String, String]) = {
+  def behavior(name: String, probe: TestProbe[Reply])(other: (Command, Parameters) => Effect[String, String]) =
     Behaviors
       .supervise {
         val parameters = Parameters()
@@ -102,21 +101,20 @@ object PerformanceSpec {
         }
       }
       .onFailure(SupervisorStrategy.restart.withLoggingEnabled(false))
-  }
 
   def eventSourcedTestPersistenceBehavior(name: String, probe: TestProbe[Reply]) =
     behavior(name, probe) {
       case (CommandWithEvent(evt), parameters) =>
         Effect
           .persist(evt)
-          .thenRun(_ => {
+          .thenRun { _ =>
             parameters.persistCalls += 1
             if (parameters.every(1000)) print(".")
             if (parameters.shouldFail) {
               probe.ref ! ExpectedFail
               throw TestException("boom")
             }
-          })
+          }
       case _ => Effect.none
     }
 }
@@ -142,7 +140,7 @@ class PerformanceSpec
       probe: TestProbe[Reply],
       failAt: Option[Long],
       description: String): Unit = {
-    failAt.foreach { persistentActor ! FailAt(_) }
+    failAt.foreach(persistentActor ! FailAt(_))
     val m = new Measure(loadCycles)
     m.startMeasure()
     val parameters = Parameters(0, failAt = failAt.getOrElse(-1))

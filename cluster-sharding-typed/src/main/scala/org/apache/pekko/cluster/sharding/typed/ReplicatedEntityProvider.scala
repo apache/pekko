@@ -60,7 +60,7 @@ object ReplicatedEntityProvider {
    * @tparam M The type of messages the replicated entity accepts
    */
   def apply[M: ClassTag](typeName: String, allReplicaIds: Set[ReplicaId])(
-      settingsPerReplicaFactory: (EntityTypeKey[M], ReplicaId) => ReplicatedEntity[M]): ReplicatedEntityProvider[M] = {
+      settingsPerReplicaFactory: (EntityTypeKey[M], ReplicaId) => ReplicatedEntity[M]): ReplicatedEntityProvider[M] =
     new ReplicatedEntityProvider(
       allReplicaIds.map { replicaId =>
         if (typeName.contains(Separator))
@@ -70,7 +70,6 @@ object ReplicatedEntityProvider {
         val typeKey = EntityTypeKey[M](s"$typeName$Separator${replicaId.id}")
         (settingsPerReplicaFactory(typeKey, replicaId), typeName)
       }.toVector, directReplication = true)
-  }
 
   /**
    * Scala API
@@ -79,14 +78,13 @@ object ReplicatedEntityProvider {
    * ClusterSharding. A replica will be run per data center.
    */
   def perDataCenter[M: ClassTag, E](typeName: String, allReplicaIds: Set[ReplicaId])(
-      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] = {
+      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] =
     apply(typeName, allReplicaIds) { (typeKey, replicaId) =>
       ReplicatedEntity(replicaId,
         Entity(typeKey) { entityContext =>
           create(ReplicationId.fromString(entityContext.entityId))
         }.withDataCenter(replicaId.id))
     }
-  }
 
   /**
    * Scala API
@@ -96,14 +94,13 @@ object ReplicatedEntityProvider {
    * entity will run on each role.
    */
   def perRole[M: ClassTag, E](typeName: String, allReplicaIds: Set[ReplicaId])(
-      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] = {
+      create: ReplicationId => Behavior[M]): ReplicatedEntityProvider[M] =
     apply(typeName, allReplicaIds) { (typeKey, replicaId) =>
       ReplicatedEntity(replicaId,
         Entity(typeKey) { entityContext =>
           create(ReplicationId.fromString(entityContext.entityId))
         }.withRole(replicaId.id))
     }
-  }
 
   /**
    * Java API

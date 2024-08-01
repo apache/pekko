@@ -83,10 +83,9 @@ object StartStopActor2 {
 class StartStopActor2(context: ActorContext[String]) extends AbstractBehavior[String](context) {
   println("second started")
 
-  override def onMessage(msg: String): Behavior[String] = {
+  override def onMessage(msg: String): Behavior[String] =
     // no messages handled by this actor
     Behaviors.unhandled
-  }
 
   override def onSignal: PartialFunction[Signal, Behavior[String]] = {
     case PostStop =>

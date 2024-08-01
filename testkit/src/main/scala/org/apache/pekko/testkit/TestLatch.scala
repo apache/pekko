@@ -55,7 +55,6 @@ class TestLatch(count: Int = 1)(implicit system: ActorSystem) extends Awaitable[
     this
   }
   @throws(classOf[Exception])
-  def result(atMost: Duration)(implicit permit: CanAwait): Unit = {
+  def result(atMost: Duration)(implicit permit: CanAwait): Unit =
     ready(atMost)
-  }
 }

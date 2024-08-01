@@ -31,13 +31,11 @@ import pekko.util.ByteString
 
   override val identifier: Int = BaseSerializer.identifierFromConfig("primitive-long", system)
 
-  override def toBinary(o: AnyRef, buf: ByteBuffer): Unit = {
+  override def toBinary(o: AnyRef, buf: ByteBuffer): Unit =
     buf.putLong(Long.unbox(o))
-  }
 
-  override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = {
+  override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef =
     Long.box(buf.getLong)
-  }
 
   override def toBinary(o: AnyRef): Array[Byte] = {
     val result = new Array[Byte](8)
@@ -154,9 +152,8 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     ByteString(bytes)
-  }
 
 }
 
@@ -185,13 +182,12 @@ import pekko.util.ByteString
     buf.put(flag)
   }
 
-  override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef = {
+  override def fromBinary(buf: ByteBuffer, manifest: String): AnyRef =
     buf.get() match {
       case TrueB  => TRUE
       case FalseB => FALSE
       case b      => throw new IllegalArgumentException(s"Non boolean flag byte: $b")
     }
-  }
 
   override def toBinary(o: AnyRef): Array[Byte] = {
     val flag = o match {
@@ -204,11 +200,10 @@ import pekko.util.ByteString
     result
   }
 
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef =
     bytes(0) match {
       case TrueB  => TRUE
       case FalseB => FALSE
       case b      => throw new IllegalArgumentException(s"Non boolean flag byte: $b")
     }
-  }
 }

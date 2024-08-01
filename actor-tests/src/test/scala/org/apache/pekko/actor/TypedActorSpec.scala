@@ -147,9 +147,8 @@ object TypedActorSpec {
     }
 
     @nowarn
-    def futureComposePigdogFrom(foo: Foo): Future[String] = {
+    def futureComposePigdogFrom(foo: Foo): Future[String] =
       foo.futurePigdog(500 millis).map(_.toUpperCase)
-    }
 
     def optionPigdog(): Option[String] = Some(pigdog())
 
@@ -165,9 +164,8 @@ object TypedActorSpec {
 
     var internalNumber = 0
 
-    def incr(): Unit = {
+    def incr(): Unit =
       internalNumber += 1
-    }
 
     def read() = internalNumber
   }
@@ -219,12 +217,11 @@ object TypedActorSpec {
 
     override def postRestart(reason: Throwable): Unit = ensureContextAvailable(for (_ <- 1 to 7) latch.countDown())
 
-    override def onReceive(msg: Any, sender: ActorRef): Unit = {
+    override def onReceive(msg: Any, sender: ActorRef): Unit =
       ensureContextAvailable(msg match {
         case "pigdog" => sender ! "dogpig"
         case _        =>
       })
-    }
   }
 
   trait F {
@@ -369,9 +366,8 @@ class TypedActorSpec
     "be able to call multiple Future-returning methods non-blockingly" in within(timeout.duration) {
       val t = newFooBar
       val futures = for (i <- 1 to 20) yield (i, t.futurePigdog(20 millis, i))
-      for ((i, f) <- futures) {
+      for ((i, f) <- futures)
         Await.result(f, remaining) should ===("Pigdog" + i)
-      }
       mustStop(t)
     }
 
@@ -422,14 +418,14 @@ class TypedActorSpec
         t.failingPigdog()
         t.read() should ===(1) // Make sure state is not reset after failure
 
-        intercept[IllegalStateException] { Await.result(t.failingFuturePigdog(), 2 seconds) }.getMessage should ===(
+        intercept[IllegalStateException](Await.result(t.failingFuturePigdog(), 2 seconds)).getMessage should ===(
           "expected")
         t.read() should ===(1) // Make sure state is not reset after failure
 
-        intercept[IllegalStateException] { t.failingJOptionPigdog() }.getMessage should ===("expected")
+        intercept[IllegalStateException](t.failingJOptionPigdog()).getMessage should ===("expected")
         t.read() should ===(1) // Make sure state is not reset after failure
 
-        intercept[IllegalStateException] { t.failingOptionPigdog() }.getMessage should ===("expected")
+        intercept[IllegalStateException](t.failingOptionPigdog()).getMessage should ===("expected")
 
         t.read() should ===(1) // Make sure state is not reset after failure
 
@@ -440,12 +436,12 @@ class TypedActorSpec
     "be restarted on failure" in {
       filterEvents(EventFilter[IllegalStateException]("expected")) {
         val t = newFooBar(Duration(2, "s"))
-        intercept[IllegalStateException] { t.failingOptionPigdog() }.getMessage should ===("expected")
+        intercept[IllegalStateException](t.failingOptionPigdog()).getMessage should ===("expected")
         t.optionPigdog() should ===(Some("Pigdog"))
         mustStop(t)
 
         val ta: F = pekko.actor.TypedActor(system).typedActorOf(TypedProps[FI]())
-        intercept[IllegalStateException] { ta.f(true) }.getMessage should ===("expected")
+        intercept[IllegalStateException](ta.f(true)).getMessage should ===("expected")
         ta.f(false) should ===(1)
 
         mustStop(ta)

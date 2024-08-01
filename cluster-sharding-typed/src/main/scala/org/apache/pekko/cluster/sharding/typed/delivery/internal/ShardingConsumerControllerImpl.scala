@@ -32,7 +32,7 @@ import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
 @InternalApi private[pekko] object ShardingConsumerControllerImpl {
   def apply[A, B](
       consumerBehavior: ActorRef[ConsumerController.Start[A]] => Behavior[B],
-      settings: ShardingConsumerController.Settings): Behavior[ConsumerController.SequencedMessage[A]] = {
+      settings: ShardingConsumerController.Settings): Behavior[ConsumerController.SequencedMessage[A]] =
     Behaviors
       .setup[ConsumerController.Command[A]] { context =>
         context.setLoggerName("org.apache.pekko.cluster.sharding.typed.delivery.ShardingConsumerController")
@@ -41,12 +41,11 @@ import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
         waitForStart(context, settings, consumer)
       }
       .narrow
-  }
 
   private def waitForStart[A](
       context: ActorContext[ConsumerController.Command[A]],
       settings: ShardingConsumerController.Settings,
-      consumer: ActorRef[_]): Behavior[ConsumerController.Command[A]] = {
+      consumer: ActorRef[_]): Behavior[ConsumerController.Command[A]] =
     Behaviors.withStash(settings.bufferSize) { stashBuffer =>
       Behaviors
         .receiveMessage[ConsumerController.Command[A]] {
@@ -66,7 +65,6 @@ import pekko.cluster.sharding.typed.delivery.ShardingConsumerController
             Behaviors.stopped
         }
     }
-  }
 
 }
 
@@ -80,12 +78,11 @@ private class ShardingConsumerControllerImpl[A](
       producerControllers: Map[ActorRef[ProducerControllerImpl.InternalCommand], String],
       // producerId -> ConsumerController
       consumerControllers: Map[String, ActorRef[ConsumerController.Command[A]]])
-      : Behavior[ConsumerController.Command[A]] = {
-
+      : Behavior[ConsumerController.Command[A]] =
     Behaviors
       .receiveMessagePartial[ConsumerController.Command[A]] {
         case seqMsg: ConsumerController.SequencedMessage[A @unchecked] =>
-          def updatedProducerControllers(): Map[ActorRef[ProducerControllerImpl.InternalCommand], String] = {
+          def updatedProducerControllers(): Map[ActorRef[ProducerControllerImpl.InternalCommand], String] =
             producerControllers.get(seqMsg.producerController) match {
               case Some(_) =>
                 producerControllers
@@ -93,7 +90,6 @@ private class ShardingConsumerControllerImpl[A](
                 context.watch(seqMsg.producerController)
                 producerControllers.updated(seqMsg.producerController, seqMsg.producerId)
             }
-          }
 
           consumerControllers.get(seqMsg.producerId) match {
             case Some(c) =>
@@ -137,7 +133,5 @@ private class ShardingConsumerControllerImpl[A](
               }
           }
       }
-
-  }
 
 }

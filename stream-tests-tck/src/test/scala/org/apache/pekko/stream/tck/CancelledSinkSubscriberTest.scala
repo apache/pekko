@@ -25,13 +25,10 @@ class CancelledSinkSubscriberTest extends PekkoSubscriberBlackboxVerification[In
 
   override def createElement(element: Int): Int = element
 
-  override def required_spec201_blackbox_mustSignalDemandViaSubscriptionRequest() = {
+  override def required_spec201_blackbox_mustSignalDemandViaSubscriptionRequest() =
     throw new SkipException("Cancelled sink doesn't signal demand")
-  }
-  override def required_spec209_blackbox_mustBePreparedToReceiveAnOnCompleteSignalWithPrecedingRequestCall() = {
+  override def required_spec209_blackbox_mustBePreparedToReceiveAnOnCompleteSignalWithPrecedingRequestCall() =
     throw new SkipException("Cancelled sink doesn't signal demand")
-  }
-  override def required_spec210_blackbox_mustBePreparedToReceiveAnOnErrorSignalWithPrecedingRequestCall() = {
+  override def required_spec210_blackbox_mustBePreparedToReceiveAnOnErrorSignalWithPrecedingRequestCall() =
     throw new SkipException("Cancelled sink doesn't signal demand")
-  }
 }

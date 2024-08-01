@@ -74,9 +74,8 @@ object JavaFlowSupport {
     /**
      * Creates a Flow from a Reactive Streams [[org.reactivestreams.Processor]]
      */
-    def fromProcessor[I, O](processorFactory: () => juc.Flow.Processor[I, O]): Flow[I, O, NotUsed] = {
+    def fromProcessor[I, O](processorFactory: () => juc.Flow.Processor[I, O]): Flow[I, O, NotUsed] =
       fromProcessorMat(() => (processorFactory(), NotUsed))
-    }
 
     /**
      * Creates a Flow from a Reactive Streams [[java.util.concurrent.Flow.Processor]] and returns a materialized value.

@@ -126,7 +126,7 @@ class HotSwapSpec extends PekkoSpec with ImplicitSender {
       expectMsg("swapped")
       a ! "state"
       expectMsg("1")
-      EventFilter[Exception](message = "Crash (expected)!", occurrences = 1).intercept { a ! "crash" }
+      EventFilter[Exception](message = "Crash (expected)!", occurrences = 1).intercept(a ! "crash")
       a ! "state"
       expectMsg("0")
     }

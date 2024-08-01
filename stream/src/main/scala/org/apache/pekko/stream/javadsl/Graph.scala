@@ -524,9 +524,8 @@ object ZipLatest {
  * '''Cancels when''' downstream cancels
  */
 object ZipN {
-  def create[A](n: Int): Graph[UniformFanInShape[A, java.util.List[A]], NotUsed] = {
+  def create[A](n: Int): Graph[UniformFanInShape[A, java.util.List[A]], NotUsed] =
     ZipWithN.create(ConstantFun.javaIdentityFunction[java.util.List[A]], n)
-  }
 }
 
 /**

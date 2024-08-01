@@ -46,11 +46,10 @@ class PersistenceSchemaEvolutionDocSpec extends AnyWordSpec {
     """
 
   val system = ActorSystem("PersistenceSchemaEvolutionDocSpec", ConfigFactory.parseString(customSerializerConfig))
-  try {
+  try
     SerializationExtension(system)
-  } finally {
+  finally
     TestKit.shutdownActorSystem(system, 10.seconds, false)
-  }
 
 }
 

@@ -92,11 +92,10 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Unsubscribe from a previous subscription of a given `key`.
    * @see [[ReplicatorMessageAdapter.subscribe]]
    */
-  def unsubscribe(key: Key[B]): Unit = {
+  def unsubscribe(key: Key[B]): Unit =
     changedMessageAdapters.get(key).foreach { subscriber =>
       replicator ! Replicator.Unsubscribe(key, subscriber)
     }
-  }
 
   /**
    * Send a [[Replicator.Update]] request to the replicator. The [[Replicator.UpdateResponse]]
@@ -109,13 +108,12 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askUpdate(
       createRequest: ActorRef[Replicator.UpdateResponse[B]] => Replicator.Update[B],
-      responseAdapter: Replicator.UpdateResponse[B] => A): Unit = {
+      responseAdapter: Replicator.UpdateResponse[B] => A): Unit =
     context
       .ask[Replicator.Update[B], Replicator.UpdateResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
   /**
    * Send a [[Replicator.Get]] request to the replicator. The [[Replicator.GetResponse]]
@@ -128,12 +126,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askGet(
       createRequest: ActorRef[Replicator.GetResponse[B]] => Replicator.Get[B],
-      responseAdapter: Replicator.GetResponse[B] => A): Unit = {
+      responseAdapter: Replicator.GetResponse[B] => A): Unit =
     context.ask[Replicator.Get[B], Replicator.GetResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
       case Success(value) => responseAdapter(value)
       case Failure(ex)    => throw ex // unexpected ask timeout
     }
-  }
 
   /**
    * Send a [[Replicator.Delete]] request to the replicator. The [[Replicator.DeleteResponse]]
@@ -146,13 +143,12 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askDelete(
       createRequest: ActorRef[Replicator.DeleteResponse[B]] => Replicator.Delete[B],
-      responseAdapter: Replicator.DeleteResponse[B] => A): Unit = {
+      responseAdapter: Replicator.DeleteResponse[B] => A): Unit =
     context
       .ask[Replicator.Delete[B], Replicator.DeleteResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
   /**
    * Send a [[Replicator.GetReplicaCount]] request to the replicator. The [[Replicator.ReplicaCount]]
@@ -165,12 +161,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askReplicaCount(
       createRequest: ActorRef[Replicator.ReplicaCount] => Replicator.GetReplicaCount,
-      responseAdapter: Replicator.ReplicaCount => A): Unit = {
+      responseAdapter: Replicator.ReplicaCount => A): Unit =
     context
       .ask[Replicator.GetReplicaCount, Replicator.ReplicaCount](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
 }

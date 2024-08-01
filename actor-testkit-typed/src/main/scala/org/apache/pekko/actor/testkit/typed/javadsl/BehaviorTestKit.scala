@@ -45,9 +45,8 @@ object BehaviorTestKit {
    * JAVA API
    */
   @ApiMayChange
-  def create[T](initialBehavior: Behavior[T], name: String): BehaviorTestKit[T] = {
+  def create[T](initialBehavior: Behavior[T], name: String): BehaviorTestKit[T] =
     create(initialBehavior, name, ActorSystemStub.config.defaultReference)
-  }
 
   /**
    * JAVA API

@@ -38,9 +38,8 @@ object InterceptSpec {
     override def aroundReceive(
         context: TypedActorContext[String],
         message: String,
-        target: ReceiveTarget[String]): Behavior[String] = {
+        target: ReceiveTarget[String]): Behavior[String] =
       target(context, message)
-    }
 
     override def isSame(other: BehaviorInterceptor[Any, Any]): Boolean =
       other.isInstanceOf[SameTypeInterceptor]
@@ -72,7 +71,7 @@ object InterceptSpec {
 
     }
 
-    def apply(probe: ActorRef[String]): Behavior[Command] = {
+    def apply(probe: ActorRef[String]): Behavior[Command] =
       Behaviors
         .intercept(() => new ProtocolTransformer)(Behaviors.receiveMessagePartial[InternalProtocol] {
           case InternalProtocol.WrappedCommand(cmd) =>
@@ -83,7 +82,6 @@ object InterceptSpec {
             Behaviors.same
         })
         .narrow
-    }
   }
 }
 
@@ -211,9 +209,8 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
 
         override def aroundStart(
             context: TypedActorContext[String],
-            target: PreStartTarget[String]): Behavior[String] = {
+            target: PreStartTarget[String]): Behavior[String] =
           Behaviors.stopped
-        }
 
         def aroundReceive(
             context: TypedActorContext[String],
@@ -261,7 +258,7 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
       val probe = TestProbe[String]()
       val interceptor = snitchingInterceptor(probe.ref)
 
-      def next(count1: Int): Behavior[String] = {
+      def next(count1: Int): Behavior[String] =
         Behaviors.intercept(() => interceptor)(Behaviors.setup { _ =>
           var count2 = 0
           Behaviors.receiveMessage[String] { m =>
@@ -270,7 +267,6 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
             next(count1 + 1)
           }
         })
-      }
 
       val ref: ActorRef[String] = spawn(next(1))
 
@@ -427,7 +423,7 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
     }
 
     "not grow stack when nesting same interceptor" in {
-      def next(n: Int, p: ActorRef[Array[StackTraceElement]]): Behavior[String] = {
+      def next(n: Int, p: ActorRef[Array[StackTraceElement]]): Behavior[String] =
         Behaviors.intercept(() => new SameTypeInterceptor) {
 
           Behaviors.receiveMessage { _ =>
@@ -441,7 +437,6 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
             }
           }
         }
-      }
 
       val probe = TestProbe[Array[StackTraceElement]]()
       val ref = spawn(next(0, probe.ref))
@@ -464,9 +459,8 @@ class InterceptSpec extends ScalaTestWithActorTestKit with AnyWordSpecLike with 
         override def aroundReceive(
             ctx: TypedActorContext[Command],
             msg: Command,
-            target: BehaviorInterceptor.ReceiveTarget[Command]): Behavior[Command] = {
+            target: BehaviorInterceptor.ReceiveTarget[Command]): Behavior[Command] =
           target(ctx, Command(msg.s.toUpperCase()))
-        }
 
       }
 

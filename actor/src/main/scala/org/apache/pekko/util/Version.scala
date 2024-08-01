@@ -53,7 +53,7 @@ final class Version(val version: String) extends Comparable[Version] {
    * INTERNAL API
    */
   @InternalApi private[pekko] def parse(): Version = {
-    def parseLastPart(s: String): (Int, String) = {
+    def parseLastPart(s: String): (Int, String) =
       // for example 2, 2-SNAPSHOT or dynver 2+10-1234abcd
       if (s.length == 0) {
         Undefined -> s
@@ -69,9 +69,8 @@ final class Version(val version: String) extends Comparable[Version] {
         else
           s.substring(0, k).toInt -> s.substring(k + 1)
       }
-    }
 
-    def parseDynverPart(s: String): (Int, String) = {
+    def parseDynverPart(s: String): (Int, String) =
       // for example SNAPSHOT or dynver 10-1234abcd
       if (s.isEmpty || !s.charAt(0).isDigit) {
         Undefined -> s
@@ -80,15 +79,14 @@ final class Version(val version: String) extends Comparable[Version] {
           case -1 =>
             Undefined -> s
           case i =>
-            try {
+            try
               s.substring(0, i).toInt -> s.substring(i + 1)
-            } catch {
+            catch {
               case _: NumberFormatException =>
                 Undefined -> s
             }
         }
       }
-    }
 
     def parseLastParts(s: String): (Int, Int, String) = {
       // for example 2, 2-SNAPSHOT or dynver 2+10-1234abcd
@@ -152,7 +150,7 @@ final class Version(val version: String) extends Comparable[Version] {
     this
   }
 
-  override def compareTo(other: Version): Int = {
+  override def compareTo(other: Version): Int =
     if (version == other.version) // String equals without requiring parse
       0
     else {
@@ -179,7 +177,6 @@ final class Version(val version: String) extends Comparable[Version] {
       }
       diff
     }
-  }
 
   override def equals(o: Any): Boolean = o match {
     case v: Version => compareTo(v) == 0

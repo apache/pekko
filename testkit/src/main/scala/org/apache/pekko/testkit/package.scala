@@ -42,9 +42,8 @@ package object testkit {
         throw new AssertionError("Filter completion error:\n" + failed.mkString("\n"))
 
       result
-    } finally {
+    } finally
       system.eventStream.publish(TestEvent.UnMute(eventFilters.to(immutable.Seq)))
-    }
   }
 
   def filterEvents[T](eventFilters: EventFilter*)(block: => T)(implicit system: ActorSystem): T =

@@ -82,9 +82,8 @@ class DownAllIndirectlyConnected5NodeSpec extends MultiNodeClusterSpec(DownAllIn
       enterBarrier("Cluster formed")
 
       runOn(node1) {
-        for (x <- List(node1, node2, node3); y <- List(node4, node5)) {
+        for (x <- List(node1, node2, node3); y <- List(node4, node5))
           testConductor.blackhole(x, y, ThrottlerTransportAdapter.Direction.Both).await
-        }
       }
       enterBarrier("blackholed-clean-partition")
 

@@ -380,15 +380,13 @@ class UnfoldResourceAsyncSourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     "close resource when stream is quickly cancelled reproducer 2" in {
       val closed = Promise[Done]()
       Source
-        .unfoldResourceAsync[String, Iterator[String]]({ () =>
-            Future(Iterator("a", "b", "c"))
-          },
-          { m =>
-            Future(if (m.hasNext) Some(m.next()) else None)
-          },
-          { _ =>
+        .unfoldResourceAsync[String, Iterator[String]](() =>
+            Future(Iterator("a", "b", "c")),
+          m =>
+            Future(if (m.hasNext) Some(m.next()) else None),
+          _ =>
             closed.success(Done).future
-          })
+        )
         .map(m => println(s"Elem=> $m"))
         .runWith(Sink.cancelled)
 

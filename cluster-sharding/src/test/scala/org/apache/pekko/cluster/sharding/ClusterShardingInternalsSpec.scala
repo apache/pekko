@@ -31,9 +31,8 @@ object ClusterShardingInternalsSpec {
       case _ =>
     }
 
-    override def postStop(): Unit = {
+    override def postStop(): Unit =
       super.postStop()
-    }
   }
 }
 

@@ -59,7 +59,7 @@ object EventSourcedProducerQueue {
      * Scala API: Factory method from Config corresponding to
      * `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`.
      */
-    def apply(config: Config): Settings = {
+    def apply(config: Config): Settings =
       new Settings(
         restartMaxBackoff = config.getDuration("restart-max-backoff").asScala,
         snapshotEvery = config.getInt("snapshot-every"),
@@ -68,7 +68,6 @@ object EventSourcedProducerQueue {
         cleanupUnusedAfter = config.getDuration("cleanup-unused-after").asScala,
         journalPluginId = config.getString("journal-plugin-id"),
         snapshotPluginId = config.getString("snapshot-plugin-id"))
-    }
 
     /**
      * Java API: Factory method from config `pekko.reliable-delivery.producer-controller.event-sourced-durable-queue`
@@ -171,13 +170,12 @@ object EventSourcedProducerQueue {
 
   private case class CleanupTick[A]() extends DurableProducerQueue.Command[A]
 
-  def apply[A](persistenceId: PersistenceId): Behavior[DurableProducerQueue.Command[A]] = {
+  def apply[A](persistenceId: PersistenceId): Behavior[DurableProducerQueue.Command[A]] =
     Behaviors.setup { context =>
       apply(persistenceId, Settings(context.system))
     }
-  }
 
-  def apply[A](persistenceId: PersistenceId, settings: Settings): Behavior[DurableProducerQueue.Command[A]] = {
+  def apply[A](persistenceId: PersistenceId, settings: Settings): Behavior[DurableProducerQueue.Command[A]] =
     Behaviors.setup { context =>
       context.setLoggerName(classOf[EventSourcedProducerQueue[A]])
       val impl = new EventSourcedProducerQueue[A](context, settings.cleanupUnusedAfter)
@@ -206,7 +204,6 @@ object EventSourcedProducerQueue {
             .restartWithBackoff(1.second.min(settings.restartMaxBackoff), settings.restartMaxBackoff, 0.1))
       }
     }
-  }
 
   /**
    * Java API
@@ -305,7 +302,7 @@ private class EventSourcedProducerQueue[A](
     }.toSet
   }
 
-  def onCommandBeforeInitialCleanup(state: State[A], command: Command[A]): Effect[Event, State[A]] = {
+  def onCommandBeforeInitialCleanup(state: State[A], command: Command[A]): Effect[Event, State[A]] =
     command match {
       case _: CleanupTick[_] =>
         val old = oldUnconfirmedToCleanup(state)
@@ -321,9 +318,8 @@ private class EventSourcedProducerQueue[A](
       case _ =>
         Effect.stash()
     }
-  }
 
-  def onEvent(state: State[A], event: Event): State[A] = {
+  def onEvent(state: State[A], event: Event): State[A] =
     event match {
       case sent: MessageSent[A] @unchecked =>
         state.addMessageSent(sent)
@@ -332,6 +328,5 @@ private class EventSourcedProducerQueue[A](
       case Cleanup(confirmationQualifiers) =>
         state.cleanup(confirmationQualifiers).cleanupPartialChunkedMessages()
     }
-  }
 
 }

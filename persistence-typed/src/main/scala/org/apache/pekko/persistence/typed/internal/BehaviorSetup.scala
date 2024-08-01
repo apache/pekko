@@ -136,7 +136,7 @@ private[pekko] final class BehaviorSetup[C, E, S](
    * `catchAndLog=true` should be used for "unknown" signals in the phases before Running
    * to avoid restart loops if restart supervision is used.
    */
-  def onSignal[T](state: S, signal: Signal, catchAndLog: Boolean): Boolean = {
+  def onSignal[T](state: S, signal: Signal, catchAndLog: Boolean): Boolean =
     try {
       var handled = true
       signalHandler.applyOrElse((state, signal), (_: (S, Signal)) => handled = false)
@@ -152,9 +152,8 @@ private[pekko] final class BehaviorSetup[C, E, S](
           throw ex
         }
     }
-  }
 
-  def shouldSnapshot(state: S, event: E, sequenceNr: Long): SnapshotAfterPersist = {
+  def shouldSnapshot(state: S, event: E, sequenceNr: Long): SnapshotAfterPersist =
     retention match {
       case DisabledRetentionCriteria =>
         if (snapshotWhen(state, event, sequenceNr)) SnapshotWithoutRetention
@@ -165,7 +164,6 @@ private[pekko] final class BehaviorSetup[C, E, S](
         else NoSnapshot
       case unexpected => throw new IllegalStateException(s"Unexpected retention criteria: $unexpected")
     }
-  }
 
 }
 

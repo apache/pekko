@@ -117,13 +117,11 @@ class RemoveInternalClusterShardingDataSpec
     List("pekko.persistence.journal.leveldb.dir", "pekko.persistence.snapshot-store.local.dir").map(s =>
       new File(system.settings.config.getString(s)))
 
-  override protected def atStartup(): Unit = {
+  override protected def atStartup(): Unit =
     storageLocations.foreach(dir => if (dir.exists) FileUtils.deleteDirectory(dir))
-  }
 
-  override protected def afterTermination(): Unit = {
+  override protected def afterTermination(): Unit =
     storageLocations.foreach(dir => if (dir.exists) FileUtils.deleteDirectory(dir))
-  }
 
   // same persistenceId as is used by ShardCoordinator
   def persistenceId(typeName: String): String = s"/sharding/${typeName}Coordinator"

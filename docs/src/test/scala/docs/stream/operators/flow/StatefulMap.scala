@@ -19,20 +19,19 @@ object StatefulMap {
 
   implicit val actorSystem: ActorSystem = ???
 
-  def indexed(): Unit = {
+  def indexed(): Unit =
     // #zipWithIndex
     Source(List("A", "B", "C", "D"))
       .statefulMap(() => 0L)((index, elem) => (index + 1, (elem, index)), _ => None)
       .runForeach(println)
-    // prints
-    // (A,0)
-    // (B,1)
-    // (C,2)
-    // (D,3)
-    // #zipWithIndex
-  }
+  // prints
+  // (A,0)
+  // (B,1)
+  // (C,2)
+  // (D,3)
+  // #zipWithIndex
 
-  def bufferUntilChanged(): Unit = {
+  def bufferUntilChanged(): Unit =
     // #bufferUntilChanged
     Source("A" :: "B" :: "B" :: "C" :: "C" :: "C" :: "D" :: Nil)
       .statefulMap(() => List.empty[String])(
@@ -44,15 +43,14 @@ object StatefulMap {
         buffer => Some(buffer))
       .filter(_.nonEmpty)
       .runForeach(println)
-    // prints
-    // List(A)
-    // List(B, B)
-    // List(C, C, C)
-    // List(D)
-    // #bufferUntilChanged
-  }
+  // prints
+  // List(A)
+  // List(B, B)
+  // List(C, C, C)
+  // List(D)
+  // #bufferUntilChanged
 
-  def distinctUntilChanged(): Unit = {
+  def distinctUntilChanged(): Unit =
     // #distinctUntilChanged
     Source("A" :: "B" :: "B" :: "C" :: "C" :: "C" :: "D" :: Nil)
       .statefulMap(() => Option.empty[String])(
@@ -64,15 +62,14 @@ object StatefulMap {
         _ => None)
       .collect { case Some(elem) => elem }
       .runForeach(println)
-    // prints
-    // A
-    // B
-    // C
-    // D
-    // #distinctUntilChanged
-  }
+  // prints
+  // A
+  // B
+  // C
+  // D
+  // #distinctUntilChanged
 
-  def statefulMapConcatLike(): Unit = {
+  def statefulMapConcatLike(): Unit =
     // #statefulMapConcatLike
     Source(1 to 10)
       .statefulMap(() => List.empty[Int])(
@@ -87,17 +84,16 @@ object StatefulMap {
         state => Some(state.reverse))
       .mapConcat(identity)
       .runForeach(println)
-    // prints
-    // 1
-    // 2
-    // 3
-    // 4
-    // 5
-    // 6
-    // 7
-    // 8
-    // 9
-    // 10
-    // #statefulMapConcatLike
-  }
+  // prints
+  // 1
+  // 2
+  // 3
+  // 4
+  // 5
+  // 6
+  // 7
+  // 8
+  // 9
+  // 10
+  // #statefulMapConcatLike
 }

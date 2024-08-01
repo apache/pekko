@@ -109,8 +109,7 @@ private[io] trait WithUdpSend {
         pendingSend = null
         pendingCommander = null
       }
-    } finally {
+    } finally
       udp.bufferPool.release(buffer)
-    }
   }
 }

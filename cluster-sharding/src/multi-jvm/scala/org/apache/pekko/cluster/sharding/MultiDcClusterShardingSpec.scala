@@ -92,7 +92,7 @@ abstract class MultiDcClusterShardingSpec
   import MultiDcClusterShardingSpec._
   import MultiDcClusterShardingSpecConfig._
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     join(
       from,
       to, {
@@ -106,29 +106,26 @@ abstract class MultiDcClusterShardingSpec
           }
         }
       })
-  }
 
-  def startSharding(): Unit = {
+  def startSharding(): Unit =
     startSharding(
       system,
       typeName = "Entity",
       entityProps = Props[Entity](),
       extractEntityId = extractEntityId,
       extractShardId = extractShardId)
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 
   private def fillAddress(a: Address): Address =
     if (a.hasLocalScope) Cluster(system).selfAddress else a
 
-  private def assertCurrentRegions(expected: Set[Address]): Unit = {
+  private def assertCurrentRegions(expected: Set[Address]): Unit =
     awaitAssert({
         val p = TestProbe()
         region.tell(GetCurrentRegions, p.ref)
         p.expectMsg(CurrentRegions(expected))
       }, 10.seconds)
-  }
 
   "Cluster sharding in multi data center cluster" must {
     "join cluster" in within(20.seconds) {
@@ -137,11 +134,10 @@ abstract class MultiDcClusterShardingSpec
       join(third, first)
       join(fourth, first)
 
-      awaitAssert({
-          withClue(s"Members: ${Cluster(system).state}") {
-            Cluster(system).state.members.size should ===(4)
-            Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
-          }
+      awaitAssert(
+        withClue(s"Members: ${Cluster(system).state}") {
+          Cluster(system).state.members.size should ===(4)
+          Cluster(system).state.members.unsorted.map(_.status) should ===(Set(MemberStatus.Up))
         }, 10.seconds)
 
       runOn(first, second) {

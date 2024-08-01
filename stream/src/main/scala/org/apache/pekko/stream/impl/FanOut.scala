@@ -121,23 +121,21 @@ import org.reactivestreams.Subscription
         unmarkOutput(output)
       }
 
-    def markOutput(output: Int): Unit = {
+    def markOutput(output: Int): Unit =
       if (!marked(output)) {
         if (cancelled(output)) markedCancelled += 1
         if (pending(output)) markedPending += 1
         marked(output) = true
         markedCount += 1
       }
-    }
 
-    def unmarkOutput(output: Int): Unit = {
+    def unmarkOutput(output: Int): Unit =
       if (marked(output)) {
         if (cancelled(output)) markedCancelled -= 1
         if (pending(output)) markedPending -= 1
         marked(output) = false
         markedCount -= 1
       }
-    }
 
     def markAllOutputs(): Unit = {
       var i = 0

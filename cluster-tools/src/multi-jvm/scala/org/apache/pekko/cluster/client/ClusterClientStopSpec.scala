@@ -71,13 +71,12 @@ class ClusterClientStopSpec extends MultiNodeSpec(ClusterClientStopSpec) with ST
     enterBarrier(from.name + "-joined")
   }
 
-  def awaitCount(expected: Int): Unit = {
+  def awaitCount(expected: Int): Unit =
     awaitAssert {
       DistributedPubSub(system).mediator ! DistributedPubSubMediator.Count
       val actual = expectMsgType[Int]
       actual should ===(expected)
     }
-  }
 
   def initialContacts = Set(first, second).map { r =>
     node(r) / "system" / "receptionist"

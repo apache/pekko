@@ -59,9 +59,8 @@ class DaemonicSpec extends PekkoSpec {
             newNonDaemons should ===(Set.empty[Thread])
           }, 4.seconds)
 
-      } finally {
+      } finally
         shutdown(daemonicSystem)
-      }
     }
   }
 }

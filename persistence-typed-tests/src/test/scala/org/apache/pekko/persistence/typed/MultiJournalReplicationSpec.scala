@@ -41,7 +41,7 @@ object MultiJournalReplicationSpec {
     case class StoreMe(text: String, ack: ActorRef[Done]) extends Command
 
     private val writeJournalPerReplica = Map("R1" -> "journal1.journal", "R2" -> "journal2.journal")
-    def apply(entityId: String, replicaId: String): Behavior[Command] = {
+    def apply(entityId: String, replicaId: String): Behavior[Command] =
       ReplicatedEventSourcing
         .perReplicaJournalConfig(
           ReplicationId("MultiJournalSpec", entityId, ReplicaId(replicaId)),
@@ -59,7 +59,6 @@ object MultiJournalReplicationSpec {
               },
             (state, event) => state + event))
         .withJournalPluginId(writeJournalPerReplica(replicaId))
-    }
   }
 
   def separateJournalsConfig: Config = ConfigFactory.parseString(s"""

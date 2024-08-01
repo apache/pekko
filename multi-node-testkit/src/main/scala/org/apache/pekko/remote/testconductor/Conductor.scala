@@ -154,7 +154,7 @@ trait Conductor { this: TestConductorExt =>
   def blackhole(node: RoleName, target: RoleName, direction: Direction): Future[Done] =
     throttle(node, target, direction, 0f)
 
-  private def requireTestConductorTranport(): Unit = {
+  private def requireTestConductorTranport(): Unit =
     if (transport.provider.remoteSettings.Artery.Enabled) {
       if (!transport.provider.remoteSettings.Artery.Advanced.TestMode)
         throw new ConfigurationException(
@@ -166,7 +166,6 @@ trait Conductor { this: TestConductorExt =>
           "To use this feature you must activate the failure injector adapters " +
           "(trttl, gremlin) by specifying `testTransport(on = true)` in your MultiNodeConfig.")
     }
-  }
 
   /**
    * Switch the Netty pipeline of the remote support into pass through mode for
@@ -455,7 +454,7 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
     case BarrierTimeout(data)             => failBarrier(data)
     case FailedBarrier(data)              => failBarrier(data)
     case BarrierEmpty(_, _)               => SupervisorStrategy.Resume
-    case WrongBarrier(name, client, data) => { client ! ToClient(BarrierResult(name, false)); failBarrier(data) }
+    case WrongBarrier(name, client, data) => client ! ToClient(BarrierResult(name, false)); failBarrier(data)
     case ClientLost(data, _)              => failBarrier(data)
     case DuplicateNode(data, _)           => failBarrier(data)
   }
@@ -532,9 +531,8 @@ private[pekko] class Controller(private var initialParticipants: Int, controller
       sender() ! connection.channelFuture.sync().channel().localAddress()
   }
 
-  override def postStop(): Unit = {
+  override def postStop(): Unit =
     connection.shutdown()
-  }
 }
 
 /**
@@ -600,7 +598,7 @@ private[pekko] class BarrierCoordinator
   var failed = false
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {}
-  override def postRestart(reason: Throwable): Unit = { failed = true }
+  override def postRestart(reason: Throwable): Unit = failed = true
 
   // TODO what happens with the other waiting players in case of a test failure?
 
@@ -680,8 +678,7 @@ private[pekko] class BarrierCoordinator
     }
   }
 
-  def getDeadline(timeout: Option[FiniteDuration]): Deadline = {
+  def getDeadline(timeout: Option[FiniteDuration]): Deadline =
     Deadline.now + timeout.getOrElse(TestConductor().Settings.BarrierTimeout.duration)
-  }
 
 }

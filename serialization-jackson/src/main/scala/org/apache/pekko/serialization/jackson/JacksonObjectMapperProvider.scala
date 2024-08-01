@@ -156,7 +156,7 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
     jsonFactory
   }
 
-  private def getBufferRecyclerPool(cfg: Config): RecyclerPool[BufferRecycler] = {
+  private def getBufferRecyclerPool(cfg: Config): RecyclerPool[BufferRecycler] =
     cfg.getString("buffer-recycler.pool-instance") match {
       case "thread-local"            => JsonRecyclerPools.threadLocalPool()
       case "lock-free"               => JsonRecyclerPools.newLockFreePool()
@@ -166,7 +166,6 @@ object JacksonObjectMapperProvider extends ExtensionId[JacksonObjectMapperProvid
       case "bounded"                 => JsonRecyclerPools.newBoundedPool(cfg.getInt("buffer-recycler.bounded-pool-size"))
       case other                     => throw new IllegalArgumentException(s"Unknown recycler-pool: $other")
     }
-  }
 
   @nowarn("msg=deprecated")
   private def configureObjectMapperFeatures(
@@ -356,9 +355,8 @@ final class JacksonObjectMapperProvider(system: ExtendedActorSystem) extends Ext
    * @param jsonFactory optional `JsonFactory` such as `CBORFactory`, for plain JSON `None` (defaults)
    *                    can be used
    */
-  def getOrCreate(bindingName: String, jsonFactory: Option[JsonFactory]): ObjectMapper = {
+  def getOrCreate(bindingName: String, jsonFactory: Option[JsonFactory]): ObjectMapper =
     objectMappers.computeIfAbsent(bindingName, _ => create(bindingName, jsonFactory))
-  }
 
   /**
    * Java API: Returns an existing Jackson `ObjectMapper` that was created previously with this method, or

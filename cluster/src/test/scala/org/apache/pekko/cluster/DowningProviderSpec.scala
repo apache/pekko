@@ -30,9 +30,8 @@ import scala.util.control.NonFatal
 
 class FailingDowningProvider(@unused system: ActorSystem) extends DowningProvider {
   override val downRemovalMargin: FiniteDuration = 20.seconds
-  override def downingActorProps: Option[Props] = {
+  override def downingActorProps: Option[Props] =
     throw new ConfigurationException("this provider never works")
-  }
 }
 
 class DummyDowningProvider(@unused system: ActorSystem) extends DowningProvider {
@@ -89,14 +88,14 @@ class DowningProviderSpec extends AnyWordSpec with Matchers {
       // graceful shutdown fast enough that creating the actor system throws on constructing
       // thread (or slow enough that we have time to try join the cluster before noticing)
       val maybeSystem =
-        try {
+        try
           Some(
             ActorSystem(
               "auto-downing",
               ConfigFactory.parseString("""
           pekko.cluster.downing-provider-class="org.apache.pekko.cluster.FailingDowningProvider"
         """).withFallback(baseConf)))
-        } catch {
+        catch {
           case NonFatal(_) =>
             // expected to sometimes happen
             None

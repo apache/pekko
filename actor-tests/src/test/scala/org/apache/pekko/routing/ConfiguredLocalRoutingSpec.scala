@@ -128,14 +128,13 @@ class ConfiguredLocalRoutingSpec
     case _ => throw new IllegalArgumentException(s"Unexpected actorref $ref")
   }
 
-  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] = {
+  def collectRouteePaths(probe: TestProbe, router: ActorRef, n: Int): immutable.Seq[ActorPath] =
     for (i <- 1 to n) yield {
       val msg = i.toString
       router.tell(msg, probe.ref)
       probe.expectMsg(msg)
       probe.lastSender.path
     }
-  }
 
   "RouterConfig" must {
 

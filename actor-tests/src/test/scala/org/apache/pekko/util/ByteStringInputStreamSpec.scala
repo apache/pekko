@@ -62,9 +62,8 @@ class ByteStringInputStreamSpec extends AnyWordSpec with Matchers {
     try {
       copy(input, output)
       output.toByteArray
-    } finally {
+    } finally
       output.close()
-    }
   }
 
   private def copy(input: InputStream, output: OutputStream): Int = {

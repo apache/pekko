@@ -50,7 +50,7 @@ object ReplicatedShoppingCartExampleSpec {
 
     final case class State(items: Map[ProductId, Counter])
 
-    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] = {
+    def apply(entityId: String, replicaId: ReplicaId, allReplicaIds: Set[ReplicaId]): Behavior[Command] =
       ReplicatedEventSourcing.commonJournalConfig(
         ReplicationId("blog", entityId, replicaId),
         allReplicaIds,
@@ -61,9 +61,8 @@ object ReplicatedShoppingCartExampleSpec {
           (state, cmd) => commandHandler(state, cmd),
           (state, event) => eventHandler(state, event))
       }
-    }
 
-    private def commandHandler(state: State, cmd: Command): Effect[Event, State] = {
+    private def commandHandler(state: State, cmd: Command): Effect[Event, State] =
       cmd match {
         case AddItem(productId, count) =>
           Effect.persist(ItemUpdated(productId, Counter.Updated(count)))
@@ -76,9 +75,8 @@ object ReplicatedShoppingCartExampleSpec {
           replyTo ! CartItems(items)
           Effect.none
       }
-    }
 
-    private def eventHandler(state: State, event: Event): State = {
+    private def eventHandler(state: State, event: Event): State =
       event match {
         case ItemUpdated(id, update) =>
           val newItems = state.items.get(id) match {
@@ -87,7 +85,6 @@ object ReplicatedShoppingCartExampleSpec {
           }
           State(newItems)
       }
-    }
   }
   // #shopping-cart
 }

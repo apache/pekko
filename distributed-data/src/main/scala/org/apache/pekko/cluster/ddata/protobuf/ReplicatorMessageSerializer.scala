@@ -82,14 +82,13 @@ private[pekko] object ReplicatorMessageSerializer {
     private def get(a: A, startPos: Int): B = {
       // start at the latest added value, most likely that we want that
       val end = startPos + elements.length
-      @tailrec def find(i: Int): B = {
+      @tailrec def find(i: Int): B =
         if (end - i == 0) null.asInstanceOf[B]
         else {
           val x = elements(i & mask)
           if ((x eq null) || (x._1 ne a)) find(i + 1)
           else x._2
         }
-      }
       lastUsed = System.nanoTime()
       find(startPos)
     }
@@ -487,7 +486,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     Changed(key)(data)
   }
 
-  private def pruningToProto(entries: Map[UniqueAddress, PruningState]): Iterable[dm.DataEnvelope.PruningEntry] = {
+  private def pruningToProto(entries: Map[UniqueAddress, PruningState]): Iterable[dm.DataEnvelope.PruningEntry] =
     entries.map {
       case (removedAddress, state) =>
         val b = dm.DataEnvelope.PruningEntry.newBuilder().setRemovedAddress(uniqueAddressToProto(removedAddress))
@@ -506,7 +505,6 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
         }
         b.build()
     }
-  }
 
   private def dataEnvelopeToProto(dataEnvelope: DataEnvelope): dm.DataEnvelope = {
     val dataEnvelopeBuilder = dm.DataEnvelope.newBuilder().setData(otherMessageToProto(dataEnvelope.data))
@@ -532,7 +530,7 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   }
 
   private def pruningFromProto(
-      pruningEntries: java.util.List[dm.DataEnvelope.PruningEntry]): Map[UniqueAddress, PruningState] = {
+      pruningEntries: java.util.List[dm.DataEnvelope.PruningEntry]): Map[UniqueAddress, PruningState] =
     if (pruningEntries.isEmpty)
       Map.empty
     else
@@ -549,7 +547,6 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
         val removed = uniqueAddressFromProto(pruningEntry.getRemovedAddress)
         removed -> state
       }.toMap
-  }
 
   private def writeToProto(write: Write): dm.Write =
     dm.Write

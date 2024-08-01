@@ -90,11 +90,10 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    * Unsubscribe from a previous subscription of a given `key`.
    * @see [[ReplicatorMessageAdapter.subscribe]]
    */
-  def unsubscribe(key: Key[B]): Unit = {
+  def unsubscribe(key: Key[B]): Unit =
     changedMessageAdapters.get(key).foreach { subscriber =>
       replicator ! Replicator.Unsubscribe(key, subscriber)
     }
-  }
 
   /**
    * Send a [[Replicator.Update]] request to the replicator. The [[Replicator.UpdateResponse]]
@@ -107,13 +106,12 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askUpdate(
       createRequest: JFunction[ActorRef[Replicator.UpdateResponse[B]], Replicator.Update[B]],
-      responseAdapter: JFunction[Replicator.UpdateResponse[B], A]): Unit = {
+      responseAdapter: JFunction[Replicator.UpdateResponse[B], A]): Unit =
     context.asScala
       .ask[Replicator.Update[B], Replicator.UpdateResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
   /**
    * Send a [[Replicator.Get]] request to the replicator. The [[Replicator.GetResponse]]
@@ -127,13 +125,12 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
   @nowarn
   def askGet(
       createRequest: JFunction[ActorRef[Replicator.GetResponse[B]], Replicator.Get[B]],
-      responseAdapter: JFunction[Replicator.GetResponse[B], A]): Unit = {
+      responseAdapter: JFunction[Replicator.GetResponse[B], A]): Unit =
     context.asScala
       .ask[Replicator.Get[B], Replicator.GetResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
   /**
    * Send a [[Replicator.Delete]] request to the replicator. The [[Replicator.DeleteResponse]]
@@ -146,13 +143,12 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askDelete(
       createRequest: JFunction[ActorRef[Replicator.DeleteResponse[B]], Replicator.Delete[B]],
-      responseAdapter: JFunction[Replicator.DeleteResponse[B], A]): Unit = {
+      responseAdapter: JFunction[Replicator.DeleteResponse[B], A]): Unit =
     context.asScala
       .ask[Replicator.Delete[B], Replicator.DeleteResponse[B]](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
   /**
    * Send a [[Replicator.GetReplicaCount]] request to the replicator. The [[Replicator.ReplicaCount]]
@@ -165,12 +161,11 @@ class ReplicatorMessageAdapter[A, B <: ReplicatedData](
    */
   def askReplicaCount(
       createRequest: JFunction[ActorRef[Replicator.ReplicaCount], Replicator.GetReplicaCount],
-      responseAdapter: JFunction[Replicator.ReplicaCount, A]): Unit = {
+      responseAdapter: JFunction[Replicator.ReplicaCount, A]): Unit =
     context.asScala
       .ask[Replicator.GetReplicaCount, Replicator.ReplicaCount](replicator, askReplyTo => createRequest(askReplyTo)) {
         case Success(value) => responseAdapter(value)
         case Failure(ex)    => throw ex // unexpected ask timeout
       }
-  }
 
 }

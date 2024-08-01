@@ -47,7 +47,7 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
   def replayMessages(persistenceId: Int, fromSequenceNr: Long, toSequenceNr: Long, max: Long)(
       replayCallback: PersistentRepr => Unit): Unit = {
     @scala.annotation.tailrec
-    def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: PersistentRepr => Unit): Unit = {
+    def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: PersistentRepr => Unit): Unit =
       if (iter.hasNext) {
         val nextEntry = iter.next()
         val nextKey = keyFromBytes(nextEntry.getKey)
@@ -65,11 +65,10 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
           }
         }
       }
-    }
 
     // need to have this to be able to read journal created with 2.3.x, which
     // supported deletion of individual events
-    def deletion(iter: DBIterator, key: Key): Boolean = {
+    def deletion(iter: DBIterator, key: Key): Boolean =
       if (iter.hasNext) {
         val nextEntry = iter.peekNext()
         val nextKey = keyFromBytes(nextEntry.getKey)
@@ -79,7 +78,6 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
           true
         } else false
       } else false
-    }
 
     withIterator { iter =>
       val startKey = Key(persistenceId, if (fromSequenceNr < 1L) 1L else fromSequenceNr, 0)
@@ -99,7 +97,7 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
       replayCallback: ReplayedTaggedMessage => Unit): Unit = {
 
     @scala.annotation.tailrec
-    def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: ReplayedTaggedMessage => Unit): Unit = {
+    def go(iter: DBIterator, key: Key, ctr: Long, replayCallback: ReplayedTaggedMessage => Unit): Unit =
       if (iter.hasNext) {
         val nextEntry = iter.next()
         val nextKey = keyFromBytes(nextEntry.getKey)
@@ -113,7 +111,6 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
           }
         }
       }
-    }
 
     withIterator { iter =>
       // fromSequenceNr is exclusive, i.e. start with +1
@@ -125,13 +122,12 @@ private[persistence] trait LeveldbRecovery extends AsyncRecovery { this: Leveldb
 
   def readHighestSequenceNr(persistenceId: Int) = {
     val ro = leveldbSnapshot()
-    try {
+    try
       leveldb.get(keyToBytes(counterKey(persistenceId)), ro) match {
         case null  => 0L
         case bytes => counterFromBytes(bytes)
       }
-    } finally {
+    finally
       ro.snapshot().close()
-    }
   }
 }

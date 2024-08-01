@@ -86,10 +86,9 @@ trait UnrestrictedStash extends Actor with StashSupport {
    *  clears the stash, stops all children and invokes the postStop() callback.
    */
   @throws(classOf[Exception])
-  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit =
     try unstashAll()
     finally super.preRestart(reason, message)
-  }
 
   /**
    *  Overridden callback. Prepends all messages in the stash to the mailbox and clears the stash.
@@ -157,7 +156,7 @@ private[pekko] trait StashSupport {
    * The actor's deque-based message queue.
    * `mailbox.queue` is the underlying `Deque`.
    */
-  private[pekko] val mailbox: DequeBasedMessageQueueSemantics = {
+  private[pekko] val mailbox: DequeBasedMessageQueueSemantics =
     actorCell.mailbox.messageQueue match {
       case queue: DequeBasedMessageQueueSemantics => queue
       case other =>
@@ -170,7 +169,6 @@ private[pekko] trait StashSupport {
           |  }
           |""".stripMargin)
     }
-  }
 
   /**
    *  Adds the current message (the message that the actor received last) to the
@@ -209,11 +207,10 @@ private[pekko] trait StashSupport {
    */
   private[pekko] def unstash(): Unit =
     if (theStash.nonEmpty)
-      try {
+      try
         enqueueFirst(theStash.head)
-      } finally {
+      finally
         theStash = theStash.tail
-      }
 
   /**
    *  Prepends all messages in the stash to the mailbox, and then clears the stash.
@@ -242,14 +239,12 @@ private[pekko] trait StashSupport {
    *                         prepended to the mailbox.
    */
   @InternalStableApi
-  private[pekko] def unstashAll(filterPredicate: Any => Boolean): Unit = {
+  private[pekko] def unstashAll(filterPredicate: Any => Boolean): Unit =
     try {
       val i = theStash.reverseIterator.filter(envelope => filterPredicate(envelope.message))
       while (i.hasNext) enqueueFirst(i.next())
-    } finally {
+    } finally
       theStash = Vector.empty[Envelope]
-    }
-  }
 
   /**
    * INTERNAL API.

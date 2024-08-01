@@ -22,16 +22,14 @@ import pekko.util.{ ByteIterator, ByteString, ByteStringBuilder }
  */
 @InternalApi
 private[pekko] object DomainName {
-  def length(name: String): Short = {
+  def length(name: String): Short =
     (name.length + 2).toShort
-  }
 
   def write(it: ByteStringBuilder, name: String): Unit = {
     for (label <- name.split('.')) {
       it.putByte(label.length.toByte)
-      for (c <- label) {
+      for (c <- label)
         it.putByte(c.toByte)
-      }
     }
     it.putByte(0)
   }

@@ -31,7 +31,7 @@ class SecureRandomFactoryInvalidPRNGSpec extends SecureRandomFactorySpec("Invali
 abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
   var prng: SecureRandom = null
 
-  def isSupported: Boolean = {
+  def isSupported: Boolean =
     try {
       prng = SecureRandomFactory.createSecureRandom(alg, NoMarkerLogging)
       prng.nextInt() // Has to work
@@ -44,7 +44,6 @@ abstract class SecureRandomFactorySpec(alg: String) extends PekkoSpec {
         info(e.toString)
         false
     }
-  }
 
   s"Artery's Secure Random support ($alg)" must {
     if (isSupported) {

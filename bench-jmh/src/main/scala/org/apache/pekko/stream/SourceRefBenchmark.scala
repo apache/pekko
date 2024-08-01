@@ -56,14 +56,12 @@ class SourceRefBenchmark {
   //  var initialInputBufferSize = 0
 
   @Setup(Level.Invocation)
-  def setup(): Unit = {
+  def setup(): Unit =
     sourceRef = Source.fromGraph(new BenchTestSource(100000)).runWith(StreamRefs.sourceRef())
-  }
 
   @TearDown
-  def shutdown(): Unit = {
+  def shutdown(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   @Benchmark
   @OperationsPerInvocation(100000)

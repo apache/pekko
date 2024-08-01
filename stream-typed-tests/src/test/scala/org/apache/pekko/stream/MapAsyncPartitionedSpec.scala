@@ -50,18 +50,14 @@ private object MapAsyncPartitionedSpec {
       for {
         totalElements <- Gen.choose(1, 100)
         totalPartitions <- Gen.choose(1, 8)
-      } yield {
-        generateElements(totalPartitions, totalElements)
-      }
+      } yield generateElements(totalPartitions, totalElements)
     }
 
     def generateElements(totalPartitions: Int, totalElements: Int): Seq[TestKeyValue] =
-      for (i <- 1 to totalElements) yield {
-        TestKeyValue(
-          key = Random.nextInt(totalPartitions),
-          delay = DurationInt(Random.nextInt(20) + 10).millis,
-          value = i.toString)
-      }
+      for (i <- 1 to totalElements) yield TestKeyValue(
+        key = Random.nextInt(totalPartitions),
+        delay = DurationInt(Random.nextInt(20) + 10).millis,
+        value = i.toString)
 
     val partitioner: TestKeyValue => Int = kv => kv.key
 

@@ -106,7 +106,7 @@ final class Deploy(
    * precedence. The “path” of the other Deploy is not taken into account. All
    * other members are merged using `X.withFallback(other.X)`.
    */
-  def withFallback(other: Deploy): Deploy = {
+  def withFallback(other: Deploy): Deploy =
     Deploy(
       path,
       config.withFallback(other.config),
@@ -114,7 +114,6 @@ final class Deploy(
       scope.withFallback(other.scope),
       if (dispatcher == Deploy.NoDispatcherGiven) other.dispatcher else dispatcher,
       if (mailbox == Deploy.NoMailboxGiven) other.mailbox else mailbox)
-  }
 
   def withTags(tags: Set[String]): Deploy =
     new Deploy(path, config, routerConfig, scope, dispatcher, mailbox, tags)

@@ -137,7 +137,7 @@ private[io] class TcpListener(
       if (limit > 0) {
         try channel.accept()
         catch {
-          case NonFatal(e) => { log.error(e, "Accept error: could not accept new connection"); null }
+          case NonFatal(e) => log.error(e, "Accept error: could not accept new connection"); null
         }
       } else null
     if (socketChannel != null) {
@@ -151,14 +151,13 @@ private[io] class TcpListener(
     else BatchAcceptLimit
   }
 
-  override def postStop(): Unit = {
-    try {
+  override def postStop(): Unit =
+    try
       if (channel.isOpen) {
         log.debug("Closing serverSocketChannel after being stopped")
         channel.close()
       }
-    } catch {
+    catch {
       case NonFatal(e) => log.debug("Error closing ServerSocketChannel: {}", e)
     }
-  }
 }

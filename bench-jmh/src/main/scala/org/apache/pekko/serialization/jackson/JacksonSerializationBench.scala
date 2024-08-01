@@ -232,13 +232,12 @@ class JacksonSerializationBench {
   }
 
   @TearDown(Level.Trial)
-  def tearDownTrial(): Unit = {
+  def tearDownTrial(): Unit =
     Await.result(system.terminate(), 5.seconds)
-  }
 
   private var size = 0L
 
-  private def serializeDeserialize[T <: AnyRef](msg: T): T = {
+  private def serializeDeserialize[T <: AnyRef](msg: T): T =
     serialization.findSerializerFor(msg) match {
       case serializer: SerializerWithStringManifest =>
         val blob = serializer.toBinary(msg)
@@ -257,41 +256,32 @@ class JacksonSerializationBench {
           serializer.fromBinary(blob, None).asInstanceOf[T]
     }
 
-  }
-
   @Benchmark
-  def small(): Small = {
+  def small(): Small =
     serializeDeserialize(smallMsg1)
-  }
 
   @Benchmark
-  def medium(): Medium = {
+  def medium(): Medium =
     serializeDeserialize(mediumMsg1)
-  }
 
   @Benchmark
-  def large(): Large = {
+  def large(): Large =
     serializeDeserialize(largeMsg)
-  }
 
   @Benchmark
-  def jSmall(): JSmall = {
+  def jSmall(): JSmall =
     serializeDeserialize(jSmallMsg1)
-  }
 
   @Benchmark
-  def jMedium(): JMedium = {
+  def jMedium(): JMedium =
     serializeDeserialize(jMediumMsg1)
-  }
 
   @Benchmark
-  def jLarge(): JLarge = {
+  def jLarge(): JLarge =
     serializeDeserialize(jLargeMsg)
-  }
 
   @Benchmark
-  def timeMessage(): TimeMessage = {
+  def timeMessage(): TimeMessage =
     serializeDeserialize(timeMsg)
-  }
 
 }

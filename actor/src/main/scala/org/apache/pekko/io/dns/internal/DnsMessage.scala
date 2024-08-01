@@ -66,9 +66,8 @@ private[internal] case class MessageFlags(flags: Short) extends AnyVal {
 
   def isRecursionAvailable: Boolean = (flags & (1 << 7)) != 0
 
-  def responseCode: ResponseCode.Value = {
+  def responseCode: ResponseCode.Value =
     ResponseCode(flags & 0x0F)
-  }
 
   override def toString: String = {
     var ret = List[String]()
@@ -95,7 +94,7 @@ private[internal] object MessageFlags {
       truncated: Boolean = false,
       recursionDesired: Boolean = true,
       recursionAvailable: Boolean = false,
-      responseCode: ResponseCode.Value = ResponseCode.SUCCESS): MessageFlags = {
+      responseCode: ResponseCode.Value = ResponseCode.SUCCESS): MessageFlags =
     new MessageFlags(
       ((if (answer) 0x8000 else 0) |
       (opCode.id << 11) |
@@ -104,7 +103,6 @@ private[internal] object MessageFlags {
       (if (recursionDesired) 1 << 8 else 0) |
       (if (recursionAvailable) 1 << 7 else 0) |
       responseCode.id).toShort)
-  }
 }
 
 /**

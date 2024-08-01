@@ -151,7 +151,7 @@ class SourceWithContextSpec extends StreamSpec {
 
       SourceWithContext
         .fromTuples(Source(data))
-        .unsafeDataVia(Flow.fromFunction[String, Int] { _.toInt })
+        .unsafeDataVia(Flow.fromFunction[String, Int](_.toInt))
         .runWith(TestSink.probe[(Int, Int)])
         .request(4)
         .expectNext((1, 1), (2, 2), (3, 3), (4, 4))

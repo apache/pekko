@@ -49,14 +49,13 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
   private val fs = Jimfs.newFileSystem("MapWithResourceSpec", Configuration.unix())
   private val ex = new Exception("TEST") with NoStackTrace
 
-  private val manyLines = {
+  private val manyLines =
     ("a" * 100 + "\n") * 10 +
     ("b" * 100 + "\n") * 10 +
     ("c" * 100 + "\n") * 10 +
     ("d" * 100 + "\n") * 10 +
     ("e" * 100 + "\n") * 10 +
     ("f" * 100 + "\n") * 10
-  }
   private val manyLinesArray = manyLines.split("\n")
 
   private val manyLinesPath = {
@@ -71,7 +70,7 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
     }
 
     @tailrec
-    def loop(builder: ListBuffer[String], n: Int): ListBuffer[String] = {
+    def loop(builder: ListBuffer[String], n: Int): ListBuffer[String] =
       if (n == 0) {
         builder
       } else {
@@ -83,16 +82,14 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
           loop(builder, n - 1)
         }
       }
-    }
     loop(ListBuffer.empty, maxCount).result()
   }
 
   "MapWithResource" must {
     "can read contents from a file" in {
       val p = Source(List(1, 10, 20, 30))
-        .mapWithResource(() => newBufferedReader())((reader, count) => {
-            readLines(reader, count)
-          },
+        .mapWithResource(() => newBufferedReader())((reader, count) =>
+            readLines(reader, count),
           reader => {
             reader.close()
             None
@@ -140,10 +137,10 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 49).foreach(i => {
+      (0 to 49).foreach { i =>
         sub.request(1)
         c.expectNext() should ===(if (i < 10) manyLinesArray(i) else manyLinesArray(i + 10))
-      })
+      }
       sub.request(1)
       c.expectComplete()
     }
@@ -167,10 +164,10 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 19).foreach(_ => {
+      (0 to 19).foreach { _ =>
         sub.request(1)
         c.expectNext() should ===(manyLinesArray(0))
-      })
+      }
       sub.cancel()
     }
 
@@ -204,10 +201,10 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 121).foreach(_ => {
+      (0 to 121).foreach { _ =>
         sub.request(1)
         c.expectNext().utf8String should ===(nextChunk())
-      })
+      }
       sub.request(1)
       c.expectComplete()
     }
@@ -395,9 +392,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val promise = Promise[Done]()
       val matVal = Source
         .single(1)
-        .mapWithResource(() => {
+        .mapWithResource { () =>
           newBufferedReader()
-        })((reader, count) => readLines(reader, count),
+        }((reader, count) => readLines(reader, count),
           reader => {
             reader.close()
             promise.complete(Success(Done))
@@ -527,9 +524,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val p = Source
         .fromIterator(() => (0 to 50).iterator)
         .mapWithResource(create,
-          (_: AutoCloseable, elem) => {
+          (_: AutoCloseable, elem) =>
             if (elem == 10) throw TE("") else elem
-          })
+        )
         .withAttributes(supervisionStrategy(resumingDecider))
         .runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
@@ -537,10 +534,10 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 48).foreach(i => {
+      (0 to 48).foreach { i =>
         sub.request(1)
         c.expectNext() should ===(if (i < 10) i else i + 1)
-      })
+      }
       sub.request(1)
       c.expectNext(50)
       c.expectComplete()
@@ -556,9 +553,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val p = Source
         .fromIterator(() => (0 to 50).iterator)
         .mapWithResource(create,
-          (_: AutoCloseable, elem) => {
+          (_: AutoCloseable, elem) =>
             if (elem == 10 || elem == 20) throw TE("") else elem
-          })
+        )
         .withAttributes(supervisionStrategy(restartingDecider))
         .runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
@@ -566,11 +563,11 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 30).filter(i => i != 10 && i != 20).foreach(i => {
+      (0 to 30).filter(i => i != 10 && i != 20).foreach { i =>
         sub.request(1)
         c.expectNext() shouldBe i
         closedCounter.get should ===(if (i < 10) 0 else if (i < 20) 1 else 2)
-      })
+      }
       sub.cancel()
     }
 
@@ -583,9 +580,9 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       val p = Source
         .fromIterator(() => (0 to 50).iterator)
         .mapWithResource(create,
-          (_: AutoCloseable, elem) => {
+          (_: AutoCloseable, elem) =>
             if (elem == 10) throw TE("") else elem
-          })
+        )
         .withAttributes(supervisionStrategy(stoppingDecider))
         .runWith(Sink.asPublisher(false))
       val c = TestSubscriber.manualProbe[Int]()
@@ -593,17 +590,16 @@ class FlowMapWithResourceSpec extends StreamSpec(UnboundedMailboxConfig) {
       p.subscribe(c)
       val sub = c.expectSubscription()
 
-      (0 to 9).foreach(i => {
+      (0 to 9).foreach { i =>
         sub.request(1)
         c.expectNext() shouldBe i
-      })
+      }
       sub.request(1)
       c.expectError()
       closedCounter.get shouldBe 1
     }
 
   }
-  override def afterTermination(): Unit = {
+  override def afterTermination(): Unit =
     fs.close()
-  }
 }

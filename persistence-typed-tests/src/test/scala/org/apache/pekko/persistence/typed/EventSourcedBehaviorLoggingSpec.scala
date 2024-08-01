@@ -41,7 +41,7 @@ object EventSourcedBehaviorLoggingSpec {
 
     final case class Event(msg: String) extends CborSerializable
 
-    def apply(id: PersistenceId): Behavior[Command] = {
+    def apply(id: PersistenceId): Behavior[Command] =
       Behaviors.setup { ctx =>
         EventSourcedBehavior[Command, Event, Set[Event]](
           id,
@@ -57,7 +57,6 @@ object EventSourcedBehaviorLoggingSpec {
             },
           (state, event) => state + event)
       }
-    }
   }
 }
 

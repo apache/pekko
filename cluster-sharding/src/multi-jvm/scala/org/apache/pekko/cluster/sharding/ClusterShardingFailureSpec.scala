@@ -111,7 +111,7 @@ abstract class ClusterShardingFailureSpec(multiNodeConfig: ClusterShardingFailur
   import ClusterShardingFailureSpec._
   import multiNodeConfig._
 
-  def join(from: RoleName, to: RoleName): Unit = {
+  def join(from: RoleName, to: RoleName): Unit =
     join(
       from,
       to,
@@ -121,7 +121,6 @@ abstract class ClusterShardingFailureSpec(multiNodeConfig: ClusterShardingFailur
         entityProps = Props[Entity](),
         extractEntityId = extractEntityId,
         extractShardId = extractShardId))
-  }
 
   lazy val region = ClusterSharding(system).shardRegion("Entity")
 

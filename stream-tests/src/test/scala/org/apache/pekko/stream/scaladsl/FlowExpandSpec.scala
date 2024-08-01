@@ -62,9 +62,8 @@ class FlowExpandSpec extends StreamSpec("""
 
       publisher.sendNext(42)
 
-      for (_ <- 1 to 100) {
+      for (_ <- 1 to 100)
         subscriber.requestNext(42)
-      }
 
       publisher.sendNext(-42)
 

@@ -31,7 +31,7 @@ private[pekko] trait AbstractProps {
   /**
    * INTERNAL API
    */
-  private[pekko] def validate(clazz: Class[_]): Unit = {
+  private[pekko] def validate(clazz: Class[_]): Unit =
     if (Modifier.isAbstract(clazz.getModifiers)) {
       throw new IllegalArgumentException(s"Actor class [${clazz.getName}] must not be abstract")
     } else if (!classOf[Actor].isAssignableFrom(clazz) &&
@@ -39,7 +39,6 @@ private[pekko] trait AbstractProps {
       throw new IllegalArgumentException(
         s"Actor class [${clazz.getName}] must be subClass of org.apache.pekko.actor.Actor or org.apache.pekko.actor.IndirectActorProducer.")
     }
-  }
 
   /**
    * Java API: create a Props given a class and its constructor arguments.
@@ -93,7 +92,7 @@ private[pekko] trait AbstractProps {
     val enclosingClass = clazz.getEnclosingClass
 
     def hasDeclaredConstructorWithEmptyParams(declaredConstructors: Array[Constructor[_]]): Boolean = {
-      @tailrec def loop(i: Int): Boolean = {
+      @tailrec def loop(i: Int): Boolean =
         if (i == declaredConstructors.length) false
         else {
           if (declaredConstructors(i).getParameterCount == 0)
@@ -101,12 +100,11 @@ private[pekko] trait AbstractProps {
           else
             loop(i + 1) // recur
         }
-      }
       loop(0)
     }
 
     def hasDeclaredConstructorWithEnclosingClassParam(declaredConstructors: Array[Constructor[_]]): Boolean = {
-      @tailrec def loop(i: Int): Boolean = {
+      @tailrec def loop(i: Int): Boolean =
         if (i == declaredConstructors.length) false
         else {
           val c = declaredConstructors(i)
@@ -115,7 +113,6 @@ private[pekko] trait AbstractProps {
           else
             loop(i + 1) // recur
         }
-      }
       loop(0)
     }
 
