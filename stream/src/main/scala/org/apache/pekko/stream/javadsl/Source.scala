@@ -138,6 +138,32 @@ object Source {
     new Source(scaladsl.Source.cycle(() => f.create().asScala))
 
   /**
+   * Creates a Source from an existing base Source outputting an optional element
+   * and applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param source The base source that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined.
+   * @param combine How to combine the materialized values of source and viaFlow
+   * @return a Source with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Optional which indicates whether the original source's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  def optionalVia[SOut, FOut, SMat, FMat, Mat](source: Source[Optional[SOut], SMat],
+      viaFlow: Flow[SOut, FOut, FMat],
+      combine: function.Function2[SMat, FMat, Mat]
+  ): Source[Optional[FOut], Mat] =
+    scaladsl.Source.optionalVia(source.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(_.toJava).asJava
+
+  /**
    * Helper to create [[Source]] from `Iterable`.
    * Example usage:
    * {{{

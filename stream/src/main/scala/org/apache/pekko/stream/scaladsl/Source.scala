@@ -309,6 +309,55 @@ object Source {
   }
 
   /**
+   * Creates a Source from an existing base Source outputting an optional element
+   * and applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param source The base source that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined.
+   * @param combine How to combine the materialized values of source and viaFlow
+   * @return a Source with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Option which indicates whether the original source's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  def optionalVia[SOut, FOut, SMat, FMat, Mat](source: Source[Option[SOut], SMat],
+      viaFlow: Flow[SOut, FOut, FMat])(
+      combine: (SMat, FMat) => Mat
+  ): Source[Option[FOut], Mat] =
+    Source.fromGraph(GraphDSL.createGraph(source, viaFlow)(combine) { implicit b => (s, viaF) =>
+      import GraphDSL.Implicits._
+      val broadcast = b.add(Broadcast[Option[SOut]](2))
+      val merge = b.add(Merge[Option[FOut]](2))
+
+      val filterAvailable = Flow[Option[SOut]].collect {
+        case Some(f) => f
+      }
+
+      val filterUnavailable = Flow[Option[SOut]].collect {
+        case None => Option.empty[FOut]
+      }
+
+      val mapIntoOption = Flow[FOut].map {
+        f => Some(f)
+      }
+
+      s ~> broadcast.in
+
+      broadcast.out(0) ~> filterAvailable   ~> viaF ~> mapIntoOption ~> merge.in(0)
+      broadcast.out(1) ~> filterUnavailable ~> merge.in(1)
+
+      SourceShape(merge.out)
+    })
+
+  /**
    * A graph with the shape of a source logically is a source, this method makes
    * it so also in type.
    */

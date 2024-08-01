@@ -548,6 +548,22 @@ class FlowSpec extends StreamSpec(ConfigFactory.parseString("pekko.actor.debug.r
     "should be created from a function easily" in {
       Source(0 to 9).via(Flow.fromFunction(_ + 1)).runWith(Sink.seq).futureValue should ===(1 to 10)
     }
+
+    "Apply a viaFlow with optional elements using optionalVia" in {
+      val data = List(Some("1"), None, None, Some("4"))
+
+      val flow = Flow[Option[String]]
+
+      Source(data).via(
+        Flow.optionalVia(
+          flow,
+          Flow.fromFunction { (string: String) => string.toInt }
+        )(Keep.none)
+      ).runWith(TestSink.probe[Option[Int]])
+        .request(4)
+        .expectNext(Some(1), None, None, Some(4))
+        .expectComplete()
+    }
   }
 
   /**
