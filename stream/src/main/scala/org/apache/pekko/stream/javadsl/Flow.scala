@@ -69,6 +69,32 @@ object Flow {
   def fromFunction[I, O](f: function.Function[I, O]): javadsl.Flow[I, O, NotUsed] =
     Flow.create[I]().map(f)
 
+  /**
+   * Creates a Flow from an existing base Flow outputting an optional element and
+   * applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param flow The base flow that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined.
+   * @param combine How to combine the materialized values of flow and viaFlow
+   * @return a Flow with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Optional which indicates whether the original flow's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  def optionalVia[FIn, FOut, FViaOut, FMat, FViaMat, Mat](flow: Flow[FIn, Optional[FOut], FMat],
+      viaFlow: Flow[FOut, FViaOut, FViaMat],
+      combine: function.Function2[FMat, FViaMat, Mat]
+  ): Flow[FIn, Optional[FViaOut], Mat] =
+    scaladsl.Flow.optionalVia(flow.map(_.toScala).asScala, viaFlow.asScala)(combinerToScala(combine)).map(_.toJava).asJava
+
   /** Create a `Flow` which can process elements of type `T`. */
   def of[T](@unused clazz: Class[T]): javadsl.Flow[T, T, NotUsed] = create[T]()
 

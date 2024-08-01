@@ -444,6 +444,19 @@ class SourceSpec extends StreamSpec with DefaultTimeout {
       import Attributes._
       val s: Source[Int, NotUsed] = Source.single(42).async.addAttributes(none).named("")
     }
+
+    "Apply a viaFlow with optional elements using optionalVia" in {
+      val data = List(Some("1"), None, None, Some("4"))
+
+      Source.optionalVia(
+        Source(data),
+        Flow.fromFunction { (string: String) => string.toInt }
+      )(Keep.none)
+        .runWith(TestSink.probe[Option[Int]])
+        .request(4)
+        .expectNext(Some(1), None, None, Some(4))
+        .expectComplete()
+    }
   }
 
   "A Source.run" must {

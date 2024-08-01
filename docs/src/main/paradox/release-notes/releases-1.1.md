@@ -41,6 +41,7 @@ The Stream API has been updated to add some extra functions.
 * add Sink.forall operator ([PR989](https://github.com/apache/pekko/pull/989))
 * add Source.iterate operator ([PR1244](https://github.com/apache/pekko/pull/1244))
 * added extra retry operators that allow users to provide a predicate to decide whether to retry based on the exception ([PR1269](https://github.com/apache/pekko/pull/1269))
+* add optionalVia/unsafeOptionalDataVia operators ([PR1422](https://github.com/apache/pekko/pull/1422))
 
 The Stream Testkit Java DSL has some extra functions.
 

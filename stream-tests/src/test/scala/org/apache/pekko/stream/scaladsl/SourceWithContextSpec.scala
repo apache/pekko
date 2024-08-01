@@ -157,5 +157,20 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext((1, 1), (2, 2), (3, 3), (4, 4))
         .expectComplete()
     }
+
+    "Apply a viaFlow with optional elements using unsafeOptionalVia" in {
+      val data = List((Some("1"), 1), (None, 2), (None, 3), (Some("4"), 4))
+
+      val source = SourceWithContext.fromTuples(Source(data))
+
+      SourceWithContext.unsafeOptionalDataVia(
+        source,
+        Flow.fromFunction { (string: String) => string.toInt }
+      )(Keep.none)
+        .runWith(TestSink.probe[(Option[Int], Int)])
+        .request(4)
+        .expectNext((Some(1), 1), (None, 2), (None, 3), (Some(4), 4))
+        .expectComplete()
+    }
   }
 }
