@@ -22,16 +22,24 @@ import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
 
-import java.io.NotSerializableException
 import java.util.Base64
 
-class SnapshotSerializerMigrationIgnoreSpec extends PekkoSpec(
-      "pekko.persistence.snapshot-store.migrate-manifest-to=ignore"
-    ) {
+class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
+  "pekko.persistence.snapshot-store.migrate-manifest-to=akka"
+) {
 
   import SnapshotSerializerTestData._
 
   "Snapshot serializer with migration ignored" should {
+    "deserialize akka snapshots" in {
+      val serialization = SerializationExtension(system)
+      val bytes = Base64.getDecoder.decode(akkaSnapshotData)
+      val result = serialization.deserialize(bytes, classOf[Snapshot]).get
+      val deserialized = result.data
+      deserialized shouldBe a[PersistentFSMSnapshot[_]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      persistentFSMSnapshot shouldEqual fsmSnapshot
+    }
     "deserialize pekko snapshots" in {
       val serialization = SerializationExtension(system)
       val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
@@ -40,13 +48,6 @@ class SnapshotSerializerMigrationIgnoreSpec extends PekkoSpec(
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
       val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
       persistentFSMSnapshot shouldEqual fsmSnapshot
-    }
-    "fail to deserialize akka snapshots" in {
-      val serialization = SerializationExtension(system)
-      val bytes = Base64.getDecoder.decode(akkaSnapshotData)
-      intercept[NotSerializableException] {
-        serialization.deserialize(bytes, classOf[Snapshot]).get
-      }
     }
   }
 }
