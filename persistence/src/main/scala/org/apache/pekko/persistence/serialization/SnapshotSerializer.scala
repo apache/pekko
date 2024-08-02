@@ -99,11 +99,13 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       else {
         val manifestBytes = new Array[Byte](remaining)
         in.read(manifestBytes)
-        migrateManifestIfNecessary(new String(manifestBytes, UTF_8))
+        migrateManifestToPekkoIfNecessary(new String(manifestBytes, UTF_8))
       }
     (serializerId, manifest)
   }
 
+  // when writinging the data, we want to allow the serialized data to
+  // support Akka and Pekko serializers as required by configuration
   private def migrateManifestIfNecessary(manifest: String): String = {
     migrationStrategy match {
       case Ignore => manifest
@@ -116,6 +118,19 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       case Akka =>
         if (manifest.startsWith("org.apache.pekko")) {
           manifest.replaceFirst("org.apache.pekko", "akka")
+        } else {
+          manifest
+        }
+    }
+  }
+
+  // when reading the data, we want to force use of the Pekko serializer
+  private def migrateManifestToPekkoIfNecessary(manifest: String): String = {
+    migrationStrategy match {
+      case Ignore => manifest
+      case _ =>
+        if (manifest.startsWith("akka")) {
+          manifest.replaceFirst("akka", "org.apache.pekko")
         } else {
           manifest
         }
