@@ -29,14 +29,36 @@ import pekko.util.ByteString.UTF_8
 @SerialVersionUID(1L)
 final case class Snapshot(data: Any)
 
+private[serialization] sealed trait SnapshotSerializerSnapshotMigration
+
+private[serialization] object SnapshotSerializerSnapshotMigration {
+  // Ignore the snapshot migration strategy - means that Pekko will not be able to work with snapshots saved by Akka
+  object Ignore extends SnapshotSerializerSnapshotMigration
+  // When saving snapshots, migrate any manifests with `akka` to `org.apache.pekko`
+  object Pekko extends SnapshotSerializerSnapshotMigration
+  // When saving snapshots, migrate any manifests with `org.apache.pekko` to `akka`
+  object Akka extends SnapshotSerializerSnapshotMigration
+
+  def fromString(s: String): SnapshotSerializerSnapshotMigration = s match {
+    case "ignore" => Ignore
+    case "pekko"  => Pekko
+    case "akka"   => Akka
+    case _        => throw new IllegalArgumentException(s"Unknown snapshot migration strategy: $s")
+  }
+}
+
 /**
  * [[Snapshot]] serializer.
  */
 class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
+  import SnapshotSerializerSnapshotMigration._
 
   override val includeManifest: Boolean = false
 
   private lazy val serialization = SerializationExtension(system)
+
+  private lazy val migrationStrategy = SnapshotSerializerSnapshotMigration.fromString(
+    system.settings.config.getString("pekko.persistence.snapshot-store.migrate-manifest-to"))
 
   /**
    * Serializes a [[Snapshot]]. Delegates serialization of snapshot `data` to a matching
@@ -58,7 +80,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     val out = new ByteArrayOutputStream
     writeInt(out, snapshotSerializer.identifier)
 
-    val ms = Serializers.manifestFor(snapshotSerializer, snapshot)
+    val ms = migrateManifestIfNecessary(Serializers.manifestFor(snapshotSerializer, snapshot))
     if (ms.nonEmpty) out.write(ms.getBytes(UTF_8))
 
     out.toByteArray
@@ -77,9 +99,27 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
       else {
         val manifestBytes = new Array[Byte](remaining)
         in.read(manifestBytes)
-        new String(manifestBytes, UTF_8)
+        migrateManifestIfNecessary(new String(manifestBytes, UTF_8))
       }
     (serializerId, manifest)
+  }
+
+  private def migrateManifestIfNecessary(manifest: String): String = {
+    migrationStrategy match {
+      case Ignore => manifest
+      case Pekko =>
+        if (manifest.startsWith("akka")) {
+          manifest.replaceFirst("akka", "org.apache.pekko")
+        } else {
+          manifest
+        }
+      case Akka =>
+        if (manifest.startsWith("org.apache.pekko")) {
+          manifest.replaceFirst("org.apache.pekko", "akka")
+        } else {
+          manifest
+        }
+    }
   }
 
   private def snapshotToBinary(snapshot: AnyRef): Array[Byte] = {
@@ -112,14 +152,8 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
 
     val (serializerId, manifest) = headerFromBinary(headerBytes)
 
-    // suggested in https://github.com/scullxbones/pekko-persistence-mongo/pull/14#issuecomment-1847223850
     serialization
       .deserialize(snapshotBytes, serializerId, manifest)
-      .recoverWith {
-        case _: NotSerializableException if manifest.startsWith("akka") =>
-          serialization
-            .deserialize(snapshotBytes, serializerId, manifest.replaceFirst("akka", "org.apache.pekko"))
-      }
       .get
   }
 

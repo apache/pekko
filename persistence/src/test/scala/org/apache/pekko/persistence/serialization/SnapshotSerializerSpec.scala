@@ -18,7 +18,6 @@
 package org.apache.pekko.persistence.serialization
 
 import org.apache.pekko
-import pekko.actor.ActorSystem
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
@@ -27,9 +26,10 @@ import java.util.Base64
 
 class SnapshotSerializerSpec extends PekkoSpec {
 
+  private val fsmSnapshot = PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
+
   "Snapshot serializer" should {
     "deserialize akka snapshots" in {
-      val system = ActorSystem()
       val serialization = SerializationExtension(system)
       // https://github.com/apache/pekko/pull/837#issuecomment-1847320309
       val data =
@@ -39,7 +39,28 @@ class SnapshotSerializerSpec extends PekkoSpec {
       val deserialized = result.data
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
       val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
-      persistentFSMSnapshot shouldEqual PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
+      persistentFSMSnapshot shouldEqual fsmSnapshot
+    }
+    "deserialize pekko snapshots" in {
+      val serialization = SerializationExtension(system)
+      val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
+      val result = serialization.deserialize(bytes, classOf[Snapshot]).get
+      val deserialized = result.data
+      deserialized shouldBe a[PersistentFSMSnapshot[_]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      persistentFSMSnapshot shouldEqual fsmSnapshot
+    }
+    "deserialize pre-saved pekko snapshots" in {
+      val serialization = SerializationExtension(system)
+      // this is Pekko encoded snapshot based on https://github.com/apache/pekko/pull/837#issuecomment-1847320309
+      val data =
+        "SAAAAAcAAABvcmcuYXBhY2hlLnBla2tvLnBlcnNpc3RlbmNlLmZzbS5QZXJzaXN0ZW50RlNNJFBlcnNpc3RlbnRGU01TbmFwc2hvdAoPdGVzdC1pZGVudGlmaWVyEg0IFBIJdGVzdC1kYXRh"
+      val bytes = Base64.getDecoder.decode(data)
+      val result = serialization.deserialize(bytes, classOf[Snapshot]).get
+      val deserialized = result.data
+      deserialized shouldBe a[PersistentFSMSnapshot[_]]
+      val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
+      persistentFSMSnapshot shouldEqual fsmSnapshot
     }
   }
 }
