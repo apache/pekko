@@ -17,15 +17,18 @@
 
 package org.apache.pekko.persistence.serialization
 
+import com.typesafe.config.ConfigFactory
 import org.apache.pekko
+import pekko.actor.ActorSystem
 import pekko.persistence.fsm.PersistentFSM.PersistentFSMSnapshot
 import pekko.serialization.SerializationExtension
 import pekko.testkit.PekkoSpec
 
+import java.io.NotSerializableException
 import java.util.Base64
 
 class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
-      "pekko.persistence.snapshot-store.migrate-manifest-to=akka"
+      s"${SnapshotSerializerSnapshotMigration.ConfigName}=akka"
     ) {
 
   import SnapshotSerializerTestData._
@@ -48,6 +51,21 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
       val persistentFSMSnapshot = deserialized.asInstanceOf[PersistentFSMSnapshot[_]]
       persistentFSMSnapshot shouldEqual fsmSnapshot
+    }
+    "serialize snapshot with Akka class name" in {
+      val serialization = SerializationExtension(system)
+      val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
+      val cfg = ConfigFactory.parseString(s"${SnapshotSerializerSnapshotMigration.ConfigName}=ignore")
+        .withFallback(system.settings.config)
+      val pekkoOnlySystem = ActorSystem("pekko-only-serialization", cfg)
+      try {
+        val pekkoOnlySerialization = SerializationExtension(pekkoOnlySystem)
+        intercept[NotSerializableException] {
+          pekkoOnlySerialization.deserialize(bytes, classOf[Snapshot]).get
+        }
+      } finally {
+        pekkoOnlySystem.terminate()
+      }
     }
   }
 }
