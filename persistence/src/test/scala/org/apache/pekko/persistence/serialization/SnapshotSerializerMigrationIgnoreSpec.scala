@@ -26,7 +26,7 @@ import java.io.NotSerializableException
 import java.util.Base64
 
 class SnapshotSerializerMigrationIgnoreSpec extends PekkoSpec(
-      "pekko.persistence.snapshot-store.migrate-manifest-to=ignore"
+      s"${SnapshotSerializerSnapshotMigration.ConfigName}=ignore"
     ) {
 
   import SnapshotSerializerTestData._

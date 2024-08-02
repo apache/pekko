@@ -32,6 +32,8 @@ final case class Snapshot(data: Any)
 private[serialization] sealed trait SnapshotSerializerSnapshotMigration
 
 private[serialization] object SnapshotSerializerSnapshotMigration {
+  val ConfigName = "pekko.persistence.snapshot-store.migrate-manifest-to"
+
   // Ignore the snapshot migration strategy - means that Pekko will not be able to work with snapshots saved by Akka
   object Ignore extends SnapshotSerializerSnapshotMigration
   // When saving snapshots, migrate any manifests with `akka` to `org.apache.pekko`
@@ -58,7 +60,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   private lazy val serialization = SerializationExtension(system)
 
   private lazy val migrationStrategy = SnapshotSerializerSnapshotMigration.fromString(
-    system.settings.config.getString("pekko.persistence.snapshot-store.migrate-manifest-to"))
+    system.settings.config.getString(ConfigName))
 
   /**
    * Serializes a [[Snapshot]]. Delegates serialization of snapshot `data` to a matching
