@@ -24,17 +24,21 @@ import pekko.testkit.PekkoSpec
 
 import java.util.Base64
 
+private[serialization] object SnapshotSerializerTestData {
+  val fsmSnapshot = PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
+  // https://github.com/apache/pekko/pull/837#issuecomment-1847320309
+  val akkaSnapshotData =
+    "PAAAAAcAAABha2thLnBlcnNpc3RlbmNlLmZzbS5QZXJzaXN0ZW50RlNNJFBlcnNpc3RlbnRGU01TbmFwc2hvdAoPdGVzdC1pZGVudGlmaWVyEg0IFBIJdGVzdC1kYXRh"
+}
+
 class SnapshotSerializerSpec extends PekkoSpec {
 
-  private val fsmSnapshot = PersistentFSMSnapshot[String]("test-identifier", "test-data", None)
+  import SnapshotSerializerTestData._
 
   "Snapshot serializer" should {
     "deserialize akka snapshots" in {
       val serialization = SerializationExtension(system)
-      // https://github.com/apache/pekko/pull/837#issuecomment-1847320309
-      val data =
-        "PAAAAAcAAABha2thLnBlcnNpc3RlbmNlLmZzbS5QZXJzaXN0ZW50RlNNJFBlcnNpc3RlbnRGU01TbmFwc2hvdAoPdGVzdC1pZGVudGlmaWVyEg0IFBIJdGVzdC1kYXRh"
-      val bytes = Base64.getDecoder.decode(data)
+      val bytes = Base64.getDecoder.decode(akkaSnapshotData)
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
@@ -53,9 +57,9 @@ class SnapshotSerializerSpec extends PekkoSpec {
     "deserialize pre-saved pekko snapshots" in {
       val serialization = SerializationExtension(system)
       // this is Pekko encoded snapshot based on https://github.com/apache/pekko/pull/837#issuecomment-1847320309
-      val data =
+      val pekkoSnapshotData =
         "SAAAAAcAAABvcmcuYXBhY2hlLnBla2tvLnBlcnNpc3RlbmNlLmZzbS5QZXJzaXN0ZW50RlNNJFBlcnNpc3RlbnRGU01TbmFwc2hvdAoPdGVzdC1pZGVudGlmaWVyEg0IFBIJdGVzdC1kYXRh"
-      val bytes = Base64.getDecoder.decode(data)
+      val bytes = Base64.getDecoder.decode(pekkoSnapshotData)
       val result = serialization.deserialize(bytes, classOf[Snapshot]).get
       val deserialized = result.data
       deserialized shouldBe a[PersistentFSMSnapshot[_]]
