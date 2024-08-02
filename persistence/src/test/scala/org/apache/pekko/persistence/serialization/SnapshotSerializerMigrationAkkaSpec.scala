@@ -25,8 +25,8 @@ import pekko.testkit.PekkoSpec
 import java.util.Base64
 
 class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
-  "pekko.persistence.snapshot-store.migrate-manifest-to=akka"
-) {
+      "pekko.persistence.snapshot-store.migrate-manifest-to=akka"
+    ) {
 
   import SnapshotSerializerTestData._
 
