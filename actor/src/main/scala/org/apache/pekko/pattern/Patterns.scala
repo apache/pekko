@@ -466,6 +466,18 @@ object Patterns {
     afterCompletionStage(duration.asScala, scheduler)(value.call())(context)
 
   /**
+   * Returns a [[java.util.concurrent.CompletionStage]] that will be completed with a [[java.util.concurrent.TimeoutException]]
+   * if the provided value is not completed within the specified duration.
+   * @since 1.2.0
+   */
+  def timeout[T](
+      duration: java.time.Duration,
+      scheduler: Scheduler,
+      context: ExecutionContext,
+      value: Callable[CompletionStage[T]]): CompletionStage[T] =
+    timeoutCompletionStage(duration.asScala, scheduler)(value.call())(context)
+
+  /**
    * Returns a [[scala.concurrent.Future]] that will be completed with the success or failure of the provided Callable
    * after the specified duration.
    */
