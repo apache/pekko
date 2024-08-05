@@ -532,6 +532,23 @@ class SourceOrFlow {
     // #foldAsync
   }
 
+  void optionalViaExample() {
+
+    // #optionalVia
+    Flow<String, Integer, NotUsed> flow = Flow.fromFunction(Integer::parseInt);
+
+    Source<Optional<String>, NotUsed> source =
+        Source.from(
+            Arrays.asList(Optional.of("1"), Optional.empty(), Optional.empty(), Optional.of("4")));
+
+    Source.optionalVia(source, flow, Keep.none()).runForeach(System.out::println, system);
+    // Optional[1]
+    // Optional.empty
+    // Optional.empty
+    // Optional[4]
+    // #optionalVia
+  }
+
   void takeExample() {
     // #take
     Source.from(Arrays.asList(1, 2, 3, 4, 5)).take(3).runForeach(System.out::println, system);

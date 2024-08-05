@@ -429,6 +429,55 @@ object Flow {
   def fromFunction[A, B](f: A => B): Flow[A, B, NotUsed] = apply[A].map(f)
 
   /**
+   * Creates a FlowW from an existing base Flow outputting an optional element and
+   * applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param flow The base flow that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined.
+   * @param combine How to combine the materialized values of flow and viaFlow
+   * @return a Flow with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Option which indicates whether the original flow's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  def optionalVia[FIn, FOut, FViaOut, FMat, FViaMat, Mat](flow: Flow[FIn, Option[FOut], FMat],
+      viaFlow: Flow[FOut, FViaOut, FViaMat])(
+      combine: (FMat, FViaMat) => Mat
+  ): Flow[FIn, Option[FViaOut], Mat] =
+    Flow.fromGraph(GraphDSL.createGraph(flow, viaFlow)(combine) { implicit b => (s, viaF) =>
+      import GraphDSL.Implicits._
+      val broadcast = b.add(Broadcast[Option[FOut]](2))
+      val merge = b.add(Merge[Option[FViaOut]](2))
+
+      val filterAvailable = Flow[Option[FOut]].collect {
+        case Some(f) => f
+      }
+
+      val filterUnavailable = Flow[Option[FOut]].collect {
+        case None => Option.empty[FViaOut]
+      }
+
+      val mapIntoOption = Flow[FViaOut].map {
+        f => Some(f)
+      }
+
+      s ~> broadcast.in
+
+      broadcast.out(0) ~> filterAvailable   ~> viaF ~> mapIntoOption ~> merge.in(0)
+      broadcast.out(1) ~> filterUnavailable ~> merge.in(1)
+
+      FlowShape(s.in, merge.out)
+    })
+
+  /**
    * A graph with the shape of a flow logically is a flow, this method makes
    * it so also in type.
    */

@@ -13,6 +13,7 @@
 
 package org.apache.pekko.stream.javadsl
 
+import java.util.Optional
 import java.util.concurrent.CompletionStage
 
 import scala.annotation.unchecked.uncheckedVariance
@@ -25,6 +26,7 @@ import pekko.stream._
 import pekko.util.ConstantFun
 import pekko.util.FutureConverters._
 import pekko.util.JavaDurationConverters._
+import pekko.util.OptionConverters._
 import pekko.util.ccompat.JavaConverters._
 
 object FlowWithContext {
@@ -38,6 +40,38 @@ object FlowWithContext {
   def fromPairs[In, CtxIn, Out, CtxOut, Mat](
       under: Flow[Pair[In, CtxIn], Pair[Out, CtxOut], Mat]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     new FlowWithContext(under)
+
+  /**
+   * Creates a FlowWithContext from an existing base FlowWithContext outputting an optional element
+   * and applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param flow The base flow that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined. This flow only works
+   *                on the data portion of flow and ignores the context so this flow *must* not re-order,
+   *                drop or emit multiple elements for one incoming element
+   * @param combine How to combine the materialized values of flow and viaFlow
+   * @return a FlowWithContext with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Optional which indicates whether the original flow's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  @ApiMayChange
+  def unsafeOptionalDataVia[FIn, FOut, FViaOut, Ctx, FMat, FViaMat, Mat](
+      flow: FlowWithContext[FIn, Ctx, Optional[FOut], Ctx, FMat],
+      viaFlow: Flow[FOut, FViaOut, FViaMat],
+      combine: function.Function2[FMat, FViaMat, Mat]
+  ): FlowWithContext[FIn, Ctx, Optional[FViaOut], Ctx, Mat] =
+    scaladsl.FlowWithContext.unsafeOptionalDataVia(flow.map(_.toScala).asScala, viaFlow.asScala)(
+      combinerToScala(combine)).map(
+      _.toJava).asJava
 
 }
 

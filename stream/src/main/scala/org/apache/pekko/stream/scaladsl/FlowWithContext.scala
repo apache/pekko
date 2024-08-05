@@ -16,6 +16,7 @@ package org.apache.pekko.stream.scaladsl
 import scala.annotation.unchecked.uncheckedVariance
 
 import org.apache.pekko
+import pekko.annotation.ApiMayChange
 import pekko.NotUsed
 import pekko.japi.Pair
 import pekko.stream._
@@ -36,6 +37,69 @@ object FlowWithContext {
   def fromTuples[In, CtxIn, Out, CtxOut, Mat](
       flow: Flow[(In, CtxIn), (Out, CtxOut), Mat]): FlowWithContext[In, CtxIn, Out, CtxOut, Mat] =
     new FlowWithContext(flow)
+
+  /**
+   * Creates a FlowWithContext from an existing base FlowWithContext outputting an optional element
+   * and applying an additional viaFlow only if the element in the stream is defined.
+   *
+   * '''Emits when''' the provided viaFlow is runs with defined elements
+   *
+   * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
+   *
+   * '''Completes when''' upstream completes
+   *
+   * '''Cancels when''' downstream cancels
+   *
+   * @param flow The base flow that outputs an optional element
+   * @param viaFlow The flow that gets used if the optional element in is defined. This flow only works
+   *                on the data portion of flow and ignores the context so this flow *must* not re-order,
+   *                drop or emit multiple elements for one incoming element
+   * @param combine How to combine the materialized values of flow and viaFlow
+   * @return a FlowWithContext with the viaFlow applied onto defined elements of the flow. The output value
+   *         is contained within an Option which indicates whether the original flow's element had viaFlow
+   *         applied.
+   * @since 1.1.0
+   */
+  @ApiMayChange
+  def unsafeOptionalDataVia[FIn, FOut, FViaOut, Ctx, FMat, FViaMat, Mat](
+      flow: FlowWithContext[FIn, Ctx, Option[FOut], Ctx, FMat],
+      viaFlow: Flow[FOut, FViaOut, FViaMat])(
+      combine: (FMat, FViaMat) => Mat
+  ): FlowWithContext[FIn, Ctx, Option[FViaOut], Ctx, Mat] =
+    FlowWithContext.fromTuples(Flow.fromGraph(GraphDSL.createGraph(flow, viaFlow)(combine) {
+      implicit b => (f, viaF) =>
+        import GraphDSL.Implicits._
+        val broadcast = b.add(Broadcast[(Option[FOut], Ctx)](2))
+        val merge = b.add(Merge[(Option[FViaOut], Ctx)](2))
+
+        val unzip = b.add(Unzip[FOut, Ctx]())
+        val zipper = b.add(Zip[FViaOut, Ctx]())
+
+        val filterAvailable = Flow[(Option[FOut], Ctx)].collect {
+          case (Some(f), ctx) => (f, ctx)
+        }
+
+        val filterUnavailable = Flow[(Option[FOut], Ctx)].collect {
+          case (None, ctx) => (Option.empty[FViaOut], ctx)
+        }
+
+        val mapIntoOption = Flow[(FViaOut, Ctx)].map {
+          case (f, ctx) => (Some(f), ctx)
+        }
+
+        f ~> broadcast.in
+
+        broadcast.out(0) ~> filterAvailable ~> unzip.in
+
+        unzip.out0 ~> viaF ~> zipper.in0
+        unzip.out1 ~> zipper.in1
+
+        zipper.out ~> mapIntoOption ~> merge.in(0)
+
+        broadcast.out(1) ~> filterUnavailable ~> merge.in(1)
+
+        FlowShape(f.in, merge.out)
+    }))
 }
 
 /**
