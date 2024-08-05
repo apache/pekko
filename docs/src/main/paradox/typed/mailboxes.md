@@ -58,6 +58,17 @@ configuration section from the @apidoc[ActorSystem](typed.ActorSystem) configura
 `id` key with the configuration path of the mailbox type and adding a
 fall-back to the default mailbox configuration section.
 
+### Interoperability with DispatcherSelector
+
+The @apidoc[MailboxSelector](MailboxSelector$) will create a @apidoc[Props](typed.Props) instance that can be both set up Dispatcher and Mailbox,
+which means that you can continue to set up Dispatcher through chain calls.
+
+Scala
+:  @@snip [MailboxDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/MailboxDocSpec.scala) { #interoperability-with-dispatcher }
+
+Java
+:  @@snip [MailboxDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/MailboxDocTest.java) { #interoperability-with-dispatcher }
+
 ## Mailbox Implementations
 
 Pekko ships with a number of mailbox implementations:

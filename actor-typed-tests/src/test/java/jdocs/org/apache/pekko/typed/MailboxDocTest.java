@@ -19,6 +19,7 @@ import org.apache.pekko.actor.testkit.typed.javadsl.TestKitJunitResource;
 import org.apache.pekko.actor.testkit.typed.javadsl.TestProbe;
 import org.apache.pekko.actor.typed.ActorRef;
 import org.apache.pekko.actor.typed.Behavior;
+import org.apache.pekko.actor.typed.Dispatchers;
 import org.apache.pekko.actor.typed.MailboxSelector;
 import org.apache.pekko.actor.typed.javadsl.Behaviors;
 import com.typesafe.config.ConfigFactory;
@@ -51,6 +52,35 @@ public class MailboxDocTest extends JUnitSuite {
                   "from-config-mailbox-child",
                   MailboxSelector.fromConfig("my-app.my-special-mailbox"));
               // #select-mailbox
+
+              testProbe.ref().tell(Done.getInstance());
+              return Behaviors.stopped();
+            });
+
+    ActorRef<Void> ref = testKit.spawn(setup);
+    testProbe.receiveMessage();
+  }
+
+  @Test
+  public void startSomeActorsWithMailboxSelectorInteroperability() {
+    TestProbe<Done> testProbe = testKit.createTestProbe();
+    Behavior<String> childBehavior = Behaviors.empty();
+
+    Behavior<Void> setup =
+        Behaviors.setup(
+            context -> {
+              // #interoperability-with-dispatcher
+              context.spawn(
+                  childBehavior,
+                  "bounded-mailbox-child",
+                  MailboxSelector.bounded(100).withDispatcherDefault());
+
+              context.spawn(
+                  childBehavior,
+                  "from-config-mailbox-child",
+                  MailboxSelector.fromConfig("my-app.my-special-mailbox")
+                      .withDispatcherFromConfig(Dispatchers.DefaultDispatcherId()));
+              // #interoperability-with-dispatcher
 
               testProbe.ref().tell(Done.getInstance());
               return Behaviors.stopped();
