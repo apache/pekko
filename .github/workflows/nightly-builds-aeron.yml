@@ -1,6 +1,8 @@
 name: Nightly Aeron Tests
 
 on:
+  # hack to run these tests for this PR
+  pull_request:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
