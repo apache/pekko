@@ -21,7 +21,7 @@ import com.typesafe.config.ConfigFactory
 
 import org.apache.pekko
 import pekko.actor.{ Actor, Props }
-import pekko.testkit.PekkoSpec
+import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object VirtualThreadPoolDispatcherSpec {
   val config = ConfigFactory.parseString("""
