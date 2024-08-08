@@ -22,7 +22,7 @@ import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.Utils._
 import pekko.stream.testkit.scaladsl.StreamTestKit._
 
-class FlowPublisherSinkSpec extends StreamSpec {
+xyzclass FlowPublisherSinkSpec extends StreamSpec {
 
   "A FlowPublisherSink" must {
 

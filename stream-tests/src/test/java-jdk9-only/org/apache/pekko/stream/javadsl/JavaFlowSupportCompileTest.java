@@ -21,7 +21,7 @@ import java.util.concurrent.Flow;
 
 import org.scalatestplus.junit.JUnitSuite;
 
-public class JavaFlowSupportCompileTest extends JUnitSuite {
+xyzpublic class JavaFlowSupportCompileTest extends JUnitSuite {
   @Test
   public void shouldCompile() throws Exception {
     final Flow.Processor<String,String> processor = new Flow.Processor<String, String>() {
