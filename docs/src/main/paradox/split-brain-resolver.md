@@ -337,8 +337,8 @@ See also @ref[Down all when unstable](#down-all-when-unstable) and @ref:[indirec
 ### Lease
 
 The strategy named `lease-majority` is using a distributed lease (lock) to decide what nodes that are allowed to
-survive. Only one SBR instance can acquire the lease make the decision to remain up. The other side will
-not be able to aquire the lease and will therefore down itself.
+survive. Only one SBR instance can acquire the lease and make the decision to remain up. The other side will
+not be able to acquire the lease and will therefore down itself.
 
 Best effort is to keep the side that has most nodes, i.e. the majority side. This is achieved by adding a delay
 before trying to acquire the lease on the minority side.
