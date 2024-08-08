@@ -26,7 +26,7 @@ import scala.util.control.NonFatal
 
 @InternalApi
 private[dispatch] object VirtualThreadSupport {
-  private val lookup = MethodHandles.lookup
+  private val lookup = MethodHandles.publicLookup()
 
   /**
    * Is virtual thread supported
