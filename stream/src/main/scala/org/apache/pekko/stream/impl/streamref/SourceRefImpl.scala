@@ -85,7 +85,7 @@ private[stream] final case class SourceRefImpl[T](initialPartnerRef: ActorRef) e
   private case object AwaitingPartner extends State
   // we're the "remote" for an already active Source on the other side (the "origin")
   private case class AwaitingSubscription(partner: ActorRef) extends WeKnowPartner
-  // subscription aquired and up and running
+  // subscription acquired and up and running
   private final case class Running(partner: ActorRef) extends WeKnowPartner
 
   // downstream cancelled or failed, waiting for remote upstream to ack
