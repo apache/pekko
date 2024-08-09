@@ -106,7 +106,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
     (serializerId, manifest)
   }
 
-  // when writinging the data, we want to allow the serialized data to
+  // when writing the data, we want to allow the serialized data to
   // support Akka and Pekko serializers as required by configuration
   private def migrateManifestIfNecessary(manifest: String): String = {
     migrationStrategy match {
