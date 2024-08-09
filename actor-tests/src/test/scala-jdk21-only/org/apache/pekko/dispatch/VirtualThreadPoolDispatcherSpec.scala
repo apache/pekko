@@ -27,10 +27,7 @@ object VirtualThreadPoolDispatcherSpec {
   val config = ConfigFactory.parseString("""
       |virtual-thread-pool {
       |  task-dispatcher {
-      |    throughput = 5
-      |    thread-pool-executor {
-      |
-      |    }
+      |    executor = virtual-thread-executor
       |  }
       |}
     """.stripMargin)
