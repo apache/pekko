@@ -94,3 +94,43 @@ jobs:
           -Dsbt.log.noformat=false \
           -Dpekko.log.timestamps=true \
           validatePullRequest
+
+  jdk-21-extra-tests:
+    name: Java 21 Extra Tests (including all tests that need Java 9+)
+    runs-on: ubuntu-20.04
+    env:
+      DEVELOCITY_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # we don't know what commit the last tag was it's safer to get entire repo so previousStableVersion resolves
+          fetch-depth: 0
+          fetch-tags: 0
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cache Coursier cache
+        uses: coursier/cache-action@v6
+
+      - name: Enable jvm-opts
+        run: cp .jvmopts-ci .jvmopts
+
+      - name: sbt TestJdk9/test
+        run: |-
+          sbt \
+          -Dpekko.mima.enabled=false \
+          -Dpekko.test.multi-in-test=false \
+          -Dpekko.test.timefactor=2 \
+          -Dpekko.actor.testkit.typed.timefactor=2 \
+          -Dpekko.test.tags.exclude=gh-exclude,timing \
+          -Dpekko.cluster.assert=on \
+          -Dsbt.override.build.repos=false \
+          -Dpekko.test.multi-node=false \
+          -Dsbt.log.noformat=false \
+          -Dpekko.log.timestamps=true \
+          TestJdk9/test        
