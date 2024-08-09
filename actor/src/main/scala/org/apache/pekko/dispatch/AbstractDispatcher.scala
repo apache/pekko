@@ -16,13 +16,10 @@ package org.apache.pekko.dispatch
 import java.{ util => ju }
 import java.util.concurrent._
 
-import scala.annotation.tailrec
+import scala.annotation.{ nowarn, tailrec }
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor }
 import scala.concurrent.duration.{ Duration, FiniteDuration }
 import scala.util.control.NonFatal
-
-import scala.annotation.nowarn
-import com.typesafe.config.Config
 
 import org.apache.pekko
 import pekko.actor._
@@ -32,6 +29,8 @@ import pekko.dispatch.sysmsg._
 import pekko.event.EventStream
 import pekko.event.Logging.{ Debug, Error, LogEventException }
 import pekko.util.{ unused, Index, Unsafe }
+
+import com.typesafe.config.Config
 
 final case class Envelope private (message: Any, sender: ActorRef) {
 
@@ -367,9 +366,16 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
   def dispatcher(): MessageDispatcher
 
   def configureExecutor(): ExecutorServiceConfigurator = {
+    @tailrec
     def configurator(executor: String): ExecutorServiceConfigurator = executor match {
       case null | "" | "fork-join-executor" =>
         new ForkJoinExecutorConfigurator(config.getConfig("fork-join-executor"), prerequisites)
+      case "virtual-thread-executor" =>
+        if (VirtualThreadSupport.isSupported) {
+          new VirtualThreadExecutorConfigurator(config.getConfig("virtual-thread-executor"), prerequisites)
+        } else {
+          configurator(config.getString("virtual-thread-executor.fallback"))
+        }
       case "thread-pool-executor" =>
         new ThreadPoolExecutorConfigurator(config.getConfig("thread-pool-executor"), prerequisites)
       case "affinity-pool-executor" =>
@@ -397,6 +403,32 @@ abstract class MessageDispatcherConfigurator(_config: Config, val prerequisites:
           prerequisites,
           configurator(config.getString("default-executor.fallback")))
       case other => configurator(other)
+    }
+  }
+}
+
+final class VirtualThreadExecutorConfigurator(config: Config, prerequisites: DispatcherPrerequisites)
+    extends ExecutorServiceConfigurator(config, prerequisites) {
+
+  override def createExecutorServiceFactory(id: String, threadFactory: ThreadFactory): ExecutorServiceFactory = {
+    import VirtualThreadSupport._
+    val tf: ThreadFactory = threadFactory match {
+      case MonitorableThreadFactory(name, _, contextClassLoader, exceptionHandler, _) =>
+        new ThreadFactory {
+          private val vtFactory = newVirtualThreadFactory(name)
+
+          override def newThread(r: Runnable): Thread = {
+            val vt = vtFactory.newThread(r)
+            vt.setUncaughtExceptionHandler(exceptionHandler)
+            contextClassLoader.foreach(vt.setContextClassLoader)
+            vt
+          }
+        }
+      case _ => VirtualThreadSupport.newVirtualThreadFactory(prerequisites.settings.name);
+    }
+    new ExecutorServiceFactory {
+      import VirtualThreadSupport._
+      override def createExecutorService: ExecutorService = newThreadPerTaskExecutor(tf)
     }
   }
 }
