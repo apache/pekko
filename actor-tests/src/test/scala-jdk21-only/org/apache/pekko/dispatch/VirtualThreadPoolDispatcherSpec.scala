@@ -25,10 +25,8 @@ import pekko.testkit.{ ImplicitSender, PekkoSpec }
 
 object VirtualThreadPoolDispatcherSpec {
   val config = ConfigFactory.parseString("""
-      |virtual-thread-pool {
-      |  task-dispatcher {
-      |    executor = virtual-thread-executor
-      |  }
+      |virtual-thread-dispatcher {
+      |  executor = virtual-thread-executor
       |}
     """.stripMargin)
 
@@ -50,7 +48,7 @@ class VirtualThreadPoolDispatcherSpec extends PekkoSpec(VirtualThreadPoolDispatc
   "VirtualThreadPool support" must {
 
     "handle simple dispatch" in {
-      val innocentActor = system.actorOf(Props(new InnocentActor).withDispatcher("virtual-thread-pool.task-dispatcher"))
+      val innocentActor = system.actorOf(Props(new InnocentActor).withDispatcher("virtual-thread-dispatcher"))
       innocentActor ! "ping"
       expectMsg("All fine")
     }
