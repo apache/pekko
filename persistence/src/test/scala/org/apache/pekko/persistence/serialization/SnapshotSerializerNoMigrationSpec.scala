@@ -25,13 +25,13 @@ import pekko.testkit.PekkoSpec
 import java.io.NotSerializableException
 import java.util.Base64
 
-class SnapshotSerializerMigrationIgnoreSpec extends PekkoSpec(
-      s"${SnapshotSerializerSnapshotMigration.ConfigName}=ignore"
+class SnapshotSerializerNoMigrationSpec extends PekkoSpec(
+      s"${SnapshotAutoMigration.ConfigName}=no-migration"
     ) {
 
   import SnapshotSerializerTestData._
 
-  "Snapshot serializer with migration ignored" should {
+  "Snapshot serializer with no migration" should {
     "deserialize pekko snapshots" in {
       val serialization = SerializationExtension(system)
       val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get

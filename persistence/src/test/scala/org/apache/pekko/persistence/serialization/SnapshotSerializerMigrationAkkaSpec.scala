@@ -28,7 +28,7 @@ import java.io.NotSerializableException
 import java.util.Base64
 
 class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
-      s"${SnapshotSerializerSnapshotMigration.ConfigName}=akka"
+      s"${SnapshotAutoMigration.ConfigName}=akka"
     ) {
 
   import SnapshotSerializerTestData._
@@ -55,7 +55,7 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
     "serialize snapshot with Akka class name" in {
       val serialization = SerializationExtension(system)
       val bytes = serialization.serialize(Snapshot(fsmSnapshot)).get
-      val cfg = ConfigFactory.parseString(s"${SnapshotSerializerSnapshotMigration.ConfigName}=ignore")
+      val cfg = ConfigFactory.parseString(s"${SnapshotAutoMigration.ConfigName}=no-migration")
         .withFallback(system.settings.config)
       val pekkoOnlySystem = ActorSystem("pekko-only-serialization", cfg)
       try {

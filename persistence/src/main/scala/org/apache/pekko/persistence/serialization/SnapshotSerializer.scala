@@ -29,23 +29,23 @@ import pekko.util.ByteString.UTF_8
 @SerialVersionUID(1L)
 final case class Snapshot(data: Any)
 
-private[serialization] sealed trait SnapshotSerializerSnapshotMigration
+private[serialization] sealed trait SnapshotAutoMigration
 
-private[serialization] object SnapshotSerializerSnapshotMigration {
-  val ConfigName = "pekko.persistence.snapshot-store.migrate-manifest-to"
+private[serialization] object SnapshotAutoMigration {
+  val ConfigName = "pekko.persistence.snapshot-store.auto-migrate-manifest"
 
   // Ignore the snapshot migration strategy - means that Pekko will not be able to work with snapshots saved by Akka
-  object Ignore extends SnapshotSerializerSnapshotMigration
+  object NoMigration extends SnapshotAutoMigration
   // When saving snapshots, migrate any manifests with `akka` to `org.apache.pekko`
-  object Pekko extends SnapshotSerializerSnapshotMigration
+  object Pekko extends SnapshotAutoMigration
   // When saving snapshots, migrate any manifests with `org.apache.pekko` to `akka`
-  object Akka extends SnapshotSerializerSnapshotMigration
+  object Akka extends SnapshotAutoMigration
 
-  def fromString(s: String): SnapshotSerializerSnapshotMigration = s match {
-    case "ignore" => Ignore
-    case "pekko"  => Pekko
-    case "akka"   => Akka
-    case _        => throw new IllegalArgumentException(s"Unknown snapshot migration strategy: $s")
+  def fromString(s: String): SnapshotAutoMigration = s match {
+    case "no-migration" => NoMigration
+    case "pekko"        => Pekko
+    case "akka"         => Akka
+    case _              => throw new IllegalArgumentException(s"Unknown snapshot migration strategy: $s")
   }
 }
 
@@ -53,13 +53,13 @@ private[serialization] object SnapshotSerializerSnapshotMigration {
  * [[Snapshot]] serializer.
  */
 class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
-  import SnapshotSerializerSnapshotMigration._
+  import SnapshotAutoMigration._
 
   override val includeManifest: Boolean = false
 
   private lazy val serialization = SerializationExtension(system)
 
-  private lazy val migrationStrategy = SnapshotSerializerSnapshotMigration.fromString(
+  private lazy val migrationStrategy = SnapshotAutoMigration.fromString(
     system.settings.config.getString(ConfigName))
 
   /**
@@ -110,7 +110,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   // support Akka and Pekko serializers as required by configuration
   private def migrateManifestIfNecessary(manifest: String): String = {
     migrationStrategy match {
-      case Ignore => manifest
+      case NoMigration => manifest
       case Pekko =>
         if (manifest.startsWith("akka")) {
           manifest.replaceFirst("akka", "org.apache.pekko")
@@ -129,7 +129,7 @@ class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer
   // when reading the data, we want to force use of the Pekko serializer
   private def migrateManifestToPekkoIfNecessary(manifest: String): String = {
     migrationStrategy match {
-      case Ignore => manifest
+      case NoMigration => manifest
       case _ =>
         if (manifest.startsWith("akka")) {
           manifest.replaceFirst("akka", "org.apache.pekko")
