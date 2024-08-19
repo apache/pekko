@@ -209,7 +209,6 @@ class StubbedSupervisionSpec extends AnyWordSpec with Matchers with LogCapturing
       supervise(targetBehavior(inboxRef))
         .onFailure[Exc2](SupervisorStrategy.resume)
         .onFailure[Exc3](SupervisorStrategy.restart)
-        .onFailure[Exc1](SupervisorStrategy.stop)
     }
 
     "not catch fatal error" in {
@@ -283,8 +282,7 @@ class StubbedSupervisionSpec extends AnyWordSpec with Matchers with LogCapturing
   }
 }
 
-class SupervisionSpec extends ScalaTestWithActorTestKit(
-      """
+class SupervisionSpec extends ScalaTestWithActorTestKit("""
     pekko.log-dead-letters = off
     """) with AnyWordSpecLike with LogCapturing {
 
@@ -292,19 +290,16 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
   import SupervisionSpec._
 
   private val nameCounter = Iterator.from(0)
-
   private def nextName(prefix: String = "a"): String = s"$prefix-${nameCounter.next()}"
 
   class FailingConstructorTestSetup(failCount: Int) {
     val failCounter = new AtomicInteger(0)
-
     class FailingConstructor(context: ActorContext[Command], monitor: ActorRef[Event])
         extends AbstractBehavior[Command](context) {
       monitor ! Started
       if (failCounter.getAndIncrement() < failCount) {
         throw TestException("simulated exc from constructor")
       }
-
       override def onMessage(message: Command): Behavior[Command] = {
         monitor ! Pong(0)
         Behaviors.same
@@ -358,7 +353,6 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
   class FailingDeferredTestSetup(failCount: Int, strategy: SupervisorStrategy) {
     val probe = TestProbe[AnyRef]("evt")
     val failCounter = new AtomicInteger(0)
-
     def behv =
       supervise(setup[Command] { _ =>
         val count = failCounter.getAndIncrement()
@@ -374,7 +368,6 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
 
   class FailingUnhandledTestSetup(strategy: SupervisorStrategy) {
     val probe = TestProbe[AnyRef]("evt")
-
     def behv =
       supervise(setup[Command] { _ =>
         probe.ref ! StartFailed
@@ -424,7 +417,8 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
       }
     }
 
-    def throwIOExceptionThenIllegalArgumentException(behvFactory: ActorRef[Event] => Behavior[Command]): Unit = {
+    def throwIOExceptionThenIllegalArgumentException(behvFactory: ActorRef[Event] => Behavior[Command])(
+        secondSignal: ReceivedSignal = ReceivedSignal(PreRestart)): Unit = {
       val probe = TestProbe[Event]("evt")
 
       val ref = spawn(behvFactory(probe.ref))
@@ -439,12 +433,16 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
 
       LoggingTestKit.error[IllegalArgumentException].expect {
         ref ! Throw(new IllegalArgumentException("cat"))
-        probe.expectMessage(ReceivedSignal(PreRestart))
+        probe.expectMessage(secondSignal)
       }
 
-      // verify that it's still alive and not stopped, IllegalStateException would stop it
-      ref ! Ping(2)
-      probe.expectMessage(Pong(2))
+      secondSignal.signal match {
+        case PreRestart =>
+          // verify that it's still alive and not stopped, IllegalStateException would stop it
+          ref ! Ping(2)
+          probe.expectMessage(Pong(2))
+        case _ => // ignore
+      }
     }
 
     "support nesting exceptions with different strategies" in throwIOExceptionThenIllegalArgumentException { probeRef =>
@@ -452,14 +450,14 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
         supervise(targetBehavior(probeRef))
           .onFailure[RuntimeException](SupervisorStrategy.stop))
         .onFailure[Exception](SupervisorStrategy.restart)
-    }
+    }(ReceivedSignal(PostStop))
 
     "support flattening exceptions with different strategies" in throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(targetBehavior(probeRef))
           .onFailure[RuntimeException](SupervisorStrategy.stop)
           .onFailure[Exception](SupervisorStrategy.restart)
-    }
+    }(ReceivedSignal(PostStop))
 
     "support nesting exceptions with outer restart and inner backoff strategies" in throwIOExceptionThenIllegalArgumentException {
       probeRef =>
@@ -467,14 +465,14 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
           supervise(targetBehavior(probeRef))
             .onFailure[IllegalArgumentException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0)))
           .onFailure[IOException](SupervisorStrategy.restart)
-    }
+    }()
 
     "support flattening exceptions with outer restart and inner backoff strategies" in throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(targetBehavior(probeRef))
           .onFailure[IllegalArgumentException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0))
           .onFailure[IOException](SupervisorStrategy.restart)
-    }
+    }()
 
     "support nesting exceptions with inner restart and outer backoff strategies" in throwIOExceptionThenIllegalArgumentException {
       probeRef =>
@@ -482,14 +480,14 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
           supervise(targetBehavior(probeRef))
             .onFailure[IllegalArgumentException](SupervisorStrategy.restart))
           .onFailure[IOException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0))
-    }
+    }()
 
     "support flattening exceptions with inner restart and outer backoff strategies" in throwIOExceptionThenIllegalArgumentException {
       probeRef =>
         supervise(targetBehavior(probeRef))
           .onFailure[IllegalArgumentException](SupervisorStrategy.restart)
           .onFailure[IOException](SupervisorStrategy.restartWithBackoff(10.millis, 10.millis, 0.0))
-    }
+    }()
 
     "stop when not supervised" in {
       val probe = TestProbe[Event]("evt")
@@ -1068,7 +1066,7 @@ class SupervisionSpec extends ScalaTestWithActorTestKit(
           1100.millis))
     }
 
-    "handle reset backoff count for more than one nested restartWithBackoff" in throwExc1ThenExc2 { probeRef =>
+    "handle reset backoff count for more than one flatten restartWithBackoff" in throwExc1ThenExc2 { probeRef =>
       supervise(targetBehavior(probeRef))
         .onFailure[Exc1](SupervisorStrategy.restartWithBackoff(20.millis, 10.seconds, 0.0).withResetBackoffAfter(
           900.millis))
