@@ -33,7 +33,7 @@ class SnapshotSerializerMigrationAkkaSpec extends PekkoSpec(
 
   import SnapshotSerializerTestData._
 
-  "Snapshot serializer with migration ignored" should {
+  "Snapshot serializer with migration to Akka" should {
     "deserialize akka snapshots" in {
       val serialization = SerializationExtension(system)
       val bytes = Base64.getDecoder.decode(akkaSnapshotData)
