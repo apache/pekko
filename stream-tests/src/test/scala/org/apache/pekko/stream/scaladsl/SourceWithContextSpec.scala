@@ -19,6 +19,9 @@ import org.apache.pekko
 import pekko.stream.testkit.StreamSpec
 import pekko.stream.testkit.scaladsl.TestSink
 
+import scala.collection.mutable.ListBuffer
+import scala.concurrent.duration._
+
 case class Message(data: String, offset: Long)
 
 class SourceWithContextSpec extends StreamSpec {
@@ -72,6 +75,44 @@ class SourceWithContextSpec extends StreamSpec {
         .expectNext(("a", 1L))
         .expectNext(("c", 4L))
         .expectComplete()
+    }
+
+    "pass through all data when using alsoTo" in {
+      val listBuffer = new ListBuffer[Message]()
+      val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
+      Source(messages)
+        .asSourceWithContext(_.offset)
+        .alsoTo(Sink.foreach(message => listBuffer.+=(message)))
+        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext((Message("A", 1L), 1L))
+        .expectNext((Message("B", 2L), 2L))
+        .expectNext((Message("D", 3L), 3L))
+        .expectNext((Message("C", 4L), 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer.toVector shouldBe messages
+        }
+    }
+
+    "pass through all data when using alsoToContext" in {
+      val listBuffer = new ListBuffer[Long]()
+      val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
+      Source(messages)
+        .asSourceWithContext(_.offset)
+        .alsoToContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext((Message("A", 1L), 1L))
+        .expectNext((Message("B", 2L), 2L))
+        .expectNext((Message("D", 3L), 3L))
+        .expectNext((Message("C", 4L), 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer.toVector shouldBe messages.map(_.offset)
+        }
     }
 
     "pass through contexts via a FlowWithContext" in {
