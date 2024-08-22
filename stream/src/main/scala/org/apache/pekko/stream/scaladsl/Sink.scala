@@ -51,7 +51,7 @@ final class Sink[-In, +Mat](override val traversalBuilder: LinearTraversalBuilde
    * '''Cancels when''' original [[Sink]] cancels
    * @since 1.1.0
    */
-  def contramap[In2](f: In2 => In): Sink[In2, Mat] = Flow.fromFunction(f).toMat(this)(Keep.right)
+  def contramap[In2](f: In2 => In): Sink[In2, Mat] = Sink.contramapImpl(this, f)
 
   /**
    * Connect this `Sink` to a `Source` and run it. The returned value is the materialized value
@@ -137,6 +137,10 @@ object Sink {
 
   /** INTERNAL API */
   def shape[T](name: String): SinkShape[T] = SinkShape(Inlet(name + ".in"))
+
+  @InternalApi private[pekko] final def contramapImpl[In, In2, Mat](
+      sink: Graph[SinkShape[In], Mat], f: In2 => In): Sink[In2, Mat] =
+    Flow.fromFunction(f).toMat(sink)(Keep.right)
 
   /**
    * A graph with the shape of a sink logically is a sink, this method makes

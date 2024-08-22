@@ -138,6 +138,12 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
       combine: (Mat, Mat2) => Mat3): FlowWithContext[In, CtxIn, Out2, Ctx2, Mat3] =
     new FlowWithContext(delegate.viaMat(flow)(combine))
 
+  override def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out, CtxOut] =
+    FlowWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._1)))
+
+  override def alsoToContext(that: Graph[SinkShape[CtxOut], _]): Repr[Out, CtxOut] =
+    FlowWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._2)))
+
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.Flow.withAttributes]].
    *

@@ -33,6 +33,7 @@ class DslFactoriesConsistencySpec extends AnyWordSpec with Matchers {
       "getClass",
       "shape",
       "identityTraversalBuilder",
+      "contramapImpl",
       // futures in scaladsl vs completion stage in javadsl
       "lazyFutureSource", // lazyCompletionStageSource
       "futureSource", // completionStageSource

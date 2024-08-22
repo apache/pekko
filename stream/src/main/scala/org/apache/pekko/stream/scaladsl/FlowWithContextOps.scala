@@ -89,6 +89,22 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
       combine: (Mat, Mat2) => Mat3): ReprMat[Out2, Ctx2, Mat3]
 
   /**
+   * Data variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * @since 1.1.0
+   */
+  def alsoTo(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+
+  /**
+   * Context variant of [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.alsoTo]]
+   * @since 1.1.0
+   */
+  def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+
+  /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.map]].
    *
    * @see [[pekko.stream.scaladsl.FlowOps.map]]
