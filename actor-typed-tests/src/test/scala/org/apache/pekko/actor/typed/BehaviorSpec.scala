@@ -379,34 +379,18 @@ class ReceiveBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppab
 }
 
 class ReceiveMessageWithSameBehaviorSpec extends Messages {
-  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = behv(monitor, StateA) -> null
-  private def behv(monitor: ActorRef[Event], state: State): Behavior[Command] = {
-    SBehaviors.setup[Command] { context =>
-      SBehaviors
-        .receiveMessageWithSame[Command] {
-          case GetSelf =>
-            monitor ! Self(context.self)
-          case Miss =>
-            monitor ! Missed
-          case Ignore =>
-            monitor ! Ignored
-          case Ping =>
-            monitor ! Pong
-            behv(monitor, state)
-          case Swap =>
-            monitor ! Swapped
-            behv(monitor, state.next)
-          case GetState() =>
-            monitor ! state
-          case Stop       => SBehaviors.stopped
-          case _: AuxPing => SBehaviors.unhandled
-        }
-        .receiveSignal {
-          case (_, signal) =>
-            monitor ! ReceivedSignal(signal)
-            SBehaviors.same
-        }
-    }
+  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = behv(monitor) -> null
+  private def behv(monitor: ActorRef[Event]): Behavior[Command] = {
+    SBehaviors
+      .receiveMessageWithSame[Command] {
+        case Miss =>
+          monitor ! Missed
+        case Ignore =>
+          monitor ! Ignored
+        case Ping =>
+          monitor ! Pong
+        case _ =>
+      }
   }
 }
 
