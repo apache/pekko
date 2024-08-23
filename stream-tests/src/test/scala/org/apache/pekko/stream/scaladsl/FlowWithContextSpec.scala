@@ -126,6 +126,50 @@ class FlowWithContextSpec extends StreamSpec {
         }
     }
 
+    "pass through all data when using wireTap" in {
+      val listBuffer = new ListBuffer[String]()
+      Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
+        .asSourceWithContext(_.offset)
+        .via(
+          FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
+            (data.data.toLowerCase, offset)
+          }).wireTap(Sink.foreach(string => listBuffer.+=(string)))
+        )
+        .toMat(TestSink.probe[(String, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext(("a", 1L))
+        .expectNext(("b", 2L))
+        .expectNext(("d", 3L))
+        .expectNext(("c", 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer should contain atLeastOneElementOf List("a", "b", "d", "c")
+        }
+    }
+
+    "pass through all data when using wireTapContext" in {
+      val listBuffer = new ListBuffer[Long]()
+      Source(Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L)))
+        .asSourceWithContext(_.offset)
+        .via(
+          FlowWithContext.fromTuples(Flow.fromFunction[(Message, Long), (String, Long)] { case (data, offset) =>
+            (data.data.toLowerCase, offset)
+          }).wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        )
+        .toMat(TestSink.probe[(String, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext(("a", 1L))
+        .expectNext(("b", 2L))
+        .expectNext(("d", 3L))
+        .expectNext(("c", 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer should contain atLeastOneElementOf List(1L, 2L, 3L, 4L)
+        }
+    }
+
     "keep the same order for data and context when using unsafeDataVia" in {
       val data = List(("1", 1), ("2", 2), ("3", 3), ("4", 4))
 

@@ -161,6 +161,12 @@ final class SourceWithContext[+Out, +Ctx, +Mat] private[stream] (delegate: Sourc
   override def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx] =
     SourceWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._2)))
 
+  override def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx] =
+    SourceWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._1)))
+
+  override def wireTapContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx] =
+    SourceWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, Ctx)) => in._2)))
+
   /**
    * Connect this [[pekko.stream.scaladsl.SourceWithContext]] to a [[pekko.stream.scaladsl.Sink]] and run it.
    * The returned value is the materialized value of the `Sink`.

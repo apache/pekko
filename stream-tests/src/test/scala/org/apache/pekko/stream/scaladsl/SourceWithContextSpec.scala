@@ -115,6 +115,44 @@ class SourceWithContextSpec extends StreamSpec {
         }
     }
 
+    "pass through all data when using wireTap" in {
+      val listBuffer = new ListBuffer[Message]()
+      val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
+      Source(messages)
+        .asSourceWithContext(_.offset)
+        .wireTap(Sink.foreach(message => listBuffer.+=(message)))
+        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext((Message("A", 1L), 1L))
+        .expectNext((Message("B", 2L), 2L))
+        .expectNext((Message("D", 3L), 3L))
+        .expectNext((Message("C", 4L), 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer.toVector should contain atLeastOneElementOf messages
+        }
+    }
+
+    "pass through all data when using wireTapContext" in {
+      val listBuffer = new ListBuffer[Long]()
+      val messages = Vector(Message("A", 1L), Message("B", 2L), Message("D", 3L), Message("C", 4L))
+      Source(messages)
+        .asSourceWithContext(_.offset)
+        .wireTapContext(Sink.foreach(offset => listBuffer.+=(offset)))
+        .toMat(TestSink.probe[(Message, Long)])(Keep.right)
+        .run()
+        .request(4)
+        .expectNext((Message("A", 1L), 1L))
+        .expectNext((Message("B", 2L), 2L))
+        .expectNext((Message("D", 3L), 3L))
+        .expectNext((Message("C", 4L), 4L))
+        .expectComplete()
+        .within(10.seconds) {
+          listBuffer.toVector should contain atLeastOneElementOf (messages.map(_.offset))
+        }
+    }
+
     "pass through contexts via a FlowWithContext" in {
 
       def flowWithContext[T] = FlowWithContext[T, Long]
