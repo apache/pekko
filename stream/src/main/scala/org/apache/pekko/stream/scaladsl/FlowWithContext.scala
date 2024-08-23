@@ -144,6 +144,12 @@ final class FlowWithContext[-In, -CtxIn, +Out, +CtxOut, +Mat](delegate: Flow[(In
   override def alsoToContext(that: Graph[SinkShape[CtxOut], _]): Repr[Out, CtxOut] =
     FlowWithContext.fromTuples(delegate.alsoTo(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._2)))
 
+  override def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, CtxOut] =
+    FlowWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._1)))
+
+  override def wireTapContext(that: Graph[SinkShape[CtxOut], _]): Repr[Out, CtxOut] =
+    FlowWithContext.fromTuples(delegate.wireTap(Sink.contramapImpl(that, (in: (Out, CtxOut)) => in._2)))
+
   /**
    * Context-preserving variant of [[pekko.stream.scaladsl.Flow.withAttributes]].
    *

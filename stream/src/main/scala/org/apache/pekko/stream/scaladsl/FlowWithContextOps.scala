@@ -105,6 +105,22 @@ trait FlowWithContextOps[+Out, +Ctx, +Mat] {
   def alsoToContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
 
   /**
+   * Data variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * @since 1.1.0
+   */
+  def wireTap(that: Graph[SinkShape[Out], _]): Repr[Out, Ctx]
+
+  /**
+   * Context variant of [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   *
+   * @see [[pekko.stream.scaladsl.FlowOps.wireTap]]
+   * @since 1.1.0
+   */
+  def wireTapContext(that: Graph[SinkShape[Ctx], _]): Repr[Out, Ctx]
+
+  /**
    * Context-preserving variant of [[pekko.stream.scaladsl.FlowOps.map]].
    *
    * @see [[pekko.stream.scaladsl.FlowOps.map]]
