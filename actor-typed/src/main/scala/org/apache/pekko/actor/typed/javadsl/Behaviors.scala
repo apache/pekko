@@ -144,6 +144,27 @@ object Behaviors {
     new BehaviorImpl.ReceiveBehavior((_, msg) => onMessage.apply(msg))
 
   /**
+   * Simplified version of [[receiveMessage]] with only a single argument - the message
+   * to be handled, but it doesn't produce a return value of next behavior.
+   * Useful for when the behavior doesn't want to change in runtime.
+   *
+   * Construct an actor behavior that can react to incoming messages but not to
+   * lifecycle signals. After spawning this actor from another actor (or as the
+   * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
+   * [[ActorContext]] that allows access to the system, spawning and watching
+   * other actors, etc.
+   *
+   * Compared to using [[AbstractBehavior]] this factory is a more functional style
+   * of defining the `Behavior`. Processing the next message will not result in
+   * different behavior than this one
+   */
+  def receiveMessage[T](onMessage: pekko.japi.Procedure[T]): Behavior[T] =
+    new BehaviorImpl.ReceiveBehavior((_, msg) => {
+      onMessage.apply(msg)
+      same[T]
+    })
+
+  /**
    * Construct an actor behavior that can react to both incoming messages and
    * lifecycle signals. After spawning this actor from another actor (or as the
    * guardian of an [[pekko.actor.typed.ActorSystem]]) it will be executed within an
