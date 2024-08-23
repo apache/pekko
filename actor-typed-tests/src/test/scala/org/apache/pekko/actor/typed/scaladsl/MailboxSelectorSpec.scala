@@ -19,6 +19,8 @@ package org.apache.pekko.actor.typed.scaladsl
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
 import pekko.actor.ActorCell
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
@@ -35,7 +37,6 @@ import pekko.dispatch.BoundedNodeMessageQueue
 import pekko.dispatch.Dispatchers
 import pekko.dispatch.MessageQueue
 import pekko.dispatch.NodeMessageQueue
-import org.scalatest.wordspec.AnyWordSpecLike
 
 object MailboxSelectorSpec {
   val config = ConfigFactory.parseString(

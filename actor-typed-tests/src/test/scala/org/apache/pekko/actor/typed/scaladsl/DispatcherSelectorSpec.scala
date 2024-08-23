@@ -16,10 +16,8 @@ package org.apache.pekko.actor.typed.scaladsl
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import org.scalatest.wordspec.AnyWordSpecLike
+
 import org.apache.pekko
-import pekko.actor.typed.DispatcherSelector
-import pekko.actor.typed.Props
-import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.BootstrapSetup
 import pekko.actor.setup.ActorSystemSetup
 import pekko.actor.testkit.typed.scaladsl.ActorTestKit
@@ -30,6 +28,9 @@ import pekko.actor.testkit.typed.scaladsl.TestProbe
 import pekko.actor.typed.ActorRef
 import pekko.actor.typed.ActorSystem
 import pekko.actor.typed.Behavior
+import pekko.actor.typed.DispatcherSelector
+import pekko.actor.typed.Props
+import pekko.actor.typed.scaladsl.AskPattern._
 import pekko.actor.typed.SpawnProtocol
 
 object DispatcherSelectorSpec {
