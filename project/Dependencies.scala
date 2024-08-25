@@ -124,7 +124,7 @@ object Dependencies {
       val bcutil = "org.bouncycastle" % "bcutil-jdk18on" % bouncyCastleVersion % Test
       val commonsIo = "commons-io" % "commons-io" % "2.16.1" % Test
       val commonsCodec = "commons-codec" % "commons-codec" % "1.17.1" % Test
-      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.27.0" % Test
+      val commonsCompress = "org.apache.commons" % "commons-compress" % "1.27.1" % Test
       val guava = "com.google.guava" % "guava" % "33.3.0-jre" % Test
       val junit = "junit" % "junit" % junitVersion % Test
       val junit5 = "org.junit.jupiter" % "junit-jupiter-engine" % junit5Version % Test
