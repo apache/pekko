@@ -147,6 +147,8 @@ object Behaviors {
    * Compared to using [[AbstractBehavior]] this factory is a more functional style
    * of defining the `Behavior`. Processing the next message will not result in
    * different behavior than this one
+   *
+   * @since 1.1.0
    */
   def receiveMessageWithSame[T](onMessage: T => Unit): Receive[T] = {
     new ReceiveMessageImpl(onMessage.andThen(_ => same))
