@@ -80,7 +80,7 @@ object QueueOfferResult {
   /**
    * Java API: The `QueueClosed` singleton instance
    *
-   * @since 1.1.0   
+   * @since 1.1.0
    */
   def closed: QueueOfferResult = QueueClosed
 }
