@@ -404,7 +404,6 @@ lazy val remote =
       streamTestkit % Test,
       jackson % "test->test")
     .settings(Dependencies.remote)
-    .settings(dependencyOverrides += "org.agrona" % "agrona" % Dependencies.agronaVersion)
     .settings(AutomaticModuleName.settings("pekko.remote"))
     .settings(AddMetaInfLicenseFiles.remoteSettings)
     .settings(OSGi.remote)
