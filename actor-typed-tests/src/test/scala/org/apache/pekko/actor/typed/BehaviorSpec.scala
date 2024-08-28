@@ -378,6 +378,22 @@ class ReceiveBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppab
   }
 }
 
+class ReceiveMessageWithSameBehaviorSpec extends Messages {
+  override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = behv(monitor) -> null
+  private def behv(monitor: ActorRef[Event]): Behavior[Command] = {
+    SBehaviors
+      .receiveMessageWithSame[Command] {
+        case Miss =>
+          monitor ! Missed
+        case Ignore =>
+          monitor ! Ignored
+        case Ping =>
+          monitor ! Pong
+        case _ =>
+      }
+  }
+}
+
 class ImmutableWithSignalScalaBehaviorSpec extends Messages with BecomeWithLifecycle with Stoppable {
 
   override def behavior(monitor: ActorRef[Event]): (Behavior[Command], Aux) = behv(monitor) -> null
