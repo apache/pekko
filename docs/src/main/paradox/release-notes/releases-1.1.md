@@ -24,10 +24,12 @@ Apache Pekko 1.1.0 contains all of the changes that have been released in the @r
 
 * Add create method to PFBuilder ([PR947](https://github.com/apache/pekko/pull/947))
 * Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
+* Add additional mailbox selector for typed props ([PR1096](https://github.com/apache/pekko/pull/1096)) (not in v1.1.0-M1)
 * Add missing create method to javadsl Graph ([PR1230](https://github.com/apache/pekko/pull/1230))
 * Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
 * Add UntypedAbstractActorWithTimers ([#1360](https://github.com/apache/pekko/issues/1360)) (not in v1.1.0-M1)
 * Add isCompleted method to BoundedSourceQueue ([PR1374](https://github.com/apache/pekko/pull/1374)) (not in v1.1.0-M1)
+* Add Behaviors.receiveMessageWithSame ([#1444](https://github.com/apache/pekko/issues/1444)) (not in v1.1.0-M1)
 
 The Stream API has been updated to add some extra functions. 
 
