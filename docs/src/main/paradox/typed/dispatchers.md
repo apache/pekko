@@ -55,7 +55,7 @@ A default dispatcher is used for all actors that are spawned without specifying 
 This is suitable for all actors that don't block. Blocking in actors needs to be carefully managed, more
 details @ref:[here](#blocking-needs-careful-management).
 
-To select a dispatcher use `DispatcherSelector` to create a `Props` instance for spawning your actor:
+To select a dispatcher use @apidoc[DispatcherSelector](DispatcherSelector$)  to create a @apidoc[Props](typed.Props) instance for spawning your actor:
 
 Scala
 :  @@snip [DispatcherDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/DispatchersDocSpec.scala) { #spawn-dispatcher }
@@ -73,6 +73,17 @@ The final example shows how to load a custom dispatcher from configuration and r
 
 <!-- Same between Java and Scala -->
 @@snip [DispatcherDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/DispatchersDocSpec.scala) { #config }
+
+### Interoperability with MailboxSelector
+
+The @apidoc[DispatcherSelector](DispatcherSelector$) will create a @apidoc[Props](typed.Props) instance that can be both set up Dispatcher and Mailbox, 
+which means that you can continue to set up Mailbox through chain calls.
+
+Scala
+:  @@snip [DispatcherDocSpec.scala](/actor-typed-tests/src/test/scala/docs/org/apache/pekko/typed/DispatchersDocSpec.scala) { #interoperability-with-mailbox }
+
+Java
+:  @@snip [DispatcherDocTest.java](/actor-typed-tests/src/test/java/jdocs/org/apache/pekko/typed/DispatchersDocTest.java) { #interoperability-with-mailbox }
 
 ## Types of dispatchers
 

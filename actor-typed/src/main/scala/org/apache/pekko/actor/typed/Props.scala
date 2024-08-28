@@ -82,6 +82,14 @@ abstract class Props private[pekko] () extends Product with Serializable {
   def withDispatcherFromConfig(path: String): Props = DispatcherFromConfig(path, this)
 
   /**
+   * Prepend a selection of the mailbox found at the given Config path to this Props.
+   * The path is relative to the configuration root of the [[ActorSystem]] that looks up the
+   * mailbox.
+   * @since 1.1.0
+   */
+  def withMailboxFromConfig(path: String): Props = MailboxFromConfigSelector(path, this)
+
+  /**
    * Prepend a selection of the same executor as the parent actor to this Props.
    */
   def withDispatcherSameAsParent: Props = DispatcherSameAsParent(this)

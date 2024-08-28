@@ -18,6 +18,7 @@ import pekko.Done
 import pekko.actor.testkit.typed.scaladsl.ScalaTestWithActorTestKit
 import pekko.actor.testkit.typed.scaladsl.LogCapturing
 import pekko.actor.typed.Behavior
+import pekko.actor.typed.Dispatchers
 import pekko.actor.typed.MailboxSelector
 import pekko.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.ConfigFactory
@@ -46,6 +47,29 @@ class MailboxDocSpec
       spawn(parent)
 
       probe.receiveMessage()
+    }
+
+    "interoperability with DispatcherSelector" in {
+
+      val probe = createTestProbe[Done]()
+      val childBehavior: Behavior[String] = Behaviors.empty
+      val parent: Behavior[Unit] = Behaviors.setup { context =>
+        // #interoperability-with-dispatcher
+        context.spawn(childBehavior, "bounded-mailbox-child", MailboxSelector.bounded(100).withDispatcherDefault)
+
+        val props =
+          MailboxSelector.fromConfig("my-app.my-special-mailbox").withDispatcherFromConfig(
+            Dispatchers.DefaultDispatcherId)
+        context.spawn(childBehavior, "from-config-mailbox-child", props)
+        // #interoperability-with-dispatcher
+
+        probe.ref ! Done
+        Behaviors.stopped
+      }
+      spawn(parent)
+
+      probe.receiveMessage()
+
     }
   }
 
