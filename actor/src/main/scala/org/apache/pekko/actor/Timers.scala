@@ -88,6 +88,8 @@ abstract class AbstractActorWithTimers extends AbstractActor with Timers {
  *
  * Timers are bound to the lifecycle of the actor that owns it,
  * and thus are cancelled automatically when it is restarted or stopped.
+ *
+ * @since 1.1.0
  */
 abstract class UntypedAbstractActorWithTimers extends UntypedAbstractActor with Timers {
 
