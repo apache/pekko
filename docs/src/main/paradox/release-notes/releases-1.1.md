@@ -22,10 +22,12 @@ Apache Pekko 1.1.0 contains all of the changes that have been released in the @r
 
 ### Additional APIs
 
-* Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
-* Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
 * Add create method to PFBuilder ([PR947](https://github.com/apache/pekko/pull/947))
+* Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
 * Add missing create method to javadsl Graph ([PR1230](https://github.com/apache/pekko/pull/1230))
+* Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
+* Add UntypedAbstractActorWithTimers ([#1360](https://github.com/apache/pekko/issues/1360)) (not in v1.1.0-M1)
+* Add isCompleted method to BoundedSourceQueue ([PR1374](https://github.com/apache/pekko/pull/1374)) (not in v1.1.0-M1)
 
 The Stream API has been updated to add some extra functions. 
 
@@ -76,6 +78,8 @@ The Stream Testkit Java DSL has some extra functions.
 * Add AbruptStreamTerminationException as super class of some related exceptions ([PR1201](https://github.com/apache/pekko/pull/1201))
 * For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision ([PR1271](https://github.com/apache/pekko/pull/1271))
 * Support for a dispatcher that uses Virtual Threads ([PR1299](https://github.com/apache/pekko/pull/1299)) (not in v1.1.0-M1)
+* Avoid unnecessary shard updates while shutting down ([PR1342](https://github.com/apache/pekko/pull/1342)) (not in v1.1.0-M1)
+* Support just warning instead of error when pekko.scheduler.tick-duration < 10ms on Windows ([#1364](https://github.com/apache/pekko/issues/1364)) (not in v1.1.0-M1)
 * Support the flattening syntax for supervising ([PR1386](https://github.com/apache/pekko/pull/1386)) (not in v1.1.0-M1)
 * Fix uncurried Pekko Stream ops in javadsl ([PR1406](https://github.com/apache/pekko/pull/1406)) (not in v1.1.0-M1)
 * A new config has been added to support users of Pekko Persistence snapshots to choose not to modify the persisted data to include Pekko serializer names ([PR1423](https://github.com/apache/pekko/pull/1423)) (not in v1.1.0-M1)
