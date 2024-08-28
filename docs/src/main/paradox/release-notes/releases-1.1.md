@@ -4,7 +4,7 @@ Apache Pekko 1.1.x releases support Java 8 and above.
 
 ## 1.1.0
 
-Release notes for Apache Pekko 1.1.0. See [GitHub Milestone for 1.1.0-M1](https://github.com/apache/pekko/milestone/2?closed=1) [GitHub Milestone for 1.1.0](https://github.com/apache/pekko/milestone/7?closed=1) for a fuller list of changes.
+Release notes for Apache Pekko 1.1.0. See [GitHub Milestone for 1.1.0-M1](https://github.com/apache/pekko/milestone/2?closed=1) and [GitHub Milestone for 1.1.0](https://github.com/apache/pekko/milestone/7?closed=1) for a fuller list of changes.
 
 ### 1.0.x changes
 
@@ -49,8 +49,8 @@ The Stream API has been updated to add some extra functions.
 * added extra retry operators that allow users to provide a predicate to decide whether to retry based on the exception ([PR1269](https://github.com/apache/pekko/pull/1269))
 * add QueueOfferResult.closed() method for Java DSL users ([PR1377](https://github.com/apache/pekko/pull/1377)) (not in v1.1.0-M1)
 * add optionalVia/unsafeOptionalDataVia operators ([PR1422](https://github.com/apache/pekko/pull/1422)) (not in v1.1.0-M1)
-* add alsoTo/alsoToContext operators to `SourceWithContext`/`FlowWithContext` ([PR-1443](https://github.com/apache/pekko/pull/1443)) (not in v1.1.0-M1)
-* add wireTap/wireTapContext operators to `SourceWithContext`/`FlowWithContext` ([PR-1446](https://github.com/apache/pekko/pull/1446)) (not in v1.1.0-M1)
+* add alsoTo/alsoToContext operators to `SourceWithContext`/`FlowWithContext` ([PR1443](https://github.com/apache/pekko/pull/1443)) (not in v1.1.0-M1)
+* add wireTap/wireTapContext operators to `SourceWithContext`/`FlowWithContext` ([PR1446](https://github.com/apache/pekko/pull/1446)) (not in v1.1.0-M1)
 
 The Stream Testkit Java DSL has some extra functions.
 
