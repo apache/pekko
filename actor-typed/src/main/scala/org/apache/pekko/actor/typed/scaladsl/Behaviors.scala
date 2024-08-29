@@ -49,6 +49,17 @@ object Behaviors {
     })
 
   /**
+   * Support for stashing messages to unstash at a later time.
+   *
+   * @since 1.1.0
+   */
+  def withStashSetup[T](capacity: Int)(factory: (StashBuffer[T], ActorContext[T]) => Behavior[T]): Behavior[T] =
+    setup(ctx => {
+      val stash = StashBuffer[T](ctx, capacity)
+      factory(stash, ctx)
+    })
+
+  /**
    * Return this behavior from message processing in order to advise the
    * system to reuse the previous behavior. This is provided in order to
    * avoid the allocation overhead of recreating the current behavior where
@@ -268,6 +279,19 @@ object Behaviors {
    */
   def withTimers[T](factory: TimerScheduler[T] => Behavior[T]): Behavior[T] =
     TimerSchedulerImpl.withTimers(factory)
+
+  /**
+   * Support for scheduled `self` messages in an actor.
+   * It takes care of the lifecycle of the timers such as cancelling them when the actor
+   * is restarted or stopped.
+   *
+   * @see [[TimerScheduler]]
+   * @since 1.1.0
+   */
+  def withTimersSetup[T](factory: (TimerScheduler[T], ActorContext[T]) => Behavior[T]): Behavior[T] =
+    setup(ctx => {
+      TimerSchedulerImpl.withTimers(factory(_, ctx))
+    })
 
   /**
    * Per message MDC (Mapped Diagnostic Context) logging.

@@ -59,6 +59,17 @@ object Behaviors {
     })
 
   /**
+   * Support for stashing messages to unstash at a later time.
+   *
+   * @since 1.1.0
+   */
+  def withStashSetup[T](capacity: Int,
+      factory: java.util.function.BiFunction[StashBuffer[T], ActorContext[T], Behavior[T]]): Behavior[T] =
+    setup(ctx => {
+      factory(StashBufferImpl[T](ctx.asScala, capacity), ctx.asJava)
+    })
+
+  /**
    * Return this behavior from message processing in order to advise the
    * system to reuse the previous behavior. This is provided in order to
    * avoid the allocation overhead of recreating the current behavior where
@@ -344,6 +355,18 @@ object Behaviors {
    */
   def withTimers[T](factory: pekko.japi.function.Function[TimerScheduler[T], Behavior[T]]): Behavior[T] =
     TimerSchedulerImpl.withTimers(timers => factory.apply(timers))
+
+  /**
+   * Support for scheduled `self` messages in an actor.
+   * It takes care of the lifecycle of the timers such as cancelling them when the actor
+   * is restarted or stopped.
+   *
+   * @see [[TimerScheduler]]
+   * @since 1.1.0
+   */
+  def withTimersSetup[T](
+      factory: pekko.japi.function.Function2[TimerScheduler[T], ActorContext[T], Behavior[T]]): Behavior[T] =
+    setup(ctx => TimerSchedulerImpl.withTimers(timers => factory.apply(timers, ctx)))
 
   /**
    * Per message MDC (Mapped Diagnostic Context) logging.
