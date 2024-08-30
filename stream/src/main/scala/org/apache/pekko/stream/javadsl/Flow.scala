@@ -73,7 +73,7 @@ object Flow {
    * Creates a Flow from an existing base Flow outputting an optional element and
    * applying an additional viaFlow only if the element in the stream is defined.
    *
-   * '''Emits when''' the provided viaFlow is runs with defined elements
+   * '''Emits when''' the provided viaFlow runs with defined elements
    *
    * '''Backpressures when''' the viaFlow runs for the defined elements and downstream backpressures
    *
