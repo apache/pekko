@@ -34,4 +34,4 @@ addSbtPlugin("io.github.siculo" % "sbt-bom" % "0.3.0")
 
 addSbtPlugin("org.apache.pekko" % "pekko-sbt-paradox" % "1.0.1")
 
-addSbtPlugin("com.gradle" % "sbt-develocity" % "1.1")
+addSbtPlugin("com.gradle" % "sbt-develocity" % "1.1.1")
