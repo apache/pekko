@@ -366,7 +366,7 @@ object Behaviors {
    */
   def withTimersSetup[T](
       factory: pekko.japi.function.Function2[TimerScheduler[T], ActorContext[T], Behavior[T]]): Behavior[T] =
-    setup(ctx => TimerSchedulerImpl.withTimers(timers => factory.apply(timers, ctx)))
+    setup(ctx => TimerSchedulerImpl.wrapWithTimers(timer => factory.apply(timer, ctx.asJava))(ctx.asScala))
 
   /**
    * Per message MDC (Mapped Diagnostic Context) logging.

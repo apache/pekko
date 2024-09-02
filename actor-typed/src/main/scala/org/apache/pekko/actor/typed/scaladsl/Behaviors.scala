@@ -290,7 +290,7 @@ object Behaviors {
    */
   def withTimersSetup[T](factory: (TimerScheduler[T], ActorContext[T]) => Behavior[T]): Behavior[T] =
     setup(ctx => {
-      TimerSchedulerImpl.withTimers(factory(_, ctx))
+      TimerSchedulerImpl.wrapWithTimers(factory(_, ctx))(ctx)
     })
 
   /**
