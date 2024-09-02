@@ -1,13 +1,14 @@
 # Release Notes (1.1.x)
 
-## 1.1.0-M1
+Apache Pekko 1.1.x releases support Java 8 and above.
 
-Release notes for Apache Pekko 1.1.0-M1. See [GitHub Milestone](https://github.com/apache/pekko/milestone/2?closed=1) for fuller list of changes.
-As with all milestone releases, this release is not recommended for production use - it is designed to allow users to try out the changes in a test environment.
+## 1.1.0
+
+Release notes for Apache Pekko 1.1.0. See [GitHub Milestone for 1.1.0-M1](https://github.com/apache/pekko/milestone/2?closed=1) and [GitHub Milestone for 1.1.0](https://github.com/apache/pekko/milestone/7?closed=1) for a fuller list of changes.
 
 ### 1.0.x changes
 
-Apache Pekko 1.1.0-M1 contains all of the changes that have been released in the @ref:[1.0.x releases](releases-1.0.md) up to and including v1.0.3-M1.
+Apache Pekko 1.1.0 contains all of the changes that have been released in the @ref:[1.0.x releases](releases-1.0.md) up to and including v1.0.3.
 
 ### Bug Fixes
 
@@ -17,13 +18,18 @@ Apache Pekko 1.1.0-M1 contains all of the changes that have been released in the
 * Fix uncaught decider exception in Split with Supervision.resumingDecider ([PR1207](https://github.com/apache/pekko/pull/1207))
 * Pull instead of throw exception in groupBy operator ([PR1210](https://github.com/apache/pekko/pull/1210))
 * Fix ByteIterator indexWhere method ([PR1282](https://github.com/apache/pekko/pull/1282))
+* Assertion failure caused by exception during pre-start ([#1384](https://github.com/apache/pekko/issues/1384)) (not in v1.1.0-M1)
 
 ### Additional APIs
 
-* Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
-* Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
 * Add create method to PFBuilder ([PR947](https://github.com/apache/pekko/pull/947))
+* Add asInputStream to ByteString ([PR1085](https://github.com/apache/pekko/pull/1085))
+* Add additional mailbox selector for typed props ([PR1096](https://github.com/apache/pekko/pull/1096)) (not in v1.1.0-M1)
 * Add missing create method to javadsl Graph ([PR1230](https://github.com/apache/pekko/pull/1230))
+* Add new indexOf functions to ByteString for byte lookups ([PR1247](https://github.com/apache/pekko/pull/1247))
+* Add UntypedAbstractActorWithTimers ([#1360](https://github.com/apache/pekko/issues/1360)) (not in v1.1.0-M1)
+* Add isCompleted method to BoundedSourceQueue ([PR1374](https://github.com/apache/pekko/pull/1374)) (not in v1.1.0-M1)
+* Add Behaviors.receiveMessageWithSame ([#1444](https://github.com/apache/pekko/issues/1444)) (not in v1.1.0-M1)
 
 The Stream API has been updated to add some extra functions. 
 
@@ -41,9 +47,10 @@ The Stream API has been updated to add some extra functions.
 * add Sink.forall operator ([PR989](https://github.com/apache/pekko/pull/989))
 * add Source.iterate operator ([PR1244](https://github.com/apache/pekko/pull/1244))
 * added extra retry operators that allow users to provide a predicate to decide whether to retry based on the exception ([PR1269](https://github.com/apache/pekko/pull/1269))
-* add optionalVia/unsafeOptionalDataVia operators ([PR1422](https://github.com/apache/pekko/pull/1422))
-* add alsoTo/alsoToContext operators to `SourceWithContext`/`FlowWithContext` ([PR-1443](https://github.com/apache/pekko/pull/1443))
-* add wireTap/wireTapContext operators to `SourceWithContext`/`FlowWithContext` ([PR-1446](https://github.com/apache/pekko/pull/1446))
+* add QueueOfferResult.closed() method for Java DSL users ([PR1377](https://github.com/apache/pekko/pull/1377)) (not in v1.1.0-M1)
+* add optionalVia/unsafeOptionalDataVia operators ([PR1422](https://github.com/apache/pekko/pull/1422)) (not in v1.1.0-M1)
+* add alsoTo/alsoToContext operators to `SourceWithContext`/`FlowWithContext` ([PR1443](https://github.com/apache/pekko/pull/1443)) (not in v1.1.0-M1)
+* add wireTap/wireTapContext operators to `SourceWithContext`/`FlowWithContext` ([PR1446](https://github.com/apache/pekko/pull/1446)) (not in v1.1.0-M1)
 
 The Stream Testkit Java DSL has some extra functions.
 
@@ -66,12 +73,18 @@ The Stream Testkit Java DSL has some extra functions.
 * add junit5 support to pekko-testkit-typed ([PR751](https://github.com/apache/pekko/pull/751))
 * Fix maybe throw for MinimalStage (Stream Unfold). ([PR822](https://github.com/apache/pekko/pull/822))
 * Add dedicated stream timeout exceptions for timeout related operators ([PR861](https://github.com/apache/pekko/pull/861))
-* Reimplement MapConcat operator without statefulMapConcat. ([PR902](https://github.com/apache/pekko/pull/902))
-* Make SingleConsumerMultiProducer the default mailbox for stream. ([PR917](https://github.com/apache/pekko/pull/917))
-* Rework PhiAccrualFailureDetector to enable monitoring of interval. ([PR1137](https://github.com/apache/pekko/pull/1137))
-* Remove the deprecation of statefulMapConcat operator. ([PR1147](https://github.com/apache/pekko/pull/1147))
-* Add AbruptStreamTerminationException as super class of some related exceptions. ([PR1201](https://github.com/apache/pekko/pull/1201))
-* For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision. ([PR1271](https://github.com/apache/pekko/pull/1271))
+* Reimplement MapConcat operator without statefulMapConcat ([PR902](https://github.com/apache/pekko/pull/902))
+* Make SingleConsumerMultiProducer the default mailbox for stream ([PR917](https://github.com/apache/pekko/pull/917))
+* Rework PhiAccrualFailureDetector to enable monitoring of interval ([PR1137](https://github.com/apache/pekko/pull/1137))
+* Remove the deprecation of statefulMapConcat operator ([PR1147](https://github.com/apache/pekko/pull/1147))
+* Add AbruptStreamTerminationException as super class of some related exceptions ([PR1201](https://github.com/apache/pekko/pull/1201))
+* For Pekko Persistence DurableState API, a new DeleteRevisionException has been added and the aim is to have implementations fail with that exception if a deleteObject does not delete exactly one record for that revision ([PR1271](https://github.com/apache/pekko/pull/1271))
+* Support for a dispatcher that uses Virtual Threads ([PR1299](https://github.com/apache/pekko/pull/1299)) (not in v1.1.0-M1)
+* Avoid unnecessary shard updates while shutting down ([PR1342](https://github.com/apache/pekko/pull/1342)) (not in v1.1.0-M1)
+* Support just warning instead of error when pekko.scheduler.tick-duration < 10ms on Windows ([#1364](https://github.com/apache/pekko/issues/1364)) (not in v1.1.0-M1)
+* Support the flattening syntax for supervising ([PR1386](https://github.com/apache/pekko/pull/1386)) (not in v1.1.0-M1)
+* Fix uncurried Pekko Stream ops in javadsl ([PR1406](https://github.com/apache/pekko/pull/1406)) (not in v1.1.0-M1)
+* A new config has been added to support users of Pekko Persistence snapshots to choose not to modify the persisted data to include Pekko serializer names ([PR1423](https://github.com/apache/pekko/pull/1423)) (not in v1.1.0-M1)
 * Some performance changes in the Stream code ([PR48](https://github.com/apache/pekko/pull/48), [PR49](https://github.com/apache/pekko/pull/49), [PR278](https://github.com/apache/pekko/pull/278), [PR363](https://github.com/apache/pekko/pull/363), [PR408](https://github.com/apache/pekko/pull/408), [PR872](https://github.com/apache/pekko/pull/872), [PR923](https://github.com/apache/pekko/pull/923), [PR983](https://github.com/apache/pekko/pull/983), [PR1001](https://github.com/apache/pekko/pull/1001), [PR1027](https://github.com/apache/pekko/pull/1027), [PR1249](https://github.com/apache/pekko/pull/1249), [PR1250](https://github.com/apache/pekko/pull/1250))
 
 ### Dependency Changes
@@ -81,7 +94,8 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 * The protobuf-java code that is shaded and released as pekko-protobuf-v3 has been upgraded to protobuf-java 3.25.3
 * slf4j was updated to v2 ([PR748](https://github.com/apache/pekko/pull/748))
 * upgrade from netty 3 to netty 4 (pekko-remote and pekko-multi-node-testkit)
-* Jackson 2.17.1
+* Jackson 2.17.2
+* Aeron 1.45.0 and Agrona 1.22.0 (newer versions of these libs require Java 17)
 
 ### Known Issues
 
