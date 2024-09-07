@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentHashMap
 
 import scala.collection.immutable
 import scala.concurrent.Await
-import scala.runtime.AbstractPartialFunction
 import scala.util.control.NonFatal
 
 import org.apache.pekko
@@ -430,25 +429,14 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       typeName,
       _ => entityProps,
       settings,
-      extractEntityId = extractEntityIdFromExtractor(messageExtractor),
+      extractEntityId = {
+        case msg if messageExtractor.entityId(msg) ne null =>
+          (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
+      },
       extractShardId = msg => messageExtractor.shardId(msg),
       allocationStrategy = allocationStrategy,
       handOffStopMessage = handOffStopMessage)
   }
-
-  // !!!important is only applicable if you know that isDefinedAt(x) is always called before apply(x) (with the same x)
-  private def extractEntityIdFromExtractor(
-      messageExtractor: ShardRegion.MessageExtractor): ShardRegion.ExtractEntityId =
-    new AbstractPartialFunction[Any, (String, Any)] {
-      var cache: String = _
-
-      override def isDefinedAt(msg: Any): Boolean = {
-        cache = messageExtractor.entityId(msg)
-        cache != null
-      }
-
-      override def apply(x: Any): (String, Any) = (cache, messageExtractor.entityMessage(x))
-    }
 
   /**
    * Java/Scala API: Register a named entity type by defining the [[pekko.actor.Props]] of the entity actor
@@ -624,12 +612,11 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
       dataCenter: Optional[String],
       messageExtractor: ShardRegion.MessageExtractor): ActorRef = {
 
-    startProxy(
-      typeName,
-      Option(role.orElse(null)),
-      Option(dataCenter.orElse(null)),
-      extractEntityId = extractEntityIdFromExtractor(messageExtractor),
-      msg => messageExtractor.shardId(msg))
+    startProxy(typeName, Option(role.orElse(null)), Option(dataCenter.orElse(null)),
+      extractEntityId = {
+        case msg if messageExtractor.entityId(msg) ne null =>
+          (messageExtractor.entityId(msg), messageExtractor.entityMessage(msg))
+      }, extractShardId = msg => messageExtractor.shardId(msg))
 
   }
 
