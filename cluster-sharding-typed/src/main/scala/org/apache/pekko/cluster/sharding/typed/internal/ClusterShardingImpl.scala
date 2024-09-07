@@ -20,7 +20,6 @@ import java.util.concurrent.CompletionStage
 import java.util.concurrent.ConcurrentHashMap
 
 import scala.concurrent.Future
-import scala.runtime.AbstractPartialFunction
 
 import org.apache.pekko
 import pekko.actor.ActorRefProvider
@@ -173,16 +172,10 @@ import pekko.util.JavaDurationConverters._
       allocationStrategy: Option[ShardAllocationStrategy]): ActorRef[E] = {
 
     val extractorAdapter = new ExtractorAdapter(extractor)
-    // !!!important is only applicable if you know that isDefinedAt(x) is always called before apply(x) (with the same x)
-    val extractEntityId: ShardRegion.ExtractEntityId = new AbstractPartialFunction[Any, (String, Any)] {
-      var cache: String = _
-
-      override def isDefinedAt(msg: Any): Boolean = {
-        cache = extractorAdapter.entityId(msg)
-        cache != null
-      }
-
-      override def apply(x: Any): (String, Any) = (cache, extractorAdapter.unwrapMessage(x))
+    val extractEntityId: ShardRegion.ExtractEntityId = {
+      // TODO is it possible to avoid the double evaluation of entityId
+      case message if extractorAdapter.entityId(message) != null =>
+        (extractorAdapter.entityId(message), extractorAdapter.unwrapMessage(message))
     }
     val extractShardId: ShardRegion.ExtractShardId = { message =>
       extractorAdapter.entityId(message) match {
