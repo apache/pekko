@@ -6,6 +6,10 @@ Apache Pekko 1.1.x releases support Java 8 and above.
 
 Release notes for Apache Pekko 1.1.0. See [GitHub Milestone for 1.1.0-M1](https://github.com/apache/pekko/milestone/2?closed=1) and [GitHub Milestone for 1.1.0](https://github.com/apache/pekko/milestone/7?closed=1) for a fuller list of changes.
 
+Pekko Remote and/or Cluster users who use Netty instead of Aeron should note that we now support Netty 4 instead of Netty 3. It is recommended that you run some tests before you go into production with this new release.
+
+Please review the Known Issues below.
+
 ### 1.0.x changes
 
 Apache Pekko 1.1.0 contains all of the changes that have been released in the @ref:[1.0.x releases](releases-1.0.md) up to and including v1.0.3.
@@ -99,6 +103,7 @@ Most of the dependency changes are small patch level upgrades. Some exceptions i
 
 ### Known Issues
 
+* A race condition has been introduced into pekko-cluster-sharding which needs to be fixed in a Pekko 1.1.1 release. Users who use Cluster Sharding should skip this release. The problem does not appear in v1.1.0-M1. ([#1463](https://github.com/apache/pekko/pull/1463))
 * For Scala 2.12 users, we have run into an issue with stream-testkit function `expectNextWithTimeoutPF` ([#1393](https://github.com/apache/pekko/issues/1393)).
     * For now, the consensus is not to change this as it appears to be more of a Scala 2.12 compiler issue.
     * Affected Scala 2.12 users can stick with Pekko 1.0 or change their code to get it to compile. The most reliable code change is to move the PartialFunction code and declare it as a `val`.
