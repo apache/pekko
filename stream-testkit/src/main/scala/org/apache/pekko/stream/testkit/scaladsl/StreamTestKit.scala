@@ -35,12 +35,30 @@ object StreamTestKit {
    * This assertion is useful to check that all of the stages have
    * terminated successfully.
    */
+  def assertAllStagesStopped[T](block: => T, overrideTimeout: FiniteDuration)(implicit materializer: Materializer): T =
+    materializer match {
+      case impl: PhasedFusingActorMaterializer =>
+        stopAllChildren(impl.system, impl.supervisor)
+        val result = block
+        assertNoChildren(impl.system, impl.supervisor, Some(overrideTimeout))
+        result
+      case _ => block
+    }
+
+  /**
+   * Asserts that after the given code block is ran, no stages are left over
+   * that were created by the given materializer with an overridden duration
+   * that ignores `stream.testkit.all-stages-stopped-timeout`.
+   *
+   * This assertion is useful to check that all of the stages have
+   * terminated successfully.
+   */
   def assertAllStagesStopped[T](block: => T)(implicit materializer: Materializer): T =
     materializer match {
       case impl: PhasedFusingActorMaterializer =>
         stopAllChildren(impl.system, impl.supervisor)
         val result = block
-        assertNoChildren(impl.system, impl.supervisor)
+        assertNoChildren(impl.system, impl.supervisor, None)
         result
       case _ => block
     }
@@ -53,10 +71,15 @@ object StreamTestKit {
   }
 
   /** INTERNAL API */
-  @InternalApi private[testkit] def assertNoChildren(sys: ActorSystem, supervisor: ActorRef): Unit = {
+  @InternalApi private[testkit] def assertNoChildren(sys: ActorSystem, supervisor: ActorRef,
+      overrideTimeout: Option[FiniteDuration]): Unit = {
     val probe = TestProbe()(sys)
-    val c = sys.settings.config.getConfig("pekko.stream.testkit")
-    val timeout = c.getDuration("all-stages-stopped-timeout", MILLISECONDS).millis
+
+    val timeout = overrideTimeout.getOrElse {
+      val c = sys.settings.config.getConfig("pekko.stream.testkit")
+      c.getDuration("all-stages-stopped-timeout", MILLISECONDS).millis
+    }
+
     probe.within(timeout) {
       try probe.awaitAssert {
           supervisor.tell(StreamSupervisor.GetChildren, probe.ref)
