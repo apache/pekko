@@ -216,7 +216,7 @@ class ShardRegionSpec extends PekkoSpec(ShardRegionSpec.config) with WithLogCapt
   }
 
   "ExtractEntityId" must {
-    "can be safely share to multiple shards" in {
+    "be safely able to share multiple shards" in {
       implicit val ec: ExecutionContext = system.dispatcher
 
       Cluster(sysA).join(Cluster(sysA).selfAddress) // coordinator on A
