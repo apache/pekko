@@ -141,7 +141,7 @@ object OSGi {
       "!scala.util.parsing.*",
       scalaImport(scalaVersion),
       "*")
-  def pekkoImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "1.0", "1.1")
+  def pekkoImport(packageName: String = "org.apache.pekko.*") = versionedImport(packageName, "1.1", "1.2")
   def configImport(packageName: String = "com.typesafe.config.*") = versionedImport(packageName, "1.4.0", "1.5.0")
   def scalaImport(version: String) = {
     val packageName = "scala.*"
