@@ -30,13 +30,13 @@ object Dependencies {
   val agronaVersion = "1.15.1"
   val nettyVersion = "3.10.6.Final"
   val protobufJavaVersion = "3.16.3"
-  val logbackVersion = "1.2.11"
+  val logbackVersion = "1.2.13"
 
   val jacksonCoreVersion = "2.14.3"
   val jacksonDatabindVersion = jacksonCoreVersion
 
-  val scala212Version = "2.12.19"
-  val scala213Version = "2.13.13"
+  val scala212Version = "2.12.20"
+  val scala213Version = "2.13.14"
   val scala3Version = "3.3.3"
   val allScalaVersions = Seq(scala213Version, scala212Version, scala3Version)
 
