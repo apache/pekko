@@ -78,7 +78,7 @@ object PekkoDisciplinePlugin extends AutoPlugin {
 
   lazy val defaultScalaOptions = Def.setting(CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((2, 12)) => "-Wconf:cat=unused-nowarn:s,any:e"
-    case _             => "-Wconf:cat=unused-nowarn:s,cat=lint-named-booleans:s,cat=other-shadowing:s,any:e"
+    case _             => "-Wconf:cat=unused-nowarn:s,cat=other-shadowing:s,any:e"
   })
 
   lazy val nowarnSettings = Seq(
