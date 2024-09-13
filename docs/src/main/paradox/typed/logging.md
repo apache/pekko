@@ -452,7 +452,7 @@ troubleshooting. Those logger names are typically prefixed with the package name
 For example, in Logback the configuration may look like this to enable debug logging for Cluster Sharding: 
 
 ```
-   <logger name="pekko.cluster.sharding" level="DEBUG" />
+   <logger name="org.apache.pekko.cluster.sharding" level="DEBUG" />
 
     <root level="INFO">
         <appender-ref ref="ASYNC"/>
@@ -462,18 +462,18 @@ For example, in Logback the configuration may look like this to enable debug log
 Other examples of logger names or prefixes:
 
 ```
-pekko.cluster
-pekko.cluster.Cluster
-pekko.cluster.ClusterHeartbeat
-pekko.cluster.ClusterGossip
-pekko.cluster.ddata
-pekko.cluster.pubsub
-pekko.cluster.singleton
-pekko.cluster.sharding
-pekko.coordination.lease
-pekko.discovery
-pekko.persistence
-pekko.remote
+org.apache.pekko.cluster
+org.apache.pekko.cluster.Cluster
+org.apache.pekko.cluster.ClusterHeartbeat
+org.apache.pekko.cluster.ClusterGossip
+org.apache.pekko.cluster.ddata
+org.apache.pekko.cluster.pubsub
+org.apache.pekko.cluster.singleton
+org.apache.pekko.cluster.sharding
+org.apache.pekko.coordination.lease
+org.apache.pekko.discovery
+org.apache.pekko.persistence
+org.apache.pekko.remote
 ```
 
 ## Logging in tests
