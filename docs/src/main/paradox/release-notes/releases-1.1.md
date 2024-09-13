@@ -2,6 +2,14 @@
 
 Apache Pekko 1.1.x releases support Java 8 and above.
 
+## 1.1.1
+
+Pekko 1.1.1 is a bugfix release.
+
+### Bug Fixes
+
+* Cluster sharding delivers message to the wrong entity ([PR1464](https://github.com/apache/pekko/pull/1464))
+
 ## 1.1.0
 
 Release notes for Apache Pekko 1.1.0. See [GitHub Milestone for 1.1.0-M1](https://github.com/apache/pekko/milestone/2?closed=1) and [GitHub Milestone for 1.1.0](https://github.com/apache/pekko/milestone/7?closed=1) for a fuller list of changes.
